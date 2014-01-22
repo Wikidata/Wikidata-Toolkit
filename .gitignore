@@ -4,3 +4,36 @@
 *.jar
 *.war
 *.ear
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.classpath
+.project
+.metadata
+.settings/
+local.properties
+
+# NetBeans
+nbbuild/
+nbdist/
+nbproject/
+nb-configuration.xml
+nbactions.xml
+
+# Maven, etc.
+out/
+target/
+
+# General
+*.pyc
+*~
+*.bak
+*.sw[o,p]
+*.tmp
+.DS_Store
+Thumbs.db
