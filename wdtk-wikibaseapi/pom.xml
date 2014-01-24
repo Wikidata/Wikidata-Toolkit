@@ -3,46 +3,24 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.wikidata.wdtk</groupId>
+	<parent>
+		<groupId>org.wikidata.wdtk</groupId>
+		<artifactId>wdtk-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
 	<artifactId>wdtk-wikibaseapi</artifactId>
-	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
+	<name>Wikidata Toolkit Wikibase API</name>
+	<description>Java library to access the Wikibase Web API</description>
+
 	<dependencies>
-
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-datamodel</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-	<name>Wikidata Toolkit Wiki Base API</name>
-
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<id>markus</id>
-			<name>Markus Kroetzsch</name>
-			<email>markus.kroetzsch@cs.ox.ac.uk</email>
-		</developer>
-		<developer>
-			<id>julian</id>
-			<name>Julian Mendez</name>
-			<email>mendez@tcs.inf.tu-dresden.de</email>
-		</developer>
-	</developers>
 
 </project>

@@ -3,46 +3,16 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.wikidata.wdtk</groupId>
+	<parent>
+		<groupId>org.wikidata.wdtk</groupId>
+		<artifactId>wdtk-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
 	<artifactId>wdtk-datamodel</artifactId>
-	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<name>Wikidata Toolkit Data Model</name>
-
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<id>markus</id>
-			<name>Markus Kroetzsch</name>
-			<email>markus.kroetzsch@cs.ox.ac.uk</email>
-		</developer>
-		<developer>
-			<id>julian</id>
-			<name>Julian Mendez</name>
-			<email>mendez@tcs.inf.tu-dresden.de</email>
-		</developer>
-	</developers>
+	<description>Java implementation of the Wikibase data model</description>
 
 </project>
