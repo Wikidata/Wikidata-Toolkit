@@ -40,6 +40,11 @@
 		</developer>
 	</developers>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<slf4jVersion>1.6.1</slf4jVersion>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -47,11 +52,20 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+			<!-- Simply forward log messages to System.out. -->
+			<!-- Users can use their own logging framework instead. -->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4jVersion}</version>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 
 	<build>
 		<plugins>
