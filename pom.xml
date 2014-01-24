@@ -26,6 +26,9 @@
 	</licenses>
 
 	<inceptionYear>2014</inceptionYear>
+	<organization>
+		<name>Wikidata Toolkit Developers</name>
+	</organization>
 
 	<developers>
 		<developer>
@@ -42,7 +45,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4jVersion>1.6.1</slf4jVersion>
+		<slf4jVersion>1.7.5</slf4jVersion>
 	</properties>
 
 	<dependencies>
@@ -58,7 +61,7 @@
 			<version>${slf4jVersion}</version>
 		</dependency>
 		<dependency>
-			<!-- Simply forward log messages to System.out. -->
+			<!-- Simply forward log messages to System.err. -->
 			<!-- Users can use their own logging framework instead. -->
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
@@ -78,6 +81,30 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.6</version>
+				<configuration>
+				</configuration>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>update-file-header</goal>
+							<goal>update-project-license</goal>
+						</goals>
+						<phase>process-sources</phase>
+						<configuration>
+							<licenseName>apache_v2</licenseName>
+							<roots>
+								<root>src/main/java</root>
+								<root>src/test/java</root>
+							</roots>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
