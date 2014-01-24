@@ -86,8 +86,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>1.6</version>
-				<configuration>
-				</configuration>
+				<configuration></configuration>
 				<executions>
 					<execution>
 						<id>first</id>
@@ -106,6 +105,35 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<!-- This plugin's configuration is used to store Eclipse
+				m2e settings only. It has no influence on the Maven build. -->
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>license-maven-plugin</artifactId>
+									<versionRange>[1.2,)</versionRange>
+									<goals>
+										<goal>update-project-license</goal>
+										<goal>update-file-header</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore />
+								</action>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
