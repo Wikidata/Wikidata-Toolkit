@@ -20,33 +20,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.*;
 
-/**
- * Generic implementation of {@link ItemId} that works with arbitrary Wikibase
- * instances: it requires a baseIri that identifies the site globally.
- * 
- * @author Markus Kroetzsch
- * 
- */
-public class ItemIdImpl extends EntityIdImpl implements ItemId {
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 
-	/**
-	 * @see EntityIdImpl#EntityIdImpl(String, String)
-	 * @param id
-	 * @param baseIri
-	 */
-	public ItemIdImpl(String id, String baseIri) {
-		super(id, baseIri);
+public class DatatypeIdImplTest {
+
+	@Test
+	public void datatypeEqualityBasedOnContent() {
+		DatatypeIdImpl d1 = new DatatypeIdImpl(DatatypeId.DT_ITEM);
+		DatatypeIdImpl d2 = new DatatypeIdImpl("http://www.wikidata.org/ontology#propertyTypeItem");
+		DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeId.DT_TIME);
 		
-		if (!id.matches("^Q[1-9][0-9]*$")) {
-        	throw new IllegalArgumentException("Wikibase item ids must have the form \"Q[1-9]+\"");
-		}
-	}
-
-	@Override
-	public EntityType getEntityType() {
-		return EntityType.ITEM;
+		assertEquals(d1, d2);
+		assertThat(d1, not(equalTo(d3)));
 	}
 
 }
