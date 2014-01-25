@@ -9,6 +9,6 @@ following the original [Wikibase Toolkit IEG proposal](https://meta.wikimedia.or
 Authors:
 [Markus Kroetzsch](http://korrekt.org)
 
-License: [GNU GPL v2](License.txt)
+License: [Apache 2.0](License.txt)
 
 
