@@ -66,5 +66,15 @@ public class ItemIdImplTest {
 		assertThat(item1, not(equalTo(item3)));
 		assertThat(item1, not(equalTo(item4)));
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void itemIdValidatedForFirstLetter() {
+		new ItemIdImpl("P12345", "http://www.wikidata.org/entity/");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void itemIdValidatedForNumber() {
+		new ItemIdImpl("Q34d23", "http://www.wikidata.org/entity/");
+	}
 
 }

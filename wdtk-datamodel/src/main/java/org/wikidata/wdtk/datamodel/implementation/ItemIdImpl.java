@@ -37,7 +37,10 @@ public class ItemIdImpl extends EntityIdImpl implements ItemId {
 	 */
 	public ItemIdImpl(String id, String baseIri) {
 		super(id, baseIri);
-		// TODO Check validity of ID, at least the initial letter
+		
+		if (!id.matches("^Q[1-9][0-9]*$")) {
+        	throw new IllegalArgumentException("Wikibase item ids must have the form \"Q[1-9]+\"");
+		}
 	}
 
 	@Override
