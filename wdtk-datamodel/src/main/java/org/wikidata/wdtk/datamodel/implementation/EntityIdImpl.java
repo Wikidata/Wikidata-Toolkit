@@ -38,8 +38,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityId;
  */
 public abstract class EntityIdImpl implements EntityId {
 
-	private final String id;
-	private final String baseIri;
+	final String id;
+	final String baseIri;
 
 	/**
 	 * Constructor.
