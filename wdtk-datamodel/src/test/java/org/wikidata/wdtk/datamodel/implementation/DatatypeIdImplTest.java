@@ -24,19 +24,36 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 
 public class DatatypeIdImplTest {
 
+	DatatypeIdImpl d1;
+	DatatypeIdImpl d2;
+	DatatypeIdImpl d3;
+
+	@Before
+	public void setUp() {
+		d1 = new DatatypeIdImpl(DatatypeId.DT_ITEM);
+		d2 = new DatatypeIdImpl(
+				"http://www.wikidata.org/ontology#propertyTypeItem");
+		d3 = new DatatypeIdImpl(DatatypeId.DT_TIME);
+	}
+
 	@Test
 	public void datatypeEqualityBasedOnContent() {
-		DatatypeIdImpl d1 = new DatatypeIdImpl(DatatypeId.DT_ITEM);
-		DatatypeIdImpl d2 = new DatatypeIdImpl("http://www.wikidata.org/ontology#propertyTypeItem");
-		DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeId.DT_TIME);
-		
+		assertEquals(d1, d1);
 		assertEquals(d1, d2);
 		assertThat(d1, not(equalTo(d3)));
+		assertThat(d1, not(equalTo(null)));
+		assertFalse(d1.equals(this));
+	}
+
+	@Test
+	public void datatypeHashBasedOnContent() {
+		assertEquals(d1.hashCode(), d2.hashCode());
 	}
 
 }
