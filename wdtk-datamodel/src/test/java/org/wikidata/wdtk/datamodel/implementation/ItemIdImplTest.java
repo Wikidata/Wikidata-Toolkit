@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-
 public class ItemIdImplTest {
 
 	private ItemIdImpl item1;
@@ -62,11 +61,19 @@ public class ItemIdImplTest {
 
 	@Test
 	public void itemEqualityBasedOnContent() {
+		assertEquals(item1, item1);
 		assertEquals(item1, item2);
 		assertThat(item1, not(equalTo(item3)));
 		assertThat(item1, not(equalTo(item4)));
+		assertThat(item1, not(equalTo(null)));
+		assertFalse(item1.equals(this));
 	}
-	
+
+	@Test
+	public void itemHashBasedOnContent() {
+		assertEquals(item1.hashCode(), item2.hashCode());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void itemIdValidatedForFirstLetter() {
 		new ItemIdImpl("P12345", "http://www.wikidata.org/entity/");

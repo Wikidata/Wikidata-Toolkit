@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-
 public class PropertyIdImplTest {
 
 	private PropertyIdImpl prop1;
@@ -62,11 +61,19 @@ public class PropertyIdImplTest {
 
 	@Test
 	public void propertyEqualityBasedOnContent() {
+		assertEquals(prop1, prop1);
 		assertEquals(prop1, prop2);
 		assertThat(prop1, not(equalTo(prop3)));
 		assertThat(prop1, not(equalTo(prop4)));
+		assertThat(prop1, not(equalTo(null)));
+		assertFalse(prop1.equals(this));
 	}
-	
+
+	@Test
+	public void propertyHashBasedOnContent() {
+		assertEquals(prop1.hashCode(), prop2.hashCode());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void propertyIdValidatedForFirstLetter() {
 		new PropertyIdImpl("Q12345", "http://www.wikidata.org/entity/");
