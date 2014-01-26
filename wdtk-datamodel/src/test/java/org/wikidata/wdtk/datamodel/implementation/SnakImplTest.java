@@ -62,7 +62,7 @@ public class SnakImplTest {
 		nvs2 = new NoValueSnakImpl(p1);
 		nvs3 = new NoValueSnakImpl(p2);
 	}
-	
+
 	@Test
 	public void snakHashBasedOnContent() {
 		assertEquals(vs1.hashCode(), vs2.hashCode());
@@ -74,6 +74,7 @@ public class SnakImplTest {
 	public void snakEqualityBasedOnType() {
 		assertFalse(svs1.equals(nvs1));
 		assertFalse(nvs1.equals(svs1));
+		assertFalse(vs1.equals(svs1));
 	}
 
 	@Test
