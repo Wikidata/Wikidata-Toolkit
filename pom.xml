@@ -159,7 +159,7 @@
 				<version>2.6</version>
 				<configuration>
 					<format>xml</format>
-					<format>html</format>
+<!-- 					<format>html</format> -->
 					<maxmem>256m</maxmem>
 					<!-- aggregated reports for multi-module projects -->
 					<aggregate>true</aggregate>
