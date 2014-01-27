@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -36,6 +38,7 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	public ValueSnakImpl(PropertyId propertyId, Value value) {
 		super(propertyId);
+		Validate.notNull(value, "ValueSnak values cannot be null");
 		this.value = value;
 	}
 
@@ -45,7 +48,8 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	}
 
 	public int hashCode() {
-		return 997 * this.value.hashCode() ^ 1013 * this.propertyId.hashCode();
+		return new HashCodeBuilder(997, 1013).append(value).append(propertyId)
+				.toHashCode();
 	}
 
 	public boolean equals(Object obj) {

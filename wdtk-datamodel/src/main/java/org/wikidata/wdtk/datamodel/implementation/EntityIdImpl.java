@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 
 /**
@@ -51,6 +53,8 @@ public abstract class EntityIdImpl implements EntityId {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public EntityIdImpl(String id, String baseIri) {
+		Validate.notNull(id, "Entity ids cannot be null");
+		Validate.notNull(baseIri, "Entity base IRIs cannot be null");
 		this.id = id;
 		this.baseIri = baseIri;
 	}
@@ -66,8 +70,8 @@ public abstract class EntityIdImpl implements EntityId {
 	}
 
 	public int hashCode() {
-		// TODO not the most efficient approach; better use some hash builder
-		return this.getIri().hashCode();
+		return new HashCodeBuilder(773, 241).append(baseIri).append(id)
+				.toHashCode();
 	}
 
 	public boolean equals(Object obj) {

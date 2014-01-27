@@ -41,6 +41,11 @@ public class DatatypeIdImplTest {
 				"http://www.wikidata.org/ontology#propertyTypeItem");
 		d3 = new DatatypeIdImpl(DatatypeId.DT_TIME);
 	}
+	
+	@Test(expected = NullPointerException.class)
+	public void datatypeIdNotNull() {
+		new DatatypeIdImpl(null);
+	}
 
 	@Test
 	public void datatypeEqualityBasedOnContent() {

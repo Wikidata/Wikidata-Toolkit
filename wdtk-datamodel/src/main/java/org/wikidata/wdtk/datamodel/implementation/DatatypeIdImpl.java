@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 
 /**
@@ -41,6 +42,7 @@ public class DatatypeIdImpl implements DatatypeId {
 	 *            the IRI string that identifies the datatype
 	 */
 	public DatatypeIdImpl(String datatypeIri) {
+		Validate.notNull(datatypeIri, "Datatype IRIs cannot be null");
 		this.iri = datatypeIri;
 	}
 

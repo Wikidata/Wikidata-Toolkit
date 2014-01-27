@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -20,28 +20,30 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import java.util.List;
 
 /**
- * Implementation of {@link Snak}.
+ * Interface for Wikibase Statments. A Statement is the main information object
+ * entered by users in Wikidata. It consists of a {@link Claim}, which it
+ * extends by additional information about references and ranking.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public abstract class SnakImpl implements Snak {
+public interface Statement extends Claim {
 
-	final PropertyId propertyId;
+	/**
+	 * @see StatementRank
+	 * @return the rank of the Statement
+	 */
+	public StatementRank getRank();
 
-	public SnakImpl(PropertyId propertyId) {
-		Validate.notNull(propertyId, "Snak property ids cannot be null");
-		this.propertyId = propertyId;
-	}
-
-	@Override
-	public PropertyId getPropertyId() {
-		return propertyId;
-	}
-
+	/**
+	 * Get a list of references for this Statement. Each reference is
+	 * represented by a list of Snaks, which provide information about the
+	 * reference.
+	 * 
+	 * @return the list of references
+	 */
+	public List<List<? extends Snak>> getReferences();
 }

@@ -84,4 +84,14 @@ public class ItemIdImplTest {
 		new ItemIdImpl("Q34d23", "http://www.wikidata.org/entity/");
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void idNotNull() {
+		new ItemIdImpl(null, "http://www.wikidata.org/entity/");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void baseIriNotNull() {
+		new ItemIdImpl("Q42", null);
+	}
+
 }

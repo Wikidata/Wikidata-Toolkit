@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -21,11 +23,37 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * Interface for Wikidata claims.
+ * Interface for Wikidata claims. Claims consist of those parts of Wikibase
+ * Statements that express a claim about a subject entity, such as the claim
+ * that Berlin has 3 million inhabitants. Additional information, such as
+ * references and ranks, are not part of the claim.
  * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public interface Claim {
-	// TODO
+
+	/**
+	 * The subject that the claim refers to, e.g., the id of "Berlin".
+	 * 
+	 * @return EntityId of the subject
+	 */
+	public EntityId getSubject();
+
+	/**
+	 * Main Snak of the statement. This Snak refers directly to the subject,
+	 * e.g., the {@ValueSnak} "Population: 3000000".
+	 * 
+	 * @return
+	 */
+	public Snak getMainSnak();
+
+	/**
+	 * Auxiliary Snaks, also known as qualifiers, that provide additional
+	 * context information for this claim. For example, "as of: 2014" might be a
+	 * temporal context given for a claim that provides a populatio number.
+	 * 
+	 * @return
+	 */
+	public List<? extends Snak> getQualifiers();
 }

@@ -102,4 +102,19 @@ public class SnakImplTest {
 		assertThat(nvs1, not(equalTo(null)));
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void idNotNull() {
+		new ItemIdImpl(null, "http://www.wikidata.org/entity/");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void snakPropertyNotNull() {
+		new SomeValueSnakImpl(null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void snakValueNotNull() {
+		new ValueSnakImpl(new PropertyIdImpl("P42",
+				"http://example.com/entity/"), null);
+	}
 }
