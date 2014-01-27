@@ -60,6 +60,16 @@ public class StatementImplTest {
 				StatementRank.NORMAL);
 	}
 
+	@Test
+	public void gettersWorking() {
+		assertEquals(s1.getSubject(), subject);
+		assertEquals(s1.getMainSnak(), mainSnak);
+		assertEquals(s1.getQualifiers(), Collections.<Snak> emptyList());
+		assertEquals(s1.getReferences(),
+				Collections.<List<? extends Snak>> emptyList());
+		assertEquals(s1.getRank(), StatementRank.NORMAL);
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void subjectNotNull() {
 		new StatementImpl(null, mainSnak, Collections.<Snak> emptyList(),
@@ -135,6 +145,7 @@ public class StatementImplTest {
 		assertThat(s1, not(equalTo(s6)));
 		assertThat(s1, not(equalTo(s7)));
 		assertThat(s1, not(equalTo(null)));
+		assertFalse(s1.equals(this));
 	}
 
 }
