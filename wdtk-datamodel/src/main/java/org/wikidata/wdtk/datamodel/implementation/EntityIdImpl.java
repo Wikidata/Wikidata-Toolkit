@@ -69,11 +69,23 @@ public abstract class EntityIdImpl implements EntityId {
 		return id;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(773, 241).append(baseIri).append(id)
 				.toHashCode();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;

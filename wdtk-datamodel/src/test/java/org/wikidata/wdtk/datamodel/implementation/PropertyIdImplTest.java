@@ -22,7 +22,8 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import org.junit.Test;

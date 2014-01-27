@@ -47,11 +47,23 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 		return value;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(997, 1013).append(value).append(propertyId)
 				.toHashCode();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;

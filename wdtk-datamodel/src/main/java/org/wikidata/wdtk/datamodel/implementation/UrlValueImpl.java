@@ -20,13 +20,39 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
 
-public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
+/**
+ * Implementation of {@link UrlValue}.
+ * 
+ * @author Markus Kroetzsch
+ * 
+ */
+public class UrlValueImpl implements UrlValue {
 
-	public SomeValueSnakImpl(PropertyId propertyId) {
-		super(propertyId);
+	final String url;
+
+	/**
+	 * Constructor.
+	 * 
+	 * There is currently no validation of the URL string.
+	 * 
+	 * @param url
+	 */
+	public UrlValueImpl(String url) {
+		Validate.notNull(url, "URL cannot be null");
+		this.url = url;
+	}
+
+	@Override
+	public String getUrl() {
+		return url;
+	}
+
+	@Override
+	public String getIri() {
+		return url;
 	}
 
 	/*
@@ -36,7 +62,7 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	 */
 	@Override
 	public int hashCode() {
-		return this.propertyId.hashCode();
+		return url.hashCode();
 	}
 
 	/*
@@ -46,14 +72,13 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj == null)
 			return false;
-		if (obj == this)
-			return true;
-		if (!(obj instanceof SomeValueSnak))
+		if (!(obj instanceof UrlValueImpl))
 			return false;
-
-		return this.propertyId.equals(((SomeValueSnak) obj).getPropertyId());
+		return url.equals(((UrlValueImpl) obj).url);
 	}
 
 }
