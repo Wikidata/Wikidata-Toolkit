@@ -27,7 +27,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * 
  * This interface is intended as a general interface for all types of
  * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
- * the value that is used when users enter a URL (or IRI) direclty in Wikibase.
+ * the value that is used when users enter a URL (or IRI) directly in Wikibase.
  * 
  * @author Markus Kroetzsch
  * 

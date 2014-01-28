@@ -43,6 +43,20 @@ public class StatementImpl implements Statement {
 	final List<List<? extends Snak>> references;
 	final StatementRank rank;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param subject
+	 *            the subject the Statement refers to
+	 * @param mainSnak
+	 *            the main Snak of the Statement
+	 * @param qualifiers
+	 *            the qualifiers of the Statement
+	 * @param references
+	 *            the references for the Statement
+	 * @param rank
+	 *            the rank of the Statement
+	 */
 	public StatementImpl(EntityId subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank) {
@@ -103,21 +117,25 @@ public class StatementImpl implements Statement {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof StatementImpl))
+		}
+		if (!(obj instanceof StatementImpl)) {
 			return false;
+		}
 
 		StatementImpl other = (StatementImpl) obj;
 
 		if (!subject.equals(other.subject) || !mainSnak.equals(other.mainSnak)
 				|| rank != other.rank || !qualifiers.equals(other.qualifiers)
-				|| !references.equals(other.references))
+				|| !references.equals(other.references)) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 
 }
