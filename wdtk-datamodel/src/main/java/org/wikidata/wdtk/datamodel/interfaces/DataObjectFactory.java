@@ -174,12 +174,12 @@ public interface DataObjectFactory {
 	 * @param baseIri
 	 *            the string key of the site of the linked article; this might
 	 *            be computed from the site key in the future
-	 * @param batches
-	 *            the list of batches of the linked article
+	 * @param badges
+	 *            the list of badges of the linked article
 	 * @return a {@link SiteLink} corresponding to the input
 	 */
 	public SiteLink getSiteLink(String title, String siteKey, String baseIri,
-			List<String> batches);
+			List<String> badges);
 
 	/**
 	 * Create a {@link PropertyRecord}.

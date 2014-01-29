@@ -43,7 +43,7 @@ public class SiteLinkImpl implements SiteLink {
 	final String title;
 	final String siteKey;
 	final String baseIri;
-	final List<String> batches;
+	final List<String> badges;
 
 	/**
 	 * Constructor.
@@ -51,19 +51,19 @@ public class SiteLinkImpl implements SiteLink {
 	 * @param title
 	 * @param siteKey
 	 * @param baseIri
-	 * @param batches
+	 * @param badges
 	 */
 	SiteLinkImpl(String title, String siteKey, String baseIri,
-			List<String> batches) {
+			List<String> badges) {
 		Validate.notNull(title, "title cannot be null");
 		Validate.notNull(siteKey, "siteKey cannot be null");
 		Validate.notNull(baseIri, "base IRI cannot be null");
-		Validate.notNull(batches, "list of batches cannot be null");
+		Validate.notNull(badges, "list of badges cannot be null");
 
 		this.title = title;
 		this.siteKey = siteKey;
 		this.baseIri = baseIri;
-		this.batches = batches;
+		this.badges = badges;
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class SiteLinkImpl implements SiteLink {
 
 	@Override
 	public List<String> getBadges() {
-		return Collections.unmodifiableList(batches);
+		return Collections.unmodifiableList(badges);
 	}
 
 	/*
@@ -101,7 +101,7 @@ public class SiteLinkImpl implements SiteLink {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + baseIri.hashCode();
-		result = prime * result + batches.hashCode();
+		result = prime * result + badges.hashCode();
 		result = prime * result + siteKey.hashCode();
 		result = prime * result + title.hashCode();
 		return result;
@@ -124,7 +124,7 @@ public class SiteLinkImpl implements SiteLink {
 			return false;
 		}
 		SiteLinkImpl other = (SiteLinkImpl) obj;
-		return baseIri.equals(other.baseIri) && batches.equals(other.batches)
+		return baseIri.equals(other.baseIri) && badges.equals(other.badges)
 				&& siteKey.equals(other.siteKey) && title.equals(other.title);
 	}
 }
