@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -85,7 +86,7 @@ public class StatementImpl implements Statement {
 
 	@Override
 	public List<? extends Snak> getQualifiers() {
-		return qualifiers;
+		return Collections.unmodifiableList(qualifiers);
 	}
 
 	@Override
@@ -95,7 +96,9 @@ public class StatementImpl implements Statement {
 
 	@Override
 	public List<List<? extends Snak>> getReferences() {
-		return references;
+		// TODO This still allows inner lists of Snaks to be modified. Do
+		// we have to protect against this?
+		return Collections.unmodifiableList(references);
 	}
 
 	/*
