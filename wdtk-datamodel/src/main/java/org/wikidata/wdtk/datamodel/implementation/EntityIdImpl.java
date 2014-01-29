@@ -93,11 +93,12 @@ public abstract class EntityIdImpl implements EntityId {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof EntityId)) {
+		if (!(obj instanceof EntityIdImpl)) {
 			return false;
 		}
 
-		return this.getIri().equals(((EntityId) obj).getIri());
+		EntityIdImpl other = (EntityIdImpl) obj;
+		return id.equals(other.id) && baseIri.equals(other.baseIri);
 	}
 
 }
