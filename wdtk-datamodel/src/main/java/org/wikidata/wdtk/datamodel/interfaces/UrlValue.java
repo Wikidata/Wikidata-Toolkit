@@ -21,23 +21,25 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * An IriValue is a Value that is identified by an IRI, which can be used as the
- * canonical identifier for the entity outside of the context of a particular
- * Wikibase installation.
+ * A URL Value represents a single web address, which is a IRI.
  * 
- * This interface is intended as a general interface for all types of
- * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
- * the value that is used when users enter a URL (or IRI) direclty in Wikibase.
+ * It was called IRI value in the original Wikidata datamodel specification, but
+ * we now use {@link IriValue} as a general interface for all kinds of
+ * {@link Value} that have an IRI associated with them. The new label also
+ * matches the name URL datatype. However, the URL Value may still store
+ * basically any IRI, without additional formal conditions (such as being
+ * resolvable).
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface IriValue extends Value {
+public interface UrlValue extends IriValue {
 
 	/**
-	 * Get the IRI of this entity.
+	 * Get the URL stored by this value. Should always return the same result as
+	 * getIri().
 	 * 
-	 * @return String with the IRI
+	 * @return URL string
 	 */
-	public String getIri();
+	public String getUrl();
 }
