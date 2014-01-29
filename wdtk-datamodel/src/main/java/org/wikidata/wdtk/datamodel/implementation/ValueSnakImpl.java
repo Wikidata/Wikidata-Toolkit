@@ -65,12 +65,15 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof ValueSnak))
+		}
+		if (!(obj instanceof ValueSnak)) {
 			return false;
+		}
 
 		return this.propertyId.equals(((ValueSnak) obj).getPropertyId())
 				&& this.value.equals(((ValueSnak) obj).getValue());

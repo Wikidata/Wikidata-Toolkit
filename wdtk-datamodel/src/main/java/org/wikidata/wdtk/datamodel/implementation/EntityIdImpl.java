@@ -87,12 +87,15 @@ public abstract class EntityIdImpl implements EntityId {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof EntityId))
+		}
+		if (!(obj instanceof EntityId)) {
 			return false;
+		}
 
 		return this.getIri().equals(((EntityId) obj).getIri());
 	}
