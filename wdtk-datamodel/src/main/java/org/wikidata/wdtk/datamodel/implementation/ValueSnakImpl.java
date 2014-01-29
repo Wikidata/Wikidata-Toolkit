@@ -36,7 +36,13 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	final Value value;
 
-	public ValueSnakImpl(PropertyId propertyId, Value value) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param propertyId
+	 * @param value
+	 */
+	ValueSnakImpl(PropertyId propertyId, Value value) {
 		super(propertyId);
 		Validate.notNull(value, "ValueSnak values cannot be null");
 		this.value = value;

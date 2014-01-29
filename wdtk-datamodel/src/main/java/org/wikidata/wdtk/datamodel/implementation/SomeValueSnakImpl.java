@@ -25,7 +25,12 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
 public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 
-	public SomeValueSnakImpl(PropertyId propertyId) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param propertyId
+	 */
+	SomeValueSnakImpl(PropertyId propertyId) {
 		super(propertyId);
 	}
 

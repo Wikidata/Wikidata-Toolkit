@@ -45,7 +45,15 @@ public class SiteLinkImpl implements SiteLink {
 	final String baseIri;
 	final List<String> batches;
 
-	public SiteLinkImpl(String title, String siteKey, String baseIri,
+	/**
+	 * Constructor.
+	 * 
+	 * @param title
+	 * @param siteKey
+	 * @param baseIri
+	 * @param batches
+	 */
+	SiteLinkImpl(String title, String siteKey, String baseIri,
 			List<String> batches) {
 		Validate.notNull(title, "title cannot be null");
 		Validate.notNull(siteKey, "siteKey cannot be null");

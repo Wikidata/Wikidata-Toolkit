@@ -34,7 +34,7 @@ public abstract class SnakImpl implements Snak {
 
 	final PropertyId propertyId;
 
-	public SnakImpl(PropertyId propertyId) {
+	SnakImpl(PropertyId propertyId) {
 		Validate.notNull(propertyId, "Snak property ids cannot be null");
 		this.propertyId = propertyId;
 	}

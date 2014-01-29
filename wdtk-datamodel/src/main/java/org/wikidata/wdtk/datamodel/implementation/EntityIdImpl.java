@@ -52,7 +52,7 @@ public abstract class EntityIdImpl implements EntityId {
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public EntityIdImpl(String id, String baseIri) {
+	EntityIdImpl(String id, String baseIri) {
 		Validate.notNull(id, "Entity ids cannot be null");
 		Validate.notNull(baseIri, "Entity base IRIs cannot be null");
 		this.id = id;

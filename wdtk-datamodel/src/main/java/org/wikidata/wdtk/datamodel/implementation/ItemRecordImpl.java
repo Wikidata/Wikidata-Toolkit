@@ -53,7 +53,7 @@ public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	public ItemRecordImpl(ItemId itemId, Map<String, String> labels,
+	ItemRecordImpl(ItemId itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {

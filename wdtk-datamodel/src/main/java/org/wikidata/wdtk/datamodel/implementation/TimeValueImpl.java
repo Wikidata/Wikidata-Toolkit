@@ -37,7 +37,16 @@ public class TimeValueImpl implements TimeValue {
 	final byte precision;
 	final String calendarModel;
 
-	public TimeValueImpl(int year, byte month, byte day, byte precision,
+	/**
+	 * Constructor.
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param precision
+	 * @param calendarModel
+	 */
+	TimeValueImpl(int year, byte month, byte day, byte precision,
 			String calendarModel) {
 		Validate.notNull(calendarModel, "Calendar model must not be null");
 		this.year = year;

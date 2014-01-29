@@ -36,7 +36,7 @@ public class PropertyIdImpl extends EntityIdImpl implements PropertyId {
 	 * @param id
 	 * @param baseIri
 	 */
-	public PropertyIdImpl(String id, String baseIri) {
+	PropertyIdImpl(String id, String baseIri) {
 		super(id, baseIri);
 
 		if (!id.matches("^P[1-9][0-9]*$")) {

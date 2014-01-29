@@ -55,8 +55,8 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
-	public PropertyRecordImpl(PropertyId propertyId,
-			Map<String, String> labels, Map<String, String> descriptions,
+	PropertyRecordImpl(PropertyId propertyId, Map<String, String> labels,
+			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId) {
 		super(labels, descriptions, aliases);
 		Validate.notNull(propertyId, "property ID cannot be null");

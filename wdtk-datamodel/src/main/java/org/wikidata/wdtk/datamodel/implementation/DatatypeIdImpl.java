@@ -41,7 +41,7 @@ public class DatatypeIdImpl implements DatatypeId {
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
 	 */
-	public DatatypeIdImpl(String datatypeIri) {
+	DatatypeIdImpl(String datatypeIri) {
 		Validate.notNull(datatypeIri, "Datatype IRIs cannot be null");
 		this.iri = datatypeIri;
 	}

@@ -36,7 +36,7 @@ public class ItemIdImpl extends EntityIdImpl implements ItemId {
 	 * @param id
 	 * @param baseIri
 	 */
-	public ItemIdImpl(String id, String baseIri) {
+	ItemIdImpl(String id, String baseIri) {
 		super(id, baseIri);
 
 		if (!id.matches("^Q[1-9][0-9]*$")) {

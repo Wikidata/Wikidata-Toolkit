@@ -48,7 +48,7 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
-	public GlobeCoordinatesValueImpl(double latitude, double longitude,
+	GlobeCoordinatesValueImpl(double latitude, double longitude,
 			double precision, String globeIri) {
 		Validate.notNull(globeIri, "globe IRI must not be null");
 		this.latitude = normalizeDouble(latitude);

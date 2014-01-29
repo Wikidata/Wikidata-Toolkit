@@ -58,7 +58,7 @@ public class StatementImpl implements Statement {
 	 * @param rank
 	 *            the rank of the Statement
 	 */
-	public StatementImpl(EntityId subject, Snak mainSnak,
+	StatementImpl(EntityId subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank) {
 		Validate.notNull(subject, "Statement subjects cannot be null");

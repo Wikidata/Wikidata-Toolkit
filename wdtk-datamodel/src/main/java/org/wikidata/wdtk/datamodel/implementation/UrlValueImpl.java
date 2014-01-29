@@ -40,7 +40,7 @@ public class UrlValueImpl implements UrlValue {
 	 * 
 	 * @param url
 	 */
-	public UrlValueImpl(String url) {
+	UrlValueImpl(String url) {
 		Validate.notNull(url, "URL cannot be null");
 		this.url = url;
 	}

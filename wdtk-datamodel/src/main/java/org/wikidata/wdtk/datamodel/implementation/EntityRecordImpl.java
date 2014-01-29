@@ -47,7 +47,7 @@ public abstract class EntityRecordImpl implements EntityRecord {
 	 * @param descriptions
 	 * @param aliases
 	 */
-	public EntityRecordImpl(Map<String, String> labels,
+	EntityRecordImpl(Map<String, String> labels,
 			Map<String, String> descriptions, Map<String, List<String>> aliases) {
 		Validate.notNull(labels, "map of labels cannot be null");
 		Validate.notNull(descriptions, "map of descriptions cannot be null");

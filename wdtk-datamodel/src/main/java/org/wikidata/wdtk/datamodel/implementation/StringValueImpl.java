@@ -36,11 +36,9 @@ public class StringValueImpl implements StringValue {
 	/**
 	 * Constructor.
 	 * 
-	 * There is currently no validation of the URL string.
-	 * 
-	 * @param url
+	 * @param string
 	 */
-	public StringValueImpl(String string) {
+	StringValueImpl(String string) {
 		Validate.notNull(string, "URL cannot be null");
 		this.string = string;
 	}

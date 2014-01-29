@@ -31,7 +31,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
  */
 public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 
-	public NoValueSnakImpl(PropertyId propertyId) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param propertyId
+	 */
+	NoValueSnakImpl(PropertyId propertyId) {
 		super(propertyId);
 	}
 
