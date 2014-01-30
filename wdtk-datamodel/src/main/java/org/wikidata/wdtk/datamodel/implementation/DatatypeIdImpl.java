@@ -41,7 +41,7 @@ public class DatatypeIdImpl implements DatatypeId {
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
 	 */
-	public DatatypeIdImpl(String datatypeIri) {
+	DatatypeIdImpl(String datatypeIri) {
 		Validate.notNull(datatypeIri, "Datatype IRIs cannot be null");
 		this.iri = datatypeIri;
 	}
@@ -50,7 +50,7 @@ public class DatatypeIdImpl implements DatatypeId {
 	public String getIri() {
 		return iri;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -68,12 +68,15 @@ public class DatatypeIdImpl implements DatatypeId {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof DatatypeId))
+		}
+		if (!(obj instanceof DatatypeId)) {
 			return false;
+		}
 
 		return iri.equals(((DatatypeId) obj).getIri());
 	}

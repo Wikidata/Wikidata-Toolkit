@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -43,7 +44,21 @@ public class StatementImpl implements Statement {
 	final List<List<? extends Snak>> references;
 	final StatementRank rank;
 
-	public StatementImpl(EntityId subject, Snak mainSnak,
+	/**
+	 * Constructor.
+	 * 
+	 * @param subject
+	 *            the subject the Statement refers to
+	 * @param mainSnak
+	 *            the main Snak of the Statement
+	 * @param qualifiers
+	 *            the qualifiers of the Statement
+	 * @param references
+	 *            the references for the Statement
+	 * @param rank
+	 *            the rank of the Statement
+	 */
+	StatementImpl(EntityId subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank) {
 		Validate.notNull(subject, "Statement subjects cannot be null");
@@ -71,7 +86,7 @@ public class StatementImpl implements Statement {
 
 	@Override
 	public List<? extends Snak> getQualifiers() {
-		return qualifiers;
+		return Collections.unmodifiableList(qualifiers);
 	}
 
 	@Override
@@ -81,7 +96,9 @@ public class StatementImpl implements Statement {
 
 	@Override
 	public List<List<? extends Snak>> getReferences() {
-		return references;
+		// TODO This still allows inner lists of Snaks to be modified. Do
+		// we have to protect against this?
+		return Collections.unmodifiableList(references);
 	}
 
 	/*
@@ -103,21 +120,25 @@ public class StatementImpl implements Statement {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof StatementImpl))
+		}
+		if (!(obj instanceof StatementImpl)) {
 			return false;
+		}
 
 		StatementImpl other = (StatementImpl) obj;
 
 		if (!subject.equals(other.subject) || !mainSnak.equals(other.mainSnak)
 				|| rank != other.rank || !qualifiers.equals(other.qualifiers)
-				|| !references.equals(other.references))
+				|| !references.equals(other.references)) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 
 }

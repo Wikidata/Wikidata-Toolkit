@@ -36,7 +36,13 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	final Value value;
 
-	public ValueSnakImpl(PropertyId propertyId, Value value) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param propertyId
+	 * @param value
+	 */
+	ValueSnakImpl(PropertyId propertyId, Value value) {
 		super(propertyId);
 		Validate.notNull(value, "ValueSnak values cannot be null");
 		this.value = value;
@@ -65,12 +71,15 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof ValueSnak))
+		}
+		if (!(obj instanceof ValueSnak)) {
 			return false;
+		}
 
 		return this.propertyId.equals(((ValueSnak) obj).getPropertyId())
 				&& this.value.equals(((ValueSnak) obj).getValue());

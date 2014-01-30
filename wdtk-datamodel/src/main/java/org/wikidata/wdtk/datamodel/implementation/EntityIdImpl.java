@@ -52,7 +52,7 @@ public abstract class EntityIdImpl implements EntityId {
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public EntityIdImpl(String id, String baseIri) {
+	EntityIdImpl(String id, String baseIri) {
 		Validate.notNull(id, "Entity ids cannot be null");
 		Validate.notNull(baseIri, "Entity base IRIs cannot be null");
 		this.id = id;
@@ -87,14 +87,18 @@ public abstract class EntityIdImpl implements EntityId {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof EntityId))
+		}
+		if (!(obj instanceof EntityIdImpl)) {
 			return false;
+		}
 
-		return this.getIri().equals(((EntityId) obj).getIri());
+		EntityIdImpl other = (EntityIdImpl) obj;
+		return id.equals(other.id) && baseIri.equals(other.baseIri);
 	}
 
 }

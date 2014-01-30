@@ -31,7 +31,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
  */
 public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 
-	public NoValueSnakImpl(PropertyId propertyId) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param propertyId
+	 */
+	NoValueSnakImpl(PropertyId propertyId) {
 		super(propertyId);
 	}
 
@@ -52,12 +57,15 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (obj == this)
+		}
+		if (obj == this) {
 			return true;
-		if (!(obj instanceof NoValueSnak))
+		}
+		if (!(obj instanceof NoValueSnak)) {
 			return false;
+		}
 
 		return this.propertyId.equals(((NoValueSnak) obj).getPropertyId());
 	}
