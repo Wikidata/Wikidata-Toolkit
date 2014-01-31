@@ -24,11 +24,11 @@ import java.math.BigDecimal;
 
 /**
  * A quantity value represents a number, possibly under some unit. The number
- * can be of arbitrary precision.
+ * can be of arbitrary precision. Additional upper and lower bounds are provided
+ * to allow an interval of uncertainty to be defined.
  * 
  * As of Jan 2014, units of measurement are not supported yet. The interface may
- * be extended to account for this and other additional components in the
- * future.
+ * be extended to account for this in the future.
  * 
  * @author Markus Kroetzsch
  * 
@@ -36,10 +36,24 @@ import java.math.BigDecimal;
 public interface QuantityValue extends Value {
 
 	/**
-	 * Get the numeric value of this quantity.
+	 * Get the main numeric value of this quantity.
 	 * 
 	 * @return numeric value as a decimal value of arbitrary precision
 	 */
 	public BigDecimal getNumericValue();
+
+	/**
+	 * Get the upper bound for the numeric value of this quantity.
+	 * 
+	 * @return numeric value as a decimal value of arbitrary precision
+	 */
+	public BigDecimal getLowerBound();
+
+	/**
+	 * Get the upper bound for the numeric value of this quantity.
+	 * 
+	 * @return numeric value as a decimal value of arbitrary precision
+	 */
+	public BigDecimal getUpperBound();
 
 }

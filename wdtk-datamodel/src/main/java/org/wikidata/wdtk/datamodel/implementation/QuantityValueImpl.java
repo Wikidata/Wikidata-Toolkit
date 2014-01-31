@@ -34,21 +34,51 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 public class QuantityValueImpl implements QuantityValue {
 
 	final BigDecimal numericValue;
+	final BigDecimal lowerBound;
+	final BigDecimal upperBound;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param numericValue
 	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
 	 */
-	QuantityValueImpl(BigDecimal numericValue) {
+	QuantityValueImpl(BigDecimal numericValue, BigDecimal lowerBound,
+			BigDecimal upperBound) {
 		Validate.notNull(numericValue, "Numeric value cannot be null");
+		Validate.notNull(lowerBound, "Lower bound cannot be null");
+		Validate.notNull(upperBound, "Upper bound cannot be null");
+		if (lowerBound.compareTo(numericValue) == 1) {
+			throw new IllegalArgumentException(
+					"Lower bound cannot be strictly greater than numeric value");
+		}
+		if (numericValue.compareTo(upperBound) == 1) {
+			throw new IllegalArgumentException(
+					"Upper bound cannot be strictly smaller than numeric value");
+		}
+
 		this.numericValue = numericValue;
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 	}
 
 	@Override
 	public BigDecimal getNumericValue() {
 		return numericValue;
+	}
+
+	@Override
+	public BigDecimal getLowerBound() {
+		return lowerBound;
+	}
+
+	@Override
+	public BigDecimal getUpperBound() {
+		return upperBound;
 	}
 
 	/*
@@ -58,7 +88,12 @@ public class QuantityValueImpl implements QuantityValue {
 	 */
 	@Override
 	public int hashCode() {
-		return numericValue.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + numericValue.hashCode();
+		result = prime * result + lowerBound.hashCode();
+		result = prime * result + upperBound.hashCode();
+		return result;
 	}
 
 	/*
@@ -78,7 +113,9 @@ public class QuantityValueImpl implements QuantityValue {
 			return false;
 		}
 		QuantityValueImpl other = (QuantityValueImpl) obj;
-		return numericValue.equals(other.numericValue);
+		return numericValue.equals(other.numericValue)
+				&& lowerBound.equals(other.lowerBound)
+				&& upperBound.equals(other.upperBound);
 	}
 
 }
