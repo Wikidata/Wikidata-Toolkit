@@ -112,8 +112,12 @@ public class DataObjectFactoryImplTest {
 	public final void testGetQuantityValue() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
-		QuantityValue o1 = new QuantityValueImpl(nv);
-		QuantityValue o2 = factory.getQuantityValue(nv);
+		BigDecimal lb = new BigDecimal(
+				"0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal(
+				"0.123456789012345678901234567890123456790");
+		QuantityValue o1 = new QuantityValueImpl(nv, lb, ub);
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub);
 		assertEquals(o1, o2);
 	}
 

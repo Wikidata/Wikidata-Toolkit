@@ -126,9 +126,14 @@ public interface DataObjectFactory {
 	 * 
 	 * @param numericValue
 	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
-	public QuantityValue getQuantityValue(BigDecimal numericValue);
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound);
 
 	/**
 	 * Create a {@link ValueSnak}.

@@ -93,8 +93,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public QuantityValue getQuantityValue(BigDecimal numericValue) {
-		return new QuantityValueImpl(numericValue);
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound) {
+		return new QuantityValueImpl(numericValue, lowerBound, upperBound);
 	}
 
 	@Override

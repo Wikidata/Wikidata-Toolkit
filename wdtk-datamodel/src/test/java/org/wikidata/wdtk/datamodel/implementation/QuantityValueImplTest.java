@@ -36,30 +36,41 @@ public class QuantityValueImplTest {
 
 	QuantityValue q1;
 	QuantityValue q2;
+	BigDecimal nv;
+	BigDecimal lb;
+	BigDecimal ub;
 
 	@Before
 	public void setUp() throws Exception {
-		BigDecimal nv = new BigDecimal(
-				"0.123456789012345678901234567890123456789");
-		q1 = new QuantityValueImpl(nv);
-		q2 = new QuantityValueImpl(nv);
+		nv = new BigDecimal("0.123456789012345678901234567890123456789");
+		lb = new BigDecimal("0.123456789012345678901234567890123456788");
+		ub = new BigDecimal("0.123456789012345678901234567890123456790");
+		q1 = new QuantityValueImpl(nv, lb, ub);
+		q2 = new QuantityValueImpl(nv, lb, ub);
 	}
 
 	@Test
 	public void quantityIsCorrect() {
-		BigDecimal nv = new BigDecimal(
-				"0.123456789012345678901234567890123456789");
 		assertEquals(q1.getNumericValue(), nv);
+		assertEquals(q1.getLowerBound(), lb);
+		assertEquals(q1.getUpperBound(), ub);
 	}
 
 	@Test
 	public void quantitiyValueEqualityBasedOnContent() {
-		BigDecimal nv = new BigDecimal("42");
-		QuantityValue q3 = new QuantityValueImpl(nv);
+		BigDecimal nvplus = new BigDecimal(
+				"0.1234567890123456789012345678901234567895");
+		BigDecimal nvminus = new BigDecimal(
+				"0.1234567890123456789012345678901234567885");
+		QuantityValue q3 = new QuantityValueImpl(nvplus, lb, ub);
+		QuantityValue q4 = new QuantityValueImpl(nv, nvminus, ub);
+		QuantityValue q5 = new QuantityValueImpl(nv, lb, nvplus);
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
 		assertThat(q1, not(equalTo(q3)));
+		assertThat(q1, not(equalTo(q4)));
+		assertThat(q1, not(equalTo(q5)));
 		assertThat(q1, not(equalTo(null)));
 		assertFalse(q1.equals(this));
 	}
@@ -71,7 +82,27 @@ public class QuantityValueImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void quantityValueNumValueNotNull() {
-		new QuantityValueImpl(null);
+		new QuantityValueImpl(null, lb, ub);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void quantityValueLowerBoundNotNull() {
+		new QuantityValueImpl(nv, null, lb);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void quantityValueUpperBoundNotNull() {
+		new QuantityValueImpl(nv, lb, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void quantityValueLowerBoundNotGreaterNumVal() {
+		new QuantityValueImpl(lb, nv, ub);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void quantityValueNumValNotGreaterLowerBound() {
+		new QuantityValueImpl(ub, lb, nv);
 	}
 
 }
