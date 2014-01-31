@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
@@ -103,6 +105,15 @@ public class DataObjectFactoryImplTest {
 	public final void testGetStringValue() {
 		StringValue o1 = new StringValueImpl("foo");
 		StringValue o2 = factory.getStringValue("foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValue() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = new QuantityValueImpl(nv);
+		QuantityValue o2 = factory.getQuantityValue(nv);
 		assertEquals(o1, o2);
 	}
 
