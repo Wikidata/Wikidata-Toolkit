@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +120,20 @@ public interface DataObjectFactory {
 	 * @return a {@link StringValue} corresponding to the input
 	 */
 	public StringValue getStringValue(String string);
+
+	/**
+	 * Create a {@link QuantityValue}.
+	 * 
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound);
 
 	/**
 	 * Create a {@link ValueSnak}.

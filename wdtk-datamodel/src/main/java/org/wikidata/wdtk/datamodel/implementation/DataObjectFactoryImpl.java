@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
@@ -88,6 +90,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public StringValue getStringValue(String string) {
 		return new StringValueImpl(string);
+	}
+
+	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound) {
+		return new QuantityValueImpl(numericValue, lowerBound, upperBound);
 	}
 
 	@Override
