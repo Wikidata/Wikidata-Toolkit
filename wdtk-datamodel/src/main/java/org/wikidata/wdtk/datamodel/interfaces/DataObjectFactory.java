@@ -43,7 +43,7 @@ public interface DataObjectFactory {
 	 *            "http://www.wikidata.org/entity/"
 	 * @return an {@link ItemId} corresponding to the input
 	 */
-	public ItemId getItemId(String id, String baseIri);
+	ItemId getItemId(String id, String baseIri);
 
 	/**
 	 * Create a {@link PropertyId}.
@@ -55,7 +55,7 @@ public interface DataObjectFactory {
 	 *            "http://www.wikidata.org/entity/"
 	 * @return a {@link PropertyId} corresponding to the input
 	 */
-	public PropertyId getPropertyId(String id, String baseIri);
+	PropertyId getPropertyId(String id, String baseIri);
 
 	/**
 	 * Create a {@link DatatypeId}. The datatype IRI is usually one of the
@@ -66,7 +66,7 @@ public interface DataObjectFactory {
 	 *            the IRI string that identifies the datatype
 	 * @return a {@link DatatypeId} corresponding to the input
 	 */
-	public DatatypeId getDatatypeId(String id);
+	DatatypeId getDatatypeId(String id);
 
 	/**
 	 * Create a {@link UrlValue}.
@@ -74,7 +74,7 @@ public interface DataObjectFactory {
 	 * @param url
 	 * @return a {@link UrlValue} corresponding to the input
 	 */
-	public UrlValue getUrlValue(String url);
+	UrlValue getUrlValue(String url);
 
 	/**
 	 * Create a {@link TimeValue}.
@@ -94,8 +94,8 @@ public interface DataObjectFactory {
 	 *            {@link TimeValue#CM_JULIAN_PRO}
 	 * @return a {@link DatatypeId} corresponding to the input
 	 */
-	public TimeValue getTimeValue(int year, byte month, byte day,
-			byte precision, String calendarModel);
+	TimeValue getTimeValue(int year, byte month, byte day, byte precision,
+			String calendarModel);
 
 	/**
 	 * Create a {@link GlobeCoordinatesValue}.
@@ -110,7 +110,7 @@ public interface DataObjectFactory {
 	 *            IRI specifying the celestial objects of the coordinates
 	 * @return a {@link GlobeCoordinatesValue} corresponding to the input
 	 */
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+	GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
 			double longitude, double precision, String globeIri);
 
 	/**
@@ -119,7 +119,21 @@ public interface DataObjectFactory {
 	 * @param string
 	 * @return a {@link StringValue} corresponding to the input
 	 */
-	public StringValue getStringValue(String string);
+	StringValue getStringValue(String string);
+
+	/**
+	 * Create a {@link QuantityValue}.
+	 * 
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound);
 
 	/**
 	 * Create a {@link QuantityValue}.
@@ -142,7 +156,7 @@ public interface DataObjectFactory {
 	 * @param value
 	 * @return a {@link ValueSnak} corresponding to the input
 	 */
-	public ValueSnak getValueSnak(PropertyId propertyId, Value value);
+	ValueSnak getValueSnak(PropertyId propertyId, Value value);
 
 	/**
 	 * Create a {@link SomeValueSnak}.
@@ -150,7 +164,7 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link SomeValueSnak} corresponding to the input
 	 */
-	public SomeValueSnak getSomeValueSnak(PropertyId propertyId);
+	SomeValueSnak getSomeValueSnak(PropertyId propertyId);
 
 	/**
 	 * Create a {@link NoValueSnak}.
@@ -158,7 +172,7 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link NoValueSnak} corresponding to the input
 	 */
-	public NoValueSnak getNoValueSnak(PropertyId propertyId);
+	NoValueSnak getNoValueSnak(PropertyId propertyId);
 
 	/**
 	 * Create a {@link Statement}.
@@ -175,7 +189,7 @@ public interface DataObjectFactory {
 	 *            the rank of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
-	public Statement getStatement(EntityId subject, Snak mainSnak,
+	Statement getStatement(EntityId subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank);
 
@@ -193,7 +207,7 @@ public interface DataObjectFactory {
 	 *            the list of badges of the linked article
 	 * @return a {@link SiteLink} corresponding to the input
 	 */
-	public SiteLink getSiteLink(String title, String siteKey, String baseIri,
+	SiteLink getSiteLink(String title, String siteKey, String baseIri,
 			List<String> badges);
 
 	/**
@@ -211,7 +225,7 @@ public interface DataObjectFactory {
 	 *            the datatype of that property
 	 * @return a {@link PropertyRecord} corresponding to the input
 	 */
-	public PropertyRecord getPropertyRecord(PropertyId propertyId,
+	PropertyRecord getPropertyRecord(PropertyId propertyId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId);
 
@@ -232,7 +246,7 @@ public interface DataObjectFactory {
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemRecord} corresponding to the input
 	 */
-	public ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
+	ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks);

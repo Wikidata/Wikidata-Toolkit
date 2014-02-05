@@ -59,7 +59,7 @@ public interface GlobeCoordinatesValue extends Value {
 	 * 
 	 * @return latitude in degrees
 	 */
-	public double getLatitude();
+	double getLatitude();
 
 	/**
 	 * Get the longitude of this value in degrees. For celestial bodies other
@@ -70,7 +70,7 @@ public interface GlobeCoordinatesValue extends Value {
 	 * 
 	 * @return longitude in degrees
 	 */
-	public double getLongitude();
+	double getLongitude();
 
 	/**
 	 * Get the precision of the value in degrees. This value indicates that both
@@ -82,7 +82,7 @@ public interface GlobeCoordinatesValue extends Value {
 	 * 
 	 * @return precision in degrees
 	 */
-	public double getPrecision();
+	double getPrecision();
 
 	/**
 	 * Get the IRI of the globe that these coordinates refer to. In most cases
@@ -90,6 +90,6 @@ public interface GlobeCoordinatesValue extends Value {
 	 * 
 	 * @return IRI of a globe.
 	 */
-	public String getGlobe();
+	String getGlobe();
 
 }
