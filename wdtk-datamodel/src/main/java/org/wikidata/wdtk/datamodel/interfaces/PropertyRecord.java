@@ -38,13 +38,13 @@ public interface PropertyRecord extends EntityRecord {
 	 * 
 	 * @return property id
 	 */
-	public PropertyId getPropertyId();
+	PropertyId getPropertyId();
 
 	/**
 	 * Get the datatype id of the datatype defined for this property.
 	 * 
 	 * @return
 	 */
-	public DatatypeId getDatatype();
+	DatatypeId getDatatype();
 
 }

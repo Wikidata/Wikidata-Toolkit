@@ -39,7 +39,7 @@ public interface ItemRecord extends EntityRecord {
 	 * 
 	 * @return item id
 	 */
-	public ItemId getItemId();
+	ItemId getItemId();
 
 	/**
 	 * Return the list of all Statements stored for this item. The order of
@@ -50,13 +50,13 @@ public interface ItemRecord extends EntityRecord {
 	 * 
 	 * @return list of Statements
 	 */
-	public List<Statement> getStatements();
+	List<Statement> getStatements();
 
 	/**
 	 * Get a Map of site keys to {@link SiteLink} objects.
 	 * 
 	 * @return
 	 */
-	public Map<String, SiteLink> getSiteLinks();
+	Map<String, SiteLink> getSiteLinks();
 
 }

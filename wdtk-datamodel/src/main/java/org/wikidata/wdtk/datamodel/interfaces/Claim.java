@@ -38,7 +38,7 @@ public interface Claim {
 	 * 
 	 * @return EntityId of the subject
 	 */
-	public EntityId getSubject();
+	EntityId getSubject();
 
 	/**
 	 * Main Snak of the statement. This Snak refers directly to the subject,
@@ -46,7 +46,7 @@ public interface Claim {
 	 * 
 	 * @return
 	 */
-	public Snak getMainSnak();
+	Snak getMainSnak();
 
 	/**
 	 * Auxiliary Snaks, also known as qualifiers, that provide additional
@@ -55,5 +55,5 @@ public interface Claim {
 	 * 
 	 * @return
 	 */
-	public List<? extends Snak> getQualifiers();
+	List<? extends Snak> getQualifiers();
 }

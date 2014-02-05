@@ -36,7 +36,7 @@ public interface Statement extends Claim {
 	 * @see StatementRank
 	 * @return the rank of the Statement
 	 */
-	public StatementRank getRank();
+	StatementRank getRank();
 
 	/**
 	 * Get a list of references for this Statement. Each reference is
@@ -45,5 +45,5 @@ public interface Statement extends Claim {
 	 * 
 	 * @return the list of references
 	 */
-	public List<List<? extends Snak>> getReferences();
+	List<List<? extends Snak>> getReferences();
 }

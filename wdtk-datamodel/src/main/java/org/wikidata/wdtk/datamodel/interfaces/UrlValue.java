@@ -41,5 +41,5 @@ public interface UrlValue extends IriValue {
 	 * 
 	 * @return URL string
 	 */
-	public String getUrl();
+	String getUrl();
 }
