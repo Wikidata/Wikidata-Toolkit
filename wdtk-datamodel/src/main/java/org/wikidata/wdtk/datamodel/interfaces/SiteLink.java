@@ -38,21 +38,21 @@ public interface SiteLink {
 	 * 
 	 * @return
 	 */
-	public String getArticleTitle();
+	String getArticleTitle();
 
 	/**
 	 * Get the string key of the linked site.
 	 * 
 	 * @return
 	 */
-	public String getSiteKey();
+	String getSiteKey();
 
 	/**
 	 * Get the full IRI (URL) of the linked article.
 	 * 
 	 * @return
 	 */
-	public String getUrl();
+	String getUrl();
 
 	/**
 	 * Get the list of badges of the linked article.
@@ -62,6 +62,6 @@ public interface SiteLink {
 	 * 
 	 * @return
 	 */
-	public List<String> getBadges();
+	List<String> getBadges();
 
 }

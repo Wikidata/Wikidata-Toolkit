@@ -38,21 +38,21 @@ public interface EntityRecord {
 	 * 
 	 * @return entity id
 	 */
-	public EntityId getEntityId();
+	EntityId getEntityId();
 
 	/**
 	 * Return a Map from Wikibase language codes to labels.
 	 * 
 	 * @return the map of labels
 	 */
-	public Map<String, String> getLabels();
+	Map<String, String> getLabels();
 
 	/**
 	 * Return a Map from Wikibase language codes to descriptions.
 	 * 
 	 * @return the map of descriptions
 	 */
-	public Map<String, String> getDescriptions();
+	Map<String, String> getDescriptions();
 
 	/**
 	 * Return a Map from Wikibase language codes to lists of alias labels for a
@@ -60,5 +60,5 @@ public interface EntityRecord {
 	 * 
 	 * @return the aliases for this language
 	 */
-	public Map<String, List<String>> getAliases();
+	Map<String, List<String>> getAliases();
 }

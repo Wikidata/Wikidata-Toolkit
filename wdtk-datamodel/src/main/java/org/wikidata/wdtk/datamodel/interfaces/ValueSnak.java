@@ -34,5 +34,5 @@ public interface ValueSnak extends Snak {
 	 * 
 	 * @return Value
 	 */
-	public Value getValue();
+	Value getValue();
 }

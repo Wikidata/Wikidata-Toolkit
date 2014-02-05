@@ -33,5 +33,5 @@ public interface StringValue extends Value {
 	 * 
 	 * @return string value
 	 */
-	public String getString();
+	String getString();
 }

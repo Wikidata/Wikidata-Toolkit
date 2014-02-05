@@ -39,5 +39,5 @@ public interface IriValue extends Value {
 	 * 
 	 * @return String with the IRI
 	 */
-	public String getIri();
+	String getIri();
 }
