@@ -227,8 +227,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public Iterator<Boolean> iterator() {
-		// return new BitVectorIterator(this);
-		throw new UnsupportedOperationException();
+		return new BitVectorIterator(this);
 	}
 
 	/**
