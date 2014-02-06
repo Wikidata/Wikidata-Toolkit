@@ -30,15 +30,68 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * needed, the internal array grows exponentially.
  * 
  * @author Julian Mendez
- * 
  */
-public class BitVectorImpl implements BitVector {
+public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	static final int GROWTH_FACTOR = 2;
 	static final int LG_WORD_SIZE = 6;
 	static final int MINIMUM_ARRAY_SIZE = 1;
 	static final int WORD_MASK = 0x3F;
 	static final int WORD_SIZE = 0x40;
+
+	long[] array;
+	int hashCode;
+	long size;
+	boolean undefinedHashCode = true;
+
+	/**
+	 * Constructor of a bit vector of size 0.
+	 * 
+	 */
+	public BitVectorImpl() {
+		this.array = new long[MINIMUM_ARRAY_SIZE];
+	}
+
+	/**
+	 * Copy constructor of a bit vector. A
+	 * 
+	 */
+	public BitVectorImpl(BitVector vector) {
+		if (vector == null) {
+			throw new IllegalArgumentException(
+					"Null argument. Bit vector cannot be null.");
+		}
+
+		if (vector instanceof BitVectorImpl) {
+			BitVectorImpl other = (BitVectorImpl) vector;
+			this.array = new long[other.array.length];
+			System.arraycopy(other.array, 0, this.array, 0, other.array.length);
+		} else {
+			this.array = new long[getMinimumArraySize(vector.size())];
+			for (long index = 0; index < this.size; index++) {
+				setBit(index, vector.getBit(index));
+			}
+		}
+		this.size = vector.size();
+	}
+
+	/**
+	 * Constructor of a bit vector of size <i>initialSize</i>. The bit vector
+	 * contains <code>false</code> at all indexes.
+	 * 
+	 * @param initialSize
+	 *            initial size of this bit vector
+	 * 
+	 */
+	public BitVectorImpl(long initialSize) {
+		if (initialSize < 0) {
+			throw new IllegalArgumentException("Wrong bit vector size '"
+					+ initialSize + "'. Bit vector size must be non-negative.");
+		}
+
+		this.array = new long[getMinimumArraySize(initialSize)];
+		this.size = 0;
+	}
 
 	/**
 	 * @param bit
@@ -47,7 +100,7 @@ public class BitVectorImpl implements BitVector {
 	 *            word
 	 * @return the value in a specific <i>bit</i> of a <i>word</i>.
 	 */
-	static boolean getBit(int bit, long word) {
+	static boolean getBitInWord(byte bit, long word) {
 		if ((bit < 0) || (bit >= WORD_SIZE)) {
 			throw new IndexOutOfBoundsException();
 		}
@@ -74,8 +127,8 @@ public class BitVectorImpl implements BitVector {
 	 * @return the resulting word of setting a <i>value</i> in a specific
 	 *         <i>bit</i> of a <i>word</i>.
 	 */
-	static long setBit(int bit, boolean value, long word) {
-		if (getBit(bit, word) == value) {
+	static long setBitInWord(byte bit, boolean value, long word) {
+		if (getBitInWord(bit, word) == value) {
 			return word;
 		} else {
 			return word ^ (((long) 1) << bit);
@@ -94,64 +147,40 @@ public class BitVectorImpl implements BitVector {
 		return (new StringBuilder(binaryDigits)).reverse().toString();
 	}
 
-	private long[] array = new long[MINIMUM_ARRAY_SIZE];
-
-	private long size;
-
-	/**
-	 * Constructor of a bit vector of size 0.
-	 * 
-	 */
-	public BitVectorImpl() {
-	}
-
-	/**
-	 * Copy constructor of a bit vector.
-	 * 
-	 */
-	public BitVectorImpl(BitVector vector) {
-		this(vector.size());
-		for (long index = 0; index < this.size; index++) {
-			set(index, vector.get(index));
-		}
-	}
-
-	/**
-	 * Constructor of a bit vector of size <i>initialSize</i>.
-	 * 
-	 */
-	public BitVectorImpl(long initialSize) {
-		if (initialSize < 0) {
-			throw new IllegalArgumentException("Wrong vector size '"
-					+ initialSize + "'. Vector size must be non-negative.");
-		}
-
-		this.array = new long[getMinimumArraySize(initialSize)];
-		this.size = initialSize;
-	}
-
 	@Override
 	public boolean add(boolean element) {
+		this.undefinedHashCode = true;
 		this.size++;
 		if (((this.size >> LG_WORD_SIZE) + 1) > this.array.length) {
-			resizeArray();
+			resizeArray(GROWTH_FACTOR * this.array.length);
 		}
-		set(this.size - 1, element);
+		setBit(this.size - 1, element);
 		return true;
 	}
 
+	/**
+	 * @param position
+	 *            position
+	 * @throws IndexOutOfBoundsException
+	 *             if the position is out of bounds.
+	 */
 	void assertRange(long position) throws IndexOutOfBoundsException {
-		if ((position < 0) || (position >= size())) {
+		if ((position < 0) || (position >= this.size)) {
 			throw new IndexOutOfBoundsException("Position " + position
 					+ " is out of bounds.");
 		}
 	}
 
-	/** This method is not implemented. */
-	@Override
-	public long count(boolean bit, long position) {
-		// TODO
-		throw new UnsupportedOperationException("Method not implemented.");
+	/**
+	 * @return a hash code for the current bit vector.
+	 */
+	int computeHashCode() {
+		int ret = (int) this.size;
+		int arraySize = (int) (this.size >> LG_WORD_SIZE);
+		for (int i = 0; i < arraySize; i++) {
+			ret += (0x1F * this.array[i]);
+		}
+		return ret;
 	}
 
 	@Override
@@ -159,53 +188,69 @@ public class BitVectorImpl implements BitVector {
 		boolean ret = (this == obj);
 		if (!ret && (obj instanceof BitVector)) {
 			BitVector other = (BitVector) obj;
-			ret = size() == other.size();
-			for (long i = 0; ret && (i < size()); i++) {
-				ret = ret && (get(i) == other.get(i));
+			ret = (this.size == other.size());
+			if (ret) {
+				long comparisonFirstPos = 0;
+				if (other instanceof BitVectorImpl) {
+					BitVectorImpl otherBitVectorImpl = (BitVectorImpl) other;
+					int arraySize = (int) (this.size >> LG_WORD_SIZE);
+					for (int i = 0; ret && (i < arraySize); i++) {
+						ret = ret
+								&& (this.array[i] == otherBitVectorImpl.array[i]);
+					}
+					comparisonFirstPos = ((long) arraySize << LG_WORD_SIZE);
+				}
+				for (long i = comparisonFirstPos; ret && (i < this.size); i++) {
+					ret = ret && (getBit(i) == other.getBit(i));
+				}
 			}
 		}
 		return ret;
 	}
 
-	/** This method is not implemented. */
 	@Override
-	public long find(boolean bit, long nOccurrence) {
-		// TODO
-		throw new UnsupportedOperationException("Method not implemented.");
-	}
-
-	@Override
-	public boolean get(long position) {
+	public boolean getBit(long position) {
 		assertRange(position);
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
-		int wordPos = (int) (position & WORD_MASK);
-		return getBit(wordPos, this.array[arrayPos]);
+		byte wordPos = (byte) (position & WORD_MASK);
+		return getBitInWord(wordPos, this.array[arrayPos]);
 	}
 
 	@Override
 	public int hashCode() {
-		return (int) (this.size + (0x1F * this.array[0]));
+		if (this.undefinedHashCode) {
+			this.hashCode = computeHashCode();
+			this.undefinedHashCode = false;
+		}
+		return this.hashCode;
 	}
 
-	/** This method is not implemented. */
 	@Override
-	public Iterator<BitVector> iterator() {
-		// TODO
-		throw new UnsupportedOperationException("Method not implemented.");
+	public Iterator<Boolean> iterator() {
+		// return new BitVectorIterator(this);
+		throw new UnsupportedOperationException();
 	}
 
-	void resizeArray() {
-		long[] newArray = new long[GROWTH_FACTOR * this.array.length];
+	/**
+	 * Resizes the array that represents this bit vector.
+	 * 
+	 * @param newArraySize
+	 *            new array size
+	 */
+	void resizeArray(int newArraySize) {
+		long[] newArray = new long[newArraySize];
 		System.arraycopy(this.array, 0, newArray, 0, this.array.length);
 		this.array = newArray;
 	}
 
 	@Override
-	public void set(long position, boolean value) {
+	public void setBit(long position, boolean value) {
 		assertRange(position);
+		this.undefinedHashCode = true;
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
-		int wordPos = (int) (position & WORD_MASK);
-		this.array[arrayPos] = setBit(wordPos, value, this.array[arrayPos]);
+		byte wordPos = (byte) (position & WORD_MASK);
+		this.array[arrayPos] = setBitInWord(wordPos, value,
+				this.array[arrayPos]);
 	}
 
 	@Override
@@ -222,7 +267,7 @@ public class BitVectorImpl implements BitVector {
 				sbuf.append(toString(this.array[arrayPos]));
 				position += WORD_SIZE;
 			} else {
-				sbuf.append(get(position) ? "1" : "0");
+				sbuf.append(getBit(position) ? "1" : "0");
 				position++;
 			}
 		}

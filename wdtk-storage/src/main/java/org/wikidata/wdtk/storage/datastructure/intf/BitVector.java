@@ -26,9 +26,28 @@ import java.util.Iterator;
  * Interface for a bit vector.
  * 
  * @author Julian Mendez
- * 
  */
 public interface BitVector {
+
+	/**
+	 * This is the &quot;access&quot; method of bit vectors.
+	 * 
+	 * @return value of a bit at <i>position</i>.
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             if the position is out of range
+	 */
+	boolean getBit(long position);
+
+	/**
+	 * @return size of this bit vector.
+	 */
+	long size();
+
+	/**
+	 * @return an iterator for this bit vector.
+	 */
+	Iterator<Boolean> iterator();
 
 	/**
 	 * Appends an <i>element</i> to this bit vector.
@@ -38,45 +57,15 @@ public interface BitVector {
 	boolean add(boolean element);
 
 	/**
-	 * This is the &quot;rank&quot; method of bit vectors.
-	 * 
-	 * @return number of occurrences of <i>bit</i> at <i>position</i>.
-	 */
-	long count(boolean bit, long position);
-
-	/**
-	 * This is the &quot;select&quot; method of bit vectors.
-	 * 
-	 * @return position of the n-th occurrence (<i>nOccurrence</i>) of
-	 *         <i>bit</i>.
-	 */
-	long find(boolean bit, long nOccurrence);
-
-	/**
-	 * This is the &quot;access&quot; method of bit vectors.
-	 * 
-	 * @return value of a bit at <i>position</i>.
-	 */
-	boolean get(long position);
-
-	/**
-	 * @return an iterator for this bit vector.
-	 */
-	Iterator<BitVector> iterator();
-
-	/**
 	 * Sets a <i>value</i> at a particular <i>position</i>.
 	 * 
 	 * @param position
 	 *            position
 	 * @param value
 	 *            value
+	 * @throws IndexOutOfBoundsException
+	 *             if the position is out of range
 	 */
-	void set(long position, boolean value);
-
-	/**
-	 * @return size of this bit vector.
-	 */
-	long size();
+	void setBit(long position, boolean value);
 
 }
