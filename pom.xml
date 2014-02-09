@@ -16,6 +16,7 @@
 		<module>wdtk-dumpfiles</module>
 		<module>wdtk-storage</module>
 		<module>wdtk-wikibaseapi</module>
+		<module>wdtk-util</module>
 	</modules>
 
 	<licenses>
