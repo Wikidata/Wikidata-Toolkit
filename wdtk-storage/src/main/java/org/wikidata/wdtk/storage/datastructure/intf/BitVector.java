@@ -50,22 +50,22 @@ public interface BitVector {
 	Iterator<Boolean> iterator();
 
 	/**
-	 * Appends an <i>element</i> to this bit vector.
+	 * Appends a <i>bit</i> to this bit vector.
 	 * 
 	 * @return <code>true</code> if the element was successfully added.
 	 */
-	boolean add(boolean element);
+	boolean addBit(boolean bit);
 
 	/**
-	 * Sets a <i>value</i> at a particular <i>position</i>.
+	 * Sets a <i>bit</i> at a particular <i>position</i>.
 	 * 
 	 * @param position
 	 *            position
-	 * @param value
-	 *            value
+	 * @param bit
+	 *            bit
 	 * @throws IndexOutOfBoundsException
 	 *             if the position is out of range
 	 */
-	void setBit(long position, boolean value);
+	void setBit(long position, boolean bit);
 
 }

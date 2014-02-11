@@ -45,7 +45,7 @@ public class BitVectorIteratorTest {
 			BitVectorImpl bv = new BitVectorImpl();
 			for (int i = 0; i < 0x100; i++) {
 				boolean value = (i % 3) == 0;
-				bv.add(value);
+				bv.addBit(value);
 			}
 
 			{
@@ -65,7 +65,7 @@ public class BitVectorIteratorTest {
 			BitVectorImpl bv = new BitVectorImpl();
 			for (int i = 0; i < 0x100; i++) {
 				boolean value = (i % 7) == 0;
-				bv.add(value);
+				bv.addBit(value);
 			}
 
 			{
@@ -87,7 +87,7 @@ public class BitVectorIteratorTest {
 		this.seed = 0x1234;
 		for (int i = 0; i < 0x1000; i++) {
 			boolean value = getPseudoRandomBoolean();
-			bv.add(value);
+			bv.addBit(value);
 		}
 
 		this.seed = 0x1234;

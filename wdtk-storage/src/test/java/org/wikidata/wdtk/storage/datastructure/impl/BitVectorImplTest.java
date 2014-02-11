@@ -50,21 +50,21 @@ public class BitVectorImplTest {
 		BitVectorImpl bv = new BitVectorImpl();
 		Assert.assertEquals(0, bv.size());
 
-		bv.add(true);
+		bv.addBit(true);
 		Assert.assertEquals(1, bv.size());
 		Assert.assertEquals(true, bv.getBit(0));
 
-		bv.add(false);
+		bv.addBit(false);
 		Assert.assertEquals(2, bv.size());
 		Assert.assertEquals(false, bv.getBit(1));
 
-		bv.add(false);
+		bv.addBit(false);
 		Assert.assertEquals(3, bv.size());
 		Assert.assertEquals(false, bv.getBit(2));
 
 		for (int i = 3; i < 0x1000; i++) {
 			boolean value = (i % 3) == 0;
-			bv.add(value);
+			bv.addBit(value);
 			Assert.assertEquals(value, bv.getBit(i));
 		}
 	}
@@ -84,13 +84,13 @@ public class BitVectorImplTest {
 		BitVectorImpl bv0 = new BitVectorImpl();
 		for (int i = 0; i < 0x100000; i++) {
 			boolean value = (i % 3) == 0;
-			bv0.add(value);
+			bv0.addBit(value);
 		}
 
 		BitVectorImpl bv1 = new BitVectorImpl();
 		for (int i = 0; i < 0x100000; i++) {
 			boolean value = (i % 3) == 0;
-			bv1.add(value);
+			bv1.addBit(value);
 		}
 
 		assertEqualsForBitVector(bv0, bv1);
@@ -106,7 +106,7 @@ public class BitVectorImplTest {
 		BitVectorImpl bv2 = new BitVectorImpl(bv1);
 		for (int i = 0; i < 0x100000; i++) {
 			boolean value = (i % 3) == 0;
-			bv1.add(value);
+			bv1.addBit(value);
 		}
 
 		bv2.setBit(0x12345, true);
@@ -214,17 +214,37 @@ public class BitVectorImplTest {
 	}
 
 	@Test
+	public void testSize() {
+		{
+			BitVectorImpl bv = new BitVectorImpl(0x100);
+			Assert.assertEquals(0x100, bv.size());
+			bv.addBit(false);
+			bv.addBit(true);
+			Assert.assertEquals(0x102, bv.size());
+		}
+
+		{
+			BitVectorImpl bv = new BitVectorImpl();
+			Assert.assertEquals(0, bv.size());
+			for (int i = 0; i < 0x300; i++) {
+				bv.addBit((i % 5) == 0);
+				Assert.assertEquals(i + 1, bv.size());
+			}
+		}
+	}
+
+	@Test
 	public void testToString() {
 		BitVectorImpl bv = new BitVectorImpl();
 		for (int i = 0; i < 0x10; i++) {
 			boolean value = (i % 3) == 0;
-			bv.add(value);
+			bv.addBit(value);
 		}
 		Assert.assertEquals("1001001001001001", bv.toString());
 
 		for (int i = 0; i < 0x10; i++) {
 			boolean value = (i % 2) == 0;
-			bv.add(value);
+			bv.addBit(value);
 		}
 		Assert.assertEquals("10010010010010011010101010101010", bv.toString());
 
@@ -245,16 +265,16 @@ public class BitVectorImplTest {
 		long word = 0;
 		Assert.assertEquals(
 				"0000000000000000000000000000000000000000000000000000000000000000",
-				BitVectorImpl.toString(word));
+				BitVectorImpl.wordToString(word));
 		word = -1;
 		Assert.assertEquals(
 				"1111111111111111111111111111111111111111111111111111111111111111",
-				BitVectorImpl.toString(word));
+				BitVectorImpl.wordToString(word));
 
 		word = 0x362;
 		Assert.assertEquals(
 				"0100011011000000000000000000000000000000000000000000000000000000",
-				BitVectorImpl.toString(word));
+				BitVectorImpl.wordToString(word));
 	}
 
 }

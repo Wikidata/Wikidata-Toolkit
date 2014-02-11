@@ -23,6 +23,7 @@ package org.wikidata.wdtk.storage.datastructure.impl;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
@@ -38,26 +39,25 @@ public class BitVectorIterator implements Iterator<Boolean> {
 	/**
 	 * Constructs an iterator for a bit vector.
 	 * 
-	 * @param bitVector0
+	 * @param bitVector
 	 *            bit vector
 	 */
-	public BitVectorIterator(BitVector bitVector0) {
-		if (bitVector0 == null) {
-			throw new IllegalArgumentException("Null argument.");
-		}
-
-		this.bitVector = bitVector0;
+	public BitVectorIterator(BitVector bitVector) {
+		Validate.notNull(bitVector, "Bit vector cannot be null.");
+		this.bitVector = bitVector;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		boolean ret = (this == o);
-		if (!ret && (o instanceof BitVectorIterator)) {
-			BitVectorIterator other = (BitVectorIterator) o;
-			ret = (this.pointer == other.pointer)
-					&& this.bitVector.equals(other.bitVector);
+		if (this == o) {
+			return true;
 		}
-		return ret;
+		if (!(o instanceof BitVectorIterator)) {
+			return false;
+		}
+		BitVectorIterator other = (BitVectorIterator) o;
+		return (this.pointer == other.pointer)
+				&& this.bitVector.equals(other.bitVector);
 	}
 
 	@Override

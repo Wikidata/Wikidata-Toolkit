@@ -23,8 +23,10 @@ package org.wikidata.wdtk.storage.datastructure.intf;
 /**
  * A ranked bit vector provides operations to compute:
  * <ul>
- * <li>rank: number of occurrences of a bit at a certain position</li>
- * <li>select: position of the <i>n</i>-th occurrence of a certain bit</li>
+ * <li>rank ({@link RankedBitVector#countBits}): number of occurrences of a bit
+ * at a certain position</li>
+ * <li>select ({@link RankedBitVector#findPosition}): position of the
+ * <i>n</i>-th occurrence of a certain bit</li>
  * </ul>
  * 
  * @author Julian Mendez
