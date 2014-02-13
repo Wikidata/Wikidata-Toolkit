@@ -32,7 +32,7 @@ public interface BitVector {
 	/**
 	 * This is the &quot;access&quot; method of bit vectors.
 	 * 
-	 * @return value of a bit at <i>position</i>.
+	 * @return value of a bit at <i>position</i>
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             if the position is out of range
@@ -40,19 +40,19 @@ public interface BitVector {
 	boolean getBit(long position);
 
 	/**
-	 * @return size of this bit vector.
+	 * @return size of this bit vector
 	 */
 	long size();
 
 	/**
-	 * @return an iterator for this bit vector.
+	 * @return an iterator for this bit vector
 	 */
 	Iterator<Boolean> iterator();
 
 	/**
 	 * Appends a <i>bit</i> to this bit vector.
 	 * 
-	 * @return <code>true</code> if the element was successfully added.
+	 * @return <code>true</code> if the element was successfully added
 	 */
 	boolean addBit(boolean bit);
 

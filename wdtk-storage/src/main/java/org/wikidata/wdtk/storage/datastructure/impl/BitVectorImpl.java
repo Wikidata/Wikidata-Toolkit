@@ -98,8 +98,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 *            position
 	 * @param word
 	 *            word
-	 * @return the value of a bit at a specific <i>position</i> of a
-	 *         <i>word</i>.
+	 * @return the value of a bit at a specific <i>position</i> of a <i>word</i>
 	 */
 	static boolean getBitInWord(byte position, long word) {
 		if ((position < 0) || (position >= WORD_SIZE)) {
@@ -111,7 +110,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	/**
 	 * @param bitVectorSize
 	 *            bit vector sizes
-	 * @return the minimum array size for a bit vector of <i>bitVectorSize</i>.
+	 * @return the minimum array size for a bit vector of <i>bitVectorSize</i>
 	 */
 	static int getMinimumArraySize(long bitVectorSize) {
 		return Math.max(MINIMUM_ARRAY_SIZE,
@@ -126,7 +125,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @param bit
 	 *            bit
 	 * @return the resulting word of setting a <i>bit</i> at a specific
-	 *         <i>position</i> of a <i>word</i>.
+	 *         <i>position</i> of a <i>word</i>
 	 */
 	static long setBitInWord(byte position, boolean bit, long word) {
 		if (getBitInWord(position, word) == bit) {
@@ -140,7 +139,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @param word
 	 *            word to be rendered
 	 * @return a string representation of a <i>word</i> with the least
-	 *         significant bit first.
+	 *         significant bit first
 	 */
 	static String wordToString(long word) {
 		String binaryDigits = String.format("%" + WORD_SIZE + "s",
@@ -163,7 +162,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @param position
 	 *            position
 	 * @throws IndexOutOfBoundsException
-	 *             if the position is out of bounds.
+	 *             if the position is out of bounds
 	 */
 	void assertRange(long position) throws IndexOutOfBoundsException {
 		if ((position < 0) || (position >= this.size)) {
@@ -173,7 +172,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	}
 
 	/**
-	 * @return a hash code for the current bit vector.
+	 * @return a hash code for the current bit vector
 	 */
 	int computeHashCode() {
 		int ret = (int) this.size;
@@ -208,7 +207,6 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 			return false;
 		}
 
-		boolean ret = true;
 		long comparisonFirstPos = 0;
 
 		if (other instanceof BitVectorImpl) {
@@ -221,18 +219,21 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 			// vectors that are equal can have different values in the unused
 			// bits
 
-			for (int i = 0; ret && (i < arraySize); i++) {
-				ret = ret
-						&& (this.arrayOfBits[i] == otherBitVectorImpl.arrayOfBits[i]);
+			for (int i = 0; i < arraySize; i++) {
+				if (this.arrayOfBits[i] != otherBitVectorImpl.arrayOfBits[i]) {
+					return false;
+				}
 			}
 			comparisonFirstPos = ((long) arraySize << LG_WORD_SIZE);
 		}
 
-		for (long i = comparisonFirstPos; ret && (i < this.size); i++) {
+		for (long i = comparisonFirstPos; i < this.size; i++) {
 			// bit-by-bit comparison of the remaining bits
-			ret = ret && (getBit(i) == other.getBit(i));
+			if (getBit(i) != other.getBit(i)) {
+				return false;
+			}
 		}
-		return ret;
+		return true;
 	}
 
 	@Override

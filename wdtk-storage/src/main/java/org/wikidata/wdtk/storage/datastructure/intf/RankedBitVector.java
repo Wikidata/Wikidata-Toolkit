@@ -36,7 +36,7 @@ public interface RankedBitVector extends BitVector {
 	/**
 	 * This is the &quot;rank&quot; method of bit vectors.
 	 * 
-	 * @return number of occurrences of <i>bit</i> at <i>position</i>.
+	 * @return number of occurrences of <i>bit</i> at <i>position</i>
 	 */
 	long countBits(boolean bit, long position);
 
@@ -44,7 +44,7 @@ public interface RankedBitVector extends BitVector {
 	 * This is the &quot;select&quot; method of bit vectors.
 	 * 
 	 * @return position of the <i>n</i>-th occurrence (<i>nOccurrence</i>) of
-	 *         <i>bit</i>.
+	 *         <i>bit</i>
 	 */
 	long findPosition(boolean bit, long nOccurrence);
 
