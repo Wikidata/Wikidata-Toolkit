@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -41,15 +42,19 @@ public class TimerTest {
 	 */
 	void doDummyComputation() {
 		long dummyValue = 0;
-		for (int i = 0; i < 100000; i++) {
-			dummyValue = 31 * (dummyValue + 1);
+		// We use a random number and a subsequent check to avoid smart
+		// compilers
+		Random rand = new Random();
+		int seed = rand.nextInt(10) + 1;
+		for (int i = 0; i < 1000000; i++) {
+			dummyValue = 10 + ((31 * (dummyValue + seed)) % 1234567);
 		}
-		if (dummyValue < 100) {
+		if (dummyValue < 10) {
 			throw new RuntimeException(
 					"This never happens, but let's pretend the value matters to avoid this being complied away.");
 		}
 		try {
-			Thread.sleep(10);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +91,7 @@ public class TimerTest {
 		assertTrue(
 				"Unrealistic wall time: " + timer.getTotalWallTime()
 						+ " should be closer to " + wallTime1,
-				(wallTime1 - 100000) <= timer.getTotalWallTime()
+				(wallTime1 - 200000) <= timer.getTotalWallTime()
 						&& timer.getTotalWallTime() <= wallTime1);
 
 		long cpuTime2 = tmxb.getThreadCpuTime(threadId);
@@ -104,7 +109,7 @@ public class TimerTest {
 		assertTrue(
 				"Unrealistic total wall time: " + timer.getTotalWallTime()
 						+ " should be closer to " + wallTime1,
-				(wallTime1 - 200000) <= timer.getTotalWallTime()
+				(wallTime1 - 400000) <= timer.getTotalWallTime()
 						&& timer.getTotalWallTime() <= wallTime1);
 
 		assertEquals(timer.getTotalCpuTime() / 2, timer.getAvgCpuTime());
