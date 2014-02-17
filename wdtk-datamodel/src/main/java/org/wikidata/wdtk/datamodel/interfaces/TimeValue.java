@@ -119,21 +119,21 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return year number
 	 */
-	public int getYear();
+	int getYear();
 
 	/**
 	 * Get the month stored for this date. It will be a number from 1 to 12.
 	 * 
 	 * @return month number
 	 */
-	public byte getMonth();
+	byte getMonth();
 
 	/**
 	 * Get the day stored for this date. It will be a number from 1 to 31.
 	 * 
 	 * @return day number
 	 */
-	public byte getDay();
+	byte getDay();
 
 	/**
 	 * Get the IRI of the preferred calendar model that should be used to
@@ -143,7 +143,7 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return IRI of the preferred calendar model
 	 */
-	public String getPreferredCalendarModel();
+	String getPreferredCalendarModel();
 
 	/**
 	 * Get the precision hint of this date. The return value will be in the
@@ -151,21 +151,21 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return precision hint for this date
 	 */
-	public byte getPrecision();
+	byte getPrecision();
 
 	/*
 	 * Get the hour stored for this date. It will be a number from 1 to 23.
 	 * 
 	 * @return hour number
 	 */
-	// public byte getHour();
+	// byte getHour();
 
 	/*
 	 * Get the minute stored for this date. It will be a number from 1 to 59.
 	 * 
 	 * @return minute number
 	 */
-	// public byte getMinute();
+	// byte getMinute();
 
 	/*
 	 * Get the seconds stored for this date. This is a decimal number,
@@ -177,7 +177,7 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return second number and fraction
 	 */
-	// public Number getSeconds();
+	// Number getSeconds();
 
 	/*
 	 * Get the whole seconds stored for this date, without any sub-second
@@ -185,6 +185,6 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return second number without any fraction
 	 */
-	// public byte getFullSeconds();
+	// byte getFullSeconds();
 
 }
