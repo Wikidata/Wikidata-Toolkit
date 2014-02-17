@@ -34,16 +34,16 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
-public class PropertyRecordImplTest {
+public class PropertyDocumentImplTest {
 
-	PropertyRecord pr1;
-	PropertyRecord pr2;
+	PropertyDocument pr1;
+	PropertyDocument pr2;
 
 	PropertyId pid;
 	Map<String, String> labels;
@@ -62,9 +62,9 @@ public class PropertyRecordImplTest {
 		aliases.put("en", Collections.<String> singletonList("An alias of P42"));
 		datatypeId = new DatatypeIdImpl(DatatypeId.DT_ITEM);
 
-		pr1 = new PropertyRecordImpl(pid, labels, descriptions, aliases,
+		pr1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
 				datatypeId);
-		pr2 = new PropertyRecordImpl(pid, labels, descriptions, aliases,
+		pr2 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
 				datatypeId);
 	}
 
@@ -79,21 +79,22 @@ public class PropertyRecordImplTest {
 	}
 
 	@Test
-	public void propertyRecordValueEqualityBasedOnContent() {
-		PropertyRecord pr3 = new PropertyRecordImpl(new PropertyIdImpl("P43",
-				"http://wikibase.org/entity/"), labels, descriptions, aliases,
-				datatypeId);
-		PropertyRecord pr4 = new PropertyRecordImpl(pid,
+	public void valueEqualityBasedOnContent() {
+		PropertyDocument pr3 = new PropertyDocumentImpl(new PropertyIdImpl(
+				"P43", "http://wikibase.org/entity/"), labels, descriptions,
+				aliases, datatypeId);
+		PropertyDocument pr4 = new PropertyDocumentImpl(pid,
 				Collections.<String, String> emptyMap(), descriptions, aliases,
 				datatypeId);
-		PropertyRecord pr5 = new PropertyRecordImpl(pid, labels,
+		PropertyDocument pr5 = new PropertyDocumentImpl(pid, labels,
 				Collections.<String, String> emptyMap(), aliases, datatypeId);
-		PropertyRecord pr6 = new PropertyRecordImpl(pid, labels, descriptions,
-				Collections.<String, List<String>> emptyMap(), datatypeId);
-		PropertyRecord pr7 = new PropertyRecordImpl(pid, labels, descriptions,
-				aliases, new DatatypeIdImpl(DatatypeId.DT_STRING));
+		PropertyDocument pr6 = new PropertyDocumentImpl(pid, labels,
+				descriptions, Collections.<String, List<String>> emptyMap(),
+				datatypeId);
+		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
+				descriptions, aliases, new DatatypeIdImpl(DatatypeId.DT_STRING));
 
-		ItemRecord ir = new ItemRecordImpl(new ItemIdImpl("Q42", "foo"),
+		ItemDocument ir = new ItemDocumentImpl(new ItemIdImpl("Q42", "foo"),
 				labels, descriptions, aliases,
 				Collections.<Statement> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
@@ -111,33 +112,34 @@ public class PropertyRecordImplTest {
 	}
 
 	@Test
-	public void propertyRecordHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(pr1.hashCode(), pr2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordIdNotNull() {
-		new PropertyRecordImpl(null, labels, descriptions, aliases, datatypeId);
+	public void idNotNull() {
+		new PropertyDocumentImpl(null, labels, descriptions, aliases,
+				datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordLabelsNotNull() {
-		new PropertyRecordImpl(pid, null, descriptions, aliases, datatypeId);
+	public void labelsNotNull() {
+		new PropertyDocumentImpl(pid, null, descriptions, aliases, datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordDescriptionsNotNull() {
-		new PropertyRecordImpl(pid, labels, null, aliases, datatypeId);
+	public void descriptionsNotNull() {
+		new PropertyDocumentImpl(pid, labels, null, aliases, datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordAliasesNotNull() {
-		new PropertyRecordImpl(pid, labels, descriptions, null, datatypeId);
+	public void aliasesNotNull() {
+		new PropertyDocumentImpl(pid, labels, descriptions, null, datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordDatatypeNotNull() {
-		new PropertyRecordImpl(pid, labels, descriptions, aliases, null);
+	public void datatypeNotNull() {
+		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null);
 	}
 
 }

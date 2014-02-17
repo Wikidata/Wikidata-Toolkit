@@ -29,10 +29,10 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -131,19 +131,19 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public PropertyRecord getPropertyRecord(PropertyId propertyId,
+	public PropertyDocument getPropertyDocument(PropertyId propertyId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId) {
-		return new PropertyRecordImpl(propertyId, labels, descriptions,
+		return new PropertyDocumentImpl(propertyId, labels, descriptions,
 				aliases, datatypeId);
 	}
 
 	@Override
-	public ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
+	public ItemDocument getItemDocument(ItemId itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {
-		return new ItemRecordImpl(itemId, labels, descriptions, aliases,
+		return new ItemDocumentImpl(itemId, labels, descriptions, aliases,
 				statements, siteLinks);
 	}
 

@@ -25,16 +25,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.EntityRecord;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 /**
- * Implementation of {@link EntityRecord}. This abstract class defines the code
- * for shared functionality of concrete types of EntityRecord.
+ * Implementation of {@link TermedDocument}. This abstract class defines the
+ * code for shared functionality of concrete types of TermedDocument.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public abstract class EntityRecordImpl implements EntityRecord {
+public abstract class TermedDocumentImpl implements TermedDocument {
 
 	final Map<String, String> labels;
 	final Map<String, String> descriptions;
@@ -47,7 +47,7 @@ public abstract class EntityRecordImpl implements EntityRecord {
 	 * @param descriptions
 	 * @param aliases
 	 */
-	EntityRecordImpl(Map<String, String> labels,
+	TermedDocumentImpl(Map<String, String> labels,
 			Map<String, String> descriptions, Map<String, List<String>> aliases) {
 		Validate.notNull(labels, "map of labels cannot be null");
 		Validate.notNull(descriptions, "map of descriptions cannot be null");
@@ -102,10 +102,10 @@ public abstract class EntityRecordImpl implements EntityRecord {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof EntityRecordImpl)) {
+		if (!(obj instanceof TermedDocumentImpl)) {
 			return false;
 		}
-		EntityRecordImpl other = (EntityRecordImpl) obj;
+		TermedDocumentImpl other = (TermedDocumentImpl) obj;
 		return aliases.equals(other.aliases)
 				&& descriptions.equals(other.descriptions)
 				&& labels.equals(other.labels);

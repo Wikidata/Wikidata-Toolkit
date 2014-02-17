@@ -24,22 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for datasets that describe an entity. This data mainly consists of
- * various pieces of text, such as labels, descriptions, and aliases. More
- * specific interfaces further add sitelinks and statements.
+ * Interface for EntityDocuments that can be described by terms in several
+ * languages. These terms consist labels, descriptions, and aliases.
  * 
  * @author Markus Kroetzsch
- * 
  */
-public interface EntityRecord {
-
-	/**
-	 * Return the ID of the entity that the data refers to
-	 * 
-	 * @return entity id
-	 */
-	EntityId getEntityId();
-
+public interface TermedDocument extends EntityDocument {
 	/**
 	 * Return a Map from Wikibase language codes to labels.
 	 * 
@@ -61,4 +51,5 @@ public interface EntityRecord {
 	 * @return the aliases for this language
 	 */
 	Map<String, List<String>> getAliases();
+
 }

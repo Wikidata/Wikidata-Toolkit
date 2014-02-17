@@ -213,7 +213,7 @@ public interface DataObjectFactory {
 			List<String> badges);
 
 	/**
-	 * Create a {@link PropertyRecord}.
+	 * Create a {@link PropertyDocument}.
 	 * 
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -225,14 +225,14 @@ public interface DataObjectFactory {
 	 *            the alias lists of this property by language code
 	 * @param datatypeId
 	 *            the datatype of that property
-	 * @return a {@link PropertyRecord} corresponding to the input
+	 * @return a {@link PropertyDocument} corresponding to the input
 	 */
-	PropertyRecord getPropertyRecord(PropertyId propertyId,
+	PropertyDocument getPropertyDocument(PropertyId propertyId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId);
 
 	/**
-	 * Create an {@link ItemRecord}.
+	 * Create an {@link ItemDocument}.
 	 * 
 	 * @param itemId
 	 *            the id of the item that data is about
@@ -246,9 +246,9 @@ public interface DataObjectFactory {
 	 *            the list of statements of this item
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
-	 * @return an {@link ItemRecord} corresponding to the input
+	 * @return an {@link ItemDocument} corresponding to the input
 	 */
-	ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
+	ItemDocument getItemDocument(ItemId itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks);

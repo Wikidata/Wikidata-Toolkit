@@ -22,18 +22,18 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * Interface for datasets that describe properties. It extends
- * {@link EntityRecord} with information about the datatype of a property.
+ * {@link EntityDocument} with information about the datatype of a property.
  * 
  * Claims or Statements on properties might be supported in the future.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface PropertyRecord extends EntityRecord {
+public interface PropertyDocument extends TermedDocument {
 
 	/**
 	 * Return the ID of the property that the data refers to. The result is the
-	 * same as that of {@link EntityRecord#getEntityId()}, but declared with a
+	 * same as that of {@link EntityDocument#getEntityId()}, but declared with a
 	 * more specific result type.
 	 * 
 	 * @return property id

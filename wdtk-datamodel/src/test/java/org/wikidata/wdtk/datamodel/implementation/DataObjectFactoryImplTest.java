@@ -31,10 +31,10 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -176,13 +176,13 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
-	public final void testGetPropertyRecord() {
-		PropertyRecord o1 = new PropertyRecordImpl(factory.getPropertyId("P42",
+	public final void testGetPropertyDocument() {
+		PropertyDocument o1 = new PropertyDocumentImpl(factory.getPropertyId("P42",
 				"foo"), Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, List<String>> emptyMap(),
 				factory.getDatatypeId(DatatypeId.DT_TIME));
-		PropertyRecord o2 = factory.getPropertyRecord(
+		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyId("P42", "foo"),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
@@ -192,14 +192,14 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
-	public final void testGetItemRecord() {
-		ItemRecord o1 = new ItemRecordImpl(factory.getItemId("Q42", "foo"),
+	public final void testGetItemDocument() {
+		ItemDocument o1 = new ItemDocumentImpl(factory.getItemId("Q42", "foo"),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, List<String>> emptyMap(),
 				Collections.<Statement> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
-		ItemRecord o2 = factory.getItemRecord(factory.getItemId("Q42", "foo"),
+		ItemDocument o2 = factory.getItemDocument(factory.getItemId("Q42", "foo"),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, List<String>> emptyMap(),

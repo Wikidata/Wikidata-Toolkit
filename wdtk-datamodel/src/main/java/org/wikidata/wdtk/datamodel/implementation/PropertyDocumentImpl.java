@@ -27,16 +27,16 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 /**
- * Implementation of {@link PropertyRecord}.
+ * Implementation of {@link PropertyDocument}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyRecordImpl extends EntityRecordImpl implements
-		PropertyRecord {
+public class PropertyDocumentImpl extends TermedDocumentImpl implements
+		PropertyDocument {
 
 	final PropertyId propertyId;
 	final DatatypeId datatypeId;
@@ -55,7 +55,7 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
-	PropertyRecordImpl(PropertyId propertyId, Map<String, String> labels,
+	PropertyDocumentImpl(PropertyId propertyId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId) {
 		super(labels, descriptions, aliases);
@@ -107,10 +107,10 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof PropertyRecordImpl)) {
+		if (!(obj instanceof PropertyDocumentImpl)) {
 			return false;
 		}
-		PropertyRecordImpl other = (PropertyRecordImpl) obj;
+		PropertyDocumentImpl other = (PropertyDocumentImpl) obj;
 		return datatypeId.equals(other.datatypeId)
 				&& propertyId.equals(other.propertyId);
 	}

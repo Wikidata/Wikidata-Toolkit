@@ -24,17 +24,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for datasets that describe items. It extends {@link EntityRecord}
+ * Interface for datasets that describe items. It extends {@link EntityDocument}
  * with information about site links and statements.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface ItemRecord extends EntityRecord {
+public interface ItemDocument extends TermedDocument {
 
 	/**
 	 * Return the ID of the item that the data refers to. The result is the same
-	 * as that of {@link EntityRecord#getEntityId()}, but declared with a more
+	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
 	 * specific result type.
 	 * 
 	 * @return item id

@@ -34,18 +34,18 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
-public class ItemRecordImplTest {
+public class ItemDocumentImplTest {
 
-	ItemRecord ir1;
-	ItemRecord ir2;
+	ItemDocument ir1;
+	ItemDocument ir2;
 
 	ItemId iid;
 	Map<String, String> labels;
@@ -75,9 +75,9 @@ public class ItemRecordImplTest {
 				Collections.<String> emptyList());
 		sitelinks = Collections.singletonMap("enwiki", sl);
 
-		ir1 = new ItemRecordImpl(iid, labels, descriptions, aliases,
+		ir1 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
 				statements, sitelinks);
-		ir2 = new ItemRecordImpl(iid, labels, descriptions, aliases,
+		ir2 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
 				statements, sitelinks);
 	}
 
@@ -93,26 +93,27 @@ public class ItemRecordImplTest {
 	}
 
 	@Test
-	public void itemRecordValueEqualityBasedOnContent() {
-		ItemRecord ir3 = new ItemRecordImpl(new ItemIdImpl("Q43", "something"),
-				labels, descriptions, aliases, statements, sitelinks);
-		ItemRecord ir4 = new ItemRecordImpl(iid,
+	public void valueEqualityBasedOnContent() {
+		ItemDocument ir3 = new ItemDocumentImpl(new ItemIdImpl("Q43",
+				"something"), labels, descriptions, aliases, statements,
+				sitelinks);
+		ItemDocument ir4 = new ItemDocumentImpl(iid,
 				Collections.<String, String> emptyMap(), descriptions, aliases,
 				statements, sitelinks);
-		ItemRecord ir5 = new ItemRecordImpl(iid, labels,
+		ItemDocument ir5 = new ItemDocumentImpl(iid, labels,
 				Collections.<String, String> emptyMap(), aliases, statements,
 				sitelinks);
-		ItemRecord ir6 = new ItemRecordImpl(iid, labels, descriptions,
+		ItemDocument ir6 = new ItemDocumentImpl(iid, labels, descriptions,
 				Collections.<String, List<String>> emptyMap(), statements,
 				sitelinks);
-		ItemRecord ir7 = new ItemRecordImpl(iid, labels, descriptions, aliases,
-				Collections.<Statement> emptyList(), sitelinks);
-		ItemRecord ir8 = new ItemRecordImpl(iid, labels, descriptions, aliases,
-				statements, Collections.<String, SiteLink> emptyMap());
+		ItemDocument ir7 = new ItemDocumentImpl(iid, labels, descriptions,
+				aliases, Collections.<Statement> emptyList(), sitelinks);
+		ItemDocument ir8 = new ItemDocumentImpl(iid, labels, descriptions,
+				aliases, statements, Collections.<String, SiteLink> emptyMap());
 
-		PropertyRecord pr = new PropertyRecordImpl(new PropertyIdImpl("P42",
-				"foo"), labels, descriptions, aliases, new DatatypeIdImpl(
-				DatatypeId.DT_STRING));
+		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdImpl(
+				"P42", "foo"), labels, descriptions, aliases,
+				new DatatypeIdImpl(DatatypeId.DT_STRING));
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
@@ -128,41 +129,43 @@ public class ItemRecordImplTest {
 	}
 
 	@Test
-	public void itemRecordHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(ir1.hashCode(), ir2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void itemRecordIdNotNull() {
-		new ItemRecordImpl(null, labels, descriptions, aliases, statements,
+	public void idNotNull() {
+		new ItemDocumentImpl(null, labels, descriptions, aliases, statements,
 				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordLabelsNotNull() {
-		new ItemRecordImpl(iid, null, descriptions, aliases, statements,
+	public void labelsNotNull() {
+		new ItemDocumentImpl(iid, null, descriptions, aliases, statements,
 				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordDescriptionsNotNull() {
-		new ItemRecordImpl(iid, labels, null, aliases, statements, sitelinks);
+	public void descriptionsNotNull() {
+		new ItemDocumentImpl(iid, labels, null, aliases, statements, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordAliasesNotNull() {
-		new ItemRecordImpl(iid, labels, descriptions, null, statements,
+	public void aliasesNotNull() {
+		new ItemDocumentImpl(iid, labels, descriptions, null, statements,
 				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordStatementsNotNull() {
-		new ItemRecordImpl(iid, labels, descriptions, aliases, null, sitelinks);
+	public void statementsNotNull() {
+		new ItemDocumentImpl(iid, labels, descriptions, aliases, null,
+				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void propertyRecordSitelinksNotNull() {
-		new ItemRecordImpl(iid, labels, descriptions, aliases, statements, null);
+	public void sitelinksNotNull() {
+		new ItemDocumentImpl(iid, labels, descriptions, aliases, statements,
+				null);
 	}
 
 }

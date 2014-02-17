@@ -27,11 +27,11 @@ import java.util.Map;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
-public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
+public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument {
 
 	final ItemId itemId;
 	final List<Statement> statements;
@@ -53,7 +53,7 @@ public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	ItemRecordImpl(ItemId itemId, Map<String, String> labels,
+	ItemDocumentImpl(ItemId itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {
@@ -114,10 +114,10 @@ public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof ItemRecordImpl)) {
+		if (!(obj instanceof ItemDocumentImpl)) {
 			return false;
 		}
-		ItemRecordImpl other = (ItemRecordImpl) obj;
+		ItemDocumentImpl other = (ItemDocumentImpl) obj;
 
 		return itemId.equals(other.itemId) && siteLinks.equals(other.siteLinks)
 				&& statements.equals(other.statements);
