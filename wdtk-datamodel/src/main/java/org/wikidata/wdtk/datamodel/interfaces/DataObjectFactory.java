@@ -85,17 +85,33 @@ public interface DataObjectFactory {
 	 *            a month number between 1 and 12
 	 * @param day
 	 *            a day number between 1 and 31
+	 * @param hour
+	 *            an hour number between 0 and 23
+	 * @param minute
+	 *            a minute number between 0 and 59
+	 * @param second
+	 *            a second number between 0 and 60 (possible leap second)
 	 * @param precision
 	 *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
 	 *            {@link TimeValue#PREC_GY}
+	 * @param beforeTolerance
+	 *            non-negative integer tolerance before the value; see
+	 *            {@link TimeValue#getBeforeTolerance()}
+	 * @param afterTolerance
+	 *            non-zero, positive integer tolerance before the value; see
+	 *            {@link TimeValue#getAfterTolerance()}
 	 * @param calendarModel
 	 *            the IRI of the calendar model preferred when displaying the
 	 *            date; usually {@link TimeValue#CM_GREGORIAN_PRO} or
 	 *            {@link TimeValue#CM_JULIAN_PRO}
+	 * @param timezoneOffset
+	 *            offset in minutes that should be applied when displaying this
+	 *            time
 	 * @return a {@link DatatypeId} corresponding to the input
 	 */
-	TimeValue getTimeValue(int year, byte month, byte day, byte precision,
-			String calendarModel);
+	TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+			byte minute, byte second, byte precision, int beforeTolerance,
+			int afterTolerance, int timezoneOffset, String calendarModel);
 
 	/**
 	 * Create a {@link GlobeCoordinatesValue}.

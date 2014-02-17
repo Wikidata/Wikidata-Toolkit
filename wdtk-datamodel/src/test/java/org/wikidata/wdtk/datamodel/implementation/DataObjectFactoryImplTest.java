@@ -85,10 +85,12 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetTimeValue() {
-		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 1,
+		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10,
+				(byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 1, TimeValue.CM_GREGORIAN_PRO);
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(o1, o2);
 	}
 
