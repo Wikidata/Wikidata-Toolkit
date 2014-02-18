@@ -26,12 +26,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
-public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument {
+public class ItemDocumentImpl extends TermedDocumentImpl implements
+		ItemDocument {
 
 	final ItemIdValue itemId;
 	final List<Statement> statements;
@@ -53,10 +55,11 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	ItemDocumentImpl(ItemIdValue itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
-			Map<String, SiteLink> siteLinks) {
+	ItemDocumentImpl(ItemIdValue itemId,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			List<Statement> statements, Map<String, SiteLink> siteLinks) {
 		super(labels, descriptions, aliases);
 		Validate.notNull(itemId, "item ID cannot be null");
 		Validate.notNull(statements, "statement list cannot be null");

@@ -35,14 +35,14 @@ public interface TermedDocument extends EntityDocument {
 	 * 
 	 * @return the map of labels
 	 */
-	Map<String, String> getLabels();
+	Map<String, MonolingualTextValue> getLabels();
 
 	/**
 	 * Return a Map from Wikibase language codes to descriptions.
 	 * 
 	 * @return the map of descriptions
 	 */
-	Map<String, String> getDescriptions();
+	Map<String, MonolingualTextValue> getDescriptions();
 
 	/**
 	 * Return a Map from Wikibase language codes to lists of alias labels for a
@@ -50,6 +50,6 @@ public interface TermedDocument extends EntityDocument {
 	 * 
 	 * @return the aliases for this language
 	 */
-	Map<String, List<String>> getAliases();
+	Map<String, List<MonolingualTextValue>> getAliases();
 
 }

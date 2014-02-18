@@ -28,7 +28,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * @author Markus Kroetzsch
  * 
  */
-public interface DatatypeId extends IriIdentifiedValue {
+public interface DatatypeIdValue extends IriIdentifiedValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */

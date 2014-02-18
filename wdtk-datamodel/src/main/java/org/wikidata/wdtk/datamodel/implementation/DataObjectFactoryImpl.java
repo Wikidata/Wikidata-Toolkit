@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -57,17 +57,17 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
-	public ItemIdValue getItemId(String id, String baseIri) {
+	public ItemIdValue getItemIdValue(String id, String baseIri) {
 		return new ItemIdValueImpl(id, baseIri);
 	}
 
 	@Override
-	public PropertyIdValue getPropertyId(String id, String baseIri) {
+	public PropertyIdValue getPropertyIdValue(String id, String baseIri) {
 		return new PropertyIdValueImpl(id, baseIri);
 	}
 
 	@Override
-	public DatatypeId getDatatypeId(String id) {
+	public DatatypeIdValue getDatatypeIdValue(String id) {
 		return new DatatypeIdImpl(id);
 	}
 
@@ -144,17 +144,20 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId) {
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			DatatypeIdValue datatypeId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
 				aliases, datatypeId);
 	}
 
 	@Override
 	public ItemDocument getItemDocument(ItemIdValue itemId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
-			Map<String, SiteLink> siteLinks) {
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			List<Statement> statements, Map<String, SiteLink> siteLinks) {
 		return new ItemDocumentImpl(itemId, labels, descriptions, aliases,
 				statements, siteLinks);
 	}

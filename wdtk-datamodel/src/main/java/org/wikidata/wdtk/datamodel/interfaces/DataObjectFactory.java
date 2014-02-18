@@ -43,7 +43,7 @@ public interface DataObjectFactory {
 	 *            "http://www.wikidata.org/entity/"
 	 * @return an {@link ItemIdValue} corresponding to the input
 	 */
-	ItemIdValue getItemId(String id, String baseIri);
+	ItemIdValue getItemIdValue(String id, String baseIri);
 
 	/**
 	 * Create a {@link PropertyIdValue}.
@@ -55,18 +55,18 @@ public interface DataObjectFactory {
 	 *            "http://www.wikidata.org/entity/"
 	 * @return a {@link PropertyIdValue} corresponding to the input
 	 */
-	PropertyIdValue getPropertyId(String id, String baseIri);
+	PropertyIdValue getPropertyIdValue(String id, String baseIri);
 
 	/**
-	 * Create a {@link DatatypeId}. The datatype IRI is usually one of the
-	 * constants defined in {@link DatatypeId}, but this is not enforced, since
+	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced, since
 	 * there might be extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
-	 * @return a {@link DatatypeId} corresponding to the input
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	DatatypeId getDatatypeId(String id);
+	DatatypeIdValue getDatatypeIdValue(String id);
 
 	/**
 	 * Create a {@link TimeValue}.
@@ -99,7 +99,7 @@ public interface DataObjectFactory {
 	 * @param timezoneOffset
 	 *            offset in minutes that should be applied when displaying this
 	 *            time
-	 * @return a {@link DatatypeId} corresponding to the input
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
 	TimeValue getTimeValue(int year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
@@ -250,8 +250,10 @@ public interface DataObjectFactory {
 	 * @return a {@link PropertyDocument} corresponding to the input
 	 */
 	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId);
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			DatatypeIdValue datatypeId);
 
 	/**
 	 * Create an {@link ItemDocument}.
@@ -271,8 +273,9 @@ public interface DataObjectFactory {
 	 * @return an {@link ItemDocument} corresponding to the input
 	 */
 	ItemDocument getItemDocument(ItemIdValue itemId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
-			Map<String, SiteLink> siteLinks);
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			List<Statement> statements, Map<String, SiteLink> siteLinks);
 
 }

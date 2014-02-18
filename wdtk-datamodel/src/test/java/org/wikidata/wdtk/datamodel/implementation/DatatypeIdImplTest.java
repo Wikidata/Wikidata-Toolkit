@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 public class DatatypeIdImplTest {
 
@@ -36,10 +36,10 @@ public class DatatypeIdImplTest {
 
 	@Before
 	public void setUp() {
-		d1 = new DatatypeIdImpl(DatatypeId.DT_ITEM);
+		d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 		d2 = new DatatypeIdImpl(
 				"http://www.wikidata.org/ontology#propertyTypeItem");
-		d3 = new DatatypeIdImpl(DatatypeId.DT_TIME);
+		d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 	}
 	
 	@Test(expected = NullPointerException.class)

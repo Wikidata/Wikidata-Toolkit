@@ -34,9 +34,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
@@ -50,21 +51,28 @@ public class ItemDocumentImplTest {
 	ItemDocument ir2;
 
 	ItemIdValue iid;
-	Map<String, String> labels;
-	Map<String, String> descriptions;
-	Map<String, List<String>> aliases;
+	Map<String, MonolingualTextValue> labels;
+	Map<String, MonolingualTextValue> descriptions;
+	Map<String, List<MonolingualTextValue>> aliases;
 	List<Statement> statements;
 	Map<String, SiteLink> sitelinks;
 
 	@Before
 	public void setUp() throws Exception {
 		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
-		labels = new HashMap<String, String>();
-		labels.put("en", "Property 42");
-		descriptions = new HashMap<String, String>();
-		descriptions.put("de", "Dies ist Property 42.");
-		aliases = new HashMap<String, List<String>>();
-		aliases.put("en", Collections.<String> singletonList("An alias of P42"));
+
+		labels = new HashMap<String, MonolingualTextValue>();
+		labels.put("en", new MonolingualTextValueImpl("Item 42", "en"));
+
+		descriptions = new HashMap<String, MonolingualTextValue>();
+		descriptions.put("de", new MonolingualTextValueImpl(
+				"Dies ist Item 42.", "de"));
+
+		MonolingualTextValue alias = new MonolingualTextValueImpl(
+				"An alias of Q42", "en");
+		aliases = new HashMap<String, List<MonolingualTextValue>>();
+		aliases.put("en",
+				Collections.<MonolingualTextValue> singletonList(alias));
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
@@ -95,19 +103,19 @@ public class ItemDocumentImplTest {
 	}
 
 	@Test
-	public void valueEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		ItemDocument ir3 = new ItemDocumentImpl(new ItemIdValueImpl("Q43",
 				"something"), labels, descriptions, aliases, statements,
 				sitelinks);
 		ItemDocument ir4 = new ItemDocumentImpl(iid,
-				Collections.<String, String> emptyMap(), descriptions, aliases,
-				statements, sitelinks);
+				Collections.<String, MonolingualTextValue> emptyMap(),
+				descriptions, aliases, statements, sitelinks);
 		ItemDocument ir5 = new ItemDocumentImpl(iid, labels,
-				Collections.<String, String> emptyMap(), aliases, statements,
-				sitelinks);
+				Collections.<String, MonolingualTextValue> emptyMap(), aliases,
+				statements, sitelinks);
 		ItemDocument ir6 = new ItemDocumentImpl(iid, labels, descriptions,
-				Collections.<String, List<String>> emptyMap(), statements,
-				sitelinks);
+				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				statements, sitelinks);
 		ItemDocument ir7 = new ItemDocumentImpl(iid, labels, descriptions,
 				aliases, Collections.<Statement> emptyList(), sitelinks);
 		ItemDocument ir8 = new ItemDocumentImpl(iid, labels, descriptions,
@@ -115,7 +123,7 @@ public class ItemDocumentImplTest {
 
 		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdValueImpl(
 				"P42", "foo"), labels, descriptions, aliases,
-				new DatatypeIdImpl(DatatypeId.DT_STRING));
+				new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
