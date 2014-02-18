@@ -64,15 +64,16 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 		if (bitVector instanceof BitVectorImpl) {
 			BitVectorImpl other = (BitVectorImpl) bitVector;
 			this.arrayOfBits = new long[other.arrayOfBits.length];
+			this.size = bitVector.size();
 			System.arraycopy(other.arrayOfBits, 0, this.arrayOfBits, 0,
 					other.arrayOfBits.length);
 		} else {
 			this.arrayOfBits = new long[getMinimumArraySize(bitVector.size())];
-			for (long index = 0; index < this.size; index++) {
+			this.size = bitVector.size();
+			for (long index = 0; index < bitVector.size(); index++) {
 				setBit(index, bitVector.getBit(index));
 			}
 		}
-		this.size = bitVector.size();
 	}
 
 	/**
