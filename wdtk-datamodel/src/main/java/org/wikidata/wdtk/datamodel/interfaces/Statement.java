@@ -24,13 +24,20 @@ import java.util.List;
 
 /**
  * Interface for Wikibase Statments. A Statement is the main information object
- * entered by users in Wikidata. It consists of a {@link Claim}, which it
- * extends by additional information about references and ranking.
+ * entered by users in Wikidata. It refers to a {@link Claim}, on which it
+ * provides additional information about references and ranking.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface Statement extends Claim {
+public interface Statement {
+
+	/**
+	 * Get the Claim object that this statement refers to.
+	 * 
+	 * @return the claim that this statement refers to
+	 */
+	Claim getClaim();
 
 	/**
 	 * @see StatementRank

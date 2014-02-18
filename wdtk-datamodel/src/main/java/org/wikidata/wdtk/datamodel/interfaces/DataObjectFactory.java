@@ -194,21 +194,16 @@ public interface DataObjectFactory {
 	/**
 	 * Create a {@link Statement}.
 	 * 
-	 * @param subject
-	 *            the subject the Statement refers to
-	 * @param mainSnak
-	 *            the main Snak of the Statement
-	 * @param qualifiers
-	 *            the qualifiers of the Statement
+	 * @param claim
+	 *            the main claim the Statement refers to
 	 * @param references
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
-	Statement getStatement(EntityIdValue subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
-			List<? extends Reference> references, StatementRank rank);
+	Statement getStatement(Claim claim, List<? extends Reference> references,
+			StatementRank rank);
 
 	/**
 	 * Create a {@link SiteLink}.

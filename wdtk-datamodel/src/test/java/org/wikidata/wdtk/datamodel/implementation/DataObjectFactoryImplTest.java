@@ -172,13 +172,12 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetStatement() {
-		Statement o1 = new StatementImpl(factory.getItemId("Q42", "foo"),
+		Claim c = new ClaimImpl(factory.getItemId("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
-				Collections.<Snak> emptyList(),
+				Collections.<Snak> emptyList());
+		Statement o1 = new StatementImpl(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL);
-		Statement o2 = factory.getStatement(factory.getItemId("Q42", "foo"),
-				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
-				Collections.<Snak> emptyList(),
+		Statement o2 = factory.getStatement(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		assertEquals(o1, o2);
 	}

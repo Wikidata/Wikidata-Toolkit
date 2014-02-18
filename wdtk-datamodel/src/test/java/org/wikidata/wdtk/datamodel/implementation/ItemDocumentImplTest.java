@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -65,10 +66,11 @@ public class ItemDocumentImplTest {
 		aliases = new HashMap<String, List<String>>();
 		aliases.put("en", Collections.<String> singletonList("An alias of P42"));
 
-		Statement s = new StatementImpl(iid, new SomeValueSnakImpl(
+		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<Snak> emptyList(),
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Snak> emptyList());
+		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL);
 		statements = Collections.singletonList(s);
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
 				"http://en.wikipedia.org/wiki/",

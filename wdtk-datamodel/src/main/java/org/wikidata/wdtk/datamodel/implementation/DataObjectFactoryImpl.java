@@ -124,11 +124,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public Statement getStatement(EntityIdValue subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
+	public Statement getStatement(Claim claim,
 			List<? extends Reference> references, StatementRank rank) {
-		return new StatementImpl(subject, mainSnak, qualifiers, references,
-				rank);
+		return new StatementImpl(claim, references, rank);
 	}
 
 	@Override

@@ -25,9 +25,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
@@ -39,65 +38,44 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  */
 public class StatementImpl implements Statement {
 
-	final EntityIdValue subject;
-	final Snak mainSnak;
-	final List<? extends Snak> qualifiers;
+	final Claim claim;
 	final List<? extends Reference> references;
 	final StatementRank rank;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param subject
-	 *            the subject the Statement refers to
-	 * @param mainSnak
-	 *            the main Snak of the Statement
-	 * @param qualifiers
-	 *            the qualifiers of the Statement
+	 * @param claim
+	 *            the main claim the Statement refers to
 	 * @param references
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
 	 */
-	StatementImpl(EntityIdValue subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
-			List<? extends Reference> references, StatementRank rank) {
-		Validate.notNull(subject, "Statement subjects cannot be null");
-		Validate.notNull(mainSnak, "Statement main Snaks cannot be null");
-		Validate.notNull(qualifiers, "Statement qualifiers cannot be null");
+	StatementImpl(Claim claim, List<? extends Reference> references,
+			StatementRank rank) {
+		Validate.notNull(claim, "Statement main claim cannot be null");
 		Validate.notNull(references, "Statement references cannot be null");
 		Validate.notNull(rank, "Statement ranks cannot be null");
 
-		this.subject = subject;
-		this.mainSnak = mainSnak;
-		this.qualifiers = qualifiers;
+		this.claim = claim;
 		this.references = references;
 		this.rank = rank;
 	}
 
 	@Override
-	public EntityIdValue getSubject() {
-		return subject;
-	}
-
-	@Override
-	public Snak getMainSnak() {
-		return mainSnak;
-	}
-
-	@Override
-	public List<? extends Snak> getQualifiers() {
-		return Collections.unmodifiableList(qualifiers);
+	public Claim getClaim() {
+		return this.claim;
 	}
 
 	@Override
 	public StatementRank getRank() {
-		return rank;
+		return this.rank;
 	}
 
 	@Override
 	public List<? extends Reference> getReferences() {
-		return Collections.unmodifiableList(references);
+		return Collections.unmodifiableList(this.references);
 	}
 
 	/*
@@ -107,9 +85,8 @@ public class StatementImpl implements Statement {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(31, 569).append(subject).append(mainSnak)
-				.append(rank).append(qualifiers).append(references)
-				.toHashCode();
+		return new HashCodeBuilder(31, 569).append(this.claim)
+				.append(this.rank).append(this.references).toHashCode();
 	}
 
 	/*
@@ -122,22 +99,14 @@ public class StatementImpl implements Statement {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
 		if (!(obj instanceof StatementImpl)) {
 			return false;
 		}
 
 		StatementImpl other = (StatementImpl) obj;
 
-		if (!subject.equals(other.subject) || !mainSnak.equals(other.mainSnak)
-				|| rank != other.rank || !qualifiers.equals(other.qualifiers)
-				|| !references.equals(other.references)) {
-			return false;
-		} else {
-			return true;
-		}
+		return this.claim.equals(other.claim) && this.rank == other.rank
+				&& this.references.equals(other.references);
 	}
 
 }
