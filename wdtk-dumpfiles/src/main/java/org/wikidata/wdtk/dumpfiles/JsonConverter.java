@@ -9,7 +9,6 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
@@ -21,7 +20,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
- * normally belongs to the same domain, the site IRI is represented as an
+ * normally belongs to the same domain, the base IRI is represented as an
  * attribute.
  * 
  * @author Fredo Erxleben
@@ -198,25 +197,29 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON object into the description format used by the WDTK data
+	 * model.
 	 * 
 	 * @param descriptions
-	 * @return
+	 *            a JSON object representing the descriptions of an entity.
+	 * @return a map representing descriptions. The key is the language
+	 *         abbreviation, the value is the description in the language
+	 *         represented by the key.
+	 * @throws JSONException
 	 */
-	private Map<String, String> getDescriptions(JSONObject descriptions) {
+	private Map<String, String> getDescriptions(JSONObject descriptions)
+			throws JSONException {
 		assert descriptions != null : "Description JSON object was null";
 
 		Map<String, String> result = new HashMap<String, String>();
 
-		Iterator<?> keyIterator = descriptions.keys();
+		@SuppressWarnings("unchecked")
+		Iterator<String> keyIterator = descriptions.keys();
 
 		while (keyIterator.hasNext()) {
-			String key = (String) keyIterator.next();
-			try {
-				String value = descriptions.getString(key);
-				result.put(key, value);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			String key = keyIterator.next();
+			String value = descriptions.getString(key);
+			result.put(key, value);
 		}
 
 		return result;
