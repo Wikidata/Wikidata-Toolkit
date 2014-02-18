@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 /**
@@ -36,9 +37,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  */
 public abstract class TermedDocumentImpl implements TermedDocument {
 
-	final Map<String, String> labels;
-	final Map<String, String> descriptions;
-	final Map<String, List<String>> aliases;
+	final Map<String, MonolingualTextValue> labels;
+	final Map<String, MonolingualTextValue> descriptions;
+	final Map<String, List<MonolingualTextValue>> aliases;
 
 	/**
 	 * Constructor.
@@ -47,8 +48,9 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 	 * @param descriptions
 	 * @param aliases
 	 */
-	TermedDocumentImpl(Map<String, String> labels,
-			Map<String, String> descriptions, Map<String, List<String>> aliases) {
+	TermedDocumentImpl(Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases) {
 		Validate.notNull(labels, "map of labels cannot be null");
 		Validate.notNull(descriptions, "map of descriptions cannot be null");
 		Validate.notNull(aliases, "map of aliases cannot be null");
@@ -58,17 +60,17 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 	}
 
 	@Override
-	public Map<String, String> getLabels() {
+	public Map<String, MonolingualTextValue> getLabels() {
 		return Collections.unmodifiableMap(labels);
 	}
 
 	@Override
-	public Map<String, String> getDescriptions() {
+	public Map<String, MonolingualTextValue> getDescriptions() {
 		return Collections.unmodifiableMap(descriptions);
 	}
 
 	@Override
-	public Map<String, List<String>> getAliases() {
+	public Map<String, List<MonolingualTextValue>> getAliases() {
 		// TODO This still allows inner lists of aliases to be modified. Do
 		// we have to protect against this?
 		return Collections.unmodifiableMap(aliases);

@@ -33,8 +33,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
@@ -46,21 +47,28 @@ public class PropertyDocumentImplTest {
 	PropertyDocument pr2;
 
 	PropertyIdValue pid;
-	Map<String, String> labels;
-	Map<String, String> descriptions;
-	Map<String, List<String>> aliases;
-	DatatypeId datatypeId;
+	Map<String, MonolingualTextValue> labels;
+	Map<String, MonolingualTextValue> descriptions;
+	Map<String, List<MonolingualTextValue>> aliases;
+	DatatypeIdValue datatypeId;
 
 	@Before
 	public void setUp() throws Exception {
 		pid = new PropertyIdValueImpl("P42", "http://wikibase.org/entity/");
-		labels = new HashMap<String, String>();
-		labels.put("en", "Property 42");
-		descriptions = new HashMap<String, String>();
-		descriptions.put("de", "Dies ist Property 42.");
-		aliases = new HashMap<String, List<String>>();
-		aliases.put("en", Collections.<String> singletonList("An alias of P42"));
-		datatypeId = new DatatypeIdImpl(DatatypeId.DT_ITEM);
+
+		labels = new HashMap<String, MonolingualTextValue>();
+		labels.put("en", new MonolingualTextValueImpl("Property 42", "en"));
+
+		descriptions = new HashMap<String, MonolingualTextValue>();
+		descriptions.put("de", new MonolingualTextValueImpl(
+				"Dies ist Property 42.", "de"));
+
+		MonolingualTextValue alias = new MonolingualTextValueImpl(
+				"An alias of P42", "en");
+		aliases = new HashMap<String, List<MonolingualTextValue>>();
+		aliases.put("en",
+				Collections.<MonolingualTextValue> singletonList(alias));
+		datatypeId = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 
 		pr1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
 				datatypeId);
@@ -80,23 +88,25 @@ public class PropertyDocumentImplTest {
 
 	@Test
 	public void valueEqualityBasedOnContent() {
-		PropertyDocument pr3 = new PropertyDocumentImpl(new PropertyIdValueImpl(
-				"P43", "http://wikibase.org/entity/"), labels, descriptions,
-				aliases, datatypeId);
+		PropertyDocument pr3 = new PropertyDocumentImpl(
+				new PropertyIdValueImpl("P43", "http://wikibase.org/entity/"),
+				labels, descriptions, aliases, datatypeId);
 		PropertyDocument pr4 = new PropertyDocumentImpl(pid,
-				Collections.<String, String> emptyMap(), descriptions, aliases,
-				datatypeId);
+				Collections.<String, MonolingualTextValue> emptyMap(),
+				descriptions, aliases, datatypeId);
 		PropertyDocument pr5 = new PropertyDocumentImpl(pid, labels,
-				Collections.<String, String> emptyMap(), aliases, datatypeId);
+				Collections.<String, MonolingualTextValue> emptyMap(), aliases,
+				datatypeId);
 		PropertyDocument pr6 = new PropertyDocumentImpl(pid, labels,
-				descriptions, Collections.<String, List<String>> emptyMap(),
+				descriptions,
+				Collections.<String, List<MonolingualTextValue>> emptyMap(),
 				datatypeId);
 		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
-				descriptions, aliases, new DatatypeIdImpl(DatatypeId.DT_STRING));
+				descriptions, aliases, new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
 
-		ItemDocument ir = new ItemDocumentImpl(new ItemIdValueImpl("Q42", "foo"),
-				labels, descriptions, aliases,
-				Collections.<Statement> emptyList(),
+		ItemDocument ir = new ItemDocumentImpl(
+				new ItemIdValueImpl("Q42", "foo"), labels, descriptions,
+				aliases, Collections.<Statement> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 
 		assertEquals(pr1, pr1);

@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Implementation of {@link PropertyDocument}.
@@ -39,7 +40,7 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 		PropertyDocument {
 
 	final PropertyIdValue propertyId;
-	final DatatypeId datatypeId;
+	final DatatypeIdValue datatypeId;
 
 	/**
 	 * Constructor.
@@ -55,9 +56,11 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
-	PropertyDocumentImpl(PropertyIdValue propertyId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId) {
+	PropertyDocumentImpl(PropertyIdValue propertyId,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			DatatypeIdValue datatypeId) {
 		super(labels, descriptions, aliases);
 		Validate.notNull(propertyId, "property ID cannot be null");
 		Validate.notNull(datatypeId, "datatype ID cannot be null");
@@ -76,7 +79,7 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
-	public DatatypeId getDatatype() {
+	public DatatypeIdValue getDatatype() {
 		return datatypeId;
 	}
 

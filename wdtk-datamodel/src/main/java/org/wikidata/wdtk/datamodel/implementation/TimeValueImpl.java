@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
@@ -75,7 +75,7 @@ public class TimeValueImpl implements TimeValue {
 	 * @param timezoneOffset
 	 *            offset in minutes that should be applied when displaying this
 	 *            time
-	 * @return a {@link DatatypeId} corresponding to the input
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
 	TimeValueImpl(int year, byte month, byte day, byte hour, byte minute,
 			byte second, byte precision, int beforeTolerance,
