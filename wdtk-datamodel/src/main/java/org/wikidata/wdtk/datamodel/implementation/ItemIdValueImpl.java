@@ -20,27 +20,27 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 /**
- * Generic implementation of {@link PropertyId} that works with arbitrary
- * Wikibase instances: it requires a baseIri that identifies the site globally.
+ * Generic implementation of {@link ItemIdValue} that works with arbitrary Wikibase
+ * instances: it requires a baseIri that identifies the site globally.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyIdImpl extends EntityIdImpl implements PropertyId {
+public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	/**
-	 * @see EntityIdImpl#EntityIdImpl(String, String)
+	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
 	 * @param baseIri
 	 */
-	PropertyIdImpl(String id, String baseIri) {
+	ItemIdValueImpl(String id, String baseIri) {
 		super(id, baseIri);
 
-		if (!id.matches("^P[1-9][0-9]*$")) {
+		if (!id.matches("^Q[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
 					"Wikibase item ids must have the form \"Q[1-9]+\"");
 		}
@@ -48,7 +48,7 @@ public class PropertyIdImpl extends EntityIdImpl implements PropertyId {
 
 	@Override
 	public String getEntityType() {
-		return EntityId.ET_PROPERTY;
+		return EntityIdValue.ET_ITEM;
 	}
 
 }

@@ -26,13 +26,13 @@ import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -54,13 +54,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
-	public ItemId getItemId(String id, String baseIri) {
-		return new ItemIdImpl(id, baseIri);
+	public ItemIdValue getItemId(String id, String baseIri) {
+		return new ItemIdValueImpl(id, baseIri);
 	}
 
 	@Override
-	public PropertyId getPropertyId(String id, String baseIri) {
-		return new PropertyIdImpl(id, baseIri);
+	public PropertyIdValue getPropertyId(String id, String baseIri) {
+		return new PropertyIdValueImpl(id, baseIri);
 	}
 
 	@Override
@@ -96,22 +96,22 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public ValueSnak getValueSnak(PropertyId propertyId, Value value) {
+	public ValueSnak getValueSnak(PropertyIdValue propertyId, Value value) {
 		return new ValueSnakImpl(propertyId, value);
 	}
 
 	@Override
-	public SomeValueSnak getSomeValueSnak(PropertyId propertyId) {
+	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		return new SomeValueSnakImpl(propertyId);
 	}
 
 	@Override
-	public NoValueSnak getNoValueSnak(PropertyId propertyId) {
+	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		return new NoValueSnakImpl(propertyId);
 	}
 
 	@Override
-	public Statement getStatement(EntityId subject, Snak mainSnak,
+	public Statement getStatement(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank) {
 		return new StatementImpl(subject, mainSnak, qualifiers, references,
@@ -125,7 +125,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public PropertyDocument getPropertyDocument(PropertyId propertyId,
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
@@ -133,7 +133,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public ItemDocument getItemDocument(ItemId itemId,
+	public ItemDocument getItemDocument(ItemIdValue itemId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {

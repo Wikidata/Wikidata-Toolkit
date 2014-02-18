@@ -25,15 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument {
 
-	final ItemId itemId;
+	final ItemIdValue itemId;
 	final List<Statement> statements;
 	final Map<String, SiteLink> siteLinks;
 
@@ -53,7 +53,7 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	ItemDocumentImpl(ItemId itemId, Map<String, String> labels,
+	ItemDocumentImpl(ItemIdValue itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {
@@ -67,12 +67,12 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements ItemDocument
 	}
 
 	@Override
-	public EntityId getEntityId() {
+	public EntityIdValue getEntityId() {
 		return itemId;
 	}
 
 	@Override
-	public ItemId getItemId() {
+	public ItemIdValue getItemId() {
 		return itemId;
 	}
 

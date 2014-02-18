@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
@@ -45,7 +45,7 @@ public class PropertyDocumentImplTest {
 	PropertyDocument pr1;
 	PropertyDocument pr2;
 
-	PropertyId pid;
+	PropertyIdValue pid;
 	Map<String, String> labels;
 	Map<String, String> descriptions;
 	Map<String, List<String>> aliases;
@@ -53,7 +53,7 @@ public class PropertyDocumentImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		pid = new PropertyIdImpl("P42", "http://wikibase.org/entity/");
+		pid = new PropertyIdValueImpl("P42", "http://wikibase.org/entity/");
 		labels = new HashMap<String, String>();
 		labels.put("en", "Property 42");
 		descriptions = new HashMap<String, String>();
@@ -80,7 +80,7 @@ public class PropertyDocumentImplTest {
 
 	@Test
 	public void valueEqualityBasedOnContent() {
-		PropertyDocument pr3 = new PropertyDocumentImpl(new PropertyIdImpl(
+		PropertyDocument pr3 = new PropertyDocumentImpl(new PropertyIdValueImpl(
 				"P43", "http://wikibase.org/entity/"), labels, descriptions,
 				aliases, datatypeId);
 		PropertyDocument pr4 = new PropertyDocumentImpl(pid,
@@ -94,7 +94,7 @@ public class PropertyDocumentImplTest {
 		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, new DatatypeIdImpl(DatatypeId.DT_STRING));
 
-		ItemDocument ir = new ItemDocumentImpl(new ItemIdImpl("Q42", "foo"),
+		ItemDocument ir = new ItemDocumentImpl(new ItemIdValueImpl("Q42", "foo"),
 				labels, descriptions, aliases,
 				Collections.<Statement> emptyList(),
 				Collections.<String, SiteLink> emptyMap());

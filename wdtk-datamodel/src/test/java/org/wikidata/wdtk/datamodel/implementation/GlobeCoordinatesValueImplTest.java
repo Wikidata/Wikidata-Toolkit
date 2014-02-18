@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
-public class GlobeCoordinatesImplTest {
+public class GlobeCoordinatesValueImplTest {
 
 	GlobeCoordinatesValue c1;
 	GlobeCoordinatesValue c2;
@@ -48,7 +48,7 @@ public class GlobeCoordinatesImplTest {
 	}
 
 	@Test
-	public void globeCoordinatesDataIsCorrect() {
+	public void dataIsCorrect() {
 		assertEquals(c1.getLatitude(),
 				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 0);
 		assertEquals(c1.getLongitude(),
@@ -58,7 +58,7 @@ public class GlobeCoordinatesImplTest {
 	}
 
 	@Test
-	public void globeCoordinatesValueEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		GlobeCoordinatesValue c3 = new GlobeCoordinatesValueImpl(
 				121 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
@@ -91,12 +91,12 @@ public class GlobeCoordinatesImplTest {
 	}
 
 	@Test
-	public void globeCoordinatesValueHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(c1.hashCode(), c2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void globeCoordinatesValueGlobeNotNull() {
+	public void globeNotNull() {
 		new GlobeCoordinatesValueImpl(
 				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
@@ -104,7 +104,7 @@ public class GlobeCoordinatesImplTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void globeCoordinatesValueOnlyAllowedPrecisions() {
+	public void onlyAllowedPrecisions() {
 		new GlobeCoordinatesValueImpl(
 				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 123456789,

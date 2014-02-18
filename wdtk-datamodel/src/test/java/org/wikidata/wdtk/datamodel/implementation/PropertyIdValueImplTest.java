@@ -28,26 +28,29 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-public class PropertyIdImplTest {
+public class PropertyIdValueImplTest {
 
-	private PropertyIdImpl prop1;
-	private PropertyIdImpl prop2;
-	private PropertyIdImpl prop3;
-	private PropertyIdImpl prop4;
+	private PropertyIdValueImpl prop1;
+	private PropertyIdValueImpl prop2;
+	private PropertyIdValueImpl prop3;
+	private PropertyIdValueImpl prop4;
 
 	@Before
 	public void setUp() {
-		prop1 = new PropertyIdImpl("P42", "http://www.wikidata.org/entity/");
-		prop2 = new PropertyIdImpl("P42", "http://www.wikidata.org/entity/");
-		prop3 = new PropertyIdImpl("P57", "http://www.wikidata.org/entity/");
-		prop4 = new PropertyIdImpl("P42", "http://www.example.org/entity/");
+		prop1 = new PropertyIdValueImpl("P42",
+				"http://www.wikidata.org/entity/");
+		prop2 = new PropertyIdValueImpl("P42",
+				"http://www.wikidata.org/entity/");
+		prop3 = new PropertyIdValueImpl("P57",
+				"http://www.wikidata.org/entity/");
+		prop4 = new PropertyIdValueImpl("P42", "http://www.example.org/entity/");
 	}
 
 	@Test
 	public void entityTypeIsProperty() {
-		assertEquals(prop1.getEntityType(), EntityId.ET_PROPERTY);
+		assertEquals(prop1.getEntityType(), EntityIdValue.ET_PROPERTY);
 	}
 
 	@Test
@@ -62,7 +65,7 @@ public class PropertyIdImplTest {
 	}
 
 	@Test
-	public void propertyEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		assertEquals(prop1, prop1);
 		assertEquals(prop1, prop2);
 		assertThat(prop1, not(equalTo(prop3)));
@@ -72,18 +75,18 @@ public class PropertyIdImplTest {
 	}
 
 	@Test
-	public void propertyHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(prop1.hashCode(), prop2.hashCode());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void propertyIdValidatedForFirstLetter() {
-		new PropertyIdImpl("Q12345", "http://www.wikidata.org/entity/");
+	public void idValidatedForFirstLetter() {
+		new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void itemIdValidatedForNumber() {
-		new PropertyIdImpl("P34d23", "http://www.wikidata.org/entity/");
+	public void idValidatedForNumber() {
+		new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/");
 	}
 
 }

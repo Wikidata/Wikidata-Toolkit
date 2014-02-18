@@ -31,10 +31,10 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -56,15 +56,15 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemId() {
-		ItemId o1 = new ItemIdImpl("Q42", "foo");
-		ItemId o2 = factory.getItemId("Q42", "foo");
+		ItemIdValue o1 = new ItemIdValueImpl("Q42", "foo");
+		ItemIdValue o2 = factory.getItemId("Q42", "foo");
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetPropertyId() {
-		PropertyId o1 = new PropertyIdImpl("P42", "foo");
-		PropertyId o2 = factory.getPropertyId("P42", "foo");
+		PropertyIdValue o1 = new PropertyIdValueImpl("P42", "foo");
+		PropertyIdValue o2 = factory.getPropertyId("P42", "foo");
 		assertEquals(o1, o2);
 	}
 

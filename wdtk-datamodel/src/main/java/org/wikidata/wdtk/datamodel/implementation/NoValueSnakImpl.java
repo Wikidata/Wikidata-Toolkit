@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Implementation of {@link NoValueSnak}.
@@ -36,7 +36,7 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 	 * 
 	 * @param propertyId
 	 */
-	NoValueSnakImpl(PropertyId propertyId) {
+	NoValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);
 	}
 

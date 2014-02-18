@@ -34,28 +34,28 @@ import java.util.Map;
 public interface DataObjectFactory {
 
 	/**
-	 * Create an {@link ItemId}.
+	 * Create an {@link ItemIdValue}.
 	 * 
 	 * @param id
 	 *            the ID string, e.g., "Q1234"
 	 * @param baseIri
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return an {@link ItemId} corresponding to the input
+	 * @return an {@link ItemIdValue} corresponding to the input
 	 */
-	ItemId getItemId(String id, String baseIri);
+	ItemIdValue getItemId(String id, String baseIri);
 
 	/**
-	 * Create a {@link PropertyId}.
+	 * Create a {@link PropertyIdValue}.
 	 * 
 	 * @param id
 	 *            the ID string, e.g., "P1234"
 	 * @param baseIri
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return a {@link PropertyId} corresponding to the input
+	 * @return a {@link PropertyIdValue} corresponding to the input
 	 */
-	PropertyId getPropertyId(String id, String baseIri);
+	PropertyIdValue getPropertyId(String id, String baseIri);
 
 	/**
 	 * Create a {@link DatatypeId}. The datatype IRI is usually one of the
@@ -150,7 +150,7 @@ public interface DataObjectFactory {
 	 * @param value
 	 * @return a {@link ValueSnak} corresponding to the input
 	 */
-	ValueSnak getValueSnak(PropertyId propertyId, Value value);
+	ValueSnak getValueSnak(PropertyIdValue propertyId, Value value);
 
 	/**
 	 * Create a {@link SomeValueSnak}.
@@ -158,7 +158,7 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link SomeValueSnak} corresponding to the input
 	 */
-	SomeValueSnak getSomeValueSnak(PropertyId propertyId);
+	SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId);
 
 	/**
 	 * Create a {@link NoValueSnak}.
@@ -166,7 +166,7 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link NoValueSnak} corresponding to the input
 	 */
-	NoValueSnak getNoValueSnak(PropertyId propertyId);
+	NoValueSnak getNoValueSnak(PropertyIdValue propertyId);
 
 	/**
 	 * Create a {@link Statement}.
@@ -183,7 +183,7 @@ public interface DataObjectFactory {
 	 *            the rank of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
-	Statement getStatement(EntityId subject, Snak mainSnak,
+	Statement getStatement(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank);
 
@@ -219,7 +219,7 @@ public interface DataObjectFactory {
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
 	 */
-	PropertyDocument getPropertyDocument(PropertyId propertyId,
+	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId);
 
@@ -240,7 +240,7 @@ public interface DataObjectFactory {
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemDocument} corresponding to the input
 	 */
-	ItemDocument getItemDocument(ItemId itemId, Map<String, String> labels,
+	ItemDocument getItemDocument(ItemIdValue itemId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks);

@@ -20,7 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
 public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
@@ -30,7 +30,7 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	 * 
 	 * @param propertyId
 	 */
-	SomeValueSnakImpl(PropertyId propertyId) {
+	SomeValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);
 	}
 

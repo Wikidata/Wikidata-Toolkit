@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * ValueSnaks represent property-value pairs, where the property are represented
- * by a {@link PropertyId} and the value is represented by a {@Value}.
+ * by a {@link PropertyIdValue} and the value is represented by a {@Value}.
  * 
  * @author Markus Kroetzsch
  * 

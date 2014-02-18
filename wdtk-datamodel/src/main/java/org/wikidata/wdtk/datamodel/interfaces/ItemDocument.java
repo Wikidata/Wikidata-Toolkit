@@ -39,7 +39,7 @@ public interface ItemDocument extends TermedDocument {
 	 * 
 	 * @return item id
 	 */
-	ItemId getItemId();
+	ItemIdValue getItemId();
 
 	/**
 	 * Return the list of all Statements stored for this item. The order of

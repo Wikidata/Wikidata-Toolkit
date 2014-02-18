@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -47,7 +47,7 @@ public class ItemDocumentImplTest {
 	ItemDocument ir1;
 	ItemDocument ir2;
 
-	ItemId iid;
+	ItemIdValue iid;
 	Map<String, String> labels;
 	Map<String, String> descriptions;
 	Map<String, List<String>> aliases;
@@ -56,7 +56,7 @@ public class ItemDocumentImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		iid = new ItemIdImpl("Q42", "http://wikibase.org/entity/");
+		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
 		labels = new HashMap<String, String>();
 		labels.put("en", "Property 42");
 		descriptions = new HashMap<String, String>();
@@ -65,7 +65,7 @@ public class ItemDocumentImplTest {
 		aliases.put("en", Collections.<String> singletonList("An alias of P42"));
 
 		Statement s = new StatementImpl(iid, new SomeValueSnakImpl(
-				new PropertyIdImpl("P42", "http://wikibase.org/entity/")),
+				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.<Snak> emptyList(),
 				Collections.<List<? extends Snak>> emptyList(),
 				StatementRank.NORMAL);
@@ -94,7 +94,7 @@ public class ItemDocumentImplTest {
 
 	@Test
 	public void valueEqualityBasedOnContent() {
-		ItemDocument ir3 = new ItemDocumentImpl(new ItemIdImpl("Q43",
+		ItemDocument ir3 = new ItemDocumentImpl(new ItemIdValueImpl("Q43",
 				"something"), labels, descriptions, aliases, statements,
 				sitelinks);
 		ItemDocument ir4 = new ItemDocumentImpl(iid,
@@ -111,7 +111,7 @@ public class ItemDocumentImplTest {
 		ItemDocument ir8 = new ItemDocumentImpl(iid, labels, descriptions,
 				aliases, statements, Collections.<String, SiteLink> emptyMap());
 
-		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdImpl(
+		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdValueImpl(
 				"P42", "foo"), labels, descriptions, aliases,
 				new DatatypeIdImpl(DatatypeId.DT_STRING));
 

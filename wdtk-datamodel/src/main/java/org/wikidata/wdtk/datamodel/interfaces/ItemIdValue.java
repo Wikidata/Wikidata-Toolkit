@@ -21,13 +21,13 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * The id of a Wikibase Property. Objects implementing this interface always return
- * {@link EntityId.EntityType#PROPERTY} for {@link EntityId#getEntityType()
+ * The id of a Wikibase Item. Objects implementing this interface always return
+ * {@link EntityIdValue.EntityType#ITEM} for {@link EntityIdValue#getEntityType()
  * getEntityType}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface PropertyId extends EntityId {
+public interface ItemIdValue extends EntityIdValue {
 
 }

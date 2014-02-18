@@ -21,23 +21,13 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * An IriValue is a Value that is identified by an IRI, which can be used as the
- * canonical identifier for the entity outside of the context of a particular
- * Wikibase installation.
- * 
- * This interface is intended as a general interface for all types of
- * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
- * the value that is used when users enter a URL (or IRI) directly in Wikibase.
+ * The id of a Wikibase Property. Objects implementing this interface always return
+ * {@link EntityIdValue.EntityType#PROPERTY} for {@link EntityIdValue#getEntityType()
+ * getEntityType}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface IriValue extends Value {
+public interface PropertyIdValue extends EntityIdValue {
 
-	/**
-	 * Get the IRI of this entity.
-	 * 
-	 * @return String with the IRI
-	 */
-	String getIri();
 }

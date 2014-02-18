@@ -38,7 +38,7 @@ public interface Claim {
 	 * 
 	 * @return EntityId of the subject
 	 */
-	EntityId getSubject();
+	EntityIdValue getSubject();
 
 	/**
 	 * Main Snak of the statement. This Snak refers directly to the subject,

@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 /**
@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 public class PropertyDocumentImpl extends TermedDocumentImpl implements
 		PropertyDocument {
 
-	final PropertyId propertyId;
+	final PropertyIdValue propertyId;
 	final DatatypeId datatypeId;
 
 	/**
@@ -55,7 +55,7 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
-	PropertyDocumentImpl(PropertyId propertyId, Map<String, String> labels,
+	PropertyDocumentImpl(PropertyIdValue propertyId, Map<String, String> labels,
 			Map<String, String> descriptions,
 			Map<String, List<String>> aliases, DatatypeId datatypeId) {
 		super(labels, descriptions, aliases);
@@ -66,12 +66,12 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
-	public EntityId getEntityId() {
+	public EntityIdValue getEntityId() {
 		return propertyId;
 	}
 
 	@Override
-	public PropertyId getPropertyId() {
+	public PropertyIdValue getPropertyId() {
 		return propertyId;
 	}
 

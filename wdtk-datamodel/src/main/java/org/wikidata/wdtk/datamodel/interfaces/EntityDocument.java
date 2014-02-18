@@ -33,6 +33,6 @@ public interface EntityDocument {
 	 * 
 	 * @return entity id
 	 */
-	EntityId getEntityId();
+	EntityIdValue getEntityId();
 
 }

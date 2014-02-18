@@ -39,6 +39,6 @@ public interface Snak {
 	 * 
 	 * @return PropertyId of this Snak
 	 */
-	PropertyId getPropertyId();
+	PropertyIdValue getPropertyId();
 
 }

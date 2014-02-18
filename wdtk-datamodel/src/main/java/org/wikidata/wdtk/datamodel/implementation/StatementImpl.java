@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  */
 public class StatementImpl implements Statement {
 
-	final EntityId subject;
+	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<? extends Snak> qualifiers;
 	final List<List<? extends Snak>> references;
@@ -58,7 +58,7 @@ public class StatementImpl implements Statement {
 	 * @param rank
 	 *            the rank of the Statement
 	 */
-	StatementImpl(EntityId subject, Snak mainSnak,
+	StatementImpl(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
 			List<List<? extends Snak>> references, StatementRank rank) {
 		Validate.notNull(subject, "Statement subjects cannot be null");
@@ -75,7 +75,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
-	public EntityId getSubject() {
+	public EntityIdValue getSubject() {
 		return subject;
 	}
 

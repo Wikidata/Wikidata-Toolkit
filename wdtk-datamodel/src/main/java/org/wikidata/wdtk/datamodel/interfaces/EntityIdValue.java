@@ -32,7 +32,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * @author Markus Kroetzsch
  * 
  */
-public interface EntityId extends IriValue {
+public interface EntityIdValue extends IriIdentifiedValue {
 
 	/**
 	 * IRI of the type of an entity that is an item.
@@ -45,8 +45,8 @@ public interface EntityId extends IriValue {
 
 	/**
 	 * Get the type of this entity. This should be an IRI that identifies an
-	 * entity type, such as {@link EntityId#ET_ITEM} or
-	 * {@link EntityId#ET_PROPERTY}.
+	 * entity type, such as {@link EntityIdValue#ET_ITEM} or
+	 * {@link EntityIdValue#ET_PROPERTY}.
 	 * 
 	 * @return String
 	 */

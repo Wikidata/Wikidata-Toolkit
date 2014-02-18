@@ -22,10 +22,10 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 /**
- * Generic implementation of {@link EntityId} that works with arbitrary Wikibase
+ * Generic implementation of {@link EntityIdValue} that works with arbitrary Wikibase
  * instances: it requires a baseIri that identifies the site globally.
  * 
  * TODO It would be cleaner to have an object that manages the site context
@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityId;
  * @author Markus Kroetzsch
  * 
  */
-public abstract class EntityIdImpl implements EntityId {
+public abstract class EntityIdValueImpl implements EntityIdValue {
 
 	final String id;
 	final String baseIri;
@@ -52,7 +52,7 @@ public abstract class EntityIdImpl implements EntityId {
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	EntityIdImpl(String id, String baseIri) {
+	EntityIdValueImpl(String id, String baseIri) {
 		Validate.notNull(id, "Entity ids cannot be null");
 		Validate.notNull(baseIri, "Entity base IRIs cannot be null");
 		this.id = id;
@@ -93,11 +93,11 @@ public abstract class EntityIdImpl implements EntityId {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof EntityIdImpl)) {
+		if (!(obj instanceof EntityIdValueImpl)) {
 			return false;
 		}
 
-		EntityIdImpl other = (EntityIdImpl) obj;
+		EntityIdValueImpl other = (EntityIdValueImpl) obj;
 		return id.equals(other.id) && baseIri.equals(other.baseIri);
 	}
 

@@ -31,15 +31,15 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 public class StatementImplTest {
 
-	EntityId subject;
+	EntityIdValue subject;
 	Snak mainSnak;
 
 	Statement s1;
@@ -47,8 +47,8 @@ public class StatementImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = new ItemIdImpl("Q42", "http://wikidata.org/entity/");
-		PropertyId property = new PropertyIdImpl("P42",
+		subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
+		PropertyIdValue property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
@@ -113,8 +113,8 @@ public class StatementImplTest {
 	@Test
 	public void statementEqualityBasedOnContent() {
 		Statement s3, s4, s5, s6, s7;
-		EntityId subject2 = new ItemIdImpl("Q43", "http://wikidata.org/entity/");
-		PropertyId property = new PropertyIdImpl("P43",
+		EntityIdValue subject2 = new ItemIdValueImpl("Q43", "http://wikidata.org/entity/");
+		PropertyIdValue property = new PropertyIdValueImpl("P43",
 				"http://wikidata.org/entity/");
 		Snak mainSnak2 = new ValueSnakImpl(property, subject2);
 

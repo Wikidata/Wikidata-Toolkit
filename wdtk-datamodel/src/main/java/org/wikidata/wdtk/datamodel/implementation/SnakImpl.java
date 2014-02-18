@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 
 /**
@@ -32,15 +32,15 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
  */
 public abstract class SnakImpl implements Snak {
 
-	final PropertyId propertyId;
+	final PropertyIdValue propertyId;
 
-	SnakImpl(PropertyId propertyId) {
+	SnakImpl(PropertyIdValue propertyId) {
 		Validate.notNull(propertyId, "Snak property ids cannot be null");
 		this.propertyId = propertyId;
 	}
 
 	@Override
-	public PropertyId getPropertyId() {
+	public PropertyIdValue getPropertyId() {
 		return propertyId;
 	}
 

@@ -27,26 +27,26 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-public class ItemIdImplTest {
+public class ItemIdValueImplTest {
 
-	private ItemIdImpl item1;
-	private ItemIdImpl item2;
-	private ItemIdImpl item3;
-	private ItemIdImpl item4;
+	private ItemIdValueImpl item1;
+	private ItemIdValueImpl item2;
+	private ItemIdValueImpl item3;
+	private ItemIdValueImpl item4;
 
 	@Before
 	public void setUp() {
-		item1 = new ItemIdImpl("Q42", "http://www.wikidata.org/entity/");
-		item2 = new ItemIdImpl("Q42", "http://www.wikidata.org/entity/");
-		item3 = new ItemIdImpl("Q57", "http://www.wikidata.org/entity/");
-		item4 = new ItemIdImpl("Q42", "http://www.example.org/entity/");
+		item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+		item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+		item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
+		item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
 	}
 
 	@Test
 	public void entityTypeIsItem() {
-		assertEquals(item1.getEntityType(), EntityId.ET_ITEM);
+		assertEquals(item1.getEntityType(), EntityIdValue.ET_ITEM);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class ItemIdImplTest {
 	}
 
 	@Test
-	public void itemEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		assertEquals(item1, item1);
 		assertEquals(item1, item2);
 		assertThat(item1, not(equalTo(item3)));
@@ -71,28 +71,28 @@ public class ItemIdImplTest {
 	}
 
 	@Test
-	public void itemHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(item1.hashCode(), item2.hashCode());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void itemIdValidatedForFirstLetter() {
-		new ItemIdImpl("P12345", "http://www.wikidata.org/entity/");
+	public void idValidatedForFirstLetter() {
+		new ItemIdValueImpl("P12345", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void itemIdValidatedForNumber() {
-		new ItemIdImpl("Q34d23", "http://www.wikidata.org/entity/");
+	public void idValidatedForNumber() {
+		new ItemIdValueImpl("Q34d23", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new ItemIdImpl(null, "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl(null, "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
-		new ItemIdImpl("Q42", null);
+		new ItemIdValueImpl("Q42", null);
 	}
 
 }
