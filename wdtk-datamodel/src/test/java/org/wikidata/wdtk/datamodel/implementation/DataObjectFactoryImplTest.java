@@ -76,13 +76,6 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
-	public final void testGetUrlValue() {
-		UrlValue o1 = new UrlValueImpl("http://example.org/");
-		UrlValue o2 = factory.getUrlValue("http://example.org/");
-		assertEquals(o1, o2);
-	}
-
-	@Test
 	public final void testGetTimeValue() {
 		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10,
 				(byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,

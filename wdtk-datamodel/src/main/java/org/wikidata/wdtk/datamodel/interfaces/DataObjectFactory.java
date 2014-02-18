@@ -69,14 +69,6 @@ public interface DataObjectFactory {
 	DatatypeId getDatatypeId(String id);
 
 	/**
-	 * Create a {@link UrlValue}.
-	 * 
-	 * @param url
-	 * @return a {@link UrlValue} corresponding to the input
-	 */
-	UrlValue getUrlValue(String url);
-
-	/**
 	 * Create a {@link TimeValue}.
 	 * 
 	 * @param year

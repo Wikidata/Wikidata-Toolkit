@@ -69,11 +69,6 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public UrlValue getUrlValue(String url) {
-		return new UrlValueImpl(url);
-	}
-
-	@Override
 	public TimeValue getTimeValue(int year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
