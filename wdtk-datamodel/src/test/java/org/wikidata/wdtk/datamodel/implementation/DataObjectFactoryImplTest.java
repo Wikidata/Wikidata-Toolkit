@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -147,6 +148,17 @@ public class DataObjectFactoryImplTest {
 				factory.getPropertyId("P42", "foo"));
 		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyId("P42",
 				"foo"));
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetClaim() {
+		Claim o1 = new ClaimImpl(factory.getItemId("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
+				Collections.<Snak> emptyList());
+		Claim o2 = factory.getClaim(factory.getItemId("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
+				Collections.<Snak> emptyList());
 		assertEquals(o1, o2);
 	}
 

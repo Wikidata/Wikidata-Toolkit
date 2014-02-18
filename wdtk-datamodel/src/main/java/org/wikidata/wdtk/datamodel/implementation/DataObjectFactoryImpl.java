@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -109,6 +110,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		return new NoValueSnakImpl(propertyId);
+	}
+
+	@Override
+	public Claim getClaim(EntityIdValue subject, Snak mainSnak,
+			List<? extends Snak> qualifiers) {
+		return new ClaimImpl(subject, mainSnak, qualifiers);
 	}
 
 	@Override

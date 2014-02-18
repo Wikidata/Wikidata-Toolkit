@@ -169,6 +169,20 @@ public interface DataObjectFactory {
 	NoValueSnak getNoValueSnak(PropertyIdValue propertyId);
 
 	/**
+	 * Create a {@link Claim}.
+	 * 
+	 * @param subject
+	 *            the subject the Statement refers to
+	 * @param mainSnak
+	 *            the main Snak of the Statement
+	 * @param qualifiers
+	 *            the qualifiers of the Statement
+	 * @return a {@link Claim} corresponding to the input
+	 */
+	Claim getClaim(EntityIdValue subject, Snak mainSnak,
+			List<? extends Snak> qualifiers);
+
+	/**
 	 * Create a {@link Reference}.
 	 * 
 	 * @param valueSnaks
