@@ -37,30 +37,48 @@ public class GlobeCoordinatesImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		c1 = new GlobeCoordinatesValueImpl(12.3, 14.1, 1.0,
+		c1 = new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
-		c2 = new GlobeCoordinatesValueImpl(12.3, 14.1, 1.0,
+		c2 = new GlobeCoordinatesValueImpl(12300000000L, 14100000000L,
+				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test
 	public void globeCoordinatesDataIsCorrect() {
-		assertEquals(c1.getLatitude(), 12.3, 0);
-		assertEquals(c1.getLongitude(), 14.1, 0);
-		assertEquals(c1.getPrecision(), 1.0, 0);
+		assertEquals(c1.getLatitude(),
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 0);
+		assertEquals(c1.getLongitude(),
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 0);
+		assertEquals(c1.getPrecision(), GlobeCoordinatesValue.PREC_DEGREE, 0);
 		assertEquals(c1.getGlobe(), GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test
 	public void globeCoordinatesValueEqualityBasedOnContent() {
-		GlobeCoordinatesValue c3 = new GlobeCoordinatesValueImpl(12.4, 14.1,
-				1.0, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue c4 = new GlobeCoordinatesValueImpl(12.3, 14.2,
-				1.0, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue c5 = new GlobeCoordinatesValueImpl(12.3, 14.1,
-				0.1, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue c6 = new GlobeCoordinatesValueImpl(12.3, 14.1,
-				1.0, "http://wikidata.org/entity/Q367221");
+		GlobeCoordinatesValue c3 = new GlobeCoordinatesValueImpl(
+				121 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue c4 = new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				142 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue c5 = new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_ARCMINUTE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue c6 = new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DEGREE,
+				"http://wikidata.org/entity/Q367221");
 
 		assertEquals(c1, c1);
 		assertEquals(c1, c2);
@@ -73,41 +91,24 @@ public class GlobeCoordinatesImplTest {
 	}
 
 	@Test
-	public void negativeZeroHandling() {
-		GlobeCoordinatesValue cpos = new GlobeCoordinatesValueImpl(0.0, 14.1,
-				1.0, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue cneg = new GlobeCoordinatesValueImpl(-0.0, 14.1,
-				1.0, GlobeCoordinatesValue.GLOBE_EARTH);
-
-		assertEquals(cpos, cneg);
-		assertEquals(cpos.hashCode(), cneg.hashCode());
-	}
-
-	@Test
 	public void globeCoordinatesValueHashBasedOnContent() {
 		assertEquals(c1.hashCode(), c2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void globeCoordinatesValueGlobeNotNull() {
-		new GlobeCoordinatesValueImpl(12.4, 14.1, 1.0, null);
+		new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DEGREE, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void globeCoordinatesValueLatNotNan() {
-		new GlobeCoordinatesValueImpl(Double.NaN, 14.1, 1.0,
+	public void globeCoordinatesValueOnlyAllowedPrecisions() {
+		new GlobeCoordinatesValueImpl(
+				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 123456789,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void globeCoordinatesValueLonNotNan() {
-		new GlobeCoordinatesValueImpl(12.1, Double.NaN, 1.0,
-				GlobeCoordinatesValue.GLOBE_EARTH);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void globeCoordinatesValuePrecNotNan() {
-		new GlobeCoordinatesValueImpl(12.1, 14.1, Double.NaN,
-				GlobeCoordinatesValue.GLOBE_EARTH);
-	}
 }

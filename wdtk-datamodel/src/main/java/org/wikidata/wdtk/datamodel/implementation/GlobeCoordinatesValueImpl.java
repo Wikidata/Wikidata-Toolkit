@@ -31,62 +31,70 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
  */
 public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 
-	final double latitude;
-	final double longitude;
-	final double precision;
+	final long latitude;
+	final long longitude;
+	final long precision;
 	final String globeIri;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param latitude
-	 *            the latitude of the coordinates in degrees
+	 *            the latitude of the coordinates in nanodegrees
 	 * @param longitude
-	 *            the longitude of the coordinates in degrees
+	 *            the longitude of the coordinates in nanodegrees
 	 * @param precision
-	 *            the precision of the coordinates in degrees
+	 *            the precision of the coordinates in nanodegrees
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
-	GlobeCoordinatesValueImpl(double latitude, double longitude,
-			double precision, String globeIri) {
+	GlobeCoordinatesValueImpl(long latitude, long longitude, long precision,
+			String globeIri) {
 		Validate.notNull(globeIri, "globe IRI must not be null");
-		this.latitude = normalizeDouble(latitude);
-		this.longitude = normalizeDouble(longitude);
-		this.precision = normalizeDouble(precision);
+		if ((latitude > 90 * GlobeCoordinatesValue.PREC_DEGREE)
+				|| (latitude < -90 * GlobeCoordinatesValue.PREC_DEGREE)) {
+			throw new IllegalArgumentException(
+					"Latitude must be between 90 degrees and -90 degrees.");
+		}
+		if ((longitude > 360 * GlobeCoordinatesValue.PREC_DEGREE)
+				|| (longitude < -360 * GlobeCoordinatesValue.PREC_DEGREE)) {
+			throw new IllegalArgumentException(
+					"Longitude must be between -360 degrees and +360 degrees.");
+		}
+		if ((precision != GlobeCoordinatesValue.PREC_TEN_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_DECI_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_ARCMINUTE)
+				&& (precision != GlobeCoordinatesValue.PREC_CENTI_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_MILLI_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_ARCSECOND)
+				&& (precision != GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_DECI_ARCSECOND)
+				&& (precision != GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_CENTI_ARCSECOND)
+				&& (precision != GlobeCoordinatesValue.PREC_MICRO_DEGREE)
+				&& (precision != GlobeCoordinatesValue.PREC_MILLI_ARCSECOND)) {
+			throw new IllegalArgumentException(
+					"Precision must be one of the predefined values.");
+		}
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.precision = precision;
 		this.globeIri = globeIri;
 	}
 
-	/**
-	 * Ensure that a double value is neither negative zero nor NaN.
-	 * 
-	 * @param value
-	 *            the double to normalize
-	 * @return the normalized double
-	 */
-	double normalizeDouble(double value) {
-		if (Double.isNaN(value)) {
-			throw new IllegalArgumentException("NaN is not accepted as a value");
-		}
-		if (value == -0.0) {
-			return 0.0;
-		} else {
-			return value;
-		}
-	}
-
 	@Override
-	public double getLatitude() {
+	public long getLatitude() {
 		return latitude;
 	}
 
 	@Override
-	public double getLongitude() {
+	public long getLongitude() {
 		return longitude;
 	}
 
 	@Override
-	public double getPrecision() {
+	public long getPrecision() {
 		return precision;
 	}
 

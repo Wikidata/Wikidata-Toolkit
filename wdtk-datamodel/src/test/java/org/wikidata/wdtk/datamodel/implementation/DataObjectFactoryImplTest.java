@@ -30,11 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -43,7 +43,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class DataObjectFactoryImplTest {
@@ -96,10 +95,16 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetGlobeCoordinatesValue() {
-		GlobeCoordinatesValue o1 = new GlobeCoordinatesValueImpl(90.0, 190.5,
-				1, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(90.0,
-				190.5, 1, GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue o1 = new GlobeCoordinatesValueImpl(
+				90 * GlobeCoordinatesValue.PREC_DEGREE,
+				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(
+				90 * GlobeCoordinatesValue.PREC_DEGREE,
+				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
 		assertEquals(o1, o2);
 	}
 
@@ -177,8 +182,8 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetPropertyDocument() {
-		PropertyDocument o1 = new PropertyDocumentImpl(factory.getPropertyId("P42",
-				"foo"), Collections.<String, String> emptyMap(),
+		PropertyDocument o1 = new PropertyDocumentImpl(factory.getPropertyId(
+				"P42", "foo"), Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, List<String>> emptyMap(),
 				factory.getDatatypeId(DatatypeId.DT_TIME));
@@ -199,7 +204,8 @@ public class DataObjectFactoryImplTest {
 				Collections.<String, List<String>> emptyMap(),
 				Collections.<Statement> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
-		ItemDocument o2 = factory.getItemDocument(factory.getItemId("Q42", "foo"),
+		ItemDocument o2 = factory.getItemDocument(
+				factory.getItemId("Q42", "foo"),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, String> emptyMap(),
 				Collections.<String, List<String>> emptyMap(),

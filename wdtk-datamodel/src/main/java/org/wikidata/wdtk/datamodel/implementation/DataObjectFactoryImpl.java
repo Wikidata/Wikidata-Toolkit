@@ -28,11 +28,11 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -41,7 +41,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -84,8 +83,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
-			double longitude, double precision, String globeIri) {
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
+			long longitude, long precision, String globeIri) {
 		return new GlobeCoordinatesValueImpl(latitude, longitude, precision,
 				globeIri);
 	}
@@ -139,8 +138,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public ItemDocument getItemDocument(ItemId itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
+	public ItemDocument getItemDocument(ItemId itemId,
+			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks) {
 		return new ItemDocumentImpl(itemId, labels, descriptions, aliases,
