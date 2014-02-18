@@ -130,6 +130,18 @@ public interface DataObjectFactory {
 	StringValue getStringValue(String string);
 
 	/**
+	 * Create a {@link MonolingualTextValue}.
+	 * 
+	 * @param text
+	 *            the text of the value
+	 * @param languageCode
+	 *            the language code of the value
+	 * @return a {@link MonolingualValue} corresponding to the input
+	 */
+	MonolingualTextValue getMonolingualTextValue(String text,
+			String languageCode);
+
+	/**
 	 * Create a {@link QuantityValue}.
 	 * 
 	 * @param numericValue

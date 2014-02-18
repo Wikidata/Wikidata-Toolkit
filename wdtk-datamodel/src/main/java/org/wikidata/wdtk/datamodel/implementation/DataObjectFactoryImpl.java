@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -89,6 +90,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public StringValue getStringValue(String string) {
 		return new StringValueImpl(string);
+	}
+
+	@Override
+	public MonolingualTextValue getMonolingualTextValue(String text,
+			String languageCode) {
+		return new MonolingualTextValueImpl(text, languageCode);
 	}
 
 	@Override

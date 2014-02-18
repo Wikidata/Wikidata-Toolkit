@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -107,6 +108,13 @@ public class DataObjectFactoryImplTest {
 	public final void testGetStringValue() {
 		StringValue o1 = new StringValueImpl("foo");
 		StringValue o2 = factory.getStringValue("foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMonolingualTextValue() {
+		MonolingualTextValue o1 = new MonolingualTextValueImpl("foo", "en");
+		MonolingualTextValue o2 = factory.getMonolingualTextValue("foo", "en");
 		assertEquals(o1, o2);
 	}
 
