@@ -9,23 +9,25 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.EntityRecord;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
-// NOTE: the current implementation is extremely verbose regarding exceptions.
-// It will not mask any exceptions occurring and always print a full stack trace
-
+// TODO add @link to documentation where needed
 /**
+ * This class provides methods to convert dump-file JSON objects into
+ * representations according to the WDTK data model. Since the converted JSON
+ * normally belongs to the same domain, the site IRI is represented as an
+ * attribute.
  * 
- * @author fredo
+ * @author Fredo Erxleben
  * 
  */
-public class JsonParser {
+public class JsonConverter {
 
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
@@ -35,17 +37,18 @@ public class JsonParser {
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
 	 * 
 	 * @param baseIri
+	 *            the initial IRI to be used for the processed JSON.
 	 */
-	public JsonParser(String baseIri) {
-		assert baseIri != null : "BaseIRI in constructor was null";
-		this.baseIri = baseIri;
+	public JsonConverter(String baseIri) {
+		this.setBaseIri(baseIri);
+		;
 	}
 
 	/**
 	 * Attempts to parse a given JSON object into an instance of ItemRecord.
 	 * 
-	 * @param toParse
-	 *            the JSON object to parse. Must represent an item record.
+	 * @param toConvert
+	 *            the JSON object to convert. Must represent an item record.
 	 * @param baseIri
 	 *            he first part of the IRI of the site this belongs to.
 	 * @return the ItemRecord parsed from JSON. Might be <b>null</b>.
@@ -54,7 +57,7 @@ public class JsonParser {
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public ItemRecord parseToItemRecord(JSONObject toParse)
+	public ItemRecord convertToItemRecord(JSONObject toConvert)
 			throws JSONException, NullPointerException {
 
 		// initialize variables for the things we need to get
@@ -69,39 +72,36 @@ public class JsonParser {
 		Map<String, SiteLink> siteLinks = null;
 
 		// sanity check
-		if (toParse == null) {
+		if (toConvert == null) {
 			throw new NullPointerException();
 		}
 
-		if (toParse.length() == 0) { // if the JSON object is empty
-			return result;
-			// TODO better throw exception? or return an empty ItemRecord?
+		if (toConvert.length() == 0) { // if the JSON object is empty
+			throw new JSONException("The JSON to convert was empty");
 		}
-		try {
-			// get the item Id
-			JSONArray jsonEntity = toParse.getJSONArray("entity");
-			itemId = getItemId(jsonEntity);
+		// get the item Id
+		JSONArray jsonEntity = toConvert.getJSONArray("entity");
+		itemId = getItemId(jsonEntity);
 
-			// get the labels
-			JSONObject jsonLabels = toParse.getJSONObject("label");
-			labels = this.getLabels(jsonLabels);
+		// get the labels
+		JSONObject jsonLabels = toConvert.getJSONObject("label");
+		labels = this.getLabels(jsonLabels);
 
-			// get the description
-			JSONObject jsonDescriptions = toParse.getJSONObject("description");
-			descriptions = this.getDescriptions(jsonDescriptions);
+		// get the description
+		JSONObject jsonDescriptions = toConvert.getJSONObject("description");
+		descriptions = this.getDescriptions(jsonDescriptions);
 
-			// get the aliases
-			JSONObject jsonAliases = toParse.getJSONObject("aliases");
-			aliases = this.getAliases(jsonAliases);
+		// get the aliases
+		JSONObject jsonAliases = toConvert.getJSONObject("aliases");
+		aliases = this.getAliases(jsonAliases);
 
-			// TODO get the statements
-			// get the site links
-			JSONObject jsonLinks = toParse.getJSONObject("links");
-			siteLinks = this.getSiteLinks(jsonLinks);
+		// get the statements
+		JSONArray jsonStatements = toConvert.getJSONArray("claims");
+		statements = this.getStatements(jsonStatements);
 
-		} catch (JSONException e) {
-			throw e;
-		}
+		// get the site links
+		JSONObject jsonLinks = toConvert.getJSONObject("links");
+		siteLinks = this.getSiteLinks(jsonLinks);
 
 		// now put it all together
 		result = factory.getItemRecord(itemId, labels, descriptions, aliases,
@@ -111,37 +111,58 @@ public class JsonParser {
 
 	/**
 	 * 
-	 * @param jsonLinks
+	 * @param jsonStatements
 	 * @return
-	 * @throws JSONException 
 	 */
-	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks) throws JSONException {
+	private List<Statement> getStatements(JSONArray jsonStatements) {
+		// TODO complete
+
+		List<Statement> result = new LinkedList<Statement>();
+
+		return result;
+	}
+
+	/**
+	 * Converts a JSON object into a mapping from site keys to
+	 * SiteLink-instances.
+	 * 
+	 * @param jsonLinks
+	 *            a JSON object representing the site links.
+	 * @return A mapping with a String representing a site key e.g. "enwiki" as
+	 *         key and a SiteLink-object as value.
+	 * @throws JSONException
+	 */
+	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
+			throws JSONException {
+		assert jsonLinks != null : "Link JSON object was null";
+
 		// links are siteKey:{"name":string,"badges":[string] }
 		// the siteKey is the key for the returned map
-		// TODO assertions
+
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 
 		@SuppressWarnings("unchecked")
-		Iterator<String> labelIterator = jsonLinks.keys();
+		Iterator<String> linkIterator = jsonLinks.keys();
 
-		while (labelIterator.hasNext()) {
-			
-			String siteKey = labelIterator.next();
+		while (linkIterator.hasNext()) {
+
+			String siteKey = linkIterator.next();
 			JSONObject currentLink = jsonLinks.getJSONObject(siteKey);
 			String title = currentLink.getString("name");
 			JSONArray badgeArray = currentLink.getJSONArray("badges");
-			
+
 			// convert badges to List<String>
 			List<String> badges = new LinkedList<String>();
-			for(int i = 0; i < badgeArray.length(); i++){
+			for (int i = 0; i < badgeArray.length(); i++) {
 				badges.add(badgeArray.getString(i));
 			}
-			
+
 			// create the SiteLink instance
-			SiteLink siteLink = factory.getSiteLink(title, siteKey, this.baseIri, badges);
+			SiteLink siteLink = factory.getSiteLink(title, siteKey,
+					this.baseIri, badges);
 			result.put(siteKey, siteLink);
 		}
-		
+
 		return result;
 	}
 
@@ -165,7 +186,7 @@ public class JsonParser {
 			String key = keyIterator.next();
 			List<String> value = new LinkedList<String>();
 			JSONArray aliasEntries = aliases.getJSONArray(key);
-			
+
 			// get all aliases for a certain language
 			for (int i = 0; i < aliasEntries.length(); i++) {
 				value.add(aliasEntries.getString(i));
@@ -183,7 +204,6 @@ public class JsonParser {
 	 */
 	private Map<String, String> getDescriptions(JSONObject descriptions) {
 		assert descriptions != null : "Description JSON object was null";
-		assert descriptions.length() > 0 : "Description JSON did not contain any entries";
 
 		Map<String, String> result = new HashMap<String, String>();
 
@@ -213,7 +233,6 @@ public class JsonParser {
 	 */
 	private ItemId getItemId(JSONArray entity) throws JSONException {
 		assert entity != null : "Entity JSONArray was null";
-		assert entity.length() > 0 : "Entity JSONArray did not contain any entries";
 
 		ItemId itemId;
 		String id = null;
@@ -245,7 +264,6 @@ public class JsonParser {
 	private Map<String, String> getLabels(JSONObject labels)
 			throws JSONException {
 		assert labels != null : "Label JSON was null";
-		assert labels.length() > 0 : "Label JSON was did not contain any entries";
 
 		Map<String, String> result = new HashMap<String, String>();
 
@@ -273,7 +291,6 @@ public class JsonParser {
 	 *            the new baseIRI to be set. If the given string is null,
 	 *            nothing will be done.
 	 */
-
 	public void setBaseIri(String baseIri) {
 		if (baseIri == null)
 			return;
