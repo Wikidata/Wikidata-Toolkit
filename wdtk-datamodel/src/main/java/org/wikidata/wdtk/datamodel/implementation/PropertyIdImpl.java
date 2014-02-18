@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
 
 /**
@@ -46,8 +47,8 @@ public class PropertyIdImpl extends EntityIdImpl implements PropertyId {
 	}
 
 	@Override
-	public EntityType getEntityType() {
-		return EntityType.PROPERTY;
+	public String getEntityType() {
+		return EntityId.ET_PROPERTY;
 	}
 
 }

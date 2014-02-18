@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemId;
 
 /**
@@ -46,8 +47,8 @@ public class ItemIdImpl extends EntityIdImpl implements ItemId {
 	}
 
 	@Override
-	public EntityType getEntityType() {
-		return EntityType.ITEM;
+	public String getEntityType() {
+		return EntityId.ET_ITEM;
 	}
 
 }

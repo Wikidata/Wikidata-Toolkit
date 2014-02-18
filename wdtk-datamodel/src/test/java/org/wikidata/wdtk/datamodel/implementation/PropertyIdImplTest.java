@@ -20,14 +20,15 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.EntityId;
 
 public class PropertyIdImplTest {
 
@@ -46,7 +47,7 @@ public class PropertyIdImplTest {
 
 	@Test
 	public void entityTypeIsProperty() {
-		assertEquals(prop1.getEntityType(), EntityId.EntityType.PROPERTY);
+		assertEquals(prop1.getEntityType(), EntityId.ET_PROPERTY);
 	}
 
 	@Test

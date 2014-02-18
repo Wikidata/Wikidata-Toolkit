@@ -35,20 +35,22 @@ package org.wikidata.wdtk.datamodel.interfaces;
 public interface EntityId extends IriValue {
 
 	/**
-	 * Enum for the possible entity types, currently Item and Property.
-	 * 
-	 * @author Markus Kroetzsch
+	 * IRI of the type of an entity that is an item.
 	 */
-	enum EntityType {
-		ITEM, PROPERTY
-	}
+	static final String ET_ITEM = "http://www.wikidata.org/ontology#Item";
+	/**
+	 * IRI of the type of an entity that is a property.
+	 */
+	static final String ET_PROPERTY = "http://www.wikidata.org/ontology#Property";
 
 	/**
-	 * Get the type of this entity.
+	 * Get the type of this entity. This should be an IRI that identifies an
+	 * entity type, such as {@link EntityId#ET_ITEM} or
+	 * {@link EntityId#ET_PROPERTY}.
 	 * 
-	 * @return EntityType
+	 * @return String
 	 */
-	EntityType getEntityType();
+	String getEntityType();
 
 	/**
 	 * Get the id of this entity.
