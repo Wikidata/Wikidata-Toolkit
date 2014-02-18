@@ -169,6 +169,15 @@ public interface DataObjectFactory {
 	NoValueSnak getNoValueSnak(PropertyIdValue propertyId);
 
 	/**
+	 * Create a {@link Reference}.
+	 * 
+	 * @param valueSnaks
+	 *            list of property-value pairs
+	 * @return a {@link Reference} corresponding to the input
+	 */
+	Reference getReference(List<? extends ValueSnak> valueSnaks);
+
+	/**
 	 * Create a {@link Statement}.
 	 * 
 	 * @param subject
@@ -185,7 +194,7 @@ public interface DataObjectFactory {
 	 */
 	Statement getStatement(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank);
+			List<? extends Reference> references, StatementRank rank);
 
 	/**
 	 * Create a {@link SiteLink}.
@@ -240,8 +249,8 @@ public interface DataObjectFactory {
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemDocument} corresponding to the input
 	 */
-	ItemDocument getItemDocument(ItemIdValue itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
+	ItemDocument getItemDocument(ItemIdValue itemId,
+			Map<String, String> labels, Map<String, String> descriptions,
 			Map<String, List<String>> aliases, List<Statement> statements,
 			Map<String, SiteLink> siteLinks);
 

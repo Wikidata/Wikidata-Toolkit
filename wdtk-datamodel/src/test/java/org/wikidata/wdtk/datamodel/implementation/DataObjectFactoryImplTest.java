@@ -36,6 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
@@ -150,17 +151,23 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
+	public final void testGetReference() {
+		Reference r1 = new ReferenceImpl(Collections.<ValueSnak> emptyList());
+		Reference r2 = factory
+				.getReference(Collections.<ValueSnak> emptyList());
+		assertEquals(r1, r2);
+	}
+
+	@Test
 	public final void testGetStatement() {
 		Statement o1 = new StatementImpl(factory.getItemId("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		Statement o2 = factory.getStatement(factory.getItemId("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		assertEquals(o1, o2);
 	}
 

@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -41,7 +42,7 @@ public class StatementImpl implements Statement {
 	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<? extends Snak> qualifiers;
-	final List<List<? extends Snak>> references;
+	final List<? extends Reference> references;
 	final StatementRank rank;
 
 	/**
@@ -60,7 +61,7 @@ public class StatementImpl implements Statement {
 	 */
 	StatementImpl(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank) {
+			List<? extends Reference> references, StatementRank rank) {
 		Validate.notNull(subject, "Statement subjects cannot be null");
 		Validate.notNull(mainSnak, "Statement main Snaks cannot be null");
 		Validate.notNull(qualifiers, "Statement qualifiers cannot be null");
@@ -95,9 +96,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
-	public List<List<? extends Snak>> getReferences() {
-		// TODO This still allows inner lists of Snaks to be modified. Do
-		// we have to protect against this?
+	public List<? extends Reference> getReferences() {
 		return Collections.unmodifiableList(references);
 	}
 

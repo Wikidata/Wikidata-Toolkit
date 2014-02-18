@@ -33,14 +33,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class StatementImplTest {
 
 	EntityIdValue subject;
-	Snak mainSnak;
+	ValueSnak mainSnak;
 
 	Statement s1;
 	Statement s2;
@@ -54,12 +56,10 @@ public class StatementImplTest {
 
 		s1 = new StatementImpl(subject, mainSnak,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		s2 = new StatementImpl(subject, mainSnak,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 	}
 
 	@Test
@@ -75,22 +75,19 @@ public class StatementImplTest {
 	@Test(expected = NullPointerException.class)
 	public void subjectNotNull() {
 		new StatementImpl(null, mainSnak, Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void mainSnakNotNull() {
 		new StatementImpl(subject, null, Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void qualifiersNotNull() {
 		new StatementImpl(subject, mainSnak, null,
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -102,7 +99,7 @@ public class StatementImplTest {
 	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
 		new StatementImpl(subject, mainSnak, Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(), null);
+				Collections.<Reference> emptyList(), null);
 	}
 
 	@Test
@@ -113,31 +110,29 @@ public class StatementImplTest {
 	@Test
 	public void statementEqualityBasedOnContent() {
 		Statement s3, s4, s5, s6, s7;
-		EntityIdValue subject2 = new ItemIdValueImpl("Q43", "http://wikidata.org/entity/");
+		EntityIdValue subject2 = new ItemIdValueImpl("Q43",
+				"http://wikidata.org/entity/");
 		PropertyIdValue property = new PropertyIdValueImpl("P43",
 				"http://wikidata.org/entity/");
-		Snak mainSnak2 = new ValueSnakImpl(property, subject2);
+		ValueSnak mainSnak2 = new ValueSnakImpl(property, subject2);
 
 		s3 = new StatementImpl(subject2, mainSnak,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		s4 = new StatementImpl(subject, mainSnak2,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		s5 = new StatementImpl(subject, mainSnak,
 				Collections.<Snak> singletonList(mainSnak),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		s6 = new StatementImpl(subject, mainSnak,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> singletonList(Collections
-						.<Snak> singletonList(mainSnak)), StatementRank.NORMAL);
+				Collections.<Reference> singletonList(new ReferenceImpl(
+						Collections.<ValueSnak> singletonList(mainSnak))),
+				StatementRank.NORMAL);
 		s7 = new StatementImpl(subject, mainSnak,
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.PREFERRED);
+				Collections.<Reference> emptyList(), StatementRank.PREFERRED);
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);

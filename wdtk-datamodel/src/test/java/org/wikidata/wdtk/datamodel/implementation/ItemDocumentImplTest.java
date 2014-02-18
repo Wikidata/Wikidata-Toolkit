@@ -37,6 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -67,8 +68,7 @@ public class ItemDocumentImplTest {
 		Statement s = new StatementImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		statements = Collections.singletonList(s);
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
 				"http://en.wikipedia.org/wiki/",

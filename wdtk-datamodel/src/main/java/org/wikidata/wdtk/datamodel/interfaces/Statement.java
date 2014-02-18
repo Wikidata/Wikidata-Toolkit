@@ -45,5 +45,5 @@ public interface Statement extends Claim {
 	 * 
 	 * @return the list of references
 	 */
-	List<List<? extends Snak>> getReferences();
+	List<? extends Reference> getReferences();
 }

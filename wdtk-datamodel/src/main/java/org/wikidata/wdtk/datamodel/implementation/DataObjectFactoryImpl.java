@@ -34,6 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
@@ -111,9 +112,14 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public Reference getReference(List<? extends ValueSnak> valueSnaks) {
+		return new ReferenceImpl(valueSnaks);
+	}
+
+	@Override
 	public Statement getStatement(EntityIdValue subject, Snak mainSnak,
 			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank) {
+			List<? extends Reference> references, StatementRank rank) {
 		return new StatementImpl(subject, mainSnak, qualifiers, references,
 				rank);
 	}
