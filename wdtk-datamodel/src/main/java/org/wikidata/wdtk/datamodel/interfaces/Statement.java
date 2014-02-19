@@ -53,4 +53,26 @@ public interface Statement {
 	 * @return the list of references
 	 */
 	List<? extends Reference> getReferences();
+
+	/**
+	 * Return the id used to identify this statement.
+	 * <p>
+	 * Statement ids are used by Wikibase to allow certain interactions though
+	 * the API, especially the atomic modification of Statements (modifications
+	 * of statements can be viewed as deletions followed by insertions, but
+	 * doing this in several steps though the API is not practical). In the
+	 * current Wikibase implementation, the id is a string that begins with the
+	 * (lowercased) local ID of the subject of the statement, followed by a
+	 * dollar sign and a randomly generated UUID. Thus statements of different
+	 * subjects can never have the same id, and it is extremely unlikely that
+	 * two statements of the one subject ever have the same id. However, it is
+	 * possible that two statements with the same content differ in their id,
+	 * since the id is not based on the content.
+	 * <p>
+	 * Callers should not make any assumptions about the stability of statement
+	 * ids over time, or about the internal format of the ids.
+	 * 
+	 * @return the statement string id
+	 */
+	String getStatementId();
 }

@@ -58,9 +58,9 @@ public class StatementImplTest {
 
 		claim = new ClaimImpl(subject, mainSnak, Collections.<Snak> emptyList());
 		s1 = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
+				StatementRank.NORMAL, "MyId");
 		s2 = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
+				StatementRank.NORMAL, "MyId");
 	}
 
 	@Test
@@ -69,22 +69,30 @@ public class StatementImplTest {
 		assertEquals(s1.getReferences(),
 				Collections.<List<? extends Snak>> emptyList());
 		assertEquals(s1.getRank(), StatementRank.NORMAL);
+		assertEquals(s1.getStatementId(), "MyId");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void claimNotNull() {
 		new StatementImpl(null, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
+				StatementRank.NORMAL, "MyId");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void referencesNotNull() {
-		new StatementImpl(claim, null, StatementRank.NORMAL);
+		new StatementImpl(claim, null, StatementRank.NORMAL, "MyId");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
-		new StatementImpl(claim, Collections.<Reference> emptyList(), null);
+		new StatementImpl(claim, Collections.<Reference> emptyList(), null,
+				"MyId");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void idNotNull() {
+		new StatementImpl(claim, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL, null);
 	}
 
 	@Test
@@ -94,26 +102,31 @@ public class StatementImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		Statement s3, s4, s5;
+		Statement sDiffClaim, sDiffReferences, sDiffRank, sDiffId;
 
 		Claim claim2 = new ClaimImpl(new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/"), mainSnak,
 				Collections.<Snak> emptyList());
 
-		s3 = new StatementImpl(claim2, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
-		s4 = new StatementImpl(claim,
+		sDiffClaim = new StatementImpl(claim2,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
+		sDiffReferences = new StatementImpl(claim,
 				Collections.<Reference> singletonList(new ReferenceImpl(
 						Collections.<ValueSnak> singletonList(mainSnak))),
-				StatementRank.NORMAL);
-		s5 = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.PREFERRED);
+				StatementRank.NORMAL, "MyId");
+		sDiffRank = new StatementImpl(claim,
+				Collections.<Reference> emptyList(), StatementRank.PREFERRED,
+				"MyId");
+		sDiffId = new StatementImpl(claim, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL, "MyOtherId");
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(s4)));
-		assertThat(s1, not(equalTo(s5)));
+		assertThat(s1, not(equalTo(sDiffClaim)));
+		assertThat(s1, not(equalTo(sDiffReferences)));
+		assertThat(s1, not(equalTo(sDiffRank)));
+		assertThat(s1, not(equalTo(sDiffId)));
 		assertThat(s1, not(equalTo(null)));
 		assertFalse(s1.equals(this));
 	}

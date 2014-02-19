@@ -80,7 +80,7 @@ public class ItemDocumentImplTest {
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.<Snak> emptyList());
 		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
+				StatementRank.NORMAL, "MyId");
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
 		statementGroups = Collections.singletonList(sg);
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
@@ -191,7 +191,8 @@ public class ItemDocumentImplTest {
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.<Snak> emptyList());
 		Statement s2 = new StatementImpl(c2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		StatementGroup sg2 = new StatementGroupImpl(
 				Collections.singletonList(s2));
 

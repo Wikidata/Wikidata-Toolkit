@@ -133,8 +133,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public Statement getStatement(Claim claim,
-			List<? extends Reference> references, StatementRank rank) {
-		return new StatementImpl(claim, references, rank);
+			List<? extends Reference> references, StatementRank rank,
+			String statementId) {
+		return new StatementImpl(claim, references, rank, statementId);
 	}
 
 	@Override

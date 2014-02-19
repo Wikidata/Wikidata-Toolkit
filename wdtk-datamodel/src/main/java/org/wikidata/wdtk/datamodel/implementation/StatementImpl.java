@@ -41,9 +41,14 @@ public class StatementImpl implements Statement {
 	final Claim claim;
 	final List<? extends Reference> references;
 	final StatementRank rank;
+	final String statementId;
 
 	/**
 	 * Constructor.
+	 * <p>
+	 * The string id is used mainly for communication with a Wikibase site, in
+	 * order to refer to statements of that site. When creating new statements
+	 * that are not on any site, the empty string can be used.
 	 * 
 	 * @param claim
 	 *            the main claim the Statement refers to
@@ -51,16 +56,20 @@ public class StatementImpl implements Statement {
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
+	 * @param statementId
+	 *            the string id of the Statement
 	 */
 	StatementImpl(Claim claim, List<? extends Reference> references,
-			StatementRank rank) {
+			StatementRank rank, String statementId) {
 		Validate.notNull(claim, "Statement main claim cannot be null");
 		Validate.notNull(references, "Statement references cannot be null");
 		Validate.notNull(rank, "Statement ranks cannot be null");
+		Validate.notNull(statementId, "Statement ids cannot be null");
 
 		this.claim = claim;
 		this.references = references;
 		this.rank = rank;
+		this.statementId = statementId;
 	}
 
 	@Override
@@ -78,6 +87,11 @@ public class StatementImpl implements Statement {
 		return Collections.unmodifiableList(this.references);
 	}
 
+	@Override
+	public String getStatementId() {
+		return this.statementId;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -86,7 +100,8 @@ public class StatementImpl implements Statement {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(31, 569).append(this.claim)
-				.append(this.rank).append(this.references).toHashCode();
+				.append(this.rank).append(this.references)
+				.append(this.statementId).toHashCode();
 	}
 
 	/*
@@ -106,7 +121,8 @@ public class StatementImpl implements Statement {
 		StatementImpl other = (StatementImpl) obj;
 
 		return this.claim.equals(other.claim) && this.rank == other.rank
-				&& this.references.equals(other.references);
+				&& this.references.equals(other.references)
+				&& this.statementId.equals(other.statementId);
 	}
 
 }

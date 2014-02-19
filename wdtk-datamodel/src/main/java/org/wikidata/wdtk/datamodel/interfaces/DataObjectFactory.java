@@ -205,6 +205,10 @@ public interface DataObjectFactory {
 
 	/**
 	 * Create a {@link Statement}.
+	 * <p>
+	 * The string id is used mainly for communication with a Wikibase site, in
+	 * order to refer to statements of that site. When creating new statements
+	 * that are not on any site, the empty string can be used.
 	 * 
 	 * @param claim
 	 *            the main claim the Statement refers to
@@ -212,10 +216,12 @@ public interface DataObjectFactory {
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
+	 * @param statementId
+	 *            the string id of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
 	Statement getStatement(Claim claim, List<? extends Reference> references,
-			StatementRank rank);
+			StatementRank rank, String statementId);
 
 	/**
 	 * Create a {@link StatementGroup}.

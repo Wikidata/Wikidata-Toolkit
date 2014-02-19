@@ -59,9 +59,11 @@ public class StatementGroupTest {
 				Collections.<Snak> emptyList());
 
 		statement1 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		statement2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.PREFERRED);
+				Collections.<Reference> emptyList(), StatementRank.PREFERRED,
+				"MyId");
 
 		sg1 = new StatementGroupImpl(
 				Collections.<Statement> singletonList(statement1));
@@ -126,7 +128,8 @@ public class StatementGroupTest {
 		Claim claim = new ClaimImpl(subject2, mainSnak,
 				Collections.<Snak> emptyList());
 		Statement s2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		statements.add(s2);
 
 		new StatementGroupImpl(statements);
@@ -144,7 +147,8 @@ public class StatementGroupTest {
 		Claim claim = new ClaimImpl(subject, mainSnak,
 				Collections.<Snak> emptyList());
 		Statement s2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		statements.add(s2);
 
 		new StatementGroupImpl(statements);

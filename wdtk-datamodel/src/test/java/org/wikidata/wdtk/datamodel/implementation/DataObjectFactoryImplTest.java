@@ -190,9 +190,11 @@ public class DataObjectFactoryImplTest {
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.<Snak> emptyList());
 		Statement o1 = new StatementImpl(c,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		Statement o2 = factory.getStatement(c,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
 		assertEquals(o1, o2);
 	}
 
@@ -203,7 +205,7 @@ public class DataObjectFactoryImplTest {
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.<Snak> emptyList());
 		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL);
+				StatementRank.NORMAL, "MyId");
 		StatementGroup o1 = new StatementGroupImpl(
 				Collections.<Statement> singletonList(s));
 		StatementGroup o2 = factory.getStatementGroup(Collections
