@@ -159,13 +159,14 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public ItemDocument getItemDocument(ItemIdValue itemId,
+	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			List<Statement> statements, Map<String, SiteLink> siteLinks) {
-		return new ItemDocumentImpl(itemId, labels, descriptions, aliases,
-				statements, siteLinks);
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks) {
+		return new ItemDocumentImpl(itemIdValue, labels, descriptions, aliases,
+				statementGroups, siteLinks);
 	}
 
 }

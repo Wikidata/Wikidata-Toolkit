@@ -39,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class PropertyDocumentImplTest {
 
@@ -102,11 +102,12 @@ public class PropertyDocumentImplTest {
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
 				datatypeId);
 		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
-				descriptions, aliases, new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
+				descriptions, aliases, new DatatypeIdImpl(
+						DatatypeIdValue.DT_STRING));
 
 		ItemDocument ir = new ItemDocumentImpl(
 				new ItemIdValueImpl("Q42", "foo"), labels, descriptions,
-				aliases, Collections.<Statement> emptyList(),
+				aliases, Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 
 		assertEquals(pr1, pr1);

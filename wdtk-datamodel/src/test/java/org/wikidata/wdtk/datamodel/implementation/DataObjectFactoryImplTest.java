@@ -243,14 +243,14 @@ public class DataObjectFactoryImplTest {
 				"foo"), Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
-				Collections.<Statement> emptyList(),
+				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 		ItemDocument o2 = factory.getItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
-				Collections.<Statement> emptyList(),
+				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 		assertEquals(o1, o2);
 	}

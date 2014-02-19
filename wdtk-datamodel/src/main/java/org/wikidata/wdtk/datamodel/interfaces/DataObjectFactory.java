@@ -59,8 +59,8 @@ public interface DataObjectFactory {
 
 	/**
 	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
-	 * constants defined in {@link DatatypeIdValue}, but this is not enforced, since
-	 * there might be extensions that provide additional types.
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
+	 * since there might be extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
@@ -268,7 +268,7 @@ public interface DataObjectFactory {
 	/**
 	 * Create an {@link ItemDocument}.
 	 * 
-	 * @param itemId
+	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
 	 *            the labels of this item by language code
@@ -276,16 +276,18 @@ public interface DataObjectFactory {
 	 *            the descriptions of this item by language code
 	 * @param aliases
 	 *            the alias lists of this item by language code
-	 * @param statements
-	 *            the list of statements of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemDocument} corresponding to the input
 	 */
-	ItemDocument getItemDocument(ItemIdValue itemId,
+	ItemDocument getItemDocument(ItemIdValue itemIdValue,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			List<Statement> statements, Map<String, SiteLink> siteLinks);
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks);
 
 }

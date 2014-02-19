@@ -30,19 +30,19 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
 		ItemDocument {
 
 	final ItemIdValue itemId;
-	final List<Statement> statements;
+	final List<StatementGroup> statementGroups;
 	final Map<String, SiteLink> siteLinks;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param itemId
+	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
 	 *            the labels of this item by language code
@@ -50,22 +50,34 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	 *            the descriptions of this item by language code
 	 * @param aliases
 	 *            the alias lists of this item by language code
-	 * @param statements
-	 *            the list of statements of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	ItemDocumentImpl(ItemIdValue itemId,
+	ItemDocumentImpl(ItemIdValue itemIdValue,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
-			List<Statement> statements, Map<String, SiteLink> siteLinks) {
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks) {
 		super(labels, descriptions, aliases);
-		Validate.notNull(itemId, "item ID cannot be null");
-		Validate.notNull(statements, "statement list cannot be null");
+		Validate.notNull(itemIdValue, "item ID cannot be null");
+		Validate.notNull(statementGroups, "statement list cannot be null");
 		Validate.notNull(siteLinks, "site links cannot be null");
-		this.itemId = itemId;
-		this.statements = statements;
+
+		if (!statementGroups.isEmpty()) {
+			for (StatementGroup sg : statementGroups) {
+				if (!itemIdValue.equals(sg.getSubject())) {
+					throw new IllegalArgumentException(
+							"All statement groups in a document must have the same subject");
+				}
+			}
+		}
+
+		this.itemId = itemIdValue;
+		this.statementGroups = statementGroups;
 		this.siteLinks = siteLinks;
 	}
 
@@ -80,8 +92,8 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
-	public List<Statement> getStatements() {
-		return Collections.unmodifiableList(statements);
+	public List<StatementGroup> getStatementGroups() {
+		return Collections.unmodifiableList(statementGroups);
 	}
 
 	@Override
@@ -100,7 +112,7 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 		int result = super.hashCode();
 		result = prime * result + itemId.hashCode();
 		result = prime * result + siteLinks.hashCode();
-		result = prime * result + statements.hashCode();
+		result = prime * result + statementGroups.hashCode();
 		return result;
 	}
 
@@ -123,7 +135,7 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 		ItemDocumentImpl other = (ItemDocumentImpl) obj;
 
 		return itemId.equals(other.itemId) && siteLinks.equals(other.siteLinks)
-				&& statements.equals(other.statements);
+				&& statementGroups.equals(other.statementGroups);
 	}
 
 }

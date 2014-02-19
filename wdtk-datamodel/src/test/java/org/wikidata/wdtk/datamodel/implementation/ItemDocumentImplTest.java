@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 public class ItemDocumentImplTest {
@@ -54,7 +56,7 @@ public class ItemDocumentImplTest {
 	Map<String, MonolingualTextValue> labels;
 	Map<String, MonolingualTextValue> descriptions;
 	Map<String, List<MonolingualTextValue>> aliases;
-	List<Statement> statements;
+	List<StatementGroup> statementGroups;
 	Map<String, SiteLink> sitelinks;
 
 	@Before
@@ -79,16 +81,17 @@ public class ItemDocumentImplTest {
 				Collections.<Snak> emptyList());
 		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL);
-		statements = Collections.singletonList(s);
+		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
+		statementGroups = Collections.singletonList(sg);
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
 				"http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 		sitelinks = Collections.singletonMap("enwiki", sl);
 
 		ir1 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
-				statements, sitelinks);
+				statementGroups, sitelinks);
 		ir2 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
-				statements, sitelinks);
+				statementGroups, sitelinks);
 	}
 
 	@Test
@@ -98,41 +101,49 @@ public class ItemDocumentImplTest {
 		assertEquals(ir1.getLabels(), labels);
 		assertEquals(ir1.getDescriptions(), descriptions);
 		assertEquals(ir1.getAliases(), aliases);
-		assertEquals(ir1.getStatements(), statements);
+		assertEquals(ir1.getStatementGroups(), statementGroups);
 		assertEquals(ir1.getSiteLinks(), sitelinks);
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		ItemDocument ir3 = new ItemDocumentImpl(new ItemIdValueImpl("Q43",
-				"something"), labels, descriptions, aliases, statements,
-				sitelinks);
-		ItemDocument ir4 = new ItemDocumentImpl(iid,
+		ItemDocument irDiffLabels = new ItemDocumentImpl(iid,
 				Collections.<String, MonolingualTextValue> emptyMap(),
-				descriptions, aliases, statements, sitelinks);
-		ItemDocument ir5 = new ItemDocumentImpl(iid, labels,
+				descriptions, aliases, statementGroups, sitelinks);
+		ItemDocument irDiffDescriptions = new ItemDocumentImpl(iid, labels,
 				Collections.<String, MonolingualTextValue> emptyMap(), aliases,
-				statements, sitelinks);
-		ItemDocument ir6 = new ItemDocumentImpl(iid, labels, descriptions,
+				statementGroups, sitelinks);
+		ItemDocument irDiffAliases = new ItemDocumentImpl(iid, labels,
+				descriptions,
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
-				statements, sitelinks);
-		ItemDocument ir7 = new ItemDocumentImpl(iid, labels, descriptions,
-				aliases, Collections.<Statement> emptyList(), sitelinks);
-		ItemDocument ir8 = new ItemDocumentImpl(iid, labels, descriptions,
-				aliases, statements, Collections.<String, SiteLink> emptyMap());
+				statementGroups, sitelinks);
+		ItemDocument irDiffStatementGroups = new ItemDocumentImpl(iid, labels,
+				descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), sitelinks);
+		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid, labels,
+				descriptions, aliases, statementGroups,
+				Collections.<String, SiteLink> emptyMap());
 
 		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdValueImpl(
 				"P42", "foo"), labels, descriptions, aliases,
 				new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
 
+		// we need to use empty lists of Statement groups to test inequality
+		// based on different item ids with all other data being equal
+		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
+				new ItemIdValueImpl("Q23", "http://example.org/"),
+				Collections.<String, MonolingualTextValue> emptyMap(),
+				descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), sitelinks);
+
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
-		assertThat(ir1, not(equalTo(ir3)));
-		assertThat(ir1, not(equalTo(ir4)));
-		assertThat(ir1, not(equalTo(ir5)));
-		assertThat(ir1, not(equalTo(ir6)));
-		assertThat(ir1, not(equalTo(ir7)));
-		assertThat(ir1, not(equalTo(ir8)));
+		assertThat(ir1, not(equalTo(irDiffLabels)));
+		assertThat(ir1, not(equalTo(irDiffDescriptions)));
+		assertThat(ir1, not(equalTo(irDiffAliases)));
+		assertThat(ir1, not(equalTo(irDiffStatementGroups)));
+		assertThat(ir1, not(equalTo(irDiffSiteLinks)));
+		assertThat(irDiffStatementGroups, not(equalTo(irDiffItemIdValue)));
 		assertFalse(ir1.equals(pr));
 		assertThat(ir1, not(equalTo(null)));
 		assertFalse(ir1.equals(this));
@@ -145,37 +156,57 @@ public class ItemDocumentImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new ItemDocumentImpl(null, labels, descriptions, aliases, statements,
-				sitelinks);
+		new ItemDocumentImpl(null, labels, descriptions, aliases,
+				statementGroups, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void labelsNotNull() {
-		new ItemDocumentImpl(iid, null, descriptions, aliases, statements,
+		new ItemDocumentImpl(iid, null, descriptions, aliases, statementGroups,
 				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
-		new ItemDocumentImpl(iid, labels, null, aliases, statements, sitelinks);
+		new ItemDocumentImpl(iid, labels, null, aliases, statementGroups,
+				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void aliasesNotNull() {
-		new ItemDocumentImpl(iid, labels, descriptions, null, statements,
+		new ItemDocumentImpl(iid, labels, descriptions, null, statementGroups,
 				sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void statementsNotNull() {
+	public void statementGroupsNotNull() {
 		new ItemDocumentImpl(iid, labels, descriptions, aliases, null,
 				sitelinks);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void statementGroupsUseSameSubject() {
+		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
+		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
+				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
+				Collections.<Snak> emptyList());
+		Statement s2 = new StatementImpl(c2,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+		StatementGroup sg2 = new StatementGroupImpl(
+				Collections.singletonList(s2));
+
+		List<StatementGroup> statementGroups2 = new ArrayList<StatementGroup>();
+		statementGroups2.add(statementGroups.get(0));
+		statementGroups2.add(sg2);
+
+		new ItemDocumentImpl(iid, labels, descriptions, aliases,
+				statementGroups2, sitelinks);
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void sitelinksNotNull() {
-		new ItemDocumentImpl(iid, labels, descriptions, aliases, statements,
-				null);
+		new ItemDocumentImpl(iid, labels, descriptions, aliases,
+				statementGroups, null);
 	}
 
 }

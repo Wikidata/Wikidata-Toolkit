@@ -42,15 +42,12 @@ public interface ItemDocument extends TermedDocument {
 	ItemIdValue getItemId();
 
 	/**
-	 * Return the list of all Statements stored for this item. The order of
-	 * Statements is significant, but it is not constrained in any way. The
-	 * grouping by main-snak property that can be seen when editing a page on
-	 * Wikibase is computed dynamically from this list in the user interface,
-	 * and does not constitute a part of the data.
+	 * Return the list of all StatementGroups stored for this item. The order of
+	 * StatementGroups is significant.
 	 * 
-	 * @return list of Statements
+	 * @return list of StatementGroups
 	 */
-	List<Statement> getStatements();
+	List<StatementGroup> getStatementGroups();
 
 	/**
 	 * Get a Map of site keys to {@link SiteLink} objects.
