@@ -254,5 +254,4 @@ public class DataObjectFactoryImplTest {
 				Collections.<String, SiteLink> emptyMap());
 		assertEquals(o1, o2);
 	}
-
 }

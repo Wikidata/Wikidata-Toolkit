@@ -59,8 +59,8 @@ public interface DataObjectFactory {
 
 	/**
 	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
-	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
-	 * since there might be extensions that provide additional types.
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced, since
+	 * there might be extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
