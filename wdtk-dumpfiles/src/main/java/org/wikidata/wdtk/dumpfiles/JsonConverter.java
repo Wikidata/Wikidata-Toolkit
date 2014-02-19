@@ -11,10 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 // TODO add @link to documentation where needed
 /**
@@ -56,18 +57,18 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public ItemRecord convertToItemRecord(JSONObject toConvert)
+	public ItemDocument convertToItemRecord(JSONObject toConvert)
 			throws JSONException, NullPointerException {
 
 		// initialize variables for the things we need to get
 		// TODO check if it would not be better to initialize…
 		// …with empty maps/lists
-		ItemRecord result = null;
-		ItemId itemId = null;
-		Map<String, String> labels = null;
-		Map<String, String> descriptions = null;
-		Map<String, List<String>> aliases = null;
-		List<Statement> statements = null;
+		ItemDocument result = null;
+		ItemIdValue itemId = null;
+		List<MonolingualTextValue> labels = null;
+		List<MonolingualTextValue> descriptions = null;
+		List<MonolingualTextValue> aliases = null;
+		List<StatementGroup> statements = null;
 		Map<String, SiteLink> siteLinks = null;
 
 		// sanity check
@@ -103,7 +104,7 @@ public class JsonConverter {
 		siteLinks = this.getSiteLinks(jsonLinks);
 
 		// now put it all together
-		result = factory.getItemRecord(itemId, labels, descriptions, aliases,
+		result = factory.getItemDocument(itemId, labels, descriptions, aliases,
 				statements, siteLinks);
 		return result;
 	}
@@ -113,10 +114,10 @@ public class JsonConverter {
 	 * @param jsonStatements
 	 * @return
 	 */
-	private List<Statement> getStatements(JSONArray jsonStatements) {
+	private List<StatementGroup> getStatements(JSONArray jsonStatements) {
 		// TODO complete
 
-		List<Statement> result = new LinkedList<Statement>();
+		List<StatementGroup> result = new LinkedList<StatementGroup>();
 
 		return result;
 	}
@@ -166,15 +167,19 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Convert a JSON object representing the aliases of an item into a list of
+	 * MonolingualTextValues.
 	 * 
 	 * @param aliases
-	 * @return
+	 *            a JSON object representing the aliases.
+	 * @return a list of MonolingualTextValues. Might be empty but not null.
 	 * @throws JSONException
 	 */
-	private Map<String, List<String>> getAliases(JSONObject aliases)
+	private List<MonolingualTextValue> getAliases(JSONObject aliases)
 			throws JSONException {
-		// TODO assertions
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		assert aliases != null : "Aliases JSON object was null";
+
+		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
 
 		// aliases are of the form string:[string]
 
@@ -183,14 +188,15 @@ public class JsonConverter {
 
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
-			List<String> value = new LinkedList<String>();
 			JSONArray aliasEntries = aliases.getJSONArray(key);
 
 			// get all aliases for a certain language
 			for (int i = 0; i < aliasEntries.length(); i++) {
-				value.add(aliasEntries.getString(i));
+				String aliasString = aliasEntries.getString(i);
+				MonolingualTextValue element;
+				element = factory.getMonolingualTextValue(aliasString, key);
+				result.add(element);
 			}
-			result.put(key, value);
 		}
 
 		return result;
@@ -207,19 +213,21 @@ public class JsonConverter {
 	 *         represented by the key.
 	 * @throws JSONException
 	 */
-	private Map<String, String> getDescriptions(JSONObject descriptions)
+	private List<MonolingualTextValue> getDescriptions(JSONObject descriptions)
 			throws JSONException {
 		assert descriptions != null : "Description JSON object was null";
 
-		Map<String, String> result = new HashMap<String, String>();
+		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
 
 		@SuppressWarnings("unchecked")
 		Iterator<String> keyIterator = descriptions.keys();
 
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
-			String value = descriptions.getString(key);
-			result.put(key, value);
+			String desctiptionString = descriptions.getString(key);
+			MonolingualTextValue element = factory.getMonolingualTextValue(
+					desctiptionString, key);
+			result.add(element);
 		}
 
 		return result;
@@ -234,10 +242,10 @@ public class JsonConverter {
 	 *             if the entity does not contain an "item"-entry or the entry
 	 *             is not followed by an integer denoting the item id.
 	 */
-	private ItemId getItemId(JSONArray entity) throws JSONException {
+	private ItemIdValue getItemId(JSONArray entity) throws JSONException {
 		assert entity != null : "Entity JSONArray was null";
 
-		ItemId itemId;
+		ItemIdValue itemId;
 		String id = null;
 
 		for (int i = 0; i < entity.length(); i++) {
@@ -247,7 +255,7 @@ public class JsonConverter {
 			}
 		}
 
-		itemId = factory.getItemId(id, baseIri);
+		itemId = factory.getItemIdValue(id, baseIri);
 		return itemId;
 	}
 
@@ -264,19 +272,21 @@ public class JsonConverter {
 	 *             the JSON object is broken (i.e. has no Strings as keys) or
 	 *             something is wrong with the <i>org.json</i> JSON parser.
 	 */
-	private Map<String, String> getLabels(JSONObject labels)
+	private List<MonolingualTextValue> getLabels(JSONObject labels)
 			throws JSONException {
 		assert labels != null : "Label JSON was null";
 
-		Map<String, String> result = new HashMap<String, String>();
+		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
 
 		@SuppressWarnings("unchecked")
 		Iterator<String> keyIterator = labels.keys();
 
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
-			String value = labels.getString(key);
-			result.put(key, value);
+			String labelString = labels.getString(key);
+			MonolingualTextValue element = factory.getMonolingualTextValue(
+					labelString, key);
+			result.add(element);
 		}
 
 		return result;
