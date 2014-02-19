@@ -20,28 +20,35 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 /**
- * Implementation of {@link Snak}.
+ * Generic implementation of {@link ItemIdValue} that works with arbitrary Wikibase
+ * instances: it requires a baseIri that identifies the site globally.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public abstract class SnakImpl implements Snak {
+public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
-	final PropertyIdValue propertyId;
+	/**
+	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
+	 * @param id
+	 * @param baseIri
+	 */
+	ItemIdValueImpl(String id, String baseIri) {
+		super(id, baseIri);
 
-	SnakImpl(PropertyIdValue propertyId) {
-		Validate.notNull(propertyId, "Snak property ids cannot be null");
-		this.propertyId = propertyId;
+		if (!id.matches("^Q[1-9][0-9]*$")) {
+			throw new IllegalArgumentException(
+					"Wikibase item ids must have the form \"Q[1-9]+\"");
+		}
 	}
 
 	@Override
-	public PropertyIdValue getPropertyId() {
-		return propertyId;
+	public String getEntityType() {
+		return EntityIdValue.ET_ITEM;
 	}
 
 }

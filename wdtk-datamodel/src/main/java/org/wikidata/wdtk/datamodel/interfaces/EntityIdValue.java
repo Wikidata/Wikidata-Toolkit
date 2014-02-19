@@ -25,30 +25,32 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * identified by its id, corresponding to the title of that page. Typical
  * entities are Items (with identifiers of the form Q1234) and Properties (with
  * identifiers of the form P1234).
- * 
+ * <p>
  * The full IRI of an entity is used in export formats like RDF, but also
  * internally, e.g., for identifying the calendar model of time values.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface EntityId extends IriValue {
+public interface EntityIdValue extends IriIdentifiedValue {
 
 	/**
-	 * Enum for the possible entity types, currently Item and Property.
-	 * 
-	 * @author Markus Kroetzsch
+	 * IRI of the type of an entity that is an item.
 	 */
-	enum EntityType {
-		ITEM, PROPERTY
-	}
+	static final String ET_ITEM = "http://www.wikidata.org/ontology#Item";
+	/**
+	 * IRI of the type of an entity that is a property.
+	 */
+	static final String ET_PROPERTY = "http://www.wikidata.org/ontology#Property";
 
 	/**
-	 * Get the type of this entity.
+	 * Get the type of this entity. This should be an IRI that identifies an
+	 * entity type, such as {@link EntityIdValue#ET_ITEM} or
+	 * {@link EntityIdValue#ET_PROPERTY}.
 	 * 
-	 * @return EntityType
+	 * @return String
 	 */
-	EntityType getEntityType();
+	String getEntityType();
 
 	/**
 	 * Get the id of this entity.

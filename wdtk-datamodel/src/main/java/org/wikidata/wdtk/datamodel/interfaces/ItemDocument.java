@@ -24,41 +24,36 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for datasets that describe an entity. This data mainly consists of
- * various pieces of text, such as labels, descriptions, and aliases. More
- * specific interfaces further add sitelinks and statements.
+ * Interface for datasets that describe items. It extends {@link EntityDocument}
+ * with information about site links and statements.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface EntityRecord {
+public interface ItemDocument extends TermedDocument {
 
 	/**
-	 * Return the ID of the entity that the data refers to
+	 * Return the ID of the item that the data refers to. The result is the same
+	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
+	 * specific result type.
 	 * 
-	 * @return entity id
+	 * @return item id
 	 */
-	EntityId getEntityId();
+	ItemIdValue getItemId();
 
 	/**
-	 * Return a Map from Wikibase language codes to labels.
+	 * Return the list of all StatementGroups stored for this item. The order of
+	 * StatementGroups is significant.
 	 * 
-	 * @return the map of labels
+	 * @return list of StatementGroups
 	 */
-	Map<String, String> getLabels();
+	List<StatementGroup> getStatementGroups();
 
 	/**
-	 * Return a Map from Wikibase language codes to descriptions.
+	 * Get a Map of site keys to {@link SiteLink} objects.
 	 * 
-	 * @return the map of descriptions
+	 * @return
 	 */
-	Map<String, String> getDescriptions();
+	Map<String, SiteLink> getSiteLinks();
 
-	/**
-	 * Return a Map from Wikibase language codes to lists of alias labels for a
-	 * given language.
-	 * 
-	 * @return the aliases for this language
-	 */
-	Map<String, List<String>> getAliases();
 }

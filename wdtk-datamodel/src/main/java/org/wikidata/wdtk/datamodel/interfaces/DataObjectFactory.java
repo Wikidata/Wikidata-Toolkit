@@ -34,47 +34,39 @@ import java.util.Map;
 public interface DataObjectFactory {
 
 	/**
-	 * Create an {@link ItemId}.
+	 * Create an {@link ItemIdValue}.
 	 * 
 	 * @param id
 	 *            the ID string, e.g., "Q1234"
 	 * @param baseIri
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return an {@link ItemId} corresponding to the input
+	 * @return an {@link ItemIdValue} corresponding to the input
 	 */
-	ItemId getItemId(String id, String baseIri);
+	ItemIdValue getItemIdValue(String id, String baseIri);
 
 	/**
-	 * Create a {@link PropertyId}.
+	 * Create a {@link PropertyIdValue}.
 	 * 
 	 * @param id
 	 *            the ID string, e.g., "P1234"
 	 * @param baseIri
 	 *            the first part of the IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return a {@link PropertyId} corresponding to the input
+	 * @return a {@link PropertyIdValue} corresponding to the input
 	 */
-	PropertyId getPropertyId(String id, String baseIri);
+	PropertyIdValue getPropertyIdValue(String id, String baseIri);
 
 	/**
-	 * Create a {@link DatatypeId}. The datatype IRI is usually one of the
-	 * constants defined in {@link DatatypeId}, but this is not enforced, since
-	 * there might be extensions that provide additional types.
+	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
+	 * since there might be extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
-	 * @return a {@link DatatypeId} corresponding to the input
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	DatatypeId getDatatypeId(String id);
-
-	/**
-	 * Create a {@link UrlValue}.
-	 * 
-	 * @param url
-	 * @return a {@link UrlValue} corresponding to the input
-	 */
-	UrlValue getUrlValue(String url);
+	DatatypeIdValue getDatatypeIdValue(String id);
 
 	/**
 	 * Create a {@link TimeValue}.
@@ -85,33 +77,49 @@ public interface DataObjectFactory {
 	 *            a month number between 1 and 12
 	 * @param day
 	 *            a day number between 1 and 31
+	 * @param hour
+	 *            an hour number between 0 and 23
+	 * @param minute
+	 *            a minute number between 0 and 59
+	 * @param second
+	 *            a second number between 0 and 60 (possible leap second)
 	 * @param precision
 	 *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
 	 *            {@link TimeValue#PREC_GY}
+	 * @param beforeTolerance
+	 *            non-negative integer tolerance before the value; see
+	 *            {@link TimeValue#getBeforeTolerance()}
+	 * @param afterTolerance
+	 *            non-zero, positive integer tolerance before the value; see
+	 *            {@link TimeValue#getAfterTolerance()}
 	 * @param calendarModel
 	 *            the IRI of the calendar model preferred when displaying the
 	 *            date; usually {@link TimeValue#CM_GREGORIAN_PRO} or
 	 *            {@link TimeValue#CM_JULIAN_PRO}
-	 * @return a {@link DatatypeId} corresponding to the input
+	 * @param timezoneOffset
+	 *            offset in minutes that should be applied when displaying this
+	 *            time
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	TimeValue getTimeValue(int year, byte month, byte day, byte precision,
-			String calendarModel);
+	TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+			byte minute, byte second, byte precision, int beforeTolerance,
+			int afterTolerance, int timezoneOffset, String calendarModel);
 
 	/**
 	 * Create a {@link GlobeCoordinatesValue}.
 	 * 
 	 * @param latitude
-	 *            the latitude of the coordinates in degrees
+	 *            the latitude of the coordinates in nanodegrees
 	 * @param longitude
-	 *            the longitude of the coordinates in degrees
+	 *            the longitude of the coordinates in nanodegrees
 	 * @param precision
-	 *            the precision of the coordinates in degrees
+	 *            the precision of the coordinates in nanodegrees
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 * @return a {@link GlobeCoordinatesValue} corresponding to the input
 	 */
-	GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
-			double longitude, double precision, String globeIri);
+	GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
+			long longitude, long precision, String globeIri);
 
 	/**
 	 * Create a {@link StringValue}.
@@ -120,6 +128,18 @@ public interface DataObjectFactory {
 	 * @return a {@link StringValue} corresponding to the input
 	 */
 	StringValue getStringValue(String string);
+
+	/**
+	 * Create a {@link MonolingualTextValue}.
+	 * 
+	 * @param text
+	 *            the text of the value
+	 * @param languageCode
+	 *            the language code of the value
+	 * @return a {@link MonolingualValue} corresponding to the input
+	 */
+	MonolingualTextValue getMonolingualTextValue(String text,
+			String languageCode);
 
 	/**
 	 * Create a {@link QuantityValue}.
@@ -142,7 +162,7 @@ public interface DataObjectFactory {
 	 * @param value
 	 * @return a {@link ValueSnak} corresponding to the input
 	 */
-	ValueSnak getValueSnak(PropertyId propertyId, Value value);
+	ValueSnak getValueSnak(PropertyIdValue propertyId, Value value);
 
 	/**
 	 * Create a {@link SomeValueSnak}.
@@ -150,7 +170,7 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link SomeValueSnak} corresponding to the input
 	 */
-	SomeValueSnak getSomeValueSnak(PropertyId propertyId);
+	SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId);
 
 	/**
 	 * Create a {@link NoValueSnak}.
@@ -158,10 +178,10 @@ public interface DataObjectFactory {
 	 * @param propertyId
 	 * @return a {@link NoValueSnak} corresponding to the input
 	 */
-	NoValueSnak getNoValueSnak(PropertyId propertyId);
+	NoValueSnak getNoValueSnak(PropertyIdValue propertyId);
 
 	/**
-	 * Create a {@link Statement}.
+	 * Create a {@link Claim}.
 	 * 
 	 * @param subject
 	 *            the subject the Statement refers to
@@ -169,15 +189,49 @@ public interface DataObjectFactory {
 	 *            the main Snak of the Statement
 	 * @param qualifiers
 	 *            the qualifiers of the Statement
+	 * @return a {@link Claim} corresponding to the input
+	 */
+	Claim getClaim(EntityIdValue subject, Snak mainSnak,
+			List<? extends Snak> qualifiers);
+
+	/**
+	 * Create a {@link Reference}.
+	 * 
+	 * @param valueSnaks
+	 *            list of property-value pairs
+	 * @return a {@link Reference} corresponding to the input
+	 */
+	Reference getReference(List<? extends ValueSnak> valueSnaks);
+
+	/**
+	 * Create a {@link Statement}.
+	 * <p>
+	 * The string id is used mainly for communication with a Wikibase site, in
+	 * order to refer to statements of that site. When creating new statements
+	 * that are not on any site, the empty string can be used.
+	 * 
+	 * @param claim
+	 *            the main claim the Statement refers to
 	 * @param references
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
+	 * @param statementId
+	 *            the string id of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
-	Statement getStatement(EntityId subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank);
+	Statement getStatement(Claim claim, List<? extends Reference> references,
+			StatementRank rank, String statementId);
+
+	/**
+	 * Create a {@link StatementGroup}.
+	 * 
+	 * @param statements
+	 *            a non-empty list of statements that use the same subject and
+	 *            main-snak property in their claim
+	 * @return a {@link StatementGroup} corresponding to the input
+	 */
+	StatementGroup getStatementGroup(List<Statement> statements);
 
 	/**
 	 * Create a {@link SiteLink}.
@@ -197,44 +251,52 @@ public interface DataObjectFactory {
 			List<String> badges);
 
 	/**
-	 * Create a {@link PropertyRecord}.
+	 * Create a {@link PropertyDocument}.
 	 * 
 	 * @param propertyId
 	 *            the id of the property that data is about
 	 * @param labels
-	 *            the labels of this property by language code
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
 	 * @param descriptions
-	 *            the descriptions of this property by language code
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this property by language code
+	 *            the list of aliases of this property
 	 * @param datatypeId
 	 *            the datatype of that property
-	 * @return a {@link PropertyRecord} corresponding to the input
+	 * @return a {@link PropertyDocument} corresponding to the input
 	 */
-	PropertyRecord getPropertyRecord(PropertyId propertyId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId);
+	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId);
 
 	/**
-	 * Create an {@link ItemRecord}.
+	 * Create an {@link ItemDocument}.
 	 * 
-	 * @param itemId
+	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
-	 *            the labels of this item by language code
+	 *            the list of labels of this item, with at most one label for
+	 *            each language code
 	 * @param descriptions
-	 *            the descriptions of this item by language code
+	 *            the list of descriptions of this item, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this item by language code
-	 * @param statements
-	 *            the list of statements of this item
+	 *            the list of aliases of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
-	 * @return an {@link ItemRecord} corresponding to the input
+	 * @return an {@link ItemDocument} corresponding to the input
 	 */
-	ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
+	ItemDocument getItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks);
 
 }

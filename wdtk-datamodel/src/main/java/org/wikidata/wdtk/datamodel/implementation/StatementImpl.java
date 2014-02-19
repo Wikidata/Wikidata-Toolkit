@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
@@ -38,67 +38,58 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  */
 public class StatementImpl implements Statement {
 
-	final EntityId subject;
-	final Snak mainSnak;
-	final List<? extends Snak> qualifiers;
-	final List<List<? extends Snak>> references;
+	final Claim claim;
+	final List<? extends Reference> references;
 	final StatementRank rank;
+	final String statementId;
 
 	/**
 	 * Constructor.
+	 * <p>
+	 * The string id is used mainly for communication with a Wikibase site, in
+	 * order to refer to statements of that site. When creating new statements
+	 * that are not on any site, the empty string can be used.
 	 * 
-	 * @param subject
-	 *            the subject the Statement refers to
-	 * @param mainSnak
-	 *            the main Snak of the Statement
-	 * @param qualifiers
-	 *            the qualifiers of the Statement
+	 * @param claim
+	 *            the main claim the Statement refers to
 	 * @param references
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
+	 * @param statementId
+	 *            the string id of the Statement
 	 */
-	StatementImpl(EntityId subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank) {
-		Validate.notNull(subject, "Statement subjects cannot be null");
-		Validate.notNull(mainSnak, "Statement main Snaks cannot be null");
-		Validate.notNull(qualifiers, "Statement qualifiers cannot be null");
+	StatementImpl(Claim claim, List<? extends Reference> references,
+			StatementRank rank, String statementId) {
+		Validate.notNull(claim, "Statement main claim cannot be null");
 		Validate.notNull(references, "Statement references cannot be null");
 		Validate.notNull(rank, "Statement ranks cannot be null");
+		Validate.notNull(statementId, "Statement ids cannot be null");
 
-		this.subject = subject;
-		this.mainSnak = mainSnak;
-		this.qualifiers = qualifiers;
+		this.claim = claim;
 		this.references = references;
 		this.rank = rank;
+		this.statementId = statementId;
 	}
 
 	@Override
-	public EntityId getSubject() {
-		return subject;
-	}
-
-	@Override
-	public Snak getMainSnak() {
-		return mainSnak;
-	}
-
-	@Override
-	public List<? extends Snak> getQualifiers() {
-		return Collections.unmodifiableList(qualifiers);
+	public Claim getClaim() {
+		return this.claim;
 	}
 
 	@Override
 	public StatementRank getRank() {
-		return rank;
+		return this.rank;
 	}
 
 	@Override
-	public List<List<? extends Snak>> getReferences() {
-		// TODO This still allows inner lists of Snaks to be modified. Do
-		// we have to protect against this?
-		return Collections.unmodifiableList(references);
+	public List<? extends Reference> getReferences() {
+		return Collections.unmodifiableList(this.references);
+	}
+
+	@Override
+	public String getStatementId() {
+		return this.statementId;
 	}
 
 	/*
@@ -108,9 +99,9 @@ public class StatementImpl implements Statement {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(31, 569).append(subject).append(mainSnak)
-				.append(rank).append(qualifiers).append(references)
-				.toHashCode();
+		return new HashCodeBuilder(31, 569).append(this.claim)
+				.append(this.rank).append(this.references)
+				.append(this.statementId).toHashCode();
 	}
 
 	/*
@@ -123,22 +114,15 @@ public class StatementImpl implements Statement {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
 		if (!(obj instanceof StatementImpl)) {
 			return false;
 		}
 
 		StatementImpl other = (StatementImpl) obj;
 
-		if (!subject.equals(other.subject) || !mainSnak.equals(other.mainSnak)
-				|| rank != other.rank || !qualifiers.equals(other.qualifiers)
-				|| !references.equals(other.references)) {
-			return false;
-		} else {
-			return true;
-		}
+		return this.claim.equals(other.claim) && this.rank == other.rank
+				&& this.references.equals(other.references)
+				&& this.statementId.equals(other.statementId);
 	}
 
 }

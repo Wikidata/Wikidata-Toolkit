@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -42,7 +42,7 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	 * @param propertyId
 	 * @param value
 	 */
-	ValueSnakImpl(PropertyId propertyId, Value value) {
+	ValueSnakImpl(PropertyIdValue propertyId, Value value) {
 		super(propertyId);
 		Validate.notNull(value, "ValueSnak values cannot be null");
 		this.value = value;

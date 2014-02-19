@@ -21,25 +21,25 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Implementation of {@link PropertyRecord}.
+ * Implementation of {@link PropertyDocument}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyRecordImpl extends EntityRecordImpl implements
-		PropertyRecord {
+public class PropertyDocumentImpl extends TermedDocumentImpl implements
+		PropertyDocument {
 
-	final PropertyId propertyId;
-	final DatatypeId datatypeId;
+	final PropertyIdValue propertyId;
+	final DatatypeIdValue datatypeId;
 
 	/**
 	 * Constructor.
@@ -47,17 +47,20 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 	 * @param propertyId
 	 *            the id of the property that data is about
 	 * @param labels
-	 *            the labels of this property by language code
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
 	 * @param descriptions
-	 *            the descriptions of this property by language code
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this property by language code
+	 *            the list of aliases of this property
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
-	PropertyRecordImpl(PropertyId propertyId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId) {
+	PropertyDocumentImpl(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		super(labels, descriptions, aliases);
 		Validate.notNull(propertyId, "property ID cannot be null");
 		Validate.notNull(datatypeId, "datatype ID cannot be null");
@@ -66,17 +69,17 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 	}
 
 	@Override
-	public EntityId getEntityId() {
+	public EntityIdValue getEntityId() {
 		return propertyId;
 	}
 
 	@Override
-	public PropertyId getPropertyId() {
+	public PropertyIdValue getPropertyId() {
 		return propertyId;
 	}
 
 	@Override
-	public DatatypeId getDatatype() {
+	public DatatypeIdValue getDatatype() {
 		return datatypeId;
 	}
 
@@ -107,10 +110,10 @@ public class PropertyRecordImpl extends EntityRecordImpl implements
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof PropertyRecordImpl)) {
+		if (!(obj instanceof PropertyDocumentImpl)) {
 			return false;
 		}
-		PropertyRecordImpl other = (PropertyRecordImpl) obj;
+		PropertyDocumentImpl other = (PropertyDocumentImpl) obj;
 		return datatypeId.equals(other.datatypeId)
 				&& propertyId.equals(other.propertyId);
 	}

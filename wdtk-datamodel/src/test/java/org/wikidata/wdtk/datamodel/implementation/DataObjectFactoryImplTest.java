@@ -24,26 +24,28 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class DataObjectFactoryImplTest {
@@ -57,47 +59,49 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemId() {
-		ItemId o1 = new ItemIdImpl("Q42", "foo");
-		ItemId o2 = factory.getItemId("Q42", "foo");
+		ItemIdValue o1 = new ItemIdValueImpl("Q42", "foo");
+		ItemIdValue o2 = factory.getItemIdValue("Q42", "foo");
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetPropertyId() {
-		PropertyId o1 = new PropertyIdImpl("P42", "foo");
-		PropertyId o2 = factory.getPropertyId("P42", "foo");
+		PropertyIdValue o1 = new PropertyIdValueImpl("P42", "foo");
+		PropertyIdValue o2 = factory.getPropertyIdValue("P42", "foo");
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetDatatypeId() {
-		DatatypeId o1 = new DatatypeIdImpl(DatatypeId.DT_TIME);
-		DatatypeId o2 = factory.getDatatypeId(DatatypeId.DT_TIME);
-		assertEquals(o1, o2);
-	}
-
-	@Test
-	public final void testGetUrlValue() {
-		UrlValue o1 = new UrlValueImpl("http://example.org/");
-		UrlValue o2 = factory.getUrlValue("http://example.org/");
+		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
+		DatatypeIdValue o2 = factory
+				.getDatatypeIdValue(DatatypeIdValue.DT_TIME);
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetTimeValue() {
-		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 1,
+		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10,
+				(byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 1, TimeValue.CM_GREGORIAN_PRO);
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetGlobeCoordinatesValue() {
-		GlobeCoordinatesValue o1 = new GlobeCoordinatesValueImpl(90.0, 190.5,
-				1, GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(90.0,
-				190.5, 1, GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue o1 = new GlobeCoordinatesValueImpl(
+				90 * GlobeCoordinatesValue.PREC_DEGREE,
+				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(
+				90 * GlobeCoordinatesValue.PREC_DEGREE,
+				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
 		assertEquals(o1, o2);
 	}
 
@@ -105,6 +109,13 @@ public class DataObjectFactoryImplTest {
 	public final void testGetStringValue() {
 		StringValue o1 = new StringValueImpl("foo");
 		StringValue o2 = factory.getStringValue("foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMonolingualTextValue() {
+		MonolingualTextValue o1 = new MonolingualTextValueImpl("foo", "en");
+		MonolingualTextValue o2 = factory.getMonolingualTextValue("foo", "en");
 		assertEquals(o1, o2);
 	}
 
@@ -123,44 +134,81 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetValueSnak() {
-		ValueSnak o1 = new ValueSnakImpl(factory.getPropertyId("P42", "foo"),
-				factory.getStringValue("foo"));
+		ValueSnak o1 = new ValueSnakImpl(factory.getPropertyIdValue("P42",
+				"foo"), factory.getStringValue("foo"));
 		ValueSnak o2 = factory.getValueSnak(
-				factory.getPropertyId("P42", "foo"),
+				factory.getPropertyIdValue("P42", "foo"),
 				factory.getStringValue("foo"));
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetSomeValueSnak() {
-		SomeValueSnak o1 = new SomeValueSnakImpl(factory.getPropertyId("P42",
-				"foo"));
-		SomeValueSnak o2 = factory.getSomeValueSnak(factory.getPropertyId(
+		SomeValueSnak o1 = new SomeValueSnakImpl(factory.getPropertyIdValue(
+				"P42", "foo"));
+		SomeValueSnak o2 = factory.getSomeValueSnak(factory.getPropertyIdValue(
 				"P42", "foo"));
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetNoValueSnak() {
-		NoValueSnak o1 = new NoValueSnakImpl(
-				factory.getPropertyId("P42", "foo"));
-		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyId("P42",
+		NoValueSnak o1 = new NoValueSnakImpl(factory.getPropertyIdValue("P42",
 				"foo"));
+		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyIdValue(
+				"P42", "foo"));
 		assertEquals(o1, o2);
 	}
 
 	@Test
+	public final void testGetClaim() {
+		Claim o1 = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.<Snak> emptyList());
+		Claim o2 = factory
+				.getClaim(factory.getItemIdValue("Q42", "foo"), factory
+						.getNoValueSnak(factory
+								.getPropertyIdValue("P42", "foo")), Collections
+						.<Snak> emptyList());
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetReference() {
+		Reference r1 = new ReferenceImpl(Collections.<ValueSnak> emptyList());
+		Reference r2 = factory
+				.getReference(Collections.<ValueSnak> emptyList());
+		assertEquals(r1, r2);
+	}
+
+	@Test
 	public final void testGetStatement() {
-		Statement o1 = new StatementImpl(factory.getItemId("Q42", "foo"),
-				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
-				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
-		Statement o2 = factory.getStatement(factory.getItemId("Q42", "foo"),
-				factory.getNoValueSnak(factory.getPropertyId("P42", "foo")),
-				Collections.<Snak> emptyList(),
-				Collections.<List<? extends Snak>> emptyList(),
-				StatementRank.NORMAL);
+		Claim c = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.<Snak> emptyList());
+		Statement o1 = new StatementImpl(c,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
+		Statement o2 = factory.getStatement(c,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"MyId");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetStatementGroup() {
+		Claim c = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.<Snak> emptyList());
+		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL, "MyId");
+		StatementGroup o1 = new StatementGroupImpl(
+				Collections.<Statement> singletonList(s));
+		StatementGroup o2 = factory.getStatementGroup(Collections
+				.<Statement> singletonList(s));
 		assertEquals(o1, o2);
 	}
 
@@ -174,36 +222,37 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
-	public final void testGetPropertyRecord() {
-		PropertyRecord o1 = new PropertyRecordImpl(factory.getPropertyId("P42",
-				"foo"), Collections.<String, String> emptyMap(),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, List<String>> emptyMap(),
-				factory.getDatatypeId(DatatypeId.DT_TIME));
-		PropertyRecord o2 = factory.getPropertyRecord(
-				factory.getPropertyId("P42", "foo"),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, List<String>> emptyMap(),
-				factory.getDatatypeId(DatatypeId.DT_TIME));
+	public final void testGetPropertyDocument() {
+		PropertyDocument o1 = new PropertyDocumentImpl(
+				factory.getPropertyIdValue("P42", "foo"),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
+		PropertyDocument o2 = factory.getPropertyDocument(
+				factory.getPropertyIdValue("P42", "foo"),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		assertEquals(o1, o2);
 	}
 
 	@Test
-	public final void testGetItemRecord() {
-		ItemRecord o1 = new ItemRecordImpl(factory.getItemId("Q42", "foo"),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, List<String>> emptyMap(),
-				Collections.<Statement> emptyList(),
+	public final void testGetItemDocument() {
+		ItemDocument o1 = new ItemDocumentImpl(factory.getItemIdValue("Q42",
+				"foo"), Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
-		ItemRecord o2 = factory.getItemRecord(factory.getItemId("Q42", "foo"),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, String> emptyMap(),
-				Collections.<String, List<String>> emptyMap(),
-				Collections.<Statement> emptyList(),
+		ItemDocument o2 = factory.getItemDocument(
+				factory.getItemIdValue("Q42", "foo"),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 		assertEquals(o1, o2);
 	}
-
 }

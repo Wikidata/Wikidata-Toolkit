@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -20,34 +20,14 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-
 /**
- * Generic implementation of {@link ItemId} that works with arbitrary Wikibase
- * instances: it requires a baseIri that identifies the site globally.
+ * The id of a Wikibase Property. Objects implementing this interface always return
+ * {@link EntityIdValue.EntityType#PROPERTY} for {@link EntityIdValue#getEntityType()
+ * getEntityType}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class ItemIdImpl extends EntityIdImpl implements ItemId {
-
-	/**
-	 * @see EntityIdImpl#EntityIdImpl(String, String)
-	 * @param id
-	 * @param baseIri
-	 */
-	ItemIdImpl(String id, String baseIri) {
-		super(id, baseIri);
-
-		if (!id.matches("^Q[1-9][0-9]*$")) {
-			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
-		}
-	}
-
-	@Override
-	public EntityType getEntityType() {
-		return EntityType.ITEM;
-	}
+public interface PropertyIdValue extends EntityIdValue {
 
 }

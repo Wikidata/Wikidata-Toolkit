@@ -37,53 +37,91 @@ public class TimeValueImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		t1 = new TimeValueImpl(2012, (byte) 5, (byte) 12, TimeValue.PREC_DAY,
+		t1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
-		t2 = new TimeValueImpl(2012, (byte) 5, (byte) 12, TimeValue.PREC_DAY,
+		t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 	}
 
 	@Test
 	public void storedValuesCorrect() {
-		assertEquals(t1.getYear(), 2012);
+		assertEquals(t1.getYear(), 2007);
 		assertEquals(t1.getMonth(), 5);
 		assertEquals(t1.getDay(), 12);
-		assertEquals(t1.getPrecision(), TimeValue.PREC_DAY);
+		assertEquals(t1.getHour(), 10);
+		assertEquals(t1.getMinute(), 45);
+		assertEquals(t1.getSecond(), 0);
+		assertEquals(t1.getPrecision(), TimeValue.PREC_SECOND);
+		assertEquals(t1.getBeforeTolerance(), 0);
+		assertEquals(t1.getAfterTolerance(), 1);
+		assertEquals(t1.getTimezoneOffset(), 60);
 		assertEquals(t1.getPreferredCalendarModel(), TimeValue.CM_GREGORIAN_PRO);
 	}
 
 	@Test
-	public void timeValueEqualityBasedOnContent() {
-		TimeValue t3 = new TimeValueImpl(2013, (byte) 5, (byte) 12,
-				TimeValue.PREC_DAY, TimeValue.CM_GREGORIAN_PRO);
-		TimeValue t4 = new TimeValueImpl(2012, (byte) 6, (byte) 12,
-				TimeValue.PREC_DAY, TimeValue.CM_GREGORIAN_PRO);
-		TimeValue t5 = new TimeValueImpl(2012, (byte) 5, (byte) 13,
-				TimeValue.PREC_DAY, TimeValue.CM_GREGORIAN_PRO);
-		TimeValue t6 = new TimeValueImpl(2012, (byte) 5, (byte) 12,
-				TimeValue.PREC_YEAR, TimeValue.CM_GREGORIAN_PRO);
-		TimeValue t7 = new TimeValueImpl(2012, (byte) 5, (byte) 12,
-				TimeValue.PREC_DAY, TimeValue.CM_JULIAN_PRO);
+	public void equalityBasedOnContent() {
+		TimeValue tdYear = new TimeValueImpl(2013, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdMonth = new TimeValueImpl(2007, (byte) 6, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdDay = new TimeValueImpl(2007, (byte) 5, (byte) 13,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdHour = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 11, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdMinute = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 47, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdSecond = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 01, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdTimezone = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				120, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdBefore = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 1, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdAfter = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 2,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdPrecision = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				TimeValue.CM_GREGORIAN_PRO);
+		TimeValue tdCalendar = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_JULIAN_PRO);
 
 		assertEquals(t1, t1);
 		assertEquals(t1, t2);
-		assertThat(t1, not(equalTo(t3)));
-		assertThat(t1, not(equalTo(t4)));
-		assertThat(t1, not(equalTo(t5)));
-		assertThat(t1, not(equalTo(t6)));
-		assertThat(t1, not(equalTo(t7)));
+		assertThat(t1, not(equalTo(tdYear)));
+		assertThat(t1, not(equalTo(tdMonth)));
+		assertThat(t1, not(equalTo(tdDay)));
+		assertThat(t1, not(equalTo(tdHour)));
+		assertThat(t1, not(equalTo(tdMinute)));
+		assertThat(t1, not(equalTo(tdSecond)));
+		assertThat(t1, not(equalTo(tdTimezone)));
+		assertThat(t1, not(equalTo(tdBefore)));
+		assertThat(t1, not(equalTo(tdAfter)));
+		assertThat(t1, not(equalTo(tdPrecision)));
+		assertThat(t1, not(equalTo(tdCalendar)));
 		assertThat(t1, not(equalTo(null)));
 		assertFalse(t1.equals(this));
 	}
 
 	@Test
-	public void timeValueHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(t1.hashCode(), t2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void timeValueCalendarModelNotNull() {
-		new TimeValueImpl(2012, (byte) 5, (byte) 12, TimeValue.PREC_DAY, null);
+	public void calendarModelNotNull() {
+		new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60, null);
 	}
 
 }

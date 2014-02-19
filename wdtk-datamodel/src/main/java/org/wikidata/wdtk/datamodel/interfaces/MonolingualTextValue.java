@@ -21,30 +21,27 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * Interface for datasets that describe properties. It extends
- * {@link EntityRecord} with information about the datatype of a property.
- * 
- * Claims or Statements on properties might be supported in the future.
+ * A monolingual text value represents a text (string) in a certain language.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface PropertyRecord extends EntityRecord {
+public interface MonolingualTextValue extends Value {
 
 	/**
-	 * Return the ID of the property that the data refers to. The result is the
-	 * same as that of {@link EntityRecord#getEntityId()}, but declared with a
-	 * more specific result type.
+	 * Get the text of this value.
 	 * 
-	 * @return property id
+	 * @return a string
 	 */
-	PropertyId getPropertyId();
+	String getText();
 
 	/**
-	 * Get the datatype id of the datatype defined for this property.
+	 * Get the language code of this value. The codes are usually based on the
+	 * codes used internally in Wikibase, which in turn are the codes used in
+	 * the Universal Language Selector extension. However, the data model as
+	 * such does not restrict the strings that might be used here.
 	 * 
-	 * @return
+	 * @return a string that represents language
 	 */
-	DatatypeId getDatatype();
-
+	String getLanguageCode();
 }

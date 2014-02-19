@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
@@ -34,51 +35,118 @@ public class TimeValueImpl implements TimeValue {
 	final int year;
 	final byte month;
 	final byte day;
+	final byte hour;
+	final byte minute;
+	final byte second;
 	final byte precision;
+	final int timezoneOffset;
+	final int beforeTolerance;
+	final int afterTolerance;
 	final String calendarModel;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param year
+	 *            a year number, where 0 refers to 1BCE
 	 * @param month
+	 *            a month number between 1 and 12
 	 * @param day
+	 *            a day number between 1 and 31
+	 * @param hour
+	 *            an hour number between 0 and 23
+	 * @param minute
+	 *            a minute number between 0 and 59
+	 * @param second
+	 *            a second number between 0 and 60 (possible leap second)
 	 * @param precision
+	 *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
+	 *            {@link TimeValue#PREC_GY}
+	 * @param beforeTolerance
+	 *            non-negative integer tolerance before the value; see
+	 *            {@link TimeValue#getBeforeTolerance()}
+	 * @param afterTolerance
+	 *            non-zero, positive integer tolerance before the value; see
+	 *            {@link TimeValue#getAfterTolerance()}
 	 * @param calendarModel
+	 *            the IRI of the calendar model preferred when displaying the
+	 *            date; usually {@link TimeValue#CM_GREGORIAN_PRO} or
+	 *            {@link TimeValue#CM_JULIAN_PRO}
+	 * @param timezoneOffset
+	 *            offset in minutes that should be applied when displaying this
+	 *            time
+	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	TimeValueImpl(int year, byte month, byte day, byte precision,
-			String calendarModel) {
+	TimeValueImpl(int year, byte month, byte day, byte hour, byte minute,
+			byte second, byte precision, int beforeTolerance,
+			int afterTolerance, int timezoneOffset, String calendarModel) {
 		Validate.notNull(calendarModel, "Calendar model must not be null");
 		this.year = year;
 		this.month = month;
 		this.day = day;
+		this.hour = hour;
+		this.minute = minute;
+		this.second = second;
 		this.precision = precision;
+		this.beforeTolerance = beforeTolerance;
+		this.afterTolerance = afterTolerance;
+		this.timezoneOffset = timezoneOffset;
 		this.calendarModel = calendarModel;
 	}
 
 	@Override
 	public int getYear() {
-		return year;
+		return this.year;
 	}
 
 	@Override
 	public byte getMonth() {
-		return month;
+		return this.month;
 	}
 
 	@Override
 	public byte getDay() {
-		return day;
+		return this.day;
+	}
+
+	@Override
+	public byte getHour() {
+		return this.hour;
+	}
+
+	@Override
+	public byte getMinute() {
+		return this.minute;
+	}
+
+	@Override
+	public byte getSecond() {
+		return this.second;
+	}
+
+	@Override
+	public int getTimezoneOffset() {
+		return this.timezoneOffset;
 	}
 
 	@Override
 	public String getPreferredCalendarModel() {
-		return calendarModel;
+		return this.calendarModel;
 	}
 
 	@Override
 	public byte getPrecision() {
-		return precision;
+		return this.precision;
+	}
+
+	@Override
+	public int getBeforeTolerance() {
+		return this.beforeTolerance;
+	}
+
+	@Override
+	public int getAfterTolerance() {
+		return this.afterTolerance;
 	}
 
 	/*
@@ -90,11 +158,17 @@ public class TimeValueImpl implements TimeValue {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + calendarModel.hashCode();
-		result = prime * result + day;
-		result = prime * result + month;
-		result = prime * result + precision;
-		result = prime * result + year;
+		result = prime * result + this.year;
+		result = prime * result + this.month;
+		result = prime * result + this.day;
+		result = prime * result + this.hour;
+		result = prime * result + this.minute;
+		result = prime * result + this.second;
+		result = prime * result + this.precision;
+		result = prime * result + this.beforeTolerance;
+		result = prime * result + this.afterTolerance;
+		result = prime * result + this.timezoneOffset;
+		result = prime * result + this.calendarModel.hashCode();
 		return result;
 	}
 
@@ -108,16 +182,18 @@ public class TimeValueImpl implements TimeValue {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
 		if (!(obj instanceof TimeValueImpl)) {
 			return false;
 		}
 		TimeValueImpl other = (TimeValueImpl) obj;
-		return calendarModel.equals(other.calendarModel) && day == other.day
-				&& month == other.month && precision == other.precision
-				&& year == other.year;
+		return this.year == other.year && this.month == other.month
+				&& this.day == other.day && this.hour == other.hour
+				&& this.minute == other.minute && this.second == other.second
+				&& this.precision == other.precision
+				&& this.beforeTolerance == other.beforeTolerance
+				&& this.afterTolerance == other.afterTolerance
+				&& this.timezoneOffset == other.timezoneOffset
+				&& this.calendarModel.equals(other.calendarModel);
 	}
 
 }

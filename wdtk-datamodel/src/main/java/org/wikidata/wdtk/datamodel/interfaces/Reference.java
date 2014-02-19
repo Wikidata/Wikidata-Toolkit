@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -20,34 +20,24 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import java.util.List;
 
 /**
- * Generic implementation of {@link PropertyId} that works with arbitrary
- * Wikibase instances: it requires a baseIri that identifies the site globally.
+ * An interface for references in Wikidata. A reference is currently defined by
+ * a list of ValueSnaks, encoding property-value pairs.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyIdImpl extends EntityIdImpl implements PropertyId {
+public interface Reference {
 
 	/**
-	 * @see EntityIdImpl#EntityIdImpl(String, String)
-	 * @param id
-	 * @param baseIri
+	 * Get the list of property-value pairs associated with this reference.
+	 * Objects of this class are immutable, and the list should therefore not be
+	 * modifiable.
+	 * 
+	 * @return list of ValueSnaks
 	 */
-	PropertyIdImpl(String id, String baseIri) {
-		super(id, baseIri);
-
-		if (!id.matches("^P[1-9][0-9]*$")) {
-			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
-		}
-	}
-
-	@Override
-	public EntityType getEntityType() {
-		return EntityType.PROPERTY;
-	}
+	List<? extends ValueSnak> getSnaks();
 
 }

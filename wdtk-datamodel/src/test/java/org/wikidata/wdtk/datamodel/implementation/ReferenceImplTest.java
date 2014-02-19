@@ -26,45 +26,57 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-public class StringValueImplTest {
+public class ReferenceImplTest {
 
-	StringValue s1;
-	StringValue s2;
+	Reference r1;
+	Reference r2;
+	ValueSnak valueSnak;
 
 	@Before
 	public void setUp() throws Exception {
-		s1 = new StringValueImpl("some string");
-		s2 = new StringValueImpl("some string");
+		EntityIdValue subject = new ItemIdValueImpl("Q42",
+				"http://wikidata.org/entity/");
+		PropertyIdValue property = new PropertyIdValueImpl("P42",
+				"http://wikidata.org/entity/");
+		valueSnak = new ValueSnakImpl(property, subject);
+		r1 = new ReferenceImpl(Collections.<ValueSnak> singletonList(valueSnak));
+		r2 = new ReferenceImpl(Collections.<ValueSnak> singletonList(valueSnak));
 	}
 
 	@Test
-	public void stringIsCorrect() {
-		assertEquals(s1.getString(), "some string");
+	public void snakListIsCorrect() {
+		assertEquals(r1.getSnaks(),
+				Collections.<ValueSnak> singletonList(valueSnak));
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		StringValue s3 = new StringValueImpl("another string");
+		Reference r3 = new ReferenceImpl(Collections.<ValueSnak> emptyList());
 
-		assertEquals(s1, s1);
-		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertEquals(r1, r1);
+		assertEquals(r1, r2);
+		assertThat(r1, not(equalTo(r3)));
+		assertThat(r1, not(equalTo(null)));
+		assertFalse(r1.equals(this));
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(s1.hashCode(), s2.hashCode());
+		assertEquals(r1.hashCode(), r2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void stringNotNull() {
-		new StringValueImpl(null);
+	public void snakListNotNull() {
+		new ReferenceImpl(null);
 	}
 
 }

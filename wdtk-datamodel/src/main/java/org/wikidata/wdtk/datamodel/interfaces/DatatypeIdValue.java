@@ -22,13 +22,13 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * A value that represents one of the available Wikibase datatypes. The method
- * {@link IriValue#getIri() getIri()} will always return one of the datatype
+ * {@link IriIdentifiedValue#getIri() getIri()} will always return one of the datatype
  * IRIs defined in this interface.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface DatatypeId extends IriValue {
+public interface DatatypeIdValue extends IriIdentifiedValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */

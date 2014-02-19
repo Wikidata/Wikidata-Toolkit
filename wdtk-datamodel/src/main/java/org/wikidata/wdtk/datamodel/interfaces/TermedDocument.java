@@ -20,24 +20,36 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * An IriValue is a Value that is identified by an IRI, which can be used as the
- * canonical identifier for the entity outside of the context of a particular
- * Wikibase installation.
- * 
- * This interface is intended as a general interface for all types of
- * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
- * the value that is used when users enter a URL (or IRI) directly in Wikibase.
+ * Interface for EntityDocuments that can be described by terms in several
+ * languages. These terms consist labels, descriptions, and aliases.
  * 
  * @author Markus Kroetzsch
- * 
  */
-public interface IriValue extends Value {
+public interface TermedDocument extends EntityDocument {
+	/**
+	 * Return a Map from Wikibase language codes to labels.
+	 * 
+	 * @return the map of labels
+	 */
+	Map<String, MonolingualTextValue> getLabels();
 
 	/**
-	 * Get the IRI of this entity.
+	 * Return a Map from Wikibase language codes to descriptions.
 	 * 
-	 * @return String with the IRI
+	 * @return the map of descriptions
 	 */
-	String getIri();
+	Map<String, MonolingualTextValue> getDescriptions();
+
+	/**
+	 * Return a Map from Wikibase language codes to lists of alias labels for a
+	 * given language.
+	 * 
+	 * @return the aliases for this language
+	 */
+	Map<String, List<MonolingualTextValue>> getAliases();
+
 }

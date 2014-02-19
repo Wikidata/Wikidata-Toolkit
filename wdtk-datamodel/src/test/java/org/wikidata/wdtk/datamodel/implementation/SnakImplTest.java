@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -46,8 +46,8 @@ public class SnakImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropertyId p1 = new PropertyIdImpl("P42", "http://example.com/entity/");
-		PropertyId p2 = new PropertyIdImpl("P43", "http://example.com/entity/");
+		PropertyIdValue p1 = new PropertyIdValueImpl("P42", "http://example.com/entity/");
+		PropertyIdValue p2 = new PropertyIdValueImpl("P43", "http://example.com/entity/");
 
 		vs1 = new ValueSnakImpl(p1, p1);
 		vs2 = new ValueSnakImpl(p1, p1);
@@ -104,7 +104,7 @@ public class SnakImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new ItemIdImpl(null, "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl(null, "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -114,7 +114,7 @@ public class SnakImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void snakValueNotNull() {
-		new ValueSnakImpl(new PropertyIdImpl("P42",
+		new ValueSnakImpl(new PropertyIdValueImpl("P42",
 				"http://example.com/entity/"), null);
 	}
 }

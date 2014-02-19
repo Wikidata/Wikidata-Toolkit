@@ -50,14 +50,14 @@ public class QuantityValueImplTest {
 	}
 
 	@Test
-	public void quantityIsCorrect() {
+	public void gettersWorking() {
 		assertEquals(q1.getNumericValue(), nv);
 		assertEquals(q1.getLowerBound(), lb);
 		assertEquals(q1.getUpperBound(), ub);
 	}
 
 	@Test
-	public void quantitiyValueEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		BigDecimal nvplus = new BigDecimal(
 				"0.1234567890123456789012345678901234567895");
 		BigDecimal nvminus = new BigDecimal(
@@ -76,32 +76,32 @@ public class QuantityValueImplTest {
 	}
 
 	@Test
-	public void quantityValueHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(q1.hashCode(), q2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void quantityValueNumValueNotNull() {
+	public void numValueNotNull() {
 		new QuantityValueImpl(null, lb, ub);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void quantityValueLowerBoundNotNull() {
+	public void lowerBoundNotNull() {
 		new QuantityValueImpl(nv, null, lb);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void quantityValueUpperBoundNotNull() {
+	public void upperBoundNotNull() {
 		new QuantityValueImpl(nv, lb, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void quantityValueLowerBoundNotGreaterNumVal() {
+	public void lowerBoundNotGreaterNumVal() {
 		new QuantityValueImpl(lb, nv, ub);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void quantityValueNumValNotGreaterLowerBound() {
+	public void numValNotGreaterLowerBound() {
 		new QuantityValueImpl(ub, lb, nv);
 	}
 

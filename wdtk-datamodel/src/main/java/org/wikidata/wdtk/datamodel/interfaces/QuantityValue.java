@@ -26,9 +26,10 @@ import java.math.BigDecimal;
  * A quantity value represents a number, possibly under some unit. The number
  * can be of arbitrary precision. Additional upper and lower bounds are provided
  * to allow an interval of uncertainty to be defined.
- * 
+ * <p>
  * As of Jan 2014, units of measurement are not supported yet. The interface may
- * be extended to account for this in the future.
+ * be extended to account for this in the future. It is intended to use external
+ * definitions for units and to identify units by wikidata.org entity ids.
  * 
  * @author Markus Kroetzsch
  * 

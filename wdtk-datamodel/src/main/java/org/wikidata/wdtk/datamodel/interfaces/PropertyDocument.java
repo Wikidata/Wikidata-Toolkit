@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -20,28 +20,31 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-
 /**
- * Implementation of {@link Snak}.
+ * Interface for datasets that describe properties. It extends
+ * {@link EntityDocument} with information about the datatype of a property.
+ * <p>
+ * Claims or Statements on properties might be supported in the future.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public abstract class SnakImpl implements Snak {
+public interface PropertyDocument extends TermedDocument {
 
-	final PropertyIdValue propertyId;
+	/**
+	 * Return the ID of the property that the data refers to. The result is the
+	 * same as that of {@link EntityDocument#getEntityId()}, but declared with a
+	 * more specific result type.
+	 * 
+	 * @return property id
+	 */
+	PropertyIdValue getPropertyId();
 
-	SnakImpl(PropertyIdValue propertyId) {
-		Validate.notNull(propertyId, "Snak property ids cannot be null");
-		this.propertyId = propertyId;
-	}
-
-	@Override
-	public PropertyIdValue getPropertyId() {
-		return propertyId;
-	}
+	/**
+	 * Get the datatype id of the datatype defined for this property.
+	 * 
+	 * @return
+	 */
+	DatatypeIdValue getDatatype();
 
 }

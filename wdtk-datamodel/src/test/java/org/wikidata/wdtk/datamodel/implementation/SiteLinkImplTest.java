@@ -48,14 +48,14 @@ public class SiteLinkImplTest {
 	}
 
 	@Test
-	public void siteLinkFieldsIsCorrect() {
+	public void fieldsIsCorrect() {
 		assertEquals(s1.getArticleTitle(), "Dresden");
 		assertEquals(s1.getSiteKey(), "enwiki");
 		assertEquals(s1.getBadges(), Collections.<String> emptyList());
 	}
 
 	@Test
-	public void siteLinkEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		SiteLink s3 = new SiteLinkImpl("Berlin", "enwiki",
 				"http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
@@ -80,7 +80,7 @@ public class SiteLinkImplTest {
 	}
 
 	@Test
-	public void siteLinkHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(s1.hashCode(), s2.hashCode());
 	}
 
@@ -100,25 +100,25 @@ public class SiteLinkImplTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void siteLinkTitleNotNull() {
+	public void titleNotNull() {
 		new SiteLinkImpl(null, "enwiki", "http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void siteLinkSiteKeyNotNull() {
+	public void siteKeyNotNull() {
 		new SiteLinkImpl("Dresden", null, "http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void siteLinkBaseIriNotNull() {
+	public void baseIriNotNull() {
 		new SiteLinkImpl("Dresden", "enwiki", null,
 				Collections.<String> emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void siteLinkBadgesNotNull() {
+	public void badgesNotNull() {
 		new SiteLinkImpl("Dresden", "enwiki", "http://en.wikipedia.org/wiki/",
 				null);
 	}

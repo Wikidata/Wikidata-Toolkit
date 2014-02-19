@@ -25,60 +25,77 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
-public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
+public class ItemDocumentImpl extends TermedDocumentImpl implements
+		ItemDocument {
 
-	final ItemId itemId;
-	final List<Statement> statements;
+	final ItemIdValue itemId;
+	final List<StatementGroup> statementGroups;
 	final Map<String, SiteLink> siteLinks;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param itemId
+	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
-	 *            the labels of this item by language code
+	 *            the list of labels of this item, with at most one label for
+	 *            each language code
 	 * @param descriptions
-	 *            the descriptions of this item by language code
+	 *            the list of descriptions of this item, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this item by language code
-	 * @param statements
-	 *            the list of statements of this item
+	 *            the list of aliases of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 */
-	ItemRecordImpl(ItemId itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
+	ItemDocumentImpl(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
 		super(labels, descriptions, aliases);
-		Validate.notNull(itemId, "item ID cannot be null");
-		Validate.notNull(statements, "statement list cannot be null");
+		Validate.notNull(itemIdValue, "item ID cannot be null");
+		Validate.notNull(statementGroups, "statement list cannot be null");
 		Validate.notNull(siteLinks, "site links cannot be null");
-		this.itemId = itemId;
-		this.statements = statements;
+
+		if (!statementGroups.isEmpty()) {
+			for (StatementGroup sg : statementGroups) {
+				if (!itemIdValue.equals(sg.getSubject())) {
+					throw new IllegalArgumentException(
+							"All statement groups in a document must have the same subject");
+				}
+			}
+		}
+
+		this.itemId = itemIdValue;
+		this.statementGroups = statementGroups;
 		this.siteLinks = siteLinks;
 	}
 
 	@Override
-	public EntityId getEntityId() {
+	public EntityIdValue getEntityId() {
 		return itemId;
 	}
 
 	@Override
-	public ItemId getItemId() {
+	public ItemIdValue getItemId() {
 		return itemId;
 	}
 
 	@Override
-	public List<Statement> getStatements() {
-		return Collections.unmodifiableList(statements);
+	public List<StatementGroup> getStatementGroups() {
+		return Collections.unmodifiableList(statementGroups);
 	}
 
 	@Override
@@ -97,7 +114,7 @@ public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
 		int result = super.hashCode();
 		result = prime * result + itemId.hashCode();
 		result = prime * result + siteLinks.hashCode();
-		result = prime * result + statements.hashCode();
+		result = prime * result + statementGroups.hashCode();
 		return result;
 	}
 
@@ -114,13 +131,13 @@ public class ItemRecordImpl extends EntityRecordImpl implements ItemRecord {
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof ItemRecordImpl)) {
+		if (!(obj instanceof ItemDocumentImpl)) {
 			return false;
 		}
-		ItemRecordImpl other = (ItemRecordImpl) obj;
+		ItemDocumentImpl other = (ItemDocumentImpl) obj;
 
 		return itemId.equals(other.itemId) && siteLinks.equals(other.siteLinks)
-				&& statements.equals(other.statements);
+				&& statementGroups.equals(other.statementGroups);
 	}
 
 }

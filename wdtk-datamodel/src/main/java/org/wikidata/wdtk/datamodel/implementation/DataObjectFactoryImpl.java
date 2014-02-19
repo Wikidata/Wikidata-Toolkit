@@ -24,24 +24,27 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
-import org.wikidata.wdtk.datamodel.interfaces.EntityId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemId;
-import org.wikidata.wdtk.datamodel.interfaces.ItemRecord;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyId;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyRecord;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -55,34 +58,32 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
-	public ItemId getItemId(String id, String baseIri) {
-		return new ItemIdImpl(id, baseIri);
+	public ItemIdValue getItemIdValue(String id, String baseIri) {
+		return new ItemIdValueImpl(id, baseIri);
 	}
 
 	@Override
-	public PropertyId getPropertyId(String id, String baseIri) {
-		return new PropertyIdImpl(id, baseIri);
+	public PropertyIdValue getPropertyIdValue(String id, String baseIri) {
+		return new PropertyIdValueImpl(id, baseIri);
 	}
 
 	@Override
-	public DatatypeId getDatatypeId(String id) {
+	public DatatypeIdValue getDatatypeIdValue(String id) {
 		return new DatatypeIdImpl(id);
 	}
 
 	@Override
-	public UrlValue getUrlValue(String url) {
-		return new UrlValueImpl(url);
+	public TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+			byte minute, byte second, byte precision, int beforeTolerance,
+			int afterTolerance, int timezoneOffset, String calendarModel) {
+		return new TimeValueImpl(year, month, day, hour, minute, second,
+				precision, beforeTolerance, afterTolerance, timezoneOffset,
+				calendarModel);
 	}
 
 	@Override
-	public TimeValue getTimeValue(int year, byte month, byte day,
-			byte precision, String calendarModel) {
-		return new TimeValueImpl(year, month, day, precision, calendarModel);
-	}
-
-	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
-			double longitude, double precision, String globeIri) {
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
+			long longitude, long precision, String globeIri) {
 		return new GlobeCoordinatesValueImpl(latitude, longitude, precision,
 				globeIri);
 	}
@@ -93,32 +94,53 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public MonolingualTextValue getMonolingualTextValue(String text,
+			String languageCode) {
+		return new MonolingualTextValueImpl(text, languageCode);
+	}
+
+	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
 		return new QuantityValueImpl(numericValue, lowerBound, upperBound);
 	}
 
 	@Override
-	public ValueSnak getValueSnak(PropertyId propertyId, Value value) {
+	public ValueSnak getValueSnak(PropertyIdValue propertyId, Value value) {
 		return new ValueSnakImpl(propertyId, value);
 	}
 
 	@Override
-	public SomeValueSnak getSomeValueSnak(PropertyId propertyId) {
+	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		return new SomeValueSnakImpl(propertyId);
 	}
 
 	@Override
-	public NoValueSnak getNoValueSnak(PropertyId propertyId) {
+	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		return new NoValueSnakImpl(propertyId);
 	}
 
 	@Override
-	public Statement getStatement(EntityId subject, Snak mainSnak,
-			List<? extends Snak> qualifiers,
-			List<List<? extends Snak>> references, StatementRank rank) {
-		return new StatementImpl(subject, mainSnak, qualifiers, references,
-				rank);
+	public Claim getClaim(EntityIdValue subject, Snak mainSnak,
+			List<? extends Snak> qualifiers) {
+		return new ClaimImpl(subject, mainSnak, qualifiers);
+	}
+
+	@Override
+	public Reference getReference(List<? extends ValueSnak> valueSnaks) {
+		return new ReferenceImpl(valueSnaks);
+	}
+
+	@Override
+	public Statement getStatement(Claim claim,
+			List<? extends Reference> references, StatementRank rank,
+			String statementId) {
+		return new StatementImpl(claim, references, rank, statementId);
+	}
+
+	@Override
+	public StatementGroup getStatementGroup(List<Statement> statements) {
+		return new StatementGroupImpl(statements);
 	}
 
 	@Override
@@ -128,20 +150,23 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public PropertyRecord getPropertyRecord(PropertyId propertyId,
-			Map<String, String> labels, Map<String, String> descriptions,
-			Map<String, List<String>> aliases, DatatypeId datatypeId) {
-		return new PropertyRecordImpl(propertyId, labels, descriptions,
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
+		return new PropertyDocumentImpl(propertyId, labels, descriptions,
 				aliases, datatypeId);
 	}
 
 	@Override
-	public ItemRecord getItemRecord(ItemId itemId, Map<String, String> labels,
-			Map<String, String> descriptions,
-			Map<String, List<String>> aliases, List<Statement> statements,
+	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
-		return new ItemRecordImpl(itemId, labels, descriptions, aliases,
-				statements, siteLinks);
+		return new ItemDocumentImpl(itemIdValue, labels, descriptions, aliases,
+				statementGroups, siteLinks);
 	}
 
 }

@@ -20,39 +20,31 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.UrlValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
- * Implementation of {@link UrlValue}.
+ * Implementation of {@link Reference}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class UrlValueImpl implements UrlValue {
+public class ReferenceImpl implements Reference {
 
-	final String url;
+	List<? extends ValueSnak> valueSnaks;
 
-	/**
-	 * Constructor.
-	 * 
-	 * There is currently no validation of the URL string.
-	 * 
-	 * @param url
-	 */
-	UrlValueImpl(String url) {
-		Validate.notNull(url, "URL cannot be null");
-		this.url = url;
+	ReferenceImpl(List<? extends ValueSnak> valueSnaks) {
+		Validate.notNull(valueSnaks, "List of value snaks cannot be null");
+		this.valueSnaks = valueSnaks;
 	}
 
 	@Override
-	public String getUrl() {
-		return url;
-	}
-
-	@Override
-	public String getIri() {
-		return url;
+	public List<? extends ValueSnak> getSnaks() {
+		return Collections.unmodifiableList(this.valueSnaks);
 	}
 
 	/*
@@ -62,7 +54,7 @@ public class UrlValueImpl implements UrlValue {
 	 */
 	@Override
 	public int hashCode() {
-		return url.hashCode();
+		return valueSnaks.hashCode();
 	}
 
 	/*
@@ -75,13 +67,11 @@ public class UrlValueImpl implements UrlValue {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (!(obj instanceof ReferenceImpl)) {
 			return false;
 		}
-		if (!(obj instanceof UrlValueImpl)) {
-			return false;
-		}
-		return url.equals(((UrlValueImpl) obj).url);
+		ReferenceImpl other = (ReferenceImpl) obj;
+		return other.valueSnaks.equals(this.valueSnaks);
 	}
 
 }

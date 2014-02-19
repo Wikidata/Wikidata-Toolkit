@@ -21,25 +21,18 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * A URL Value represents a single web address, which is a IRI.
- * 
- * It was called IRI value in the original Wikidata datamodel specification, but
- * we now use {@link IriValue} as a general interface for all kinds of
- * {@link Value} that have an IRI associated with them. The new label also
- * matches the name URL datatype. However, the URL Value may still store
- * basically any IRI, without additional formal conditions (such as being
- * resolvable).
+ * Interface for datasets that describe an entity.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface UrlValue extends IriValue {
+public interface EntityDocument {
 
 	/**
-	 * Get the URL stored by this value. Should always return the same result as
-	 * getIri().
+	 * Return the ID of the entity that the data refers to
 	 * 
-	 * @return URL string
+	 * @return entity id
 	 */
-	String getUrl();
+	EntityIdValue getEntityId();
+
 }

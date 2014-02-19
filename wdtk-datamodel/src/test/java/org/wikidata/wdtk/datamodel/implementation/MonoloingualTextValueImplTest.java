@@ -28,43 +28,53 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
-public class StringValueImplTest {
+public class MonoloingualTextValueImplTest {
 
-	StringValue s1;
-	StringValue s2;
+	MonolingualTextValue mt1;
+	MonolingualTextValue mt2;
 
 	@Before
 	public void setUp() throws Exception {
-		s1 = new StringValueImpl("some string");
-		s2 = new StringValueImpl("some string");
+		mt1 = new MonolingualTextValueImpl("some string", "en");
+		mt2 = new MonolingualTextValueImpl("some string", "en");
 	}
 
 	@Test
-	public void stringIsCorrect() {
-		assertEquals(s1.getString(), "some string");
+	public void dataIsCorrect() {
+		assertEquals(mt1.getText(), "some string");
+		assertEquals(mt1.getLanguageCode(), "en");
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		StringValue s3 = new StringValueImpl("another string");
+		MonolingualTextValue mtDiffString = new MonolingualTextValueImpl(
+				"another string", "en");
+		MonolingualTextValue mtDiffLanguageCode = new MonolingualTextValueImpl(
+				"some string", "en-GB");
 
-		assertEquals(s1, s1);
-		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertEquals(mt1, mt1);
+		assertEquals(mt1, mt2);
+		assertThat(mt1, not(equalTo(mtDiffString)));
+		assertThat(mt1, not(equalTo(mtDiffLanguageCode)));
+		assertThat(mt1, not(equalTo(null)));
+		assertFalse(mt1.equals(this));
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(s1.hashCode(), s2.hashCode());
+		assertEquals(mt1.hashCode(), mt2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void stringNotNull() {
-		new StringValueImpl(null);
+	public void textNotNull() {
+		new MonolingualTextValueImpl(null, "en");
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void languageCodeNotNull() {
+		new MonolingualTextValueImpl("some text", null);
 	}
 
 }

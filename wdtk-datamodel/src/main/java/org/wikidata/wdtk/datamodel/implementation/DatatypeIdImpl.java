@@ -21,21 +21,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeId;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 /**
- * Implementation of {@link DatatypeId}
+ * Implementation of {@link DatatypeIdValue}
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class DatatypeIdImpl implements DatatypeId {
+public class DatatypeIdImpl implements DatatypeIdValue {
 
 	final String iri;
 
 	/**
 	 * Constructor. The datatype IRI is usually one of the constants defined in
-	 * {@link DatatypeId}, but this is not enforced, since there might be
+	 * {@link DatatypeIdValue}, but this is not enforced, since there might be
 	 * extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
@@ -74,11 +74,11 @@ public class DatatypeIdImpl implements DatatypeId {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof DatatypeId)) {
+		if (!(obj instanceof DatatypeIdValue)) {
 			return false;
 		}
 
-		return iri.equals(((DatatypeId) obj).getIri());
+		return iri.equals(((DatatypeIdValue) obj).getIri());
 	}
 
 }

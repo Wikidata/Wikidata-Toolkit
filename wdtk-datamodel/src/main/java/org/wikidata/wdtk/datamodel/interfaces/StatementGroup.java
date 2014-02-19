@@ -20,14 +20,38 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.List;
+
 /**
- * The id of a Wikibase Item. Objects implementing this interface always return
- * {@link EntityId.EntityType#ITEM} for {@link EntityId#getEntityType()
- * getEntityType}.
+ * A statement group represents an ordered list of {@link Statement} objects
+ * that use the same subject and the same property in the main snak of their
+ * {@link Claim}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface ItemId extends EntityId {
+public interface StatementGroup {
 
+	/**
+	 * Get the list of Statements of this group.
+	 * 
+	 * @return a list of Statements
+	 */
+	List<Statement> getStatements();
+
+	/**
+	 * Get the property used in the main snak of the {@link Claim} of each
+	 * statement in this group.
+	 * 
+	 * @return a PropertyIdValue
+	 */
+	PropertyIdValue getProperty();
+
+	/**
+	 * Get the subject used in the {@link Claim} of each statement in this
+	 * group.
+	 * 
+	 * @return an EntityIdValue
+	 */
+	EntityIdValue getSubject();
 }
