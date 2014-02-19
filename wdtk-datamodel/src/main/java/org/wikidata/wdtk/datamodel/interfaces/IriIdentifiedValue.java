@@ -24,10 +24,10 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * An IriIdentifiedValue is a Value that is identified by an IRI, which can be
  * used as the canonical identifier for the entity outside of the context of a
  * particular Wikibase installation.
- * 
+ * <p>
  * This is not a primitive datatype of the Wikibase datamodel, but a convenience
  * interface to access IRIs uniformly for values that provide them.
- * 
+ * <p>
  * This interface is intended as a general interface for all types of
  * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
  * the value that is used when users enter a URL (or IRI) directly in Wikibase.

@@ -23,9 +23,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * Globe coordinates specify a position on some globe (usually Earth, but
  * possibly also another celestial body, such as Mars).
- * 
+ * <p>
  * Altitude is not supported in this value.
- * 
+ * <p>
  * All numeric data in coordinates is represented by limited-precision decimal
  * numbers: they are given as long integers that should be divided by 10^9 to
  * obtain the actual value in degrees. In other words, all numbers here are
@@ -35,19 +35,19 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * constants in code. For example, the value of 23.567 degrees in nanodegrees is
  * obtained by multiplying 23567 with
  * {@link GlobeCoordinatesValue#PREC_MILLI_DEGREE}.
- * 
+ * <p>
  * Limited precision is acceptable here, because (1) coordinates are naturally
  * of limited precision, already because the whole coordinate system makes
  * simplifying assumptions about the shape of the body it refers to; (2) exact
  * calculations with coordinates are not needed in most applications; (4) exact
  * comparisons of coordinate objects, although rare in practice, should still
  * work as expected.
- * 
+ * <p>
  * The one general problem with any underlying number format is the conversion
  * between degrees (with fraction) and a degrees-minute-second view, which will
  * always lead to a loss in precision that one has to live with. All values
  * should be rounded to 9 significant digits after the dot.
- * 
+ * <p>
  * Precision is measured in degrees, for convenience of use, but only some
  * values are allowed there. The constants defined in this interface are based
  * on what is supported by the Wikibase user interface.

@@ -29,18 +29,18 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * that specify how much {@link getBeforeTolerance() before} or {@link
  * getBeforeTolerance() after} the given time point an event might have
  * occurred.
- * 
+ * <p>
  * Time points cannot describe durations (which are quantities), recurring
  * events ("1st of May"), or time spans (
  * "He reigned from 1697 to 1706, i.e., during <i>every</i> moment of that time span"
  * ). Intervals expressed by times always encode uncertainty ("He died in the
  * year 546 BCE, i.e., in <i>some</i> moment within that interval").
- * 
+ * <p>
  * The main time point of the value generally refers to the proleptic Gregorian
  * calendar. However, if dates are imprecise (like "Jan 1512" or even "1200")
  * then one cannot convert this reliably and Wikidata will just keep the value
  * as entered.
- * 
+ * <p>
  * "Y0K issue": Neither the Gregorian nor the Julian calendar assume a year 0,
  * i.e., the year 1 BCE was followed by 1 CE in these calendars. See
  * {@link http://en.wikipedia.org/wiki/Year_zero}. Wikibase internally uses the
@@ -49,7 +49,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * their case 1BCE is represented as "-1". Understanding the difference is
  * relevant for computing leap years, for computing temporal intervals, and for
  * exporting data.
- * 
+ * <p>
  * Timezone information is to be given in the form of a positive or negative
  * offset with respect to UTC, measured in minutes. This information specifies
  * the timezone that the time should be displayed in when shown to a user. The
@@ -217,7 +217,7 @@ public interface TimeValue extends Value {
 	 * Get a tolerance value that specifies how much earlier in time the value
 	 * could at most be, measured as a multiple of {@link getPrecision()
 	 * precision}. The value is a non-negative integer.
-	 * 
+	 * <p>
 	 * For example, for the date 2007-05-12T10:45:00 with precision
 	 * {@link TimeValue#PREC_MONTH}, a before-tolerance value of 3 means that
 	 * the earliest possible time of this event could have been
@@ -227,7 +227,7 @@ public interface TimeValue extends Value {
 	 * point instead. If not set specifically by the user, the before-tolerance
 	 * value should be 0, i.e., the given time point marks the earliest possible
 	 * time.
-	 * 
+	 * <p>
 	 * This boundary is inclusive. For example, a date 2014-02-17T00:00:00 with
 	 * precision {@link TimeValue#PREC_DAY} and before-tolerance value 1
 	 * specifies a time that between 2014-02-17T00:00:00
@@ -242,7 +242,7 @@ public interface TimeValue extends Value {
 	 * Get a tolerance value that specifies how much later in time the value
 	 * could at most be, measured as a multiple of {@link getPrecision()
 	 * precision}. The value is a positive integer.
-	 * 
+	 * <p>
 	 * For example, for the date 2007-05-12T10:45:00 with precision
 	 * {@link TimeValue#PREC_MONTH}, an after-tolerance value of 2 means that
 	 * the latest possible time of this event could have been strictly before
@@ -252,7 +252,7 @@ public interface TimeValue extends Value {
 	 * point instead. If not set specifically by the user, the before-tolerance
 	 * value should be 1, i.e., the interval of uncertainty is exactly the
 	 * length given by precision.
-	 * 
+	 * <p>
 	 * The boundary is exclusive. For example, a date 2013-02-01T00:00:00 with
 	 * precision {@link TimeValue#PREC_MONTH} and after-tolerance value 1 and
 	 * before-tolerance value of 0 specifies a time "sometime in February 2013",

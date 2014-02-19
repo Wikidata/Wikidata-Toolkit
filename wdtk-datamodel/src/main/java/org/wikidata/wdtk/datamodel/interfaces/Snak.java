@@ -25,7 +25,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * Wikibase. They are an integral part of each {@link Statement} (which can be
  * viewed as collection of Snaks about an Entity, together with a list of
  * references).
- * 
+ * <p>
  * The most basic (and most common) form of Snaks are property-value pairs, but
  * other forms exist.
  * 

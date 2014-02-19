@@ -25,7 +25,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * identified by its id, corresponding to the title of that page. Typical
  * entities are Items (with identifiers of the form Q1234) and Properties (with
  * identifiers of the form P1234).
- * 
+ * <p>
  * The full IRI of an entity is used in export formats like RDF, but also
  * internally, e.g., for identifying the calendar model of time values.
  * 

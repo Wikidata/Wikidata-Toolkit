@@ -23,7 +23,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * Enum for the possible ranks of Wikibase Statements. Ranks are used to compare
  * Statements that have the same subject and main-snak property.
- * 
+ * <p>
  * By default, Statements are of "normal" rank. The rank "preferred" can be
  * given to Statements that should be preferred when using the data without more
  * specific selection criteria (for example, there can be many population

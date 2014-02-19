@@ -23,7 +23,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * Interface for datasets that describe properties. It extends
  * {@link EntityDocument} with information about the datatype of a property.
- * 
+ * <p>
  * Claims or Statements on properties might be supported in the future.
  * 
  * @author Markus Kroetzsch
