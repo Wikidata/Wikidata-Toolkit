@@ -22,7 +22,9 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,14 +43,14 @@ public class DatatypeIdImplTest {
 				"http://www.wikidata.org/ontology#propertyTypeItem");
 		d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void datatypeIdNotNull() {
 		new DatatypeIdImpl(null);
 	}
 
 	@Test
-	public void datatypeEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		assertEquals(d1, d1);
 		assertEquals(d1, d2);
 		assertThat(d1, not(equalTo(d3)));
@@ -57,7 +59,7 @@ public class DatatypeIdImplTest {
 	}
 
 	@Test
-	public void datatypeHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(d1.hashCode(), d2.hashCode());
 	}
 

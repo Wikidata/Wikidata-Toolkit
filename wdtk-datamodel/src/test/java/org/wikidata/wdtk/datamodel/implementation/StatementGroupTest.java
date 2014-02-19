@@ -107,17 +107,17 @@ public class StatementGroupTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void StatementListNotNull() {
+	public void statementListNotNull() {
 		new StatementGroupImpl(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void StatementListNotEmpty() {
+	public void statementListNotEmpty() {
 		new StatementGroupImpl(Collections.<Statement> emptyList());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void StatementListRequiresSameSubject() {
+	public void statementListRequiresSameSubject() {
 		List<Statement> statements = new ArrayList<Statement>();
 
 		statements.add(statement1);
@@ -136,7 +136,7 @@ public class StatementGroupTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void StatementListRequiresSameProperty() {
+	public void statementListRequiresSameProperty() {
 		List<Statement> statements = new ArrayList<Statement>();
 
 		statements.add(statement1);

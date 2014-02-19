@@ -44,8 +44,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class PropertyDocumentImplTest {
 
-	PropertyDocument pr1;
-	PropertyDocument pr2;
+	PropertyDocument pd1;
+	PropertyDocument pd2;
 
 	PropertyIdValue pid;
 	Map<String, MonolingualTextValue> labelMap;
@@ -92,60 +92,60 @@ public class PropertyDocumentImplTest {
 
 		datatypeId = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 
-		pr1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
+		pd1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
 				datatypeId);
-		pr2 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
+		pd2 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
 				datatypeId);
 	}
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(pr1.getPropertyId(), pid);
-		assertEquals(pr1.getEntityId(), pid);
-		assertEquals(pr1.getLabels(), labelMap);
-		assertEquals(pr1.getDescriptions(), descriptionMap);
-		assertEquals(pr1.getAliases(), aliasMap);
-		assertEquals(pr1.getDatatype(), datatypeId);
+		assertEquals(pd1.getPropertyId(), pid);
+		assertEquals(pd1.getEntityId(), pid);
+		assertEquals(pd1.getLabels(), labelMap);
+		assertEquals(pd1.getDescriptions(), descriptionMap);
+		assertEquals(pd1.getAliases(), aliasMap);
+		assertEquals(pd1.getDatatype(), datatypeId);
 	}
 
 	@Test
-	public void valueEqualityBasedOnContent() {
-		PropertyDocument pr3 = new PropertyDocumentImpl(
+	public void equalityBasedOnContent() {
+		PropertyDocument pdDiffSubject = new PropertyDocumentImpl(
 				new PropertyIdValueImpl("P43", "http://wikibase.org/entity/"),
 				labels, descriptions, aliases, datatypeId);
-		PropertyDocument pr4 = new PropertyDocumentImpl(pid,
+		PropertyDocument pdDiffLabels = new PropertyDocumentImpl(pid,
 				Collections.<MonolingualTextValue> emptyList(), descriptions,
 				aliases, datatypeId);
-		PropertyDocument pr5 = new PropertyDocumentImpl(pid, labels,
-				Collections.<MonolingualTextValue> emptyList(), aliases,
-				datatypeId);
-		PropertyDocument pr6 = new PropertyDocumentImpl(pid, labels,
+		PropertyDocument pdDiffDescriptions = new PropertyDocumentImpl(pid,
+				labels, Collections.<MonolingualTextValue> emptyList(),
+				aliases, datatypeId);
+		PropertyDocument pdDiffAliases = new PropertyDocumentImpl(pid, labels,
 				descriptions, Collections.<MonolingualTextValue> emptyList(),
 				datatypeId);
-		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
+		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING));
 
-		ItemDocument ir = new ItemDocumentImpl(
+		ItemDocument id = new ItemDocumentImpl(
 				new ItemIdValueImpl("Q42", "foo"), labels, descriptions,
 				aliases, Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 
-		assertEquals(pr1, pr1);
-		assertEquals(pr1, pr2);
-		assertThat(pr1, not(equalTo(pr3)));
-		assertThat(pr1, not(equalTo(pr4)));
-		assertThat(pr1, not(equalTo(pr5)));
-		assertThat(pr1, not(equalTo(pr6)));
-		assertThat(pr1, not(equalTo(pr7)));
-		assertFalse(pr1.equals(ir));
-		assertThat(pr1, not(equalTo(null)));
-		assertFalse(pr1.equals(this));
+		assertEquals(pd1, pd1);
+		assertEquals(pd1, pd2);
+		assertThat(pd1, not(equalTo(pdDiffSubject)));
+		assertThat(pd1, not(equalTo(pdDiffLabels)));
+		assertThat(pd1, not(equalTo(pdDiffDescriptions)));
+		assertThat(pd1, not(equalTo(pdDiffAliases)));
+		assertThat(pd1, not(equalTo(pdDiffDatatype)));
+		assertFalse(pd1.equals(id));
+		assertThat(pd1, not(equalTo(null)));
+		assertFalse(pd1.equals(this));
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(pr1.hashCode(), pr2.hashCode());
+		assertEquals(pd1.hashCode(), pd2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)

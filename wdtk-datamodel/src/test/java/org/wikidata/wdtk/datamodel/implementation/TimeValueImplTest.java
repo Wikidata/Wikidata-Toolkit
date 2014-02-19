@@ -61,7 +61,7 @@ public class TimeValueImplTest {
 	}
 
 	@Test
-	public void timeValueEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		TimeValue tdYear = new TimeValueImpl(2013, (byte) 5, (byte) 12,
 				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
@@ -114,12 +114,12 @@ public class TimeValueImplTest {
 	}
 
 	@Test
-	public void timeValueHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(t1.hashCode(), t2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void timeValueCalendarModelNotNull() {
+	public void calendarModelNotNull() {
 		new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
 				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60, null);
 	}

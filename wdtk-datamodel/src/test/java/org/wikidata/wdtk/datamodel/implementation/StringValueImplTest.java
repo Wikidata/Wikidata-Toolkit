@@ -22,7 +22,9 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +47,7 @@ public class StringValueImplTest {
 	}
 
 	@Test
-	public void stringValueEqualityBasedOnContent() {
+	public void equalityBasedOnContent() {
 		StringValue s3 = new StringValueImpl("another string");
 
 		assertEquals(s1, s1);
@@ -56,14 +58,13 @@ public class StringValueImplTest {
 	}
 
 	@Test
-	public void stringValueHashBasedOnContent() {
+	public void hashBasedOnContent() {
 		assertEquals(s1.hashCode(), s2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void stringValueUrlNotNull() {
+	public void stringNotNull() {
 		new StringValueImpl(null);
 	}
-
 
 }

@@ -32,39 +32,39 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 public class MonoloingualTextValueImplTest {
 
-	MonolingualTextValue s1;
-	MonolingualTextValue s2;
+	MonolingualTextValue mt1;
+	MonolingualTextValue mt2;
 
 	@Before
 	public void setUp() throws Exception {
-		s1 = new MonolingualTextValueImpl("some string", "en");
-		s2 = new MonolingualTextValueImpl("some string", "en");
+		mt1 = new MonolingualTextValueImpl("some string", "en");
+		mt2 = new MonolingualTextValueImpl("some string", "en");
 	}
 
 	@Test
 	public void dataIsCorrect() {
-		assertEquals(s1.getText(), "some string");
-		assertEquals(s1.getLanguageCode(), "en");
+		assertEquals(mt1.getText(), "some string");
+		assertEquals(mt1.getLanguageCode(), "en");
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		MonolingualTextValue s3 = new MonolingualTextValueImpl(
+		MonolingualTextValue mtDiffString = new MonolingualTextValueImpl(
 				"another string", "en");
-		MonolingualTextValue s4 = new MonolingualTextValueImpl("some string",
-				"en-GB");
+		MonolingualTextValue mtDiffLanguageCode = new MonolingualTextValueImpl(
+				"some string", "en-GB");
 
-		assertEquals(s1, s1);
-		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(s4)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertEquals(mt1, mt1);
+		assertEquals(mt1, mt2);
+		assertThat(mt1, not(equalTo(mtDiffString)));
+		assertThat(mt1, not(equalTo(mtDiffLanguageCode)));
+		assertThat(mt1, not(equalTo(null)));
+		assertFalse(mt1.equals(this));
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(s1.hashCode(), s2.hashCode());
+		assertEquals(mt1.hashCode(), mt2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)

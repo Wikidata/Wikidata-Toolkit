@@ -83,24 +83,26 @@ public class ClaimImplTest {
 	}
 
 	@Test
-	public void statementEqualityBasedOnContent() {
-		Claim c3, c4, c5;
+	public void equalityBasedOnContent() {
+		Claim cDiffSubject, cDiffMainSnak, cDiffQualifiers;
 		EntityIdValue subject2 = new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/");
 		PropertyIdValue property = new PropertyIdValueImpl("P43",
 				"http://wikidata.org/entity/");
 		ValueSnak mainSnak2 = new ValueSnakImpl(property, subject2);
 
-		c3 = new ClaimImpl(subject2, mainSnak, Collections.<Snak> emptyList());
-		c4 = new ClaimImpl(subject, mainSnak2, Collections.<Snak> emptyList());
-		c5 = new ClaimImpl(subject, mainSnak,
+		cDiffSubject = new ClaimImpl(subject2, mainSnak,
+				Collections.<Snak> emptyList());
+		cDiffMainSnak = new ClaimImpl(subject, mainSnak2,
+				Collections.<Snak> emptyList());
+		cDiffQualifiers = new ClaimImpl(subject, mainSnak,
 				Collections.<Snak> singletonList(mainSnak));
 
 		assertEquals(c1, c1);
 		assertEquals(c1, c2);
-		assertThat(c1, not(equalTo(c3)));
-		assertThat(c1, not(equalTo(c4)));
-		assertThat(c1, not(equalTo(c5)));
+		assertThat(c1, not(equalTo(cDiffSubject)));
+		assertThat(c1, not(equalTo(cDiffMainSnak)));
+		assertThat(c1, not(equalTo(cDiffQualifiers)));
 		assertThat(c1, not(equalTo(null)));
 		assertFalse(c1.equals(this));
 	}

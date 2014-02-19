@@ -75,7 +75,7 @@ public class ReferenceImplTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void SnakListNotNull() {
+	public void snakListNotNull() {
 		new ReferenceImpl(null);
 	}
 
