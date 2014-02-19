@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,27 +48,48 @@ public class PropertyDocumentImplTest {
 	PropertyDocument pr2;
 
 	PropertyIdValue pid;
-	Map<String, MonolingualTextValue> labels;
-	Map<String, MonolingualTextValue> descriptions;
-	Map<String, List<MonolingualTextValue>> aliases;
+	Map<String, MonolingualTextValue> labelMap;
+	Map<String, MonolingualTextValue> descriptionMap;
+	Map<String, List<MonolingualTextValue>> aliasMap;
+	List<MonolingualTextValue> labels;
+	List<MonolingualTextValue> descriptions;
+	List<MonolingualTextValue> aliases;
 	DatatypeIdValue datatypeId;
 
 	@Before
 	public void setUp() throws Exception {
 		pid = new PropertyIdValueImpl("P42", "http://wikibase.org/entity/");
 
-		labels = new HashMap<String, MonolingualTextValue>();
-		labels.put("en", new MonolingualTextValueImpl("Property 42", "en"));
+		labelMap = new HashMap<String, MonolingualTextValue>();
+		labelMap.put("en", new MonolingualTextValueImpl("Property 42", "en"));
+		labels = new ArrayList<MonolingualTextValue>();
+		labels.add(new MonolingualTextValueImpl("Property 42", "en"));
 
-		descriptions = new HashMap<String, MonolingualTextValue>();
-		descriptions.put("de", new MonolingualTextValueImpl(
+		descriptionMap = new HashMap<String, MonolingualTextValue>();
+		descriptionMap.put("de", new MonolingualTextValueImpl(
 				"Dies ist Property 42.", "de"));
+		descriptions = new ArrayList<MonolingualTextValue>();
+		descriptions.add(new MonolingualTextValueImpl("Dies ist Property 42.",
+				"de"));
 
-		MonolingualTextValue alias = new MonolingualTextValueImpl(
+		MonolingualTextValue alias1 = new MonolingualTextValueImpl(
 				"An alias of P42", "en");
-		aliases = new HashMap<String, List<MonolingualTextValue>>();
-		aliases.put("en",
-				Collections.<MonolingualTextValue> singletonList(alias));
+		MonolingualTextValue alias2 = new MonolingualTextValueImpl(
+				"Ein Alias von P42", "de");
+		MonolingualTextValue alias3 = new MonolingualTextValueImpl(
+				"Another alias of P42", "en");
+		aliasMap = new HashMap<String, List<MonolingualTextValue>>();
+		List<MonolingualTextValue> enAliases = new ArrayList<MonolingualTextValue>();
+		enAliases.add(alias1);
+		enAliases.add(alias3);
+		aliasMap.put("en", enAliases);
+		aliasMap.put("de",
+				Collections.<MonolingualTextValue> singletonList(alias2));
+		aliases = new ArrayList<MonolingualTextValue>();
+		aliases.add(alias1);
+		aliases.add(alias2);
+		aliases.add(alias3);
+
 		datatypeId = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 
 		pr1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
@@ -80,9 +102,9 @@ public class PropertyDocumentImplTest {
 	public void fieldsAreCorrect() {
 		assertEquals(pr1.getPropertyId(), pid);
 		assertEquals(pr1.getEntityId(), pid);
-		assertEquals(pr1.getLabels(), labels);
-		assertEquals(pr1.getDescriptions(), descriptions);
-		assertEquals(pr1.getAliases(), aliases);
+		assertEquals(pr1.getLabels(), labelMap);
+		assertEquals(pr1.getDescriptions(), descriptionMap);
+		assertEquals(pr1.getAliases(), aliasMap);
 		assertEquals(pr1.getDatatype(), datatypeId);
 	}
 
@@ -92,14 +114,13 @@ public class PropertyDocumentImplTest {
 				new PropertyIdValueImpl("P43", "http://wikibase.org/entity/"),
 				labels, descriptions, aliases, datatypeId);
 		PropertyDocument pr4 = new PropertyDocumentImpl(pid,
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				descriptions, aliases, datatypeId);
+				Collections.<MonolingualTextValue> emptyList(), descriptions,
+				aliases, datatypeId);
 		PropertyDocument pr5 = new PropertyDocumentImpl(pid, labels,
-				Collections.<String, MonolingualTextValue> emptyMap(), aliases,
+				Collections.<MonolingualTextValue> emptyList(), aliases,
 				datatypeId);
 		PropertyDocument pr6 = new PropertyDocumentImpl(pid, labels,
-				descriptions,
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				descriptions, Collections.<MonolingualTextValue> emptyList(),
 				datatypeId);
 		PropertyDocument pr7 = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, new DatatypeIdImpl(
@@ -151,6 +172,26 @@ public class PropertyDocumentImplTest {
 	@Test(expected = NullPointerException.class)
 	public void datatypeNotNull() {
 		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void labelUniquePerLanguage() {
+		List<MonolingualTextValue> labels2 = new ArrayList<MonolingualTextValue>(
+				labels);
+		labels2.add(new MonolingualTextValueImpl("Property 42 label duplicate",
+				"en"));
+
+		new PropertyDocumentImpl(pid, labels2, descriptions, aliases, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void descriptionUniquePerLanguage() {
+		List<MonolingualTextValue> descriptions2 = new ArrayList<MonolingualTextValue>(
+				descriptions);
+		descriptions2.add(new MonolingualTextValueImpl(
+				"Noch eine Beschreibung fuer P42", "de"));
+
+		new PropertyDocumentImpl(pid, labels, descriptions2, aliases, null);
 	}
 
 }

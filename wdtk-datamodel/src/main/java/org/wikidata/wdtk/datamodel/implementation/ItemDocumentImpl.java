@@ -45,11 +45,13 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
-	 *            the labels of this item by language code
+	 *            the list of labels of this item, with at most one label for
+	 *            each language code
 	 * @param descriptions
-	 *            the descriptions of this item by language code
+	 *            the list of descriptions of this item, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this item by language code
+	 *            the list of aliases of this item
 	 * @param statementGroups
 	 *            the list of statement groups of this item; all of them must
 	 *            have the given itemIdValue as their subject
@@ -57,9 +59,9 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	 *            the sitelinks of this item by site key
 	 */
 	ItemDocumentImpl(ItemIdValue itemIdValue,
-			Map<String, MonolingualTextValue> labels,
-			Map<String, MonolingualTextValue> descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
 		super(labels, descriptions, aliases);

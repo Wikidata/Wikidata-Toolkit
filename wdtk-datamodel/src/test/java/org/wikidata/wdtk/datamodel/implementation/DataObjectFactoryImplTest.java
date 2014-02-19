@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -226,15 +225,15 @@ public class DataObjectFactoryImplTest {
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = new PropertyDocumentImpl(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		assertEquals(o1, o2);
 	}
@@ -242,16 +241,16 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetItemDocument() {
 		ItemDocument o1 = new ItemDocumentImpl(factory.getItemIdValue("Q42",
-				"foo"), Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				"foo"), Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 		ItemDocument o2 = factory.getItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 		assertEquals(o1, o2);

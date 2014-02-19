@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -48,19 +47,20 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 	 * @param propertyId
 	 *            the id of the property that data is about
 	 * @param labels
-	 *            the labels of this property by language code
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
 	 * @param descriptions
-	 *            the descriptions of this property by language code
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
 	 * @param aliases
-	 *            the alias lists of this property by language code
+	 *            the list of aliases of this property
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
 	PropertyDocumentImpl(PropertyIdValue propertyId,
-			Map<String, MonolingualTextValue> labels,
-			Map<String, MonolingualTextValue> descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
-			DatatypeIdValue datatypeId) {
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		super(labels, descriptions, aliases);
 		Validate.notNull(propertyId, "property ID cannot be null");
 		Validate.notNull(datatypeId, "datatype ID cannot be null");

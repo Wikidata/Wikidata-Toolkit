@@ -28,7 +28,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,28 +52,12 @@ public class ItemDocumentImplTest {
 	ItemDocument ir2;
 
 	ItemIdValue iid;
-	Map<String, MonolingualTextValue> labels;
-	Map<String, MonolingualTextValue> descriptions;
-	Map<String, List<MonolingualTextValue>> aliases;
 	List<StatementGroup> statementGroups;
 	Map<String, SiteLink> sitelinks;
 
 	@Before
 	public void setUp() throws Exception {
 		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
-
-		labels = new HashMap<String, MonolingualTextValue>();
-		labels.put("en", new MonolingualTextValueImpl("Item 42", "en"));
-
-		descriptions = new HashMap<String, MonolingualTextValue>();
-		descriptions.put("de", new MonolingualTextValueImpl(
-				"Dies ist Item 42.", "de"));
-
-		MonolingualTextValue alias = new MonolingualTextValueImpl(
-				"An alias of Q42", "en");
-		aliases = new HashMap<String, List<MonolingualTextValue>>();
-		aliases.put("en",
-				Collections.<MonolingualTextValue> singletonList(alias));
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
@@ -88,9 +71,15 @@ public class ItemDocumentImplTest {
 				Collections.<String> emptyList());
 		sitelinks = Collections.singletonMap("enwiki", sl);
 
-		ir1 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
+		ir1 = new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, sitelinks);
-		ir2 = new ItemDocumentImpl(iid, labels, descriptions, aliases,
+		ir2 = new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, sitelinks);
 	}
 
@@ -98,49 +87,40 @@ public class ItemDocumentImplTest {
 	public void fieldsAreCorrect() {
 		assertEquals(ir1.getItemId(), iid);
 		assertEquals(ir1.getEntityId(), iid);
-		assertEquals(ir1.getLabels(), labels);
-		assertEquals(ir1.getDescriptions(), descriptions);
-		assertEquals(ir1.getAliases(), aliases);
 		assertEquals(ir1.getStatementGroups(), statementGroups);
 		assertEquals(ir1.getSiteLinks(), sitelinks);
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		ItemDocument irDiffLabels = new ItemDocumentImpl(iid,
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				descriptions, aliases, statementGroups, sitelinks);
-		ItemDocument irDiffDescriptions = new ItemDocumentImpl(iid, labels,
-				Collections.<String, MonolingualTextValue> emptyMap(), aliases,
-				statementGroups, sitelinks);
-		ItemDocument irDiffAliases = new ItemDocumentImpl(iid, labels,
-				descriptions,
-				Collections.<String, List<MonolingualTextValue>> emptyMap(),
-				statementGroups, sitelinks);
-		ItemDocument irDiffStatementGroups = new ItemDocumentImpl(iid, labels,
-				descriptions, aliases,
+		ItemDocument irDiffStatementGroups = new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(), sitelinks);
-		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid, labels,
-				descriptions, aliases, statementGroups,
-				Collections.<String, SiteLink> emptyMap());
+		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				statementGroups, Collections.<String, SiteLink> emptyMap());
 
 		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdValueImpl(
-				"P42", "foo"), labels, descriptions, aliases,
+				"P42", "foo"), Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
 
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal
 		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
 				new ItemIdValueImpl("Q23", "http://example.org/"),
-				Collections.<String, MonolingualTextValue> emptyMap(),
-				descriptions, aliases,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(), sitelinks);
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
-		assertThat(ir1, not(equalTo(irDiffLabels)));
-		assertThat(ir1, not(equalTo(irDiffDescriptions)));
-		assertThat(ir1, not(equalTo(irDiffAliases)));
 		assertThat(ir1, not(equalTo(irDiffStatementGroups)));
 		assertThat(ir1, not(equalTo(irDiffSiteLinks)));
 		assertThat(irDiffStatementGroups, not(equalTo(irDiffItemIdValue)));
@@ -156,32 +136,43 @@ public class ItemDocumentImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new ItemDocumentImpl(null, labels, descriptions, aliases,
+		new ItemDocumentImpl(null,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void labelsNotNull() {
-		new ItemDocumentImpl(iid, null, descriptions, aliases, statementGroups,
-				sitelinks);
+		new ItemDocumentImpl(iid, null,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				statementGroups, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
-		new ItemDocumentImpl(iid, labels, null, aliases, statementGroups,
-				sitelinks);
+		new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(), null,
+				Collections.<MonolingualTextValue> emptyList(),
+				statementGroups, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void aliasesNotNull() {
-		new ItemDocumentImpl(iid, labels, descriptions, null, statementGroups,
-				sitelinks);
+		new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(), null,
+				statementGroups, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void statementGroupsNotNull() {
-		new ItemDocumentImpl(iid, labels, descriptions, aliases, null,
-				sitelinks);
+		new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(), null, sitelinks);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -200,13 +191,19 @@ public class ItemDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new ItemDocumentImpl(iid, labels, descriptions, aliases,
+		new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups2, sitelinks);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void sitelinksNotNull() {
-		new ItemDocumentImpl(iid, labels, descriptions, aliases,
+		new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, null);
 	}
 

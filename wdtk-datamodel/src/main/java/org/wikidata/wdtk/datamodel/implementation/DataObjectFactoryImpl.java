@@ -151,19 +151,18 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			Map<String, MonolingualTextValue> labels,
-			Map<String, MonolingualTextValue> descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
-			DatatypeIdValue datatypeId) {
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
 				aliases, datatypeId);
 	}
 
 	@Override
 	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
-			Map<String, MonolingualTextValue> labels,
-			Map<String, MonolingualTextValue> descriptions,
-			Map<String, List<MonolingualTextValue>> aliases,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
 		return new ItemDocumentImpl(itemIdValue, labels, descriptions, aliases,

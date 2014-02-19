@@ -20,7 +20,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,18 +47,52 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 	 * Constructor.
 	 * 
 	 * @param labels
+	 *            the list of labels of this entity, with at most one label for
+	 *            each language code
 	 * @param descriptions
+	 *            the list of descriptions of this entity, with at most one
+	 *            description for each language code
 	 * @param aliases
+	 *            the list of aliases of this entity
 	 */
-	TermedDocumentImpl(Map<String, MonolingualTextValue> labels,
-			Map<String, MonolingualTextValue> descriptions,
-			Map<String, List<MonolingualTextValue>> aliases) {
-		Validate.notNull(labels, "map of labels cannot be null");
-		Validate.notNull(descriptions, "map of descriptions cannot be null");
-		Validate.notNull(aliases, "map of aliases cannot be null");
-		this.labels = labels;
-		this.descriptions = descriptions;
-		this.aliases = aliases;
+	TermedDocumentImpl(List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases) {
+		Validate.notNull(labels, "list of labels cannot be null");
+		Validate.notNull(descriptions, "list of descriptions cannot be null");
+		Validate.notNull(aliases, "list of aliases cannot be null");
+
+		this.labels = new HashMap<String, MonolingualTextValue>();
+		for (MonolingualTextValue label : labels) {
+			if (this.labels.containsKey(label.getLanguageCode())) {
+				throw new IllegalArgumentException(
+						"At most one label allowed per language code");
+			} else {
+				this.labels.put(label.getLanguageCode(), label);
+			}
+		}
+
+		this.descriptions = new HashMap<String, MonolingualTextValue>();
+		for (MonolingualTextValue description : descriptions) {
+			if (this.descriptions.containsKey(description.getLanguageCode())) {
+				throw new IllegalArgumentException(
+						"At most one description allowed per language code");
+			} else {
+				this.descriptions.put(description.getLanguageCode(),
+						description);
+			}
+		}
+
+		this.aliases = new HashMap<String, List<MonolingualTextValue>>();
+		for (MonolingualTextValue alias : aliases) {
+			if (this.aliases.containsKey(alias.getLanguageCode())) {
+				this.aliases.get(alias.getLanguageCode()).add(alias);
+			} else {
+				List<MonolingualTextValue> aliasesForLanguage = new ArrayList<MonolingualTextValue>();
+				aliasesForLanguage.add(alias);
+				this.aliases.put(alias.getLanguageCode(), aliasesForLanguage);
+			}
+		}
 	}
 
 	@Override
