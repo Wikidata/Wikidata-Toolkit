@@ -43,6 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
@@ -74,7 +75,8 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
-		DatatypeIdValue o2 = factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME);
+		DatatypeIdValue o2 = factory
+				.getDatatypeIdValue(DatatypeIdValue.DT_TIME);
 		assertEquals(o1, o2);
 	}
 
@@ -133,8 +135,8 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetValueSnak() {
-		ValueSnak o1 = new ValueSnakImpl(factory.getPropertyIdValue("P42", "foo"),
-				factory.getStringValue("foo"));
+		ValueSnak o1 = new ValueSnakImpl(factory.getPropertyIdValue("P42",
+				"foo"), factory.getStringValue("foo"));
 		ValueSnak o2 = factory.getValueSnak(
 				factory.getPropertyIdValue("P42", "foo"),
 				factory.getStringValue("foo"));
@@ -143,8 +145,8 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetSomeValueSnak() {
-		SomeValueSnak o1 = new SomeValueSnakImpl(factory.getPropertyIdValue("P42",
-				"foo"));
+		SomeValueSnak o1 = new SomeValueSnakImpl(factory.getPropertyIdValue(
+				"P42", "foo"));
 		SomeValueSnak o2 = factory.getSomeValueSnak(factory.getPropertyIdValue(
 				"P42", "foo"));
 		assertEquals(o1, o2);
@@ -152,21 +154,24 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetNoValueSnak() {
-		NoValueSnak o1 = new NoValueSnakImpl(
-				factory.getPropertyIdValue("P42", "foo"));
-		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyIdValue("P42",
+		NoValueSnak o1 = new NoValueSnakImpl(factory.getPropertyIdValue("P42",
 				"foo"));
+		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyIdValue(
+				"P42", "foo"));
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetClaim() {
-		Claim o1 = new ClaimImpl(factory.getItemIdValue("Q42", "foo"),
+		Claim o1 = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.<Snak> emptyList());
-		Claim o2 = factory.getClaim(factory.getItemIdValue("Q42", "foo"),
-				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.<Snak> emptyList());
+		Claim o2 = factory
+				.getClaim(factory.getItemIdValue("Q42", "foo"), factory
+						.getNoValueSnak(factory
+								.getPropertyIdValue("P42", "foo")), Collections
+						.<Snak> emptyList());
 		assertEquals(o1, o2);
 	}
 
@@ -180,13 +185,29 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetStatement() {
-		Claim c = new ClaimImpl(factory.getItemIdValue("Q42", "foo"),
+		Claim c = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.<Snak> emptyList());
 		Statement o1 = new StatementImpl(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL);
 		Statement o2 = factory.getStatement(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetStatementGroup() {
+		Claim c = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.<Snak> emptyList());
+		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL);
+		StatementGroup o1 = new StatementGroupImpl(
+				Collections.<Statement> singletonList(s));
+		StatementGroup o2 = factory.getStatementGroup(Collections
+				.<Statement> singletonList(s));
 		assertEquals(o1, o2);
 	}
 
@@ -201,8 +222,8 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetPropertyDocument() {
-		PropertyDocument o1 = new PropertyDocumentImpl(factory.getPropertyIdValue(
-				"P42", "foo"),
+		PropertyDocument o1 = new PropertyDocumentImpl(
+				factory.getPropertyIdValue("P42", "foo"),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
@@ -218,8 +239,8 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemDocument() {
-		ItemDocument o1 = new ItemDocumentImpl(factory.getItemIdValue("Q42", "foo"),
-				Collections.<String, MonolingualTextValue> emptyMap(),
+		ItemDocument o1 = new ItemDocumentImpl(factory.getItemIdValue("Q42",
+				"foo"), Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, MonolingualTextValue> emptyMap(),
 				Collections.<String, List<MonolingualTextValue>> emptyMap(),
 				Collections.<Statement> emptyList(),

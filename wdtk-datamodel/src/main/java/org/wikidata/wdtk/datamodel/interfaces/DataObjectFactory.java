@@ -59,8 +59,8 @@ public interface DataObjectFactory {
 
 	/**
 	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
-	 * constants defined in {@link DatatypeIdValue}, but this is not enforced, since
-	 * there might be extensions that provide additional types.
+	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
+	 * since there might be extensions that provide additional types.
 	 * 
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
@@ -216,6 +216,16 @@ public interface DataObjectFactory {
 	 */
 	Statement getStatement(Claim claim, List<? extends Reference> references,
 			StatementRank rank);
+
+	/**
+	 * Create a {@link StatementGroup}.
+	 * 
+	 * @param statements
+	 *            a non-empty list of statements that use the same subject and
+	 *            main-snak property in their claim
+	 * @return a {@link StatementGroup} corresponding to the input
+	 */
+	StatementGroup getStatementGroup(List<Statement> statements);
 
 	/**
 	 * Create a {@link SiteLink}.

@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
@@ -134,6 +135,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public Statement getStatement(Claim claim,
 			List<? extends Reference> references, StatementRank rank) {
 		return new StatementImpl(claim, references, rank);
+	}
+
+	@Override
+	public StatementGroup getStatementGroup(List<Statement> statements) {
+		return new StatementGroupImpl(statements);
 	}
 
 	@Override
