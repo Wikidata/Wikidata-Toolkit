@@ -17,14 +17,36 @@ import org.junit.Test;
  */
 public class jsonConverterTest {
 
+	private String sampleFilesBasePath = "ressources/testSamples/";
 	private List<File> sampleFiles = new LinkedList<>();
 	private List<JSONObject> testSamples = new LinkedList<>();
 
 	@Before
 	public void setUp() {
-		// TODO complete
+
+		// select the samples
+		this.addSample("Haaften.json");
+		this.addSample("Chicago.json");
+
 		// load test case files
 		// convert them to JSONObject
+
+	}
+
+	/**
+	 * A helper for fetching the samples for the test setup
+	 * 
+	 * @param fileName
+	 *            the file name only, no path information. The file is supposed
+	 *            to be in the "resources/testSamples/"-directory.
+	 */
+	private void addSample(String fileName) {
+		String relativeFilePath = this.sampleFilesBasePath + fileName;
+		File sampleFile = new File(relativeFilePath);
+
+		if (sampleFile.exists()) {
+			this.sampleFiles.add(sampleFile);
+		}
 
 	}
 
