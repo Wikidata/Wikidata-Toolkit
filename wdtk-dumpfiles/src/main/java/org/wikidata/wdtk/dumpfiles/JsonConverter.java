@@ -174,9 +174,19 @@ public class JsonConverter {
 		return result;
 	}
 
-	private List<? extends Reference> getReferences(JSONArray jsonArray) {
+	/**
+	 * 
+	 * @param jsonReferences
+	 * @return
+	 */
+	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
+		// References are [singeRef]
+		// singleRef are [refStatements]
+		// refStatements are ["value", int, …]
+		
+		List<? extends Reference> result = new LinkedList<>(); 
 		// TODO Auto-generated method stub
-		return null;
+		return result;
 	}
 
 	/**
