@@ -135,8 +135,8 @@ public class JsonConverter {
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
-		// "m" =>
-		// "g" =>
+		// "m" => main snak
+		// "g" => statement id
 
 		List<StatementGroup> result = new LinkedList<StatementGroup>();
 		List<Statement> statementsFromJson = new LinkedList<Statement>();
@@ -159,7 +159,6 @@ public class JsonConverter {
 
 			// get the statement id
 			String statementId = currentStatement.getString("g");
-			// TODO check if "g" really means the statement id
 
 			// combine into statement
 			Statement statement = factory.getStatement(currentClaim,
@@ -180,9 +179,31 @@ public class JsonConverter {
 		return null;
 	}
 
-	private StatementRank getStatementRank(int int1) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Transforms a statement rank from an integer representation to an
+	 * enumerated value as requested by the WDTK data model. <br/>
+	 * The number 0 maps to DEPRECATED. <br/>
+	 * The number 1 maps to NORMAL. <br/>
+	 * The number 2 maps to PREFERRED. <br/>
+	 * 
+	 * To accommodate for possible other values that may occur any number below
+	 * 0 also maps to DEPRECATED and any number above 2 also maps to PREFERRED.
+	 * 
+	 * @param intRank
+	 *            the rank as integer.
+	 * @return an appropriate StatementRank-value
+	 */
+	private StatementRank getStatementRank(int intRank) {
+
+		// this is the default case
+		StatementRank result = StatementRank.NORMAL;
+
+		if (intRank < 1) {
+			result = StatementRank.DEPRECATED;
+		} else if (intRank > 1) {
+			result = StatementRank.PREFERRED;
+		}
+		return result;
 	}
 
 	private Claim getClaim(JSONObject currentStatement) {
