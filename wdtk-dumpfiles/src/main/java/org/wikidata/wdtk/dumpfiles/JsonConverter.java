@@ -10,14 +10,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 // TODO add @link to documentation where needed
+// TODO permanent: check if documentation is up-to-date
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
@@ -113,13 +118,64 @@ public class JsonConverter {
 	 * 
 	 * @param jsonStatements
 	 * @return
+	 * @throws JSONException
 	 */
-	private List<StatementGroup> getStatements(JSONArray jsonStatements) {
-		// TODO complete
+	private List<StatementGroup> getStatements(JSONArray jsonStatements)
+			throws JSONException {
+
+			assert jsonStatements != null : "statements JSON array was null";
+		// structure is [{"m":object, "q":[], "g":string, "rank":int,
+		// "refs":[…]},…]
+		// "q" => qualifiers
+		// "m" =>
+		// "g" =>
 
 		List<StatementGroup> result = new LinkedList<StatementGroup>();
 
+		// iterate over all the statements
+		for (int i = 0; i < jsonStatements.length(); i++) {
+			JSONObject currentStatement = jsonStatements.getJSONObject(i);
+
+			// get a list of statements in the order they are in the JSON
+			// get the claim
+			Claim currentClaim = this.getClaim(currentStatement);
+
+			// get the references
+			JSONArray jsonRefs = currentStatement.getJSONArray("refs");
+			List<? extends Reference> references = this.getReferences(jsonRefs);
+
+			// get the statement rank
+			int rankAsInt = currentStatement.getInt("rank");
+			StatementRank rank = this.getStatementRank(rankAsInt);
+
+			// get the statement id
+			String statementId = currentStatement.getString("g");
+			// TODO check if "g" really means the statement id
+
+			// combine into statement
+			Statement statement = factory.getStatement(currentClaim,
+					references, rank, statementId);
+
+			// process the list of statements into a list of statement groups
+			// TODO complete
+		}
+
 		return result;
+	}
+
+	private List<? extends Reference> getReferences(JSONArray jsonArray) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private StatementRank getStatementRank(int int1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Claim getClaim(JSONObject currentStatement) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
