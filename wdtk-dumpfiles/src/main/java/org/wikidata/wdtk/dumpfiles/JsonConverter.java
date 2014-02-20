@@ -115,15 +115,23 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON array containing statements into a list of statement
+	 * groups a represented by the WDTK data model.
 	 * 
 	 * @param jsonStatements
-	 * @return
+	 *            contains all the statements about an item. must consist of
+	 *            JSON objects containing the keys "m", "q", "g", "refs" and
+	 *            "rank" each.
+	 * 
+	 * @return a list of statement groups as specified by the WDTK data model.
 	 * @throws JSONException
+	 *             if one of the JSON objects in the array did not contain all
+	 *             required keys.
 	 */
 	private List<StatementGroup> getStatements(JSONArray jsonStatements)
 			throws JSONException {
 
-			assert jsonStatements != null : "statements JSON array was null";
+		assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
@@ -131,8 +139,9 @@ public class JsonConverter {
 		// "g" =>
 
 		List<StatementGroup> result = new LinkedList<StatementGroup>();
+		List<Statement> statementsFromJson = new LinkedList<Statement>();
 
-		// iterate over all the statements
+		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
 			JSONObject currentStatement = jsonStatements.getJSONObject(i);
 
@@ -156,9 +165,12 @@ public class JsonConverter {
 			Statement statement = factory.getStatement(currentClaim,
 					references, rank, statementId);
 
-			// process the list of statements into a list of statement groups
-			// TODO complete
+			statementsFromJson.add(statement);
+
 		}
+
+		// process the list of statements into a list of statement groups
+		// TODO complete
 
 		return result;
 	}
