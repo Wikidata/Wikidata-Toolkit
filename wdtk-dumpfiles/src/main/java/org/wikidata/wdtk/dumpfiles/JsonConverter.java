@@ -20,6 +20,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 // TODO add @link to documentation where needed
 // TODO permanent: check if documentation is up-to-date
@@ -178,15 +179,42 @@ public class JsonConverter {
 	 * 
 	 * @param jsonReferences
 	 * @return
+	 * @throws JSONException
 	 */
-	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
+	private List<? extends Reference> getReferences(JSONArray jsonReferences)
+			throws JSONException {
 		// References are [singeRef]
 		// singleRef are [refStatements]
-		// refStatements are ["value", int, …]
-		
-		List<? extends Reference> result = new LinkedList<>(); 
-		// TODO Auto-generated method stub
+		// refStatements are value snaks
+
+		List<Reference> result = new LinkedList<>();
+
+		// process the single references
+		for (int i = 0; i < jsonReferences.length(); i++) {
+			JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
+			List<ValueSnak> valueSnaks = new LinkedList<>();
+
+			// process the reference statements
+			for (int j = 0; j < jsonSingleRef.length(); j++) {
+				JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
+				ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
+				valueSnaks.add(currentValueSnak);
+			}
+
+			Reference singleReference = factory.getReference(valueSnaks);
+			result.add(singleReference);
+		}
 		return result;
+	}
+
+	/**
+	 * 
+	 * @param jsonValueSnak
+	 * @return
+	 */
+	private ValueSnak getValueSnak(JSONArray jsonValueSnak) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -216,6 +244,11 @@ public class JsonConverter {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param currentStatement
+	 * @return
+	 */
 	private Claim getClaim(JSONObject currentStatement) {
 		// TODO Auto-generated method stub
 		return null;
