@@ -35,7 +35,8 @@ public interface WebResourceFetcher {
 
 	/**
 	 * Get a BufferedReader for the document at the given URL. The reader should
-	 * be closed after use.
+	 * be closed after use. The bytes found at the given URL will be interpreted
+	 * as UTF-8 for this operation.
 	 * 
 	 * @param urlString
 	 *            the URL of the document
@@ -48,7 +49,8 @@ public interface WebResourceFetcher {
 
 	/**
 	 * Get a BufferedReader for the Gzip-compressed document at the given URL.
-	 * The reader should be closed after use.
+	 * The reader should be closed after use. The bytes found in the gzipped
+	 * file at the given URL will be interpreted as UTF-8 for this operation.
 	 * 
 	 * @param urlString
 	 *            the URL of the gzipped document

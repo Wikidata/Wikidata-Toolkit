@@ -157,7 +157,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
 		return new BufferedReader(new InputStreamReader(Files.newInputStream(
-				filePath, StandardOpenOption.READ)));
+				filePath, StandardOpenOption.READ), StandardCharsets.UTF_8));
 	}
 
 	/*
@@ -173,7 +173,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 		return new BufferedReader(new InputStreamReader(
 				new BZip2CompressorInputStream(
 						new BufferedInputStream(Files.newInputStream(filePath,
-								StandardOpenOption.READ)))));
+								StandardOpenOption.READ))),
+				StandardCharsets.UTF_8));
 	}
 
 	/*

@@ -68,7 +68,8 @@ public interface DirectoryManager {
 
 	/**
 	 * Create a new file in the current directory, and fill it with the data
-	 * from the given input stream.
+	 * from the given input stream. If the stream encodes a string, then it
+	 * should generally be encoded in UTF-8, since access methods assume this.
 	 * 
 	 * @param fileName
 	 *            the name of the file
@@ -82,7 +83,7 @@ public interface DirectoryManager {
 
 	/**
 	 * Create a new file in the current directory, and fill it with the given
-	 * data. Should only be used for short pieces of data.
+	 * data, encoded in UTF-8. Should only be used for short pieces of data.
 	 * 
 	 * @param fileName
 	 *            the name of the file
@@ -94,7 +95,7 @@ public interface DirectoryManager {
 
 	/**
 	 * Get a buffered reader to access the file of the given name within the
-	 * current directory.
+	 * current directory. It is assumed that the file is encoded in UTF-8.
 	 * <p>
 	 * It is important to close the reader after using it to free memory.
 	 * 
@@ -107,7 +108,8 @@ public interface DirectoryManager {
 
 	/**
 	 * Get a buffered reader to access the BZIP2-compressed file of the given
-	 * name within the current directory.
+	 * name within the current directory. It is assumed that the uncompressed
+	 * file is encoded in UTF-8.
 	 * <p>
 	 * It is important to close the reader after using it to free memory.
 	 * 

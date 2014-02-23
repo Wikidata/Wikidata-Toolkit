@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -46,7 +47,8 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 	public BufferedReader getBufferedReaderForUrl(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
-		return new BufferedReader(new InputStreamReader(url.openStream()));
+		return new BufferedReader(new InputStreamReader(url.openStream(),
+				StandardCharsets.UTF_8));
 	}
 
 	/*
@@ -61,7 +63,7 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 			throws IOException {
 		URL url = new URL(urlString);
 		return new BufferedReader(new InputStreamReader(new GZIPInputStream(
-				url.openStream())));
+				url.openStream()), StandardCharsets.UTF_8));
 	}
 
 	/*
