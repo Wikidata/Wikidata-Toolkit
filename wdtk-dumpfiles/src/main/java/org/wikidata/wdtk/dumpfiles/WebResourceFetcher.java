@@ -22,19 +22,16 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.zip.GZIPInputStream;
+import java.io.InputStream;
 
 /**
- * Class to access files on the Web.
+ * Interface to access files on the Web. Mock implementations can be used for
+ * testing without Web access.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class WebResourceFetcher {
+public interface WebResourceFetcher {
 
 	/**
 	 * Get a BufferedReader for the document at the given URL. The reader should
@@ -47,10 +44,7 @@ public class WebResourceFetcher {
 	 *             if the document at the URL could not be opended or the URL
 	 *             was invalid
 	 */
-	BufferedReader getBufferedReaderForUrl(String urlString) throws IOException {
-		URL url = new URL(urlString);
-		return new BufferedReader(new InputStreamReader(url.openStream()));
-	}
+	BufferedReader getBufferedReaderForUrl(String urlString) throws IOException;
 
 	/**
 	 * Get a BufferedReader for the Gzip-compressed document at the given URL.
@@ -64,27 +58,19 @@ public class WebResourceFetcher {
 	 *             was invalid
 	 */
 	BufferedReader getBufferedReaderForGzipUrl(String urlString)
-			throws IOException {
-		URL url = new URL(urlString);
-		return new BufferedReader(new InputStreamReader(new GZIPInputStream(
-				url.openStream())));
-	}
+			throws IOException;
 
 	/**
-	 * Get a ReadableByteChannel for the document at the given URL. This can be
-	 * used for downloading. The channel should be closed after use.
+	 * Get an InputStream for the document at the given URL. This can be used
+	 * for downloading. The stream should be closed after use.
 	 * 
 	 * @param urlString
 	 *            the URL of the document
-	 * @return ReadableByteChannel for the requested document
+	 * @return InputStream for the requested document
 	 * @throws IOException
 	 *             if the document at the URL could not be opended or the URL
 	 *             was invalid
 	 */
-	ReadableByteChannel getReadableByteChannelForUrl(String urlString)
-			throws IOException {
-		URL url = new URL(urlString);
-		return Channels.newChannel(url.openStream());
-	}
+	InputStream getInputStreamForUrl(String urlString) throws IOException;
 
 }

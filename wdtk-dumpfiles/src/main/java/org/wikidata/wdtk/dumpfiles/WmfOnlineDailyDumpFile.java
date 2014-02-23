@@ -22,7 +22,7 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.channels.ReadableByteChannel;
+import java.io.InputStream;
 
 /**
  * Class for representing incremental daily dump files as published by the
@@ -77,9 +77,9 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager("daily-" + this.dateStamp);
 
-		try (ReadableByteChannel readableByteChannel = webResourceFetcher
-				.getReadableByteChannelForUrl(urlString)) {
-			dailyDirectoryManager.createFile(fileName, readableByteChannel);
+		try (InputStream inputStream = webResourceFetcher
+				.getInputStreamForUrl(urlString)) {
+			dailyDirectoryManager.createFile(fileName, inputStream);
 		}
 
 		dailyDirectoryManager.createFile("maxrevid.txt", this

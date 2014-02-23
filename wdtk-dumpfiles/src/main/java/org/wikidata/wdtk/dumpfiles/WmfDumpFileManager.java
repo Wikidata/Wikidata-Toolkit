@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * downloading/processing in the future.
  * <p>
  * Typically, the Web will be accessed to find information about dumps available
- * online. This Web access is mediated by a {@link WebResourceFetcher} object,
+ * online. This Web access is mediated by a {@link WebResourceFetcherImpl} object,
  * provided upon construction. If null is given instead, the class will operate
  * in offline mode, using only previously downloaded files.
  * <p>

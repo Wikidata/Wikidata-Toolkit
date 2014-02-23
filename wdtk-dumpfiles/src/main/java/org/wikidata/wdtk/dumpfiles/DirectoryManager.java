@@ -20,70 +20,20 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-
 /**
- * Class to read and write files from one directory. It is guaranteed that the
- * directory always exists (it is created if needed).
+ * Interface for classes that read and write files from one directory. Allows
+ * for mock implementations to test functionality without actually writing
+ * files.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class DirectoryManager {
-
-	/**
-	 * The directory that this object is managing.
-	 */
-	final Path directory;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param baseDirectory
-	 *            the directory where the file manager should point initially;
-	 *            will be created if not existing
-	 * @throws IOException
-	 *             if there was a problem creating the directory
-	 */
-	public DirectoryManager(String baseDirectory) throws IOException {
-		this(Paths.get(baseDirectory));
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param baseDirectory
-	 *            the directory where the file manager should point initially;
-	 *            will be created if not existing
-	 * @throws IOException
-	 *             if there was a problem creating the directory
-	 */
-	public DirectoryManager(Path baseDirectory) throws IOException {
-		this.directory = baseDirectory;
-		createDirectory(this.directory);
-	}
-
-	@Override
-	public String toString() {
-		return this.directory.toString();
-	}
+public interface DirectoryManager {
 
 	/**
 	 * Return a new directory manager for the subdirectory of the given name. If
@@ -97,10 +47,8 @@ public class DirectoryManager {
 	 * @throws IOException
 	 *             if directory could not be created
 	 */
-	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
-			throws IOException {
-		return new DirectoryManager(directory.resolve(subdirectoryName));
-	}
+	DirectoryManager getSubdirectoryManager(String subdirectoryName)
+			throws IOException;
 
 	/**
 	 * Check if there is a subdirectory of the given name.
@@ -108,10 +56,7 @@ public class DirectoryManager {
 	 * @param subdirectoryName
 	 * @return true if the subdirectory exists
 	 */
-	public boolean hasSubdirectory(String subdirectoryName) {
-		Path subdirectoryPath = this.directory.resolve(subdirectoryName);
-		return Files.isDirectory(subdirectoryPath);
-	}
+	boolean hasSubdirectory(String subdirectoryName);
 
 	/**
 	 * Check if there is a file of the given name.
@@ -119,32 +64,21 @@ public class DirectoryManager {
 	 * @param fileName
 	 * @return true if the file exists and is not a directory
 	 */
-	public boolean hasFile(String fileName) {
-		Path filePath = this.directory.resolve(fileName);
-		return Files.isRegularFile(filePath);
-	}
+	boolean hasFile(String fileName);
 
 	/**
 	 * Create a new file in the current directory, and fill it with the data
-	 * from the given readable byte channel.
+	 * from the given input stream.
 	 * 
 	 * @param fileName
 	 *            the name of the file
-	 * @param readableByteChannel
-	 *            the channel from which to load the file
+	 * @param inputStream
+	 *            the input stream from which to load the file
 	 * @return size of the new file in bytes
 	 * @throws IOException
 	 */
-	public long createFile(String fileName,
-			ReadableByteChannel readableByteChannel) throws IOException {
-		long fileSize;
-		Path filePath = this.directory.resolve(fileName);
-		try (FileChannel fc = FileChannel.open(filePath,
-				StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW)) {
-			fileSize = fc.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-		}
-		return fileSize;
-	}
+	long createFile(String fileName, InputStream inputStream)
+			throws IOException;
 
 	/**
 	 * Create a new file in the current directory, and fill it with the given
@@ -156,15 +90,7 @@ public class DirectoryManager {
 	 *            the data to write into the file
 	 * @throws IOException
 	 */
-	public void createFile(String fileName, String fileContents)
-			throws IOException {
-		Path filePath = this.directory.resolve(fileName);
-		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(filePath,
-				StandardCharsets.UTF_8, StandardOpenOption.WRITE,
-				StandardOpenOption.CREATE_NEW)) {
-			bufferedWriter.write(fileContents);
-		}
-	}
+	void createFile(String fileName, String fileContents) throws IOException;
 
 	/**
 	 * Get a buffered reader to access the file of the given name within the
@@ -177,12 +103,7 @@ public class DirectoryManager {
 	 * @return a BufferedReader to fetch data from the file
 	 * @throws IOException
 	 */
-	public BufferedReader getBufferedReaderForFile(String fileName)
-			throws IOException {
-		Path filePath = this.directory.resolve(fileName);
-		return new BufferedReader(new InputStreamReader(Files.newInputStream(
-				filePath, StandardOpenOption.READ)));
-	}
+	BufferedReader getBufferedReaderForFile(String fileName) throws IOException;
 
 	/**
 	 * Get a buffered reader to access the BZIP2-compressed file of the given
@@ -195,45 +116,19 @@ public class DirectoryManager {
 	 * @return a BufferedReader to fetch data from the file
 	 * @throws IOException
 	 */
-	public BufferedReader getBufferedReaderForBz2File(String fileName)
-			throws IOException {
-		Path filePath = this.directory.resolve(fileName);
-		return new BufferedReader(new InputStreamReader(
-				new BZip2CompressorInputStream(
-						new BufferedInputStream(Files.newInputStream(filePath,
-								StandardOpenOption.READ)))));
-	}
-
-	public List<String> getSubdirectories(String glob) throws IOException {
-		List<String> result = new ArrayList<String>();
-		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
-				this.directory, glob)) {
-			for (Path entry : directoryStream) {
-				if (Files.isDirectory(entry)) {
-					result.add(entry.getFileName().toString());
-				}
-			}
-		}
-		return result;
-	}
+	BufferedReader getBufferedReaderForBz2File(String fileName)
+			throws IOException;
 
 	/**
-	 * Create a directory at the given path if it does not exist yet.
+	 * Get a list of the names of all subdirectories of the base directory. The
+	 * glob pattern can be used to filter the names; "*" should be used if no
+	 * filtering is desired.
 	 * 
-	 * @param path
+	 * @param glob
+	 *            pattern to filter directoy names
+	 * @return
 	 * @throws IOException
-	 *             if it was not possible to create a directory at the given
-	 *             path
 	 */
-	void createDirectory(Path path) throws IOException {
-		try {
-			Files.createDirectory(path);
-		} catch (FileAlreadyExistsException e) {
-			if (Files.isDirectory(path)) {
-				// fine, then we don't need to create it
-			} else {
-				throw e;
-			}
-		}
-	}
+	List<String> getSubdirectories(String glob) throws IOException;
+
 }
