@@ -12,11 +12,15 @@ import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -47,7 +51,6 @@ public class JsonConverter {
 	 */
 	public JsonConverter(String baseIri) {
 		this.setBaseIri(baseIri);
-		;
 	}
 
 	/**
@@ -103,7 +106,7 @@ public class JsonConverter {
 
 		// get the statements
 		JSONArray jsonStatements = toConvert.getJSONArray("claims");
-		statements = this.getStatements(jsonStatements);
+		statements = this.getStatements(jsonStatements, itemId);
 
 		// get the site links
 		JSONObject jsonLinks = toConvert.getJSONObject("links");
@@ -129,7 +132,7 @@ public class JsonConverter {
 	 *             if one of the JSON objects in the array did not contain all
 	 *             required keys.
 	 */
-	private List<StatementGroup> getStatements(JSONArray jsonStatements)
+	private List<StatementGroup> getStatements(JSONArray jsonStatements, EntityIdValue subject)
 			throws JSONException {
 
 		assert jsonStatements != null : "statements JSON array was null";
@@ -148,7 +151,7 @@ public class JsonConverter {
 
 			// get a list of statements in the order they are in the JSON
 			// get the claim
-			Claim currentClaim = this.getClaim(currentStatement);
+			Claim currentClaim = this.getClaim(currentStatement, subject);
 
 			// get the references
 			JSONArray jsonRefs = currentStatement.getJSONArray("refs");
@@ -170,7 +173,8 @@ public class JsonConverter {
 		}
 
 		// process the list of statements into a list of statement groups
-		// TODO complete
+		StatementGroupBuilder builder = new StatementGroupBuilder(this.factory);
+		result = builder.buildFromStatementList(statementsFromJson);
 
 		return result;
 	}
@@ -245,11 +249,74 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Gets the claim ftom a statement in JSON. A Claim consists out of the
+	 * EntityIdValue of the subject, the subjects main snak and its qualifiers.
 	 * 
 	 * @param currentStatement
+	 *            a JSON object representing a whole statement from which the
+	 *            claim is to be extracted.
 	 * @return
+	 * @throws JSONException
+	 *             when a required key was not found or the snak type could not
+	 *             be identyfied.
 	 */
-	private Claim getClaim(JSONObject currentStatement) {
+	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject) throws JSONException {
+
+		// m: main snak
+		// q: qualifiers
+
+		// get the main snak
+		Snak mainSnak;
+		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
+		switch (jsonMainSnak.getString(0)) {
+		case "value":
+			mainSnak = this.getValueSnak(jsonMainSnak);
+			break;
+		case "somevalue" :
+			mainSnak = this.getSomeValueSnak(jsonMainSnak);
+			break;
+		case "novalue":
+			mainSnak = this.getNoValueSnak(jsonMainSnak);
+			break;
+		default: // could not determine snak type...
+			throw new JSONException("Unknown snack type: "
+					+ jsonMainSnak.getString(0));
+		}
+
+		// get the qualifiers
+		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
+		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
+
+		// build it together
+		Claim result = factory.getClaim(subject, mainSnak, qualifiers);
+		return result;
+	}
+
+	private SomeValueSnak getSomeValueSnak(JSONArray jsonMainSnak) {
+		// example:
+		// ["somevalue",22], where P22 is the property "father"
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak) {
+		// example:
+		// ["novalue",40], where P40 is the property "children"
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
+		// example:
+		// "q":[
+		// ["value",585,
+		// "time",{
+		// "time":"+00000002012-06-30T00:00:00Z",
+		// "timezone":0,"before":0,"after":0,
+		// "precision":11,
+		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
+		// ]
+		// ]
 		// TODO Auto-generated method stub
 		return null;
 	}
