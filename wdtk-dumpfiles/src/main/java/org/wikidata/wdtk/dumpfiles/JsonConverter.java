@@ -13,12 +13,14 @@ import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -63,6 +65,54 @@ public class JsonConverter {
 	 */
 	public JsonConverter(String baseIri) {
 		this.setBaseIri(baseIri);
+	}
+
+	PropertyDocument convertToPropertyDocument(JSONObject toConvert)
+			throws JSONException {
+
+		PropertyDocument result;
+
+		// get the property id
+		JSONArray jsonEntity = toConvert.getJSONArray("entity");
+		PropertyIdValue propertyId = this.getPropertyId(jsonEntity);
+
+		// get the labels
+		JSONObject jsonLabels = toConvert.getJSONObject("labels");
+		List<MonolingualTextValue> labels = this.getLabels(jsonLabels);
+
+		// get the descriptions
+		JSONObject jsonDescriptions = toConvert.getJSONObject("description");
+		List<MonolingualTextValue> descriptions = this
+				.getDescriptions(jsonDescriptions);
+
+		// get the aliases
+		JSONObject jsonAliases = toConvert.getJSONObject("aliases");
+		List<MonolingualTextValue> aliases = this.getAliases(jsonAliases);
+
+		// get the datatype id
+		String jsonDataTypeId = toConvert.getString("datatype");
+		DatatypeIdValue datatypeId = this.getDataTypeId(jsonDataTypeId);
+
+		result = this.factory.getPropertyDocument(propertyId, labels,
+				descriptions, aliases, datatypeId);
+		return result;
+	}
+
+	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
+
+		return this.factory.getDatatypeIdValue(jsonDataTypeId);
+	}
+
+	private PropertyIdValue getPropertyId(JSONArray jsonEntity) throws JSONException {
+		assert jsonEntity != null : "Entity JSON was null.";
+		assert jsonEntity.getString(0).equals("property") : "Entity JSON did not denote a property";
+		return this.getPropertyIdValue(jsonEntity.getInt(1));
+	}
+
+	private PropertyIdValue getPropertyIdValue(int intValue) {
+		
+		String id = "P" + intValue;
+		return this.factory.getPropertyIdValue(id, this.baseIri);
 	}
 
 	/**
@@ -287,7 +337,8 @@ public class JsonConverter {
 		// "unit":"1",
 		// "upperBound":"+34197",
 		// "lowerBound":"+34195"}
-		// TODO ignore unit?
+		// NOTE ignore unit for now
+		// it will be reviewed later
 
 		BigDecimal numericValue = new BigDecimal(
 				jsonQuantityValue.getString("amount"));
@@ -355,7 +406,7 @@ public class JsonConverter {
 		// example:
 		// {"entity-type":"item",
 		// "numeric-id":842256}
-		// TODO will there be any other entity-type then "item"?
+		// NOTE there be any other entity-type then "item" in later releases
 
 		EntityIdValue result;
 		String entityType = jsonObject.getString("entity-type");
@@ -722,28 +773,20 @@ public class JsonConverter {
 	/**
 	 * Constructs the item id of a JSON object denoting an item.
 	 * 
-	 * @param entity
-	 *            a JSON array containing information about the entity.
+	 * @param jsonEntity
+	 *            a JSON array containing information about the entity or
+	 *            property. The array shoud have the structure ["item", itemId]
+	 *            or ["property", propertyId].
+	 * @return An item id value prefixed accordingly.
 	 * @throws JSONException
 	 *             if the entity does not contain an "item"-entry or the entry
 	 *             is not followed by an integer denoting the item id.
 	 */
-	private ItemIdValue getItemId(JSONArray entity) throws JSONException {
-		assert entity != null : "Entity JSONArray was null";
+	private ItemIdValue getItemId(JSONArray jsonEntity) throws JSONException {
+		assert jsonEntity != null : "Entity JSONArray was null";
+		assert jsonEntity.getString(0).equals("item") : "JSONArray did not denote an item id.";
 
-		// TODO review this!
-		ItemIdValue itemId;
-		String id = null;
-
-		for (int i = 0; i < entity.length(); i++) {
-			if (entity.getString(i).equals("item")) {
-				// the next thing after "item" should be the item id number
-				id = "Q" + entity.getInt(i + 1);
-			}
-		}
-
-		itemId = factory.getItemIdValue(id, baseIri);
-		return itemId;
+		return this.getItemIdValue(jsonEntity.getInt(1));
 	}
 
 	/**
