@@ -17,6 +17,11 @@ import org.junit.Test;
  */
 public class jsonConverterTest {
 
+	// TODO change test setup to map<file, expectedObject>
+	// TODO test empty property document
+	// TODO test empty item document
+	// TODO reduce replication in test files
+	
 	private String sampleFilesBasePath = "ressources/testSamples/";
 	private List<File> sampleFiles = new LinkedList<>();
 	private List<JSONObject> testSamples = new LinkedList<>();

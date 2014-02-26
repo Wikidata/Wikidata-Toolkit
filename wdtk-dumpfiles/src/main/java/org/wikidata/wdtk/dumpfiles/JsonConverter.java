@@ -42,6 +42,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 // TODO complete assertions
 // TODO add @link to documentation where needed
 // TODO permanent: check if documentation is up-to-date
+// TODO see if one can reduce duplicated code, 
+// especially in convertToPropertyDocument and convertToItemDocument
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
