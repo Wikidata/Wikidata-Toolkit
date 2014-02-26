@@ -22,9 +22,13 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.mockito.Mockito;
 
 /**
  * Helper class to create BufferedReaders and InputStreams with predefined
@@ -57,5 +61,88 @@ public class MockStringContentFactory {
 	public static BufferedReader newMockBufferedReader(String contents) {
 		return new BufferedReader(new InputStreamReader(
 				newMockInputStream(contents)));
+	}
+
+	/**
+	 * Load a string from the file at the given URL. This should only be used
+	 * for relatively small files, obviously. The file contents is interpreted
+	 * as UTF-8.
+	 * 
+	 * @param url
+	 * @return string contents of the file at the given URL
+	 * @throws IOException
+	 *             if the URL could not be resolved or the file could not be
+	 *             read
+	 */
+	public static String getStringFromUrl(URL url) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				url.openStream(), StandardCharsets.UTF_8));
+		return getStringFromBufferedReader(br);
+	}
+
+	/**
+	 * Load a string from the given buffered reader. Newline will be appended
+	 * after each line but the last.
+	 * 
+	 * @param bufferedReader
+	 * @return string contents of the buffered reader
+	 * @throws IOException
+	 *             if it was not possible to read from the buffered reader
+	 */
+	public static String getStringFromBufferedReader(
+			BufferedReader bufferedReader) throws IOException {
+		StringBuilder contentsBuilder = new StringBuilder();
+		String line;
+		boolean firstLine = true;
+		while ((line = bufferedReader.readLine()) != null) {
+			if (firstLine) {
+				firstLine = false;
+			} else {
+				contentsBuilder.append("\n");
+			}
+			contentsBuilder.append(line);
+		}
+		return contentsBuilder.toString();
+	}
+
+	/**
+	 * Get a buffered reader that will throw IOExceptions on common reading
+	 * operations.
+	 * 
+	 * @return
+	 */
+	public static BufferedReader getFailingBufferedReader() {
+		BufferedReader br = Mockito.mock(BufferedReader.class);
+		try {
+			Mockito.doThrow(new IOException()).when(br).readLine();
+			Mockito.doThrow(new IOException()).when(br).read();
+		} catch (IOException e) {
+			throw new RuntimeException(
+					"Mockito should not throw anything here. Strange.", e);
+		}
+		return br;
+	}
+
+	/**
+	 * Get an input stream that will throw IOExceptions on common reading
+	 * operations.
+	 * 
+	 * @return
+	 */
+	public static InputStream getFailingInputStream() {
+		InputStream is = Mockito.mock(InputStream.class);
+		try {
+			Mockito.doThrow(new IOException()).when(is).read();
+			Mockito.doThrow(new IOException()).when(is)
+					.read((byte[]) Mockito.anyObject());
+			Mockito.doThrow(new IOException())
+					.when(is)
+					.read((byte[]) Mockito.anyObject(), Mockito.anyInt(),
+							Mockito.anyInt());
+		} catch (IOException e) {
+			throw new RuntimeException(
+					"Mockito should not throw anything here. Strange.", e);
+		}
+		return is;
 	}
 }

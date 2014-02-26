@@ -53,7 +53,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	public WmfOnlineDailyDumpFile(String dateStamp, String projectName,
 			WebResourceFetcher webResourceFetcher,
 			DirectoryManager dumpfileDirectoryManager) {
-		super(dateStamp, projectName, WmfDumpFile.POSTFIX_DAILY_DUMP_FILE);
+		super(dateStamp, projectName);
 		this.webResourceFetcher = webResourceFetcher;
 		this.dumpfileDirectoryManager = dumpfileDirectoryManager;
 	}
@@ -65,11 +65,14 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		String fileName = this.projectName + "-" + this.dateStamp
-				+ WmfDumpFile.POSTFIX_DAILY_DUMP_FILE;
+		String fileName = this.projectName
+				+ "-"
+				+ this.dateStamp
+				+ WmfDumpFile
+						.getDumpFilePostfix(MediaWikiDumpFile.DumpContentType.DAILY);
 		String urlString = getBaseUrl() + fileName;
 
-		if (this.getMaximalRevisionId() == -1) {
+		if (this.getMaximalRevisionId() == -1L) {
 			throw new IOException(
 					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
 		}
@@ -114,7 +117,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 		try (BufferedReader in = this.webResourceFetcher
 				.getBufferedReaderForUrl(getBaseUrl() + "status.txt")) {
 			String inputLine = in.readLine();
-			result = inputLine.equals("done");
+			result = "done".equals(inputLine);
 		} catch (IOException e) { // file not found or not readable
 			result = false;
 		}

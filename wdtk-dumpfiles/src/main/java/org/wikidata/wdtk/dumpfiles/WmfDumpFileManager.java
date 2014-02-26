@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
  * downloading/processing in the future.
  * <p>
  * Typically, the Web will be accessed to find information about dumps available
- * online. This Web access is mediated by a {@link WebResourceFetcherImpl} object,
- * provided upon construction. If null is given instead, the class will operate
- * in offline mode, using only previously downloaded files.
+ * online. This Web access is mediated by a {@link WebResourceFetcherImpl}
+ * object, provided upon construction. If null is given instead, the class will
+ * operate in offline mode, using only previously downloaded files.
  * <p>
  * The location of the Wikimedia download site is currently hardwired, since the
  * extraction methods used to get the data are highly specific to the format of
@@ -122,7 +122,7 @@ public class WmfDumpFileManager {
 	 * The result is ordered with the most recent dump first. If a dump file A
 	 * contains revisions of a page P, and Rmax is the maximal revision of P in
 	 * A, then every dump file that comes after A should contain only revisions
-	 * of P that are smaller than or equal to R1. In other words, the maximal
+	 * of P that are smaller than or equal to Rmax. In other words, the maximal
 	 * revision found in the first file that contains P at all should also be
 	 * the maximal revision overall.
 	 * 
@@ -139,7 +139,7 @@ public class WmfDumpFileManager {
 		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
 
 		for (MediaWikiDumpFile dumpFile : findAllDailyDumps()) {
-			if (dumpFile.getDateStamp().compareTo(mainDump.getDateStamp()) > 1) {
+			if (dumpFile.getDateStamp().compareTo(mainDump.getDateStamp()) > 0) {
 				result.add(dumpFile);
 			}
 		}
@@ -264,20 +264,6 @@ public class WmfDumpFileManager {
 			MediaWikiDumpFile.DumpContentType dumpContentType) {
 
 		String directoryPrefix = dumpContentType.toString().toLowerCase() + "-";
-		String filePostfix;
-		switch (dumpContentType) {
-		case DAILY:
-			filePostfix = WmfDumpFile.POSTFIX_DAILY_DUMP_FILE;
-			break;
-		case CURRENT:
-			filePostfix = WmfDumpFile.POSTFIX_CURRENT_DUMP_FILE;
-			break;
-		case FULL:
-			filePostfix = WmfDumpFile.POSTFIX_FULL_DUMP_FILE;
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported dump type");
-		}
 
 		List<String> dumpFileDirectories;
 		try {
@@ -295,7 +281,7 @@ public class WmfDumpFileManager {
 			if (dateStamp.matches("\\d\\d\\d\\d\\d\\d\\d\\d")) {
 				WmfLocalDumpFile dumpFile = new WmfLocalDumpFile(dateStamp,
 						this.projectName, dumpfileDirectoryManager,
-						dumpContentType, filePostfix);
+						dumpContentType);
 				if (dumpFile.isAvailable()) {
 					result.add(dumpFile);
 				} else {
@@ -305,6 +291,9 @@ public class WmfDumpFileManager {
 				}
 			}
 		}
+
+		Collections.sort(result, Collections
+				.reverseOrder(new MediaWikiDumpFile.DateComparator()));
 
 		return result;
 	}
@@ -345,9 +334,10 @@ public class WmfDumpFileManager {
 		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
-			result.add(new WmfOnlineCurrentDumpFile(dateStamp,
+			result.add(new WmfOnlineStandardDumpFile(dateStamp,
 					this.projectName, this.webResourceFetcher,
-					this.dumpfileDirectoryManager));
+					this.dumpfileDirectoryManager,
+					MediaWikiDumpFile.DumpContentType.CURRENT));
 		}
 
 		return result;
@@ -367,8 +357,10 @@ public class WmfDumpFileManager {
 		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
-			result.add(new WmfOnlineFullDumpFile(dateStamp, this.projectName,
-					this.webResourceFetcher, this.dumpfileDirectoryManager));
+			result.add(new WmfOnlineStandardDumpFile(dateStamp,
+					this.projectName, this.webResourceFetcher,
+					this.dumpfileDirectoryManager,
+					MediaWikiDumpFile.DumpContentType.FULL));
 		}
 
 		return result;

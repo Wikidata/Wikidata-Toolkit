@@ -50,6 +50,7 @@ public class MockDirectoryManager implements DirectoryManager {
 
 	final Path directory;
 	final HashMap<Path, String> files;
+	boolean returnFailingReaders;
 
 	public MockDirectoryManager(Path directory) throws IOException {
 		this(directory, new HashMap<Path, String>());
@@ -65,6 +66,27 @@ public class MockDirectoryManager implements DirectoryManager {
 			throw new IOException("Could not create mock working directory.");
 		}
 		setDirectory(directory);
+	}
+
+	/**
+	 * When set to true, every operation that returns reader objects to access
+	 * some file will return objects that fail with exceptions when trying to
+	 * read the file. This can be used to simulate problems like insufficient
+	 * access rights or files becoming inaccessible after being opened.
+	 * <p>
+	 * The property is inherited by any submanagers that are created by this
+	 * object.
+	 * 
+	 * @param returnFailingReaders
+	 *            whether read operations should fail
+	 */
+	public void setReturnFailingReaders(boolean returnFailingReaders) {
+		this.returnFailingReaders = returnFailingReaders;
+	}
+
+	@Override
+	public String toString() {
+		return "[mocked directory] " + this.directory.toString();
 	}
 
 	/**
@@ -95,8 +117,10 @@ public class MockDirectoryManager implements DirectoryManager {
 	@Override
 	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException {
-		return new MockDirectoryManager(directory.resolve(subdirectoryName),
-				files);
+		MockDirectoryManager result = new MockDirectoryManager(
+				directory.resolve(subdirectoryName), files);
+		result.setReturnFailingReaders(this.returnFailingReaders);
+		return result;
 	}
 
 	@Override
@@ -173,9 +197,13 @@ public class MockDirectoryManager implements DirectoryManager {
 			throw new FileNotFoundException();
 		}
 
-		Path filePath = this.directory.resolve(fileName);
-		return MockStringContentFactory.newMockBufferedReader(this.files
-				.get(filePath));
+		if (this.returnFailingReaders) {
+			return MockStringContentFactory.getFailingBufferedReader();
+		} else {
+			Path filePath = this.directory.resolve(fileName);
+			return MockStringContentFactory.newMockBufferedReader(this.files
+					.get(filePath));
+		}
 	}
 
 	@Override

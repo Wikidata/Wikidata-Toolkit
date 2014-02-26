@@ -23,16 +23,35 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * Class for representing dump files published by the Wikimedia Foundation, and
+ * previously downloaded to a local directory.
+ * 
+ * @author Markus Kroetzsch
+ * 
+ */
 public class WmfLocalDumpFile extends WmfDumpFile {
 
 	final DirectoryManager thisDumpfileDirectoryManager;
 	final MediaWikiDumpFile.DumpContentType dumpContentType;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param dateStamp
+	 *            dump date in format YYYYMMDD
+	 * @param projectName
+	 *            project name string
+	 * @param dumpfileDirectoryManager
+	 *            the directory manager for the directory where dumps should be
+	 *            downloaded to
+	 * @param dumpContentType
+	 *            the type of dump this represents
+	 */
 	public WmfLocalDumpFile(String dateStamp, String projectName,
 			DirectoryManager dumpfileDirectoryManager,
-			MediaWikiDumpFile.DumpContentType dumpContentType,
-			String filePostfix) {
-		super(dateStamp, projectName, filePostfix);
+			MediaWikiDumpFile.DumpContentType dumpContentType) {
+		super(dateStamp, projectName);
 
 		String subdirectoryName = dumpContentType.toString().toLowerCase()
 				+ "-" + dateStamp;
@@ -103,7 +122,8 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	 * @return
 	 */
 	String getFileName() {
-		return this.projectName + "-" + this.dateStamp + filePostfix;
+		return this.projectName + "-" + this.dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(this.dumpContentType);
 	}
 
 }

@@ -74,7 +74,7 @@ public class MockWebResourceFetcherTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void readOnlyGzipFiles() throws IOException {
-		mwrf.getBufferedReaderForGzipUrl("http://example.com/test.txt");
+		mwrf.getBufferedReaderForGzipUrl("http://example.com/test.html");
 	}
 
 	@Test(expected = IOException.class)

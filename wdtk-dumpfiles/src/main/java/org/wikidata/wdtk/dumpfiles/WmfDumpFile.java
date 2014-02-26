@@ -26,8 +26,7 @@ package org.wikidata.wdtk.dumpfiles;
  * @author Markus Kroetzsch
  * 
  */
-public abstract class WmfDumpFile implements MediaWikiDumpFile,
-		Comparable<WmfDumpFile> {
+public abstract class WmfDumpFile implements MediaWikiDumpFile {
 
 	/**
 	 * The default URL of the website to obtain the dump files from.
@@ -40,19 +39,12 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile,
 
 	final String dateStamp;
 	final String projectName;
-	final String filePostfix;
 	Long maxRevId;
 	Boolean isDone;
 
-	public WmfDumpFile(String dateStamp, String projectName, String filePostfix) {
+	public WmfDumpFile(String dateStamp, String projectName) {
 		this.dateStamp = dateStamp;
 		this.projectName = projectName;
-		this.filePostfix = filePostfix;
-	}
-
-	@Override
-	public int compareTo(WmfDumpFile other) {
-		return this.dateStamp.compareTo(other.dateStamp);
 	}
 
 	@Override
@@ -101,5 +93,29 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile,
 	 * @return true if the dump is done
 	 */
 	protected abstract boolean fetchIsDone();
+
+	/**
+	 * Return the ending used by the Wikimedia-provided dumpfile names of the
+	 * given type.
+	 * 
+	 * @param dumpContentType
+	 *            the type of dump
+	 * @return postfix of the dumpfile name
+	 * @throws IllegalArgumentException
+	 *             if the given dump file type is not known
+	 */
+	public static String getDumpFilePostfix(
+			MediaWikiDumpFile.DumpContentType dumpContentType) {
+		switch (dumpContentType) {
+		case DAILY:
+			return WmfDumpFile.POSTFIX_DAILY_DUMP_FILE;
+		case CURRENT:
+			return WmfDumpFile.POSTFIX_CURRENT_DUMP_FILE;
+		case FULL:
+			return WmfDumpFile.POSTFIX_FULL_DUMP_FILE;
+		default:
+			throw new IllegalArgumentException("Unsupported dump type");
+		}
+	}
 
 }

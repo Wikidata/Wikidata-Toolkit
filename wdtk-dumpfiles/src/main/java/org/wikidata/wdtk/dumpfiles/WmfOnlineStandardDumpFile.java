@@ -54,17 +54,13 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	 *            downloaded to
 	 * @param dumpContentType
 	 *            the type of dump this represents
-	 * @param filePostfix
-	 *            the ending of file names of the actual dump files as published
-	 *            by the WMF
 	 */
 	public WmfOnlineStandardDumpFile(String dateStamp, String projectName,
 			WebResourceFetcher webResourceFetcher,
 			DirectoryManager dumpfileDirectoryManager,
-			MediaWikiDumpFile.DumpContentType dumpContentType,
-			String filePostfix) {
+			MediaWikiDumpFile.DumpContentType dumpContentType) {
 
-		super(dateStamp, projectName, filePostfix);
+		super(dateStamp, projectName);
 		this.webResourceFetcher = webResourceFetcher;
 		this.dumpfileDirectoryManager = dumpfileDirectoryManager;
 		this.dumpContentType = dumpContentType;
@@ -170,6 +166,8 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				.getBufferedReaderForUrl(getBaseUrl() + this.projectName + "-"
 						+ dateStamp + "-md5sums.txt")) {
 			String inputLine;
+			String filePostfix = WmfDumpFile
+					.getDumpFilePostfix(this.dumpContentType);
 			while (!found && (inputLine = in.readLine()) != null) {
 				if (inputLine.endsWith(filePostfix)) {
 					found = true;
@@ -194,10 +192,11 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	/**
 	 * Get the file name of the files for this dump.
 	 * 
-	 * @return base URL
+	 * @return file name
 	 */
 	String getFileName() {
-		return this.projectName + "-" + this.dateStamp + filePostfix;
+		return this.projectName + "-" + this.dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(this.dumpContentType);
 	}
 
 }
