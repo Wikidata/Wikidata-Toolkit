@@ -43,7 +43,7 @@ public class WmfLocalDumpFileTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void directoryDoesNotExist() {
 		new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
-				MediaWikiDumpFile.DumpContentType.DAILY);
+				DumpContentType.DAILY);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -54,22 +54,19 @@ public class WmfLocalDumpFileTest {
 				.getSubdirectoryManager("daily-20140220");
 
 		new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
-				MediaWikiDumpFile.DumpContentType.DAILY);
+				DumpContentType.DAILY);
 	}
 
 	@Test
 	public void malformattedRevisionId() {
 		Path thisDumpPath = dm.directory.resolve("daily-20140220");
-		dm.setFileContents(
-				thisDumpPath
-						.resolve("wikidatawiki-20140220"
-								+ WmfDumpFile
-										.getDumpFilePostfix(MediaWikiDumpFile.DumpContentType.DAILY)),
+		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
+				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
 		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "invalid");
 
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, MediaWikiDumpFile.DumpContentType.DAILY);
+				"wikidatawiki", dm, DumpContentType.DAILY);
 		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
 		assertEquals(dumpFile.isAvailable(), false);
 	}
@@ -77,33 +74,27 @@ public class WmfLocalDumpFileTest {
 	@Test
 	public void emptyRevisionId() {
 		Path thisDumpPath = dm.directory.resolve("daily-20140220");
-		dm.setFileContents(
-				thisDumpPath
-						.resolve("wikidatawiki-20140220"
-								+ WmfDumpFile
-										.getDumpFilePostfix(MediaWikiDumpFile.DumpContentType.DAILY)),
+		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
+				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
 		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "");
 
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, MediaWikiDumpFile.DumpContentType.DAILY);
+				"wikidatawiki", dm, DumpContentType.DAILY);
 		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
 	}
 
 	@Test
 	public void unreadaleRevisionId() {
 		Path thisDumpPath = dm.directory.resolve("daily-20140220");
-		dm.setFileContents(
-				thisDumpPath
-						.resolve("wikidatawiki-20140220"
-								+ WmfDumpFile
-										.getDumpFilePostfix(MediaWikiDumpFile.DumpContentType.DAILY)),
+		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
+				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
 		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "1234567");
 		dm.setReturnFailingReaders(true);
 
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, MediaWikiDumpFile.DumpContentType.DAILY);
+				"wikidatawiki", dm, DumpContentType.DAILY);
 		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
 		assertEquals(dumpFile.isAvailable(), false);
 	}
@@ -114,7 +105,7 @@ public class WmfLocalDumpFileTest {
 		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "12345678");
 
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, MediaWikiDumpFile.DumpContentType.DAILY);
+				"wikidatawiki", dm, DumpContentType.DAILY);
 		assertEquals(dumpFile.getMaximalRevisionId(), new Long(12345678));
 		assertEquals(dumpFile.isAvailable(), false);
 	}

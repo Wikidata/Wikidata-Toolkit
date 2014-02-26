@@ -104,8 +104,7 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile {
 	 * @throws IllegalArgumentException
 	 *             if the given dump file type is not known
 	 */
-	public static String getDumpFilePostfix(
-			MediaWikiDumpFile.DumpContentType dumpContentType) {
+	public static String getDumpFilePostfix(DumpContentType dumpContentType) {
 		switch (dumpContentType) {
 		case DAILY:
 			return WmfDumpFile.POSTFIX_DAILY_DUMP_FILE;

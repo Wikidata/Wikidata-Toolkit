@@ -181,7 +181,7 @@ public class WmfDumpFileManager {
 	 * @return a list of daily dump files
 	 */
 	public List<MediaWikiDumpFile> findAllDailyDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(MediaWikiDumpFile.DumpContentType.DAILY);
+		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.DAILY);
 		if (this.webResourceFetcher != null) {
 			List<MediaWikiDumpFile> onlineDumps = findDailyDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
@@ -198,7 +198,7 @@ public class WmfDumpFileManager {
 	 * @return a list of current dump files
 	 */
 	public List<MediaWikiDumpFile> findAllCurrentDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(MediaWikiDumpFile.DumpContentType.CURRENT);
+		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.CURRENT);
 		if (this.webResourceFetcher != null) {
 			List<MediaWikiDumpFile> onlineDumps = findCurrentDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
@@ -215,7 +215,7 @@ public class WmfDumpFileManager {
 	 * @return a list of full dump files
 	 */
 	public List<MediaWikiDumpFile> findAllFullDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(MediaWikiDumpFile.DumpContentType.FULL);
+		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.FULL);
 		if (this.webResourceFetcher != null) {
 			List<MediaWikiDumpFile> onlineDumps = findFullDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
@@ -260,8 +260,7 @@ public class WmfDumpFileManager {
 	 *            the type of dump to consider
 	 * @return list of objects that provide information on available dumps
 	 */
-	List<MediaWikiDumpFile> findDumpsLocally(
-			MediaWikiDumpFile.DumpContentType dumpContentType) {
+	List<MediaWikiDumpFile> findDumpsLocally(DumpContentType dumpContentType) {
 
 		String directoryPrefix = dumpContentType.toString().toLowerCase() + "-";
 
@@ -336,8 +335,7 @@ public class WmfDumpFileManager {
 		for (String dateStamp : dumpFileDates) {
 			result.add(new WmfOnlineStandardDumpFile(dateStamp,
 					this.projectName, this.webResourceFetcher,
-					this.dumpfileDirectoryManager,
-					MediaWikiDumpFile.DumpContentType.CURRENT));
+					this.dumpfileDirectoryManager, DumpContentType.CURRENT));
 		}
 
 		return result;
@@ -359,8 +357,7 @@ public class WmfDumpFileManager {
 		for (String dateStamp : dumpFileDates) {
 			result.add(new WmfOnlineStandardDumpFile(dateStamp,
 					this.projectName, this.webResourceFetcher,
-					this.dumpfileDirectoryManager,
-					MediaWikiDumpFile.DumpContentType.FULL));
+					this.dumpfileDirectoryManager, DumpContentType.FULL));
 		}
 
 		return result;

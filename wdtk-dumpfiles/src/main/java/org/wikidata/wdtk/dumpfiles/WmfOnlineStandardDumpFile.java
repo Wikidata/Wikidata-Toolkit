@@ -38,7 +38,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
-	final MediaWikiDumpFile.DumpContentType dumpContentType;
+	final DumpContentType dumpContentType;
 
 	/**
 	 * Constructor.
@@ -58,7 +58,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	public WmfOnlineStandardDumpFile(String dateStamp, String projectName,
 			WebResourceFetcher webResourceFetcher,
 			DirectoryManager dumpfileDirectoryManager,
-			MediaWikiDumpFile.DumpContentType dumpContentType) {
+			DumpContentType dumpContentType) {
 
 		super(dateStamp, projectName);
 		this.webResourceFetcher = webResourceFetcher;

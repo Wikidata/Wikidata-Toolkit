@@ -77,8 +77,8 @@ public class WmfDumpFileManagerTest {
 	 * @param dumpContentType
 	 * @param isDone
 	 */
-	void setLocalDump(String dateStamp,
-			MediaWikiDumpFile.DumpContentType dumpContentType, boolean isDone) {
+	void setLocalDump(String dateStamp, DumpContentType dumpContentType,
+			boolean isDone) {
 
 		Path dumpFilePath = dm.directory.resolve("dumpfiles").resolve(
 				"wikidatawiki");
@@ -102,12 +102,11 @@ public class WmfDumpFileManagerTest {
 				"/other-incr-wikidatawiki-index.html",
 				MockWebResourceFetcher.TYPE_HTML);
 
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140219", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
-		setLocalDump("20140215", MediaWikiDumpFile.DumpContentType.DAILY, false);
-		setLocalDump("20140205", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("nodate", MediaWikiDumpFile.DumpContentType.DAILY, true);
+		setLocalDump("20140220", DumpContentType.DAILY, true);
+		setLocalDump("20140219", DumpContentType.CURRENT, true);
+		setLocalDump("20140215", DumpContentType.DAILY, false);
+		setLocalDump("20140205", DumpContentType.DAILY, true);
+		setLocalDump("nodate", DumpContentType.DAILY, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
@@ -125,7 +124,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.DAILY);
+					DumpContentType.DAILY);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
@@ -141,14 +140,11 @@ public class WmfDumpFileManagerTest {
 				"http://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
 
-		setLocalDump("20140210", MediaWikiDumpFile.DumpContentType.CURRENT,
-				false);
-		setLocalDump("20140123", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
-		setLocalDump("20140106", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20131201", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
-		setLocalDump("nodate", MediaWikiDumpFile.DumpContentType.CURRENT, true);
+		setLocalDump("20140210", DumpContentType.CURRENT, false);
+		setLocalDump("20140123", DumpContentType.CURRENT, true);
+		setLocalDump("20140106", DumpContentType.DAILY, true);
+		setLocalDump("20131201", DumpContentType.CURRENT, true);
+		setLocalDump("nodate", DumpContentType.CURRENT, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
@@ -163,7 +159,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.CURRENT);
+					DumpContentType.CURRENT);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
@@ -179,12 +175,11 @@ public class WmfDumpFileManagerTest {
 				"http://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
 
-		setLocalDump("20140210", MediaWikiDumpFile.DumpContentType.FULL, false);
-		setLocalDump("20140123", MediaWikiDumpFile.DumpContentType.FULL, true);
-		setLocalDump("20140106", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
-		setLocalDump("20131201", MediaWikiDumpFile.DumpContentType.FULL, true);
-		setLocalDump("nodate", MediaWikiDumpFile.DumpContentType.FULL, true);
+		setLocalDump("20140210", DumpContentType.FULL, false);
+		setLocalDump("20140123", DumpContentType.FULL, true);
+		setLocalDump("20140106", DumpContentType.CURRENT, true);
+		setLocalDump("20131201", DumpContentType.FULL, true);
+		setLocalDump("nodate", DumpContentType.FULL, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
@@ -199,7 +194,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.FULL);
+					DumpContentType.FULL);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
@@ -211,8 +206,8 @@ public class WmfDumpFileManagerTest {
 
 	@Test
 	public void getAllDailyDumpsOffline() throws IOException {
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140205", MediaWikiDumpFile.DumpContentType.DAILY, true);
+		setLocalDump("20140220", DumpContentType.DAILY, true);
+		setLocalDump("20140205", DumpContentType.DAILY, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
@@ -225,7 +220,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.DAILY);
+					DumpContentType.DAILY);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
 		}
@@ -233,10 +228,8 @@ public class WmfDumpFileManagerTest {
 
 	@Test
 	public void getAllCurrentDumpsOffline() throws IOException {
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
-		setLocalDump("20140205", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
+		setLocalDump("20140220", DumpContentType.CURRENT, true);
+		setLocalDump("20140205", DumpContentType.CURRENT, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
@@ -249,7 +242,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.CURRENT);
+					DumpContentType.CURRENT);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
 		}
@@ -257,8 +250,8 @@ public class WmfDumpFileManagerTest {
 
 	@Test
 	public void getAllFullDumpsOffline() throws IOException {
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.FULL, true);
-		setLocalDump("20140205", MediaWikiDumpFile.DumpContentType.FULL, true);
+		setLocalDump("20140220", DumpContentType.FULL, true);
+		setLocalDump("20140205", DumpContentType.FULL, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
@@ -271,7 +264,7 @@ public class WmfDumpFileManagerTest {
 		assertEquals(dumpFiles.size(), dumpDates.length);
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			assertEquals(dumpFiles.get(i).getDumpContentType(),
-					MediaWikiDumpFile.DumpContentType.FULL);
+					DumpContentType.FULL);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
 		}
@@ -287,9 +280,9 @@ public class WmfDumpFileManagerTest {
 				"http://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
 
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140219", MediaWikiDumpFile.DumpContentType.FULL, true);
-		setLocalDump("20140205", MediaWikiDumpFile.DumpContentType.DAILY, true);
+		setLocalDump("20140220", DumpContentType.DAILY, true);
+		setLocalDump("20140219", DumpContentType.FULL, true);
+		setLocalDump("20140205", DumpContentType.DAILY, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
@@ -307,10 +300,10 @@ public class WmfDumpFileManagerTest {
 		for (int i = 0; i < dumpFiles.size(); i++) {
 			if (i == dumpFiles.size() - 1) {
 				assertEquals(dumpFiles.get(i).getDumpContentType(),
-						MediaWikiDumpFile.DumpContentType.CURRENT);
+						DumpContentType.CURRENT);
 			} else {
 				assertEquals(dumpFiles.get(i).getDumpContentType(),
-						MediaWikiDumpFile.DumpContentType.DAILY);
+						DumpContentType.DAILY);
 			}
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
@@ -323,9 +316,8 @@ public class WmfDumpFileManagerTest {
 
 	@Test
 	public void getAllRelevantDumpsMainDumpMissing() throws IOException {
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140210", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
+		setLocalDump("20140220", DumpContentType.DAILY, true);
+		setLocalDump("20140210", DumpContentType.CURRENT, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
@@ -335,7 +327,7 @@ public class WmfDumpFileManagerTest {
 
 		assertEquals(dumpFiles.size(), 1);
 		assertEquals(dumpFiles.get(0).getDumpContentType(),
-				MediaWikiDumpFile.DumpContentType.DAILY);
+				DumpContentType.DAILY);
 		assertEquals(dumpFiles.get(0).getDateStamp(), "20140220");
 		assertTrue(dumpFiles.get(0) instanceof WmfLocalDumpFile);
 	}
@@ -343,10 +335,9 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void processAllRelevantDumps() throws IOException {
 
-		setLocalDump("20140221", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140220", MediaWikiDumpFile.DumpContentType.DAILY, true);
-		setLocalDump("20140219", MediaWikiDumpFile.DumpContentType.CURRENT,
-				true);
+		setLocalDump("20140221", DumpContentType.DAILY, true);
+		setLocalDump("20140220", DumpContentType.DAILY, true);
+		setLocalDump("20140219", DumpContentType.CURRENT, true);
 
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);

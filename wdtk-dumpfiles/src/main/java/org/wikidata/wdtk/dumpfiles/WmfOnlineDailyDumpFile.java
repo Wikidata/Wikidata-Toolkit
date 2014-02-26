@@ -60,16 +60,13 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	@Override
 	public DumpContentType getDumpContentType() {
-		return MediaWikiDumpFile.DumpContentType.DAILY;
+		return DumpContentType.DAILY;
 	}
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		String fileName = this.projectName
-				+ "-"
-				+ this.dateStamp
-				+ WmfDumpFile
-						.getDumpFilePostfix(MediaWikiDumpFile.DumpContentType.DAILY);
+		String fileName = this.projectName + "-" + this.dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY);
 		String urlString = getBaseUrl() + fileName;
 
 		if (this.getMaximalRevisionId() == -1L) {

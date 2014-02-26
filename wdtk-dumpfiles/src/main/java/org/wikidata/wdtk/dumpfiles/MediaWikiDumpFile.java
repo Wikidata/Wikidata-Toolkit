@@ -46,10 +46,6 @@ public interface MediaWikiDumpFile {
 		}
 	}
 
-	public enum DumpContentType {
-		DAILY, CURRENT, FULL
-	}
-
 	/**
 	 * Check if the dump is actually available. Should be called before
 	 * {@link #getDumpFileReader()}.

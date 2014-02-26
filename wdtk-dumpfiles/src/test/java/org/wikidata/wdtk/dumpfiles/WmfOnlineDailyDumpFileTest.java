@@ -72,8 +72,7 @@ public class WmfOnlineDailyDumpFileTest {
 		assertEquals(dateStamp, dump.getDateStamp());
 		assertEquals("wikidatawiki", dump.getProjectName());
 		assertEquals("wikidatawiki-daily-" + dateStamp, dump.toString());
-		assertEquals(MediaWikiDumpFile.DumpContentType.DAILY,
-				dump.getDumpContentType());
+		assertEquals(DumpContentType.DAILY, dump.getDumpContentType());
 	}
 
 	@Test

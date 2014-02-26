@@ -33,7 +33,7 @@ import java.io.IOException;
 public class WmfLocalDumpFile extends WmfDumpFile {
 
 	final DirectoryManager thisDumpfileDirectoryManager;
-	final MediaWikiDumpFile.DumpContentType dumpContentType;
+	final DumpContentType dumpContentType;
 
 	/**
 	 * Constructor.
@@ -50,7 +50,7 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	 */
 	public WmfLocalDumpFile(String dateStamp, String projectName,
 			DirectoryManager dumpfileDirectoryManager,
-			MediaWikiDumpFile.DumpContentType dumpContentType) {
+			DumpContentType dumpContentType) {
 		super(dateStamp, projectName);
 
 		String subdirectoryName = dumpContentType.toString().toLowerCase()

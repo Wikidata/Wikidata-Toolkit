@@ -56,8 +56,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-md5sums.txt",
 				MockWebResourceFetcher.TYPE_HTML);
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm,
-				MediaWikiDumpFile.DumpContentType.CURRENT);
+				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 
 		BufferedReader br = dump.getDumpFileReader();
 
@@ -66,14 +65,13 @@ public class WmfOnlineStandardDumpFileTest {
 		assertTrue(dump.isAvailable());
 		assertEquals(new Long(108891795), dump.getMaximalRevisionId());
 		assertEquals("20140210", dump.getDateStamp());
-		assertEquals(MediaWikiDumpFile.DumpContentType.CURRENT,
-				dump.getDumpContentType());
+		assertEquals(DumpContentType.CURRENT, dump.getDumpContentType());
 	}
 
 	@Test
 	public void missingFullDumpProperties() {
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm, MediaWikiDumpFile.DumpContentType.FULL);
+				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
 		assertTrue(!dump.isAvailable());
 		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
@@ -96,8 +94,7 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setReturnFailingReaders(true);
 
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm,
-				MediaWikiDumpFile.DumpContentType.CURRENT);
+				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 
 		assertTrue(!dump.isAvailable());
 		assertEquals(new Long(-1), dump.getMaximalRevisionId());
@@ -110,19 +107,18 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-index.html",
 				MockWebResourceFetcher.TYPE_HTML);
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm, MediaWikiDumpFile.DumpContentType.FULL);
+				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
 		assertTrue(!dump.isAvailable());
 		assertEquals(new Long(108995868), dump.getMaximalRevisionId());
 		assertEquals("20140210", dump.getDateStamp());
-		assertEquals(MediaWikiDumpFile.DumpContentType.FULL,
-				dump.getDumpContentType());
+		assertEquals(DumpContentType.FULL, dump.getDumpContentType());
 	}
 
 	@Test
 	public void emptyFullDumpRevisionId() throws IOException {
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm, MediaWikiDumpFile.DumpContentType.FULL);
+				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
 		assertEquals(new Long(-1), dump.getMaximalRevisionId());
 	}
@@ -133,7 +129,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", MockWebResourceFetcher.TYPE_BZ2);
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm, MediaWikiDumpFile.DumpContentType.FULL);
+				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 		dump.getDumpFileReader();
 	}
 
@@ -148,8 +144,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-md5sums.txt",
 				MockWebResourceFetcher.TYPE_HTML);
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm,
-				MediaWikiDumpFile.DumpContentType.CURRENT);
+				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 		dump.getDumpFileReader();
 	}
 
