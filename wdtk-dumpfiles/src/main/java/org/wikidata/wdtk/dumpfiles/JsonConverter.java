@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.dumpfiles;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,10 +14,13 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
@@ -24,8 +28,16 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
+// TODO introduce a verbose-flag to enable/disable logging
+// TODO make item and property prefixes variable, 
+// in case someone does not use "Q" and "P"
+// TODO move MonolingualTextValue inlines into a method
+// TODO complete assertions
 // TODO add @link to documentation where needed
 // TODO permanent: check if documentation is up-to-date
 /**
@@ -90,7 +102,7 @@ public class JsonConverter {
 		}
 		// get the item Id
 		JSONArray jsonEntity = toConvert.getJSONArray("entity");
-		itemId = getItemId(jsonEntity);
+		itemId = this.getItemId(jsonEntity);
 
 		// get the labels
 		JSONObject jsonLabels = toConvert.getJSONObject("label");
@@ -132,8 +144,8 @@ public class JsonConverter {
 	 *             if one of the JSON objects in the array did not contain all
 	 *             required keys.
 	 */
-	private List<StatementGroup> getStatements(JSONArray jsonStatements, EntityIdValue subject)
-			throws JSONException {
+	private List<StatementGroup> getStatements(JSONArray jsonStatements,
+			EntityIdValue subject) throws JSONException {
 
 		assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
@@ -215,10 +227,220 @@ public class JsonConverter {
 	 * 
 	 * @param jsonValueSnak
 	 * @return
+	 * @throws JSONException
 	 */
-	private ValueSnak getValueSnak(JSONArray jsonValueSnak) {
-		// TODO Auto-generated method stub
-		return null;
+	private ValueSnak getValueSnak(JSONArray jsonValueSnak)
+			throws JSONException {
+		// a value snak is
+		// ["value", propertyID, value-type, value]
+
+		assert jsonValueSnak != null : "jsonValueSnak was null";
+		assert jsonValueSnak.getString(0).equals("value") : "given JSON was not a value snak";
+
+		ValueSnak result;
+
+		// get the property id
+		String id = "P" + jsonValueSnak.getInt(1);
+		PropertyIdValue propertyId = factory.getPropertyIdValue(id,
+				this.baseIri);
+
+		// get the value
+		String valueString = jsonValueSnak.getString(2);
+		Value value;
+		switch (valueString) {
+		case "time":
+			value = this.getTimeValue(jsonValueSnak.getJSONObject(3));
+			break;
+		case "wikibase-entityid":
+			value = this.getEntityIdValue(jsonValueSnak.getJSONObject(3));
+			break;
+		case "string":
+			value = this.getStringIdValue(jsonValueSnak.getString(3));
+			break;
+		case "globecoordinate":
+			value = this.getGlobeCoordinatesValue(jsonValueSnak
+					.getJSONObject(3));
+			break;
+		case "quantity":
+			value = this.getQuantityValue(jsonValueSnak.getJSONObject(3));
+			break;
+		default:
+			throw new JSONException("Unknown value type " + valueString
+					+ "in value snak JSON");
+		}
+
+		// put it all together
+		result = this.factory.getValueSnak(propertyId, value);
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param jsonQuantityValue
+	 * @return
+	 * @throws JSONException
+	 */
+	private QuantityValue getQuantityValue(JSONObject jsonQuantityValue)
+			throws JSONException {
+		// example:
+		// {"amount":"+34196",
+		// "unit":"1",
+		// "upperBound":"+34197",
+		// "lowerBound":"+34195"}
+		// TODO ignore unit?
+
+		BigDecimal numericValue = new BigDecimal(
+				jsonQuantityValue.getString("amount"));
+
+		BigDecimal lowerBound = new BigDecimal(
+				jsonQuantityValue.getString("lowerBound"));
+
+		BigDecimal upperBound = new BigDecimal(
+				jsonQuantityValue.getString("upperBound"));
+
+		QuantityValue result = this.factory.getQuantityValue(numericValue,
+				lowerBound, upperBound);
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param jsonGlobeCoordinate
+	 * @return
+	 * @throws JSONException
+	 */
+	private GlobeCoordinatesValue getGlobeCoordinatesValue(
+			JSONObject jsonGlobeCoordinate) throws JSONException {
+		// example:
+		// {"latitude":51.835,
+		// "longitude":10.785277777778,
+		// "altitude":null,
+		// "precision":0.00027777777777778,
+		// "globe":"http:\/\/www.wikidata.org\/entity\/Q2"}
+		// NOTE as for now, ignore "altitude".
+		// The key will be reviewed in the future.
+
+		long latitude = jsonGlobeCoordinate.getLong("latitude");
+		long longitude = jsonGlobeCoordinate.getLong("longitiude");
+		long precision = jsonGlobeCoordinate.getLong("precision");
+		String globeIri = jsonGlobeCoordinate.getString("globe");
+
+		GlobeCoordinatesValue result = this.factory.getGlobeCoordinatesValue(
+				latitude, longitude, precision, globeIri);
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private StringValue getStringIdValue(String string) {
+		// NOTE I decided against inlining, so
+		// if the StringValue changes somehow in the future
+		// one has only to change this method
+		return this.factory.getStringValue(string);
+	}
+
+	/**
+	 * 
+	 * @param jsonObject
+	 * @return
+	 * @throws JSONException
+	 */
+	private EntityIdValue getEntityIdValue(JSONObject jsonObject)
+			throws JSONException {
+		// example:
+		// {"entity-type":"item",
+		// "numeric-id":842256}
+		// TODO will there be any other entity-type then "item"?
+
+		EntityIdValue result;
+		String entityType = jsonObject.getString("entity-type");
+
+		// check the entity type
+		switch (entityType) {
+		case "item":
+			result = this.getItemIdValue(jsonObject.getInt("numeric-id"));
+			break;
+		default:
+			throw new JSONException("Unknown entity type " + entityType
+					+ " in entity id value JSON.");
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param intValue
+	 * @return
+	 */
+	private ItemIdValue getItemIdValue(int intValue) {
+		String id = "Q" + intValue;
+		return this.factory.getItemIdValue(id, this.baseIri);
+
+	}
+
+	/**
+	 * 
+	 * @param jsonTimeValue
+	 * @return
+	 * @throws JSONException
+	 */
+	private TimeValue getTimeValue(JSONObject jsonTimeValue)
+			throws JSONException {
+		// example:
+		// {"time":"+00000002012-06-30T00:00:00Z",
+		// "timezone":0,
+		// "before":0,
+		// "after":0,
+		// "precision":11,
+		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
+		TimeValue result;
+
+		String stringTime = jsonTimeValue.getString("time");
+		String[] stringValues = stringTime.split("[\\-\\:TZ]");
+		// TODO test regex
+
+		// get the year
+		int year = Integer.parseInt(stringValues[0]);
+
+		// get the month
+		byte month = Byte.parseByte(stringValues[1]);
+
+		// get the day
+		byte day = Byte.parseByte(stringValues[2]);
+
+		// get the hour
+		byte hour = Byte.parseByte(stringValues[3]);
+
+		// get the minute
+		byte minute = Byte.parseByte(stringValues[4]);
+		;
+
+		// get the second
+		byte second = Byte.parseByte(stringValues[5]);
+		;
+
+		// get the precision
+		byte precision = (byte) jsonTimeValue.getInt("precision");
+
+		// get the tolerances
+		int beforeTolerance = jsonTimeValue.getInt("before");
+		int afterTolerance = jsonTimeValue.getInt("after");
+
+		// get the timezone offset
+		int timezoneOffset = jsonTimeValue.getInt("timezone");
+
+		// get the calendar model
+		String calendarModel = jsonTimeValue.getString("calendarmodel");
+
+		result = this.factory.getTimeValue(year, month, day, hour, minute,
+				second, precision, beforeTolerance, afterTolerance,
+				timezoneOffset, calendarModel);
+		return result;
 	}
 
 	/**
@@ -260,28 +482,15 @@ public class JsonConverter {
 	 *             when a required key was not found or the snak type could not
 	 *             be identyfied.
 	 */
-	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject) throws JSONException {
+	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
+			throws JSONException {
 
 		// m: main snak
 		// q: qualifiers
 
 		// get the main snak
-		Snak mainSnak;
 		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
-		switch (jsonMainSnak.getString(0)) {
-		case "value":
-			mainSnak = this.getValueSnak(jsonMainSnak);
-			break;
-		case "somevalue" :
-			mainSnak = this.getSomeValueSnak(jsonMainSnak);
-			break;
-		case "novalue":
-			mainSnak = this.getNoValueSnak(jsonMainSnak);
-			break;
-		default: // could not determine snak type...
-			throw new JSONException("Unknown snack type: "
-					+ jsonMainSnak.getString(0));
-		}
+		Snak mainSnak = getSnak(jsonMainSnak);
 
 		// get the qualifiers
 		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
@@ -292,21 +501,91 @@ public class JsonConverter {
 		return result;
 	}
 
-	private SomeValueSnak getSomeValueSnak(JSONArray jsonMainSnak) {
+	/**
+	 * 
+	 * @param jsonMainSnak
+	 * @return
+	 * @throws JSONException
+	 */
+	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
+
+		Snak result;
+		switch (jsonMainSnak.getString(0)) {
+		case "value":
+			result = this.getValueSnak(jsonMainSnak);
+			break;
+		case "somevalue":
+			result = this.getSomeValueSnak(jsonMainSnak);
+			break;
+		case "novalue":
+			result = this.getNoValueSnak(jsonMainSnak);
+			break;
+		default: // could not determine snak type...
+			throw new JSONException("Unknown snack type: "
+					+ jsonMainSnak.getString(0));
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param jsonSomeValueSnak
+	 * @return
+	 * @throws JSONException
+	 */
+	private SomeValueSnak getSomeValueSnak(JSONArray jsonSomeValueSnak)
+			throws JSONException {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
-		// TODO Auto-generated method stub
-		return null;
+
+		// TODO documentation
+
+		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
+		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
+
+		int intPropertyId = jsonSomeValueSnak.getInt(1);
+		String id = "P" + intPropertyId;
+		PropertyIdValue propertyId = this.factory.getPropertyIdValue(id,
+				this.baseIri);
+
+		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
+
+		return result;
 	}
 
-	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak) {
+	/**
+	 * 
+	 * @param jsonNoValueSnak
+	 * @return
+	 * @throws JSONException
+	 */
+	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak)
+			throws JSONException {
 		// example:
 		// ["novalue",40], where P40 is the property "children"
-		// TODO Auto-generated method stub
-		return null;
+		// TODO documentation
+
+		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
+		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
+
+		int intPropertyId = jsonNoValueSnak.getInt(1);
+		String id = "P" + intPropertyId;
+		PropertyIdValue propertyId = this.factory.getPropertyIdValue(id,
+				this.baseIri);
+
+		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
+
+		return result;
 	}
 
-	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
+	/**
+	 * 
+	 * @param jsonQualifiers
+	 * @return
+	 * @throws JSONException
+	 */
+	private List<Snak> getQualifiers(JSONArray jsonQualifiers)
+			throws JSONException {
 		// example:
 		// "q":[
 		// ["value",585,
@@ -317,8 +596,16 @@ public class JsonConverter {
 		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
 		// ]
 		// ]
-		// TODO Auto-generated method stub
-		return null;
+		// effectively a list of value snaks
+
+		List<Snak> result = new LinkedList<Snak>();
+		for (int i = 0; i < jsonQualifiers.length(); i++) {
+			JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
+			// TODO skip conversion attempt on exception
+			result.add(this.getSnak(currentValueSnak));
+		}
+
+		return result;
 	}
 
 	/**
@@ -444,6 +731,7 @@ public class JsonConverter {
 	private ItemIdValue getItemId(JSONArray entity) throws JSONException {
 		assert entity != null : "Entity JSONArray was null";
 
+		// TODO review this!
 		ItemIdValue itemId;
 		String id = null;
 
