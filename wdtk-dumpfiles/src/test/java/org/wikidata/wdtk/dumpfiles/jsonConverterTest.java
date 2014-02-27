@@ -59,19 +59,19 @@ public class jsonConverterTest {
 	public void compareWithExpectation() {
 		for (TestCase t : this.testCases) {
 			
-			// show the json
-			JSONObject json = t.getJson();
-			
-			@SuppressWarnings("unchecked")
-			Iterator<String> key = json.keys();
-			
-			while(key.hasNext()){
-				try {
-					System.out.println(json.get(key.next()));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
+//			// show the json
+//			JSONObject json = t.getJson();
+//			
+//			@SuppressWarnings("unchecked")
+//			Iterator<String> key = json.keys();
+//			
+//			while(key.hasNext()){
+//				try {
+//					System.out.println(json.get(key.next()));
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
 
 			// convert
 			try {

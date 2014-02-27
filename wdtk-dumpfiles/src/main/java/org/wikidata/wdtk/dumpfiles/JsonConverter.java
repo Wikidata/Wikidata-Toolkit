@@ -105,14 +105,15 @@ public class JsonConverter {
 		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
 
-	private PropertyIdValue getPropertyId(JSONArray jsonEntity) throws JSONException {
+	private PropertyIdValue getPropertyId(JSONArray jsonEntity)
+			throws JSONException {
 		assert jsonEntity != null : "Entity JSON was null.";
 		assert jsonEntity.getString(0).equals("property") : "Entity JSON did not denote a property";
 		return this.getPropertyIdValue(jsonEntity.getInt(1));
 	}
 
 	private PropertyIdValue getPropertyIdValue(int intValue) {
-		
+
 		String id = "P" + intValue;
 		return this.factory.getPropertyIdValue(id, this.baseIri);
 	}
@@ -165,8 +166,15 @@ public class JsonConverter {
 		descriptions = this.getDescriptions(jsonDescriptions);
 
 		// get the aliases
-		JSONObject jsonAliases = toConvert.getJSONObject("aliases");
-		aliases = this.getAliases(jsonAliases);
+		// NOTE empty aliases are an JSOn array
+		// non-empty aliases are JSON objects
+		JSONArray jsonEmptyAliases = toConvert.optJSONArray("aliases");
+		if (jsonEmptyAliases == null) {
+			JSONObject jsonAliases = toConvert.getJSONObject("aliases");
+			aliases = this.getAliases(jsonAliases);
+		} else {
+			aliases = new LinkedList<>();
+		}
 
 		// get the statements
 		JSONArray jsonStatements = toConvert.getJSONArray("claims");
