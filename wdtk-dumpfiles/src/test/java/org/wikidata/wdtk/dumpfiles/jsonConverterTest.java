@@ -1,9 +1,11 @@
 package org.wikidata.wdtk.dumpfiles;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +15,12 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * The test setup uses several files containing JSON. These files are read by
@@ -41,8 +46,12 @@ public class jsonConverterTest {
 		this.unitUnderTest = new JsonConverter(this.baseIri);
 
 		// create the empty property test case
-		PropertyDocument expectation = this.createEmptyPropertyDocument();
-		this.addPropertyTestCase("EmptyProperty.json", expectation);
+		PropertyDocument emptyPropertyDocument = this.createEmptyPropertyDocument();
+		this.addPropertyTestCase("EmptyProperty.json", emptyPropertyDocument);
+		
+		// create the empty item test case
+		ItemDocument emptyItemDocument = this.createEmptyItemDocument();
+		this.addItemTestCase("EmptyItem.json", emptyItemDocument);
 
 	}
 
@@ -90,6 +99,18 @@ public class jsonConverterTest {
 				.getDatatypeIdValue("globe-coordinate");
 		PropertyDocument document = this.factory.getPropertyDocument(
 				propertyId, labels, descriptions, aliases, datatypeId);
+		return document;
+	}
+	
+	private ItemDocument createEmptyItemDocument(){
+		
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", this.baseIri);
+		List<MonolingualTextValue> labels = new LinkedList<>();
+		List<MonolingualTextValue> descriptions = new LinkedList<>();
+		List<MonolingualTextValue> aliases = new LinkedList<>();
+		List<StatementGroup> statementGroups = new LinkedList<>();
+		Map<String, SiteLink> siteLinks = new HashMap<>();
+		ItemDocument document = this.factory.getItemDocument(itemIdValue, labels, descriptions, aliases, statementGroups, siteLinks);
 		return document;
 	}
 
