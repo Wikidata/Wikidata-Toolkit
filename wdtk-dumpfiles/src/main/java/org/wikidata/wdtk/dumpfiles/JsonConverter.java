@@ -79,7 +79,7 @@ public class JsonConverter {
 		PropertyIdValue propertyId = this.getPropertyId(jsonEntity);
 
 		// get the labels
-		JSONObject jsonLabels = toConvert.getJSONObject("labels");
+		JSONObject jsonLabels = toConvert.getJSONObject("label");
 		List<MonolingualTextValue> labels = this.getLabels(jsonLabels);
 
 		// get the descriptions
