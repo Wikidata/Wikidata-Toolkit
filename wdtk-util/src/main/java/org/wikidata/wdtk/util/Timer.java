@@ -162,7 +162,7 @@ public class Timer {
 	/**
 	 * Return the average CPU time across all measurements.
 	 * 
-	 * @return
+	 * @return the average CPU time across all measurements
 	 */
 	public long getAvgCpuTime() {
 		if (measurements > 0) {
@@ -184,7 +184,7 @@ public class Timer {
 	/**
 	 * Return the average wall clock time across all measurements.
 	 * 
-	 * @return
+	 * @return the average wall clock time across all measurements
 	 */
 	public long getAvgWallTime() {
 		if (measurements > 0) {
