@@ -30,7 +30,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyIdValueImpl extends EntityIdValueImpl implements PropertyIdValue {
+public class PropertyIdValueImpl extends EntityIdValueImpl implements
+		PropertyIdValue {
 
 	/**
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
@@ -42,7 +43,7 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements PropertyId
 
 		if (!id.matches("^P[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
+					"Wikibase property ids must have the form \"P<positive integer>\"");
 		}
 	}
 

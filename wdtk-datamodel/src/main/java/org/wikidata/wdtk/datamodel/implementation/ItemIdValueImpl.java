@@ -24,8 +24,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 /**
- * Generic implementation of {@link ItemIdValue} that works with arbitrary Wikibase
- * instances: it requires a baseIri that identifies the site globally.
+ * Generic implementation of {@link ItemIdValue} that works with arbitrary
+ * Wikibase instances: it requires a baseIri that identifies the site globally.
  * 
  * @author Markus Kroetzsch
  * 
@@ -42,7 +42,7 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 		if (!id.matches("^Q[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
+					"Wikibase item ids must have the form \"Q<positive integer>\"");
 		}
 	}
 
