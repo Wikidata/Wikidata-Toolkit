@@ -33,9 +33,15 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	/**
+	 * Constructor.
+	 * 
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
+	 *            a string of the form Qn... where n... is the string
+	 *            representation of a positive integer number
 	 * @param baseIri
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
 	ItemIdValueImpl(String id, String baseIri) {
 		super(id, baseIri);
