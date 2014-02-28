@@ -30,19 +30,26 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyIdValueImpl extends EntityIdValueImpl implements PropertyIdValue {
+public class PropertyIdValueImpl extends EntityIdValueImpl implements
+		PropertyIdValue {
 
 	/**
+	 * Constructor.
+	 * 
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
+	 *            a string of the form Pn... where n... is the string
+	 *            representation of a positive integer number
 	 * @param baseIri
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
 	PropertyIdValueImpl(String id, String baseIri) {
 		super(id, baseIri);
 
 		if (!id.matches("^P[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
+					"Wikibase property ids must have the form \"P<positive integer>\"");
 		}
 	}
 

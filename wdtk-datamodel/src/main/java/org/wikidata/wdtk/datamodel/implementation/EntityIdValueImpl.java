@@ -25,8 +25,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 /**
- * Generic implementation of {@link EntityIdValue} that works with arbitrary Wikibase
- * instances: it requires a baseIri that identifies the site globally.
+ * Generic implementation of {@link EntityIdValue} that works with arbitrary
+ * Wikibase instances: it requires a baseIri that identifies the site globally.
  * 
  * TODO It would be cleaner to have an object that manages the site context
  * instead of passing a base IRI string that is simply concatenated.
@@ -47,10 +47,11 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 	 * Constructor.
 	 * 
 	 * @param id
-	 *            the ID string, e.g., "Q1234"
+	 *            the ID string, e.g., "Q1234". The required format depends on
+	 *            the specific type of entity
 	 * @param baseIri
-	 *            the first part of the IRI of the site this belongs to, e.g.,
-	 *            "http://www.wikidata.org/entity/"
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
 	EntityIdValueImpl(String id, String baseIri) {
 		Validate.notNull(id, "Entity ids cannot be null");
