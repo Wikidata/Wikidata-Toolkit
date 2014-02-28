@@ -35,42 +35,81 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-// TODO introduce a verbose-flag to enable/disable logging
-// TODO make item and property prefixes variable, 
-// in case someone does not use "Q" and "P"
-// TODO move MonolingualTextValue inlines into a method
-// TODO complete assertions
-// TODO add @link to documentation where needed
+// IDEA introduce a verbose-flag to enable/disable logging
+// IDEA move MonolingualTextValue inlines into a method
 // TODO permanent: check if documentation is up-to-date
-// TODO see if one can reduce duplicated code, 
-// especially in convertToPropertyDocument and convertToItemDocument
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
  * normally belongs to the same domain, the base IRI is represented as an
- * attribute.
+ * attribute. The prefixes used for items and properties may be set
+ * individually. The default is "Q" for items and "P" for properties.
  * 
  * @author Fredo Erxleben
  * 
  */
 public class JsonConverter {
 
+	private String itemPrefix;
+	private String propertyPrefix;
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
 
 	/**
-	 * For the <i>baseIri</i> see also
-	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
+	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
+	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId} The item
+	 * prefix defaults to "Q". The property prefix defaults to "P".
 	 * 
 	 * @param baseIri
 	 *            the initial IRI to be used for the processed JSON.
 	 */
 	public JsonConverter(String baseIri) {
-		this.setBaseIri(baseIri);
+		this(baseIri, "Q", "P");
 	}
 
+	/**
+	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
+	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
+	 * 
+	 * @param baseIri
+	 *            the initial IRI to be used for the processed JSON.
+	 * @param itemPrefix
+	 *            the prefix used for any item id.
+	 * @param propertyPrefix
+	 *            the prefix used for any property id.
+	 */
+	public JsonConverter(String baseIri, String itemPrefix,
+			String PropertyPrefix) {
+		this.setBaseIri(baseIri);
+		this.setItemPrefix(itemPrefix);
+		this.setPropertyPrefix(PropertyPrefix);
+	}
+
+	/**
+	 * Attempts to parse a given JSON object into an instance of
+	 * PropertyDocument.
+	 * 
+	 * @param toConvert
+	 *            the JSON object to convert. Must represent a property document
+	 *            and therefore contain the keys "entity", "label",
+	 *            "description", "aliases" and "datatype".
+	 * @return the PropertyDocument as described in the JSON.
+	 * @throws NullPointerException
+	 *             if toConvert was null.
+	 * @throws JSONException
+	 *             if the JSON object did not contain a key it should have had.
+	 */
 	PropertyDocument convertToPropertyDocument(JSONObject toConvert)
 			throws JSONException {
+
+		// sanity check
+		if (toConvert == null) {
+			throw new NullPointerException();
+		}
+
+		if (toConvert.length() == 0) { // if the JSON object is empty
+			throw new JSONException("The JSON to convert was empty");
+		}
 
 		PropertyDocument result;
 
@@ -100,50 +139,68 @@ public class JsonConverter {
 		return result;
 	}
 
+	/**
+	 * Transforms a given string into a DatatypeIdValue.
+	 * 
+	 * @param jsonDataTypeId
+	 *            is the string to be converted. Must not be null.
+	 * @return the appropriate DatatypeIdValue-instance.
+	 */
 	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
+		assert jsonDataTypeId != null : "Given JSON datatype id was null";
 
 		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
 
+	/**
+	 * Converts a given JSON array into a PropertyIdValue. The appropriate
+	 * prefix for properties will be used.
+	 * 
+	 * @param jsonEntity
+	 *            is a JSON array denoting the property id. Must be of the form <br/>
+	 *            ["property", <i>propertyID</i>]<br/>
+	 *            Must not be null.
+	 * @return the appropriate PropertyIdValue-instance.
+	 * @throws JSONException
+	 *             if the format requirements are not met.
+	 */
 	private PropertyIdValue getPropertyId(JSONArray jsonEntity)
 			throws JSONException {
 		assert jsonEntity != null : "Entity JSON was null.";
 		assert jsonEntity.getString(0).equals("property") : "Entity JSON did not denote a property";
+
 		return this.getPropertyIdValue(jsonEntity.getInt(1));
 	}
 
+	/**
+	 * Creates a PropertyIdValue from a given integer and the set property
+	 * prefix.
+	 * 
+	 * @param intValue
+	 *            is the integer id of the property.
+	 * @return a PropertyIdValue-instance.
+	 */
 	private PropertyIdValue getPropertyIdValue(int intValue) {
 
-		String id = "P" + intValue;
+		String id = this.propertyPrefix + intValue;
 		return this.factory.getPropertyIdValue(id, this.baseIri);
 	}
 
 	/**
-	 * Attempts to parse a given JSON object into an instance of ItemRecord.
+	 * Attempts to parse a given JSON object into an instance of ItemDocument.
 	 * 
 	 * @param toConvert
-	 *            the JSON object to convert. Must represent an item record.
-	 * @param baseIri
-	 *            he first part of the IRI of the site this belongs to.
-	 * @return the ItemRecord parsed from JSON. Might be <b>null</b>.
+	 *            the JSON object to convert. Must represent an item document
+	 *            and therefore contain the keys "entity", "label",
+	 *            "description", "aliases", "claims" and "links".
+	 * @return the ItemDocument as described in the JSON.
 	 * @throws NullPointerException
-	 *             if toParse was null.
+	 *             if toConvert was null.
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
 	public ItemDocument convertToItemRecord(JSONObject toConvert)
 			throws JSONException, NullPointerException {
-
-		// initialize variables for the things we need to get
-		// TODO check if it would not be better to initialize…
-		// …with empty maps/lists
-		ItemDocument result = null;
-		ItemIdValue itemId = null;
-		List<MonolingualTextValue> labels = null;
-		List<MonolingualTextValue> descriptions = null;
-		List<MonolingualTextValue> aliases = null;
-		List<StatementGroup> statements = null;
-		Map<String, SiteLink> siteLinks = null;
 
 		// sanity check
 		if (toConvert == null) {
@@ -153,21 +210,24 @@ public class JsonConverter {
 		if (toConvert.length() == 0) { // if the JSON object is empty
 			throw new JSONException("The JSON to convert was empty");
 		}
+
 		// get the item Id
 		JSONArray jsonEntity = toConvert.getJSONArray("entity");
-		itemId = this.getItemId(jsonEntity);
+		ItemIdValue itemId = this.getItemId(jsonEntity);
 
 		// get the labels
 		JSONObject jsonLabels = toConvert.getJSONObject("label");
-		labels = this.getLabels(jsonLabels);
+		List<MonolingualTextValue> labels = this.getLabels(jsonLabels);
 
 		// get the description
 		JSONObject jsonDescriptions = toConvert.getJSONObject("description");
-		descriptions = this.getDescriptions(jsonDescriptions);
+		List<MonolingualTextValue> descriptions = this
+				.getDescriptions(jsonDescriptions);
 
 		// get the aliases
-		// NOTE empty aliases are an JSOn array
+		// NOTE empty aliases are an JSON array
 		// non-empty aliases are JSON objects
+		List<MonolingualTextValue> aliases;
 		JSONArray jsonEmptyAliases = toConvert.optJSONArray("aliases");
 		if (jsonEmptyAliases == null) {
 			JSONObject jsonAliases = toConvert.getJSONObject("aliases");
@@ -178,15 +238,16 @@ public class JsonConverter {
 
 		// get the statements
 		JSONArray jsonStatements = toConvert.getJSONArray("claims");
-		statements = this.getStatements(jsonStatements, itemId);
+		List<StatementGroup> statements = this.getStatements(jsonStatements,
+				itemId);
 
 		// get the site links
 		JSONObject jsonLinks = toConvert.getJSONObject("links");
-		siteLinks = this.getSiteLinks(jsonLinks);
+		Map<String, SiteLink> siteLinks = this.getSiteLinks(jsonLinks);
 
 		// now put it all together
-		result = factory.getItemDocument(itemId, labels, descriptions, aliases,
-				statements, siteLinks);
+		ItemDocument result = factory.getItemDocument(itemId, labels,
+				descriptions, aliases, statements, siteLinks);
 		return result;
 	}
 
@@ -252,13 +313,15 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts the given JSON array into a list of Reference-objects. A
+	 * reference is an array of reference statements which in turn are value
+	 * snaks.
 	 * 
 	 * @param jsonReferences
-	 * @return
-	 * @throws JSONException
+	 *            is an JSON array of JSON arrays of value snaks
+	 * @return the appropriate List of references.
 	 */
-	private List<? extends Reference> getReferences(JSONArray jsonReferences)
-			throws JSONException {
+	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
 		// References are [singeRef]
 		// singleRef are [refStatements]
 		// refStatements are value snaks
@@ -267,27 +330,46 @@ public class JsonConverter {
 
 		// process the single references
 		for (int i = 0; i < jsonReferences.length(); i++) {
-			JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
-			List<ValueSnak> valueSnaks = new LinkedList<>();
+			try {
+				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
+				List<ValueSnak> valueSnaks = new LinkedList<>();
 
-			// process the reference statements
-			for (int j = 0; j < jsonSingleRef.length(); j++) {
-				JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
-				ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
-				valueSnaks.add(currentValueSnak);
+				// process the reference statements
+				for (int j = 0; j < jsonSingleRef.length(); j++) {
+					try {
+						JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
+						ValueSnak currentValueSnak = this
+								.getValueSnak(jsonValueSnak);
+						valueSnaks.add(currentValueSnak);
+					} catch (JSONException e) {
+						// skip over invalid references
+						continue;
+					}
+				}
+
+				Reference singleReference = factory.getReference(valueSnaks);
+				result.add(singleReference);
+
+			} catch (JSONException e) {
+				// skip over invalid references
+				continue;
 			}
 
-			Reference singleReference = factory.getReference(valueSnaks);
-			result.add(singleReference);
 		}
 		return result;
 	}
 
 	/**
+	 * Converts the given JSON array into a ValueSnak.
 	 * 
 	 * @param jsonValueSnak
-	 * @return
+	 *            is a JSON array of the form <br/>
+	 *            ["value", <i>propertyID</i>, <i>value type</i>, <i>value</i>]
+	 *            where the structure of the value depends on the value type.
+	 *            Must not be null.
+	 * @return a ValueSnak-instance according to the given JSON representation.
 	 * @throws JSONException
+	 *             if the required format was not matched.
 	 */
 	private ValueSnak getValueSnak(JSONArray jsonValueSnak)
 			throws JSONException {
@@ -300,9 +382,8 @@ public class JsonConverter {
 		ValueSnak result;
 
 		// get the property id
-		String id = "P" + jsonValueSnak.getInt(1);
-		PropertyIdValue propertyId = factory.getPropertyIdValue(id,
-				this.baseIri);
+		int intId = jsonValueSnak.getInt(1);
+		PropertyIdValue propertyId = this.getPropertyIdValue(intId);
 
 		// get the value
 		String valueString = jsonValueSnak.getString(2);
@@ -335,9 +416,13 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON-objects into QuantityValues.
 	 * 
 	 * @param jsonQuantityValue
-	 * @return
+	 *            is a JSON-object containing the labels "amount", "upperBound"
+	 *            and "lowerBound". All other labels will be ignored. Must not
+	 *            be null.
+	 * @return an appropriate QuantityValue-instance.
 	 * @throws JSONException
 	 */
 	private QuantityValue getQuantityValue(JSONObject jsonQuantityValue)
@@ -366,13 +451,20 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON-object into a GlobeCordinatesValue.
 	 * 
 	 * @param jsonGlobeCoordinate
-	 * @return
+	 *            is a JSON-object containing the labels "latitude",
+	 *            "longitude", "precision" and "globe". All other labels will be
+	 *            ignored. Must not be null.
+	 * @return an appropriate GlobeCoordinatesValue
 	 * @throws JSONException
+	 *             if a required label was missing.
 	 */
 	private GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
+
+		assert jsonGlobeCoordinate != null : "Globe coordinate JSON was null";
 		// example:
 		// {"latitude":51.835,
 		// "longitude":10.785277777778,
@@ -394,11 +486,14 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Acquires the StringValue for a given String.
 	 * 
 	 * @param string
 	 * @return
 	 */
 	private StringValue getStringIdValue(String string) {
+		assert string != null : "String to be converted to a StringValue was null";
+
 		// NOTE I decided against inlining, so
 		// if the StringValue changes somehow in the future
 		// one has only to change this method
@@ -406,10 +501,14 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a given JSON-object to an EntityIdValue.
 	 * 
 	 * @param jsonObject
+	 *            an JSON object denoting an entity id. It must contain the
+	 *            labels "entity-type" and "numeric-id".
 	 * @return
 	 * @throws JSONException
+	 *             if a required key was not available.
 	 */
 	private EntityIdValue getEntityIdValue(JSONObject jsonObject)
 			throws JSONException {
@@ -434,21 +533,27 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Creates a ItemIdValue from a given integer and the set item prefix.
 	 * 
 	 * @param intValue
-	 * @return
+	 *            is the integer id of the item.
+	 * @return a ItemIdValue-instance.
 	 */
 	private ItemIdValue getItemIdValue(int intValue) {
-		String id = "Q" + intValue;
+		String id = this.itemPrefix + intValue;
 		return this.factory.getItemIdValue(id, this.baseIri);
 
 	}
 
 	/**
+	 * Converts a JSON-object into a TimeValue.
 	 * 
 	 * @param jsonTimeValue
-	 * @return
+	 *            is a JSON-object with the keys "time", "timezone", "before",
+	 *            "after", "precision" and "calendarmodel".
+	 * @return the TimeValue as described by the JSON-object.
 	 * @throws JSONException
+	 *             if a required label was missing.
 	 */
 	private TimeValue getTimeValue(JSONObject jsonTimeValue)
 			throws JSONException {
@@ -463,7 +568,6 @@ public class JsonConverter {
 
 		String stringTime = jsonTimeValue.getString("time");
 		String[] stringValues = stringTime.split("[\\-\\:TZ]");
-		// TODO test regex
 
 		// get the year
 		int year = Integer.parseInt(stringValues[0]);
@@ -532,7 +636,7 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Gets the claim ftom a statement in JSON. A Claim consists out of the
+	 * Gets the claim from a statement in JSON. A Claim consists out of the
 	 * EntityIdValue of the subject, the subjects main snak and its qualifiers.
 	 * 
 	 * @param currentStatement
@@ -541,7 +645,7 @@ public class JsonConverter {
 	 * @return
 	 * @throws JSONException
 	 *             when a required key was not found or the snak type could not
-	 *             be identyfied.
+	 *             be identified.
 	 */
 	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
 			throws JSONException {
@@ -558,15 +662,19 @@ public class JsonConverter {
 		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
 
 		// build it together
-		Claim result = factory.getClaim(subject, mainSnak, qualifiers);
+		Claim result = this.factory.getClaim(subject, mainSnak, qualifiers);
 		return result;
 	}
 
 	/**
+	 * Converts the given JSON array into a Snak. This might either be a
+	 * ValueSnak, NoValueSnak or SomeValueSnak.
 	 * 
 	 * @param jsonMainSnak
-	 * @return
+	 *            is the JSON array to be converted. Must not be null.
+	 * @return A Snak corresponding to the given JSON array.
 	 * @throws JSONException
+	 *             if the snack type could not determined.
 	 */
 	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
 
@@ -589,25 +697,27 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON array into a SomeValueSnak.
 	 * 
 	 * @param jsonSomeValueSnak
-	 * @return
+	 *            is an JSON array that denotes a some-value snak. It has the
+	 *            form<br/>
+	 *            ["somevalue", <i>propertyID</i>]
+	 * 
+	 * @return an appropriate SomeValueSnak-instance
 	 * @throws JSONException
+	 *             if the format does not match the required one.
 	 */
 	private SomeValueSnak getSomeValueSnak(JSONArray jsonSomeValueSnak)
 			throws JSONException {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
 
-		// TODO documentation
-
 		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
 		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
-		String id = "P" + intPropertyId;
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue(id,
-				this.baseIri);
+		PropertyIdValue propertyId = this.getPropertyIdValue(intPropertyId);
 
 		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
 
@@ -615,24 +725,26 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts a JSON array into a NoValueSnak.
 	 * 
 	 * @param jsonNoValueSnak
-	 * @return
+	 *            is an JSON array that denotes a no-value snak. It has the form<br/>
+	 *            ["novalue", <i>propertyID</i>]
+	 * 
+	 * @return an appropriate NoValueSnak-instance
 	 * @throws JSONException
+	 *             if the format does not match the required one.
 	 */
 	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak)
 			throws JSONException {
 		// example:
 		// ["novalue",40], where P40 is the property "children"
-		// TODO documentation
 
 		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
 		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
-		String id = "P" + intPropertyId;
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue(id,
-				this.baseIri);
+		PropertyIdValue propertyId = this.getPropertyIdValue(intPropertyId);
 
 		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
 
@@ -640,30 +752,24 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Converts the qualifiers from a JSON array to a list of value snaks.
 	 * 
 	 * @param jsonQualifiers
-	 * @return
-	 * @throws JSONException
+	 *            is a JSON array containing several snaks.
+	 * @return a list of snaks corresponding to the given JSON array.
 	 */
-	private List<Snak> getQualifiers(JSONArray jsonQualifiers)
-			throws JSONException {
-		// example:
-		// "q":[
-		// ["value",585,
-		// "time",{
-		// "time":"+00000002012-06-30T00:00:00Z",
-		// "timezone":0,"before":0,"after":0,
-		// "precision":11,
-		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
-		// ]
-		// ]
+	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
 		// effectively a list of value snaks
 
 		List<Snak> result = new LinkedList<Snak>();
 		for (int i = 0; i < jsonQualifiers.length(); i++) {
-			JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
-			// TODO skip conversion attempt on exception
-			result.add(this.getSnak(currentValueSnak));
+			try {
+				JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
+				result.add(this.getSnak(currentValueSnak));
+			} catch (JSONException e) {
+				// skip the snak on error
+				continue;
+			}
 		}
 
 		return result;
@@ -741,7 +847,8 @@ public class JsonConverter {
 			for (int i = 0; i < aliasEntries.length(); i++) {
 				String aliasString = aliasEntries.getString(i);
 				MonolingualTextValue element;
-				element = factory.getMonolingualTextValue(aliasString, key);
+				element = this.factory
+						.getMonolingualTextValue(aliasString, key);
 				result.add(element);
 			}
 		}
@@ -772,8 +879,8 @@ public class JsonConverter {
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
 			String desctiptionString = descriptions.getString(key);
-			MonolingualTextValue element = factory.getMonolingualTextValue(
-					desctiptionString, key);
+			MonolingualTextValue element = this.factory
+					.getMonolingualTextValue(desctiptionString, key);
 			result.add(element);
 		}
 
@@ -824,8 +931,8 @@ public class JsonConverter {
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
 			String labelString = labels.getString(key);
-			MonolingualTextValue element = factory.getMonolingualTextValue(
-					labelString, key);
+			MonolingualTextValue element = this.factory
+					.getMonolingualTextValue(labelString, key);
 			result.add(element);
 		}
 
@@ -848,6 +955,48 @@ public class JsonConverter {
 		if (baseIri == null)
 			return;
 		this.baseIri = baseIri;
+	}
+
+	public String getItemPrefix() {
+		return itemPrefix;
+	}
+
+	/**
+	 * Sets the prefix to be prepended before an item id. For example if your
+	 * items id number is "123" and you set the prefix to "X", the full item id
+	 * would be "X123".
+	 * 
+	 * @param itemPrefix
+	 *            is the prefix to be used. If the given value is null, the
+	 *            prefix will default to "Q".
+	 */
+	public void setItemPrefix(String itemPrefix) {
+		if (itemPrefix == null) {
+			this.itemPrefix = "Q";
+		} else {
+			this.itemPrefix = itemPrefix;
+		}
+	}
+
+	public String getPropertyPrefix() {
+		return propertyPrefix;
+	}
+
+	/**
+	 * Sets the prefix to be prepended before an property id. For example if
+	 * your properties id number is "123" and you set the prefix to "X", the
+	 * full property id would be "X123".
+	 * 
+	 * @param propertyPrefix
+	 *            is the prefix to be used. If the given value is null, the
+	 *            prefix will default to "P".
+	 */
+	public void setPropertyPrefix(String propertyPrefix) {
+		if (propertyPrefix == null) {
+			this.propertyPrefix = "P";
+		} else {
+			this.propertyPrefix = propertyPrefix;
+		}
 	}
 
 }

@@ -31,8 +31,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 public class jsonConverterTest {
 
-	// TODO test empty property document
-	// TODO test empty item document
 	// TODO reduce replication in test files
 
 	private String sampleFilesBasePath = "src/test/resources/testSamples/";
@@ -58,20 +56,6 @@ public class jsonConverterTest {
 	@Test
 	public void compareWithExpectation() {
 		for (TestCase t : this.testCases) {
-			
-//			// show the json
-//			JSONObject json = t.getJson();
-//			
-//			@SuppressWarnings("unchecked")
-//			Iterator<String> key = json.keys();
-//			
-//			while(key.hasNext()){
-//				try {
-//					System.out.println(json.get(key.next()));
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//			}
 
 			// convert
 			try {
@@ -154,12 +138,6 @@ public class jsonConverterTest {
 		}
 
 		this.testCases.add(testCase);
-
-	}
-
-	@Test
-	public void itemDocumentConversion() {
-		// TODO complete
 
 	}
 
