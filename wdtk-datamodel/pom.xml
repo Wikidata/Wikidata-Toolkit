@@ -14,5 +14,12 @@
 
 	<name>Wikidata Toolkit Data Model</name>
 	<description>Java implementation of the Wikibase data model</description>
-
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20140107</version>
+		</dependency>
+	</dependencies>
 </project>
