@@ -475,7 +475,7 @@ public class JsonConverter {
 		// The key will be reviewed in the future.
 
 		long latitude = jsonGlobeCoordinate.getLong("latitude");
-		long longitude = jsonGlobeCoordinate.getLong("longitiude");
+		long longitude = jsonGlobeCoordinate.getLong("longitude");
 		long precision = jsonGlobeCoordinate.getLong("precision");
 		String globeIri = jsonGlobeCoordinate.getString("globe");
 

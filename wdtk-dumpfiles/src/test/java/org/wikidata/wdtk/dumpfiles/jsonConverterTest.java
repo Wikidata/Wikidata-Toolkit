@@ -28,8 +28,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 public class jsonConverterTest {
 
-	// TODO reduce replication in test files
-
 	private String sampleFilesBasePath = "src/test/resources/testSamples/";
 	private static JsonConverter unitUnderTest;
 	private static String baseIri = "test";
