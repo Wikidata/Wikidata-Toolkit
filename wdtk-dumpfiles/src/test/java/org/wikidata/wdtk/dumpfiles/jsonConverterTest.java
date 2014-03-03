@@ -1,15 +1,12 @@
 package org.wikidata.wdtk.dumpfiles;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -34,48 +31,51 @@ public class jsonConverterTest {
 	// TODO reduce replication in test files
 
 	private String sampleFilesBasePath = "src/test/resources/testSamples/";
-	private JsonConverter unitUnderTest;
-	private String baseIri = "test";
+	private static JsonConverter unitUnderTest;
+	private static String baseIri = "test";
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
-	private List<TestCase> testCases = new LinkedList<>();
 
-	@Before
-	public void setUp() {
-		this.unitUnderTest = new JsonConverter(this.baseIri);
-
-		// create the empty property test case
-		PropertyDocument emptyPropertyDocument = this.createEmptyPropertyDocument();
-		this.addPropertyTestCase("EmptyProperty.json", emptyPropertyDocument);
-		
-		// create the empty item test case
-		ItemDocument emptyItemDocument = this.createEmptyItemDocument();
-		this.addItemTestCase("EmptyItem.json", emptyItemDocument);
-
+	@BeforeClass
+	public static void setUp() {
+		unitUnderTest = new JsonConverter(baseIri);
 	}
 
 	@Test
-	public void compareWithExpectation() {
-		for (TestCase t : this.testCases) {
+	public void testEmptyProperty() throws JSONException {
+		// create the empty property test case
+		PropertyDocument emptyPropertyDocument = this
+				.createEmptyPropertyDocument();
+		PropertyTestCase testCase = this.generatePropertyTestCase(
+				"EmptyProperty.json", emptyPropertyDocument);
 
-			// convert
-			try {
-				t.convert();
-			} catch (JSONException e) {
-				System.err.println("Conversion error!");
-				System.err.println(t.toString());
-				e.printStackTrace();
-				continue;
-			}
-
-			assert t.resultMatchesExpected() : "Result did not match expectation.\n"
-					+ t.toString();
-		}
+		testCase.convert();
+		assert testCase.getResult().equals(emptyPropertyDocument) : 
+			"Converted and expected empty property documents did not match";
 	}
+	
+	@Test
+	public void testEmptyItem() throws JSONException {
+		// create the empty property test case
+		ItemDocument emptyItemDocument = this
+				.createEmptyItemDocument();
+		ItemTestCase testCase = this.generateItemTestCase(
+				"EmptyItem.json", emptyItemDocument);
 
+		testCase.convert();
+		assert testCase.getResult().equals(emptyItemDocument) : 
+			"Converted and expected empty property documents did not match";
+	}
+	
+
+	/**
+	 * Sets up an empty property document in the WDTK data model.
+	 * 
+	 * @return
+	 */
 	private PropertyDocument createEmptyPropertyDocument() {
 
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				this.baseIri);
+				baseIri);
 		List<MonolingualTextValue> labels = new LinkedList<>();
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
 		List<MonolingualTextValue> aliases = new LinkedList<>();
@@ -85,16 +85,18 @@ public class jsonConverterTest {
 				propertyId, labels, descriptions, aliases, datatypeId);
 		return document;
 	}
-	
-	private ItemDocument createEmptyItemDocument(){
-		
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", this.baseIri);
+
+	private ItemDocument createEmptyItemDocument() {
+
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1",
+				baseIri);
 		List<MonolingualTextValue> labels = new LinkedList<>();
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
 		List<MonolingualTextValue> aliases = new LinkedList<>();
 		List<StatementGroup> statementGroups = new LinkedList<>();
 		Map<String, SiteLink> siteLinks = new HashMap<>();
-		ItemDocument document = this.factory.getItemDocument(itemIdValue, labels, descriptions, aliases, statementGroups, siteLinks);
+		ItemDocument document = this.factory.getItemDocument(itemIdValue,
+				labels, descriptions, aliases, statementGroups, siteLinks);
 		return document;
 	}
 
@@ -105,17 +107,17 @@ public class jsonConverterTest {
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
 	 */
-	private void addItemTestCase(String fileName, ItemDocument expectation) {
+	private ItemTestCase generateItemTestCase(String fileName, ItemDocument expectation) {
 		String relativeFilePath = this.sampleFilesBasePath + fileName;
 
 		ItemTestCase testCase = new ItemTestCase(relativeFilePath,
-				this.unitUnderTest);
+				unitUnderTest);
 
 		if (expectation != null) {
 			testCase.setExpected(expectation);
 		}
 
-		this.testCases.add(testCase);
+		return testCase;
 
 	}
 
@@ -126,18 +128,18 @@ public class jsonConverterTest {
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
 	 */
-	private void addPropertyTestCase(String fileName,
+	private PropertyTestCase generatePropertyTestCase(String fileName,
 			PropertyDocument expectation) {
 		String relativeFilePath = this.sampleFilesBasePath + fileName;
 
 		PropertyTestCase testCase = new PropertyTestCase(relativeFilePath,
-				this.unitUnderTest);
+				unitUnderTest);
 
 		if (expectation != null) {
 			testCase.setExpected(expectation);
 		}
 
-		this.testCases.add(testCase);
+		return testCase;
 
 	}
 
