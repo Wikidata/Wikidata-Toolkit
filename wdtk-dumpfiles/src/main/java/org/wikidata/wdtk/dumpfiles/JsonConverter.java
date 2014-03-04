@@ -42,16 +42,15 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
  * normally belongs to the same domain, the base IRI is represented as an
- * attribute. The prefixes used for items and properties may be set
- * individually. The default is "Q" for items and "P" for properties.
+ * attribute.
  * 
  * @author Fredo Erxleben
  * 
  */
 public class JsonConverter {
 
-	private String itemPrefix;
-	private String propertyPrefix;
+	private static final String itemPrefix = "Q";
+	private static final String propertyPrefix = "P";
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
 
@@ -64,25 +63,7 @@ public class JsonConverter {
 	 *            the initial IRI to be used for the processed JSON.
 	 */
 	public JsonConverter(String baseIri) {
-		this(baseIri, "Q", "P");
-	}
-
-	/**
-	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
-	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
-	 * 
-	 * @param baseIri
-	 *            the initial IRI to be used for the processed JSON.
-	 * @param itemPrefix
-	 *            the prefix used for any item id.
-	 * @param propertyPrefix
-	 *            the prefix used for any property id.
-	 */
-	public JsonConverter(String baseIri, String itemPrefix,
-			String PropertyPrefix) {
 		this.setBaseIri(baseIri);
-		this.setItemPrefix(itemPrefix);
-		this.setPropertyPrefix(PropertyPrefix);
 	}
 
 	/**
@@ -182,7 +163,7 @@ public class JsonConverter {
 	 */
 	private PropertyIdValue getPropertyIdValue(int intValue) {
 
-		String id = this.propertyPrefix + intValue;
+		String id = propertyPrefix + intValue;
 		return this.factory.getPropertyIdValue(id, this.baseIri);
 	}
 
@@ -212,8 +193,16 @@ public class JsonConverter {
 		}
 
 		// get the item Id
-		JSONArray jsonEntity = toConvert.getJSONArray("entity");
-		ItemIdValue itemId = this.getItemId(jsonEntity);
+		// NOTE that in old dumps the entity is not an array
+		// but a string with appropriate prefix in lowercase
+		ItemIdValue itemId;
+		JSONArray jsonEntity = toConvert.optJSONArray("entity");
+		if (jsonEntity != null) {
+			itemId = this.getItemId(jsonEntity);
+		} else {
+			String stringItemId = toConvert.getString("entity").toUpperCase();
+			itemId = this.factory.getItemIdValue(stringItemId, baseIri);
+		}
 
 		// get the labels
 		JSONObject jsonLabels = toConvert.getJSONObject("label");
@@ -473,10 +462,73 @@ public class JsonConverter {
 		// "globe":"http:\/\/www.wikidata.org\/entity\/Q2"}
 		// NOTE as for now, ignore "altitude".
 		// The key will be reviewed in the future.
+		// NOTE the precision is denoted in float as a part of the degree
+		// conversion into long necessary
+		// NOTE sometimes the latitude and longitude are provided as int in degree
 
-		long latitude = jsonGlobeCoordinate.getLong("latitude");
-		long longitude = jsonGlobeCoordinate.getLong("longitude");
-		long precision = jsonGlobeCoordinate.getLong("precision");
+		// convert latitude and longitude into nanodegrees
+		// TODO check conversion for precision issues
+		// TODO check conversion when handling older dump formats
+		long latitude;
+		long longitude;
+		
+		// try if the coordinates are already in int (with degree precision?)
+		int invalid = 0xFFFFFF; // needed because the org.json parser handles optInt() inconsistently
+		
+		int intLatitude = jsonGlobeCoordinate.optInt("latitude", invalid);
+
+		if (intLatitude == invalid) {
+			double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
+			latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
+		} else {
+			latitude = (long)intLatitude * GlobeCoordinatesValue.PREC_DEGREE;
+		}
+		
+		int intLongitude = jsonGlobeCoordinate.optInt("longitude", invalid);
+
+		if (intLongitude == invalid) {
+			double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
+			longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
+		} else {
+			longitude = (long)intLongitude * GlobeCoordinatesValue.PREC_DEGREE;
+		}
+
+		// getting the precision
+		// NOTE this is done by hand, since otherwise one would get rounding
+		// errors
+		Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
+		long precision;
+
+		if (doublePrecision.equals(10)) {
+			precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
+		} else if (doublePrecision.equals(1.0)) {
+			precision = GlobeCoordinatesValue.PREC_DEGREE;
+		} else if (doublePrecision.equals(0.1)) {
+			precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
+		} else if (doublePrecision.equals(0.016666666666667)) {
+			precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
+		} else if (doublePrecision.equals(0.01)) {
+			precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
+		} else if (doublePrecision.equals(0.001)) {
+			precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+		} else if (doublePrecision.equals(0.00027777777777778)) {
+			precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+		} else if (doublePrecision.equals(0.00001)) {
+			precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
+		} else if (doublePrecision.equals(0.00002777777777778)) {
+			precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
+		} else if (doublePrecision.equals(0.000001)) {
+			precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
+		} else if (doublePrecision.equals(0.00000277777777778)) {
+			precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
+		} else if (doublePrecision.equals(0.0000001)) {
+			precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
+		} else if (doublePrecision.equals(0.00000027777777778)) {
+			precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+		} else {
+			throw new JSONException("Unknown precision in global coordinates.");
+		}
+
 		String globeIri = jsonGlobeCoordinate.getString("globe");
 
 		GlobeCoordinatesValue result = this.factory.getGlobeCoordinatesValue(
@@ -540,7 +592,7 @@ public class JsonConverter {
 	 * @return a ItemIdValue-instance.
 	 */
 	private ItemIdValue getItemIdValue(int intValue) {
-		String id = this.itemPrefix + intValue;
+		String id = itemPrefix + intValue;
 		return this.factory.getItemIdValue(id, this.baseIri);
 
 	}
@@ -961,42 +1013,8 @@ public class JsonConverter {
 		return itemPrefix;
 	}
 
-	/**
-	 * Sets the prefix to be prepended before an item id. For example if your
-	 * items id number is "123" and you set the prefix to "X", the full item id
-	 * would be "X123".
-	 * 
-	 * @param itemPrefix
-	 *            is the prefix to be used. If the given value is null, the
-	 *            prefix will default to "Q".
-	 */
-	public void setItemPrefix(String itemPrefix) {
-		if (itemPrefix == null) {
-			this.itemPrefix = "Q";
-		} else {
-			this.itemPrefix = itemPrefix;
-		}
-	}
-
 	public String getPropertyPrefix() {
 		return propertyPrefix;
-	}
-
-	/**
-	 * Sets the prefix to be prepended before an property id. For example if
-	 * your properties id number is "123" and you set the prefix to "X", the
-	 * full property id would be "X123".
-	 * 
-	 * @param propertyPrefix
-	 *            is the prefix to be used. If the given value is null, the
-	 *            prefix will default to "P".
-	 */
-	public void setPropertyPrefix(String propertyPrefix) {
-		if (propertyPrefix == null) {
-			this.propertyPrefix = "P";
-		} else {
-			this.propertyPrefix = propertyPrefix;
-		}
 	}
 
 }
