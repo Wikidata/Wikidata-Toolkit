@@ -390,27 +390,16 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 		void updateCount() {
 			this.positionArray.clear();
 			this.positionArray.add((long) 0);
-			long zeroCountStartingPosition = 0;
 			long count = 0;
-			int positionPointer = 1;
-			for (long index = zeroCountStartingPosition; index < RankedBitVectorImpl.this.bitVector
+			for (long index = 0; index < RankedBitVectorImpl.this.bitVector
 					.size(); index++) {
 				if (RankedBitVectorImpl.this.bitVector.getBit(index) == this.bit) {
 					count++;
 				}
 				if (count >= this.blockSize) {
 					count = 0;
-					if (positionPointer < this.positionArray.size()) {
-						this.positionArray.set(positionPointer, index);
-					} else {
-						this.positionArray.add(index);
-					}
-					positionPointer++;
+					this.positionArray.add(index);
 				}
-			}
-			while (positionPointer < this.positionArray.size()) {
-				this.positionArray.set(positionPointer, NOT_FOUND);
-				positionPointer++;
 			}
 		}
 
