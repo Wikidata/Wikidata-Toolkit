@@ -464,69 +464,103 @@ public class JsonConverter {
 		// The key will be reviewed in the future.
 		// NOTE the precision is denoted in float as a part of the degree
 		// conversion into long necessary
-		// NOTE sometimes the latitude and longitude are provided as int in degree
+		// NOTE sometimes the latitude and longitude are provided as int in
+		// degree
 
 		// convert latitude and longitude into nanodegrees
 		// TODO check conversion for precision issues
 		// TODO check conversion when handling older dump formats
 		long latitude;
 		long longitude;
-		
+
 		// try if the coordinates are already in int (with degree precision?)
-		int invalid = 0xFFFFFF; // needed because the org.json parser handles optInt() inconsistently
-		
+		int invalid = 0xFFFFFF; // needed because the org.json parser handles
+								// optInt() inconsistently
+
 		int intLatitude = jsonGlobeCoordinate.optInt("latitude", invalid);
 
 		if (intLatitude == invalid) {
 			double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
 			latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
 		} else {
-			latitude = (long)intLatitude * GlobeCoordinatesValue.PREC_DEGREE;
+			latitude = (long) intLatitude * GlobeCoordinatesValue.PREC_DEGREE;
 		}
-		
+
 		int intLongitude = jsonGlobeCoordinate.optInt("longitude", invalid);
 
 		if (intLongitude == invalid) {
 			double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
 			longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
 		} else {
-			longitude = (long)intLongitude * GlobeCoordinatesValue.PREC_DEGREE;
+			longitude = (long) intLongitude * GlobeCoordinatesValue.PREC_DEGREE;
 		}
 
 		// getting the precision
+		// if the precision is available as double it needs to be converted
 		// NOTE this is done by hand, since otherwise one would get rounding
 		// errors
-		Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
+		// if the precision is available as int it needs to be multiplied with
+		// PREC_DEGREE
+		// also in older dumps the precision might be null
+		// in this case the precision might default to PREC_DEGREE
 		long precision;
-
-		if (doublePrecision.equals(10)) {
-			precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
-		} else if (doublePrecision.equals(1.0)) {
+		
+		if(jsonGlobeCoordinate.isNull("precision")){
+			
 			precision = GlobeCoordinatesValue.PREC_DEGREE;
-		} else if (doublePrecision.equals(0.1)) {
-			precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
-		} else if (doublePrecision.equals(0.016666666666667)) {
-			precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
-		} else if (doublePrecision.equals(0.01)) {
-			precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-		} else if (doublePrecision.equals(0.001)) {
-			precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-		} else if (doublePrecision.equals(0.00027777777777778)) {
-			precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-		} else if (doublePrecision.equals(0.00001)) {
-			precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
-		} else if (doublePrecision.equals(0.00002777777777778)) {
-			precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
-		} else if (doublePrecision.equals(0.000001)) {
-			precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
-		} else if (doublePrecision.equals(0.00000277777777778)) {
-			precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
-		} else if (doublePrecision.equals(0.0000001)) {
-			precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
-		} else if (doublePrecision.equals(0.00000027777777778)) {
-			precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+			
 		} else {
-			throw new JSONException("Unknown precision in global coordinates.");
+		
+		int intPrecision = jsonGlobeCoordinate.optInt("precision", invalid);
+
+		if (intPrecision == invalid || intPrecision == 0) {
+
+			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
+
+			// Yes you have to check all
+			// possible representations since they do not equal
+			// in their internal representation
+			
+			if (doublePrecision.equals(10)) {
+				precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
+			} else if (doublePrecision.equals(1.0)) {
+				precision = GlobeCoordinatesValue.PREC_DEGREE;
+			} else if (doublePrecision.equals(0.1)) {
+				precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
+			} else if (doublePrecision.equals(0.016666666666667)) {
+				precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
+			} else if (doublePrecision.equals(0.01)) {
+				precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
+			} else if (doublePrecision.equals(0.001)) {
+				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+			} else if (doublePrecision.equals(0.00027777777777778) || 
+					doublePrecision.equals(2.7777777777778e-4)) {
+				precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+			} else if (doublePrecision.equals(0.0001) ||
+					doublePrecision.equals(1.0e-4)) {
+				precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
+			} else if (doublePrecision.equals(0.00002777777777778) ||
+					doublePrecision.equals(2.7777777777778e-5)) {
+				precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
+			} else if (doublePrecision.equals(0.00001) ||
+					doublePrecision.equals(1.0e-5)) {
+				precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
+			} else if (doublePrecision.equals(0.00000277777777778) ||
+					doublePrecision.equals(2.7777777777778e-6)) {
+				precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
+			} else if (doublePrecision.equals(0.000001)) {
+				precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
+			} else if (doublePrecision.equals(0.00000027777777778) ||
+					doublePrecision.equals(2.7777777777778e-7)) {
+				precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+			} else {
+				throw new JSONException(
+						"Unknown precision " + doublePrecision +"in global coordinates.");
+			}
+		} else {
+			precision = ((long) intPrecision)
+					* GlobeCoordinatesValue.PREC_DEGREE;
+		}
 		}
 
 		String globeIri = jsonGlobeCoordinate.getString("globe");
@@ -618,10 +652,18 @@ public class JsonConverter {
 		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
 		TimeValue result;
 
+		// TODO include negative years in test
+		// NOTE suggested regex is
+		// "(?<!\\A)[\\-\\:TZ]"
+		// if one woule prefer regex instead if substrings
+
 		String stringTime = jsonTimeValue.getString("time");
 
 		// get the year
-		int year = Integer.parseInt(stringTime.substring(0, 12));
+		// NOTE in the data model the year is handled as an integer
+		// which causes problems
+		// TODO update in factory call when the data model switched to long
+		long year = Long.parseLong(stringTime.substring(0, 12));
 
 		// get the month
 		byte month = Byte.parseByte(stringTime.substring(13, 15));
@@ -651,8 +693,8 @@ public class JsonConverter {
 		// get the calendar model
 		String calendarModel = jsonTimeValue.getString("calendarmodel");
 
-		result = this.factory.getTimeValue(year, month, day, hour, minute,
-				second, precision, beforeTolerance, afterTolerance,
+		result = this.factory.getTimeValue((int) year, month, day, hour,
+				minute, second, precision, beforeTolerance, afterTolerance,
 				timezoneOffset, calendarModel);
 		return result;
 	}
@@ -884,21 +926,38 @@ public class JsonConverter {
 		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
 
 		// aliases are of the form string:[string]
+		// except when they are of the form string:{numericString:alias}
 
 		@SuppressWarnings("unchecked")
 		Iterator<String> keyIterator = aliases.keys();
 
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
-			JSONArray aliasEntries = aliases.getJSONArray(key);
+			JSONArray aliasEntries = aliases.optJSONArray(key);
 
-			// get all aliases for a certain language
-			for (int i = 0; i < aliasEntries.length(); i++) {
-				String aliasString = aliasEntries.getString(i);
-				MonolingualTextValue element;
-				element = this.factory
-						.getMonolingualTextValue(aliasString, key);
-				result.add(element);
+			if (aliasEntries == null) { // if the aliases are objects
+
+				JSONObject objAliasEntries = aliases.getJSONObject(key);
+				@SuppressWarnings("unchecked")
+				Iterator<String> objKeyIterator = objAliasEntries.keys();
+				while (objKeyIterator.hasNext()) {
+					String objKey = objKeyIterator.next();
+					String aliasString = objAliasEntries.getString(objKey);
+					MonolingualTextValue element;
+					element = this.factory.getMonolingualTextValue(aliasString,
+							key);
+					result.add(element);
+				}
+			} else { // if the aliases are string arrays
+
+				// get all aliases for a certain language
+				for (int i = 0; i < aliasEntries.length(); i++) {
+					String aliasString = aliasEntries.getString(i);
+					MonolingualTextValue element;
+					element = this.factory.getMonolingualTextValue(aliasString,
+							key);
+					result.add(element);
+				}
 			}
 		}
 
