@@ -158,6 +158,46 @@ public class RankedBitVectorImplTest {
 
 	}
 
+	@Test
+	public void testFindPosition() {
+		for (int x = 0x20; x > 0; x--) {
+			testFindPositionWithBitVector(new RankedBitVectorImpl(0, 0x10, x));
+		}
+	}
+
+	void testFindPositionWithBitVector(RankedBitVectorImpl bv) {
+		Assert.assertEquals(0, bv.size());
+
+		bv.addBit(true);
+
+		Assert.assertEquals(RankedBitVector.NOT_FOUND, bv.findPosition(true, 0));
+		Assert.assertEquals(0, bv.findPosition(true, 1));
+
+		bv.addBit(true);
+		bv.addBit(false);
+		bv.addBit(true);
+		bv.addBit(false);
+		bv.addBit(false);
+		bv.addBit(false);
+		bv.addBit(true);
+
+		Assert.assertEquals(RankedBitVector.NOT_FOUND,
+				bv.findPosition(false, 0));
+		Assert.assertEquals(RankedBitVector.NOT_FOUND, bv.findPosition(true, 0));
+		Assert.assertEquals(0, bv.findPosition(true, 1));
+		Assert.assertEquals(1, bv.findPosition(true, 2));
+		Assert.assertEquals(2, bv.findPosition(false, 1));
+		Assert.assertEquals(3, bv.findPosition(true, 3));
+		Assert.assertEquals(4, bv.findPosition(false, 2));
+		Assert.assertEquals(5, bv.findPosition(false, 3));
+		Assert.assertEquals(6, bv.findPosition(false, 4));
+		Assert.assertEquals(7, bv.findPosition(true, 4));
+		Assert.assertEquals(RankedBitVector.NOT_FOUND,
+				bv.findPosition(false, 5));
+		Assert.assertEquals(RankedBitVector.NOT_FOUND, bv.findPosition(true, 5));
+
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInitialSize() {
 		new RankedBitVectorImpl(-1);
