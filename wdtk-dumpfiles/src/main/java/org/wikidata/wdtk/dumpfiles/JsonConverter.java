@@ -619,27 +619,24 @@ public class JsonConverter {
 		TimeValue result;
 
 		String stringTime = jsonTimeValue.getString("time");
-		String[] stringValues = stringTime.split("[\\-\\:TZ]");
 
 		// get the year
-		int year = Integer.parseInt(stringValues[0]);
+		int year = Integer.parseInt(stringTime.substring(0, 12));
 
 		// get the month
-		byte month = Byte.parseByte(stringValues[1]);
+		byte month = Byte.parseByte(stringTime.substring(13, 15));
 
 		// get the day
-		byte day = Byte.parseByte(stringValues[2]);
+		byte day = Byte.parseByte(stringTime.substring(16, 18));
 
 		// get the hour
-		byte hour = Byte.parseByte(stringValues[3]);
+		byte hour = Byte.parseByte(stringTime.substring(19, 21));
 
 		// get the minute
-		byte minute = Byte.parseByte(stringValues[4]);
-		;
+		byte minute = Byte.parseByte(stringTime.substring(22, 24));
 
 		// get the second
-		byte second = Byte.parseByte(stringValues[5]);
-		;
+		byte second = Byte.parseByte(stringTime.substring(25, 27));
 
 		// get the precision
 		byte precision = (byte) jsonTimeValue.getInt("precision");
