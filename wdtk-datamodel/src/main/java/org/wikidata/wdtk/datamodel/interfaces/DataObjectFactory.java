@@ -37,10 +37,11 @@ public interface DataObjectFactory {
 	 * Create an {@link ItemIdValue}.
 	 * 
 	 * @param id
-	 *            the ID string, e.g., "Q1234"
+	 *            a string of the form Qn... where n... is the string
+	 *            representation of a positive integer number
 	 * @param baseIri
-	 *            the first part of the IRI of the site this belongs to, e.g.,
-	 *            "http://www.wikidata.org/entity/"
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 * @return an {@link ItemIdValue} corresponding to the input
 	 */
 	ItemIdValue getItemIdValue(String id, String baseIri);
@@ -49,10 +50,11 @@ public interface DataObjectFactory {
 	 * Create a {@link PropertyIdValue}.
 	 * 
 	 * @param id
-	 *            the ID string, e.g., "P1234"
+	 *            a string of the form Pn... where n... is the string
+	 *            representation of a positive integer number
 	 * @param baseIri
-	 *            the first part of the IRI of the site this belongs to, e.g.,
-	 *            "http://www.wikidata.org/entity/"
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 * @return a {@link PropertyIdValue} corresponding to the input
 	 */
 	PropertyIdValue getPropertyIdValue(String id, String baseIri);
@@ -101,7 +103,7 @@ public interface DataObjectFactory {
 	 *            time
 	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+	TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel);
 

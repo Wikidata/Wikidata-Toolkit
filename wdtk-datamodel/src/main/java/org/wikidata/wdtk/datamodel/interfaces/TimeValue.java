@@ -139,7 +139,7 @@ public interface TimeValue extends Value {
 	 * 
 	 * @return year number
 	 */
-	int getYear();
+	long getYear();
 
 	/**
 	 * Get the month stored for this date. It will be a number from 1 to 12.
