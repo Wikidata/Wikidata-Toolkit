@@ -73,7 +73,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+	public TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
 		return new TimeValueImpl(year, month, day, hour, minute, second,

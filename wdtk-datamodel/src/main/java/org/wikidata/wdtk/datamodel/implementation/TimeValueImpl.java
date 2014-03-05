@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
  */
 public class TimeValueImpl implements TimeValue {
 
-	final int year;
+	final long year;
 	final byte month;
 	final byte day;
 	final byte hour;
@@ -77,7 +77,7 @@ public class TimeValueImpl implements TimeValue {
 	 *            time
 	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	TimeValueImpl(int year, byte month, byte day, byte hour, byte minute,
+	TimeValueImpl(long year, byte month, byte day, byte hour, byte minute,
 			byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
 		Validate.notNull(calendarModel, "Calendar model must not be null");
@@ -95,7 +95,7 @@ public class TimeValueImpl implements TimeValue {
 	}
 
 	@Override
-	public int getYear() {
+	public long getYear() {
 		return this.year;
 	}
 
@@ -158,7 +158,7 @@ public class TimeValueImpl implements TimeValue {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.year;
+		result = prime * result + new Long(this.year).hashCode();
 		result = prime * result + this.month;
 		result = prime * result + this.day;
 		result = prime * result + this.hour;
