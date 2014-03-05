@@ -27,6 +27,7 @@ public class MltvHandler {
 		// the container object is of the form {"key", value}
 		// where the value might be a JSONArray of strings
 		// or a JSONObject itself
+		// or simply a string associated with the key
 
 		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
 
@@ -46,11 +47,14 @@ public class MltvHandler {
 			// differentiate between objects and arrays
 			JSONArray arrayEntries = container.optJSONArray(key);
 			JSONObject objEntries = container.optJSONObject(key);
+			String stringEntry = container.optString(key);
 
 			if (arrayEntries != null) { // it is an array
 				values = this.extractValues(arrayEntries);
 			} else if (objEntries != null) { // it is an object
 				values = this.extractValues(objEntries);
+			} else if(stringEntry != null){ // it is a string
+				values.add(stringEntry);
 			}
 			// else do nothing…
 			// this is not in a known format

@@ -36,7 +36,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 // IDEA introduce a verbose-flag to enable/disable logging
-// IDEA move MonolingualTextValue inlines into a method
 // TODO permanent: check if documentation is up-to-date
 /**
  * This class provides methods to convert dump-file JSON objects into
@@ -48,9 +47,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * 
  */
 public class JsonConverter {
-
-
-	// TODO remove deprecated methods
+	
+	// TODO refactor: sort methods
 	
 	private static final String itemPrefix = "Q";
 	private static final String propertyPrefix = "P";

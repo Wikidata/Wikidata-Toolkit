@@ -9,15 +9,22 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 /**
  * The test setup uses several files containing JSON. These files are read by
@@ -64,6 +71,18 @@ public class jsonConverterTest {
 			"Converted and expected empty property documents did not match";
 	}
 	
+	@Test
+	public void testBasicItem() throws JSONException {
+		// create the empty property test case
+		ItemDocument basicItemDocument = this
+			.createBasicItemDocument();
+		ItemTestCase testCase = this.generateItemTestCase(
+				"BasicItem.json", null);
+
+		testCase.convert();
+		assert testCase.getResult().equals(basicItemDocument) : 
+			"Converted and expected empty property documents did not match";
+	}
 
 	/**
 	 * Sets up an empty property document in the WDTK data model.
@@ -84,6 +103,48 @@ public class jsonConverterTest {
 		return document;
 	}
 
+	private ItemDocument createBasicItemDocument() {
+
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1",
+				baseIri);
+		
+		List<MonolingualTextValue> labels = new LinkedList<>();
+		labels.add(this.factory.getMonolingualTextValue("test", "en"));
+		
+		List<MonolingualTextValue> descriptions = new LinkedList<>();
+		descriptions.add(this.factory.getMonolingualTextValue("this is a test", "en"));
+		
+		List<MonolingualTextValue> aliases = new LinkedList<>();
+		aliases.add(this.factory.getMonolingualTextValue("TEST", "en"));
+		aliases.add(this.factory.getMonolingualTextValue("Test", "en"));
+		
+		List<StatementGroup> statementGroups = new LinkedList<>();
+		List<Statement> statements = new LinkedList<>();
+		
+		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1", baseIri);
+		Value value = this.factory.getItemIdValue("Q1", baseIri);
+		Snak mainSnak = factory.getValueSnak(propertyId , value );
+		List<? extends Snak> qualifiers = new LinkedList<>();
+		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers );
+		
+		List<? extends Reference> references = new LinkedList<>();
+		StatementRank rank = StatementRank.NORMAL;
+		String statementId = "foo";
+		statements.add(this.factory.getStatement(claim, references, rank, statementId));
+		
+		statementGroups.add(this.factory.getStatementGroup(statements));
+		
+		Map<String, SiteLink> siteLinks = new HashMap<>();
+		List<String> badges = new LinkedList<>();
+		String siteKey = "enwiki";
+		String title = "test";
+		siteLinks.put("enwiki", this.factory.getSiteLink(title, siteKey, statementId, badges));
+		
+		ItemDocument document = this.factory.getItemDocument(itemIdValue,
+				labels, descriptions, aliases, statementGroups, siteLinks);
+		return document;
+	}
+	
 	private ItemDocument createEmptyItemDocument() {
 
 		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1",
