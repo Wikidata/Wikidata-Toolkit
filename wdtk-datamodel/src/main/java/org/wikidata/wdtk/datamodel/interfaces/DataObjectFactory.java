@@ -103,7 +103,7 @@ public interface DataObjectFactory {
 	 *            time
 	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
-	TimeValue getTimeValue(int year, byte month, byte day, byte hour,
+	TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel);
 

@@ -124,4 +124,13 @@ public class TimeValueImplTest {
 				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60, null);
 	}
 
+	@Test
+	public void largeYearValues() {
+		// May 12 in the first year after the beginning of the universe:
+		TimeValue t = new TimeValueImpl(-13800000000L, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				60, TimeValue.CM_GREGORIAN_PRO);
+		assertEquals(t.getYear(), -13800000000L);
+	}
+
 }
