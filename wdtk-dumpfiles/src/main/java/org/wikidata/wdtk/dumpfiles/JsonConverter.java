@@ -236,32 +236,6 @@ public class JsonConverter {
 		return result;
 	}
 
-	@Deprecated
-	public List<MonolingualTextValue> extractDescriptions(
-			JSONObject topLevelJson) {
-		// the description in the topLevelJson might either be
-		// a JSON object or a JSON array
-
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-
-		try {
-			JSONArray jsonArrayDescriptions = topLevelJson
-					.optJSONArray("description");
-			if (jsonArrayDescriptions == null) { // description was an object
-
-				JSONObject jsonDescriptions = topLevelJson
-						.getJSONObject("description");
-				descriptions = this.getDescriptions(jsonDescriptions);
-			} else { // description was an array
-				// TODO complete
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		return descriptions;
-	}
-
 	/**
 	 * Converts a JSON array containing statements into a list of statement
 	 * groups a represented by the WDTK data model.
@@ -934,93 +908,6 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Convert a JSON object representing the aliases of an item into a list of
-	 * MonolingualTextValues.
-	 * 
-	 * @param aliases
-	 *            a JSON object representing the aliases.
-	 * @return a list of MonolingualTextValues. Might be empty but not null.
-	 * @throws JSONException
-	 */
-	@Deprecated
-	private List<MonolingualTextValue> getAliases(JSONObject aliases)
-			throws JSONException {
-		assert aliases != null : "Aliases JSON object was null";
-
-		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
-
-		// aliases are of the form string:[string]
-		// except when they are of the form string:{numericString:alias}
-
-		@SuppressWarnings("unchecked")
-		Iterator<String> keyIterator = aliases.keys();
-
-		while (keyIterator.hasNext()) {
-			String key = keyIterator.next();
-			JSONArray aliasEntries = aliases.optJSONArray(key);
-
-			if (aliasEntries == null) { // if the aliases are objects
-
-				JSONObject objAliasEntries = aliases.getJSONObject(key);
-				@SuppressWarnings("unchecked")
-				Iterator<String> objKeyIterator = objAliasEntries.keys();
-				while (objKeyIterator.hasNext()) {
-					String objKey = objKeyIterator.next();
-					String aliasString = objAliasEntries.getString(objKey);
-					MonolingualTextValue element;
-					element = this.factory.getMonolingualTextValue(aliasString,
-							key);
-					result.add(element);
-				}
-			} else { // if the aliases are string arrays
-
-				// get all aliases for a certain language
-				for (int i = 0; i < aliasEntries.length(); i++) {
-					String aliasString = aliasEntries.getString(i);
-					MonolingualTextValue element;
-					element = this.factory.getMonolingualTextValue(aliasString,
-							key);
-					result.add(element);
-				}
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Converts a JSON object into the description format used by the WDTK data
-	 * model.
-	 * 
-	 * @param descriptions
-	 *            a JSON object representing the descriptions of an entity.
-	 * @return a map representing descriptions. The key is the language
-	 *         abbreviation, the value is the description in the language
-	 *         represented by the key.
-	 * @throws JSONException
-	 */
-	@Deprecated
-	private List<MonolingualTextValue> getDescriptions(JSONObject descriptions)
-			throws JSONException {
-		assert descriptions != null : "Description JSON object was null";
-
-		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
-
-		@SuppressWarnings("unchecked")
-		Iterator<String> keyIterator = descriptions.keys();
-
-		while (keyIterator.hasNext()) {
-			String key = keyIterator.next();
-			String desctiptionString = descriptions.getString(key);
-			MonolingualTextValue element = this.factory
-					.getMonolingualTextValue(desctiptionString, key);
-			result.add(element);
-		}
-
-		return result;
-	}
-
-	/**
 	 * Constructs the item id of a JSON object denoting an item.
 	 * 
 	 * @param jsonEntity
@@ -1037,40 +924,6 @@ public class JsonConverter {
 		assert jsonEntity.getString(0).equals("item") : "JSONArray did not denote an item id.";
 
 		return this.getItemIdValue(jsonEntity.getInt(1));
-	}
-
-	/**
-	 * Converts a JSON description of the labels into a mapping from language
-	 * abbreviations to the labels in these languages.
-	 * 
-	 * @param labels
-	 *            a JSON object containing the labels
-	 * @return a mapping between language abbreviations to the label in the
-	 *         referring language.
-	 * @throws JSONException
-	 *             if the iterator returned a non existing key. This could mean
-	 *             the JSON object is broken (i.e. has no Strings as keys) or
-	 *             something is wrong with the <i>org.json</i> JSON parser.
-	 */
-	@Deprecated
-	private List<MonolingualTextValue> getLabels(JSONObject labels)
-			throws JSONException {
-		assert labels != null : "Label JSON was null";
-
-		List<MonolingualTextValue> result = new LinkedList<MonolingualTextValue>();
-
-		@SuppressWarnings("unchecked")
-		Iterator<String> keyIterator = labels.keys();
-
-		while (keyIterator.hasNext()) {
-			String key = keyIterator.next();
-			String labelString = labels.getString(key);
-			MonolingualTextValue element = this.factory
-					.getMonolingualTextValue(labelString, key);
-			result.add(element);
-		}
-
-		return result;
 	}
 
 	public String getBaseIri() {
