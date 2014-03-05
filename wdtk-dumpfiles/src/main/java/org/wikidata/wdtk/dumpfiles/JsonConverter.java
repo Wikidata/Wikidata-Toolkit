@@ -49,8 +49,18 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class JsonConverter {
 
+
+	// TODO remove deprecated methods
+	
 	private static final String itemPrefix = "Q";
 	private static final String propertyPrefix = "P";
+	// TODO refactor to form KEY_FOO
+	private static final String labelString = "label";
+	private static final String entityString = "entity";
+	private static final String descriptionString = "description";
+	private static final String aliasString = "alias";
+	private static final String datatypeString = "datatype";
+	
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
 
@@ -95,24 +105,20 @@ public class JsonConverter {
 		PropertyDocument result;
 
 		// get the property id
-		JSONArray jsonEntity = toConvert.getJSONArray("entity");
+		JSONArray jsonEntity = toConvert.getJSONArray(entityString);
 		PropertyIdValue propertyId = this.getPropertyId(jsonEntity);
 
 		// get the labels
-		JSONObject jsonLabels = toConvert.getJSONObject("label");
-		List<MonolingualTextValue> labels = this.getLabels(jsonLabels);
+		List<MonolingualTextValue> labels = this.getMltv(labelString, toConvert);
 
 		// get the descriptions
-		JSONObject jsonDescriptions = toConvert.getJSONObject("description");
-		List<MonolingualTextValue> descriptions = this
-				.getDescriptions(jsonDescriptions);
+		List<MonolingualTextValue> descriptions = this.getMltv(descriptionString, toConvert);
 
 		// get the aliases
-		JSONObject jsonAliases = toConvert.getJSONObject("aliases");
-		List<MonolingualTextValue> aliases = this.getAliases(jsonAliases);
+		List<MonolingualTextValue> aliases = this.getMltv(aliasString, toConvert);
 
 		// get the datatype id
-		String jsonDataTypeId = toConvert.getString("datatype");
+		String jsonDataTypeId = toConvert.getString(datatypeString);
 		DatatypeIdValue datatypeId = this.getDataTypeId(jsonDataTypeId);
 
 		result = this.factory.getPropertyDocument(propertyId, labels,
@@ -196,34 +202,24 @@ public class JsonConverter {
 		// NOTE that in old dumps the entity is not an array
 		// but a string with appropriate prefix in lowercase
 		ItemIdValue itemId;
-		JSONArray jsonEntity = toConvert.optJSONArray("entity");
+		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
 		if (jsonEntity != null) {
 			itemId = this.getItemId(jsonEntity);
 		} else {
-			String stringItemId = toConvert.getString("entity").toUpperCase();
+			String stringItemId = toConvert.getString(entityString).toUpperCase();
 			itemId = this.factory.getItemIdValue(stringItemId, baseIri);
 		}
 
 		// get the labels
-		JSONObject jsonLabels = toConvert.getJSONObject("label");
-		List<MonolingualTextValue> labels = this.getLabels(jsonLabels);
+		List<MonolingualTextValue> labels = this.getMltv(labelString, toConvert);
 
 		// get the description
-		JSONObject jsonDescriptions = toConvert.getJSONObject("description");
-		List<MonolingualTextValue> descriptions = this
-				.getDescriptions(jsonDescriptions);
+		List<MonolingualTextValue> descriptions = this.getMltv(descriptionString, toConvert);
 
 		// get the aliases
 		// NOTE empty aliases are an JSON array
 		// non-empty aliases are JSON objects
-		List<MonolingualTextValue> aliases;
-		JSONArray jsonEmptyAliases = toConvert.optJSONArray("aliases");
-		if (jsonEmptyAliases == null) {
-			JSONObject jsonAliases = toConvert.getJSONObject("aliases");
-			aliases = this.getAliases(jsonAliases);
-		} else {
-			aliases = new LinkedList<>();
-		}
+		List<MonolingualTextValue> aliases = this.getMltv(aliasString, toConvert);
 
 		// get the statements
 		JSONArray jsonStatements = toConvert.getJSONArray("claims");
@@ -238,6 +234,32 @@ public class JsonConverter {
 		ItemDocument result = factory.getItemDocument(itemId, labels,
 				descriptions, aliases, statements, siteLinks);
 		return result;
+	}
+
+	@Deprecated
+	public List<MonolingualTextValue> extractDescriptions(
+			JSONObject topLevelJson) {
+		// the description in the topLevelJson might either be
+		// a JSON object or a JSON array
+
+		List<MonolingualTextValue> descriptions = new LinkedList<>();
+
+		try {
+			JSONArray jsonArrayDescriptions = topLevelJson
+					.optJSONArray("description");
+			if (jsonArrayDescriptions == null) { // description was an object
+
+				JSONObject jsonDescriptions = topLevelJson
+						.getJSONObject("description");
+				descriptions = this.getDescriptions(jsonDescriptions);
+			} else { // description was an array
+				// TODO complete
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return descriptions;
 	}
 
 	/**
@@ -504,63 +526,64 @@ public class JsonConverter {
 		// also in older dumps the precision might be null
 		// in this case the precision might default to PREC_DEGREE
 		long precision;
-		
-		if(jsonGlobeCoordinate.isNull("precision")){
-			
+
+		if (jsonGlobeCoordinate.isNull("precision")) {
+
 			precision = GlobeCoordinatesValue.PREC_DEGREE;
-			
+
 		} else {
-		
-		int intPrecision = jsonGlobeCoordinate.optInt("precision", invalid);
 
-		if (intPrecision == invalid || intPrecision == 0) {
+			int intPrecision = jsonGlobeCoordinate.optInt("precision", invalid);
 
-			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
+			if (intPrecision == invalid || intPrecision == 0) {
 
-			// Yes you have to check all
-			// possible representations since they do not equal
-			// in their internal representation
-			
-			if (doublePrecision.equals(10)) {
-				precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
-			} else if (doublePrecision.equals(1.0)) {
-				precision = GlobeCoordinatesValue.PREC_DEGREE;
-			} else if (doublePrecision.equals(0.1)) {
-				precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
-			} else if (doublePrecision.equals(0.016666666666667)) {
-				precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
-			} else if (doublePrecision.equals(0.01)) {
-				precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-			} else if (doublePrecision.equals(0.001)) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-			} else if (doublePrecision.equals(0.00027777777777778) || 
-					doublePrecision.equals(2.7777777777778e-4)) {
-				precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-			} else if (doublePrecision.equals(0.0001) ||
-					doublePrecision.equals(1.0e-4)) {
-				precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
-			} else if (doublePrecision.equals(0.00002777777777778) ||
-					doublePrecision.equals(2.7777777777778e-5)) {
-				precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
-			} else if (doublePrecision.equals(0.00001) ||
-					doublePrecision.equals(1.0e-5)) {
-				precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
-			} else if (doublePrecision.equals(0.00000277777777778) ||
-					doublePrecision.equals(2.7777777777778e-6)) {
-				precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
-			} else if (doublePrecision.equals(0.000001)) {
-				precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
-			} else if (doublePrecision.equals(0.00000027777777778) ||
-					doublePrecision.equals(2.7777777777778e-7)) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+				Double doublePrecision = jsonGlobeCoordinate
+						.getDouble("precision");
+
+				// Yes you have to check all
+				// possible representations since they do not equal
+				// in their internal representation
+
+				if (doublePrecision.equals(10)) {
+					precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
+				} else if (doublePrecision.equals(1.0)) {
+					precision = GlobeCoordinatesValue.PREC_DEGREE;
+				} else if (doublePrecision.equals(0.1)) {
+					precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
+				} else if (doublePrecision.equals(0.016666666666667)) {
+					precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
+				} else if (doublePrecision.equals(0.01)) {
+					precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
+				} else if (doublePrecision.equals(0.001)) {
+					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+				} else if (doublePrecision.equals(0.00027777777777778)
+						|| doublePrecision.equals(2.7777777777778e-4)) {
+					precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+				} else if (doublePrecision.equals(0.0001)
+						|| doublePrecision.equals(1.0e-4)) {
+					precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
+				} else if (doublePrecision.equals(0.00002777777777778)
+						|| doublePrecision.equals(2.7777777777778e-5)) {
+					precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
+				} else if (doublePrecision.equals(0.00001)
+						|| doublePrecision.equals(1.0e-5)) {
+					precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
+				} else if (doublePrecision.equals(0.00000277777777778)
+						|| doublePrecision.equals(2.7777777777778e-6)) {
+					precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
+				} else if (doublePrecision.equals(0.000001)) {
+					precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
+				} else if (doublePrecision.equals(0.00000027777777778)
+						|| doublePrecision.equals(2.7777777777778e-7)) {
+					precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+				} else {
+					throw new JSONException("Unknown precision "
+							+ doublePrecision + "in global coordinates.");
+				}
 			} else {
-				throw new JSONException(
-						"Unknown precision " + doublePrecision +"in global coordinates.");
+				precision = ((long) intPrecision)
+						* GlobeCoordinatesValue.PREC_DEGREE;
 			}
-		} else {
-			precision = ((long) intPrecision)
-					* GlobeCoordinatesValue.PREC_DEGREE;
-		}
 		}
 
 		String globeIri = jsonGlobeCoordinate.getString("globe");
@@ -919,6 +942,7 @@ public class JsonConverter {
 	 * @return a list of MonolingualTextValues. Might be empty but not null.
 	 * @throws JSONException
 	 */
+	@Deprecated
 	private List<MonolingualTextValue> getAliases(JSONObject aliases)
 			throws JSONException {
 		assert aliases != null : "Aliases JSON object was null";
@@ -975,6 +999,7 @@ public class JsonConverter {
 	 *         represented by the key.
 	 * @throws JSONException
 	 */
+	@Deprecated
 	private List<MonolingualTextValue> getDescriptions(JSONObject descriptions)
 			throws JSONException {
 		assert descriptions != null : "Description JSON object was null";
@@ -1027,6 +1052,7 @@ public class JsonConverter {
 	 *             the JSON object is broken (i.e. has no Strings as keys) or
 	 *             something is wrong with the <i>org.json</i> JSON parser.
 	 */
+	@Deprecated
 	private List<MonolingualTextValue> getLabels(JSONObject labels)
 			throws JSONException {
 		assert labels != null : "Label JSON was null";
@@ -1049,6 +1075,37 @@ public class JsonConverter {
 
 	public String getBaseIri() {
 		return baseIri;
+	}
+
+	/**
+	 * Converts a JSONObject into a list of mono-lingual text values. The object
+	 * to be converted is the value associated with the given key in the top
+	 * level object. So if there is a JSONObject <i>topLevel</i> and the key
+	 * "label" are given, only the JSONObject found in the <i>topLevel</i> under
+	 * the key "label" will be converted, not the whole <i>topLevel</i>.
+	 * 
+	 * MLTV is the abbreviation for MonoLingualTextValue.
+	 * 
+	 * @param key
+	 *            is the key of the object to be converted in the topLevel. If
+	 *            the key is not present or not an object an empty list will be
+	 *            returned.
+	 * @param topLevel
+	 *            is the JSONObject that contains the object to be converted
+	 *            under a given key.
+	 * @return a list of extracted mono-lingual text values. Might be empty, but
+	 *         not null.
+	 */
+	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
+
+		MltvHandler handler = new MltvHandler(this.factory);
+
+		JSONObject toConvert = topLevel.optJSONObject(key);
+		if (toConvert != null) {
+			return handler.convertToMltv(toConvert);
+		} // else…
+
+		return new LinkedList<>();
 	}
 
 	/**
