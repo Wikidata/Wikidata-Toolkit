@@ -657,9 +657,6 @@ public class JsonConverter {
 		String stringTime = jsonTimeValue.getString("time");
 
 		// get the year
-		// NOTE in the data model the year is handled as an integer
-		// which causes problems
-		// TODO update in factory call when the data model switched to long
 		long year = Long.parseLong(stringTime.substring(0, 12));
 
 		// get the month
@@ -690,7 +687,7 @@ public class JsonConverter {
 		// get the calendar model
 		String calendarModel = jsonTimeValue.getString("calendarmodel");
 
-		result = this.factory.getTimeValue((int) year, month, day, hour,
+		result = this.factory.getTimeValue(year, month, day, hour,
 				minute, second, precision, beforeTolerance, afterTolerance,
 				timezoneOffset, calendarModel);
 		return result;
