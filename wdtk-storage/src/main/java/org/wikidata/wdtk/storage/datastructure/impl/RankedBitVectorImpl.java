@@ -20,9 +20,7 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
@@ -56,9 +54,9 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl() {
 		this.bitVector = new BitVectorImpl();
-		this.countArray = new CountArray();
-		this.findPositionOfFalse = new FindPositionArray(false);
-		this.findPositionOfTrue = new FindPositionArray(true);
+		this.countArray = new CountArray(this.bitVector);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
 	}
 
 	/**
@@ -70,13 +68,13 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	public RankedBitVectorImpl(BitVector bitVector) {
 		this.bitVector = new BitVectorImpl(bitVector);
 		if (bitVector instanceof RankedBitVectorImpl) {
-			this.countArray = new CountArray(
+			this.countArray = new CountArray(this.bitVector,
 					((RankedBitVectorImpl) bitVector).countArray.getBlockSize());
 		} else {
-			this.countArray = new CountArray();
+			this.countArray = new CountArray(this.bitVector);
 		}
-		this.findPositionOfFalse = new FindPositionArray(false);
-		this.findPositionOfTrue = new FindPositionArray(true);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
 
 	}
 
@@ -89,9 +87,9 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl(long initialSize) {
 		this.bitVector = new BitVectorImpl(initialSize);
-		this.countArray = new CountArray();
-		this.findPositionOfFalse = new FindPositionArray(false);
-		this.findPositionOfTrue = new FindPositionArray(true);
+		this.countArray = new CountArray(this.bitVector);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
 	}
 
 	/**
@@ -110,10 +108,10 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	public RankedBitVectorImpl(long initialSize, int countBlockSize,
 			int findPositionBlockSize) {
 		this.bitVector = new BitVectorImpl(initialSize);
-		this.countArray = new CountArray(countBlockSize);
-		this.findPositionOfFalse = new FindPositionArray(false,
+		this.countArray = new CountArray(this.bitVector, countBlockSize);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,
 				findPositionBlockSize);
-		this.findPositionOfTrue = new FindPositionArray(true,
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true,
 				findPositionBlockSize);
 	}
 
@@ -193,231 +191,6 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 			this.findPositionOfTrue.updateCount();
 			this.isFindPositionUpdated = true;
 		}
-	}
-
-	/**
-	 * This class keeps the count of occurrences of <code>true</code> values in
-	 * a bit vector.
-	 * 
-	 * @author Julian Mendez
-	 */
-	class CountArray {
-
-		final int blockSize;
-
-		/**
-		 * This array contains the number of <code>true</code> values found in
-		 * each block.
-		 */
-		final List<Long> count = new ArrayList<Long>();
-
-		/**
-		 * Creates a block array with a default size.
-		 */
-		CountArray() {
-			this.blockSize = 0x10;
-			updateCount(0);
-		}
-
-		/**
-		 * Creates a count array with a give block size.
-		 * 
-		 * @param blockSize
-		 *            block size
-		 */
-		CountArray(int blockSize) {
-			this.blockSize = blockSize;
-			updateCount(0);
-		}
-
-		long countBits(boolean bit, long position) {
-			int blockNumber = getBlockNumber(position);
-			long mark = ((long) blockNumber) * this.blockSize;
-			long trueValues = 0;
-			if (blockNumber > 0) {
-				trueValues = this.count.get(blockNumber - 1);
-			}
-			for (long index = mark; index <= position; index++) {
-				trueValues += RankedBitVectorImpl.this.bitVector.getBit(index) ? 1
-						: 0;
-			}
-			return bit ? trueValues : ((position + 1) - trueValues);
-		}
-
-		/**
-		 * Returns the block number for a given position in the bit vector.
-		 * 
-		 * @param positionInBitVector
-		 *            position in bit vector
-		 * @return the block number for a given position in the bit vector
-		 */
-		int getBlockNumber(long positionInBitVector) {
-			return (int) (positionInBitVector / this.blockSize);
-		}
-
-		/**
-		 * Returns the block size.
-		 * 
-		 * @return the block size
-		 */
-		int getBlockSize() {
-			return this.blockSize;
-		}
-
-		/**
-		 * Modifies the count by a delta starting from a given position.
-		 * 
-		 * @param startingPosition
-		 *            starting position
-		 * @param delta
-		 *            delta
-		 */
-		void modifyCount(long startingPosition, int delta) {
-			int blockNumber = getBlockNumber(startingPosition);
-			for (int index = blockNumber; index < this.count.size(); index++) {
-				this.count.set(index, this.count.get(index) + delta);
-			}
-
-		}
-
-		/**
-		 * This method updates the whole count starting from a given position
-		 * <i>startingPosition</i>. This method assumes that all the previous
-		 * positions are updated.
-		 * 
-		 * @param startingPosition
-		 *            starting position to update the count
-		 * @param bit
-		 *            bit
-		 */
-		void updateCount(long startingPosition) {
-			for (long index = startingPosition; index < RankedBitVectorImpl.this.bitVector
-					.size(); index++) {
-				int positionInCount = getBlockNumber(index);
-				if (positionInCount >= this.count.size()) {
-					long lastValue = 0;
-					if (this.count.size() > 0) {
-						lastValue = this.count.get(this.count.size() - 1);
-					}
-					this.count.add(lastValue);
-				}
-				if (RankedBitVectorImpl.this.bitVector.getBit(index)) {
-					this.count.set(positionInCount,
-							this.count.get(positionInCount) + 1);
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can
-	 * be found, where <i>bit</i> can be <code>true</code> or <code>false</code>
-	 * .
-	 * 
-	 * @author Julian Mendez
-	 */
-	class FindPositionArray {
-
-		final boolean bit;
-
-		final int blockSize;
-
-		long[] positionArray;
-
-		FindPositionArray(boolean bit) {
-			this.bit = bit;
-			this.blockSize = 0x10;
-			updateCount();
-		}
-
-		FindPositionArray(boolean bit, int blockSize) {
-			this.bit = bit;
-			this.blockSize = blockSize;
-			updateCount();
-		}
-
-		/**
-		 * Returns the position for a given number of occurrences or NOT_FOUND
-		 * if this value is not found.
-		 * 
-		 * @param nOccurrence
-		 *            number of occurrences
-		 * @return the position for a given number of occurrences or NOT_FOUND
-		 *         if this value is not found
-		 */
-		long findPosition(long nOccurrence) {
-			long ret = NOT_FOUND;
-			if (nOccurrence > 0) {
-				int findPos = getBlockNumber(nOccurrence);
-				if (findPos < this.positionArray.length) {
-					long pos0 = this.positionArray[findPos];
-					if (pos0 != NOT_FOUND) {
-						long leftOccurrences = nOccurrence
-								- (findPos * this.blockSize);
-						if (leftOccurrences == 0) {
-							ret = pos0;
-						} else {
-							for (long index = (pos0 + ((pos0 > 0) ? 1 : 0)); (leftOccurrences > 0)
-									&& (index < RankedBitVectorImpl.this.bitVector
-											.size()); index++) {
-								if (RankedBitVectorImpl.this.bitVector
-										.getBit(index) == this.bit) {
-									leftOccurrences--;
-								}
-								if (leftOccurrences == 0) {
-									ret = index;
-								}
-							}
-						}
-					}
-				}
-			}
-			return ret;
-		}
-
-		/**
-		 * Returns the block number for a given number of occurrences.
-		 * 
-		 * @param nOccurrences
-		 *            nOccurrences
-		 * @return the block number for a given number of occurrences
-		 */
-		int getBlockNumber(long nOccurrences) {
-			return (int) (nOccurrences / this.blockSize);
-		}
-
-		List<Long> getPositionList() {
-			List<Long> ret = new ArrayList<Long>();
-			ret.add((long) 0);
-			long count = 0;
-			for (long index = 0; index < RankedBitVectorImpl.this.bitVector
-					.size(); index++) {
-				if (RankedBitVectorImpl.this.bitVector.getBit(index) == this.bit) {
-					count++;
-				}
-				if (count >= this.blockSize) {
-					count = 0;
-					ret.add(index);
-				}
-			}
-			return ret;
-		}
-
-		long[] toArray(List<Long> list) {
-			long[] ret = new long[list.size()];
-			int index = 0;
-			for (Long element : list) {
-				ret[index] = element;
-				index++;
-			}
-			return ret;
-		}
-
-		void updateCount() {
-			this.positionArray = toArray(getPositionList());
-		}
-
 	}
 
 }
