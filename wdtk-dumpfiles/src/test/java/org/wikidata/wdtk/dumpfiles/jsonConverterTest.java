@@ -56,44 +56,48 @@ public class jsonConverterTest {
 				"EmptyProperty.json", emptyPropertyDocument);
 
 		testCase.convert();
-		assert testCase.getResult().equals(emptyPropertyDocument) : 
-			"Converted and expected empty property documents did not match";
+		assert testCase.getResult().equals(emptyPropertyDocument) : "Converted and expected empty property documents did not match";
 	}
-	
+
 	@Test
 	public void testEmptyItem() throws JSONException {
 		// create the empty property test case
-		ItemDocument emptyItemDocument = this
-				.createEmptyItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase(
-				"EmptyItem.json", emptyItemDocument);
+		ItemDocument emptyItemDocument = this.createEmptyItemDocument();
+		ItemTestCase testCase = this.generateItemTestCase("EmptyItem.json",
+				emptyItemDocument);
 
 		testCase.convert();
-		assert testCase.getResult().equals(emptyItemDocument) : 
-			"Converted and expected empty property documents did not match";
+		assertEquals( testCase.getResult(),emptyItemDocument);
 	}
-	
+
 	@Test
 	public void testBasicItem() throws JSONException {
 		// create the empty property test case
-		ItemDocument basicItemDocument = this
-			.createBasicItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase(
-				"BasicItem.json", basicItemDocument);
+		ItemDocument basicItemDocument = this.createBasicItemDocument();
+		ItemTestCase testCase = this.generateItemTestCase("BasicItem.json",
+				basicItemDocument);
 
 		testCase.convert();
-		assertTrue(testCase.getResult().getSiteLinks().equals(basicItemDocument.getSiteLinks()));
-		//assertTrue(testCase.getResult().equals(basicItemDocument));
-	}
-	
-	@Test
-	public void testRealItems() throws JSONException{
-		List<ItemTestCase> testCases = new LinkedList<>();
+		ItemDocument result = testCase.getResult();
 		
+		assertEquals(result.getEntityId(), basicItemDocument.getEntityId());
+		assertEquals(result.getItemId(), basicItemDocument.getItemId());
+		assertEquals(result.getDescriptions(), basicItemDocument.getDescriptions());
+		assertEquals(result.getAliases(), basicItemDocument.getAliases());
+		assertEquals(result.getLabels(), basicItemDocument.getLabels());
+		assertEquals(result.getSiteLinks(), basicItemDocument.getSiteLinks());
+		assertEquals(result.getStatementGroups(), basicItemDocument.getStatementGroups());		
+		assertEquals(result, basicItemDocument);
+	}
+
+	@Test
+	public void testRealItems() throws JSONException {
+		List<ItemTestCase> testCases = new LinkedList<>();
+
 		testCases.add(this.generateItemTestCase("Chicago.json", null));
 		testCases.add(this.generateItemTestCase("Haaften.json", null));
-		
-		for(ItemTestCase t : testCases){
+
+		for (ItemTestCase t : testCases) {
 			t.convert();
 		}
 	}
@@ -119,50 +123,52 @@ public class jsonConverterTest {
 
 	private ItemDocument createBasicItemDocument() {
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1",
-				baseIri);
-		
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
+
 		List<MonolingualTextValue> labels = new LinkedList<>();
 		labels.add(this.factory.getMonolingualTextValue("test", "en"));
-		
+
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		descriptions.add(this.factory.getMonolingualTextValue("this is a test", "en"));
-		
+		descriptions.add(this.factory.getMonolingualTextValue("this is a test",
+				"en"));
+
 		List<MonolingualTextValue> aliases = new LinkedList<>();
 		aliases.add(this.factory.getMonolingualTextValue("TEST", "en"));
 		aliases.add(this.factory.getMonolingualTextValue("Test", "en"));
-		
+
 		List<StatementGroup> statementGroups = new LinkedList<>();
 		List<Statement> statements = new LinkedList<>();
-		
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1", baseIri);
+
+		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
+				baseIri);
 		Value value = this.factory.getItemIdValue("Q1", baseIri);
-		Snak mainSnak = factory.getValueSnak(propertyId , value );
+		Snak mainSnak = factory.getValueSnak(propertyId, value);
 		List<? extends Snak> qualifiers = new LinkedList<>();
-		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers );
-		
+		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers);
+
 		List<? extends Reference> references = new LinkedList<>();
 		StatementRank rank = StatementRank.NORMAL;
-		String statementId = "test";
-		statements.add(this.factory.getStatement(claim, references, rank, statementId));
-		
+		String statementId = "foo";
+		statements.add(this.factory.getStatement(claim, references, rank,
+				statementId));
+
 		statementGroups.add(this.factory.getStatementGroup(statements));
-		
+
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 		List<String> badges = new LinkedList<>();
 		String siteKey = "enwiki";
 		String title = "test";
-		siteLinks.put("enwiki", this.factory.getSiteLink(title, siteKey, statementId, badges));
-		
+		siteLinks.put("enwiki",
+				this.factory.getSiteLink(title, siteKey, baseIri, badges));
+
 		ItemDocument document = this.factory.getItemDocument(itemIdValue,
 				labels, descriptions, aliases, statementGroups, siteLinks);
 		return document;
 	}
-	
+
 	private ItemDocument createEmptyItemDocument() {
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1",
-				baseIri);
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
 		List<MonolingualTextValue> labels = new LinkedList<>();
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
 		List<MonolingualTextValue> aliases = new LinkedList<>();
@@ -180,7 +186,8 @@ public class jsonConverterTest {
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
 	 */
-	private ItemTestCase generateItemTestCase(String fileName, ItemDocument expectation) {
+	private ItemTestCase generateItemTestCase(String fileName,
+			ItemDocument expectation) {
 		String relativeFilePath = this.sampleFilesBasePath + fileName;
 
 		ItemTestCase testCase = new ItemTestCase(relativeFilePath,
