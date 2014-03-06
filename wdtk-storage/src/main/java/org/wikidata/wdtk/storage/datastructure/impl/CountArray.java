@@ -30,13 +30,14 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * bit vector. This implementation divides the bit vector in blocks of equal
  * size. It keeps an array with the count of <code>true</code> values present in
  * each block. <br />
- * For example, given the bit vector: 10010, with a block size of 2, the array
- * contains: [1, 2, 2]. The first block contains 1 <code>true</code> value, the
- * second block contains 1 more <code>true</code> value, in total 2. The third
- * block is incomplete, since it has only one bit, and it does not contain more
- * <code>true</code> values. <br />
- * For efficiency reasons, this class assumes that the bit vector is unmodified,
- * and any modification of a bit vector needs to be notified in
+ * For example, given the bit vector: 10010 (0 is <code>false</code>, 1 is
+ * <code>true</code>), with a block size of 2, the array contains: [1, 2, 2].
+ * The first block contains 1 <code>true</code> value, the second block contains
+ * 1 more <code>true</code> value, in total 2. The third block is incomplete,
+ * since it has only one bit, and it does not contain more <code>true</code>
+ * values. <br />
+ * For efficiency reasons, this class assumes that the bit vector is unmodified.
+ * Any modification of the bit vector needs to be notified in
  * {@link FindPositionArray#update(BitVector)}.
  * 
  * @see RankedBitVectorImpl
@@ -51,7 +52,7 @@ class CountArray {
 	BitVector bitVector;
 
 	/**
-	 * This is the size of each block.
+	 * The size of each block.
 	 */
 	final int blockSize;
 
@@ -75,7 +76,7 @@ class CountArray {
 	}
 
 	/**
-	 * Creates a count array with a give block size.
+	 * Creates a count array with a given block size.
 	 * 
 	 * @param blockSize
 	 *            block size
@@ -87,6 +88,11 @@ class CountArray {
 		updateCount();
 	}
 
+	/**
+	 * Returns the number of occurrences of <i>bit</i> at <i>position</i>.
+	 * 
+	 * @return number of occurrences of <i>bit</i> at <i>position</i>
+	 */
 	public long countBits(boolean bit, long position) {
 		updateCount();
 		int blockNumber = getBlockNumber(position);

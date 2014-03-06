@@ -30,24 +30,24 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can be
  * found in a bit vector (<i>bit</i> can be <code>true</code> or
  * <code>false</code>). This class uses an array to store these positions. Each
- * cell of the array covers a block in the bit vector, and to find the other
- * position, the method iterates on the array.<br />
- * For example, let us suppose we have the following bit vector: [11010001] (0
- * is <code>false</code> and 1 is <code>true</code>), with a block size of 2.
- * For the case of <code>true</code> value, the array stores the position where
+ * cell of the array covers a block in the bit vector, and to find the positions
+ * in this block, the method iterates on the bit vector.<br />
+ * For example, let us suppose we have the following bit vector: 11010001 (0 is
+ * <code>false</code> and 1 is <code>true</code>), with a block size of 2. For
+ * the case of <code>true</code>, the array stores the position where
  * <code>true</code> is found for the zeroth time, the second time, the forth
- * time, and so on and so forth. The array for <code>true</code> is [0, 1, 7],
- * and the array for <code>false</code> is [0, 4, 6]. Since the zeroth time is
- * not defined, the {@link #findPosition(long)} method returns
- * {@link RankedBitVector.NOT_FOUND} for that value. The second occurrence of
- * <code>true</code> is at position 1 in the bit vector. The forth occurrence of
- * <code>true</code> is at position 7 in the bit vector. Analogously, the
- * positions of the <code>false</code> value are 4 for the second occurrence,
- * and 6 for the forth occurrence.<br />
+ * time, and so on and so forth. The array for <code>true</code> is [0, 1, 7].
+ * Since the zeroth time is not defined, the {@link #findPosition(long)} method
+ * returns {@link RankedBitVector.NOT_FOUND} for that value. The second
+ * occurrence of <code>true</code> is at position 1 in the bit vector. The forth
+ * occurrence of <code>true</code> is at position 7 in the bit vector.
+ * Analogously, the array for <code>false</code> is [0, 4, 6]. The positions of
+ * <code>false</code> are 4 for the second occurrence, and 6 for the forth
+ * occurrence.<br />
  * Please observe that the blocks have the same size in number of occurrences,
- * and therefore may cover different number of positions in the bit vector.<br />
- * For efficiency reasons, this class assumes that the bit vector is unmodified,
- * and any modification of a bit vector needs to be notified in
+ * but may cover different number of positions in the bit vector.<br />
+ * For efficiency reasons, this class assumes that the bit vector is unmodified.
+ * Any modification of a bit vector needs to be notified in
  * {@link FindPositionArray#update(BitVector)}.
  * 
  * @see RankedBitVectorImpl
@@ -78,7 +78,7 @@ class FindPositionArray {
 	boolean hasChanged;
 
 	/**
-	 * This array contains the position for a given number of occurrence
+	 * This array contains the position for a given number of occurrences
 	 * multiplied by the block size.
 	 */
 	long[] positionArray;
