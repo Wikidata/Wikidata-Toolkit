@@ -44,7 +44,7 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * 
  * @author Julian Mendez
  */
-class CountArray {
+class CountBitsArray {
 
 	/**
 	 * The bit vector, which is assumed unmodified.
@@ -71,7 +71,7 @@ class CountArray {
 	/**
 	 * Creates a block array with a default size.
 	 */
-	public CountArray(BitVector bitVector) {
+	public CountBitsArray(BitVector bitVector) {
 		this(bitVector, 0x10);
 	}
 
@@ -81,7 +81,7 @@ class CountArray {
 	 * @param blockSize
 	 *            block size
 	 */
-	public CountArray(BitVector bitVector, int blockSize) {
+	public CountBitsArray(BitVector bitVector, int blockSize) {
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 		this.blockSize = blockSize;

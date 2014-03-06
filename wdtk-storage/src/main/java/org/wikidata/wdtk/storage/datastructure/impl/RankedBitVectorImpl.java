@@ -29,10 +29,10 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  * Default implementation of {@link RankedBitVector}. This implementation uses
  * auxiliary classes to have efficient performance for the methods of a ranked
  * bit vector. Hence, {@link #countBits(boolean, long)} uses an instance of
- * {@link CountArray} and {@link #findPosition(boolean, long)} uses two
+ * {@link CountBitsArray} and {@link #findPosition(boolean, long)} uses two
  * instances of {@link FindPositionArray}.
  * 
- * @see CountArray
+ * @see CountBitsArray
  * 
  * @see FindPositionArray
  * 
@@ -42,7 +42,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
 	final BitVectorImpl bitVector;
 
-	final CountArray countArray;
+	final CountBitsArray countBitsArray;
 
 	final FindPositionArray findPositionOfFalse;
 
@@ -53,7 +53,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl() {
 		this.bitVector = new BitVectorImpl();
-		this.countArray = new CountArray(this.bitVector);
+		this.countBitsArray = new CountBitsArray(this.bitVector);
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
 		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
 	}
@@ -67,10 +67,11 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	public RankedBitVectorImpl(BitVector bitVector) {
 		this.bitVector = new BitVectorImpl(bitVector);
 		if (bitVector instanceof RankedBitVectorImpl) {
-			this.countArray = new CountArray(this.bitVector,
-					((RankedBitVectorImpl) bitVector).countArray.getBlockSize());
+			this.countBitsArray = new CountBitsArray(this.bitVector,
+					((RankedBitVectorImpl) bitVector).countBitsArray
+							.getBlockSize());
 		} else {
-			this.countArray = new CountArray(this.bitVector);
+			this.countBitsArray = new CountBitsArray(this.bitVector);
 		}
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
 		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
@@ -86,7 +87,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl(long initialSize) {
 		this.bitVector = new BitVectorImpl(initialSize);
-		this.countArray = new CountArray(this.bitVector);
+		this.countBitsArray = new CountBitsArray(this.bitVector);
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
 		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
 	}
@@ -107,7 +108,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	public RankedBitVectorImpl(long initialSize, int countBlockSize,
 			int findPositionBlockSize) {
 		this.bitVector = new BitVectorImpl(initialSize);
-		this.countArray = new CountArray(this.bitVector, countBlockSize);
+		this.countBitsArray = new CountBitsArray(this.bitVector, countBlockSize);
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,
 				findPositionBlockSize);
 		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true,
@@ -123,7 +124,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
 	@Override
 	public long countBits(boolean bit, long position) {
-		return this.countArray.countBits(bit, position);
+		return this.countBitsArray.countBits(bit, position);
 	}
 
 	@Override
@@ -162,7 +163,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	}
 
 	void notifyObservers() {
-		this.countArray.update(this.bitVector);
+		this.countBitsArray.update(this.bitVector);
 		this.findPositionOfFalse.update(this.bitVector);
 		this.findPositionOfTrue.update(this.bitVector);
 	}
