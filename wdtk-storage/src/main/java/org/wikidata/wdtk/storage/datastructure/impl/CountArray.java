@@ -51,9 +51,7 @@ class CountArray {
 	 * Creates a block array with a default size.
 	 */
 	public CountArray(BitVector bitVector) {
-		this.bitVector = bitVector;
-		this.hasChanged = true;
-		this.blockSize = 0x10;
+		this(bitVector, 0x10);
 	}
 
 	/**
@@ -66,6 +64,7 @@ class CountArray {
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 		this.blockSize = blockSize;
+		updateCount();
 	}
 
 	public long countBits(boolean bit, long position) {
@@ -130,6 +129,21 @@ class CountArray {
 			index++;
 		}
 		return ret;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append('[');
+		if (this.countArray.length > 0) {
+			str.append(this.countArray[0]);
+		}
+		for (int index = 1; index < this.countArray.length; index++) {
+			str.append(", ");
+			str.append(this.countArray[index]);
+		}
+		str.append(']');
+		return str.toString();
 	}
 
 	public void update(BitVector bitVector) {

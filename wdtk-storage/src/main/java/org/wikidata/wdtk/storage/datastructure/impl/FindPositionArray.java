@@ -47,10 +47,7 @@ class FindPositionArray {
 	long[] positionArray;
 
 	public FindPositionArray(BitVector bitVector, boolean bit) {
-		this.bitVector = bitVector;
-		this.hasChanged = true;
-		this.bit = bit;
-		this.blockSize = 0x10;
+		this(bitVector, bit, 0x10);
 	}
 
 	public FindPositionArray(BitVector bitVector, boolean bit, int blockSize) {
@@ -58,6 +55,7 @@ class FindPositionArray {
 		this.hasChanged = true;
 		this.bit = bit;
 		this.blockSize = blockSize;
+		updateCount();
 	}
 
 	/**
@@ -133,6 +131,21 @@ class FindPositionArray {
 			index++;
 		}
 		return ret;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append('[');
+		if (this.positionArray.length > 0) {
+			str.append(this.positionArray[0]);
+		}
+		for (int index = 1; index < this.positionArray.length; index++) {
+			str.append(", ");
+			str.append(this.positionArray[index]);
+		}
+		str.append(']');
+		return str.toString();
 	}
 
 	public void update(BitVector bitVector) {
