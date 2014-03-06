@@ -323,7 +323,7 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
 		final int blockSize;
 
-		final List<Long> positionArray = new ArrayList<Long>();
+		long[] positionArray;
 
 		FindPositionArray(boolean bit) {
 			this.bit = bit;
@@ -350,8 +350,8 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 			long ret = NOT_FOUND;
 			if (nOccurrence > 0) {
 				int findPos = getBlockNumber(nOccurrence);
-				if (findPos < this.positionArray.size()) {
-					long pos0 = this.positionArray.get(findPos);
+				if (findPos < this.positionArray.length) {
+					long pos0 = this.positionArray[findPos];
 					if (pos0 != NOT_FOUND) {
 						long leftOccurrences = nOccurrence
 								- (findPos * this.blockSize);
@@ -387,9 +387,9 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 			return (int) (nOccurrences / this.blockSize);
 		}
 
-		void updateCount() {
-			this.positionArray.clear();
-			this.positionArray.add((long) 0);
+		List<Long> getPositionList() {
+			List<Long> ret = new ArrayList<Long>();
+			ret.add((long) 0);
 			long count = 0;
 			for (long index = 0; index < RankedBitVectorImpl.this.bitVector
 					.size(); index++) {
@@ -398,9 +398,24 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 				}
 				if (count >= this.blockSize) {
 					count = 0;
-					this.positionArray.add(index);
+					ret.add(index);
 				}
 			}
+			return ret;
+		}
+
+		long[] toArray(List<Long> list) {
+			long[] ret = new long[list.size()];
+			int index = 0;
+			for (Long element : list) {
+				ret[index] = element;
+				index++;
+			}
+			return ret;
+		}
+
+		void updateCount() {
+			this.positionArray = toArray(getPositionList());
 		}
 
 	}
