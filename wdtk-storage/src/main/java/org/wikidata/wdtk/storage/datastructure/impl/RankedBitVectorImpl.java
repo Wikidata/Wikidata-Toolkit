@@ -47,8 +47,6 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
 	final FindPositionArray findPositionOfTrue;
 
-	boolean isFindPositionUpdated = false;
-
 	/**
 	 * Constructor of a ranked bit vector of size 0.
 	 */
@@ -117,10 +115,8 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
 	@Override
 	public boolean addBit(boolean bit) {
-		this.isFindPositionUpdated = false;
 		boolean ret = this.bitVector.addBit(bit);
-		long lastPosition = this.bitVector.size() - 1;
-		this.countArray.updateCount(lastPosition);
+		notifyObservers();
 		return ret;
 	}
 
@@ -145,7 +141,6 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 		if (nOccurrence <= 0) {
 			return NOT_FOUND;
 		}
-		updateIfNeeded();
 		return bit ? this.findPositionOfTrue.findPosition(nOccurrence)
 				: this.findPositionOfFalse.findPosition(nOccurrence);
 	}
@@ -165,13 +160,18 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 		return this.bitVector.iterator();
 	}
 
+	void notifyObservers() {
+		this.countArray.update(this.bitVector);
+		this.findPositionOfFalse.update(this.bitVector);
+		this.findPositionOfTrue.update(this.bitVector);
+	}
+
 	@Override
 	public void setBit(long position, boolean bit) {
-		this.isFindPositionUpdated = false;
 		boolean oldBit = getBit(position);
 		if (oldBit != bit) {
 			this.bitVector.setBit(position, bit);
-			this.countArray.modifyCount(position, bit ? 1 : -1);
+			notifyObservers();
 		}
 	}
 
@@ -183,14 +183,6 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	@Override
 	public String toString() {
 		return this.bitVector.toString();
-	}
-
-	void updateIfNeeded() {
-		if (!this.isFindPositionUpdated) {
-			this.findPositionOfFalse.updateCount();
-			this.findPositionOfTrue.updateCount();
-			this.isFindPositionUpdated = true;
-		}
 	}
 
 }

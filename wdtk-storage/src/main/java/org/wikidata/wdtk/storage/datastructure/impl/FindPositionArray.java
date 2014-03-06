@@ -30,31 +30,34 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can be
  * found, where <i>bit</i> can be <code>true</code> or <code>false</code> .
  * 
- * @author Julian Mendez
  * @see RankedBitVectorImpl
+ * 
+ * @author Julian Mendez
  */
 class FindPositionArray {
 
 	final boolean bit;
 
-	final BitVector bitVector;
+	BitVector bitVector;
 
 	final int blockSize;
 
+	boolean hasChanged;
+
 	long[] positionArray;
 
-	FindPositionArray(BitVector bitVector, boolean bit) {
+	public FindPositionArray(BitVector bitVector, boolean bit) {
 		this.bitVector = bitVector;
+		this.hasChanged = true;
 		this.bit = bit;
 		this.blockSize = 0x10;
-		updateCount();
 	}
 
-	FindPositionArray(BitVector bitVector, boolean bit, int blockSize) {
+	public FindPositionArray(BitVector bitVector, boolean bit, int blockSize) {
 		this.bitVector = bitVector;
+		this.hasChanged = true;
 		this.bit = bit;
 		this.blockSize = blockSize;
-		updateCount();
 	}
 
 	/**
@@ -66,7 +69,8 @@ class FindPositionArray {
 	 * @return the position for a given number of occurrences or NOT_FOUND if
 	 *         this value is not found
 	 */
-	long findPosition(long nOccurrence) {
+	public long findPosition(long nOccurrence) {
+		updateCount();
 		long ret = RankedBitVector.NOT_FOUND;
 		if (nOccurrence > 0) {
 			int findPos = getBlockNumber(nOccurrence);
@@ -131,8 +135,16 @@ class FindPositionArray {
 		return ret;
 	}
 
+	public void update(BitVector bitVector) {
+		this.bitVector = bitVector;
+		this.hasChanged = true;
+	}
+
 	void updateCount() {
-		this.positionArray = toArray(getPositionList());
+		if (this.hasChanged) {
+			this.positionArray = toArray(getPositionList());
+			this.hasChanged = false;
+		}
 	}
 
 }

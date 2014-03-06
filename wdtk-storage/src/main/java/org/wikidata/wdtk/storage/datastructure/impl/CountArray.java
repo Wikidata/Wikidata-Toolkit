@@ -29,12 +29,13 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * This class keeps the count of occurrences of <code>true</code> values in a
  * bit vector.
  * 
- * @author Julian Mendez
  * @see RankedBitVectorImpl
+ * 
+ * @author Julian Mendez
  */
 class CountArray {
 
-	final BitVector bitVector;
+	BitVector bitVector;
 
 	final int blockSize;
 
@@ -42,15 +43,17 @@ class CountArray {
 	 * This array contains the number of <code>true</code> values found in each
 	 * block.
 	 */
-	final List<Long> count = new ArrayList<Long>();
+	long[] countArray;
+
+	boolean hasChanged;
 
 	/**
 	 * Creates a block array with a default size.
 	 */
-	CountArray(BitVector bitVector) {
+	public CountArray(BitVector bitVector) {
 		this.bitVector = bitVector;
+		this.hasChanged = true;
 		this.blockSize = 0x10;
-		updateCount(0);
 	}
 
 	/**
@@ -59,18 +62,19 @@ class CountArray {
 	 * @param blockSize
 	 *            block size
 	 */
-	CountArray(BitVector bitVector, int blockSize) {
+	public CountArray(BitVector bitVector, int blockSize) {
 		this.bitVector = bitVector;
+		this.hasChanged = true;
 		this.blockSize = blockSize;
-		updateCount(0);
 	}
 
-	long countBits(boolean bit, long position) {
+	public long countBits(boolean bit, long position) {
+		updateCount();
 		int blockNumber = getBlockNumber(position);
 		long mark = ((long) blockNumber) * this.blockSize;
 		long trueValues = 0;
 		if (blockNumber > 0) {
-			trueValues = this.count.get(blockNumber - 1);
+			trueValues = this.countArray[blockNumber - 1];
 		}
 		for (long index = mark; index <= position; index++) {
 			trueValues += this.bitVector.getBit(index) ? 1 : 0;
@@ -98,46 +102,45 @@ class CountArray {
 		return this.blockSize;
 	}
 
-	/**
-	 * Modifies the count by a delta starting from a given position.
-	 * 
-	 * @param startingPosition
-	 *            starting position
-	 * @param delta
-	 *            delta
-	 */
-	void modifyCount(long startingPosition, int delta) {
-		int blockNumber = getBlockNumber(startingPosition);
-		for (int index = blockNumber; index < this.count.size(); index++) {
-			this.count.set(index, this.count.get(index) + delta);
+	List<Long> getCountList() {
+		List<Long> ret = new ArrayList<Long>();
+		long lastValue = 0;
+		int positionInBlock = 0;
+		for (long index = 0; index < this.bitVector.size(); index++) {
+			if (this.bitVector.getBit(index)) {
+				lastValue++;
+			}
+			positionInBlock++;
+			if (positionInBlock == this.blockSize) {
+				ret.add(lastValue);
+				positionInBlock = 0;
+			}
 		}
-
+		if (positionInBlock > 0) {
+			ret.add(lastValue);
+		}
+		return ret;
 	}
 
-	/**
-	 * This method updates the whole count starting from a given position
-	 * <i>startingPosition</i>. This method assumes that all the previous
-	 * positions are updated.
-	 * 
-	 * @param startingPosition
-	 *            starting position to update the count
-	 * @param bit
-	 *            bit
-	 */
-	void updateCount(long startingPosition) {
-		for (long index = startingPosition; index < this.bitVector.size(); index++) {
-			int positionInCount = getBlockNumber(index);
-			if (positionInCount >= this.count.size()) {
-				long lastValue = 0;
-				if (this.count.size() > 0) {
-					lastValue = this.count.get(this.count.size() - 1);
-				}
-				this.count.add(lastValue);
-			}
-			if (this.bitVector.getBit(index)) {
-				this.count.set(positionInCount,
-						this.count.get(positionInCount) + 1);
-			}
+	long[] toArray(List<Long> list) {
+		long[] ret = new long[list.size()];
+		int index = 0;
+		for (Long element : list) {
+			ret[index] = element;
+			index++;
+		}
+		return ret;
+	}
+
+	public void update(BitVector bitVector) {
+		this.bitVector = bitVector;
+		this.hasChanged = true;
+	}
+
+	void updateCount() {
+		if (this.hasChanged) {
+			this.countArray = toArray(getCountList());
+			this.hasChanged = false;
 		}
 	}
 
