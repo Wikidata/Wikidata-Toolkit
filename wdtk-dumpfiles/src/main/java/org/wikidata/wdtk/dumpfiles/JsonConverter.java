@@ -56,7 +56,7 @@ public class JsonConverter {
 	private static final String labelString = "label";
 	private static final String entityString = "entity";
 	private static final String descriptionString = "description";
-	private static final String aliasString = "alias";
+	private static final String aliasString = "aliases";
 	private static final String datatypeString = "datatype";
 	private static final String claimString = "claims";
 	private static final String linkString = "links";
