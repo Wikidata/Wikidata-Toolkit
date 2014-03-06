@@ -489,8 +489,6 @@ public class JsonConverter {
 		// degree
 
 		// convert latitude and longitude into nanodegrees
-		// TODO check conversion for precision issues
-		// TODO check conversion when handling older dump formats
 		long latitude;
 		long longitude;
 
@@ -498,23 +496,12 @@ public class JsonConverter {
 		int invalid = 0xFFFFFF; // needed because the org.json parser handles
 								// optInt() inconsistently
 
-		int intLatitude = jsonGlobeCoordinate.optInt("latitude", invalid);
-
-		if (intLatitude == invalid) {
 			double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
 			latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
-		} else {
-			latitude = (long) intLatitude * GlobeCoordinatesValue.PREC_DEGREE;
-		}
 
-		int intLongitude = jsonGlobeCoordinate.optInt("longitude", invalid);
-
-		if (intLongitude == invalid) {
 			double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
 			longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
-		} else {
-			longitude = (long) intLongitude * GlobeCoordinatesValue.PREC_DEGREE;
-		}
+
 
 		// getting the precision
 		// if the precision is available as double it needs to be converted
@@ -531,10 +518,6 @@ public class JsonConverter {
 			precision = GlobeCoordinatesValue.PREC_DEGREE;
 
 		} else {
-
-			int intPrecision = jsonGlobeCoordinate.optInt("precision", invalid);
-
-			if (intPrecision == invalid || intPrecision == 0) {
 
 				Double doublePrecision = jsonGlobeCoordinate
 						.getDouble("precision");
@@ -571,18 +554,12 @@ public class JsonConverter {
 				} else {
 					precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
 				}
-			} else {
-				precision = ((long) intPrecision)
-						* GlobeCoordinatesValue.PREC_DEGREE;
-			}
 		}
 
 		// get the globeIri
 		// caution: might be null
-		String globeIri = jsonGlobeCoordinate.optString("globe");
-		if (globeIri == null) {
-			globeIri = "";
-		}
+		String globeIri = null;
+		globeIri = jsonGlobeCoordinate.optString("globe", "");
 
 		GlobeCoordinatesValue result = this.factory.getGlobeCoordinatesValue(
 				latitude, longitude, precision, globeIri);

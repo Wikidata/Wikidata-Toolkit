@@ -9,22 +9,9 @@ class ItemTestCase extends TestCase {
 		super(filePath, converter);
 	}
 	private ItemDocument result;
-	private ItemDocument expected = null;
 	
 	void convert() throws JSONException {
 		this.result = this.converter.convertToItemRecord(this.json);
-	}
-	
-	boolean resultMatchesExpected(){
-		if(this.expected != null){
-			return false;
-		}
-		
-		return this.result.equals(this.expected);
-	}
-	
-	void setExpected(ItemDocument expected){
-		this.expected = expected;
 	}
 	
 	ItemDocument getResult(){

@@ -47,8 +47,6 @@ abstract class TestCase {
 
 	abstract void convert() throws JSONException;
 
-	abstract boolean resultMatchesExpected();
-
 	@Override
 	public String toString() {
 		return this.filePath + "\n" + this.json.toString();

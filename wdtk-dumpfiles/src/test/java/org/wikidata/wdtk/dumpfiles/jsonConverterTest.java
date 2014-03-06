@@ -1,7 +1,6 @@
 package org.wikidata.wdtk.dumpfiles;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -52,8 +51,8 @@ public class jsonConverterTest {
 		// create the empty property test case
 		PropertyDocument emptyPropertyDocument = this
 				.createEmptyPropertyDocument();
-		PropertyTestCase testCase = this.generatePropertyTestCase(
-				"EmptyProperty.json", emptyPropertyDocument);
+		PropertyTestCase testCase = this
+				.generatePropertyTestCase("EmptyProperty.json");
 
 		testCase.convert();
 		assert testCase.getResult().equals(emptyPropertyDocument) : "Converted and expected empty property documents did not match";
@@ -63,30 +62,30 @@ public class jsonConverterTest {
 	public void testEmptyItem() throws JSONException {
 		// create the empty property test case
 		ItemDocument emptyItemDocument = this.createEmptyItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase("EmptyItem.json",
-				emptyItemDocument);
+		ItemTestCase testCase = this.generateItemTestCase("EmptyItem.json");
 
 		testCase.convert();
-		assertEquals( testCase.getResult(),emptyItemDocument);
+		assertEquals(testCase.getResult(), emptyItemDocument);
 	}
 
 	@Test
 	public void testBasicItem() throws JSONException {
 		// create the empty property test case
 		ItemDocument basicItemDocument = this.createBasicItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase("BasicItem.json",
-				basicItemDocument);
+		ItemTestCase testCase = this.generateItemTestCase("BasicItem.json");
 
 		testCase.convert();
 		ItemDocument result = testCase.getResult();
-		
+
 		assertEquals(result.getEntityId(), basicItemDocument.getEntityId());
 		assertEquals(result.getItemId(), basicItemDocument.getItemId());
-		assertEquals(result.getDescriptions(), basicItemDocument.getDescriptions());
+		assertEquals(result.getDescriptions(),
+				basicItemDocument.getDescriptions());
 		assertEquals(result.getAliases(), basicItemDocument.getAliases());
 		assertEquals(result.getLabels(), basicItemDocument.getLabels());
 		assertEquals(result.getSiteLinks(), basicItemDocument.getSiteLinks());
-		assertEquals(result.getStatementGroups(), basicItemDocument.getStatementGroups());		
+		assertEquals(result.getStatementGroups(),
+				basicItemDocument.getStatementGroups());
 		assertEquals(result, basicItemDocument);
 	}
 
@@ -94,12 +93,36 @@ public class jsonConverterTest {
 	public void testRealItems() throws JSONException {
 		List<ItemTestCase> testCases = new LinkedList<>();
 
-		testCases.add(this.generateItemTestCase("Chicago.json", null));
-		testCases.add(this.generateItemTestCase("Haaften.json", null));
+		testCases.add(this.generateItemTestCase("Chicago.json"));
+		testCases.add(this.generateItemTestCase("Haaften.json"));
+		testCases.add(this.generateItemTestCase("Tours.json"));
+		testCases.add(this.generateItemTestCase("JohnPaulII.json"));
+		testCases.add(this.generateItemTestCase("Wernigerode.json"));
 
 		for (ItemTestCase t : testCases) {
 			t.convert();
 		}
+	}
+
+	@Test
+	public void testClaims() throws JSONException {
+		List<ItemTestCase> testCases = new LinkedList<>();
+
+		testCases.add(this.generateItemTestCase("GlobalCoordinates.json"));
+		testCases.add(this.generateItemTestCase("StatementRanks.json"));
+		testCases.add(this.generateItemTestCase("SnakTypes.json"));
+		
+
+		for (ItemTestCase t : testCases) {
+			t.convert();
+		}
+	}
+
+	@Test
+	public void testDifferentNotations() throws JSONException {
+		ItemTestCase testCase = this
+				.generateItemTestCase("DifferentNotations.json");
+		testCase.convert();
 	}
 
 	/**
@@ -186,16 +209,11 @@ public class jsonConverterTest {
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
 	 */
-	private ItemTestCase generateItemTestCase(String fileName,
-			ItemDocument expectation) {
+	private ItemTestCase generateItemTestCase(String fileName) {
 		String relativeFilePath = this.sampleFilesBasePath + fileName;
 
 		ItemTestCase testCase = new ItemTestCase(relativeFilePath,
 				unitUnderTest);
-
-		if (expectation != null) {
-			testCase.setExpected(expectation);
-		}
 
 		return testCase;
 
@@ -208,16 +226,11 @@ public class jsonConverterTest {
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
 	 */
-	private PropertyTestCase generatePropertyTestCase(String fileName,
-			PropertyDocument expectation) {
+	private PropertyTestCase generatePropertyTestCase(String fileName) {
 		String relativeFilePath = this.sampleFilesBasePath + fileName;
 
 		PropertyTestCase testCase = new PropertyTestCase(relativeFilePath,
 				unitUnderTest);
-
-		if (expectation != null) {
-			testCase.setExpected(expectation);
-		}
 
 		return testCase;
 
