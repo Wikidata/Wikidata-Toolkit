@@ -47,9 +47,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * 
  */
 public class JsonConverter {
-	
+
 	// TODO refactor: sort methods
-	
+
 	private static final String itemPrefix = "Q";
 	private static final String propertyPrefix = "P";
 	// TODO refactor to form KEY_FOO
@@ -58,7 +58,9 @@ public class JsonConverter {
 	private static final String descriptionString = "description";
 	private static final String aliasString = "alias";
 	private static final String datatypeString = "datatype";
-	
+	private static final String claimString = "claims";
+	private static final String linkString = "links";
+
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
 
@@ -88,7 +90,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	PropertyDocument convertToPropertyDocument(JSONObject toConvert)
+	public PropertyDocument convertToPropertyDocument(JSONObject toConvert)
 			throws JSONException {
 
 		// sanity check
@@ -107,13 +109,16 @@ public class JsonConverter {
 		PropertyIdValue propertyId = this.getPropertyId(jsonEntity);
 
 		// get the labels
-		List<MonolingualTextValue> labels = this.getMltv(labelString, toConvert);
+		List<MonolingualTextValue> labels = this
+				.getMltv(labelString, toConvert);
 
 		// get the descriptions
-		List<MonolingualTextValue> descriptions = this.getMltv(descriptionString, toConvert);
+		List<MonolingualTextValue> descriptions = this.getMltv(
+				descriptionString, toConvert);
 
 		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(aliasString, toConvert);
+		List<MonolingualTextValue> aliases = this.getMltv(aliasString,
+				toConvert);
 
 		// get the datatype id
 		String jsonDataTypeId = toConvert.getString(datatypeString);
@@ -201,32 +206,50 @@ public class JsonConverter {
 		// but a string with appropriate prefix in lowercase
 		ItemIdValue itemId;
 		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
-		if (jsonEntity != null) {
+		if (!toConvert.has(entityString)) {
+			// TODO what now?
+			System.out.println(toConvert.toString(2));
+			throw new JSONException("No entity entry found.");
+		} else if (jsonEntity != null) {
 			itemId = this.getItemId(jsonEntity);
 		} else {
-			String stringItemId = toConvert.getString(entityString).toUpperCase();
+			String stringItemId = toConvert.getString(entityString)
+					.toUpperCase();
 			itemId = this.factory.getItemIdValue(stringItemId, baseIri);
 		}
 
 		// get the labels
-		List<MonolingualTextValue> labels = this.getMltv(labelString, toConvert);
+		List<MonolingualTextValue> labels = this
+				.getMltv(labelString, toConvert);
 
 		// get the description
-		List<MonolingualTextValue> descriptions = this.getMltv(descriptionString, toConvert);
+		List<MonolingualTextValue> descriptions = this.getMltv(
+				descriptionString, toConvert);
 
 		// get the aliases
 		// NOTE empty aliases are an JSON array
 		// non-empty aliases are JSON objects
-		List<MonolingualTextValue> aliases = this.getMltv(aliasString, toConvert);
+		List<MonolingualTextValue> aliases = this.getMltv(aliasString,
+				toConvert);
 
 		// get the statements
-		JSONArray jsonStatements = toConvert.getJSONArray("claims");
-		List<StatementGroup> statements = this.getStatements(jsonStatements,
-				itemId);
+		List<StatementGroup> statements = new LinkedList<>();
+		if (toConvert.has(claimString)) {
+			JSONArray jsonStatements = toConvert.getJSONArray(claimString);
+			statements = this.getStatements(jsonStatements, itemId);
+		}
 
 		// get the site links
-		JSONObject jsonLinks = toConvert.getJSONObject("links");
-		Map<String, SiteLink> siteLinks = this.getSiteLinks(jsonLinks);
+		// NOTE might be empty array…
+		Map<String, SiteLink> siteLinks = new HashMap<>();
+
+		if (toConvert.has(linkString)) {
+			JSONArray linkArray = toConvert.optJSONArray(linkString);
+			if (linkArray == null) {
+				JSONObject jsonLinks = toConvert.getJSONObject(linkString);
+				siteLinks = this.getSiteLinks(jsonLinks);
+			}
+		}
 
 		// now put it all together
 		ItemDocument result = factory.getItemDocument(itemId, labels,
@@ -439,7 +462,11 @@ public class JsonConverter {
 	 * @param jsonGlobeCoordinate
 	 *            is a JSON-object containing the labels "latitude",
 	 *            "longitude", "precision" and "globe". All other labels will be
-	 *            ignored. Must not be null.
+	 *            ignored. Must not be null. Precisions not covered by the
+	 *            current data model will be rounded to the next coarse
+	 *            precision. Note that an unwanted rounding might occur if the
+	 *            choosen representation is a slight bit higher then the limit
+	 *            for the precision.
 	 * @return an appropriate GlobeCoordinatesValue
 	 * @throws JSONException
 	 *             if a required label was missing.
@@ -514,43 +541,35 @@ public class JsonConverter {
 
 				// Yes you have to check all
 				// possible representations since they do not equal
-				// in their internal representation
+				// in their internal binary representation
+				// and Double can not cope with that
 
-				if (doublePrecision.equals(10)) {
+				if (doublePrecision > 1.0) {
 					precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
-				} else if (doublePrecision.equals(1.0)) {
+				} else if (doublePrecision > 0.1) {
 					precision = GlobeCoordinatesValue.PREC_DEGREE;
-				} else if (doublePrecision.equals(0.1)) {
+				} else if (doublePrecision > 0.016666666666667) {
 					precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
-				} else if (doublePrecision.equals(0.016666666666667)) {
+				} else if (doublePrecision > 0.01) {
 					precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
-				} else if (doublePrecision.equals(0.01)) {
+				} else if (doublePrecision > 0.001) {
 					precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-				} else if (doublePrecision.equals(0.001)) {
+				} else if (doublePrecision > 0.00027777777777778) {
 					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-				} else if (doublePrecision.equals(0.00027777777777778)
-						|| doublePrecision.equals(2.7777777777778e-4)) {
-					precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-				} else if (doublePrecision.equals(0.0001)
-						|| doublePrecision.equals(1.0e-4)) {
+				} else if (doublePrecision > 0.0001) {
+					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+				} else if (doublePrecision > 0.00002777777777778) {
 					precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
-				} else if (doublePrecision.equals(0.00002777777777778)
-						|| doublePrecision.equals(2.7777777777778e-5)) {
-					precision = GlobeCoordinatesValue.PREC_DECI_ARCSECOND;
-				} else if (doublePrecision.equals(0.00001)
-						|| doublePrecision.equals(1.0e-5)) {
+				} else if (doublePrecision > 0.00001) {
+					precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+				} else if (doublePrecision > 0.00000277777777778) {
 					precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
-				} else if (doublePrecision.equals(0.00000277777777778)
-						|| doublePrecision.equals(2.7777777777778e-6)) {
+				} else if (doublePrecision > 0.000001) {
 					precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
-				} else if (doublePrecision.equals(0.000001)) {
-					precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
-				} else if (doublePrecision.equals(0.00000027777777778)
-						|| doublePrecision.equals(2.7777777777778e-7)) {
-					precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+				} else if (doublePrecision > 0.00000027777777778) {
+					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
 				} else {
-					throw new JSONException("Unknown precision "
-							+ doublePrecision + "in global coordinates.");
+					precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
 				}
 			} else {
 				precision = ((long) intPrecision)
@@ -558,7 +577,12 @@ public class JsonConverter {
 			}
 		}
 
-		String globeIri = jsonGlobeCoordinate.getString("globe");
+		// get the globeIri
+		// caution: might be null
+		String globeIri = jsonGlobeCoordinate.optString("globe");
+		if (globeIri == null) {
+			globeIri = "";
+		}
 
 		GlobeCoordinatesValue result = this.factory.getGlobeCoordinatesValue(
 				latitude, longitude, precision, globeIri);
@@ -648,29 +672,28 @@ public class JsonConverter {
 		TimeValue result;
 
 		// TODO include negative years in test
-		// NOTE suggested regex is
-		// "(?<!\\A)[\\-\\:TZ]"
-		// if one woule prefer regex instead if substrings
+		// caution: substrings might fail
 
 		String stringTime = jsonTimeValue.getString("time");
+		String[] substrings = stringTime.split("(?<!\\A)[\\-\\:TZ]");
 
 		// get the year
-		long year = Long.parseLong(stringTime.substring(0, 12));
+		long year = Long.parseLong(substrings[0]);
 
 		// get the month
-		byte month = Byte.parseByte(stringTime.substring(13, 15));
+		byte month = Byte.parseByte(substrings[1]);
 
 		// get the day
-		byte day = Byte.parseByte(stringTime.substring(16, 18));
+		byte day = Byte.parseByte(substrings[2]);
 
 		// get the hour
-		byte hour = Byte.parseByte(stringTime.substring(19, 21));
+		byte hour = Byte.parseByte(substrings[3]);
 
 		// get the minute
-		byte minute = Byte.parseByte(stringTime.substring(22, 24));
+		byte minute = Byte.parseByte(substrings[4]);
 
 		// get the second
-		byte second = Byte.parseByte(stringTime.substring(25, 27));
+		byte second = Byte.parseByte(substrings[5]);
 
 		// get the precision
 		byte precision = (byte) jsonTimeValue.getInt("precision");
@@ -685,8 +708,8 @@ public class JsonConverter {
 		// get the calendar model
 		String calendarModel = jsonTimeValue.getString("calendarmodel");
 
-		result = this.factory.getTimeValue(year, month, day, hour,
-				minute, second, precision, beforeTolerance, afterTolerance,
+		result = this.factory.getTimeValue(year, month, day, hour, minute,
+				second, precision, beforeTolerance, afterTolerance,
 				timezoneOffset, calendarModel);
 		return result;
 	}
@@ -874,6 +897,7 @@ public class JsonConverter {
 
 		// links are siteKey:{"name":string,"badges":[string] }
 		// the siteKey is the key for the returned map
+		// or they are siteKey:string
 
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 
@@ -882,15 +906,27 @@ public class JsonConverter {
 
 		while (linkIterator.hasNext()) {
 
-			String siteKey = linkIterator.next();
-			JSONObject currentLink = jsonLinks.getJSONObject(siteKey);
-			String title = currentLink.getString("name");
-			JSONArray badgeArray = currentLink.getJSONArray("badges");
-
-			// convert badges to List<String>
+			String title;
 			List<String> badges = new LinkedList<String>();
-			for (int i = 0; i < badgeArray.length(); i++) {
-				badges.add(badgeArray.getString(i));
+
+			String siteKey = linkIterator.next();
+
+			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
+			String stringLink = jsonLinks.optString(siteKey);
+
+			if (currentLink != null) {
+
+				title = currentLink.getString("name");
+				JSONArray badgeArray = currentLink.getJSONArray("badges");
+
+				// convert badges to List<String>
+				for (int i = 0; i < badgeArray.length(); i++) {
+					badges.add(badgeArray.getString(i));
+				}
+			} else if (stringLink != null) { // its a string
+				title = stringLink;
+			} else { // none of the above, skip
+				continue;
 			}
 
 			// create the SiteLink instance

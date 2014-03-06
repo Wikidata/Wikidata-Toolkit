@@ -12,7 +12,6 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -77,11 +76,23 @@ public class jsonConverterTest {
 		ItemDocument basicItemDocument = this
 			.createBasicItemDocument();
 		ItemTestCase testCase = this.generateItemTestCase(
-				"BasicItem.json", null);
+				"BasicItem.json", basicItemDocument);
 
 		testCase.convert();
 		assert testCase.getResult().equals(basicItemDocument) : 
 			"Converted and expected empty property documents did not match";
+	}
+	
+	@Test
+	public void testRealItems() throws JSONException{
+		List<ItemTestCase> testCases = new LinkedList<>();
+		
+		testCases.add(this.generateItemTestCase("Chicago.json", null));
+		testCases.add(this.generateItemTestCase("Haaften.json", null));
+		
+		for(ItemTestCase t : testCases){
+			t.convert();
+		}
 	}
 
 	/**
