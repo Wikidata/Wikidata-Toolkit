@@ -27,7 +27,17 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
  * This class keeps the count of occurrences of <code>true</code> values in a
- * bit vector.
+ * bit vector. This implementation divides the bit vector in blocks of equal
+ * size. It keeps an array with the count of <code>true</code> values present in
+ * each block. <br />
+ * For example, given the bit vector: 10010, with a block size of 2, the array
+ * contains: [1, 2, 2]. The first block contains 1 <code>true</code> value, the
+ * second block contains 1 more <code>true</code> value, in total 2. The third
+ * block is incomplete, since it has only one bit, and it does not contain more
+ * <code>true</code> values. <br />
+ * For efficiency reasons, this class assumes that the bit vector is unmodified,
+ * and any modification of a bit vector needs to be notified in
+ * {@link FindPositionArray#update(BitVector)}.
  * 
  * @see RankedBitVectorImpl
  * 
@@ -35,8 +45,14 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  */
 class CountArray {
 
+	/**
+	 * The bit vector, which is assumed unmodified.
+	 */
 	BitVector bitVector;
 
+	/**
+	 * This is the size of each block.
+	 */
 	final int blockSize;
 
 	/**
@@ -45,6 +61,10 @@ class CountArray {
 	 */
 	long[] countArray;
 
+	/**
+	 * If this value is <code>true</code>, there is a new bit vector and the
+	 * array needs to be updated.
+	 */
 	boolean hasChanged;
 
 	/**
@@ -101,6 +121,13 @@ class CountArray {
 		return this.blockSize;
 	}
 
+	/**
+	 * Returns a list of Long that contains the indices of positions computed
+	 * according to the given bit vector.
+	 * 
+	 * @return a list of Long that contains the indices of positions computed
+	 *         according to the given bit vector
+	 */
 	List<Long> getCountList() {
 		List<Long> ret = new ArrayList<Long>();
 		long lastValue = 0;
@@ -121,6 +148,13 @@ class CountArray {
 		return ret;
 	}
 
+	/**
+	 * Transforms a list of Long to an array of long.
+	 * 
+	 * @param list
+	 *            list
+	 * @return an array of long
+	 */
 	long[] toArray(List<Long> list) {
 		long[] ret = new long[list.size()];
 		int index = 0;
@@ -146,11 +180,22 @@ class CountArray {
 		return str.toString();
 	}
 
+	/**
+	 * Notifies this object that the bit vector has changed, and therefore, the
+	 * computed internal array must be updated.
+	 * 
+	 * @param bitVector
+	 *            new bit vector
+	 */
 	public void update(BitVector bitVector) {
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 	}
 
+	/**
+	 * This method updates the internal array only if the bit vector has been
+	 * changed since the last update or creation of this class.
+	 */
 	void updateCount() {
 		if (this.hasChanged) {
 			this.countArray = toArray(getCountList());

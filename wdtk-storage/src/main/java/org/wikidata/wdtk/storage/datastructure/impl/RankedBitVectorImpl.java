@@ -26,14 +26,15 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
- * Default implementation of {@link RankedBitVector}. This implementation
- * divides the bit vector in blocks of equal size. It keeps an array with the
- * count of <code>true</code> values present in each block. <br />
- * For example, given the bit vector: 10010, with a block size of 2, the array
- * contains: [1, 2, 2]. The first block contains 1 <code>true</code> value, the
- * second block contains 1 more <code>true</code> value, in total 2. The third
- * block is incomplete, since it has only one bit, and it does not contain more
- * <code>true</code> values.
+ * Default implementation of {@link RankedBitVector}. This implementation uses
+ * auxiliary classes to have efficient performance for the methods of a ranked
+ * bit vector. Hence, {@link #countBits(boolean, long)} uses an instance of
+ * {@link CountArray} and {@link #findPosition(boolean, long)} uses two
+ * instances of {@link FindPositionArray}.
+ * 
+ * @see CountArray
+ * 
+ * @see FindPositionArray
  * 
  * @author Julian Mendez
  */
