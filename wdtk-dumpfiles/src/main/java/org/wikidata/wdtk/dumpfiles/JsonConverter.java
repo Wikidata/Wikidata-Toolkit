@@ -48,11 +48,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class JsonConverter {
 
-	// TODO refactor: sort methods
-
 	public static final String PREFIX_ITEM = "Q";
 	public static final String PREFIX_PROPERTY = "P";
-	
+
 	// Keys that might occur in the documents
 	private static final String KEY_LABEL = "label";
 	private static final String KEY_ENTITY = "entity";
@@ -122,16 +120,14 @@ public class JsonConverter {
 		}
 
 		// get the labels
-		List<MonolingualTextValue> labels = this
-				.getMltv(KEY_LABEL, toConvert);
+		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, toConvert);
 
 		// get the descriptions
-		List<MonolingualTextValue> descriptions = this.getMltv(
-				KEY_DESCRIPTION, toConvert);
+		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
+				toConvert);
 
 		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS,
-				toConvert);
+		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS, toConvert);
 
 		// get the datatype id
 		String jsonDataTypeId = toConvert.getString(KEY_DATATYPE);
@@ -184,16 +180,14 @@ public class JsonConverter {
 		}
 
 		// get the labels
-		List<MonolingualTextValue> labels = this
-				.getMltv(KEY_LABEL, toConvert);
+		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, toConvert);
 
 		// get the description
-		List<MonolingualTextValue> descriptions = this.getMltv(
-				KEY_DESCRIPTION, toConvert);
+		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
+				toConvert);
 
 		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS,
-				toConvert);
+		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS, toConvert);
 
 		// get the statements
 		List<StatementGroup> statements = new LinkedList<>();
@@ -220,16 +214,23 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Constructs the item id of a JSON object denoting an item.
+	 * Constructs the item id of a JSON array denoting an entity. The type will
+	 * be determined by the document type passed to the method.
 	 * 
 	 * @param jsonEntity
 	 *            a JSON array containing information about the entity or
 	 *            property. The array shoud have the structure ["item", itemId]
 	 *            or ["property", propertyId].
-	 * @return An item id value prefixed accordingly.
+	 * @param docType
+	 *            is the type of the document containing the entity-key.
+	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
+	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
+	 *         the document type is DocumentType.PROPERTY the result will be an
+	 *         PropertyIdValue.
 	 * @throws JSONException
-	 *             if the entity does not contain an "item"-entry or the entry
-	 *             is not followed by an integer denoting the item id.
+	 *             if the entity does not contain an "item"- or "property"-entry
+	 *             or the entry is not followed by an integer denoting the
+	 *             entity id or the document type is unknown.
 	 */
 	private EntityIdValue getEntityId(JSONArray jsonEntity, DocumentType docType)
 			throws JSONException {
@@ -275,6 +276,25 @@ public class JsonConverter {
 		return result;
 	}
 
+	/**
+	 * Constructs the entity id of a string denoting an entity. The type will be
+	 * determined by the document type passed to the method.
+	 * 
+	 * @param id
+	 *            a string containing information about the entity or property.
+	 *            It should have the form prefix + id, where the prefix is
+	 *            either "P" for properties or "Q" for items. The prefix is not
+	 *            case sensitive. The id should be a numeric string.
+	 * @param docType
+	 *            is the type of the document containing the entity-key.
+	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
+	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
+	 *         the document type is DocumentType.PROPERTY the result will be an
+	 *         PropertyIdValue.
+	 * @throws JSONException
+	 *             if the prefix of the id-string did not match the document
+	 *             type or the document type is unknown.
+	 */
 	private EntityIdValue getEntityId(String id, DocumentType docType)
 			throws JSONException {
 
@@ -317,6 +337,21 @@ public class JsonConverter {
 		return result;
 	}
 
+	/**
+	 * Constructs the entity id of an integer denoting an entity. The type will
+	 * be determined by the document type passed to the method.
+	 * 
+	 * @param jsonEntity
+	 *            a non-zero integer.
+	 * @param docType
+	 *            is the type of the document containing the entity-key.
+	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
+	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
+	 *         the document type is DocumentType.PROPERTY the result will be an
+	 *         PropertyIdValue.
+	 * @throws JSONException
+	 *             if the document type is unknown.
+	 */
 	private EntityIdValue getEntityId(int entityId, DocumentType docType)
 			throws JSONException {
 
@@ -369,17 +404,18 @@ public class JsonConverter {
 	 *         not null.
 	 */
 	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
-	
+
 		MltvHandler handler = new MltvHandler(this.factory);
-	
+
 		JSONObject toConvert = topLevel.optJSONObject(key);
 		if (toConvert != null) {
 			return handler.convertToMltv(toConvert);
 		} // else…
-	
+
 		return new LinkedList<>();
 	}
 
+	
 	/**
 	 * Converts the given JSON array into a list of Reference-objects. A
 	 * reference is an array of reference statements which in turn are value
@@ -393,15 +429,15 @@ public class JsonConverter {
 		// References are [singeRef]
 		// singleRef are [refStatements]
 		// refStatements are value snaks
-	
+
 		List<Reference> result = new LinkedList<>();
-	
+
 		// process the single references
 		for (int i = 0; i < jsonReferences.length(); i++) {
 			try {
 				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
 				List<ValueSnak> valueSnaks = new LinkedList<>();
-	
+
 				// process the reference statements
 				for (int j = 0; j < jsonSingleRef.length(); j++) {
 					try {
@@ -414,19 +450,20 @@ public class JsonConverter {
 						continue;
 					}
 				}
-	
+
 				Reference singleReference = factory.getReference(valueSnaks);
 				result.add(singleReference);
-	
+
 			} catch (JSONException e) {
 				// skip over invalid references
 				continue;
 			}
-	
+
 		}
 		return result;
 	}
 
+	
 	/**
 	 * Converts a JSON object into a mapping from site keys to
 	 * SiteLink-instances.
@@ -440,31 +477,31 @@ public class JsonConverter {
 	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
 			throws JSONException {
 		assert jsonLinks != null : "Link JSON object was null";
-	
+
 		// links are siteKey:{"name":string,"badges":[string] }
 		// the siteKey is the key for the returned map
 		// or they are siteKey:string
-	
+
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
-	
+
 		@SuppressWarnings("unchecked")
 		Iterator<String> linkIterator = jsonLinks.keys();
-	
+
 		while (linkIterator.hasNext()) {
-	
+
 			String title;
 			List<String> badges = new LinkedList<String>();
-	
+
 			String siteKey = linkIterator.next();
-	
+
 			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
 			String stringLink = jsonLinks.optString(siteKey);
-	
+
 			if (currentLink != null) {
-	
+
 				title = currentLink.getString("name");
 				JSONArray badgeArray = currentLink.getJSONArray("badges");
-	
+
 				// convert badges to List<String>
 				for (int i = 0; i < badgeArray.length(); i++) {
 					badges.add(badgeArray.getString(i));
@@ -474,13 +511,13 @@ public class JsonConverter {
 			} else { // none of the above, skip
 				continue;
 			}
-	
+
 			// create the SiteLink instance
 			SiteLink siteLink = factory.getSiteLink(title, siteKey,
 					this.baseIri, badges);
 			result.put(siteKey, siteLink);
 		}
-	
+
 		return result;
 	}
 
@@ -500,48 +537,48 @@ public class JsonConverter {
 	 */
 	private List<StatementGroup> getStatements(JSONArray jsonStatements,
 			EntityIdValue subject) throws JSONException {
-	
+
 		assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
 		// "m" => main snak
 		// "g" => statement id
-	
+
 		List<StatementGroup> result = new LinkedList<StatementGroup>();
 		List<Statement> statementsFromJson = new LinkedList<Statement>();
-	
+
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
 			JSONObject currentStatement = jsonStatements.getJSONObject(i);
-	
+
 			// get a list of statements in the order they are in the JSON
 			// get the claim
 			Claim currentClaim = this.getClaim(currentStatement, subject);
-	
+
 			// get the references
 			JSONArray jsonRefs = currentStatement.getJSONArray("refs");
 			List<? extends Reference> references = this.getReferences(jsonRefs);
-	
+
 			// get the statement rank
 			int rankAsInt = currentStatement.getInt("rank");
 			StatementRank rank = this.getStatementRank(rankAsInt);
-	
+
 			// get the statement id
 			String statementId = currentStatement.getString("g");
-	
+
 			// combine into statement
 			Statement statement = factory.getStatement(currentClaim,
 					references, rank, statementId);
-	
+
 			statementsFromJson.add(statement);
-	
+
 		}
-	
+
 		// process the list of statements into a list of statement groups
 		StatementGroupBuilder builder = new StatementGroupBuilder(this.factory);
 		result = builder.buildFromStatementList(statementsFromJson);
-	
+
 		return result;
 	}
 
@@ -559,23 +596,24 @@ public class JsonConverter {
 	 */
 	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
 			throws JSONException {
-	
+
 		// m: main snak
 		// q: qualifiers
-	
+
 		// get the main snak
 		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
 		Snak mainSnak = getSnak(jsonMainSnak);
-	
+
 		// get the qualifiers
 		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
 		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
-	
+
 		// build it together
 		Claim result = this.factory.getClaim(subject, mainSnak, qualifiers);
 		return result;
 	}
 
+	
 	/**
 	 * Transforms a statement rank from an integer representation to an
 	 * enumerated value as requested by the WDTK data model. <br/>
@@ -591,10 +629,10 @@ public class JsonConverter {
 	 * @return an appropriate StatementRank-value
 	 */
 	private StatementRank getStatementRank(int intRank) {
-	
+
 		// this is the default case
 		StatementRank result = StatementRank.NORMAL;
-	
+
 		if (intRank < 1) {
 			result = StatementRank.DEPRECATED;
 		} else if (intRank > 1) {
@@ -612,7 +650,7 @@ public class JsonConverter {
 	 */
 	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
 		// effectively a list of value snaks
-	
+
 		List<Snak> result = new LinkedList<Snak>();
 		for (int i = 0; i < jsonQualifiers.length(); i++) {
 			try {
@@ -623,7 +661,7 @@ public class JsonConverter {
 				continue;
 			}
 		}
-	
+
 		return result;
 	}
 
@@ -638,7 +676,7 @@ public class JsonConverter {
 	 *             if the snack type could not determined.
 	 */
 	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
-	
+
 		Snak result;
 		switch (jsonMainSnak.getString(0)) {
 		case "value":
@@ -657,6 +695,7 @@ public class JsonConverter {
 		return result;
 	}
 
+	
 	/**
 	 * Converts a JSON array into a NoValueSnak.
 	 * 
@@ -672,18 +711,19 @@ public class JsonConverter {
 			throws JSONException {
 		// example:
 		// ["novalue",40], where P40 is the property "children"
-	
+
 		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
 		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
-	
+
 		int intPropertyId = jsonNoValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
 				intPropertyId, DocumentType.PROPERTY);
-	
+
 		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
-	
+
 		return result;
 	}
+
 
 	/**
 	 * Converts a JSON array into a SomeValueSnak.
@@ -701,18 +741,19 @@ public class JsonConverter {
 			throws JSONException {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
-	
+
 		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
 		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
-	
+
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
 				intPropertyId, DocumentType.PROPERTY);
-	
+
 		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
-	
+
 		return result;
 	}
+
 
 	/**
 	 * Converts the given JSON array into a ValueSnak.
@@ -730,17 +771,17 @@ public class JsonConverter {
 			throws JSONException {
 		// a value snak is
 		// ["value", propertyID, value-type, value]
-	
+
 		assert jsonValueSnak != null : "jsonValueSnak was null";
 		assert jsonValueSnak.getString(0).equals("value") : "given JSON was not a value snak";
-	
+
 		ValueSnak result;
-	
+
 		// get the property id
 		int intId = jsonValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(intId,
 				DocumentType.PROPERTY);
-	
+
 		// get the value
 		String valueString = jsonValueSnak.getString(2);
 		Value value;
@@ -765,11 +806,12 @@ public class JsonConverter {
 			throw new JSONException("Unknown value type " + valueString
 					+ "in value snak JSON");
 		}
-	
+
 		// put it all together
 		result = this.factory.getValueSnak(propertyId, value);
 		return result;
 	}
+
 
 	/**
 	 * Transforms a given string into a DatatypeIdValue.
@@ -828,7 +870,7 @@ public class JsonConverter {
 	 *            ignored. Must not be null. Precisions not covered by the
 	 *            current data model will be rounded to the next coarse
 	 *            precision. Note that an unwanted rounding might occur if the
-	 *            choosen representation is a slight bit higher then the limit
+	 *            chosen representation is a slight bit higher then the limit
 	 *            for the precision.
 	 * @return an appropriate GlobeCoordinatesValue
 	 * @throws JSONException
@@ -1031,7 +1073,7 @@ public class JsonConverter {
 		int beforeTolerance = jsonTimeValue.getInt("before");
 		int afterTolerance = jsonTimeValue.getInt("after");
 
-		// get the timezone offset
+		// get the time zone offset
 		int timezoneOffset = jsonTimeValue.getInt("timezone");
 
 		// get the calendar model
