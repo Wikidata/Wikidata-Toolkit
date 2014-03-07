@@ -67,14 +67,13 @@ public interface Converter {
 	public JSONObject convertGlobeCoordinatesValueToJson(GlobeCoordinatesValue value) throws JSONException;
 	public JSONObject convertEntityIdValueToJson(EntityIdValue value) throws JSONException;
 	public JSONObject convertStringValueToJson(StringValue value) throws JSONException;
-	public JSONObject convertIriIdentifiedValueToJson(IriIdentifiedValue value) throws JSONException;
+	//public JSONObject convertIriIdentifiedValueToJson(IriIdentifiedValue value) throws JSONException;
 	public JSONObject convertDatatypeIdValueToJson(DatatypeIdValue value) throws JSONException;
 	public JSONObject convertItemIdValueToJson(ItemIdValue value) throws JSONException;
 	public JSONObject convertMonolingualTextValueToJson(MonolingualTextValue value) throws JSONException;
 	public JSONObject convertPropertyIdValueToJson(PropertyIdValue value) throws JSONException;
 	public JSONObject convertSiteLinkToJson(SiteLink link) throws JSONException;
 	public JSONObject convertTermedDocumentToJson(TermedDocument document) throws JSONException;
-	public JSONObject convertValueToJson(Value value) throws JSONException;
-	public String convertStatementRankToJson(StatementRank rank);
+	//public JSONObject convertValueToJson(Value value) throws JSONException;
 	
 }

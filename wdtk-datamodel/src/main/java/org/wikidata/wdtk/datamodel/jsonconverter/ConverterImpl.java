@@ -20,8 +20,15 @@ package org.wikidata.wdtk.datamodel.jsonconverter;
  * #L%
  */
 
+import java.text.DecimalFormat;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.json.*;
+import org.wikidata.wdtk.datamodel.implementation.NoValueSnakImpl;
+import org.wikidata.wdtk.datamodel.implementation.SomeValueSnakImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -52,10 +59,33 @@ public class ConverterImpl implements Converter {
 
 	// GLOBAL-TODO replace identifiers in the code with new / old constants
 
-	String timeToString(int year, int month, int day, int hour, int minute,
-			int second) {
-		// TODO implement
-		return "+0";
+	String timeToString(long year, byte month, byte day, byte hour,
+			byte minute, int second) throws IllegalArgumentException {
+		if ((month == 0) || (day == 0)) {
+			throw new IllegalArgumentException();
+		}
+
+		String result;
+		StringBuilder builder = new StringBuilder();
+		DecimalFormat yearForm = new DecimalFormat("00000000000");
+		DecimalFormat timeForm = new DecimalFormat("00");
+		builder.append(yearForm.format(year));
+		if (year > 0) {
+			builder.insert(0, "+");
+		}
+		builder.append("-");
+		builder.append(timeForm.format(month));
+		builder.append("-");
+		builder.append(timeForm.format(day));
+		builder.append("T");
+		builder.append(timeForm.format(hour));
+		builder.append(":");
+		builder.append(timeForm.format(minute));
+		builder.append(":");
+		builder.append(timeForm.format(second));
+		builder.append("Z");
+		result = builder.toString();
+		return result;
 	}
 
 	JSONObject mergeJSONObjects(JSONObject objFrom, JSONObject objTo)
@@ -117,11 +147,46 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	JSONObject convertQualifiersToJson(List<? extends Snak> qualifiers) {
+		JSONObject result = new JSONObject();
+		Set<String> qualifierGroups = new HashSet<String>();
+		for (Snak qualifier : qualifiers) {
+			final String pId = qualifier.getPropertyId().getEntityType();
+			if (!qualifierGroups.contains(pId)) {
+				result.put(pId, new JSONArray());
+			}
+			final JSONArray group = (JSONArray) result.get(pId);
+			group.put(convertSnakToJson(qualifier));
+		}
+		return result;
+	}
+
+	JSONObject addTermedDocumentAttributes(TermedDocument document,
+			JSONObject to) {
+		JSONObject result = to;
+		result.put("id", document.getEntityId().getId());
+		result.put("title", document.getEntityId().getId());
+		if (!document.getAliases().isEmpty()) {
+			result.put("aliases", convertAliasesToJson(document));
+		}
+		if (!document.getDescriptions().isEmpty()) {
+			result.put("description", convertDescriptionsToJson(document));
+		}
+		if (!document.getLabels().isEmpty()) {
+			result.put("labels", convertLabelsToJson(document));
+		}
+		return result;
+	}
+
 	@Override
 	public JSONObject convertClaimToJson(Claim claim) throws JSONException {
 		JSONObject result = new JSONObject();
-		// TODO add Qualifiers claim.getQualifiers()
-		result = convertSnakToJson(claim.getMainSnak());
+		result.put("mainsnak", convertSnakToJson(claim.getMainSnak()));
+		if (!claim.getQualifiers().isEmpty()) {
+			result.put("qualifiers",
+					convertQualifiersToJson(claim.getQualifiers()));
+		}
+		// what about the subject?
 		return result;
 	}
 
@@ -132,6 +197,7 @@ public class ConverterImpl implements Converter {
 		if (entity instanceof TermedDocument) {
 			result = convertTermedDocumentToJson((TermedDocument) entity);
 		} else {
+			// Should not happen maybe skip that
 			JSONObject valueResult = new JSONObject();
 			result.put("value", valueResult);
 			result.put("type", entity.getEntityId().getEntityType());
@@ -150,16 +216,15 @@ public class ConverterImpl implements Converter {
 			throws JSONException {
 		JSONObject result = new JSONObject();
 		JSONObject statementGroups = new JSONObject();
-
+		result = addTermedDocumentAttributes(itemDocument, result);
 		result.put("type", "item"); // result.put("type",
 									// itemDocument.getEntityId().getEntityType());
-		result.put("id", itemDocument.getEntityId().getId());
-		result.put("title", itemDocument.getEntityId().getId());
-		result.put("claims", statementGroups);
-		result.put("aliases", convertAliasesToJson(itemDocument));
-		result.put("description", convertDescriptionsToJson(itemDocument));
-		result.put("labels", convertLabelsToJson(itemDocument));
-		result.put("sitelinks", convertSiteLinksToJson(itemDocument));
+		if (!itemDocument.getStatementGroups().isEmpty()) {
+			result.put("claims", statementGroups);
+		}
+		if (!itemDocument.getSiteLinks().isEmpty()) {
+			result.put("sitelinks", convertSiteLinksToJson(itemDocument));
+		}
 
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
 			statementGroups.put(
@@ -174,15 +239,10 @@ public class ConverterImpl implements Converter {
 	public JSONObject convertPropertyDocumentToJson(PropertyDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put("title", document.getPropertyId().getId());
 		result.put("type", "property"); // result.put("type",
 										// document.getEntityId()); giving type
 										// with iri
-		result.put("id", document.getPropertyId().getId());
-
-		result.put("aliases", convertAliasesToJson(document));
-		result.put("labels", convertLabelsToJson(document));
-		result.put("descriptions", convertDescriptionsToJson(document));
+		result = addTermedDocumentAttributes(document, result);
 
 		return result;
 	}
@@ -192,12 +252,26 @@ public class ConverterImpl implements Converter {
 			throws JSONException {
 		JSONObject result = new JSONObject();
 		JSONObject snaks = new JSONObject();
+		JSONArray snakOrder = new JSONArray();
+		Set<String> snakGroups = new HashSet<String>();
+
 		// no ref.hash value...
+
 		result.put("snaks", snaks);
+		result.put("snak-order", snakOrder);
+
 		for (ValueSnak snak : ref.getSnaks()) {
-			// TODO sort snaks by Property
-			snaks.put(snak.getPropertyId().getId(),
-					convertValueSnakToJson(snak));
+			final String pId = snak.getPropertyId().getId();
+			if (!snakGroups.contains(pId)) {
+				snaks.put(pId, new JSONArray());
+				snakGroups.add(pId);
+			}
+			final JSONArray group = (JSONArray) snaks.get(pId);
+			group.put(convertValueSnakToJson(snak));
+		}
+
+		for (String pId : snakGroups) {
+			snakOrder.put(pId);
 		}
 
 		return result;
@@ -209,11 +283,20 @@ public class ConverterImpl implements Converter {
 		JSONObject result = new JSONObject();
 
 		result.put("id", statement.getStatementId());
-		result.put("mainsnak", convertClaimToJson(statement.getClaim()));
+		result.put("mainsnak", convertSnakToJson(statement.getClaim()
+				.getMainSnak()));
+		if (statement.getClaim().getQualifiers().isEmpty() == false) {
+			result.put("qualifiers",
+					convertQualifiersToJson((List<? extends Snak>) statement
+							.getClaim().getQualifiers()));
+		}
+		// What about the Subject?
 		result.put("type", "statement");
 		result.put("rank", convertStatementRankToJson(statement.getRank()));
-
 		JSONArray references = new JSONArray();
+		if (!statement.getReferences().isEmpty()) {
+			result.put("references", references);
+		}
 		for (Reference ref : statement.getReferences()) {
 			references.put(convertReferenceToJson(ref));
 		}
@@ -227,7 +310,6 @@ public class ConverterImpl implements Converter {
 		for (Statement statement : statementGroup.getStatements()) {
 			statements.put(convertStatementToJson(statement));
 		}
-		// TODO Auto-generated method stub
 		return statements;
 	}
 
@@ -235,16 +317,14 @@ public class ConverterImpl implements Converter {
 	public JSONObject convertSnakToJson(Snak snak) throws JSONException {
 		JSONObject result = null;
 		// TODO better using if snak instanceof Interface
-		switch (snak.getClass().getSimpleName()) {
-		case "NoValueSnakImpl":
+		if (snak instanceof NoValueSnak) {
 			result = convertNoValueSnakToJson((NoValueSnak) snak);
-			break;
-		case "SomeValueSnakImpl":
+		} else if (snak instanceof SomeValueSnak) {
 			result = convertSomeValueSnakToJson((SomeValueSnak) snak);
-			break;
-		case "ValueSnak":
+		} else if (snak instanceof ValueSnak) {
 			result = convertValueSnakToJson((ValueSnak) snak);
-			break;
+		} else {
+			throw new IllegalArgumentException("Snaktype is unknown!");
 		}
 		return result;
 	}
@@ -256,46 +336,35 @@ public class ConverterImpl implements Converter {
 		result.put("snaktype", "value");
 		result.put("property", snak.getPropertyId().getId());
 
-		// TODO there are probably more possibilities
-		if (snak.getValue() instanceof IriIdentifiedValue) {
-			result.put("datatype", "wikibase-item"); // for wikibase-entityid in
-														// the dump
-			JSONObject datavalue = new JSONObject();
-			result.put("datavalue", datavalue);
-			datavalue.put("type", "iri"); // TODO searching right type
-			datavalue.put("value",
-					convertIriIdentifiedValueToJson((IriIdentifiedValue) snak
-							.getValue()));
-		}
+		// maybe there are more possibilities
 		if (snak.getValue() instanceof EntityIdValue) {
 			result.put("datatype", "wikibase-item"); // for wikibase-entityid in
 														// the dump | are there
 														// other EntityTypes?
 			result.put("datavalue",
 					convertEntityIdValueToJson((EntityIdValue) snak.getValue()));
-		}
-		if (snak.getValue() instanceof TimeValue) {
+		} else if (snak.getValue() instanceof TimeValue) {
 			result.put("datatype", "time"); // for time in the dump
 			result.put("datavalue",
 					convertTimeValueToJson((TimeValue) snak.getValue()));
-		}
-		if (snak.getValue() instanceof GlobeCoordinatesValue) {
+		} else if (snak.getValue() instanceof GlobeCoordinatesValue) {
 			result.put("datatype", "globe-coordinate"); // for globecoordinate
 														// in the dump
 			result.put(
 					"datavalue",
 					convertGlobeCoordinatesValueToJson((GlobeCoordinatesValue) snak
 							.getValue()));
-		}
-		if (snak.getValue() instanceof QuantityValue) {
+		} else if (snak.getValue() instanceof QuantityValue) {
 			result.put("datatype", "quantity"); // for quantity in the dump
 			result.put("datavalue",
 					convertQuantityValueToJson((QuantityValue) snak.getValue()));
-		}
-		if (snak.getValue() instanceof StringValue) {
+		} else if (snak.getValue() instanceof StringValue) {
 			result.put("datatype", "string"); // for string in the dump
 			result.put("datavalue",
 					convertStringValueToJson((StringValue) snak.getValue()));
+		} else {
+			throw new IllegalArgumentException("The class of the value "
+					+ snak.getValue().getClass() + " is unknown!");
 		}
 
 		return result;
@@ -369,7 +438,8 @@ public class ConverterImpl implements Converter {
 
 		valueResult.put("latitude", value.getLatitude());
 		valueResult.put("longitude", value.getLongitude());
-		valueResult.put("precision", value.getPrecision());
+		valueResult.put("precision", value.getPrecision()
+				/ GlobeCoordinatesValue.PREC_DEGREE);
 		valueResult.put("globe", value.getGlobe());
 
 		result.put("type", "globecoordinate");
@@ -380,32 +450,24 @@ public class ConverterImpl implements Converter {
 	@Override
 	public JSONObject convertEntityIdValueToJson(EntityIdValue value)
 			throws JSONException {
-		// TODO Anything - have to revise this code
+
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
-		// result.put("value", valueResult);
-		// result.put("type", "wikibase-entityid");
-
+		result.put("type", "wikibase-entityid");
 		switch (value.getEntityType()) {
 		case EntityIdValue.ET_ITEM:
-			valueResult = convertItemIdValueToJson((ItemIdValue) value); // Probably
-																			// value
-																			// =
-																			// ...
+			valueResult = convertItemIdValueToJson((ItemIdValue) value);
 			break;
 		case EntityIdValue.ET_PROPERTY:
-			valueResult = convertPropertyIdValueToJson((PropertyIdValue) value); // Probably
-																					// value
-																					// =
-																					// ...
+			valueResult = convertPropertyIdValueToJson((PropertyIdValue) value);
 			break;
 		default:
 			throw new JSONException("Unknown EntityType: "
 					+ value.getEntityType());
 		}
-		// valueResult.put("entity-type", value.getEntityType());
-		// valueResult.put("numeric-id", value.getId());
+
+		result.put("value", valueResult);
 
 		return result;
 	}
@@ -419,14 +481,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
-	@Override
-	public JSONObject convertIriIdentifiedValueToJson(IriIdentifiedValue value)
-			throws JSONException {
-		JSONObject result = new JSONObject();
-		// TODO fill result
-
-		return result;
-	}
+	/*
+	 * @Override public JSONObject
+	 * convertIriIdentifiedValueToJson(IriIdentifiedValue value) throws
+	 * JSONException { JSONObject result = new JSONObject();
+	 * 
+	 * return result; }
+	 */
 
 	@Override
 	public JSONObject convertDatatypeIdValueToJson(DatatypeIdValue value)
@@ -439,8 +500,8 @@ public class ConverterImpl implements Converter {
 	public JSONObject convertItemIdValueToJson(ItemIdValue value)
 			throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put("entity-type", value.getEntityType()); // or "item"
-		result.put("numeric-id", value.getId()); // TODO maybe something different
+		result.put("entity-type", "item"); // or value.getEntityType()
+		result.put("numeric-id", value.getId());
 
 		return result;
 	}
@@ -457,8 +518,11 @@ public class ConverterImpl implements Converter {
 	@Override
 	public JSONObject convertPropertyIdValueToJson(PropertyIdValue value)
 			throws JSONException {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject result = new JSONObject();
+		result.put("entity-type", "property"); // or value.getEntityType()
+		result.put("numeric-id", value.getId());
+
+		return result;
 	}
 
 	@Override
@@ -466,11 +530,10 @@ public class ConverterImpl implements Converter {
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
 		result.put("title", link.getArticleTitle());
-		result.put("badges", new JSONObject()); // always empty
+		result.put("badges", new JSONArray()); // always empty
 		return result;
 	}
 
-	@Override
 	public String convertStatementRankToJson(StatementRank rank) {
 		return rank.toString().toLowerCase();
 	}
@@ -489,12 +552,10 @@ public class ConverterImpl implements Converter {
 
 		return result;
 	}
-
-	@Override
-	public JSONObject convertValueToJson(Value value) throws JSONException {
-		JSONObject result = new JSONObject();
-		// TODO checking type of Value and call function for converting value?
-		return result;
-	}
+	/*
+	 * @Override public JSONObject convertValueToJson(Value value) throws
+	 * JSONException { JSONObject result = new JSONObject(); // TODO checking
+	 * type of Value and call function for converting value? return result; }
+	 */
 
 }
