@@ -73,7 +73,8 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		String fileName = getFileName();
+		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
+				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
 		if (this.getMaximalRevisionId() == -1) {
@@ -81,17 +82,18 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
 		}
 
-		String dumpLabel = this.dumpContentType.toString().toLowerCase();
 		DirectoryManager thisDumpDirectoryManager = this.dumpfileDirectoryManager
-				.getSubdirectoryManager(dumpLabel + "-" + this.dateStamp);
+				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
+						this.dumpContentType, this.dateStamp));
 
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
 			thisDumpDirectoryManager.createFile(fileName, inputStream);
 		}
 
-		thisDumpDirectoryManager.createFile("maxrevid.txt", this
-				.getMaximalRevisionId().toString());
+		thisDumpDirectoryManager.createFile(
+				WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
+						.getMaximalRevisionId().toString());
 
 		return thisDumpDirectoryManager.getBufferedReaderForBz2File(fileName);
 	}
@@ -107,7 +109,8 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 			// "[max 123456789]".
 			String inputLine;
 			String previousLine = "";
-			String linePattern = getFileName();
+			String linePattern = WmfDumpFile.getDumpFileName(
+					this.dumpContentType, this.projectName, this.dateStamp);
 			while (maxRevId < 0 && (inputLine = in.readLine()) != null) {
 				if (inputLine.indexOf(linePattern) >= 0) {
 					int startIndex = previousLine.lastIndexOf("[max ") + 5;
@@ -180,23 +183,13 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	}
 
 	/**
-	 * Get the base URL under which the files for this dump are found.
+	 * Returns the base URL under which the files for this dump are found.
 	 * 
 	 * @return base URL
 	 */
 	String getBaseUrl() {
 		return WmfDumpFile.DUMP_SITE_BASE_URL + this.projectName + "/"
 				+ this.dateStamp + "/";
-	}
-
-	/**
-	 * Get the file name of the files for this dump.
-	 * 
-	 * @return file name
-	 */
-	String getFileName() {
-		return this.projectName + "-" + this.dateStamp
-				+ WmfDumpFile.getDumpFilePostfix(this.dumpContentType);
 	}
 
 }

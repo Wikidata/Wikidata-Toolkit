@@ -40,11 +40,11 @@ import org.mockito.Mockito;
 public class MockStringContentFactory {
 
 	/**
-	 * Return a new InputStream that gives access to the contents as given in
+	 * Returns a new InputStream that gives access to the contents as given in
 	 * the input string.
 	 * 
 	 * @param contents
-	 * @return
+	 * @return an input stream for the given string
 	 */
 	public static InputStream newMockInputStream(String contents) {
 		return new ByteArrayInputStream(
@@ -52,11 +52,11 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Return a new BufferedReader that gives access to the contents as given in
-	 * the input string.
+	 * Returns a new BufferedReader that gives access to the contents as given
+	 * in the input string.
 	 * 
 	 * @param contents
-	 * @return
+	 * @return a buffered reader for the given string
 	 */
 	public static BufferedReader newMockBufferedReader(String contents) {
 		return new BufferedReader(new InputStreamReader(
@@ -64,7 +64,7 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Load a string from the file at the given URL. This should only be used
+	 * Loads a string from the file at the given URL. This should only be used
 	 * for relatively small files, obviously. The file contents is interpreted
 	 * as UTF-8.
 	 * 
@@ -81,7 +81,7 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Load a string from the given buffered reader. Newline will be appended
+	 * Loads a string from the given buffered reader. Newline will be appended
 	 * after each line but the last.
 	 * 
 	 * @param bufferedReader
@@ -106,10 +106,10 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Get a buffered reader that will throw IOExceptions on common reading
+	 * Returns a buffered reader that will throw IOExceptions on common reading
 	 * operations.
 	 * 
-	 * @return
+	 * @return buffered reader that fails on reading
 	 */
 	public static BufferedReader getFailingBufferedReader() {
 		BufferedReader br = Mockito.mock(BufferedReader.class);
@@ -124,10 +124,10 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Get an input stream that will throw IOExceptions on common reading
+	 * Returns an input stream that will throw IOExceptions on common reading
 	 * operations.
 	 * 
-	 * @return
+	 * @return input stream that fails on reading
 	 */
 	public static InputStream getFailingInputStream() {
 		InputStream is = Mockito.mock(InputStream.class);

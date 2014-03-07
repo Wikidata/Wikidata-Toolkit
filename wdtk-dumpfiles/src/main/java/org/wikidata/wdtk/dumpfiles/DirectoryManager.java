@@ -36,9 +36,9 @@ import java.util.List;
 public interface DirectoryManager {
 
 	/**
-	 * Return a new directory manager for the subdirectory of the given name. If
-	 * the subdirectory does not exist yet, it will be created. If this is not
-	 * desired, its existence can be checked with
+	 * Returns a new directory manager for the subdirectory of the given name.
+	 * If the subdirectory does not exist yet, it will be created. If this is
+	 * not desired, its existence can be checked with
 	 * {@link #hasSubdirectory(String)} first (ignoring the fact that there
 	 * might be race conditions when accessing the file system).
 	 * 
@@ -51,23 +51,25 @@ public interface DirectoryManager {
 			throws IOException;
 
 	/**
-	 * Check if there is a subdirectory of the given name.
+	 * Checks if there is a subdirectory of the given name.
 	 * 
 	 * @param subdirectoryName
+	 *            the name of the subdirectory
 	 * @return true if the subdirectory exists
 	 */
 	boolean hasSubdirectory(String subdirectoryName);
 
 	/**
-	 * Check if there is a file of the given name.
+	 * Checks if there is a file of the given name.
 	 * 
 	 * @param fileName
+	 *            the name of the file
 	 * @return true if the file exists and is not a directory
 	 */
 	boolean hasFile(String fileName);
 
 	/**
-	 * Create a new file in the current directory, and fill it with the data
+	 * Creates a new file in the current directory, and fill it with the data
 	 * from the given input stream. If the stream encodes a string, then it
 	 * should generally be encoded in UTF-8, since access methods assume this.
 	 * 
@@ -82,7 +84,7 @@ public interface DirectoryManager {
 			throws IOException;
 
 	/**
-	 * Create a new file in the current directory, and fill it with the given
+	 * Creates a new file in the current directory, and fill it with the given
 	 * data, encoded in UTF-8. Should only be used for short pieces of data.
 	 * 
 	 * @param fileName
@@ -94,7 +96,7 @@ public interface DirectoryManager {
 	void createFile(String fileName, String fileContents) throws IOException;
 
 	/**
-	 * Get a buffered reader to access the file of the given name within the
+	 * Returns a buffered reader to access the file of the given name within the
 	 * current directory. It is assumed that the file is encoded in UTF-8.
 	 * <p>
 	 * It is important to close the reader after using it to free memory.
@@ -107,9 +109,9 @@ public interface DirectoryManager {
 	BufferedReader getBufferedReaderForFile(String fileName) throws IOException;
 
 	/**
-	 * Get a buffered reader to access the BZIP2-compressed file of the given
-	 * name within the current directory. It is assumed that the uncompressed
-	 * file is encoded in UTF-8.
+	 * Returns a buffered reader to access the BZIP2-compressed file of the
+	 * given name within the current directory. It is assumed that the
+	 * uncompressed file is encoded in UTF-8.
 	 * <p>
 	 * It is important to close the reader after using it to free memory.
 	 * 
@@ -122,13 +124,13 @@ public interface DirectoryManager {
 			throws IOException;
 
 	/**
-	 * Get a list of the names of all subdirectories of the base directory. The
-	 * glob pattern can be used to filter the names; "*" should be used if no
-	 * filtering is desired.
+	 * Returns a list of the names of all subdirectories of the base directory.
+	 * The glob pattern can be used to filter the names; "*" should be used if
+	 * no filtering is desired.
 	 * 
 	 * @param glob
 	 *            pattern to filter directoy names
-	 * @return
+	 * @return list of subdirectory names
 	 * @throws IOException
 	 */
 	List<String> getSubdirectories(String glob) throws IOException;

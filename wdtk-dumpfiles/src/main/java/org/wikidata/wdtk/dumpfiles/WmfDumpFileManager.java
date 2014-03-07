@@ -55,6 +55,11 @@ public class WmfDumpFileManager {
 	static final Logger logger = LoggerFactory
 			.getLogger(WmfDumpFileManager.class);
 
+	/**
+	 * The regular expression that a date stamp should match.
+	 */
+	static final String dateStampPattern = "\\d\\d\\d\\d\\d\\d\\d\\d";
+
 	final String projectName;
 	final DirectoryManager dumpfileDirectoryManager;
 	final WebResourceFetcher webResourceFetcher;
@@ -87,7 +92,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Process all relevant dumps in order. For further details on the
+	 * Processes all relevant dumps in order. For further details on the
 	 * parameters, see {@link #findAllRelevantDumps(boolean)}.
 	 * 
 	 * @param preferCurrent
@@ -109,7 +114,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find all dump files, online or locally, that are relevant to obtain the
+	 * Finds all dump files, online or locally, that are relevant to obtain the
 	 * most current state of the data.
 	 * <p>
 	 * If the parameter <b>preferCurrent</b> is true, then dumps that contain
@@ -150,7 +155,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find the most recent main dump (non-incremental dump). For further
+	 * Finds the most recent main dump (non-incremental dump). For further
 	 * details on the parameters, see {@link #findAllRelevantDumps(boolean)}.
 	 * 
 	 * @param preferCurrent
@@ -174,9 +179,9 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Get a list of all daily dump files available either online or locally.
-	 * For dumps available both online and locally, the local version is
-	 * included. The list is order with most recent dump date first.
+	 * Returns a list of all daily dump files available either online or
+	 * locally. For dumps available both online and locally, the local version
+	 * is included. The list is order with most recent dump date first.
 	 * 
 	 * @return a list of daily dump files
 	 */
@@ -191,9 +196,9 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Get a list of all current dump files available either online or locally.
-	 * For dumps available both online and locally, the local version is
-	 * included. The list is order with most recent dump date first.
+	 * Returns a list of all current dump files available either online or
+	 * locally. For dumps available both online and locally, the local version
+	 * is included. The list is order with most recent dump date first.
 	 * 
 	 * @return a list of current dump files
 	 */
@@ -208,9 +213,9 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Get a list of all full dump files available either online or locally. For
-	 * dumps available both online and locally, the local version is included.
-	 * The list is order with most recent dump date first.
+	 * Finds a list of all full dump files available either online or locally.
+	 * For dumps available both online and locally, the local version is
+	 * included. The list is order with most recent dump date first.
 	 * 
 	 * @return a list of full dump files
 	 */
@@ -225,7 +230,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Merge a list of local and online dumps. For dumps available both online
+	 * Merges a list of local and online dumps. For dumps available both online
 	 * and locally, only the local version is included. The list is order with
 	 * most recent dump date first.
 	 * 
@@ -251,10 +256,10 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find out which dump files of the given type have been downloaded already.
-	 * The result is a list of objects that describe the available dump files,
-	 * in descending order by their date. Not all of the dumps included might be
-	 * actually available.
+	 * Finds out which dump files of the given type have been downloaded
+	 * already. The result is a list of objects that describe the available dump
+	 * files, in descending order by their date. Not all of the dumps included
+	 * might be actually available.
 	 * 
 	 * @param dumpContentType
 	 *            the type of dump to consider
@@ -262,12 +267,13 @@ public class WmfDumpFileManager {
 	 */
 	List<MediaWikiDumpFile> findDumpsLocally(DumpContentType dumpContentType) {
 
-		String directoryPrefix = dumpContentType.toString().toLowerCase() + "-";
+		String directoryPattern = WmfDumpFile.getDumpFileDirectoryName(
+				dumpContentType, "*");
 
 		List<String> dumpFileDirectories;
 		try {
 			dumpFileDirectories = this.dumpfileDirectoryManager
-					.getSubdirectories(directoryPrefix + "*");
+					.getSubdirectories(directoryPattern);
 		} catch (IOException e) {
 			logger.error("Unable to access dump directory: " + e.toString());
 			return Collections.<MediaWikiDumpFile> emptyList();
@@ -276,8 +282,10 @@ public class WmfDumpFileManager {
 		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
 
 		for (String directory : dumpFileDirectories) {
-			String dateStamp = directory.substring(directoryPrefix.length());
-			if (dateStamp.matches("\\d\\d\\d\\d\\d\\d\\d\\d")) {
+			String dateStamp = WmfDumpFile
+					.getDateStampFromDumpFileDirectoryName(dumpContentType,
+							directory);
+			if (dateStamp.matches(WmfDumpFileManager.dateStampPattern)) {
 				WmfLocalDumpFile dumpFile = new WmfLocalDumpFile(dateStamp,
 						this.projectName, dumpfileDirectoryManager,
 						dumpContentType);
@@ -288,7 +296,7 @@ public class WmfDumpFileManager {
 							+ dumpFile.getDumpfileDirectory()
 							+ " to attempt fresh download.");
 				}
-			}
+			} // else: silently ignore directories that don't match
 		}
 
 		Collections.sort(result, Collections
@@ -298,15 +306,15 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find out which daily dump files are available for download. The result is
-	 * a list of objects that describe the available dump files, in descending
-	 * order by their date. Not all of the dumps included might be actually
-	 * available.
+	 * Finds out which daily dump files are available for download. The result
+	 * is a list of objects that describe the available dump files, in
+	 * descending order by their date. Not all of the dumps included might be
+	 * actually available.
 	 * 
 	 * @return list of objects that provide information on available daily dumps
 	 */
 	List<MediaWikiDumpFile> findDailyDumpsOnline() {
-		List<String> dumpFileDates = findDumpDatesOnline("other/incr/");
+		List<String> dumpFileDates = findDumpDatesOnline(WmfDumpFile.DAILY_WEB_DIRECTORY);
 
 		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
 
@@ -319,9 +327,9 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find out which current version dump files are available for download. The
-	 * result is a list of objects that describe the available dump files, in
-	 * descending order by their date. Not all of the dumps included might be
+	 * Finds out which current version dump files are available for download.
+	 * The result is a list of objects that describe the available dump files,
+	 * in descending order by their date. Not all of the dumps included might be
 	 * actually available.
 	 * 
 	 * @return list of objects that provide information on available current
@@ -342,7 +350,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find out which full dump files are available for download. The result is
+	 * Finds out which full dump files are available for download. The result is
 	 * a list of objects that describe the available dump files, in descending
 	 * order by their date. Not all of the dumps included might be actually
 	 * available.
@@ -364,7 +372,7 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Find out which dump files are available for download in a given
+	 * Finds out which dump files are available for download in a given
 	 * directory. The result is a list of YYYYMMDD date stamps, ordered newest
 	 * to oldest. The list is based on the directories found at the target
 	 * location, without considering whether or not each dump is actually
@@ -386,7 +394,7 @@ public class WmfDumpFileManager {
 			while ((inputLine = in.readLine()) != null) {
 				if (inputLine.startsWith("<tr><td class=\"n\">")) {
 					String dateStamp = inputLine.substring(27, 35);
-					if (dateStamp.matches("\\d\\d\\d\\d\\d\\d\\d\\d")) {
+					if (dateStamp.matches(WmfDumpFileManager.dateStampPattern)) {
 						result.add(dateStamp);
 					}
 				}

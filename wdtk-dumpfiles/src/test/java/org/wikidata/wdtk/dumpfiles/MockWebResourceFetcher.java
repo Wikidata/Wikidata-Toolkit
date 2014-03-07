@@ -64,7 +64,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	}
 
 	/**
-	 * Define the contents of a new web resource. The contents type is used to
+	 * Defines the contents of a new web resource. The contents type is used to
 	 * define which methods are allowed to access this contents. All contents is
 	 * stored as plain text, but contents of type {@link #TYPE_GZIP} can only be
 	 * accessed when using a suitable method, etc.
@@ -83,7 +83,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	}
 
 	/**
-	 * Define the contents of a new web resource by taking the string from a
+	 * Defines the contents of a new web resource by taking the string from a
 	 * given (Java) resource. The contents type is used to define which methods
 	 * are allowed to access this contents. All contents is stored as plain
 	 * text, but contents of type {@link #TYPE_GZIP} can only be accessed when
@@ -133,12 +133,12 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	}
 
 	/**
-	 * Return a buffered reader for the content mocked for given URL. It is
+	 * Returns a buffered reader for the content mocked for given URL. It is
 	 * assumed that the URL is valid. The type of the content at this location
 	 * will not be checked.
 	 * 
 	 * @param urlString
-	 * @return
+	 * @return buffered reader for resource
 	 * @throws IOException
 	 */
 	BufferedReader getBufferedReaderForMockWebResource(String urlString)

@@ -65,8 +65,8 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		String fileName = this.projectName + "-" + this.dateStamp
-				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY);
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
 		if (this.getMaximalRevisionId() == -1L) {
@@ -75,15 +75,16 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 		}
 
 		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
-				.getSubdirectoryManager("daily-" + this.dateStamp);
+				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
+						DumpContentType.DAILY, this.dateStamp));
 
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
 			dailyDirectoryManager.createFile(fileName, inputStream);
 		}
 
-		dailyDirectoryManager.createFile("maxrevid.txt", this
-				.getMaximalRevisionId().toString());
+		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
+				this.getMaximalRevisionId().toString());
 
 		return dailyDirectoryManager.getBufferedReaderForBz2File(fileName);
 	}
@@ -122,12 +123,12 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	}
 
 	/**
-	 * Get the base URL under which the files for this dump are found.
+	 * Returns the base URL under which the files for this dump are found.
 	 * 
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL + "other/incr/"
+		return WmfDumpFile.DUMP_SITE_BASE_URL + WmfDumpFile.DAILY_WEB_DIRECTORY
 				+ this.projectName + "/" + this.dateStamp + "/";
 	}
 

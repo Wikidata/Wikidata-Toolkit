@@ -34,9 +34,9 @@ import java.io.InputStream;
 public interface WebResourceFetcher {
 
 	/**
-	 * Get a BufferedReader for the document at the given URL. The reader should
-	 * be closed after use. The bytes found at the given URL will be interpreted
-	 * as UTF-8 for this operation.
+	 * Returns a BufferedReader for the document at the given URL. The reader
+	 * should be closed after use. The bytes found at the given URL will be
+	 * interpreted as UTF-8 for this operation.
 	 * 
 	 * @param urlString
 	 *            the URL of the document
@@ -48,9 +48,10 @@ public interface WebResourceFetcher {
 	BufferedReader getBufferedReaderForUrl(String urlString) throws IOException;
 
 	/**
-	 * Get a BufferedReader for the Gzip-compressed document at the given URL.
-	 * The reader should be closed after use. The bytes found in the gzipped
-	 * file at the given URL will be interpreted as UTF-8 for this operation.
+	 * Returns a BufferedReader for the Gzip-compressed document at the given
+	 * URL. The reader should be closed after use. The bytes found in the
+	 * gzipped file at the given URL will be interpreted as UTF-8 for this
+	 * operation.
 	 * 
 	 * @param urlString
 	 *            the URL of the gzipped document
@@ -63,8 +64,8 @@ public interface WebResourceFetcher {
 			throws IOException;
 
 	/**
-	 * Get an InputStream for the document at the given URL. This can be used
-	 * for downloading. The stream should be closed after use.
+	 * Returns an InputStream for the document at the given URL. This can be
+	 * used for downloading. The stream should be closed after use.
 	 * 
 	 * @param urlString
 	 *            the URL of the document

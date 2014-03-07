@@ -91,7 +91,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DIrectoryManagerInterface#getSubdirectoryManager
+	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#getSubdirectoryManager
 	 * (java.lang.String)
 	 */
 	@Override
@@ -104,7 +104,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DIrectoryManagerInterface#hasSubdirectory
+	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#hasSubdirectory
 	 * (java.lang.String)
 	 */
 	@Override
@@ -117,7 +117,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DIrectoryManagerInterface#hasFile(java.lang
+	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#hasFile(java.lang
 	 * .String)
 	 */
 	@Override

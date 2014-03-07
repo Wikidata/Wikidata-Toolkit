@@ -32,10 +32,20 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile {
 	 * The default URL of the website to obtain the dump files from.
 	 */
 	static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
+	/**
+	 * The subdirectory of the dumpfile site where daily dumps are kept.
+	 */
+	static final String DAILY_WEB_DIRECTORY = "other/incr/";
 
 	static final String POSTFIX_DAILY_DUMP_FILE = "-pages-meta-hist-incr.xml.bz2";
 	static final String POSTFIX_CURRENT_DUMP_FILE = "-pages-meta-current.xml.bz2";
 	static final String POSTFIX_FULL_DUMP_FILE = "-pages-meta-history.xml.bz2";
+
+	/**
+	 * The name of the file where a dump's maximal revision id should be stored
+	 * locally.
+	 */
+	static final String LOCAL_FILENAME_MAXREVID = "maxrevid.txt";
 
 	final String dateStamp;
 	final String projectName;
@@ -81,21 +91,21 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile {
 	}
 
 	/**
-	 * Get the maximal revision id for this dump.
+	 * Returns the maximal revision id for this dump.
 	 * 
 	 * @return maximal revision id or -1 if it was not found
 	 */
 	protected abstract Long fetchMaximalRevisionId();
 
 	/**
-	 * Find out if the dump is ready.
+	 * Finds out if the dump is ready.
 	 * 
 	 * @return true if the dump is done
 	 */
 	protected abstract boolean fetchIsDone();
 
 	/**
-	 * Return the ending used by the Wikimedia-provided dumpfile names of the
+	 * Returns the ending used by the Wikimedia-provided dumpfile names of the
 	 * given type.
 	 * 
 	 * @param dumpContentType
@@ -115,6 +125,55 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile {
 		default:
 			throw new IllegalArgumentException("Unsupported dump type");
 		}
+	}
+
+	/**
+	 * Returns the name of the directory where the dumpfile of the given type
+	 * and date should be stored.
+	 * 
+	 * @param dumpContentType
+	 *            the type of the dump
+	 * @param dateStamp
+	 *            the date of the dump in format YYYYMMDD
+	 * @return the local directory name for the dumpfile
+	 */
+	public static String getDumpFileDirectoryName(
+			DumpContentType dumpContentType, String dateStamp) {
+		return dumpContentType.toString().toLowerCase() + "-" + dateStamp;
+	}
+
+	/**
+	 * Extracts the date stamp from a dumpfile directory name in the form that
+	 * is created by {@link #getDumpFileDirectoryName(DumpContentType, String)}.
+	 * It is not checked that the given directory name has the right format; if
+	 * it has not, the result will not be a date stamp but some other string.
+	 * 
+	 * @param dumpContentType
+	 * @param directoryName
+	 * @return the date stamp
+	 */
+	public static String getDateStampFromDumpFileDirectoryName(
+			DumpContentType dumpContentType, String directoryName) {
+		int prefixLength = dumpContentType.toString().length() + 1;
+		return directoryName.substring(prefixLength);
+	}
+
+	/**
+	 * Returns the name under which this dump file. This is the name used online
+	 * and also locally when downloading the file.
+	 * 
+	 * @param dumpContentType
+	 *            the type of the dump
+	 * @param projectName
+	 *            the project name, e.g., wikidatawiki
+	 * @param dateStamp
+	 *            the date of the dump in format YYYYMMDD
+	 * @return file name string
+	 */
+	public static String getDumpFileName(DumpContentType dumpContentType,
+			String projectName, String dateStamp) {
+		return projectName + "-" + dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
 	}
 
 }

@@ -32,7 +32,13 @@ import java.io.IOException;
  */
 public class WmfLocalDumpFile extends WmfDumpFile {
 
-	final DirectoryManager thisDumpfileDirectoryManager;
+	/**
+	 * DirectoryManager for the directory of this local dumpfile.
+	 */
+	final DirectoryManager localDumpfileDirectoryManager;
+	/**
+	 * Type of this dumpfile.
+	 */
 	final DumpContentType dumpContentType;
 
 	/**
@@ -53,14 +59,14 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 			DumpContentType dumpContentType) {
 		super(dateStamp, projectName);
 
-		String subdirectoryName = dumpContentType.toString().toLowerCase()
-				+ "-" + dateStamp;
+		String subdirectoryName = WmfDumpFile.getDumpFileDirectoryName(
+				dumpContentType, dateStamp);
 		if (!dumpfileDirectoryManager.hasSubdirectory(subdirectoryName)) {
 			throw new IllegalArgumentException(
 					"There is no local dump file directory at the specified location.");
 		}
 		try {
-			this.thisDumpfileDirectoryManager = dumpfileDirectoryManager
+			this.localDumpfileDirectoryManager = dumpfileDirectoryManager
 					.getSubdirectoryManager(subdirectoryName);
 		} catch (IOException e) {
 			throw new IllegalArgumentException(
@@ -71,12 +77,12 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	}
 
 	/**
-	 * Get the directory where this dump file data should be.
+	 * Returns the directory where this dump file data should be.
 	 * 
-	 * @return
+	 * @return string representation of the directory of this dumpfile
 	 */
 	public String getDumpfileDirectory() {
-		return this.thisDumpfileDirectoryManager.toString();
+		return this.localDumpfileDirectoryManager.toString();
 	}
 
 	@Override
@@ -86,15 +92,16 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		return this.thisDumpfileDirectoryManager
-				.getBufferedReaderForBz2File(getFileName());
+		return this.localDumpfileDirectoryManager
+				.getBufferedReaderForBz2File(WmfDumpFile.getDumpFileName(
+						this.dumpContentType, this.projectName, this.dateStamp));
 	}
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
 		String inputLine;
-		try (BufferedReader in = this.thisDumpfileDirectoryManager
-				.getBufferedReaderForFile("maxrevid.txt")) {
+		try (BufferedReader in = this.localDumpfileDirectoryManager
+				.getBufferedReaderForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID)) {
 			inputLine = in.readLine();
 		} catch (IOException e) {
 			return -1L;
@@ -112,18 +119,10 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 
 	@Override
 	protected boolean fetchIsDone() {
-		return this.thisDumpfileDirectoryManager.hasFile(getFileName())
+		return this.localDumpfileDirectoryManager.hasFile(WmfDumpFile
+				.getDumpFileName(this.dumpContentType, this.projectName,
+						this.dateStamp))
 				&& this.getMaximalRevisionId() >= 0;
-	}
-
-	/**
-	 * Get the file name of this dump file.
-	 * 
-	 * @return
-	 */
-	String getFileName() {
-		return this.projectName + "-" + this.dateStamp
-				+ WmfDumpFile.getDumpFilePostfix(this.dumpContentType);
 	}
 
 }

@@ -47,25 +47,30 @@ public interface MediaWikiDumpFile {
 	}
 
 	/**
-	 * Check if the dump is actually available. Should be called before
-	 * {@link #getDumpFileReader()}.
+	 * Checks if the dump is actually available. Should be called before
+	 * {@link #getDumpFileReader()}. Depending on the type of dumpfile, this
+	 * will trigger one or more checks to make sure that all relevant data can
+	 * be accessed for this dump file. This is still no definite guarantee that
+	 * the download will succeed, since there can always be IO errors anyway,
+	 * but it helps to detect cases where the dump is clearly not in a usable
+	 * state.
 	 * 
-	 * @return true if the
+	 * @return true if the dump file is likely to be available
 	 */
 	public boolean isAvailable();
 
 	/**
-	 * Get the project name for this dump. Together with the dump content type
-	 * and date stamp, this identifies the dump, and it is therefore always
+	 * Returns the project name for this dump. Together with the dump content
+	 * type and date stamp, this identifies the dump, and it is therefore always
 	 * available.
 	 * 
-	 * @return a project name string;
+	 * @return a project name string
 	 */
 	public String getProjectName();
 
 	/**
-	 * Get the date stamp for this dump. Together with the project name and dump
-	 * content type, this identifies the dump, and it is therefore always
+	 * Returns the date stamp for this dump. Together with the project name and
+	 * dump content type, this identifies the dump, and it is therefore always
 	 * available.
 	 * 
 	 * @return a string that represents a date in format YYYYMMDD
@@ -73,24 +78,24 @@ public interface MediaWikiDumpFile {
 	public String getDateStamp();
 
 	/**
-	 * Get information about the content of the dump. Together with the project
-	 * name and date stamp, this identifies the dump, and it is therefore always
-	 * available.
+	 * Returns information about the content of the dump. Together with the
+	 * project name and date stamp, this identifies the dump, and it is
+	 * therefore always available.
 	 * 
-	 * @return
+	 * @return the content type of this dump
 	 */
 	public DumpContentType getDumpContentType();
 
 	/**
-	 * Get the maximal revision id of a revision within this dump. The number
-	 * "-1" will be returned if this information is not available.
+	 * Returns the maximal revision id of a revision within this dump. The
+	 * number "-1" will be returned if this information is not available.
 	 * 
 	 * @return maximal revision id or -1 if not available
 	 */
 	public Long getMaximalRevisionId();
 
 	/**
-	 * Get a buffered reader that provides access to the (uncompressed) XML
+	 * Returns a buffered reader that provides access to the (uncompressed) XML
 	 * content of the dump file.
 	 * <p>
 	 * It is important to close the reader after use.
