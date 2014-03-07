@@ -29,6 +29,18 @@ nbactions.xml
 out/
 target/
 
+# WDTK dumpfile download directory
+dumpfiles/
+
+# Don't apply the above to src/ where Java requires
+# subdirectories named according to package names.
+# We do not want to forbid things like "dumpfiles" in
+# package names. 
+!src/
+
+# Use as directory for local testing code
+**/src/local/
+
 # General
 *.pyc
 *~
