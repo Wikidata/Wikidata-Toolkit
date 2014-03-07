@@ -50,8 +50,8 @@ public class JsonConverter {
 
 	// TODO refactor: sort methods
 
-	private static final String itemPrefix = "Q";
-	private static final String propertyPrefix = "P";
+	public static final String itemPrefix = "Q";
+	public static final String propertyPrefix = "P";
 	// TODO refactor to form KEY_FOO
 	private static final String labelString = "label";
 	private static final String entityString = "entity";
@@ -104,9 +104,21 @@ public class JsonConverter {
 
 		PropertyDocument result;
 
-		// get the property id
-		JSONArray jsonEntity = toConvert.getJSONArray(entityString);
-		PropertyIdValue propertyId = this.getPropertyId(jsonEntity);
+		// get the property Id
+		// NOTE that in old dumps the entity is not an array
+		// but a string with appropriate prefix in lowercase
+		PropertyIdValue propertyId;
+		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
+		if (!toConvert.has(entityString)) {
+			throw new JSONException("No entity entry found.");
+		} else if (jsonEntity != null) { // it is an array
+			propertyId = (PropertyIdValue) this.getEntityId(jsonEntity,
+					DocumentType.PROPERTY);
+		} else { // it is a String
+			String stringItemId = toConvert.getString(entityString);
+			propertyId = (PropertyIdValue) this.getEntityId(stringItemId,
+					DocumentType.PROPERTY);
+		}
 
 		// get the labels
 		List<MonolingualTextValue> labels = this
@@ -127,53 +139,6 @@ public class JsonConverter {
 		result = this.factory.getPropertyDocument(propertyId, labels,
 				descriptions, aliases, datatypeId);
 		return result;
-	}
-
-	/**
-	 * Transforms a given string into a DatatypeIdValue.
-	 * 
-	 * @param jsonDataTypeId
-	 *            is the string to be converted. Must not be null.
-	 * @return the appropriate DatatypeIdValue-instance.
-	 */
-	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
-		assert jsonDataTypeId != null : "Given JSON datatype id was null";
-
-		return this.factory.getDatatypeIdValue(jsonDataTypeId);
-	}
-
-	/**
-	 * Converts a given JSON array into a PropertyIdValue. The appropriate
-	 * prefix for properties will be used.
-	 * 
-	 * @param jsonEntity
-	 *            is a JSON array denoting the property id. Must be of the form <br/>
-	 *            ["property", <i>propertyID</i>]<br/>
-	 *            Must not be null.
-	 * @return the appropriate PropertyIdValue-instance.
-	 * @throws JSONException
-	 *             if the format requirements are not met.
-	 */
-	private PropertyIdValue getPropertyId(JSONArray jsonEntity)
-			throws JSONException {
-		assert jsonEntity != null : "Entity JSON was null.";
-		assert jsonEntity.getString(0).equals("property") : "Entity JSON did not denote a property";
-
-		return this.getPropertyIdValue(jsonEntity.getInt(1));
-	}
-
-	/**
-	 * Creates a PropertyIdValue from a given integer and the set property
-	 * prefix.
-	 * 
-	 * @param intValue
-	 *            is the integer id of the property.
-	 * @return a PropertyIdValue-instance.
-	 */
-	private PropertyIdValue getPropertyIdValue(int intValue) {
-
-		String id = propertyPrefix + intValue;
-		return this.factory.getPropertyIdValue(id, this.baseIri);
 	}
 
 	/**
@@ -207,15 +172,14 @@ public class JsonConverter {
 		ItemIdValue itemId;
 		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
 		if (!toConvert.has(entityString)) {
-			// TODO what now?
-			System.out.println(toConvert.toString(2));
 			throw new JSONException("No entity entry found.");
-		} else if (jsonEntity != null) {
-			itemId = this.getItemId(jsonEntity);
-		} else {
-			String stringItemId = toConvert.getString(entityString)
-					.toUpperCase();
-			itemId = this.factory.getItemIdValue(stringItemId, baseIri);
+		} else if (jsonEntity != null) { // it is an array
+			itemId = (ItemIdValue) this.getEntityId(jsonEntity,
+					DocumentType.ITEM);
+		} else { // it is a String
+			String stringItemId = toConvert.getString(entityString);
+			itemId = (ItemIdValue) this.getEntityId(stringItemId,
+					DocumentType.ITEM);
 		}
 
 		// get the labels
@@ -227,8 +191,6 @@ public class JsonConverter {
 				descriptionString, toConvert);
 
 		// get the aliases
-		// NOTE empty aliases are an JSON array
-		// non-empty aliases are JSON objects
 		List<MonolingualTextValue> aliases = this.getMltv(aliasString,
 				toConvert);
 
@@ -240,7 +202,6 @@ public class JsonConverter {
 		}
 
 		// get the site links
-		// NOTE might be empty array…
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 
 		if (toConvert.has(linkString)) {
@@ -255,6 +216,149 @@ public class JsonConverter {
 		ItemDocument result = factory.getItemDocument(itemId, labels,
 				descriptions, aliases, statements, siteLinks);
 		return result;
+	}
+
+	/**
+	 * Constructs the item id of a JSON object denoting an item.
+	 * 
+	 * @param jsonEntity
+	 *            a JSON array containing information about the entity or
+	 *            property. The array shoud have the structure ["item", itemId]
+	 *            or ["property", propertyId].
+	 * @return An item id value prefixed accordingly.
+	 * @throws JSONException
+	 *             if the entity does not contain an "item"-entry or the entry
+	 *             is not followed by an integer denoting the item id.
+	 */
+	private EntityIdValue getEntityId(JSONArray jsonEntity, DocumentType docType)
+			throws JSONException {
+		assert jsonEntity != null : "Entity JSONArray was null";
+
+		String expectedIdentifier;
+		String prefix;
+
+		switch (docType) {
+		case ITEM:
+			expectedIdentifier = "item";
+			prefix = itemPrefix;
+			break;
+		case PROPERTY:
+			expectedIdentifier = "property";
+			prefix = propertyPrefix;
+			break;
+		default:
+			throw new JSONException("Unsupported document type");
+		}
+
+		String identifier = jsonEntity.getString(0);
+		if (!identifier.equalsIgnoreCase(expectedIdentifier)) {
+			throw new JSONException("Entity identifier \"" + identifier
+					+ "\" did not match expected identifier \""
+					+ expectedIdentifier + "\".");
+		}
+
+		int idValue = jsonEntity.getInt(1);
+		String fullId = prefix + idValue;
+
+		EntityIdValue result = null;
+		switch (docType) {
+		case ITEM:
+			result = this.factory.getItemIdValue(fullId, this.baseIri);
+			break;
+		case PROPERTY:
+			result = this.factory.getPropertyIdValue(fullId, this.baseIri);
+			break;
+		// Omitted default, this can never happen.
+		}
+
+		return result;
+	}
+
+	private EntityIdValue getEntityId(String id, DocumentType docType)
+			throws JSONException {
+
+		// sanity check
+		if (id == null) {
+			throw new NullPointerException("Entity id string was null");
+		}
+
+		String expectedPrefix;
+
+		switch (docType) {
+		case ITEM:
+			expectedPrefix = itemPrefix;
+			break;
+		case PROPERTY:
+			expectedPrefix = propertyPrefix;
+			break;
+		default:
+			throw new JSONException("Unsupported document type");
+		}
+
+		String upperCase = id.toUpperCase();
+		if (!upperCase.startsWith(expectedPrefix)) {
+			throw new JSONException("Entity identifier \"" + id
+					+ "\" did not start with expected prefix \""
+					+ expectedPrefix + "\".");
+		}
+
+		EntityIdValue result = null;
+		switch (docType) {
+		case ITEM:
+			result = this.factory.getItemIdValue(upperCase, this.baseIri);
+			break;
+		case PROPERTY:
+			result = this.factory.getPropertyIdValue(upperCase, this.baseIri);
+			break;
+		// Omitted default, this can never happen.
+		}
+
+		return result;
+	}
+
+	private EntityIdValue getEntityId(int entityId, DocumentType docType)
+			throws JSONException {
+
+		String prefix;
+
+		switch (docType) {
+		case ITEM:
+			prefix = itemPrefix;
+			break;
+		case PROPERTY:
+			prefix = propertyPrefix;
+			break;
+		default:
+			throw new JSONException("Unsupported document type");
+		}
+
+		EntityIdValue result = null;
+		switch (docType) {
+		case ITEM:
+			result = this.factory.getItemIdValue(prefix + entityId,
+					this.baseIri);
+			break;
+		case PROPERTY:
+			result = this.factory.getPropertyIdValue(prefix + entityId,
+					this.baseIri);
+			break;
+		// Omitted default, this can never happen.
+		}
+
+		return result;
+	}
+
+	/**
+	 * Transforms a given string into a DatatypeIdValue.
+	 * 
+	 * @param jsonDataTypeId
+	 *            is the string to be converted. Must not be null.
+	 * @return the appropriate DatatypeIdValue-instance.
+	 */
+	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
+		assert jsonDataTypeId != null : "Given JSON datatype id was null";
+
+		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
 
 	/**
@@ -389,7 +493,8 @@ public class JsonConverter {
 
 		// get the property id
 		int intId = jsonValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyIdValue(intId);
+		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(intId,
+				DocumentType.PROPERTY);
 
 		// get the value
 		String valueString = jsonValueSnak.getString(2);
@@ -493,15 +598,12 @@ public class JsonConverter {
 		long longitude;
 
 		// try if the coordinates are already in int (with degree precision?)
-		int invalid = 0xFFFFFF; // needed because the org.json parser handles
-								// optInt() inconsistently
 
-			double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
-			latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
+		double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
+		latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
 
-			double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
-			longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
-
+		double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
+		longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
 
 		// getting the precision
 		// if the precision is available as double it needs to be converted
@@ -519,41 +621,40 @@ public class JsonConverter {
 
 		} else {
 
-				Double doublePrecision = jsonGlobeCoordinate
-						.getDouble("precision");
+			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
 
-				// Yes you have to check all
-				// possible representations since they do not equal
-				// in their internal binary representation
-				// and Double can not cope with that
+			// Yes you have to check all
+			// possible representations since they do not equal
+			// in their internal binary representation
+			// and Double can not cope with that
 
-				if (doublePrecision > 1.0) {
-					precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
-				} else if (doublePrecision > 0.1) {
-					precision = GlobeCoordinatesValue.PREC_DEGREE;
-				} else if (doublePrecision > 0.016666666666667) {
-					precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
-				} else if (doublePrecision > 0.01) {
-					precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
-				} else if (doublePrecision > 0.001) {
-					precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-				} else if (doublePrecision > 0.00027777777777778) {
-					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-				} else if (doublePrecision > 0.0001) {
-					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-				} else if (doublePrecision > 0.00002777777777778) {
-					precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
-				} else if (doublePrecision > 0.00001) {
-					precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-				} else if (doublePrecision > 0.00000277777777778) {
-					precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
-				} else if (doublePrecision > 0.000001) {
-					precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
-				} else if (doublePrecision > 0.00000027777777778) {
-					precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-				} else {
-					precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
-				}
+			if (doublePrecision > 1.0) {
+				precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
+			} else if (doublePrecision > 0.1) {
+				precision = GlobeCoordinatesValue.PREC_DEGREE;
+			} else if (doublePrecision > 0.016666666666667) {
+				precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
+			} else if (doublePrecision > 0.01) {
+				precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
+			} else if (doublePrecision > 0.001) {
+				precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
+			} else if (doublePrecision > 0.00027777777777778) {
+				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+			} else if (doublePrecision > 0.0001) {
+				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+			} else if (doublePrecision > 0.00002777777777778) {
+				precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
+			} else if (doublePrecision > 0.00001) {
+				precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+			} else if (doublePrecision > 0.00000277777777778) {
+				precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
+			} else if (doublePrecision > 0.000001) {
+				precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
+			} else if (doublePrecision > 0.00000027777777778) {
+				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+			} else {
+				precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+			}
 		}
 
 		// get the globeIri
@@ -601,30 +702,23 @@ public class JsonConverter {
 
 		EntityIdValue result;
 		String entityType = jsonObject.getString("entity-type");
+		int entityId = jsonObject.getInt("numeric-id");
 
 		// check the entity type
 		switch (entityType) {
 		case "item":
-			result = this.getItemIdValue(jsonObject.getInt("numeric-id"));
+			result = this.getEntityId(entityId, DocumentType.ITEM);
+			break;
+		case "property":
+			// this case is possible in theory,
+			// but I never encountered it so far
+			result = this.getEntityId(entityId, DocumentType.PROPERTY);
 			break;
 		default:
 			throw new JSONException("Unknown entity type " + entityType
 					+ " in entity id value JSON.");
 		}
 		return result;
-	}
-
-	/**
-	 * Creates a ItemIdValue from a given integer and the set item prefix.
-	 * 
-	 * @param intValue
-	 *            is the integer id of the item.
-	 * @return a ItemIdValue-instance.
-	 */
-	private ItemIdValue getItemIdValue(int intValue) {
-		String id = itemPrefix + intValue;
-		return this.factory.getItemIdValue(id, this.baseIri);
-
 	}
 
 	/**
@@ -800,7 +894,8 @@ public class JsonConverter {
 		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyIdValue(intPropertyId);
+		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
+				intPropertyId, DocumentType.PROPERTY);
 
 		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
 
@@ -827,7 +922,8 @@ public class JsonConverter {
 		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyIdValue(intPropertyId);
+		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
+				intPropertyId, DocumentType.PROPERTY);
 
 		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
 
@@ -916,29 +1012,6 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Constructs the item id of a JSON object denoting an item.
-	 * 
-	 * @param jsonEntity
-	 *            a JSON array containing information about the entity or
-	 *            property. The array shoud have the structure ["item", itemId]
-	 *            or ["property", propertyId].
-	 * @return An item id value prefixed accordingly.
-	 * @throws JSONException
-	 *             if the entity does not contain an "item"-entry or the entry
-	 *             is not followed by an integer denoting the item id.
-	 */
-	private ItemIdValue getItemId(JSONArray jsonEntity) throws JSONException {
-		assert jsonEntity != null : "Entity JSONArray was null";
-		assert jsonEntity.getString(0).equals("item") : "JSONArray did not denote an item id.";
-
-		return this.getItemIdValue(jsonEntity.getInt(1));
-	}
-
-	public String getBaseIri() {
-		return baseIri;
-	}
-
-	/**
 	 * Converts a JSONObject into a list of mono-lingual text values. The object
 	 * to be converted is the value associated with the given key in the top
 	 * level object. So if there is a JSONObject <i>topLevel</i> and the key
@@ -969,6 +1042,10 @@ public class JsonConverter {
 		return new LinkedList<>();
 	}
 
+	public String getBaseIri() {
+		return baseIri;
+	}
+
 	/**
 	 * For the <i>baseIri</i> see also
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
@@ -981,14 +1058,6 @@ public class JsonConverter {
 		if (baseIri == null)
 			return;
 		this.baseIri = baseIri;
-	}
-
-	public String getItemPrefix() {
-		return itemPrefix;
-	}
-
-	public String getPropertyPrefix() {
-		return propertyPrefix;
 	}
 
 }

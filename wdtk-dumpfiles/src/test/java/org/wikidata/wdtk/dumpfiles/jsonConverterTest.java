@@ -9,7 +9,11 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -34,8 +38,12 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
  * @author Fredo Erxleben
  * 
  */
+@RunWith(JUnit4.class)
 public class jsonConverterTest {
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	private String sampleFilesBasePath = "src/test/resources/testSamples/";
 	private static JsonConverter unitUnderTest;
 	private static String baseIri = "test";
@@ -120,9 +128,32 @@ public class jsonConverterTest {
 
 	@Test
 	public void testDifferentNotations() throws JSONException {
-		ItemTestCase testCase = this
-				.generateItemTestCase("DifferentNotations.json");
-		testCase.convert();
+		List<TestCase> testCases = new LinkedList<>();
+
+		testCases.add(this.generateItemTestCase("DifferentNotations.json"));
+		testCases.add(this.generateItemTestCase("StringEntityItem.json"));
+		testCases.add(this.generatePropertyTestCase("StringEntityProperty.json"));
+		
+
+		for (TestCase t : testCases) {
+			t.convert();
+		}
+	}
+	
+	@Test
+	public void testBrokenDocuments() throws JSONException{
+		
+		ItemTestCase itemTest = this.generateItemTestCase("NoEntityDocument.json");
+		PropertyTestCase propertyTest = this.generatePropertyTestCase("NoEntityDocument.json");
+		
+		exception.expect(JSONException.class);
+		itemTest.convert();
+		
+		exception.expect(JSONException.class);
+		propertyTest.convert();
+		
+		
+		
 	}
 
 	/**
