@@ -58,7 +58,7 @@ public class WmfDumpFileManager {
 	/**
 	 * The regular expression that a date stamp should match.
 	 */
-	static final String dateStampPattern = "\\d\\d\\d\\d\\d\\d\\d\\d";
+	static final String DATE_STAMP_PATTERN = "\\d\\d\\d\\d\\d\\d\\d\\d";
 
 	final String projectName;
 	final DirectoryManager dumpfileDirectoryManager;
@@ -285,7 +285,7 @@ public class WmfDumpFileManager {
 			String dateStamp = WmfDumpFile
 					.getDateStampFromDumpFileDirectoryName(dumpContentType,
 							directory);
-			if (dateStamp.matches(WmfDumpFileManager.dateStampPattern)) {
+			if (dateStamp.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
 				WmfLocalDumpFile dumpFile = new WmfLocalDumpFile(dateStamp,
 						this.projectName, dumpfileDirectoryManager,
 						dumpContentType);
@@ -394,7 +394,7 @@ public class WmfDumpFileManager {
 			while ((inputLine = in.readLine()) != null) {
 				if (inputLine.startsWith("<tr><td class=\"n\">")) {
 					String dateStamp = inputLine.substring(27, 35);
-					if (dateStamp.matches(WmfDumpFileManager.dateStampPattern)) {
+					if (dateStamp.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
 						result.add(dateStamp);
 					}
 				}
