@@ -234,7 +234,7 @@ public class JsonConverter {
 	 */
 	private EntityIdValue getEntityId(JSONArray jsonEntity, DocumentType docType)
 			throws JSONException {
-		assert jsonEntity != null : "Entity JSONArray was null";
+		// assert jsonEntity != null : "Entity JSONArray was null";
 
 		String expectedIdentifier;
 		String prefix;
@@ -415,7 +415,6 @@ public class JsonConverter {
 		return new LinkedList<>();
 	}
 
-	
 	/**
 	 * Converts the given JSON array into a list of Reference-objects. A
 	 * reference is an array of reference statements which in turn are value
@@ -463,7 +462,6 @@ public class JsonConverter {
 		return result;
 	}
 
-	
 	/**
 	 * Converts a JSON object into a mapping from site keys to
 	 * SiteLink-instances.
@@ -476,7 +474,7 @@ public class JsonConverter {
 	 */
 	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
 			throws JSONException {
-		assert jsonLinks != null : "Link JSON object was null";
+//		assert jsonLinks != null : "Link JSON object was null";
 
 		// links are siteKey:{"name":string,"badges":[string] }
 		// the siteKey is the key for the returned map
@@ -538,7 +536,7 @@ public class JsonConverter {
 	private List<StatementGroup> getStatements(JSONArray jsonStatements,
 			EntityIdValue subject) throws JSONException {
 
-		assert jsonStatements != null : "statements JSON array was null";
+//		assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
@@ -613,7 +611,6 @@ public class JsonConverter {
 		return result;
 	}
 
-	
 	/**
 	 * Transforms a statement rank from an integer representation to an
 	 * enumerated value as requested by the WDTK data model. <br/>
@@ -695,7 +692,6 @@ public class JsonConverter {
 		return result;
 	}
 
-	
 	/**
 	 * Converts a JSON array into a NoValueSnak.
 	 * 
@@ -712,8 +708,9 @@ public class JsonConverter {
 		// example:
 		// ["novalue",40], where P40 is the property "children"
 
-		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
-		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
+		// assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
+		// assert jsonNoValueSnak.getString(0).equals("novalue") :
+		// "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
@@ -723,7 +720,6 @@ public class JsonConverter {
 
 		return result;
 	}
-
 
 	/**
 	 * Converts a JSON array into a SomeValueSnak.
@@ -742,8 +738,8 @@ public class JsonConverter {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
 
-		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
-		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
+//		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
+//		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
@@ -753,7 +749,6 @@ public class JsonConverter {
 
 		return result;
 	}
-
 
 	/**
 	 * Converts the given JSON array into a ValueSnak.
@@ -772,8 +767,9 @@ public class JsonConverter {
 		// a value snak is
 		// ["value", propertyID, value-type, value]
 
-		assert jsonValueSnak != null : "jsonValueSnak was null";
-		assert jsonValueSnak.getString(0).equals("value") : "given JSON was not a value snak";
+		// assert jsonValueSnak != null : "jsonValueSnak was null";
+		// assert jsonValueSnak.getString(0).equals("value") :
+		// "given JSON was not a value snak";
 
 		ValueSnak result;
 
@@ -812,7 +808,6 @@ public class JsonConverter {
 		return result;
 	}
 
-
 	/**
 	 * Transforms a given string into a DatatypeIdValue.
 	 * 
@@ -821,7 +816,7 @@ public class JsonConverter {
 	 * @return the appropriate DatatypeIdValue-instance.
 	 */
 	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
-		assert jsonDataTypeId != null : "Given JSON datatype id was null";
+//		assert jsonDataTypeId != null : "Given JSON datatype id was null";
 
 		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
@@ -879,7 +874,7 @@ public class JsonConverter {
 	private GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
 
-		assert jsonGlobeCoordinate != null : "Globe coordinate JSON was null";
+//		assert jsonGlobeCoordinate != null : "Globe coordinate JSON was null";
 		// example:
 		// {"latitude":51.835,
 		// "longitude":10.785277777778,
@@ -975,7 +970,8 @@ public class JsonConverter {
 	 * @return
 	 */
 	private StringValue getStringIdValue(String string) {
-		assert string != null : "String to be converted to a StringValue was null";
+		// assert string != null :
+		// "String to be converted to a StringValue was null";
 
 		// NOTE I decided against inlining, so
 		// if the StringValue changes somehow in the future

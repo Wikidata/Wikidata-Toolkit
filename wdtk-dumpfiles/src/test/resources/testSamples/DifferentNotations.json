@@ -11,7 +11,7 @@
 		"en":["TEST", "Test"]
 	},
 	"links":{
-		"enwiki":{"name":"test","badges":[]}
+		"enwiki":{"name":"test","badges":["someBadge"]}
 	},
 	"entity":["item",1],
 	"claims":[

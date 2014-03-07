@@ -1,6 +1,9 @@
 package org.wikidata.wdtk.dumpfiles;
 
+
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,9 +44,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
 @RunWith(JUnit4.class)
 public class jsonConverterTest {
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-	
 	private String sampleFilesBasePath = "src/test/resources/testSamples/";
 	private static JsonConverter unitUnderTest;
 	private static String baseIri = "test";
@@ -119,7 +119,6 @@ public class jsonConverterTest {
 		testCases.add(this.generateItemTestCase("GlobalCoordinates.json"));
 		testCases.add(this.generateItemTestCase("StatementRanks.json"));
 		testCases.add(this.generateItemTestCase("SnakTypes.json"));
-		
 
 		for (ItemTestCase t : testCases) {
 			t.convert();
@@ -132,28 +131,53 @@ public class jsonConverterTest {
 
 		testCases.add(this.generateItemTestCase("DifferentNotations.json"));
 		testCases.add(this.generateItemTestCase("StringEntityItem.json"));
-		testCases.add(this.generatePropertyTestCase("StringEntityProperty.json"));
-		
+		testCases.add(this
+				.generatePropertyTestCase("StringEntityProperty.json"));
 
 		for (TestCase t : testCases) {
 			t.convert();
 		}
 	}
-	
+
 	@Test
-	public void testBrokenDocuments() throws JSONException{
+	public void testBrokenDocuments() throws JSONException {
+
+		boolean caughtException = true;
+
+		ItemTestCase itemTest = this
+				.generateItemTestCase("NoEntityDocument.json");
+		PropertyTestCase propertyTest = this
+				.generatePropertyTestCase("NoEntityDocument.json");
+
+		ItemTestCase miscErrors = this.generateItemTestCase("MiscErrors.json");
+
+		caughtException = false;
+		try {
+			itemTest.convert();
+		} catch (JSONException e) {
+			caughtException = true;
+
+		}
+		assertTrue(caughtException);
 		
-		ItemTestCase itemTest = this.generateItemTestCase("NoEntityDocument.json");
-		PropertyTestCase propertyTest = this.generatePropertyTestCase("NoEntityDocument.json");
+		caughtException = false;
+		try {
+			propertyTest.convert();
+		} catch (JSONException e) {
+			caughtException = true;
+
+		}
+		assertTrue(caughtException);
 		
-		exception.expect(JSONException.class);
-		itemTest.convert();
-		
-		exception.expect(JSONException.class);
-		propertyTest.convert();
-		
-		
-		
+		caughtException = false;
+		try {
+			miscErrors.convert();
+		} catch (JSONException e) {
+			caughtException = true;
+
+		}
+		assertTrue(caughtException);
+
 	}
 
 	/**
