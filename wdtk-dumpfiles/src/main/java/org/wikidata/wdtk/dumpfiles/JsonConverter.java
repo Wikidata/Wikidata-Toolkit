@@ -50,16 +50,17 @@ public class JsonConverter {
 
 	// TODO refactor: sort methods
 
-	public static final String itemPrefix = "Q";
-	public static final String propertyPrefix = "P";
-	// TODO refactor to form KEY_FOO
-	private static final String labelString = "label";
-	private static final String entityString = "entity";
-	private static final String descriptionString = "description";
-	private static final String aliasString = "aliases";
-	private static final String datatypeString = "datatype";
-	private static final String claimString = "claims";
-	private static final String linkString = "links";
+	public static final String PREFIX_ITEM = "Q";
+	public static final String PREFIX_PROPERTY = "P";
+	
+	// Keys that might occur in the documents
+	private static final String KEY_LABEL = "label";
+	private static final String KEY_ENTITY = "entity";
+	private static final String KEY_DESCRIPTION = "description";
+	private static final String KEY_ALIAS = "aliases";
+	private static final String KEY_DATATYPE = "datatype";
+	private static final String KEY_CLAIM = "claims";
+	private static final String KEY_LINK = "links";
 
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
 	private String baseIri = "";
@@ -108,32 +109,32 @@ public class JsonConverter {
 		// NOTE that in old dumps the entity is not an array
 		// but a string with appropriate prefix in lowercase
 		PropertyIdValue propertyId;
-		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
-		if (!toConvert.has(entityString)) {
+		JSONArray jsonEntity = toConvert.optJSONArray(KEY_ENTITY);
+		if (!toConvert.has(KEY_ENTITY)) {
 			throw new JSONException("No entity entry found.");
 		} else if (jsonEntity != null) { // it is an array
 			propertyId = (PropertyIdValue) this.getEntityId(jsonEntity,
 					DocumentType.PROPERTY);
 		} else { // it is a String
-			String stringItemId = toConvert.getString(entityString);
+			String stringItemId = toConvert.getString(KEY_ENTITY);
 			propertyId = (PropertyIdValue) this.getEntityId(stringItemId,
 					DocumentType.PROPERTY);
 		}
 
 		// get the labels
 		List<MonolingualTextValue> labels = this
-				.getMltv(labelString, toConvert);
+				.getMltv(KEY_LABEL, toConvert);
 
 		// get the descriptions
 		List<MonolingualTextValue> descriptions = this.getMltv(
-				descriptionString, toConvert);
+				KEY_DESCRIPTION, toConvert);
 
 		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(aliasString,
+		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS,
 				toConvert);
 
 		// get the datatype id
-		String jsonDataTypeId = toConvert.getString(datatypeString);
+		String jsonDataTypeId = toConvert.getString(KEY_DATATYPE);
 		DatatypeIdValue datatypeId = this.getDataTypeId(jsonDataTypeId);
 
 		result = this.factory.getPropertyDocument(propertyId, labels,
@@ -170,44 +171,44 @@ public class JsonConverter {
 		// NOTE that in old dumps the entity is not an array
 		// but a string with appropriate prefix in lowercase
 		ItemIdValue itemId;
-		JSONArray jsonEntity = toConvert.optJSONArray(entityString);
-		if (!toConvert.has(entityString)) {
+		JSONArray jsonEntity = toConvert.optJSONArray(KEY_ENTITY);
+		if (!toConvert.has(KEY_ENTITY)) {
 			throw new JSONException("No entity entry found.");
 		} else if (jsonEntity != null) { // it is an array
 			itemId = (ItemIdValue) this.getEntityId(jsonEntity,
 					DocumentType.ITEM);
 		} else { // it is a String
-			String stringItemId = toConvert.getString(entityString);
+			String stringItemId = toConvert.getString(KEY_ENTITY);
 			itemId = (ItemIdValue) this.getEntityId(stringItemId,
 					DocumentType.ITEM);
 		}
 
 		// get the labels
 		List<MonolingualTextValue> labels = this
-				.getMltv(labelString, toConvert);
+				.getMltv(KEY_LABEL, toConvert);
 
 		// get the description
 		List<MonolingualTextValue> descriptions = this.getMltv(
-				descriptionString, toConvert);
+				KEY_DESCRIPTION, toConvert);
 
 		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(aliasString,
+		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS,
 				toConvert);
 
 		// get the statements
 		List<StatementGroup> statements = new LinkedList<>();
-		if (toConvert.has(claimString)) {
-			JSONArray jsonStatements = toConvert.getJSONArray(claimString);
+		if (toConvert.has(KEY_CLAIM)) {
+			JSONArray jsonStatements = toConvert.getJSONArray(KEY_CLAIM);
 			statements = this.getStatements(jsonStatements, itemId);
 		}
 
 		// get the site links
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 
-		if (toConvert.has(linkString)) {
-			JSONArray linkArray = toConvert.optJSONArray(linkString);
+		if (toConvert.has(KEY_LINK)) {
+			JSONArray linkArray = toConvert.optJSONArray(KEY_LINK);
 			if (linkArray == null) {
-				JSONObject jsonLinks = toConvert.getJSONObject(linkString);
+				JSONObject jsonLinks = toConvert.getJSONObject(KEY_LINK);
 				siteLinks = this.getSiteLinks(jsonLinks);
 			}
 		}
@@ -240,11 +241,11 @@ public class JsonConverter {
 		switch (docType) {
 		case ITEM:
 			expectedIdentifier = "item";
-			prefix = itemPrefix;
+			prefix = PREFIX_ITEM;
 			break;
 		case PROPERTY:
 			expectedIdentifier = "property";
-			prefix = propertyPrefix;
+			prefix = PREFIX_PROPERTY;
 			break;
 		default:
 			throw new JSONException("Unsupported document type");
@@ -286,10 +287,10 @@ public class JsonConverter {
 
 		switch (docType) {
 		case ITEM:
-			expectedPrefix = itemPrefix;
+			expectedPrefix = PREFIX_ITEM;
 			break;
 		case PROPERTY:
-			expectedPrefix = propertyPrefix;
+			expectedPrefix = PREFIX_PROPERTY;
 			break;
 		default:
 			throw new JSONException("Unsupported document type");
@@ -323,10 +324,10 @@ public class JsonConverter {
 
 		switch (docType) {
 		case ITEM:
-			prefix = itemPrefix;
+			prefix = PREFIX_ITEM;
 			break;
 		case PROPERTY:
-			prefix = propertyPrefix;
+			prefix = PREFIX_PROPERTY;
 			break;
 		default:
 			throw new JSONException("Unsupported document type");
@@ -349,16 +350,138 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Transforms a given string into a DatatypeIdValue.
+	 * Converts a JSONObject into a list of mono-lingual text values. The object
+	 * to be converted is the value associated with the given key in the top
+	 * level object. So if there is a JSONObject <i>topLevel</i> and the key
+	 * "label" are given, only the JSONObject found in the <i>topLevel</i> under
+	 * the key "label" will be converted, not the whole <i>topLevel</i>.
 	 * 
-	 * @param jsonDataTypeId
-	 *            is the string to be converted. Must not be null.
-	 * @return the appropriate DatatypeIdValue-instance.
+	 * MLTV is the abbreviation for MonoLingualTextValue.
+	 * 
+	 * @param key
+	 *            is the key of the object to be converted in the topLevel. If
+	 *            the key is not present or not an object an empty list will be
+	 *            returned.
+	 * @param topLevel
+	 *            is the JSONObject that contains the object to be converted
+	 *            under a given key.
+	 * @return a list of extracted mono-lingual text values. Might be empty, but
+	 *         not null.
 	 */
-	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
-		assert jsonDataTypeId != null : "Given JSON datatype id was null";
+	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
+	
+		MltvHandler handler = new MltvHandler(this.factory);
+	
+		JSONObject toConvert = topLevel.optJSONObject(key);
+		if (toConvert != null) {
+			return handler.convertToMltv(toConvert);
+		} // else…
+	
+		return new LinkedList<>();
+	}
 
-		return this.factory.getDatatypeIdValue(jsonDataTypeId);
+	/**
+	 * Converts the given JSON array into a list of Reference-objects. A
+	 * reference is an array of reference statements which in turn are value
+	 * snaks.
+	 * 
+	 * @param jsonReferences
+	 *            is an JSON array of JSON arrays of value snaks
+	 * @return the appropriate List of references.
+	 */
+	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
+		// References are [singeRef]
+		// singleRef are [refStatements]
+		// refStatements are value snaks
+	
+		List<Reference> result = new LinkedList<>();
+	
+		// process the single references
+		for (int i = 0; i < jsonReferences.length(); i++) {
+			try {
+				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
+				List<ValueSnak> valueSnaks = new LinkedList<>();
+	
+				// process the reference statements
+				for (int j = 0; j < jsonSingleRef.length(); j++) {
+					try {
+						JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
+						ValueSnak currentValueSnak = this
+								.getValueSnak(jsonValueSnak);
+						valueSnaks.add(currentValueSnak);
+					} catch (JSONException e) {
+						// skip over invalid references
+						continue;
+					}
+				}
+	
+				Reference singleReference = factory.getReference(valueSnaks);
+				result.add(singleReference);
+	
+			} catch (JSONException e) {
+				// skip over invalid references
+				continue;
+			}
+	
+		}
+		return result;
+	}
+
+	/**
+	 * Converts a JSON object into a mapping from site keys to
+	 * SiteLink-instances.
+	 * 
+	 * @param jsonLinks
+	 *            a JSON object representing the site links.
+	 * @return A mapping with a String representing a site key e.g. "enwiki" as
+	 *         key and a SiteLink-object as value.
+	 * @throws JSONException
+	 */
+	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
+			throws JSONException {
+		assert jsonLinks != null : "Link JSON object was null";
+	
+		// links are siteKey:{"name":string,"badges":[string] }
+		// the siteKey is the key for the returned map
+		// or they are siteKey:string
+	
+		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
+	
+		@SuppressWarnings("unchecked")
+		Iterator<String> linkIterator = jsonLinks.keys();
+	
+		while (linkIterator.hasNext()) {
+	
+			String title;
+			List<String> badges = new LinkedList<String>();
+	
+			String siteKey = linkIterator.next();
+	
+			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
+			String stringLink = jsonLinks.optString(siteKey);
+	
+			if (currentLink != null) {
+	
+				title = currentLink.getString("name");
+				JSONArray badgeArray = currentLink.getJSONArray("badges");
+	
+				// convert badges to List<String>
+				for (int i = 0; i < badgeArray.length(); i++) {
+					badges.add(badgeArray.getString(i));
+				}
+			} else if (stringLink != null) { // its a string
+				title = stringLink;
+			} else { // none of the above, skip
+				continue;
+			}
+	
+			// create the SiteLink instance
+			SiteLink siteLink = factory.getSiteLink(title, siteKey,
+					this.baseIri, badges);
+			result.put(siteKey, siteLink);
+		}
+	
+		return result;
 	}
 
 	/**
@@ -377,95 +500,217 @@ public class JsonConverter {
 	 */
 	private List<StatementGroup> getStatements(JSONArray jsonStatements,
 			EntityIdValue subject) throws JSONException {
-
+	
 		assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
 		// "m" => main snak
 		// "g" => statement id
-
+	
 		List<StatementGroup> result = new LinkedList<StatementGroup>();
 		List<Statement> statementsFromJson = new LinkedList<Statement>();
-
+	
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
 			JSONObject currentStatement = jsonStatements.getJSONObject(i);
-
+	
 			// get a list of statements in the order they are in the JSON
 			// get the claim
 			Claim currentClaim = this.getClaim(currentStatement, subject);
-
+	
 			// get the references
 			JSONArray jsonRefs = currentStatement.getJSONArray("refs");
 			List<? extends Reference> references = this.getReferences(jsonRefs);
-
+	
 			// get the statement rank
 			int rankAsInt = currentStatement.getInt("rank");
 			StatementRank rank = this.getStatementRank(rankAsInt);
-
+	
 			// get the statement id
 			String statementId = currentStatement.getString("g");
-
+	
 			// combine into statement
 			Statement statement = factory.getStatement(currentClaim,
 					references, rank, statementId);
-
+	
 			statementsFromJson.add(statement);
-
+	
 		}
-
+	
 		// process the list of statements into a list of statement groups
 		StatementGroupBuilder builder = new StatementGroupBuilder(this.factory);
 		result = builder.buildFromStatementList(statementsFromJson);
-
+	
 		return result;
 	}
 
 	/**
-	 * Converts the given JSON array into a list of Reference-objects. A
-	 * reference is an array of reference statements which in turn are value
-	 * snaks.
+	 * Gets the claim from a statement in JSON. A Claim consists out of the
+	 * EntityIdValue of the subject, the subjects main snak and its qualifiers.
 	 * 
-	 * @param jsonReferences
-	 *            is an JSON array of JSON arrays of value snaks
-	 * @return the appropriate List of references.
+	 * @param currentStatement
+	 *            a JSON object representing a whole statement from which the
+	 *            claim is to be extracted.
+	 * @return
+	 * @throws JSONException
+	 *             when a required key was not found or the snak type could not
+	 *             be identified.
 	 */
-	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
-		// References are [singeRef]
-		// singleRef are [refStatements]
-		// refStatements are value snaks
+	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
+			throws JSONException {
+	
+		// m: main snak
+		// q: qualifiers
+	
+		// get the main snak
+		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
+		Snak mainSnak = getSnak(jsonMainSnak);
+	
+		// get the qualifiers
+		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
+		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
+	
+		// build it together
+		Claim result = this.factory.getClaim(subject, mainSnak, qualifiers);
+		return result;
+	}
 
-		List<Reference> result = new LinkedList<>();
+	/**
+	 * Transforms a statement rank from an integer representation to an
+	 * enumerated value as requested by the WDTK data model. <br/>
+	 * The number 0 maps to DEPRECATED. <br/>
+	 * The number 1 maps to NORMAL. <br/>
+	 * The number 2 maps to PREFERRED. <br/>
+	 * 
+	 * To accommodate for possible other values that may occur any number below
+	 * 0 also maps to DEPRECATED and any number above 2 also maps to PREFERRED.
+	 * 
+	 * @param intRank
+	 *            the rank as integer.
+	 * @return an appropriate StatementRank-value
+	 */
+	private StatementRank getStatementRank(int intRank) {
+	
+		// this is the default case
+		StatementRank result = StatementRank.NORMAL;
+	
+		if (intRank < 1) {
+			result = StatementRank.DEPRECATED;
+		} else if (intRank > 1) {
+			result = StatementRank.PREFERRED;
+		}
+		return result;
+	}
 
-		// process the single references
-		for (int i = 0; i < jsonReferences.length(); i++) {
+	/**
+	 * Converts the qualifiers from a JSON array to a list of value snaks.
+	 * 
+	 * @param jsonQualifiers
+	 *            is a JSON array containing several snaks.
+	 * @return a list of snaks corresponding to the given JSON array.
+	 */
+	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
+		// effectively a list of value snaks
+	
+		List<Snak> result = new LinkedList<Snak>();
+		for (int i = 0; i < jsonQualifiers.length(); i++) {
 			try {
-				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
-				List<ValueSnak> valueSnaks = new LinkedList<>();
-
-				// process the reference statements
-				for (int j = 0; j < jsonSingleRef.length(); j++) {
-					try {
-						JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
-						ValueSnak currentValueSnak = this
-								.getValueSnak(jsonValueSnak);
-						valueSnaks.add(currentValueSnak);
-					} catch (JSONException e) {
-						// skip over invalid references
-						continue;
-					}
-				}
-
-				Reference singleReference = factory.getReference(valueSnaks);
-				result.add(singleReference);
-
+				JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
+				result.add(this.getSnak(currentValueSnak));
 			} catch (JSONException e) {
-				// skip over invalid references
+				// skip the snak on error
 				continue;
 			}
-
 		}
+	
+		return result;
+	}
+
+	/**
+	 * Converts the given JSON array into a Snak. This might either be a
+	 * ValueSnak, NoValueSnak or SomeValueSnak.
+	 * 
+	 * @param jsonMainSnak
+	 *            is the JSON array to be converted. Must not be null.
+	 * @return A Snak corresponding to the given JSON array.
+	 * @throws JSONException
+	 *             if the snack type could not determined.
+	 */
+	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
+	
+		Snak result;
+		switch (jsonMainSnak.getString(0)) {
+		case "value":
+			result = this.getValueSnak(jsonMainSnak);
+			break;
+		case "somevalue":
+			result = this.getSomeValueSnak(jsonMainSnak);
+			break;
+		case "novalue":
+			result = this.getNoValueSnak(jsonMainSnak);
+			break;
+		default: // could not determine snak type...
+			throw new JSONException("Unknown snack type: "
+					+ jsonMainSnak.getString(0));
+		}
+		return result;
+	}
+
+	/**
+	 * Converts a JSON array into a NoValueSnak.
+	 * 
+	 * @param jsonNoValueSnak
+	 *            is an JSON array that denotes a no-value snak. It has the form<br/>
+	 *            ["novalue", <i>propertyID</i>]
+	 * 
+	 * @return an appropriate NoValueSnak-instance
+	 * @throws JSONException
+	 *             if the format does not match the required one.
+	 */
+	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak)
+			throws JSONException {
+		// example:
+		// ["novalue",40], where P40 is the property "children"
+	
+		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
+		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
+	
+		int intPropertyId = jsonNoValueSnak.getInt(1);
+		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
+				intPropertyId, DocumentType.PROPERTY);
+	
+		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
+	
+		return result;
+	}
+
+	/**
+	 * Converts a JSON array into a SomeValueSnak.
+	 * 
+	 * @param jsonSomeValueSnak
+	 *            is an JSON array that denotes a some-value snak. It has the
+	 *            form<br/>
+	 *            ["somevalue", <i>propertyID</i>]
+	 * 
+	 * @return an appropriate SomeValueSnak-instance
+	 * @throws JSONException
+	 *             if the format does not match the required one.
+	 */
+	private SomeValueSnak getSomeValueSnak(JSONArray jsonSomeValueSnak)
+			throws JSONException {
+		// example:
+		// ["somevalue",22], where P22 is the property "father"
+	
+		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
+		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
+	
+		int intPropertyId = jsonSomeValueSnak.getInt(1);
+		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
+				intPropertyId, DocumentType.PROPERTY);
+	
+		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
+	
 		return result;
 	}
 
@@ -485,17 +730,17 @@ public class JsonConverter {
 			throws JSONException {
 		// a value snak is
 		// ["value", propertyID, value-type, value]
-
+	
 		assert jsonValueSnak != null : "jsonValueSnak was null";
 		assert jsonValueSnak.getString(0).equals("value") : "given JSON was not a value snak";
-
+	
 		ValueSnak result;
-
+	
 		// get the property id
 		int intId = jsonValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(intId,
 				DocumentType.PROPERTY);
-
+	
 		// get the value
 		String valueString = jsonValueSnak.getString(2);
 		Value value;
@@ -520,10 +765,23 @@ public class JsonConverter {
 			throw new JSONException("Unknown value type " + valueString
 					+ "in value snak JSON");
 		}
-
+	
 		// put it all together
 		result = this.factory.getValueSnak(propertyId, value);
 		return result;
+	}
+
+	/**
+	 * Transforms a given string into a DatatypeIdValue.
+	 * 
+	 * @param jsonDataTypeId
+	 *            is the string to be converted. Must not be null.
+	 * @return the appropriate DatatypeIdValue-instance.
+	 */
+	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
+		assert jsonDataTypeId != null : "Given JSON datatype id was null";
+
+		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
 
 	/**
@@ -783,263 +1041,6 @@ public class JsonConverter {
 				second, precision, beforeTolerance, afterTolerance,
 				timezoneOffset, calendarModel);
 		return result;
-	}
-
-	/**
-	 * Transforms a statement rank from an integer representation to an
-	 * enumerated value as requested by the WDTK data model. <br/>
-	 * The number 0 maps to DEPRECATED. <br/>
-	 * The number 1 maps to NORMAL. <br/>
-	 * The number 2 maps to PREFERRED. <br/>
-	 * 
-	 * To accommodate for possible other values that may occur any number below
-	 * 0 also maps to DEPRECATED and any number above 2 also maps to PREFERRED.
-	 * 
-	 * @param intRank
-	 *            the rank as integer.
-	 * @return an appropriate StatementRank-value
-	 */
-	private StatementRank getStatementRank(int intRank) {
-
-		// this is the default case
-		StatementRank result = StatementRank.NORMAL;
-
-		if (intRank < 1) {
-			result = StatementRank.DEPRECATED;
-		} else if (intRank > 1) {
-			result = StatementRank.PREFERRED;
-		}
-		return result;
-	}
-
-	/**
-	 * Gets the claim from a statement in JSON. A Claim consists out of the
-	 * EntityIdValue of the subject, the subjects main snak and its qualifiers.
-	 * 
-	 * @param currentStatement
-	 *            a JSON object representing a whole statement from which the
-	 *            claim is to be extracted.
-	 * @return
-	 * @throws JSONException
-	 *             when a required key was not found or the snak type could not
-	 *             be identified.
-	 */
-	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
-			throws JSONException {
-
-		// m: main snak
-		// q: qualifiers
-
-		// get the main snak
-		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
-		Snak mainSnak = getSnak(jsonMainSnak);
-
-		// get the qualifiers
-		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
-		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
-
-		// build it together
-		Claim result = this.factory.getClaim(subject, mainSnak, qualifiers);
-		return result;
-	}
-
-	/**
-	 * Converts the given JSON array into a Snak. This might either be a
-	 * ValueSnak, NoValueSnak or SomeValueSnak.
-	 * 
-	 * @param jsonMainSnak
-	 *            is the JSON array to be converted. Must not be null.
-	 * @return A Snak corresponding to the given JSON array.
-	 * @throws JSONException
-	 *             if the snack type could not determined.
-	 */
-	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
-
-		Snak result;
-		switch (jsonMainSnak.getString(0)) {
-		case "value":
-			result = this.getValueSnak(jsonMainSnak);
-			break;
-		case "somevalue":
-			result = this.getSomeValueSnak(jsonMainSnak);
-			break;
-		case "novalue":
-			result = this.getNoValueSnak(jsonMainSnak);
-			break;
-		default: // could not determine snak type...
-			throw new JSONException("Unknown snack type: "
-					+ jsonMainSnak.getString(0));
-		}
-		return result;
-	}
-
-	/**
-	 * Converts a JSON array into a SomeValueSnak.
-	 * 
-	 * @param jsonSomeValueSnak
-	 *            is an JSON array that denotes a some-value snak. It has the
-	 *            form<br/>
-	 *            ["somevalue", <i>propertyID</i>]
-	 * 
-	 * @return an appropriate SomeValueSnak-instance
-	 * @throws JSONException
-	 *             if the format does not match the required one.
-	 */
-	private SomeValueSnak getSomeValueSnak(JSONArray jsonSomeValueSnak)
-			throws JSONException {
-		// example:
-		// ["somevalue",22], where P22 is the property "father"
-
-		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
-		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
-
-		int intPropertyId = jsonSomeValueSnak.getInt(1);
-		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
-				intPropertyId, DocumentType.PROPERTY);
-
-		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
-
-		return result;
-	}
-
-	/**
-	 * Converts a JSON array into a NoValueSnak.
-	 * 
-	 * @param jsonNoValueSnak
-	 *            is an JSON array that denotes a no-value snak. It has the form<br/>
-	 *            ["novalue", <i>propertyID</i>]
-	 * 
-	 * @return an appropriate NoValueSnak-instance
-	 * @throws JSONException
-	 *             if the format does not match the required one.
-	 */
-	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak)
-			throws JSONException {
-		// example:
-		// ["novalue",40], where P40 is the property "children"
-
-		assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
-		assert jsonNoValueSnak.getString(0).equals("novalue") : "Argument was not a SomeValueSnak.";
-
-		int intPropertyId = jsonNoValueSnak.getInt(1);
-		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
-				intPropertyId, DocumentType.PROPERTY);
-
-		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
-
-		return result;
-	}
-
-	/**
-	 * Converts the qualifiers from a JSON array to a list of value snaks.
-	 * 
-	 * @param jsonQualifiers
-	 *            is a JSON array containing several snaks.
-	 * @return a list of snaks corresponding to the given JSON array.
-	 */
-	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
-		// effectively a list of value snaks
-
-		List<Snak> result = new LinkedList<Snak>();
-		for (int i = 0; i < jsonQualifiers.length(); i++) {
-			try {
-				JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
-				result.add(this.getSnak(currentValueSnak));
-			} catch (JSONException e) {
-				// skip the snak on error
-				continue;
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Converts a JSON object into a mapping from site keys to
-	 * SiteLink-instances.
-	 * 
-	 * @param jsonLinks
-	 *            a JSON object representing the site links.
-	 * @return A mapping with a String representing a site key e.g. "enwiki" as
-	 *         key and a SiteLink-object as value.
-	 * @throws JSONException
-	 */
-	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
-			throws JSONException {
-		assert jsonLinks != null : "Link JSON object was null";
-
-		// links are siteKey:{"name":string,"badges":[string] }
-		// the siteKey is the key for the returned map
-		// or they are siteKey:string
-
-		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
-
-		@SuppressWarnings("unchecked")
-		Iterator<String> linkIterator = jsonLinks.keys();
-
-		while (linkIterator.hasNext()) {
-
-			String title;
-			List<String> badges = new LinkedList<String>();
-
-			String siteKey = linkIterator.next();
-
-			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
-			String stringLink = jsonLinks.optString(siteKey);
-
-			if (currentLink != null) {
-
-				title = currentLink.getString("name");
-				JSONArray badgeArray = currentLink.getJSONArray("badges");
-
-				// convert badges to List<String>
-				for (int i = 0; i < badgeArray.length(); i++) {
-					badges.add(badgeArray.getString(i));
-				}
-			} else if (stringLink != null) { // its a string
-				title = stringLink;
-			} else { // none of the above, skip
-				continue;
-			}
-
-			// create the SiteLink instance
-			SiteLink siteLink = factory.getSiteLink(title, siteKey,
-					this.baseIri, badges);
-			result.put(siteKey, siteLink);
-		}
-
-		return result;
-	}
-
-	/**
-	 * Converts a JSONObject into a list of mono-lingual text values. The object
-	 * to be converted is the value associated with the given key in the top
-	 * level object. So if there is a JSONObject <i>topLevel</i> and the key
-	 * "label" are given, only the JSONObject found in the <i>topLevel</i> under
-	 * the key "label" will be converted, not the whole <i>topLevel</i>.
-	 * 
-	 * MLTV is the abbreviation for MonoLingualTextValue.
-	 * 
-	 * @param key
-	 *            is the key of the object to be converted in the topLevel. If
-	 *            the key is not present or not an object an empty list will be
-	 *            returned.
-	 * @param topLevel
-	 *            is the JSONObject that contains the object to be converted
-	 *            under a given key.
-	 * @return a list of extracted mono-lingual text values. Might be empty, but
-	 *         not null.
-	 */
-	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
-
-		MltvHandler handler = new MltvHandler(this.factory);
-
-		JSONObject toConvert = topLevel.optJSONObject(key);
-		if (toConvert != null) {
-			return handler.convertToMltv(toConvert);
-		} // else…
-
-		return new LinkedList<>();
 	}
 
 	public String getBaseIri() {
