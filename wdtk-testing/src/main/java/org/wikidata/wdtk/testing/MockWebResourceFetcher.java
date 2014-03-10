@@ -100,6 +100,10 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *            the Java resource name
 	 * @param contentsType
 	 *            one of the predefined type constants
+	 * @param resourceClass
+	 *            the Class relative to which the resource should be resolved
+	 *            (since resources are stored relative to a classpath); can
+	 *            usually be obtained with getClass() from the calling object
 	 * @throws IOException
 	 *             if the Java resource could not be loaded
 	 */
