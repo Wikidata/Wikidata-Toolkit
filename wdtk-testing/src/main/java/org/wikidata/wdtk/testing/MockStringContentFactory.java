@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.util;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L

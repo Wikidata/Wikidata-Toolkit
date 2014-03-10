@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.util;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -26,6 +26,8 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class MockWebResourceFetcherTest {
 
@@ -33,7 +35,7 @@ public class MockWebResourceFetcherTest {
 
 	@Before
 	public void setUp() throws Exception {
-		mwrf = new MockWebResourceFetcher(this.getClass());
+		mwrf = new MockWebResourceFetcher();
 		mwrf.setWebResourceContents("http://example.com/test.html",
 				"Line1\nLine2", MockWebResourceFetcher.TYPE_HTML);
 		mwrf.setWebResourceContents("http://example.com/test.gzip",

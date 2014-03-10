@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.wikidata.wdtk.util.MockDirectoryManager;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
 
 public class WmfLocalDumpFileTest {
 

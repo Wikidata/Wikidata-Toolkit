@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.util;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -34,6 +34,9 @@ import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.util.DirectoryManager;
 
 public class MockDirectoryManagerTest {
 

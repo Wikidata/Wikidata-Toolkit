@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.util;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -33,6 +33,8 @@ import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
  * Mock implementation of {@link DirectoryManager} that simulates file access

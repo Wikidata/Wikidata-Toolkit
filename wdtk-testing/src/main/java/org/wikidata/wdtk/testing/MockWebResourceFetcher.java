@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.util;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.wikidata.wdtk.util.WebResourceFetcher;
+
 /**
  * Mock implementation of {@link WebResourceFetcher}.
  * 
@@ -42,18 +44,15 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	final HashMap<String, String> webResourceTypes;
 	boolean returnFailingReaders;
 
-	final Class<?> resourceClass;
-
 	/**
 	 * Constructor.
 	 * 
 	 * @param resourceClass
 	 *            the Class that should be used to resolve resources
 	 */
-	public MockWebResourceFetcher(Class<?> resourceClass) {
+	public MockWebResourceFetcher() {
 		this.webResources = new HashMap<String, String>();
 		this.webResourceTypes = new HashMap<String, String>();
-		this.resourceClass = resourceClass;
 	}
 
 	/**
@@ -105,28 +104,12 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *             if the Java resource could not be loaded
 	 */
 	public void setWebResourceContentsFromResource(String url, String resource,
-			String contentsType) throws IOException {
-		URL resourceUrl = this.resourceClass.getResource(resource);
+			String contentsType, Class<?> resourceClass) throws IOException {
+		URL resourceUrl = resourceClass.getResource(resource);
 		String contents = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
 		setWebResourceContents(url, contents, contentsType);
 	}
-
-	// @Override
-	// public BufferedReader getBufferedReaderForUrl(String urlString)
-	// throws IOException {
-	// return new BufferedReader(new InputStreamReader(
-	// getInputStreamForMockWebResource(urlString,
-	// MockWebResourceFetcher.TYPE_HTML),
-	// StandardCharsets.UTF_8));
-	// }
-	//
-	// @Override
-	// public BufferedReader getBufferedReaderForGzipUrl(String urlString)
-	// throws IOException {
-	// return new BufferedReader(new InputStreamReader(
-	// getInputStreamForGzipUrl(urlString), StandardCharsets.UTF_8));
-	// }
 
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)

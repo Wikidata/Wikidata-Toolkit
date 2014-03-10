@@ -32,9 +32,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.util.MockDirectoryManager;
-import org.wikidata.wdtk.util.MockStringContentFactory;
-import org.wikidata.wdtk.util.MockWebResourceFetcher;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class WmfDumpFileManagerTest {
 
@@ -69,7 +69,7 @@ public class WmfDumpFileManagerTest {
 
 	@Before
 	public void setUp() throws IOException {
-		this.wrf = new MockWebResourceFetcher(this.getClass());
+		this.wrf = new MockWebResourceFetcher();
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
 		this.dm = new MockDirectoryManager(this.dmPath);
 	}
@@ -104,7 +104,7 @@ public class WmfDumpFileManagerTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.CURRENT, true);
@@ -142,7 +142,8 @@ public class WmfDumpFileManagerTest {
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
 		setLocalDump("20140123", DumpContentType.CURRENT, true);
@@ -177,7 +178,8 @@ public class WmfDumpFileManagerTest {
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
 		setLocalDump("20140123", DumpContentType.FULL, true);
@@ -279,10 +281,11 @@ public class WmfDumpFileManagerTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.FULL, true);
