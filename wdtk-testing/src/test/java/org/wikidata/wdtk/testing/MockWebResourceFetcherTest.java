@@ -21,13 +21,13 @@ package org.wikidata.wdtk.testing;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.testing.MockStringContentFactory;
-import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class MockWebResourceFetcherTest {
 
@@ -54,6 +54,32 @@ public class MockWebResourceFetcherTest {
 		String content = MockStringContentFactory.getStringFromInputStream(mwrf
 				.getInputStreamForGzipUrl("http://example.com/test.gzip"));
 		assertEquals(content, "Line1\nLine2");
+	}
+
+	@Test
+	public void setConcentsFromResource() throws IOException {
+		mwrf.setWebResourceContentsFromResource(
+				"http://example.com/resource.html", "/test.txt",
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
+		String content = MockStringContentFactory.getStringFromInputStream(mwrf
+				.getInputStreamForUrl("http://example.com/resource.html"));
+		assertEquals(content, "This file is here\nto test resource loading.");
+	}
+
+	@Test
+	public void inputStreamForHtmlFails() throws IOException {
+		mwrf.setReturnFailingReaders(true);
+		InputStream in = mwrf
+				.getInputStreamForUrl("http://example.com/test.html");
+		// We do not use @Test(expected = IOException.class) in order to check
+		// if the exception is really thrown at the right moment.
+		boolean exception = false;
+		try {
+			MockStringContentFactory.getStringFromInputStream(in);
+		} catch (IOException e) {
+			exception = true;
+		}
+		assertTrue(exception);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -34,8 +34,6 @@ import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.testing.MockDirectoryManager;
-import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 public class MockDirectoryManagerTest {
@@ -125,6 +123,22 @@ public class MockDirectoryManagerTest {
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
 				.getInputStreamForFile("newfile.txt"));
 		assertEquals(content, "New contents");
+	}
+
+	@Test
+	public void readFileFails() throws IOException {
+		mdm.setReturnFailingReaders(true);
+		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
+		InputStream in = submdm.getInputStreamForFile("test.txt");
+		// We do not use @Test(expected = IOException.class) in order to check
+		// if the exception is really thrown at the right moment.
+		boolean exception = false;
+		try {
+			MockStringContentFactory.getStringFromInputStream(in);
+		} catch (IOException e) {
+			exception = true;
+		}
+		assertTrue(exception);
 	}
 
 	@Test(expected = FileAlreadyExistsException.class)
