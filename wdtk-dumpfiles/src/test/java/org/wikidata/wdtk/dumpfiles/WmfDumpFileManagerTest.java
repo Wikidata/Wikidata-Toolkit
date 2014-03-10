@@ -24,19 +24,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.util.MockDirectoryManager;
+import org.wikidata.wdtk.util.MockStringContentFactory;
+import org.wikidata.wdtk.util.MockWebResourceFetcher;
 
 public class WmfDumpFileManagerTest {
 
 	MockWebResourceFetcher wrf;
 	MockDirectoryManager dm;
+	Path dmPath;
 
 	/**
 	 * Helper class to test dump file processing capabilities.
@@ -49,13 +53,12 @@ public class WmfDumpFileManagerTest {
 		String result = "";
 
 		@Override
-		public void processDumpFileContents(BufferedReader bufferedReader,
+		public void processDumpFileContents(InputStream inputStream,
 				MediaWikiDumpFile dumpFile) {
 			try {
 				result = result
 						+ MockStringContentFactory
-								.getStringFromBufferedReader(bufferedReader)
-						+ "\n";
+								.getStringFromInputStream(inputStream) + "\n";
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -66,8 +69,9 @@ public class WmfDumpFileManagerTest {
 
 	@Before
 	public void setUp() throws IOException {
-		wrf = new MockWebResourceFetcher();
-		dm = new MockDirectoryManager(Paths.get(System.getProperty("user.dir")));
+		this.wrf = new MockWebResourceFetcher(this.getClass());
+		this.dmPath = Paths.get(System.getProperty("user.dir"));
+		this.dm = new MockDirectoryManager(this.dmPath);
 	}
 
 	/**
@@ -80,7 +84,7 @@ public class WmfDumpFileManagerTest {
 	void setLocalDump(String dateStamp, DumpContentType dumpContentType,
 			boolean isDone) {
 
-		Path dumpFilePath = dm.directory.resolve("dumpfiles").resolve(
+		Path dumpFilePath = this.dmPath.resolve("dumpfiles").resolve(
 				"wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);

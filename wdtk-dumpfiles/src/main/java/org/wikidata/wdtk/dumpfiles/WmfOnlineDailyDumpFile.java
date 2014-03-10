@@ -23,6 +23,11 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
  * Class for representing incremental daily dump files as published by the
@@ -64,7 +69,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	public BufferedReader getDumpFileReader() throws IOException {
+	public InputStream getDumpFileStream() throws IOException {
 		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
@@ -86,15 +91,18 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
 				this.getMaximalRevisionId().toString());
 
-		return dailyDirectoryManager.getBufferedReaderForBz2File(fileName);
+		return dailyDirectoryManager.getInputStreamForBz2File(fileName);
 	}
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
 		String inputLine;
-		try (BufferedReader in = this.webResourceFetcher
-				.getBufferedReaderForUrl(getBaseUrl() + "maxrevid.txt")) {
-			inputLine = in.readLine();
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(getBaseUrl() + "maxrevid.txt")) {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
+			inputLine = bufferedReader.readLine();
+			bufferedReader.close();
 		} catch (IOException e) {
 			return -1L;
 		}
@@ -112,9 +120,12 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	@Override
 	protected boolean fetchIsDone() {
 		boolean result;
-		try (BufferedReader in = this.webResourceFetcher
-				.getBufferedReaderForUrl(getBaseUrl() + "status.txt")) {
-			String inputLine = in.readLine();
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(getBaseUrl() + "status.txt")) {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
+			String inputLine = bufferedReader.readLine();
+			bufferedReader.close();
 			result = "done".equals(inputLine);
 		} catch (IOException e) { // file not found or not readable
 			result = false;

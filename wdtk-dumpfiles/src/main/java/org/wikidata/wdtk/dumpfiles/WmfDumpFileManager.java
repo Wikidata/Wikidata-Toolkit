@@ -22,6 +22,9 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +32,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.WebResourceFetcher;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 /**
  * Class for providing access to available dumpfiles provided by the Wikimedia
@@ -103,9 +109,9 @@ public class WmfDumpFileManager {
 			boolean preferCurrent) {
 
 		for (MediaWikiDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
-			try (BufferedReader bufferedReader = dumpFile.getDumpFileReader()) {
-				dumpFileProcessor.processDumpFileContents(bufferedReader,
-						dumpFile);
+			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
+				dumpFileProcessor
+						.processDumpFileContents(inputStream, dumpFile);
 			} catch (IOException e) {
 				logger.error("Dump file " + dumpFile.toString()
 						+ " could not be processed: " + e.toString());
@@ -386,19 +392,23 @@ public class WmfDumpFileManager {
 	 */
 	List<String> findDumpDatesOnline(String relativeDirectory) {
 		List<String> result = new ArrayList<String>();
-		try (BufferedReader in = this.webResourceFetcher
-				.getBufferedReaderForUrl(WmfDumpFile.DUMP_SITE_BASE_URL
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(WmfDumpFile.DUMP_SITE_BASE_URL
 						+ relativeDirectory + this.projectName + "/")) {
 
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
 			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
+			while ((inputLine = bufferedReader.readLine()) != null) {
 				if (inputLine.startsWith("<tr><td class=\"n\">")) {
 					String dateStamp = inputLine.substring(27, 35);
-					if (dateStamp.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
+					if (dateStamp
+							.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
 						result.add(dateStamp);
 					}
 				}
 			}
+			bufferedReader.close();
 		} catch (IOException e) {
 			logger.error("Failed to fetch available dump dates online.");
 		}

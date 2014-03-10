@@ -23,6 +23,11 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
  * Class for representing dump files published by the Wikimedia Foundation in
@@ -72,7 +77,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	public BufferedReader getDumpFileReader() throws IOException {
+	public InputStream getDumpFileStream() throws IOException {
 		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
@@ -95,23 +100,26 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
 						.getMaximalRevisionId().toString());
 
-		return thisDumpDirectoryManager.getBufferedReaderForBz2File(fileName);
+		return thisDumpDirectoryManager.getInputStreamForBz2File(fileName);
 	}
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
 		Long maxRevId = -1L;
 		String urlString = getBaseUrl();
-		try (BufferedReader in = this.webResourceFetcher
-				.getBufferedReaderForUrl(urlString)) {
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(urlString)) {
 			// Search for the line with the download link. The line just before
 			// that contains the maximal revision id, formatted as
 			// "[max 123456789]".
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
 			String inputLine;
 			String previousLine = "";
 			String linePattern = WmfDumpFile.getDumpFileName(
 					this.dumpContentType, this.projectName, this.dateStamp);
-			while (maxRevId < 0 && (inputLine = in.readLine()) != null) {
+			while (maxRevId < 0
+					&& (inputLine = bufferedReader.readLine()) != null) {
 				if (inputLine.indexOf(linePattern) >= 0) {
 					int startIndex = previousLine.lastIndexOf("[max ") + 5;
 					int endIndex = previousLine.indexOf("]", startIndex);
@@ -127,6 +135,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				}
 				previousLine = inputLine;
 			}
+			bufferedReader.close();
 		} catch (IOException e) {
 			// file not found or not readable; just fall through to return -1
 		}
@@ -165,17 +174,20 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	@Override
 	protected boolean fetchIsDone() {
 		boolean found = false;
-		try (BufferedReader in = this.webResourceFetcher
-				.getBufferedReaderForUrl(getBaseUrl() + this.projectName + "-"
+		try (InputStream in = this.webResourceFetcher
+				.getInputStreamForUrl(getBaseUrl() + this.projectName + "-"
 						+ dateStamp + "-md5sums.txt")) {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
 			String inputLine;
 			String filePostfix = WmfDumpFile
 					.getDumpFilePostfix(this.dumpContentType);
-			while (!found && (inputLine = in.readLine()) != null) {
+			while (!found && (inputLine = bufferedReader.readLine()) != null) {
 				if (inputLine.endsWith(filePostfix)) {
 					found = true;
 				}
 			}
+			bufferedReader.close();
 		} catch (IOException e) {
 			// file not found or not readable; just return false
 		}

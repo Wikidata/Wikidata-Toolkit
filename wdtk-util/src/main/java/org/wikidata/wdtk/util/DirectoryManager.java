@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -96,32 +95,30 @@ public interface DirectoryManager {
 	void createFile(String fileName, String fileContents) throws IOException;
 
 	/**
-	 * Returns a buffered reader to access the file of the given name within the
-	 * current directory. It is assumed that the file is encoded in UTF-8.
+	 * Returns an input stream to access the file of the given name within the
+	 * current directory.
 	 * <p>
-	 * It is important to close the reader after using it to free memory.
+	 * It is important to close the stream after using it to free memory.
 	 * 
 	 * @param fileName
 	 *            the name of the file
-	 * @return a BufferedReader to fetch data from the file
+	 * @return an InputStream to fetch data from the file
 	 * @throws IOException
 	 */
-	BufferedReader getBufferedReaderForFile(String fileName) throws IOException;
+	InputStream getInputStreamForFile(String fileName) throws IOException;
 
 	/**
-	 * Returns a buffered reader to access the BZIP2-compressed file of the
-	 * given name within the current directory. It is assumed that the
-	 * uncompressed file is encoded in UTF-8.
+	 * Returns an input stream to access the BZIP2-compressed file of the given
+	 * name within the current directory.
 	 * <p>
-	 * It is important to close the reader after using it to free memory.
+	 * It is important to close the stream after using it to free memory.
 	 * 
 	 * @param fileName
 	 *            the name of the file
-	 * @return a BufferedReader to fetch data from the file
+	 * @return an InputStream to fetch data from the file
 	 * @throws IOException
 	 */
-	BufferedReader getBufferedReaderForBz2File(String fileName)
-			throws IOException;
+	InputStream getInputStreamForBz2File(String fileName) throws IOException;
 
 	/**
 	 * Returns a list of the names of all subdirectories of the base directory.

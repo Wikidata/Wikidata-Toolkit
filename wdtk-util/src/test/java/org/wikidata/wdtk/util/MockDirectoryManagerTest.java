@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,23 +91,19 @@ public class MockDirectoryManagerTest {
 	@Test
 	public void readFile() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		BufferedReader br = submdm.getBufferedReaderForFile("test.txt");
-		String firstLine = br.readLine();
-		String secondLine = br.readLine();
-		assertEquals(firstLine, "Test contents");
-		assertEquals(secondLine, null);
+		String content = MockStringContentFactory
+				.getStringFromInputStream(submdm
+						.getInputStreamForFile("test.txt"));
+		assertEquals(content, "Test contents");
 	}
 
 	@Test
 	public void readBz2File() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
-		BufferedReader br = submdm.getBufferedReaderForBz2File("test.txt.bz2");
-		String firstLine = br.readLine();
-		String secondLine = br.readLine();
-		String thirdLine = br.readLine();
-		assertEquals(firstLine, "Test BZ2 contents");
-		assertEquals(secondLine, "More contents");
-		assertEquals(thirdLine, null);
+		String content = MockStringContentFactory
+				.getStringFromInputStream(submdm
+						.getInputStreamForBz2File("test.txt.bz2"));
+		assertEquals(content, "Test BZ2 contents\nMore contents");
 	}
 
 	@Test
@@ -116,23 +111,17 @@ public class MockDirectoryManagerTest {
 		InputStream inputStream = MockStringContentFactory
 				.newMockInputStream("New stream contents\nMultiple lines");
 		mdm.createFile("newfile.txt", inputStream);
-		BufferedReader br = mdm.getBufferedReaderForFile("newfile.txt");
-		String firstLine = br.readLine();
-		String secondLine = br.readLine();
-		String thirdLine = br.readLine();
-		assertEquals(firstLine, "New stream contents");
-		assertEquals(secondLine, "Multiple lines");
-		assertEquals(thirdLine, null);
+		String content = MockStringContentFactory.getStringFromInputStream(mdm
+				.getInputStreamForFile("newfile.txt"));
+		assertEquals(content, "New stream contents\nMultiple lines");
 	}
 
 	@Test
 	public void createFileFromString() throws IOException {
 		mdm.createFile("newfile.txt", "New contents");
-		BufferedReader br = mdm.getBufferedReaderForFile("newfile.txt");
-		String firstLine = br.readLine();
-		String secondLine = br.readLine();
-		assertEquals(firstLine, "New contents");
-		assertEquals(secondLine, null);
+		String content = MockStringContentFactory.getStringFromInputStream(mdm
+				.getInputStreamForFile("newfile.txt"));
+		assertEquals(content, "New contents");
 	}
 
 	@Test(expected = FileAlreadyExistsException.class)
@@ -143,18 +132,18 @@ public class MockDirectoryManagerTest {
 
 	@Test(expected = FileNotFoundException.class)
 	public void fileNotFound() throws IOException {
-		mdm.getBufferedReaderForFile("test.txt");
+		mdm.getInputStreamForFile("test.txt");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void readOnlyNonBz2Files() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		submdm.getBufferedReaderForBz2File("test.txt");
+		submdm.getInputStreamForBz2File("test.txt");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void bunzipOnlyBz2Files() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
-		submdm.getBufferedReaderForFile("test.txt.bz2");
+		submdm.getInputStreamForFile("test.txt.bz2");
 	}
 }

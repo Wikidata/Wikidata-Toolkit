@@ -22,6 +22,11 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
  * Class for representing dump files published by the Wikimedia Foundation, and
@@ -91,18 +96,21 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	public BufferedReader getDumpFileReader() throws IOException {
+	public InputStream getDumpFileStream() throws IOException {
 		return this.localDumpfileDirectoryManager
-				.getBufferedReaderForBz2File(WmfDumpFile.getDumpFileName(
+				.getInputStreamForBz2File(WmfDumpFile.getDumpFileName(
 						this.dumpContentType, this.projectName, this.dateStamp));
 	}
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
 		String inputLine;
-		try (BufferedReader in = this.localDumpfileDirectoryManager
-				.getBufferedReaderForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID)) {
-			inputLine = in.readLine();
+		try (InputStream in = this.localDumpfileDirectoryManager
+				.getInputStreamForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID)) {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in, StandardCharsets.UTF_8));
+			inputLine = bufferedReader.readLine();
+			bufferedReader.close();
 		} catch (IOException e) {
 			return -1L;
 		}

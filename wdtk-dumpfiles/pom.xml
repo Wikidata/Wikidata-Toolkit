@@ -22,9 +22,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.7</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-util</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	

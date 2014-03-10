@@ -1,5 +1,10 @@
 package org.wikidata.wdtk.dumpfiles;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -88,6 +93,12 @@ public abstract class WmfDumpFile implements MediaWikiDumpFile {
 		return this.projectName + "-"
 				+ getDumpContentType().toString().toLowerCase() + "-"
 				+ this.dateStamp;
+	}
+
+	@Override
+	public BufferedReader getDumpFileReader() throws IOException {
+		return new BufferedReader(new InputStreamReader(getDumpFileStream(),
+				StandardCharsets.UTF_8));
 	}
 
 	/**

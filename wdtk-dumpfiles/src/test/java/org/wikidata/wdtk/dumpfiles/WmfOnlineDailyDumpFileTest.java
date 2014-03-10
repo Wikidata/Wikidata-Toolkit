@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.util.MockDirectoryManager;
+import org.wikidata.wdtk.util.MockWebResourceFetcher;
 
 public class WmfOnlineDailyDumpFileTest {
 
@@ -39,7 +41,7 @@ public class WmfOnlineDailyDumpFileTest {
 	public void setUp() throws IOException {
 		dm = new MockDirectoryManager(Paths.get(System.getProperty("user.dir")));
 
-		wrf = new MockWebResourceFetcher();
+		wrf = new MockWebResourceFetcher(this.getClass());
 	}
 
 	@Test

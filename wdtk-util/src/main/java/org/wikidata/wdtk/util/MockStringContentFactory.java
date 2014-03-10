@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -41,7 +41,7 @@ public class MockStringContentFactory {
 
 	/**
 	 * Returns a new InputStream that gives access to the contents as given in
-	 * the input string.
+	 * the input string, encoded in UTF-8.
 	 * 
 	 * @param contents
 	 * @return an input stream for the given string
@@ -49,18 +49,6 @@ public class MockStringContentFactory {
 	public static InputStream newMockInputStream(String contents) {
 		return new ByteArrayInputStream(
 				contents.getBytes(StandardCharsets.UTF_8));
-	}
-
-	/**
-	 * Returns a new BufferedReader that gives access to the contents as given
-	 * in the input string.
-	 * 
-	 * @param contents
-	 * @return a buffered reader for the given string
-	 */
-	public static BufferedReader newMockBufferedReader(String contents) {
-		return new BufferedReader(new InputStreamReader(
-				newMockInputStream(contents)));
 	}
 
 	/**
@@ -106,21 +94,22 @@ public class MockStringContentFactory {
 	}
 
 	/**
-	 * Returns a buffered reader that will throw IOExceptions on common reading
-	 * operations.
+	 * Loads a string from the given input stream. UTF-8 encoding will be
+	 * assumed. Newline will be appended after each line but the last.
 	 * 
-	 * @return buffered reader that fails on reading
+	 * @param inputStream
+	 * @return string contents of the input stream
+	 * @throws IOException
+	 *             if it was not possible to read from the buffered reader
 	 */
-	public static BufferedReader getFailingBufferedReader() {
-		BufferedReader br = Mockito.mock(BufferedReader.class);
-		try {
-			Mockito.doThrow(new IOException()).when(br).readLine();
-			Mockito.doThrow(new IOException()).when(br).read();
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Mockito should not throw anything here. Strange.", e);
-		}
-		return br;
+	public static String getStringFromInputStream(InputStream inputStream)
+			throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+		String result = MockStringContentFactory
+				.getStringFromBufferedReader(bufferedReader);
+		bufferedReader.close();
+		return result;
 	}
 
 	/**
