@@ -84,7 +84,6 @@ class CountBitsArray {
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 		this.blockSize = blockSize;
-		updateCount();
 	}
 
 	/**

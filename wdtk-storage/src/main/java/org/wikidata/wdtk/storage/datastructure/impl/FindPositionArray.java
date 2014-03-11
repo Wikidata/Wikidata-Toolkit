@@ -110,7 +110,6 @@ class FindPositionArray {
 		this.hasChanged = true;
 		this.bit = bit;
 		this.blockSize = blockSize;
-		updateCount();
 	}
 
 	/**
