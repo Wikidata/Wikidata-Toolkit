@@ -54,13 +54,14 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Implementation of {@link Converter} that provides a Conversion from Object
- * constructed by the {@link DataObjectFactory} into a JSON-Format.
+ * constructed by the
+ * {@link org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory} into a
+ * json-format using JSONObjects from the org.json library.
  * 
- * @author michael
+ * @author Michael Günther
  * 
  */
-
-public class ConverterImpl implements Converter {
+public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 
 	final String KEY_ENTITY_TYP_ITEM = "item";
 	final String KEY_ENTITY_TYP_PROPERTY = "property";
@@ -86,6 +87,20 @@ public class ConverterImpl implements Converter {
 
 	final String FORMAT_YEAR = "00000000000";
 	final String FORMAT_OTHER = "00";
+
+	/**
+	 * converting information of a date to a string value in ISO 8601 format
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @param second
+	 * @return ISO 8601 value (String)
+	 * 
+	 * @throws IllegalArgumentException
+	 */
 
 	String timeToString(long year, byte month, byte day, byte hour,
 			byte minute, int second) throws IllegalArgumentException {
@@ -116,6 +131,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * format a BigDecimal value into a string value representation
+	 * 
+	 * @param number
+	 * @return String for BigDecimal value
+	 */
+
 	String formatBigDecimal(BigDecimal number) {
 		StringBuilder builder = new StringBuilder();
 		if (number.signum() != -1) {
@@ -124,6 +146,15 @@ public class ConverterImpl implements Converter {
 		builder.append(number.toString());
 		return builder.toString();
 	}
+
+	/**
+	 * merge two JSONObjects. The fist onjFrom will merged into objTo
+	 * 
+	 * @param objFrom
+	 * @param objTo
+	 * @return merged JSONObject
+	 * @throws JSONException
+	 */
 
 	JSONObject mergeJSONObjects(JSONObject objFrom, JSONObject objTo)
 
@@ -139,6 +170,14 @@ public class ConverterImpl implements Converter {
 		return objTo;
 	}
 
+	/**
+	 * create a json representation for the aliases of an document
+	 * 
+	 * @param document
+	 * @return JSONObject representing aliases of a {@link TermedDocument}
+	 * @throws JSONException
+	 */
+
 	JSONObject convertAliasesToJson(TermedDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
@@ -153,6 +192,15 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * create a json representation for the descriptions of an
+	 * {@link TermedeDocument}
+	 * 
+	 * @param document
+	 * @return JSONObject representing descriptions of a {@link TermedDocument}
+	 * @throws JSONException
+	 */
+
 	JSONObject convertDescriptionsToJson(TermedDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
@@ -164,6 +212,14 @@ public class ConverterImpl implements Converter {
 
 	}
 
+	/**
+	 * create a json representation for the labels of a {@link TermedDocument}
+	 * 
+	 * @param document
+	 * @return JSONObject of labels
+	 * @throws JSONException
+	 */
+
 	JSONObject convertLabelsToJson(TermedDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
@@ -174,6 +230,14 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * create a json representation for the SiteLinks of an {@link ItemDocument}
+	 * 
+	 * @param document
+	 * @return JSONObject representation for
+	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink} objects
+	 * @throws JSONException
+	 */
 	JSONObject convertSiteLinksToJson(ItemDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
@@ -184,6 +248,12 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * create a json representation for qualifiers of {@link Claim}
+	 * 
+	 * @param qualifiers
+	 * @return JSONObject of qualifiers
+	 */
 	JSONObject convertQualifiersToJson(List<? extends Snak> qualifiers) {
 		JSONObject result = new JSONObject();
 		Set<String> qualifierGroups = new HashSet<String>();
@@ -198,6 +268,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * adds the attributes occurring in every {@link TermedDocument} to object
+	 * 
+	 * @param document
+	 * @param to
+	 * @return JSONObject with "aliases", "descriptions", "labels" key
+	 */
 	JSONObject addTermedDocumentAttributes(TermedDocument document,
 			JSONObject to) {
 		JSONObject result = to;
@@ -215,6 +292,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertClaimToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.Claim)
+	 */
 	@Override
 	public JSONObject convertClaimToJson(Claim claim) throws JSONException {
 		JSONObject result = new JSONObject();
@@ -227,7 +311,15 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
-	@Override
+	/**
+	 * If the parameter is an ItemDocument or a PropertyDocument the function
+	 * for that is called, otherwise it will add the attributes of an
+	 * EntityDocument to the entity parameter
+	 * 
+	 * @param entity
+	 * @return JSONObject for  {@link org.wikidata.wdtk.datamodel.interfaces.EntityDocument}
+	 * @throws JSONException
+	 */
 	public JSONObject convertEntityDocumentToJson(EntityDocument entity)
 			throws JSONException {
 		JSONObject result = new JSONObject();
@@ -246,6 +338,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertItemDocumentToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.ItemDocument)
+	 */
 	@Override
 	public JSONObject convertItemDocumentToJson(ItemDocument itemDocument)
 			throws JSONException {
@@ -270,6 +369,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertPropertyDocumentToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyDocument)
+	 */
 	@Override
 	public JSONObject convertPropertyDocumentToJson(PropertyDocument document)
 			throws JSONException {
@@ -282,6 +388,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertReferenceToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.Reference)
+	 */
 	@Override
 	public JSONObject convertReferenceToJson(Reference ref)
 			throws JSONException {
@@ -312,6 +425,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertStatementToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.Statement)
+	 */
 	@Override
 	public JSONObject convertStatementToJson(Statement statement)
 			throws JSONException {
@@ -338,6 +458,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertStatementGroupToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.StatementGroup)
+	 */
 	@Override
 	public JSONArray convertStatementGroupToJson(StatementGroup statementGroup)
 			throws JSONException {
@@ -348,7 +475,17 @@ public class ConverterImpl implements Converter {
 		return statements;
 	}
 
-	@Override
+	/**
+	 * Create a json representation of a
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.ValueSnak},
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.NoValueSnak} or a
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak}.
+	 * 
+	 * @param snak
+	 * @return JSONObject representing a specific
+	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Snak}
+	 * @throws JSONException
+	 */
 	public JSONObject convertSnakToJson(Snak snak) throws JSONException {
 		JSONObject result = null;
 		// TODO better using if snak instanceof Interface
@@ -364,6 +501,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertValueSnakToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.ValueSnak)
+	 */
 	@Override
 	public JSONObject convertValueSnakToJson(ValueSnak snak)
 			throws JSONException {
@@ -406,6 +550,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertNoValueSnakToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.NoValueSnak)
+	 */
 	@Override
 	public JSONObject convertNoValueSnakToJson(NoValueSnak snak)
 			throws JSONException {
@@ -415,6 +566,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertSomeValueSnakToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak)
+	 */
 	@Override
 	public JSONObject convertSomeValueSnakToJson(SomeValueSnak snak)
 			throws JSONException {
@@ -424,6 +582,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertQuantityValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.QuantityValue)
+	 */
 	@Override
 	public JSONObject convertQuantityValueToJson(QuantityValue value)
 			throws JSONException {
@@ -442,6 +607,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertTimeValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.TimeValue)
+	 */
 	@Override
 	public JSONObject convertTimeValueToJson(TimeValue value)
 			throws JSONException {
@@ -465,6 +637,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertGlobeCoordinatesValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue)
+	 */
 	@Override
 	public JSONObject convertGlobeCoordinatesValueToJson(
 			GlobeCoordinatesValue value) throws JSONException {
@@ -483,6 +662,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertEntityIdValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.EntityIdValue)
+	 */
 	@Override
 	public JSONObject convertEntityIdValueToJson(EntityIdValue value)
 			throws JSONException {
@@ -508,6 +694,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertStringValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.StringValue)
+	 */
 	@Override
 	public JSONObject convertStringValueToJson(StringValue value)
 			throws JSONException {
@@ -518,13 +711,12 @@ public class ConverterImpl implements Converter {
 	}
 
 	/*
-	 * @Override public JSONObject
-	 * convertIriIdentifiedValueToJson(IriIdentifiedValue value) throws
-	 * JSONException { JSONObject result = new JSONObject();
+	 * (non-Javadoc)
 	 * 
-	 * return result; }
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertDatatypeIdValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue)
 	 */
-
 	@Override
 	public JSONObject convertDatatypeIdValueToJson(DatatypeIdValue value)
 			throws JSONException {
@@ -532,6 +724,13 @@ public class ConverterImpl implements Converter {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertItemIdValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.ItemIdValue)
+	 */
 	@Override
 	public JSONObject convertItemIdValueToJson(ItemIdValue value)
 			throws JSONException {
@@ -543,6 +742,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertMonolingualTextValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue)
+	 */
 	@Override
 	public JSONObject convertMonolingualTextValueToJson(
 			MonolingualTextValue value) throws JSONException {
@@ -552,6 +758,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
+	 * convertPropertyIdValueToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue)
+	 */
 	@Override
 	public JSONObject convertPropertyIdValueToJson(PropertyIdValue value)
 			throws JSONException {
@@ -563,6 +776,13 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertSiteLinkToJson
+	 * (org.wikidata.wdtk.datamodel.interfaces.SiteLink)
+	 */
 	@Override
 	public JSONObject convertSiteLinkToJson(SiteLink link) throws JSONException {
 		JSONObject result = new JSONObject();
@@ -572,28 +792,40 @@ public class ConverterImpl implements Converter {
 		return result;
 	}
 
+	/**
+	 * create a string notation for
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.StatementRank}
+	 * 
+	 * @param rank
+	 * 
+	 * @return {@link org.wikidata.wdtk.datamodel.interfaces.StatementRank} in
+	 *         string notation for the json format
+	 * 
+	 */
 	public String convertStatementRankToJson(StatementRank rank) {
 		return rank.toString().toLowerCase();
 	}
 
-	@Override
+/**
+	 * If the parameter is an ItemDocument or a PropertyDocument the function
+	 * for that is called, otherwise it will throw an IllegalArgumentException
+	 * 
+	 * @param document
+	 * @return JSONObject for {@link org.wikidata.wdtk.datamodel.interfaces.TermedDocument}
+	 * @throws JSONException
+	 */
 	public JSONObject convertTermedDocumentToJson(TermedDocument document)
 			throws JSONException {
 
 		JSONObject result = new JSONObject();
 		if (document instanceof ItemDocument) {
 			result = convertItemDocumentToJson((ItemDocument) document);
-		}
-		if (document instanceof PropertyDocument) {
+		} else if (document instanceof PropertyDocument) {
 			result = convertPropertyDocumentToJson((PropertyDocument) document);
+		} else {
+			throw new IllegalArgumentException();
 		}
 
 		return result;
 	}
-	/*
-	 * @Override public JSONObject convertValueToJson(Value value) throws
-	 * JSONException { JSONObject result = new JSONObject(); // TODO checking
-	 * type of Value and call function for converting value? return result; }
-	 */
-
 }
