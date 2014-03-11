@@ -43,7 +43,7 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * <p>
  * For efficiency reasons, this class assumes that the bit vector is unmodified.
  * Any modification of the bit vector needs to be notified in
- * {@link FindPositionArray#update(BitVector)}.
+ * {@link FindPositionArray#update()}.
  * </p>
  * 
  * @see RankedBitVectorImpl
