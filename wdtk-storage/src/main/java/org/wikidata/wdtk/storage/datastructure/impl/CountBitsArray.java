@@ -26,19 +26,25 @@ import java.util.List;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
+ * <p>
  * This class keeps the count of occurrences of <code>true</code> values in a
  * bit vector. This implementation divides the bit vector in blocks of equal
  * size. It keeps an array with the count of <code>true</code> values present in
- * each block. <br />
+ * each block.
+ * </p>
+ * <p>
  * For example, given the bit vector: 10010 (0 is <code>false</code>, 1 is
  * <code>true</code>), with a block size of 2, the array contains: [1, 2, 2].
  * The first block contains 1 <code>true</code> value, the second block contains
  * 1 more <code>true</code> value, in total 2. The third block is incomplete,
  * since it has only one bit, and it does not contain more <code>true</code>
- * values. <br />
+ * values.
+ * </p>
+ * <p>
  * For efficiency reasons, this class assumes that the bit vector is unmodified.
  * Any modification of the bit vector needs to be notified in
  * {@link FindPositionArray#update(BitVector)}.
+ * </p>
  * 
  * @see RankedBitVectorImpl
  * 
@@ -49,7 +55,7 @@ class CountBitsArray {
 	/**
 	 * The bit vector, which is assumed unmodified.
 	 */
-	BitVector bitVector;
+	final BitVector bitVector;
 
 	/**
 	 * The size of each block.
@@ -89,9 +95,9 @@ class CountBitsArray {
 	}
 
 	/**
-	 * Returns the number of occurrences of <i>bit</i> at <i>position</i>.
+	 * Returns the number of occurrences of <i>bit</i> up to <i>position</i>.
 	 * 
-	 * @return number of occurrences of <i>bit</i> at <i>position</i>
+	 * @return number of occurrences of <i>bit</i> up to <i>position</i>
 	 */
 	public long countBits(boolean bit, long position) {
 		updateCount();
@@ -193,8 +199,7 @@ class CountBitsArray {
 	 * @param bitVector
 	 *            new bit vector
 	 */
-	public void update(BitVector bitVector) {
-		this.bitVector = bitVector;
+	public void update() {
 		this.hasChanged = true;
 	}
 

@@ -27,11 +27,14 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
+ * <p>
  * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can be
  * found in a bit vector (<i>bit</i> can be <code>true</code> or
  * <code>false</code>). This class uses an array to store these positions. Each
  * cell of the array covers a block in the bit vector, and to find the positions
- * in this block, the method iterates on the bit vector.<br />
+ * in this block, the method iterates on the bit vector.
+ * </p>
+ * <p>
  * For example, let us suppose we have the following bit vector: 11010001 (0 is
  * <code>false</code> and 1 is <code>true</code>), with a block size of 2. For
  * the case of <code>true</code>, the array stores the position where
@@ -41,17 +44,24 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  * undefined and the first occurrence needs to be found in the following cell of
  * the bit vector, i.e. at position 0. Anyway, since the zeroth occurrence is
  * not defined, the {@link #findPosition(long)} method returns
- * {@link RankedBitVector.NOT_FOUND} for that value.<br />
+ * {@link RankedBitVector.NOT_FOUND} for that value.
+ * </p>
+ * <p>
  * The array for <code>true</code> is [-1, 1, 7]. The second occurrence of
  * <code>true</code> is at position 1 in the bit vector. The forth occurrence of
  * <code>true</code> is at position 7 in the bit vector. Analogously, the array
  * for <code>false</code> is [-1, 4, 6]. The positions of <code>false</code> are
- * 4 for the second occurrence, and 6 for the forth occurrence.<br />
+ * 4 for the second occurrence, and 6 for the forth occurrence.
+ * </p>
+ * <p>
  * Please observe that the blocks have the same size in number of occurrences,
- * but may cover different number of positions in the bit vector.<br />
+ * but may cover different number of positions in the bit vector.
+ * </p>
+ * <p>
  * For efficiency reasons, this class assumes that the bit vector is unmodified.
  * Any modification of the bit vector needs to be notified in
  * {@link FindPositionArray#update(BitVector)}.
+ * </p>
  * 
  * @see RankedBitVectorImpl
  * 
@@ -67,7 +77,7 @@ class FindPositionArray {
 	/**
 	 * The bit vector, which is assumed unmodified.
 	 */
-	BitVector bitVector;
+	final BitVector bitVector;
 
 	/**
 	 * This is the size of each block of occurrences.
@@ -81,8 +91,7 @@ class FindPositionArray {
 	boolean hasChanged;
 
 	/**
-	 * This array contains the position for a given number of occurrences
-	 * multiplied by the block size.
+	 * This array contains the position represented as explained above.
 	 */
 	long[] positionArray;
 
@@ -127,29 +136,28 @@ class FindPositionArray {
 	 */
 	public long findPosition(long nOccurrence) {
 		updateCount();
-		long ret = RankedBitVector.NOT_FOUND;
-		if (nOccurrence > 0) {
-			int findPos = getBlockNumber(nOccurrence);
-			if (findPos < this.positionArray.length) {
-				long pos0 = this.positionArray[findPos];
-				long leftOccurrences = nOccurrence - (findPos * this.blockSize);
-				if (leftOccurrences == 0) {
-					ret = pos0;
-				} else {
-					for (long index = pos0 + 1; (leftOccurrences > 0)
-							&& (index < this.bitVector.size()); index++) {
-						if (this.bitVector.getBit(index) == this.bit) {
-							leftOccurrences--;
-						}
-						if (leftOccurrences == 0) {
-							ret = index;
-						}
+		if (nOccurrence <= 0) {
+			return RankedBitVector.NOT_FOUND;
+		}
+		int findPos = getBlockNumber(nOccurrence);
+		if (findPos < this.positionArray.length) {
+			long pos0 = this.positionArray[findPos];
+			long leftOccurrences = nOccurrence - (findPos * this.blockSize);
+			if (leftOccurrences == 0) {
+				return pos0;
+			} else {
+				for (long index = pos0 + 1; (leftOccurrences > 0)
+						&& (index < this.bitVector.size()); index++) {
+					if (this.bitVector.getBit(index) == this.bit) {
+						leftOccurrences--;
 					}
-
+					if (leftOccurrences == 0) {
+						return index;
+					}
 				}
 			}
 		}
-		return ret;
+		return RankedBitVector.NOT_FOUND;
 	}
 
 	/**
@@ -173,7 +181,7 @@ class FindPositionArray {
 	List<Long> getPositionList() {
 		List<Long> ret = new ArrayList<Long>();
 
-		ret.add((long) -1);
+		ret.add(-1L);
 		/*
 		 * This -1 is pointing to the previous position of the first valid
 		 * position of the bit vector, which starts at index 0. Since the zeroth
@@ -233,8 +241,7 @@ class FindPositionArray {
 	 * @param bitVector
 	 *            new bit vector
 	 */
-	public void update(BitVector bitVector) {
-		this.bitVector = bitVector;
+	public void update() {
 		this.hasChanged = true;
 	}
 

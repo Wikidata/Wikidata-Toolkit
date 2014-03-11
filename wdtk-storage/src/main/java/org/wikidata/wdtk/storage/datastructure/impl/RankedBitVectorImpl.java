@@ -163,9 +163,9 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	}
 
 	void notifyObservers() {
-		this.countBitsArray.update(this.bitVector);
-		this.findPositionOfFalse.update(this.bitVector);
-		this.findPositionOfTrue.update(this.bitVector);
+		this.countBitsArray.update();
+		this.findPositionOfFalse.update();
+		this.findPositionOfTrue.update();
 	}
 
 	@Override
