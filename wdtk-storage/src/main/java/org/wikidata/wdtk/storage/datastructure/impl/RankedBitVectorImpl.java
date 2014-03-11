@@ -40,6 +40,10 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  */
 public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
+	static final int defaultCountBitsBlockSize = 0x10;
+
+	static final int defaultFindPositionBlockSize = 0x10;
+
 	final BitVectorImpl bitVector;
 
 	final CountBitsArray countBitsArray;
@@ -53,9 +57,12 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl() {
 		this.bitVector = new BitVectorImpl();
-		this.countBitsArray = new CountBitsArray(this.bitVector);
-		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
-		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
+		this.countBitsArray = new CountBitsArray(this.bitVector,
+				defaultCountBitsBlockSize);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,
+				defaultFindPositionBlockSize);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true,
+				defaultFindPositionBlockSize);
 	}
 
 	/**
@@ -71,10 +78,13 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 					((RankedBitVectorImpl) bitVector).countBitsArray
 							.getBlockSize());
 		} else {
-			this.countBitsArray = new CountBitsArray(this.bitVector);
+			this.countBitsArray = new CountBitsArray(this.bitVector,
+					defaultCountBitsBlockSize);
 		}
-		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
-		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,
+				defaultFindPositionBlockSize);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true,
+				defaultFindPositionBlockSize);
 
 	}
 
@@ -87,9 +97,12 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 */
 	public RankedBitVectorImpl(long initialSize) {
 		this.bitVector = new BitVectorImpl(initialSize);
-		this.countBitsArray = new CountBitsArray(this.bitVector);
-		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false);
-		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true);
+		this.countBitsArray = new CountBitsArray(this.bitVector,
+				defaultCountBitsBlockSize);
+		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,
+				defaultFindPositionBlockSize);
+		this.findPositionOfTrue = new FindPositionArray(this.bitVector, true,
+				defaultFindPositionBlockSize);
 	}
 
 	/**

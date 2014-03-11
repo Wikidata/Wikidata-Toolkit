@@ -75,13 +75,6 @@ class CountBitsArray {
 	boolean hasChanged;
 
 	/**
-	 * Creates a block array with a default size.
-	 */
-	public CountBitsArray(BitVector bitVector) {
-		this(bitVector, 0x10);
-	}
-
-	/**
 	 * Creates a count array with a given block size.
 	 * 
 	 * @param blockSize

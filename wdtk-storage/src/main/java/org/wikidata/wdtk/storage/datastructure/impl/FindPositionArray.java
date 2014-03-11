@@ -96,18 +96,6 @@ class FindPositionArray {
 	long[] positionArray;
 
 	/**
-	 * Constructs a new array.
-	 * 
-	 * @param bitVector
-	 *            bit vector
-	 * @param bit
-	 *            bit
-	 */
-	public FindPositionArray(BitVector bitVector, boolean bit) {
-		this(bitVector, bit, 0x10);
-	}
-
-	/**
 	 * Constructs a new array using a given block size of occurrences.
 	 * 
 	 * @param bitVector
