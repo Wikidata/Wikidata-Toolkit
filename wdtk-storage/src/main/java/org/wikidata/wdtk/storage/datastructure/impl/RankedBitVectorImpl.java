@@ -40,9 +40,9 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  */
 public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 
-	static final int defaultCountBitsBlockSize = 0x10;
+	static final int defaultCountBitsBlockSize = 0x400;
 
-	static final int defaultFindPositionBlockSize = 0x10;
+	static final int defaultFindPositionBlockSize = 0x2000;
 
 	final BitVectorImpl bitVector;
 
@@ -113,13 +113,23 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 * @param initialSize
 	 *            initial size of this ranked bit vector
 	 * @param countBlockSize
-	 *            block size to count number of occurrences of a value
+	 *            block size to count number of occurrences of a value; this
+	 *            value must be a positive number
 	 * @param findPositionBlockSize
 	 *            block size to find the position of the <i>n</i>-th occurrence
-	 *            of a value
+	 *            of a value; this value must be greater than or equal to 64
 	 */
 	public RankedBitVectorImpl(long initialSize, int countBlockSize,
 			int findPositionBlockSize) {
+		if (countBlockSize < 1) {
+			throw new IllegalArgumentException(
+					"Block size must be a positive number. The received value was: "
+							+ countBlockSize + ".");
+		}
+		if (findPositionBlockSize < 0x40) {
+			throw new IllegalArgumentException("Block size is too small: "
+					+ findPositionBlockSize + ". The minimum is " + 0x40 + ".");
+		}
 		this.bitVector = new BitVectorImpl(initialSize);
 		this.countBitsArray = new CountBitsArray(this.bitVector, countBlockSize);
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,

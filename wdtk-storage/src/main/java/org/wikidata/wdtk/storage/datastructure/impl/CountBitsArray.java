@@ -26,12 +26,10 @@ import java.util.List;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
- * <p>
  * This class keeps the count of occurrences of <code>true</code> values in a
  * bit vector. This implementation divides the bit vector in blocks of equal
  * size. It keeps an array with the count of <code>true</code> values present in
  * each block.
- * </p>
  * <p>
  * For example, given the bit vector: 10010 (0 is <code>false</code>, 1 is
  * <code>true</code>), with a block size of 2, the array contains: [1, 2, 2].
@@ -39,12 +37,10 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  * 1 more <code>true</code> value, in total 2. The third block is incomplete,
  * since it has only one bit, and it does not contain more <code>true</code>
  * values.
- * </p>
  * <p>
  * For efficiency reasons, this class assumes that the bit vector is unmodified.
  * Any modification of the bit vector needs to be notified in
  * {@link FindPositionArray#update()}.
- * </p>
  * 
  * @see RankedBitVectorImpl
  * 
@@ -78,7 +74,7 @@ class CountBitsArray {
 	 * Creates a count array with a given block size.
 	 * 
 	 * @param blockSize
-	 *            block size
+	 *            block size; this value must be a positive number
 	 */
 	public CountBitsArray(BitVector bitVector, int blockSize) {
 		this.bitVector = bitVector;

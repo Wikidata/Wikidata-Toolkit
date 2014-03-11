@@ -27,13 +27,11 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
- * <p>
  * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can be
  * found in a bit vector (<i>bit</i> can be <code>true</code> or
  * <code>false</code>). This class uses an array to store these positions. Each
  * cell of the array covers a block in the bit vector, and to find the positions
  * in this block, the method iterates on the bit vector.
- * </p>
  * <p>
  * For example, let us suppose we have the following bit vector: 11010001 (0 is
  * <code>false</code> and 1 is <code>true</code>), with a block size of 2. For
@@ -45,23 +43,19 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  * the bit vector, i.e. at position 0. Anyway, since the zeroth occurrence is
  * not defined, the {@link #findPosition(long)} method returns
  * {@link RankedBitVector.NOT_FOUND} for that value.
- * </p>
  * <p>
  * The array for <code>true</code> is [-1, 1, 7]. The second occurrence of
  * <code>true</code> is at position 1 in the bit vector. The forth occurrence of
  * <code>true</code> is at position 7 in the bit vector. Analogously, the array
  * for <code>false</code> is [-1, 4, 6]. The positions of <code>false</code> are
  * 4 for the second occurrence, and 6 for the forth occurrence.
- * </p>
  * <p>
  * Please observe that the blocks have the same size in number of occurrences,
  * but may cover different number of positions in the bit vector.
- * </p>
  * <p>
  * For efficiency reasons, this class assumes that the bit vector is unmodified.
  * Any modification of the bit vector needs to be notified in
  * {@link FindPositionArray#update()}.
- * </p>
  * 
  * @see RankedBitVectorImpl
  * 
@@ -91,7 +85,7 @@ class FindPositionArray {
 	boolean hasChanged;
 
 	/**
-	 * This array contains the position represented as explained above.
+	 * This array contains the position.
 	 */
 	long[] positionArray;
 
@@ -103,7 +97,7 @@ class FindPositionArray {
 	 * @param bit
 	 *            bit
 	 * @param blockSize
-	 *            block size
+	 *            block size; this value must be greater than or equal to 64.
 	 */
 	public FindPositionArray(BitVector bitVector, boolean bit, int blockSize) {
 		this.bitVector = bitVector;

@@ -200,7 +200,7 @@ public class RankedBitVectorImplTest {
 
 	@Test
 	public void testFindPositionBlockSize() {
-		for (int x = 0x20; x > 0; x--) {
+		for (int x = 0x80; x >= 0x40; x--) {
 			testFindPositionWithBitVector(new RankedBitVectorImpl(0, 0x10, x));
 		}
 	}
