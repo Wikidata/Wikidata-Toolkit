@@ -30,16 +30,17 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -49,15 +50,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ConverterImplTest {
 
-	DataObjectFactory factory = new DataObjectFactoryImpl();;
-	TestObjectFactory objectFactory = new TestObjectFactory();
-	ConverterImpl converter = new ConverterImpl();
-
-	@Before
-	public void setUp() throws Exception {
-
-		// TODO generate test classes (maybe from dumpfiles)
-	}
+	final DataObjectFactory factory = new DataObjectFactoryImpl();;
+	final TestObjectFactory objectFactory = new TestObjectFactory();
+	final ConverterImpl converter = new ConverterImpl();
 
 	public void compareJSONObjects(JSONObject obj1, JSONObject obj2) {
 		for (Object key : obj1.keySet()) {
@@ -116,70 +111,9 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertItemDocumentToJson() throws JSONException {
-
-		// System.out.println(converter.convertItemDocumentToJson(objectFactory
-		// .createEmptyItemDocument()));
-
-		List<Statement> statements = new ArrayList<Statement>();
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
-		Claim claim = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				factory.getNoValueSnak(factory.getPropertyIdValue("P11",
-						"base/")), Collections.<Snak> emptyList());
-		statements.add(factory.getStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
-
-		statementGroups.add(factory.getStatementGroup(statements));
-
-		statements = new ArrayList<Statement>();
-
-		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakTime(17, "P1040"),
-				objectFactory.createQualifiers());
-		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakTime(3, "P1040"),
-				Collections.<Snak> emptyList());
-
-		statements.add(factory.getStatement(claim2,
-				objectFactory.createReferences(3), StatementRank.NORMAL,
-				"none2"));
-		statements.add(factory.getStatement(claim3,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
-		statementGroups.add(factory.getStatementGroup(statements));
-		compareJSONObjects(converter.convertItemDocumentToJson(factory
-				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
-						objectFactory.createLabels(),
-						objectFactory.createDescriptions(),
-						objectFactory.createAliases(), statementGroups,
-						objectFactory.createSiteLinks())), new JSONObject(
-				TestRessources.ITEM_DOCUMENT_REPRES));
-		compareJSONObjects(converter.convertEntityDocumentToJson(factory
-				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
-						objectFactory.createLabels(),
-						objectFactory.createDescriptions(),
-						objectFactory.createAliases(), statementGroups,
-						objectFactory.createSiteLinks())), new JSONObject(
-				TestRessources.ITEM_DOCUMENT_REPRES));
-	}
-
-	@Test
-	public void testConvertPropertyDocumentToJson() throws JSONException {
-		PropertyDocument document = factory.getPropertyDocument(
-				factory.getPropertyIdValue("P42", "base/"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				factory.getDatatypeIdValue("string"));
-		compareJSONObjects(converter.convertPropertyDocumentToJson(document),
-				new JSONObject(TestRessources.EMPTY_PROPERTY_DOCUMENT_REPRES));
-		compareJSONObjects(
-				converter.convertPropertyDocumentToJson(objectFactory
-						.createEmptyPropertyDocument()),
-				new JSONObject(
-						"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
-
+	public void testBigDecimals() {
+		BigDecimal test = new BigDecimal(3638);
+		assertEquals(converter.formatBigDecimal(test), "+3638");
 	}
 
 	@Test
@@ -221,14 +155,77 @@ public class ConverterImplTest {
 		object1.put("keyLv1.3", Lv2);
 		objectMerge.put("keyLv1.3", Lv2);
 
-		assertEquals(converter.mergeJSONObjects(object1, object2).toString(),
-				converter.mergeJSONObjects(object2, object1).toString());
-		// assertEquals(converter.mergeJSONObjects(object1, objectMerge),
-		// objectMerge);
-		assertEquals(converter.mergeJSONObjects(objectMerge, object2)
-				.toString(), objectMerge.toString());
-		assertEquals(converter.mergeJSONObjects(object1, object2).toString(),
-				objectMerge.toString());
+		compareJSONObjects(converter.mergeJSONObjects(object1, object2),
+				converter.mergeJSONObjects(object2, object1));
+		compareJSONObjects(converter.mergeJSONObjects(objectMerge, object2),
+				objectMerge);
+		compareJSONObjects(converter.mergeJSONObjects(object1, object2),
+				objectMerge);
+
+	}
+
+	@Test
+	public void testConvertItemDocumentToJson() throws JSONException {
+
+		List<Statement> statements = new ArrayList<Statement>();
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		Claim claim = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P11",
+						"base/")), Collections.<Snak> emptyList());
+		statements.add(factory.getStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"none"));
+
+		statementGroups.add(factory.getStatementGroup(statements));
+
+		statements = new ArrayList<Statement>();
+
+		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				objectFactory.createValueSnakTime(17, "P1040"),
+				objectFactory.createQualifiers());
+		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				objectFactory.createValueSnakTime(3, "P1040"),
+				Collections.<Snak> emptyList());
+
+		statements
+				.add(factory.getStatement(claim2,
+						objectFactory.createReferences(), StatementRank.NORMAL,
+						"none2"));
+		statements.add(factory.getStatement(claim3,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"none"));
+		statementGroups.add(factory.getStatementGroup(statements));
+		compareJSONObjects(converter.convertItemDocumentToJson(factory
+				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
+						objectFactory.createLabels(),
+						objectFactory.createDescriptions(),
+						objectFactory.createAliases(), statementGroups,
+						objectFactory.createSiteLinks())), new JSONObject(
+				TestRessources.ITEM_DOCUMENT_REPRES));
+		compareJSONObjects(converter.convertEntityDocumentToJson(factory
+				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
+						objectFactory.createLabels(),
+						objectFactory.createDescriptions(),
+						objectFactory.createAliases(), statementGroups,
+						objectFactory.createSiteLinks())), new JSONObject(
+				TestRessources.ITEM_DOCUMENT_REPRES));
+	}
+
+	@Test
+	public void testConvertPropertyDocumentToJson() throws JSONException {
+		PropertyDocument document = factory.getPropertyDocument(
+				factory.getPropertyIdValue("P42", "base/"),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				factory.getDatatypeIdValue("string"));
+		compareJSONObjects(converter.convertPropertyDocumentToJson(document),
+				new JSONObject(TestRessources.EMPTY_PROPERTY_DOCUMENT_REPRES));
+		compareJSONObjects(
+				converter.convertPropertyDocumentToJson(objectFactory
+						.createEmptyPropertyDocument()),
+				new JSONObject(
+						"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
 
 	}
 
@@ -256,9 +253,19 @@ public class ConverterImplTest {
 	@Test
 	public void testConvertSomeValueSnakToJson() {
 		SomeValueSnak snak = objectFactory.createSomeValueSnak("P1231");
-		assertEquals(converter.convertSnakToJson(snak).toString(),
-				TestRessources.SOME_VALUE_SNAK_REPRES);
+		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
+				TestRessources.SOME_VALUE_SNAK_REPRES));
 
+	}
+
+	@Test
+	public void testConvertNoValueSnakToJson() {
+		NoValueSnak snak = factory.getNoValueSnak(factory.getPropertyIdValue(
+				"P10", "test/"));
+		compareJSONObjects(converter.convertSnakToJson(snak),
+				converter.convertNoValueSnakToJson(snak));
+		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
+				TestRessources.NO_VALUE_SNAK_REPRES));
 	}
 
 	@Test
@@ -267,6 +274,29 @@ public class ConverterImplTest {
 		Claim claim = objectFactory.createClaim("Q31", snak);
 		assertEquals(converter.convertClaimToJson(claim).toString(),
 				TestRessources.CLAIM_REPRES);
+
+	}
+
+	@Test
+	public void testConvertReferenceToJson() {
+		Reference ref = objectFactory.createReference();
+		compareJSONObjects(converter.convertReferenceToJson(ref),
+				new JSONObject(TestRessources.REFERENCE_REPRES));
+	}
+
+	@Test
+	public void testConvertStatementToJson() {
+		Statement statement = objectFactory.createStatement("Q100", "P131");
+		compareJSONObjects(converter.convertStatementToJson(statement),
+				new JSONObject(TestRessources.STATEMENT_REPRES));
+
+	}
+
+	@Test
+	public void testConvertStatementGroupToJson() {
+		StatementGroup group = objectFactory.createStatementGroup();
+		compareJSONArrays(converter.convertStatementGroupToJson(group),
+				new JSONArray(TestRessources.STATEMENT_GROUP_REPRES));
 
 	}
 
@@ -289,13 +319,23 @@ public class ConverterImplTest {
 		assertEquals(converter.convertEntityIdValueToJson(value).toString(),
 				TestRessources.ENTITY_ID_VALUE_REPRES);
 	}
-	
+
 	@Test
-	public void testBigDecimals(){
-		BigDecimal test = new BigDecimal(3.53);
-		System.out.println(test);
-		test = new BigDecimal(5000);
-		System.out.println(test);
+	public void testConvertMonolingualTextValue() {
+		MonolingualTextValue value = factory.getMonolingualTextValue(
+				"some text in a language lc", "lc");
+		compareJSONObjects(converter.convertMonolingualTextValueToJson(value),
+				new JSONObject(TestRessources.MONOLINGUAL_TEXT_VALUE_REPRES));
+
+	}
+
+	@Test
+	public void testConvertSiteLinks() {
+		SiteLink siteLink = factory.getSiteLink("title", "siteKey", "baseIri",
+				Collections.<String> emptyList());
+		compareJSONObjects(converter.convertSiteLinkToJson(siteLink),
+				new JSONObject(TestRessources.SITE_LINK_REPRES));
+
 	}
 
 }

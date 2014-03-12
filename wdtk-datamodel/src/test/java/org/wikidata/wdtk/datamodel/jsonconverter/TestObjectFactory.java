@@ -33,10 +33,8 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -45,12 +43,13 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * 
  * @author michael, fredo
- *
+ * 
  */
 
 public class TestObjectFactory {
@@ -72,17 +71,22 @@ public class TestObjectFactory {
 		return document;
 	}
 
-	ItemDocument createEmptyItemDocument() {
+	Statement createStatement(String qId, String pId) {
+		return factory.getStatement(
+				createClaim(qId, createValueSnakStringValue(pId)),
+				createReferences(), StatementRank.NORMAL, "id111");
+	}
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		List<MonolingualTextValue> aliases = new LinkedList<>();
-		List<StatementGroup> statementGroups = new LinkedList<>();
-		Map<String, SiteLink> siteLinks = new HashMap<>();
-		ItemDocument document = this.factory.getItemDocument(itemIdValue,
-				labels, descriptions, aliases, statementGroups, siteLinks);
-		return document;
+	StatementGroup createStatementGroup() {
+		final String pId = "P122";
+		final String qId = "Q10";
+		List<Statement> statements = new ArrayList<Statement>();
+		statements.add(createStatement(qId, pId));
+		statements.add(factory.getStatement(
+				createClaim(qId, createValueSnakQuantityValue(pId)),
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"id112"));
+		return factory.getStatementGroup(statements);
 	}
 
 	List<MonolingualTextValue> createLabels() {
@@ -138,7 +142,7 @@ public class TestObjectFactory {
 		return result;
 	}
 
-	List<? extends Reference> createReferences(int random) {
+	List<? extends Reference> createReferences() {
 		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
 		List<Reference> refs = new ArrayList<>();
 		snaks.add(createValueSnakTime(122, "P112"));
@@ -146,43 +150,54 @@ public class TestObjectFactory {
 		return refs;
 	}
 
+	Reference createReference() {
+		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
+
+		snaks.add(createValueSnakCoordinatesValue("P232"));
+		snaks.add(createValueSnakQuantityValue("P211"));
+
+		return factory.getReference(snaks);
+	}
+
 	Claim createClaim(String id, Snak snak) {
 		return factory.getClaim(factory.getItemIdValue(id, baseIri), snak,
 				Collections.<Snak> emptyList());
 	}
 
-	SomeValueSnak createSomeValueSnak(String pId){
-		return factory.getSomeValueSnak(factory.getPropertyIdValue(pId, baseIri));
+	SomeValueSnak createSomeValueSnak(String pId) {
+		return factory.getSomeValueSnak(factory
+				.getPropertyIdValue(pId, baseIri));
 	}
-	
+
 	ValueSnak createValueSnakItemIdValue(String pId, String qId) {
 		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
 				factory.getItemIdValue(qId, baseIri));
 	}
-	
-	ValueSnak createValueSnakStringValue(String pId){
+
+	ValueSnak createValueSnakStringValue(String pId) {
 		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
 				factory.getStringValue("TestString"));
 	}
-	
-	ValueSnak createValueSnakCoordinatesValue(String pId){
-		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri), factory.getGlobeCoordinatesValue(213124, 21314, GlobeCoordinatesValue.PREC_ARCMINUTE, "http://www.wikidata.org/entity/Q2"));
+
+	ValueSnak createValueSnakCoordinatesValue(String pId) {
+		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
+				factory.getGlobeCoordinatesValue(213124, 21314,
+						GlobeCoordinatesValue.PREC_ARCMINUTE,
+						"http://www.wikidata.org/entity/Q2"));
 	}
-	ValueSnak createValueSnakQuantityValue(String pId){
-		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri), factory.getQuantityValue(new BigDecimal(3), new BigDecimal(3), new BigDecimal(3)));
+
+	ValueSnak createValueSnakQuantityValue(String pId) {
+		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
+				factory.getQuantityValue(new BigDecimal(3), new BigDecimal(3),
+						new BigDecimal(3)));
 	}
-	
-	PropertyIdValue createPropertyIdValue(String id){
+
+	PropertyIdValue createPropertyIdValue(String id) {
 		return factory.getPropertyIdValue(id, baseIri);
 	}
-	ItemIdValue createItemIdValue(String id){
+
+	ItemIdValue createItemIdValue(String id) {
 		return factory.getItemIdValue(id, baseIri);
 	}
-	/*
-	 * Statement createSatement(){ Claim claim =
-	 * factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-	 * factory.getNoValueSnak(factory.getPropertyIdValue("P11", "base/")),
-	 * Collections.<Snak> emptyList()); return factory.getStatement(claim,
-	 * references, rank, statementId) }
-	 */
+	
 }

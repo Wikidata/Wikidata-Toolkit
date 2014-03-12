@@ -307,7 +307,6 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 			result.put(KEY_QUALIFIERS,
 					convertQualifiersToJson(claim.getQualifiers()));
 		}
-		// what about the subject?
 		return result;
 	}
 
@@ -317,7 +316,8 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 	 * EntityDocument to the entity parameter
 	 * 
 	 * @param entity
-	 * @return JSONObject for  {@link org.wikidata.wdtk.datamodel.interfaces.EntityDocument}
+	 * @return JSONObject for
+	 *         {@link org.wikidata.wdtk.datamodel.interfaces.EntityDocument}
 	 * @throws JSONException
 	 */
 	public JSONObject convertEntityDocumentToJson(EntityDocument entity)
@@ -351,8 +351,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 		JSONObject result = new JSONObject();
 		JSONObject statementGroups = new JSONObject();
 		result = addTermedDocumentAttributes(itemDocument, result);
-		result.put(KEY_TYP, KEY_ENTITY_TYP_ITEM); // result.put("type",
-		// itemDocument.getEntityId().getEntityType());
+		result.put(KEY_TYP, KEY_ENTITY_TYP_ITEM);
 		if (!itemDocument.getStatementGroups().isEmpty()) {
 			result.put(KEY_CLAIMS, statementGroups);
 		}
@@ -380,9 +379,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 	public JSONObject convertPropertyDocumentToJson(PropertyDocument document)
 			throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(KEY_TYP, KEY_ENTITY_TYP_PROPERTY); // result.put("type",
-		// document.getEntityId()); giving type
-		// with iri
+		result.put(KEY_TYP, KEY_ENTITY_TYP_PROPERTY);
 		result = addTermedDocumentAttributes(document, result);
 
 		return result;
@@ -487,8 +484,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 	 * @throws JSONException
 	 */
 	public JSONObject convertSnakToJson(Snak snak) throws JSONException {
-		JSONObject result = null;
-		// TODO better using if snak instanceof Interface
+		JSONObject result;
 		if (snak instanceof NoValueSnak) {
 			result = convertNoValueSnakToJson((NoValueSnak) snak);
 		} else if (snak instanceof SomeValueSnak) {
@@ -519,8 +515,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 		if (snak.getValue() instanceof EntityIdValue) {
 			result.put(KEY_DATATYP, "wikibase-item"); // for wikibase-entityid
 														// in
-														// the dump | are there
-														// other EntityTypes?
+														// the dump
 			result.put(KEY_DATAVALUE,
 					convertEntityIdValueToJson((EntityIdValue) snak.getValue()));
 		} else if (snak.getValue() instanceof TimeValue) {
@@ -735,8 +730,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 	public JSONObject convertItemIdValueToJson(ItemIdValue value)
 			throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put("entity-type", KEY_ENTITY_TYP_ITEM); // or
-														// value.getEntityType()
+		result.put("entity-type", KEY_ENTITY_TYP_ITEM);
 		result.put("numeric-id", value.getId());
 
 		return result;
@@ -769,8 +763,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 	public JSONObject convertPropertyIdValueToJson(PropertyIdValue value)
 			throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put("entity-type", KEY_ENTITY_TYP_PROPERTY); // or
-															// value.getEntityType()
+		result.put("entity-type", KEY_ENTITY_TYP_PROPERTY);
 		result.put("numeric-id", value.getId());
 
 		return result;
@@ -788,7 +781,7 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
 		result.put(KEY_TITLE, link.getArticleTitle());
-		result.put("badges", new JSONArray()); // always empty
+		result.put("badges", new JSONArray()); // always empty at the moment
 		return result;
 	}
 
@@ -806,12 +799,13 @@ public class ConverterImpl implements Converter<JSONObject, JSONArray> {
 		return rank.toString().toLowerCase();
 	}
 
-/**
+	/**
 	 * If the parameter is an ItemDocument or a PropertyDocument the function
 	 * for that is called, otherwise it will throw an IllegalArgumentException
 	 * 
 	 * @param document
-	 * @return JSONObject for {@link org.wikidata.wdtk.datamodel.interfaces.TermedDocument}
+	 * @return JSONObject for
+	 *         {@link org.wikidata.wdtk.datamodel.interfaces.TermedDocument}
 	 * @throws JSONException
 	 */
 	public JSONObject convertTermedDocumentToJson(TermedDocument document)
