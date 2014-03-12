@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -21,11 +21,9 @@ package org.wikidata.wdtk.dumpfiles;
  */
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -87,39 +85,18 @@ public class DirectoryManagerImpl implements DirectoryManager {
 		return this.directory.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#getSubdirectoryManager
-	 * (java.lang.String)
-	 */
 	@Override
 	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException {
 		return new DirectoryManagerImpl(directory.resolve(subdirectoryName));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#hasSubdirectory
-	 * (java.lang.String)
-	 */
 	@Override
 	public boolean hasSubdirectory(String subdirectoryName) {
 		Path subdirectoryPath = this.directory.resolve(subdirectoryName);
 		return Files.isDirectory(subdirectoryPath);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DirectoryManagerInterface#hasFile(java.lang
-	 * .String)
-	 */
 	@Override
 	public boolean hasFile(String fileName) {
 		Path filePath = this.directory.resolve(fileName);
@@ -153,37 +130,20 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	}
 
 	@Override
-	public BufferedReader getBufferedReaderForFile(String fileName)
+	public InputStream getInputStreamForFile(String fileName)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
-		return new BufferedReader(new InputStreamReader(Files.newInputStream(
-				filePath, StandardOpenOption.READ), StandardCharsets.UTF_8));
+		return Files.newInputStream(filePath, StandardOpenOption.READ);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.dumpfiles.DIrectoryManagerInterface#
-	 * getBufferedReaderForBz2File(java.lang.String)
-	 */
 	@Override
-	public BufferedReader getBufferedReaderForBz2File(String fileName)
+	public InputStream getInputStreamForBz2File(String fileName)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
-		return new BufferedReader(new InputStreamReader(
-				new BZip2CompressorInputStream(
-						new BufferedInputStream(Files.newInputStream(filePath,
-								StandardOpenOption.READ))),
-				StandardCharsets.UTF_8));
+		return new BZip2CompressorInputStream(new BufferedInputStream(
+				Files.newInputStream(filePath, StandardOpenOption.READ)));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.DIrectoryManagerInterface#getSubdirectories
-	 * (java.lang.String)
-	 */
 	@Override
 	public List<String> getSubdirectories(String glob) throws IOException {
 		List<String> result = new ArrayList<String>();

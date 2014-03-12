@@ -29,15 +29,18 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
 
 public class WmfLocalDumpFileTest {
 
 	MockDirectoryManager dm;
+	Path dmPath;
 
 	@Before
 	public void setUp() throws Exception {
-		dm = new MockDirectoryManager(Paths.get(System.getProperty("user.dir"))
-				.resolve("dumpfiles").resolve("wikidatawiki"));
+		this.dmPath = Paths.get(System.getProperty("user.dir"))
+				.resolve("dumpfiles").resolve("wikidatawiki");
+		this.dm = new MockDirectoryManager(this.dmPath);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -59,7 +62,7 @@ public class WmfLocalDumpFileTest {
 
 	@Test
 	public void malformattedRevisionId() {
-		Path thisDumpPath = dm.directory.resolve("daily-20140220");
+		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
 		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
 				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
@@ -73,7 +76,7 @@ public class WmfLocalDumpFileTest {
 
 	@Test
 	public void emptyRevisionId() {
-		Path thisDumpPath = dm.directory.resolve("daily-20140220");
+		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
 		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
 				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
@@ -86,7 +89,7 @@ public class WmfLocalDumpFileTest {
 
 	@Test
 	public void unreadaleRevisionId() {
-		Path thisDumpPath = dm.directory.resolve("daily-20140220");
+		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
 		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
 				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
 				"Contents of daily 20140220");
@@ -101,7 +104,7 @@ public class WmfLocalDumpFileTest {
 
 	@Test
 	public void missingDumpFile() {
-		Path thisDumpPath = dm.directory.resolve("daily-20140220");
+		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
 		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "12345678");
 
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",

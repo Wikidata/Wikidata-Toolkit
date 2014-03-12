@@ -14,5 +14,13 @@
 
 	<name>Wikidata Toolkit utilities</name>
 	<description>General-purpose utilities used by WDTK</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.7</version>
+		</dependency>
+	</dependencies>
 
 </project>

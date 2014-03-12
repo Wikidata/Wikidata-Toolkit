@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -20,12 +20,9 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -36,48 +33,33 @@ import java.util.zip.GZIPInputStream;
  */
 public class WebResourceFetcherImpl implements WebResourceFetcher {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.WebResourceFetcher#getBufferedReaderForUrl
-	 * (java.lang.String)
-	 */
-	@Override
-	public BufferedReader getBufferedReaderForUrl(String urlString)
-			throws IOException {
-		URL url = new URL(urlString);
-		return new BufferedReader(new InputStreamReader(url.openStream(),
-				StandardCharsets.UTF_8));
-	}
+	// @Override
+	// public BufferedReader getBufferedReaderForUrl(String urlString)
+	// throws IOException {
+	// return new BufferedReader(new InputStreamReader(
+	// this.getInputStreamForUrl(urlString), StandardCharsets.UTF_8));
+	// }
+	//
+	// @Override
+	// public BufferedReader getBufferedReaderForGzipUrl(String urlString)
+	// throws IOException {
+	// return new BufferedReader(new InputStreamReader(
+	// this.getInputStreamForGzipUrl(urlString),
+	// StandardCharsets.UTF_8));
+	// }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.WebResourceFetcher#getBufferedReaderForGzipUrl
-	 * (java.lang.String)
-	 */
-	@Override
-	public BufferedReader getBufferedReaderForGzipUrl(String urlString)
-			throws IOException {
-		URL url = new URL(urlString);
-		return new BufferedReader(new InputStreamReader(new GZIPInputStream(
-				url.openStream()), StandardCharsets.UTF_8));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.dumpfiles.WebResourceFetcher#getReadableByteChannelForUrl
-	 * (java.lang.String)
-	 */
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
 		return url.openStream();
+	}
+
+	@Override
+	public InputStream getInputStreamForGzipUrl(String urlString)
+			throws IOException {
+		URL url = new URL(urlString);
+		return new GZIPInputStream(url.openStream());
 	}
 
 }

@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Comparator;
 
 /**
@@ -93,6 +94,18 @@ public interface MediaWikiDumpFile {
 	 * @return maximal revision id or -1 if not available
 	 */
 	public Long getMaximalRevisionId();
+
+	/**
+	 * Returns an input stream that provides access to the (uncompressed) XML
+	 * content of the dump file.
+	 * <p>
+	 * It is important to close the stream after use.
+	 * 
+	 * @return an input stream to read the dump file
+	 * @throws IOException
+	 *             if the dump file contents could not be accessed
+	 */
+	public InputStream getDumpFileStream() throws IOException;
 
 	/**
 	 * Returns a buffered reader that provides access to the (uncompressed) XML

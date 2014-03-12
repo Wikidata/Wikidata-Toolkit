@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -45,7 +44,8 @@ public interface WebResourceFetcher {
 	 *             if the document at the URL could not be opended or the URL
 	 *             was invalid
 	 */
-	BufferedReader getBufferedReaderForUrl(String urlString) throws IOException;
+	// BufferedReader getBufferedReaderForUrl(String urlString) throws
+	// IOException;
 
 	/**
 	 * Returns a BufferedReader for the Gzip-compressed document at the given
@@ -60,8 +60,8 @@ public interface WebResourceFetcher {
 	 *             if the document at the URL could not be opended or the URL
 	 *             was invalid
 	 */
-	BufferedReader getBufferedReaderForGzipUrl(String urlString)
-			throws IOException;
+	// BufferedReader getBufferedReaderForGzipUrl(String urlString)
+	// throws IOException;
 
 	/**
 	 * Returns an InputStream for the document at the given URL. This can be
@@ -71,9 +71,22 @@ public interface WebResourceFetcher {
 	 *            the URL of the document
 	 * @return InputStream for the requested document
 	 * @throws IOException
-	 *             if the document at the URL could not be opended or the URL
-	 *             was invalid
+	 *             if the document at the URL could not be opened or the URL was
+	 *             invalid
 	 */
 	InputStream getInputStreamForUrl(String urlString) throws IOException;
+
+	/**
+	 * Returns an InputStream for the Gzip-compressed document at the given URL.
+	 * This can be used for downloading. The stream should be closed after use.
+	 * 
+	 * @param urlString
+	 *            the URL of the document
+	 * @return InputStream for the requested document
+	 * @throws IOException
+	 *             if the document at the URL could not be opened or the URL was
+	 *             invalid
+	 */
+	InputStream getInputStreamForGzipUrl(String urlString) throws IOException;
 
 }
