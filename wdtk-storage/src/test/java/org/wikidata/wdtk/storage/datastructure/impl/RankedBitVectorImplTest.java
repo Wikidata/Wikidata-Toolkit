@@ -21,7 +21,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
@@ -104,10 +103,6 @@ public class RankedBitVectorImplTest {
 			}
 		}
 		return RankedBitVector.NOT_FOUND;
-	}
-
-	@Before
-	public void setUp() throws Exception {
 	}
 
 	@Test

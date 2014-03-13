@@ -23,7 +23,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
 import java.util.Iterator;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,10 +34,6 @@ import org.junit.Test;
 public class BitVectorIteratorTest {
 
 	int seed;
-
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	boolean getPseudoRandomBoolean() {
 		this.seed = (0x4650 * (this.seed & 0xFFFF)) + (this.seed >> 0x10);

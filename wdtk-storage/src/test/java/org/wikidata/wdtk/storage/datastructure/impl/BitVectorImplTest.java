@@ -21,7 +21,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
@@ -39,10 +38,6 @@ public class BitVectorImplTest {
 		Assert.assertEquals(bv1, bv0);
 		Assert.assertEquals(bv1, bv1);
 		Assert.assertEquals(bv0.hashCode(), bv1.hashCode());
-	}
-
-	@Before
-	public void setUp() throws Exception {
 	}
 
 	@Test
