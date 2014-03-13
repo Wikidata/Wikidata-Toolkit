@@ -1,5 +1,5 @@
 /**
- * Provides interfaces basic data structures.
+ * Provides interfaces of basic data structures.
  *
  * @author Julian Mendez
  */
