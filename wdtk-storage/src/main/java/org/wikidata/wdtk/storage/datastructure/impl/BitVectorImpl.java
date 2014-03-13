@@ -247,7 +247,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public int hashCode() {
-		if (this.validHashCode) {
+		if (!this.validHashCode) {
 			this.hashCode = computeHashCode();
 			this.validHashCode = true;
 		}
@@ -291,14 +291,8 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (long position = 0; position < this.size;) {
-			if ((position + WORD_SIZE) < this.size) {
-				int arrayPos = (int) (position >> LG_WORD_SIZE);
-				sb.append(wordToString(this.arrayOfBits[arrayPos]));
-				position += WORD_SIZE;
-			} else {
-				sb.append(getBit(position) ? "1" : "0");
-				position++;
-			}
+			sb.append(getBit(position) ? "1" : "0");
+			position++;
 		}
 		return sb.toString();
 	}
