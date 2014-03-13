@@ -35,12 +35,28 @@ import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
  */
 public class RankedBitVectorImplTest {
 
+	/**
+	 * Asserts that for every position in a bit vector,
+	 * {@link RankedBitVector#countBits(boolean, long)} works as expected.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 */
 	void assertCorrectCount(RankedBitVector bv) {
 		for (long index = 0; index < bv.size(); index++) {
 			assertCorrectCount(bv, index);
 		}
 	}
 
+	/**
+	 * Asserts that {@link RankedBitVector#countBits(boolean, long)} works as
+	 * expected at a particular position.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 * @param position
+	 *            position
+	 */
 	void assertCorrectCount(RankedBitVector bv, long position) {
 		{
 			long expectedCount = countBits(bv, false, position);
@@ -54,12 +70,29 @@ public class RankedBitVectorImplTest {
 		}
 	}
 
+	/**
+	 * Asserts that for every number of occurrences of a bit value in a bit
+	 * vector, {@link RankedBitVector#findPosition(boolean, long)} works as
+	 * expected.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 */
 	void assertCorrectFindPosition(RankedBitVector bv) {
 		for (long index = 0; index < bv.size(); index++) {
 			assertCorrectFindPosition(bv, index);
 		}
 	}
 
+	/**
+	 * Asserts that {@link RankedBitVector#findPosition(boolean, long)} works as
+	 * expected considering the given number of occurrences of a bit value.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 * @param nOccurrences
+	 *            number of occurrences
+	 */
 	void assertCorrectFindPosition(RankedBitVector bv, long nOccurrences) {
 		{
 			long expectedFindPosition = findPosition(bv, false, nOccurrences);
@@ -73,14 +106,35 @@ public class RankedBitVectorImplTest {
 		}
 	}
 
-	void assertEqualsForBitVector(RankedBitVector bv0, BitVector bv1) {
+	/**
+	 * Asserts that two ranked bit vectors are equal, and also that the first
+	 * bit vector is equal to itself.
+	 * 
+	 * @param bv0
+	 *            one bit vector
+	 * @param bv1
+	 *            another bit vector
+	 */
+	void assertEqualsForBitVector(RankedBitVector bv0, RankedBitVector bv1) {
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertEquals(bv0, bv1);
 		Assert.assertEquals(bv1, bv0);
-		Assert.assertEquals(bv1, bv1);
 		Assert.assertEquals(bv0.hashCode(), bv1.hashCode());
 	}
 
+	/**
+	 * Returns the expected value of
+	 * {@link RankedBitVector#countBits(boolean, long)}.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 * @param bit
+	 *            bit value
+	 * @param position
+	 *            position
+	 * @return the expected value of
+	 *         {@link RankedBitVector#countBits(boolean, long)}
+	 */
 	long countBits(BitVector bv, boolean bit, long position) {
 		long ret = 0;
 		for (long index = 0; index <= position; index++) {
@@ -91,6 +145,19 @@ public class RankedBitVectorImplTest {
 		return ret;
 	}
 
+	/**
+	 * Returns the expected value of
+	 * {@link RankedBitVector#findPosition(boolean, long)}.
+	 * 
+	 * @param bv
+	 *            bit vector
+	 * @param bit
+	 *            bit value
+	 * @param nOccurrences
+	 *            number of occurrences
+	 * @return the expected value of
+	 *         {@link RankedBitVector#findPosition(boolean, long)}
+	 */
 	long findPosition(BitVector bv, boolean bit, long nOccurrences) {
 		if (nOccurrences == 0) {
 			return RankedBitVector.NOT_FOUND;
@@ -154,20 +221,17 @@ public class RankedBitVectorImplTest {
 	@Test
 	public void testEmptyBitVector() {
 		RankedBitVectorImpl bv0 = new RankedBitVectorImpl();
-		RankedBitVector bv1 = new RankedBitVectorImpl();
-		assertEqualsForBitVector(bv0, bv1);
+		Assert.assertEquals(0, bv0.size());
 		assertCorrectCount(bv0);
-		assertCorrectCount(bv1);
 		assertCorrectFindPosition(bv0);
-		assertCorrectFindPosition(bv1);
+		Assert.assertNotEquals(bv0, new Object());
+		Assert.assertEquals(bv0, new BitVectorImpl());
 
+		RankedBitVector bv1 = new RankedBitVectorImpl();
 		RankedBitVectorImpl bv2 = new RankedBitVectorImpl(0);
 		assertEqualsForBitVector(bv1, bv2);
 		assertCorrectCount(bv2);
 		assertCorrectFindPosition(bv2);
-
-		Assert.assertNotEquals(bv0, new Object());
-		Assert.assertEquals(bv0, new BitVectorImpl());
 	}
 
 	@Test
@@ -228,7 +292,6 @@ public class RankedBitVectorImplTest {
 		Assert.assertEquals(RankedBitVector.NOT_FOUND,
 				bv.findPosition(false, 5));
 		Assert.assertEquals(RankedBitVector.NOT_FOUND, bv.findPosition(true, 5));
-
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -264,11 +327,12 @@ public class RankedBitVectorImplTest {
 	@Test
 	public void testIterator() {
 		RankedBitVectorImpl bv = new RankedBitVectorImpl(new BitVectorImpl());
+		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+				0x7531);
 		Assert.assertEquals(0, bv.size());
 		for (int i = 0; i < 0x300; i++) {
-			bv.addBit((i % 5) == 0);
+			bv.addBit(generator.getPseudorandomBoolean());
 		}
-
 		Iterator<Boolean> it = bv.iterator();
 		for (int i = 0; i < 0x300; i++) {
 			boolean value = it.next();
@@ -333,7 +397,6 @@ public class RankedBitVectorImplTest {
 		Assert.assertEquals("01101101101101100101010101010101", bv.toString());
 		assertCorrectCount(bv);
 		assertCorrectFindPosition(bv);
-
 	}
 
 	@Test
