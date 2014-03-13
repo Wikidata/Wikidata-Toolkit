@@ -30,9 +30,18 @@ public class PseudorandomNumberGenerator {
 
 	int seed = 0x1234;
 
+	/**
+	 * Constructs a pseudorandom number generator using a default seed.
+	 */
 	public PseudorandomNumberGenerator() {
 	}
 
+	/**
+	 * Constructs a pseudorandom number generator using a given seed.
+	 * 
+	 * @param seed
+	 *            seed
+	 */
 	public PseudorandomNumberGenerator(int seed) {
 		this.seed = seed;
 	}

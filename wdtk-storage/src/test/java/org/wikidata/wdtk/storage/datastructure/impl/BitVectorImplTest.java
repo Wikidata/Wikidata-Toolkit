@@ -32,6 +32,15 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  */
 public class BitVectorImplTest {
 
+	/**
+	 * Asserts that two bit vectors are equal, and also that the first bit
+	 * vector is equal to itself.
+	 * 
+	 * @param bv0
+	 *            one bit vector
+	 * @param bv1
+	 *            another bit vector
+	 */
 	void assertEqualsForBitVector(BitVector bv0, BitVector bv1) {
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertEquals(bv0, bv1);
