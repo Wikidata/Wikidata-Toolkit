@@ -39,8 +39,8 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 /**
  * Class for providing access to available dumpfiles provided by the Wikimedia
  * Foundation. The preferred access point for this class if
- * {@link #processAllRecentDumps(DumpFileProcessor, boolean)}, since this method
- * takes care of freeing resources and might also provide parallelized
+ * {@link #processAllRecentDumps(MwDumpFileProcessor, boolean)}, since this
+ * method takes care of freeing resources and might also provide parallelized
  * downloading/processing in the future.
  * <p>
  * Typically, the Web will be accessed to find information about dumps available
@@ -105,10 +105,10 @@ public class WmfDumpFileManager {
 	 *            should dumps with current revisions be preferred?
 	 * @return most recent main dump or null if no such dump exists
 	 */
-	public void processAllRecentDumps(DumpFileProcessor dumpFileProcessor,
+	public void processAllRecentDumps(MwDumpFileProcessor dumpFileProcessor,
 			boolean preferCurrent) {
 
-		for (MediaWikiDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
+		for (MwDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
 			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
 				dumpFileProcessor
 						.processDumpFileContents(inputStream, dumpFile);
@@ -141,15 +141,15 @@ public class WmfDumpFileManager {
 	 *            should dumps with current revisions be preferred?
 	 * @return an ordered list of all dump files that match the given criteria
 	 */
-	public List<MediaWikiDumpFile> findAllRelevantDumps(boolean preferCurrent) {
-		MediaWikiDumpFile mainDump = findMostRecentMainDump(preferCurrent);
+	public List<MwDumpFile> findAllRelevantDumps(boolean preferCurrent) {
+		MwDumpFile mainDump = findMostRecentMainDump(preferCurrent);
 		if (mainDump == null) {
 			return findAllDailyDumps();
 		}
 
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
-		for (MediaWikiDumpFile dumpFile : findAllDailyDumps()) {
+		for (MwDumpFile dumpFile : findAllDailyDumps()) {
 			if (dumpFile.getDateStamp().compareTo(mainDump.getDateStamp()) > 0) {
 				result.add(dumpFile);
 			}
@@ -168,8 +168,8 @@ public class WmfDumpFileManager {
 	 *            should dumps with current revisions be preferred?
 	 * @return most recent main dump or null if no such dump exists
 	 */
-	public MediaWikiDumpFile findMostRecentMainDump(boolean preferCurrent) {
-		List<MediaWikiDumpFile> mainDumps;
+	public MwDumpFile findMostRecentMainDump(boolean preferCurrent) {
+		List<MwDumpFile> mainDumps;
 		if (preferCurrent) {
 			mainDumps = findAllCurrentDumps();
 		} else {
@@ -191,10 +191,10 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return a list of daily dump files
 	 */
-	public List<MediaWikiDumpFile> findAllDailyDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.DAILY);
+	public List<MwDumpFile> findAllDailyDumps() {
+		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.DAILY);
 		if (this.webResourceFetcher != null) {
-			List<MediaWikiDumpFile> onlineDumps = findDailyDumpsOnline();
+			List<MwDumpFile> onlineDumps = findDailyDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
 		} else {
 			return localDumps;
@@ -208,10 +208,10 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return a list of current dump files
 	 */
-	public List<MediaWikiDumpFile> findAllCurrentDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.CURRENT);
+	public List<MwDumpFile> findAllCurrentDumps() {
+		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.CURRENT);
 		if (this.webResourceFetcher != null) {
-			List<MediaWikiDumpFile> onlineDumps = findCurrentDumpsOnline();
+			List<MwDumpFile> onlineDumps = findCurrentDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
 		} else {
 			return localDumps;
@@ -225,10 +225,10 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return a list of full dump files
 	 */
-	public List<MediaWikiDumpFile> findAllFullDumps() {
-		List<MediaWikiDumpFile> localDumps = findDumpsLocally(DumpContentType.FULL);
+	public List<MwDumpFile> findAllFullDumps() {
+		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.FULL);
 		if (this.webResourceFetcher != null) {
-			List<MediaWikiDumpFile> onlineDumps = findFullDumpsOnline();
+			List<MwDumpFile> onlineDumps = findFullDumpsOnline();
 			return mergeDumpLists(localDumps, onlineDumps);
 		} else {
 			return localDumps;
@@ -242,22 +242,21 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return a merged list of dump files
 	 */
-	List<MediaWikiDumpFile> mergeDumpLists(List<MediaWikiDumpFile> localDumps,
-			List<MediaWikiDumpFile> onlineDumps) {
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>(
-				localDumps);
+	List<MwDumpFile> mergeDumpLists(List<MwDumpFile> localDumps,
+			List<MwDumpFile> onlineDumps) {
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>(localDumps);
 
 		HashSet<String> localDateStamps = new HashSet<String>();
-		for (MediaWikiDumpFile dumpFile : localDumps) {
+		for (MwDumpFile dumpFile : localDumps) {
 			localDateStamps.add(dumpFile.getDateStamp());
 		}
-		for (MediaWikiDumpFile dumpFile : onlineDumps) {
+		for (MwDumpFile dumpFile : onlineDumps) {
 			if (!localDateStamps.contains(dumpFile.getDateStamp())) {
 				result.add(dumpFile);
 			}
 		}
-		Collections.sort(result, Collections
-				.reverseOrder(new MediaWikiDumpFile.DateComparator()));
+		Collections.sort(result,
+				Collections.reverseOrder(new MwDumpFile.DateComparator()));
 		return result;
 	}
 
@@ -271,7 +270,7 @@ public class WmfDumpFileManager {
 	 *            the type of dump to consider
 	 * @return list of objects that provide information on available dumps
 	 */
-	List<MediaWikiDumpFile> findDumpsLocally(DumpContentType dumpContentType) {
+	List<MwDumpFile> findDumpsLocally(DumpContentType dumpContentType) {
 
 		String directoryPattern = WmfDumpFile.getDumpFileDirectoryName(
 				dumpContentType, "*");
@@ -282,10 +281,10 @@ public class WmfDumpFileManager {
 					.getSubdirectories(directoryPattern);
 		} catch (IOException e) {
 			logger.error("Unable to access dump directory: " + e.toString());
-			return Collections.<MediaWikiDumpFile> emptyList();
+			return Collections.<MwDumpFile> emptyList();
 		}
 
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
 		for (String directory : dumpFileDirectories) {
 			String dateStamp = WmfDumpFile
@@ -305,8 +304,8 @@ public class WmfDumpFileManager {
 			} // else: silently ignore directories that don't match
 		}
 
-		Collections.sort(result, Collections
-				.reverseOrder(new MediaWikiDumpFile.DateComparator()));
+		Collections.sort(result,
+				Collections.reverseOrder(new MwDumpFile.DateComparator()));
 
 		return result;
 	}
@@ -319,10 +318,10 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return list of objects that provide information on available daily dumps
 	 */
-	List<MediaWikiDumpFile> findDailyDumpsOnline() {
+	List<MwDumpFile> findDailyDumpsOnline() {
 		List<String> dumpFileDates = findDumpDatesOnline(WmfDumpFile.DAILY_WEB_DIRECTORY);
 
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
 			result.add(new WmfOnlineDailyDumpFile(dateStamp, this.projectName,
@@ -341,10 +340,10 @@ public class WmfDumpFileManager {
 	 * @return list of objects that provide information on available current
 	 *         dumps
 	 */
-	List<MediaWikiDumpFile> findCurrentDumpsOnline() {
+	List<MwDumpFile> findCurrentDumpsOnline() {
 		List<String> dumpFileDates = findDumpDatesOnline("");
 
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
 			result.add(new WmfOnlineStandardDumpFile(dateStamp,
@@ -363,10 +362,10 @@ public class WmfDumpFileManager {
 	 * 
 	 * @return list of objects that provide information on available full dumps
 	 */
-	List<MediaWikiDumpFile> findFullDumpsOnline() {
+	List<MwDumpFile> findFullDumpsOnline() {
 		List<String> dumpFileDates = findDumpDatesOnline("");
 
-		List<MediaWikiDumpFile> result = new ArrayList<MediaWikiDumpFile>();
+		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
 			result.add(new WmfOnlineStandardDumpFile(dateStamp,
