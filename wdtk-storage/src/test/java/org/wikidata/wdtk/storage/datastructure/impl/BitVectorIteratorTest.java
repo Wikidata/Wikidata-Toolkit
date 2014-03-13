@@ -35,13 +35,6 @@ import org.junit.Test;
  */
 public class BitVectorIteratorTest {
 
-	int seed;
-
-	boolean getPseudoRandomBoolean() {
-		this.seed = (0x4650 * (this.seed & 0xFFFF)) + (this.seed >> 0x10);
-		return ((this.seed & 1) == 1);
-	}
-
 	@Test
 	public void testHashCode() {
 		Iterator<Boolean> it = (new BitVectorImpl()).iterator();
@@ -69,17 +62,19 @@ public class BitVectorIteratorTest {
 		Assert.assertNotEquals(bv0.iterator(),
 				(new ArrayList<Boolean>()).iterator());
 
-		this.seed = 0x1234;
+		PseudorandomNumberGenerator generator0 = new PseudorandomNumberGenerator(
+				0x1234);
 		for (int i = 0; i < 0x1000; i++) {
-			boolean value = getPseudoRandomBoolean();
+			boolean value = generator0.getPseudorandomBoolean();
 			bv0.addBit(value);
 			bv1.addBit(value);
 		}
 
-		this.seed = 0x1234;
+		PseudorandomNumberGenerator generator1 = new PseudorandomNumberGenerator(
+				0x1234);
 		int i = 0;
 		for (boolean value : bv0) {
-			boolean expectedValue = getPseudoRandomBoolean();
+			boolean expectedValue = generator1.getPseudorandomBoolean();
 			Assert.assertEquals(expectedValue, value);
 			i++;
 		}
