@@ -43,12 +43,12 @@ public class RankedBitVectorImplTest {
 	void assertCorrectCount(RankedBitVector bv, long position) {
 		{
 			long expectedCount = countBits(bv, false, position);
-			long computedCount = countBits(bv, false, position);
+			long computedCount = bv.countBits(false, position);
 			Assert.assertEquals(expectedCount, computedCount);
 		}
 		{
 			long expectedCount = countBits(bv, true, position);
-			long computedCount = countBits(bv, true, position);
+			long computedCount = bv.countBits(true, position);
 			Assert.assertEquals(expectedCount, computedCount);
 		}
 	}
