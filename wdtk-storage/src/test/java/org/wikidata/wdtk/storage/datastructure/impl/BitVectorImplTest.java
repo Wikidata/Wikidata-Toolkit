@@ -75,45 +75,33 @@ public class BitVectorImplTest {
 
 	@Test
 	public void testEqualityAndCopyConstructor() {
+		int aLargeNumber = 0x100000;
 		BitVectorImpl bv0 = new BitVectorImpl();
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertNotEquals(bv0, new Object());
-
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv0.addBit(value);
-		}
-
 		BitVectorImpl bv1 = new BitVectorImpl();
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
+
+		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+				0x1234);
+		for (int i = 0; i < aLargeNumber; i++) {
+			boolean value = generator.getPseudorandomBoolean();
+			bv0.addBit(value);
 			bv1.addBit(value);
 		}
-
 		assertEqualsForBitVector(bv0, bv1);
 
-		bv1.setBit(0x12345, false);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
-		bv1.setBit(0x12346, true);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
 		BitVectorImpl bv2 = new BitVectorImpl(bv1);
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv1.addBit(value);
-		}
-
-		bv2.setBit(0x12345, true);
-		Assert.assertFalse(bv0.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv0));
-		Assert.assertFalse(bv1.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv1));
-
-		bv2.setBit(0x12346, false);
 		assertEqualsForBitVector(bv0, bv2);
+
+		bv1.setBit(0x12345, false);
+		bv2.setBit(0x12345, true);
+
+		Assert.assertNotEquals(bv1, bv2);
+		Assert.assertNotEquals(bv2, bv1);
+
+		RankedBitVectorImpl bv3 = new RankedBitVectorImpl(bv2);
+		Assert.assertNotEquals(bv1, bv3);
+		Assert.assertNotEquals(bv3, bv1);
 	}
 
 	@Test

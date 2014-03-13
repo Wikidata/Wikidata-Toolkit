@@ -353,6 +353,9 @@ public class RankedBitVectorImplTest {
 
 		FindPositionArray fpa = new FindPositionArray(2, bv, false);
 		Assert.assertEquals("[-1, 4, 6]", fpa.toString());
+
+		Assert.assertEquals(RankedBitVector.NOT_FOUND, fpa.findPosition(0));
+		Assert.assertEquals(4, fpa.findPosition(2));
 	}
 
 	@Test
