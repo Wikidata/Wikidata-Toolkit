@@ -21,8 +21,10 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
@@ -89,7 +91,7 @@ class CountBitsArray {
 	 */
 	public long countBits(boolean bit, long position) {
 		updateCount();
-		int blockNumber = getBlockNumber(position);
+		int blockNumber = (int) (position / this.blockSize);
 		long mark = ((long) blockNumber) * this.blockSize;
 		long trueValues = 0;
 		if (blockNumber > 0) {
@@ -99,17 +101,6 @@ class CountBitsArray {
 			trueValues += this.bitVector.getBit(index) ? 1 : 0;
 		}
 		return bit ? trueValues : ((position + 1) - trueValues);
-	}
-
-	/**
-	 * Returns the block number for a given position in the bit vector.
-	 * 
-	 * @param positionInBitVector
-	 *            position in bit vector
-	 * @return the block number for a given position in the bit vector
-	 */
-	int getBlockNumber(long positionInBitVector) {
-		return (int) (positionInBitVector / this.blockSize);
 	}
 
 	/**
@@ -148,36 +139,9 @@ class CountBitsArray {
 		return ret;
 	}
 
-	/**
-	 * Transforms a list of Long to an array of long.
-	 * 
-	 * @param list
-	 *            list
-	 * @return an array of long
-	 */
-	long[] toArray(List<Long> list) {
-		long[] ret = new long[list.size()];
-		int index = 0;
-		for (Long element : list) {
-			ret[index] = element;
-			index++;
-		}
-		return ret;
-	}
-
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append('[');
-		if (this.countArray.length > 0) {
-			str.append(this.countArray[0]);
-		}
-		for (int index = 1; index < this.countArray.length; index++) {
-			str.append(", ");
-			str.append(this.countArray[index]);
-		}
-		str.append(']');
-		return str.toString();
+		return Arrays.toString(this.countArray);
 	}
 
 	/**
@@ -197,7 +161,8 @@ class CountBitsArray {
 	 */
 	void updateCount() {
 		if (this.hasChanged) {
-			this.countArray = toArray(getCountList());
+			this.countArray = ArrayUtils.toPrimitive(getCountList().toArray(
+					new Long[0]));
 			this.hasChanged = false;
 		}
 	}

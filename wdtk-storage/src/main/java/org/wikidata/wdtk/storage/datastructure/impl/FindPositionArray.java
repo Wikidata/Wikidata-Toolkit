@@ -21,8 +21,10 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
@@ -120,15 +122,14 @@ class FindPositionArray {
 		if (nOccurrence <= 0) {
 			return RankedBitVector.NOT_FOUND;
 		}
-		int findPos = getBlockNumber(nOccurrence);
+		int findPos = (int) (nOccurrence / this.blockSize);
 		if (findPos < this.positionArray.length) {
 			long pos0 = this.positionArray[findPos];
 			long leftOccurrences = nOccurrence - (findPos * this.blockSize);
 			if (leftOccurrences == 0) {
 				return pos0;
 			} else {
-				for (long index = pos0 + 1; (leftOccurrences > 0)
-						&& (index < this.bitVector.size()); index++) {
+				for (long index = pos0 + 1; index < this.bitVector.size(); index++) {
 					if (this.bitVector.getBit(index) == this.bit) {
 						leftOccurrences--;
 					}
@@ -139,17 +140,6 @@ class FindPositionArray {
 			}
 		}
 		return RankedBitVector.NOT_FOUND;
-	}
-
-	/**
-	 * Returns the block number for a given number of occurrences.
-	 * 
-	 * @param nOccurrences
-	 *            nOccurrences
-	 * @return the block number for a given number of occurrences
-	 */
-	int getBlockNumber(long nOccurrences) {
-		return (int) (nOccurrences / this.blockSize);
 	}
 
 	/**
@@ -183,36 +173,9 @@ class FindPositionArray {
 		return ret;
 	}
 
-	/**
-	 * Transforms a list of Long to an array of long.
-	 * 
-	 * @param list
-	 *            list
-	 * @return an array of long
-	 */
-	long[] toArray(List<Long> list) {
-		long[] ret = new long[list.size()];
-		int index = 0;
-		for (Long element : list) {
-			ret[index] = element;
-			index++;
-		}
-		return ret;
-	}
-
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append('[');
-		if (this.positionArray.length > 0) {
-			str.append(this.positionArray[0]);
-		}
-		for (int index = 1; index < this.positionArray.length; index++) {
-			str.append(", ");
-			str.append(this.positionArray[index]);
-		}
-		str.append(']');
-		return str.toString();
+		return Arrays.toString(this.positionArray);
 	}
 
 	/**
@@ -232,9 +195,9 @@ class FindPositionArray {
 	 */
 	void updateCount() {
 		if (this.hasChanged) {
-			this.positionArray = toArray(getPositionList());
+			this.positionArray = ArrayUtils.toPrimitive(getPositionList()
+					.toArray(new Long[0]));
 			this.hasChanged = false;
 		}
 	}
-
 }
