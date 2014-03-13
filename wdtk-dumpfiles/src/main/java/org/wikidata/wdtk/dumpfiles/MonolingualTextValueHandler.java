@@ -10,16 +10,16 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 /**
- * MLTV is the abbreviation for mono-lingual text value.
+ * This class is a handler for mono-lingual text values.
  * 
- * @author fredo
+ * @author Fredo Erxleben
  * 
  */
-public class MltvHandler {
+public class MonolingualTextValueHandler {
 
 	private DataObjectFactory factory;
 
-	public MltvHandler(DataObjectFactory factory) {
+	public MonolingualTextValueHandler(DataObjectFactory factory) {
 		this.factory = factory;
 	}
 

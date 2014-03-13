@@ -1,12 +1,14 @@
 package org.wikidata.wdtk.dumpfiles;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,8 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-// IDEA introduce a verbose-flag to enable/disable logging
-// TODO permanent: check if documentation is up-to-date
+// TODO logging support
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
@@ -60,26 +61,42 @@ public class JsonConverter {
 	private static final String KEY_CLAIM = "claims";
 	private static final String KEY_LINK = "links";
 
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
+	private final DataObjectFactory factory;
 	private String baseIri = "";
+	private final MonolingualTextValueHandler mltvHandler;
 
 	/**
 	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
 	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId} The item
-	 * prefix defaults to "Q". The property prefix defaults to "P".
+	 * prefix is "Q". The property prefix is "P". If the given factory is
+	 * <i>null</i> the
+	 * {@link org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl}
+	 * will be used.
 	 * 
 	 * @param baseIri
-	 *            the initial IRI to be used for the processed JSON.
+	 *            the initial IRI to be used for the processed JSON
+	 * @param factory
+	 *            is the DataObjectFactory to be used upon construction of the
+	 *            objects of the data model
 	 */
-	public JsonConverter(String baseIri) {
+	public JsonConverter(String baseIri, DataObjectFactory factory) {
 		this.setBaseIri(baseIri);
+
+		if (factory == null) {
+			this.factory = new DataObjectFactoryImpl();
+		} else {
+			this.factory = factory;
+		}
+		
+		mltvHandler = new MonolingualTextValueHandler(
+				this.factory);
 	}
 
 	/**
 	 * Attempts to parse a given JSON object into an instance of
 	 * PropertyDocument.
 	 * 
-	 * @param toConvert
+	 * @param jsonObject
 	 *            the JSON object to convert. Must represent a property document
 	 *            and therefore contain the keys "entity", "label",
 	 *            "description", "aliases" and "datatype".
@@ -89,48 +106,27 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public PropertyDocument convertToPropertyDocument(JSONObject toConvert)
+	public PropertyDocument convertToPropertyDocument(JSONObject jsonObject)
 			throws JSONException {
 
-		// sanity check
-		if (toConvert == null) {
-			throw new NullPointerException();
-		}
-
-		if (toConvert.length() == 0) { // if the JSON object is empty
+		if (jsonObject.length() == 0) { // if the JSON object is empty
 			throw new JSONException("The JSON to convert was empty");
 		}
 
 		PropertyDocument result;
 
-		// get the property Id
-		// NOTE that in old dumps the entity is not an array
-		// but a string with appropriate prefix in lowercase
-		PropertyIdValue propertyId;
-		JSONArray jsonEntity = toConvert.optJSONArray(KEY_ENTITY);
-		if (!toConvert.has(KEY_ENTITY)) {
-			throw new JSONException("No entity entry found.");
-		} else if (jsonEntity != null) { // it is an array
-			propertyId = (PropertyIdValue) this.getEntityId(jsonEntity,
-					DocumentType.PROPERTY);
-		} else { // it is a String
-			String stringItemId = toConvert.getString(KEY_ENTITY);
-			propertyId = (PropertyIdValue) this.getEntityId(stringItemId,
-					DocumentType.PROPERTY);
-		}
+		PropertyIdValue propertyId = (PropertyIdValue) this
+				.getEntityFromTopLevel(jsonObject, DocumentType.PROPERTY);
 
-		// get the labels
-		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, toConvert);
+		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
-		// get the descriptions
 		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
-				toConvert);
+				jsonObject);
 
-		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS, toConvert);
+		List<MonolingualTextValue> aliases = this
+				.getMltv(KEY_ALIAS, jsonObject);
 
-		// get the datatype id
-		String jsonDataTypeId = toConvert.getString(KEY_DATATYPE);
+		String jsonDataTypeId = jsonObject.getString(KEY_DATATYPE);
 		DatatypeIdValue datatypeId = this.getDataTypeId(jsonDataTypeId);
 
 		result = this.factory.getPropertyDocument(propertyId, labels,
@@ -141,9 +137,9 @@ public class JsonConverter {
 	/**
 	 * Attempts to parse a given JSON object into an instance of ItemDocument.
 	 * 
-	 * @param toConvert
+	 * @param jsonObject
 	 *            the JSON object to convert. Must represent an item document
-	 *            and therefore contain the keys "entity", "label",
+	 *            and therefore might contain the keys "entity", "label",
 	 *            "description", "aliases", "claims" and "links".
 	 * @return the ItemDocument as described in the JSON.
 	 * @throws NullPointerException
@@ -151,66 +147,76 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public ItemDocument convertToItemRecord(JSONObject toConvert)
+	public ItemDocument convertToItemDocument(JSONObject jsonObject)
 			throws JSONException, NullPointerException {
 
-		// sanity check
-		if (toConvert == null) {
-			throw new NullPointerException();
-		}
-
-		if (toConvert.length() == 0) { // if the JSON object is empty
+		if (jsonObject.length() == 0) { // if the JSON object is empty
 			throw new JSONException("The JSON to convert was empty");
 		}
 
-		// get the item Id
-		// NOTE that in old dumps the entity is not an array
-		// but a string with appropriate prefix in lowercase
-		ItemIdValue itemId;
-		JSONArray jsonEntity = toConvert.optJSONArray(KEY_ENTITY);
-		if (!toConvert.has(KEY_ENTITY)) {
-			throw new JSONException("No entity entry found.");
-		} else if (jsonEntity != null) { // it is an array
-			itemId = (ItemIdValue) this.getEntityId(jsonEntity,
-					DocumentType.ITEM);
-		} else { // it is a String
-			String stringItemId = toConvert.getString(KEY_ENTITY);
-			itemId = (ItemIdValue) this.getEntityId(stringItemId,
-					DocumentType.ITEM);
-		}
+		ItemIdValue itemId = (ItemIdValue) this.getEntityFromTopLevel(
+				jsonObject, DocumentType.ITEM);
 
-		// get the labels
-		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, toConvert);
+		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
-		// get the description
 		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
-				toConvert);
+				jsonObject);
 
-		// get the aliases
-		List<MonolingualTextValue> aliases = this.getMltv(KEY_ALIAS, toConvert);
+		List<MonolingualTextValue> aliases = this
+				.getMltv(KEY_ALIAS, jsonObject);
 
-		// get the statements
 		List<StatementGroup> statements = new LinkedList<>();
-		if (toConvert.has(KEY_CLAIM)) {
-			JSONArray jsonStatements = toConvert.getJSONArray(KEY_CLAIM);
+		if (jsonObject.has(KEY_CLAIM)) {
+			JSONArray jsonStatements = jsonObject.getJSONArray(KEY_CLAIM);
 			statements = this.getStatements(jsonStatements, itemId);
 		}
 
-		// get the site links
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 
-		if (toConvert.has(KEY_LINK)) {
-			JSONArray linkArray = toConvert.optJSONArray(KEY_LINK);
+		if (jsonObject.has(KEY_LINK)) {
+			JSONArray linkArray = jsonObject.optJSONArray(KEY_LINK);
 			if (linkArray == null) {
-				JSONObject jsonLinks = toConvert.getJSONObject(KEY_LINK);
+				JSONObject jsonLinks = jsonObject.getJSONObject(KEY_LINK);
 				siteLinks = this.getSiteLinks(jsonLinks);
 			}
 		}
 
-		// now put it all together
 		ItemDocument result = factory.getItemDocument(itemId, labels,
 				descriptions, aliases, statements, siteLinks);
 		return result;
+	}
+
+	/**
+	 * Attempts to get the entity id value from the given JSON-object. Note that
+	 * in old dumps the entity is not an array but a string with appropriate
+	 * prefix in lower case.
+	 * 
+	 * @param topLevel
+	 *            is the JSON object describing the whole entity
+	 * @param docType
+	 *            describes if the entity is a property or an item
+	 * @return the entities id as EntityIdValue; this should be casted into the
+	 *         appropriate type by the caller
+	 * @throws JSONException
+	 *             if the topLevel does not contain the key "entity"
+	 */
+	private EntityIdValue getEntityFromTopLevel(JSONObject topLevel,
+			DocumentType docType) throws JSONException {
+
+		if (!topLevel.has(KEY_ENTITY)) {
+			throw new JSONException("No entity entry found.");
+		}
+
+		EntityIdValue entityId;
+		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
+
+		if (entityJsonArray != null) { // it is an array
+			entityId = this.getEntityId(entityJsonArray, docType);
+		} else { // it is a String
+			String stringItemId = topLevel.getString(KEY_ENTITY);
+			entityId = this.getEntityId(stringItemId, docType);
+		}
+		return entityId;
 	}
 
 	/**
@@ -234,46 +240,43 @@ public class JsonConverter {
 	 */
 	private EntityIdValue getEntityId(JSONArray jsonEntity, DocumentType docType)
 			throws JSONException {
-		// assert jsonEntity != null : "Entity JSONArray was null";
 
-		String expectedIdentifier;
+		String expectedTypeIndicator;
 		String prefix;
 
 		switch (docType) {
 		case ITEM:
-			expectedIdentifier = "item";
+			expectedTypeIndicator = "item";
 			prefix = PREFIX_ITEM;
 			break;
 		case PROPERTY:
-			expectedIdentifier = "property";
+			expectedTypeIndicator = "property";
 			prefix = PREFIX_PROPERTY;
 			break;
 		default:
-			throw new JSONException("Unsupported document type");
+			throw new IllegalArgumentException("Unsupported document type");
 		}
 
-		String identifier = jsonEntity.getString(0);
-		if (!identifier.equalsIgnoreCase(expectedIdentifier)) {
-			throw new JSONException("Entity identifier \"" + identifier
-					+ "\" did not match expected identifier \""
-					+ expectedIdentifier + "\".");
+		String entityTypeIndicator = jsonEntity.getString(0);
+		if (!entityTypeIndicator.equalsIgnoreCase(expectedTypeIndicator)) {
+			throw new JSONException("Entity type indicator \""
+					+ entityTypeIndicator
+					+ "\" did not match expected type indicator \""
+					+ expectedTypeIndicator + "\".");
 		}
 
 		int idValue = jsonEntity.getInt(1);
 		String fullId = prefix + idValue;
 
-		EntityIdValue result = null;
 		switch (docType) {
 		case ITEM:
-			result = this.factory.getItemIdValue(fullId, this.baseIri);
-			break;
+			return this.factory.getItemIdValue(fullId, this.baseIri);
 		case PROPERTY:
-			result = this.factory.getPropertyIdValue(fullId, this.baseIri);
-			break;
-		// Omitted default, this can never happen.
+			return this.factory.getPropertyIdValue(fullId, this.baseIri);
+			// Omitted default, this can never happen.
 		}
 
-		return result;
+		return null;
 	}
 
 	/**
@@ -297,11 +300,6 @@ public class JsonConverter {
 	 */
 	private EntityIdValue getEntityId(String id, DocumentType docType)
 			throws JSONException {
-
-		// sanity check
-		if (id == null) {
-			throw new NullPointerException("Entity id string was null");
-		}
 
 		String expectedPrefix;
 
@@ -405,11 +403,9 @@ public class JsonConverter {
 	 */
 	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
 
-		MltvHandler handler = new MltvHandler(this.factory);
-
 		JSONObject toConvert = topLevel.optJSONObject(key);
 		if (toConvert != null) {
-			return handler.convertToMltv(toConvert);
+			return this.mltvHandler.convertToMltv(toConvert);
 		} // else…
 
 		return new LinkedList<>();
@@ -418,7 +414,7 @@ public class JsonConverter {
 	/**
 	 * Converts the given JSON array into a list of Reference-objects. A
 	 * reference is an array of reference statements which in turn are value
-	 * snaks.
+	 * snaks. Invalid references will be skipped.
 	 * 
 	 * @param jsonReferences
 	 *            is an JSON array of JSON arrays of value snaks
@@ -435,22 +431,8 @@ public class JsonConverter {
 		for (int i = 0; i < jsonReferences.length(); i++) {
 			try {
 				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
-				List<ValueSnak> valueSnaks = new LinkedList<>();
-
-				// process the reference statements
-				for (int j = 0; j < jsonSingleRef.length(); j++) {
-					try {
-						JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
-						ValueSnak currentValueSnak = this
-								.getValueSnak(jsonValueSnak);
-						valueSnaks.add(currentValueSnak);
-					} catch (JSONException e) {
-						// skip over invalid references
-						continue;
-					}
-				}
-
-				Reference singleReference = factory.getReference(valueSnaks);
+				Reference singleReference = this
+						.getSingleReference(jsonSingleRef);
 				result.add(singleReference);
 
 			} catch (JSONException e) {
@@ -460,6 +442,34 @@ public class JsonConverter {
 
 		}
 		return result;
+	}
+
+	/**
+	 * Converts a given JSON-array into a single Reference. The array must be
+	 * taken from the JSON-array of references.
+	 * 
+	 * @param jsonSingleRef
+	 *            is a JSON-array describing a single reference, containing
+	 *            value snaks
+	 * @return the appropriate reference
+	 * @throws JSONException
+	 *             in case the conversion of the value snaks fails
+	 */
+	private Reference getSingleReference(JSONArray jsonSingleRef)
+			throws JSONException {
+		List<ValueSnak> valueSnaks = new LinkedList<>();
+
+		// process the reference statements
+		// do not recover from broken snaks, skip the reference
+		for (int j = 0; j < jsonSingleRef.length(); j++) {
+
+			JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
+			ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
+			valueSnaks.add(currentValueSnak);
+		}
+
+		Reference singleReference = factory.getReference(valueSnaks);
+		return singleReference;
 	}
 
 	/**
@@ -474,7 +484,7 @@ public class JsonConverter {
 	 */
 	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
 			throws JSONException {
-//		assert jsonLinks != null : "Link JSON object was null";
+		// assert jsonLinks != null : "Link JSON object was null";
 
 		// links are siteKey:{"name":string,"badges":[string] }
 		// the siteKey is the key for the returned map
@@ -482,18 +492,20 @@ public class JsonConverter {
 
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 
+		// TODO where to get the site IRI from
+		String siteIri = "";
+		
 		@SuppressWarnings("unchecked")
 		Iterator<String> linkIterator = jsonLinks.keys();
 
 		while (linkIterator.hasNext()) {
 
 			String title;
-			List<String> badges = new LinkedList<String>();
+			List<String> badges = new ArrayList<String>();
 
 			String siteKey = linkIterator.next();
 
 			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
-			String stringLink = jsonLinks.optString(siteKey);
 
 			if (currentLink != null) {
 
@@ -504,15 +516,19 @@ public class JsonConverter {
 				for (int i = 0; i < badgeArray.length(); i++) {
 					badges.add(badgeArray.getString(i));
 				}
-			} else if (stringLink != null) { // its a string
-				title = stringLink;
-			} else { // none of the above, skip
-				continue;
+			} else {
+				String stringLink = jsonLinks.optString(siteKey);
+				if (stringLink != null) { // its a string
+					title = stringLink;
+				} else { // none of the above, skip
+					// TODO logging
+					continue;
+				}
 			}
-
+			
 			// create the SiteLink instance
 			SiteLink siteLink = factory.getSiteLink(title, siteKey,
-					this.baseIri, badges);
+					siteIri, badges);
 			result.put(siteKey, siteLink);
 		}
 
@@ -521,7 +537,7 @@ public class JsonConverter {
 
 	/**
 	 * Converts a JSON array containing statements into a list of statement
-	 * groups a represented by the WDTK data model.
+	 * groups as represented by the WDTK data model.
 	 * 
 	 * @param jsonStatements
 	 *            contains all the statements about an item. must consist of
@@ -536,15 +552,15 @@ public class JsonConverter {
 	private List<StatementGroup> getStatements(JSONArray jsonStatements,
 			EntityIdValue subject) throws JSONException {
 
-//		assert jsonStatements != null : "statements JSON array was null";
+		// assert jsonStatements != null : "statements JSON array was null";
 		// structure is [{"m":object, "q":[], "g":string, "rank":int,
 		// "refs":[…]},…]
 		// "q" => qualifiers
 		// "m" => main snak
 		// "g" => statement id
 
-		List<StatementGroup> result = new LinkedList<StatementGroup>();
-		List<Statement> statementsFromJson = new LinkedList<Statement>();
+		List<StatementGroup> result;
+		List<Statement> statementsFromJson = new ArrayList<Statement>(jsonStatements.length());
 
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
@@ -607,8 +623,7 @@ public class JsonConverter {
 		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
 
 		// build it together
-		Claim result = this.factory.getClaim(subject, mainSnak, qualifiers);
-		return result;
+		return this.factory.getClaim(subject, mainSnak, qualifiers);
 	}
 
 	/**
@@ -617,9 +632,7 @@ public class JsonConverter {
 	 * The number 0 maps to DEPRECATED. <br/>
 	 * The number 1 maps to NORMAL. <br/>
 	 * The number 2 maps to PREFERRED. <br/>
-	 * 
-	 * To accommodate for possible other values that may occur any number below
-	 * 0 also maps to DEPRECATED and any number above 2 also maps to PREFERRED.
+	 * Other ranks are regarded as an error.
 	 * 
 	 * @param intRank
 	 *            the rank as integer.
@@ -627,15 +640,13 @@ public class JsonConverter {
 	 */
 	private StatementRank getStatementRank(int intRank) {
 
-		// this is the default case
-		StatementRank result = StatementRank.NORMAL;
-
-		if (intRank < 1) {
-			result = StatementRank.DEPRECATED;
-		} else if (intRank > 1) {
-			result = StatementRank.PREFERRED;
+		switch(intRank){
+		case 0 : return StatementRank.DEPRECATED;
+		case 1 : return StatementRank.NORMAL;
+		case 2 : return StatementRank.PREFERRED;
+		default:
+			throw new IllegalArgumentException("Undefined statement rank.");
 		}
-		return result;
 	}
 
 	/**
@@ -648,7 +659,7 @@ public class JsonConverter {
 	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
 		// effectively a list of value snaks
 
-		List<Snak> result = new LinkedList<Snak>();
+		List<Snak> result = new ArrayList<Snak>(jsonQualifiers.length());
 		for (int i = 0; i < jsonQualifiers.length(); i++) {
 			try {
 				JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
@@ -674,22 +685,17 @@ public class JsonConverter {
 	 */
 	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
 
-		Snak result;
 		switch (jsonMainSnak.getString(0)) {
 		case "value":
-			result = this.getValueSnak(jsonMainSnak);
-			break;
+			return this.getValueSnak(jsonMainSnak);
 		case "somevalue":
-			result = this.getSomeValueSnak(jsonMainSnak);
-			break;
+			return this.getSomeValueSnak(jsonMainSnak);
 		case "novalue":
-			result = this.getNoValueSnak(jsonMainSnak);
-			break;
+			return this.getNoValueSnak(jsonMainSnak);
 		default: // could not determine snak type...
 			throw new JSONException("Unknown snack type: "
 					+ jsonMainSnak.getString(0));
 		}
-		return result;
 	}
 
 	/**
@@ -738,8 +744,9 @@ public class JsonConverter {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
 
-//		assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
-//		assert jsonSomeValueSnak.getString(0).equals("somevalue") : "Argument was not a SomeValueSnak.";
+		// assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
+		// assert jsonSomeValueSnak.getString(0).equals("somevalue") :
+		// "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
 		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
@@ -800,7 +807,7 @@ public class JsonConverter {
 			break;
 		default:
 			throw new JSONException("Unknown value type " + valueString
-					+ "in value snak JSON");
+					+ " in value snak JSON");
 		}
 
 		// put it all together
@@ -816,7 +823,7 @@ public class JsonConverter {
 	 * @return the appropriate DatatypeIdValue-instance.
 	 */
 	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
-//		assert jsonDataTypeId != null : "Given JSON datatype id was null";
+		// assert jsonDataTypeId != null : "Given JSON datatype id was null";
 
 		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
@@ -874,7 +881,8 @@ public class JsonConverter {
 	private GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
 
-//		assert jsonGlobeCoordinate != null : "Globe coordinate JSON was null";
+		// assert jsonGlobeCoordinate != null :
+		// "Globe coordinate JSON was null";
 		// example:
 		// {"latitude":51.835,
 		// "longitude":10.785277777778,
@@ -1094,8 +1102,7 @@ public class JsonConverter {
 	 *            nothing will be done.
 	 */
 	public void setBaseIri(String baseIri) {
-		if (baseIri == null)
-			return;
+		Validate.notNull(baseIri);
 		this.baseIri = baseIri;
 	}
 

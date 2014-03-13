@@ -11,7 +11,7 @@ class ItemTestCase extends TestCase {
 	private ItemDocument result;
 	
 	void convert() throws JSONException {
-		this.result = this.converter.convertToItemRecord(this.json);
+		this.result = this.converter.convertToItemDocument(this.json);
 	}
 	
 	ItemDocument getResult(){

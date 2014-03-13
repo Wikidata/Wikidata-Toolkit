@@ -23,13 +23,13 @@
 			"m":["value",1,"wikibase-entityid",{"entity-type":"item","numeric-id":1}],
 			"q":[],
 			"g":"foo",
-			"rank":-1,
+			"rank":0,
 			"refs":[]
 		},{
 			"m":["value",1,"wikibase-entityid",{"entity-type":"item","numeric-id":1}],
 			"q":[],
 			"g":"foo",
-			"rank":100,
+			"rank":2,
 			"refs":[]
 		}
 	]

@@ -12,9 +12,7 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -51,7 +49,7 @@ public class jsonConverterTest {
 
 	@BeforeClass
 	public static void setUp() {
-		unitUnderTest = new JsonConverter(baseIri);
+		unitUnderTest = new JsonConverter(baseIri, new DataObjectFactoryImpl());
 	}
 
 	@Test
@@ -237,7 +235,7 @@ public class jsonConverterTest {
 		String siteKey = "enwiki";
 		String title = "test";
 		siteLinks.put("enwiki",
-				this.factory.getSiteLink(title, siteKey, baseIri, badges));
+				this.factory.getSiteLink(title, siteKey, "", badges));
 
 		ItemDocument document = this.factory.getItemDocument(itemIdValue,
 				labels, descriptions, aliases, statementGroups, siteLinks);
