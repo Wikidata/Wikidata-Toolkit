@@ -20,7 +20,9 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,6 +40,53 @@ public class BitVectorIteratorTest {
 	boolean getPseudoRandomBoolean() {
 		this.seed = (0x4650 * (this.seed & 0xFFFF)) + (this.seed >> 0x10);
 		return ((this.seed & 1) == 1);
+	}
+
+	@Test
+	public void testHashCode() {
+		Iterator<Boolean> it = (new BitVectorImpl()).iterator();
+		Assert.assertEquals(0, it.hashCode());
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void testNoSuchElementException() {
+		new BitVectorImpl().iterator().next();
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testUnsupportedOperationException() {
+		new BitVectorImpl().iterator().remove();
+	}
+
+	@Test
+	public void testVectorWithPseudoRandomValues() {
+		BitVectorImpl bv0 = new BitVectorImpl();
+		BitVectorImpl bv1 = new BitVectorImpl();
+
+		Iterator<Boolean> it = bv0.iterator();
+		Assert.assertEquals(it, it);
+		Assert.assertEquals(bv0.iterator(), bv1.iterator());
+		Assert.assertNotEquals(bv0.iterator(),
+				(new ArrayList<Boolean>()).iterator());
+
+		this.seed = 0x1234;
+		for (int i = 0; i < 0x1000; i++) {
+			boolean value = getPseudoRandomBoolean();
+			bv0.addBit(value);
+			bv1.addBit(value);
+		}
+
+		this.seed = 0x1234;
+		int i = 0;
+		for (boolean value : bv0) {
+			boolean expectedValue = getPseudoRandomBoolean();
+			Assert.assertEquals(expectedValue, value);
+			i++;
+		}
+
+		Assert.assertEquals(i, 0x1000);
+		Assert.assertEquals(bv0.iterator(), bv1.iterator());
+		Assert.assertNotEquals(bv0.iterator(), (new BitVectorImpl()).iterator());
 	}
 
 	@Test
@@ -79,27 +128,6 @@ public class BitVectorIteratorTest {
 			}
 		}
 
-	}
-
-	@Test
-	public void testVectorWithPseudoRandomValues() {
-		BitVectorImpl bv = new BitVectorImpl();
-
-		this.seed = 0x1234;
-		for (int i = 0; i < 0x1000; i++) {
-			boolean value = getPseudoRandomBoolean();
-			bv.addBit(value);
-		}
-
-		this.seed = 0x1234;
-		int i = 0;
-		for (boolean value : bv) {
-			boolean expectedValue = getPseudoRandomBoolean();
-			Assert.assertEquals(expectedValue, value);
-			i++;
-		}
-
-		Assert.assertEquals(i, 0x1000);
 	}
 
 }

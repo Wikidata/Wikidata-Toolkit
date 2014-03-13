@@ -36,7 +36,6 @@ public class BitVectorImplTest {
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertEquals(bv0, bv1);
 		Assert.assertEquals(bv1, bv0);
-		Assert.assertEquals(bv1, bv1);
 		Assert.assertEquals(bv0.hashCode(), bv1.hashCode());
 	}
 
@@ -77,6 +76,9 @@ public class BitVectorImplTest {
 	@Test
 	public void testEqualityAndCopyConstructor() {
 		BitVectorImpl bv0 = new BitVectorImpl();
+		Assert.assertEquals(bv0, bv0);
+		Assert.assertNotEquals(bv0, new Object());
+
 		for (int i = 0; i < 0x100000; i++) {
 			boolean value = (i % 3) == 0;
 			bv0.addBit(value);
@@ -144,28 +146,56 @@ public class BitVectorImplTest {
 
 	}
 
+	@Test
+	public void testHashCode() {
+		{
+			BitVectorImpl bv = new BitVectorImpl();
+			Assert.assertEquals(0, bv.hashCode());
+
+			bv.addBit(false);
+			Assert.assertEquals(1, bv.hashCode());
+		}
+		{
+			BitVectorImpl bv = new BitVectorImpl();
+			Assert.assertEquals(0, bv.hashCode());
+
+			bv.addBit(true);
+			Assert.assertEquals(0x20, bv.hashCode());
+		}
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInitialSize() {
 		new BitVectorImpl(-1);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
+	public void testInvalidPositionSizeGet00() {
+		(new BitVectorImpl()).getBit(-1);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testInvalidPositionSizeGet01() {
-		BitVectorImpl.getBitInWord((byte) -1, 0);
+		(new BitVectorImpl()).getBit(1);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testInvalidPositionSizeGet02() {
+		BitVectorImpl.getBitInWord((byte) -1, 0);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testInvalidPositionSizeGet03() {
 		BitVectorImpl.getBitInWord((byte) 0x40, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeSet01() {
+	public void testInvalidPositionSizeSet00() {
 		BitVectorImpl.setBitInWord((byte) -1, true, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeSet02() {
+	public void testInvalidPositionSizeSet01() {
 		BitVectorImpl.setBitInWord((byte) 0x40, false, 0);
 	}
 

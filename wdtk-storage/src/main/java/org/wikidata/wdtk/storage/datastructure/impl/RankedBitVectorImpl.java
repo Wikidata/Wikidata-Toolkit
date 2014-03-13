@@ -118,18 +118,11 @@ public class RankedBitVectorImpl implements RankedBitVector, Iterable<Boolean> {
 	 * @param findPositionBlockSize
 	 *            block size to find the position of the <i>n</i>-th occurrence
 	 *            of a value; this value must be greater than or equal to 64
+	 * @throws IllegalArgumentException
+	 *             if any of the block sizes is too small
 	 */
 	public RankedBitVectorImpl(long initialSize, int countBlockSize,
 			int findPositionBlockSize) {
-		if (countBlockSize < 1) {
-			throw new IllegalArgumentException(
-					"Block size must be a positive number. The received value was: "
-							+ countBlockSize + ".");
-		}
-		if (findPositionBlockSize < 0x40) {
-			throw new IllegalArgumentException("Block size is too small: "
-					+ findPositionBlockSize + ". The minimum is " + 0x40 + ".");
-		}
 		this.bitVector = new BitVectorImpl(initialSize);
 		this.countBitsArray = new CountBitsArray(this.bitVector, countBlockSize);
 		this.findPositionOfFalse = new FindPositionArray(this.bitVector, false,

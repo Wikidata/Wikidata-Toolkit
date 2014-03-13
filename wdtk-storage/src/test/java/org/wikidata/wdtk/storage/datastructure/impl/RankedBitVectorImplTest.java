@@ -20,6 +20,8 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  * #L%
  */
 
+import java.util.Iterator;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
@@ -71,7 +73,7 @@ public class RankedBitVectorImplTest {
 		}
 	}
 
-	void assertEqualsForBitVector(BitVector bv0, BitVector bv1) {
+	void assertEqualsForBitVector(RankedBitVector bv0, BitVector bv1) {
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertEquals(bv0, bv1);
 		Assert.assertEquals(bv1, bv0);
@@ -144,6 +146,9 @@ public class RankedBitVectorImplTest {
 		assertEqualsForBitVector(bv1, bv2);
 		assertCorrectCount(bv2);
 		assertCorrectFindPosition(bv2);
+
+		Assert.assertNotEquals(bv0, new Object());
+		Assert.assertEquals(bv0, new BitVectorImpl());
 	}
 
 	@Test
@@ -190,7 +195,6 @@ public class RankedBitVectorImplTest {
 				assertCorrectCount(bv2, i);
 			}
 		}
-
 	}
 
 	@Test
@@ -234,8 +238,49 @@ public class RankedBitVectorImplTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidInitialSize() {
+	public void testInvalidInitialSizes0() {
+		new RankedBitVectorImpl(1, 0, 0x40);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidInitialSizes1() {
+		new RankedBitVectorImpl(1, 2, 0x3F);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidInitialSizes2() {
+		new CountBitsArray(new BitVectorImpl(), 0);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidInitialSizes3() {
+		new FindPositionArray(0, new BitVectorImpl(), true);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidInitialSizes4() {
+		new FindPositionArray(new BitVectorImpl(), true, 0x3F);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidInitialSizes5() {
 		new RankedBitVectorImpl(-1);
+	}
+
+	@Test
+	public void testIterator() {
+		RankedBitVectorImpl bv = new RankedBitVectorImpl(new BitVectorImpl());
+		Assert.assertEquals(0, bv.size());
+		for (int i = 0; i < 0x300; i++) {
+			bv.addBit((i % 5) == 0);
+		}
+
+		Iterator<Boolean> it = bv.iterator();
+		for (int i = 0; i < 0x300; i++) {
+			boolean value = it.next();
+			Assert.assertEquals(bv.getBit(i), value);
+		}
+		Assert.assertFalse(it.hasNext());
 	}
 
 	@Test
@@ -295,6 +340,35 @@ public class RankedBitVectorImplTest {
 		assertCorrectCount(bv);
 		assertCorrectFindPosition(bv);
 
+	}
+
+	@Test
+	public void testToStringOfAuxClasses() {
+		BitVectorImpl bv = new BitVectorImpl();
+		bv.addBit(true);
+		bv.addBit(false);
+		bv.addBit(true);
+		bv.addBit(true);
+		bv.addBit(false);
+		bv.addBit(false);
+		bv.addBit(false);
+		bv.addBit(true);
+
+		CountBitsArray cba = new CountBitsArray(bv, 2);
+		Assert.assertEquals("[1, 3, 3, 4]", cba.toString());
+
+		FindPositionArray fpa = new FindPositionArray(2, bv, false);
+		Assert.assertEquals("[-1, 4, 6]", fpa.toString());
+	}
+
+	@Test
+	public void testValidInitialSizes() {
+		new RankedBitVectorImpl(1, 1, 0x40);
+		new RankedBitVectorImpl(1, 2, 0x40);
+		new CountBitsArray(new BitVectorImpl(), 1);
+		new FindPositionArray(1, new BitVectorImpl(), true);
+		new FindPositionArray(new BitVectorImpl(), true, 0x40);
+		new RankedBitVectorImpl(0);
 	}
 
 }
