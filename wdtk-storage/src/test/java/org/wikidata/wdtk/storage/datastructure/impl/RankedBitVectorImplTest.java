@@ -133,6 +133,25 @@ public class RankedBitVectorImplTest {
 	}
 
 	@Test
+	public void testCountBits() {
+		final long aLargeNumber = 0x100000;
+
+		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+				0x1234);
+		RankedBitVectorImpl bv = new RankedBitVectorImpl(new BitVectorImpl());
+		for (int i = 0; i < aLargeNumber; i++) {
+			boolean value = generator.getPseudorandomBoolean();
+			bv.addBit(value);
+		}
+
+		for (int i = 0; i < aLargeNumber; i++) {
+			if ((i % 0x6785) == 0) {
+				assertCorrectCount(bv, i);
+			}
+		}
+	}
+
+	@Test
 	public void testEmptyBitVector() {
 		RankedBitVectorImpl bv0 = new RankedBitVectorImpl();
 		RankedBitVector bv1 = new RankedBitVectorImpl();
@@ -153,48 +172,23 @@ public class RankedBitVectorImplTest {
 
 	@Test
 	public void testEqualityAndCopyConstructor() {
-		RankedBitVectorImpl bv0 = new RankedBitVectorImpl();
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv0.addBit(value);
-		}
+		final long aLargeNumber = 0x100000;
 
+		RankedBitVectorImpl bv0 = new RankedBitVectorImpl();
 		RankedBitVectorImpl bv1 = new RankedBitVectorImpl();
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
+
+		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+				0x1234);
+		for (int i = 0; i < aLargeNumber; i++) {
+			boolean value = generator.getPseudorandomBoolean();
+			bv0.addBit(value);
 			bv1.addBit(value);
 		}
 
 		assertEqualsForBitVector(bv0, bv1);
 
-		bv1.setBit(0x12345, false);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
-		bv1.setBit(0x12346, true);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
 		RankedBitVectorImpl bv2 = new RankedBitVectorImpl(bv1);
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv1.addBit(value);
-		}
-
-		bv2.setBit(0x12345, true);
-		Assert.assertFalse(bv0.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv0));
-		Assert.assertFalse(bv1.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv1));
-
-		bv2.setBit(0x12346, false);
 		assertEqualsForBitVector(bv0, bv2);
-
-		for (int i = 0; i < 0x100000; i++) {
-			if ((i % 0x6785) == 0) {
-				assertCorrectCount(bv2, i);
-			}
-		}
 	}
 
 	@Test
