@@ -98,10 +98,40 @@ class FindPositionArray {
 	 *            bit vector
 	 * @param bit
 	 *            bit
-	 * @param blockSize
+	 * @param blockSizeGTE64
 	 *            block size; this value must be greater than or equal to 64.
+	 * @throws IllegalArgumentException
+	 *             if block size is less than 64
 	 */
-	public FindPositionArray(BitVector bitVector, boolean bit, int blockSize) {
+	public FindPositionArray(BitVector bitVector, boolean bit,
+			int blockSizeGTE64) {
+		this(blockSizeGTE64, bitVector, bit);
+		if (blockSizeGTE64 < 0x40) {
+			throw new IllegalArgumentException(
+					"The block size must be greater than or equal to " + 0x40
+							+ ". The received value was " + blockSizeGTE64
+							+ ".");
+		}
+	}
+
+	/**
+	 * Constructs a new array using a given block size of occurrences. This
+	 * constructor does not restrict the block size and it should be used only
+	 * as an auxiliary constructor or for testing.
+	 * 
+	 * @param bitVector
+	 *            bit vector
+	 * @param bit
+	 *            bit
+	 * @param blockSize
+	 *            block size; this value must be a positive number.
+	 */
+	FindPositionArray(int blockSize, BitVector bitVector, boolean bit) {
+		if (blockSize < 1) {
+			throw new IllegalArgumentException(
+					"The block size must be a positive number. The received value was: "
+							+ blockSize + ".");
+		}
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 		this.bit = bit;
@@ -128,14 +158,13 @@ class FindPositionArray {
 			long leftOccurrences = nOccurrence - (findPos * this.blockSize);
 			if (leftOccurrences == 0) {
 				return pos0;
-			} else {
-				for (long index = pos0 + 1; index < this.bitVector.size(); index++) {
-					if (this.bitVector.getBit(index) == this.bit) {
-						leftOccurrences--;
-					}
-					if (leftOccurrences == 0) {
-						return index;
-					}
+			}
+			for (long index = pos0 + 1; index < this.bitVector.size(); index++) {
+				if (this.bitVector.getBit(index) == this.bit) {
+					leftOccurrences--;
+				}
+				if (leftOccurrences == 0) {
+					return index;
 				}
 			}
 		}
@@ -175,6 +204,7 @@ class FindPositionArray {
 
 	@Override
 	public String toString() {
+		updateCount();
 		return Arrays.toString(this.positionArray);
 	}
 

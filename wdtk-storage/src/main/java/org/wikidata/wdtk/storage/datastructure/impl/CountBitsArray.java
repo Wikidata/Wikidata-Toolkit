@@ -77,8 +77,15 @@ class CountBitsArray {
 	 * 
 	 * @param blockSize
 	 *            block size; this value must be a positive number
+	 * @throws IllegalArgumentException
+	 *             if the block size is not a positive number
 	 */
 	public CountBitsArray(BitVector bitVector, int blockSize) {
+		if (blockSize < 1) {
+			throw new IllegalArgumentException(
+					"The block size must be a positive number. The received value was: "
+							+ blockSize + ".");
+		}
 		this.bitVector = bitVector;
 		this.hasChanged = true;
 		this.blockSize = blockSize;
@@ -141,6 +148,7 @@ class CountBitsArray {
 
 	@Override
 	public String toString() {
+		updateCount();
 		return Arrays.toString(this.countArray);
 	}
 
