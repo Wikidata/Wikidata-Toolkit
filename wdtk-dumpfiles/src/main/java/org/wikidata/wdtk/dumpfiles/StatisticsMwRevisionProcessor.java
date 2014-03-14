@@ -64,6 +64,24 @@ public class StatisticsMwRevisionProcessor implements MwRevisionProcessor {
 				Timer.RECORD_ALL);
 	}
 
+	/**
+	 * Returns the total number of revisions processed so far.
+	 * 
+	 * @return the number of revisions
+	 */
+	public long getTotalRevisionCount() {
+		return this.totalRevisionCount;
+	}
+
+	/**
+	 * Returns the number of revisions processed in the current run.
+	 * 
+	 * @return the number of revisions
+	 */
+	public long getCurrentRevisionCount() {
+		return this.currentRevisionCount;
+	}
+
 	@Override
 	public void startRevisionProcessing(String siteName, String baseUrl,
 			Map<Integer, String> namespaces) {

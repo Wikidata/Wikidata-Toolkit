@@ -59,14 +59,25 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 
 	final List<MwRevisionProcessorBroker.RevisionSubscription> revisionSubscriptions;
 
-	MwRevisionImpl currentRevision;
+	/**
+	 * Holds the most current revision found in the block of revisions that is
+	 * currently being processed. If the current page block is not the first for
+	 * that page, this will not be stored and the value is null.
+	 */
+	MwRevisionImpl mostCurrentRevision;
+	/**
+	 * Page id of the currently processed block of page revisions. Used to
+	 * detect when the block changes.
+	 */
+	int currentPageId;
 
 	BitVector encounteredPages;
 	BitVector encounteredRevisions;
 
 	public MwRevisionProcessorBroker() {
 		this.revisionSubscriptions = new ArrayList<MwRevisionProcessorBroker.RevisionSubscription>();
-		this.currentRevision = new MwRevisionImpl();
+		this.mostCurrentRevision = null;
+		this.currentPageId = -1;
 		// TODO these initial sizes need to be configurable
 		encounteredPages = new BitVectorImpl(20000000);
 		encounteredRevisions = new BitVectorImpl(200000000);
@@ -124,19 +135,22 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 			return;
 		}
 
-		boolean pageIsNew = !this.encounteredPages.getBit(mwRevision
-				.getPageId());
-		if (pageIsNew) {
-			this.encounteredPages.setBit(mwRevision.getPageId(), true);
-		}
+		if (mwRevision.getPageId() != this.currentPageId) {
+			notifyMwRevisionProcessors(this.mostCurrentRevision, true);
 
-		if (mwRevision.getPageId() != this.currentRevision.getPageId()) {
-			notifyMwRevisionProcessors(this.currentRevision, true);
-			this.currentRevision = new MwRevisionImpl(mwRevision);
-		} else if (pageIsNew
-				&& mwRevision.getRevisionId() > this.currentRevision
+			this.currentPageId = mwRevision.getPageId();
+			boolean currentPageIsNew = !this.encounteredPages
+					.getBit(this.currentPageId);
+			if (currentPageIsNew) {
+				this.encounteredPages.setBit(this.currentPageId, true);
+				this.mostCurrentRevision = new MwRevisionImpl(mwRevision);
+			} else {
+				this.mostCurrentRevision = null;
+			}
+		} else if (this.mostCurrentRevision != null
+				&& mwRevision.getRevisionId() > this.mostCurrentRevision
 						.getRevisionId()) {
-			this.currentRevision = new MwRevisionImpl(mwRevision);
+			this.mostCurrentRevision = new MwRevisionImpl(mwRevision);
 		}
 
 		notifyMwRevisionProcessors(mwRevision, false);
@@ -151,7 +165,7 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 *            true if this is guaranteed to be the most current revision
 	 */
 	void notifyMwRevisionProcessors(MwRevision mwRevision, boolean isCurrent) {
-		if (mwRevision.getPageId() <= 0) {
+		if (mwRevision == null || mwRevision.getPageId() <= 0) {
 			return;
 		}
 		for (MwRevisionProcessorBroker.RevisionSubscription rs : this.revisionSubscriptions) {
@@ -171,8 +185,8 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 */
 	@Override
 	public void finishRevisionProcessing() {
-		notifyMwRevisionProcessors(this.currentRevision, true);
-		this.currentRevision = new MwRevisionImpl();
+		notifyMwRevisionProcessors(this.mostCurrentRevision, true);
+		this.mostCurrentRevision = null;
 
 		for (MwRevisionProcessorBroker.RevisionSubscription rs : this.revisionSubscriptions) {
 			rs.mwRevisionProcessor.finishRevisionProcessing();

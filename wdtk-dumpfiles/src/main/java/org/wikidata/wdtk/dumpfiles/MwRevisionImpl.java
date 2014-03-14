@@ -60,6 +60,7 @@ public class MwRevisionImpl implements MwRevision {
 	 */
 	public MwRevisionImpl(MwRevision mwRevision) {
 		this.title = mwRevision.getTitle();
+		this.timeStamp = mwRevision.getTimeStamp();
 		this.text = mwRevision.getText();
 		this.model = mwRevision.getModel();
 		this.format = mwRevision.getFormat();
@@ -152,6 +153,16 @@ public class MwRevisionImpl implements MwRevision {
 		this.format = null;
 		this.timeStamp = null;
 		this.model = null;
+	}
+
+	@Override
+	public String toString() {
+		return "Revision " + this.revisionId + " of page " + this.title
+				+ " (ns " + this.namespace + ", id " + this.pageId
+				+ "). Created at " + this.timeStamp + " by " + this.contributor
+				+ " (" + this.contributorId + ") with comment \""
+				+ this.comment + "\". Model " + this.model + " (" + this.format
+				+ "). Text length: " + this.text.length();
 	}
 
 }
