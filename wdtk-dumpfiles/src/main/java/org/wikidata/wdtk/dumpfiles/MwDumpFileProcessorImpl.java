@@ -29,6 +29,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class processes MediaWiki dumpfiles, extracting all revisions and
  * forwarding them to any registered revision processor. The class also keeps
@@ -57,6 +60,7 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	static final String E_PAGE_ID = "id";
 	static final String E_PAGE_NAMESPACE = "ns";
 	static final String E_PAGE_REVISION = "revision";
+	static final String E_PAGE_REDIRECT = "redirect";
 
 	static final String E_REV_ID = "id";
 	static final String E_REV_PARENT_ID = "parentid";
@@ -72,6 +76,9 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	static final String E_CONTRIBUTOR_NAME = "username";
 	static final String E_CONTRIBUTOR_ID = "id";
 	static final String E_CONTRIBUTOR_IP = "ip";
+
+	static final Logger logger = LoggerFactory
+			.getLogger(MwDumpFileProcessorImpl.class);
 
 	XMLInputFactory xmlFactory;
 	XMLStreamReader xmlReader;
@@ -101,12 +108,8 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	 */
 	final MwRevisionProcessor mwRevisionProcessor;
 
-	// Basic bookkeeping:
-	long revisionCount;
-	int pageCount;
-
 	/**
-	 * Constuctor.
+	 * Constructor.
 	 * 
 	 * @param mwRevisionProcessor
 	 *            the revision processor to which all revisions will be reported
@@ -131,8 +134,6 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	 */
 	public void reset() {
 		this.namespaces.clear();
-		this.revisionCount = 0;
-		this.pageCount = 0;
 	}
 
 	@Override
@@ -148,10 +149,8 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 		try {
 			this.xmlReader = this.xmlFactory.createXMLStreamReader(inputStream);
 			processXmlMediawiki();
-		} catch (XMLStreamException e) {
-			throw new RuntimeException(e.toString(), e);
-		} catch (MwDumpFormatException e) {
-			throw new RuntimeException(e.toString(), e);
+		} catch (XMLStreamException | MwDumpFormatException e) {
+			MwDumpFileProcessorImpl.logger.error(e.toString());
 		} finally { // unfortunately, xmlReader does not implement AutoClosable
 			if (this.xmlReader != null) {
 				try {
@@ -183,11 +182,11 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	 */
 	void processXmlMediawiki() throws XMLStreamException, MwDumpFormatException {
 
-		while (xmlReader.hasNext()) {
-			switch (xmlReader.getEventType()) {
+		while (this.xmlReader.hasNext()) {
+			switch (this.xmlReader.getEventType()) {
 
 			case XMLStreamConstants.START_ELEMENT:
-				switch (xmlReader.getLocalName()) {
+				switch (this.xmlReader.getLocalName()) {
 				case MwDumpFileProcessorImpl.E_MEDIAWIKI:
 					break;
 				case MwDumpFileProcessorImpl.E_SITEINFO:
@@ -196,21 +195,21 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 							this.sitename, this.baseUrl, this.namespaces);
 					break;
 				case MwDumpFileProcessorImpl.E_PAGE:
-					processXmlPage();
+					tryProcessXmlPage();
 					break;
 				}
 				break;
 
 			case XMLStreamConstants.END_ELEMENT:
-				if (!"mediawiki".equals(xmlReader.getLocalName())) {
+				if (!"mediawiki".equals(this.xmlReader.getLocalName())) {
 					throw new MwDumpFormatException("Unexpected end element </"
-							+ xmlReader.getLocalName() + ">.");
+							+ this.xmlReader.getLocalName() + ">.");
 				}
 				break;
 
 			}
 
-			xmlReader.next();
+			this.xmlReader.next();
 		}
 	}
 
@@ -228,11 +227,11 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	 *             if the contents of the XML file did not match our
 	 *             expectations of a MediaWiki XML dump
 	 */
-	void processXmlSiteinfo() throws XMLStreamException, MwDumpFormatException {
+	void processXmlSiteinfo() throws XMLStreamException {
 
-		xmlReader.next(); // skip current start tag
-		while (xmlReader.hasNext()) {
-			switch (xmlReader.getEventType()) {
+		this.xmlReader.next(); // skip current start tag
+		while (this.xmlReader.hasNext()) {
+			switch (this.xmlReader.getEventType()) {
 
 			case XMLStreamConstants.START_ELEMENT:
 				switch (xmlReader.getLocalName()) {
@@ -241,7 +240,7 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 					break;
 				case MwDumpFileProcessorImpl.E_NAMESPACE:
 					Integer namespaceKey = new Integer(
-							xmlReader.getAttributeValue(null,
+							this.xmlReader.getAttributeValue(null,
 									MwDumpFileProcessorImpl.A_NSKEY));
 					this.namespaces.put(namespaceKey,
 							this.xmlReader.getElementText());
@@ -253,7 +252,7 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 				break;
 
 			case XMLStreamConstants.END_ELEMENT:
-				if (MwDumpFileProcessorImpl.E_SITEINFO.equals(xmlReader
+				if (MwDumpFileProcessorImpl.E_SITEINFO.equals(this.xmlReader
 						.getLocalName())) {
 					return;
 				}
@@ -261,7 +260,45 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 
 			}
 
-			xmlReader.next();
+			this.xmlReader.next();
+		}
+	}
+
+	/**
+	 * Tries to processes current XML starting from a &lt;page&gt; start tag up
+	 * to the corresponding end tag using {@link #processXmlPage()}. If this
+	 * fails for some reason, it tries to recover to read all remaining page
+	 * blocks nonetheless.
+	 * 
+	 * @throws XMLStreamException
+	 *             if there was a problem reading the XML
+	 */
+	void tryProcessXmlPage() throws XMLStreamException {
+		try {
+			processXmlPage();
+		} catch (MwDumpFormatException e) {
+			MwDumpFileProcessorImpl.logger
+					.error("Error when trying to process revision block for page \""
+							+ this.mwRevision.getTitle()
+							+ "\" (namespace "
+							+ this.mwRevision.getNamespace()
+							+ ", id "
+							+ this.mwRevision.getPageId()
+							+ "): "
+							+ e.toString());
+
+			MwDumpFileProcessorImpl.logger.info("Trying to recover ...");
+			while (this.xmlReader.hasNext()) {
+				this.xmlReader.next();
+				if (this.xmlReader.getEventType() == XMLStreamConstants.END_ELEMENT
+						&& this.xmlReader.getLocalName() == MwDumpFileProcessorImpl.E_PAGE) {
+					MwDumpFileProcessorImpl.logger
+							.info("... recovery successful. Continuing processing.");
+					return;
+				}
+			}
+			MwDumpFileProcessorImpl.logger
+					.error("Recovery failed. Could not process remaining XML.");
 		}
 	}
 
@@ -283,12 +320,12 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 
 		this.mwRevision.resetCurrentPageData();
 
-		xmlReader.next(); // skip current start tag
-		while (xmlReader.hasNext()) {
-			switch (xmlReader.getEventType()) {
+		this.xmlReader.next(); // skip current start tag
+		while (this.xmlReader.hasNext()) {
+			switch (this.xmlReader.getEventType()) {
 
 			case XMLStreamConstants.START_ELEMENT:
-				switch (xmlReader.getLocalName()) {
+				switch (this.xmlReader.getLocalName()) {
 				case MwDumpFileProcessorImpl.E_PAGE_TITLE:
 					this.mwRevision.title = this.xmlReader.getElementText();
 					break;
@@ -303,20 +340,23 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 				case MwDumpFileProcessorImpl.E_PAGE_REVISION:
 					processXmlRevision();
 					break;
+				case MwDumpFileProcessorImpl.E_PAGE_REDIRECT:
+					break;
+				default:
+					throw new MwDumpFormatException("Unexpected element \""
+							+ this.xmlReader.getLocalName() + "\" in page.");
 				}
-
 				break;
 
 			case XMLStreamConstants.END_ELEMENT:
 				if (MwDumpFileProcessorImpl.E_PAGE.equals(xmlReader
 						.getLocalName())) {
-					this.pageCount++;
 					return;
 				}
 				break;
 			}
 
-			xmlReader.next();
+			this.xmlReader.next();
 		}
 	}
 
@@ -338,12 +378,12 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 
 		this.mwRevision.resetCurrentRevisionData();
 
-		xmlReader.next(); // skip current start tag
-		while (xmlReader.hasNext()) {
-			switch (xmlReader.getEventType()) {
+		this.xmlReader.next(); // skip current start tag
+		while (this.xmlReader.hasNext()) {
+			switch (this.xmlReader.getEventType()) {
 
 			case XMLStreamConstants.START_ELEMENT:
-				switch (xmlReader.getLocalName()) {
+				switch (this.xmlReader.getLocalName()) {
 				case MwDumpFileProcessorImpl.E_REV_COMMENT:
 					this.mwRevision.comment = this.xmlReader.getElementText();
 					break;
@@ -366,32 +406,27 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 					this.mwRevision.revisionId = new Long(
 							this.xmlReader.getElementText());
 					break;
-				case "":
 				case MwDumpFileProcessorImpl.E_REV_PARENT_ID:
 				case MwDumpFileProcessorImpl.E_REV_SHA1:
 				case MwDumpFileProcessorImpl.E_REV_MINOR:
 					break;
 				default:
 					throw new MwDumpFormatException("Unexpected element \""
-							+ xmlReader.getLocalName() + "\" in revision.");
+							+ this.xmlReader.getLocalName() + "\" in revision.");
 				}
 
 				break;
 
 			case XMLStreamConstants.END_ELEMENT:
-				if (MwDumpFileProcessorImpl.E_PAGE_REVISION.equals(xmlReader
-						.getLocalName())) {
-
+				if (MwDumpFileProcessorImpl.E_PAGE_REVISION
+						.equals(this.xmlReader.getLocalName())) {
 					this.mwRevisionProcessor.processRevision(this.mwRevision);
-
-					this.revisionCount++;
-
 					return;
 				}
 				break;
 			}
 
-			xmlReader.next();
+			this.xmlReader.next();
 		}
 	}
 
@@ -412,12 +447,12 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 	void processXmlContributor() throws XMLStreamException,
 			MwDumpFormatException {
 
-		xmlReader.next(); // skip current start tag
-		while (xmlReader.hasNext()) {
-			switch (xmlReader.getEventType()) {
+		this.xmlReader.next(); // skip current start tag
+		while (this.xmlReader.hasNext()) {
+			switch (this.xmlReader.getEventType()) {
 
 			case XMLStreamConstants.START_ELEMENT:
-				switch (xmlReader.getLocalName()) {
+				switch (this.xmlReader.getLocalName()) {
 				case MwDumpFileProcessorImpl.E_CONTRIBUTOR_NAME:
 					this.mwRevision.contributor = this.xmlReader
 							.getElementText();
@@ -431,24 +466,23 @@ public class MwDumpFileProcessorImpl implements MwDumpFileProcessor {
 							.getElementText();
 					this.mwRevision.contributorId = -1;
 					break;
-				case "":
-					break;
 				default:
 					throw new MwDumpFormatException("Unexpected element \""
-							+ xmlReader.getLocalName() + "\" in contributor.");
+							+ this.xmlReader.getLocalName()
+							+ "\" in contributor.");
 				}
 
 				break;
 
 			case XMLStreamConstants.END_ELEMENT:
-				if (MwDumpFileProcessorImpl.E_REV_CONTRIBUTOR.equals(xmlReader
-						.getLocalName())) {
+				if (MwDumpFileProcessorImpl.E_REV_CONTRIBUTOR
+						.equals(this.xmlReader.getLocalName())) {
 					return;
 				}
 				break;
 			}
 
-			xmlReader.next();
+			this.xmlReader.next();
 		}
 	}
 

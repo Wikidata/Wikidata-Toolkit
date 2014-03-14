@@ -158,10 +158,54 @@ public class MwDumpFileProcessingTest {
 	}
 
 	@Test
+	public void testIncompleteDumpFile() throws IOException {
+		URL resourceUrl = MwDumpFileProcessingTest.class
+				.getResource("/mock-dump-incomplete-revision.xml");
+		MwDumpFile mockDumpFile = Mockito.mock(WmfLocalDumpFile.class);
+
+		MwRevisionProcessorBroker mwrpBroker = new MwRevisionProcessorBroker();
+
+		TestMwRevisionProcessor tmrpAll = new TestMwRevisionProcessor();
+		mwrpBroker.registerMwRevisionProcessor(tmrpAll, null, false);
+
+		MwDumpFileProcessorImpl mwdfp = new MwDumpFileProcessorImpl(mwrpBroker);
+		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
+
+		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
+		revisionsAll.add(getItemRevision(4));
+
+		assertEqualRevisionLists(revisionsAll, tmrpAll.revisions,
+				"all-incomplete");
+	}
+
+	@Test
+	public void testBuggyDumpFile() throws IOException {
+		URL resourceUrl = MwDumpFileProcessingTest.class
+				.getResource("/mock-dump-with-bugs.xml");
+		MwDumpFile mockDumpFile = Mockito.mock(WmfLocalDumpFile.class);
+
+		MwRevisionProcessorBroker mwrpBroker = new MwRevisionProcessorBroker();
+
+		TestMwRevisionProcessor tmrpAll = new TestMwRevisionProcessor();
+		mwrpBroker.registerMwRevisionProcessor(tmrpAll, null, false);
+
+		MwDumpFileProcessorImpl mwdfp = new MwDumpFileProcessorImpl(mwrpBroker);
+		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
+
+		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
+		revisionsAll.add(getItemRevision(4));
+		revisionsAll.add(getItemRevision(5));
+		revisionsAll.add(getPageRevision(1));
+		revisionsAll.add(getPageRevision(2));
+
+		assertEqualRevisionLists(revisionsAll, tmrpAll.revisions,
+				"all-incomplete");
+	}
+
+	@Test
 	public void testMwDumpFileProcessing() throws IOException {
 		URL resourceUrl = MwDumpFileProcessingTest.class
 				.getResource("/mock-dump-for-testing.xml");
-
 		MwDumpFile mockDumpFile = Mockito.mock(WmfLocalDumpFile.class);
 
 		MwRevisionProcessorBroker mwrpBroker = new MwRevisionProcessorBroker();
