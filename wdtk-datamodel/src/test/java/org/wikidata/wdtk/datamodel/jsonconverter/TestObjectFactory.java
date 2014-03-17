@@ -118,12 +118,7 @@ public class TestObjectFactory {
 				baseIri, new LinkedList<String>()));
 		return result;
 	}
-
-	/*
-	 * ValueSnak createValueSnak(){ ValueSnak result =
-	 * factory.getValueSnak(factory.getPropertyIdValue("P100", baseIri),
-	 * factory.getItemIdValue("Q101", baseIri)); return result; }
-	 */
+	
 	ValueSnak createValueSnakTime(int random, String pId) {
 		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
 				factory.getTimeValue((random * 18) % 25500,

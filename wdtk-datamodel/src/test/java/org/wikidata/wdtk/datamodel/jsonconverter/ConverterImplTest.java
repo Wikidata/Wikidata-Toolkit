@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
@@ -111,57 +112,12 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testBigDecimals() {
-		BigDecimal test = new BigDecimal(3638);
-		assertEquals(converter.formatBigDecimal(test), "+3638");
-	}
-
-	@Test
-	public void testTimeToString() {
-		assertEquals(converter.timeToString((long) 1974, (byte) 3, (byte) 11,
-				(byte) 12, (byte) 47, (byte) 35),
-				"+00000001974-03-11T12:47:35Z");
-		assertEquals(converter.timeToString((long) -65000000, (byte) 1,
-				(byte) 1, (byte) 0, (byte) 0, (byte) 0),
-				"-00065000000-01-01T00:00:00Z");
-	}
-
-	@Test
 	public void testOrder() {
 		JSONArray array = new JSONArray();
 		array.put("one");
 		array.put("two");
 		array.put("three");
 		assertEquals(array.toString(), "[\"one\",\"two\",\"three\"]");
-	}
-
-	@Test
-	public void testMergeJSONObjects() {
-		JSONObject object1 = new JSONObject();
-		JSONObject object2 = new JSONObject();
-		JSONObject objectMerge = new JSONObject();
-
-		object1.put("keyLv1.1", 3);
-		objectMerge.put("keyLv1.1", 3);
-
-		object2.put("keyLv1.2", new JSONArray());
-		objectMerge.put("keyLv1.2", new JSONArray());
-
-		JSONObject Lv2 = new JSONObject();
-
-		Lv2.put("keylv2.1", "ok");
-		Lv2.put("keyLv2.2", new String());
-
-		object1.put("keyLv1.3", Lv2);
-		objectMerge.put("keyLv1.3", Lv2);
-
-		compareJSONObjects(converter.mergeJSONObjects(object1, object2),
-				converter.mergeJSONObjects(object2, object1));
-		compareJSONObjects(converter.mergeJSONObjects(objectMerge, object2),
-				objectMerge);
-		compareJSONObjects(converter.mergeJSONObjects(object1, object2),
-				objectMerge);
-
 	}
 
 	@Test
@@ -195,14 +151,7 @@ public class ConverterImplTest {
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
 		statementGroups.add(factory.getStatementGroup(statements));
-		compareJSONObjects(converter.convertItemDocumentToJson(factory
-				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
-						objectFactory.createLabels(),
-						objectFactory.createDescriptions(),
-						objectFactory.createAliases(), statementGroups,
-						objectFactory.createSiteLinks())), new JSONObject(
-				TestRessources.ITEM_DOCUMENT_REPRES));
-		compareJSONObjects(converter.convertEntityDocumentToJson(factory
+		compareJSONObjects(converter.visit(factory
 				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
 						objectFactory.createLabels(),
 						objectFactory.createDescriptions(),
@@ -219,10 +168,10 @@ public class ConverterImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				factory.getDatatypeIdValue("string"));
-		compareJSONObjects(converter.convertPropertyDocumentToJson(document),
+		compareJSONObjects(converter.visit(document),
 				new JSONObject(TestRessources.EMPTY_PROPERTY_DOCUMENT_REPRES));
 		compareJSONObjects(
-				converter.convertPropertyDocumentToJson(objectFactory
+				converter.visit(objectFactory
 						.createEmptyPropertyDocument()),
 				new JSONObject(
 						"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
@@ -263,7 +212,7 @@ public class ConverterImplTest {
 		NoValueSnak snak = factory.getNoValueSnak(factory.getPropertyIdValue(
 				"P10", "test/"));
 		compareJSONObjects(converter.convertSnakToJson(snak),
-				converter.convertNoValueSnakToJson(snak));
+				converter.visit(snak));
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
 				TestRessources.NO_VALUE_SNAK_REPRES));
 	}
@@ -272,7 +221,7 @@ public class ConverterImplTest {
 	public void testConvertClaimToJson() {
 		ValueSnak snak = objectFactory.createValueSnakTime(42, "P129");
 		Claim claim = objectFactory.createClaim("Q31", snak);
-		assertEquals(converter.convertClaimToJson(claim).toString(),
+		assertEquals(converter.visit(claim).toString(),
 				TestRessources.CLAIM_REPRES);
 
 	}
@@ -280,14 +229,14 @@ public class ConverterImplTest {
 	@Test
 	public void testConvertReferenceToJson() {
 		Reference ref = objectFactory.createReference();
-		compareJSONObjects(converter.convertReferenceToJson(ref),
+		compareJSONObjects(converter.visit(ref),
 				new JSONObject(TestRessources.REFERENCE_REPRES));
 	}
 
 	@Test
 	public void testConvertStatementToJson() {
 		Statement statement = objectFactory.createStatement("Q100", "P131");
-		compareJSONObjects(converter.convertStatementToJson(statement),
+		compareJSONObjects(converter.visit(statement),
 				new JSONObject(TestRessources.STATEMENT_REPRES));
 
 	}
@@ -303,9 +252,9 @@ public class ConverterImplTest {
 	@Test
 	public void testConvertPropertyIdValueToJson() {
 		PropertyIdValue value = objectFactory.createPropertyIdValue("P200");
-		assertEquals(converter.convertPropertyIdValueToJson(value).toString(),
+		assertEquals(converter.visit(value).toString(),
 				TestRessources.PROPERTY_ID_VALUE_REPRES);
-		assertEquals(converter.convertEntityIdValueToJson(value).toString(),
+		assertEquals(converter.convertEntityIdValueToJson((EntityIdValue)value).toString(),
 				TestRessources.ENTITY_ID_VALUE_REPRES_2);
 
 	}
@@ -313,7 +262,7 @@ public class ConverterImplTest {
 	@Test
 	public void testConvertItemIdValueToJson() {
 		ItemIdValue value = objectFactory.createItemIdValue("Q200");
-		assertEquals(converter.convertItemIdValueToJson(value).toString(),
+		assertEquals(converter.visit(value).toString(),
 				TestRessources.ITEM_ID_VALUE_REPRES);
 
 		assertEquals(converter.convertEntityIdValueToJson(value).toString(),
@@ -324,7 +273,7 @@ public class ConverterImplTest {
 	public void testConvertMonolingualTextValue() {
 		MonolingualTextValue value = factory.getMonolingualTextValue(
 				"some text in a language lc", "lc");
-		compareJSONObjects(converter.convertMonolingualTextValueToJson(value),
+		compareJSONObjects(converter.visit(value),
 				new JSONObject(TestRessources.MONOLINGUAL_TEXT_VALUE_REPRES));
 
 	}
@@ -333,7 +282,7 @@ public class ConverterImplTest {
 	public void testConvertSiteLinks() {
 		SiteLink siteLink = factory.getSiteLink("title", "siteKey", "baseIri",
 				Collections.<String> emptyList());
-		compareJSONObjects(converter.convertSiteLinkToJson(siteLink),
+		compareJSONObjects(converter.visit(siteLink),
 				new JSONObject(TestRessources.SITE_LINK_REPRES));
 
 	}

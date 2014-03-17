@@ -21,10 +21,8 @@ package org.wikidata.wdtk.datamodel.jsonconverter;
  * #L%
  */
 
-import org.json.JSONException;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -37,235 +35,205 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Interface for Converters providing methods to convert Object from
- * {@link org.wikidata.wdtk.datamodel.interfaces} in json}
+ * {@link org.wikidata.wdtk.datamodel.interfaces} in an Output-format}
  * 
  * @author Michael Günther
  * 
  * @param <Output>
- * @param <OutputArray>
  */
-public interface Converter<Output, OutputArray> {
+public interface Converter<Output> {
 
 	/**
-	 * Create a json-representation of a attribute of an
+	 * Converts the attributes of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.Claim}
 	 * 
 	 * @param claim
-	 * @return Json representation of an
+	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Claim}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertClaimToJson(Claim claim) throws JSONException;
+	public Output visit(Claim claim) throws Exception;
 
 	/**
-	 * Create a json-representation of an
+	 * Create a representation of an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemDocument}
 	 * 
 	 * @param itemDocument
-	 * @return Json representation of an
+	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ItemDocument}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertItemDocumentToJson(ItemDocument itemDocument)
-			throws JSONException;
+	public Output visit(ItemDocument itemDocument) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.PropertyDocument}
 	 * 
 	 * @param propertyDocument
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.PropertyDocument}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertPropertyDocumentToJson(
-			PropertyDocument propertyDocument) throws JSONException;
+	public Output visit(PropertyDocument propertyDocument) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.Reference}
 	 * 
 	 * @param ref
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Reference}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertReferenceToJson(Reference ref) throws JSONException;
+	public Output visit(Reference ref) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.Statement}
 	 * 
 	 * @param statement
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Statement}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertStatementToJson(Statement statement)
-			throws JSONException;
+	public Output visit(Statement statement) throws Exception;
 
 	/**
-	 * Create a json-representation of a
-	 * {@link org.wikidata.wdtk.datamodel.interfaces.StatementGroup} (something
-	 * like an array of statements,)
-	 * 
-	 * @param statementGroup
-	 * @return Json representation of a
-	 *         {@link org.wikidata.wdtk.datamodel.interfaces.StatementGroup}
-	 * @throws JSONException
-	 */
-	public OutputArray convertStatementGroupToJson(StatementGroup statementGroup)
-			throws JSONException;
-
-	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.ValueSnak}
 	 * 
 	 * @param snak
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ValueSnak}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertValueSnakToJson(ValueSnak snak) throws JSONException;
+	public Output visit(ValueSnak snak) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.NoValueSnak}
 	 * 
 	 * @param snak
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.NoValueSnak}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertNoValueSnakToJson(NoValueSnak snak)
-			throws JSONException;
+	public Output visit(NoValueSnak snak) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak}
 	 * 
 	 * @param snak
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertSomeValueSnakToJson(SomeValueSnak snak)
-			throws JSONException;
+	public Output visit(SomeValueSnak snak) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertQuantityValueToJson(QuantityValue value)
-			throws JSONException;
+	public Output visit(QuantityValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertTimeValueToJson(TimeValue value) throws JSONException;
+	public Output visit(TimeValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertGlobeCoordinatesValueToJson(GlobeCoordinatesValue value)
-			throws JSONException;
+	public Output visit(GlobeCoordinatesValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of an
-	 * {@link org.wikidata.wdtk.datamodel.interfaces.EntityIdValue}
-	 * 
-	 * @param value
-	 * @return Json representation of an
-	 *         {@link org.wikidata.wdtk.datamodel.interfaces.EntityIdValue}
-	 * @throws JSONException
-	 */
-	public Output convertEntityIdValueToJson(EntityIdValue value)
-			throws JSONException;
-
-	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.StringValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.StringValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertStringValueToJson(StringValue value)
-			throws JSONException;
+	public Output visit(StringValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue}
 	 * 
-	 * @param  value
-	 * @return Json representation of a
+	 * @param value
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertDatatypeIdValueToJson(DatatypeIdValue value)
-			throws JSONException;
+	public Output visit(DatatypeIdValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of an
+	 * Create a representation of an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemIdValue}
 	 * 
 	 * @param value
-	 * @return Json representation of an
+	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ItemIdValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertItemIdValueToJson(ItemIdValue value)
-			throws JSONException;
+	public Output visit(ItemIdValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertMonolingualTextValueToJson(MonolingualTextValue value)
-			throws JSONException;
+	public Output visit(MonolingualTextValue value) throws Exception;
 
 	/**
-	 * Create a json-representation of a
+	 * Create a representation of a
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue}
 	 * 
 	 * @param value
-	 * @return Json representation of a
+	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue}
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public Output convertPropertyIdValueToJson(PropertyIdValue value)
-			throws JSONException;
+	public Output visit(PropertyIdValue value) throws Exception;
 
-	public Output convertSiteLinkToJson(SiteLink link) throws JSONException;
+	/**
+	 * Create a representation of a
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink}
+	 * 
+	 * @param link
+	 * @return representation of
+	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink}
+	 * @throws Exception
+	 */
+	public Output visit(SiteLink link) throws Exception;
 
 }
