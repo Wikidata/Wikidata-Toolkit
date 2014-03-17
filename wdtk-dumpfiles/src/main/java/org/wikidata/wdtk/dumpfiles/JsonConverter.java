@@ -87,9 +87,8 @@ public class JsonConverter {
 		} else {
 			this.factory = factory;
 		}
-		
-		mltvHandler = new MonolingualTextValueHandler(
-				this.factory);
+
+		mltvHandler = new MonolingualTextValueHandler(this.factory);
 	}
 
 	/**
@@ -115,8 +114,7 @@ public class JsonConverter {
 
 		PropertyDocument result;
 
-		PropertyIdValue propertyId = (PropertyIdValue) this
-				.getEntityFromTopLevel(jsonObject, DocumentType.PROPERTY);
+		PropertyIdValue propertyId = this.getPropertyIdFromTopLevel(jsonObject);
 
 		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
@@ -154,8 +152,7 @@ public class JsonConverter {
 			throw new JSONException("The JSON to convert was empty");
 		}
 
-		ItemIdValue itemId = (ItemIdValue) this.getEntityFromTopLevel(
-				jsonObject, DocumentType.ITEM);
+		ItemIdValue itemId = this.getItemIdFromTopLevel(jsonObject);
 
 		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
@@ -187,199 +184,155 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Attempts to get the entity id value from the given JSON-object. Note that
+	 * Attempts to get the item id value from the given JSON-object. Note that
 	 * in old dumps the entity is not an array but a string with appropriate
 	 * prefix in lower case.
 	 * 
 	 * @param topLevel
 	 *            is the JSON object describing the whole entity
-	 * @param docType
-	 *            describes if the entity is a property or an item
-	 * @return the entities id as EntityIdValue; this should be casted into the
-	 *         appropriate type by the caller
+	 * @return the items id as ItemIdValue
 	 * @throws JSONException
 	 *             if the topLevel does not contain the key "entity"
 	 */
-	private EntityIdValue getEntityFromTopLevel(JSONObject topLevel,
-			DocumentType docType) throws JSONException {
+	private ItemIdValue getItemIdFromTopLevel(JSONObject topLevel)
+			throws JSONException {
 
 		if (!topLevel.has(KEY_ENTITY)) {
 			throw new JSONException("No entity entry found.");
 		}
 
-		EntityIdValue entityId;
+		ItemIdValue itemId;
 		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
 
 		if (entityJsonArray != null) { // it is an array
-			entityId = this.getEntityId(entityJsonArray, docType);
+			itemId = this.getItemId(entityJsonArray);
 		} else { // it is a String
 			String stringItemId = topLevel.getString(KEY_ENTITY);
-			entityId = this.getEntityId(stringItemId, docType);
+			itemId = this.getItemId(stringItemId);
 		}
-		return entityId;
+		return itemId;
 	}
 
 	/**
-	 * Constructs the item id of a JSON array denoting an entity. The type will
-	 * be determined by the document type passed to the method.
+	 * Attempts to get the property id value from the given JSON-object. Note
+	 * that in old dumps the entity is not an array but a string with
+	 * appropriate prefix in lower case.
 	 * 
-	 * @param jsonEntity
-	 *            a JSON array containing information about the entity or
-	 *            property. The array shoud have the structure ["item", itemId]
-	 *            or ["property", propertyId].
-	 * @param docType
-	 *            is the type of the document containing the entity-key.
-	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
-	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
-	 *         the document type is DocumentType.PROPERTY the result will be an
-	 *         PropertyIdValue.
+	 * @param topLevel
+	 *            is the JSON object describing the whole entity
+	 * @return the properties id as PropertyIdValue
 	 * @throws JSONException
-	 *             if the entity does not contain an "item"- or "property"-entry
-	 *             or the entry is not followed by an integer denoting the
-	 *             entity id or the document type is unknown.
+	 *             if the topLevel does not contain the key "entity"
 	 */
-	private EntityIdValue getEntityId(JSONArray jsonEntity, DocumentType docType)
+	private PropertyIdValue getPropertyIdFromTopLevel(JSONObject topLevel)
 			throws JSONException {
 
-		String expectedTypeIndicator;
-		String prefix;
-
-		switch (docType) {
-		case ITEM:
-			expectedTypeIndicator = "item";
-			prefix = PREFIX_ITEM;
-			break;
-		case PROPERTY:
-			expectedTypeIndicator = "property";
-			prefix = PREFIX_PROPERTY;
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported document type");
+		if (!topLevel.has(KEY_ENTITY)) {
+			throw new JSONException("No entity entry found.");
 		}
 
+		PropertyIdValue propertyId;
+		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
+
+		if (entityJsonArray != null) { // it is an array
+			propertyId = this.getPropertyId(entityJsonArray);
+		} else { // it is a String
+			String stringItemId = topLevel.getString(KEY_ENTITY);
+			propertyId = this.getPropertyId(stringItemId);
+		}
+		return propertyId;
+	}
+
+	/**
+	 * Constructs the item id of a JSON array denoting an entity.
+	 * 
+	 * @param jsonEntity
+	 *            a JSON array containing information about the item; The array
+	 *            should have the structure ["item", itemId]
+	 * @return an ItemIdValue with the according prefix.
+	 * @throws JSONException
+	 *             if the entity does not contain an "item" entry or the entry
+	 *             is not followed by an integer denoting the item id
+	 */
+	private ItemIdValue getItemId(JSONArray jsonEntity) throws JSONException {
+
 		String entityTypeIndicator = jsonEntity.getString(0);
-		if (!entityTypeIndicator.equalsIgnoreCase(expectedTypeIndicator)) {
+		if (!entityTypeIndicator.equalsIgnoreCase("item")) {
 			throw new JSONException("Entity type indicator \""
 					+ entityTypeIndicator
-					+ "\" did not match expected type indicator \""
-					+ expectedTypeIndicator + "\".");
+					+ "\" did not match expected type indicator \"item\".");
 		}
 
 		int idValue = jsonEntity.getInt(1);
-		String fullId = prefix + idValue;
-
-		switch (docType) {
-		case ITEM:
-			return this.factory.getItemIdValue(fullId, this.baseIri);
-		case PROPERTY:
-			return this.factory.getPropertyIdValue(fullId, this.baseIri);
-			// Omitted default, this can never happen.
-		}
-
-		return null;
+		return this.factory.getItemIdValue(PREFIX_ITEM + idValue, this.baseIri);
 	}
 
 	/**
-	 * Constructs the entity id of a string denoting an entity. The type will be
-	 * determined by the document type passed to the method.
-	 * 
-	 * @param id
-	 *            a string containing information about the entity or property.
-	 *            It should have the form prefix + id, where the prefix is
-	 *            either "P" for properties or "Q" for items. The prefix is not
-	 *            case sensitive. The id should be a numeric string.
-	 * @param docType
-	 *            is the type of the document containing the entity-key.
-	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
-	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
-	 *         the document type is DocumentType.PROPERTY the result will be an
-	 *         PropertyIdValue.
-	 * @throws JSONException
-	 *             if the prefix of the id-string did not match the document
-	 *             type or the document type is unknown.
-	 */
-	private EntityIdValue getEntityId(String id, DocumentType docType)
-			throws JSONException {
-
-		String expectedPrefix;
-
-		switch (docType) {
-		case ITEM:
-			expectedPrefix = PREFIX_ITEM;
-			break;
-		case PROPERTY:
-			expectedPrefix = PREFIX_PROPERTY;
-			break;
-		default:
-			throw new JSONException("Unsupported document type");
-		}
-
-		String upperCase = id.toUpperCase();
-		if (!upperCase.startsWith(expectedPrefix)) {
-			throw new JSONException("Entity identifier \"" + id
-					+ "\" did not start with expected prefix \""
-					+ expectedPrefix + "\".");
-		}
-
-		EntityIdValue result = null;
-		switch (docType) {
-		case ITEM:
-			result = this.factory.getItemIdValue(upperCase, this.baseIri);
-			break;
-		case PROPERTY:
-			result = this.factory.getPropertyIdValue(upperCase, this.baseIri);
-			break;
-		// Omitted default, this can never happen.
-		}
-
-		return result;
-	}
-
-	/**
-	 * Constructs the entity id of an integer denoting an entity. The type will
-	 * be determined by the document type passed to the method.
+	 * Constructs the property id of a JSON array denoting an entity.
 	 * 
 	 * @param jsonEntity
-	 *            a non-zero integer.
-	 * @param docType
-	 *            is the type of the document containing the entity-key.
-	 * @return A subclass of EntityIdValue prefixed accordingly. If the document
-	 *         type is DocumentType.ITEM the result will be an ItemIdValue. If
-	 *         the document type is DocumentType.PROPERTY the result will be an
-	 *         PropertyIdValue.
+	 *            a JSON array containing information about the property; The
+	 *            array should have the structure ["property", propertyId]
+	 * @return an PropertyIdValue with the according prefix.
 	 * @throws JSONException
-	 *             if the document type is unknown.
+	 *             if the entity does not contain an "property" entry or the
+	 *             entry is not followed by an integer denoting the property id
 	 */
-	private EntityIdValue getEntityId(int entityId, DocumentType docType)
+	private PropertyIdValue getPropertyId(JSONArray jsonEntity)
 			throws JSONException {
 
-		String prefix;
-
-		switch (docType) {
-		case ITEM:
-			prefix = PREFIX_ITEM;
-			break;
-		case PROPERTY:
-			prefix = PREFIX_PROPERTY;
-			break;
-		default:
-			throw new JSONException("Unsupported document type");
+		String entityTypeIndicator = jsonEntity.getString(0);
+		if (!entityTypeIndicator.equalsIgnoreCase("property")) {
+			throw new JSONException("Entity type indicator \""
+					+ entityTypeIndicator
+					+ "\" did not match expected type indicator \"property\".");
 		}
 
-		EntityIdValue result = null;
-		switch (docType) {
-		case ITEM:
-			result = this.factory.getItemIdValue(prefix + entityId,
-					this.baseIri);
-			break;
-		case PROPERTY:
-			result = this.factory.getPropertyIdValue(prefix + entityId,
-					this.baseIri);
-			break;
-		// Omitted default, this can never happen.
-		}
+		int idValue = jsonEntity.getInt(1);
+		return this.factory.getPropertyIdValue(PREFIX_PROPERTY + idValue,
+				this.baseIri);
+	}
 
-		return result;
+	/**
+	 * Composes an ItemId out of a string denoting this id. It is required that
+	 * the given string begins with the prefix for items.
+	 * 
+	 * @param id
+	 *            is the id of the item as string, including the prefix "Q" or
+	 *            "q"
+	 * @return the items id as an ItemId-instance
+	 * @throws JSONException
+	 */
+	private ItemIdValue getItemId(String id) throws JSONException {
+
+		String upperCase = id.toUpperCase();
+		if (!upperCase.startsWith(PREFIX_ITEM)) {
+			throw new JSONException("Entity identifier \"" + id
+					+ "\" did not start with expected prefix \"" + PREFIX_ITEM
+					+ "\".");
+		}
+		return this.factory.getItemIdValue(upperCase, this.baseIri);
+	}
+
+	/**
+	 * Composes an PropertyId out of a string denoting this id. It is required
+	 * that the given string begins with the prefix for properties.
+	 * 
+	 * @param id
+	 *            is the id of the property as string, including the prefix "P"
+	 *            or "p"
+	 * @return the property id as an PropertyId-instance
+	 * @throws JSONException
+	 */
+	private PropertyIdValue getPropertyId(String id) throws JSONException {
+
+		String upperCase = id.toUpperCase();
+		if (!upperCase.startsWith(PREFIX_PROPERTY)) {
+			throw new JSONException("Entity identifier \"" + id
+					+ "\" did not start with expected prefix \""
+					+ PREFIX_PROPERTY + "\".");
+		}
+		return this.factory.getPropertyIdValue(upperCase, this.baseIri);
 	}
 
 	/**
@@ -494,7 +447,7 @@ public class JsonConverter {
 
 		// TODO where to get the site IRI from
 		String siteIri = "";
-		
+
 		@SuppressWarnings("unchecked")
 		Iterator<String> linkIterator = jsonLinks.keys();
 
@@ -525,10 +478,10 @@ public class JsonConverter {
 					continue;
 				}
 			}
-			
+
 			// create the SiteLink instance
-			SiteLink siteLink = factory.getSiteLink(title, siteKey,
-					siteIri, badges);
+			SiteLink siteLink = factory.getSiteLink(title, siteKey, siteIri,
+					badges);
 			result.put(siteKey, siteLink);
 		}
 
@@ -560,7 +513,8 @@ public class JsonConverter {
 		// "g" => statement id
 
 		List<StatementGroup> result;
-		List<Statement> statementsFromJson = new ArrayList<Statement>(jsonStatements.length());
+		List<Statement> statementsFromJson = new ArrayList<Statement>(
+				jsonStatements.length());
 
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
@@ -640,10 +594,13 @@ public class JsonConverter {
 	 */
 	private StatementRank getStatementRank(int intRank) {
 
-		switch(intRank){
-		case 0 : return StatementRank.DEPRECATED;
-		case 1 : return StatementRank.NORMAL;
-		case 2 : return StatementRank.PREFERRED;
+		switch (intRank) {
+		case 0:
+			return StatementRank.DEPRECATED;
+		case 1:
+			return StatementRank.NORMAL;
+		case 2:
+			return StatementRank.PREFERRED;
 		default:
 			throw new IllegalArgumentException("Undefined statement rank.");
 		}
@@ -719,8 +676,8 @@ public class JsonConverter {
 		// "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
-		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
-				intPropertyId, DocumentType.PROPERTY);
+		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+				+ intPropertyId);
 
 		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
 
@@ -749,8 +706,8 @@ public class JsonConverter {
 		// "Argument was not a SomeValueSnak.";
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
-		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(
-				intPropertyId, DocumentType.PROPERTY);
+		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+				+ intPropertyId);
 
 		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
 
@@ -781,9 +738,9 @@ public class JsonConverter {
 		ValueSnak result;
 
 		// get the property id
-		int intId = jsonValueSnak.getInt(1);
-		PropertyIdValue propertyId = (PropertyIdValue) this.getEntityId(intId,
-				DocumentType.PROPERTY);
+		int intPropertyId = jsonValueSnak.getInt(1);
+		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+				+ intPropertyId);
 
 		// get the value
 		String valueString = jsonValueSnak.getString(2);
@@ -1011,12 +968,12 @@ public class JsonConverter {
 		// check the entity type
 		switch (entityType) {
 		case "item":
-			result = this.getEntityId(entityId, DocumentType.ITEM);
+			result = this.getItemId(PREFIX_ITEM + entityId);
 			break;
 		case "property":
 			// this case is possible in theory,
 			// but I never encountered it so far
-			result = this.getEntityId(entityId, DocumentType.PROPERTY);
+			result = this.getPropertyId(PREFIX_PROPERTY + entityId);
 			break;
 		default:
 			throw new JSONException("Unknown entity type " + entityType
