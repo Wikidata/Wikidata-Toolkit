@@ -12,6 +12,8 @@ import org.apache.commons.lang3.Validate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -65,6 +67,8 @@ public class JsonConverter {
 	private String baseIri = "";
 	private final MonolingualTextValueHandler mltvHandler;
 
+	static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
+
 	/**
 	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
 	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId} The item
@@ -99,14 +103,18 @@ public class JsonConverter {
 	 *            the JSON object to convert. Must represent a property document
 	 *            and therefore contain the keys "entity", "label",
 	 *            "description", "aliases" and "datatype".
+	 * @param propertyIdString
+	 *            is a string containing the id of the property provided by
+	 *            external sources; if null is given, the information will be
+	 *            extracted from the JSON
 	 * @return the PropertyDocument as described in the JSON.
 	 * @throws NullPointerException
 	 *             if toConvert was null.
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public PropertyDocument convertToPropertyDocument(JSONObject jsonObject)
-			throws JSONException {
+	public PropertyDocument convertToPropertyDocument(JSONObject jsonObject,
+			String propertyIdString) throws JSONException {
 
 		if (jsonObject.length() == 0) { // if the JSON object is empty
 			throw new JSONException("The JSON to convert was empty");
@@ -114,7 +122,13 @@ public class JsonConverter {
 
 		PropertyDocument result;
 
-		PropertyIdValue propertyId = this.getPropertyIdFromTopLevel(jsonObject);
+		PropertyIdValue propertyId;
+
+		if (propertyIdString != null) {
+			propertyId = this.getPropertyId(propertyIdString);
+		} else {
+			propertyId = this.getPropertyIdFromTopLevel(jsonObject);
+		}
 
 		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
@@ -139,21 +153,29 @@ public class JsonConverter {
 	 *            the JSON object to convert. Must represent an item document
 	 *            and therefore might contain the keys "entity", "label",
 	 *            "description", "aliases", "claims" and "links".
+	 * @param propertyIdString
+	 *            is a string containing the id of the item provided by external
+	 *            sources; if null is given, the information will be extracted
+	 *            from the JSON
 	 * @return the ItemDocument as described in the JSON.
 	 * @throws NullPointerException
 	 *             if toConvert was null.
 	 * @throws JSONException
 	 *             if the JSON object did not contain a key it should have had.
 	 */
-	public ItemDocument convertToItemDocument(JSONObject jsonObject)
-			throws JSONException, NullPointerException {
+	public ItemDocument convertToItemDocument(JSONObject jsonObject,
+			String itemIdString) throws JSONException, NullPointerException {
 
 		if (jsonObject.length() == 0) { // if the JSON object is empty
 			throw new JSONException("The JSON to convert was empty");
 		}
 
-		ItemIdValue itemId = this.getItemIdFromTopLevel(jsonObject);
-
+		ItemIdValue itemId;
+		if (itemIdString != null) {
+			itemId = this.getItemId(itemIdString);
+		} else {
+			itemId = this.getItemIdFromTopLevel(jsonObject);
+		}
 		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
 
 		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
@@ -305,13 +327,16 @@ public class JsonConverter {
 	 */
 	private ItemIdValue getItemId(String id) throws JSONException {
 
-		String upperCase = id.toUpperCase();
-		if (!upperCase.startsWith(PREFIX_ITEM)) {
-			throw new JSONException("Entity identifier \"" + id
-					+ "\" did not start with expected prefix \"" + PREFIX_ITEM
-					+ "\".");
+		try {
+			// converting IDs to upper case is a fix since
+			// lower case might occur in the dump files
+			// but is not accepted by the factory
+			return this.factory.getItemIdValue(id.toUpperCase(), this.baseIri);
+		} catch (Exception e) {
+			// re-throw runtime exceptions
+			// as they might be thrown by the factory
+			throw new JSONException(e);
 		}
-		return this.factory.getItemIdValue(upperCase, this.baseIri);
 	}
 
 	/**
@@ -326,13 +351,17 @@ public class JsonConverter {
 	 */
 	private PropertyIdValue getPropertyId(String id) throws JSONException {
 
-		String upperCase = id.toUpperCase();
-		if (!upperCase.startsWith(PREFIX_PROPERTY)) {
-			throw new JSONException("Entity identifier \"" + id
-					+ "\" did not start with expected prefix \""
-					+ PREFIX_PROPERTY + "\".");
+		try {
+			// converting IDs to upper case is a fix since
+			// lower case might occur in the dump files
+			// but is not accepted by the factory
+			return this.factory.getPropertyIdValue(id.toUpperCase(),
+					this.baseIri);
+		} catch (Exception e) {
+			// re-throw runtime exceptions
+			// as they might be thrown by the factory
+			throw new JSONException(e);
 		}
-		return this.factory.getPropertyIdValue(upperCase, this.baseIri);
 	}
 
 	/**
@@ -454,7 +483,7 @@ public class JsonConverter {
 		while (linkIterator.hasNext()) {
 
 			String title;
-			List<String> badges = new ArrayList<String>();
+			List<String> badges;
 
 			String siteKey = linkIterator.next();
 
@@ -464,6 +493,7 @@ public class JsonConverter {
 
 				title = currentLink.getString("name");
 				JSONArray badgeArray = currentLink.getJSONArray("badges");
+				badges = new ArrayList<>(badgeArray.length());
 
 				// convert badges to List<String>
 				for (int i = 0; i < badgeArray.length(); i++) {
@@ -473,8 +503,11 @@ public class JsonConverter {
 				String stringLink = jsonLinks.optString(siteKey);
 				if (stringLink != null) { // its a string
 					title = stringLink;
+					// initialize the badges as empty list
+					// since they are needed for the factory
+					badges = new ArrayList<>();
 				} else { // none of the above, skip
-					// TODO logging
+					logger.info("Site link is neither a JSON object nor a String. Skipped.");
 					continue;
 				}
 			}
@@ -671,10 +704,6 @@ public class JsonConverter {
 		// example:
 		// ["novalue",40], where P40 is the property "children"
 
-		// assert jsonNoValueSnak != null : "jsonSomeValueSnak was null.";
-		// assert jsonNoValueSnak.getString(0).equals("novalue") :
-		// "Argument was not a SomeValueSnak.";
-
 		int intPropertyId = jsonNoValueSnak.getInt(1);
 		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
 				+ intPropertyId);
@@ -701,10 +730,6 @@ public class JsonConverter {
 		// example:
 		// ["somevalue",22], where P22 is the property "father"
 
-		// assert jsonSomeValueSnak != null : "jsonSomeValueSnak was null.";
-		// assert jsonSomeValueSnak.getString(0).equals("somevalue") :
-		// "Argument was not a SomeValueSnak.";
-
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
 		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
 				+ intPropertyId);
@@ -730,10 +755,6 @@ public class JsonConverter {
 			throws JSONException {
 		// a value snak is
 		// ["value", propertyID, value-type, value]
-
-		// assert jsonValueSnak != null : "jsonValueSnak was null";
-		// assert jsonValueSnak.getString(0).equals("value") :
-		// "given JSON was not a value snak";
 
 		ValueSnak result;
 
@@ -857,7 +878,8 @@ public class JsonConverter {
 		long latitude;
 		long longitude;
 
-		// try if the coordinates are already in int (with degree precision?)
+		// try if the coordinates are already in integer (with degree
+		// precision?)
 
 		double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
 		latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
@@ -866,11 +888,10 @@ public class JsonConverter {
 		longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
 
 		// getting the precision
-		// if the precision is available as double it needs to be converted
+		// if the precision is available as double or integer it needs to be
+		// converted (integer can be parsed from JSON as double)
 		// NOTE this is done by hand, since otherwise one would get rounding
 		// errors
-		// if the precision is available as int it needs to be multiplied with
-		// PREC_DEGREE
 		// also in older dumps the precision might be null
 		// in this case the precision might default to PREC_DEGREE
 		long precision;
@@ -883,7 +904,7 @@ public class JsonConverter {
 
 			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
 
-			// Yes you have to check all
+			// Yes, one has to check all
 			// possible representations since they do not equal
 			// in their internal binary representation
 			// and Double can not cope with that
@@ -935,8 +956,6 @@ public class JsonConverter {
 	 * @return
 	 */
 	private StringValue getStringIdValue(String string) {
-		// assert string != null :
-		// "String to be converted to a StringValue was null";
 
 		// NOTE I decided against inlining, so
 		// if the StringValue changes somehow in the future
@@ -945,7 +964,11 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a given JSON-object to an EntityIdValue.
+	 * Converts a given JSON-object to an EntityIdValue. An example JSON could
+	 * look like:
+	 * <p>
+	 * {"entity-type":"item",</br> "numeric-id":842256}
+	 * <p/>
 	 * 
 	 * @param jsonObject
 	 *            an JSON object denoting an entity id. It must contain the
@@ -956,34 +979,36 @@ public class JsonConverter {
 	 */
 	private EntityIdValue getEntityIdValue(JSONObject jsonObject)
 			throws JSONException {
-		// example:
-		// {"entity-type":"item",
-		// "numeric-id":842256}
 		// NOTE there be any other entity-type then "item" in later releases
 
-		EntityIdValue result;
 		String entityType = jsonObject.getString("entity-type");
 		int entityId = jsonObject.getInt("numeric-id");
 
 		// check the entity type
 		switch (entityType) {
 		case "item":
-			result = this.getItemId(PREFIX_ITEM + entityId);
-			break;
+			return this.getItemId(PREFIX_ITEM + entityId);
 		case "property":
 			// this case is possible in theory,
-			// but I never encountered it so far
-			result = this.getPropertyId(PREFIX_PROPERTY + entityId);
-			break;
+			// but was never encountered it so far
+			return this.getPropertyId(PREFIX_PROPERTY + entityId);
 		default:
 			throw new JSONException("Unknown entity type " + entityType
 					+ " in entity id value JSON.");
 		}
-		return result;
 	}
 
 	/**
-	 * Converts a JSON-object into a TimeValue.
+	 * Converts a JSON-object into a TimeValue. An example in JSON might look
+	 * like:
+	 * <p>
+	 * {"time":"+00000002012-06-30T00:00:00Z",<br/>
+	 * "timezone":0,<br/>
+	 * "before":0,<br/>
+	 * "after":0,<br/>
+	 * "precision":11,<br/>
+	 * "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
+	 * </p>
 	 * 
 	 * @param jsonTimeValue
 	 *            is a JSON-object with the keys "time", "timezone", "before",
@@ -994,17 +1019,8 @@ public class JsonConverter {
 	 */
 	private TimeValue getTimeValue(JSONObject jsonTimeValue)
 			throws JSONException {
-		// example:
-		// {"time":"+00000002012-06-30T00:00:00Z",
-		// "timezone":0,
-		// "before":0,
-		// "after":0,
-		// "precision":11,
-		// "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
-		TimeValue result;
 
-		// TODO include negative years in test
-		// caution: substrings might fail
+		TimeValue result;
 
 		String stringTime = jsonTimeValue.getString("time");
 		String[] substrings = stringTime.split("(?<!\\A)[\\-\\:TZ]");

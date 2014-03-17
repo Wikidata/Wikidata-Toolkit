@@ -11,7 +11,7 @@ class PropertyTestCase extends TestCase {
 	private PropertyDocument result;
 	
 	void convert() throws JSONException {
-		this.result = this.converter.convertToPropertyDocument(this.json);
+		this.result = this.converter.convertToPropertyDocument(this.json, null);
 	}
 	
 	PropertyDocument getResult(){
