@@ -5,13 +5,21 @@ import java.text.DecimalFormat;
 
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
+/**
+ * This class contains static methods to create string notations for values of
+ * several data types and classes
+ * 
+ * @author michael
+ * 
+ */
 public class DatatypeConverters {
-	
+
 	final static String FORMAT_YEAR = "00000000000";
 	final static String FORMAT_OTHER = "00";
 
 	/**
-	 * Returns a representation of the date from the value attributes as ISO 8601 encoding.
+	 * Returns a representation of the date from the value attributes as ISO
+	 * 8601 encoding.
 	 * 
 	 * @param year
 	 * @param month
@@ -23,7 +31,8 @@ public class DatatypeConverters {
 	 * 
 	 * @throws IllegalArgumentException
 	 */
-	public static String formatTimeISO8601(TimeValue value) throws IllegalArgumentException {
+	public static String formatTimeISO8601(TimeValue value)
+			throws IllegalArgumentException {
 		StringBuilder builder = new StringBuilder();
 		DecimalFormat yearForm = new DecimalFormat(FORMAT_YEAR);
 		DecimalFormat timeForm = new DecimalFormat(FORMAT_OTHER);
@@ -54,9 +63,9 @@ public class DatatypeConverters {
 	public static String formatBigDecimal(BigDecimal number) {
 		if (number.signum() != -1) {
 			return "+" + number.toString();
-		}else{
+		} else {
 			return number.toString();
 		}
 	}
-	
+
 }
