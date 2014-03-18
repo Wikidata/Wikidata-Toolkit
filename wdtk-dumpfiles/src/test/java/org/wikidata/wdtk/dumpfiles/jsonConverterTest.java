@@ -175,7 +175,9 @@ public class jsonConverterTest {
 
 		}
 		assertTrue(caughtException);
-
+		
+		ItemTestCase universe = this.generateItemTestCase("Universe.json");
+		universe.convert();
 	}
 
 	/**
