@@ -90,7 +90,7 @@ public class BitVectorImplTest {
 		Assert.assertNotEquals(bv0, new Object());
 		BitVectorImpl bv1 = new BitVectorImpl();
 
-		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
 				0x1234);
 		for (int i = 0; i < aLargeNumber; i++) {
 			boolean value = generator.getPseudorandomBoolean();

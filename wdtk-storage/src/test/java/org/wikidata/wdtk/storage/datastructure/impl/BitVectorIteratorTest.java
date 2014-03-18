@@ -62,7 +62,7 @@ public class BitVectorIteratorTest {
 		Assert.assertNotEquals(bv0.iterator(),
 				(new ArrayList<Boolean>()).iterator());
 
-		PseudorandomNumberGenerator generator0 = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator0 = new PseudorandomBooleanGenerator(
 				0x1234);
 		for (int i = 0; i < 0x1000; i++) {
 			boolean value = generator0.getPseudorandomBoolean();
@@ -70,7 +70,7 @@ public class BitVectorIteratorTest {
 			bv1.addBit(value);
 		}
 
-		PseudorandomNumberGenerator generator1 = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator1 = new PseudorandomBooleanGenerator(
 				0x1234);
 		int i = 0;
 		for (boolean value : bv0) {

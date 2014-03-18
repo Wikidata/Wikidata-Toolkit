@@ -21,35 +21,29 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 /**
- * Pseudorandom number generator.
+ * Pseudorandom Boolean generator.
  * 
  * @author Julian Mendez
  * 
  */
-public class PseudorandomNumberGenerator {
+public class PseudorandomBooleanGenerator {
 
-	int seed = 0x1234;
-
-	/**
-	 * Constructs a pseudorandom number generator using a default seed.
-	 */
-	public PseudorandomNumberGenerator() {
-	}
+	int seed;
 
 	/**
-	 * Constructs a pseudorandom number generator using a given seed.
+	 * Constructs a pseudorandom Boolean generator using a given seed.
 	 * 
 	 * @param seed
 	 *            seed
 	 */
-	public PseudorandomNumberGenerator(int seed) {
+	public PseudorandomBooleanGenerator(int seed) {
 		this.seed = seed;
 	}
 
 	/**
-	 * Returns a boolean obtained using a pseudorandom number generator.
+	 * Returns a boolean obtained using a pseudorandom Boolean generator.
 	 * 
-	 * @return a boolean obtained using a pseudorandom number generator
+	 * @return a boolean obtained using a pseudorandom Boolean generator
 	 * 
 	 */
 	public boolean getPseudorandomBoolean() {

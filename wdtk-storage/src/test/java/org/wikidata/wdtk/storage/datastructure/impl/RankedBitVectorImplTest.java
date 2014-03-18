@@ -58,16 +58,13 @@ public class RankedBitVectorImplTest {
 	 *            position
 	 */
 	void assertCorrectCount(RankedBitVector bv, long position) {
-		{
-			long expectedCount = countBits(bv, false, position);
-			long computedCount = bv.countBits(false, position);
-			Assert.assertEquals(expectedCount, computedCount);
-		}
-		{
-			long expectedCount = countBits(bv, true, position);
-			long computedCount = bv.countBits(true, position);
-			Assert.assertEquals(expectedCount, computedCount);
-		}
+		long expectedCountBitsFalse = countBits(bv, false, position);
+		long computedCountBitsFalse = bv.countBits(false, position);
+		Assert.assertEquals(expectedCountBitsFalse, computedCountBitsFalse);
+
+		long expectedCountBitsTrue = countBits(bv, true, position);
+		long computedCountBitsTrue = bv.countBits(true, position);
+		Assert.assertEquals(expectedCountBitsTrue, computedCountBitsTrue);
 	}
 
 	/**
@@ -94,16 +91,14 @@ public class RankedBitVectorImplTest {
 	 *            number of occurrences
 	 */
 	void assertCorrectFindPosition(RankedBitVector bv, long nOccurrences) {
-		{
-			long expectedFindPosition = findPosition(bv, false, nOccurrences);
-			long computedFindPosition = bv.findPosition(false, nOccurrences);
-			Assert.assertEquals(expectedFindPosition, computedFindPosition);
-		}
-		{
-			long expectedFindPosition = findPosition(bv, true, nOccurrences);
-			long computedFindPosition = bv.findPosition(true, nOccurrences);
-			Assert.assertEquals(expectedFindPosition, computedFindPosition);
-		}
+		long expectedFindPositionFalse = findPosition(bv, false, nOccurrences);
+		long computedFindPositionFalse = bv.findPosition(false, nOccurrences);
+		Assert.assertEquals(expectedFindPositionFalse,
+				computedFindPositionFalse);
+
+		long expectedFindPositionTrue = findPosition(bv, true, nOccurrences);
+		long computedFindPositionTrue = bv.findPosition(true, nOccurrences);
+		Assert.assertEquals(expectedFindPositionTrue, computedFindPositionTrue);
 	}
 
 	/**
@@ -203,7 +198,7 @@ public class RankedBitVectorImplTest {
 	public void testCountBits() {
 		final long aLargeNumber = 0x100000;
 
-		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
 				0x1234);
 		RankedBitVectorImpl bv = new RankedBitVectorImpl(new BitVectorImpl());
 		for (int i = 0; i < aLargeNumber; i++) {
@@ -241,7 +236,7 @@ public class RankedBitVectorImplTest {
 		RankedBitVectorImpl bv0 = new RankedBitVectorImpl();
 		RankedBitVectorImpl bv1 = new RankedBitVectorImpl();
 
-		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
 				0x1234);
 		for (int i = 0; i < aLargeNumber; i++) {
 			boolean value = generator.getPseudorandomBoolean();
@@ -327,7 +322,7 @@ public class RankedBitVectorImplTest {
 	@Test
 	public void testIterator() {
 		RankedBitVectorImpl bv = new RankedBitVectorImpl(new BitVectorImpl());
-		PseudorandomNumberGenerator generator = new PseudorandomNumberGenerator(
+		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
 				0x7531);
 		Assert.assertEquals(0, bv.size());
 		for (int i = 0; i < 0x300; i++) {
@@ -342,27 +337,26 @@ public class RankedBitVectorImplTest {
 	}
 
 	@Test
-	public void testSize() {
-		{
-			RankedBitVectorImpl bv = new RankedBitVectorImpl(0x100);
-			Assert.assertEquals(0x100, bv.size());
-			bv.addBit(false);
-			bv.addBit(true);
-			Assert.assertEquals(0x102, bv.size());
-			assertCorrectCount(bv);
-			assertCorrectFindPosition(bv);
-		}
+	public void testSize0() {
+		RankedBitVectorImpl bv = new RankedBitVectorImpl(0x100);
+		Assert.assertEquals(0x100, bv.size());
+		bv.addBit(false);
+		bv.addBit(true);
+		Assert.assertEquals(0x102, bv.size());
+		assertCorrectCount(bv);
+		assertCorrectFindPosition(bv);
+	}
 
-		{
-			RankedBitVectorImpl bv = new RankedBitVectorImpl();
-			Assert.assertEquals(0, bv.size());
-			for (int i = 0; i < 0x300; i++) {
-				bv.addBit((i % 5) == 0);
-				Assert.assertEquals(i + 1, bv.size());
-			}
-			assertCorrectCount(bv);
-			assertCorrectFindPosition(bv);
+	@Test
+	public void testSize1() {
+		RankedBitVectorImpl bv = new RankedBitVectorImpl();
+		Assert.assertEquals(0, bv.size());
+		for (int i = 0; i < 0x300; i++) {
+			bv.addBit((i % 5) == 0);
+			Assert.assertEquals(i + 1, bv.size());
 		}
+		assertCorrectCount(bv);
+		assertCorrectFindPosition(bv);
 	}
 
 	@Test
