@@ -20,8 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -60,12 +58,12 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
  * 
  */
 @RunWith(JUnit4.class)
-public class jsonConverterTest {
+public class JsonConverterTest {
 
-	private String sampleFilesBasePath = "src/test/resources/testSamples/";
+	private final String sampleFilesBasePath = "src/test/resources/testSamples/";
 	private static JsonConverter unitUnderTest;
 	private static String baseIri = "test";
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	@BeforeClass
 	public static void setUp() {
@@ -177,7 +175,7 @@ public class jsonConverterTest {
 
 		}
 		assertTrue(caughtException);
-		
+
 		caughtException = false;
 		try {
 			propertyTest.convert();
@@ -186,7 +184,7 @@ public class jsonConverterTest {
 
 		}
 		assertTrue(caughtException);
-		
+
 		caughtException = false;
 		try {
 			miscErrors.convert();
@@ -195,7 +193,7 @@ public class jsonConverterTest {
 
 		}
 		assertTrue(caughtException);
-		
+
 		ItemTestCase universe = this.generateItemTestCase("Universe.json");
 		universe.convert();
 	}
