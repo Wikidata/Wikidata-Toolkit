@@ -40,8 +40,8 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -145,7 +145,7 @@ public class JsonConverter {
 		PropertyIdValue propertyId;
 
 		if (propertyIdString != null) {
-			propertyId = this.getPropertyId(propertyIdString);
+			propertyId = this.getPropertyIdValue(propertyIdString);
 		} else {
 			propertyId = this.getPropertyIdFromTopLevel(jsonObject);
 		}
@@ -192,7 +192,7 @@ public class JsonConverter {
 
 		ItemIdValue itemId;
 		if (itemIdString != null) {
-			itemId = this.getItemId(itemIdString);
+			itemId = this.getItemIdValue(itemIdString);
 		} else {
 			itemId = this.getItemIdFromTopLevel(jsonObject);
 		}
@@ -250,7 +250,7 @@ public class JsonConverter {
 			itemId = this.getItemId(entityJsonArray);
 		} else { // it is a String
 			String stringItemId = topLevel.getString(KEY_ENTITY);
-			itemId = this.getItemId(stringItemId);
+			itemId = this.getItemIdValue(stringItemId);
 		}
 		return itemId;
 	}
@@ -280,7 +280,7 @@ public class JsonConverter {
 			propertyId = this.getPropertyId(entityJsonArray);
 		} else { // it is a String
 			String stringItemId = topLevel.getString(KEY_ENTITY);
-			propertyId = this.getPropertyId(stringItemId);
+			propertyId = this.getPropertyIdValue(stringItemId);
 		}
 		return propertyId;
 	}
@@ -336,50 +336,40 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Composes an ItemId out of a string denoting this id. It is required that
-	 * the given string begins with the prefix for items.
+	 * Creates an ItemIdValue from a string id given in JSON, which may have the
+	 * form Q12345 or q12345. The lower case version is not a valid id but may
+	 * occur in the JSON dump for historic reasons.
 	 * 
 	 * @param id
-	 *            is the id of the item as string, including the prefix "Q" or
-	 *            "q"
-	 * @return the items id as an ItemId-instance
+	 *            JSON string id of the item
+	 * @return the corresponding ItemIdValue
 	 * @throws JSONException
 	 */
-	private ItemIdValue getItemId(String id) throws JSONException {
+	private ItemIdValue getItemIdValue(String id) throws JSONException {
 
 		try {
-			// converting IDs to upper case is a fix since
-			// lower case might occur in the dump files
-			// but is not accepted by the factory
 			return this.factory.getItemIdValue(id.toUpperCase(), this.baseIri);
-		} catch (Exception e) {
-			// re-throw runtime exceptions
-			// as they might be thrown by the factory
+		} catch (IllegalArgumentException e) { // invalid id format
 			throw new JSONException(e);
 		}
 	}
 
 	/**
-	 * Composes an PropertyId out of a string denoting this id. It is required
-	 * that the given string begins with the prefix for properties.
+	 * Creates a PropertyIdValue from a string id given in JSON, which may have
+	 * the form P12345 or p12345. The lower case version is not a valid id but
+	 * may occur in the JSON dump for historic reasons.
 	 * 
 	 * @param id
-	 *            is the id of the property as string, including the prefix "P"
-	 *            or "p"
-	 * @return the property id as an PropertyId-instance
+	 *            JSON string id of the property
+	 * @return the corresponding PropertyIdValue
 	 * @throws JSONException
 	 */
-	private PropertyIdValue getPropertyId(String id) throws JSONException {
+	private PropertyIdValue getPropertyIdValue(String id) throws JSONException {
 
 		try {
-			// converting IDs to upper case is a fix since
-			// lower case might occur in the dump files
-			// but is not accepted by the factory
 			return this.factory.getPropertyIdValue(id.toUpperCase(),
 					this.baseIri);
-		} catch (Exception e) {
-			// re-throw runtime exceptions
-			// as they might be thrown by the factory
+		} catch (IllegalArgumentException e) { // invalid id format
 			throw new JSONException(e);
 		}
 	}
@@ -725,7 +715,7 @@ public class JsonConverter {
 		// ["novalue",40], where P40 is the property "children"
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
 				+ intPropertyId);
 
 		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
@@ -751,7 +741,7 @@ public class JsonConverter {
 		// ["somevalue",22], where P22 is the property "father"
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
 				+ intPropertyId);
 
 		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
@@ -780,7 +770,7 @@ public class JsonConverter {
 
 		// get the property id
 		int intPropertyId = jsonValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyId(PREFIX_PROPERTY
+		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
 				+ intPropertyId);
 
 		// get the value
@@ -1007,11 +997,11 @@ public class JsonConverter {
 		// check the entity type
 		switch (entityType) {
 		case "item":
-			return this.getItemId(PREFIX_ITEM + entityId);
+			return this.getItemIdValue(PREFIX_ITEM + entityId);
 		case "property":
 			// this case is possible in theory,
 			// but was never encountered it so far
-			return this.getPropertyId(PREFIX_PROPERTY + entityId);
+			return this.getPropertyIdValue(PREFIX_PROPERTY + entityId);
 		default:
 			throw new JSONException("Unknown entity type " + entityType
 					+ " in entity id value JSON.");
