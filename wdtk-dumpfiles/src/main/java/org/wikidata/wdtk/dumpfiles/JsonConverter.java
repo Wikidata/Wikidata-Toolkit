@@ -809,25 +809,28 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSON-objects into QuantityValues.
+	 * Create a QuantityValue from a given JSON object. The JSON should have the
+	 * form as in the following example:
+	 * 
+	 * <pre>
+	 * {"amount":"+34196",
+	 *  "unit":"1",
+	 *  "upperBound":"+34197",
+	 *  "lowerBound":"+34195"
+	 * }
+	 * </pre>
+	 * 
+	 * The unit is currently ignored since it is not clear yet how exactly it
+	 * will work when supported by Wikibase.
 	 * 
 	 * @param jsonQuantityValue
-	 *            is a JSON-object containing the labels "amount", "upperBound"
-	 *            and "lowerBound". All other labels will be ignored. Must not
-	 *            be null.
-	 * @return an appropriate QuantityValue-instance.
+	 *            a JSON object representing a QuantityValue
+	 * @return the corresponding QuantityValue
 	 * @throws JSONException
+	 *             if the given JSON did not have the expected form
 	 */
 	private QuantityValue getQuantityValue(JSONObject jsonQuantityValue)
 			throws JSONException {
-		// example:
-		// {"amount":"+34196",
-		// "unit":"1",
-		// "upperBound":"+34197",
-		// "lowerBound":"+34195"}
-		// NOTE ignore unit for now
-		// it will be reviewed later
-
 		BigDecimal numericValue = new BigDecimal(
 				jsonQuantityValue.getString("amount"));
 
@@ -844,66 +847,49 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSON-object into a GlobeCordinatesValue.
+	 * Creates a GlobeCordinatesValue from a given JSON object. The JSON should
+	 * have the form as in the following example:
+	 * 
+	 * <pre>
+	 * {"latitude":51.835,
+	 *  "longitude":10.785277777778,
+	 *  "altitude":null,
+	 *  "precision":0.00027777777777778,
+	 *  "globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+	 * }
+	 * </pre>
+	 * 
+	 * Altitude is present for historical reasons. It has never been supported
+	 * by Wikibase and will vanish altogether in the future. Only specific
+	 * numbers are allowed as precisions; all others will be rounded to the next
+	 * greater precision, which might lead to conversion errors. If the
+	 * precision is not given, this implementation defaults to the maximal
+	 * precision (milli-arcsecond). If the globe is not given, this
+	 * implementation defaults to Earth.
 	 * 
 	 * @param jsonGlobeCoordinate
-	 *            is a JSON-object containing the labels "latitude",
-	 *            "longitude", "precision" and "globe". All other labels will be
-	 *            ignored. Must not be null. Precisions not covered by the
-	 *            current data model will be rounded to the next coarse
-	 *            precision. Note that an unwanted rounding might occur if the
-	 *            chosen representation is a slight bit higher then the limit
-	 *            for the precision.
+	 *            a JSON object representing a GlobeCoordinatesValue
 	 * @return an appropriate GlobeCoordinatesValue
 	 * @throws JSONException
-	 *             if a required label was missing.
+	 *             if the given JSON did not have the expected form
 	 */
 	private GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
 
-		// assert jsonGlobeCoordinate != null :
-		// "Globe coordinate JSON was null";
-		// example:
-		// {"latitude":51.835,
-		// "longitude":10.785277777778,
-		// "altitude":null,
-		// "precision":0.00027777777777778,
-		// "globe":"http:\/\/www.wikidata.org\/entity\/Q2"}
-		// NOTE as for now, ignore "altitude".
-		// The key will be reviewed in the future.
-		// NOTE the precision is denoted in float as a part of the degree
-		// conversion into long necessary
-		// NOTE sometimes the latitude and longitude are provided as int in
-		// degree
-
-		// convert latitude and longitude into nanodegrees
-		long latitude;
-		long longitude;
-
-		// try if the coordinates are already in integer (with degree
-		// precision?)
-
+		// convert latitude and longitude from double (degrees) to long
+		// (nanodegrees)
 		double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
-		latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
+		long latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
 
 		double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
-		longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
+		long longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
 
-		// getting the precision
-		// if the precision is available as double or integer it needs to be
-		// converted (integer can be parsed from JSON as double)
-		// NOTE this is done by hand, since otherwise one would get rounding
-		// errors
-		// also in older dumps the precision might be null
-		// in this case the precision might default to PREC_DEGREE
+		// get the precision
 		long precision;
 
 		if (jsonGlobeCoordinate.isNull("precision")) {
-
-			precision = GlobeCoordinatesValue.PREC_DEGREE;
-
+			precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
 		} else {
-
 			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
 
 			// Yes, one has to check all
@@ -941,9 +927,8 @@ public class JsonConverter {
 		}
 
 		// get the globeIri
-		// caution: might be null
-		String globeIri = null;
-		globeIri = jsonGlobeCoordinate.optString("globe", "");
+		String globeIri = jsonGlobeCoordinate.optString("globe",
+				GlobeCoordinatesValue.GLOBE_EARTH);
 
 		GlobeCoordinatesValue result = this.factory.getGlobeCoordinatesValue(
 				latitude, longitude, precision, globeIri);
@@ -966,22 +951,22 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a given JSON-object to an EntityIdValue. An example JSON could
-	 * look like:
-	 * <p>
-	 * {"entity-type":"item",</br> "numeric-id":842256}
-	 * <p/>
+	 * Creates an EntityIdValue from a given JSON object. The JSON should have
+	 * the form as in the following example:
+	 * 
+	 * <pre>
+	 * {"entity-type":"item",
+	 *  "numeric-id":842256}
+	 * </pre>
 	 * 
 	 * @param jsonObject
-	 *            an JSON object denoting an entity id. It must contain the
-	 *            labels "entity-type" and "numeric-id".
-	 * @return
+	 *            an JSON object denoting an entity id
+	 * @return the corresponding EntityIdValue
 	 * @throws JSONException
-	 *             if a required key was not available.
+	 *             if the given JSON did not have the expected form
 	 */
 	private EntityIdValue getEntityIdValue(JSONObject jsonObject)
 			throws JSONException {
-		// NOTE there be any other entity-type then "item" in later releases
 
 		String entityType = jsonObject.getString("entity-type");
 		int entityId = jsonObject.getInt("numeric-id");
@@ -991,8 +976,8 @@ public class JsonConverter {
 		case "item":
 			return this.getItemIdValue(PREFIX_ITEM + entityId);
 		case "property":
-			// this case is possible in theory,
-			// but was never encountered it so far
+			// using properties as values is planned for the future,
+			// but is not supported by Wikibase as of March 2014
 			return this.getPropertyIdValue(PREFIX_PROPERTY + entityId);
 		default:
 			throw new JSONException("Unknown entity type " + entityType
@@ -1001,28 +986,26 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSON-object into a TimeValue. An example in JSON might look
-	 * like:
-	 * <p>
-	 * {"time":"+00000002012-06-30T00:00:00Z",<br/>
-	 * "timezone":0,<br/>
-	 * "before":0,<br/>
-	 * "after":0,<br/>
-	 * "precision":11,<br/>
+	 * Creates a TimeValue from a given JSON object. The JSON should have the
+	 * form as in the following example:
+	 * 
+	 * <pre>
+	 * {"time":"+00000002012-06-30T00:00:00Z",
+	 * "timezone":0,
+	 * "before":0,
+	 * "after":0,
+	 * "precision":11,
 	 * "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
-	 * </p>
+	 * </pre>
 	 * 
 	 * @param jsonTimeValue
-	 *            is a JSON-object with the keys "time", "timezone", "before",
-	 *            "after", "precision" and "calendarmodel".
-	 * @return the TimeValue as described by the JSON-object.
+	 *            an JSON object denoting a time value
+	 * @return the corresponding TimeValue
 	 * @throws JSONException
-	 *             if a required label was missing.
+	 *             if the given JSON did not have the expected form
 	 */
 	private TimeValue getTimeValue(JSONObject jsonTimeValue)
 			throws JSONException {
-
-		TimeValue result;
 
 		String stringTime = jsonTimeValue.getString("time");
 		String[] substrings = stringTime.split("(?<!\\A)[\\-\\:TZ]");
@@ -1058,10 +1041,9 @@ public class JsonConverter {
 		// get the calendar model
 		String calendarModel = jsonTimeValue.getString("calendarmodel");
 
-		result = this.factory.getTimeValue(year, month, day, hour, minute,
+		return this.factory.getTimeValue(year, month, day, hour, minute,
 				second, precision, beforeTolerance, afterTolerance,
 				timezoneOffset, calendarModel);
-		return result;
 	}
 
 	public String getBaseIri() {
