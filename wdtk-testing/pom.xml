@@ -9,18 +9,22 @@
 		<version>0.0.1</version>
 	</parent>
 
-	<artifactId>wdtk-util</artifactId>
+	<artifactId>wdtk-testing</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Wikidata Toolkit utilities</name>
-	<description>General-purpose utilities used by WDTK</description>
-	
+	<name>Wikidata Toolkit utilities for testing</name>
+	<description>Helper code that is only used in unit tests</description>
+
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.7</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>  
+			<version>1.9.5</version> 
 		</dependency>
 	</dependencies>
-
 </project>

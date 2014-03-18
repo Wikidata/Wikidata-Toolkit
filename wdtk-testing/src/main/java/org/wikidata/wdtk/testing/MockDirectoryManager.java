@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -33,6 +33,8 @@ import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
  * Mock implementation of {@link DirectoryManager} that simulates file access
@@ -164,44 +166,44 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	@Override
-	public BufferedReader getBufferedReaderForFile(String fileName)
+	public InputStream getInputStreamForFile(String fileName)
 			throws IOException {
 		if (fileName.endsWith(".bz2")) {
 			throw new IllegalArgumentException(
 					"Cannot read bz2 files with this method");
 		}
-		return getBufferedReaderForMockFile(fileName);
+		return getInputStreamForMockFile(fileName);
 	}
 
 	@Override
-	public BufferedReader getBufferedReaderForBz2File(String fileName)
+	public InputStream getInputStreamForBz2File(String fileName)
 			throws IOException {
 		if (!fileName.endsWith(".bz2")) {
 			throw new IllegalArgumentException(
 					"Can only read bz2 files with this method");
 		}
-		return getBufferedReaderForMockFile(fileName);
+		return getInputStreamForMockFile(fileName);
 	}
 
 	/**
-	 * Get a buffered reader for the mocked contents of the given file, or throw
+	 * Get an input stream for the mocked contents of the given file, or throw
 	 * an exception if the file does not exist.
 	 * 
 	 * @param fileName
-	 * @return
+	 * @return input stream for file
 	 * @throws FileNotFoundException
 	 */
-	BufferedReader getBufferedReaderForMockFile(String fileName)
+	InputStream getInputStreamForMockFile(String fileName)
 			throws FileNotFoundException {
 		if (!hasFile(fileName)) {
 			throw new FileNotFoundException();
 		}
 
 		if (this.returnFailingReaders) {
-			return MockStringContentFactory.getFailingBufferedReader();
+			return MockStringContentFactory.getFailingInputStream();
 		} else {
 			Path filePath = this.directory.resolve(fileName);
-			return MockStringContentFactory.newMockBufferedReader(this.files
+			return MockStringContentFactory.newMockInputStream(this.files
 					.get(filePath));
 		}
 	}

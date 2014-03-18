@@ -30,6 +30,19 @@ import java.util.Iterator;
 public interface BitVector {
 
 	/**
+	 * Returns <code>true</code> if and only if the specified object is also a
+	 * BitVector and both contain the same bits in the same order.
+	 * 
+	 * @param o
+	 *            the object to be compared with this BitVector
+	 * 
+	 * @return <code>true</code> if and only if the specified object is also a
+	 *         BitVector and both contain the same bits in the same order
+	 */
+	@Override
+	boolean equals(Object o);
+
+	/**
 	 * This is the &quot;access&quot; method of bit vectors.
 	 * 
 	 * @return value of a bit at <i>position</i>

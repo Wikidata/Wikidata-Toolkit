@@ -1,0 +1,2 @@
+This file is here
+to test resource loading.

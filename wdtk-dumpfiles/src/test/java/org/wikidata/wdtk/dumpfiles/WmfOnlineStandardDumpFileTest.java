@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class WmfOnlineStandardDumpFileTest {
 
@@ -47,14 +49,14 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", MockWebResourceFetcher.TYPE_BZ2);
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 
@@ -83,14 +85,14 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", MockWebResourceFetcher.TYPE_BZ2);
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setReturnFailingReaders(true);
 
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
@@ -105,7 +107,7 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
@@ -138,11 +140,11 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		MediaWikiDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 		dump.getDumpFileReader();

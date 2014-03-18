@@ -24,19 +24,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class WmfDumpFileManagerTest {
 
 	MockWebResourceFetcher wrf;
 	MockDirectoryManager dm;
+	Path dmPath;
 
 	/**
 	 * Helper class to test dump file processing capabilities.
@@ -49,13 +53,12 @@ public class WmfDumpFileManagerTest {
 		String result = "";
 
 		@Override
-		public void processDumpFileContents(BufferedReader bufferedReader,
+		public void processDumpFileContents(InputStream inputStream,
 				MediaWikiDumpFile dumpFile) {
 			try {
 				result = result
 						+ MockStringContentFactory
-								.getStringFromBufferedReader(bufferedReader)
-						+ "\n";
+								.getStringFromInputStream(inputStream) + "\n";
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -66,8 +69,9 @@ public class WmfDumpFileManagerTest {
 
 	@Before
 	public void setUp() throws IOException {
-		wrf = new MockWebResourceFetcher();
-		dm = new MockDirectoryManager(Paths.get(System.getProperty("user.dir")));
+		this.wrf = new MockWebResourceFetcher();
+		this.dmPath = Paths.get(System.getProperty("user.dir"));
+		this.dm = new MockDirectoryManager(this.dmPath);
 	}
 
 	/**
@@ -80,7 +84,7 @@ public class WmfDumpFileManagerTest {
 	void setLocalDump(String dateStamp, DumpContentType dumpContentType,
 			boolean isDone) {
 
-		Path dumpFilePath = dm.directory.resolve("dumpfiles").resolve(
+		Path dumpFilePath = this.dmPath.resolve("dumpfiles").resolve(
 				"wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);
@@ -100,7 +104,7 @@ public class WmfDumpFileManagerTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.CURRENT, true);
@@ -138,7 +142,8 @@ public class WmfDumpFileManagerTest {
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
 		setLocalDump("20140123", DumpContentType.CURRENT, true);
@@ -173,7 +178,8 @@ public class WmfDumpFileManagerTest {
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
 		setLocalDump("20140123", DumpContentType.FULL, true);
@@ -275,10 +281,11 @@ public class WmfDumpFileManagerTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML);
+				MockWebResourceFetcher.TYPE_HTML, this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML);
+				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
+				this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.FULL, true);

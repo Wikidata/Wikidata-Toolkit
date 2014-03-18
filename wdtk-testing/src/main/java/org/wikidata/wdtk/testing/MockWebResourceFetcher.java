@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.testing;
 
 /*
  * #%L
@@ -20,11 +20,12 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+
+import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
  * Mock implementation of {@link WebResourceFetcher}.
@@ -37,6 +38,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	public static final String TYPE_HTML = "html";
 	public static final String TYPE_GZIP = "gz";
 	public static final String TYPE_BZ2 = "bz2";
+	public static final String TYPE_ANY = "any";
 
 	final HashMap<String, String> webResources;
 	final HashMap<String, String> webResourceTypes;
@@ -44,6 +46,9 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param resourceClass
+	 *            the Class that should be used to resolve resources
 	 */
 	public MockWebResourceFetcher() {
 		this.webResources = new HashMap<String, String>();
@@ -95,68 +100,57 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *            the Java resource name
 	 * @param contentsType
 	 *            one of the predefined type constants
+	 * @param resourceClass
+	 *            the Class relative to which the resource should be resolved
+	 *            (since resources are stored relative to a classpath); can
+	 *            usually be obtained with getClass() from the calling object
 	 * @throws IOException
 	 *             if the Java resource could not be loaded
 	 */
 	public void setWebResourceContentsFromResource(String url, String resource,
-			String contentsType) throws IOException {
-		URL resourceUrl = WmfDumpFileManagerTest.class.getResource(resource);
+			String contentsType, Class<?> resourceClass) throws IOException {
+		URL resourceUrl = resourceClass.getResource(resource);
 		String contents = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
 		setWebResourceContents(url, contents, contentsType);
 	}
 
 	@Override
-	public BufferedReader getBufferedReaderForUrl(String urlString)
+	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
-		if (!this.webResources.containsKey(urlString)) {
-			throw new IOException("Inaccessible URL (not mocked)");
-		}
-		if (!MockWebResourceFetcher.TYPE_HTML.equals(this.webResourceTypes
-				.get(urlString))) {
-			throw new IllegalArgumentException("Cannot access non-html content");
-		}
-		return getBufferedReaderForMockWebResource(urlString);
+		return getInputStreamForMockWebResource(urlString,
+				MockWebResourceFetcher.TYPE_ANY);
 	}
 
 	@Override
-	public BufferedReader getBufferedReaderForGzipUrl(String urlString)
+	public InputStream getInputStreamForGzipUrl(String urlString)
 			throws IOException {
-		if (!this.webResources.containsKey(urlString)) {
-			throw new IOException("Inaccessible URL (not mocked)");
-		}
-		if (!MockWebResourceFetcher.TYPE_GZIP.equals(this.webResourceTypes
-				.get(urlString))) {
-			throw new IllegalArgumentException("Cannot access non-gzip content");
-		}
-		return getBufferedReaderForMockWebResource(urlString);
+		return getInputStreamForMockWebResource(urlString,
+				MockWebResourceFetcher.TYPE_GZIP);
 	}
 
 	/**
-	 * Returns a buffered reader for the content mocked for given URL. It is
-	 * assumed that the URL is valid. The type of the content at this location
-	 * will not be checked.
+	 * Returns an input stream for the content mocked for given URL. It is
+	 * checked that the URL is valid and that the type of its content matches
+	 * the given one.
 	 * 
 	 * @param urlString
-	 * @return buffered reader for resource
+	 * @param resourceType
+	 *            expected type
+	 * @return input stream for resource
 	 * @throws IOException
 	 */
-	BufferedReader getBufferedReaderForMockWebResource(String urlString)
-			throws IOException {
-		assert (this.webResources.containsKey(urlString));
-		if (this.returnFailingReaders) {
-			return MockStringContentFactory.getFailingBufferedReader();
-		} else {
-			return MockStringContentFactory
-					.newMockBufferedReader(this.webResources.get(urlString));
-		}
-	}
-
-	@Override
-	public InputStream getInputStreamForUrl(String urlString)
-			throws IOException {
+	InputStream getInputStreamForMockWebResource(String urlString,
+			String resourceType) throws IOException {
 		if (!this.webResources.containsKey(urlString)) {
-			throw new IOException("Invalid mock URL");
+			throw new IOException("Inaccessible URL (not mocked)");
+		}
+		if (!resourceType.equals(MockWebResourceFetcher.TYPE_ANY)
+				&& !resourceType.equals(this.webResourceTypes.get(urlString))) {
+			throw new IllegalArgumentException(
+					"Can only access content of type " + resourceType
+							+ " but was "
+							+ this.webResourceTypes.get(urlString) + ".");
 		}
 		if (this.returnFailingReaders) {
 			return MockStringContentFactory.getFailingInputStream();

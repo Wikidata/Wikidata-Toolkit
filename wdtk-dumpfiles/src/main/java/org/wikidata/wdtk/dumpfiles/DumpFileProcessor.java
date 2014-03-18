@@ -20,7 +20,7 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
+import java.io.InputStream;
 
 /**
  * General interface for classes that process dump files, typically for parsing
@@ -32,17 +32,17 @@ import java.io.BufferedReader;
 public interface DumpFileProcessor {
 
 	/**
-	 * Process dump file data from the given buffered reader.
+	 * Process dump file data from the given input stream.
 	 * <p>
-	 * The buffered reader is obtained from the given dump file via
-	 * {@link MediaWikiDumpFile#getDumpFileReader()}. It will be closed by the
+	 * The input stream is obtained from the given dump file via
+	 * {@link MediaWikiDumpFile#getDumpFileStream()}. It will be closed by the
 	 * caller.
 	 * 
-	 * @param bufferedReader
+	 * @param inputStream
 	 *            to access the contents of the dump
 	 * @param dumpFile
 	 *            to access further information about this dump
 	 */
-	public void processDumpFileContents(BufferedReader bufferedReader,
+	public void processDumpFileContents(InputStream inputStream,
 			MediaWikiDumpFile dumpFile);
 }
