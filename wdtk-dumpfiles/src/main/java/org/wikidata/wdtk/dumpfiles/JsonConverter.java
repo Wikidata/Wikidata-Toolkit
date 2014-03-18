@@ -34,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -91,26 +90,17 @@ public class JsonConverter {
 
 	/**
 	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
-	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemId} The item
-	 * prefix is "Q". The property prefix is "P". If the given factory is
-	 * <i>null</i> the
-	 * {@link org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl}
-	 * will be used.
+	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemIdValue}.
 	 * 
 	 * @param baseIri
-	 *            the initial IRI to be used for the processed JSON
+	 *            the base IRI to be used for entities
 	 * @param factory
-	 *            is the DataObjectFactory to be used upon construction of the
-	 *            objects of the data model
+	 *            the DataObjectFactory to be used to construct objects of the
+	 *            data model
 	 */
 	public JsonConverter(String baseIri, DataObjectFactory factory) {
 		this.setBaseIri(baseIri);
-
-		if (factory == null) {
-			this.factory = new DataObjectFactoryImpl();
-		} else {
-			this.factory = factory;
-		}
+		this.factory = factory;
 
 		mltvHandler = new MonolingualTextValueHandler(this.factory);
 	}
