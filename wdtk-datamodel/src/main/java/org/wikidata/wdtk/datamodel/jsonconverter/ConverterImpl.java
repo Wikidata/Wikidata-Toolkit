@@ -86,10 +86,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * 
 	 * @param document
 	 * @return JSONObject representing aliases of a {@link TermedDocument}
-	 * @throws JSONException
 	 */
-	JSONObject convertAliasesToJson(TermedDocument document)
-			throws JSONException {
+	JSONObject convertAliasesToJson(TermedDocument document){
 		JSONObject result = new JSONObject();
 		for (String key : document.getAliases().keySet()) {
 			JSONArray alias = new JSONArray();
@@ -108,11 +106,9 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * 
 	 * @param document
 	 * @return JSONObject representing descriptions of a {@link TermedDocument}
-	 * @throws JSONException
 	 */
 
-	JSONObject convertDescriptionsToJson(TermedDocument document)
-			throws JSONException {
+	JSONObject convertDescriptionsToJson(TermedDocument document){
 		JSONObject result = new JSONObject();
 		for (String key : document.getDescriptions().keySet()) {
 			result.put(key, visit(document.getDescriptions().get(key)));
@@ -126,11 +122,9 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * 
 	 * @param document
 	 * @return JSONObject of labels
-	 * @throws JSONException
 	 */
 
-	JSONObject convertLabelsToJson(TermedDocument document)
-			throws JSONException {
+	JSONObject convertLabelsToJson(TermedDocument document){
 		JSONObject result = new JSONObject();
 		for (String key : document.getLabels().keySet()) {
 			result.put(key, visit(document.getLabels().get(key)));
@@ -145,10 +139,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param document
 	 * @return JSONObject representation for
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink} objects
-	 * @throws JSONException
 	 */
-	JSONObject convertSiteLinksToJson(ItemDocument document)
-			throws JSONException {
+	JSONObject convertSiteLinksToJson(ItemDocument document){
 		JSONObject result = new JSONObject();
 		for (String key : document.getSiteLinks().keySet()) {
 			result.put(key, visit(document.getSiteLinks().get(key)));
@@ -208,7 +200,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.Claim)
 	 */
 	@Override
-	public JSONObject visit(Claim claim) throws JSONException {
+	public JSONObject visit(Claim claim){
 		JSONObject result = new JSONObject();
 		result.put(KEY_MAINSNAK, convertSnakToJson(claim.getMainSnak()));
 		if (!claim.getQualifiers().isEmpty()) {
@@ -226,19 +218,19 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.ItemDocument)
 	 */
 	@Override
-	public JSONObject visit(ItemDocument itemDocument) throws JSONException {
+	public JSONObject visit(ItemDocument document){
 		JSONObject result = new JSONObject();
 		JSONObject statementGroups = new JSONObject();
-		result = addTermedDocumentAttributes(itemDocument, result);
+		result = addTermedDocumentAttributes(document, result);
 		result.put(KEY_TYP, KEY_ENTITY_TYP_ITEM);
-		if (!itemDocument.getStatementGroups().isEmpty()) {
+		if (!document.getStatementGroups().isEmpty()) {
 			result.put(KEY_CLAIMS, statementGroups);
 		}
-		if (!itemDocument.getSiteLinks().isEmpty()) {
-			result.put(KEY_SITE_LINKS, convertSiteLinksToJson(itemDocument));
+		if (!document.getSiteLinks().isEmpty()) {
+			result.put(KEY_SITE_LINKS, convertSiteLinksToJson(document));
 		}
 
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
+		for (StatementGroup statementGroup : document.getStatementGroups()) {
 			statementGroups.put(
 					statementGroup.getProperty().getId().toString(),
 					convertStatementGroupToJson(statementGroup));
@@ -255,7 +247,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyDocument)
 	 */
 	@Override
-	public JSONObject visit(PropertyDocument document) throws JSONException {
+	public JSONObject visit(PropertyDocument document){
 		JSONObject result = new JSONObject();
 		result.put(KEY_TYP, KEY_ENTITY_TYP_PROPERTY);
 		result = addTermedDocumentAttributes(document, result);
@@ -271,7 +263,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.Reference)
 	 */
 	@Override
-	public JSONObject visit(Reference ref) throws JSONException {
+	public JSONObject visit(Reference ref){
 		JSONObject result = new JSONObject();
 		JSONObject snaks = new JSONObject();
 		JSONArray snakOrder = new JSONArray();
@@ -307,7 +299,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.Statement)
 	 */
 	@Override
-	public JSONObject visit(Statement statement) throws JSONException {
+	public JSONObject visit(Statement statement){
 		JSONObject result = new JSONObject();
 
 		result.put(KEY_ID, statement.getStatementId());
@@ -338,10 +330,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param statementGroup
 	 * @return Json representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.StatementGroup}
-	 * @throws JSONException
 	 */
-	public JSONArray convertStatementGroupToJson(StatementGroup statementGroup)
-			throws JSONException {
+	public JSONArray convertStatementGroupToJson(StatementGroup statementGroup){
 		JSONArray statements = new JSONArray();
 		for (Statement statement : statementGroup.getStatements()) {
 			statements.put(visit(statement));
@@ -358,9 +348,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param snak
 	 * @return JSONObject representing for a specific
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Snak}
-	 * @throws JSONException
 	 */
-	public JSONObject convertSnakToJson(Snak snak) throws JSONException {
+	public JSONObject convertSnakToJson(Snak snak){
 		JSONObject result;
 		if (snak instanceof NoValueSnak) {
 			result = visit((NoValueSnak) snak);
@@ -382,7 +371,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.ValueSnak)
 	 */
 	@Override
-	public JSONObject visit(ValueSnak snak) throws JSONException {
+	public JSONObject visit(ValueSnak snak){
 		JSONObject result = new JSONObject();
 		result.put(KEY_SNAK_TYP, "value");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
@@ -421,7 +410,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.NoValueSnak)
 	 */
 	@Override
-	public JSONObject visit(NoValueSnak snak) throws JSONException {
+	public JSONObject visit(NoValueSnak snak){
 		JSONObject result = new JSONObject();
 		result.put(KEY_SNAK_TYP, "novalue");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
@@ -436,7 +425,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak)
 	 */
 	@Override
-	public JSONObject visit(SomeValueSnak snak) throws JSONException {
+	public JSONObject visit(SomeValueSnak snak){
 		JSONObject result = new JSONObject();
 		result.put(KEY_SNAK_TYP, "somevalue");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
@@ -451,7 +440,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.QuantityValue)
 	 */
 	@Override
-	public JSONObject visit(QuantityValue value) throws JSONException {
+	public JSONObject visit(QuantityValue value){
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
@@ -478,7 +467,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.TimeValue)
 	 */
 	@Override
-	public JSONObject visit(TimeValue value) throws JSONException {
+	public JSONObject visit(TimeValue value){
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
@@ -504,7 +493,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue)
 	 */
 	@Override
-	public JSONObject visit(GlobeCoordinatesValue value) throws JSONException {
+	public JSONObject visit(GlobeCoordinatesValue value){
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 		result.put(KEY_VALUE, valueResult);
@@ -527,10 +516,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param value
 	 * @return json-representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.EntityIdValue}
-	 * @throws JSONException
 	 */
-	public JSONObject convertEntityIdValueToJson(EntityIdValue value)
-			throws JSONException {
+	public JSONObject convertEntityIdValueToJson(EntityIdValue value){
 
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
@@ -561,7 +548,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.StringValue)
 	 */
 	@Override
-	public JSONObject visit(StringValue value) throws JSONException {
+	public JSONObject visit(StringValue value){
 		JSONObject result = new JSONObject();
 		result.put(KEY_VALUE, value.getString());
 		result.put(KEY_TYP, "string");
@@ -576,7 +563,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue)
 	 */
 	@Override
-	public JSONObject visit(DatatypeIdValue value) throws JSONException {
+	public JSONObject visit(DatatypeIdValue value){
 		// TODO implement
 		return new JSONObject(); // empty
 	}
@@ -589,7 +576,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.ItemIdValue)
 	 */
 	@Override
-	public JSONObject visit(ItemIdValue value) throws JSONException {
+	public JSONObject visit(ItemIdValue value){
 		JSONObject result = new JSONObject();
 		result.put("entity-type", KEY_ENTITY_TYP_ITEM);
 		result.put("numeric-id", value.getId());
@@ -605,7 +592,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue)
 	 */
 	@Override
-	public JSONObject visit(MonolingualTextValue value) throws JSONException {
+	public JSONObject visit(MonolingualTextValue value){
 		JSONObject result = new JSONObject();
 		result.put("language", value.getLanguageCode());
 		result.put(KEY_VALUE, value.getText());
@@ -620,7 +607,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue)
 	 */
 	@Override
-	public JSONObject visit(PropertyIdValue value) throws JSONException {
+	public JSONObject visit(PropertyIdValue value){
 		JSONObject result = new JSONObject();
 		result.put("entity-type", KEY_ENTITY_TYP_PROPERTY);
 		result.put("numeric-id", value.getId());
@@ -636,7 +623,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * (org.wikidata.wdtk.datamodel.interfaces.SiteLink)
 	 */
 	@Override
-	public JSONObject visit(SiteLink link) throws JSONException {
+	public JSONObject visit(SiteLink link){
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
 		result.put(KEY_TITLE, link.getArticleTitle());
@@ -656,30 +643,5 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 */
 	public String convertStatementRankToJson(StatementRank rank) {
 		return rank.toString().toLowerCase();
-	}
-
-	/**
-	 * If the parameter is an ItemDocument or a PropertyDocument the respective
-	 * function for document is called, otherwise it will throw an
-	 * IllegalArgumentException.
-	 * 
-	 * @param document
-	 * @return JSONObject for
-	 *         {@link org.wikidata.wdtk.datamodel.interfaces.TermedDocument}
-	 * @throws JSONException
-	 */
-	public JSONObject convertTermedDocumentToJson(TermedDocument document)
-			throws JSONException {
-
-		JSONObject result = new JSONObject();
-		if (document instanceof ItemDocument) {
-			result = visit((ItemDocument) document);
-		} else if (document instanceof PropertyDocument) {
-			result = visit((PropertyDocument) document);
-		} else {
-			throw new IllegalArgumentException("Class of document is unknown");
-		}
-
-		return result;
 	}
 }

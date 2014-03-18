@@ -45,9 +45,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * 
  * @author Michael Günther
  * 
- * @param <Output>
+ * @param <T>
  */
-public interface Converter<Output> {
+public interface Converter<T> {
 
 	/**
 	 * Converts the attributes of a
@@ -56,9 +56,8 @@ public interface Converter<Output> {
 	 * @param claim
 	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Claim}
-	 * @throws Exception
 	 */
-	public Output visit(Claim claim) throws Exception;
+	public T visit(Claim claim);
 
 	/**
 	 * Create a representation of an
@@ -67,9 +66,8 @@ public interface Converter<Output> {
 	 * @param itemDocument
 	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ItemDocument}
-	 * @throws Exception
 	 */
-	public Output visit(ItemDocument itemDocument) throws Exception;
+	public T visit(ItemDocument itemDocument);
 
 	/**
 	 * Create a representation of a
@@ -78,9 +76,8 @@ public interface Converter<Output> {
 	 * @param propertyDocument
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.PropertyDocument}
-	 * @throws Exception
 	 */
-	public Output visit(PropertyDocument propertyDocument) throws Exception;
+	public T visit(PropertyDocument propertyDocument);
 
 	/**
 	 * Create a representation of a
@@ -89,9 +86,8 @@ public interface Converter<Output> {
 	 * @param ref
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Reference}
-	 * @throws Exception
 	 */
-	public Output visit(Reference ref) throws Exception;
+	public T visit(Reference ref);
 
 	/**
 	 * Create a representation of a
@@ -100,9 +96,8 @@ public interface Converter<Output> {
 	 * @param statement
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Statement}
-	 * @throws Exception
 	 */
-	public Output visit(Statement statement) throws Exception;
+	public T visit(Statement statement);
 
 	/**
 	 * Create a representation of a
@@ -111,9 +106,8 @@ public interface Converter<Output> {
 	 * @param snak
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ValueSnak}
-	 * @throws Exception
 	 */
-	public Output visit(ValueSnak snak) throws Exception;
+	public T visit(ValueSnak snak);
 
 	/**
 	 * Create a representation of a
@@ -122,9 +116,8 @@ public interface Converter<Output> {
 	 * @param snak
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.NoValueSnak}
-	 * @throws Exception
 	 */
-	public Output visit(NoValueSnak snak) throws Exception;
+	public T visit(NoValueSnak snak);
 
 	/**
 	 * Create a representation of a
@@ -133,9 +126,8 @@ public interface Converter<Output> {
 	 * @param snak
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak}
-	 * @throws Exception
 	 */
-	public Output visit(SomeValueSnak snak) throws Exception;
+	public T visit(SomeValueSnak snak);
 
 	/**
 	 * Create a representation of a
@@ -144,9 +136,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue}
-	 * @throws Exception
 	 */
-	public Output visit(QuantityValue value) throws Exception;
+	public T visit(QuantityValue value);
 
 	/**
 	 * Create a representation of a
@@ -155,9 +146,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue}
-	 * @throws Exception
 	 */
-	public Output visit(TimeValue value) throws Exception;
+	public T visit(TimeValue value);
 
 	/**
 	 * Create a representation of a
@@ -166,9 +156,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue}
-	 * @throws Exception
 	 */
-	public Output visit(GlobeCoordinatesValue value) throws Exception;
+	public T visit(GlobeCoordinatesValue value);
 
 	/**
 	 * Create a representation of a
@@ -177,9 +166,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.StringValue}
-	 * @throws Exception
 	 */
-	public Output visit(StringValue value) throws Exception;
+	public T visit(StringValue value);
 
 	/**
 	 * Create a representation of a
@@ -188,9 +176,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue}
-	 * @throws Exception
 	 */
-	public Output visit(DatatypeIdValue value) throws Exception;
+	public T visit(DatatypeIdValue value);
 
 	/**
 	 * Create a representation of an
@@ -199,9 +186,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.ItemIdValue}
-	 * @throws Exception
 	 */
-	public Output visit(ItemIdValue value) throws Exception;
+	public T visit(ItemIdValue value);
 
 	/**
 	 * Create a representation of a
@@ -210,9 +196,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue}
-	 * @throws Exception
 	 */
-	public Output visit(MonolingualTextValue value) throws Exception;
+	public T visit(MonolingualTextValue value);
 
 	/**
 	 * Create a representation of a
@@ -221,9 +206,8 @@ public interface Converter<Output> {
 	 * @param value
 	 * @return representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue}
-	 * @throws Exception
 	 */
-	public Output visit(PropertyIdValue value) throws Exception;
+	public T visit(PropertyIdValue value);
 
 	/**
 	 * Create a representation of a
@@ -232,8 +216,7 @@ public interface Converter<Output> {
 	 * @param link
 	 * @return representation of
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink}
-	 * @throws Exception
 	 */
-	public Output visit(SiteLink link) throws Exception;
+	public T visit(SiteLink link);
 
 }
