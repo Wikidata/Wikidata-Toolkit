@@ -666,109 +666,111 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts the given JSON array into a Snak. This might either be a
+	 * Create a Snak from the given JSON array. This might either be a
 	 * ValueSnak, NoValueSnak or SomeValueSnak.
 	 * 
-	 * @param jsonMainSnak
-	 *            is the JSON array to be converted. Must not be null.
-	 * @return A Snak corresponding to the given JSON array.
+	 * @param jsonSnak
+	 *            is a JSON array representing a Snak
+	 * @return the corresponding Snak
 	 * @throws JSONException
-	 *             if the snack type could not determined.
+	 *             if the given JSON did not have the expected form
 	 */
-	private Snak getSnak(JSONArray jsonMainSnak) throws JSONException {
-
-		switch (jsonMainSnak.getString(0)) {
+	private Snak getSnak(JSONArray jsonSnak) throws JSONException {
+		switch (jsonSnak.getString(0)) {
 		case "value":
-			return this.getValueSnak(jsonMainSnak);
+			return this.getValueSnak(jsonSnak);
 		case "somevalue":
-			return this.getSomeValueSnak(jsonMainSnak);
+			return this.getSomeValueSnak(jsonSnak);
 		case "novalue":
-			return this.getNoValueSnak(jsonMainSnak);
-		default: // could not determine snak type...
+			return this.getNoValueSnak(jsonSnak);
+		default:
 			throw new JSONException("Unknown snack type: "
-					+ jsonMainSnak.getString(0));
+					+ jsonSnak.getString(0));
 		}
 	}
 
 	/**
-	 * Converts a JSON array into a NoValueSnak.
+	 * Create a NoValueSnak from the given JSON array. The JSON should have the
+	 * form as in the following example:
+	 * 
+	 * <pre>
+	 * ["novalue",40]
+	 * </pre>
+	 * 
+	 * In this example, 40 is the id of the property the snak refers to.
 	 * 
 	 * @param jsonNoValueSnak
-	 *            is an JSON array that denotes a no-value snak. It has the form<br/>
-	 *            ["novalue", <i>propertyID</i>]
-	 * 
-	 * @return an appropriate NoValueSnak-instance
+	 *            is a JSON array representing a NoValueSnak
+	 * @return the corresponding NoValueSnak
 	 * @throws JSONException
-	 *             if the format does not match the required one.
+	 *             if the given JSON did not have the expected form
 	 */
 	private NoValueSnak getNoValueSnak(JSONArray jsonNoValueSnak)
 			throws JSONException {
-		// example:
-		// ["novalue",40], where P40 is the property "children"
 
 		int intPropertyId = jsonNoValueSnak.getInt(1);
 		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
 				+ intPropertyId);
 
-		NoValueSnak result = this.factory.getNoValueSnak(propertyId);
-
-		return result;
+		return this.factory.getNoValueSnak(propertyId);
 	}
 
 	/**
-	 * Converts a JSON array into a SomeValueSnak.
+	 * Create a SomeValueSnak from the given JSON array. The JSON should have
+	 * the form as in the following example:
+	 * 
+	 * <pre>
+	 * ["somevalue",22]
+	 * </pre>
+	 * 
+	 * In this example, 22 is the id of the property the snak refers to.
 	 * 
 	 * @param jsonSomeValueSnak
-	 *            is an JSON array that denotes a some-value snak. It has the
-	 *            form<br/>
-	 *            ["somevalue", <i>propertyID</i>]
-	 * 
-	 * @return an appropriate SomeValueSnak-instance
+	 *            is a JSON array representing a SomeValueSnak
+	 * @return the corresponding SomeValueSnak
 	 * @throws JSONException
-	 *             if the format does not match the required one.
+	 *             if the given JSON did not have the expected form
 	 */
 	private SomeValueSnak getSomeValueSnak(JSONArray jsonSomeValueSnak)
 			throws JSONException {
-		// example:
-		// ["somevalue",22], where P22 is the property "father"
 
 		int intPropertyId = jsonSomeValueSnak.getInt(1);
 		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
 				+ intPropertyId);
 
-		SomeValueSnak result = this.factory.getSomeValueSnak(propertyId);
-
-		return result;
+		return this.factory.getSomeValueSnak(propertyId);
 	}
 
 	/**
-	 * Converts the given JSON array into a ValueSnak.
+	 * Create a ValueSnak from the given JSON array. The JSON should have the
+	 * form as in the following example:
+	 * 
+	 * <pre>
+	 * ["value", 22, "wikibase-entityid", jsonForValue]
+	 * </pre>
+	 * 
+	 * In this example, 22 is the id of the property the snak refers to, and
+	 * jsonForValue should be replaced by the JSON encoding of a value of the
+	 * given type "wikibase-entityid".
 	 * 
 	 * @param jsonValueSnak
-	 *            is a JSON array of the form <br/>
-	 *            ["value", <i>propertyID</i>, <i>value type</i>, <i>value</i>]
-	 *            where the structure of the value depends on the value type.
-	 *            Must not be null.
-	 * @return a ValueSnak-instance according to the given JSON representation.
+	 *            is a JSON array representing a ValueSnak
+	 * @return the corresponding ValueSnak
 	 * @throws JSONException
-	 *             if the required format was not matched.
+	 *             if the given JSON did not have the expected form
 	 */
 	private ValueSnak getValueSnak(JSONArray jsonValueSnak)
 			throws JSONException {
-		// a value snak is
-		// ["value", propertyID, value-type, value]
 
-		ValueSnak result;
-
-		// get the property id
+		// get the property id value
 		int intPropertyId = jsonValueSnak.getInt(1);
-		PropertyIdValue propertyId = this.getPropertyIdValue(PREFIX_PROPERTY
-				+ intPropertyId);
+		PropertyIdValue propertyIdValue = this
+				.getPropertyIdValue(PREFIX_PROPERTY + intPropertyId);
 
 		// get the value
-		String valueString = jsonValueSnak.getString(2);
+		String valueType = jsonValueSnak.getString(2);
 		Value value;
-		switch (valueString) {
+		switch (valueType) {
 		case "time":
 			value = this.getTimeValue(jsonValueSnak.getJSONObject(3));
 			break;
@@ -786,13 +788,12 @@ public class JsonConverter {
 			value = this.getQuantityValue(jsonValueSnak.getJSONObject(3));
 			break;
 		default:
-			throw new JSONException("Unknown value type " + valueString
+			throw new JSONException("Unknown value type " + valueType
 					+ " in value snak JSON");
 		}
 
 		// put it all together
-		result = this.factory.getValueSnak(propertyId, value);
-		return result;
+		return this.factory.getValueSnak(propertyIdValue, value);
 	}
 
 	/**
@@ -892,11 +893,8 @@ public class JsonConverter {
 		} else {
 			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
 
-			// Yes, one has to check all
-			// possible representations since they do not equal
-			// in their internal binary representation
-			// and Double can not cope with that
-
+			// determine precision by comparing intervals, since exact
+			// comparisons of long and double do not work reliably
 			if (doublePrecision > 1.0) {
 				precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
 			} else if (doublePrecision > 0.1) {
@@ -1010,28 +1008,16 @@ public class JsonConverter {
 		String stringTime = jsonTimeValue.getString("time");
 		String[] substrings = stringTime.split("(?<!\\A)[\\-\\:TZ]");
 
-		// get the year
+		// get the components of the date
 		long year = Long.parseLong(substrings[0]);
-
-		// get the month
 		byte month = Byte.parseByte(substrings[1]);
-
-		// get the day
 		byte day = Byte.parseByte(substrings[2]);
-
-		// get the hour
 		byte hour = Byte.parseByte(substrings[3]);
-
-		// get the minute
 		byte minute = Byte.parseByte(substrings[4]);
-
-		// get the second
 		byte second = Byte.parseByte(substrings[5]);
 
-		// get the precision
+		// get the precision and tolerances
 		byte precision = (byte) jsonTimeValue.getInt("precision");
-
-		// get the tolerances
 		int beforeTolerance = jsonTimeValue.getInt("before");
 		int afterTolerance = jsonTimeValue.getInt("after");
 
