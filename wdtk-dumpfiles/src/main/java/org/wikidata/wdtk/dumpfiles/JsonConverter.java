@@ -197,7 +197,7 @@ public class JsonConverter {
 		List<StatementGroup> statements = new LinkedList<>();
 		if (jsonObject.has(KEY_CLAIM)) {
 			JSONArray jsonStatements = jsonObject.getJSONArray(KEY_CLAIM);
-			statements = this.getStatements(jsonStatements, itemId);
+			statements = this.getStatementGroups(jsonStatements, itemId);
 		}
 
 		Map<String, SiteLink> siteLinks = new HashMap<>();
@@ -524,28 +524,20 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSON array containing statements into a list of statement
-	 * groups as represented by the WDTK data model.
+	 * Creates a list of StatementGroup objects from the given JSON array, which
+	 * represents a list of statements (without any groups).
 	 * 
 	 * @param jsonStatements
-	 *            contains all the statements about an item. must consist of
-	 *            JSON objects containing the keys "m", "q", "g", "refs" and
-	 *            "rank" each.
+	 *            a JSON list of JSON representations for Statements
+	 * @param entityIdValue
+	 *            the subject to which this statement refers
 	 * 
-	 * @return a list of statement groups as specified by the WDTK data model.
+	 * @return the corresponding list of StatementGroups
 	 * @throws JSONException
-	 *             if one of the JSON objects in the array did not contain all
-	 *             required keys.
+	 *             if the given JSON did not have the expected form
 	 */
-	private List<StatementGroup> getStatements(JSONArray jsonStatements,
-			EntityIdValue subject) throws JSONException {
-
-		// assert jsonStatements != null : "statements JSON array was null";
-		// structure is [{"m":object, "q":[], "g":string, "rank":int,
-		// "refs":[…]},…]
-		// "q" => qualifiers
-		// "m" => main snak
-		// "g" => statement id
+	private List<StatementGroup> getStatementGroups(JSONArray jsonStatements,
+			EntityIdValue entityIdValue) throws JSONException {
 
 		List<StatementGroup> result;
 		List<Statement> statementsFromJson = new ArrayList<Statement>(
@@ -553,29 +545,10 @@ public class JsonConverter {
 
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
-			JSONObject currentStatement = jsonStatements.getJSONObject(i);
-
-			// get a list of statements in the order they are in the JSON
-			// get the claim
-			Claim currentClaim = this.getClaim(currentStatement, subject);
-
-			// get the references
-			JSONArray jsonRefs = currentStatement.getJSONArray("refs");
-			List<? extends Reference> references = this.getReferences(jsonRefs);
-
-			// get the statement rank
-			int rankAsInt = currentStatement.getInt("rank");
-			StatementRank rank = this.getStatementRank(rankAsInt);
-
-			// get the statement id
-			String statementId = currentStatement.getString("g");
-
-			// combine into statement
-			Statement statement = factory.getStatement(currentClaim,
-					references, rank, statementId);
-
+			JSONObject statementJson = jsonStatements.getJSONObject(i);
+			Statement statement = this.getStatement(statementJson,
+					entityIdValue);
 			statementsFromJson.add(statement);
-
 		}
 
 		// process the list of statements into a list of statement groups
@@ -586,33 +559,76 @@ public class JsonConverter {
 	}
 
 	/**
+	 * Creates a Statement object for the given entity id from the given JSON
+	 * object. The JSON needs to have the following structure:
+	 * 
+	 * <pre>
+	 * {"m":object,
+	 *  "q":[],
+	 *  "g":string,
+	 *  "rank":int,
+	 *  "refs":[...]}
+	 * </pre>
+	 * 
+	 * Here, "m" denotes the main snak, "q" the qualifiers, and "g" the
+	 * statement id.
+	 * 
+	 * @param jsonObject
+	 *            a JSON object representing a statement
+	 * @param entityIdValue
+	 *            the subject to which this statement refers
+	 * @return the corresponding Statement
+	 * @throws JSONException
+	 *             if the given JSON did not have the expected form
+	 */
+	private Statement getStatement(JSONObject jsonObject,
+			EntityIdValue entityIdValue) throws JSONException {
+		// get the claim
+		Claim currentClaim = this.getClaim(jsonObject, entityIdValue);
+
+		// get the references
+		JSONArray jsonRefs = jsonObject.getJSONArray("refs");
+		List<? extends Reference> references = this.getReferences(jsonRefs);
+
+		// get the statement rank
+		int intRank = jsonObject.getInt("rank");
+		StatementRank rank = this.getStatementRank(intRank);
+
+		// get the statement id
+		String statementId = jsonObject.getString("g");
+
+		return factory
+				.getStatement(currentClaim, references, rank, statementId);
+	}
+
+	/**
 	 * Creates a Claim object for the given entity id from the given JSON object
 	 * (this is usually the JSON for encoding a whole Statement). A Claim
 	 * consists of the EntityIdValue of the subject (given explicitly), the
 	 * claim's main snak (given by a key "m" i JSON) and the claim's qualifiers
 	 * (given by a key "q" in JSON).
 	 * 
-	 * @param currentStatement
+	 * @param jsonObject
 	 *            a JSON object representing a whole statement from which the
 	 *            claim is to be extracted
-	 * @param subject
+	 * @param entityIdValue
 	 *            the subject to which this claim refers
 	 * @return the corresponding Claim
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
+	private Claim getClaim(JSONObject jsonObject, EntityIdValue entityIdValue)
 			throws JSONException {
 		// get the main snak
-		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
+		JSONArray jsonMainSnak = jsonObject.getJSONArray("m");
 		Snak mainSnak = getSnak(jsonMainSnak);
 
 		// get the qualifiers
-		JSONArray jsonQualifiers = currentStatement.getJSONArray("q");
+		JSONArray jsonQualifiers = jsonObject.getJSONArray("q");
 		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
 
 		// build it together
-		return this.factory.getClaim(subject, mainSnak, qualifiers);
+		return this.factory.getClaim(entityIdValue, mainSnak, qualifiers);
 	}
 
 	/**
