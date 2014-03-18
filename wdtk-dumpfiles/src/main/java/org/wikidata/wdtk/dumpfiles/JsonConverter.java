@@ -642,31 +642,28 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts the qualifiers from a JSON array to a list of value snaks.
+	 * Creates a list of ValueSnak objects from a JSON array as it is used to
+	 * encode qualifiers.
 	 * 
 	 * @param jsonQualifiers
-	 *            is a JSON array containing several snaks.
-	 * @return a list of snaks corresponding to the given JSON array.
+	 *            a JSON array containing several Snaks
+	 * @return the corresponding list of Snaks
+	 * @throws JSONException
+	 *             if the given JSON did not have the expected form
 	 */
-	private List<Snak> getQualifiers(JSONArray jsonQualifiers) {
-		// effectively a list of value snaks
-
+	private List<Snak> getQualifiers(JSONArray jsonQualifiers)
+			throws JSONException {
 		List<Snak> result = new ArrayList<Snak>(jsonQualifiers.length());
 		for (int i = 0; i < jsonQualifiers.length(); i++) {
-			try {
-				JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
-				result.add(this.getSnak(currentValueSnak));
-			} catch (JSONException e) {
-				// skip the snak on error
-				continue;
-			}
+			JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
+			result.add(this.getSnak(currentValueSnak));
 		}
 
 		return result;
 	}
 
 	/**
-	 * Create a Snak from the given JSON array. This might either be a
+	 * Creates a Snak from the given JSON array. This might either be a
 	 * ValueSnak, NoValueSnak or SomeValueSnak.
 	 * 
 	 * @param jsonSnak
@@ -690,7 +687,7 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Create a NoValueSnak from the given JSON array. The JSON should have the
+	 * Creates a NoValueSnak from the given JSON array. The JSON should have the
 	 * form as in the following example:
 	 * 
 	 * <pre>
@@ -716,7 +713,7 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Create a SomeValueSnak from the given JSON array. The JSON should have
+	 * Creates a SomeValueSnak from the given JSON array. The JSON should have
 	 * the form as in the following example:
 	 * 
 	 * <pre>
@@ -742,7 +739,7 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Create a ValueSnak from the given JSON array. The JSON should have the
+	 * Creates a ValueSnak from the given JSON array. The JSON should have the
 	 * form as in the following example:
 	 * 
 	 * <pre>
