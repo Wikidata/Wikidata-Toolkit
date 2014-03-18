@@ -13,7 +13,7 @@
 	<packaging>jar</packaging>
 
 	<name>Wikidata Toolkit Examples</name>
-	<description>This module contains examples to use the Wikidata Toolkit. Among these examples, it also contains classes that are used to run benchmarks.</description>
+	<description>This module contains examples to use the Wikidata Toolkit. This module also contains classes that are used to run benchmarks.</description>
 
 	<dependencies>
 		<dependency>
