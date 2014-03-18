@@ -149,7 +149,7 @@ public class JsonConverter {
 				.getMltv(KEY_ALIAS, jsonObject);
 
 		String jsonDataTypeId = jsonObject.getString(KEY_DATATYPE);
-		DatatypeIdValue datatypeId = this.getDataTypeId(jsonDataTypeId);
+		DatatypeIdValue datatypeId = this.getDatatypeIdValue(jsonDataTypeId);
 
 		result = this.factory.getPropertyDocument(propertyId, labels,
 				descriptions, aliases, datatypeId);
@@ -796,15 +796,15 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Transforms a given string into a DatatypeIdValue.
+	 * Creates a DatatypeIdValue for the given datatype id.
 	 * 
 	 * @param jsonDataTypeId
-	 *            is the string to be converted. Must not be null.
-	 * @return the appropriate DatatypeIdValue-instance.
+	 *            the id of the datatype
+	 * @return the corresponding DatatypeIdValue
 	 */
-	private DatatypeIdValue getDataTypeId(String jsonDataTypeId) {
-		// assert jsonDataTypeId != null : "Given JSON datatype id was null";
-
+	private DatatypeIdValue getDatatypeIdValue(String jsonDataTypeId) {
+		// FIXME This is not correct. The datatype id in JSON is not the
+		// datatype that we need to use in the datamodel.
 		return this.factory.getDatatypeIdValue(jsonDataTypeId);
 	}
 
