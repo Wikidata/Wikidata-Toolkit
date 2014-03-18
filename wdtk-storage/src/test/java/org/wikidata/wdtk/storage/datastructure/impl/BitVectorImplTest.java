@@ -21,7 +21,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
@@ -33,16 +32,20 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
  */
 public class BitVectorImplTest {
 
+	/**
+	 * Asserts that two bit vectors are equal, and also that the first bit
+	 * vector is equal to itself.
+	 * 
+	 * @param bv0
+	 *            one bit vector
+	 * @param bv1
+	 *            another bit vector
+	 */
 	void assertEqualsForBitVector(BitVector bv0, BitVector bv1) {
 		Assert.assertEquals(bv0, bv0);
 		Assert.assertEquals(bv0, bv1);
 		Assert.assertEquals(bv1, bv0);
-		Assert.assertEquals(bv1, bv1);
 		Assert.assertEquals(bv0.hashCode(), bv1.hashCode());
-	}
-
-	@Before
-	public void setUp() throws Exception {
 	}
 
 	@Test
@@ -81,42 +84,33 @@ public class BitVectorImplTest {
 
 	@Test
 	public void testEqualityAndCopyConstructor() {
+		int aLargeNumber = 0x100000;
 		BitVectorImpl bv0 = new BitVectorImpl();
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv0.addBit(value);
-		}
-
+		Assert.assertEquals(bv0, bv0);
+		Assert.assertNotEquals(bv0, new Object());
 		BitVectorImpl bv1 = new BitVectorImpl();
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
+
+		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
+				0x1234);
+		for (int i = 0; i < aLargeNumber; i++) {
+			boolean value = generator.getPseudorandomBoolean();
+			bv0.addBit(value);
 			bv1.addBit(value);
 		}
-
 		assertEqualsForBitVector(bv0, bv1);
 
-		bv1.setBit(0x12345, false);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
-		bv1.setBit(0x12346, true);
-		Assert.assertFalse(bv0.equals(bv1));
-		Assert.assertFalse(bv1.equals(bv0));
-
 		BitVectorImpl bv2 = new BitVectorImpl(bv1);
-		for (int i = 0; i < 0x100000; i++) {
-			boolean value = (i % 3) == 0;
-			bv1.addBit(value);
-		}
-
-		bv2.setBit(0x12345, true);
-		Assert.assertFalse(bv0.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv0));
-		Assert.assertFalse(bv1.equals(bv2));
-		Assert.assertFalse(bv2.equals(bv1));
-
-		bv2.setBit(0x12346, false);
 		assertEqualsForBitVector(bv0, bv2);
+
+		bv1.setBit(0x12345, false);
+		bv2.setBit(0x12345, true);
+
+		Assert.assertNotEquals(bv1, bv2);
+		Assert.assertNotEquals(bv2, bv1);
+
+		RankedBitVectorImpl bv3 = new RankedBitVectorImpl(bv2);
+		Assert.assertNotEquals(bv1, bv3);
+		Assert.assertNotEquals(bv3, bv1);
 	}
 
 	@Test
@@ -149,28 +143,56 @@ public class BitVectorImplTest {
 
 	}
 
+	@Test
+	public void testHashCode() {
+		{
+			BitVectorImpl bv = new BitVectorImpl();
+			Assert.assertEquals(0, bv.hashCode());
+
+			bv.addBit(false);
+			Assert.assertEquals(1, bv.hashCode());
+		}
+		{
+			BitVectorImpl bv = new BitVectorImpl();
+			Assert.assertEquals(0, bv.hashCode());
+
+			bv.addBit(true);
+			Assert.assertEquals(0x20, bv.hashCode());
+		}
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInitialSize() {
 		new BitVectorImpl(-1);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
+	public void testInvalidPositionSizeGet00() {
+		(new BitVectorImpl()).getBit(-1);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
 	public void testInvalidPositionSizeGet01() {
-		BitVectorImpl.getBitInWord((byte) -1, 0);
+		(new BitVectorImpl()).getBit(1);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testInvalidPositionSizeGet02() {
+		BitVectorImpl.getBitInWord((byte) -1, 0);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testInvalidPositionSizeGet03() {
 		BitVectorImpl.getBitInWord((byte) 0x40, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeSet01() {
+	public void testInvalidPositionSizeSet00() {
 		BitVectorImpl.setBitInWord((byte) -1, true, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeSet02() {
+	public void testInvalidPositionSizeSet01() {
 		BitVectorImpl.setBitInWord((byte) 0x40, false, 0);
 	}
 

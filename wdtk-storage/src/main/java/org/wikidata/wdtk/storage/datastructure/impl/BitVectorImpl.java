@@ -64,15 +64,16 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 		if (bitVector instanceof BitVectorImpl) {
 			BitVectorImpl other = (BitVectorImpl) bitVector;
 			this.arrayOfBits = new long[other.arrayOfBits.length];
+			this.size = bitVector.size();
 			System.arraycopy(other.arrayOfBits, 0, this.arrayOfBits, 0,
 					other.arrayOfBits.length);
 		} else {
 			this.arrayOfBits = new long[getMinimumArraySize(bitVector.size())];
-			for (long index = 0; index < this.size; index++) {
+			this.size = bitVector.size();
+			for (long index = 0; index < bitVector.size(); index++) {
 				setBit(index, bitVector.getBit(index));
 			}
 		}
-		this.size = bitVector.size();
 	}
 
 	/**
@@ -246,7 +247,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public int hashCode() {
-		if (this.validHashCode) {
+		if (!this.validHashCode) {
 			this.hashCode = computeHashCode();
 			this.validHashCode = true;
 		}
@@ -290,14 +291,8 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (long position = 0; position < this.size;) {
-			if ((position + WORD_SIZE) < this.size) {
-				int arrayPos = (int) (position >> LG_WORD_SIZE);
-				sb.append(wordToString(this.arrayOfBits[arrayPos]));
-				position += WORD_SIZE;
-			} else {
-				sb.append(getBit(position) ? "1" : "0");
-				position++;
-			}
+			sb.append(getBit(position) ? "1" : "0");
+			position++;
 		}
 		return sb.toString();
 	}
