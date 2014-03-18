@@ -237,7 +237,7 @@ public class JsonConverter {
 		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
 
 		if (entityJsonArray != null) { // it is an array
-			itemId = this.getItemId(entityJsonArray);
+			itemId = this.getItemIdValue(entityJsonArray);
 		} else { // it is a String
 			String stringItemId = topLevel.getString(KEY_ENTITY);
 			itemId = this.getItemIdValue(stringItemId);
@@ -267,7 +267,7 @@ public class JsonConverter {
 		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
 
 		if (entityJsonArray != null) { // it is an array
-			propertyId = this.getPropertyId(entityJsonArray);
+			propertyId = this.getPropertyIdValue(entityJsonArray);
 		} else { // it is a String
 			String stringItemId = topLevel.getString(KEY_ENTITY);
 			propertyId = this.getPropertyIdValue(stringItemId);
@@ -276,17 +276,19 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Constructs the item id of a JSON array denoting an entity.
+	 * Creates an ItemIdValue from a JSON array that represents an item in JSON.
 	 * 
 	 * @param jsonEntity
-	 *            a JSON array containing information about the item; The array
-	 *            should have the structure ["item", itemId]
-	 * @return an ItemIdValue with the according prefix.
+	 *            a JSON array containing information about the item; the array
+	 *            should have the structure ["item", itemId] where itemId is an
+	 *            integer
+	 * @return the corresponding ItemIdValue
 	 * @throws JSONException
-	 *             if the entity does not contain an "item" entry or the entry
-	 *             is not followed by an integer denoting the item id
+	 *             if the entity does not contain an "item" entry or the id does
+	 *             not have the correct format
 	 */
-	private ItemIdValue getItemId(JSONArray jsonEntity) throws JSONException {
+	private ItemIdValue getItemIdValue(JSONArray jsonEntity)
+			throws JSONException {
 
 		String entityTypeIndicator = jsonEntity.getString(0);
 		if (!entityTypeIndicator.equalsIgnoreCase("item")) {
@@ -300,17 +302,19 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Constructs the property id of a JSON array denoting an entity.
+	 * Creates a PropertyIdValue from a JSON array that represents a property in
+	 * JSON.
 	 * 
 	 * @param jsonEntity
-	 *            a JSON array containing information about the property; The
-	 *            array should have the structure ["property", propertyId]
-	 * @return an PropertyIdValue with the according prefix.
+	 *            a JSON array containing information about the property; the
+	 *            array should have the structure ["property", propertyId] where
+	 *            propertyId is an integer
+	 * @return the corresponding PropertyIdValue
 	 * @throws JSONException
-	 *             if the entity does not contain an "property" entry or the
-	 *             entry is not followed by an integer denoting the property id
+	 *             if the entity does not contain an "property" entry or the id
+	 *             does not have the correct format
 	 */
-	private PropertyIdValue getPropertyId(JSONArray jsonEntity)
+	private PropertyIdValue getPropertyIdValue(JSONArray jsonEntity)
 			throws JSONException {
 
 		String entityTypeIndicator = jsonEntity.getString(0);
@@ -336,7 +340,6 @@ public class JsonConverter {
 	 * @throws JSONException
 	 */
 	private ItemIdValue getItemIdValue(String id) throws JSONException {
-
 		try {
 			return this.factory.getItemIdValue(id.toUpperCase(), this.baseIri);
 		} catch (IllegalArgumentException e) { // invalid id format
@@ -355,7 +358,6 @@ public class JsonConverter {
 	 * @throws JSONException
 	 */
 	private PropertyIdValue getPropertyIdValue(String id) throws JSONException {
-
 		try {
 			return this.factory.getPropertyIdValue(id.toUpperCase(),
 					this.baseIri);
