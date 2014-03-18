@@ -85,6 +85,7 @@ public class JsonConverter {
 	private final DataObjectFactory factory;
 	private String baseIri = "";
 	private final MonolingualTextValueHandler mltvHandler;
+	private final StatementGroupBuilder statementGroupBuilder;
 
 	static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
@@ -103,6 +104,7 @@ public class JsonConverter {
 		this.factory = factory;
 
 		mltvHandler = new MonolingualTextValueHandler(this.factory);
+		statementGroupBuilder = new StatementGroupBuilder(this.factory);
 	}
 
 	/**
@@ -552,8 +554,8 @@ public class JsonConverter {
 		}
 
 		// process the list of statements into a list of statement groups
-		StatementGroupBuilder builder = new StatementGroupBuilder(this.factory);
-		result = builder.buildFromStatementList(statementsFromJson);
+		result = this.statementGroupBuilder
+				.buildFromStatementList(statementsFromJson);
 
 		return result;
 	}
