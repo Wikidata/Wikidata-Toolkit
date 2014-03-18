@@ -65,8 +65,8 @@ public class ConverterImplTest {
 				JSONArray arrayObj2 = obj2.getJSONArray((String) key);
 				compareJSONArrays(arrayObj1, arrayObj2);
 			} else {
-				assertTrue(comparableValue(obj1.get((String) key)).equals(
-						comparableValue(obj2.get((String) key))));
+				assertTrue(comparableNumber(obj1.get((String) key)).equals(
+						comparableNumber(obj2.get((String) key))));
 			}
 		}
 	}
@@ -81,12 +81,12 @@ public class ConverterImplTest {
 				JSONArray arrayElem2 = array2.getJSONArray(index);
 				compareJSONArrays(arrayElem1, arrayElem2);
 			} else {
-				assertTrue(comparableValue(array1.get(index)).equals(comparableValue(array2.get(index))));
+				assertTrue(comparableNumber(array1.get(index)).equals(comparableNumber(array2.get(index))));
 			}
 		}
 	}
 
-	public Object comparableValue(Object val) {
+	public Object comparableNumber(Object val) {
 		if (val instanceof Integer) {
 			return ((Integer) val).longValue();
 		}
@@ -104,16 +104,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testOrder() {
-		JSONArray array = new JSONArray();
-		array.put("one");
-		array.put("two");
-		array.put("three");
-		assertEquals(array.toString(), "[\"one\",\"two\",\"three\"]");
-	}
-
-	@Test
-	public void testConvertItemDocumentToJson() throws JSONException {
+	public void testVisitItemDocument() throws JSONException {
 
 		List<Statement> statements = new ArrayList<Statement>();
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
@@ -153,7 +144,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertPropertyDocumentToJson() throws JSONException {
+	public void testvisitPropertyDocument() throws JSONException {
 		PropertyDocument document = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "base/"),
 				Collections.<MonolingualTextValue> emptyList(),
@@ -171,7 +162,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertValueSnakToJson() {
+	public void testVisitValueSnak() {
 		// ItemIdValue:
 		ValueSnak snak = objectFactory.createValueSnakItemIdValue("P132",
 				"Q233");
@@ -192,7 +183,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertSomeValueSnakToJson() {
+	public void testVisitConvertSomeValueSnak() {
 		SomeValueSnak snak = objectFactory.createSomeValueSnak("P1231");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
 				TestRessources.SOME_VALUE_SNAK_REPRES));
@@ -200,7 +191,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertNoValueSnakToJson() {
+	public void testVisitNoValueSnak() {
 		NoValueSnak snak = factory.getNoValueSnak(factory.getPropertyIdValue(
 				"P10", "test/"));
 		compareJSONObjects(converter.convertSnakToJson(snak),
@@ -210,7 +201,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertClaimToJson() {
+	public void testVisitClaim() {
 		ValueSnak snak = objectFactory.createValueSnakTime(42, "P129");
 		Claim claim = objectFactory.createClaim("Q31", snak);
 		assertEquals(converter.visit(claim).toString(),
@@ -219,14 +210,14 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertReferenceToJson() {
+	public void testVisitReference() {
 		Reference ref = objectFactory.createReference();
 		compareJSONObjects(converter.visit(ref),
 				new JSONObject(TestRessources.REFERENCE_REPRES));
 	}
 
 	@Test
-	public void testConvertStatementToJson() {
+	public void testVisitStatement() {
 		Statement statement = objectFactory.createStatement("Q100", "P131");
 		compareJSONObjects(converter.visit(statement),
 				new JSONObject(TestRessources.STATEMENT_REPRES));
@@ -234,7 +225,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertStatementGroupToJson() {
+	public void testVisitStatementGroup() {
 		StatementGroup group = objectFactory.createStatementGroup();
 		compareJSONArrays(converter.convertStatementGroupToJson(group),
 				new JSONArray(TestRessources.STATEMENT_GROUP_REPRES));
@@ -242,7 +233,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertPropertyIdValueToJson() {
+	public void testVisitPropertyIdValue() {
 		PropertyIdValue value = objectFactory.createPropertyIdValue("P200");
 		assertEquals(converter.visit(value).toString(),
 				TestRessources.PROPERTY_ID_VALUE_REPRES);
@@ -252,7 +243,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertItemIdValueToJson() {
+	public void testVisitItemIdValue() {
 		ItemIdValue value = objectFactory.createItemIdValue("Q200");
 		assertEquals(converter.visit(value).toString(),
 				TestRessources.ITEM_ID_VALUE_REPRES);
@@ -262,7 +253,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertMonolingualTextValue() {
+	public void testVisitMonolingualTextValue() {
 		MonolingualTextValue value = factory.getMonolingualTextValue(
 				"some text in a language lc", "lc");
 		compareJSONObjects(converter.visit(value),
@@ -271,7 +262,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testConvertSiteLinks() {
+	public void testVisitSiteLinks() {
 		SiteLink siteLink = factory.getSiteLink("title", "siteKey", "baseIri",
 				Collections.<String> emptyList());
 		compareJSONObjects(converter.visit(siteLink),
