@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -459,61 +460,52 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSON object into a mapping from site keys to
-	 * SiteLink-instances.
+	 * Creates a map from string keys to SiteLink objects from the given JSON
+	 * object. The structure of a sitelink in JSON is as follows:
 	 * 
-	 * @param jsonLinks
-	 *            a JSON object representing the site links.
-	 * @return A mapping with a String representing a site key e.g. "enwiki" as
-	 *         key and a SiteLink-object as value.
+	 * <pre>
+	 * {"name":string,"badges":[string] }
+	 * </pre>
+	 * 
+	 * However, there is also an old format that did not have the badges and
+	 * only gave the string directly.
+	 * 
+	 * @param jsonObject
+	 *            a JSON object representing a list of site links
+	 * @return a mapping from site keys, such as "enwiki", to SiteLink objects
 	 * @throws JSONException
+	 *             if the given JSON did not have the expected form
 	 */
-	private Map<String, SiteLink> getSiteLinks(JSONObject jsonLinks)
+	private Map<String, SiteLink> getSiteLinks(JSONObject jsonObject)
 			throws JSONException {
-		// assert jsonLinks != null : "Link JSON object was null";
-
-		// links are siteKey:{"name":string,"badges":[string] }
-		// the siteKey is the key for the returned map
-		// or they are siteKey:string
 
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 
-		// TODO where to get the site IRI from
+		// FIXME we need to get the proper IRI instead
 		String siteIri = "";
 
+		// json.org does not type its Iterator: unchecked cast needed
 		@SuppressWarnings("unchecked")
-		Iterator<String> linkIterator = jsonLinks.keys();
+		Iterator<String> linkIterator = jsonObject.keys();
 
 		while (linkIterator.hasNext()) {
-
 			String title;
 			List<String> badges;
 
 			String siteKey = linkIterator.next();
 
-			JSONObject currentLink = jsonLinks.optJSONObject(siteKey);
-
-			if (currentLink != null) {
-
+			JSONObject currentLink = jsonObject.optJSONObject(siteKey);
+			if (currentLink != null) { // modern form wiht badges
 				title = currentLink.getString("name");
+
 				JSONArray badgeArray = currentLink.getJSONArray("badges");
 				badges = new ArrayList<>(badgeArray.length());
-
-				// convert badges to List<String>
 				for (int i = 0; i < badgeArray.length(); i++) {
 					badges.add(badgeArray.getString(i));
 				}
-			} else {
-				String stringLink = jsonLinks.optString(siteKey);
-				if (stringLink != null) { // its a string
-					title = stringLink;
-					// initialize the badges as empty list
-					// since they are needed for the factory
-					badges = new ArrayList<>();
-				} else { // none of the above, skip
-					logger.info("Site link is neither a JSON object nor a String. Skipped.");
-					continue;
-				}
+			} else { // old form without badges
+				title = jsonObject.getString(siteKey);
+				badges = Collections.emptyList();
 			}
 
 			// create the SiteLink instance
