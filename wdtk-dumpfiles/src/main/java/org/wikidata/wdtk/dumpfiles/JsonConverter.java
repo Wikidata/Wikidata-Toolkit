@@ -586,23 +586,23 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Gets the claim from a statement in JSON. A Claim consists out of the
-	 * EntityIdValue of the subject, the subjects main snak and its qualifiers.
+	 * Creates a Claim object for the given entity id from the given JSON object
+	 * (this is usually the JSON for encoding a whole Statement). A Claim
+	 * consists of the EntityIdValue of the subject (given explicitly), the
+	 * claim's main snak (given by a key "m" i JSON) and the claim's qualifiers
+	 * (given by a key "q" in JSON).
 	 * 
 	 * @param currentStatement
 	 *            a JSON object representing a whole statement from which the
-	 *            claim is to be extracted.
-	 * @return
+	 *            claim is to be extracted
+	 * @param subject
+	 *            the subject to which this claim refers
+	 * @return the corresponding Claim
 	 * @throws JSONException
-	 *             when a required key was not found or the snak type could not
-	 *             be identified.
+	 *             if the given JSON did not have the expected form
 	 */
 	private Claim getClaim(JSONObject currentStatement, EntityIdValue subject)
 			throws JSONException {
-
-		// m: main snak
-		// q: qualifiers
-
 		// get the main snak
 		JSONArray jsonMainSnak = currentStatement.getJSONArray("m");
 		Snak mainSnak = getSnak(jsonMainSnak);
@@ -617,15 +617,15 @@ public class JsonConverter {
 
 	/**
 	 * Transforms a statement rank from an integer representation to an
-	 * enumerated value as requested by the WDTK data model. <br/>
+	 * enumerated value as used in the WDTK data model. <br/>
 	 * The number 0 maps to DEPRECATED. <br/>
 	 * The number 1 maps to NORMAL. <br/>
 	 * The number 2 maps to PREFERRED. <br/>
 	 * Other ranks are regarded as an error.
 	 * 
 	 * @param intRank
-	 *            the rank as integer.
-	 * @return an appropriate StatementRank-value
+	 *            the rank as integer
+	 * @return the corresponding StatementRank
 	 */
 	private StatementRank getStatementRank(int intRank) {
 
@@ -637,7 +637,8 @@ public class JsonConverter {
 		case 2:
 			return StatementRank.PREFERRED;
 		default:
-			throw new IllegalArgumentException("Undefined statement rank.");
+			throw new IllegalArgumentException("Unknown statement rank "
+					+ intRank);
 		}
 	}
 
