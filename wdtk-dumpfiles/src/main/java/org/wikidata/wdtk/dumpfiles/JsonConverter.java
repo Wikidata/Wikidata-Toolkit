@@ -776,7 +776,7 @@ public class JsonConverter {
 			value = this.getEntityIdValue(jsonValueSnak.getJSONObject(3));
 			break;
 		case "string":
-			value = this.getStringIdValue(jsonValueSnak.getString(3));
+			value = this.getStringValue(jsonValueSnak.getString(3));
 			break;
 		case "globecoordinate":
 			value = this.getGlobeCoordinatesValue(jsonValueSnak
@@ -952,16 +952,16 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Acquires the StringValue for a given String.
+	 * Creates a StringValue for a given string.
+	 * <p>
+	 * Currently this just calls the corresponding factory method, but it could
+	 * change in the future if the JSON encoding diverges from the data model in
+	 * any way.
 	 * 
 	 * @param string
-	 * @return
+	 * @return corresponding StringValue
 	 */
-	private StringValue getStringIdValue(String string) {
-
-		// NOTE I decided against inlining, so
-		// if the StringValue changes somehow in the future
-		// one has only to change this method
+	private StringValue getStringValue(String string) {
 		return this.factory.getStringValue(string);
 	}
 
