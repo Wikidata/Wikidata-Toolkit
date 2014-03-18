@@ -10,6 +10,7 @@ following the original [Wikibase Toolkit IEG proposal](https://meta.wikimedia.or
 Authors:
 [Markus Kroetzsch](http://korrekt.org)
 [Julian Mendez](http://lat.inf.tu-dresden.de/~mendez/)
+[Fredo Erxleben](https://github.com/fer-rum)
 
 License: [Apache 2.0](LICENSE.txt)
 
