@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -110,8 +111,15 @@ public class WmfDumpFileManager {
 
 		for (MwDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
 			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
+				logger.info("Processing dump file " + dumpFile.toString());
 				dumpFileProcessor
 						.processDumpFileContents(inputStream, dumpFile);
+			} catch (FileAlreadyExistsException e) {
+				logger.error("Dump file "
+						+ dumpFile.toString()
+						+ " could not be processed since file "
+						+ e.getFile()
+						+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.");
 			} catch (IOException e) {
 				logger.error("Dump file " + dumpFile.toString()
 						+ " could not be processed: " + e.toString());

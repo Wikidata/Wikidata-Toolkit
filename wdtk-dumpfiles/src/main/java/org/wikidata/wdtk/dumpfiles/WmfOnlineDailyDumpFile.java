@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
@@ -38,6 +40,9 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  * 
  */
 class WmfOnlineDailyDumpFile extends WmfDumpFile {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(WmfOnlineDailyDumpFile.class);
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
@@ -87,6 +92,9 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
+		logger.info("Downloading daily dump file " + fileName + " from "
+				+ urlString + " ...");
+
 		if (this.getMaximalRevisionId() == -1L) {
 			throw new IOException(
 					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
@@ -103,6 +111,9 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
 				this.getMaximalRevisionId().toString());
+
+		logger.info("... Completed download of daily dump file " + fileName
+				+ " from " + urlString);
 	}
 
 	@Override

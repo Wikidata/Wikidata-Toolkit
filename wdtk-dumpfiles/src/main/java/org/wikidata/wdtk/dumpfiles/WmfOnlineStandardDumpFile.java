@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
@@ -40,6 +42,9 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  * 
  */
 public class WmfOnlineStandardDumpFile extends WmfDumpFile {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(WmfOnlineStandardDumpFile.class);
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
@@ -96,6 +101,10 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
+		logger.info("Downloading "
+				+ this.dumpContentType.toString().toLowerCase() + " dump file "
+				+ fileName + " from " + urlString + " ...");
+
 		if (this.getMaximalRevisionId() == -1) {
 			throw new IOException(
 					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
@@ -113,6 +122,10 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 		thisDumpDirectoryManager.createFile(
 				WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
 						.getMaximalRevisionId().toString());
+
+		logger.info("... Completed download of "
+				+ this.dumpContentType.toString().toLowerCase() + " dump file "
+				+ fileName + " from " + urlString);
 	}
 
 	@Override
