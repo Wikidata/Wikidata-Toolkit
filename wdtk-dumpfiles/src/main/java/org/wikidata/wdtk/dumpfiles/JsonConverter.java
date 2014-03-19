@@ -58,7 +58,6 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-// TODO logging support
 /**
  * This class provides methods to convert dump-file JSON objects into
  * representations according to the WDTK data model. Since the converted JSON
@@ -182,6 +181,9 @@ public class JsonConverter {
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 
 		if (jsonObject.has(KEY_LINK)) {
+			// FIXME This code has problems if linkArray is not null. Probably
+			// only the inner two lines are needed and the rest should be
+			// deleted.
 			JSONArray linkArray = jsonObject.optJSONArray(KEY_LINK);
 			if (linkArray == null) {
 				JSONObject jsonLinks = jsonObject.getJSONObject(KEY_LINK);
@@ -341,7 +343,7 @@ public class JsonConverter {
 			String siteKey = linkIterator.next();
 
 			JSONObject currentLink = jsonObject.optJSONObject(siteKey);
-			if (currentLink != null) { // modern form wiht badges
+			if (currentLink != null) { // modern form with badges
 				title = currentLink.getString("name");
 
 				JSONArray badgeArray = currentLink.getJSONArray("badges");
@@ -656,11 +658,43 @@ public class JsonConverter {
 	 * @param jsonDataTypeId
 	 *            the id of the datatype
 	 * @return the corresponding DatatypeIdValue
+	 * @throws JSONException
+	 *             if the datatype string is not known
 	 */
-	private DatatypeIdValue getDatatypeIdValue(String jsonDataTypeId) {
-		// FIXME This is not correct. The datatype id in JSON is not the
-		// datatype that we need to use in the datamodel.
-		return this.factory.getDatatypeIdValue(jsonDataTypeId);
+	private DatatypeIdValue getDatatypeIdValue(String jsonDataTypeId)
+			throws JSONException {
+		return this.factory.getDatatypeIdValue(getDatatypeIri(jsonDataTypeId));
+	}
+
+	/**
+	 * Returns the IRI of a Wikibase datatype for a given JSON datatype string.
+	 * 
+	 * @param jsonDataTypeId
+	 *            the id of the datatype
+	 * @return the corresponding datatype IRI
+	 * @throws JSONException
+	 *             if the datatype string is not known
+	 */
+	private String getDatatypeIri(String jsonDataTypeId) throws JSONException {
+		switch (jsonDataTypeId) {
+		case "wikibase-item":
+			return DatatypeIdValue.DT_ITEM;
+		case "string":
+			return DatatypeIdValue.DT_STRING;
+		case "url":
+			return DatatypeIdValue.DT_URL;
+		case "commonsMedia":
+			return DatatypeIdValue.DT_COMMONS_MEDIA;
+		case "time":
+			return DatatypeIdValue.DT_TIME;
+		case "globe-coordinate":
+			return DatatypeIdValue.DT_GLOBE_COORDINATES;
+		case "quantity":
+			return DatatypeIdValue.DT_QUANTITY;
+		default:
+			throw new JSONException("Unknown property datatype "
+					+ jsonDataTypeId);
+		}
 	}
 
 	/**

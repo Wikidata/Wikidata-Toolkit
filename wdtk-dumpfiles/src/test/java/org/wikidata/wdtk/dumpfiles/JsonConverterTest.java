@@ -82,7 +82,7 @@ public class JsonConverterTest {
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
 				BASE_IRI);
 		DatatypeIdValue datatypeId = this.factory
-				.getDatatypeIdValue("globe-coordinate");
+				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
 		PropertyDocument emptyPropertyDocument = this.factory
 				.getPropertyDocument(propertyId,
 						Collections.<MonolingualTextValue> emptyList(),
