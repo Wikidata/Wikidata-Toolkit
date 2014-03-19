@@ -70,14 +70,6 @@
 			<version>${slf4jVersion}</version>
 		</dependency>
 		<dependency>
-			<!-- Simply forward log messages to System.err. -->
-			<!-- Users can use their own logging framework instead. -->
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4jVersion}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<!-- Useful helpers for cleaner coding -->
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

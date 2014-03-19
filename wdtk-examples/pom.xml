@@ -18,6 +18,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-datamodel</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-dumpfiles</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -25,6 +35,11 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-storage</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency> 
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.6</version>
 		</dependency>
 	</dependencies>
 
