@@ -1,9 +1,9 @@
 /**
- * Provides interfaces and classes to run benchmarks on storage data structures.
- *
- * @author Julian Mendez
+ * Package for example programs that demonstrate how to use Wikidata Toolkit in practice.
+ *  
+ * @author Markus Kroetzsch
  */
-package org.wikidata.wdtk.examples.benchmark.storage.datastructure;
+package org.wikidata.wdtk.examples;
 
 /*
  * #%L
@@ -24,4 +24,3 @@ package org.wikidata.wdtk.examples.benchmark.storage.datastructure;
  * limitations under the License.
  * #L%
  */
-
