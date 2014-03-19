@@ -28,13 +28,15 @@ class ItemTestCase extends TestCase {
 	ItemTestCase(String filePath, JsonConverter converter) {
 		super(filePath, converter);
 	}
+
 	private ItemDocument result;
-	
+
+	@Override
 	void convert() throws JSONException {
-		this.result = this.converter.convertToItemDocument(this.json, null);
+		this.result = this.converter.convertToItemDocument(this.json, "Q1");
 	}
-	
-	ItemDocument getResult(){
+
+	ItemDocument getResult() {
 		return this.result;
 	}
 }

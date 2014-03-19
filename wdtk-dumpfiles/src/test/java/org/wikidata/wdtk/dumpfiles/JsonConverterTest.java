@@ -21,7 +21,6 @@ package org.wikidata.wdtk.dumpfiles;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -155,47 +154,24 @@ public class JsonConverterTest {
 		}
 	}
 
-	@Test
-	public void testBrokenDocuments() throws JSONException {
-
-		boolean caughtException = true;
-
-		ItemTestCase itemTest = this
-				.generateItemTestCase("NoEntityDocument.json");
+	@Test(expected = JSONException.class)
+	public void testPropertyDocumentLacksDatatype() throws JSONException {
 		PropertyTestCase propertyTest = this
 				.generatePropertyTestCase("NoEntityDocument.json");
+		propertyTest.convert();
+	}
 
+	@Test(expected = JSONException.class)
+	public void testItemDocumentWithErrors() throws JSONException {
 		ItemTestCase miscErrors = this.generateItemTestCase("MiscErrors.json");
+		miscErrors.convert();
+	}
 
-		caughtException = false;
-		try {
-			itemTest.convert();
-		} catch (JSONException e) {
-			caughtException = true;
-
-		}
-		assertTrue(caughtException);
-
-		caughtException = false;
-		try {
-			propertyTest.convert();
-		} catch (JSONException e) {
-			caughtException = true;
-
-		}
-		assertTrue(caughtException);
-
-		caughtException = false;
-		try {
-			miscErrors.convert();
-		} catch (JSONException e) {
-			caughtException = true;
-
-		}
-		assertTrue(caughtException);
-
+	@Test
+	public void testUniverse() throws JSONException {
 		ItemTestCase universe = this.generateItemTestCase("Universe.json");
 		universe.convert();
+		// FIXME this does not test anything (copied from earlier test file)
 	}
 
 	/**

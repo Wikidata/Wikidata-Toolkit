@@ -30,8 +30,6 @@ import org.json.JSONObject;
 
 abstract class TestCase {
 
-
-
 	TestCase(String filePath, JsonConverter converter) {
 		this.filePath = filePath;
 		String contents;
@@ -48,20 +46,21 @@ abstract class TestCase {
 
 	private String readFile(String filePath) throws FileNotFoundException {
 		File file = new File(filePath);
-		if(!file.exists()){
-			System.err.println("File " + file.getAbsolutePath() + " not found!");
+		if (!file.exists()) {
+			System.err
+					.println("File " + file.getAbsolutePath() + " not found!");
 			return "";
 		}
-		
+
 		Scanner scanner = new Scanner(file);
 		scanner.useDelimiter("\\A");
 		String entireFileText = scanner.next();
 		scanner.close();
-		
+
 		return entireFileText;
 	}
 
-	private String filePath;
+	private final String filePath;
 	protected JSONObject json;
 	protected JsonConverter converter;
 

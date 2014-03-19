@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +75,6 @@ public class JsonConverter {
 
 	// Keys that might occur in the documents
 	private static final String KEY_LABEL = "label";
-	private static final String KEY_ENTITY = "entity";
 	private static final String KEY_DESCRIPTION = "description";
 	private static final String KEY_ALIAS = "aliases";
 	private static final String KEY_DATATYPE = "datatype";
@@ -109,100 +107,76 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Attempts to parse a given JSON object into an instance of
-	 * PropertyDocument.
+	 * Creates a PropertyDocument from the given JSON object and property id
+	 * string. JSON objects may (or may not) contain information about the
+	 * property id as well; this information is ignored. Relevant keys in the
+	 * given JSON object are "label", "description", "aliases" and "datatype",
+	 * where "datatype" must be present and the others are optional.
 	 * 
 	 * @param jsonObject
-	 *            the JSON object to convert. Must represent a property document
-	 *            and therefore contain the keys "entity", "label",
-	 *            "description", "aliases" and "datatype".
+	 *            a JSON object representing a PropertyDocument
 	 * @param propertyIdString
-	 *            is a string containing the id of the property provided by
-	 *            external sources; if null is given, the information will be
-	 *            extracted from the JSON
-	 * @return the PropertyDocument as described in the JSON.
-	 * @throws NullPointerException
-	 *             if toConvert was null.
+	 *            the string id of the property that is described in this
+	 *            document
+	 * @return the corresponding PropertyDocument
 	 * @throws JSONException
-	 *             if the JSON object did not contain a key it should have had.
+	 *             if the given JSON did not have the expected form
+	 * 
 	 */
 	public PropertyDocument convertToPropertyDocument(JSONObject jsonObject,
 			String propertyIdString) throws JSONException {
 
-		if (jsonObject.length() == 0) { // if the JSON object is empty
-			throw new JSONException("The JSON to convert was empty");
-		}
-
-		PropertyDocument result;
-
-		PropertyIdValue propertyId;
-
-		if (propertyIdString != null) {
-			propertyId = this.getPropertyIdValue(propertyIdString);
-		} else {
-			propertyId = this.getPropertyIdFromTopLevel(jsonObject);
-		}
+		PropertyIdValue propertyIdValue = this
+				.getPropertyIdValue(propertyIdString);
 
 		List<MonolingualTextValue> labels = this.getMonolingualTextValues(
 				KEY_LABEL, jsonObject);
-
 		List<MonolingualTextValue> descriptions = this
 				.getMonolingualTextValues(KEY_DESCRIPTION, jsonObject);
-
 		List<MonolingualTextValue> aliases = this.getMonolingualTextValues(
 				KEY_ALIAS, jsonObject);
 
 		String jsonDataTypeId = jsonObject.getString(KEY_DATATYPE);
 		DatatypeIdValue datatypeId = this.getDatatypeIdValue(jsonDataTypeId);
 
-		result = this.factory.getPropertyDocument(propertyId, labels,
+		return this.factory.getPropertyDocument(propertyIdValue, labels,
 				descriptions, aliases, datatypeId);
-		return result;
 	}
 
 	/**
-	 * Attempts to parse a given JSON object into an instance of ItemDocument.
+	 * Creates an ItemDocument from the given JSON object and item id string.
+	 * JSON objects may (or may not) contain information about the item id as
+	 * well; this information is ignored. Relevant keys in the given JSON object
+	 * are "label", "description", "aliases", "claims" and "links", all of which
+	 * are optional.
 	 * 
 	 * @param jsonObject
-	 *            the JSON object to convert. Must represent an item document
-	 *            and therefore might contain the keys "entity", "label",
-	 *            "description", "aliases", "claims" and "links".
-	 * @param propertyIdString
-	 *            is a string containing the id of the item provided by external
-	 *            sources; if null is given, the information will be extracted
-	 *            from the JSON
-	 * @return the ItemDocument as described in the JSON.
-	 * @throws NullPointerException
-	 *             if toConvert was null.
+	 *            a JSON object representing an ItemDocument
+	 * @param itemIdString
+	 *            the string id of the item that is described in this document
+	 * @return the corresponding ItemDocument
 	 * @throws JSONException
-	 *             if the JSON object did not contain a key it should have had.
+	 *             if the given JSON did not have the expected form
+	 * 
 	 */
 	public ItemDocument convertToItemDocument(JSONObject jsonObject,
-			String itemIdString) throws JSONException, NullPointerException {
+			String itemIdString) throws JSONException {
 
-		if (jsonObject.length() == 0) { // if the JSON object is empty
-			throw new JSONException("The JSON to convert was empty");
-		}
+		ItemIdValue itemId = this.getItemIdValue(itemIdString);
 
-		ItemIdValue itemId;
-		if (itemIdString != null) {
-			itemId = this.getItemIdValue(itemIdString);
-		} else {
-			itemId = this.getItemIdFromTopLevel(jsonObject);
-		}
 		List<MonolingualTextValue> labels = this.getMonolingualTextValues(
 				KEY_LABEL, jsonObject);
-
 		List<MonolingualTextValue> descriptions = this
 				.getMonolingualTextValues(KEY_DESCRIPTION, jsonObject);
-
 		List<MonolingualTextValue> aliases = this.getMonolingualTextValues(
 				KEY_ALIAS, jsonObject);
 
-		List<StatementGroup> statements = new LinkedList<>();
+		List<StatementGroup> statements;
 		if (jsonObject.has(KEY_CLAIM)) {
 			JSONArray jsonStatements = jsonObject.getJSONArray(KEY_CLAIM);
 			statements = this.getStatementGroups(jsonStatements, itemId);
+		} else {
+			statements = Collections.emptyList();
 		}
 
 		Map<String, SiteLink> siteLinks = new HashMap<>();
@@ -215,123 +189,8 @@ public class JsonConverter {
 			}
 		}
 
-		ItemDocument result = factory.getItemDocument(itemId, labels,
-				descriptions, aliases, statements, siteLinks);
-		return result;
-	}
-
-	/**
-	 * Attempts to get the item id value from the given JSON-object. Note that
-	 * in old dumps the entity is not an array but a string with appropriate
-	 * prefix in lower case.
-	 * 
-	 * @param topLevel
-	 *            is the JSON object describing the whole entity
-	 * @return the items id as ItemIdValue
-	 * @throws JSONException
-	 *             if the topLevel does not contain the key "entity"
-	 */
-	private ItemIdValue getItemIdFromTopLevel(JSONObject topLevel)
-			throws JSONException {
-
-		if (!topLevel.has(KEY_ENTITY)) {
-			throw new JSONException("No entity entry found.");
-		}
-
-		ItemIdValue itemId;
-		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
-
-		if (entityJsonArray != null) { // it is an array
-			itemId = this.getItemIdValue(entityJsonArray);
-		} else { // it is a String
-			String stringItemId = topLevel.getString(KEY_ENTITY);
-			itemId = this.getItemIdValue(stringItemId);
-		}
-		return itemId;
-	}
-
-	/**
-	 * Attempts to get the property id value from the given JSON-object. Note
-	 * that in old dumps the entity is not an array but a string with
-	 * appropriate prefix in lower case.
-	 * 
-	 * @param topLevel
-	 *            is the JSON object describing the whole entity
-	 * @return the properties id as PropertyIdValue
-	 * @throws JSONException
-	 *             if the topLevel does not contain the key "entity"
-	 */
-	private PropertyIdValue getPropertyIdFromTopLevel(JSONObject topLevel)
-			throws JSONException {
-
-		if (!topLevel.has(KEY_ENTITY)) {
-			throw new JSONException("No entity entry found.");
-		}
-
-		PropertyIdValue propertyId;
-		JSONArray entityJsonArray = topLevel.optJSONArray(KEY_ENTITY);
-
-		if (entityJsonArray != null) { // it is an array
-			propertyId = this.getPropertyIdValue(entityJsonArray);
-		} else { // it is a String
-			String stringItemId = topLevel.getString(KEY_ENTITY);
-			propertyId = this.getPropertyIdValue(stringItemId);
-		}
-		return propertyId;
-	}
-
-	/**
-	 * Creates an ItemIdValue from a JSON array that represents an item in JSON.
-	 * 
-	 * @param jsonEntity
-	 *            a JSON array containing information about the item; the array
-	 *            should have the structure ["item", itemId] where itemId is an
-	 *            integer
-	 * @return the corresponding ItemIdValue
-	 * @throws JSONException
-	 *             if the entity does not contain an "item" entry or the id does
-	 *             not have the correct format
-	 */
-	private ItemIdValue getItemIdValue(JSONArray jsonEntity)
-			throws JSONException {
-
-		String entityTypeIndicator = jsonEntity.getString(0);
-		if (!entityTypeIndicator.equalsIgnoreCase("item")) {
-			throw new JSONException("Entity type indicator \""
-					+ entityTypeIndicator
-					+ "\" did not match expected type indicator \"item\".");
-		}
-
-		int idValue = jsonEntity.getInt(1);
-		return this.factory.getItemIdValue(PREFIX_ITEM + idValue, this.baseIri);
-	}
-
-	/**
-	 * Creates a PropertyIdValue from a JSON array that represents a property in
-	 * JSON.
-	 * 
-	 * @param jsonEntity
-	 *            a JSON array containing information about the property; the
-	 *            array should have the structure ["property", propertyId] where
-	 *            propertyId is an integer
-	 * @return the corresponding PropertyIdValue
-	 * @throws JSONException
-	 *             if the entity does not contain an "property" entry or the id
-	 *             does not have the correct format
-	 */
-	private PropertyIdValue getPropertyIdValue(JSONArray jsonEntity)
-			throws JSONException {
-
-		String entityTypeIndicator = jsonEntity.getString(0);
-		if (!entityTypeIndicator.equalsIgnoreCase("property")) {
-			throw new JSONException("Entity type indicator \""
-					+ entityTypeIndicator
-					+ "\" did not match expected type indicator \"property\".");
-		}
-
-		int idValue = jsonEntity.getInt(1);
-		return this.factory.getPropertyIdValue(PREFIX_PROPERTY + idValue,
-				this.baseIri);
+		return factory.getItemDocument(itemId, labels, descriptions, aliases,
+				statements, siteLinks);
 	}
 
 	/**

@@ -28,13 +28,16 @@ class PropertyTestCase extends TestCase {
 	PropertyTestCase(String filePath, JsonConverter converter) {
 		super(filePath, converter);
 	}
+
 	private PropertyDocument result;
-	
+
+	@Override
 	void convert() throws JSONException {
-		this.result = this.converter.convertToPropertyDocument(this.json, null);
+		this.result = this.converter
+				.convertToPropertyDocument(this.json, "P42");
 	}
-	
-	PropertyDocument getResult(){
+
+	PropertyDocument getResult() {
 		return this.result;
 	}
 }
