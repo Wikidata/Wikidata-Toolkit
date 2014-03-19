@@ -22,12 +22,16 @@ package org.wikidata.wdtk.dumpfiles;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +52,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 /**
  * The test setup uses several files containing JSON. These files are read by
@@ -59,7 +64,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
 @RunWith(JUnit4.class)
 public class JsonConverterTest {
 
-	private final String sampleFilesBasePath = "src/test/resources/testSamples/";
+	private final String sampleFilesBasePath = "/testSamples/";
 	private static JsonConverter unitUnderTest;
 	private static String baseIri = "test";
 	private final DataObjectFactory factory = new DataObjectFactoryImpl();
@@ -70,127 +75,59 @@ public class JsonConverterTest {
 	}
 
 	@Test
-	public void testEmptyProperty() throws JSONException {
-		// create the empty property test case
-		PropertyDocument emptyPropertyDocument = this
-				.createEmptyPropertyDocument();
-		PropertyTestCase testCase = this
-				.generatePropertyTestCase("EmptyProperty.json");
-
-		testCase.convert();
-		assert testCase.getResult().equals(emptyPropertyDocument) : "Converted and expected empty property documents did not match";
-	}
-
-	@Test
-	public void testEmptyItem() throws JSONException {
-		// create the empty property test case
-		ItemDocument emptyItemDocument = this.createEmptyItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase("EmptyItem.json");
-
-		testCase.convert();
-		assertEquals(testCase.getResult(), emptyItemDocument);
-	}
-
-	@Test
-	public void testBasicItem() throws JSONException {
-		// create the empty property test case
-		ItemDocument basicItemDocument = this.createBasicItemDocument();
-		ItemTestCase testCase = this.generateItemTestCase("BasicItem.json");
-
-		testCase.convert();
-		ItemDocument result = testCase.getResult();
-
-		assertEquals(result.getEntityId(), basicItemDocument.getEntityId());
-		assertEquals(result.getItemId(), basicItemDocument.getItemId());
-		assertEquals(result.getDescriptions(),
-				basicItemDocument.getDescriptions());
-		assertEquals(result.getAliases(), basicItemDocument.getAliases());
-		assertEquals(result.getLabels(), basicItemDocument.getLabels());
-		assertEquals(result.getSiteLinks(), basicItemDocument.getSiteLinks());
-		assertEquals(result.getStatementGroups(),
-				basicItemDocument.getStatementGroups());
-		assertEquals(result, basicItemDocument);
-	}
-
-	@Test
-	public void testRealItems() throws JSONException {
-		List<ItemTestCase> testCases = new LinkedList<>();
-
-		testCases.add(this.generateItemTestCase("Chicago.json"));
-		testCases.add(this.generateItemTestCase("Haaften.json"));
-		testCases.add(this.generateItemTestCase("Tours.json"));
-		testCases.add(this.generateItemTestCase("JohnPaulII.json"));
-		testCases.add(this.generateItemTestCase("Wernigerode.json"));
-
-		for (ItemTestCase t : testCases) {
-			t.convert();
-		}
-	}
-
-	@Test
-	public void testClaims() throws JSONException {
-		List<ItemTestCase> testCases = new LinkedList<>();
-
-		testCases.add(this.generateItemTestCase("GlobalCoordinates.json"));
-		testCases.add(this.generateItemTestCase("StatementRanks.json"));
-		testCases.add(this.generateItemTestCase("SnakTypes.json"));
-
-		for (ItemTestCase t : testCases) {
-			t.convert();
-		}
-	}
-
-	@Test
-	public void testDifferentNotations() throws JSONException {
-		List<TestCase> testCases = new LinkedList<>();
-
-		testCases.add(this.generateItemTestCase("DifferentNotations.json"));
-		testCases.add(this.generateItemTestCase("StringEntityItem.json"));
-		testCases.add(this
-				.generatePropertyTestCase("StringEntityProperty.json"));
-
-		for (TestCase t : testCases) {
-			t.convert();
-		}
-	}
-
-	@Test(expected = JSONException.class)
-	public void testPropertyDocumentLacksDatatype() throws JSONException {
-		PropertyTestCase propertyTest = this
-				.generatePropertyTestCase("NoEntityDocument.json");
-		propertyTest.convert();
-	}
-
-	@Test(expected = JSONException.class)
-	public void testItemDocumentWithErrors() throws JSONException {
-		ItemTestCase miscErrors = this.generateItemTestCase("MiscErrors.json");
-		miscErrors.convert();
-	}
-
-	@Test
-	public void testUniverse() throws JSONException {
-		ItemTestCase universe = this.generateItemTestCase("Universe.json");
-		universe.convert();
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	/**
-	 * Sets up an empty property document in the WDTK data model.
-	 * 
-	 * @return
-	 */
-	private PropertyDocument createEmptyPropertyDocument() {
+	public void testEmptyProperty() throws JSONException, IOException {
+		PropertyDocument propertyDocument = getPropertyDocumentFromResource(
+				"EmptyProperty.json", "P1");
 
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
 				baseIri);
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		List<MonolingualTextValue> aliases = new LinkedList<>();
 		DatatypeIdValue datatypeId = this.factory
 				.getDatatypeIdValue("globe-coordinate");
-		PropertyDocument document = this.factory.getPropertyDocument(
-				propertyId, labels, descriptions, aliases, datatypeId);
-		return document;
+		PropertyDocument emptyPropertyDocument = this.factory
+				.getPropertyDocument(propertyId,
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						datatypeId);
+
+		assertEquals(propertyDocument, emptyPropertyDocument);
+	}
+
+	@Test
+	public void testEmptyItem() throws JSONException, IOException {
+		ItemDocument itemDocument = getItemDocumentFromResource(
+				"EmptyItem.json", "Q1");
+
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
+		Map<String, SiteLink> siteLinks = new HashMap<>();
+		ItemDocument emptyItemDocument = this.factory.getItemDocument(
+				itemIdValue, Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(), siteLinks);
+
+		assertEquals(itemDocument, emptyItemDocument);
+	}
+
+	@Test
+	public void testBasicItem() throws JSONException, IOException {
+		ItemDocument basicItemDocument = this.createBasicItemDocument();
+		ItemDocument itemDocument = getItemDocumentFromResource(
+				"BasicItem.json", "Q1");
+
+		assertEquals(itemDocument.getEntityId(),
+				basicItemDocument.getEntityId());
+		assertEquals(itemDocument.getItemId(), basicItemDocument.getItemId());
+		assertEquals(itemDocument.getDescriptions(),
+				basicItemDocument.getDescriptions());
+		assertEquals(itemDocument.getAliases(), basicItemDocument.getAliases());
+		assertEquals(itemDocument.getLabels(), basicItemDocument.getLabels());
+		assertEquals(itemDocument.getSiteLinks(),
+				basicItemDocument.getSiteLinks());
+		assertEquals(itemDocument.getStatementGroups(),
+				basicItemDocument.getStatementGroups());
+
+		assertEquals(itemDocument, basicItemDocument);
 	}
 
 	private ItemDocument createBasicItemDocument() {
@@ -238,51 +175,105 @@ public class JsonConverterTest {
 		return document;
 	}
 
-	private ItemDocument createEmptyItemDocument() {
+	@Test
+	public void testRealItems() throws JSONException, IOException {
+		getItemDocumentFromResource("Chicago.json", "Q1");
+		getItemDocumentFromResource("Haaften.json", "Q1");
+		getItemDocumentFromResource("Tours.json", "Q1");
+		getItemDocumentFromResource("JohnPaulII.json", "Q1");
+		getItemDocumentFromResource("Wernigerode.json", "Q1");
+		// FIXME this does not test anything (copied from earlier test file)
+	}
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		List<MonolingualTextValue> aliases = new LinkedList<>();
-		List<StatementGroup> statementGroups = new LinkedList<>();
-		Map<String, SiteLink> siteLinks = new HashMap<>();
-		ItemDocument document = this.factory.getItemDocument(itemIdValue,
-				labels, descriptions, aliases, statementGroups, siteLinks);
-		return document;
+	@Test
+	public void testClaims() throws JSONException, IOException {
+		getItemDocumentFromResource("GlobalCoordinates.json", "Q1");
+		getItemDocumentFromResource("StatementRanks.json", "Q1");
+		getItemDocumentFromResource("SnakTypes.json", "Q1");
+		// FIXME this does not test anything (copied from earlier test file)
+	}
+
+	@Test
+	public void testDifferentNotations() throws JSONException, IOException {
+		getItemDocumentFromResource("DifferentNotations.json", "Q1");
+		getItemDocumentFromResource("StringEntityItem.json", "Q1");
+		getPropertyDocumentFromResource("StringEntityProperty.json", "P1");
+		// FIXME this does not test anything (copied from earlier test file)
+	}
+
+	@Test(expected = JSONException.class)
+	public void testPropertyDocumentLacksDatatype() throws JSONException,
+			IOException {
+		getPropertyDocumentFromResource("NoEntityDocument.json", "P1");
+	}
+
+	@Test(expected = JSONException.class)
+	public void testItemDocumentWithErrors() throws JSONException, IOException {
+		getItemDocumentFromResource("MiscErrors.json", "Q1");
+	}
+
+	@Test
+	public void testUniverse() throws JSONException, IOException {
+		getItemDocumentFromResource("Universe.json", "Q1");
+		// FIXME this does not test anything (copied from earlier test file)
 	}
 
 	/**
-	 * A helper for setting up ItemTestCases
+	 * Applies the JSON converter to the JSON stored in the given resource to
+	 * return an ItemDocument.
+	 * 
+	 * @param fileName
+	 *            the file name only, no path information
+	 * @param itemId
+	 *            the string id of the item
+	 * @throws IOException
+	 * @throws JSONException
+	 * @return the ItemDocument
+	 */
+	private ItemDocument getItemDocumentFromResource(String fileName,
+			String itemId) throws IOException, JSONException {
+		JSONObject jsonObject = getJsonObjectForResource(fileName);
+		return JsonConverterTest.unitUnderTest.convertToItemDocument(
+				jsonObject, itemId);
+	}
+
+	/**
+	 * Applies the JSON converter to the JSON stored in the given resource to
+	 * return a PropertyDocument.
 	 * 
 	 * @param fileName
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
+	 * @param propertyId
+	 *            the string id of the property
+	 * @return the PropertyDocument
+	 * @throws JSONException
+	 * @throws IOException
 	 */
-	private ItemTestCase generateItemTestCase(String fileName) {
-		String relativeFilePath = this.sampleFilesBasePath + fileName;
-
-		ItemTestCase testCase = new ItemTestCase(relativeFilePath,
-				unitUnderTest);
-
-		return testCase;
+	private PropertyDocument getPropertyDocumentFromResource(String fileName,
+			String propertyId) throws IOException, JSONException {
+		JSONObject jsonObject = getJsonObjectForResource(fileName);
+		return JsonConverterTest.unitUnderTest.convertToPropertyDocument(
+				jsonObject, propertyId);
 
 	}
 
 	/**
-	 * A helper for setting up PropertyTestCases
+	 * Returns a JSON object for the JSON stored in the given resource.
 	 * 
-	 * @param fileName
-	 *            the file name only, no path information. The file is supposed
-	 *            to be in the "resources/testSamples/"-directory.
+	 * @param resourceName
+	 *            a file name without any path information
+	 * @return the JSONObject
+	 * @throws IOException
+	 * @throws JSONException
 	 */
-	private PropertyTestCase generatePropertyTestCase(String fileName) {
-		String relativeFilePath = this.sampleFilesBasePath + fileName;
-
-		PropertyTestCase testCase = new PropertyTestCase(relativeFilePath,
-				unitUnderTest);
-
-		return testCase;
-
+	private JSONObject getJsonObjectForResource(String resourceName)
+			throws IOException, JSONException {
+		URL resourceUrl = this.getClass().getResource(
+				this.sampleFilesBasePath + resourceName);
+		String jsonString = MockStringContentFactory
+				.getStringFromUrl(resourceUrl);
+		return new JSONObject(jsonString);
 	}
 
 }
