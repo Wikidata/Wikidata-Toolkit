@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
  * @author Markus Kroetzsch
  * 
  */
-public abstract class WmfDumpFile implements MediaWikiDumpFile {
+public abstract class WmfDumpFile implements MwDumpFile {
 
 	/**
 	 * The default URL of the website to obtain the dump files from.

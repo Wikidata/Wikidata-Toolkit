@@ -48,13 +48,13 @@ public class WmfDumpFileManagerTest {
 	 * @author Markus Kroetzsch
 	 * 
 	 */
-	class TestDumpfileProcessor implements DumpFileProcessor {
+	class TestDumpfileProcessor implements MwDumpFileProcessor {
 
 		String result = "";
 
 		@Override
 		public void processDumpFileContents(InputStream inputStream,
-				MediaWikiDumpFile dumpFile) {
+				MwDumpFile dumpFile) {
 			try {
 				result = result
 						+ MockStringContentFactory
@@ -115,7 +115,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllDailyDumps();
 
 		String[] dumpDates = { "20140221", "20140220", "20140219", "20140218",
@@ -154,7 +154,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllCurrentDumps();
 
 		String[] dumpDates = { "20140210", "20140123", "20140106", "20131221",
@@ -190,7 +190,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllFullDumps();
 
 		String[] dumpDates = { "20140210", "20140123", "20140106", "20131221",
@@ -218,7 +218,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllDailyDumps();
 
 		String[] dumpDates = { "20140220", "20140205" };
@@ -240,7 +240,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllCurrentDumps();
 
 		String[] dumpDates = { "20140220", "20140205" };
@@ -262,7 +262,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, null);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllFullDumps();
 
 		String[] dumpDates = { "20140220", "20140205" };
@@ -294,7 +294,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllRelevantDumps(true);
 
 		String[] dumpDates = { "20140221", "20140220", "20140219", "20140218",
@@ -329,7 +329,7 @@ public class WmfDumpFileManagerTest {
 		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
 				"wikidatawiki", dm, wrf);
 
-		List<? extends MediaWikiDumpFile> dumpFiles = dumpFileManager
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
 				.findAllRelevantDumps(false);
 
 		assertEquals(dumpFiles.size(), 1);

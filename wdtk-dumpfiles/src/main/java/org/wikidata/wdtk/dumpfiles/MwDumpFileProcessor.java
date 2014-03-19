@@ -29,13 +29,13 @@ import java.io.InputStream;
  * @author Markus Kroetzsch
  * 
  */
-public interface DumpFileProcessor {
+public interface MwDumpFileProcessor {
 
 	/**
 	 * Process dump file data from the given input stream.
 	 * <p>
 	 * The input stream is obtained from the given dump file via
-	 * {@link MediaWikiDumpFile#getDumpFileStream()}. It will be closed by the
+	 * {@link MwDumpFile#getDumpFileStream()}. It will be closed by the
 	 * caller.
 	 * 
 	 * @param inputStream
@@ -43,6 +43,6 @@ public interface DumpFileProcessor {
 	 * @param dumpFile
 	 *            to access further information about this dump
 	 */
-	public void processDumpFileContents(InputStream inputStream,
-			MediaWikiDumpFile dumpFile);
+	void processDumpFileContents(InputStream inputStream,
+			MwDumpFile dumpFile);
 }

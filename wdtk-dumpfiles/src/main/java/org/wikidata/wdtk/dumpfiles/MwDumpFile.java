@@ -32,7 +32,7 @@ import java.util.Comparator;
  * @author Markus Kroetzsch
  * 
  */
-public interface MediaWikiDumpFile {
+public interface MwDumpFile {
 
 	/**
 	 * Comparator to sort dumps by date.
@@ -40,9 +40,9 @@ public interface MediaWikiDumpFile {
 	 * @author Markus Kroetzsch
 	 * 
 	 */
-	class DateComparator implements Comparator<MediaWikiDumpFile> {
+	class DateComparator implements Comparator<MwDumpFile> {
 		@Override
-		public int compare(MediaWikiDumpFile a, MediaWikiDumpFile b) {
+		public int compare(MwDumpFile a, MwDumpFile b) {
 			return a.getDateStamp().compareTo(b.getDateStamp());
 		}
 	}
