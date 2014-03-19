@@ -143,13 +143,14 @@ public class JsonConverter {
 			propertyId = this.getPropertyIdFromTopLevel(jsonObject);
 		}
 
-		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
+		List<MonolingualTextValue> labels = this.getMonolingualTextValues(
+				KEY_LABEL, jsonObject);
 
-		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
-				jsonObject);
+		List<MonolingualTextValue> descriptions = this
+				.getMonolingualTextValues(KEY_DESCRIPTION, jsonObject);
 
-		List<MonolingualTextValue> aliases = this
-				.getMltv(KEY_ALIAS, jsonObject);
+		List<MonolingualTextValue> aliases = this.getMonolingualTextValues(
+				KEY_ALIAS, jsonObject);
 
 		String jsonDataTypeId = jsonObject.getString(KEY_DATATYPE);
 		DatatypeIdValue datatypeId = this.getDatatypeIdValue(jsonDataTypeId);
@@ -189,13 +190,14 @@ public class JsonConverter {
 		} else {
 			itemId = this.getItemIdFromTopLevel(jsonObject);
 		}
-		List<MonolingualTextValue> labels = this.getMltv(KEY_LABEL, jsonObject);
+		List<MonolingualTextValue> labels = this.getMonolingualTextValues(
+				KEY_LABEL, jsonObject);
 
-		List<MonolingualTextValue> descriptions = this.getMltv(KEY_DESCRIPTION,
-				jsonObject);
+		List<MonolingualTextValue> descriptions = this
+				.getMonolingualTextValues(KEY_DESCRIPTION, jsonObject);
 
-		List<MonolingualTextValue> aliases = this
-				.getMltv(KEY_ALIAS, jsonObject);
+		List<MonolingualTextValue> aliases = this.getMonolingualTextValues(
+				KEY_ALIAS, jsonObject);
 
 		List<StatementGroup> statements = new LinkedList<>();
 		if (jsonObject.has(KEY_CLAIM)) {
@@ -370,93 +372,78 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Converts a JSONObject into a list of mono-lingual text values. The object
-	 * to be converted is the value associated with the given key in the top
-	 * level object. So if there is a JSONObject <i>topLevel</i> and the key
-	 * "label" are given, only the JSONObject found in the <i>topLevel</i> under
-	 * the key "label" will be converted, not the whole <i>topLevel</i>.
-	 * 
-	 * MLTV is the abbreviation for MonoLingualTextValue.
+	 * Creates a list of MonolingualTextValue objects from the given JSONObject.
+	 * The object to be converted is the value associated with the given key in
+	 * the top level object. So if there is a JSONObject <i>topLevel</i> and the
+	 * key "label" are given, only the JSONObject found in the <i>topLevel</i>
+	 * under the key "label" will be converted, not the whole <i>topLevel</i>.
 	 * 
 	 * @param key
-	 *            is the key of the object to be converted in the topLevel. If
-	 *            the key is not present or not an object an empty list will be
-	 *            returned.
-	 * @param topLevel
-	 *            is the JSONObject that contains the object to be converted
-	 *            under a given key.
-	 * @return a list of extracted mono-lingual text values. Might be empty, but
-	 *         not null.
+	 *            the key of the object to be converted in the topLevel
+	 * @param jsonObject
+	 *            the JSONObject that contains the object to be converted under
+	 *            the given key
+	 * @return the corresponding list of MonolingualTextValue objects, or an
+	 *         empty list if the key did not exist
 	 */
-	private List<MonolingualTextValue> getMltv(String key, JSONObject topLevel) {
+	private List<MonolingualTextValue> getMonolingualTextValues(String key,
+			JSONObject jsonObject) {
 
-		JSONObject toConvert = topLevel.optJSONObject(key);
+		JSONObject toConvert = jsonObject.optJSONObject(key);
 		if (toConvert != null) {
 			return this.mltvHandler.convertToMltv(toConvert);
-		} // else…
-
-		return new LinkedList<>();
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	/**
-	 * Converts the given JSON array into a list of Reference-objects. A
+	 * Creates a list of Reference objects from the given JSON array. A
 	 * reference is an array of reference statements which in turn are value
-	 * snaks. Invalid references will be skipped.
+	 * snaks. Invalid references will be skipped and an error is reported.
 	 * 
 	 * @param jsonReferences
-	 *            is an JSON array of JSON arrays of value snaks
-	 * @return the appropriate List of references.
+	 *            a JSON array of JSON arrays of value snaks
+	 * @return the corresponding list of References
 	 */
 	private List<? extends Reference> getReferences(JSONArray jsonReferences) {
-		// References are [singeRef]
-		// singleRef are [refStatements]
-		// refStatements are value snaks
+		List<Reference> result = new ArrayList<>(jsonReferences.length());
 
-		List<Reference> result = new LinkedList<>();
-
-		// process the single references
 		for (int i = 0; i < jsonReferences.length(); i++) {
 			try {
-				JSONArray jsonSingleRef = jsonReferences.getJSONArray(i);
-				Reference singleReference = this
-						.getSingleReference(jsonSingleRef);
-				result.add(singleReference);
-
+				JSONArray jsonRef = jsonReferences.getJSONArray(i);
+				result.add(this.getReference(jsonRef));
 			} catch (JSONException e) {
-				// skip over invalid references
-				continue;
+				JsonConverter.logger
+						.error("Problem when parsing reference. Error was: "
+								+ e.toString());
 			}
-
 		}
+
 		return result;
 	}
 
 	/**
-	 * Converts a given JSON-array into a single Reference. The array must be
-	 * taken from the JSON-array of references.
+	 * Creates a Reference from the given JSON array, as it occurs in the JSON
+	 * array of references.
 	 * 
-	 * @param jsonSingleRef
-	 *            is a JSON-array describing a single reference, containing
-	 *            value snaks
-	 * @return the appropriate reference
+	 * @param jsonArray
+	 *            a JSON array describing a single reference, containing value
+	 *            snaks
+	 * @return the corresponding Reference
 	 * @throws JSONException
-	 *             in case the conversion of the value snaks fails
+	 *             if the given JSON did not have the expected form
 	 */
-	private Reference getSingleReference(JSONArray jsonSingleRef)
-			throws JSONException {
-		List<ValueSnak> valueSnaks = new LinkedList<>();
+	private Reference getReference(JSONArray jsonArray) throws JSONException {
+		List<ValueSnak> valueSnaks = new ArrayList<>(jsonArray.length());
 
-		// process the reference statements
-		// do not recover from broken snaks, skip the reference
-		for (int j = 0; j < jsonSingleRef.length(); j++) {
-
-			JSONArray jsonValueSnak = jsonSingleRef.getJSONArray(j);
+		for (int j = 0; j < jsonArray.length(); j++) {
+			JSONArray jsonValueSnak = jsonArray.getJSONArray(j);
 			ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
 			valueSnaks.add(currentValueSnak);
 		}
 
-		Reference singleReference = factory.getReference(valueSnaks);
-		return singleReference;
+		return factory.getReference(valueSnaks);
 	}
 
 	/**
@@ -666,8 +653,8 @@ public class JsonConverter {
 			throws JSONException {
 		List<Snak> result = new ArrayList<Snak>(jsonQualifiers.length());
 		for (int i = 0; i < jsonQualifiers.length(); i++) {
-			JSONArray currentValueSnak = jsonQualifiers.getJSONArray(i);
-			result.add(this.getSnak(currentValueSnak));
+			JSONArray currentSnak = jsonQualifiers.getJSONArray(i);
+			result.add(this.getSnak(currentSnak));
 		}
 
 		return result;
