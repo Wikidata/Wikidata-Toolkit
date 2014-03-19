@@ -32,10 +32,8 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -61,17 +59,19 @@ import org.wikidata.wdtk.testing.MockStringContentFactory;
  * @author Fredo Erxleben
  * 
  */
-@RunWith(JUnit4.class)
 public class JsonConverterTest {
 
-	private final String sampleFilesBasePath = "/testSamples/";
-	private static JsonConverter unitUnderTest;
-	private static String baseIri = "test";
-	private final DataObjectFactory factory = new DataObjectFactoryImpl();
+	private static final String SAMPLE_FILES_BASE_PATH = "/testSamples/";
+	private static final String BASE_IRI = "test";
 
-	@BeforeClass
-	public static void setUp() {
-		unitUnderTest = new JsonConverter(baseIri, new DataObjectFactoryImpl());
+	private JsonConverter unitUnderTest;
+	private DataObjectFactory factory;
+
+	@Before
+	public void setUp() {
+		this.factory = new DataObjectFactoryImpl();
+		this.unitUnderTest = new JsonConverter(BASE_IRI,
+				new DataObjectFactoryImpl());
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class JsonConverterTest {
 				"EmptyProperty.json", "P1");
 
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				baseIri);
+				BASE_IRI);
 		DatatypeIdValue datatypeId = this.factory
 				.getDatatypeIdValue("globe-coordinate");
 		PropertyDocument emptyPropertyDocument = this.factory
@@ -98,7 +98,7 @@ public class JsonConverterTest {
 		ItemDocument itemDocument = getItemDocumentFromResource(
 				"EmptyItem.json", "Q1");
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 		ItemDocument emptyItemDocument = this.factory.getItemDocument(
 				itemIdValue, Collections.<MonolingualTextValue> emptyList(),
@@ -132,7 +132,7 @@ public class JsonConverterTest {
 
 	private ItemDocument createBasicItemDocument() {
 
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", baseIri);
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
 
 		List<MonolingualTextValue> labels = new LinkedList<>();
 		labels.add(this.factory.getMonolingualTextValue("test", "en"));
@@ -149,8 +149,8 @@ public class JsonConverterTest {
 		List<Statement> statements = new LinkedList<>();
 
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				baseIri);
-		Value value = this.factory.getItemIdValue("Q1", baseIri);
+				BASE_IRI);
+		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
 		Snak mainSnak = factory.getValueSnak(propertyId, value);
 		List<? extends Snak> qualifiers = new LinkedList<>();
 		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers);
@@ -233,8 +233,7 @@ public class JsonConverterTest {
 	private ItemDocument getItemDocumentFromResource(String fileName,
 			String itemId) throws IOException, JSONException {
 		JSONObject jsonObject = getJsonObjectForResource(fileName);
-		return JsonConverterTest.unitUnderTest.convertToItemDocument(
-				jsonObject, itemId);
+		return this.unitUnderTest.convertToItemDocument(jsonObject, itemId);
 	}
 
 	/**
@@ -253,9 +252,8 @@ public class JsonConverterTest {
 	private PropertyDocument getPropertyDocumentFromResource(String fileName,
 			String propertyId) throws IOException, JSONException {
 		JSONObject jsonObject = getJsonObjectForResource(fileName);
-		return JsonConverterTest.unitUnderTest.convertToPropertyDocument(
-				jsonObject, propertyId);
-
+		return this.unitUnderTest.convertToPropertyDocument(jsonObject,
+				propertyId);
 	}
 
 	/**
@@ -270,7 +268,7 @@ public class JsonConverterTest {
 	private JSONObject getJsonObjectForResource(String resourceName)
 			throws IOException, JSONException {
 		URL resourceUrl = this.getClass().getResource(
-				this.sampleFilesBasePath + resourceName);
+				JsonConverterTest.SAMPLE_FILES_BASE_PATH + resourceName);
 		String jsonString = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
 		return new JSONObject(jsonString);
