@@ -70,6 +70,19 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
+		prepareDumpFile();
+
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+				this.projectName, this.dateStamp);
+		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
+				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
+						DumpContentType.DAILY, this.dateStamp));
+
+		return dailyDirectoryManager.getInputStreamForBz2File(fileName);
+	}
+
+	@Override
+	public void prepareDumpFile() throws IOException {
 		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
@@ -90,8 +103,6 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
 				this.getMaximalRevisionId().toString());
-
-		return dailyDirectoryManager.getInputStreamForBz2File(fileName);
 	}
 
 	@Override

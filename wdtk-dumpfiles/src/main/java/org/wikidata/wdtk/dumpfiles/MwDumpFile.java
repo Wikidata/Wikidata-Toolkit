@@ -118,4 +118,14 @@ public interface MwDumpFile {
 	 *             if the dump file contents could not be accessed
 	 */
 	public BufferedReader getDumpFileReader() throws IOException;
+
+	/**
+	 * Prepares the dump file for access via {@link #getDumpFileStream()} or
+	 * {@link #getDumpFileReader()}. In particular, this will download any
+	 * remote files.
+	 * 
+	 * @throws IOException
+	 *             if there was a problem preparing the files
+	 */
+	public void prepareDumpFile() throws IOException;
 }
