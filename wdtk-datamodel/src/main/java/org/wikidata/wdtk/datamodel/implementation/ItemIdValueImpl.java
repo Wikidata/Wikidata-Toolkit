@@ -24,8 +24,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 /**
- * Generic implementation of {@link ItemIdValue} that works with arbitrary Wikibase
- * instances: it requires a baseIri that identifies the site globally.
+ * Generic implementation of {@link ItemIdValue} that works with arbitrary
+ * Wikibase instances: it requires a baseIri that identifies the site globally.
  * 
  * @author Markus Kroetzsch
  * 
@@ -33,16 +33,22 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	/**
+	 * Constructor.
+	 * 
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
+	 *            a string of the form Qn... where n... is the string
+	 *            representation of a positive integer number
 	 * @param baseIri
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
 	ItemIdValueImpl(String id, String baseIri) {
 		super(id, baseIri);
 
 		if (!id.matches("^Q[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q[1-9]+\"");
+					"Wikibase item ids must have the form \"Q<positive integer>\"");
 		}
 	}
 

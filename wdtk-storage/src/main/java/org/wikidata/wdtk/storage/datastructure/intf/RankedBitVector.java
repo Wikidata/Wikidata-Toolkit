@@ -34,17 +34,38 @@ package org.wikidata.wdtk.storage.datastructure.intf;
 public interface RankedBitVector extends BitVector {
 
 	/**
-	 * This is the &quot;rank&quot; method of bit vectors.
+	 * This is a distinguished value, which denotes that the position of a
+	 * <i>n</i>-th occurrence of a <i>bit</i> was not found. This value is a
+	 * negative number.
 	 * 
+	 * @see #findPosition(boolean, long)
+	 */
+	long NOT_FOUND = -1;
+
+	/**
+	 * This is the &quot;rank&quot; method of bit vectors. This method returns
+	 * the number of occurrences of <i>bit</i> up to <i>position</i>.
+	 * 
+	 * @param bit
+	 *            bit
+	 * @param position
+	 *            position
 	 * @return number of occurrences of <i>bit</i> at <i>position</i>
 	 */
 	long countBits(boolean bit, long position);
 
 	/**
-	 * This is the &quot;select&quot; method of bit vectors.
+	 * This is the &quot;select&quot; method of bit vectors. This method returns
+	 * the position of the <i>n</i>-th occurrence (<i>nOccurrence</i>) of
+	 * <i>bit</i> or NOT_FOUND if there are not enough occurrences.
 	 * 
+	 * 
+	 * @param bit
+	 *            bit
+	 * @param nOccurrence
+	 *            number of occurrences
 	 * @return position of the <i>n</i>-th occurrence (<i>nOccurrence</i>) of
-	 *         <i>bit</i>
+	 *         <i>bit</i> or NOT_FOUND if there are not enough occurrences
 	 */
 	long findPosition(boolean bit, long nOccurrence);
 

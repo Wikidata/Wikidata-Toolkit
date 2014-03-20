@@ -22,8 +22,8 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * A value that represents one of the available Wikibase datatypes. The method
- * {@link IriIdentifiedValue#getIri() getIri()} will always return one of the datatype
- * IRIs defined in this interface.
+ * {@link IriIdentifiedValue#getIri() getIri()} will always return one of the
+ * datatype IRIs defined in this interface.
  * 
  * @author Markus Kroetzsch
  * 
@@ -53,5 +53,9 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	 * IRI of the globe coordinates datatype in Wikibase.
 	 */
 	static final String DT_GLOBE_COORDINATES = "http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates";
+	/**
+	 * IRI of the quantity datatype in Wikibase.
+	 */
+	static final String DT_QUANTITY = "http://www.wikidata.org/ontology#propertyTypeQuantity";
 
 }

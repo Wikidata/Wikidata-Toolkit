@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.wikidata.wdtk</groupId>
+		<artifactId>wdtk-parent</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<artifactId>wdtk-examples</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Wikidata Toolkit Examples</name>
+	<description>This module contains examples to use the Wikidata Toolkit. This module also contains classes that are used to run benchmarks.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-storage</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+</project>
