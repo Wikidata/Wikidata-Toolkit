@@ -67,6 +67,11 @@ public class WmfDumpFileManager {
 	 */
 	static final String DATE_STAMP_PATTERN = "\\d\\d\\d\\d\\d\\d\\d\\d";
 
+	/**
+	 * The name of the directory where downloaded dump files are stored.
+	 */
+	public static final String DOWNLOAD_DIRECTORY_NAME = "dumpfiles";
+
 	final String projectName;
 	final DirectoryManager dumpfileDirectoryManager;
 	final WebResourceFetcher webResourceFetcher;
@@ -93,9 +98,13 @@ public class WmfDumpFileManager {
 			WebResourceFetcher webResourceFetcher) throws IOException {
 		this.projectName = projectName;
 		this.dumpfileDirectoryManager = downloadDirectoryManager
-				.getSubdirectoryManager("dumpfiles").getSubdirectoryManager(
-						projectName);
+				.getSubdirectoryManager(
+						WmfDumpFileManager.DOWNLOAD_DIRECTORY_NAME)
+				.getSubdirectoryManager(projectName);
 		this.webResourceFetcher = webResourceFetcher;
+
+		WmfDumpFileManager.logger.info("Using download directory "
+				+ this.dumpfileDirectoryManager.toString());
 	}
 
 	/**
