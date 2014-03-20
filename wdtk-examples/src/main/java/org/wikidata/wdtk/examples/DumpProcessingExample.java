@@ -59,6 +59,9 @@ public class DumpProcessingExample {
 		// Define where log messages go
 		configureLogging();
 
+		// Print information about this program
+		printDocumentation();
+
 		// Create object to get hold of Wikidata.org dumpfiles
 		WmfDumpFileManager dumpFileManager = createDumpFileManager();
 
@@ -166,6 +169,30 @@ public class DumpProcessingExample {
 
 		consoleAppender.activateOptions();
 		Logger.getRootLogger().addAppender(consoleAppender);
+	}
+
+	/**
+	 * Print some basic documentation about this program.
+	 */
+	private static void printDocumentation() {
+		System.out
+				.println("********************************************************************");
+		System.out.println("*** Wikidata Toolkit: Dump Processing Example");
+		System.out.println("*** ");
+		System.out
+				.println("*** This program will download and process dumps from Wikidata.");
+		System.out
+				.println("*** It will print progress information and some simple statistics.");
+		System.out
+				.println("*** Downloading may take some time initially. After that, files");
+		System.out
+				.println("*** are stored on disk and are used until newer dumps are available.");
+		System.out
+				.println("*** You can delete files manually when no longer needed (see ");
+		System.out
+				.println("*** message below for the directory where files are found).");
+		System.out
+				.println("********************************************************************");
 	}
 
 	/**
