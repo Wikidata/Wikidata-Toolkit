@@ -47,11 +47,13 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
+ * This class provides functions to create objects from
+ * {@link org.wikidata.wdtk.datamodel.interfaces} with certain predefined
+ * parameters.
  * 
- * @author michael, fredo
+ * @author Michael Günther, Fredo Erxleben
  * 
  */
-
 public class TestObjectFactory {
 
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
@@ -118,29 +120,17 @@ public class TestObjectFactory {
 				baseIri, new LinkedList<String>()));
 		return result;
 	}
-	
-	ValueSnak createValueSnakTime(int random, String pId) {
-		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
-				factory.getTimeValue((random * 18) % 25500,
-						(byte) ((random * 15) % 12 + 1),
-						(byte) ((random * 3) % 28 + 1),
-						(byte) ((random * 2) % 24), (byte) ((random * 7) % 61),
-						(byte) ((random * 6) % 61),
-						(byte) ((random * 3) % 25500), (random * 17) % 25500,
-						(random * 43) % 25500, (random * 390) % 25500,
-						"http://www.wikidata.org/entity/Q1985727"));
-	}
 
 	List<? extends Snak> createQualifiers() {
 		List<Snak> result = new ArrayList<Snak>();
-		result.add(createValueSnakTime(14, "P15"));
+		result.add(createValueSnakTimeValue(14, "P15"));
 		return result;
 	}
 
 	List<? extends Reference> createReferences() {
 		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
 		List<Reference> refs = new ArrayList<>();
-		snaks.add(createValueSnakTime(122, "P112"));
+		snaks.add(createValueSnakTimeValue(122, "P112"));
 		refs.add(factory.getReference(snaks));
 		return refs;
 	}
@@ -187,6 +177,13 @@ public class TestObjectFactory {
 						new BigDecimal(3)));
 	}
 
+	ValueSnak createValueSnakTimeValue(int random, String pId) {
+		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
+				factory.getTimeValue(306, (byte) 11, (byte) 3, (byte) 13,
+						(byte) 7, (byte) 6, (byte) 32, 17, 43, 0,
+						"http://www.wikidata.org/entity/Q1985727"));
+	}
+
 	PropertyIdValue createPropertyIdValue(String id) {
 		return factory.getPropertyIdValue(id, baseIri);
 	}
@@ -194,5 +191,5 @@ public class TestObjectFactory {
 	ItemIdValue createItemIdValue(String id) {
 		return factory.getItemIdValue(id, baseIri);
 	}
-	
+
 }

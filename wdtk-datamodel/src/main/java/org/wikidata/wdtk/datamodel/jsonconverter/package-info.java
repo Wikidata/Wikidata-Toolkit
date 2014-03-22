@@ -1,8 +1,7 @@
 /**
+ * Converter for converting objects of the datamodel in an external json format
  * 
- */
-/**
- * @author michael
+ * @author Michael Günther
  *
  */
 package org.wikidata.wdtk.datamodel.jsonconverter;

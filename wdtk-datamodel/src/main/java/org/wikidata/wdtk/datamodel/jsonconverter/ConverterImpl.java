@@ -59,8 +59,12 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class ConverterImpl implements Converter<JSONObject> {
 
-	final String KEY_ENTITY_TYP_ITEM = "item";
-	final String KEY_ENTITY_TYP_PROPERTY = "property";
+	final String NAME_ENTITY_TYPE_ITEM = "item";
+	final String NAME_ENTITY_TYPE_PROPERTY = "property";
+
+	final String NAME_RANK_NORMAL = "normal";
+	final String NAME_RANK_DEPRECATED = "deprecated";
+	final String NAME_RANK_PREFERRED = "preferred";
 
 	final String KEY_ID = "id";
 	final String KEY_TITLE = "title";
@@ -70,9 +74,9 @@ public class ConverterImpl implements Converter<JSONObject> {
 	final String KEY_DESCRIPTIONS = "descriptions";
 	final String KEY_SITE_LINKS = "sitelinks";
 	final String KEY_LABELS = "labels";
-	final String KEY_DATATYP = "datatype";
-	final String KEY_TYP = "type";
-	final String KEY_SNAK_TYP = "snaktype";
+	final String KEY_DATATYPE = "datatype";
+	final String KEY_TYPE = "type";
+	final String KEY_SNAK_TYPE = "snaktype";
 	final String KEY_PROPERTY = "property";
 	final String KEY_VALUE = "value";
 	final String KEY_DATAVALUE = "datavalue";
@@ -87,7 +91,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param document
 	 * @return JSONObject representing aliases of a {@link TermedDocument}
 	 */
-	JSONObject convertAliasesToJson(TermedDocument document){
+	JSONObject convertAliasesToJson(TermedDocument document) {
 		JSONObject result = new JSONObject();
 		for (String key : document.getAliases().keySet()) {
 			JSONArray alias = new JSONArray();
@@ -107,8 +111,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param document
 	 * @return JSONObject representing descriptions of a {@link TermedDocument}
 	 */
-
-	JSONObject convertDescriptionsToJson(TermedDocument document){
+	JSONObject convertDescriptionsToJson(TermedDocument document) {
 		JSONObject result = new JSONObject();
 		for (String key : document.getDescriptions().keySet()) {
 			result.put(key, visit(document.getDescriptions().get(key)));
@@ -123,8 +126,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param document
 	 * @return JSONObject of labels
 	 */
-
-	JSONObject convertLabelsToJson(TermedDocument document){
+	JSONObject convertLabelsToJson(TermedDocument document) {
 		JSONObject result = new JSONObject();
 		for (String key : document.getLabels().keySet()) {
 			result.put(key, visit(document.getLabels().get(key)));
@@ -140,7 +142,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @return JSONObject representation for
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.SiteLink} objects
 	 */
-	JSONObject convertSiteLinksToJson(ItemDocument document){
+	JSONObject convertSiteLinksToJson(ItemDocument document) {
 		JSONObject result = new JSONObject();
 		for (String key : document.getSiteLinks().keySet()) {
 			result.put(key, visit(document.getSiteLinks().get(key)));
@@ -192,15 +194,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertClaimToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.Claim)
-	 */
 	@Override
-	public JSONObject visit(Claim claim){
+	public JSONObject visit(Claim claim) {
 		JSONObject result = new JSONObject();
 		result.put(KEY_MAINSNAK, convertSnakToJson(claim.getMainSnak()));
 		if (!claim.getQualifiers().isEmpty()) {
@@ -210,19 +205,12 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertItemDocumentToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.ItemDocument)
-	 */
 	@Override
-	public JSONObject visit(ItemDocument document){
+	public JSONObject visit(ItemDocument document) {
 		JSONObject result = new JSONObject();
 		JSONObject statementGroups = new JSONObject();
 		result = addTermedDocumentAttributes(document, result);
-		result.put(KEY_TYP, KEY_ENTITY_TYP_ITEM);
+		result.put(KEY_TYPE, NAME_ENTITY_TYPE_ITEM);
 		if (!document.getStatementGroups().isEmpty()) {
 			result.put(KEY_CLAIMS, statementGroups);
 		}
@@ -239,31 +227,17 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertPropertyDocumentToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyDocument)
-	 */
 	@Override
-	public JSONObject visit(PropertyDocument document){
+	public JSONObject visit(PropertyDocument document) {
 		JSONObject result = new JSONObject();
-		result.put(KEY_TYP, KEY_ENTITY_TYP_PROPERTY);
+		result.put(KEY_TYPE, NAME_ENTITY_TYPE_PROPERTY);
 		result = addTermedDocumentAttributes(document, result);
 
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertReferenceToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.Reference)
-	 */
 	@Override
-	public JSONObject visit(Reference ref){
+	public JSONObject visit(Reference ref) {
 		JSONObject result = new JSONObject();
 		JSONObject snaks = new JSONObject();
 		JSONArray snakOrder = new JSONArray();
@@ -291,15 +265,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertStatementToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.Statement)
-	 */
 	@Override
-	public JSONObject visit(Statement statement){
+	public JSONObject visit(Statement statement) {
 		JSONObject result = new JSONObject();
 
 		result.put(KEY_ID, statement.getStatementId());
@@ -310,8 +277,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 					convertQualifiersToJson((List<? extends Snak>) statement
 							.getClaim().getQualifiers()));
 		}
-		// What about the Subject?
-		result.put(KEY_TYP, "statement");
+		result.put(KEY_TYPE, "statement");
 		result.put("rank", convertStatementRankToJson(statement.getRank()));
 		JSONArray references = new JSONArray();
 		if (!statement.getReferences().isEmpty()) {
@@ -331,7 +297,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @return Json representation of a
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.StatementGroup}
 	 */
-	public JSONArray convertStatementGroupToJson(StatementGroup statementGroup){
+	JSONArray convertStatementGroupToJson(StatementGroup statementGroup) {
 		JSONArray statements = new JSONArray();
 		for (Statement statement : statementGroup.getStatements()) {
 			statements.put(visit(statement));
@@ -349,7 +315,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @return JSONObject representing for a specific
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Snak}
 	 */
-	public JSONObject convertSnakToJson(Snak snak){
+	public JSONObject convertSnakToJson(Snak snak) {
 		JSONObject result;
 		if (snak instanceof NoValueSnak) {
 			result = visit((NoValueSnak) snak);
@@ -363,84 +329,52 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertValueSnakToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.ValueSnak)
-	 */
 	@Override
-	public JSONObject visit(ValueSnak snak){
+	public JSONObject visit(ValueSnak snak) {
 		JSONObject result = new JSONObject();
-		result.put(KEY_SNAK_TYP, "value");
+		result.put(KEY_SNAK_TYPE, "value");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
 
-		// maybe there are more possibilities
 		if (snak.getValue() instanceof EntityIdValue) {
-			// TODO put in datatype result.put(KEY_DATATYP, ????);
 			result.put(KEY_DATAVALUE,
 					convertEntityIdValueToJson((EntityIdValue) snak.getValue()));
 		} else if (snak.getValue() instanceof TimeValue) {
-			// TODO put in datatype result.put(KEY_DATATYP, ????);
 			result.put(KEY_DATAVALUE, visit((TimeValue) snak.getValue()));
 		} else if (snak.getValue() instanceof GlobeCoordinatesValue) {
-			// TODO put in datatype result.put(KEY_DATATYP, ????);
 			result.put(KEY_DATAVALUE,
 					visit((GlobeCoordinatesValue) snak.getValue()));
 		} else if (snak.getValue() instanceof QuantityValue) {
-			// TODO put in datatype result.put(KEY_DATATYP, ????);
 			result.put(KEY_DATAVALUE, visit((QuantityValue) snak.getValue()));
 		} else if (snak.getValue() instanceof StringValue) {
-			// TODO put in datatype result.put(KEY_DATATYP, ????);
 			result.put(KEY_DATAVALUE, visit((StringValue) snak.getValue()));
 		} else {
 			throw new IllegalArgumentException("class of the value "
 					+ snak.getValue().getClass() + " is unknown");
 		}
 
+		// TODO put datatype in result (datatype of the property)
+
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertNoValueSnakToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.NoValueSnak)
-	 */
 	@Override
-	public JSONObject visit(NoValueSnak snak){
+	public JSONObject visit(NoValueSnak snak) {
 		JSONObject result = new JSONObject();
-		result.put(KEY_SNAK_TYP, "novalue");
+		result.put(KEY_SNAK_TYPE, "novalue");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertSomeValueSnakToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak)
-	 */
 	@Override
-	public JSONObject visit(SomeValueSnak snak){
+	public JSONObject visit(SomeValueSnak snak) {
 		JSONObject result = new JSONObject();
-		result.put(KEY_SNAK_TYP, "somevalue");
+		result.put(KEY_SNAK_TYPE, "somevalue");
 		result.put(KEY_PROPERTY, snak.getPropertyId().getId());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertQuantityValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.QuantityValue)
-	 */
 	@Override
-	public JSONObject visit(QuantityValue value){
+	public JSONObject visit(QuantityValue value) {
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
@@ -454,20 +388,13 @@ public class ConverterImpl implements Converter<JSONObject> {
 		valueResult.put("lowerBound",
 				DatatypeConverters.formatBigDecimal(value.getLowerBound()));
 
-		result.put(KEY_TYP, "quantity");
+		result.put(KEY_TYPE, "quantity");
 
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertTimeValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.TimeValue)
-	 */
 	@Override
-	public JSONObject visit(TimeValue value){
+	public JSONObject visit(TimeValue value) {
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
@@ -480,31 +407,27 @@ public class ConverterImpl implements Converter<JSONObject> {
 		valueResult.put("precision", value.getPrecision());
 		valueResult.put("calendarmodel", value.getPreferredCalendarModel());
 
-		result.put(KEY_TYP, "time");
+		result.put(KEY_TYPE, "time");
 
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertGlobeCoordinatesValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue)
-	 */
 	@Override
-	public JSONObject visit(GlobeCoordinatesValue value){
+	public JSONObject visit(GlobeCoordinatesValue value) {
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 		result.put(KEY_VALUE, valueResult);
 
-		valueResult.put("latitude", value.getLatitude());
-		valueResult.put("longitude", value.getLongitude());
-		valueResult.put("precision", value.getPrecision()
+		valueResult
+				.put("latitude",
+						((double) value.getLatitude() / GlobeCoordinatesValue.PREC_DEGREE));
+		valueResult.put("longitude", (double) value.getLongitude()
+				/ GlobeCoordinatesValue.PREC_DEGREE);
+		valueResult.put("precision", (double) value.getPrecision()
 				/ GlobeCoordinatesValue.PREC_DEGREE);
 		valueResult.put("globe", value.getGlobe());
 
-		result.put(KEY_TYP, "globecoordinate");
+		result.put(KEY_TYPE, "globecoordinate");
 
 		return result;
 	}
@@ -517,12 +440,12 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @return json-representation of an
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.EntityIdValue}
 	 */
-	public JSONObject convertEntityIdValueToJson(EntityIdValue value){
+	JSONObject convertEntityIdValueToJson(EntityIdValue value) {
 
 		JSONObject result = new JSONObject();
 		JSONObject valueResult = new JSONObject();
 
-		result.put(KEY_TYP, "wikibase-entityid");
+		result.put(KEY_TYPE, "wikibase-entityid");
 		switch (value.getEntityType()) {
 		case EntityIdValue.ET_ITEM:
 			valueResult = visit((ItemIdValue) value);
@@ -540,90 +463,48 @@ public class ConverterImpl implements Converter<JSONObject> {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertStringValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.StringValue)
-	 */
 	@Override
-	public JSONObject visit(StringValue value){
+	public JSONObject visit(StringValue value) {
 		JSONObject result = new JSONObject();
 		result.put(KEY_VALUE, value.getString());
-		result.put(KEY_TYP, "string");
+		result.put(KEY_TYPE, "string");
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertDatatypeIdValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue)
-	 */
 	@Override
-	public JSONObject visit(DatatypeIdValue value){
+	public JSONObject visit(DatatypeIdValue value) {
 		// TODO implement
 		return new JSONObject(); // empty
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertItemIdValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.ItemIdValue)
-	 */
 	@Override
-	public JSONObject visit(ItemIdValue value){
+	public JSONObject visit(ItemIdValue value) {
 		JSONObject result = new JSONObject();
-		result.put("entity-type", KEY_ENTITY_TYP_ITEM);
+		result.put("entity-type", NAME_ENTITY_TYPE_ITEM);
 		result.put("numeric-id", value.getId());
 
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertMonolingualTextValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue)
-	 */
 	@Override
-	public JSONObject visit(MonolingualTextValue value){
+	public JSONObject visit(MonolingualTextValue value) {
 		JSONObject result = new JSONObject();
 		result.put("language", value.getLanguageCode());
 		result.put(KEY_VALUE, value.getText());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.wikidata.wdtk.datamodel.jsonconverter.Converter#
-	 * convertPropertyIdValueToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue)
-	 */
 	@Override
-	public JSONObject visit(PropertyIdValue value){
+	public JSONObject visit(PropertyIdValue value) {
 		JSONObject result = new JSONObject();
-		result.put("entity-type", KEY_ENTITY_TYP_PROPERTY);
+		result.put("entity-type", NAME_ENTITY_TYPE_PROPERTY);
 		result.put("numeric-id", value.getId());
 
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.wikidata.wdtk.datamodel.jsonconverter.Converter#convertSiteLinkToJson
-	 * (org.wikidata.wdtk.datamodel.interfaces.SiteLink)
-	 */
 	@Override
-	public JSONObject visit(SiteLink link){
+	public JSONObject visit(SiteLink link) {
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
 		result.put(KEY_TITLE, link.getArticleTitle());
@@ -641,7 +522,17 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 *         string notation for the json-format
 	 * 
 	 */
-	public String convertStatementRankToJson(StatementRank rank) {
-		return rank.toString().toLowerCase();
+	String convertStatementRankToJson(StatementRank rank) {
+		switch (rank) {
+		case PREFERRED:
+			return NAME_RANK_PREFERRED;
+		case NORMAL:
+			return NAME_RANK_NORMAL;
+		case DEPRECATED:
+			return NAME_RANK_DEPRECATED;
+		default:
+			throw new IllegalArgumentException("Unknown rank "
+					+ rank.toString());
+		}
 	}
 }

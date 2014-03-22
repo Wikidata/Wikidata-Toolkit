@@ -1,15 +1,33 @@
 package org.wikidata.wdtk.datamodel.jsonconverter;
 
+/*
+ * #%L
+ * Wikidata Toolkit Data Model
+ * %%
+ * Copyright (C) 2014 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class DatatypeConvertersTest {
 
@@ -18,10 +36,10 @@ public class DatatypeConvertersTest {
 
 	@Test
 	public void testFormatTimeISO8601() {
-		TimeValue time = (TimeValue) testObjectFactory.createValueSnakTime(3,
-				"P17").getValue();
+		TimeValue time = (TimeValue) testObjectFactory
+				.createValueSnakTimeValue(3, "P17").getValue();
 		assertEquals(DatatypeConverters.formatTimeISO8601(time),
-				"+00000000054-10-10T06:21:18Z");
+				"+00000000306-11-03T13:07:06Z");
 
 	}
 

@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.jsonconverter;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,13 +48,41 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class ConverterImplTest {
+
+	final static String ITEM_DOCUMENT_REPRES = "ItemDocument.json";
+	final static String STATEMENT_REPRES = "Statement.json";
+	final static String STATEMENT_GROUP_REPRES = "StatementGroup.json";
+	final static String CLAIM_REPRES = "Claim.json";
+	final static String REFERENCE_REPRES = "Reference.json";
+
+	final static String EMPTY_PROPERTY_DOCUMENT_REPRES = "{\"id\":\"P42\",\"title\":\"P42\",\"type\":\"property\"}";
+	final static String ITEM_ID_VALUE_REPRES = "{\"entity-type\":\"item\",\"numeric-id\":\"Q200\"}";
+	final static String PROPERTY_ID_VALUE_REPRES = "{\"entity-type\":\"property\",\"numeric-id\":\"P200\"}";
+	final static String ENTITY_ID_VALUE_REPRES = "{\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"Q200\"},\"type\":\"wikibase-entityid\"}";
+	final static String ENTITY_ID_VALUE_REPRES_2 = "{\"value\":{\"entity-type\":\"property\",\"numeric-id\":\"P200\"},\"type\":\"wikibase-entityid\"}";
+	final static String VALUE_SNAK_ITEM_ID_VALUE_REPRES = "{\"property\":\"P132\",\"snaktype\":\"value\",\"datavalue\":{\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"Q233\"},\"type\":\"wikibase-entityid\"}}";
+	final static String VALUE_SNAK_STRING_VALUE_REPRES = "{\"property\":\"P132\",\"snaktype\":\"value\",\"datavalue\":{\"value\":\"TestString\",\"type\":\"string\"}}";
+	final static String VALUE_SNAK_GLOBE_COORDINATES_VALUE_REPRES = "{\"property\":\"P132\",\"snaktype\":\"value\",\"datavalue\":{\"value\":{\"precision\":0.016666667,\"longitude\":2.1314E-5,\"latitude\":2.13124E-4,\"globe\":\"http://www.wikidata.org/entity/Q2\"},\"type\":\"globecoordinate\"}}";
+	final static String VALUE_SNAK_QUANTITY_VALUE_REPRES = "{\"property\":\"P231\",\"snaktype\":\"value\",\"datavalue\":{\"value\":{\"amount\":\"+3\",\"unit\":\"1\",\"lowerBound\":\"+3\",\"upperBound\":\"+3\"},\"type\":\"quantity\"}}";
+	final static String SOME_VALUE_SNAK_REPRES = "{\"property\":\"P1231\",\"snaktype\":\"somevalue\"}";
+	final static String NO_VALUE_SNAK_REPRES = "{\"property\":\"P10\",\"snaktype\":\"novalue\"}";
+	final static String MONOLINGUAL_TEXT_VALUE_REPRES = "{\"value\":\"some text in a language lc\",\"language\":\"lc\"}";
+	final static String SITE_LINK_REPRES = "{\"site\":\"siteKey\",\"badges\":[],\"title\":\"title\"}";
 
 	final DataObjectFactory factory = new DataObjectFactoryImpl();;
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final ConverterImpl converter = new ConverterImpl();
 
+	/**
+	 * Compares obj1 with obj2. If the content is equal (same keys, same values)
+	 * nothing happens. Otherwise the function will cause a Fail.
+	 * 
+	 * @param obj1
+	 * @param obj2
+	 */
 	public void compareJSONObjects(JSONObject obj1, JSONObject obj2) {
 		for (Object key : obj1.keySet()) {
 			if (obj1.get((String) key) instanceof JSONObject) {
@@ -65,12 +93,19 @@ public class ConverterImplTest {
 				JSONArray arrayObj2 = obj2.getJSONArray((String) key);
 				compareJSONArrays(arrayObj1, arrayObj2);
 			} else {
-				assertTrue(comparableNumber(obj1.get((String) key)).equals(
-						comparableNumber(obj2.get((String) key))));
+				assertTrue(comparableObject(obj1.get((String) key)).equals(
+						comparableObject(obj2.get((String) key))));
 			}
 		}
 	}
 
+	/**
+	 * Compares array1 with array2. If the content is equal (same values in the
+	 * same order) nothing happens. Otherwise the function will cause a Fail.
+	 * 
+	 * @param array1
+	 * @param array2
+	 */
 	public void compareJSONArrays(JSONArray array1, JSONArray array2) {
 		for (int index = 0; index < array1.length(); index++) {
 			if (array1.get(index) instanceof JSONObject) {
@@ -81,17 +116,57 @@ public class ConverterImplTest {
 				JSONArray arrayElem2 = array2.getJSONArray(index);
 				compareJSONArrays(arrayElem1, arrayElem2);
 			} else {
-				assertTrue(comparableNumber(array1.get(index)).equals(comparableNumber(array2.get(index))));
+				assertTrue(comparableObject(array1.get(index)).equals(
+						comparableObject(array2.get(index))));
 			}
 		}
 	}
 
-	public Object comparableNumber(Object val) {
+	/**
+	 * Sometimes values in the key-value-pairs of a json file are not clearly
+	 * assignable to a data type. This function convert these values in a
+	 * comparable type.
+	 * 
+	 * @param val
+	 * 
+	 * @return comparable object
+	 */
+	public Object comparableObject(Object val) {
 		if (val instanceof Integer) {
 			return ((Integer) val).longValue();
 		}
 
 		return val;
+	}
+
+	/**
+	 * Loads the resource file with fileName and returns the content as a
+	 * JSONObject.
+	 * 
+	 * @param fileName
+	 * @return JSONObject of fileName
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public JSONObject getResourceFromFile(String fileName)
+			throws JSONException, IOException {
+		return new JSONObject(MockStringContentFactory.getStringFromUrl(this
+				.getClass().getResource("/" + fileName)));
+	}
+
+	/**
+	 * Loads the resource file with fileName and returns the content as a
+	 * JSONArray.
+	 * 
+	 * @param fileName
+	 * @return JSONArray of fileName
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public JSONArray getArrayResourceFromFile(String fileName)
+			throws JSONException, IOException {
+		return new JSONArray(MockStringContentFactory.getStringFromUrl(this
+				.getClass().getResource("/" + fileName)));
 	}
 
 	@Test
@@ -104,8 +179,7 @@ public class ConverterImplTest {
 	}
 
 	@Test
-	public void testVisitItemDocument() throws JSONException {
-
+	public void testVisitItemDocument() throws JSONException, IOException {
 		List<Statement> statements = new ArrayList<Statement>();
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
 		Claim claim = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
@@ -120,10 +194,10 @@ public class ConverterImplTest {
 		statements = new ArrayList<Statement>();
 
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakTime(17, "P1040"),
+				objectFactory.createValueSnakTimeValue(17, "P1040"),
 				objectFactory.createQualifiers());
 		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakTime(3, "P1040"),
+				objectFactory.createValueSnakStringValue("P1040"),
 				Collections.<Snak> emptyList());
 
 		statements
@@ -134,13 +208,14 @@ public class ConverterImplTest {
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
 		statementGroups.add(factory.getStatementGroup(statements));
-		compareJSONObjects(converter.visit(factory
-				.getItemDocument(factory.getItemIdValue("Q10", "base/"),
-						objectFactory.createLabels(),
-						objectFactory.createDescriptions(),
-						objectFactory.createAliases(), statementGroups,
-						objectFactory.createSiteLinks())), new JSONObject(
-				TestRessources.ITEM_DOCUMENT_REPRES));
+
+		compareJSONObjects(converter.visit(factory.getItemDocument(
+				factory.getItemIdValue("Q10", "base/"),
+				objectFactory.createLabels(),
+				objectFactory.createDescriptions(),
+				objectFactory.createAliases(), statementGroups,
+				objectFactory.createSiteLinks())),
+				getResourceFromFile(ITEM_DOCUMENT_REPRES));
 	}
 
 	@Test
@@ -151,42 +226,48 @@ public class ConverterImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				factory.getDatatypeIdValue("string"));
-		compareJSONObjects(converter.visit(document),
-				new JSONObject(TestRessources.EMPTY_PROPERTY_DOCUMENT_REPRES));
-		compareJSONObjects(
-				converter.visit(objectFactory
-						.createEmptyPropertyDocument()),
-				new JSONObject(
-						"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
+		compareJSONObjects(converter.visit(document), new JSONObject(
+				EMPTY_PROPERTY_DOCUMENT_REPRES));
+		compareJSONObjects(converter.visit(objectFactory
+				.createEmptyPropertyDocument()), new JSONObject(
+				"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
 
 	}
 
 	@Test
-	public void testVisitValueSnak() {
-		// ItemIdValue:
+	public void testVisitValueSnakItemIdValue() {
 		ValueSnak snak = objectFactory.createValueSnakItemIdValue("P132",
 				"Q233");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-				TestRessources.VALUE_SNAK_ITEM_ID_VALUE_REPRES));
-		// String
-		snak = objectFactory.createValueSnakStringValue("P132");
+				VALUE_SNAK_ITEM_ID_VALUE_REPRES));
+	}
+
+	@Test
+	public void testVisitValueSnakStringValue() {
+		ValueSnak snak = objectFactory.createValueSnakStringValue("P132");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-				TestRessources.VALUE_SNAK_STRING_VALUE_REPRES));
-		// Globe-Coordinates
-		snak = objectFactory.createValueSnakCoordinatesValue("P132");
-		//compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-		//		TestRessources.VALUE_SNAK_GLOBE_COORDINATES_VALUE_REPRES));
-		// Quantity
-		snak = objectFactory.createValueSnakQuantityValue("P231");
+				VALUE_SNAK_STRING_VALUE_REPRES));
+	}
+
+	@Test
+	public void testVisitValueSnakGlobeCoordinatesValue() {
+		ValueSnak snak = objectFactory.createValueSnakCoordinatesValue("P132");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-				TestRessources.VALUE_SNAK_QUANTITY_VALUE_REPRES));
+				VALUE_SNAK_GLOBE_COORDINATES_VALUE_REPRES));
+	}
+
+	@Test
+	public void testVisitValueSnakQuantityValue() {
+		ValueSnak snak = objectFactory.createValueSnakQuantityValue("P231");
+		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
+				VALUE_SNAK_QUANTITY_VALUE_REPRES));
 	}
 
 	@Test
 	public void testVisitConvertSomeValueSnak() {
 		SomeValueSnak snak = objectFactory.createSomeValueSnak("P1231");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-				TestRessources.SOME_VALUE_SNAK_REPRES));
+				SOME_VALUE_SNAK_REPRES));
 
 	}
 
@@ -197,38 +278,40 @@ public class ConverterImplTest {
 		compareJSONObjects(converter.convertSnakToJson(snak),
 				converter.visit(snak));
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
-				TestRessources.NO_VALUE_SNAK_REPRES));
+				NO_VALUE_SNAK_REPRES));
 	}
 
 	@Test
-	public void testVisitClaim() {
-		ValueSnak snak = objectFactory.createValueSnakTime(42, "P129");
+	public void testVisitClaim() throws JSONException, IOException {
+		ValueSnak snak = objectFactory.createValueSnakTimeValue(42, "P129");
 		Claim claim = objectFactory.createClaim("Q31", snak);
-		assertEquals(converter.visit(claim).toString(),
-				TestRessources.CLAIM_REPRES);
+		compareJSONObjects(converter.visit(claim),
+				getResourceFromFile(CLAIM_REPRES));
 
 	}
 
 	@Test
-	public void testVisitReference() {
+	public void testVisitReference() throws JSONException, IOException {
 		Reference ref = objectFactory.createReference();
+		System.out.println(converter.visit(ref));
 		compareJSONObjects(converter.visit(ref),
-				new JSONObject(TestRessources.REFERENCE_REPRES));
+				getResourceFromFile(REFERENCE_REPRES));
 	}
 
 	@Test
-	public void testVisitStatement() {
+	public void testVisitStatement() throws JSONException, IOException {
 		Statement statement = objectFactory.createStatement("Q100", "P131");
 		compareJSONObjects(converter.visit(statement),
-				new JSONObject(TestRessources.STATEMENT_REPRES));
+				getResourceFromFile(STATEMENT_REPRES));
 
 	}
 
 	@Test
-	public void testVisitStatementGroup() {
+	public void testConvertStatementGroupToJson() throws JSONException,
+			IOException {
 		StatementGroup group = objectFactory.createStatementGroup();
 		compareJSONArrays(converter.convertStatementGroupToJson(group),
-				new JSONArray(TestRessources.STATEMENT_GROUP_REPRES));
+				getArrayResourceFromFile(STATEMENT_GROUP_REPRES));
 
 	}
 
@@ -236,28 +319,28 @@ public class ConverterImplTest {
 	public void testVisitPropertyIdValue() {
 		PropertyIdValue value = objectFactory.createPropertyIdValue("P200");
 		assertEquals(converter.visit(value).toString(),
-				TestRessources.PROPERTY_ID_VALUE_REPRES);
-		assertEquals(converter.convertEntityIdValueToJson((EntityIdValue)value).toString(),
-				TestRessources.ENTITY_ID_VALUE_REPRES_2);
+				PROPERTY_ID_VALUE_REPRES);
+		assertEquals(converter
+				.convertEntityIdValueToJson((EntityIdValue) value).toString(),
+				ENTITY_ID_VALUE_REPRES_2);
 
 	}
 
 	@Test
 	public void testVisitItemIdValue() {
 		ItemIdValue value = objectFactory.createItemIdValue("Q200");
-		assertEquals(converter.visit(value).toString(),
-				TestRessources.ITEM_ID_VALUE_REPRES);
+		assertEquals(converter.visit(value).toString(), ITEM_ID_VALUE_REPRES);
 
 		assertEquals(converter.convertEntityIdValueToJson(value).toString(),
-				TestRessources.ENTITY_ID_VALUE_REPRES);
+				ENTITY_ID_VALUE_REPRES);
 	}
 
 	@Test
 	public void testVisitMonolingualTextValue() {
 		MonolingualTextValue value = factory.getMonolingualTextValue(
 				"some text in a language lc", "lc");
-		compareJSONObjects(converter.visit(value),
-				new JSONObject(TestRessources.MONOLINGUAL_TEXT_VALUE_REPRES));
+		compareJSONObjects(converter.visit(value), new JSONObject(
+				MONOLINGUAL_TEXT_VALUE_REPRES));
 
 	}
 
@@ -265,8 +348,8 @@ public class ConverterImplTest {
 	public void testVisitSiteLinks() {
 		SiteLink siteLink = factory.getSiteLink("title", "siteKey", "baseIri",
 				Collections.<String> emptyList());
-		compareJSONObjects(converter.visit(siteLink),
-				new JSONObject(TestRessources.SITE_LINK_REPRES));
+		compareJSONObjects(converter.visit(siteLink), new JSONObject(
+				SITE_LINK_REPRES));
 
 	}
 

@@ -40,8 +40,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
- * Interface for Converters providing methods to convert Object from
- * {@link org.wikidata.wdtk.datamodel.interfaces} in an Output-format}
+ * Interface for Converters providing methods to convert Object created with
+ * {@link org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory} in an
+ * Output-format
  * 
  * @author Michael Günther
  * 
