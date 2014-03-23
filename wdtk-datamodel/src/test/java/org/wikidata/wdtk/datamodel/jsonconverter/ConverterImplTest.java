@@ -194,7 +194,7 @@ public class ConverterImplTest {
 		statements = new ArrayList<Statement>();
 
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakTimeValue(17, "P1040"),
+				objectFactory.createValueSnakTimeValue("P1040"),
 				objectFactory.createQualifiers());
 		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
 				objectFactory.createValueSnakStringValue("P1040"),
@@ -251,7 +251,7 @@ public class ConverterImplTest {
 
 	@Test
 	public void testVisitValueSnakGlobeCoordinatesValue() {
-		ValueSnak snak = objectFactory.createValueSnakCoordinatesValue("P132");
+		ValueSnak snak = objectFactory.createValueSnakGlobeCoordinatesValue("P132");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
 				VALUE_SNAK_GLOBE_COORDINATES_VALUE_REPRES));
 	}
@@ -283,7 +283,7 @@ public class ConverterImplTest {
 
 	@Test
 	public void testVisitClaim() throws JSONException, IOException {
-		ValueSnak snak = objectFactory.createValueSnakTimeValue(42, "P129");
+		ValueSnak snak = objectFactory.createValueSnakTimeValue("P129");
 		Claim claim = objectFactory.createClaim("Q31", snak);
 		compareJSONObjects(converter.visit(claim),
 				getResourceFromFile(CLAIM_REPRES));

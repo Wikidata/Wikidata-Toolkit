@@ -37,7 +37,7 @@ public class DatatypeConvertersTest {
 	@Test
 	public void testFormatTimeISO8601() {
 		TimeValue time = (TimeValue) testObjectFactory
-				.createValueSnakTimeValue(3, "P17").getValue();
+				.createValueSnakTimeValue("P17").getValue();
 		assertEquals(DatatypeConverters.formatTimeISO8601(time),
 				"+00000000306-11-03T13:07:06Z");
 
