@@ -181,13 +181,17 @@ public class JsonConverter {
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 
 		if (jsonObject.has(KEY_LINK)) {
-			// FIXME This code has problems if linkArray is not null. Probably
-			// only the inner two lines are needed and the rest should be
-			// deleted.
 			JSONArray linkArray = jsonObject.optJSONArray(KEY_LINK);
 			if (linkArray == null) {
 				JSONObject jsonLinks = jsonObject.getJSONObject(KEY_LINK);
 				siteLinks = this.getSiteLinks(jsonLinks);
+			} else {
+				// cope with dumps that have an array for representing the links
+				logger.debug("Links were a JSONArray @" + itemIdString);
+				if (linkArray.length() > 0) {
+					logger.error("Link array was not empty @" + itemIdString + " "
+							+ linkArray.toString());
+				}
 			}
 		}
 
@@ -275,9 +279,9 @@ public class JsonConverter {
 				JSONArray jsonRef = jsonReferences.getJSONArray(i);
 				result.add(this.getReference(jsonRef));
 			} catch (JSONException e) {
-				JsonConverter.logger
-						.error("Problem when parsing reference. Error was: "
-								+ e.toString());
+				JsonConverter.logger.error("Problem when parsing references: "
+						+ jsonReferences.toString() + "\nError was: "
+						+ e.toString());
 			}
 		}
 
@@ -300,8 +304,16 @@ public class JsonConverter {
 
 		for (int j = 0; j < jsonArray.length(); j++) {
 			JSONArray jsonValueSnak = jsonArray.getJSONArray(j);
-			ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
-			valueSnaks.add(currentValueSnak);
+
+			// FIXME add support for somevalue-snaks too
+			if (jsonValueSnak.getString(0).equals("value")) {
+				ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
+				valueSnaks.add(currentValueSnak);
+			} else {
+				JsonConverter.logger
+						.debug("Unsupported snak type in reference: "
+								+ jsonValueSnak);
+			}
 		}
 
 		return factory.getReference(valueSnaks);
