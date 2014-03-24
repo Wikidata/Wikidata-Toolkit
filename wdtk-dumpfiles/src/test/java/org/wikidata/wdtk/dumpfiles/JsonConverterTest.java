@@ -52,6 +52,13 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
+import com.google.common.io.Resources;
+
 /**
  * The test setup uses several files containing JSON. These files are read by
  * the org.json-parser into sample objects to be converted.
@@ -217,6 +224,52 @@ public class JsonConverterTest {
 		getItemDocumentFromResource("Universe.json", "Q1");
 		// FIXME this does not test anything (copied from earlier test file)
 	}
+	@Test
+  public void testJacksonDemo() throws Exception {
+    DemoItem readValue = new ObjectMapper().readValue(
+        Resources.getResource("testSamples/BasicItem.json"), DemoItem.class);
+
+    // XXX List equals
+    assertEquals(ImmutableList.of(new DemoEntity("item"), new DemoEntity(Integer.valueOf(1)))
+        .toString(), readValue.entities.toString());
+  }
+
+  // XXX do not ignore
+  @JsonIgnoreProperties({ "label", "description", "aliases", "links", "claims" })
+  private static class DemoItem {
+    private final ImmutableList<DemoEntity> entities;
+
+    @JsonCreator
+    private DemoItem(@JsonProperty("entity") List<DemoEntity> entities) {
+      this.entities = ImmutableList.copyOf(entities);
+    }
+  }
+
+  static class DemoEntity {
+
+    private final Object key;
+
+    @JsonCreator
+    private DemoEntity(Object key) {
+      this.key = key;
+    }
+
+    @Override
+    public int hashCode() {
+      return key.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return key.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+      return key.toString() + " " + key.getClass().getCanonicalName();
+    }
+
+  }
 
 	/**
 	 * Applies the JSON converter to the JSON stored in the given resource to
