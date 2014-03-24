@@ -2,7 +2,6 @@
  * Converter for converting objects of the datamodel in an external json format
  * 
  * @author Michael Günther
- *
  */
 package org.wikidata.wdtk.datamodel.jsonconverter;
 

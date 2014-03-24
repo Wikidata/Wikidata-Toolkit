@@ -315,7 +315,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @return JSONObject representing for a specific
 	 *         {@link org.wikidata.wdtk.datamodel.interfaces.Snak}
 	 */
-	public JSONObject convertSnakToJson(Snak snak) {
+	JSONObject convertSnakToJson(Snak snak) {
 		JSONObject result;
 		if (snak instanceof NoValueSnak) {
 			result = visit((NoValueSnak) snak);
