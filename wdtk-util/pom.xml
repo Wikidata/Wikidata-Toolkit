@@ -12,7 +12,7 @@
 	<artifactId>wdtk-util</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Wikidata Toolkit Utilities</name>
+	<name>Wikidata Toolkit utilities</name>
 	<description>General-purpose utilities used by WDTK</description>
 	
 	<dependencies>

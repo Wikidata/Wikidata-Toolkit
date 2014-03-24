@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -67,11 +66,6 @@ public class WmfDumpFileManager {
 	 */
 	static final String DATE_STAMP_PATTERN = "\\d\\d\\d\\d\\d\\d\\d\\d";
 
-	/**
-	 * The name of the directory where downloaded dump files are stored.
-	 */
-	public static final String DOWNLOAD_DIRECTORY_NAME = "dumpfiles";
-
 	final String projectName;
 	final DirectoryManager dumpfileDirectoryManager;
 	final WebResourceFetcher webResourceFetcher;
@@ -98,13 +92,9 @@ public class WmfDumpFileManager {
 			WebResourceFetcher webResourceFetcher) throws IOException {
 		this.projectName = projectName;
 		this.dumpfileDirectoryManager = downloadDirectoryManager
-				.getSubdirectoryManager(
-						WmfDumpFileManager.DOWNLOAD_DIRECTORY_NAME)
-				.getSubdirectoryManager(projectName);
+				.getSubdirectoryManager("dumpfiles").getSubdirectoryManager(
+						projectName);
 		this.webResourceFetcher = webResourceFetcher;
-
-		WmfDumpFileManager.logger.info("Using download directory "
-				+ this.dumpfileDirectoryManager.toString());
 	}
 
 	/**
@@ -120,15 +110,8 @@ public class WmfDumpFileManager {
 
 		for (MwDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
 			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
-				logger.info("Processing dump file " + dumpFile.toString());
 				dumpFileProcessor
 						.processDumpFileContents(inputStream, dumpFile);
-			} catch (FileAlreadyExistsException e) {
-				logger.error("Dump file "
-						+ dumpFile.toString()
-						+ " could not be processed since file "
-						+ e.getFile()
-						+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.");
 			} catch (IOException e) {
 				logger.error("Dump file " + dumpFile.toString()
 						+ " could not be processed: " + e.toString());

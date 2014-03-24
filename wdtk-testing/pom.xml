@@ -12,7 +12,7 @@
 	<artifactId>wdtk-testing</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Wikidata Toolkit Testing Utilities</name>
+	<name>Wikidata Toolkit utilities for testing</name>
 	<description>Helper code that is only used in unit tests</description>
 
 	<dependencies>

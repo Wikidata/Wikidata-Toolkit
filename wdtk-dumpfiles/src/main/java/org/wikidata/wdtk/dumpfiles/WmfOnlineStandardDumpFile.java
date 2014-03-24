@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
@@ -42,9 +40,6 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  * 
  */
 public class WmfOnlineStandardDumpFile extends WmfDumpFile {
-
-	static final Logger logger = LoggerFactory
-			.getLogger(WmfOnlineStandardDumpFile.class);
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
@@ -83,27 +78,9 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
-
-		prepareDumpFile();
-
-		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
-				this.projectName, this.dateStamp);
-		DirectoryManager thisDumpDirectoryManager = this.dumpfileDirectoryManager
-				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
-						this.dumpContentType, this.dateStamp));
-
-		return thisDumpDirectoryManager.getInputStreamForBz2File(fileName);
-	}
-
-	@Override
-	public void prepareDumpFile() throws IOException {
 		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
-
-		logger.info("Downloading "
-				+ this.dumpContentType.toString().toLowerCase() + " dump file "
-				+ fileName + " from " + urlString + " ...");
 
 		if (this.getMaximalRevisionId() == -1) {
 			throw new IOException(
@@ -123,9 +100,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
 						.getMaximalRevisionId().toString());
 
-		logger.info("... Completed download of "
-				+ this.dumpContentType.toString().toLowerCase() + " dump file "
-				+ fileName + " from " + urlString);
+		return thisDumpDirectoryManager.getInputStreamForBz2File(fileName);
 	}
 
 	@Override
@@ -166,6 +141,35 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 		}
 		return maxRevId;
 	}
+
+	// Old code below that extracts data from the site stats table.
+	// It is unclear how this data is related to the dumps (which are generated
+	// at different times)
+	// protected Long fetchMaximalRevisionId() {
+	// Long maxRevId = -1L;
+	// String urlString = getBaseUrl() + this.projectName + "-" + dateStamp
+	// + "-site_stats.sql.gz";
+	// try (BufferedReader in = this.webResourceFetcher
+	// .getBufferedReaderForGzipUrl(urlString)) {
+	// String inputLine;
+	// while (maxRevId < 0 && (inputLine = in.readLine()) != null) {
+	// if (inputLine.startsWith("INSERT INTO `site_stats` VALUES (")) {
+	// String[] values = inputLine.split(",", 4);
+	// if (values.length == 4) {
+	// try {
+	// maxRevId = new Long(values[2]);
+	// } catch (NumberFormatException e) {
+	// // could not parse number; just continue and
+	// // probably return -1
+	// }
+	// }
+	// }
+	// }
+	// } catch (IOException e) {
+	// // file not found or not readable; just fall through to return -1
+	// }
+	// return maxRevId;
+	// }
 
 	@Override
 	protected boolean fetchIsDone() {

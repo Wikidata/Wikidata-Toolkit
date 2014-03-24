@@ -103,11 +103,6 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	public void prepareDumpFile() throws IOException {
-		// nothing to do
-	}
-
-	@Override
 	protected Long fetchMaximalRevisionId() {
 		String inputLine;
 		try (InputStream in = this.localDumpfileDirectoryManager
