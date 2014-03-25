@@ -19,6 +19,7 @@
 		<module>wdtk-util</module>
 		<module>wdtk-testing</module>
 		<module>wdtk-examples</module>
+		<module>wdtk-distribution/library</module>
 	</modules>
 
 	<licenses>
