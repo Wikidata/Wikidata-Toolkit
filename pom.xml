@@ -15,11 +15,11 @@
 		<module>wdtk-datamodel</module>
 		<module>wdtk-dumpfiles</module>
 		<module>wdtk-storage</module>
-		<module>wdtk-wikibaseapi</module>
+		<!-- <module>wdtk-wikibaseapi</module> -->
 		<module>wdtk-util</module>
 		<module>wdtk-testing</module>
 		<module>wdtk-examples</module>
-		<module>wdtk-distribution/library</module>
+		<module>wdtk-distribution</module>
 	</modules>
 
 	<licenses>
@@ -61,8 +61,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>  
-			<version>1.9.5</version> 
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -105,8 +105,8 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<!-- This plugin's configuration is used to store Eclipse
-					m2e settings only. It has no influence on the Maven build. -->
+					<!-- This plugin's configuration is used to store Eclipse m2e settings 
+						only. It has no influence on the Maven build. -->
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
@@ -139,7 +139,8 @@
 				<artifactId>license-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- Used to set JRE version; will be used by IDEs like Eclipse as the target JRE (default is 1.5) -->
+				<!-- Used to set JRE version; will be used by IDEs like Eclipse as the 
+					target JRE (default is 1.5) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
@@ -161,7 +162,7 @@
 				<version>2.6</version>
 				<configuration>
 					<format>xml</format>
-<!-- 					<format>html</format> -->
+					<!-- <format>html</format> -->
 					<maxmem>256m</maxmem>
 					<!-- aggregated reports for multi-module projects -->
 					<aggregate>true</aggregate>
@@ -169,5 +170,27 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

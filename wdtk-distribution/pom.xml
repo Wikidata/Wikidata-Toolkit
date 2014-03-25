@@ -7,18 +7,17 @@
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
 		<version>0.1.0</version>
-		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>wdtk-library</artifactId>
+	<artifactId>wdtk-distribution</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>Wikidata Toolkit Library</name>
-	<description>Module to create the Wikidata Toolkit Library</description>
+	<name>Wikidata Toolkit Distribution</name>
+	<description>Module to create the Wikidata Toolkit Distribution</description>
 
 	<build>
 
-		<finalName>wdtk-${project.version}</finalName>
+		<finalName>wdtk-distribution-${project.version}</finalName>
 
 		<plugins>
 
@@ -30,49 +29,25 @@
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>org.wikidata.wdtk</Bundle-SymbolicName>
-						<Bundle-Name>wdtk</Bundle-Name>
+						<Bundle-Name>wdtk-distribution</Bundle-Name>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Description>WDTK library</Bundle-Description>
+						<Bundle-Description>Wikidata Toolkit Distribution</Bundle-Description>
 						<Bundle-Vendor>Wikidata</Bundle-Vendor>
 						<Bundle-DocURL>https://github.com/Wikidata/Wikidata-Toolkit</Bundle-DocURL>
 						<Bundle-ClassPath>${bundle.classpath}</Bundle-ClassPath>
 						<Main-Class>${mainclass}</Main-Class>
 						<Include-Resource>
 							{maven-resources}, {maven-dependencies},
-							@../../wdtk-datamodel/target/wdtk-datamodel-${project.version}.jar,
-							@../../wdtk-dumpfiles/target/wdtk-dumpfiles-${project.version}.jar,
-							@../../wdtk-storage/target/wdtk-storage-${project.version}.jar,
-							@../../wdtk-util/target/wdtk-util-${project.version}.jar
+							@../wdtk-datamodel/target/wdtk-datamodel-${project.version}.jar,
+							@../wdtk-dumpfiles/target/wdtk-dumpfiles-${project.version}.jar,
+							@../wdtk-storage/target/wdtk-storage-${project.version}.jar,
+							@../wdtk-util/target/wdtk-util-${project.version}.jar
 						</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>sign</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>
 
