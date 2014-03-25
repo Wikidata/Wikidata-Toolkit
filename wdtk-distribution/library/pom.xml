@@ -35,7 +35,6 @@
 						<Bundle-Vendor>Wikidata</Bundle-Vendor>
 						<Bundle-DocURL>https://github.com/Wikidata/Wikidata-Toolkit</Bundle-DocURL>
 						<Bundle-ClassPath>${bundle.classpath}</Bundle-ClassPath>
-						<Import-Package>javax.accessibility, javax.swing, javax.swing.border, org.osgi.framework, org.protege.editor.core.ui.workspace, *</Import-Package>
 						<Main-Class>${mainclass}</Main-Class>
 						<Include-Resource>
 							{maven-resources}, {maven-dependencies},
