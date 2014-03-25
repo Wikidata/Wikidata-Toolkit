@@ -10,6 +10,7 @@
 
 	<name>Wikidata Toolkit</name>
 	<description>A Java-based library for working with Wikidata and Wikibase</description>
+	<url>https://github.com/Wikidata/Wikidata-Toolkit</url>
 
 	<modules>
 		<module>wdtk-datamodel</module>
@@ -30,6 +31,7 @@
 	</licenses>
 
 	<inceptionYear>2014</inceptionYear>
+
 	<organization>
 		<name>Wikidata Toolkit Developers</name>
 	</organization>
@@ -170,6 +172,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>sign</id>
@@ -217,4 +220,11 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<scm>
+		<url>https://github.com/Wikidata/Wikidata-Toolkit.git</url>
+		<connection>scm:git:git://github.com/Wikidata/Wikidata-Toolkit.git</connection>
+		<developerConnection>scm:git:git://github.com/Wikidata/Wikidata-Toolkit.git</developerConnection>
+	</scm>
+
 </project>
