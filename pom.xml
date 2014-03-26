@@ -10,7 +10,7 @@
 
 	<name>Wikidata Toolkit</name>
 	<description>A Java-based library for working with Wikidata and Wikibase</description>
-	<url>https://github.com/Wikidata/Wikidata-Toolkit</url>
+	<url>https://www.mediawiki.org/wiki/Wikidata_Toolkit</url>
 
 	<modules>
 		<module>wdtk-datamodel</module>
