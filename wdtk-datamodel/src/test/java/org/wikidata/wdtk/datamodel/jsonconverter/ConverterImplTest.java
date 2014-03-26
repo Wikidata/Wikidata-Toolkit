@@ -229,7 +229,7 @@ public class ConverterImplTest {
 		compareJSONObjects(converter.visit(document), new JSONObject(
 				EMPTY_PROPERTY_DOCUMENT_REPRES));
 		compareJSONObjects(converter.visit(objectFactory
-				.createEmptyPropertyDocument()), new JSONObject(
+				.createEmptyPropertyDocument("test")), new JSONObject(
 				"{\"id\":\"P1\",\"title\":\"P1\",\"type\":\"property\"}"));
 
 	}

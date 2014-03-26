@@ -60,7 +60,8 @@ public class TestObjectFactory {
 	private static String baseIri = "test";
 
 	/**
-	 * Creates an empty {@link PropertyDocument}
+	 * Creates an empty {@link PropertyDocument} with the propertyID "P1" and
+	 * the datatypeID <i>DT_GLOBE_COORDINATES</i>.
 	 * 
 	 * <p>
 	 * ID = PropDoc
@@ -68,18 +69,20 @@ public class TestObjectFactory {
 	 * 
 	 * @return empty {@link PropertyDocument}
 	 */
-	public PropertyDocument createEmptyPropertyDocument() {
+	public PropertyDocument createEmptyPropertyDocument(String baseIri) {
 
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
 				baseIri);
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		List<MonolingualTextValue> aliases = new LinkedList<>();
 		DatatypeIdValue datatypeId = this.factory
-				.getDatatypeIdValue("globe-coordinate");
-		PropertyDocument document = this.factory.getPropertyDocument(
-				propertyId, labels, descriptions, aliases, datatypeId);
-		return document;
+				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
+
+		PropertyDocument emptyPropertyDocument = this.factory
+				.getPropertyDocument(propertyId,
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						datatypeId);
+		return emptyPropertyDocument;
 	}
 
 	/**
@@ -120,8 +123,11 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>Statement1: {@link #createStatement(String, String) Stat} (qId = Q10, pId= P122)</li>
-	 * <li>Statement2: Statement with Rank = "normal", Mainsnak = {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId = "id112"</li>
+	 * <li>Statement1: {@link #createStatement(String, String) Stat} (qId = Q10,
+	 * pId= P122)</li>
+	 * <li>Statement2: Statement with Rank = "normal", Mainsnak =
+	 * {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId =
+	 * "id112"</li>
 	 * </ul>
 	 * 
 	 * @return {@link StatementGroup}
@@ -277,7 +283,8 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String) ValSnakTime}</li>
+	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String)
+	 * ValSnakTime}</li>
 	 * </ul>
 	 * 
 	 * @return List of {@link Reference}
@@ -301,8 +308,10 @@ public class TestObjectFactory {
 	 * <b>DefualtValues</b>
 	 * </p>
 	 * <ul>
-	 * <li>Snak1: {@link #createValueSnakGlobeCoordinatesValue(String) ValSnakGlCo (pId = P232)}</li>
-	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId = 211)}</li>
+	 * <li>Snak1: {@link #createValueSnakGlobeCoordinatesValue(String)
+	 * ValSnakGlCo (pId = P232)}</li>
+	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId
+	 * = 211)}</li>
 	 * </ul>
 	 * 
 	 * @return {@link Reference}
@@ -385,7 +394,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.StringValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.StringValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakStr
@@ -438,7 +448,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakQuant
@@ -466,7 +477,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakTime

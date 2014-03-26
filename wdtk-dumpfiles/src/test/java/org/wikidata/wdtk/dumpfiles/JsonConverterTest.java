@@ -23,7 +23,6 @@ package org.wikidata.wdtk.dumpfiles;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,7 +36,6 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -50,7 +48,8 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.datamodel.jsonconverter.TestObjectFactory;
+import org.wikidata.wdtk.dumpfiles.TestHelpers.JsonFetcher;
 
 /**
  * The test setup uses several files containing JSON. These files are read by
@@ -61,8 +60,9 @@ import org.wikidata.wdtk.testing.MockStringContentFactory;
  */
 public class JsonConverterTest {
 
-	private static final String SAMPLE_FILES_BASE_PATH = "/testSamples/";
+	private static final JsonFetcher jsonFetcher = new JsonFetcher();
 	private static final String BASE_IRI = "test";
+	private static final TestObjectFactory testObjectFactory = new TestObjectFactory();
 
 	private JsonConverter unitUnderTest;
 	private DataObjectFactory factory;
@@ -79,20 +79,13 @@ public class JsonConverterTest {
 		PropertyDocument propertyDocument = getPropertyDocumentFromResource(
 				"EmptyProperty.json", "P1");
 
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				BASE_IRI);
-		DatatypeIdValue datatypeId = this.factory
-				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
-		PropertyDocument emptyPropertyDocument = this.factory
-				.getPropertyDocument(propertyId,
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						datatypeId);
+		PropertyDocument emptyPropertyDocument 
+		= testObjectFactory.createEmptyPropertyDocument(BASE_IRI);
 
 		assertEquals(propertyDocument, emptyPropertyDocument);
 	}
 
+	// TODO rework
 	@Test
 	public void testEmptyItem() throws JSONException, IOException {
 		ItemDocument itemDocument = getItemDocumentFromResource(
@@ -109,6 +102,7 @@ public class JsonConverterTest {
 		assertEquals(itemDocument, emptyItemDocument);
 	}
 
+	// TODO rework or scrap
 	@Test
 	public void testBasicItem() throws JSONException, IOException {
 		ItemDocument basicItemDocument = this.createBasicItemDocument();
@@ -130,6 +124,7 @@ public class JsonConverterTest {
 		assertEquals(itemDocument, basicItemDocument);
 	}
 
+	// TODO scrap?
 	private ItemDocument createBasicItemDocument() {
 
 		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
@@ -175,6 +170,7 @@ public class JsonConverterTest {
 		return document;
 	}
 
+	// TODO rework or scrap
 	@Test
 	public void testRealItems() throws JSONException, IOException {
 		getItemDocumentFromResource("Chicago.json", "Q1");
@@ -185,6 +181,7 @@ public class JsonConverterTest {
 		// FIXME this does not test anything (copied from earlier test file)
 	}
 
+	// TODO rework
 	@Test
 	public void testClaims() throws JSONException, IOException {
 		getItemDocumentFromResource("GlobalCoordinates.json", "Q1");
@@ -193,6 +190,7 @@ public class JsonConverterTest {
 		// FIXME this does not test anything (copied from earlier test file)
 	}
 
+	// TODO test different notations in the appropriate tests
 	@Test
 	public void testDifferentNotations() throws JSONException, IOException {
 		getItemDocumentFromResource("DifferentNotations.json", "Q1");
@@ -201,23 +199,27 @@ public class JsonConverterTest {
 		// FIXME this does not test anything (copied from earlier test file)
 	}
 
+	// TODO improve
 	@Test(expected = JSONException.class)
 	public void testPropertyDocumentLacksDatatype() throws JSONException,
 			IOException {
 		getPropertyDocumentFromResource("NoEntityDocument.json", "P1");
 	}
 
+	// TODO improve
 	@Test(expected = JSONException.class)
 	public void testItemDocumentWithErrors() throws JSONException, IOException {
 		getItemDocumentFromResource("MiscErrors.json", "Q1");
 	}
-
+	
+	// TODO remove, merge corner case with the other tests
 	@Test
 	public void testUniverse() throws JSONException, IOException {
 		getItemDocumentFromResource("Universe.json", "Q1");
 		// FIXME this does not test anything (copied from earlier test file)
 	}
 
+	// TODO move?
 	/**
 	 * Applies the JSON converter to the JSON stored in the given resource to
 	 * return an ItemDocument.
@@ -232,10 +234,11 @@ public class JsonConverterTest {
 	 */
 	private ItemDocument getItemDocumentFromResource(String fileName,
 			String itemId) throws IOException, JSONException {
-		JSONObject jsonObject = getJsonObjectForResource(fileName);
+		JSONObject jsonObject = jsonFetcher.getJsonObjectForResource(fileName);
 		return this.unitUnderTest.convertToItemDocument(jsonObject, itemId);
 	}
 
+	// TODO move?
 	/**
 	 * Applies the JSON converter to the JSON stored in the given resource to
 	 * return a PropertyDocument.
@@ -251,27 +254,29 @@ public class JsonConverterTest {
 	 */
 	private PropertyDocument getPropertyDocumentFromResource(String fileName,
 			String propertyId) throws IOException, JSONException {
-		JSONObject jsonObject = getJsonObjectForResource(fileName);
+		JSONObject jsonObject = jsonFetcher.getJsonObjectForResource(fileName);
 		return this.unitUnderTest.convertToPropertyDocument(jsonObject,
 				propertyId);
 	}
 
-	/**
-	 * Returns a JSON object for the JSON stored in the given resource.
-	 * 
-	 * @param resourceName
-	 *            a file name without any path information
-	 * @return the JSONObject
-	 * @throws IOException
-	 * @throws JSONException
-	 */
-	private JSONObject getJsonObjectForResource(String resourceName)
-			throws IOException, JSONException {
-		URL resourceUrl = this.getClass().getResource(
-				JsonConverterTest.SAMPLE_FILES_BASE_PATH + resourceName);
-		String jsonString = MockStringContentFactory
-				.getStringFromUrl(resourceUrl);
-		return new JSONObject(jsonString);
-	}
+
+	//TODO:
+	//* empty item
+	//* empty property
+	//* Both
+	//	* label notations
+	//		* empty labels (via empty item)
+	//		* labels as strings
+	//		* labels as objects
+	//	* description notations
+	//	* aliases
+	//	* (entity)
+	//* Items only
+	//	* links
+	//	* claims
+	//* Properties only
+	//	* datatype
+
+	
 
 }
