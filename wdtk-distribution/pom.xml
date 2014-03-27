@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>wdtk-distribution</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit Distribution</name>
 	<description>Module to create the Wikidata Toolkit Distribution</description>
@@ -22,30 +22,50 @@
 		<plugins>
 
 			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.4</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>org.wikidata.wdtk</Bundle-SymbolicName>
-						<Bundle-Name>wdtk-distribution</Bundle-Name>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Description>Wikidata Toolkit Distribution</Bundle-Description>
-						<Bundle-Vendor>Wikidata</Bundle-Vendor>
-						<Bundle-DocURL>https://github.com/Wikidata/Wikidata-Toolkit</Bundle-DocURL>
-						<Bundle-ClassPath>${bundle.classpath}</Bundle-ClassPath>
-						<Main-Class>${mainclass}</Main-Class>
-						<Include-Resource>
-							{maven-resources}, {maven-dependencies},
-							@../wdtk-datamodel/target/wdtk-datamodel-${project.version}.jar,
-							@../wdtk-dumpfiles/target/wdtk-dumpfiles-${project.version}.jar,
-							@../wdtk-storage/target/wdtk-storage-${project.version}.jar,
-							@../wdtk-util/target/wdtk-util-${project.version}.jar
-						</Include-Resource>
-					</instructions>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>create-release</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptors>
+								<descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>create-source-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>create-javadoc-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>${basedir}/src/main/assembly/javadoc.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 
