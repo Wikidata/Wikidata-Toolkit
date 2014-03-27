@@ -43,6 +43,13 @@
 			</includes>
 			<outputDirectory>.</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${basedir}</directory>
+			<includes>
+				<include>LICENSE.txt</include>
+			</includes>
+			<outputDirectory></outputDirectory>
+		</fileSet>
 
 	</fileSets>
 
