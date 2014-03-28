@@ -79,9 +79,14 @@ public class JsonConverterTest {
 	}
 
 	@Test
-	public void testLabels(){
-		// TODO complete
-		fail("Empty test");
+	public void testLabels() throws JSONException, IOException{
+		// NOTE: empty labels are tested in the empty documents
+		// NOTE: only one label notation is known so far
+		// which is {"key":"value", … } 
+		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
+				"Item_Labels.json", "Q1", this.uut);
+		
+		assertEquals(itemDocument.getLabels(), testObjectFactory.createTestLabels());
 	}
 	
 	@Test
@@ -142,6 +147,7 @@ public class JsonConverterTest {
 	// * Items only
 	// 		* links
 	// 		* claims
+	//			* different ranks
 	// 			* different snak types
 	// * Properties only
 	// 		* datatype

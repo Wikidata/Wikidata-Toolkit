@@ -184,10 +184,10 @@ public class TestObjectFactory {
 	 * 
 	 * @return list of {@link MonolingualTextValue}
 	 */
-	public List<MonolingualTextValue> createLabels() {
-		List<MonolingualTextValue> result = new LinkedList<>();
-		result.add(factory.getMonolingualTextValue("foo", "lc"));
-		result.add(factory.getMonolingualTextValue("bar", "lc2"));
+	public Map<String, MonolingualTextValue> createTestLabels() {
+		
+		Map<String,MonolingualTextValue> result = new HashMap<>();
+		result.put("en", factory.getMonolingualTextValue("testLabel", "en"));
 		return result;
 	}
 
