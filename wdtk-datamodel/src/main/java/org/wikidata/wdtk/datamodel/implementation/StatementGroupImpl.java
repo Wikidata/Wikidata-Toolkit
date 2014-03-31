@@ -76,12 +76,12 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public PropertyIdValue getProperty() {
-		return statements.get(0).getClaim().getMainSnak().getPropertyId();
+		return this.statements.get(0).getClaim().getMainSnak().getPropertyId();
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return statements.get(0).getClaim().getSubject();
+		return this.statements.get(0).getClaim().getSubject();
 	}
 
 	/*
@@ -91,7 +91,7 @@ public class StatementGroupImpl implements StatementGroup {
 	 */
 	@Override
 	public int hashCode() {
-		return statements.hashCode();
+		return this.statements.hashCode();
 	}
 
 	/*

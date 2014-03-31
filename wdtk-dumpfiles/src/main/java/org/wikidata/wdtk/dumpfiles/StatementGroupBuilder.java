@@ -20,14 +20,13 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -35,32 +34,29 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 /**
- * A helper class to construct StatementGroup-objects according to the WDTK data
- * model.
+ * A helper class to construct StatementGroups from lists of ungrouped
+ * statements.
  * 
  * @author Fredo Erxleben
  * 
  */
 class StatementGroupBuilder {
 
-	private DataObjectFactory factory;
-
-	StatementGroupBuilder() {
-		this(new DataObjectFactoryImpl());
-	}
+	private final DataObjectFactory factory;
 
 	/**
-	 * Creates a new StatementGroupBuilder - instance.
+	 * Creates a new StatementGroupBuilder.
 	 * 
 	 * @param factory
-	 *            the DataObjectFactory-instance to be used for generating
-	 *            StatementGroup-Instances.
+	 *            the DataObjectFactory to be used for generating
+	 *            StatementGroups.
 	 */
 	StatementGroupBuilder(DataObjectFactory factory) {
 		this.factory = factory;
 	}
 
 	/**
+	 * Creates a list of StatementGroups from a list of ungrouped Statements.
 	 * 
 	 * @param statements
 	 *            a list of Statements concerning the same subject. The list
@@ -68,10 +64,10 @@ class StatementGroupBuilder {
 	 * @return
 	 */
 	List<StatementGroup> buildFromStatementList(List<Statement> statements) {
-		// NOTE: the list of statements will be decomposed.
+		// NOTE: the list of statements will be modified.
 		// Is this acceptable or do we need to work with a copy?
 
-		List<StatementGroup> result = new LinkedList<>();
+		List<StatementGroup> result = new ArrayList<>();
 
 		Map<Snak, List<Statement>> groups = new HashMap<>();
 
@@ -90,7 +86,7 @@ class StatementGroupBuilder {
 				value.add(currentStatement);
 			} else {
 				// create a new group
-				List<Statement> value = new LinkedList<>();
+				List<Statement> value = new ArrayList<>();
 				value.add(currentStatement);
 				groups.put(currentSnak, value);
 			}
@@ -106,7 +102,8 @@ class StatementGroupBuilder {
 
 		for (Snak s : groups.keySet()) {
 			List<Statement> value = groups.get(s);
-			Collections.sort(value, new RankComparator());
+			Collections.sort(value,
+					Collections.reverseOrder(new RankComparator()));
 			StatementGroup toAdd = this.factory.getStatementGroup(value);
 			result.add(toAdd);
 		}
@@ -115,14 +112,22 @@ class StatementGroupBuilder {
 	}
 
 	/**
-	 * The comparator used for sorting the statement lists by rank. Thereby the
-	 * rank PREFERRED is to appear first, then NORMAL, then DEPRECATED.
+	 * A comparator for StatementRank objects. The natural order of ranks
+	 * (greatest to least) is PREFERRED, NORMAL, DEPRECATED.
 	 * 
 	 * @author Fredo Erxleben
 	 * 
 	 */
 	private class RankComparator implements Comparator<Statement> {
 
+		/**
+		 * Maps a StatementRank to an integer as follows: PREFERRED to 1, NORMAL
+		 * to 0, and DEPRECATED to -1.
+		 * 
+		 * @param rank
+		 *            the rank to convert
+		 * @return integer value for the rank
+		 */
 		private Integer rankToInteger(StatementRank rank) {
 			switch (rank) {
 			case PREFERRED:
@@ -136,18 +141,9 @@ class StatementGroupBuilder {
 
 		@Override
 		public int compare(Statement arg0, Statement arg1) {
-
-			// simple principle: map each rank to a number between 1 and -1
-			// and compare these to each other.
-			// the result is the result as requested by the Comparator-Interface
-
-			Integer value0 = this.rankToInteger(arg0.getRank());
-			Integer value1 = this.rankToInteger(arg1.getRank());
-
-			// return the negative result to achieve a sorting
-			// from highest to lowest rank
-			return -value0.compareTo(value1);
-
+			Integer value0 = rankToInteger(arg0.getRank());
+			Integer value1 = rankToInteger(arg1.getRank());
+			return value0.compareTo(value1);
 		}
 
 	}

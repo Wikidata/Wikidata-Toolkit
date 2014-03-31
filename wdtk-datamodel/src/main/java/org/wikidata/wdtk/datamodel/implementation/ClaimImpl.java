@@ -28,6 +28,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 /**
  * Implementation of {@link Claim}.
@@ -39,7 +40,7 @@ public class ClaimImpl implements Claim {
 
 	final EntityIdValue subject;
 	final Snak mainSnak;
-	final List<? extends Snak> qualifiers;
+	final List<SnakGroup> qualifiers;
 
 	/**
 	 * Constructor.
@@ -49,13 +50,13 @@ public class ClaimImpl implements Claim {
 	 * @param mainSnak
 	 *            the main Snak of the Claim
 	 * @param qualifiers
-	 *            the qualifiers of the Claim
+	 *            the qualifiers of the Claim, groupd in SnakGroups
 	 */
-	ClaimImpl(EntityIdValue subject, Snak mainSnak,
-			List<? extends Snak> qualifiers) {
+	ClaimImpl(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers) {
 		Validate.notNull(subject, "Statement subjects cannot be null");
 		Validate.notNull(mainSnak, "Statement main Snaks cannot be null");
-		Validate.notNull(qualifiers, "Statement qualifiers cannot be null");
+		Validate.notNull(qualifiers,
+				"Statement qualifier groups cannot be null");
 
 		this.subject = subject;
 		this.mainSnak = mainSnak;
@@ -73,7 +74,7 @@ public class ClaimImpl implements Claim {
 	}
 
 	@Override
-	public List<? extends Snak> getQualifiers() {
+	public List<SnakGroup> getQualifiers() {
 		return Collections.unmodifiableList(qualifiers);
 	}
 

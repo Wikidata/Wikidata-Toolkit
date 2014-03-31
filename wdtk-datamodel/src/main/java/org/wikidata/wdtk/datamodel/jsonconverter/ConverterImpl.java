@@ -20,11 +20,11 @@ package org.wikidata.wdtk.datamodel.jsonconverter;
  * #L%
  */
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -39,6 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -70,6 +71,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 	final String KEY_TITLE = "title";
 	final String KEY_CLAIMS = "claims";
 	final String KEY_SNAKS = "snaks";
+	final String KEY_SNAK_ORDER = "snak-order";
 	final String KEY_ALIASES = "aliases";
 	final String KEY_DESCRIPTIONS = "descriptions";
 	final String KEY_SITE_LINKS = "sitelinks";
@@ -156,16 +158,16 @@ public class ConverterImpl implements Converter<JSONObject> {
 	 * @param qualifiers
 	 * @return JSONObject of qualifiers
 	 */
-	JSONObject convertQualifiersToJson(List<? extends Snak> qualifiers) {
+	JSONObject convertQualifiersToJson(List<SnakGroup> qualifiers) {
 		JSONObject result = new JSONObject();
-		Set<String> qualifierGroups = new HashSet<String>();
-		for (Snak qualifier : qualifiers) {
-			final String pId = qualifier.getPropertyId().getEntityType();
-			if (!qualifierGroups.contains(pId)) {
-				result.put(pId, new JSONArray());
+
+		for (SnakGroup snakGroup : qualifiers) {
+			String pId = snakGroup.getProperty().getEntityType();
+			JSONArray jsonArray = new JSONArray();
+			result.put(pId, jsonArray);
+			for (Snak snak : snakGroup.getSnaks()) {
+				jsonArray.put(convertSnakToJson(snak));
 			}
-			final JSONArray group = (JSONArray) result.get(pId);
-			group.put(convertSnakToJson(qualifier));
 		}
 		return result;
 	}
@@ -238,30 +240,23 @@ public class ConverterImpl implements Converter<JSONObject> {
 
 	@Override
 	public JSONObject visit(Reference ref) {
-		JSONObject result = new JSONObject();
+
 		JSONObject snaks = new JSONObject();
 		JSONArray snakOrder = new JSONArray();
-		Set<String> snakGroups = new HashSet<String>();
 
-		// no ref.hash value...
-
-		result.put(KEY_SNAKS, snaks);
-		result.put("snak-order", snakOrder);
-
-		for (ValueSnak snak : ref.getSnaks()) {
-			final String pId = snak.getPropertyId().getId();
-			if (!snakGroups.contains(pId)) {
-				snaks.put(pId, new JSONArray());
-				snakGroups.add(pId);
-			}
-			final JSONArray group = (JSONArray) snaks.get(pId);
-			group.put(visit(snak));
-		}
-
-		for (String pId : snakGroups) {
+		for (SnakGroup snakGroup : ref.getSnakGroups()) {
+			final String pId = snakGroup.getProperty().getId();
+			final JSONArray group = new JSONArray();
+			snaks.put(pId, group);
 			snakOrder.put(pId);
+			for (Snak snak : snakGroup.getSnaks()) {
+				group.put(convertSnakToJson(snak));
+			}
 		}
 
+		JSONObject result = new JSONObject();
+		result.put(KEY_SNAKS, snaks);
+		result.put(KEY_SNAK_ORDER, snakOrder);
 		return result;
 	}
 
@@ -273,9 +268,8 @@ public class ConverterImpl implements Converter<JSONObject> {
 		result.put(KEY_MAINSNAK, convertSnakToJson(statement.getClaim()
 				.getMainSnak()));
 		if (statement.getClaim().getQualifiers().isEmpty() == false) {
-			result.put(KEY_QUALIFIERS,
-					convertQualifiersToJson((List<? extends Snak>) statement
-							.getClaim().getQualifiers()));
+			result.put(KEY_QUALIFIERS, convertQualifiersToJson(statement
+					.getClaim().getQualifiers()));
 		}
 		result.put(KEY_TYPE, "statement");
 		result.put("rank", convertStatementRankToJson(statement.getRank()));
