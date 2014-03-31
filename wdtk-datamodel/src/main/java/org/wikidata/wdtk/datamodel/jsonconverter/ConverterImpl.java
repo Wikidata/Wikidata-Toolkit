@@ -162,7 +162,7 @@ public class ConverterImpl implements Converter<JSONObject> {
 		JSONObject result = new JSONObject();
 
 		for (SnakGroup snakGroup : qualifiers) {
-			String pId = snakGroup.getProperty().getEntityType();
+			String pId = snakGroup.getProperty().getId();
 			JSONArray jsonArray = new JSONArray();
 			result.put(pId, jsonArray);
 			for (Snak snak : snakGroup.getSnaks()) {
