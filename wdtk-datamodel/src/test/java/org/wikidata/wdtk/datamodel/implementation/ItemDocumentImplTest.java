@@ -41,7 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -61,7 +61,7 @@ public class ItemDocumentImplTest {
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
@@ -180,7 +180,7 @@ public class ItemDocumentImplTest {
 		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
 		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 		Statement s2 = new StatementImpl(c2,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");

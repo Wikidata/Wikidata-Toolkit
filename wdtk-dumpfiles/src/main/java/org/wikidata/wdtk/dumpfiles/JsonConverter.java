@@ -49,6 +49,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -189,8 +190,8 @@ public class JsonConverter {
 				// cope with dumps that have an array for representing the links
 				logger.debug("Links were a JSONArray @" + itemIdString);
 				if (linkArray.length() > 0) {
-					logger.error("Link array was not empty @" + itemIdString + " "
-							+ linkArray.toString());
+					logger.error("Link array was not empty @" + itemIdString
+							+ " " + linkArray.toString());
 				}
 			}
 		}
@@ -277,7 +278,7 @@ public class JsonConverter {
 		for (int i = 0; i < jsonReferences.length(); i++) {
 			try {
 				JSONArray jsonRef = jsonReferences.getJSONArray(i);
-				result.add(this.getReference(jsonRef));
+				result.add(factory.getReference(this.getSnakGroups(jsonRef)));
 			} catch (JSONException e) {
 				JsonConverter.logger.error("Problem when parsing references: "
 						+ jsonReferences.toString() + "\nError was: "
@@ -289,34 +290,40 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Creates a Reference from the given JSON array, as it occurs in the JSON
-	 * array of references.
+	 * Creates a list of SnakGroups from the given JSON array that encodes a
+	 * list of snaks. The snaks will be grouped by property, with the order of
+	 * groups corresponding to the first occurrence of a snak of the group's
+	 * property in the input list.
 	 * 
 	 * @param jsonArray
-	 *            a JSON array describing a single reference, containing value
-	 *            snaks
-	 * @return the corresponding Reference
+	 *            a JSON array describing a list of snaks
+	 * @return the corresponding list of SnakGroups
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private Reference getReference(JSONArray jsonArray) throws JSONException {
-		List<ValueSnak> valueSnaks = new ArrayList<>(jsonArray.length());
+	private List<SnakGroup> getSnakGroups(JSONArray jsonArray)
+			throws JSONException {
+		Map<PropertyIdValue, List<Snak>> groupedSnaks = new HashMap<PropertyIdValue, List<Snak>>();
 
 		for (int j = 0; j < jsonArray.length(); j++) {
 			JSONArray jsonValueSnak = jsonArray.getJSONArray(j);
-
-			// FIXME add support for somevalue-snaks too
-			if (jsonValueSnak.getString(0).equals("value")) {
-				ValueSnak currentValueSnak = this.getValueSnak(jsonValueSnak);
-				valueSnaks.add(currentValueSnak);
+			Snak currentSnak = this.getSnak(jsonValueSnak);
+			List<Snak> snakList;
+			if (groupedSnaks.containsKey(currentSnak.getPropertyId())) {
+				snakList = groupedSnaks.get(currentSnak.getPropertyId());
 			} else {
-				JsonConverter.logger
-						.debug("Unsupported snak type in reference: "
-								+ jsonValueSnak);
+				snakList = new ArrayList<Snak>();
+				groupedSnaks.put(currentSnak.getPropertyId(), snakList);
 			}
+			snakList.add(currentSnak);
 		}
 
-		return factory.getReference(valueSnaks);
+		List<SnakGroup> snakGroups = new ArrayList<SnakGroup>(
+				groupedSnaks.size());
+		for (List<Snak> snaks : groupedSnaks.values()) {
+			snakGroups.add(factory.getSnakGroup(snaks));
+		}
+		return snakGroups;
 	}
 
 	/**
@@ -459,7 +466,7 @@ public class JsonConverter {
 	 * Creates a Claim object for the given entity id from the given JSON object
 	 * (this is usually the JSON for encoding a whole Statement). A Claim
 	 * consists of the EntityIdValue of the subject (given explicitly), the
-	 * claim's main snak (given by a key "m" i JSON) and the claim's qualifiers
+	 * claim's main snak (given by a key "m" in JSON) and the claim's qualifiers
 	 * (given by a key "q" in JSON).
 	 * 
 	 * @param jsonObject
@@ -479,10 +486,9 @@ public class JsonConverter {
 
 		// get the qualifiers
 		JSONArray jsonQualifiers = jsonObject.getJSONArray("q");
-		List<Snak> qualifiers = this.getQualifiers(jsonQualifiers);
+		List<SnakGroup> qualifierGroups = this.getSnakGroups(jsonQualifiers);
 
-		// build it together
-		return this.factory.getClaim(entityIdValue, mainSnak, qualifiers);
+		return this.factory.getClaim(entityIdValue, mainSnak, qualifierGroups);
 	}
 
 	/**
@@ -510,27 +516,6 @@ public class JsonConverter {
 			throw new IllegalArgumentException("Unknown statement rank "
 					+ intRank);
 		}
-	}
-
-	/**
-	 * Creates a list of ValueSnak objects from a JSON array as it is used to
-	 * encode qualifiers.
-	 * 
-	 * @param jsonQualifiers
-	 *            a JSON array containing several Snaks
-	 * @return the corresponding list of Snaks
-	 * @throws JSONException
-	 *             if the given JSON did not have the expected form
-	 */
-	private List<Snak> getQualifiers(JSONArray jsonQualifiers)
-			throws JSONException {
-		List<Snak> result = new ArrayList<Snak>(jsonQualifiers.length());
-		for (int i = 0; i < jsonQualifiers.length(); i++) {
-			JSONArray currentSnak = jsonQualifiers.getJSONArray(i);
-			result.add(this.getSnak(currentSnak));
-		}
-
-		return result;
 	}
 
 	/**

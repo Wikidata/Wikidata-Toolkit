@@ -44,16 +44,17 @@ public interface Claim {
 	 * Main Snak of the statement. This Snak refers directly to the subject,
 	 * e.g., the {@ValueSnak} "Population: 3000000".
 	 * 
-	 * @return
+	 * @return the main snak
 	 */
 	Snak getMainSnak();
 
 	/**
-	 * Auxiliary Snaks, also known as qualifiers, that provide additional
-	 * context information for this claim. For example, "as of: 2014" might be a
-	 * temporal context given for a claim that provides a populatio number.
+	 * Groups of auxiliary Snaks, also known as qualifiers, that provide
+	 * additional context information for this claim. For example, "as of: 2014"
+	 * might be a temporal context given for a claim that provides a population
+	 * number. The snaks are grouped by the property that they use.
 	 * 
-	 * @return
+	 * @return list of snak groups
 	 */
-	List<? extends Snak> getQualifiers();
+	List<SnakGroup> getQualifiers();
 }

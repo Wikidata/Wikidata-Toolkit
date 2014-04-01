@@ -40,6 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -56,7 +57,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class TestObjectFactory {
 
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 	private static String baseIri = "test";
 
 	/**
@@ -120,8 +121,11 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>Statement1: {@link #createStatement(String, String) Stat} (qId = Q10, pId= P122)</li>
-	 * <li>Statement2: Statement with Rank = "normal", Mainsnak = {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId = "id112"</li>
+	 * <li>Statement1: {@link #createStatement(String, String) Stat} (qId = Q10,
+	 * pId= P122)</li>
+	 * <li>Statement2: Statement with Rank = "normal", Mainsnak =
+	 * {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId =
+	 * "id112"</li>
 	 * </ul>
 	 * 
 	 * @return {@link StatementGroup}
@@ -260,10 +264,9 @@ public class TestObjectFactory {
 	 * 
 	 * @return List of {@link Snak}
 	 */
-	public List<? extends Snak> createQualifiers() {
-		List<Snak> result = new ArrayList<Snak>();
-		result.add(createValueSnakTimeValue("P15"));
-		return result;
+	public List<SnakGroup> createQualifiers() {
+		return Collections.singletonList(factory.getSnakGroup(Collections
+				.singletonList(createValueSnakTimeValue("P15"))));
 	}
 
 	/**
@@ -277,17 +280,18 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String) ValSnakTime}</li>
+	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String)
+	 * ValSnakTime}</li>
 	 * </ul>
 	 * 
 	 * @return List of {@link Reference}
 	 */
 	public List<? extends Reference> createReferences() {
-		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
-		List<Reference> refs = new ArrayList<>();
-		snaks.add(createValueSnakTimeValue("P112"));
-		refs.add(factory.getReference(snaks));
-		return refs;
+		List<SnakGroup> snaks = Collections.singletonList(factory
+				.getSnakGroup(Collections
+						.singletonList(createValueSnakTimeValue("P112"))));
+
+		return Collections.singletonList(factory.getReference(snaks));
 	}
 
 	/**
@@ -301,19 +305,23 @@ public class TestObjectFactory {
 	 * <b>DefualtValues</b>
 	 * </p>
 	 * <ul>
-	 * <li>Snak1: {@link #createValueSnakGlobeCoordinatesValue(String) ValSnakGlCo (pId = P232)}</li>
-	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId = 211)}</li>
+	 * <li>Snak1: {@link #createValueSnakGlobeCoordinatesValue(String)
+	 * ValSnakGlCo (pId = P232)}</li>
+	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId
+	 * = 211)}</li>
 	 * </ul>
 	 * 
 	 * @return {@link Reference}
 	 */
 	public Reference createReference() {
-		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
+		List<SnakGroup> snakGroups = new ArrayList<SnakGroup>();
 
-		snaks.add(createValueSnakGlobeCoordinatesValue("P232"));
-		snaks.add(createValueSnakQuantityValue("P211"));
+		snakGroups.add(factory.getSnakGroup(Collections
+				.singletonList(createValueSnakGlobeCoordinatesValue("P232"))));
+		snakGroups.add(factory.getSnakGroup(Collections
+				.singletonList(createValueSnakQuantityValue("P211"))));
 
-		return factory.getReference(snaks);
+		return factory.getReference(snakGroups);
 	}
 
 	/**
@@ -332,7 +340,7 @@ public class TestObjectFactory {
 	 */
 	public Claim createClaim(String id, Snak snak) {
 		return factory.getClaim(factory.getItemIdValue(id, baseIri), snak,
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 	}
 
 	/**
@@ -385,7 +393,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.StringValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.StringValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakStr
@@ -438,7 +447,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakQuant
@@ -466,7 +476,8 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link ValueSnak} with an {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue} in it.
+	 * Creates a {@link ValueSnak} with an
+	 * {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue} in it.
 	 * 
 	 * <p>
 	 * ID = ValSnakTime

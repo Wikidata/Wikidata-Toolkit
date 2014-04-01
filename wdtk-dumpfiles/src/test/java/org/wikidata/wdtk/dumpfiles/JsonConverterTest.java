@@ -46,6 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -134,8 +135,9 @@ public class JsonConverterTest {
 
 		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
 
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		labels.add(this.factory.getMonolingualTextValue("test", "en"));
+		List<MonolingualTextValue> labels = Collections
+				.singletonList(this.factory.getMonolingualTextValue("test",
+						"en"));
 
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
 		descriptions.add(this.factory.getMonolingualTextValue("this is a test",
@@ -152,8 +154,8 @@ public class JsonConverterTest {
 				BASE_IRI);
 		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
 		Snak mainSnak = factory.getValueSnak(propertyId, value);
-		List<? extends Snak> qualifiers = new LinkedList<>();
-		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers);
+		Claim claim = this.factory.getClaim(itemIdValue, mainSnak,
+				Collections.<SnakGroup> emptyList());
 
 		List<? extends Reference> references = new LinkedList<>();
 		StatementRank rank = StatementRank.NORMAL;

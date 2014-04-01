@@ -1,6 +1,17 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.2.0
+-------------
+
+New features:
+* Support for SnakGroups (data model updated to group Snaks by property in all lists)
+
+Bug fixes:
+* Support SomeValueSnak and NoValueSnak in references (Issue #44)
+
+
+
 Version 0.1.0
 -------------
 

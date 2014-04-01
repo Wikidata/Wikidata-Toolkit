@@ -34,7 +34,7 @@ import java.util.Map;
 public interface DataObjectFactory {
 
 	/**
-	 * Create an {@link ItemIdValue}.
+	 * Creates an {@link ItemIdValue}.
 	 * 
 	 * @param id
 	 *            a string of the form Qn... where n... is the string
@@ -47,7 +47,7 @@ public interface DataObjectFactory {
 	ItemIdValue getItemIdValue(String id, String baseIri);
 
 	/**
-	 * Create a {@link PropertyIdValue}.
+	 * Creates a {@link PropertyIdValue}.
 	 * 
 	 * @param id
 	 *            a string of the form Pn... where n... is the string
@@ -60,7 +60,7 @@ public interface DataObjectFactory {
 	PropertyIdValue getPropertyIdValue(String id, String baseIri);
 
 	/**
-	 * Create a {@link DatatypeIdValue}. The datatype IRI is usually one of the
+	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
 	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
 	 * since there might be extensions that provide additional types.
 	 * 
@@ -71,7 +71,7 @@ public interface DataObjectFactory {
 	DatatypeIdValue getDatatypeIdValue(String id);
 
 	/**
-	 * Create a {@link TimeValue}.
+	 * Creates a {@link TimeValue}.
 	 * 
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
@@ -108,7 +108,7 @@ public interface DataObjectFactory {
 			int afterTolerance, int timezoneOffset, String calendarModel);
 
 	/**
-	 * Create a {@link GlobeCoordinatesValue}.
+	 * Creates a {@link GlobeCoordinatesValue}.
 	 * 
 	 * @param latitude
 	 *            the latitude of the coordinates in nanodegrees
@@ -124,7 +124,7 @@ public interface DataObjectFactory {
 			long longitude, long precision, String globeIri);
 
 	/**
-	 * Create a {@link StringValue}.
+	 * Creates a {@link StringValue}.
 	 * 
 	 * @param string
 	 * @return a {@link StringValue} corresponding to the input
@@ -132,7 +132,7 @@ public interface DataObjectFactory {
 	StringValue getStringValue(String string);
 
 	/**
-	 * Create a {@link MonolingualTextValue}.
+	 * Creates a {@link MonolingualTextValue}.
 	 * 
 	 * @param text
 	 *            the text of the value
@@ -144,7 +144,7 @@ public interface DataObjectFactory {
 			String languageCode);
 
 	/**
-	 * Create a {@link QuantityValue}.
+	 * Creates a {@link QuantityValue}.
 	 * 
 	 * @param numericValue
 	 *            the numeric value of this quantity
@@ -158,7 +158,7 @@ public interface DataObjectFactory {
 			BigDecimal lowerBound, BigDecimal upperBound);
 
 	/**
-	 * Create a {@link ValueSnak}.
+	 * Creates a {@link ValueSnak}.
 	 * 
 	 * @param propertyId
 	 * @param value
@@ -167,7 +167,7 @@ public interface DataObjectFactory {
 	ValueSnak getValueSnak(PropertyIdValue propertyId, Value value);
 
 	/**
-	 * Create a {@link SomeValueSnak}.
+	 * Creates a {@link SomeValueSnak}.
 	 * 
 	 * @param propertyId
 	 * @return a {@link SomeValueSnak} corresponding to the input
@@ -175,7 +175,7 @@ public interface DataObjectFactory {
 	SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId);
 
 	/**
-	 * Create a {@link NoValueSnak}.
+	 * Creates a {@link NoValueSnak}.
 	 * 
 	 * @param propertyId
 	 * @return a {@link NoValueSnak} corresponding to the input
@@ -183,30 +183,39 @@ public interface DataObjectFactory {
 	NoValueSnak getNoValueSnak(PropertyIdValue propertyId);
 
 	/**
-	 * Create a {@link Claim}.
+	 * Creates a {@link SnakGroup}.
+	 * 
+	 * @param snaks
+	 *            a non-empty list of snaks that use the same property
+	 * @return a {@link SnakGroup} corresponding to the input
+	 */
+	SnakGroup getSnakGroup(List<? extends Snak> snaks);
+
+	/**
+	 * Creates a {@link Claim}.
 	 * 
 	 * @param subject
 	 *            the subject the Statement refers to
 	 * @param mainSnak
 	 *            the main Snak of the Statement
 	 * @param qualifiers
-	 *            the qualifiers of the Statement
+	 *            the qualifiers of the Statement, grouped in SnakGroups
 	 * @return a {@link Claim} corresponding to the input
 	 */
 	Claim getClaim(EntityIdValue subject, Snak mainSnak,
-			List<? extends Snak> qualifiers);
+			List<SnakGroup> qualifiers);
 
 	/**
-	 * Create a {@link Reference}.
+	 * Creates a {@link Reference}.
 	 * 
-	 * @param valueSnaks
-	 *            list of property-value pairs
+	 * @param snakGroups
+	 *            list of snak groups
 	 * @return a {@link Reference} corresponding to the input
 	 */
-	Reference getReference(List<? extends ValueSnak> valueSnaks);
+	Reference getReference(List<SnakGroup> snakGroups);
 
 	/**
-	 * Create a {@link Statement}.
+	 * Creates a {@link Statement}.
 	 * <p>
 	 * The string id is used mainly for communication with a Wikibase site, in
 	 * order to refer to statements of that site. When creating new statements
@@ -226,7 +235,7 @@ public interface DataObjectFactory {
 			StatementRank rank, String statementId);
 
 	/**
-	 * Create a {@link StatementGroup}.
+	 * Creates a {@link StatementGroup}.
 	 * 
 	 * @param statements
 	 *            a non-empty list of statements that use the same subject and
@@ -236,7 +245,7 @@ public interface DataObjectFactory {
 	StatementGroup getStatementGroup(List<Statement> statements);
 
 	/**
-	 * Create a {@link SiteLink}.
+	 * Creates a {@link SiteLink}.
 	 * 
 	 * @param title
 	 *            the title string of the linked article
@@ -253,7 +262,7 @@ public interface DataObjectFactory {
 			List<String> badges);
 
 	/**
-	 * Create a {@link PropertyDocument}.
+	 * Creates a {@link PropertyDocument}.
 	 * 
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -275,7 +284,7 @@ public interface DataObjectFactory {
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId);
 
 	/**
-	 * Create an {@link ItemDocument}.
+	 * Creates an {@link ItemDocument}.
 	 * 
 	 * @param itemIdValue
 	 *            the id of the item that data is about
