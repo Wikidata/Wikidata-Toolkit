@@ -42,11 +42,6 @@
 			<artifactId>org.json</artifactId>
 			<version>chargebee-1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.wikidata.wdtk</groupId>
-			<artifactId>wdtk-testing</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 	</dependencies>
 	
 	
