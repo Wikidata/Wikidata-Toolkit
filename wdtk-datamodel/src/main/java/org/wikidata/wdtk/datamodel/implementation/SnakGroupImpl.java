@@ -24,33 +24,51 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 /**
- * Implementation of {@link Reference}.
+ * Implementation of {@link SnakGroup}.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public class ReferenceImpl implements Reference {
+public class SnakGroupImpl implements SnakGroup {
 
-	List<? extends SnakGroup> snakGroups;
+	final List<? extends Snak> snaks;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param snakGroups
-	 *            list of snak groups
+	 * @param snaks
+	 *            a non-empty list of snaks that use the same property
 	 */
-	ReferenceImpl(List<SnakGroup> snakGroups) {
-		Validate.notNull(snakGroups, "List of snak groups cannot be null");
-		this.snakGroups = snakGroups;
+	public SnakGroupImpl(List<? extends Snak> snaks) {
+		Validate.notNull(snaks, "List of statements cannot be null");
+		Validate.notEmpty(snaks, "List of statements cannot be empty");
+
+		PropertyIdValue property = snaks.get(0).getPropertyId();
+
+		for (Snak s : snaks) {
+			if (!property.equals(s.getPropertyId())) {
+				throw new IllegalArgumentException(
+						"All snaks in a snak group must use the same property");
+			}
+		}
+
+		this.snaks = snaks;
+
 	}
 
 	@Override
-	public List<SnakGroup> getSnakGroups() {
-		return Collections.unmodifiableList(this.snakGroups);
+	public List<Snak> getSnaks() {
+		return Collections.unmodifiableList(this.snaks);
+	}
+
+	@Override
+	public PropertyIdValue getProperty() {
+		return this.snaks.get(0).getPropertyId();
 	}
 
 	/*
@@ -60,7 +78,7 @@ public class ReferenceImpl implements Reference {
 	 */
 	@Override
 	public int hashCode() {
-		return snakGroups.hashCode();
+		return this.snaks.hashCode();
 	}
 
 	/*
@@ -73,11 +91,11 @@ public class ReferenceImpl implements Reference {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof ReferenceImpl)) {
+		if (!(obj instanceof SnakGroupImpl)) {
 			return false;
 		}
-		ReferenceImpl other = (ReferenceImpl) obj;
-		return other.snakGroups.equals(this.snakGroups);
+		SnakGroupImpl other = (SnakGroupImpl) obj;
+		return this.snaks.equals(other.snaks);
 	}
 
 }

@@ -36,6 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -56,7 +57,8 @@ public class StatementImplTest {
 				"http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
-		claim = new ClaimImpl(subject, mainSnak, Collections.<Snak> emptyList());
+		claim = new ClaimImpl(subject, mainSnak,
+				Collections.<SnakGroup> emptyList());
 		s1 = new StatementImpl(claim, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
 		s2 = new StatementImpl(claim, Collections.<Reference> emptyList(),
@@ -106,14 +108,16 @@ public class StatementImplTest {
 
 		Claim claim2 = new ClaimImpl(new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/"), mainSnak,
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 
 		sDiffClaim = new StatementImpl(claim2,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");
-		sDiffReferences = new StatementImpl(claim,
+		sDiffReferences = new StatementImpl(
+				claim,
 				Collections.<Reference> singletonList(new ReferenceImpl(
-						Collections.<ValueSnak> singletonList(mainSnak))),
+						Collections.<SnakGroup> singletonList(new SnakGroupImpl(
+								Collections.<Snak> singletonList(mainSnak))))),
 				StatementRank.NORMAL, "MyId");
 		sDiffRank = new StatementImpl(claim,
 				Collections.<Reference> emptyList(), StatementRank.PREFERRED,

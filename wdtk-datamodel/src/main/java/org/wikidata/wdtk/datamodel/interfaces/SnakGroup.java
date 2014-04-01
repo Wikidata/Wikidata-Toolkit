@@ -23,21 +23,26 @@ package org.wikidata.wdtk.datamodel.interfaces;
 import java.util.List;
 
 /**
- * An interface for references in Wikidata. A reference is currently defined by
- * a list of ValueSnaks, encoding property-value pairs.
+ * A snak group represents an ordered list of {@link Snak} objects that use the
+ * same property.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public interface Reference {
+public interface SnakGroup {
 
 	/**
-	 * Get the list snak groups pairs associated with this reference. Objects of
-	 * this class are immutable, and the list should therefore not be
-	 * modifiable.
+	 * Get the list of Snaks of this group.
 	 * 
-	 * @return list of SnakGroups
+	 * @return a list of Snaks
 	 */
-	List<SnakGroup> getSnakGroups();
+	List<Snak> getSnaks();
+
+	/**
+	 * Get the property used by each snak in this group.
+	 * 
+	 * @return a PropertyIdValue
+	 */
+	PropertyIdValue getProperty();
 
 }

@@ -20,7 +20,8 @@ package org.wikidata.wdtk.datamodel.jsonconverter;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
@@ -42,7 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -180,34 +180,32 @@ public class ConverterImplTest {
 
 	@Test
 	public void testVisitItemDocument() throws JSONException, IOException {
-		List<Statement> statements = new ArrayList<Statement>();
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
-		Claim claim = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+
+		List<Statement> statements1 = new ArrayList<Statement>();
+		Claim claim1 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P11",
-						"base/")), Collections.<Snak> emptyList());
-		statements.add(factory.getStatement(claim,
+						"base/")), Collections.<SnakGroup> emptyList());
+		statements1.add(factory.getStatement(claim1,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
+		statementGroups.add(factory.getStatementGroup(statements1));
 
-		statementGroups.add(factory.getStatementGroup(statements));
-
-		statements = new ArrayList<Statement>();
-
+		List<Statement> statements2 = new ArrayList<Statement>();
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
 				objectFactory.createValueSnakTimeValue("P1040"),
 				objectFactory.createQualifiers());
-		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				objectFactory.createValueSnakStringValue("P1040"),
-				Collections.<Snak> emptyList());
-
-		statements
+		statements2
 				.add(factory.getStatement(claim2,
 						objectFactory.createReferences(), StatementRank.NORMAL,
 						"none2"));
-		statements.add(factory.getStatement(claim3,
+		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				objectFactory.createValueSnakStringValue("P1040"),
+				Collections.<SnakGroup> emptyList());
+		statements2.add(factory.getStatement(claim3,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
-		statementGroups.add(factory.getStatementGroup(statements));
+		statementGroups.add(factory.getStatementGroup(statements2));
 
 		compareJSONObjects(converter.visit(factory.getItemDocument(
 				factory.getItemIdValue("Q10", "base/"),
@@ -251,7 +249,8 @@ public class ConverterImplTest {
 
 	@Test
 	public void testVisitValueSnakGlobeCoordinatesValue() {
-		ValueSnak snak = objectFactory.createValueSnakGlobeCoordinatesValue("P132");
+		ValueSnak snak = objectFactory
+				.createValueSnakGlobeCoordinatesValue("P132");
 		compareJSONObjects(converter.convertSnakToJson(snak), new JSONObject(
 				VALUE_SNAK_GLOBE_COORDINATES_VALUE_REPRES));
 	}
@@ -320,8 +319,7 @@ public class ConverterImplTest {
 		PropertyIdValue value = objectFactory.createPropertyIdValue("P200");
 		assertEquals(converter.visit(value).toString(),
 				PROPERTY_ID_VALUE_REPRES);
-		assertEquals(converter
-				.convertEntityIdValueToJson((EntityIdValue) value).toString(),
+		assertEquals(converter.convertEntityIdValueToJson(value).toString(),
 				ENTITY_ID_VALUE_REPRES_2);
 
 	}
