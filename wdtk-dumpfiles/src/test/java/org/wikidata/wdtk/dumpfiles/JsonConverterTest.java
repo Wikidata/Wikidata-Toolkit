@@ -58,7 +58,7 @@ public class JsonConverterTest {
 	@Test
 	public void testEmptyProperty() throws JSONException, IOException {
 		PropertyDocument propertyDocument = jsonFetcher
-				.getPropertyDocumentFromResource("EmptyProperty.json", "P1",
+				.getPropertyDocumentFromResource("Property_Empty.json", "P1",
 						this.uut);
 
 		PropertyDocument emptyPropertyDocument = testObjectFactory
@@ -70,7 +70,7 @@ public class JsonConverterTest {
 	@Test
 	public void testEmptyItem() throws JSONException, IOException {
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
-				"EmptyItem.json", "Q1", this.uut);
+				"Item_Empty.json", "Q1", this.uut);
 
 		ItemDocument emptyItemDocument = testObjectFactory
 				.createEmptyItemDocument(BASE_IRI);
@@ -81,73 +81,34 @@ public class JsonConverterTest {
 	@Test
 	public void testLabels() throws JSONException, IOException{
 		// NOTE: empty labels are tested in the empty documents
-		// NOTE: only one label notation is known so far
+		// NOTE: only one label notation is tested so far
 		// which is {"key":"value", … } 
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
 				"Item_Labels.json", "Q1", this.uut);
 		
 		assertEquals(itemDocument.getLabels(), testObjectFactory.createTestLabels());
 	}
-<<<<<<< HEAD
 	
-=======
-
-	private ItemDocument createBasicItemDocument() {
-
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
-
-		List<MonolingualTextValue> labels = new LinkedList<>();
-		labels.add(this.factory.getMonolingualTextValue("test", "en"));
-
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		descriptions.add(this.factory.getMonolingualTextValue("this is a test",
-				"en"));
-
-		List<MonolingualTextValue> aliases = new LinkedList<>();
-		aliases.add(this.factory.getMonolingualTextValue("TEST", "en"));
-		aliases.add(this.factory.getMonolingualTextValue("Test", "en"));
-
-		List<StatementGroup> statementGroups = new LinkedList<>();
-		List<Statement> statements = new LinkedList<>();
-
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				BASE_IRI);
-		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
-		Snak mainSnak = this.factory.getValueSnak(propertyId, value);
-		List<? extends Snak> qualifiers = new LinkedList<>();
-		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers);
-
-		List<? extends Reference> references = new LinkedList<>();
-		StatementRank rank = StatementRank.NORMAL;
-		String statementId = "foo";
-		statements.add(this.factory.getStatement(claim, references, rank,
-				statementId));
-
-		statementGroups.add(this.factory.getStatementGroup(statements));
-
-		Map<String, SiteLink> siteLinks = new HashMap<>();
-		List<String> badges = new LinkedList<>();
-		String siteKey = "enwiki";
-		String title = "test";
-		siteLinks.put("enwiki",
-				this.factory.getSiteLink(title, siteKey, "", badges));
-
-		ItemDocument document = this.factory.getItemDocument(itemIdValue,
-				labels, descriptions, aliases, statementGroups, siteLinks);
-		return document;
-	}
-
->>>>>>> refs/remotes/origin/fix-issue-#53
 	@Test
-	public void testDescriptions(){
-		// TODO complete
-		fail("Empty test");
+	public void testDescriptions() throws JSONException, IOException{
+		// NOTE: empty descriptions are tested in the empty documents
+		// NOTE: only one description notation is tested so far
+		// which is {"key":"value", … } 
+		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
+						"Item_Descriptions.json", "Q1", this.uut);
+
+		assertEquals(itemDocument.getDescriptions(), testObjectFactory.createTestDescriptions());
 	}
 	
 	@Test
-	public void testAliases(){
-		// TODO complete
-		fail("Empty test");
+	public void testAliases() throws JSONException, IOException{
+		// NOTE: empty aliases are tested in the empty documents
+		// NOTE: only one alias notation is tested so far
+		// which is {"key":"value", … } 
+		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
+						"Item_Aliases.json", "Q1", this.uut);
+
+		assertEquals(itemDocument.getDescriptions(), testObjectFactory.createTestAliases());
 	}
 	
 	@Test
@@ -179,19 +140,11 @@ public class JsonConverterTest {
 		jsonFetcher.getPropertyDocumentFromResource("NoEntityDocument.json", "P1", this.uut);
 	}
 
-<<<<<<< HEAD
 	// TODO improve
 	@Test(expected = JSONException.class)
-=======
-	@Test
->>>>>>> refs/remotes/origin/fix-issue-#53
 	public void testItemDocumentWithErrors() throws JSONException, IOException {
-<<<<<<< HEAD
 		jsonFetcher.getItemDocumentFromResource("MiscErrors.json", "Q1", this.uut);
-=======
-		getItemDocumentFromResource("MiscErrors.json", "Q1");
 		// FIXME this does not test anything (copied from earlier test file)
->>>>>>> refs/remotes/origin/fix-issue-#53
 	}
 
 	// TODO:

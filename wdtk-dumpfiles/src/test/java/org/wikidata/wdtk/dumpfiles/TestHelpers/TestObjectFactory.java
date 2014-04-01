@@ -166,21 +166,10 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a list of labels.
-	 * 
+	 * Creates test labels with the content 
 	 * <p>
-	 * ID = Labs
+	 * "en" : "testLabel"
 	 * </p>
-	 * 
-	 * <p>
-	 * <b>Default values</b>
-	 * </p>
-	 * <ul>
-	 * <li>MonolingualTextValue1: "foo" (label in the certain language), "lc"
-	 * (LanguageCode)</li>
-	 * <li>MonolingualTextValue2: "bar" (label in the certain language), "lc2"
-	 * (LanguageCode)</li>
-	 * </ul>
 	 * 
 	 * @return list of {@link MonolingualTextValue}
 	 */
@@ -188,6 +177,36 @@ public class TestObjectFactory {
 		
 		Map<String,MonolingualTextValue> result = new HashMap<>();
 		result.put("en", factory.getMonolingualTextValue("testLabel", "en"));
+		return result;
+	}
+	
+	/**
+	 * Creates test descriptions with the content 
+	 * <p>
+	 * "en" : "testDescription"
+	 * </p>
+	 * 
+	 * @return list of {@link MonolingualTextValue}
+	 */
+	public Map<String, MonolingualTextValue> createTestDescriptions() {
+		
+		Map<String,MonolingualTextValue> result = new HashMap<>();
+		result.put("en", factory.getMonolingualTextValue("testDescription", "en"));
+		return result;
+	}
+	
+	/**
+	 * Creates test aliases with the content 
+	 * <p>
+	 * "en" : "testAlias"
+	 * </p>
+	 * 
+	 * @return list of {@link MonolingualTextValue}
+	 */
+	public Map<String, MonolingualTextValue> createTestAliases() {
+		
+		Map<String,MonolingualTextValue> result = new HashMap<>();
+		result.put("en", factory.getMonolingualTextValue("testAlias", "en"));
 		return result;
 	}
 
