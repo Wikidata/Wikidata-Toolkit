@@ -151,7 +151,7 @@ public class JsonConverterTest {
 		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
 				BASE_IRI);
 		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
-		Snak mainSnak = factory.getValueSnak(propertyId, value);
+		Snak mainSnak = this.factory.getValueSnak(propertyId, value);
 		List<? extends Snak> qualifiers = new LinkedList<>();
 		Claim claim = this.factory.getClaim(itemIdValue, mainSnak, qualifiers);
 
@@ -207,9 +207,10 @@ public class JsonConverterTest {
 		getPropertyDocumentFromResource("NoEntityDocument.json", "P1");
 	}
 
-	@Test(expected = JSONException.class)
+	@Test
 	public void testItemDocumentWithErrors() throws JSONException, IOException {
 		getItemDocumentFromResource("MiscErrors.json", "Q1");
+		// FIXME this does not test anything (copied from earlier test file)
 	}
 
 	@Test
