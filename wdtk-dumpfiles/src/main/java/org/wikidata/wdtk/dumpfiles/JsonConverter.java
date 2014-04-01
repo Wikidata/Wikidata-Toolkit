@@ -407,7 +407,7 @@ public class JsonConverter {
 			Statement statement = this.getStatement(statementJson,
 					entityIdValue);
 			statementsFromJson.add(statement);
-			} catch( Exception e){
+			} catch( IllegalArgumentException | JSONException e){
 				logger.debug("Encountered an exception during statement parsing:\n"
 						+ e.getMessage() + "\nIn statement\n" + statementJson.toString(2));
 			}
