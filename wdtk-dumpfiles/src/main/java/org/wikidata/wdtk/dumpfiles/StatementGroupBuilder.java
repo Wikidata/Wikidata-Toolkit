@@ -40,7 +40,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  * @author Fredo Erxleben
  * 
  */
-class StatementGroupBuilder {
+public class StatementGroupBuilder {
+	 // NOTE: The class is public to allow its use in tests.
 
 	private final DataObjectFactory factory;
 
@@ -51,7 +52,7 @@ class StatementGroupBuilder {
 	 *            the DataObjectFactory to be used for generating
 	 *            StatementGroups.
 	 */
-	StatementGroupBuilder(DataObjectFactory factory) {
+	public StatementGroupBuilder(DataObjectFactory factory) {
 		this.factory = factory;
 	}
 
@@ -63,7 +64,7 @@ class StatementGroupBuilder {
 	 *            will be decomposed in the process.
 	 * @return
 	 */
-	List<StatementGroup> buildFromStatementList(List<Statement> statements) {
+	public List<StatementGroup> buildFromStatementList(List<Statement> statements) {
 		// NOTE: the list of statements will be modified.
 		// Is this acceptable or do we need to work with a copy?
 

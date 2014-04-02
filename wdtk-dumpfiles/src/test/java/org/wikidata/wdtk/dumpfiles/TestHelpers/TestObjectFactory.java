@@ -48,6 +48,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.dumpfiles.StatementGroupBuilder;
 
 /**
  * This class provides functions to create objects from
@@ -59,8 +60,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class TestObjectFactory {
 
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
+	private static DataObjectFactory factory = new DataObjectFactoryImpl();
 	private static String baseIri = "";
+	private static StatementGroupBuilder sgBuilder = new StatementGroupBuilder(factory);
 
 	/**
 	 * Creates an empty {@link PropertyDocument} with the propertyID "P1" and
@@ -74,12 +76,12 @@ public class TestObjectFactory {
 	 */
 	public PropertyDocument createEmptyPropertyDocument(String baseIri) {
 
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
+		PropertyIdValue propertyId = factory.getPropertyIdValue("P1",
 				baseIri);
-		DatatypeIdValue datatypeId = this.factory
+		DatatypeIdValue datatypeId = factory
 				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
 
-		PropertyDocument emptyPropertyDocument = this.factory
+		PropertyDocument emptyPropertyDocument = factory
 				.getPropertyDocument(propertyId,
 						Collections.<MonolingualTextValue> emptyList(),
 						Collections.<MonolingualTextValue> emptyList(),
@@ -95,10 +97,10 @@ public class TestObjectFactory {
 	 */
 	public ItemDocument createEmptyItemDocument(String baseIri) {
 
-		ItemIdValue itemId = this.factory.getItemIdValue("Q1",
+		ItemIdValue itemId = factory.getItemIdValue("Q1",
 				baseIri);
 
-		ItemDocument emptyItemDocument = this.factory
+		ItemDocument emptyItemDocument = factory
 				.getItemDocument(itemId, 
 						Collections.<MonolingualTextValue> emptyList(), 
 						Collections.<MonolingualTextValue> emptyList(), 
@@ -106,65 +108,6 @@ public class TestObjectFactory {
 						Collections.<StatementGroup> emptyList(), 
 						Collections.<String, SiteLink> emptyMap());
 		return emptyItemDocument;
-	}
-	
-	/**
-	 * Creates a {@link Statement} with entity-id qId, property-id pId
-	 * 
-	 * <p>
-	 * ID = Stat
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>Default values</b>
-	 * </p>
-	 * <ul>
-	 * <li>Rank: "normal"
-	 * <li>MainSnak: {@link #createValueSnakStringValue ValSnakStr}
-	 * <li>StatementId: "id111"
-	 * <li>References: {@link #createReferences() Refs}
-	 * </ul>
-	 * 
-	 * @param qId
-	 * @param pId
-	 * @return {@link Statement}
-	 */
-	public Statement createStatement(String qId, String pId) {
-		return factory.getStatement(
-				createClaim(qId, createValueSnakStringValue(pId)),
-				createReferences(), StatementRank.NORMAL, "id111");
-	}
-
-	/**
-	 * Creates a {@link StatementGroup}
-	 * 
-	 * <p>
-	 * ID = StatGr
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>Default values</b>
-	 * </p>
-	 * <ul>
-	 * <li>Statement1: {@link #createStatement(String, String) Stat} (qId = Q10,
-	 * pId= P122)</li>
-	 * <li>Statement2: Statement with Rank = "normal", Mainsnak =
-	 * {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId =
-	 * "id112"</li>
-	 * </ul>
-	 * 
-	 * @return {@link StatementGroup}
-	 */
-	public StatementGroup createStatementGroup() {
-		final String pId = "P122";
-		final String qId = "Q10";
-		List<Statement> statements = new ArrayList<Statement>();
-		statements.add(createStatement(qId, pId));
-		statements.add(factory.getStatement(
-				createClaim(qId, createValueSnakQuantityValue(pId)),
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"id112"));
-		return factory.getStatementGroup(statements);
 	}
 
 	/**
@@ -622,24 +565,50 @@ public class TestObjectFactory {
 	}
 
 	public List<StatementGroup> createTestStatementGroups() {
+		// NOTE: for evey subtest, the items should have a new property id
+		// to avoid messed up statement groups
+		
+		// NOTE: In case of test bugs 
+		// make sure to be consistent with the test JSON first.
 		
 		List<Statement> statements = new ArrayList<>();
 		statements.add(this.createTestDefaultStatement());
+		statements.add(this.createTestRankedStatement(StatementRank.DEPRECATED));
+		statements.add(this.createTestRankedStatement(StatementRank.PREFERRED));
 		
-		List<StatementGroup> result = new ArrayList<>();
-				result.add(factory.getStatementGroup(statements));
+		List<StatementGroup> result = sgBuilder.buildFromStatementList(statements);	
 		
 		return result;
 	}
 
 	private Statement createTestDefaultStatement() {
 		Statement result = factory.getStatement(
-				this.createClaim("Q1", 
-						this.createNoValueSnak("P1")), 
-						Collections.<Reference>emptyList(), 
-						StatementRank.NORMAL, 
-						"defaultTestStatement");
+				this.createDefaultClaim(), 
+				Collections.<Reference>emptyList(), 
+				StatementRank.NORMAL, 
+				"defaultTestStatement");
 		return result;
+	}
+	
+	private Statement createTestRankedStatement(StatementRank rank){
+		Statement result = factory.getStatement(
+				this.createDefaultClaim("P2"), 
+				Collections.<Reference>emptyList(), 
+				rank, 
+				"rankTestStatement");
+		return result;
+	}
+
+	/**
+	 * Creates just some claim with item id Q1 and a no-value-snak of property P1.
+	 * @return
+	 */
+	private Claim createDefaultClaim(){
+		return this.createClaim("Q1", this.createNoValueSnak("P1"));
+	}
+	
+	private Claim createDefaultClaim(String snakId){
+		return this.createClaim("Q1", this.createNoValueSnak(snakId));
 	}
 
 	private Snak createNoValueSnak(String id) {

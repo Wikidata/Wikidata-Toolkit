@@ -1,0 +1,28 @@
+{
+"label":{},
+"description":{},
+"aliases":[],
+"links":{},
+"entity":["item",1],
+"claims":[
+	{
+		"m":["novalue",1],
+		"g":"defaultTestStatement",
+		"q":[],
+		"rank":1,
+		"refs":[]
+	}, {
+		"m":["novalue",2],
+		"g":"rankTestStatement",
+		"q":[],
+		"rank":0,
+		"refs":[]
+	}, {
+		"m":["novalue",2],
+		"g":"rankTestStatement",
+		"q":[],
+		"rank":2,
+		"refs":[]
+	}
+]
+}

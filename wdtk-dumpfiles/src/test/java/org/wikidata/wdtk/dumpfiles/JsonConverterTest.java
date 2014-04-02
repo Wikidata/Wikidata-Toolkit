@@ -23,12 +23,15 @@ package org.wikidata.wdtk.dumpfiles;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.List;
+
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.dumpfiles.TestHelpers.JsonFetcher;
 import org.wikidata.wdtk.dumpfiles.TestHelpers.TestObjectFactory;
 
@@ -135,8 +138,9 @@ public class JsonConverterTest {
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
 				"Item_Claims.json", "Q1", this.uut);
 
+		List<StatementGroup> statementGroup = testObjectFactory.createTestStatementGroups();
 		assertEquals(itemDocument.getStatementGroups(),
-				testObjectFactory.createTestStatementGroups());
+				statementGroup);
 
 	}
 
@@ -149,7 +153,7 @@ public class JsonConverterTest {
 	}
 
 	// TODO improve
-	@Test(expected = JSONException.class)
+	@Test
 	public void testItemDocumentWithErrors() throws JSONException, IOException {
 		jsonFetcher.getItemDocumentFromResource("MiscErrors.json", "Q1",
 				this.uut);
