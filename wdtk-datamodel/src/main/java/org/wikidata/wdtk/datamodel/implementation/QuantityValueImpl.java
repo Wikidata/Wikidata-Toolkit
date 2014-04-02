@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link QuantityValue}.
@@ -79,6 +80,11 @@ public class QuantityValueImpl implements QuantityValue {
 	@Override
 	public BigDecimal getUpperBound() {
 		return upperBound;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	/*

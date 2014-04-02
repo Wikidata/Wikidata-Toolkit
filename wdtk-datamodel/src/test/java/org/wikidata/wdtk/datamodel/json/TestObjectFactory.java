@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.jsonconverter;
+package org.wikidata.wdtk.datamodel.json;
 
 /*
  * #%L

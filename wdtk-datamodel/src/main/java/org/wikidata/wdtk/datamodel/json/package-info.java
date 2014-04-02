@@ -1,9 +1,10 @@
 /**
- * Converter for converting objects of the datamodel in an external json format
+ * Code that is related to the official Wikibase JSON format
+ * as used, e.g., to export result in the Wikibase Web API.
  * 
  * @author Michael Günther
  */
-package org.wikidata.wdtk.datamodel.jsonconverter;
+package org.wikidata.wdtk.datamodel.json;
 
 /*
  * #%L

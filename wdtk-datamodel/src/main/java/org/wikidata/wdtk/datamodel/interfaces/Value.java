@@ -32,4 +32,12 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 public interface Value {
 
+	/**
+	 * Accept a ValueVisitor and return its output.
+	 * 
+	 * @param valueVisitor
+	 *            the ValueVisitor
+	 * @return output of the visitor
+	 */
+	<T> T accept(ValueVisitor<T> valueVisitor);
 }
