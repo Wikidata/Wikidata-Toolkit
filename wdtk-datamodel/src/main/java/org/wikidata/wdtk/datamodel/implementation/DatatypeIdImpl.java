@@ -80,5 +80,10 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 
 		return iri.equals(((DatatypeIdValue) obj).getIri());
 	}
+	
+	@Override
+	public String toString(){
+		return this.iri;
+	}
 
 }

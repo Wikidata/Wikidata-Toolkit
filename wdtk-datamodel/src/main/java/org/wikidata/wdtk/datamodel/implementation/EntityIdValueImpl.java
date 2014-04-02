@@ -102,4 +102,8 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 		return id.equals(other.id) && baseIri.equals(other.baseIri);
 	}
 
+	@Override
+	public String toString(){
+		return this.baseIri +"/"+ this.id;
+	}
 }
