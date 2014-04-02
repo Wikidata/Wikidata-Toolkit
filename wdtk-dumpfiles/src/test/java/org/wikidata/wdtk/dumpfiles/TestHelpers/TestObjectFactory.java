@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -333,7 +334,9 @@ public class TestObjectFactory {
 		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
 		List<Reference> refs = new ArrayList<>();
 		snaks.add(createValueSnakTimeValue("P112"));
-		refs.add(factory.getReference(snaks));
+		SnakGroup snakGroup = factory.getSnakGroup(snaks);
+		
+		refs.add(factory.getReference(Collections.singletonList(snakGroup)));
 		return refs;
 	}
 
@@ -361,8 +364,9 @@ public class TestObjectFactory {
 
 		snaks.add(createValueSnakGlobeCoordinatesValue("P232"));
 		snaks.add(createValueSnakQuantityValue("P211"));
+		SnakGroup snakGroup = factory.getSnakGroup(snaks);
 
-		return factory.getReference(snaks);
+		return factory.getReference(Collections.singletonList(snakGroup));
 	}
 
 	/**
@@ -381,7 +385,7 @@ public class TestObjectFactory {
 	 */
 	public Claim createClaim(String id, Snak snak) {
 		return factory.getClaim(factory.getItemIdValue(id, baseIri), snak,
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 	}
 
 	/**
