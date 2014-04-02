@@ -1,8 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
-
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -52,8 +48,8 @@ public interface EntityDocumentProcessor {
 
 	/**
 	 * Performs final actions that should be done after all entity documents in
-	 * a batch of entity documents have been processed. This is usually called
-	 * after a whole dumpfile was completely processed.
+	 * a batch of entity documents have been processed. For example, this might
+	 * be called after a whole dumpfile was completely processed.
 	 */
 	void finishProcessingEntityDocuments();
 
