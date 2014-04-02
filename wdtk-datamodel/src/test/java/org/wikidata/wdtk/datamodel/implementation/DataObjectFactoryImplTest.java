@@ -40,6 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -161,24 +162,34 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
+	public final void testGetSnakGroup() {
+		Snak s = factory.getNoValueSnak(factory
+				.getPropertyIdValue("P42", "foo"));
+		SnakGroup o1 = new SnakGroupImpl(Collections.<Snak> singletonList(s));
+		SnakGroup o2 = factory
+				.getSnakGroup(Collections.<Snak> singletonList(s));
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetClaim() {
 		Claim o1 = new ClaimImpl(
 				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 		Claim o2 = factory
 				.getClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-						.<Snak> emptyList());
+						.<SnakGroup> emptyList());
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetReference() {
-		Reference r1 = new ReferenceImpl(Collections.<ValueSnak> emptyList());
+		Reference r1 = new ReferenceImpl(Collections.<SnakGroup> emptyList());
 		Reference r2 = factory
-				.getReference(Collections.<ValueSnak> emptyList());
+				.getReference(Collections.<SnakGroup> emptyList());
 		assertEquals(r1, r2);
 	}
 
@@ -187,7 +198,7 @@ public class DataObjectFactoryImplTest {
 		Claim c = new ClaimImpl(
 				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 		Statement o1 = new StatementImpl(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");
@@ -202,7 +213,7 @@ public class DataObjectFactoryImplTest {
 		Claim c = new ClaimImpl(
 				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.<Snak> emptyList());
+				Collections.<SnakGroup> emptyList());
 		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
 		StatementGroup o1 = new StatementGroupImpl(

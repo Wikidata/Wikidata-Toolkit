@@ -31,8 +31,21 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+<<<<<<< HEAD
 import org.wikidata.wdtk.dumpfiles.TestHelpers.JsonFetcher;
 import org.wikidata.wdtk.dumpfiles.TestHelpers.TestObjectFactory;
+=======
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
+>>>>>>> refs/remotes/origin/master
 
 /**
  * The test setup uses several files containing JSON. These files are read by
@@ -88,7 +101,57 @@ public class JsonConverterTest {
 		
 		assertEquals(itemDocument.getLabels(), testObjectFactory.createTestLabels());
 	}
+<<<<<<< HEAD
 	
+=======
+
+	private ItemDocument createBasicItemDocument() {
+
+		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
+
+		List<MonolingualTextValue> labels = Collections
+				.singletonList(this.factory.getMonolingualTextValue("test",
+						"en"));
+
+		List<MonolingualTextValue> descriptions = new LinkedList<>();
+		descriptions.add(this.factory.getMonolingualTextValue("this is a test",
+				"en"));
+
+		List<MonolingualTextValue> aliases = new LinkedList<>();
+		aliases.add(this.factory.getMonolingualTextValue("TEST", "en"));
+		aliases.add(this.factory.getMonolingualTextValue("Test", "en"));
+
+		List<StatementGroup> statementGroups = new LinkedList<>();
+		List<Statement> statements = new LinkedList<>();
+
+		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
+				BASE_IRI);
+		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
+		Snak mainSnak = factory.getValueSnak(propertyId, value);
+		Claim claim = this.factory.getClaim(itemIdValue, mainSnak,
+				Collections.<SnakGroup> emptyList());
+
+		List<? extends Reference> references = new LinkedList<>();
+		StatementRank rank = StatementRank.NORMAL;
+		String statementId = "foo";
+		statements.add(this.factory.getStatement(claim, references, rank,
+				statementId));
+
+		statementGroups.add(this.factory.getStatementGroup(statements));
+
+		Map<String, SiteLink> siteLinks = new HashMap<>();
+		List<String> badges = new LinkedList<>();
+		String siteKey = "enwiki";
+		String title = "test";
+		siteLinks.put("enwiki",
+				this.factory.getSiteLink(title, siteKey, "", badges));
+
+		ItemDocument document = this.factory.getItemDocument(itemIdValue,
+				labels, descriptions, aliases, statementGroups, siteLinks);
+		return document;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	@Test
 	public void testDescriptions() throws JSONException, IOException{
 		// NOTE: empty descriptions are tested in the empty documents

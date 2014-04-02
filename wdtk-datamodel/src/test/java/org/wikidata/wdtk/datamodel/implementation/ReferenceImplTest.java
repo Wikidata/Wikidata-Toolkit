@@ -33,13 +33,15 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ReferenceImplTest {
 
 	Reference r1;
 	Reference r2;
-	ValueSnak valueSnak;
+	SnakGroup snakGroup;
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,20 +49,22 @@ public class ReferenceImplTest {
 				"http://wikidata.org/entity/");
 		PropertyIdValue property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
-		valueSnak = new ValueSnakImpl(property, subject);
-		r1 = new ReferenceImpl(Collections.<ValueSnak> singletonList(valueSnak));
-		r2 = new ReferenceImpl(Collections.<ValueSnak> singletonList(valueSnak));
+		ValueSnak valueSnak = new ValueSnakImpl(property, subject);
+		snakGroup = new SnakGroupImpl(
+				Collections.<Snak> singletonList(valueSnak));
+		r1 = new ReferenceImpl(Collections.<SnakGroup> singletonList(snakGroup));
+		r2 = new ReferenceImpl(Collections.<SnakGroup> singletonList(snakGroup));
 	}
 
 	@Test
 	public void snakListIsCorrect() {
-		assertEquals(r1.getSnaks(),
-				Collections.<ValueSnak> singletonList(valueSnak));
+		assertEquals(r1.getSnakGroups(),
+				Collections.<SnakGroup> singletonList(snakGroup));
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		Reference r3 = new ReferenceImpl(Collections.<ValueSnak> emptyList());
+		Reference r3 = new ReferenceImpl(Collections.<SnakGroup> emptyList());
 
 		assertEquals(r1, r1);
 		assertEquals(r1, r2);
