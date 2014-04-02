@@ -2,7 +2,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
- * Wikidata Toolkit Dump File Handling
+ * Wikidata Toolkit Data Model
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
