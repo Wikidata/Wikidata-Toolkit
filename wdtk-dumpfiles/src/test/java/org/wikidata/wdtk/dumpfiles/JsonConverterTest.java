@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.junit.Before;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.dumpfiles.TestHelpers.JsonFetcher;
 import org.wikidata.wdtk.dumpfiles.TestHelpers.TestObjectFactory;
 
@@ -57,6 +59,9 @@ public class JsonConverterTest {
 
 	@Test
 	public void testEmptyProperty() throws JSONException, IOException {
+		// since there can be no property without data type,
+		// the datatype is tested here implicitly
+		
 		PropertyDocument propertyDocument = jsonFetcher
 				.getPropertyDocumentFromResource("Property_Empty.json", "P1",
 						this.uut);
@@ -103,18 +108,25 @@ public class JsonConverterTest {
 	@Test
 	public void testAliases() throws JSONException, IOException{
 		// NOTE: empty aliases are tested in the empty documents
-		// NOTE: only one alias notation is tested so far
-		// which is {"key":"value", … } 
+		// NOTE: following alias notations are tested so far:
+		// {"key":"value", … }
+		// {"key":["value1", "value2"], … }
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
 						"Item_Aliases.json", "Q1", this.uut);
 
-		assertEquals(itemDocument.getDescriptions(), testObjectFactory.createTestAliases());
+		assertEquals(itemDocument.getAliases(), testObjectFactory.createTestAliases());
 	}
 	
 	@Test
-	public void testLinks(){
-		// TODO complete
-		fail("Empty test");
+	public void testLinks() throws JSONException, IOException{
+		// NOTE: empty links are tested in the empty documents
+		// NOTE: following link notations are tested so far:
+		// {"key":"value", … }
+		// {"key":{"name":"value","badges":["value", … ]}, … }
+		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource("Item_SiteLinks.json", "Q1", this.uut);
+		
+		Map<String, SiteLink> testLinks = testObjectFactory.createTestLinks();
+		assertEquals(itemDocument.getSiteLinks(), testLinks);
 	}
 	
 	// TODO rework
@@ -125,12 +137,6 @@ public class JsonConverterTest {
 		jsonFetcher.getItemDocumentFromResource("StatementRanks.json", "Q1", this.uut);
 		jsonFetcher.getItemDocumentFromResource("SnakTypes.json", "Q1", this.uut);
 		// FIXME this does not test anything (copied from earlier test file)
-	}
-	
-	@Test
-	public void testDatatype(){
-		// TODO complete
-		fail("Empty test");
 	}
 
 	// TODO improve
@@ -148,19 +154,10 @@ public class JsonConverterTest {
 	}
 
 	// TODO:
-	// * Both
-	// 		* label notations
-	// 			* labels as strings
-	// 			* labels as objects
-	// 		* description notations
-	// 		* aliases
 	// 		* (entity)
 	// * Items only
-	// 		* links
 	// 		* claims
 	//			* different ranks
 	// 			* different snak types
-	// * Properties only
-	// 		* datatype
 
 }

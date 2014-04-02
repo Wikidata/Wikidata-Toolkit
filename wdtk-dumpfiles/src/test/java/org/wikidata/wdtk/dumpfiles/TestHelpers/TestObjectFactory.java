@@ -59,7 +59,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class TestObjectFactory {
 
 	private DataObjectFactory factory = new DataObjectFactoryImpl();
-	private static String baseIri = "test";
+	private static String baseIri = "";
 
 	/**
 	 * Creates an empty {@link PropertyDocument} with the propertyID "P1" and
@@ -204,10 +204,15 @@ public class TestObjectFactory {
 	 * 
 	 * @return list of {@link MonolingualTextValue}
 	 */
-	public Map<String, MonolingualTextValue> createTestAliases() {
+	public Map<String, List<MonolingualTextValue>> createTestAliases() {
 		
-		Map<String,MonolingualTextValue> result = new HashMap<>();
-		result.put("en", factory.getMonolingualTextValue("testAlias", "en"));
+		Map<String, List<MonolingualTextValue>> result = new HashMap<>();
+		result.put("en", Collections.singletonList(factory.getMonolingualTextValue("testAlias", "en")));
+		
+		List<MonolingualTextValue> sameLanguageAliases = new ArrayList<>();
+		sameLanguageAliases.add(factory.getMonolingualTextValue("testAlias2", "de"));
+		sameLanguageAliases.add(factory.getMonolingualTextValue("testAlias3", "de"));
+		result.put("de", sameLanguageAliases);
 		return result;
 	}
 
@@ -602,6 +607,15 @@ public class TestObjectFactory {
 	 */
 	public ItemIdValue createItemIdValue(String id) {
 		return factory.getItemIdValue(id, baseIri);
+	}
+
+	public Map<String, SiteLink> createTestLinks() {
+		
+		Map<String, SiteLink> result = new HashMap<>();
+		result.put("enwiki", factory.getSiteLink("test", "enwiki", baseIri, Collections.<String>singletonList("testBadge")));
+		result.put("dewiki", factory.getSiteLink("TEST", "dewiki", baseIri, Collections.<String>emptyList()));
+		
+		return result;
 	}
 
 }
