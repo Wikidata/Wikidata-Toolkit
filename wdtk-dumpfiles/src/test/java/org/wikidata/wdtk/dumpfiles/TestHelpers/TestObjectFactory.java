@@ -36,6 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -389,7 +390,9 @@ public class TestObjectFactory {
 	 * @return {@link Claim} with the given parameters
 	 */
 	public Claim createClaim(String id, Snak snak) {
-		return factory.getClaim(factory.getItemIdValue(id, baseIri), snak,
+		return factory.getClaim(
+				factory.getItemIdValue(id, baseIri), 
+				snak,
 				Collections.<SnakGroup> emptyList());
 	}
 
@@ -617,5 +620,34 @@ public class TestObjectFactory {
 		
 		return result;
 	}
+
+	public List<StatementGroup> createTestStatementGroups() {
+		
+		List<Statement> statements = new ArrayList<>();
+		statements.add(this.createTestDefaultStatement());
+		
+		List<StatementGroup> result = new ArrayList<>();
+				result.add(factory.getStatementGroup(statements));
+		
+		return result;
+	}
+
+	private Statement createTestDefaultStatement() {
+		Statement result = factory.getStatement(
+				this.createClaim("Q1", 
+						this.createNoValueSnak("P1")), 
+						Collections.<Reference>emptyList(), 
+						StatementRank.NORMAL, 
+						"defaultTestStatement");
+		return result;
+	}
+
+	private Snak createNoValueSnak(String id) {
+		PropertyIdValue propertyId = factory.getPropertyIdValue(id, baseIri);
+		NoValueSnak result = factory.getNoValueSnak(propertyId);
+		return result;
+	}
+	
+	
 
 }
