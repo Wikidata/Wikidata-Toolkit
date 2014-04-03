@@ -111,4 +111,10 @@ public class StatementGroupImpl implements StatementGroup {
 		return this.statements.equals(other.statements);
 	}
 
+	@Override
+	public String toString(){
+		return "[" + "subject: " + this.getSubject() 
+				+ ", pId: " + this.getProperty() + ", " 
+				+ this.statements.size() + " items]";
+	}
 }

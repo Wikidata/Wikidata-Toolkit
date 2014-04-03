@@ -127,4 +127,11 @@ public class SiteLinkImpl implements SiteLink {
 		return baseIri.equals(other.baseIri) && badges.equals(other.badges)
 				&& siteKey.equals(other.siteKey) && title.equals(other.title);
 	}
+	
+	@Override
+	public String toString(){
+		return "SiteLink {title = " + this.baseIri + "/" + this.title 
+				+ ", siteKey = " + siteKey
+				+ ", badges = " + this.badges + "}";
+	}
 }
