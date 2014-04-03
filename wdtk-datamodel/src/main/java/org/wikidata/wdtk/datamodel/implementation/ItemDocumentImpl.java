@@ -140,4 +140,14 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 				&& statementGroups.equals(other.statementGroups);
 	}
 
+	@Override
+	public String toString(){
+		return "ItemDocument {qId = " + this.itemId 
+				+ ", " + this.labels.size() + " labels, "
+				+ this.descriptions.size() + " descriptions, "
+				+ this.aliases.size() + " aliases, "
+				+ this.siteLinks.size() + " site links, "
+				+ this.statementGroups.size() + " statement groups"
+				+ "}";
+	}
 }

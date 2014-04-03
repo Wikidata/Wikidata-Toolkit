@@ -125,4 +125,10 @@ public class StatementImpl implements Statement {
 				&& this.statementId.equals(other.statementId);
 	}
 
+	@Override
+	public String toString(){
+		return "Statement {id = " + this.statementId 
+				+ ", rank = " + this.rank + ", " 
+				+ this.references.size() + " references }";
+	}
 }
