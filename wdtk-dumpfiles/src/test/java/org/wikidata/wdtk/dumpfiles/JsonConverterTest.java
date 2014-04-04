@@ -138,6 +138,7 @@ public class JsonConverterTest {
 		// NOTE: following link notations are tested so far:
 		// {"key":"value", … }
 		// {"key":{"name":"value","badges":["value", … ]}, … }
+		
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
 				"Item_SiteLinks.json", "Q1", this.uut);
 
@@ -162,27 +163,5 @@ public class JsonConverterTest {
 				statementGroup);
 
 	}
-
-	// TODO improve
-	@Test(expected = JSONException.class)
-	public void testPropertyDocumentLacksDatatype() throws JSONException,
-			IOException {
-		jsonFetcher.getPropertyDocumentFromResource("NoEntityDocument.json",
-				"P1", this.uut);
-	}
-
-	// TODO improve
-	@Test
-	public void testItemDocumentWithErrors() throws JSONException, IOException {
-		jsonFetcher.getItemDocumentFromResource("MiscErrors.json", "Q1",
-				this.uut);
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	// TODO:
-	// * (entity)
-	// * Items only
-	// * claims
-	// * different snak types
 
 }
