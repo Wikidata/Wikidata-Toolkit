@@ -33,8 +33,8 @@ import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 
 /**
- * This class processes dump files that contain the SQL dump of the MediaWiki
- * sites table.
+ * This class processes dump files that contain the SQL dump of the MediaWiki <a
+ * href="https://www.mediawiki.org/wiki/Manual:Sites_table">sites table</a>.
  * 
  * @author Markus Kroetzsch
  * 
