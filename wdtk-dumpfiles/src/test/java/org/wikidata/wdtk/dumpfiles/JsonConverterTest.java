@@ -148,6 +148,11 @@ public class JsonConverterTest {
 	// TODO expand test case
 	@Test
 	public void testClaims() throws JSONException, IOException {
+		// NOTE: this combines multipe sub-tests
+		// These sub-tests are grouped by the propertyId of the main snak
+		// and this way also test the proper working of the statement groups
+		// * novalue snaks, somevalue snaks
+		// * statement ranks
 
 		ItemDocument itemDocument = jsonFetcher.getItemDocumentFromResource(
 				"Item_Claims.json", "Q1", this.uut);
@@ -178,7 +183,6 @@ public class JsonConverterTest {
 	// * (entity)
 	// * Items only
 	// * claims
-	// * different ranks
 	// * different snak types
 
 }

@@ -290,29 +290,13 @@ public class TestObjectFactory {
 	}
 
 	/**
-	 * Creates a {@link Reference}.
-	 * 
-	 * <p>
-	 * ID = Ref
-	 * </p>
-	 * 
-	 * <p>
-	 * <b>DefualtValues</b>
-	 * </p>
-	 * <ul>
-	 * <li>Snak1: {@link #createValueSnakGlobeCoordinatesValue(String)
-	 * ValSnakGlCo (pId = P232)}</li>
-	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId
-	 * = 211)}</li>
-	 * </ul>
-	 * 
+	 * Creates a reference containing a value snak (string)
 	 * @return {@link Reference}
 	 */
 	public Reference createReference() {
 		List<ValueSnak> snaks = new ArrayList<ValueSnak>();
 
-		snaks.add(createValueSnakGlobeCoordinatesValue("P232"));
-		snaks.add(createValueSnakQuantityValue("P211"));
+		snaks.add(createValueSnakStringValue("P1"));
 		SnakGroup snakGroup = factory.getSnakGroup(snaks);
 
 		return factory.getReference(Collections.singletonList(snakGroup));
@@ -575,10 +559,34 @@ public class TestObjectFactory {
 		statements.add(this.createTestDefaultStatement());
 		statements.add(this.createTestRankedStatement(StatementRank.DEPRECATED));
 		statements.add(this.createTestRankedStatement(StatementRank.PREFERRED));
+		statements.add(this.createTestSomevalueStatement());
+		statements.add(this.createTestReferencedStatement());
 		
 		List<StatementGroup> result = sgBuilder.buildFromStatementList(statements);	
 		
 		return result;
+	}
+
+	private Statement createTestReferencedStatement() {
+		Statement result = factory.getStatement(
+				this.createDefaultClaim("P4"), 
+				Collections.<Reference>singletonList(this.createReference()), 
+				StatementRank.NORMAL, 
+				"referencedTestStatement");
+		return result;
+	}
+
+	private Statement createTestSomevalueStatement() {
+		Statement result = factory.getStatement(
+				this.createSomevalueClaim("P3"), 
+				Collections.<Reference>emptyList(), 
+				StatementRank.NORMAL, 
+				"somevalueTestStatement");
+		return result;
+	}
+
+	private Claim createSomevalueClaim(String pId) {
+		return this.createClaim("Q1", this.createSomeValueSnak(pId));
 	}
 
 	private Statement createTestDefaultStatement() {
