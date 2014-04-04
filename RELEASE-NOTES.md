@@ -5,11 +5,13 @@ Version 0.2.0
 -------------
 
 New features:
+* Support for resolving site links, based on information from the sites table dump
+  (as demonstrated in a new example program)
 * Support for SnakGroups (data model updated to group Snaks by property in all lists)
 
 Bug fixes:
 * Support SomeValueSnak and NoValueSnak in references (Issue #44)
-
+* Use correct site links when importing data from dumps (Issue #37)
 
 
 Version 0.1.0

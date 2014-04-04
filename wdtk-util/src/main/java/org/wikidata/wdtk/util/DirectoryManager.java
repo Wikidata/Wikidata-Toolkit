@@ -95,30 +95,22 @@ public interface DirectoryManager {
 	void createFile(String fileName, String fileContents) throws IOException;
 
 	/**
-	 * Returns an input stream to access the file of the given name within the
-	 * current directory.
+	 * Returns an input stream to access file of the given name within the
+	 * current directory, possibly uncompressing it if required.
 	 * <p>
 	 * It is important to close the stream after using it to free memory.
 	 * 
 	 * @param fileName
 	 *            the name of the file
+	 * @param compressionType
+	 *            for types other than {@link CompressionType#NONE}, the file
+	 *            will be uncompressed appropriately and the returned input
+	 *            stream will provide access to the uncompressed content
 	 * @return an InputStream to fetch data from the file
 	 * @throws IOException
 	 */
-	InputStream getInputStreamForFile(String fileName) throws IOException;
-
-	/**
-	 * Returns an input stream to access the BZIP2-compressed file of the given
-	 * name within the current directory.
-	 * <p>
-	 * It is important to close the stream after using it to free memory.
-	 * 
-	 * @param fileName
-	 *            the name of the file
-	 * @return an InputStream to fetch data from the file
-	 * @throws IOException
-	 */
-	InputStream getInputStreamForBz2File(String fileName) throws IOException;
+	InputStream getInputStreamForFile(String fileName,
+			CompressionType compressionType) throws IOException;
 
 	/**
 	 * Returns a list of the names of all subdirectories of the base directory.

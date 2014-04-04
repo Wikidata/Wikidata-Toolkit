@@ -248,18 +248,15 @@ public interface DataObjectFactory {
 	 * Creates a {@link SiteLink}.
 	 * 
 	 * @param title
-	 *            the title string of the linked article
+	 *            the title string of the linked page, including namespace
+	 *            prefixes if any
 	 * @param siteKey
 	 *            the string key of the site of the linked article
-	 * @param baseIri
-	 *            the string key of the site of the linked article; this might
-	 *            be computed from the site key in the future
 	 * @param badges
 	 *            the list of badges of the linked article
 	 * @return a {@link SiteLink} corresponding to the input
 	 */
-	SiteLink getSiteLink(String title, String siteKey, String baseIri,
-			List<String> badges);
+	SiteLink getSiteLink(String title, String siteKey, List<String> badges);
 
 	/**
 	 * Creates a {@link PropertyDocument}.
