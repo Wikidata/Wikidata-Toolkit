@@ -69,6 +69,20 @@ public class JsonConverterTest {
 
 		assertEquals(propertyDocument, emptyPropertyDocument);
 	}
+	
+	@Test
+	public void testPropertyWithStringEntity() throws JSONException, IOException {
+		// this tests an alternative description equivalent to an empty property
+		
+		PropertyDocument propertyDocument = jsonFetcher
+				.getPropertyDocumentFromResource("Property_StringEntity.json", "P1",
+						this.uut);
+
+		PropertyDocument emptyPropertyDocument = testObjectFactory
+				.createEmptyPropertyDocument(BASE_IRI);
+
+		assertEquals(propertyDocument, emptyPropertyDocument);
+	}
 
 	@Test
 	public void testEmptyItem() throws JSONException, IOException {
