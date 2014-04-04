@@ -69,5 +69,10 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 
 		return this.propertyId.equals(((NoValueSnak) obj).getPropertyId());
 	}
+	
+	@Override
+	public String toString(){
+		return "NoValueSnak {pId = " + this.propertyId + "}";
+	}
 
 }

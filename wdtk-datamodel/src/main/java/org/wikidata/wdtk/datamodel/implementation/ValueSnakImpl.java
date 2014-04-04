@@ -84,5 +84,10 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 		return this.propertyId.equals(((ValueSnak) obj).getPropertyId())
 				&& this.value.equals(((ValueSnak) obj).getValue());
 	}
+	
+	@Override
+	public String toString(){
+		return "ValueSnak {pId = " + this.propertyId + ", value = " + this.value + "}";
+	}
 
 }

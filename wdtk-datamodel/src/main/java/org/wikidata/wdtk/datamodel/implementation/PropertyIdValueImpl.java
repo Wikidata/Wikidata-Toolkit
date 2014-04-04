@@ -58,4 +58,9 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 		return EntityIdValue.ET_PROPERTY;
 	}
 
+	@Override
+	public String toString(){
+		return "(PropertyId)" + this.baseIri +"/"+ this.id;
+	}
+	
 }

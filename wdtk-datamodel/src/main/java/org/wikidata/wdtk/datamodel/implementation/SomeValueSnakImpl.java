@@ -63,5 +63,8 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 
 		return this.propertyId.equals(((SomeValueSnak) obj).getPropertyId());
 	}
-
+	@Override
+	public String toString(){
+		return "SomeValueSnak {pId = " + this.propertyId + "}";
+	}
 }
