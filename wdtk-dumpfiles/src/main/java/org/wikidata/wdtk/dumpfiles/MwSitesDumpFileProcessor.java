@@ -46,6 +46,12 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 
 	final SitesImpl sites = new SitesImpl();
 
+	/**
+	 * Returns the information about sites that has been extracted from the dump
+	 * file(s) processed earlier.
+	 * 
+	 * @return the sites information
+	 */
 	public Sites getSites() {
 		return this.sites;
 	}
@@ -127,11 +133,9 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 			if (valuePosition && "file_path".equals(prevString)
 					&& "/paths".equals(path)) {
 				filePath = curString;
-				// System.out.println("Found file path: " + curString);
 			} else if (valuePosition && "page_path".equals(prevString)
 					&& "/paths".equals(path)) {
 				pagePath = curString;
-				// System.out.println("Found page path: " + curString);
 			}
 
 			prevString = curString;
@@ -143,13 +147,6 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 				+ "\", type \"" + row[2] + "\")");
 		this.sites.setSiteInformation(row[1], row[3], row[5], row[2], "http:"
 				+ filePath, "http:" + pagePath);
-		//
-		// // System.out.println("Line: " + siteRow);
-		// System.out.println("Key: " + row[1]);
-		// System.out.println("  Language: " + row[5]);
-		// System.out.println("  Group: " + row[3]);
-		// System.out.println("  Page path: " + "http:" + pagePath);
-		// System.out.println("  File path: " + "http:" + filePath);
 	}
 
 	/**
