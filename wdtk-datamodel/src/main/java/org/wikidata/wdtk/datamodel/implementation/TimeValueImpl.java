@@ -202,4 +202,11 @@ public class TimeValueImpl implements TimeValue {
 				&& this.calendarModel.equals(other.calendarModel);
 	}
 
+	@Override
+	public String toString(){
+		return "(Time)" + this.year + "-" + this.month + "-" + this.day + ", "
+				+ this.hour + ":" + this.minute + ":" + this.second + "h (-"
+				+ this.beforeTolerance + ", +" + this.afterTolerance + ") timezone = "
+				+ this.timezoneOffset + " (" + this.calendarModel + ")";
+	}
 }
