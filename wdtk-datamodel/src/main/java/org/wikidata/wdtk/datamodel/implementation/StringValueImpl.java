@@ -83,4 +83,9 @@ public class StringValueImpl implements StringValue {
 		return string.equals(((StringValueImpl) obj).string);
 	}
 
+	@Override
+	public String toString(){
+		return "(String)"+ this.string;
+	}
+	
 }

@@ -123,5 +123,12 @@ public class QuantityValueImpl implements QuantityValue {
 				&& lowerBound.equals(other.lowerBound)
 				&& upperBound.equals(other.upperBound);
 	}
+	
+	@Override
+	public String toString(){
+		return "(Quantity)" + this.lowerBound 
+				+ " <= " + this.numericValue 
+				+ " <= " + this.upperBound;
+	}
 
 }

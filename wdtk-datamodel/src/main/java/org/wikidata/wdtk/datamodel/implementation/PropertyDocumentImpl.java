@@ -117,5 +117,15 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 		return datatypeId.equals(other.datatypeId)
 				&& propertyId.equals(other.propertyId);
 	}
+	
+	@Override
+	public String toString(){
+		return "PropertyDocument {pId = " + this.propertyId 
+				+ ", " + this.labels.size() + " labels, "
+				+ this.descriptions.size() + " descriptions, "
+				+ this.aliases.size() + " aliases, "
+				+ "datatype = " + this.datatypeId 
+				+ "}";
+	}
 
 }
