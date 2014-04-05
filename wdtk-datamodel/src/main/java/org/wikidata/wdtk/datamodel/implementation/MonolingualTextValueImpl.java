@@ -92,4 +92,8 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 				&& this.languageCode.equals(other.languageCode);
 	}
 
+	@Override
+	public String toString(){
+		return this.text + " (" + this.languageCode + ")";
+	}
 }

@@ -80,4 +80,8 @@ public class ReferenceImpl implements Reference {
 		return other.snakGroups.equals(this.snakGroups);
 	}
 
+	@Override
+	public String toString(){
+		return this.snakGroups.toString();
+	}
 }

@@ -70,4 +70,9 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 		return snakVisitor.visit(this);
 	}
 
+	@Override
+	public String toString(){
+		return "SomeValueSnak {pId = " + this.propertyId + "}";
+	}
+
 }

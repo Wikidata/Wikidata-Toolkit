@@ -97,5 +97,8 @@ public class SnakGroupImpl implements SnakGroup {
 		SnakGroupImpl other = (SnakGroupImpl) obj;
 		return this.snaks.equals(other.snaks);
 	}
-
+	@Override
+	public String toString(){
+		return "SnakGroup {pId = " + this.getProperty() + ", " + this.snaks.size() + " snaks}";
+	}
 }

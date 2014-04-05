@@ -153,4 +153,10 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 				&& longitude == other.longitude && precision == other.precision;
 	}
 
+	@Override
+	public String toString(){
+		return "(Coordinate)" + this.latitude + "°N, " + this.longitude + "°E (±" 
+				+ this.precision + ") " + this.globeIri;
+	}
+	
 }
