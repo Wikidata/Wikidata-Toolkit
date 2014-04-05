@@ -406,17 +406,24 @@ public class JsonConverter {
 
 		// iterate over all the statements in the item and decompose them
 		for (int i = 0; i < jsonStatements.length(); i++) {
-			
+
 			// snak conversion might fail
 			// so gracefully skip them and log a debug message
 			JSONObject statementJson = jsonStatements.getJSONObject(i);
 			try { // only conversion exceptions are to be caught
-			Statement statement = this.getStatement(statementJson,
-					entityIdValue);
-			statementsFromJson.add(statement);
-			} catch( IllegalArgumentException | JSONException e){
-				logger.debug("Encountered an exception during statement parsing:\n"
-						+ e.getMessage() + "\nIn statement\n" + statementJson.toString(2));
+				Statement statement = this.getStatement(statementJson,
+						entityIdValue);
+				statementsFromJson.add(statement);
+			} catch (IllegalArgumentException e) {
+				logger.debug("Encountered an illegal argument exception during statement parsing:\n"
+						+ e.getMessage()
+						+ "\nIn statement\n"
+						+ statementJson.toString(2));
+			} catch (JSONException e) {
+				logger.debug("Encountered a JSON exception during statement parsing:\n"
+						+ e.getMessage()
+						+ "\nIn statement\n"
+						+ statementJson.toString(2));
 			}
 		}
 
