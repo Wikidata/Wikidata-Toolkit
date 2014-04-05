@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link GlobeCoordinatesValue}.
@@ -103,6 +104,11 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 		return globeIri;
 	}
 
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,10 +153,4 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 				&& longitude == other.longitude && precision == other.precision;
 	}
 
-	@Override
-	public String toString(){
-		return "(Coordinate)" + this.latitude + "°N, " + this.longitude + "°E (±" 
-				+ this.precision + ") " + this.globeIri;
-	}
-	
 }

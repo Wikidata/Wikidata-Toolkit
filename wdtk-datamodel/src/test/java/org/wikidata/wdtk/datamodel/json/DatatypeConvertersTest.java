@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.jsonconverter;
+package org.wikidata.wdtk.datamodel.json;
 
 /*
  * #%L
@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.json.DatatypeConverters;
 
 public class DatatypeConvertersTest {
 

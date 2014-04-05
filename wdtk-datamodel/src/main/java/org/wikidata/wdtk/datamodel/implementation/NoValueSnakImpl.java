@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
 /**
  * Implementation of {@link NoValueSnak}.
@@ -38,6 +39,11 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 	 */
 	NoValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);
+	}
+
+	@Override
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
 	}
 
 	/*
@@ -68,11 +74,6 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 		}
 
 		return this.propertyId.equals(((NoValueSnak) obj).getPropertyId());
-	}
-	
-	@Override
-	public String toString(){
-		return "NoValueSnak {pId = " + this.propertyId + "}";
 	}
 
 }

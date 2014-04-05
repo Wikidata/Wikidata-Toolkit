@@ -21,33 +21,41 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * Snaks are the basic information structures used to describe Entities in
- * Wikibase. They are an integral part of each {@link Statement} (which can be
- * viewed as collection of Snaks about an Entity, together with a list of
- * references).
- * <p>
- * The most basic (and most common) form of Snaks are property-value pairs, but
- * other forms exist.
+ * A visitor for the various types of snaks in the datamodel. This should be
+ * used to avoid any type casting or instanceof checks when processing snaks.
  * 
  * @author Markus Kroetzsch
  * 
+ * @param <T>
+ *            the return type of the visitor
  */
-public interface Snak {
+public interface SnakVisitor<T> {
 
 	/**
-	 * Get the id of the property that this snak refers to.
+	 * Visits a ValueSnak and returns a result.
 	 * 
-	 * @return PropertyId of this Snak
+	 * @param snak
+	 *            the snak to visit
+	 * @return the result for this snak
 	 */
-	PropertyIdValue getPropertyId();
+	T visit(ValueSnak snak);
 
 	/**
-	 * Accept a SnakVisitor and return its output.
+	 * Visits a SomeValueSnak and returns a result.
 	 * 
-	 * @param snakVisitor
-	 *            the SnakVisitor
-	 * @return output of the visitor
+	 * @param snak
+	 *            the snak to visit
+	 * @return the result for this snak
 	 */
-	<T> T accept(SnakVisitor<T> snakVisitor);
+	T visit(SomeValueSnak snak);
+
+	/**
+	 * Visits a NoValueSnak and returns a result.
+	 * 
+	 * @param snak
+	 *            the snak to visit
+	 * @return the result for this snak
+	 */
+	T visit(NoValueSnak snak);
 
 }

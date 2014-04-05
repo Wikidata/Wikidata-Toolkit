@@ -108,12 +108,5 @@ public class ClaimImpl implements Claim {
 				&& this.mainSnak.equals(other.mainSnak)
 				&& this.qualifiers.equals(other.qualifiers);
 	}
-	
-	@Override
-	public String toString(){
-		return "Claim { main snak = " + this.mainSnak
-				+ ", subject = " + this.subject + ", " 
-				+ this.qualifiers.size() + " qualifiers}";
-	}
 
 }

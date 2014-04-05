@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -51,6 +52,11 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	@Override
 	public Value getValue() {
 		return value;
+	}
+
+	@Override
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
 	}
 
 	/*
@@ -83,11 +89,6 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 		return this.propertyId.equals(((ValueSnak) obj).getPropertyId())
 				&& this.value.equals(((ValueSnak) obj).getValue());
-	}
-	
-	@Override
-	public String toString(){
-		return "ValueSnak {pId = " + this.propertyId + ", value = " + this.value + "}";
 	}
 
 }

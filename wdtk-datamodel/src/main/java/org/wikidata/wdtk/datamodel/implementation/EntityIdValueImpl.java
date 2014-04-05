@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Generic implementation of {@link EntityIdValue} that works with arbitrary
@@ -70,6 +71,11 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 		return id;
 	}
 
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -101,5 +107,5 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 		EntityIdValueImpl other = (EntityIdValueImpl) obj;
 		return id.equals(other.id) && baseIri.equals(other.baseIri);
 	}
-	
+
 }

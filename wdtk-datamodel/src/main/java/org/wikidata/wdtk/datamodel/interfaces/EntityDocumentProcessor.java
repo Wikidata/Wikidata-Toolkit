@@ -1,8 +1,8 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
- * Wikidata Toolkit Dump File Handling
+ * Wikidata Toolkit Data Model
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
@@ -20,10 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-
 /**
  * Interface for classes that are able to process {@link EntityDocument} objects
  * in some way. Classes that implement this can subscribe to receive entity
@@ -40,7 +36,7 @@ public interface EntityDocumentProcessor {
 	 * @param itemDocument
 	 *            the ItemDocument
 	 */
-	public void processItemDocument(ItemDocument itemDocument);
+	void processItemDocument(ItemDocument itemDocument);
 
 	/**
 	 * Processes the given PropertyDocument.
@@ -48,13 +44,13 @@ public interface EntityDocumentProcessor {
 	 * @param propertyDocument
 	 *            the PropertyDocument
 	 */
-	public void processPropertyDocument(PropertyDocument propertyDocument);
+	void processPropertyDocument(PropertyDocument propertyDocument);
 
 	/**
 	 * Performs final actions that should be done after all entity documents in
-	 * a batch of entity documents have been processed. This is usually called
-	 * after a whole dumpfile was completely processed.
+	 * a batch of entity documents have been processed. For example, this might
+	 * be called after a whole dumpfile was completely processed.
 	 */
-	public void finishProcessingEntityDocuments();
+	void finishProcessingEntityDocuments();
 
 }

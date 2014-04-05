@@ -56,9 +56,5 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 	public String getEntityType() {
 		return EntityIdValue.ET_ITEM;
 	}
-	
-	@Override
-	public String toString(){
-		return "(ItemId)" + this.baseIri +"/"+ this.id;
-	}
+
 }

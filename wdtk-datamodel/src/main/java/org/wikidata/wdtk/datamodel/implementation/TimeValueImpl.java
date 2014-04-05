@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link TimeValue}.
@@ -149,6 +150,11 @@ public class TimeValueImpl implements TimeValue {
 		return this.afterTolerance;
 	}
 
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -196,11 +202,4 @@ public class TimeValueImpl implements TimeValue {
 				&& this.calendarModel.equals(other.calendarModel);
 	}
 
-	@Override
-	public String toString(){
-		return "(Time)" + this.year + "-" + this.month + "-" + this.day + ", "
-				+ this.hour + ":" + this.minute + ":" + this.second + "h (-"
-				+ this.beforeTolerance + ", +" + this.afterTolerance + ") timezone = "
-				+ this.timezoneOffset + " (" + this.calendarModel + ")";
-	}
 }
