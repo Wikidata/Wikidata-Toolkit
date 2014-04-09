@@ -232,7 +232,7 @@ public class JsonConverter {
 			result.put(JsonConstants.KEY_QUALIFIERS,
 					convertQualifiersToJson(claim.getQualifiers()));
 			result.put(JsonConstants.KEY_QUALIFIERS_ORDER, order);
-			for (SnakGroup snakGroup : claim.getQualifiers()){
+			for (SnakGroup snakGroup : claim.getQualifiers()) {
 				order.put(snakGroup.getProperty().getId());
 			}
 		}
@@ -279,9 +279,7 @@ public class JsonConverter {
 	JSONObject getJsonForStatement(Statement statement) {
 		JSONObject result = new JSONObject();
 		JSONArray order = new JSONArray();
-		
 		result = getJsonForClaim(statement.getClaim());
-		
 		result.put(JsonConstants.KEY_ID, statement.getStatementId());
 		result.put(JsonConstants.KEY_TYPE, "statement");
 		result.put("rank", convertStatementRankToJson(statement.getRank()));
