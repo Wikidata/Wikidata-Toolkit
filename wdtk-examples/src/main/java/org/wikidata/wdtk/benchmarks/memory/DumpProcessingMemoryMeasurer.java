@@ -58,7 +58,7 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 public class DumpProcessingMemoryMeasurer {
 
 	/** Number of entities processed between reports. */
-	public static final long REPORT_FREQUENCY = 10;
+	public static final long REPORT_FREQUENCY = 100000;
 
 	/** The string "wikidatawiki" identifies Wikidata.org */
 	public static final String WIKIDATAWIKI = "wikidatawiki";
