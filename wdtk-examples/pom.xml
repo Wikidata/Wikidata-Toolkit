@@ -36,7 +36,7 @@
 			<artifactId>wdtk-storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency> 
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.6</version>
@@ -54,6 +54,37 @@
 				<configuration combine.self="override">
 					<skip>true</skip>
 					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-classpath</argument>
+						<classpath />
+						<argument>-javaagent:${project.build.directory}/${project.artifactId}-${project.version}.jar</argument>
+						<argument>org.wikidata.wdtk.benchmarks.memory.DumpProcessingMemoryMeasurer</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>org.wikidata.wdtk.benchmarks.memory.DumpProcessingMemoryMeasurer</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Premain-Class>org.wikidata.wdtk.benchmarks.memory.MemoryMeasurer</Premain-Class>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
