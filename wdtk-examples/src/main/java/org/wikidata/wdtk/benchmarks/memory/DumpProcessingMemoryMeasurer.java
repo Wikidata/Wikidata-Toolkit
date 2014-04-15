@@ -21,6 +21,7 @@ package org.wikidata.wdtk.benchmarks.memory;
  */
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -183,6 +184,8 @@ public class DumpProcessingMemoryMeasurer {
 	 */
 	static class ItemStatisticsProcessor implements EntityDocumentProcessor {
 
+		Date start = new Date();
+
 		long countEntities = 0;
 		long countProperties = 0;
 		long countItems = 0;
@@ -217,7 +220,7 @@ public class DumpProcessingMemoryMeasurer {
 			this.countEntities++;
 
 			if (this.countEntities % REPORT_FREQUENCY == 0) {
-				System.out.println(getReport());
+				System.out.println("(counting item)" + getReport());
 			}
 		}
 
@@ -238,13 +241,13 @@ public class DumpProcessingMemoryMeasurer {
 			this.countEntities++;
 
 			if (this.countEntities % REPORT_FREQUENCY == 0) {
-				System.out.println(getReport());
+				System.out.println("(counting property)" + getReport());
 			}
 		}
 
 		@Override
 		public void finishProcessingEntityDocuments() {
-			System.out.println(getReport());
+			System.out.println("(finishing entity document)" + getReport());
 		}
 
 		/**
@@ -252,26 +255,36 @@ public class DumpProcessingMemoryMeasurer {
 		 */
 		private String getReport() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("\nEntities: " + this.countEntities);
-			sb.append("\n * Items: " + this.countItems);
-			sb.append("\n * Properties: " + this.countProperties);
-			sb.append("\n * Labels: " + this.countLabels);
-			sb.append("\n * Descriptions: " + this.countDescriptions);
-			sb.append("\n * Aliases: " + this.countAliases);
-			sb.append("\n * Statements: " + this.countStatements);
-			sb.append("\n * Site links: " + this.countSiteLinks);
-			sb.append("\n * Memory usage (in bytes): "
-					+ this.sizeOfUsedMemory.getSizeOfEntity());
-			sb.append("\n * Memory usage of chars (in bytes): "
-					+ this.sizeOfUsedMemory.getSizeOfChars());
+			sb.append("\nEntities: ");
+			sb.append(this.countEntities);
+			sb.append("\n * Items: ");
+			sb.append(this.countItems);
+			sb.append("\n * Properties: ");
+			sb.append(this.countProperties);
+			sb.append("\n * Labels: ");
+			sb.append(this.countLabels);
+			sb.append("\n * Descriptions: ");
+			sb.append(this.countDescriptions);
+			sb.append("\n * Aliases: ");
+			sb.append(this.countAliases);
+			sb.append("\n * Statements: ");
+			sb.append(this.countStatements);
+			sb.append("\n * Site links: ");
+			sb.append(this.countSiteLinks);
+			sb.append("\n * Memory usage (in bytes): ");
+			sb.append(this.sizeOfUsedMemory.getSizeOfEntity());
+			sb.append("\n * Memory usage of chars (in bytes): ");
+			sb.append(this.sizeOfUsedMemory.getSizeOfChars());
 			sb.append("\n * Details of memory usage: ");
-			sb.append("\n    - by entities: "
-					+ this.sizeOfUsedMemory.toString());
-			sb.append("\n    - by items: "
-					+ this.sizeOfUsedMemoryByItems.toString());
-			sb.append("\n    - by properties: "
-					+ this.sizeOfUsedMemoryByProperties.toString());
-			sb.append("\n\n");
+			sb.append("\n    - by entities: ");
+			sb.append(this.sizeOfUsedMemory.toString());
+			sb.append("\n    - by items: ");
+			sb.append(this.sizeOfUsedMemoryByItems.toString());
+			sb.append("\n    - by properties: ");
+			sb.append(this.sizeOfUsedMemoryByProperties.toString());
+			sb.append("\n * Elapsed time: ");
+			sb.append(((new Date()).getTime() - start.getTime()));
+			sb.append(" ms\n\n");
 			return sb.toString();
 		}
 	}
