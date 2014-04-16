@@ -34,6 +34,7 @@ import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 public class MockDirectoryManagerTest {
@@ -50,6 +51,9 @@ public class MockDirectoryManagerTest {
 		mdm.setFileContents(
 				basePath.resolve("anotherdir").resolve("test.txt.bz2"),
 				"Test BZ2 contents\nMore contents");
+		mdm.setFileContents(
+				basePath.resolve("anotherdir").resolve("test.txt.gz"),
+				"Test GZIP contents");
 	}
 
 	@Test
@@ -93,8 +97,8 @@ public class MockDirectoryManagerTest {
 	public void readFile() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
 		String content = MockStringContentFactory
-				.getStringFromInputStream(submdm
-						.getInputStreamForFile("test.txt"));
+				.getStringFromInputStream(submdm.getInputStreamForFile(
+						"test.txt", CompressionType.NONE));
 		assertEquals(content, "Test contents");
 	}
 
@@ -102,9 +106,18 @@ public class MockDirectoryManagerTest {
 	public void readBz2File() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
 		String content = MockStringContentFactory
-				.getStringFromInputStream(submdm
-						.getInputStreamForBz2File("test.txt.bz2"));
+				.getStringFromInputStream(submdm.getInputStreamForFile(
+						"test.txt.bz2", CompressionType.BZ2));
 		assertEquals(content, "Test BZ2 contents\nMore contents");
+	}
+
+	@Test
+	public void readGzipFile() throws IOException {
+		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
+		String content = MockStringContentFactory
+				.getStringFromInputStream(submdm.getInputStreamForFile(
+						"test.txt.gz", CompressionType.GZIP));
+		assertEquals(content, "Test GZIP contents");
 	}
 
 	@Test
@@ -113,7 +126,7 @@ public class MockDirectoryManagerTest {
 				.newMockInputStream("New stream contents\nMultiple lines");
 		mdm.createFile("newfile.txt", inputStream);
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
-				.getInputStreamForFile("newfile.txt"));
+				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
 		assertEquals(content, "New stream contents\nMultiple lines");
 	}
 
@@ -121,7 +134,7 @@ public class MockDirectoryManagerTest {
 	public void createFileFromString() throws IOException {
 		mdm.createFile("newfile.txt", "New contents");
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
-				.getInputStreamForFile("newfile.txt"));
+				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
 		assertEquals(content, "New contents");
 	}
 
@@ -129,7 +142,8 @@ public class MockDirectoryManagerTest {
 	public void readFileFails() throws IOException {
 		mdm.setReturnFailingReaders(true);
 		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		InputStream in = submdm.getInputStreamForFile("test.txt");
+		InputStream in = submdm.getInputStreamForFile("test.txt",
+				CompressionType.NONE);
 		// We do not use @Test(expected = IOException.class) in order to check
 		// if the exception is really thrown at the right moment.
 		boolean exception = false;
@@ -149,18 +163,30 @@ public class MockDirectoryManagerTest {
 
 	@Test(expected = FileNotFoundException.class)
 	public void fileNotFound() throws IOException {
-		mdm.getInputStreamForFile("test.txt");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void readOnlyNonBz2Files() throws IOException {
-		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
-		submdm.getInputStreamForBz2File("test.txt");
+		mdm.getInputStreamForFile("test.txt", CompressionType.NONE);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void bunzipOnlyBz2Files() throws IOException {
+		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
+		submdm.getInputStreamForFile("test.txt", CompressionType.BZ2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void gunzipOnlyGzipFiles() throws IOException {
+		DirectoryManager submdm = mdm.getSubdirectoryManager("dir2");
+		submdm.getInputStreamForFile("test.txt", CompressionType.GZIP);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void readOnlyNonBz2Files() throws IOException {
 		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
-		submdm.getInputStreamForFile("test.txt.bz2");
+		submdm.getInputStreamForFile("test.txt.bz2", CompressionType.NONE);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void readOnlyNonGzipFiles() throws IOException {
+		DirectoryManager submdm = mdm.getSubdirectoryManager("anotherdir");
+		submdm.getInputStreamForFile("test.txt.gz", CompressionType.NONE);
 	}
 }

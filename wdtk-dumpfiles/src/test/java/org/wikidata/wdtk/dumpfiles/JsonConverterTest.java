@@ -166,11 +166,10 @@ public class JsonConverterTest {
 		statementGroups.add(this.factory.getStatementGroup(statements));
 
 		Map<String, SiteLink> siteLinks = new HashMap<>();
-		List<String> badges = new LinkedList<>();
-		String siteKey = "enwiki";
-		String title = "test";
-		siteLinks.put("enwiki",
-				this.factory.getSiteLink(title, siteKey, "", badges));
+		siteLinks.put(
+				"enwiki",
+				this.factory.getSiteLink("test", "enwiki",
+						Collections.<String> emptyList()));
 
 		ItemDocument document = this.factory.getItemDocument(itemIdValue,
 				labels, descriptions, aliases, statementGroups, siteLinks);

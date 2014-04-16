@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
@@ -97,9 +98,12 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
-		return this.localDumpfileDirectoryManager
-				.getInputStreamForBz2File(WmfDumpFile.getDumpFileName(
-						this.dumpContentType, this.projectName, this.dateStamp));
+		String dumpFileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
+				this.projectName, this.dateStamp);
+
+		return this.localDumpfileDirectoryManager.getInputStreamForFile(
+				dumpFileName,
+				WmfDumpFile.getDumpFileCompressionType(this.dumpContentType));
 	}
 
 	@Override
@@ -109,9 +113,14 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
+		if (!WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
+			return -1L;
+		}
+
 		String inputLine;
 		try (InputStream in = this.localDumpfileDirectoryManager
-				.getInputStreamForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID)) {
+				.getInputStreamForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
+						CompressionType.NONE)) {
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(in, StandardCharsets.UTF_8));
 			inputLine = bufferedReader.readLine();
@@ -135,7 +144,8 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 		return this.localDumpfileDirectoryManager.hasFile(WmfDumpFile
 				.getDumpFileName(this.dumpContentType, this.projectName,
 						this.dateStamp))
-				&& this.getMaximalRevisionId() >= 0;
+				&& (this.getMaximalRevisionId() >= 0 || !WmfDumpFile
+						.isRevisionDumpFile(this.dumpContentType));
 	}
 
 }

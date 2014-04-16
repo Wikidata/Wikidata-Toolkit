@@ -66,8 +66,8 @@ public class ItemDocumentImplTest {
 				StatementRank.NORMAL, "MyId");
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
 		statementGroups = Collections.singletonList(sg);
+
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
-				"http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 		sitelinks = Collections.singletonMap("enwiki", sl);
 

@@ -168,7 +168,7 @@ public class MwDumpFileProcessingTest {
 		TestMwRevisionProcessor tmrpAll = new TestMwRevisionProcessor();
 		mwrpBroker.registerMwRevisionProcessor(tmrpAll, null, false);
 
-		MwDumpFileProcessorImpl mwdfp = new MwDumpFileProcessorImpl(mwrpBroker);
+		MwRevisionDumpFileProcessor mwdfp = new MwRevisionDumpFileProcessor(mwrpBroker);
 		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
 
 		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
@@ -189,7 +189,7 @@ public class MwDumpFileProcessingTest {
 		TestMwRevisionProcessor tmrpAll = new TestMwRevisionProcessor();
 		mwrpBroker.registerMwRevisionProcessor(tmrpAll, null, false);
 
-		MwDumpFileProcessorImpl mwdfp = new MwDumpFileProcessorImpl(mwrpBroker);
+		MwRevisionDumpFileProcessor mwdfp = new MwRevisionDumpFileProcessor(mwrpBroker);
 		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
 
 		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
@@ -221,7 +221,7 @@ public class MwDumpFileProcessingTest {
 		mwrpBroker.registerMwRevisionProcessor(tmrpAllItems, "wikibase-item",
 				false);
 
-		MwDumpFileProcessorImpl mwdfp = new MwDumpFileProcessorImpl(mwrpBroker);
+		MwRevisionDumpFileProcessor mwdfp = new MwRevisionDumpFileProcessor(mwrpBroker);
 		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
 
 		List<MwRevision> revisionsAllItems = new ArrayList<MwRevision>();

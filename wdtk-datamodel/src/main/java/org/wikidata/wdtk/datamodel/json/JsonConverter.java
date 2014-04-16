@@ -321,7 +321,7 @@ public class JsonConverter {
 	JSONObject getJsonForSiteLink(SiteLink link) {
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
-		result.put(JsonConstants.KEY_TITLE, link.getArticleTitle());
+		result.put(JsonConstants.KEY_TITLE, link.getPageTitle());
 		result.put("badges", new JSONArray()); // always empty at the moment
 		return result;
 	}

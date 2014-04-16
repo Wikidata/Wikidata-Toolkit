@@ -23,7 +23,6 @@ package org.wikidata.wdtk.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Standard implementation of {@link WebResourceFetcher}.
@@ -32,34 +31,11 @@ import java.util.zip.GZIPInputStream;
  * 
  */
 public class WebResourceFetcherImpl implements WebResourceFetcher {
-
-	// @Override
-	// public BufferedReader getBufferedReaderForUrl(String urlString)
-	// throws IOException {
-	// return new BufferedReader(new InputStreamReader(
-	// this.getInputStreamForUrl(urlString), StandardCharsets.UTF_8));
-	// }
-	//
-	// @Override
-	// public BufferedReader getBufferedReaderForGzipUrl(String urlString)
-	// throws IOException {
-	// return new BufferedReader(new InputStreamReader(
-	// this.getInputStreamForGzipUrl(urlString),
-	// StandardCharsets.UTF_8));
-	// }
-
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
 		return url.openStream();
-	}
-
-	@Override
-	public InputStream getInputStreamForGzipUrl(String urlString)
-			throws IOException {
-		URL url = new URL(urlString);
-		return new GZIPInputStream(url.openStream());
 	}
 
 }

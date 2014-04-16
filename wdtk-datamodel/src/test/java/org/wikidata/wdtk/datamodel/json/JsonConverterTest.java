@@ -41,7 +41,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.JsonConverter;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class JsonConverterTest {
@@ -53,7 +52,7 @@ public class JsonConverterTest {
 	final static String FILE_NAME_REFERENCE = "Reference.json";
 
 	final static String JSON_EMPTY_PROPERTY_DOCUMENT = "{\"id\":\"P42\",\"title\":\"P42\",\"type\":\"property\"}";
-	final static String JSON_SITE_LINK = "{\"site\":\"siteKey\",\"badges\":[],\"title\":\"title\"}";
+	final static String JSON_SITE_LINK = "{\"site\":\"enwiki\",\"badges\":[],\"title\":\"title\"}";
 
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 	final TestObjectFactory testObjectFactory = new TestObjectFactory();
@@ -161,7 +160,6 @@ public class JsonConverterTest {
 	@Test
 	public void testReference() throws JSONException, IOException {
 		Reference ref = testObjectFactory.createReference();
-		System.out.println(jsonConverter.getJsonForReference(ref));
 		JsonResultComparer.compareJSONObjects(
 				jsonConverter.getJsonForReference(ref),
 				getResourceFromFile(FILE_NAME_REFERENCE));
@@ -187,11 +185,10 @@ public class JsonConverterTest {
 
 	@Test
 	public void testSiteLinks() {
-		SiteLink siteLink = dataObjectFactory.getSiteLink("title", "siteKey",
-				"baseIri", Collections.<String> emptyList());
+		SiteLink siteLink = dataObjectFactory.getSiteLink("title", "enwiki",
+				Collections.<String> emptyList());
 		JsonResultComparer.compareJSONObjects(jsonConverter
 				.getJsonForSiteLink(siteLink), new JSONObject(JSON_SITE_LINK));
-
 	}
 
 }
