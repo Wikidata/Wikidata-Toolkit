@@ -126,14 +126,16 @@ public class DumpProcessingMemoryMeasurer {
 	 * @return dump file processor
 	 */
 	private static MwDumpFileProcessor createDumpFileProcessor() {
-		EntityDocumentProcessor edpItemStats = new ItemStatisticsProcessor();
-		MwRevisionProcessor rpItemStats = new WikibaseRevisionProcessor(
-				edpItemStats);
+		EntityDocumentProcessor edpEntityStats = new EntityStatisticsProcessor();
+		MwRevisionProcessor rpEntityStats = new WikibaseRevisionProcessor(
+				edpEntityStats);
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
 				"revision processing statistics", (int) REPORT_FREQUENCY);
 		MwRevisionProcessorBroker rpBroker = new MwRevisionProcessorBroker();
-		rpBroker.registerMwRevisionProcessor(rpItemStats,
+		rpBroker.registerMwRevisionProcessor(rpEntityStats,
 				MwRevision.MODEL_WIKIBASE_ITEM, true);
+		rpBroker.registerMwRevisionProcessor(rpEntityStats,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 		rpBroker.registerMwRevisionProcessor(rpRevisionStats, null, true);
 		return new MwDumpFileProcessorImpl(rpBroker);
 	}
@@ -182,7 +184,7 @@ public class DumpProcessingMemoryMeasurer {
 	 * @author Julian Mendez
 	 * 
 	 */
-	static class ItemStatisticsProcessor implements EntityDocumentProcessor {
+	static class EntityStatisticsProcessor implements EntityDocumentProcessor {
 
 		Date start = new Date();
 
@@ -255,7 +257,7 @@ public class DumpProcessingMemoryMeasurer {
 		 */
 		private String getReport() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("\nEntities: ");
+			sb.append("\n * Entities: ");
 			sb.append(this.countEntities);
 			sb.append("\n * Items: ");
 			sb.append(this.countItems);
