@@ -48,6 +48,15 @@ import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
+/**
+ * This class shows how to produce dumpfiles from wikidata.org to read out the
+ * data and put it out into a json-representation. The json data will be written
+ * into a file named WikiDataDump.json. You can find it in the example directory
+ * after you ran the example code.
+ * 
+ * @author Michael Günther
+ * 
+ */
 public class JsonSerialisationExample {
 
 	public static void main(String[] args) throws IOException {
