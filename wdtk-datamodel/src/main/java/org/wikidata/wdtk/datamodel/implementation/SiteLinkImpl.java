@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,48 +40,37 @@ public class SiteLinkImpl implements SiteLink {
 
 	final String title;
 	final String siteKey;
-	final String baseIri;
 	final List<String> badges;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param title
+	 *            the title string of the linked page, including namespace
+	 *            prefixes if any
 	 * @param siteKey
-	 * @param baseIri
+	 *            the string key of the site of the linked article
 	 * @param badges
+	 *            the list of badges of the linked article
 	 */
-	SiteLinkImpl(String title, String siteKey, String baseIri,
-			List<String> badges) {
+	SiteLinkImpl(String title, String siteKey, List<String> badges) {
 		Validate.notNull(title, "title cannot be null");
 		Validate.notNull(siteKey, "siteKey cannot be null");
-		Validate.notNull(baseIri, "base IRI cannot be null");
 		Validate.notNull(badges, "list of badges cannot be null");
 
 		this.title = title;
 		this.siteKey = siteKey;
-		this.baseIri = baseIri;
 		this.badges = badges;
 	}
 
 	@Override
-	public String getArticleTitle() {
+	public String getPageTitle() {
 		return title;
 	}
 
 	@Override
 	public String getSiteKey() {
 		return siteKey;
-	}
-
-	@Override
-	public String getUrl() {
-		try {
-			return baseIri.concat(URLEncoder.encode(title, "utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(
-					"Your JRE does not support UTF-8 encoding. Srsly?!", e);
-		}
 	}
 
 	@Override
@@ -100,7 +87,6 @@ public class SiteLinkImpl implements SiteLink {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + baseIri.hashCode();
 		result = prime * result + badges.hashCode();
 		result = prime * result + siteKey.hashCode();
 		result = prime * result + title.hashCode();
@@ -124,14 +110,13 @@ public class SiteLinkImpl implements SiteLink {
 			return false;
 		}
 		SiteLinkImpl other = (SiteLinkImpl) obj;
-		return baseIri.equals(other.baseIri) && badges.equals(other.badges)
-				&& siteKey.equals(other.siteKey) && title.equals(other.title);
+		return badges.equals(other.badges) && siteKey.equals(other.siteKey)
+				&& title.equals(other.title);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "SiteLink {title = " + this.baseIri + "/" + this.title 
-				+ ", siteKey = " + siteKey
+	public String toString() {
+		return "SiteLink {title = " + this.title + ", siteKey = " + siteKey
 				+ ", badges = " + this.badges + "}";
 	}
 }

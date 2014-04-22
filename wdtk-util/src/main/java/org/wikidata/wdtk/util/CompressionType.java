@@ -1,8 +1,8 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
- * Wikidata Toolkit Dump File Handling
+ * Wikidata Toolkit Utilities
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
@@ -21,12 +21,12 @@ package org.wikidata.wdtk.dumpfiles;
  */
 
 /**
- * Enum to refer to the various kinds of dumps that are supported by this
- * implementation.
+ * Enum for denoting several basic file types for which we provide transparent
+ * decompression.
  * 
  * @author Markus Kroetzsch
  * 
  */
-public enum DumpContentType {
-	DAILY, CURRENT, FULL, SITES
+public enum CompressionType {
+	NONE, GZIP, BZ2
 }

@@ -50,17 +50,14 @@ public class WmfOnlineDailyDumpFileTest {
 		String maxRevId = "110690987";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", maxRevId,
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", maxRevId);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/status.txt", "done",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/status.txt", "done");
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
-						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ "-pages-meta-hist-incr.xml.bz2", "Line1");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
@@ -93,12 +90,10 @@ public class WmfOnlineDailyDumpFileTest {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", "");
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/status.txt", "",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/status.txt", "");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
@@ -114,8 +109,7 @@ public class WmfOnlineDailyDumpFileTest {
 				"wikidatawiki", wrf, dm);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "nan",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", "nan");
 
 		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
 	}
@@ -127,8 +121,7 @@ public class WmfOnlineDailyDumpFileTest {
 				"wikidatawiki", wrf, dm);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "1234567",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", "1234567");
 		wrf.setReturnFailingReaders(true);
 
 		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
@@ -139,12 +132,10 @@ public class WmfOnlineDailyDumpFileTest {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "1234567",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", "1234567");
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/status.txt", "done",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/status.txt", "done");
 		wrf.setReturnFailingReaders(true);
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
@@ -158,8 +149,7 @@ public class WmfOnlineDailyDumpFileTest {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
-						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ "-pages-meta-hist-incr.xml.bz2", "Line1");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 		dump.getDumpFileReader();
@@ -171,12 +161,10 @@ public class WmfOnlineDailyDumpFileTest {
 		String maxRevId = "110690987";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", maxRevId,
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/maxrevid.txt", maxRevId);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/status.txt", "done",
-				MockWebResourceFetcher.TYPE_HTML);
+						+ dateStamp + "/status.txt", "done");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 		dump.getDumpFileReader();

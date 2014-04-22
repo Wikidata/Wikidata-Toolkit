@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
@@ -130,18 +131,24 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	}
 
 	@Override
-	public InputStream getInputStreamForFile(String fileName)
-			throws IOException {
+	public InputStream getInputStreamForFile(String fileName,
+			CompressionType compressionType) throws IOException {
 		Path filePath = this.directory.resolve(fileName);
-		return Files.newInputStream(filePath, StandardOpenOption.READ);
-	}
+		InputStream fileInputStream = Files.newInputStream(filePath,
+				StandardOpenOption.READ);
+		switch (compressionType) {
+		case NONE:
+			return fileInputStream;
+		case GZIP:
+			return new GZIPInputStream(fileInputStream);
+		case BZ2:
+			return new BZip2CompressorInputStream(new BufferedInputStream(
+					fileInputStream));
+		default:
+			throw new IllegalArgumentException("Unsupported compresion type: "
+					+ compressionType);
+		}
 
-	@Override
-	public InputStream getInputStreamForBz2File(String fileName)
-			throws IOException {
-		Path filePath = this.directory.resolve(fileName);
-		return new BZip2CompressorInputStream(new BufferedInputStream(
-				Files.newInputStream(filePath, StandardOpenOption.READ)));
 	}
 
 	@Override
