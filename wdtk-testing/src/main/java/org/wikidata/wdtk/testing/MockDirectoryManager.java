@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
@@ -166,22 +167,22 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	@Override
-	public InputStream getInputStreamForFile(String fileName)
-			throws IOException {
-		if (fileName.endsWith(".bz2")) {
+	public InputStream getInputStreamForFile(String fileName,
+			CompressionType compressionType) throws IOException {
+		if (compressionType == CompressionType.GZIP
+				&& !fileName.endsWith(".gz")) {
 			throw new IllegalArgumentException(
-					"Cannot read bz2 files with this method");
+					"Can only read gz files with this compression type");
+		} else if (compressionType == CompressionType.BZ2
+				&& !fileName.endsWith(".bz2")) {
+			throw new IllegalArgumentException(
+					"Can only read bz2 files with this compression type");
+		} else if (compressionType == CompressionType.NONE
+				&& (fileName.endsWith(".bz2") || fileName.endsWith(".gz"))) {
+			throw new IllegalArgumentException(
+					"Cannot read compressed files with this compression type");
 		}
-		return getInputStreamForMockFile(fileName);
-	}
 
-	@Override
-	public InputStream getInputStreamForBz2File(String fileName)
-			throws IOException {
-		if (!fileName.endsWith(".bz2")) {
-			throw new IllegalArgumentException(
-					"Can only read bz2 files with this method");
-		}
 		return getInputStreamForMockFile(fileName);
 	}
 

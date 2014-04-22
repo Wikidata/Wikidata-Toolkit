@@ -37,9 +37,7 @@ public class MockWebResourceFetcherTest {
 	public void setUp() throws Exception {
 		mwrf = new MockWebResourceFetcher();
 		mwrf.setWebResourceContents("http://example.com/test.html",
-				"Line1\nLine2", MockWebResourceFetcher.TYPE_HTML);
-		mwrf.setWebResourceContents("http://example.com/test.gzip",
-				"Line1\nLine2", MockWebResourceFetcher.TYPE_GZIP);
+				"Line1\nLine2");
 	}
 
 	@Test
@@ -50,17 +48,10 @@ public class MockWebResourceFetcherTest {
 	}
 
 	@Test
-	public void inputStreamForGzip() throws IOException {
-		String content = MockStringContentFactory.getStringFromInputStream(mwrf
-				.getInputStreamForGzipUrl("http://example.com/test.gzip"));
-		assertEquals(content, "Line1\nLine2");
-	}
-
-	@Test
 	public void setConcentsFromResource() throws IOException {
 		mwrf.setWebResourceContentsFromResource(
 				"http://example.com/resource.html", "/test.txt",
-				MockWebResourceFetcher.TYPE_HTML, this.getClass());
+				this.getClass());
 		String content = MockStringContentFactory.getStringFromInputStream(mwrf
 				.getInputStreamForUrl("http://example.com/resource.html"));
 		assertEquals(content, "This file is here\nto test resource loading.");
@@ -80,11 +71,6 @@ public class MockWebResourceFetcherTest {
 			exception = true;
 		}
 		assertTrue(exception);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void readOnlyGzipFiles() throws IOException {
-		mwrf.getInputStreamForGzipUrl("http://example.com/test.html");
 	}
 
 	@Test(expected = IOException.class)

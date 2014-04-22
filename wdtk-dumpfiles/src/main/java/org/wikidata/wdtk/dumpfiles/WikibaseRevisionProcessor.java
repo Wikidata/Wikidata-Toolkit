@@ -103,7 +103,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	@Override
 	public void finishRevisionProcessing() {
-		// Nothing to do
+		this.entityDocumentProcessor.finishProcessingEntityDocuments();
 	}
 
 }
