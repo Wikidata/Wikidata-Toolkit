@@ -29,20 +29,16 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.JsonProcessor;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
-import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessorImpl;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
+import org.wikidata.wdtk.dumpfiles.MwRevisionDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessorBroker;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.WikibaseRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.WmfDumpFileManager;
-import org.wikidata.wdtk.examples.DumpProcessingExample.ItemStatisticsProcessor;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
@@ -86,7 +82,7 @@ public class JsonSerialisationExample {
 		serializer.startSerialisation();
 
 		// Start processing (may trigger downloads where needed)
-		dumpFileManager.processAllRecentDumps(dumpFileProcessor, true);
+		dumpFileManager.processAllRecentRevisionDumps(dumpFileProcessor, true);
 
 		// Finish the Serialisation Process and close the FileStream
 		serializer.finishSerialisation();
@@ -171,7 +167,7 @@ public class JsonSerialisationExample {
 		rpBroker.registerMwRevisionProcessor(rpRevisionStats, null, true);
 
 		// Object to parse XML dumps to send page revisions to our broker:
-		return new MwDumpFileProcessorImpl(rpBroker);
+		return new MwRevisionDumpFileProcessor(rpBroker);
 	}
 
 	/**
