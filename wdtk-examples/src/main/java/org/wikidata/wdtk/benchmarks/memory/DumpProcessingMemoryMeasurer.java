@@ -39,7 +39,6 @@ import org.wikidata.wdtk.dumpfiles.MwRevisionProcessorBroker;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.WikibaseRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.WmfDumpFileManager;
-import org.wikidata.wdtk.examples.DumpProcessingExample;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
@@ -54,7 +53,6 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * @author Markus Kroetzsch
  * @author Julian Mendez
  * 
- * @see DumpProcessingExample
  */
 public class DumpProcessingMemoryMeasurer {
 
