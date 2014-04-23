@@ -42,6 +42,7 @@ public interface JsonConstants {
 	final String KEY_CLAIMS = "claims";
 	final String KEY_SNAKS = "snaks";
 	final String KEY_SNAK_ORDER = "snak-order";
+	final String KEY_QUALIFIERS_ORDER = "qualifiers-order";
 	final String KEY_ALIASES = "aliases";
 	final String KEY_DESCRIPTIONS = "descriptions";
 	final String KEY_SITE_LINKS = "sitelinks";

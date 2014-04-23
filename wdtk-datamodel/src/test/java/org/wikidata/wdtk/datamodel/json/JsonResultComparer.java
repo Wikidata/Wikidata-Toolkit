@@ -45,6 +45,7 @@ public class JsonResultComparer {
 	 */
 	public static void compareJSONObjects(JSONObject obj1, JSONObject obj2) {
 		try {
+			assertEquals(obj1.keySet(), obj2.keySet());
 			for (Object key : obj1.keySet()) {
 				if (obj1.get((String) key) instanceof JSONObject) {
 					compareJSONObjects(obj1.getJSONObject((String) key),
@@ -73,6 +74,7 @@ public class JsonResultComparer {
 	 */
 	public static void compareJSONArrays(JSONArray array1, JSONArray array2) {
 		try {
+			assertEquals(array1.length(), array2.length());
 			for (int index = 0; index < array1.length(); index++) {
 				if (array1.get(index) instanceof JSONObject) {
 					compareJSONObjects(array1.getJSONObject(index),
