@@ -225,11 +225,16 @@ public class JsonConverter {
 	 */
 	JSONObject getJsonForClaim(Claim claim) {
 		JSONObject result = new JSONObject();
+		JSONArray order = new JSONArray();
 		result.put(JsonConstants.KEY_MAINSNAK,
 				claim.getMainSnak().accept(this.snakJsonConverter));
 		if (!claim.getQualifiers().isEmpty()) {
 			result.put(JsonConstants.KEY_QUALIFIERS,
 					convertQualifiersToJson(claim.getQualifiers()));
+			result.put(JsonConstants.KEY_QUALIFIERS_ORDER, order);
+			for (SnakGroup snakGroup : claim.getQualifiers()) {
+				order.put(snakGroup.getProperty().getId());
+			}
 		}
 		return result;
 	}
@@ -273,15 +278,9 @@ public class JsonConverter {
 	 */
 	JSONObject getJsonForStatement(Statement statement) {
 		JSONObject result = new JSONObject();
-
+		JSONArray order = new JSONArray();
+		result = getJsonForClaim(statement.getClaim());
 		result.put(JsonConstants.KEY_ID, statement.getStatementId());
-		result.put(JsonConstants.KEY_MAINSNAK, statement.getClaim()
-				.getMainSnak().accept(this.snakJsonConverter));
-		if (statement.getClaim().getQualifiers().isEmpty() == false) {
-			result.put(JsonConstants.KEY_QUALIFIERS,
-					convertQualifiersToJson(statement.getClaim()
-							.getQualifiers()));
-		}
 		result.put(JsonConstants.KEY_TYPE, "statement");
 		result.put("rank", convertStatementRankToJson(statement.getRank()));
 		JSONArray references = new JSONArray();
@@ -321,7 +320,7 @@ public class JsonConverter {
 	JSONObject getJsonForSiteLink(SiteLink link) {
 		JSONObject result = new JSONObject();
 		result.put("site", link.getSiteKey());
-		result.put(JsonConstants.KEY_TITLE, link.getArticleTitle());
+		result.put(JsonConstants.KEY_TITLE, link.getPageTitle());
 		result.put("badges", new JSONArray()); // always empty at the moment
 		return result;
 	}

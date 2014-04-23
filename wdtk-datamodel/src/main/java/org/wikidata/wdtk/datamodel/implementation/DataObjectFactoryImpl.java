@@ -150,9 +150,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public SiteLink getSiteLink(String title, String siteKey, String baseIri,
+	public SiteLink getSiteLink(String title, String siteKey,
 			List<String> badges) {
-		return new SiteLinkImpl(title, siteKey, baseIri, badges);
+		return new SiteLinkImpl(title, siteKey, badges);
 	}
 
 	@Override

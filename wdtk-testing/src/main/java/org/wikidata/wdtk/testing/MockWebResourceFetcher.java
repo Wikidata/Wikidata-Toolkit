@@ -35,13 +35,7 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  */
 public class MockWebResourceFetcher implements WebResourceFetcher {
 
-	public static final String TYPE_HTML = "html";
-	public static final String TYPE_GZIP = "gz";
-	public static final String TYPE_BZ2 = "bz2";
-	public static final String TYPE_ANY = "any";
-
 	final HashMap<String, String> webResources;
-	final HashMap<String, String> webResourceTypes;
 	boolean returnFailingReaders;
 
 	/**
@@ -52,7 +46,6 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 */
 	public MockWebResourceFetcher() {
 		this.webResources = new HashMap<String, String>();
-		this.webResourceTypes = new HashMap<String, String>();
 	}
 
 	/**
@@ -69,37 +62,25 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	}
 
 	/**
-	 * Defines the contents of a new web resource. The contents type is used to
-	 * define which methods are allowed to access this contents. All contents is
-	 * stored as plain text, but contents of type {@link #TYPE_GZIP} can only be
-	 * accessed when using a suitable method, etc.
+	 * Defines the contents of a new web resource.
 	 * 
 	 * @param url
 	 *            the URL string
 	 * @param contents
 	 *            the string contents
-	 * @param contentsType
-	 *            one of the predefined type constants
 	 */
-	public void setWebResourceContents(String url, String contents,
-			String contentsType) {
+	public void setWebResourceContents(String url, String contents) {
 		this.webResources.put(url, contents);
-		this.webResourceTypes.put(url, contentsType);
 	}
 
 	/**
 	 * Defines the contents of a new web resource by taking the string from a
-	 * given (Java) resource. The contents type is used to define which methods
-	 * are allowed to access this contents. All contents is stored as plain
-	 * text, but contents of type {@link #TYPE_GZIP} can only be accessed when
-	 * using a suitable method, etc.
+	 * given (Java) resource.
 	 * 
 	 * @param url
 	 *            the URL string
 	 * @param resource
 	 *            the Java resource name
-	 * @param contentsType
-	 *            one of the predefined type constants
 	 * @param resourceClass
 	 *            the Class relative to which the resource should be resolved
 	 *            (since resources are stored relative to a classpath); can
@@ -108,50 +89,33 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *             if the Java resource could not be loaded
 	 */
 	public void setWebResourceContentsFromResource(String url, String resource,
-			String contentsType, Class<?> resourceClass) throws IOException {
+			Class<?> resourceClass) throws IOException {
 		URL resourceUrl = resourceClass.getResource(resource);
 		String contents = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
-		setWebResourceContents(url, contents, contentsType);
+		setWebResourceContents(url, contents);
 	}
 
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
-		return getInputStreamForMockWebResource(urlString,
-				MockWebResourceFetcher.TYPE_ANY);
-	}
-
-	@Override
-	public InputStream getInputStreamForGzipUrl(String urlString)
-			throws IOException {
-		return getInputStreamForMockWebResource(urlString,
-				MockWebResourceFetcher.TYPE_GZIP);
+		return getInputStreamForMockWebResource(urlString);
 	}
 
 	/**
 	 * Returns an input stream for the content mocked for given URL. It is
-	 * checked that the URL is valid and that the type of its content matches
-	 * the given one.
+	 * checked that the URL is valid.
 	 * 
 	 * @param urlString
-	 * @param resourceType
-	 *            expected type
 	 * @return input stream for resource
 	 * @throws IOException
 	 */
-	InputStream getInputStreamForMockWebResource(String urlString,
-			String resourceType) throws IOException {
+	InputStream getInputStreamForMockWebResource(String urlString)
+			throws IOException {
 		if (!this.webResources.containsKey(urlString)) {
 			throw new IOException("Inaccessible URL (not mocked)");
 		}
-		if (!resourceType.equals(MockWebResourceFetcher.TYPE_ANY)
-				&& !resourceType.equals(this.webResourceTypes.get(urlString))) {
-			throw new IllegalArgumentException(
-					"Can only access content of type " + resourceType
-							+ " but was "
-							+ this.webResourceTypes.get(urlString) + ".");
-		}
+
 		if (this.returnFailingReaders) {
 			return MockStringContentFactory.getFailingInputStream();
 		} else {

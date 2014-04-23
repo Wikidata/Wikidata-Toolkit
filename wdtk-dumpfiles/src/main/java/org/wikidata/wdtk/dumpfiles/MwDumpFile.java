@@ -96,7 +96,7 @@ public interface MwDumpFile {
 	public Long getMaximalRevisionId();
 
 	/**
-	 * Returns an input stream that provides access to the (uncompressed) XML
+	 * Returns an input stream that provides access to the (uncompressed) text
 	 * content of the dump file.
 	 * <p>
 	 * It is important to close the stream after use.
@@ -108,7 +108,7 @@ public interface MwDumpFile {
 	public InputStream getDumpFileStream() throws IOException;
 
 	/**
-	 * Returns a buffered reader that provides access to the (uncompressed) XML
+	 * Returns a buffered reader that provides access to the (uncompressed) text
 	 * content of the dump file.
 	 * <p>
 	 * It is important to close the reader after use.

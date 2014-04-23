@@ -40,41 +40,32 @@ public class SiteLinkImplTest {
 	@Before
 	public void setUp() throws Exception {
 		s1 = new SiteLinkImpl("Dresden", "enwiki",
-				"http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 		s2 = new SiteLinkImpl("Dresden", "enwiki",
-				"http://en.wikipedia.org/wiki/",
 				Collections.<String> emptyList());
 	}
 
 	@Test
 	public void fieldsIsCorrect() {
-		assertEquals(s1.getArticleTitle(), "Dresden");
+		assertEquals(s1.getPageTitle(), "Dresden");
 		assertEquals(s1.getSiteKey(), "enwiki");
 		assertEquals(s1.getBadges(), Collections.<String> emptyList());
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		SiteLink s3 = new SiteLinkImpl("Berlin", "enwiki",
-				"http://en.wikipedia.org/wiki/",
+		SiteLink sDiffTitle = new SiteLinkImpl("Berlin", "enwiki",
 				Collections.<String> emptyList());
-		SiteLink s4 = new SiteLinkImpl("Dresden", "dewiki",
-				"http://en.wikipedia.org/wiki/",
+		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki",
 				Collections.<String> emptyList());
-		SiteLink s5 = new SiteLinkImpl("Dresden", "enwiki",
-				"http://de.wikipedia.org/wiki/",
-				Collections.<String> emptyList());
-		SiteLink s6 = new SiteLinkImpl("Dresden", "enwiki",
-				"http://en.wikipedia.org/wiki/",
+		SiteLink sDiffBadges = new SiteLinkImpl("Dresden", "enwiki",
 				Collections.<String> singletonList("some badge?"));
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(s4)));
-		assertThat(s1, not(equalTo(s5)));
-		assertThat(s1, not(equalTo(s6)));
+		assertThat(s1, not(equalTo(sDiffTitle)));
+		assertThat(s1, not(equalTo(sDiffSiteKey)));
+		assertThat(s1, not(equalTo(sDiffBadges)));
 		assertThat(s1, not(equalTo(null)));
 		assertFalse(s1.equals(this));
 	}
@@ -84,43 +75,19 @@ public class SiteLinkImplTest {
 		assertEquals(s1.hashCode(), s2.hashCode());
 	}
 
-	@Test
-	public void siteLinkIri() {
-		assertEquals(s1.getUrl(), "http://en.wikipedia.org/wiki/Dresden");
-
-		SiteLink sSpecialChar = new SiteLinkImpl("&", "dewiki",
-				"http://de.wikipedia.org/wiki/",
-				Collections.<String> emptyList());
-		assertEquals(sSpecialChar.getUrl(), "http://de.wikipedia.org/wiki/%26");
-		SiteLink sSpecialChar2 = new SiteLinkImpl("Björk", "dewiki",
-				"http://de.wikipedia.org/wiki/",
-				Collections.<String> emptyList());
-		assertEquals(sSpecialChar2.getUrl(),
-				"http://de.wikipedia.org/wiki/Bj%C3%B6rk");
-	}
-
 	@Test(expected = NullPointerException.class)
 	public void titleNotNull() {
-		new SiteLinkImpl(null, "enwiki", "http://en.wikipedia.org/wiki/",
-				Collections.<String> emptyList());
+		new SiteLinkImpl(null, "enwiki", Collections.<String> emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void siteKeyNotNull() {
-		new SiteLinkImpl("Dresden", null, "http://en.wikipedia.org/wiki/",
-				Collections.<String> emptyList());
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void baseIriNotNull() {
-		new SiteLinkImpl("Dresden", "enwiki", null,
-				Collections.<String> emptyList());
+		new SiteLinkImpl("Dresden", null, Collections.<String> emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void badgesNotNull() {
-		new SiteLinkImpl("Dresden", "enwiki", "http://en.wikipedia.org/wiki/",
-				null);
+		new SiteLinkImpl("Dresden", "enwiki", null);
 	}
 
 }

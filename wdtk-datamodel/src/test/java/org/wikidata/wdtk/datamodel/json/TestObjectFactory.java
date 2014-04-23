@@ -221,29 +221,24 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a map of {@link SiteLink}s with empty badges.
-	 * 
 	 * <p>
 	 * ID = SLs
-	 * </p>
-	 * 
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>SiteLink: name = "enwiki" title = "title_en", siteKey = "siteKey",
-	 * baseIri = "test"</li>
-	 * <li>SiteLink: name = "auwiki" title = "title_au", siteKey = "siteKey" ,
-	 * baseIri = "test"</li>
+	 * <li>"enwiki" => SiteLink: title = "title_en", siteKey = "enwiki"</li>
+	 * <li>"dewiki" => SiteLink: title = "title_de", siteKey = "dewiki"</li>
 	 * </ul>
 	 * 
-	 * @return Map for {@link SiteLink}s and there titles
+	 * @return Map for {@link SiteLink}s and their titles
 	 */
 	public Map<String, SiteLink> createSiteLinks() {
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
-		result.put("enwiki", factory.getSiteLink("title_en", "siteKey",
-				baseIri, new LinkedList<String>()));
-		result.put("auwiki", factory.getSiteLink("title_au", "siteKey",
-				baseIri, new LinkedList<String>()));
+		result.put("enwiki", factory.getSiteLink("title_en", "enwiki",
+				new LinkedList<String>()));
+		result.put("dewiki", factory.getSiteLink("title_de", "dewiki",
+				new LinkedList<String>()));
 		return result;
 	}
 

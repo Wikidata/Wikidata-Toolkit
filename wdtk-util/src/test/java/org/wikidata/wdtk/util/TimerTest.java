@@ -36,6 +36,13 @@ import org.junit.Test;
 public class TimerTest {
 
 	/**
+	 * Base value for the time in microseconds that we allow between our
+	 * measured times and what the timer returns. In theory, there is not really
+	 * any such time but in practice a sufficiently high value should work.
+	 */
+	static final int TIME_TOLERANCE = 200000;
+
+	/**
 	 * Spend some time computing to be able to measure something.
 	 * 
 	 * @throws InterruptedException
@@ -86,12 +93,14 @@ public class TimerTest {
 		assertTrue(
 				"Unrealistic CPU time: " + timer.getTotalCpuTime()
 						+ " should be closer to " + cpuTime1,
-				(cpuTime1 - 100000) <= timer.getTotalCpuTime()
+				(cpuTime1 - TimerTest.TIME_TOLERANCE) <= timer
+						.getTotalCpuTime()
 						&& timer.getTotalCpuTime() <= cpuTime1);
 		assertTrue(
 				"Unrealistic wall time: " + timer.getTotalWallTime()
 						+ " should be closer to " + wallTime1,
-				(wallTime1 - 200000) <= timer.getTotalWallTime()
+				(wallTime1 - 2 * TimerTest.TIME_TOLERANCE) <= timer
+						.getTotalWallTime()
 						&& timer.getTotalWallTime() <= wallTime1);
 
 		long cpuTime2 = tmxb.getThreadCpuTime(threadId);
@@ -104,12 +113,14 @@ public class TimerTest {
 		assertTrue(
 				"Unrealistic total CPU time: " + timer.getTotalCpuTime()
 						+ " should be closer to " + cpuTime1,
-				(cpuTime1 - 200000) <= timer.getTotalCpuTime()
+				(cpuTime1 - 2 * TimerTest.TIME_TOLERANCE) <= timer
+						.getTotalCpuTime()
 						&& timer.getTotalCpuTime() <= cpuTime1);
 		assertTrue(
 				"Unrealistic total wall time: " + timer.getTotalWallTime()
 						+ " should be closer to " + wallTime1,
-				(wallTime1 - 400000) <= timer.getTotalWallTime()
+				(wallTime1 - 4 * TimerTest.TIME_TOLERANCE) <= timer
+						.getTotalWallTime()
 						&& timer.getTotalWallTime() <= wallTime1);
 
 		assertEquals(timer.getTotalCpuTime() / 2, timer.getAvgCpuTime());

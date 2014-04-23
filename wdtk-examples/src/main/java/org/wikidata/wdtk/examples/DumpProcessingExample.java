@@ -31,8 +31,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
-import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessorImpl;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
+import org.wikidata.wdtk.dumpfiles.MwRevisionDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessorBroker;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
@@ -69,7 +69,7 @@ public class DumpProcessingExample {
 		MwDumpFileProcessor dumpFileProcessor = createDumpFileProcessor();
 
 		// Start processing (may trigger downloads where needed)
-		dumpFileManager.processAllRecentDumps(dumpFileProcessor, true);
+		dumpFileManager.processAllRecentRevisionDumps(dumpFileProcessor, true);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class DumpProcessingExample {
 		rpBroker.registerMwRevisionProcessor(rpRevisionStats, null, true);
 
 		// Object to parse XML dumps to send page revisions to our broker:
-		return new MwDumpFileProcessorImpl(rpBroker);
+		return new MwRevisionDumpFileProcessor(rpBroker);
 	}
 
 	/**

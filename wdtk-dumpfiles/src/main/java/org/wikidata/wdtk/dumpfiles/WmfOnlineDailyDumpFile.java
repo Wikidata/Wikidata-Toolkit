@@ -83,7 +83,8 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.DAILY, this.dateStamp));
 
-		return dailyDirectoryManager.getInputStreamForBz2File(fileName);
+		return dailyDirectoryManager.getInputStreamForFile(fileName,
+				WmfDumpFile.getDumpFileCompressionType(DumpContentType.DAILY));
 	}
 
 	@Override
@@ -161,7 +162,8 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL + WmfDumpFile.DAILY_WEB_DIRECTORY
+		return WmfDumpFile.DUMP_SITE_BASE_URL
+				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY)
 				+ this.projectName + "/" + this.dateStamp + "/";
 	}
 
