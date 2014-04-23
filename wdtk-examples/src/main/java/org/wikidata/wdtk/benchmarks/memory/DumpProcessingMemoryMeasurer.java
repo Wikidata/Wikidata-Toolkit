@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
-import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessorImpl;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
+import org.wikidata.wdtk.dumpfiles.MwRevisionDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessorBroker;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
@@ -70,7 +70,7 @@ public class DumpProcessingMemoryMeasurer {
 		System.out.println(getDocumentation());
 		WmfDumpFileManager dumpFileManager = createDumpFileManager();
 		MwDumpFileProcessor dumpFileProcessor = createDumpFileProcessor();
-		dumpFileManager.processAllRecentDumps(dumpFileProcessor, true);
+		dumpFileManager.processAllRecentRevisionDumps(dumpFileProcessor, true);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class DumpProcessingMemoryMeasurer {
 		rpBroker.registerMwRevisionProcessor(rpEntityStats,
 				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 		rpBroker.registerMwRevisionProcessor(rpRevisionStats, null, true);
-		return new MwDumpFileProcessorImpl(rpBroker);
+		return new MwRevisionDumpFileProcessor(rpBroker);
 	}
 
 	/**
