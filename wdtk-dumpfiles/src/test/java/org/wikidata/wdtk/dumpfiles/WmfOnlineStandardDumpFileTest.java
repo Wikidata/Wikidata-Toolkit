@@ -125,6 +125,22 @@ public class WmfOnlineStandardDumpFileTest {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1");
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
+		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
+				"wikidatawiki", wrf, dm, DumpContentType.FULL);
+		dump.getDumpFileReader();
+	}
+
+	@Test(expected = IOException.class)
+	public void downloadNoMd5sum() throws IOException {
+		wrf.setWebResourceContents(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"Line1");
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"/wikidatawiki-20140210-index.html", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 		dump.getDumpFileReader();

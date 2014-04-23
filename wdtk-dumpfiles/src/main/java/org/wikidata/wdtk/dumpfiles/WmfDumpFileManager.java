@@ -119,7 +119,6 @@ public class WmfDumpFileManager {
 
 		for (MwDumpFile dumpFile : findAllRelevantRevisionDumps(preferCurrent)) {
 			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
-				logger.info("Processing dump file " + dumpFile.toString());
 				dumpFileProcessor
 						.processDumpFileContents(inputStream, dumpFile);
 			} catch (FileAlreadyExistsException e) {
@@ -179,13 +178,21 @@ public class WmfDumpFileManager {
 
 		result.add(mainDump);
 
+		if (logger.isInfoEnabled()) {
+			StringBuilder logMessage = new StringBuilder();
+			logMessage.append("Found " + result.size()
+					+ " relevant dumps to process:");
+			for (MwDumpFile dumpFile : result) {
+				logMessage.append("\n * ").append(dumpFile.toString());
+			}
+			logger.info(logMessage.toString());
+		}
+
 		return result;
 	}
 
 	/**
-	 * Finds the most recent main dump (non-incremental dump). For further
-	 * details on the parameters, see
-	 * {@link #findAllRelevantRevisionDumps(boolean)}.
+	 * Finds the most recent dump of the given type that is actually available.
 	 * 
 	 * @param dumpContentType
 	 *            the type of the dump to look for
@@ -194,18 +201,19 @@ public class WmfDumpFileManager {
 	public MwDumpFile findMostRecentDump(DumpContentType dumpContentType) {
 		List<MwDumpFile> dumps = findAllDumps(dumpContentType);
 
-		if (dumps.size() == 0) {
-			return null;
-		} else {
-			return dumps.get(0);
+		for (int i = 0; i < dumps.size(); i++) {
+			if (dumps.get(i).isAvailable()) {
+				return dumps.get(i);
+			}
 		}
-
+		return null;
 	}
 
 	/**
 	 * Returns a list of all dump files of the given type available either
 	 * online or locally. For dumps available both online and locally, the local
 	 * version is included. The list is order with most recent dump date first.
+	 * Online dumps found by this method might not be available yet.
 	 * 
 	 * @return a list of dump files of the given type
 	 */

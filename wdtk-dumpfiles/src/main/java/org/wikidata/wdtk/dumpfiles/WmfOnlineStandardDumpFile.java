@@ -51,6 +51,11 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	final DumpContentType dumpContentType;
 
 	/**
+	 * Set to true when all required files have been downloaded successfully.
+	 */
+	boolean isPrepared = false;
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param dateStamp
@@ -97,6 +102,10 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	@Override
 	public void prepareDumpFile() throws IOException {
+		if (this.isPrepared) {
+			return;
+		}
+
 		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
@@ -104,6 +113,11 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 		logger.info("Downloading "
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
 				+ fileName + " from " + urlString + " ...");
+
+		if (!isAvailable()) {
+			throw new IOException(
+					"Dump file not available (yet). Aborting dump retrieval.");
+		}
 
 		if (WmfDumpFile.isRevisionDumpFile(this.dumpContentType)
 				&& this.getMaximalRevisionId() == -1) {
@@ -126,9 +140,12 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 							.getMaximalRevisionId().toString());
 		}
 
-		logger.info("... Completed download of "
+		this.isPrepared = true;
+
+		logger.info("... completed download of "
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
 				+ fileName + " from " + urlString);
+
 	}
 
 	@Override
