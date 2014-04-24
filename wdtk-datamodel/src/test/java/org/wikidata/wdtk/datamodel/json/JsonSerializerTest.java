@@ -23,24 +23,39 @@ package org.wikidata.wdtk.datamodel.json;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class JsonSerializerTest {
 
 	final String START_DOCUMENT = "{\"entities\": {";
 	final String END_DOCUMENT = "}}";
 
+	final TestObjectFactory factory = new TestObjectFactory();
+
 	ByteArrayOutputStream out;
-	JsonProcessor processor;
 	JsonSerializer serializer;
+
+	/**
+	 * Loads the resource file with fileName and returns the content as a
+	 * {@link String} object.
+	 * 
+	 * @param fileName
+	 * @return textual content of the file
+	 * @throws IOException
+	 */
+	public String getResourceFromFile(String fileName) throws IOException {
+		return MockStringContentFactory.getStringFromUrl(this.getClass()
+				.getResource("/" + fileName));
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		out = new ByteArrayOutputStream();
-		processor = new JsonProcessor(out);
-		serializer = new JsonSerializer(processor);
+		serializer = new JsonSerializer(out);
 	}
 
 	@Test
@@ -53,6 +68,23 @@ public class JsonSerializerTest {
 	public void testFinishSerialisation() {
 		serializer.finishSerialisation();
 		assertEquals(out.toString(), END_DOCUMENT);
+	}
+
+	@Test
+	public void testProcessItemDocument() throws IOException {
+		serializer.processItemDocument(factory.createItemDocument());
+		assertEquals(getResourceFromFile("ItemDocumentEntry.txt"),
+				out.toString()); // not very clear because of json-order-problem
+	}
+
+	@Test
+	public void testProcessPropertyDocument() throws IOException {
+		serializer.processPropertyDocument(factory
+				.createEmptyPropertyDocument());
+		serializer.processPropertyDocument(factory
+				.createEmptyPropertyDocument());
+		assertEquals(getResourceFromFile("PropertyDocumentEntries.txt"),
+				out.toString()); // not very clear because of json-order-problem
 	}
 
 }

@@ -21,11 +21,13 @@ package org.wikidata.wdtk.datamodel.json;
  */
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 /**
  * This class implements {@link EntityDocumentsSerializer} to provide a
@@ -38,17 +40,81 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	JsonProcessor processor;
+	final JsonConverter converter = new JsonConverter();
 
-	public JsonSerializer(JsonProcessor processor) {
-		this.processor = processor;
+	OutputStream out;
+	Boolean atFirst;
+
+	public JsonSerializer(OutputStream out) {
+		this.out = out;
+		atFirst = true;
+	}
+
+	public void setOutput(OutputStream out) {
+		this.out = out;
+	}
+
+	public OutputStream getOutput() {
+		return out;
+	}
+
+	/**
+	 * This function resets the processor. Json is not a flat format. So it is
+	 * necessary to inform the processor if a new serialisation was initiated.
+	 */
+	public void restartProcess() {
+		atFirst = true;
+	}
+
+	@Override
+	public void processItemDocument(ItemDocument itemDocument) {
+		StringBuilder builder = new StringBuilder();
+		if (!atFirst) {
+			builder.append(",");
+		} else {
+			atFirst = false;
+		}
+		builder.append("\"");
+		builder.append(itemDocument.getItemId().getId());
+		builder.append(":");
+		builder.append(converter.getJsonForItemDocument(itemDocument));
+		try {
+			out.write(builder.toString().getBytes());
+		} catch (IOException e) {
+			logger.error(e.toString());
+		}
+	}
+
+	@Override
+	public void processPropertyDocument(PropertyDocument propertyDocument) {
+		StringBuilder builder = new StringBuilder();
+		if (!atFirst) {
+			builder.append(",");
+		} else {
+			atFirst = false;
+		}
+		builder.append("\"");
+		builder.append(propertyDocument.getEntityId().getId());
+		builder.append("\"");
+		builder.append(":");
+		builder.append(converter.getJsonForPropertyDocument(propertyDocument));
+		try {
+			out.write(builder.toString().getBytes());
+		} catch (IOException e) {
+			logger.error(e.toString());
+		}
+	}
+
+	@Override
+	public void finishProcessingEntityDocuments() {
+		// do nothing
 	}
 
 	@Override
 	public void startSerialisation() {
-		processor.restartProcess();
+		restartProcess();
 		try {
-			processor.getOutput().write("{\"entities\": {".getBytes());
+			out.write("{\"entities\": {".getBytes());
 		} catch (IOException e) {
 			JsonSerializer.logger.error(e.toString());
 		}
@@ -57,16 +123,10 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void finishSerialisation() {
 		try {
-			processor.getOutput().write("}}".getBytes());
+			out.write("}}".getBytes());
 		} catch (IOException e) {
 			JsonSerializer.logger.error(e.toString());
 		}
-		processor.finishProcessingEntityDocuments();
-	}
-
-	@Override
-	public EntityDocumentProcessor getEntityDocumentProcessor() {
-		return processor;
 	}
 
 }

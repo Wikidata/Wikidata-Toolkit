@@ -29,7 +29,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.JsonProcessor;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
@@ -44,10 +43,12 @@ import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+
 /**
  * This class shows how to produce dumpfiles from wikidata.org to read out the
- * data and put it out into a json-representation. The json data will be written
- * into a file named WikiDataDump.json. You can find it in the example directory
+ * data and put it out into a json-representation. The compressed json data will be written
+ * into a file named WikiDataDump.json.bz2. You can find it in the example directory
  * after you ran the example code.
  * 
  * @author Michael Günther
@@ -67,13 +68,16 @@ public class JsonSerialisationExample {
 		WmfDumpFileManager dumpFileManager = createDumpFileManager();
 
 		// Create an FileOutputStream for give out the json-file.
-		FileOutputStream fileStream = new FileOutputStream("WikiDataDump.json");
+		FileOutputStream fileStream = new FileOutputStream(
+				"WikiDataDump.json.bz2");
 
-		// Create object for processing json from EntityDocuments
-		JsonProcessor processor = new JsonProcessor(fileStream);
+		// Create an OutputStream from fileStream which compressed the data in
+		// BZip2
+		BZip2CompressorOutputStream compressedFileStream = new BZip2CompressorOutputStream(
+				fileStream);
 
 		// Create an object for managing the serialization process
-		JsonSerializer serializer = new JsonSerializer(processor);
+		JsonSerializer serializer = new JsonSerializer(compressedFileStream);
 
 		// Set up processing pipeline with the json serializer
 		MwDumpFileProcessor dumpFileProcessor = createDumpFileProcessor(serializer);
@@ -122,20 +126,14 @@ public class JsonSerialisationExample {
 	 * dumpfiles. This processing consists of the following main steps:
 	 * 
 	 * <pre>
-	 * XML dump file -> page revisions -> item documents
+	 * XML dump file -> page revisions -> item documents -> json
 	 * </pre>
 	 * 
 	 * The objects handling each step are of type {@link MwDumpFileProcessor},
-	 * {@link MwRevisionProcessor}, and {@link EntityDocumentProcessor}. In each
-	 * case, the object on the left calls the object on the right whenever new
-	 * data is available. Therefore, the object on the right must be known to
-	 * the object on the left, so we set up the objects in reverse order.
-	 * <p>
-	 * Normally, there is exactly one processor of each type. In the code below,
-	 * we want to use two different objects to process revisions (one to analyse
-	 * Wikidata item information and one to gather basic statistics about all
-	 * revisions). To do this, we use a broker class that processes revisions to
-	 * distribute them further to any number of revision processors.
+	 * {@link MwRevisionProcessor}, and {@link JsonSerializer}. In each case,
+	 * the object on the left calls the object on the right whenever new data is
+	 * available. Therefore, the object on the right must be known to the object
+	 * on the left, so we set up the objects in reverse order.
 	 * 
 	 * @return dump file processor
 	 * @throws FileNotFoundException
@@ -143,16 +141,13 @@ public class JsonSerialisationExample {
 	private static MwDumpFileProcessor createDumpFileProcessor(
 			JsonSerializer serializer) throws FileNotFoundException {
 
-		// Our local example class ItemStatisticsProcessor counts the number of
-		// labels etc. in Wikibase item documents to print out some statistics.
-		// It is the last part of the processing chain.
-		EntityDocumentProcessor edpItemStats = serializer
-				.getEntityDocumentProcessor();
+		EntityDocumentProcessor processor = serializer;
 
 		// Revision processor for extracting entity documents from revisions:
-		// (the documents are sent to our example document processor)
+		// the documents are send to our serializer which generate the json
+		// representation
 		MwRevisionProcessor rpItemStats = new WikibaseRevisionProcessor(
-				edpItemStats);
+				serializer);
 
 		// Revision processor for general statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -196,10 +191,10 @@ public class JsonSerialisationExample {
 	private static void printDocumentation() {
 		System.out
 				.println("********************************************************************");
-		System.out.println("*** Wikidata Toolkit: Dump Processing Example");
+		System.out.println("*** Wikidata Toolkit: Json Serialization Example");
 		System.out.println("*** ");
 		System.out
-				.println("*** This program will download and process dumps from Wikidata.");
+				.println("*** This program will download dumps from Wikidata and serialize the data in a json format.");
 		System.out.println("*** It will print progress json.");
 		System.out
 				.println("*** Downloading may take some time initially. After that, files");
@@ -208,7 +203,9 @@ public class JsonSerialisationExample {
 		System.out
 				.println("*** You can delete files manually when no longer needed (see ");
 		System.out
-				.println("*** message below for the directory where files are found).");
+				.println("*** message below for the directory where dump files are found).");
+		System.out
+				.println("*** The json output will be stored in the directory of the example.");
 		System.out
 				.println("********************************************************************");
 	}
