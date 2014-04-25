@@ -31,7 +31,7 @@ import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class JsonSerializerTest {
 
-	final String START_DOCUMENT = "{\"entities\": {";
+	final String START_DOCUMENT = "{\"entities\": {\n";
 	final String END_DOCUMENT = "}}";
 
 	final TestObjectFactory factory = new TestObjectFactory();
