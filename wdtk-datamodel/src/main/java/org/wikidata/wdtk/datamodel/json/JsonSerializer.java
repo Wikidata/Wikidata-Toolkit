@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +67,13 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 		atFirst = true;
 	}
 
-	@Override
-	public void processItemDocument(ItemDocument itemDocument) {
+	/**
+	 * Sends the json encoding to an OutputStream.
+	 * 
+	 * @param jsonDocument
+	 * @param id
+	 */
+	void writeEntityDocument(String jsonDocument, String id) {
 		StringBuilder builder = new StringBuilder();
 		if (!atFirst) {
 			builder.append(",");
@@ -75,34 +81,29 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 			atFirst = false;
 		}
 		builder.append("\"");
-		builder.append(itemDocument.getItemId().getId());
+		builder.append(id);
+		builder.append("\"");
 		builder.append(":");
-		builder.append(converter.getJsonForItemDocument(itemDocument));
+		builder.append(jsonDocument);
+		builder.append("\n");
 		try {
-			out.write(builder.toString().getBytes());
+			out.write(builder.toString().getBytes(Charset.forName("UTF-8")));
 		} catch (IOException e) {
 			logger.error(e.toString());
 		}
 	}
 
 	@Override
+	public void processItemDocument(ItemDocument itemDocument) {
+		writeEntityDocument(converter.getJsonForItemDocument(itemDocument)
+				.toString(), itemDocument.getItemId().getId());
+	}
+
+	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		StringBuilder builder = new StringBuilder();
-		if (!atFirst) {
-			builder.append(",");
-		} else {
-			atFirst = false;
-		}
-		builder.append("\"");
-		builder.append(propertyDocument.getEntityId().getId());
-		builder.append("\"");
-		builder.append(":");
-		builder.append(converter.getJsonForPropertyDocument(propertyDocument));
-		try {
-			out.write(builder.toString().getBytes());
-		} catch (IOException e) {
-			logger.error(e.toString());
-		}
+		writeEntityDocument(
+				converter.getJsonForPropertyDocument(propertyDocument)
+						.toString(), propertyDocument.getEntityId().getId());
 	}
 
 	@Override
@@ -114,7 +115,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	public void startSerialization() {
 		restartProcess();
 		try {
-			out.write("{\"entities\": {".getBytes());
+			out.write("{\"entities\": {\n".getBytes(Charset.forName("UTF-8")));
 		} catch (IOException e) {
 			JsonSerializer.logger.error(e.toString());
 		}
@@ -123,7 +124,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void finishSerialization() {
 		try {
-			out.write("}}".getBytes());
+			out.write("}}".getBytes(Charset.forName("UTF-8")));
 		} catch (IOException e) {
 			JsonSerializer.logger.error(e.toString());
 		}
