@@ -60,13 +60,13 @@ public class JsonSerializerTest {
 
 	@Test
 	public void testStartSerialisation() {
-		serializer.startSerialisation();
+		serializer.startSerialization();
 		assertEquals(out.toString(), START_DOCUMENT);
 	}
 
 	@Test
 	public void testFinishSerialisation() {
-		serializer.finishSerialisation();
+		serializer.finishSerialization();
 		assertEquals(out.toString(), END_DOCUMENT);
 	}
 

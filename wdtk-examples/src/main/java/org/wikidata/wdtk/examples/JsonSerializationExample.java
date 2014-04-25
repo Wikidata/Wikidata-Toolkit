@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -43,18 +44,16 @@ import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-
 /**
- * This class shows how to produce dumpfiles from wikidata.org to read out the
- * data and put it out into a json-representation. The compressed json data will be written
- * into a file named WikiDataDump.json.bz2. You can find it in the example directory
- * after you ran the example code.
+ * This class shows how convert data from wikidata.org to JSON, which follows
+ * the JSON format as used in the Wikibase API. The compressed JSON data will be
+ * written into a file named WikidataDump.json.bz2. You can find it in the
+ * example directory after you ran the example code.
  * 
  * @author Michael Günther
  * 
  */
-public class JsonSerialisationExample {
+public class JsonSerializationExample {
 
 	public static void main(String[] args) throws IOException {
 
@@ -67,29 +66,24 @@ public class JsonSerialisationExample {
 		// Create object to get hold of Wikidata.org dumpfiles
 		WmfDumpFileManager dumpFileManager = createDumpFileManager();
 
-		// Create an FileOutputStream for give out the json-file.
-		FileOutputStream fileStream = new FileOutputStream(
-				"WikiDataDump.json.bz2");
-
-		// Create an OutputStream from fileStream which compressed the data in
-		// BZip2
-		BZip2CompressorOutputStream compressedFileStream = new BZip2CompressorOutputStream(
-				fileStream);
+		// Write the output to a BZip2-compressed file
+		BZip2CompressorOutputStream outputStream = new BZip2CompressorOutputStream(
+				new FileOutputStream("WikidataDump.json.bz2"));
 
 		// Create an object for managing the serialization process
-		JsonSerializer serializer = new JsonSerializer(compressedFileStream);
+		JsonSerializer jsonSerializer = new JsonSerializer(outputStream);
 
-		// Set up processing pipeline with the json serializer
-		MwDumpFileProcessor dumpFileProcessor = createDumpFileProcessor(serializer);
+		// Set up processing pipeline with the JSON serializer
+		MwDumpFileProcessor dumpFileProcessor = createDumpFileProcessor(jsonSerializer);
 
-		// Set up the JsonSerialzer and write headers
-		serializer.startSerialisation();
+		// Set up the JSON serializer and write headers
+		jsonSerializer.startSerialization();
 
 		// Start processing (may trigger downloads where needed)
 		dumpFileManager.processAllRecentRevisionDumps(dumpFileProcessor, true);
 
-		// Finish the Serialisation Process and close the FileStream
-		serializer.finishSerialisation();
+		// Finish the JSON serialization close the file stream
+		jsonSerializer.finishSerialization();
 	}
 
 	/**
@@ -135,19 +129,20 @@ public class JsonSerialisationExample {
 	 * available. Therefore, the object on the right must be known to the object
 	 * on the left, so we set up the objects in reverse order.
 	 * 
+	 * @param jsonSerializer
+	 *            entity document processor that writes the Json serialization
 	 * @return dump file processor
 	 * @throws FileNotFoundException
 	 */
 	private static MwDumpFileProcessor createDumpFileProcessor(
-			JsonSerializer serializer) throws FileNotFoundException {
-
-		EntityDocumentProcessor processor = serializer;
+			EntityDocumentProcessor jsonSerializer)
+			throws FileNotFoundException {
 
 		// Revision processor for extracting entity documents from revisions:
 		// the documents are send to our serializer which generate the json
 		// representation
-		MwRevisionProcessor rpItemStats = new WikibaseRevisionProcessor(
-				serializer);
+		MwRevisionProcessor rpEntityJsonSerializer = new WikibaseRevisionProcessor(
+				jsonSerializer);
 
 		// Revision processor for general statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -156,7 +151,7 @@ public class JsonSerialisationExample {
 		// Broker to distribute revisions to multiple subscribers:
 		MwRevisionProcessorBroker rpBroker = new MwRevisionProcessorBroker();
 		// Subscribe to the most recent revisions of type wikibase item:
-		rpBroker.registerMwRevisionProcessor(rpItemStats,
+		rpBroker.registerMwRevisionProcessor(rpEntityJsonSerializer,
 				MwRevision.MODEL_WIKIBASE_ITEM, true);
 		// Subscribe to all current revisions (null = no filter):
 		rpBroker.registerMwRevisionProcessor(rpRevisionStats, null, true);

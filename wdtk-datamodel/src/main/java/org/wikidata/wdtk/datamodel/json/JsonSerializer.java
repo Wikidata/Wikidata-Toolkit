@@ -111,7 +111,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void startSerialisation() {
+	public void startSerialization() {
 		restartProcess();
 		try {
 			out.write("{\"entities\": {".getBytes());
@@ -121,7 +121,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void finishSerialisation() {
+	public void finishSerialization() {
 		try {
 			out.write("}}".getBytes());
 		} catch (IOException e) {

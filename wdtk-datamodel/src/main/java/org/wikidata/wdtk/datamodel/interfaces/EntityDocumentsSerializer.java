@@ -31,12 +31,12 @@ public interface EntityDocumentsSerializer extends EntityDocumentProcessor{
 	/**
 	 * Setup the serializer and writes the header on the output
 	 */
-	void startSerialisation();
+	void startSerialization();
 
 	/**
 	 * Writes the footer on the output. Can do additional stuff after the
 	 * serialization process
 	 */
-	void finishSerialisation();
+	void finishSerialization();
 
 }
