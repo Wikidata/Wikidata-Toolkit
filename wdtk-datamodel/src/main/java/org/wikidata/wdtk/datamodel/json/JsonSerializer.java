@@ -22,10 +22,11 @@ package org.wikidata.wdtk.datamodel.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -48,7 +49,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 
 	public JsonSerializer(OutputStream out) {
 		this.out = out;
-		atFirst = true;
+		this.atFirst = true;
 	}
 
 	public void setOutput(OutputStream out) {
@@ -56,7 +57,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	public OutputStream getOutput() {
-		return out;
+		return this.out;
 	}
 
 	/**
@@ -64,21 +65,23 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	 * necessary to inform the processor if a new serialisation was initiated.
 	 */
 	public void restartProcess() {
-		atFirst = true;
+		this.atFirst = true;
 	}
 
 	/**
-	 * Sends the json encoding to an OutputStream.
+	 * Sends the JSON encoding to an OutputStream.
 	 * 
 	 * @param jsonDocument
+	 *            JSON serialization for the entity document
 	 * @param id
+	 *            entity id of the entity document
 	 */
 	void writeEntityDocument(String jsonDocument, String id) {
 		StringBuilder builder = new StringBuilder();
-		if (!atFirst) {
+		if (!this.atFirst) {
 			builder.append(",");
 		} else {
-			atFirst = false;
+			this.atFirst = false;
 		}
 		builder.append("\"");
 		builder.append(id);
@@ -87,7 +90,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 		builder.append(jsonDocument);
 		builder.append("\n");
 		try {
-			out.write(builder.toString().getBytes(Charset.forName("UTF-8")));
+			this.out.write(builder.toString().getBytes(StandardCharsets.UTF_8));
 		} catch (IOException e) {
 			logger.error(e.toString());
 		}
@@ -95,14 +98,14 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		writeEntityDocument(converter.getJsonForItemDocument(itemDocument)
+		writeEntityDocument(this.converter.getJsonForItemDocument(itemDocument)
 				.toString(), itemDocument.getItemId().getId());
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		writeEntityDocument(
-				converter.getJsonForPropertyDocument(propertyDocument)
+				this.converter.getJsonForPropertyDocument(propertyDocument)
 						.toString(), propertyDocument.getEntityId().getId());
 	}
 
@@ -114,19 +117,25 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void startSerialization() {
 		restartProcess();
+
 		try {
-			out.write("{\"entities\": {\n".getBytes(Charset.forName("UTF-8")));
+			this.out.write("{\"entities\": {\n"
+					.getBytes(StandardCharsets.UTF_8));
 		} catch (IOException e) {
-			JsonSerializer.logger.error(e.toString());
+			// fail: we cannot produce useful JSON if some bytes are lost
+			logger.error("Failed to write JSON export:" + e.toString());
+			throw new RuntimeException(e.toString(), e);
 		}
 	}
 
 	@Override
 	public void finishSerialization() {
 		try {
-			out.write("}}".getBytes(Charset.forName("UTF-8")));
+			this.out.write("}}".getBytes(StandardCharsets.UTF_8));
 		} catch (IOException e) {
-			JsonSerializer.logger.error(e.toString());
+			// fail: we cannot produce useful JSON if some bytes are lost
+			logger.error("Failed to write JSON export:" + e.toString());
+			throw new RuntimeException(e.toString(), e);
 		}
 	}
 

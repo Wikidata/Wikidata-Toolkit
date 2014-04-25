@@ -82,8 +82,9 @@ public class JsonSerializationExample {
 		// Start processing (may trigger downloads where needed)
 		dumpFileManager.processAllRecentRevisionDumps(dumpFileProcessor, true);
 
-		// Finish the JSON serialization close the file stream
+		// Finish the JSON serialization
 		jsonSerializer.finishSerialization();
+		outputStream.close();
 	}
 
 	/**
