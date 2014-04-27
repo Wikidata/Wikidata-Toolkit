@@ -21,12 +21,11 @@
   		<artifactId>sesame-runtime</artifactId>
   		<version>2.7.11</version>
 	</dependency>
-	<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-datamodel</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
+	<dependency>			
+		<groupId>${project.groupId}</groupId>
+		<artifactId>wdtk-datamodel</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
   
   <build>

@@ -1,4 +1,5 @@
 package org.wikidata.wdtk.rdf;
+
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -18,6 +19,7 @@ package org.wikidata.wdtk.rdf;
  * limitations under the License.
  * #L%
  */
+import java.util.HashSet;
 import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
@@ -25,32 +27,37 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-
 public class SnakRdfConverter implements
 		SnakVisitor<Set<org.openrdf.model.Statement>> {
 
 	final ValueRdfConverter valueRdfConverter;
-	
-	public SnakRdfConverter(ValueRdfConverter valueRdfConverter){
+
+	public SnakRdfConverter(ValueRdfConverter valueRdfConverter) {
 		this.valueRdfConverter = valueRdfConverter;
 	}
-	
+
 	@Override
 	public Set<org.openrdf.model.Statement> visit(ValueSnak snak) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
+																								// TODO:
+																								// fill
+		return result;
 	}
 
 	@Override
 	public Set<org.openrdf.model.Statement> visit(SomeValueSnak snak) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
+																								// TODO:
+																								// fill
+		return result;
 	}
 
 	@Override
 	public Set<org.openrdf.model.Statement> visit(NoValueSnak snak) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
+																								// TODO:
+																								// fill
+		return result;
 	}
 
 }

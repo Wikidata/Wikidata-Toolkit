@@ -32,6 +32,7 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
@@ -70,7 +71,7 @@ public class RdfConverter {
 	/**
 	 * Fills a map with prefixes which can be added to the writer later.
 	 */
-	public void setPrefixes() {
+	void setPrefixes() {
 		namespaces.put("w", PREFIX_W);
 		namespaces.put("wo", PREFIX_WO);
 		namespaces.put("r", PREFIX_R);
@@ -131,31 +132,39 @@ public class RdfConverter {
 
 	}
 
+	public RdfConverter(){
+		setPrefixes();
+	}
+	
+	public Map<String, String> getNamespaces(){
+		return this.namespaces;
+	}
+	
 	org.openrdf.model.Statement createStatementWithStringValue(
 			String subjectURI, String predicateURI, String objectValue) {
-		URI subject = factory.createURI(subjectURI);
-		URI predicate = factory.createURI(predicateURI);
-		Literal object = factory.createLiteral(objectValue);
+		URI subject = this.factory.createURI(subjectURI);
+		URI predicate = this.factory.createURI(predicateURI);
+		Literal object = this.factory.createLiteral(objectValue);
 
-		return factory.createStatement(subject, predicate, object);
+		return this.factory.createStatement(subject, predicate, object);
 	}
 
 	org.openrdf.model.Statement createStatementWithResourceValue(
 			String subjectURI, String predicateURI, String objectValue) {
-		URI subject = factory.createURI(subjectURI);
-		URI predicate = factory.createURI(predicateURI);
-		URI object = factory.createURI(objectValue);
+		URI subject = this.factory.createURI(subjectURI);
+		URI predicate = this.factory.createURI(predicateURI);
+		URI object = this.factory.createURI(objectValue);
 
-		return factory.createStatement(subject, predicate, object);
+		return this.factory.createStatement(subject, predicate, object);
 	}
 
 	org.openrdf.model.Statement createStatementWithLiteral(String subjectURI,
 			String predicateURI, Literal literal) {
 
-		URI subject = factory.createURI(subjectURI);
-		URI predicate = factory.createURI(predicateURI);
+		URI subject = this.factory.createURI(subjectURI);
+		URI predicate = this.factory.createURI(predicateURI);
 
-		return factory.createStatement(subject, predicate, literal);
+		return this.factory.createStatement(subject, predicate, literal);
 	}
 
 	public Set<org.openrdf.model.Statement> convertLabelsToRdf(
@@ -226,6 +235,13 @@ public class RdfConverter {
 		return result;
 	}
 
+	public Set<org.openrdf.model.Statement> getRdfForPropertyDocument(
+			PropertyDocument document) {
+		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+
+		return result;
+	}
+
 	public Set<org.openrdf.model.Statement> getRdfForStatementGroup(
 			StatementGroup statementGroup) {
 
@@ -255,7 +271,7 @@ public class RdfConverter {
 
 	public Set<org.openrdf.model.Statement> getRdfForClaim(Claim claim) {
 		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
-		// result.addAll(claim.getMainSnak().accept(snakRdfConverter));
+		result.addAll(claim.getMainSnak().accept(this.snakRdfConverter));
 		return result;
 	}
 }
