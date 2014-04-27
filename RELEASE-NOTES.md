@@ -5,6 +5,7 @@ Version 0.2.0
 -------------
 
 New features:
+* Simplified code for dump file processing: new helper class DumpProcessingController
 * Support for resolving site links, based on information from the sites table dump
   (as demonstrated in a new example program)
 * Support for SnakGroups (data model updated to group Snaks by property in all lists)
