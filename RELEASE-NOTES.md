@@ -12,6 +12,7 @@ New features:
 Bug fixes:
 * Support SomeValueSnak and NoValueSnak in references (Issue #44)
 * Use correct site links when importing data from dumps (Issue #37)
+* Do not attempt to download unfinished dump files (Issue #63)
 
 
 Version 0.1.0

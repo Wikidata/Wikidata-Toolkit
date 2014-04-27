@@ -142,6 +142,8 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 	public void processDumpFileContents(InputStream inputStream,
 			MwDumpFile dumpFile) {
 
+		logger.info("Processing revision dump file " + dumpFile.toString());
+
 		this.namespaces.clear();
 		this.sitename = "";
 		this.baseUrl = "";

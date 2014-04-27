@@ -59,6 +59,9 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 	@Override
 	public void processDumpFileContents(InputStream inputStream,
 			MwDumpFile dumpFile) {
+
+		logger.info("Processing sites dump file " + dumpFile.toString());
+
 		BufferedReader bufferedReader = new BufferedReader(
 				new InputStreamReader(inputStream));
 

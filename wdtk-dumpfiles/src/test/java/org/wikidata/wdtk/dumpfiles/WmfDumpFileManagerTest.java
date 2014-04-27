@@ -285,6 +285,9 @@ public class WmfDumpFileManagerTest {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index.html", this.getClass());
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.FULL, true);
