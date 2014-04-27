@@ -8,6 +8,8 @@ New features:
 * Support for resolving site links, based on information from the sites table dump
   (as demonstrated in a new example program)
 * Support for SnakGroups (data model updated to group Snaks by property in all lists)
+* Support for serializing object of the Wikibase datamodel
+* Example program shows how to serialize a JSON dump from Wikidata dump files
 
 Bug fixes:
 * Support SomeValueSnak and NoValueSnak in references (Issue #44)
