@@ -21,9 +21,7 @@ package org.wikidata.wdtk.datamodel.json;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,10 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
@@ -90,42 +86,9 @@ public class JsonConverterTest {
 
 	@Test
 	public void testItemDocument() throws JSONException, IOException {
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
-
-		List<Statement> statements1 = new ArrayList<Statement>();
-		Claim claim1 = dataObjectFactory.getClaim(dataObjectFactory
-				.getItemIdValue("Q10", "base/"), dataObjectFactory
-				.getNoValueSnak(dataObjectFactory.getPropertyIdValue("P11",
-						"base/")), Collections.<SnakGroup> emptyList());
-		statements1.add(dataObjectFactory.getStatement(claim1,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
-		statementGroups.add(dataObjectFactory.getStatementGroup(statements1));
-
-		List<Statement> statements2 = new ArrayList<Statement>();
-		Claim claim2 = dataObjectFactory.getClaim(
-				dataObjectFactory.getItemIdValue("Q10", "base/"),
-				testObjectFactory.createValueSnakTimeValue("P1040"),
-				testObjectFactory.createQualifiers());
-		statements2.add(dataObjectFactory.getStatement(claim2,
-				testObjectFactory.createReferences(), StatementRank.NORMAL,
-				"none2"));
-		Claim claim3 = dataObjectFactory.getClaim(
-				dataObjectFactory.getItemIdValue("Q10", "base/"),
-				testObjectFactory.createValueSnakStringValue("P1040"),
-				Collections.<SnakGroup> emptyList());
-		statements2.add(dataObjectFactory.getStatement(claim3,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
-		statementGroups.add(dataObjectFactory.getStatementGroup(statements2));
-
-		JsonResultComparer.compareJSONObjects(jsonConverter
-				.getJsonForItemDocument(dataObjectFactory.getItemDocument(
-						dataObjectFactory.getItemIdValue("Q10", "base/"),
-						testObjectFactory.createLabels(),
-						testObjectFactory.createDescriptions(),
-						testObjectFactory.createAliases(), statementGroups,
-						testObjectFactory.createSiteLinks())),
+		JsonResultComparer.compareJSONObjects(
+				jsonConverter.getJsonForItemDocument(testObjectFactory
+						.createItemDocument()),
 				getResourceFromFile(FILE_NAME_ITEM_DOCUMENT));
 	}
 
