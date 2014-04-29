@@ -22,20 +22,9 @@ package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.MwDumpFile;
-import org.wikidata.wdtk.dumpfiles.MwSitesDumpFileProcessor;
-import org.wikidata.wdtk.dumpfiles.WmfDumpFileManager;
-import org.wikidata.wdtk.util.DirectoryManager;
-import org.wikidata.wdtk.util.DirectoryManagerImpl;
-import org.wikidata.wdtk.util.WebResourceFetcher;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 
 /**
  * This class demonstrates how to get access to information about sitelinks in
@@ -58,16 +47,17 @@ public class SitelinksExample {
 	public static void main(String[] args) throws IOException {
 
 		// Define where log messages go
-		configureLogging();
+		ExampleHelpers.configureLogging();
 
 		// Print information about this program
 		printDocumentation();
 
-		// Create object to get hold of Wikidata.org dumpfiles
-		WmfDumpFileManager dumpFileManager = createDumpFileManager();
+		// Controller object for processing dumps:
+		DumpProcessingController dumpProcessingController = new DumpProcessingController(
+				"wikidatawiki");
 
 		// Download the sites table dump and extract information
-		Sites sites = getSitesInformation(dumpFileManager);
+		Sites sites = dumpProcessingController.getSitesInformation();
 
 		// Access the data to find some information
 		System.out
@@ -93,79 +83,6 @@ public class SitelinksExample {
 		System.out
 				.println("*** URL of the file \"api.php\" on English Wikipedia: "
 						+ sites.getFileUrl("enwiki", "api.php"));
-	}
-
-	/**
-	 * Creates an object that manages dumpfiles published by the Wikimedia
-	 * Foundation. This object will check for available complete and incremental
-	 * dump files, both online and in a local download directory. It provides
-	 * direct access to the (decompressed) string content of these files.
-	 * <p>
-	 * The details in this method define which download directory is to be used,
-	 * which Wikimedia project we are interested in (Wikidata), and that we want
-	 * to allow online access (instead of using local files only).
-	 * 
-	 * @return dump file manager
-	 * @throws IOException
-	 *             if the download directory is not accessible
-	 */
-	private static WmfDumpFileManager createDumpFileManager()
-			throws IOException {
-		// The following can also be set to another directory:
-		String downloadDirectory = System.getProperty("user.dir");
-		DirectoryManager downloadDirectoryManager = new DirectoryManagerImpl(
-				downloadDirectory);
-
-		// The following can be set to null for offline operation:
-		WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
-
-		// The string "wikidatawiki" identifies Wikidata.org:
-		return new WmfDumpFileManager("wikidatawiki", downloadDirectoryManager,
-				webResourceFetcher);
-	}
-
-	/**
-	 * Processes the most recent dump of the sites table to extract information
-	 * about registered sites.
-	 * 
-	 * @param dumpFileManager
-	 *            the dump file manager used to access the dump
-	 * @return a Sites objects that contains the extracted information
-	 * @throws IOException
-	 */
-	private static Sites getSitesInformation(WmfDumpFileManager dumpFileManager)
-			throws IOException {
-		// Get a handle for the most recent dump file of the sites table:
-		MwDumpFile sitesTableDump = dumpFileManager
-				.findMostRecentDump(DumpContentType.SITES);
-
-		// Create a suitable processor for such dumps and process the file:
-		MwSitesDumpFileProcessor sitesDumpFileProcessor = new MwSitesDumpFileProcessor();
-		sitesDumpFileProcessor.processDumpFileContents(
-				sitesTableDump.getDumpFileStream(), sitesTableDump);
-
-		// Return the result:
-		return sitesDumpFileProcessor.getSites();
-	}
-
-	/**
-	 * Defines how messages should be logged. This method can be modified to
-	 * restrict the logging messages that are shown on the console or to change
-	 * their formatting. See the documentation of Log4J for details on how to do
-	 * this.
-	 */
-	private static void configureLogging() {
-		// Create the appender that will write log messages to the console.
-		ConsoleAppender consoleAppender = new ConsoleAppender();
-		// Define the pattern of log messages.
-		// Insert the string "%c{1}:%L" to also show class name and line.
-		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
-		consoleAppender.setLayout(new PatternLayout(pattern));
-		// Change to Level.ERROR for fewer messages:
-		consoleAppender.setThreshold(Level.INFO);
-
-		consoleAppender.activateOptions();
-		Logger.getRootLogger().addAppender(consoleAppender);
 	}
 
 	/**
