@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -105,33 +104,6 @@ public class WmfDumpFileManager {
 
 		WmfDumpFileManager.logger.info("Using download directory "
 				+ this.dumpfileDirectoryManager.toString());
-	}
-
-	/**
-	 * Processes all relevant page revision dumps in order. For further details
-	 * on the parameters, see {@link #findAllRelevantRevisionDumps(boolean)}.
-	 * 
-	 * @param preferCurrent
-	 *            should dumps with current revisions be preferred?
-	 */
-	public void processAllRecentRevisionDumps(
-			MwDumpFileProcessor dumpFileProcessor, boolean preferCurrent) {
-
-		for (MwDumpFile dumpFile : findAllRelevantRevisionDumps(preferCurrent)) {
-			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
-				dumpFileProcessor
-						.processDumpFileContents(inputStream, dumpFile);
-			} catch (FileAlreadyExistsException e) {
-				logger.error("Dump file "
-						+ dumpFile.toString()
-						+ " could not be processed since file "
-						+ e.getFile()
-						+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.");
-			} catch (IOException e) {
-				logger.error("Dump file " + dumpFile.toString()
-						+ " could not be processed: " + e.toString());
-			}
-		}
 	}
 
 	/**

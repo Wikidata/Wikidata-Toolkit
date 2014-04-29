@@ -47,17 +47,15 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	OutputStream out;
 	Boolean atFirst;
 
+	/**
+	 * Creates a new JSON serializer that writes its output to the given stream.
+	 * 
+	 * @param out
+	 *            the output stream to write to
+	 */
 	public JsonSerializer(OutputStream out) {
 		this.out = out;
 		this.atFirst = true;
-	}
-
-	public void setOutput(OutputStream out) {
-		this.out = out;
-	}
-
-	public OutputStream getOutput() {
-		return this.out;
 	}
 
 	/**
