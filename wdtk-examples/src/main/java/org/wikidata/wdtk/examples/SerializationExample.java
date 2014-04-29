@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
@@ -31,17 +32,19 @@ import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 
 /**
- * This class shows how convert data from wikidata.org to JSON, which follows
- * the JSON format as used in the Wikibase API. The compressed JSON data will be
- * written into a file named WikidataDump.json.bz2. You can find it in the
- * example directory after you ran the example code.
+ * This class shows how convert data from wikidata.org to another format. By
+ * default, this will be the JSON format as used in the Wikibase API, but the
+ * code can also be modified to produce serializations in different formats. The
+ * compressed output will be written into a file named WikidataDump.json.bz2.
+ * You can find it in the example directory after you ran the example code.
  * 
  * @author Michael Günther
  * 
  */
-public class JsonSerializationExample {
+public class SerializationExample {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException,
+			RDFHandlerException {
 
 		// Define where log messages go
 		ExampleHelpers.configureLogging();
@@ -57,13 +60,22 @@ public class JsonSerializationExample {
 		BZip2CompressorOutputStream outputStream = new BZip2CompressorOutputStream(
 				new FileOutputStream("WikidataDump.json.bz2"));
 		// Create an object for managing the serialization process
-		JsonSerializer jsonSerializer = new JsonSerializer(outputStream);
+		JsonSerializer serializer = new JsonSerializer(outputStream);
+
+		// // Alternative code to write RDF instead:
+		// // Write the output to a BZip2-compressed file
+		// BZip2CompressorOutputStream outputStream = new
+		// BZip2CompressorOutputStream(
+		// new FileOutputStream("WikidataDump.ttl.bz2"));
+		// RdfSerializer serializer = new RdfSerializer(RDFFormat.TURTLE,
+		// outputStream);
+
 		// Subscribe to the most recent entity documents of type wikibase item
 		// and property:
-		dumpProcessingController.registerEntityDocumentProcessor(
-				jsonSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				jsonSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+		dumpProcessingController.registerEntityDocumentProcessor(serializer,
+				MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dumpProcessingController.registerEntityDocumentProcessor(serializer,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -72,16 +84,16 @@ public class JsonSerializationExample {
 		dumpProcessingController.registerMwRevisionProcessor(rpRevisionStats,
 				null, true);
 
-		// Set up the JSON serializer and write headers
-		jsonSerializer.startSerialization();
+		// Set up the serializer and write headers
+		serializer.startSerialization();
 
 		// Start processing (may trigger downloads where needed)
-		// dumpProcessingController.processAllRecentRevisionDumps();
+		dumpProcessingController.processAllRecentRevisionDumps();
 		// // Process just a recent daily dump for testing:
-		dumpProcessingController.processMostRecentDailyDump();
+		// dumpProcessingController.processMostRecentDailyDump();
 
-		// Finish the JSON serialization
-		jsonSerializer.finishSerialization();
+		// Finish the serialization
+		serializer.finishSerialization();
 		outputStream.close();
 	}
 
@@ -91,11 +103,10 @@ public class JsonSerializationExample {
 	private static void printDocumentation() {
 		System.out
 				.println("********************************************************************");
-		System.out.println("*** Wikidata Toolkit: Json Serialization Example");
+		System.out.println("*** Wikidata Toolkit: Serialization Example");
 		System.out.println("*** ");
 		System.out
 				.println("*** This program will download dumps from Wikidata and serialize the data in a json format.");
-		System.out.println("*** It will print progress json.");
 		System.out
 				.println("*** Downloading may take some time initially. After that, files");
 		System.out
@@ -105,7 +116,7 @@ public class JsonSerializationExample {
 		System.out
 				.println("*** message below for the directory where dump files are found).");
 		System.out
-				.println("*** The json output will be stored in the directory of the example.");
+				.println("*** The output will be stored in the directory of the example.");
 		System.out
 				.println("********************************************************************");
 	}
