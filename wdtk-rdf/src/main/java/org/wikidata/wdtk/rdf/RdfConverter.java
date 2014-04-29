@@ -22,17 +22,23 @@ package org.wikidata.wdtk.rdf;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
@@ -47,17 +53,19 @@ public class RdfConverter {
 
 	// Prefixes
 
-	final String PREFIX_W = "http://www.wikidata.org/entity/";
-	final String PREFIX_WO = "http://www.wikidata.org/ontology#";
-	final String PREFIX_R = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-	final String PREFIX_RS = "http://www.w3.org/2000/01/rdf-schema#";
-	final String PREFIX_O = "http://www.w3.org/2002/07/owl#";
-	final String PREFIX_X = "http://www.w3.org/2001/XMLSchema#";
-	final String PREFIX_SO = "http://schema.org/";
-	final String PREFIX_SK = "http://www.w3.org/2004/02/skos/core#";
-	final String PREFIX_PV = "http://www.w3.org/ns/prov#";
+	final static String PREFIX_W = "http://www.wikidata.org/entity/";
+	final static String PREFIX_WO = "http://www.wikidata.org/ontology#";
+	final static String PREFIX_R = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	final static String PREFIX_RS = "http://www.w3.org/2000/01/rdf-schema#";
+	final static String PREFIX_O = "http://www.w3.org/2002/07/owl#";
+	final static String PREFIX_X = "http://www.w3.org/2001/XMLSchema#";
+	final static String PREFIX_SO = "http://schema.org/";
+	final static String PREFIX_SK = "http://www.w3.org/2004/02/skos/core#";
+	final static String PREFIX_PV = "http://www.w3.org/ns/prov#";
 
 	final String RDF_TYPE = PREFIX_R + "type";
+
+	RDFWriter writer;
 
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 
@@ -132,14 +140,22 @@ public class RdfConverter {
 
 	}
 
-	public RdfConverter(){
+	public RdfConverter(RDFWriter writer) {
 		setPrefixes();
+		this.writer = writer;
 	}
-	
-	public Map<String, String> getNamespaces(){
+
+	public Map<String, String> getNamespaces() {
 		return this.namespaces;
 	}
-	
+
+	org.openrdf.model.Statement createStatementWithGenericValue(String subjectURI, String predicateURI, Value value){
+		URI subject = this.factory.createURI(subjectURI);
+		URI predicate = this.factory.createURI(predicateURI);
+
+		return this.factory.createStatement(subject, predicate, value);
+	}
+
 	org.openrdf.model.Statement createStatementWithStringValue(
 			String subjectURI, String predicateURI, String objectValue) {
 		URI subject = this.factory.createURI(subjectURI);
@@ -167,111 +183,108 @@ public class RdfConverter {
 		return this.factory.createStatement(subject, predicate, literal);
 	}
 
-	public Set<org.openrdf.model.Statement> convertLabelsToRdf(
-			TermedDocument document) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+	public void convertLabelsToRdf(TermedDocument document)
+			throws RDFHandlerException {
 		for (String key : document.getLabels().keySet()) {
-			result.add(createStatementWithLiteral(PREFIX_W
+			writer.handleStatement(createStatementWithGenericValue(PREFIX_W
 					+ document.getEntityId().getId(), PREFIX_RS + "label",
 					document.getLabels().get(key)
 							.accept(this.valueRdfConverter)));
 		}
-		return result;
 	}
 
-	public Set<org.openrdf.model.Statement> convertAliasesToRdf(
-			TermedDocument document) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+	public void convertAliasesToRdf(TermedDocument document)
+			throws RDFHandlerException {
 		for (String key : document.getAliases().keySet()) {
 			for (MonolingualTextValue value : document.getAliases().get(key)) {
-				result.add(createStatementWithLiteral(PREFIX_W
+				writer.handleStatement(createStatementWithGenericValue(PREFIX_W
 						+ document.getEntityId().getId(), PREFIX_SK
 						+ "altLabel", value.accept(this.valueRdfConverter)));
 			}
 		}
-		return result;
 	}
 
-	public Set<org.openrdf.model.Statement> convertDescriptionsToRdf(
-			TermedDocument document) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+	public void convertDescriptionsToRdf(TermedDocument document)
+			throws RDFHandlerException {
 
 		for (String key : document.getDescriptions().keySet()) {
-			result.add(createStatementWithLiteral(
+			writer.handleStatement(createStatementWithGenericValue(
 					PREFIX_W + document.getEntityId().getId(),
 					PREFIX_SO + "description",
 					document.getDescriptions().get(key)
 							.accept(this.valueRdfConverter)));
 		}
 
-		return result;
 	}
 
-	Set<org.openrdf.model.Statement> addTermedDocumentAttributes(
-			TermedDocument document, Set<org.openrdf.model.Statement> result) {
+	void addTermedDocumentAttributes(TermedDocument document)
+			throws RDFHandlerException {
 
-		result.addAll(convertLabelsToRdf(document));
-		result.addAll(convertDescriptionsToRdf(document));
-		result.addAll(convertAliasesToRdf(document));
-
-		return result;
+		convertLabelsToRdf(document);
+		convertDescriptionsToRdf(document);
+		convertAliasesToRdf(document);
 
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForItemDocument(
-			ItemDocument document) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+	public Resource getRdfForItemDocument(ItemDocument document)
+			throws RDFHandlerException {
 
-		result.add(createStatementWithResourceValue(PREFIX_W
+		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
 				+ document.getItemId().getId(), RDF_TYPE, PREFIX_WO + "Item"));
 
-		result = addTermedDocumentAttributes(document, result);
+		addTermedDocumentAttributes(document);
 
 		for (org.wikidata.wdtk.datamodel.interfaces.StatementGroup statementGroup : document
 				.getStatementGroups()) {
-			result.addAll(getRdfForStatementGroup(statementGroup));
+			getRdfForStatementGroup(statementGroup);
 		}
 
-		return result;
+		// TODO: add SiteLinks
+
+		return this.factory.createURI(PREFIX_W + document.getEntityId());
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForPropertyDocument(
-			PropertyDocument document) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+	public Resource getRdfForPropertyDocument(PropertyDocument document)
+			throws RDFHandlerException {
+		addTermedDocumentAttributes(document);
 
-		return result;
+		return this.factory.createURI(PREFIX_W + document.getEntityId());
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForStatementGroup(
-			StatementGroup statementGroup) {
-
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
-
+	public void getRdfForStatementGroup(StatementGroup statementGroup)
+			throws RDFHandlerException {
 		for (org.wikidata.wdtk.datamodel.interfaces.Statement statement : statementGroup
 				.getStatements()) {
-			result.addAll(getRdfForStatement(statement));
+			getRdfForStatement(statement);
 		}
-
-		return result;
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForStatement(
-			org.wikidata.wdtk.datamodel.interfaces.Statement statement) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
-		result.add(createStatementWithResourceValue(PREFIX_W
+	public void getRdfForStatement(
+			org.wikidata.wdtk.datamodel.interfaces.Statement statement)
+			throws RDFHandlerException {
+		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
 				+ statement.getClaim().getSubject().getId(), PREFIX_W
 				+ statement.getClaim().getMainSnak().getPropertyId() + "s",
 				PREFIX_W + statement.getStatementId()));
-		result.add(createStatementWithResourceValue(
-				PREFIX_W + statement.getStatementId(), RDF_TYPE, PREFIX_WO
-						+ "Statement"));
-		result.addAll(getRdfForClaim(statement.getClaim()));
+		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
+				+ statement.getStatementId(), RDF_TYPE, PREFIX_WO + "Statement"));
+		getRdfForClaim(statement.getClaim(), statement.getStatementId());
+
+		// TODO: References
+
+		// What about the RANK?
+
+	}
+
+	public Set<org.openrdf.model.Statement> getRdfForQualifiers(
+			List<SnakGroup> qualifiers, String statementId) {
+		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
+
 		return result;
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForClaim(Claim claim) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
-		result.addAll(claim.getMainSnak().accept(this.snakRdfConverter));
-		return result;
+	public void getRdfForClaim(Claim claim, String statementId) {
+		claim.getMainSnak().accept(this.snakRdfConverter);
+		getRdfForQualifiers(claim.getQualifiers(), statementId); //TODO: irgendwas
 	}
 }

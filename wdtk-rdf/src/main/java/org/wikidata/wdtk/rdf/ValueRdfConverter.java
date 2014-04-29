@@ -18,7 +18,8 @@ package org.wikidata.wdtk.rdf;
  * limitations under the License.
  * #L%
  */
-import org.openrdf.model.Literal;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -31,50 +32,51 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 
-public class ValueRdfConverter implements ValueVisitor<Literal> {
+public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	
 	@Override
-	public Literal visit(DatatypeIdValue value) {
+	public Value visit(DatatypeIdValue value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Literal visit(EntityIdValue value) {
-		// TODO Auto-generated method stub
-		return null;
+	public Value visit(EntityIdValue value) {
+		return this.factory.createURI(RdfConverter.PREFIX_W + value.getId());
 	}
 
 	@Override
-	public Literal visit(GlobeCoordinatesValue value) {
-		// TODO Auto-generated method stub
-		return null;
+	public Value visit(GlobeCoordinatesValue value) {
+		URI valueURI = this.factory.createURI(RdfConverter.PREFIX_W + "VC" + value.hashCode());
+		// TODO add attributes
+		return valueURI;
 	}
 
 	@Override
-	public Literal visit(MonolingualTextValue value) {
+	public Value visit(MonolingualTextValue value) {
 		
 		return factory.createLiteral(value.getText(), value.getLanguageCode());
 	}
 
 	@Override
-	public Literal visit(QuantityValue value) {
+	public Value visit(QuantityValue value) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.factory.createLiteral(value.getNumericValue().doubleValue());
 	}
 
 	@Override
-	public Literal visit(StringValue value) {
+	public Value visit(StringValue value) {
 		// TODO Auto-generated method stub
-		return null;
+		return factory.createLiteral(value.getString());
 	}
 
 	@Override
-	public Literal visit(TimeValue value) {
-		// TODO Auto-generated method stub
-		return null;
+	public Value visit(TimeValue value) {
+		URI valueURI = this.factory.createURI(RdfConverter.PREFIX_W + "VT" + value.hashCode());
+		// TODO add attributes
+		return valueURI;
 	}
 
 }

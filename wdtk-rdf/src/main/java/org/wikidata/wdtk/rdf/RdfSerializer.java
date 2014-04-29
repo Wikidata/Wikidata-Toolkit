@@ -27,9 +27,7 @@ import java.util.Set;
 
 import org.openrdf.model.Model;
 import org.openrdf.model.Statement;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LinkedHashModel;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
@@ -52,11 +50,10 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final Model model = new LinkedHashModel();
 	RDFWriter writer;
 
-	final RdfConverter rdfConverter = new RdfConverter();
+	RdfConverter rdfConverter;
 
 	Map<String, String> namespaces = new HashMap<String, String>();
 
@@ -76,7 +73,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		}
 	}
 
-	void setupNamespaces(){
+	void setupNamespaces() {
 		for (String key : this.namespaces.keySet()) {
 			try {
 				writer.handleNamespace(key, this.namespaces.get(key));
@@ -85,7 +82,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 			}
 		}
 	}
-	
+
 	public RdfSerializer(RDFFormat format, OutputStream output)
 			throws RDFHandlerException {
 		this.writer = Rio.createWriter(format, output);
@@ -94,8 +91,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		try {
-			writeStatements(this.rdfConverter
-					.getRdfForItemDocument(itemDocument));
+			this.rdfConverter.getRdfForItemDocument(itemDocument);
 		} catch (RDFHandlerException e) {
 			logger.error(e.toString());
 		}
@@ -105,8 +101,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		try {
-			writeStatements(this.rdfConverter
-					.getRdfForPropertyDocument(propertyDocument));
+			this.rdfConverter.getRdfForPropertyDocument(propertyDocument);
 		} catch (RDFHandlerException e) {
 			logger.error(e.toString());
 		}
@@ -120,6 +115,8 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	@Override
 	public void startSerialization() {
 
+		rdfConverter = new RdfConverter(writer);
+
 		addNamespaces(this.rdfConverter.getNamespaces());
 
 		setupNamespaces();
@@ -129,7 +126,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		} catch (RDFHandlerException e1) {
 			logger.error(e1.toString());
 		}
-		
+
 		try {
 			writeStatements(this.rdfConverter.getBasicDefinitions());
 		} catch (RDFHandlerException e) {

@@ -19,45 +19,38 @@ package org.wikidata.wdtk.rdf;
  * limitations under the License.
  * #L%
  */
-import java.util.HashSet;
-import java.util.Set;
-
+import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class SnakRdfConverter implements
-		SnakVisitor<Set<org.openrdf.model.Statement>> {
+		SnakVisitor<Value> {
 
 	final ValueRdfConverter valueRdfConverter;
+	
+	final ValueFactory factory = ValueFactoryImpl.getInstance();
 
 	public SnakRdfConverter(ValueRdfConverter valueRdfConverter) {
 		this.valueRdfConverter = valueRdfConverter;
 	}
 
 	@Override
-	public Set<org.openrdf.model.Statement> visit(ValueSnak snak) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
-																								// TODO:
-																								// fill
-		return result;
+	public Value visit(ValueSnak snak) {
+		return snak.getValue().accept(valueRdfConverter);
 	}
 
 	@Override
-	public Set<org.openrdf.model.Statement> visit(SomeValueSnak snak) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
-																								// TODO:
-																								// fill
-		return result;
+	public Value visit(SomeValueSnak snak) {
+		return factory.createURI("unknownValue"); // see for real representation
 	}
 
 	@Override
-	public Set<org.openrdf.model.Statement> visit(NoValueSnak snak) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>(); // empty
-																								// TODO:
-																								// fill
-		return result;
+	public Value visit(NoValueSnak snak) {																
+		return factory.createURI("noValue"); // see for real representation
 	}
 
 }
