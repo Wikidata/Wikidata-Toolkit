@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -67,6 +68,13 @@ public class TestObjectFactory {
 	 * ID = PropDoc
 	 * </p>
 	 * 
+	 * <p>
+	 * <b>Default values</b>
+	 * </p>
+	 * <ul>
+	 * <li>PropertyId: "P1"</li>
+	 * </ul>
+	 * 
 	 * @return empty {@link PropertyDocument}
 	 */
 	public PropertyDocument createEmptyPropertyDocument() {
@@ -84,6 +92,89 @@ public class TestObjectFactory {
 	}
 
 	/**
+	 * Creates a {@link ItemDocument}
+	 * 
+	 * <p>
+	 * ID = Item
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Default values</b>
+	 * </p>
+	 * <ul>
+	 * <li>ItemId: "Q10"</li>
+	 * <li>baseIri: "base/"</li>
+	 * <li>Labels: {@link #createLabels Labs}</li>
+	 * <li>Descriptions: {@link #createDescriptions Descs}</li>
+	 * <li>Aliases: {@link #createAliases Aliases}</li>
+	 * <li>StatementGroups:
+	 * <ul>
+	 * <li>StatementGroup1
+	 * <ul>
+	 * <li>PropertyId: "P11"</li>
+	 * <li>baseIri: "base/"</li>
+	 * <li>Statement1
+	 * <ul>
+	 * <li>Mainsnak: NoValueSnak</li>
+	 * <li>Rank: normal</li>
+	 * </ul>
+	 * </ul>
+	 * </li>
+	 * <li>StatementGroup2
+	 * <ul>
+	 * <li>PropertyId: "P1040"</li>
+	 * <li>baseIri: "base/"</li>
+	 * <li>Statement2
+	 * <ul>
+	 * <li>Mainsnak: {@link #createValueSnakTimeValue ValSnakTime}</li>
+	 * <li>Qualifiers: {@link #createQualifiers Quals}</li>
+	 * <li>Rank: normal</li>
+	 * </ul>
+	 * </li>
+	 * <li>Statement3
+	 * <ul>
+	 * <li>Mainsnak: {@link #createValueSnakStringValue ValSnakStr}</li>
+	 * <li>Rank: normal</li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * </li>
+	 * </ul>
+	 * 
+	 * @return {@link ItemDocument}
+	 */
+	public ItemDocument createItemDocument() {
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+
+		List<Statement> statements1 = new ArrayList<Statement>();
+		Claim claim1 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P11",
+						"base/")), Collections.<SnakGroup> emptyList());
+		statements1.add(factory.getStatement(claim1,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"none"));
+		statementGroups.add(factory.getStatementGroup(statements1));
+
+		List<Statement> statements2 = new ArrayList<Statement>();
+		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				createValueSnakTimeValue("P1040"), createQualifiers());
+		statements2.add(factory.getStatement(claim2, createReferences(),
+				StatementRank.NORMAL, "none2"));
+		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+				createValueSnakStringValue("P1040"),
+				Collections.<SnakGroup> emptyList());
+		statements2.add(factory.getStatement(claim3,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"none"));
+		statementGroups.add(factory.getStatementGroup(statements2));
+		return factory.getItemDocument(factory.getItemIdValue("Q10", "base/"),
+				createLabels(), createDescriptions(), createAliases(),
+				statementGroups, createSiteLinks());
+	}
+
+	/**
 	 * Creates a {@link Statement} with entity-id qId, property-id pId
 	 * 
 	 * <p>
@@ -94,14 +185,16 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>Rank: "normal"
-	 * <li>MainSnak: {@link #createValueSnakStringValue ValSnakStr}
-	 * <li>StatementId: "id111"
-	 * <li>References: {@link #createReferences() Refs}
+	 * <li>Rank: "normal"</li>
+	 * <li>MainSnak: {@link #createValueSnakStringValue ValSnakStr}</li>
+	 * <li>StatementId: "id111"</li>
+	 * <li>References: {@link #createReferences() Refs}</li>
 	 * </ul>
 	 * 
 	 * @param qId
+	 *            item-id
 	 * @param pId
+	 *            property-id
 	 * @return {@link Statement}
 	 */
 	public Statement createStatement(String qId, String pId) {
@@ -253,8 +346,8 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>ValSnakTime (
-	 * <li>
+	 * <li>Values: {@link #createValueSnakTimeValue ValSnakTime (PropertyId:
+	 * "P15")}</li>
 	 * </ul>
 	 * 
 	 * @return List of {@link Snak}
@@ -275,8 +368,7 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String)
-	 * ValSnakTime}</li>
+	 * <li>reference: snaks = {@link #createValueSnakTimeValue ValSnakTime}</li>
 	 * </ul>
 	 * 
 	 * @return List of {@link Reference}

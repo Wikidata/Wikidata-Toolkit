@@ -278,7 +278,6 @@ public class JsonConverter {
 	 */
 	JSONObject getJsonForStatement(Statement statement) {
 		JSONObject result = new JSONObject();
-		JSONArray order = new JSONArray();
 		result = getJsonForClaim(statement.getClaim());
 		result.put(JsonConstants.KEY_ID, statement.getStatementId());
 		result.put(JsonConstants.KEY_TYPE, "statement");
