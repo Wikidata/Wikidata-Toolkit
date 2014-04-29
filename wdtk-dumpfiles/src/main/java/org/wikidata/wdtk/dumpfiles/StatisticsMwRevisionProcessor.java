@@ -122,24 +122,30 @@ public class StatisticsMwRevisionProcessor implements MwRevisionProcessor {
 	void logProgress() {
 		this.currentTimer.stop();
 		this.totalTimer.stop();
-		StatisticsMwRevisionProcessor.logger.info("[" + this.name
-				+ "] Processed " + this.totalRevisionCount
-				+ " revisions (total) in " + this.totalTimer.getTotalWallTime()
-				/ 1000000000 + "s (wall)/" + this.totalTimer.getTotalCpuTime()
-				/ 1000000000 + "s (cpu). " + "Time per revision (mics): "
-				+ this.totalTimer.getTotalWallTime() / this.totalRevisionCount
-				/ 1000 + "/" + this.totalTimer.getTotalCpuTime()
-				/ this.totalRevisionCount / 1000);
-		StatisticsMwRevisionProcessor.logger.info("[" + this.name
-				+ "] Processed " + this.currentRevisionCount
-				+ " revisions (current run) in "
-				+ this.currentTimer.getTotalWallTime() / 1000000000
-				+ "s (wall)/" + this.currentTimer.getTotalCpuTime()
-				/ 1000000000 + "s (cpu)." + " Time per revision (mics): "
-				+ this.currentTimer.getTotalWallTime()
-				/ this.currentRevisionCount / 1000 + "/"
-				+ this.currentTimer.getTotalCpuTime()
-				/ this.currentRevisionCount / 1000);
+		if (this.totalRevisionCount > 0) {
+			StatisticsMwRevisionProcessor.logger.info("[" + this.name
+					+ "] Processed " + this.totalRevisionCount
+					+ " revisions (total) in "
+					+ this.totalTimer.getTotalWallTime() / 1000000000
+					+ "s (wall)/" + this.totalTimer.getTotalCpuTime()
+					/ 1000000000 + "s (cpu). " + "Time per revision (mics): "
+					+ this.totalTimer.getTotalWallTime()
+					/ this.totalRevisionCount / 1000 + "/"
+					+ this.totalTimer.getTotalCpuTime()
+					/ this.totalRevisionCount / 1000);
+		}
+		if (this.currentRevisionCount > 0) {
+			StatisticsMwRevisionProcessor.logger.info("[" + this.name
+					+ "] Processed " + this.currentRevisionCount
+					+ " revisions (current run) in "
+					+ this.currentTimer.getTotalWallTime() / 1000000000
+					+ "s (wall)/" + this.currentTimer.getTotalCpuTime()
+					/ 1000000000 + "s (cpu)." + " Time per revision (mics): "
+					+ this.currentTimer.getTotalWallTime()
+					/ this.currentRevisionCount / 1000 + "/"
+					+ this.currentTimer.getTotalCpuTime()
+					/ this.currentRevisionCount / 1000);
+		}
 		this.currentTimer.start();
 		this.totalTimer.start();
 	}
