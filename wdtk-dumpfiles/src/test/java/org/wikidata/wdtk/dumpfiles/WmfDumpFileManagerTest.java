@@ -353,7 +353,10 @@ public class WmfDumpFileManagerTest {
 
 		TestDumpfileProcessor dfp = new TestDumpfileProcessor();
 
-		dumpFileManager.processAllRecentRevisionDumps(dfp, true);
+		for (MwDumpFile dumpFile : dumpFileManager
+				.findAllRelevantRevisionDumps(true)) {
+			dfp.processDumpFileContents(dumpFile.getDumpFileStream(), dumpFile);
+		}
 
 		assertEquals(
 				dfp.result,
