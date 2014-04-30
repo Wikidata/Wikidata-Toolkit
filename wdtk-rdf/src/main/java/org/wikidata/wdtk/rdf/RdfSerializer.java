@@ -21,19 +21,12 @@ package org.wikidata.wdtk.rdf;
  */
 
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import org.openrdf.model.Model;
-import org.openrdf.model.Statement;
-import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.Rio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -50,60 +43,48 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	final Model model = new LinkedHashModel();
-	RDFWriter writer;
-
 	RdfConverter rdfConverter;
+	RdfWriter rdfWriter;
 
-	Map<String, String> namespaces = new HashMap<String, String>();
-
-	void addNamespaces(Map<String, String> namespaces) {
-		this.namespaces.putAll(namespaces);
+	/**
+	 * Creates a new RDF serializer for the specified format and output stream.
+	 * 
+	 * @param format
+	 *            RDF format, such as RDFFormat.TURTLE
+	 * @param output
+	 *            the output stream to write to
+	 */
+	public RdfSerializer(RDFFormat format, OutputStream output) {
+		this.rdfWriter = new RdfWriter(format, output);
+		this.rdfConverter = new RdfConverter(this.rdfWriter);
 	}
 
-	void clearNamespaces() {
-		this.namespaces.clear();
-	}
-
-	void writeStatements(Set<org.openrdf.model.Statement> statements)
-			throws RDFHandlerException {
-		for (Statement st : statements) {
-			writer.handleStatement(st);
-
+	@Override
+	public void startSerialization() {
+		try {
+			this.rdfWriter.start();
+			this.rdfConverter.writeNamespaceDeclarations();
+			this.rdfConverter.writeBasicDefinitions();
+		} catch (RDFHandlerException e) { // we cannot recover here
+			throw new RuntimeException(e.toString(), e);
 		}
-	}
-
-	void setupNamespaces() {
-		for (String key : this.namespaces.keySet()) {
-			try {
-				writer.handleNamespace(key, this.namespaces.get(key));
-			} catch (RDFHandlerException e) {
-				logger.error(e.toString());
-			}
-		}
-	}
-
-	public RdfSerializer(RDFFormat format, OutputStream output)
-			throws RDFHandlerException {
-		this.writer = Rio.createWriter(format, output);
 	}
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		try {
-			this.rdfConverter.getRdfForItemDocument(itemDocument);
-		} catch (RDFHandlerException e) {
-			logger.error(e.toString());
+			this.rdfConverter.writeItemDocument(itemDocument);
+		} catch (RDFHandlerException e) { // we cannot recover here
+			throw new RuntimeException(e.toString(), e);
 		}
-
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		try {
-			this.rdfConverter.getRdfForPropertyDocument(propertyDocument);
-		} catch (RDFHandlerException e) {
-			logger.error(e.toString());
+			this.rdfConverter.writePropertyDocument(propertyDocument);
+		} catch (RDFHandlerException e) { // we cannot recover here
+			throw new RuntimeException(e.toString(), e);
 		}
 	}
 
@@ -113,34 +94,25 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void startSerialization() {
-
-		rdfConverter = new RdfConverter(writer);
-
-		addNamespaces(this.rdfConverter.getNamespaces());
-
-		setupNamespaces();
-
-		try {
-			writer.startRDF();
-		} catch (RDFHandlerException e1) {
-			logger.error(e1.toString());
-		}
-
-		try {
-			writeStatements(this.rdfConverter.getBasicDefinitions());
-		} catch (RDFHandlerException e) {
-			logger.error(e.toString());
-		}
-	}
-
-	@Override
 	public void finishSerialization() {
 		try {
-			this.writer.endRDF();
-		} catch (RDFHandlerException e) {
-			logger.error(e.toString());
+			this.rdfWriter.finish();
+		} catch (RDFHandlerException e) { // we cannot recover here
+			throw new RuntimeException(e.toString(), e);
 		}
 	}
+
+	/**
+	 * Writes a list of RDF triples to the output.
+	 * 
+	 * @param statements
+	 * @throws RDFHandlerException
+	 */
+	// void writeStatements(List<org.openrdf.model.Statement> statements)
+	// throws RDFHandlerException {
+	// for (Statement st : statements) {
+	// writer.handleStatement(st);
+	// }
+	// }
 
 }

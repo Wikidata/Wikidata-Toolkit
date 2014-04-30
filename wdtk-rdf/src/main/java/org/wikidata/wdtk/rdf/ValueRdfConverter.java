@@ -44,12 +44,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(EntityIdValue value) {
-		return this.factory.createURI(RdfConverter.PREFIX_W + value.getId());
+		return this.factory.createURI(Vocabulary.PREFIX_WIKIDATA + value.getId());
 	}
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-		URI valueURI = this.factory.createURI(RdfConverter.PREFIX_W + "VC" + value.hashCode());
+		URI valueURI = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA + "VC" + value.hashCode());
 		// TODO add attributes
 		return valueURI;
 	}
@@ -74,7 +74,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(TimeValue value) {
-		URI valueURI = this.factory.createURI(RdfConverter.PREFIX_W + "VT" + value.hashCode());
+		URI valueURI = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA + "VT" + value.hashCode());
 		// TODO add attributes
 		return valueURI;
 	}

@@ -22,35 +22,58 @@ package org.wikidata.wdtk.rdf;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-public class SnakRdfConverter implements
-		SnakVisitor<Value> {
+public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	final ValueRdfConverter valueRdfConverter;
-	
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
 
-	public SnakRdfConverter(ValueRdfConverter valueRdfConverter) {
+	final ValueFactory factory = ValueFactoryImpl.getInstance();
+	final RdfWriter rdfWriter;
+
+	String subjectUri;
+	PropertyContext propertyContext;
+
+	public SnakRdfConverter(RdfWriter rdfWriter,
+			ValueRdfConverter valueRdfConverter) {
+		this.rdfWriter = rdfWriter;
 		this.valueRdfConverter = valueRdfConverter;
 	}
 
-	@Override
-	public Value visit(ValueSnak snak) {
-		return snak.getValue().accept(valueRdfConverter);
+	public void setSnakContext(String subjectUri,
+			PropertyContext propertyContext) {
+		this.subjectUri = subjectUri;
+		this.propertyContext = propertyContext;
 	}
 
 	@Override
-	public Value visit(SomeValueSnak snak) {
-		return factory.createURI("unknownValue"); // see for real representation
+	public Void visit(ValueSnak snak) {
+		try {
+			String propertyUri = Vocabulary.getPropertyUri(
+					snak.getPropertyId(), this.propertyContext);
+			Value value = snak.getValue().accept(valueRdfConverter);
+			this.rdfWriter.writeTripleValueObject(this.subjectUri, propertyUri,
+					value);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+		return null;
 	}
 
 	@Override
-	public Value visit(NoValueSnak snak) {																
-		return factory.createURI("noValue"); // see for real representation
+	public Void visit(SomeValueSnak snak) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public Void visit(NoValueSnak snak) {
+		// TODO
+		return null;
 	}
 
 }

@@ -20,25 +20,19 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
@@ -51,224 +45,135 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  */
 public class RdfConverter {
 
-	// Prefixes
-
-	final static String PREFIX_W = "http://www.wikidata.org/entity/";
-	final static String PREFIX_WO = "http://www.wikidata.org/ontology#";
-	final static String PREFIX_R = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-	final static String PREFIX_RS = "http://www.w3.org/2000/01/rdf-schema#";
-	final static String PREFIX_O = "http://www.w3.org/2002/07/owl#";
-	final static String PREFIX_X = "http://www.w3.org/2001/XMLSchema#";
-	final static String PREFIX_SO = "http://schema.org/";
-	final static String PREFIX_SK = "http://www.w3.org/2004/02/skos/core#";
-	final static String PREFIX_PV = "http://www.w3.org/ns/prov#";
-
-	final String RDF_TYPE = PREFIX_R + "type";
-
-	RDFWriter writer;
-
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
+	final RdfWriter writer;
+	final ValueRdfConverter valueRdfConverter;
+	final SnakRdfConverter snakRdfConverter;
 
-	final ValueRdfConverter valueRdfConverter = new ValueRdfConverter();
-	final SnakRdfConverter snakRdfConverter = new SnakRdfConverter(
-			this.valueRdfConverter);
-
-	// map of prefixes (namespaces)
-	Map<String, String> namespaces = new HashMap<String, String>();
-
-	/**
-	 * Fills a map with prefixes which can be added to the writer later.
-	 */
-	void setPrefixes() {
-		namespaces.put("w", PREFIX_W);
-		namespaces.put("wo", PREFIX_WO);
-		namespaces.put("r", PREFIX_R);
-		namespaces.put("rs", PREFIX_RS);
-		namespaces.put("o", PREFIX_O);
-		namespaces.put("x", PREFIX_X);
-		namespaces.put("so", PREFIX_SO);
-		namespaces.put("sk", PREFIX_SK);
-		namespaces.put("pv", PREFIX_PV);
+	public RdfConverter(RdfWriter writer) {
+		this.writer = writer;
+		this.valueRdfConverter = new ValueRdfConverter();
+		this.snakRdfConverter = new SnakRdfConverter(writer,
+				this.valueRdfConverter);
 	}
 
 	/**
 	 * Returns a set with some triples to define instances of properties.
 	 * 
-	 * @return Set<org.openrdf.model.Statement>
+	 * @return List<org.openrdf.model.Statement>
+	 * @throws RDFHandlerException
 	 */
-	public Set<org.openrdf.model.Statement> getBasicDefinitions() {
-		Set<org.openrdf.model.Statement> statements = new HashSet<org.openrdf.model.Statement>();
-
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#propertyType", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#ObjectProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#globe", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#ObjectProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#latitude", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#longitude", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#altitude", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#gcPrecision", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#time", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#timePrecision", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.wikidata.org/ontology#preferredCalendar", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#ObjectProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://www.w3.org/ns/prov#wasDerivedFrom", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#ObjectProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://schema.org/about", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#ObjectProperty"));
-		statements.add(createStatementWithResourceValue(
-				"http://schema.org/inLanguage", RDF_TYPE,
-				"http://www.w3.org/2002/07/owl#DatatypeProperty"));
-
-		return statements;
-
+	public void writeBasicDefinitions() throws RDFHandlerException {
+		this.writer.writeTripleUriObject(Vocabulary.WB_PROPERTY_TYPE,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_GLOBE,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_LATITUDE,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_LONGITUDE,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		// To be removed from ontology: not in datamodel
+		// this.writer.writeTripleUriObject(
+		// "http://www.wikidata.org/ontology#altitude", RDF_TYPE,
+		// OWL_DATATYPE_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_GC_PRECISION,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_TIME,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_TIME_PRECISION,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.WB_PREFERRED_CALENDAR,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.PROV_WAS_DERIVED_FROM,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.SCHEMA_ABOUT,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		this.writer.writeTripleUriObject(Vocabulary.SCHEMA_IN_LANGUAGE,
+				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		// TODO add basic declarations for all external vocabulary used herein
 	}
 
-	public RdfConverter(RDFWriter writer) {
-		setPrefixes();
-		this.writer = writer;
+	public void writeNamespaceDeclarations() throws RDFHandlerException {
+		this.writer.writeNamespaceDeclaration("id", Vocabulary.PREFIX_WIKIDATA);
+		this.writer.writeNamespaceDeclaration("wo", Vocabulary.PREFIX_WBONTO);
+		this.writer.writeNamespaceDeclaration("rdf", Vocabulary.PREFIX_RDF);
+		this.writer.writeNamespaceDeclaration("rdfs", Vocabulary.PREFIX_RDFS);
+		this.writer.writeNamespaceDeclaration("owl", Vocabulary.PREFIX_OWL);
+		this.writer.writeNamespaceDeclaration("xsd", Vocabulary.PREFIX_XSD);
+		this.writer.writeNamespaceDeclaration("schema",
+				Vocabulary.PREFIX_SCHEMA);
+		this.writer.writeNamespaceDeclaration("skos", Vocabulary.PREFIX_SKOS);
+		this.writer.writeNamespaceDeclaration("prov", Vocabulary.PREFIX_PROV);
 	}
 
-	public Map<String, String> getNamespaces() {
-		return this.namespaces;
-	}
-
-	org.openrdf.model.Statement createStatementWithGenericValue(String subjectURI, String predicateURI, Value value){
-		URI subject = this.factory.createURI(subjectURI);
-		URI predicate = this.factory.createURI(predicateURI);
-
-		return this.factory.createStatement(subject, predicate, value);
-	}
-
-	org.openrdf.model.Statement createStatementWithStringValue(
-			String subjectURI, String predicateURI, String objectValue) {
-		URI subject = this.factory.createURI(subjectURI);
-		URI predicate = this.factory.createURI(predicateURI);
-		Literal object = this.factory.createLiteral(objectValue);
-
-		return this.factory.createStatement(subject, predicate, object);
-	}
-
-	org.openrdf.model.Statement createStatementWithResourceValue(
-			String subjectURI, String predicateURI, String objectValue) {
-		URI subject = this.factory.createURI(subjectURI);
-		URI predicate = this.factory.createURI(predicateURI);
-		URI object = this.factory.createURI(objectValue);
-
-		return this.factory.createStatement(subject, predicate, object);
-	}
-
-	org.openrdf.model.Statement createStatementWithLiteral(String subjectURI,
-			String predicateURI, Literal literal) {
-
-		URI subject = this.factory.createURI(subjectURI);
-		URI predicate = this.factory.createURI(predicateURI);
-
-		return this.factory.createStatement(subject, predicate, literal);
-	}
-
-	public void convertLabelsToRdf(TermedDocument document)
+	public void writeItemDocument(ItemDocument document)
 			throws RDFHandlerException {
-		for (String key : document.getLabels().keySet()) {
-			writer.handleStatement(createStatementWithGenericValue(PREFIX_W
-					+ document.getEntityId().getId(), PREFIX_RS + "label",
-					document.getLabels().get(key)
-							.accept(this.valueRdfConverter)));
-		}
-	}
 
-	public void convertAliasesToRdf(TermedDocument document)
-			throws RDFHandlerException {
-		for (String key : document.getAliases().keySet()) {
-			for (MonolingualTextValue value : document.getAliases().get(key)) {
-				writer.handleStatement(createStatementWithGenericValue(PREFIX_W
-						+ document.getEntityId().getId(), PREFIX_SK
-						+ "altLabel", value.accept(this.valueRdfConverter)));
+		String subjectUri = Vocabulary.getEntityUri(document.getEntityId());
+
+		this.writer.writeTripleUriObject(subjectUri, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_ITEM);
+
+		writeDocumentTerms(document);
+
+		for (StatementGroup statementGroup : document.getStatementGroups()) {
+			for (Statement statement : statementGroup.getStatements()) {
+				this.writer.writeTripleUriObject(subjectUri, Vocabulary
+						.getPropertyUri(statement.getClaim().getMainSnak()
+								.getPropertyId(), PropertyContext.STATEMENT),
+						Vocabulary.getStatementUri(statement));
 			}
 		}
-	}
 
-	public void convertDescriptionsToRdf(TermedDocument document)
-			throws RDFHandlerException {
-
-		for (String key : document.getDescriptions().keySet()) {
-			writer.handleStatement(createStatementWithGenericValue(
-					PREFIX_W + document.getEntityId().getId(),
-					PREFIX_SO + "description",
-					document.getDescriptions().get(key)
-							.accept(this.valueRdfConverter)));
-		}
-
-	}
-
-	void addTermedDocumentAttributes(TermedDocument document)
-			throws RDFHandlerException {
-
-		convertLabelsToRdf(document);
-		convertDescriptionsToRdf(document);
-		convertAliasesToRdf(document);
-
-	}
-
-	public Resource getRdfForItemDocument(ItemDocument document)
-			throws RDFHandlerException {
-
-		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
-				+ document.getItemId().getId(), RDF_TYPE, PREFIX_WO + "Item"));
-
-		addTermedDocumentAttributes(document);
-
-		for (org.wikidata.wdtk.datamodel.interfaces.StatementGroup statementGroup : document
-				.getStatementGroups()) {
-			getRdfForStatementGroup(statementGroup);
+		for (StatementGroup statementGroup : document.getStatementGroups()) {
+			for (Statement statement : statementGroup.getStatements()) {
+				writeStatement(statement);
+			}
 		}
 
 		// TODO: add SiteLinks
 
-		return this.factory.createURI(PREFIX_W + document.getEntityId());
 	}
 
-	public Resource getRdfForPropertyDocument(PropertyDocument document)
+	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
-		addTermedDocumentAttributes(document);
 
-		return this.factory.createURI(PREFIX_W + document.getEntityId());
+		this.writer.writeTripleUriObject(Vocabulary.PREFIX_WIKIDATA
+				+ document.getEntityId().getId(), Vocabulary.RDF_TYPE,
+				Vocabulary.WB_PROPERTY);
+
+		writeDocumentTerms(document);
+
+		// TODO add datatype
 	}
 
-	public void getRdfForStatementGroup(StatementGroup statementGroup)
-			throws RDFHandlerException {
-		for (org.wikidata.wdtk.datamodel.interfaces.Statement statement : statementGroup
-				.getStatements()) {
-			getRdfForStatement(statement);
+	void writeDocumentTerms(TermedDocument document) throws RDFHandlerException {
+		String subjectUri = Vocabulary.getEntityUri(document.getEntityId());
+
+		writeTermTriples(subjectUri, Vocabulary.RDFS_LABEL, document
+				.getLabels().values());
+		writeTermTriples(subjectUri, Vocabulary.SCHEMA_DESCRIPTION, document
+				.getDescriptions().values());
+		for (List<MonolingualTextValue> aliases : document.getAliases()
+				.values()) {
+			writeTermTriples(subjectUri, Vocabulary.SKOS_ALT_LABEL, aliases);
 		}
 	}
 
-	public void getRdfForStatement(
-			org.wikidata.wdtk.datamodel.interfaces.Statement statement)
-			throws RDFHandlerException {
-		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
-				+ statement.getClaim().getSubject().getId(), PREFIX_W
-				+ statement.getClaim().getMainSnak().getPropertyId() + "s",
-				PREFIX_W + statement.getStatementId()));
-		writer.handleStatement(createStatementWithResourceValue(PREFIX_W
-				+ statement.getStatementId(), RDF_TYPE, PREFIX_WO + "Statement"));
-		getRdfForClaim(statement.getClaim(), statement.getStatementId());
+	void writeTermTriples(String subjectUri, String predicateUri,
+			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
+		for (MonolingualTextValue mtv : terms) {
+			this.writer.writeTripleValueObject(subjectUri, predicateUri,
+					mtv.accept(this.valueRdfConverter));
+		}
+	}
+
+	void writeStatement(Statement statement) throws RDFHandlerException {
+		String statementUri = Vocabulary.getStatementUri(statement);
+
+		this.writer.writeTripleUriObject(statementUri, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_STATEMENT);
+		writeClaim(statementUri, statement.getClaim());
 
 		// TODO: References
 
@@ -276,15 +181,18 @@ public class RdfConverter {
 
 	}
 
-	public Set<org.openrdf.model.Statement> getRdfForQualifiers(
-			List<SnakGroup> qualifiers, String statementId) {
-		Set<org.openrdf.model.Statement> result = new HashSet<org.openrdf.model.Statement>();
-
-		return result;
-	}
-
-	public void getRdfForClaim(Claim claim, String statementId) {
+	void writeClaim(String statementUri, Claim claim) {
+		this.snakRdfConverter.setSnakContext(statementUri,
+				PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
-		getRdfForQualifiers(claim.getQualifiers(), statementId); //TODO: irgendwas
+
+		this.snakRdfConverter.setSnakContext(statementUri,
+				PropertyContext.QUALIFIER);
+		for (SnakGroup snakGroup : claim.getQualifiers()) {
+			for (Snak snak : snakGroup.getSnaks()) {
+				snak.accept(this.snakRdfConverter);
+			}
+		}
 	}
+
 }
