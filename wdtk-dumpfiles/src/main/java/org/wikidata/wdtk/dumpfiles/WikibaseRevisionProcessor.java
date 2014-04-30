@@ -48,6 +48,8 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	final DataObjectFactory dataObjectFactory;
 	final EntityDocumentProcessor entityDocumentProcessor;
 
+	Map<Integer, String> namespaces;
+
 	public WikibaseRevisionProcessor(
 			EntityDocumentProcessor entityDocumentProcessor) {
 		this.dataObjectFactory = new DataObjectFactoryImpl();
@@ -59,6 +61,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 			Map<Integer, String> namespaces) {
 		// FIXME the baseUrl from the dump is not the baseIri we need here
 		this.jsonConverter = new JsonConverter(baseUrl, this.dataObjectFactory);
+		this.namespaces = namespaces;
 	}
 
 	@Override

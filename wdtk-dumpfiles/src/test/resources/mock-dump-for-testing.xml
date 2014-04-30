@@ -112,4 +112,35 @@ Line 3</text>
       <format>text/x-wiki</format>
     </revision>
   </page>
+  <page>
+    <title>Property:P1</title>
+    <ns>120</ns>
+    <id>12345</id>
+    <revision>
+      <id>10004</id>
+      <parentid>3</parentid>
+      <timestamp>2014-02-19T23:34:14Z</timestamp>
+      <contributor>
+        <ip>127.0.0.4</ip>
+      </contributor>
+      <comment>Test comment 10004</comment>
+      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 10004&quot;},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
+      <sha1>ignored</sha1>
+      <model>wikibase-property</model>
+      <format>application/json</format>
+    </revision>
+    <revision>
+      <id>10005</id>
+      <parentid>4</parentid>
+      <timestamp>2014-02-19T23:34:15Z</timestamp>
+      <contributor>
+        <ip>127.0.0.5</ip>
+      </contributor>
+      <comment>Test comment 10005</comment>
+      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 10005&quot;},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
+      <sha1>ignored</sha1>
+      <model>wikibase-property</model>
+      <format>application/json</format>
+    </revision>
+  </page>
 </mediawiki>
