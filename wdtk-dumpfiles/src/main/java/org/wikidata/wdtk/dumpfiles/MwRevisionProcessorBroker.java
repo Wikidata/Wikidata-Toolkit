@@ -55,6 +55,14 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 		MwRevisionProcessor mwRevisionProcessor;
 		String model;
 		boolean onlyCurrentRevisions;
+
+		@Override
+		public String toString() {
+			return "Subscription of "
+					+ this.mwRevisionProcessor.getClass().toString()
+					+ " to model " + this.model + " (current: "
+					+ this.onlyCurrentRevisions + ")";
+		}
 	}
 
 	final List<MwRevisionProcessorBroker.RevisionSubscription> revisionSubscriptions;

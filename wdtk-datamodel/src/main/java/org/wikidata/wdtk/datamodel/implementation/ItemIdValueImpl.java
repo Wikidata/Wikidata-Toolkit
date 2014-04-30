@@ -48,7 +48,8 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 		if (!id.matches("^Q[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q<positive integer>\"");
+					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
+							+ id + "\"");
 		}
 	}
 
@@ -56,9 +57,9 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 	public String getEntityType() {
 		return EntityIdValue.ET_ITEM;
 	}
-	
+
 	@Override
-	public String toString(){
-		return "(ItemId)" + this.baseIri +"/"+ this.id;
+	public String toString() {
+		return "(ItemId)" + this.baseIri + "/" + this.id;
 	}
 }
