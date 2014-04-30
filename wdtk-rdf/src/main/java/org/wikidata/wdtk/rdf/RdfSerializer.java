@@ -64,7 +64,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		try {
 			this.rdfWriter.start();
 			this.rdfConverter.writeNamespaceDeclarations();
-			this.rdfConverter.writeBasicDefinitions();
+			this.rdfConverter.writeBasicDeclarations();
 		} catch (RDFHandlerException e) { // we cannot recover here
 			throw new RuntimeException(e.toString(), e);
 		}

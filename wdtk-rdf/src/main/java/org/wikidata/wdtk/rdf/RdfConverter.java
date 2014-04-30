@@ -22,6 +22,7 @@ package org.wikidata.wdtk.rdf;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
@@ -58,39 +59,17 @@ public class RdfConverter {
 	}
 
 	/**
-	 * Returns a set with some triples to define instances of properties.
+	 * Writes OWL declarations for all basic vocabulary elements used in the
+	 * dump.
 	 * 
-	 * @return List<org.openrdf.model.Statement>
 	 * @throws RDFHandlerException
 	 */
-	public void writeBasicDefinitions() throws RDFHandlerException {
-		this.writer.writeTripleUriObject(Vocabulary.WB_PROPERTY_TYPE,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_GLOBE,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_LATITUDE,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_LONGITUDE,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		// To be removed from ontology: not in datamodel
-		// this.writer.writeTripleUriObject(
-		// "http://www.wikidata.org/ontology#altitude", RDF_TYPE,
-		// OWL_DATATYPE_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_GC_PRECISION,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_TIME,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_TIME_PRECISION,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.WB_PREFERRED_CALENDAR,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.PROV_WAS_DERIVED_FROM,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.SCHEMA_ABOUT,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-		this.writer.writeTripleUriObject(Vocabulary.SCHEMA_IN_LANGUAGE,
-				Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-		// TODO add basic declarations for all external vocabulary used herein
+	public void writeBasicDeclarations() throws RDFHandlerException {
+		for (Map.Entry<String, String> uriType : Vocabulary
+				.getKnownVocabularyTypes().entrySet()) {
+			this.writer.writeTripleUriObject(uriType.getKey(),
+					Vocabulary.RDF_TYPE, uriType.getValue());
+		}
 	}
 
 	public void writeNamespaceDeclarations() throws RDFHandlerException {
