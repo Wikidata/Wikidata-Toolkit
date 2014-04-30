@@ -283,7 +283,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 		} catch (MwDumpFormatException e) {
 			MwRevisionDumpFileProcessor.logger
 					.error("Error when trying to process revision block for page \""
-							+ this.mwRevision.getTitle()
+							+ this.mwRevision.getPrefixedTitle()
 							+ "\" (namespace "
 							+ this.mwRevision.getNamespace()
 							+ ", id "
@@ -331,7 +331,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 			case XMLStreamConstants.START_ELEMENT:
 				switch (this.xmlReader.getLocalName()) {
 				case MwRevisionDumpFileProcessor.E_PAGE_TITLE:
-					this.mwRevision.title = this.xmlReader.getElementText();
+					this.mwRevision.prefixedTitle = this.xmlReader.getElementText();
 					break;
 				case MwRevisionDumpFileProcessor.E_PAGE_NAMESPACE:
 					this.mwRevision.namespace = new Integer(

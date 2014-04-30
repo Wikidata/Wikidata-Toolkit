@@ -35,7 +35,7 @@ public class MwRevisionImpl implements MwRevision {
 	// penalty when not reusing this object and creating a 100 million
 	// additional objects when parsing a Wikidata dump.
 
-	String title;
+	String prefixedTitle;
 	String timeStamp;
 	String text;
 	String model;
@@ -59,7 +59,7 @@ public class MwRevisionImpl implements MwRevision {
 	 * Copy constructor.
 	 */
 	public MwRevisionImpl(MwRevision mwRevision) {
-		this.title = mwRevision.getTitle();
+		this.prefixedTitle = mwRevision.getPrefixedTitle();
 		this.timeStamp = mwRevision.getTimeStamp();
 		this.text = mwRevision.getText();
 		this.model = mwRevision.getModel();
@@ -73,8 +73,20 @@ public class MwRevisionImpl implements MwRevision {
 	}
 
 	@Override
+	public String getPrefixedTitle() {
+		return this.prefixedTitle;
+	}
+
+	@Override
 	public String getTitle() {
-		return this.title;
+		// We assume that 0 is always the main namespace, which has no prefix.
+		// Without this assumption, the method would need the namespace map.
+		if (this.namespace == 0) {
+			return this.prefixedTitle;
+		} else {
+			return this.prefixedTitle
+					.substring(this.prefixedTitle.indexOf(':') + 1);
+		}
 	}
 
 	@Override
@@ -137,7 +149,7 @@ public class MwRevisionImpl implements MwRevision {
 	 * currently being processed.
 	 */
 	void resetCurrentPageData() {
-		this.title = null;
+		this.prefixedTitle = null;
 		this.pageId = -1; // impossible as an id in MediaWiki
 		this.namespace = 0; // possible value, but better than undefined
 	}
@@ -157,7 +169,7 @@ public class MwRevisionImpl implements MwRevision {
 
 	@Override
 	public String toString() {
-		return "Revision " + this.revisionId + " of page " + this.title
+		return "Revision " + this.revisionId + " of page " + this.prefixedTitle
 				+ " (ns " + this.namespace + ", id " + this.pageId
 				+ "). Created at " + this.timeStamp + " by " + this.contributor
 				+ " (" + this.contributorId + ") with comment \""
