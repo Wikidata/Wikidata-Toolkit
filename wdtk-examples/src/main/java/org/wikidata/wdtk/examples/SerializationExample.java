@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
@@ -43,8 +42,7 @@ import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
  */
 public class SerializationExample {
 
-	public static void main(String[] args) throws IOException,
-			RDFHandlerException {
+	public static void main(String[] args) throws IOException {
 
 		// Define where log messages go
 		ExampleHelpers.configureLogging();

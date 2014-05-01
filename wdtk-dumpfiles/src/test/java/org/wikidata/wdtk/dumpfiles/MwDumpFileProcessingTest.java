@@ -108,7 +108,7 @@ public class MwDumpFileProcessingTest {
 	 */
 	private MwRevision getItemRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
-		result.title = "Q1";
+		result.prefixedTitle = "Q1";
 		result.namespace = 0;
 		result.pageId = 32;
 		result.revisionId = number;
@@ -123,6 +123,29 @@ public class MwDumpFileProcessingTest {
 	}
 
 	/**
+	 * Generates a simple property revision for testing purposes.
+	 * 
+	 * @param number
+	 * @return
+	 */
+	private MwRevision getPropertyRevision(int number) {
+		MwRevisionImpl result = new MwRevisionImpl();
+		result.prefixedTitle = "Property:P1";
+		result.namespace = 120;
+		result.pageId = 12345;
+		result.revisionId = number + 10000;
+		result.timeStamp = "2014-02-19T23:34:1" + (number % 10) + "Z";
+		result.format = "application/json";
+		result.model = MwRevision.MODEL_WIKIBASE_PROPERTY;
+		result.comment = "Test comment " + (number + 10000);
+		result.text = "{\"label\":{\"en\":\"Revision " + (number + 10000)
+				+ "\"},\"datatype\":\"wikibase-item\"}";
+		result.contributor = "127.0.0." + (number % 256);
+		result.contributorId = -1;
+		return result;
+	}
+
+	/**
 	 * Generates a simple page revision for testing purposes.
 	 * 
 	 * @param number
@@ -130,7 +153,7 @@ public class MwDumpFileProcessingTest {
 	 */
 	private MwRevision getPageRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
-		result.title = "Wikidata:Contact the development team";
+		result.prefixedTitle = "Wikidata:Contact the development team";
 		result.namespace = 4;
 		result.pageId = 181;
 		result.revisionId = 110689110 + number;
@@ -153,8 +176,8 @@ public class MwDumpFileProcessingTest {
 	 */
 	private void assertEqualRevisions(MwRevision rev1, MwRevision rev2,
 			String test) {
-		assertEquals("[" + test + "] Revision titles do not match:",
-				rev1.getTitle(), rev2.getTitle());
+		assertEquals("[" + test + "] Revision prefixed titles do not match:",
+				rev1.getPrefixedTitle(), rev2.getPrefixedTitle());
 		assertEquals("[" + test + "] Revision namespaces do not match:",
 				rev1.getNamespace(), rev2.getNamespace());
 		assertEquals("[" + test + "] Revision page ids do not match:",
@@ -338,13 +361,21 @@ public class MwDumpFileProcessingTest {
 		TestMwRevisionProcessor tmrpAllCurrent = new TestMwRevisionProcessor();
 		dpc.registerMwRevisionProcessor(tmrpAllCurrent, null, true);
 		TestMwRevisionProcessor tmrpAllItems = new TestMwRevisionProcessor();
-		dpc.registerMwRevisionProcessor(tmrpAllItems, "wikibase-item", false);
+		dpc.registerMwRevisionProcessor(tmrpAllItems,
+				MwRevision.MODEL_WIKIBASE_ITEM, false);
 		TestEntityDocumentProcessor edpCurrentCounter = new TestEntityDocumentProcessor();
-		dpc.registerEntityDocumentProcessor(edpCurrentCounter, "wikibase-item",
-				true);
+		dpc.registerEntityDocumentProcessor(edpCurrentCounter,
+				MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dpc.registerEntityDocumentProcessor(edpCurrentCounter,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 		TestEntityDocumentProcessor edpAllCounter = new TestEntityDocumentProcessor();
-		dpc.registerEntityDocumentProcessor(edpAllCounter, "wikibase-item",
-				false);
+		dpc.registerEntityDocumentProcessor(edpAllCounter,
+				MwRevision.MODEL_WIKIBASE_ITEM, false);
+		dpc.registerEntityDocumentProcessor(edpAllCounter,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, false);
+		TestMwRevisionProcessor tmrpAllProperties = new TestMwRevisionProcessor();
+		dpc.registerMwRevisionProcessor(tmrpAllProperties,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, false);
 
 		dpc.processMostRecentDailyDump();
 
@@ -353,26 +384,39 @@ public class MwDumpFileProcessingTest {
 		revisionsAllItems.add(getItemRevision(5));
 		revisionsAllItems.add(getItemRevision(3));
 		revisionsAllItems.add(getItemRevision(2));
+
 		List<MwRevision> revisionsAll = new ArrayList<MwRevision>(
 				revisionsAllItems);
 		revisionsAll.add(getPageRevision(1));
 		revisionsAll.add(getPageRevision(2));
+		revisionsAll.add(getPropertyRevision(4));
+		revisionsAll.add(getPropertyRevision(5));
+
 		List<MwRevision> revisionsAllCurrent = new ArrayList<MwRevision>();
 		revisionsAllCurrent.add(getItemRevision(5));
 		revisionsAllCurrent.add(getPageRevision(2));
+		revisionsAllCurrent.add(getPropertyRevision(5));
+
+		List<MwRevision> revisionsAllProperties = new ArrayList<MwRevision>();
+		revisionsAllProperties.add(getPropertyRevision(4));
+		revisionsAllProperties.add(getPropertyRevision(5));
 
 		assertEquals(tmrpAll.siteName, "Wikidata Toolkit Test");
-		assertEquals(6, mwrpAllStats.getTotalRevisionCount());
-		assertEquals(6, mwrpAllStats.getCurrentRevisionCount());
+		assertEquals(revisionsAll.size(), mwrpAllStats.getTotalRevisionCount());
+		assertEquals(revisionsAll.size(),
+				mwrpAllStats.getCurrentRevisionCount());
 		assertEqualRevisionLists(revisionsAll, tmrpAll.revisions, "all");
 		assertEqualRevisionLists(revisionsAllItems, tmrpAllItems.revisions,
 				"allitems");
 		assertEqualRevisionLists(revisionsAllCurrent, tmrpAllCurrent.revisions,
 				"allcurrent");
-		assertEquals(4, edpAllCounter.itemCount);
-		assertEquals(0, edpAllCounter.propCount);
+		assertEqualRevisionLists(revisionsAllProperties,
+				tmrpAllProperties.revisions, "allproperties");
+
+		assertEquals(revisionsAllItems.size(), edpAllCounter.itemCount);
+		assertEquals(revisionsAllProperties.size(), edpAllCounter.propCount);
 		assertEquals(1, edpCurrentCounter.itemCount);
-		assertEquals(0, edpCurrentCounter.propCount);
+		assertEquals(1, edpCurrentCounter.propCount);
 	}
 
 	@Test
