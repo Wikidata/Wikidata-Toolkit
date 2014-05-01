@@ -86,6 +86,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 	 * @return
 	 */
 	String fetchPropertyType(PropertyIdValue propertyIdValue) {
+		// TODO implement
 		return null;
 	}
 
@@ -97,8 +98,8 @@ public class PropertyTypes implements ValueVisitor<String> {
 
 	@Override
 	public String visit(EntityIdValue value) {
-		// TODO Auto-generated method stub
-		return null;
+		// Only Items can be used as entity values so far
+		return DatatypeIdValue.DT_ITEM;
 	}
 
 	@Override
