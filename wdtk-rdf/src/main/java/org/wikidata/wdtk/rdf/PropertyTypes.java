@@ -20,13 +20,11 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONObject;
