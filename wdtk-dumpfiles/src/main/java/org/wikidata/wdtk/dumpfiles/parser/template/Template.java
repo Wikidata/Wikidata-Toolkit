@@ -67,4 +67,25 @@ public class Template {
 		return this.parameters.keySet();
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(ParserConstant.OPENING_BRACES);
+		sb.append(this.id);
+		for (String key : this.parameters.keySet()) {
+			sb.append(ParserConstant.NEWLINE);
+			sb.append(ParserConstant.VERTICAL_BAR);
+			sb.append(ParserConstant.SPACE);
+			sb.append(key);
+			String value = this.parameters.get(key);
+			if (value != null && !value.isEmpty()) {
+				sb.append(ParserConstant.EQUALS_SIGN);
+				sb.append(value);
+			}
+		}
+		sb.append(ParserConstant.NEWLINE);
+		sb.append(ParserConstant.CLOSING_BRACES);
+		return sb.toString();
+	}
+
 }

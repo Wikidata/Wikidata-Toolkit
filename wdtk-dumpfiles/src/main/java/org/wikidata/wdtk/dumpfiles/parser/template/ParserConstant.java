@@ -38,5 +38,6 @@ public interface ParserConstant {
 	String COMMA = ",";
 	String COLON = ":";
 	String SEMICOLON = ";";
+	String NEWLINE = "\n";
 
 }
