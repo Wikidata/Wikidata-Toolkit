@@ -45,10 +45,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class PropertyTypes implements ValueVisitor<String> {
 
 	final Map<String, String> propertyTypes;
-	final String projectName;
 
-	public PropertyTypes(String projectName) {
-		this.projectName = projectName;
+	public PropertyTypes() {
 		this.propertyTypes = new HashMap<String, String>();
 	}
 
