@@ -36,6 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 
 public class ValueRdfConverter implements ValueVisitor<Value> {
 
@@ -82,8 +83,9 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
-		// TODO this is not the correct language code
-		return factory.createLiteral(value.getText(), value.getLanguageCode());
+		String languageCode = WikimediaLanguageCodes.getLanguageCode(value
+				.getLanguageCode());
+		return factory.createLiteral(value.getText(), languageCode);
 	}
 
 	@Override

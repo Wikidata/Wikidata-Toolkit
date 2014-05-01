@@ -160,12 +160,12 @@ public class RdfConverter {
 
 	}
 
-	void writeClaim(String statementUri, Claim claim) {
-		this.snakRdfConverter.setSnakContext(statementUri,
+	void writeClaim(String claimUri, Claim claim) {
+		this.snakRdfConverter.setSnakContext(claimUri,
 				PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
 
-		this.snakRdfConverter.setSnakContext(statementUri,
+		this.snakRdfConverter.setSnakContext(claimUri,
 				PropertyContext.QUALIFIER);
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
 			for (Snak snak : snakGroup.getSnaks()) {

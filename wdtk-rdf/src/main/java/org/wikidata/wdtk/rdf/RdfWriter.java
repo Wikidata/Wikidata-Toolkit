@@ -34,7 +34,9 @@ import org.openrdf.rio.UnsupportedRDFormatException;
 
 /**
  * This class provides methods for writing RDF data to an output stream. It
- * encapsulates everything that is specific to the RDF library we use.
+ * encapsulates many details of the RDF library we use. It also provides a
+ * unique point at which statistics about the number of triples etc. can be
+ * gathered.
  * 
  * @author Markus Kroetzsch
  * 
