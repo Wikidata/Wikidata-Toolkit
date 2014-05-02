@@ -27,6 +27,8 @@ import java.util.Map;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -50,14 +52,19 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  */
 public class RdfConverter {
 
+	static final Logger logger = LoggerFactory.getLogger(RdfConverter.class);
+
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final RdfWriter writer;
 	final ValueRdfConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
+	final RdfConversionBuffer rdfConversionBuffer;
 
 	public RdfConverter(RdfWriter writer) {
 		this.writer = writer;
-		this.valueRdfConverter = new ValueRdfConverter();
+		this.rdfConversionBuffer = new RdfConversionBuffer();
+		this.valueRdfConverter = new ValueRdfConverter(writer,
+				this.rdfConversionBuffer);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
 				this.valueRdfConverter);
 	}
@@ -115,19 +122,30 @@ public class RdfConverter {
 		}
 
 		writeSiteLinks(document.getSiteLinks());
-		
+
 		// TODO: add SiteLinks
 
+		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
+
 	}
 
-	public void writeSiteLinks(Map<String, SiteLink> siteLinks) throws RDFHandlerException{
-		Sites sites = new SitesImpl();
-		for (String key : siteLinks.keySet()){
+	public void writeSiteLinks(Map<String, SiteLink> siteLinks)
+			throws RDFHandlerException {
+		Sites sites = new SitesImpl(); // TODO get sites from outside
+		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
-			this.writer.writeTripleUriObject(sites.getSiteLinkUrl(siteLink), Vocabulary.RDF_TYPE, Vocabulary.PREFIX_SCHEMA + "Article");
+			String siteLinkUrl = sites.getSiteLinkUrl(siteLink);
+			if (siteLinkUrl != null) {
+				this.writer.writeTripleUriObject(siteLinkUrl,
+						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
+			} else {
+				logger.warn("Failed to find URL for page \""
+						+ siteLink.getPageTitle() + "\" on site \""
+						+ siteLink.getSiteKey() + "\"");
+			}
 		}
 	}
-	
+
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
@@ -136,7 +154,7 @@ public class RdfConverter {
 				Vocabulary.WB_PROPERTY);
 
 		writeDocumentTerms(document);
-		
+
 		// TODO add datatype
 	}
 
@@ -173,12 +191,14 @@ public class RdfConverter {
 
 	}
 
-	String writeReference(Reference reference) throws RDFHandlerException{
+	String writeReference(Reference reference) throws RDFHandlerException {
 		String refId = Vocabulary.getReferenceUri(reference);
-		this.writer.writeTripleUriObject(refId, Vocabulary.RDF_TYPE, Vocabulary.WB_REFERENCE);
-		for (SnakGroup snakGroup : reference.getSnakGroups()){
-			this.snakRdfConverter.setSnakContext(refId, PropertyContext.REFERENCE);
-			for (Snak snak : snakGroup.getSnaks()){
+		this.writer.writeTripleUriObject(refId, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_REFERENCE);
+		for (SnakGroup snakGroup : reference.getSnakGroups()) {
+			this.snakRdfConverter.setSnakContext(refId,
+					PropertyContext.REFERENCE);
+			for (Snak snak : snakGroup.getSnaks()) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}

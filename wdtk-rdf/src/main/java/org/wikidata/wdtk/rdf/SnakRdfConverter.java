@@ -24,6 +24,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -35,8 +36,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final RdfWriter rdfWriter;
 
-	String subjectUri;
-	PropertyContext propertyContext;
+	String currentSubjectUri;
+	PropertyContext currentPropertyContext;
 
 	public SnakRdfConverter(RdfWriter rdfWriter,
 			ValueRdfConverter valueRdfConverter) {
@@ -44,20 +45,28 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.valueRdfConverter = valueRdfConverter;
 	}
 
+	public void writeSnak(Snak snak, String subjectUri,
+			PropertyContext propertyContext) {
+		this.currentSubjectUri = subjectUri;
+		this.currentPropertyContext = propertyContext;
+		snak.accept(this);
+	}
+
 	public void setSnakContext(String subjectUri,
 			PropertyContext propertyContext) {
-		this.subjectUri = subjectUri;
-		this.propertyContext = propertyContext;
+		this.currentSubjectUri = subjectUri;
+		this.currentPropertyContext = propertyContext;
 	}
 
 	@Override
 	public Void visit(ValueSnak snak) {
 		try {
 			String propertyUri = Vocabulary.getPropertyUri(
-					snak.getPropertyId(), this.propertyContext);
-			Value value = snak.getValue().accept(valueRdfConverter);
-			this.rdfWriter.writeTripleValueObject(this.subjectUri, propertyUri,
-					value);
+					snak.getPropertyId(), this.currentPropertyContext);
+			Value value = valueRdfConverter.getRdfValueForWikidataValue(
+					snak.getValue(), snak.getPropertyId());
+			this.rdfWriter.writeTripleValueObject(this.currentSubjectUri,
+					propertyUri, value);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}

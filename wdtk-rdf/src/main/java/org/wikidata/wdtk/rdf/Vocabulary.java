@@ -128,7 +128,7 @@ public class Vocabulary {
 	static {
 		VOCABULARY_TYPES.put(WB_REFERENCE, OWL_CLASS);
 	}
-	
+
 	/**
 	 * Class for Wikibase properties.
 	 */
@@ -144,7 +144,24 @@ public class Vocabulary {
 	static {
 		VOCABULARY_TYPES.put(WB_STATEMENT, OWL_CLASS);
 	}
-	
+
+	/**
+	 * Class for Wikipedia articles.
+	 */
+	public static final String WB_ARTICLE = PREFIX_WBONTO + "Article";
+	static {
+		VOCABULARY_TYPES.put(WB_ARTICLE, OWL_CLASS);
+	}
+
+	/**
+	 * Class for Wikibase quantity values.
+	 */
+	public static final String WB_QUANTITY_VALUE = PREFIX_WBONTO
+			+ "QuantityValue";
+	static {
+		VOCABULARY_TYPES.put(WB_QUANTITY_VALUE, OWL_CLASS);
+	}
+
 	/**
 	 * Property for defining the datatype of a Wikibase property.
 	 */
@@ -213,6 +230,31 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property for defining the numeric value of a quantity value.
+	 */
+	public static final String WB_NUMERIC_VALUE = PREFIX_WBONTO
+			+ "numericValue";
+	static {
+		VOCABULARY_TYPES.put(WB_NUMERIC_VALUE, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
+	 * Property for defining the lower bound of a quantity value.
+	 */
+	public static final String WB_LOWER_BOUND = PREFIX_WBONTO + "lowerBound";
+	static {
+		VOCABULARY_TYPES.put(WB_LOWER_BOUND, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
+	 * Property for defining the upper bound of a quantity value.
+	 */
+	public static final String WB_UPPER_BOUND = PREFIX_WBONTO + "upperBound";
+	static {
+		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
 	 * 
 	 * @return a map from vocabulary URIs to OWL type URIs
@@ -267,9 +309,10 @@ public class Vocabulary {
 			return null;
 		}
 	}
-	
-	public static String getReferenceUri (Reference reference){
-		return PREFIX_WIKIDATA + "R" + reference.hashCode(); // maybe change that
+
+	public static String getReferenceUri(Reference reference) {
+		return PREFIX_WIKIDATA + "R" + reference.hashCode(); // maybe change
+																// that
 	}
 
 }

@@ -24,22 +24,35 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 
+/**
+ * Class to convert Wikibase data values to RDF. The class is a visitor that
+ * that computes an RDF value (URI or literal) to represent any kind of Wikibase
+ * data value. Some values are complex and require further RDF triples to be
+ * written. In such cases, the class stores the values to a buffer. Methods for
+ * writing additional triples for these buffered values can be called later.
+ * 
+ * @author Markus Kroetzsch
+ * 
+ */
 public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
@@ -49,17 +62,57 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final MessageDigest md;
 	final PropertyTypes propertyTypes = new PropertyTypes();
+	final RdfWriter rdfWriter;
+	final RdfConversionBuffer rdfConversionBuffer;
+
+	PropertyIdValue currentPropertyIdValue;
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ValueRdfConverter.class);
 
-	public ValueRdfConverter() {
+	public ValueRdfConverter(RdfWriter rdfWriter,
+			RdfConversionBuffer rdfConversionBuffer) {
+		this.rdfWriter = rdfWriter;
+		this.rdfConversionBuffer = rdfConversionBuffer;
+
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(
 					"Your Java does not support MD5 hashes. You should be concerned.");
 		}
+	}
+
+	/**
+	 * Write the auxiliary RDF data for encoding the given value.
+	 * 
+	 * @param quantityValue
+	 *            the value to write
+	 * @param resource
+	 *            the (subject) URI to use to represent this value in RDF
+	 * @throws RDFHandlerException
+	 */
+	public void writeQuantityValue(QuantityValue quantityValue,
+			Resource resource) throws RDFHandlerException {
+		// TODO move all strings to Vocabulary
+		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_QUANTITY_VALUE);
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_NUMERIC_VALUE, quantityValue.getNumericValue()
+						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_LOWER_BOUND, quantityValue.getLowerBound()
+						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_UPPER_BOUND, quantityValue.getUpperBound()
+						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+	}
+
+	public Value getRdfValueForWikidataValue(
+			org.wikidata.wdtk.datamodel.interfaces.Value value,
+			PropertyIdValue propertyIdValue) {
+		this.currentPropertyIdValue = propertyIdValue;
+		return value.accept(this);
 	}
 
 	@Override
@@ -104,22 +157,34 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_QUANTITY + bytesToHex(md.digest()));
 
-		// TODO add attributes
+		this.rdfConversionBuffer.addQuantityValue(value, valueUri);
+
 		return valueUri;
 	}
 
 	@Override
 	public Value visit(StringValue value) {
-		String datatype = value.accept(this.propertyTypes);
+		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+				this.currentPropertyIdValue, value);
+
+		if (datatype == null) {
+			logger.warn("Failed to find type of property "
+					+ this.currentPropertyIdValue.getId()
+					+ "; using type \"string\"");
+			return factory.createLiteral(value.getString());
+		}
+
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
 			return factory.createLiteral(value.getString());
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			return factory.createURI(value.getString());
+			return factory.createURI("http://commons.wikimedia.org/wiki/File:"
+					+ value.getString());
 		default:
-			logger.warn("Unknown String Type, interpret as "
-					+ DatatypeIdValue.DT_STRING);
-			return factory.createLiteral(value.getString());
+			logger.warn("Property " + this.currentPropertyIdValue.getId()
+					+ " has type \"" + datatype
+					+ "\" but a value of type string. Data ignored.");
+			return null;
 		}
 	}
 

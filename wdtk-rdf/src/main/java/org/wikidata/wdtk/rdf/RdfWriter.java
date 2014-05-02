@@ -22,6 +22,8 @@ package org.wikidata.wdtk.rdf;
 
 import java.io.OutputStream;
 
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -70,13 +72,32 @@ public class RdfWriter {
 				this.factory.createURI(objectUri));
 	}
 
+	public void writeTripleUriObject(Resource subject, String predicateUri,
+			String objectUri) throws RDFHandlerException {
+		URI predicate = this.factory.createURI(predicateUri);
+		URI object = this.factory.createURI(objectUri);
+		this.writer.handleStatement(this.factory.createStatement(subject,
+				predicate, object));
+	}
+
 	public void writeTripleValueObject(String subjectUri, String predicateUri,
-			Value objectValue) throws RDFHandlerException {
+			Value object) throws RDFHandlerException {
 		URI subject = this.factory.createURI(subjectUri);
 		URI predicate = this.factory.createURI(predicateUri);
 
 		this.writer.handleStatement(this.factory.createStatement(subject,
-				predicate, objectValue));
+				predicate, object));
+	}
+
+	public void writeTripleLiteralObject(Resource subject, String predicateUri,
+			String objectLexicalValue, String objectDatatypeUri)
+			throws RDFHandlerException {
+		URI predicate = this.factory.createURI(predicateUri);
+		Literal object = this.factory.createLiteral(objectLexicalValue,
+				objectDatatypeUri);
+
+		this.writer.handleStatement(this.factory.createStatement(subject,
+				predicate, object));
 	}
 
 }

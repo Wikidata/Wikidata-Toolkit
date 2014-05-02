@@ -59,8 +59,6 @@ public class PropertyTypes implements ValueVisitor<String> {
 
 	PropertyIdValue propertyRegister = null;
 
-	final static String WIKIBASE = "http://www.wikidata.org/ontology#";
-
 	public PropertyTypes() {
 		this.propertyTypes = new HashMap<String, String>();
 		this.propertyTypes.putAll(PropertyTypes.KNOWN_PROPERTY_TYPES);
@@ -72,7 +70,6 @@ public class PropertyTypes implements ValueVisitor<String> {
 				propertyTypes.put(propertyIdValue.getId(),
 						fetchPropertyType(propertyIdValue));
 			} catch (IOException e) {
-				
 				logger.error(e.toString());
 			}
 		}
@@ -86,7 +83,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 
 	public String setPropertyTypeFromValue(PropertyIdValue propertyIdValue,
 			Value value) {
-			propertyRegister = propertyIdValue;
+		propertyRegister = propertyIdValue;
 		return value.accept(this);
 	}
 
@@ -101,6 +98,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 			throws IOException {
 		WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 		URIBuilder uriBuilder = new URIBuilder();
+		// TODO the basic api.php URL should be obtained from a Sites object
 		uriBuilder.setScheme("http");
 		uriBuilder.setHost("www.wikidata.org");
 		uriBuilder.setPath("/w/api.php");
