@@ -28,6 +28,8 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -46,13 +48,17 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final MessageDigest md;
+	final PropertyTypes propertyTypes = new PropertyTypes();
+
+	static final Logger logger = LoggerFactory
+			.getLogger(ValueRdfConverter.class);
 
 	public ValueRdfConverter() {
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(
-					"You Java does not support MD5 hashes. You should be concerned.");
+					"Your Java does not support MD5 hashes. You should be concerned.");
 		}
 	}
 
@@ -104,7 +110,17 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(StringValue value) {
-		return factory.createLiteral(value.getString());
+		String datatype = value.accept(this.propertyTypes);
+		switch (datatype) {
+		case DatatypeIdValue.DT_STRING:
+			return factory.createLiteral(value.getString());
+		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			return factory.createURI(value.getString());
+		default:
+			logger.warn("Unknown String Type, interpret as "
+					+ DatatypeIdValue.DT_STRING);
+			return factory.createLiteral(value.getString());
+		}
 	}
 
 	@Override

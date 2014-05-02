@@ -86,10 +86,8 @@ public class PropertyTypes implements ValueVisitor<String> {
 
 	public String setPropertyTypeFromValue(PropertyIdValue propertyIdValue,
 			Value value) {
-		if (!propertyTypes.containsKey(propertyIdValue.getId())) {
-			value.accept(this);
-		}
-		return propertyTypes.get(propertyIdValue);
+			propertyRegister = propertyIdValue;
+		return value.accept(this);
 	}
 
 	/**

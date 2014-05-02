@@ -27,10 +27,14 @@ import java.util.Map;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
+import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -110,10 +114,20 @@ public class RdfConverter {
 			}
 		}
 
+		writeSiteLinks(document.getSiteLinks());
+		
 		// TODO: add SiteLinks
 
 	}
 
+	public void writeSiteLinks(Map<String, SiteLink> siteLinks) throws RDFHandlerException{
+		Sites sites = new SitesImpl();
+		for (String key : siteLinks.keySet()){
+			SiteLink siteLink = siteLinks.get(key);
+			this.writer.writeTripleUriObject(sites.getSiteLinkUrl(siteLink), Vocabulary.RDF_TYPE, Vocabulary.PREFIX_SCHEMA + "Article");
+		}
+	}
+	
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
@@ -122,7 +136,7 @@ public class RdfConverter {
 				Vocabulary.WB_PROPERTY);
 
 		writeDocumentTerms(document);
-
+		
 		// TODO add datatype
 	}
 
@@ -154,15 +168,33 @@ public class RdfConverter {
 				Vocabulary.WB_STATEMENT);
 		writeClaim(statementUri, statement.getClaim());
 
-		// TODO: References
-
+		writeReferences(statementUri, statement.getReferences());
 		// What about the RANK?
 
 	}
 
+	String writeReference(Reference reference) throws RDFHandlerException{
+		String refId = Vocabulary.getReferenceUri(reference);
+		this.writer.writeTripleUriObject(refId, Vocabulary.RDF_TYPE, Vocabulary.WB_REFERENCE);
+		for (SnakGroup snakGroup : reference.getSnakGroups()){
+			this.snakRdfConverter.setSnakContext(refId, PropertyContext.REFERENCE);
+			for (Snak snak : snakGroup.getSnaks()){
+				snak.accept(this.snakRdfConverter);
+			}
+		}
+		return refId;
+	}
+
+	void writeReferences(String statementUri,
+			List<? extends Reference> references) throws RDFHandlerException {
+		for (Reference ref : references) {
+			this.writer.writeTripleUriObject(statementUri,
+					Vocabulary.PROV_WAS_DERIVED_FROM, writeReference(ref));
+		}
+	}
+
 	void writeClaim(String claimUri, Claim claim) {
-		this.snakRdfConverter.setSnakContext(claimUri,
-				PropertyContext.VALUE);
+		this.snakRdfConverter.setSnakContext(claimUri, PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
 
 		this.snakRdfConverter.setSnakContext(claimUri,

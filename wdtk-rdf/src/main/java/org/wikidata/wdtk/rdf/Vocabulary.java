@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
@@ -121,6 +122,14 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Class for Wikibase reference.
+	 */
+	public static final String WB_REFERENCE = PREFIX_WBONTO + "Reference";
+	static {
+		VOCABULARY_TYPES.put(WB_REFERENCE, OWL_CLASS);
+	}
+	
+	/**
 	 * Class for Wikibase properties.
 	 */
 	public static final String WB_PROPERTY = PREFIX_WBONTO + "Property";
@@ -135,7 +144,7 @@ public class Vocabulary {
 	static {
 		VOCABULARY_TYPES.put(WB_STATEMENT, OWL_CLASS);
 	}
-
+	
 	/**
 	 * Property for defining the datatype of a Wikibase property.
 	 */
@@ -257,6 +266,10 @@ public class Vocabulary {
 		default:
 			return null;
 		}
+	}
+	
+	public static String getReferenceUri (Reference reference){
+		return PREFIX_WIKIDATA + "R" + reference.hashCode(); // maybe change that
 	}
 
 }
