@@ -159,14 +159,11 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-		md.reset();
-		updateMessageDigestWithString(md, value.getGlobe());
-		updateMessageDigestWithLong(md, value.getLatitude());
-		updateMessageDigestWithLong(md, value.getLongitude());
-		updateMessageDigestWithLong(md, value.getPrecision());
+
+		String hash = getGlobeCoordinatesValueHash(value);
 
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_GLOBECOORDS + bytesToHex(md.digest()));
+				+ VALUE_PREFIX_GLOBECOORDS + hash);
 
 		this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
 
@@ -182,13 +179,11 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(QuantityValue value) {
-		md.reset();
-		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
-		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
-		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+
+		String hash = getQuantityValueHash(value);
 
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_QUANTITY + bytesToHex(md.digest()));
+				+ VALUE_PREFIX_QUANTITY + hash);
 
 		this.rdfConversionBuffer.addQuantityValue(value, valueUri);
 
@@ -201,28 +196,53 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 				this.currentPropertyIdValue, value);
 
 		if (datatype == null) {
-			logger.warn("Failed to find type of property "
-					+ this.currentPropertyIdValue.getId()
-					+ "; using type \"string\"");
-			return factory.createLiteral(value.getString());
+			datatype = DatatypeIdValue.DT_STRING;
+			logNoDatatypeError(datatype);
 		}
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
 			return factory.createLiteral(value.getString());
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			// TODO use a smarter function to build those URLs
 			return factory.createURI("http://commons.wikimedia.org/wiki/File:"
-					+ value.getString());
+					+ value.getString().replace(' ', '_'));
 		default:
-			logger.warn("Property " + this.currentPropertyIdValue.getId()
-					+ " has type \"" + datatype
-					+ "\" but a value of type string. Data ignored.");
+			logIncompatibleValueError(datatype, "string");
 			return null;
 		}
 	}
 
 	@Override
 	public Value visit(TimeValue value) {
+		String hash = getTimeValueHash(value);
+
+		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
+				+ VALUE_PREFIX_TIME + hash);
+
+		this.rdfConversionBuffer.addTimeValue(value, valueUri);
+
+		return valueUri;
+	}
+
+	String getGlobeCoordinatesValueHash(GlobeCoordinatesValue value) {
+		md.reset();
+		updateMessageDigestWithString(md, value.getGlobe());
+		updateMessageDigestWithLong(md, value.getLatitude());
+		updateMessageDigestWithLong(md, value.getLongitude());
+		updateMessageDigestWithLong(md, value.getPrecision());
+		return bytesToHex(md.digest());
+	}
+
+	String getQuantityValueHash(QuantityValue value) {
+		md.reset();
+		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
+		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
+		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+		return bytesToHex(md.digest());
+	}
+
+	String getTimeValueHash(TimeValue value) {
 		md.reset();
 		updateMessageDigestWithLong(md, value.getYear());
 		md.update(value.getMonth());
@@ -234,13 +254,35 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		updateMessageDigestWithInt(md, value.getBeforeTolerance());
 		updateMessageDigestWithInt(md, value.getAfterTolerance());
 		updateMessageDigestWithInt(md, value.getTimezoneOffset());
+		return bytesToHex(md.digest());
+	}
 
-		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_TIME + bytesToHex(md.digest()));
+	/**
+	 * Logs a message for the case that the declared datatype of a property
+	 * could not be found.
+	 * 
+	 * @param fallBackType
+	 *            the property datatype that will be used as a fallback instead
+	 */
+	void logNoDatatypeError(String fallBackType) {
+		logger.warn("Failed to find type of property "
+				+ this.currentPropertyIdValue.getId() + "; using type \""
+				+ fallBackType + "\"");
+	}
 
-		this.rdfConversionBuffer.addTimeValue(value, valueUri);
-
-		return valueUri;
+	/**
+	 * Logs a message for a case where the value of a property does not fit to
+	 * its declared datatype.
+	 * 
+	 * @param datatype
+	 *            the declared type of the property
+	 * @param valueType
+	 *            a string to denote the type of value
+	 */
+	void logIncompatibleValueError(String datatype, String valueType) {
+		logger.warn("Property " + this.currentPropertyIdValue.getId()
+				+ " has type \"" + datatype + "\" but a value of type "
+				+ valueType + ". Data ignored.");
 	}
 
 	ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE);
