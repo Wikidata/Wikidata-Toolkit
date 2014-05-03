@@ -86,7 +86,9 @@ public class RdfConverter {
 	}
 
 	public void writeNamespaceDeclarations() throws RDFHandlerException {
-		this.writer.writeNamespaceDeclaration("id", Vocabulary.PREFIX_WIKIDATA);
+		// TODO The prefix for wiki entities should depend on the data
+		this.writer.writeNamespaceDeclaration("id",
+				"http://www.wikidata.org/entity/");
 		this.writer.writeNamespaceDeclaration("wo", Vocabulary.PREFIX_WBONTO);
 		this.writer.writeNamespaceDeclaration("rdf", Vocabulary.PREFIX_RDF);
 		this.writer.writeNamespaceDeclaration("rdfs", Vocabulary.PREFIX_RDFS);
@@ -101,7 +103,7 @@ public class RdfConverter {
 	public void writeItemDocument(ItemDocument document)
 			throws RDFHandlerException {
 
-		String subjectUri = Vocabulary.getEntityUri(document.getEntityId());
+		String subjectUri = document.getEntityId().getIri();
 
 		this.writer.writeTripleUriObject(subjectUri, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_ITEM);
@@ -124,8 +126,6 @@ public class RdfConverter {
 		}
 
 		writeSiteLinks(document.getSiteLinks());
-
-		// TODO: add SiteLinks
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
@@ -159,20 +159,22 @@ public class RdfConverter {
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
-		this.writer.writeTripleUriObject(Vocabulary.PREFIX_WIKIDATA
-				+ document.getEntityId().getId(), Vocabulary.RDF_TYPE,
+		String propertyUri = document.getEntityId().getIri();
+
+		this.writer.writeTripleUriObject(propertyUri, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_PROPERTY);
 
 		writeDocumentTerms(document);
 
-		// TODO add datatype
+		this.writer.writeTripleUriObject(propertyUri,
+				Vocabulary.WB_PROPERTY_TYPE, document.getDatatype().getIri());
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
 	}
 
 	void writeDocumentTerms(TermedDocument document) throws RDFHandlerException {
-		String subjectUri = Vocabulary.getEntityUri(document.getEntityId());
+		String subjectUri = document.getEntityId().getIri();
 
 		writeTermTriples(subjectUri, Vocabulary.RDFS_LABEL, document
 				.getLabels().values());
