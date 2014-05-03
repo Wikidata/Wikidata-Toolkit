@@ -163,7 +163,20 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			throws RDFHandlerException {
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_LATITUDE,
+				getDecimalStringForCoordinate(globeCoordinatesValue
+						.getLatitude()), Vocabulary.XSD_DECIMAL);
+		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.WB_GLOBE,
+				globeCoordinatesValue.getGlobe());
 		// TODO finish
+	}
+
+	String getDecimalStringForCoordinate(long value) {
+		// TODO this is not ready yet; preliminary code
+		String valueString = String.format("%09d", value);
+		return valueString;
 	}
 
 	public Value getRdfValueForWikidataValue(
