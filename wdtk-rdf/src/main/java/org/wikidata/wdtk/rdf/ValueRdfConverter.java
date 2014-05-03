@@ -92,6 +92,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	/**
 	 * Write the auxiliary RDF data for encoding the given value.
+	 * <p>
+	 * Times with limited precision are exported using limited-precision XML
+	 * Schema datatypes, such as gYear, if available. Wikidata encodes the year
+	 * 1BCE as 0000, while XML Schema, even in version 2, does not allow 0000
+	 * and interprets -0001 as 1BCE. Thus all negative years must be shifted by
+	 * 1, but we only do this if the year is precise.
 	 * 
 	 * @param timeValue
 	 *            the value to write
@@ -103,7 +109,44 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			throws RDFHandlerException {
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_TIME_VALUE);
-		// TODO finish
+
+		String xsdYearString;
+		if (timeValue.getYear() == 0
+				|| (timeValue.getYear() < 0 && timeValue.getPrecision() >= TimeValue.PREC_YEAR)) {
+			xsdYearString = String.format("%05d", timeValue.getYear() - 1);
+		} else {
+			xsdYearString = String.format("%04d", timeValue.getYear());
+		}
+
+		if (timeValue.getPrecision() >= TimeValue.PREC_DAY) {
+			if (timeValue.getPrecision() > TimeValue.PREC_DAY) {
+				logger.error("Time values with times of day not supported yet. Exporting only date of "
+						+ timeValue.toString());
+			}
+			this.rdfWriter.writeTripleLiteralObject(
+					resource,
+					Vocabulary.WB_TIME,
+					xsdYearString + "-"
+							+ String.format("%02d", timeValue.getMonth()) + "-"
+							+ String.format("%02d", timeValue.getDay()),
+					Vocabulary.XSD_DATE);
+		} else if (timeValue.getPrecision() == TimeValue.PREC_MONTH) {
+			this.rdfWriter.writeTripleLiteralObject(
+					resource,
+					Vocabulary.WB_TIME,
+					xsdYearString + "-"
+							+ String.format("%02d", timeValue.getMonth()),
+					Vocabulary.XSD_G_YEAR_MONTH);
+		} else if (timeValue.getPrecision() <= TimeValue.PREC_YEAR) {
+			this.rdfWriter.writeTripleLiteralObject(resource,
+					Vocabulary.WB_TIME, xsdYearString, Vocabulary.XSD_G_YEAR);
+		}
+
+		this.rdfWriter.writeTripleIntegerObject(resource,
+				Vocabulary.WB_TIME_PRECISION, timeValue.getPrecision());
+		this.rdfWriter.writeTripleUriObject(resource,
+				Vocabulary.WB_PREFERRED_CALENDAR,
+				timeValue.getPreferredCalendarModel());
 	}
 
 	/**
