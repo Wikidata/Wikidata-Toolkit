@@ -20,14 +20,20 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
  * This class contains static methods and constants that define the various OWL
@@ -38,8 +44,20 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
  */
 public class Vocabulary {
 
+	final static MessageDigest md;
+	static {
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(
+					"Your Java does not support MD5 hashes. You should be concerned.");
+		}
+	}
+
+	// TODO The prefix for wiki entities should be determined from the data; not
+	// a constant
+	private static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 	// Prefixes
-	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 	public static final String PREFIX_WBONTO = "http://www.wikidata.org/ontology#";
 	public static final String PREFIX_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String PREFIX_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
@@ -63,6 +81,11 @@ public class Vocabulary {
 	public static final String XSD_G_YEAR = PREFIX_XSD + "gYear";
 	public static final String XSD_G_YEAR_MONTH = PREFIX_XSD + "gYearMonth";
 	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
+
+	// Prefixes for value URI construction
+	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
+	static final String VALUE_PREFIX_QUANTITY = "VQ";
+	static final String VALUE_PREFIX_TIME = "VT";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -287,17 +310,6 @@ public class Vocabulary {
 	}
 
 	/**
-	 * Get the URI for the given entity id.
-	 * 
-	 * @param entityIdValue
-	 *            the entity id for which to create a URI
-	 * @return the URI
-	 */
-	public static String getEntityUri(EntityIdValue entityIdValue) {
-		return PREFIX_WIKIDATA + entityIdValue.getId();
-	}
-
-	/**
 	 * Get the URI for the given statement.
 	 * 
 	 * @param statement
@@ -305,7 +317,9 @@ public class Vocabulary {
 	 * @return the URI
 	 */
 	public static String getStatementUri(Statement statement) {
-		return PREFIX_WIKIDATA + statement.getStatementId();
+		int i = statement.getStatementId().indexOf('$') + 1;
+		return statement.getClaim().getSubject().getIri() + "S"
+				+ statement.getStatementId().substring(i);
 	}
 
 	/**
@@ -321,21 +335,87 @@ public class Vocabulary {
 			PropertyContext propertyContext) {
 		switch (propertyContext) {
 		case STATEMENT:
-			return PREFIX_WIKIDATA + propertyIdValue.getId() + "s";
+			return propertyIdValue.getIri() + "s";
 		case VALUE:
-			return PREFIX_WIKIDATA + propertyIdValue.getId() + "v";
+			return propertyIdValue.getIri() + "v";
 		case QUALIFIER:
-			return PREFIX_WIKIDATA + propertyIdValue.getId() + "q";
+			return propertyIdValue.getIri() + "q";
 		case REFERENCE:
-			return PREFIX_WIKIDATA + propertyIdValue.getId() + "r";
+			return propertyIdValue.getIri() + "r";
 		default:
 			return null;
 		}
 	}
 
 	public static String getReferenceUri(Reference reference) {
-		return PREFIX_WIKIDATA + "R" + reference.hashCode(); // maybe change
-																// that
+		// TODO maybe change that
+		return PREFIX_WIKIDATA + "R" + reference.hashCode();
 	}
 
+	public static String getTimeValueUri(TimeValue value) {
+		md.reset();
+		updateMessageDigestWithLong(md, value.getYear());
+		md.update(value.getMonth());
+		md.update(value.getDay());
+		md.update(value.getHour());
+		md.update(value.getMinute());
+		md.update(value.getSecond());
+		updateMessageDigestWithString(md, value.getPreferredCalendarModel());
+		updateMessageDigestWithInt(md, value.getBeforeTolerance());
+		updateMessageDigestWithInt(md, value.getAfterTolerance());
+		updateMessageDigestWithInt(md, value.getTimezoneOffset());
+
+		return PREFIX_WIKIDATA + VALUE_PREFIX_TIME + bytesToHex(md.digest());
+	}
+
+	public static String getGlobeCoordinatesValueUri(GlobeCoordinatesValue value) {
+		md.reset();
+		updateMessageDigestWithString(md, value.getGlobe());
+		updateMessageDigestWithLong(md, value.getLatitude());
+		updateMessageDigestWithLong(md, value.getLongitude());
+		updateMessageDigestWithLong(md, value.getPrecision());
+
+		return PREFIX_WIKIDATA + VALUE_PREFIX_GLOBECOORDS
+				+ bytesToHex(md.digest());
+	}
+
+	public static String getQuantityValueUri(QuantityValue value) {
+		md.reset();
+		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
+		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
+		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+
+		return PREFIX_WIKIDATA + VALUE_PREFIX_QUANTITY
+				+ bytesToHex(md.digest());
+	}
+
+	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE);
+
+	static void updateMessageDigestWithLong(MessageDigest md, long x) {
+		longByteBuffer.putLong(0, x);
+		md.update(longByteBuffer);
+	}
+
+	static ByteBuffer intByteBuffer = ByteBuffer.allocate(Integer.SIZE);
+
+	static void updateMessageDigestWithInt(MessageDigest md, int x) {
+		intByteBuffer.putInt(0, x);
+		md.update(intByteBuffer);
+	}
+
+	static void updateMessageDigestWithString(MessageDigest md, String s) {
+		md.update(s.getBytes(StandardCharsets.UTF_8));
+	}
+
+	final protected static char[] hexArray = "0123456789abcdef".toCharArray();
+
+	static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
+	}
 }

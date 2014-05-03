@@ -19,11 +19,6 @@ package org.wikidata.wdtk.rdf;
  * limitations under the License.
  * #L%
  */
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -56,13 +51,8 @@ import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
  */
 public class ValueRdfConverter implements ValueVisitor<Value> {
 
-	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
-	static final String VALUE_PREFIX_QUANTITY = "VQ";
-	static final String VALUE_PREFIX_TIME = "VT";
-
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final Sites sites;
-	final MessageDigest md;
 	final PropertyTypes propertyTypes = new PropertyTypes(this.sites);
 	final RdfWriter rdfWriter;
 	final RdfConversionBuffer rdfConversionBuffer;
@@ -77,13 +67,6 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = rdfConversionBuffer;
 		this.sites = sites;
-
-		try {
-			md = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(
-					"Your Java does not support MD5 hashes. You should be concerned.");
-		}
 	}
 
 	/**
@@ -112,6 +95,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	/**
 	 * Write the auxiliary RDF data for encoding the given value.
+	 * <p>
+	 * Times with limited precision are exported using limited-precision XML
+	 * Schema datatypes, such as gYear, if available. Wikidata encodes the year
+	 * 1BCE as 0000, while XML Schema, even in version 2, does not allow 0000
+	 * and interprets -0001 as 1BCE. Thus all negative years must be shifted by
+	 * 1, but we only do this if the year is precise.
 	 * 
 	 * @param timeValue
 	 *            the value to write
@@ -123,7 +112,44 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			throws RDFHandlerException {
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_TIME_VALUE);
-		// TODO finish
+
+		String xsdYearString;
+		if (timeValue.getYear() == 0
+				|| (timeValue.getYear() < 0 && timeValue.getPrecision() >= TimeValue.PREC_YEAR)) {
+			xsdYearString = String.format("%05d", timeValue.getYear() - 1);
+		} else {
+			xsdYearString = String.format("%04d", timeValue.getYear());
+		}
+
+		if (timeValue.getPrecision() >= TimeValue.PREC_DAY) {
+			if (timeValue.getPrecision() > TimeValue.PREC_DAY) {
+				logger.error("Time values with times of day not supported yet. Exporting only date of "
+						+ timeValue.toString());
+			}
+			this.rdfWriter.writeTripleLiteralObject(
+					resource,
+					Vocabulary.WB_TIME,
+					xsdYearString + "-"
+							+ String.format("%02d", timeValue.getMonth()) + "-"
+							+ String.format("%02d", timeValue.getDay()),
+					Vocabulary.XSD_DATE);
+		} else if (timeValue.getPrecision() == TimeValue.PREC_MONTH) {
+			this.rdfWriter.writeTripleLiteralObject(
+					resource,
+					Vocabulary.WB_TIME,
+					xsdYearString + "-"
+							+ String.format("%02d", timeValue.getMonth()),
+					Vocabulary.XSD_G_YEAR_MONTH);
+		} else if (timeValue.getPrecision() <= TimeValue.PREC_YEAR) {
+			this.rdfWriter.writeTripleLiteralObject(resource,
+					Vocabulary.WB_TIME, xsdYearString, Vocabulary.XSD_G_YEAR);
+		}
+
+		this.rdfWriter.writeTripleIntegerObject(resource,
+				Vocabulary.WB_TIME_PRECISION, timeValue.getPrecision());
+		this.rdfWriter.writeTripleUriObject(resource,
+				Vocabulary.WB_PREFERRED_CALENDAR,
+				timeValue.getPreferredCalendarModel());
 	}
 
 	/**
@@ -140,7 +166,20 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			throws RDFHandlerException {
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_LATITUDE,
+				getDecimalStringForCoordinate(globeCoordinatesValue
+						.getLatitude()), Vocabulary.XSD_DECIMAL);
+		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.WB_GLOBE,
+				globeCoordinatesValue.getGlobe());
 		// TODO finish
+	}
+
+	String getDecimalStringForCoordinate(long value) {
+		// TODO this is not ready yet; preliminary code
+		String valueString = String.format("%09d", value);
+		return valueString;
 	}
 
 	public Value getRdfValueForWikidataValue(
@@ -159,16 +198,13 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(EntityIdValue value) {
 		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
-		return this.factory.createURI(Vocabulary.getEntityUri(value));
+		return this.factory.createURI(value.getIri());
 	}
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-
-		String hash = getGlobeCoordinatesValueHash(value);
-
-		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_GLOBECOORDS + hash);
+		URI valueUri = this.factory.createURI(Vocabulary
+				.getGlobeCoordinatesValueUri(value));
 
 		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
@@ -192,10 +228,8 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(QuantityValue value) {
 
-		String hash = getQuantityValueHash(value);
-
-		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_QUANTITY + hash);
+		URI valueUri = this.factory.createURI(Vocabulary
+				.getQuantityValueUri(value));
 
 		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addQuantityValue(value, valueUri);
@@ -232,47 +266,14 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(TimeValue value) {
-		String hash = getTimeValueHash(value);
 
-		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
-				+ VALUE_PREFIX_TIME + hash);
+		URI valueUri = this.factory
+				.createURI(Vocabulary.getTimeValueUri(value));
 
 		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addTimeValue(value, valueUri);
 
 		return valueUri;
-	}
-
-	String getGlobeCoordinatesValueHash(GlobeCoordinatesValue value) {
-		md.reset();
-		updateMessageDigestWithString(md, value.getGlobe());
-		updateMessageDigestWithLong(md, value.getLatitude());
-		updateMessageDigestWithLong(md, value.getLongitude());
-		updateMessageDigestWithLong(md, value.getPrecision());
-		return bytesToHex(md.digest());
-	}
-
-	String getQuantityValueHash(QuantityValue value) {
-		md.reset();
-		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
-		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
-		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
-		return bytesToHex(md.digest());
-	}
-
-	String getTimeValueHash(TimeValue value) {
-		md.reset();
-		updateMessageDigestWithLong(md, value.getYear());
-		md.update(value.getMonth());
-		md.update(value.getDay());
-		md.update(value.getHour());
-		md.update(value.getMinute());
-		md.update(value.getSecond());
-		updateMessageDigestWithString(md, value.getPreferredCalendarModel());
-		updateMessageDigestWithInt(md, value.getBeforeTolerance());
-		updateMessageDigestWithInt(md, value.getAfterTolerance());
-		updateMessageDigestWithInt(md, value.getTimezoneOffset());
-		return bytesToHex(md.digest());
 	}
 
 	/**
@@ -301,36 +302,6 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		logger.warn("Property " + this.currentPropertyIdValue.getId()
 				+ " has type \"" + datatype + "\" but a value of type "
 				+ valueType + ". Data ignored.");
-	}
-
-	ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE);
-
-	void updateMessageDigestWithLong(MessageDigest md, long x) {
-		this.longByteBuffer.putLong(0, x);
-		md.update(this.longByteBuffer);
-	}
-
-	ByteBuffer intByteBuffer = ByteBuffer.allocate(Integer.SIZE);
-
-	void updateMessageDigestWithInt(MessageDigest md, int x) {
-		this.intByteBuffer.putInt(0, x);
-		md.update(this.intByteBuffer);
-	}
-
-	void updateMessageDigestWithString(MessageDigest md, String s) {
-		md.update(s.getBytes(StandardCharsets.UTF_8));
-	}
-
-	final protected static char[] hexArray = "0123456789abcdef".toCharArray();
-
-	static String bytesToHex(byte[] bytes) {
-		char[] hexChars = new char[bytes.length * 2];
-		for (int j = 0; j < bytes.length; j++) {
-			int v = bytes[j] & 0xFF;
-			hexChars[j * 2] = hexArray[v >>> 4];
-			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-		}
-		return new String(hexChars);
 	}
 
 }

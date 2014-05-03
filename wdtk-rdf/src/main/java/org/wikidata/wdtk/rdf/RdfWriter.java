@@ -72,6 +72,12 @@ public class RdfWriter {
 				this.factory.createLiteral(objectLiteral));
 	}
 
+	public void writeTripleIntegerObject(Resource subject, String predicateUri,
+			int objectLiteral) throws RDFHandlerException {
+		writeTripleValueObject(subject, predicateUri,
+				this.factory.createLiteral(objectLiteral));
+	}
+
 	public void writeTripleUriObject(String subjectUri, String predicateUri,
 			String objectUri) throws RDFHandlerException {
 		writeTripleValueObject(subjectUri, predicateUri,
@@ -80,10 +86,8 @@ public class RdfWriter {
 
 	public void writeTripleUriObject(Resource subject, String predicateUri,
 			String objectUri) throws RDFHandlerException {
-		URI predicate = this.factory.createURI(predicateUri);
-		URI object = this.factory.createURI(objectUri);
-		this.writer.handleStatement(this.factory.createStatement(subject,
-				predicate, object));
+		writeTripleValueObject(subject, predicateUri,
+				this.factory.createURI(objectUri));
 	}
 
 	public void writeTripleValueObject(String subjectUri, String predicateUri,
@@ -95,12 +99,21 @@ public class RdfWriter {
 				predicate, object));
 	}
 
+	public void writeTripleValueObject(Resource subject, String predicateUri,
+			Value object) throws RDFHandlerException {
+		URI predicate = this.factory.createURI(predicateUri);
+
+		this.writer.handleStatement(this.factory.createStatement(subject,
+				predicate, object));
+	}
+
 	public void writeTripleLiteralObject(Resource subject, String predicateUri,
 			String objectLexicalValue, String objectDatatypeUri)
 			throws RDFHandlerException {
 		URI predicate = this.factory.createURI(predicateUri);
+		URI datatype = this.factory.createURI(objectDatatypeUri);
 		Literal object = this.factory.createLiteral(objectLexicalValue,
-				objectDatatypeUri);
+				datatype);
 
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
