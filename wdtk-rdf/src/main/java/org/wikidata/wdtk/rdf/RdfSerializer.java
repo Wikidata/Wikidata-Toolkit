@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 
 /**
@@ -53,10 +54,12 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	 *            RDF format, such as RDFFormat.TURTLE
 	 * @param output
 	 *            the output stream to write to
+	 * @param sites
+	 *            information about site links
 	 */
-	public RdfSerializer(RDFFormat format, OutputStream output) {
+	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites) {
 		this.rdfWriter = new RdfWriter(format, output);
-		this.rdfConverter = new RdfConverter(this.rdfWriter);
+		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
 	}
 
 	@Override

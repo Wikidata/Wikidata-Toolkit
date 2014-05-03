@@ -29,7 +29,6 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -59,8 +58,10 @@ public class RdfConverter {
 	final ValueRdfConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
 	final RdfConversionBuffer rdfConversionBuffer;
+	final Sites sites;
 
-	public RdfConverter(RdfWriter writer) {
+	public RdfConverter(RdfWriter writer, Sites sites) {
+		this.sites = sites;
 		this.writer = writer;
 		this.rdfConversionBuffer = new RdfConversionBuffer();
 		this.valueRdfConverter = new ValueRdfConverter(writer,
@@ -131,10 +132,9 @@ public class RdfConverter {
 
 	public void writeSiteLinks(Map<String, SiteLink> siteLinks)
 			throws RDFHandlerException {
-		Sites sites = new SitesImpl(); // TODO get sites from outside
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
-			String siteLinkUrl = sites.getSiteLinkUrl(siteLink);
+			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
 			if (siteLinkUrl != null) {
 				this.writer.writeTripleUriObject(siteLinkUrl,
 						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
