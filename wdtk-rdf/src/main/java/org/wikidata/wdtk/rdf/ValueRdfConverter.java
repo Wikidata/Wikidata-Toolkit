@@ -94,18 +94,50 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	 */
 	public void writeQuantityValue(QuantityValue quantityValue,
 			Resource resource) throws RDFHandlerException {
-		// TODO move all strings to Vocabulary
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_QUANTITY_VALUE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
 				Vocabulary.WB_NUMERIC_VALUE, quantityValue.getNumericValue()
-						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+						.toString(), Vocabulary.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
 				Vocabulary.WB_LOWER_BOUND, quantityValue.getLowerBound()
-						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+						.toString(), Vocabulary.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
 				Vocabulary.WB_UPPER_BOUND, quantityValue.getUpperBound()
-						.toString(), Vocabulary.PREFIX_XSD + "decimal");
+						.toString(), Vocabulary.XSD_DECIMAL);
+	}
+
+	/**
+	 * Write the auxiliary RDF data for encoding the given value.
+	 * 
+	 * @param timeValue
+	 *            the value to write
+	 * @param resource
+	 *            the (subject) URI to use to represent this value in RDF
+	 * @throws RDFHandlerException
+	 */
+	public void writeTimeValue(TimeValue timeValue, Resource resource)
+			throws RDFHandlerException {
+		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_TIME_VALUE);
+		// TODO finish
+	}
+
+	/**
+	 * Write the auxiliary RDF data for encoding the given value.
+	 * 
+	 * @param globeCoordinatesValue
+	 *            the value to write
+	 * @param resource
+	 *            the (subject) URI to use to represent this value in RDF
+	 * @throws RDFHandlerException
+	 */
+	public void writeGlobeCoordinatesValue(
+			GlobeCoordinatesValue globeCoordinatesValue, Resource resource)
+			throws RDFHandlerException {
+		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
+				Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+		// TODO finish
 	}
 
 	public Value getRdfValueForWikidataValue(
@@ -136,7 +168,8 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_GLOBECOORDS + bytesToHex(md.digest()));
 
-		// TODO add attributes
+		this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
+
 		return valueUri;
 	}
 
@@ -205,7 +238,8 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_TIME + bytesToHex(md.digest()));
 
-		// TODO add attributes
+		this.rdfConversionBuffer.addTimeValue(value, valueUri);
+
 		return valueUri;
 	}
 

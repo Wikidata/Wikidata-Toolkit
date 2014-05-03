@@ -57,6 +57,12 @@ public class Vocabulary {
 			+ "ObjectProperty";
 	public static final String OWL_DATATYPE_PROPERTY = PREFIX_OWL
 			+ "DatatypeProperty";
+	public static final String XSD_DECIMAL = PREFIX_XSD + "decimal";
+	public static final String XSD_INT = PREFIX_XSD + "int";
+	public static final String XSD_DATE = PREFIX_XSD + "date";
+	public static final String XSD_G_YEAR = PREFIX_XSD + "gYear";
+	public static final String XSD_G_YEAR_MONTH = PREFIX_XSD + "gYearMonth";
+	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -160,6 +166,23 @@ public class Vocabulary {
 			+ "QuantityValue";
 	static {
 		VOCABULARY_TYPES.put(WB_QUANTITY_VALUE, OWL_CLASS);
+	}
+
+	/**
+	 * Class for Wikibase time values.
+	 */
+	public static final String WB_TIME_VALUE = PREFIX_WBONTO + "TimeValue";
+	static {
+		VOCABULARY_TYPES.put(WB_TIME_VALUE, OWL_CLASS);
+	}
+
+	/**
+	 * Class for Wikibase globe coordinates values.
+	 */
+	public static final String WB_GLOBE_COORDINATES_VALUE = PREFIX_WBONTO
+			+ "GlobeCoordinatesValue";
+	static {
+		VOCABULARY_TYPES.put(WB_GLOBE_COORDINATES_VALUE, OWL_CLASS);
 	}
 
 	/**
