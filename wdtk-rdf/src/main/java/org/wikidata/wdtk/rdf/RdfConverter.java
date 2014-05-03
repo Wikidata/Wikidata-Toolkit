@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
@@ -138,6 +139,15 @@ public class RdfConverter {
 			if (siteLinkUrl != null) {
 				this.writer.writeTripleUriObject(siteLinkUrl,
 						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
+				// Commons has no uniform language; don't export
+				if (!"commonswiki".equals(siteLink.getSiteKey())) {
+					String siteLanguageCode = this.sites
+							.getLanguageCode(siteLink.getSiteKey());
+					String languageCode = WikimediaLanguageCodes
+							.getLanguageCode(siteLanguageCode);
+					this.writer.writeTripleStringObject(siteLinkUrl,
+							Vocabulary.SCHEMA_IN_LANGUAGE, languageCode);
+				}
 			} else {
 				logger.warn("Failed to find URL for page \""
 						+ siteLink.getPageTitle() + "\" on site \""

@@ -66,6 +66,12 @@ public class RdfWriter {
 		this.writer.handleNamespace(prefix, uri);
 	}
 
+	public void writeTripleStringObject(String subjectUri, String predicateUri,
+			String objectLiteral) throws RDFHandlerException {
+		writeTripleValueObject(subjectUri, predicateUri,
+				this.factory.createLiteral(objectLiteral));
+	}
+
 	public void writeTripleUriObject(String subjectUri, String predicateUri,
 			String objectUri) throws RDFHandlerException {
 		writeTripleValueObject(subjectUri, predicateUri,
