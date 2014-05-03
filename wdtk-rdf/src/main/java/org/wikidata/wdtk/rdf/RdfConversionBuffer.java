@@ -21,12 +21,14 @@ package org.wikidata.wdtk.rdf;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
@@ -42,12 +44,16 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
  */
 public class RdfConversionBuffer {
 
-	List<QuantityValue> quantityValueQueue;
-	List<Resource> quantityValueSubjectQueue;
-	List<TimeValue> timeValueQueue;
-	List<Resource> timeValueSubjectQueue;
-	List<GlobeCoordinatesValue> coordinatesValueQueue;
-	List<Resource> coordinatesValueSubjectQueue;
+	final List<QuantityValue> quantityValueQueue;
+	final List<Resource> quantityValueSubjectQueue;
+	final List<TimeValue> timeValueQueue;
+	final List<Resource> timeValueSubjectQueue;
+	final List<GlobeCoordinatesValue> coordinatesValueQueue;
+	final List<Resource> coordinatesValueSubjectQueue;
+	final List<PropertyIdValue> objectPropertyQueue;
+	final List<PropertyIdValue> datatypePropertyQueue;
+	final HashSet<PropertyIdValue> declaredProperties;
+	final HashSet<Resource> declaredValues;
 
 	public RdfConversionBuffer() {
 		this.quantityValueQueue = new ArrayList<QuantityValue>();
@@ -56,6 +62,10 @@ public class RdfConversionBuffer {
 		this.timeValueSubjectQueue = new ArrayList<Resource>();
 		this.coordinatesValueQueue = new ArrayList<GlobeCoordinatesValue>();
 		this.coordinatesValueSubjectQueue = new ArrayList<Resource>();
+		this.objectPropertyQueue = new ArrayList<PropertyIdValue>();
+		this.datatypePropertyQueue = new ArrayList<PropertyIdValue>();
+		this.declaredProperties = new HashSet<PropertyIdValue>();
+		this.declaredValues = new HashSet<Resource>();
 	}
 
 	/**
@@ -101,11 +111,81 @@ public class RdfConversionBuffer {
 		this.coordinatesValueSubjectQueue.add(resource);
 	}
 
+	/**
+	 * Adds the given property id value to the list of properties that should be
+	 * declared as OWL object properties.
+	 * 
+	 * @param propertyIdValue
+	 *            the property to declare
+	 */
+	public void addObjectProperty(PropertyIdValue propertyIdValue) {
+		if (!this.declaredProperties.contains(propertyIdValue)) {
+			this.objectPropertyQueue.add(propertyIdValue);
+		}
+	}
+
+	/**
+	 * Adds the given property id value to the list of properties that should be
+	 * declared as OWL datatype properties.
+	 * 
+	 * @param propertyIdValue
+	 *            the property to declare
+	 */
+	public void addDatatypeProperty(PropertyIdValue propertyIdValue) {
+		if (!this.declaredProperties.contains(propertyIdValue)) {
+			this.datatypePropertyQueue.add(propertyIdValue);
+		}
+	}
+
+	public void writePropertyDeclarations(RdfWriter rdfWriter)
+			throws RDFHandlerException {
+		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
+			if (!this.declaredProperties.add(propertyIdValue)) {
+				continue;
+			}
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.STATEMENT),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.VALUE),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.QUALIFIER),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.REFERENCE),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+		}
+		this.objectPropertyQueue.clear();
+
+		for (PropertyIdValue propertyIdValue : this.datatypePropertyQueue) {
+			if (!this.declaredProperties.add(propertyIdValue)) {
+				continue;
+			}
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.STATEMENT),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.VALUE),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.QUALIFIER),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.REFERENCE),
+					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+		}
+		this.datatypePropertyQueue.clear();
+	}
+
 	public void writeValues(ValueRdfConverter valueRdfConverter)
 			throws RDFHandlerException {
 		Iterator<QuantityValue> quantitiyValueIterator = this.quantityValueQueue
 				.iterator();
 		for (Resource resource : this.quantityValueSubjectQueue) {
+			if (!this.declaredValues.add(resource)) {
+				continue;
+			}
 			QuantityValue quantityValue = quantitiyValueIterator.next();
 			valueRdfConverter.writeQuantityValue(quantityValue, resource);
 		}
@@ -114,6 +194,9 @@ public class RdfConversionBuffer {
 
 		Iterator<TimeValue> timeValueIterator = this.timeValueQueue.iterator();
 		for (Resource resource : this.timeValueSubjectQueue) {
+			if (!this.declaredValues.add(resource)) {
+				continue;
+			}
 			TimeValue timeValue = timeValueIterator.next();
 			valueRdfConverter.writeTimeValue(timeValue, resource);
 		}
@@ -123,6 +206,9 @@ public class RdfConversionBuffer {
 		Iterator<GlobeCoordinatesValue> globeCoordinatesValueIterator = this.coordinatesValueQueue
 				.iterator();
 		for (Resource resource : this.coordinatesValueSubjectQueue) {
+			if (!this.declaredValues.add(resource)) {
+				continue;
+			}
 			GlobeCoordinatesValue globeCoordinatesValue = globeCoordinatesValueIterator
 					.next();
 			valueRdfConverter.writeGlobeCoordinatesValue(globeCoordinatesValue,

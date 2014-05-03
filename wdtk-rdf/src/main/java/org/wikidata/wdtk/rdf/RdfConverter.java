@@ -126,7 +126,7 @@ public class RdfConverter {
 		// TODO: add SiteLinks
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
-
+		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
 	}
 
 	public void writeSiteLinks(Map<String, SiteLink> siteLinks)
@@ -156,6 +156,9 @@ public class RdfConverter {
 		writeDocumentTerms(document);
 
 		// TODO add datatype
+
+		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
+		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
 	}
 
 	void writeDocumentTerms(TermedDocument document) throws RDFHandlerException {
@@ -175,7 +178,7 @@ public class RdfConverter {
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
 			this.writer.writeTripleValueObject(subjectUri, predicateUri,
-					mtv.accept(this.valueRdfConverter));
+					this.valueRdfConverter.getMonolingualTextValueLiteral(mtv));
 		}
 	}
 

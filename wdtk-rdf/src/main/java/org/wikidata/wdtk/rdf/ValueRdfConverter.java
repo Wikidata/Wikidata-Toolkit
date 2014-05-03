@@ -149,11 +149,13 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(DatatypeIdValue value) {
+		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		return this.factory.createURI(value.getIri());
 	}
 
 	@Override
 	public Value visit(EntityIdValue value) {
+		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		return this.factory.createURI(Vocabulary.getEntityUri(value));
 	}
 
@@ -165,6 +167,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_GLOBECOORDS + hash);
 
+		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
 
 		return valueUri;
@@ -172,6 +175,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
+		this.rdfConversionBuffer
+				.addDatatypeProperty(this.currentPropertyIdValue);
+		return getMonolingualTextValueLiteral(value);
+	}
+
+	public Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
 		String languageCode = WikimediaLanguageCodes.getLanguageCode(value
 				.getLanguageCode());
 		return factory.createLiteral(value.getText(), languageCode);
@@ -185,6 +194,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_QUANTITY + hash);
 
+		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addQuantityValue(value, valueUri);
 
 		return valueUri;
@@ -202,8 +212,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
+			this.rdfConversionBuffer
+					.addDatatypeProperty(this.currentPropertyIdValue);
 			return factory.createLiteral(value.getString());
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
 			// TODO use a smarter function to build those URLs
 			return factory.createURI("http://commons.wikimedia.org/wiki/File:"
 					+ value.getString().replace(' ', '_'));
@@ -220,6 +234,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		URI valueUri = this.factory.createURI(Vocabulary.PREFIX_WIKIDATA
 				+ VALUE_PREFIX_TIME + hash);
 
+		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
 		this.rdfConversionBuffer.addTimeValue(value, valueUri);
 
 		return valueUri;
