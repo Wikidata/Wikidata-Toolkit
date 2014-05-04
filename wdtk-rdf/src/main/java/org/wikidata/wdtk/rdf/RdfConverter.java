@@ -125,35 +125,10 @@ public class RdfConverter {
 			}
 		}
 
-		writeSiteLinks(document.getSiteLinks());
+		writeSiteLinks(subjectUri, document.getSiteLinks());
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
-	}
-
-	public void writeSiteLinks(Map<String, SiteLink> siteLinks)
-			throws RDFHandlerException {
-		for (String key : siteLinks.keySet()) {
-			SiteLink siteLink = siteLinks.get(key);
-			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
-			if (siteLinkUrl != null) {
-				this.writer.writeTripleUriObject(siteLinkUrl,
-						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
-				// Commons has no uniform language; don't export
-				if (!"commonswiki".equals(siteLink.getSiteKey())) {
-					String siteLanguageCode = this.sites
-							.getLanguageCode(siteLink.getSiteKey());
-					String languageCode = WikimediaLanguageCodes
-							.getLanguageCode(siteLanguageCode);
-					this.writer.writeTripleStringObject(siteLinkUrl,
-							Vocabulary.SCHEMA_IN_LANGUAGE, languageCode);
-				}
-			} else {
-				logger.warn("Failed to find URL for page \""
-						+ siteLink.getPageTitle() + "\" on site \""
-						+ siteLink.getSiteKey() + "\"");
-			}
-		}
 	}
 
 	public void writePropertyDocument(PropertyDocument document)
@@ -237,6 +212,33 @@ public class RdfConverter {
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
 			for (Snak snak : snakGroup.getSnaks()) {
 				snak.accept(this.snakRdfConverter);
+			}
+		}
+	}
+
+	void writeSiteLinks(String subjectUri, Map<String, SiteLink> siteLinks)
+			throws RDFHandlerException {
+		for (String key : siteLinks.keySet()) {
+			SiteLink siteLink = siteLinks.get(key);
+			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
+			if (siteLinkUrl != null) {
+				this.writer.writeTripleUriObject(siteLinkUrl,
+						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
+				this.writer.writeTripleUriObject(siteLinkUrl,
+						Vocabulary.SCHEMA_ABOUT, subjectUri);
+				// Commons has no uniform language; don't export
+				if (!"commonswiki".equals(siteLink.getSiteKey())) {
+					String siteLanguageCode = this.sites
+							.getLanguageCode(siteLink.getSiteKey());
+					String languageCode = WikimediaLanguageCodes
+							.getLanguageCode(siteLanguageCode);
+					this.writer.writeTripleStringObject(siteLinkUrl,
+							Vocabulary.SCHEMA_IN_LANGUAGE, languageCode);
+				}
+			} else {
+				logger.warn("Failed to find URL for page \""
+						+ siteLink.getPageTitle() + "\" on site \""
+						+ siteLink.getSiteKey() + "\"");
 			}
 		}
 	}
