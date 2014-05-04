@@ -159,6 +159,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	public void writeGlobeCoordinatesValue(
 			GlobeCoordinatesValue globeCoordinatesValue, Resource resource)
 			throws RDFHandlerException {
+
 		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
 				RdfWriter.WB_GLOBE_COORDINATES_VALUE);
 
@@ -174,8 +175,19 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 				RdfWriter.WB_GC_PRECISION,
 				getDecimalStringForCoordinate(globeCoordinatesValue
 						.getPrecision()), RdfWriter.XSD_DECIMAL);
-		this.rdfWriter.writeTripleUriObject(resource, RdfWriter.WB_GLOBE,
-				globeCoordinatesValue.getGlobe());
+
+		URI globeUri;
+		try {
+			globeUri = this.rdfWriter.getUri(globeCoordinatesValue.getGlobe());
+		} catch (IllegalArgumentException e) {
+			logger.warn("Invalid globe URI \""
+					+ globeCoordinatesValue.getGlobe() + "\". Assuming Earth ("
+					+ GlobeCoordinatesValue.GLOBE_EARTH + ").");
+			globeUri = this.rdfWriter.getUri(GlobeCoordinatesValue.GLOBE_EARTH);
+		}
+
+		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.WB_GLOBE,
+				globeUri);
 	}
 
 	public Value getRdfValueForWikidataValue(
@@ -190,8 +202,16 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	}
 
 	public Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
-		String languageCode = WikimediaLanguageCodes.getLanguageCode(value
-				.getLanguageCode());
+		String languageCode;
+		try {
+			languageCode = WikimediaLanguageCodes.getLanguageCode(value
+					.getLanguageCode());
+		} catch (IllegalArgumentException e) {
+			languageCode = value.getLanguageCode();
+			logger.warn("Unknown Wikimedia language code \""
+					+ languageCode
+					+ "\". Using this code in RDF now, but this might be wrong.");
+		}
 		return this.rdfWriter.getLiteral(value.getText(), languageCode);
 	}
 

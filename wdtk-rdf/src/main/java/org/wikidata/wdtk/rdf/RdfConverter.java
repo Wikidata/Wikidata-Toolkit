@@ -64,9 +64,11 @@ public class RdfConverter {
 	public RdfConverter(RdfWriter writer, Sites sites) {
 		this.sites = sites;
 		this.writer = writer;
-		this.propertyTypes = new PropertyTypes("http://www.wikidata.org/w/api.php");
+		this.propertyTypes = new PropertyTypes(
+				"http://www.wikidata.org/w/api.php");
 		this.rdfConversionBuffer = new RdfConversionBuffer();
-		this.valueRdfConverter = new ValueRdfConverter(writer, this.rdfConversionBuffer, this.propertyTypes);
+		this.valueRdfConverter = new ValueRdfConverter(writer,
+				this.rdfConversionBuffer, this.propertyTypes);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
 				this.rdfConversionBuffer, this.propertyTypes,
 				this.valueRdfConverter);
@@ -249,8 +251,17 @@ public class RdfConverter {
 				if (!"commonswiki".equals(siteLink.getSiteKey())) {
 					String siteLanguageCode = this.sites
 							.getLanguageCode(siteLink.getSiteKey());
-					String languageCode = WikimediaLanguageCodes
-							.getLanguageCode(siteLanguageCode);
+					String languageCode;
+					try {
+						languageCode = WikimediaLanguageCodes
+								.getLanguageCode(siteLanguageCode);
+					} catch (IllegalArgumentException e) {
+						languageCode = siteLanguageCode;
+						logger.warn("Unknown Wikimedia language code \""
+								+ languageCode
+								+ "\". Using this code in RDF now, but this might be wrong.");
+					}
+
 					this.writer.writeTripleStringObject(siteLinkUri,
 							RdfWriter.SCHEMA_IN_LANGUAGE, languageCode);
 				}
