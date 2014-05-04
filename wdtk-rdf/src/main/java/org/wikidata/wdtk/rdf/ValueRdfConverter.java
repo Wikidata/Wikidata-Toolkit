@@ -53,7 +53,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final Sites sites;
-	final PropertyTypes propertyTypes = new PropertyTypes(this.sites);
+	final PropertyTypes propertyTypes;
 	final RdfWriter rdfWriter;
 	final RdfConversionBuffer rdfConversionBuffer;
 
@@ -67,6 +67,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = rdfConversionBuffer;
 		this.sites = sites;
+		this.propertyTypes = new PropertyTypes(sites);
 	}
 
 	/**

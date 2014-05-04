@@ -207,17 +207,17 @@ public class RdfConverter {
 	}
 
 	String writeReference(Reference reference) throws RDFHandlerException {
-		String refId = Vocabulary.getReferenceUri(reference);
-		this.writer.writeTripleUriObject(refId, Vocabulary.RDF_TYPE,
+		String referenceUri = Vocabulary.getReferenceUri(reference);
+		this.writer.writeTripleUriObject(referenceUri, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_REFERENCE);
 		for (SnakGroup snakGroup : reference.getSnakGroups()) {
-			this.snakRdfConverter.setSnakContext(refId,
+			this.snakRdfConverter.setSnakContext(referenceUri,
 					PropertyContext.REFERENCE);
 			for (Snak snak : snakGroup.getSnaks()) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}
-		return refId;
+		return referenceUri;
 	}
 
 	void writeReferences(String statementUri,

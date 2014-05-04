@@ -23,6 +23,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
@@ -30,6 +32,9 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class SnakRdfConverter implements SnakVisitor<Void> {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(SnakRdfConverter.class);
 
 	final ValueRdfConverter valueRdfConverter;
 
@@ -60,11 +65,17 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	@Override
 	public Void visit(ValueSnak snak) {
+		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
+				this.currentPropertyContext);
+		Value value = valueRdfConverter.getRdfValueForWikidataValue(
+				snak.getValue(), snak.getPropertyId());
+		if (value == null) {
+			logger.error("Could not serialize snak: missing value (Snak: "
+					+ snak.toString() + ")");
+			return null;
+		}
+
 		try {
-			String propertyUri = Vocabulary.getPropertyUri(
-					snak.getPropertyId(), this.currentPropertyContext);
-			Value value = valueRdfConverter.getRdfValueForWikidataValue(
-					snak.getValue(), snak.getPropertyId());
 			this.rdfWriter.writeTripleValueObject(this.currentSubjectUri,
 					propertyUri, value);
 		} catch (RDFHandlerException e) {
