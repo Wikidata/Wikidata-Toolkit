@@ -44,6 +44,26 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
  */
 public class RdfConversionBuffer {
 
+	/**
+	 * Local value class for storing information about property restrictions.
+	 * 
+	 * @author Markus Kroetzsch
+	 * 
+	 */
+	private class PropertyRestriction {
+
+		final Resource subject;
+		final String propertyUri;
+		final String rangeUri;
+
+		PropertyRestriction(Resource subject, String propertyUri,
+				String rangeUri) {
+			this.subject = subject;
+			this.propertyUri = propertyUri;
+			this.rangeUri = rangeUri;
+		}
+	}
+
 	final List<QuantityValue> quantityValueQueue;
 	final List<Resource> quantityValueSubjectQueue;
 	final List<TimeValue> timeValueQueue;
@@ -54,6 +74,8 @@ public class RdfConversionBuffer {
 	final List<PropertyIdValue> datatypePropertyQueue;
 	final HashSet<PropertyIdValue> declaredProperties;
 	final HashSet<Resource> declaredValues;
+	final List<PropertyRestriction> someValuesQueue;
+	final List<PropertyRestriction> noValuesQueue;
 
 	public RdfConversionBuffer() {
 		this.quantityValueQueue = new ArrayList<QuantityValue>();
@@ -66,6 +88,36 @@ public class RdfConversionBuffer {
 		this.datatypePropertyQueue = new ArrayList<PropertyIdValue>();
 		this.declaredProperties = new HashSet<PropertyIdValue>();
 		this.declaredValues = new HashSet<Resource>();
+		this.someValuesQueue = new ArrayList<PropertyRestriction>();
+		this.noValuesQueue = new ArrayList<PropertyRestriction>();
+	}
+
+	/**
+	 * Adds the given some-value restriction to the list of restrictions that
+	 * should still be serialized. The given resource will be used as a subject.
+	 * 
+	 * @param subject
+	 * @param propertyUri
+	 * @param rangeUri
+	 */
+	public void addSomeValuesRestriction(Resource subject, String propertyUri,
+			String rangeUri) {
+		this.someValuesQueue.add(new PropertyRestriction(subject, propertyUri,
+				rangeUri));
+	}
+
+	/**
+	 * Adds the given no-value restriction to the list of restrictions that
+	 * should still be serialized. The given resource will be used as a subject.
+	 * 
+	 * @param subject
+	 * @param propertyUri
+	 * @param rangeUri
+	 */
+	public void addNoValuesRestriction(Resource subject, String propertyUri,
+			String rangeUri) {
+		this.noValuesQueue.add(new PropertyRestriction(subject, propertyUri,
+				rangeUri));
 	}
 
 	/**
@@ -216,5 +268,20 @@ public class RdfConversionBuffer {
 		}
 		this.coordinatesValueSubjectQueue.clear();
 		this.coordinatesValueQueue.clear();
+	}
+
+	public void writePropertyRestrictions(SnakRdfConverter snakRdfConverter)
+			throws RDFHandlerException {
+		for (PropertyRestriction pr : this.someValuesQueue) {
+			snakRdfConverter.writeSomeValueRestriction(pr.propertyUri,
+					pr.rangeUri, pr.subject);
+		}
+		this.someValuesQueue.clear();
+
+		for (PropertyRestriction pr : this.noValuesQueue) {
+			snakRdfConverter.writeNoValueRestriction(pr.propertyUri,
+					pr.rangeUri, pr.subject);
+		}
+		this.noValuesQueue.clear();
 	}
 }

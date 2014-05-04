@@ -59,15 +59,18 @@ public class RdfConverter {
 	final ValueRdfConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
 	final RdfConversionBuffer rdfConversionBuffer;
+	final PropertyTypes propertyTypes;
 	final Sites sites;
 
 	public RdfConverter(RdfWriter writer, Sites sites) {
 		this.sites = sites;
 		this.writer = writer;
+		this.propertyTypes = new PropertyTypes(sites);
 		this.rdfConversionBuffer = new RdfConversionBuffer();
 		this.valueRdfConverter = new ValueRdfConverter(writer,
-				this.rdfConversionBuffer, this.sites);
+				this.rdfConversionBuffer, this.propertyTypes, this.sites);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
+				this.rdfConversionBuffer, this.propertyTypes,
 				this.valueRdfConverter);
 	}
 
@@ -129,6 +132,8 @@ public class RdfConverter {
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
+		this.rdfConversionBuffer
+				.writePropertyRestrictions(this.snakRdfConverter);
 	}
 
 	public void writePropertyDocument(PropertyDocument document)
@@ -141,8 +146,11 @@ public class RdfConverter {
 
 		writeDocumentTerms(document);
 
-		this.writer.writeTripleUriObject(propertyUri,
-				Vocabulary.WB_PROPERTY_TYPE, document.getDatatype().getIri());
+		this.writer.writeTripleValueObject(propertyUri,
+				Vocabulary.WB_PROPERTY_TYPE, this.valueRdfConverter
+						.getDatatypeIdValueLiteral(document.getDatatype()));
+		this.propertyTypes.setPropertyType(document.getPropertyId(), document
+				.getDatatype().getIri());
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);

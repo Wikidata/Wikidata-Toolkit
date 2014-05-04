@@ -70,17 +70,25 @@ public class Vocabulary {
 	// Vocabulary elements that are part of ontology language standards
 	public static final String RDF_TYPE = PREFIX_RDF + "type";
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
+	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
+	public static final String OWL_THING = PREFIX_OWL + "Thing";
 	public static final String OWL_CLASS = PREFIX_OWL + "Class";
 	public static final String OWL_OBJECT_PROPERTY = PREFIX_OWL
 			+ "ObjectProperty";
 	public static final String OWL_DATATYPE_PROPERTY = PREFIX_OWL
 			+ "DatatypeProperty";
+	public static final String OWL_RESTRICTION = PREFIX_OWL + "Restriction";
+	public static final String OWL_SOME_VALUES_FROM = PREFIX_OWL
+			+ "someValuesFrom";
+	public static final String OWL_ON_PROPERTY = PREFIX_OWL + "onProperty";
+	public static final String OWL_COMPLEMENT_OF = PREFIX_OWL + "complementOf";
 	public static final String XSD_DECIMAL = PREFIX_XSD + "decimal";
 	public static final String XSD_INT = PREFIX_XSD + "int";
 	public static final String XSD_DATE = PREFIX_XSD + "date";
 	public static final String XSD_G_YEAR = PREFIX_XSD + "gYear";
 	public static final String XSD_G_YEAR_MONTH = PREFIX_XSD + "gYearMonth";
 	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
+	public static final String XSD_STRING = PREFIX_XSD + "string";
 
 	// Prefixes for value URI construction
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";

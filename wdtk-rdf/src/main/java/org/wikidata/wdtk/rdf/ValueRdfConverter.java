@@ -63,11 +63,12 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			.getLogger(ValueRdfConverter.class);
 
 	public ValueRdfConverter(RdfWriter rdfWriter,
-			RdfConversionBuffer rdfConversionBuffer, Sites sites) {
+			RdfConversionBuffer rdfConversionBuffer,
+			PropertyTypes propertyTypes, Sites sites) {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = rdfConversionBuffer;
 		this.sites = sites;
-		this.propertyTypes = new PropertyTypes(sites);
+		this.propertyTypes = propertyTypes;
 	}
 
 	/**

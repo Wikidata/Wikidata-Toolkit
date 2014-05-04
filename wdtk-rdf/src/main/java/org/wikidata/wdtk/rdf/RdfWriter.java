@@ -48,17 +48,28 @@ public class RdfWriter {
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	RDFWriter writer;
 
+	long tripleCount = 0;
+
 	public RdfWriter(RDFFormat format, OutputStream output)
 			throws UnsupportedRDFormatException {
 		this.writer = Rio.createWriter(format, output);
 	}
 
+	public long getTripleCount() {
+		return this.tripleCount;
+	}
+
 	public void start() throws RDFHandlerException {
+		this.tripleCount = 0;
 		this.writer.startRDF();
 	}
 
 	public void finish() throws RDFHandlerException {
 		this.writer.endRDF();
+	}
+
+	public Resource getFreshBNode() {
+		return this.factory.createBNode();
 	}
 
 	public void writeNamespaceDeclaration(String prefix, String uri)
@@ -95,6 +106,7 @@ public class RdfWriter {
 		URI subject = this.factory.createURI(subjectUri);
 		URI predicate = this.factory.createURI(predicateUri);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
@@ -103,6 +115,7 @@ public class RdfWriter {
 			Value object) throws RDFHandlerException {
 		URI predicate = this.factory.createURI(predicateUri);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
@@ -115,6 +128,7 @@ public class RdfWriter {
 		Literal object = this.factory.createLiteral(objectLexicalValue,
 				datatype);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
