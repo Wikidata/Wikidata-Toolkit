@@ -172,15 +172,16 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 				Vocabulary.WB_LATITUDE,
 				getDecimalStringForCoordinate(globeCoordinatesValue
 						.getLatitude()), Vocabulary.XSD_DECIMAL);
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_LONGITUDE,
+				getDecimalStringForCoordinate(globeCoordinatesValue
+						.getLongitude()), Vocabulary.XSD_DECIMAL);
+		this.rdfWriter.writeTripleLiteralObject(resource,
+				Vocabulary.WB_GC_PRECISION,
+				getDecimalStringForCoordinate(globeCoordinatesValue
+						.getPrecision()), Vocabulary.XSD_DECIMAL);
 		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.WB_GLOBE,
 				globeCoordinatesValue.getGlobe());
-		// TODO finish
-	}
-
-	String getDecimalStringForCoordinate(long value) {
-		// TODO this is not ready yet; preliminary code
-		String valueString = String.format("%09d", value);
-		return valueString;
 	}
 
 	public Value getRdfValueForWikidataValue(
@@ -190,34 +191,8 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		return value.accept(this);
 	}
 
-	@Override
-	public Value visit(DatatypeIdValue value) {
-		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
+	public Value getDatatypeIdValueLiteral(DatatypeIdValue value) {
 		return this.factory.createURI(value.getIri());
-	}
-
-	@Override
-	public Value visit(EntityIdValue value) {
-		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
-		return this.factory.createURI(value.getIri());
-	}
-
-	@Override
-	public Value visit(GlobeCoordinatesValue value) {
-		URI valueUri = this.factory.createURI(Vocabulary
-				.getGlobeCoordinatesValueUri(value));
-
-		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
-		this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
-
-		return valueUri;
-	}
-
-	@Override
-	public Value visit(MonolingualTextValue value) {
-		this.rdfConversionBuffer
-				.addDatatypeProperty(this.currentPropertyIdValue);
-		return getMonolingualTextValueLiteral(value);
 	}
 
 	public Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
@@ -227,26 +202,83 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	}
 
 	@Override
+	public Value visit(DatatypeIdValue value) {
+		throw new RuntimeException(
+				"DatatypeIdValue cannot be processed like a value of a user-defined property. "
+						+ "Use getDatatypeIdValueLiteral() to get a Literal for such values.");
+	}
+
+	@Override
+	public Value visit(EntityIdValue value) {
+		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+				this.currentPropertyIdValue, value);
+
+		switch (datatype) {
+		case DatatypeIdValue.DT_ITEM:
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			return this.factory.createURI(value.getIri());
+		default:
+			logIncompatibleValueError(datatype, "entity");
+			return null;
+		}
+	}
+
+	@Override
+	public Value visit(GlobeCoordinatesValue value) {
+
+		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+				this.currentPropertyIdValue, value);
+
+		switch (datatype) {
+		case DatatypeIdValue.DT_GLOBE_COORDINATES:
+			URI valueUri = this.factory.createURI(Vocabulary
+					.getGlobeCoordinatesValueUri(value));
+
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			this.rdfConversionBuffer.addGlobeCoordinatesValue(value, valueUri);
+
+			return valueUri;
+		default:
+			logIncompatibleValueError(datatype, "globe coordinates");
+			return null;
+		}
+	}
+
+	@Override
+	public Value visit(MonolingualTextValue value) {
+		throw new RuntimeException(
+				"MonolingualTextValue cannot be processed like a value of a user-defined property. "
+						+ "Use getMonolingualTextValueLiteral() to get a Literal for such values.");
+	}
+
+	@Override
 	public Value visit(QuantityValue value) {
 
-		URI valueUri = this.factory.createURI(Vocabulary
-				.getQuantityValueUri(value));
+		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+				this.currentPropertyIdValue, value);
 
-		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
-		this.rdfConversionBuffer.addQuantityValue(value, valueUri);
+		switch (datatype) {
+		case DatatypeIdValue.DT_QUANTITY:
+			URI valueUri = this.factory.createURI(Vocabulary
+					.getQuantityValueUri(value));
 
-		return valueUri;
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			this.rdfConversionBuffer.addQuantityValue(value, valueUri);
+
+			return valueUri;
+		default:
+			logIncompatibleValueError(datatype, "quantity");
+			return null;
+		}
 	}
 
 	@Override
 	public Value visit(StringValue value) {
 		String datatype = this.propertyTypes.setPropertyTypeFromValue(
 				this.currentPropertyIdValue, value);
-
-		if (datatype == null) {
-			datatype = DatatypeIdValue.DT_STRING;
-			logNoDatatypeError(datatype);
-		}
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
@@ -272,26 +304,34 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(TimeValue value) {
 
-		URI valueUri = this.factory
-				.createURI(Vocabulary.getTimeValueUri(value));
+		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+				this.currentPropertyIdValue, value);
 
-		this.rdfConversionBuffer.addObjectProperty(this.currentPropertyIdValue);
-		this.rdfConversionBuffer.addTimeValue(value, valueUri);
+		switch (datatype) {
+		case DatatypeIdValue.DT_TIME:
+			URI valueUri = this.factory.createURI(Vocabulary
+					.getTimeValueUri(value));
 
-		return valueUri;
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			this.rdfConversionBuffer.addTimeValue(value, valueUri);
+
+			return valueUri;
+		default:
+			logIncompatibleValueError(datatype, "time");
+			return null;
+		}
 	}
 
-	/**
-	 * Logs a message for the case that the declared datatype of a property
-	 * could not be found.
-	 * 
-	 * @param fallBackType
-	 *            the property datatype that will be used as a fallback instead
-	 */
-	void logNoDatatypeError(String fallBackType) {
-		logger.warn("Failed to find type of property "
-				+ this.currentPropertyIdValue.getId() + "; using type \""
-				+ fallBackType + "\"");
+	String getDecimalStringForCoordinate(long value) {
+		String valueString;
+		if (value >= 0) {
+			valueString = String.format("%010d", value);
+		} else {
+			valueString = String.format("%011d", value);
+		}
+		return valueString.substring(0, valueString.length() - 9) + "."
+				+ valueString.substring(valueString.length() - 9);
 	}
 
 	/**
