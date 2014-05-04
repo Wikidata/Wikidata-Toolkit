@@ -46,7 +46,85 @@ import org.openrdf.rio.UnsupportedRDFormatException;
  */
 public class RdfWriter {
 
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
+	static final ValueFactory factory = ValueFactoryImpl.getInstance();
+
+	public static final URI RDF_TYPE = factory.createURI(Vocabulary.RDF_TYPE);
+	public static final URI RDFS_LABEL = factory
+			.createURI(Vocabulary.RDFS_LABEL);
+	public static final URI RDFS_LITERAL = factory
+			.createURI(Vocabulary.RDFS_LITERAL);
+	public static final URI OWL_THING = factory.createURI(Vocabulary.OWL_THING);
+	public static final URI OWL_CLASS = factory.createURI(Vocabulary.OWL_CLASS);
+	public static final URI OWL_OBJECT_PROPERTY = factory
+			.createURI(Vocabulary.OWL_OBJECT_PROPERTY);
+	public static final URI OWL_DATATYPE_PROPERTY = factory
+			.createURI(Vocabulary.OWL_DATATYPE_PROPERTY);
+	public static final URI OWL_RESTRICTION = factory
+			.createURI(Vocabulary.OWL_RESTRICTION);
+	public static final URI OWL_SOME_VALUES_FROM = factory
+			.createURI(Vocabulary.OWL_SOME_VALUES_FROM);
+	public static final URI OWL_ON_PROPERTY = factory
+			.createURI(Vocabulary.OWL_ON_PROPERTY);
+	public static final URI OWL_COMPLEMENT_OF = factory
+			.createURI(Vocabulary.OWL_COMPLEMENT_OF);
+	public static final URI XSD_DECIMAL = factory
+			.createURI(Vocabulary.XSD_DECIMAL);
+	public static final URI XSD_INT = factory.createURI(Vocabulary.XSD_INT);
+	public static final URI XSD_DATE = factory.createURI(Vocabulary.XSD_DATE);
+	public static final URI XSD_G_YEAR = factory
+			.createURI(Vocabulary.XSD_G_YEAR);
+	public static final URI XSD_G_YEAR_MONTH = factory
+			.createURI(Vocabulary.XSD_G_YEAR_MONTH);
+	public static final URI XSD_DATETIME = factory
+			.createURI(Vocabulary.XSD_DATETIME);
+	public static final URI XSD_STRING = factory
+			.createURI(Vocabulary.XSD_STRING);
+	public static final URI SKOS_ALT_LABEL = factory
+			.createURI(Vocabulary.SKOS_ALT_LABEL);
+	public static final URI SCHEMA_ABOUT = factory
+			.createURI(Vocabulary.SCHEMA_ABOUT);
+	public static final URI SCHEMA_DESCRIPTION = factory
+			.createURI(Vocabulary.SCHEMA_DESCRIPTION);
+	public static final URI SCHEMA_IN_LANGUAGE = factory
+			.createURI(Vocabulary.SCHEMA_IN_LANGUAGE);
+	public static final URI PROV_WAS_DERIVED_FROM = factory
+			.createURI(Vocabulary.PROV_WAS_DERIVED_FROM);
+	public static final URI WB_ITEM = factory.createURI(Vocabulary.WB_ITEM);
+	public static final URI WB_REFERENCE = factory
+			.createURI(Vocabulary.WB_REFERENCE);
+	public static final URI WB_PROPERTY = factory
+			.createURI(Vocabulary.WB_PROPERTY);
+	public static final URI WB_STATEMENT = factory
+			.createURI(Vocabulary.WB_STATEMENT);
+	public static final URI WB_ARTICLE = factory
+			.createURI(Vocabulary.WB_ARTICLE);
+	public static final URI WB_QUANTITY_VALUE = factory
+			.createURI(Vocabulary.WB_QUANTITY_VALUE);
+	public static final URI WB_TIME_VALUE = factory
+			.createURI(Vocabulary.WB_TIME_VALUE);
+	public static final URI WB_GLOBE_COORDINATES_VALUE = factory
+			.createURI(Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+	public static final URI WB_PROPERTY_TYPE = factory
+			.createURI(Vocabulary.WB_PROPERTY_TYPE);
+	public static final URI WB_GLOBE = factory.createURI(Vocabulary.WB_GLOBE);
+	public static final URI WB_LATITUDE = factory
+			.createURI(Vocabulary.WB_LATITUDE);
+	public static final URI WB_LONGITUDE = factory
+			.createURI(Vocabulary.WB_LONGITUDE);
+	public static final URI WB_GC_PRECISION = factory
+			.createURI(Vocabulary.WB_GC_PRECISION);
+	public static final URI WB_TIME = factory.createURI(Vocabulary.WB_TIME);
+	public static final URI WB_TIME_PRECISION = factory
+			.createURI(Vocabulary.WB_TIME_PRECISION);
+	public static final URI WB_PREFERRED_CALENDAR = factory
+			.createURI(Vocabulary.WB_PREFERRED_CALENDAR);
+	public static final URI WB_NUMERIC_VALUE = factory
+			.createURI(Vocabulary.WB_NUMERIC_VALUE);
+	public static final URI WB_LOWER_BOUND = factory
+			.createURI(Vocabulary.WB_LOWER_BOUND);
+	public static final URI WB_UPPER_BOUND = factory
+			.createURI(Vocabulary.WB_UPPER_BOUND);
+
 	RDFWriter writer;
 
 	long tripleCount = 0;
@@ -70,19 +148,19 @@ public class RdfWriter {
 	}
 
 	public BNode getFreshBNode() {
-		return this.factory.createBNode();
+		return factory.createBNode();
 	}
 
 	public URI getUri(String uri) {
-		return this.factory.createURI(uri);
+		return factory.createURI(uri);
 	}
 
 	public Literal getLiteral(String value) {
-		return this.factory.createLiteral(value);
+		return factory.createLiteral(value);
 	}
 
 	public Literal getLiteral(String value, String languageCode) {
-		return this.factory.createLiteral(value, languageCode);
+		return factory.createLiteral(value, languageCode);
 	}
 
 	public void writeNamespaceDeclaration(String prefix, String uri)
@@ -90,60 +168,52 @@ public class RdfWriter {
 		this.writer.handleNamespace(prefix, uri);
 	}
 
-	public void writeTripleStringObject(String subjectUri, String predicateUri,
+	public void writeTripleStringObject(Resource subject, URI predicate,
 			String objectLiteral) throws RDFHandlerException {
-		writeTripleValueObject(subjectUri, predicateUri,
-				this.factory.createLiteral(objectLiteral));
+		writeTripleValueObject(subject, predicate,
+				factory.createLiteral(objectLiteral));
 	}
 
-	public void writeTripleIntegerObject(Resource subject, String predicateUri,
+	public void writeTripleIntegerObject(Resource subject, URI predicate,
 			int objectLiteral) throws RDFHandlerException {
-		writeTripleValueObject(subject, predicateUri,
-				this.factory.createLiteral(objectLiteral));
+		writeTripleValueObject(subject, predicate,
+				factory.createLiteral(objectLiteral));
 	}
 
-	public void writeTripleUriObject(String subjectUri, String predicateUri,
+	public void writeTripleUriObject(String subjectUri, URI predicate,
 			String objectUri) throws RDFHandlerException {
-		writeTripleValueObject(subjectUri, predicateUri,
-				this.factory.createURI(objectUri));
+		writeTripleValueObject(subjectUri, predicate,
+				factory.createURI(objectUri));
 	}
 
-	public void writeTripleUriObject(Resource subject, String predicateUri,
+	public void writeTripleUriObject(Resource subject, URI predicate,
 			String objectUri) throws RDFHandlerException {
-		writeTripleValueObject(subject, predicateUri,
-				this.factory.createURI(objectUri));
+		writeTripleValueObject(subject, predicate, factory.createURI(objectUri));
 	}
 
-	public void writeTripleValueObject(String subjectUri, String predicateUri,
+	public void writeTripleValueObject(String subjectUri, URI predicate,
 			Value object) throws RDFHandlerException {
-		URI subject = this.factory.createURI(subjectUri);
-		URI predicate = this.factory.createURI(predicateUri);
+		URI subject = factory.createURI(subjectUri);
 
 		this.tripleCount++;
-		this.writer.handleStatement(this.factory.createStatement(subject,
-				predicate, object));
+		this.writer.handleStatement(factory.createStatement(subject, predicate,
+				object));
 	}
 
-	public void writeTripleValueObject(Resource subject, String predicateUri,
+	public void writeTripleValueObject(Resource subject, URI predicate,
 			Value object) throws RDFHandlerException {
-		URI predicate = this.factory.createURI(predicateUri);
-
 		this.tripleCount++;
-		this.writer.handleStatement(this.factory.createStatement(subject,
-				predicate, object));
+		this.writer.handleStatement(factory.createStatement(subject, predicate,
+				object));
 	}
 
-	public void writeTripleLiteralObject(Resource subject, String predicateUri,
-			String objectLexicalValue, String objectDatatypeUri)
-			throws RDFHandlerException {
-		URI predicate = this.factory.createURI(predicateUri);
-		URI datatype = this.factory.createURI(objectDatatypeUri);
-		Literal object = this.factory.createLiteral(objectLexicalValue,
-				datatype);
+	public void writeTripleLiteralObject(Resource subject, URI predicate,
+			String objectLexicalValue, URI datatype) throws RDFHandlerException {
+		Literal object = factory.createLiteral(objectLexicalValue, datatype);
 
 		this.tripleCount++;
-		this.writer.handleStatement(this.factory.createStatement(subject,
-				predicate, object));
+		this.writer.handleStatement(factory.createStatement(subject, predicate,
+				object));
 	}
 
 }

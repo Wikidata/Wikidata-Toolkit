@@ -79,17 +79,17 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	 */
 	public void writeQuantityValue(QuantityValue quantityValue,
 			Resource resource) throws RDFHandlerException {
-		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
-				Vocabulary.WB_QUANTITY_VALUE);
+		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
+				RdfWriter.WB_QUANTITY_VALUE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_NUMERIC_VALUE, quantityValue.getNumericValue()
-						.toString(), Vocabulary.XSD_DECIMAL);
+				RdfWriter.WB_NUMERIC_VALUE, quantityValue.getNumericValue()
+						.toString(), RdfWriter.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_LOWER_BOUND, quantityValue.getLowerBound()
-						.toString(), Vocabulary.XSD_DECIMAL);
+				RdfWriter.WB_LOWER_BOUND, quantityValue.getLowerBound()
+						.toString(), RdfWriter.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_UPPER_BOUND, quantityValue.getUpperBound()
-						.toString(), Vocabulary.XSD_DECIMAL);
+				RdfWriter.WB_UPPER_BOUND, quantityValue.getUpperBound()
+						.toString(), RdfWriter.XSD_DECIMAL);
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	 */
 	public void writeTimeValue(TimeValue timeValue, Resource resource)
 			throws RDFHandlerException {
-		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
-				Vocabulary.WB_TIME_VALUE);
+		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
+				RdfWriter.WB_TIME_VALUE);
 
 		String xsdYearString;
 		if (timeValue.getYear() == 0
@@ -127,27 +127,27 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			}
 			this.rdfWriter.writeTripleLiteralObject(
 					resource,
-					Vocabulary.WB_TIME,
+					RdfWriter.WB_TIME,
 					xsdYearString + "-"
 							+ String.format("%02d", timeValue.getMonth()) + "-"
 							+ String.format("%02d", timeValue.getDay()),
-					Vocabulary.XSD_DATE);
+					RdfWriter.XSD_DATE);
 		} else if (timeValue.getPrecision() == TimeValue.PREC_MONTH) {
 			this.rdfWriter.writeTripleLiteralObject(
 					resource,
-					Vocabulary.WB_TIME,
+					RdfWriter.WB_TIME,
 					xsdYearString + "-"
 							+ String.format("%02d", timeValue.getMonth()),
-					Vocabulary.XSD_G_YEAR_MONTH);
+					RdfWriter.XSD_G_YEAR_MONTH);
 		} else if (timeValue.getPrecision() <= TimeValue.PREC_YEAR) {
 			this.rdfWriter.writeTripleLiteralObject(resource,
-					Vocabulary.WB_TIME, xsdYearString, Vocabulary.XSD_G_YEAR);
+					RdfWriter.WB_TIME, xsdYearString, RdfWriter.XSD_G_YEAR);
 		}
 
 		this.rdfWriter.writeTripleIntegerObject(resource,
-				Vocabulary.WB_TIME_PRECISION, timeValue.getPrecision());
+				RdfWriter.WB_TIME_PRECISION, timeValue.getPrecision());
 		this.rdfWriter.writeTripleUriObject(resource,
-				Vocabulary.WB_PREFERRED_CALENDAR,
+				RdfWriter.WB_PREFERRED_CALENDAR,
 				timeValue.getPreferredCalendarModel());
 	}
 
@@ -163,22 +163,22 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	public void writeGlobeCoordinatesValue(
 			GlobeCoordinatesValue globeCoordinatesValue, Resource resource)
 			throws RDFHandlerException {
-		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
-				Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
+				RdfWriter.WB_GLOBE_COORDINATES_VALUE);
 
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_LATITUDE,
+				RdfWriter.WB_LATITUDE,
 				getDecimalStringForCoordinate(globeCoordinatesValue
-						.getLatitude()), Vocabulary.XSD_DECIMAL);
+						.getLatitude()), RdfWriter.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_LONGITUDE,
+				RdfWriter.WB_LONGITUDE,
 				getDecimalStringForCoordinate(globeCoordinatesValue
-						.getLongitude()), Vocabulary.XSD_DECIMAL);
+						.getLongitude()), RdfWriter.XSD_DECIMAL);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				Vocabulary.WB_GC_PRECISION,
+				RdfWriter.WB_GC_PRECISION,
 				getDecimalStringForCoordinate(globeCoordinatesValue
-						.getPrecision()), Vocabulary.XSD_DECIMAL);
-		this.rdfWriter.writeTripleUriObject(resource, Vocabulary.WB_GLOBE,
+						.getPrecision()), RdfWriter.XSD_DECIMAL);
+		this.rdfWriter.writeTripleUriObject(resource, RdfWriter.WB_GLOBE,
 				globeCoordinatesValue.getGlobe());
 	}
 

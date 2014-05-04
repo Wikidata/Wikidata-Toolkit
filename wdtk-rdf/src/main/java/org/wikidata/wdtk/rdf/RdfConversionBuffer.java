@@ -226,18 +226,18 @@ public class RdfConversionBuffer {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
 			}
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.STATEMENT),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.VALUE),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.QUALIFIER),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.REFERENCE),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 		}
 		this.objectPropertyQueue.clear();
 
@@ -245,18 +245,18 @@ public class RdfConversionBuffer {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
 			}
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.STATEMENT),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.VALUE),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.QUALIFIER),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
-			rdfWriter.writeTripleUriObject(Vocabulary.getPropertyUri(
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 					propertyIdValue, PropertyContext.REFERENCE),
-					Vocabulary.RDF_TYPE, Vocabulary.OWL_DATATYPE_PROPERTY);
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 		}
 		this.datatypePropertyQueue.clear();
 	}

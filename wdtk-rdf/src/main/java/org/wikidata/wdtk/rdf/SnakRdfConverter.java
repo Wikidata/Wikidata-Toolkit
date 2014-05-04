@@ -20,6 +20,7 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
@@ -71,6 +72,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public Void visit(ValueSnak snak) {
 		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
 				this.currentPropertyContext);
+		URI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValueForWikidataValue(
 				snak.getValue(), snak.getPropertyId());
 		if (value == null) {
@@ -81,7 +83,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 		try {
 			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					propertyUri, value);
+					property, value);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -104,7 +106,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				rangeUri);
 		try {
 			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					Vocabulary.RDF_TYPE, bnode);
+					RdfWriter.RDF_TYPE, bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -130,7 +132,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				rangeUri);
 		try {
 			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					Vocabulary.RDF_TYPE, bnode);
+					RdfWriter.RDF_TYPE, bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -140,28 +142,28 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	public void writeSomeValueRestriction(String propertyUri, String rangeUri,
 			Resource bnode) throws RDFHandlerException {
-		this.rdfWriter.writeTripleUriObject(bnode, Vocabulary.RDF_TYPE,
-				Vocabulary.OWL_RESTRICTION);
-		this.rdfWriter.writeTripleUriObject(bnode, Vocabulary.OWL_ON_PROPERTY,
+		this.rdfWriter.writeTripleValueObject(bnode, RdfWriter.RDF_TYPE,
+				RdfWriter.OWL_RESTRICTION);
+		this.rdfWriter.writeTripleUriObject(bnode, RdfWriter.OWL_ON_PROPERTY,
 				propertyUri);
 		this.rdfWriter.writeTripleUriObject(bnode,
-				Vocabulary.OWL_SOME_VALUES_FROM, rangeUri);
+				RdfWriter.OWL_SOME_VALUES_FROM, rangeUri);
 	}
 
 	public void writeNoValueRestriction(String propertyUri, String rangeUri,
 			Resource bnode) throws RDFHandlerException {
 
 		Resource bnodeSome = this.rdfWriter.getFreshBNode();
-		this.rdfWriter.writeTripleUriObject(bnode, Vocabulary.RDF_TYPE,
-				Vocabulary.OWL_CLASS);
+		this.rdfWriter.writeTripleValueObject(bnode, RdfWriter.RDF_TYPE,
+				RdfWriter.OWL_CLASS);
 		this.rdfWriter.writeTripleValueObject(bnode,
-				Vocabulary.OWL_COMPLEMENT_OF, bnodeSome);
-		this.rdfWriter.writeTripleUriObject(bnodeSome, Vocabulary.RDF_TYPE,
-				Vocabulary.OWL_RESTRICTION);
+				RdfWriter.OWL_COMPLEMENT_OF, bnodeSome);
+		this.rdfWriter.writeTripleValueObject(bnodeSome, RdfWriter.RDF_TYPE,
+				RdfWriter.OWL_RESTRICTION);
 		this.rdfWriter.writeTripleUriObject(bnodeSome,
-				Vocabulary.OWL_ON_PROPERTY, propertyUri);
+				RdfWriter.OWL_ON_PROPERTY, propertyUri);
 		this.rdfWriter.writeTripleUriObject(bnodeSome,
-				Vocabulary.OWL_SOME_VALUES_FROM, rangeUri);
+				RdfWriter.OWL_SOME_VALUES_FROM, rangeUri);
 	}
 
 	String getRangeUri(PropertyIdValue propertyIdValue) {
