@@ -22,8 +22,6 @@ package org.wikidata.wdtk.rdf;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +48,6 @@ import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
  */
 public class ValueRdfConverter implements ValueVisitor<Value> {
 
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final PropertyTypes propertyTypes;
 	final RdfWriter rdfWriter;
 	final RdfConversionBuffer rdfConversionBuffer;
@@ -61,10 +58,10 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			.getLogger(ValueRdfConverter.class);
 
 	public ValueRdfConverter(RdfWriter rdfWriter,
-			RdfConversionBuffer rdfConversionBuffer) {
+			RdfConversionBuffer rdfConversionBuffer, PropertyTypes propertyTypes) {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = rdfConversionBuffer;
-		this.propertyTypes = new PropertyTypes("http://www.wikidata.org/w/api.php");
+		this.propertyTypes = propertyTypes;
 	}
 
 	/**
@@ -189,13 +186,13 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	}
 
 	public Value getDatatypeIdValueLiteral(DatatypeIdValue value) {
-		return this.factory.createURI(value.getIri());
+		return this.rdfWriter.getUri(value.getIri());
 	}
 
 	public Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
 		String languageCode = WikimediaLanguageCodes.getLanguageCode(value
 				.getLanguageCode());
-		return factory.createLiteral(value.getText(), languageCode);
+		return this.rdfWriter.getLiteral(value.getText(), languageCode);
 	}
 
 	@Override
@@ -214,7 +211,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		case DatatypeIdValue.DT_ITEM:
 			this.rdfConversionBuffer
 					.addObjectProperty(this.currentPropertyIdValue);
-			return this.factory.createURI(value.getIri());
+			return this.rdfWriter.getUri(value.getIri());
 		default:
 			logIncompatibleValueError(datatype, "entity");
 			return null;
@@ -229,7 +226,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			URI valueUri = this.factory.createURI(Vocabulary
+			URI valueUri = this.rdfWriter.getUri(Vocabulary
 					.getGlobeCoordinatesValueUri(value));
 
 			this.rdfConversionBuffer
@@ -258,7 +255,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_QUANTITY:
-			URI valueUri = this.factory.createURI(Vocabulary
+			URI valueUri = this.rdfWriter.getUri(Vocabulary
 					.getQuantityValueUri(value));
 
 			this.rdfConversionBuffer
@@ -281,17 +278,18 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		case DatatypeIdValue.DT_STRING:
 			this.rdfConversionBuffer
 					.addDatatypeProperty(this.currentPropertyIdValue);
-			return factory.createLiteral(value.getString());
+			return this.rdfWriter.getLiteral(value.getString());
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
 			this.rdfConversionBuffer
 					.addObjectProperty(this.currentPropertyIdValue);
 			// TODO use a smarter function to build those URLs
-			return factory.createURI("http://commons.wikimedia.org/wiki/File:"
-					+ value.getString().replace(' ', '_'));
+			return this.rdfWriter
+					.getUri("http://commons.wikimedia.org/wiki/File:"
+							+ value.getString().replace(' ', '_'));
 		case DatatypeIdValue.DT_URL:
 			this.rdfConversionBuffer
 					.addObjectProperty(this.currentPropertyIdValue);
-			return factory.createURI(value.getString());
+			return this.rdfWriter.getUri(value.getString());
 		default:
 			logIncompatibleValueError(datatype, "string");
 			return null;
@@ -306,7 +304,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_TIME:
-			URI valueUri = this.factory.createURI(Vocabulary
+			URI valueUri = this.rdfWriter.getUri(Vocabulary
 					.getTimeValueUri(value));
 
 			this.rdfConversionBuffer

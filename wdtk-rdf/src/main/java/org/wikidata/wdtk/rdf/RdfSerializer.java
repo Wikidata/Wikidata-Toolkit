@@ -62,6 +62,15 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
 	}
 
+	/**
+	 * Returns the number of triples that have been written so far.
+	 * 
+	 * @return number of triples
+	 */
+	public long getTripleCount() {
+		return this.rdfWriter.getTripleCount();
+	}
+
 	@Override
 	public void startSerialization() {
 		try {
@@ -104,18 +113,5 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 			throw new RuntimeException(e.toString(), e);
 		}
 	}
-
-	/**
-	 * Writes a list of RDF triples to the output.
-	 * 
-	 * @param statements
-	 * @throws RDFHandlerException
-	 */
-	// void writeStatements(List<org.openrdf.model.Statement> statements)
-	// throws RDFHandlerException {
-	// for (Statement st : statements) {
-	// writer.handleStatement(st);
-	// }
-	// }
 
 }

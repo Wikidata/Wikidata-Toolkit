@@ -32,6 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
@@ -70,22 +72,31 @@ public class Vocabulary {
 	// Vocabulary elements that are part of ontology language standards
 	public static final String RDF_TYPE = PREFIX_RDF + "type";
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
+	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
+	public static final String OWL_THING = PREFIX_OWL + "Thing";
 	public static final String OWL_CLASS = PREFIX_OWL + "Class";
 	public static final String OWL_OBJECT_PROPERTY = PREFIX_OWL
 			+ "ObjectProperty";
 	public static final String OWL_DATATYPE_PROPERTY = PREFIX_OWL
 			+ "DatatypeProperty";
+	public static final String OWL_RESTRICTION = PREFIX_OWL + "Restriction";
+	public static final String OWL_SOME_VALUES_FROM = PREFIX_OWL
+			+ "someValuesFrom";
+	public static final String OWL_ON_PROPERTY = PREFIX_OWL + "onProperty";
+	public static final String OWL_COMPLEMENT_OF = PREFIX_OWL + "complementOf";
 	public static final String XSD_DECIMAL = PREFIX_XSD + "decimal";
 	public static final String XSD_INT = PREFIX_XSD + "int";
 	public static final String XSD_DATE = PREFIX_XSD + "date";
 	public static final String XSD_G_YEAR = PREFIX_XSD + "gYear";
 	public static final String XSD_G_YEAR_MONTH = PREFIX_XSD + "gYearMonth";
 	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
+	public static final String XSD_STRING = PREFIX_XSD + "string";
 
-	// Prefixes for value URI construction
+	// Prefixes for value/reference URI construction
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
 	static final String VALUE_PREFIX_QUANTITY = "VQ";
 	static final String VALUE_PREFIX_TIME = "VT";
+	static final String VALUE_PREFIX_REFERENCE = "R";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -348,8 +359,15 @@ public class Vocabulary {
 	}
 
 	public static String getReferenceUri(Reference reference) {
-		// TODO maybe change that
-		return PREFIX_WIKIDATA + "R" + reference.hashCode();
+		md.reset();
+		for (SnakGroup snakgroup : reference.getSnakGroups()) {
+			for (Snak snak : snakgroup.getSnaks()) {
+				updateMessageDigestWithInt(md, snak.hashCode());
+			}
+		}
+
+		return PREFIX_WIKIDATA + VALUE_PREFIX_REFERENCE
+				+ bytesToHex(md.digest());
 	}
 
 	public static String getTimeValueUri(TimeValue value) {

@@ -22,6 +22,7 @@ package org.wikidata.wdtk.rdf;
 
 import java.io.OutputStream;
 
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
@@ -48,17 +49,40 @@ public class RdfWriter {
 	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	RDFWriter writer;
 
+	long tripleCount = 0;
+
 	public RdfWriter(RDFFormat format, OutputStream output)
 			throws UnsupportedRDFormatException {
 		this.writer = Rio.createWriter(format, output);
 	}
 
+	public long getTripleCount() {
+		return this.tripleCount;
+	}
+
 	public void start() throws RDFHandlerException {
+		this.tripleCount = 0;
 		this.writer.startRDF();
 	}
 
 	public void finish() throws RDFHandlerException {
 		this.writer.endRDF();
+	}
+
+	public BNode getFreshBNode() {
+		return this.factory.createBNode();
+	}
+
+	public URI getUri(String uri) {
+		return this.factory.createURI(uri);
+	}
+
+	public Literal getLiteral(String value) {
+		return this.factory.createLiteral(value);
+	}
+
+	public Literal getLiteral(String value, String languageCode) {
+		return this.factory.createLiteral(value, languageCode);
 	}
 
 	public void writeNamespaceDeclaration(String prefix, String uri)
@@ -95,6 +119,7 @@ public class RdfWriter {
 		URI subject = this.factory.createURI(subjectUri);
 		URI predicate = this.factory.createURI(predicateUri);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
@@ -103,6 +128,7 @@ public class RdfWriter {
 			Value object) throws RDFHandlerException {
 		URI predicate = this.factory.createURI(predicateUri);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
@@ -115,6 +141,7 @@ public class RdfWriter {
 		Literal object = this.factory.createLiteral(objectLexicalValue,
 				datatype);
 
+		this.tripleCount++;
 		this.writer.handleStatement(this.factory.createStatement(subject,
 				predicate, object));
 	}
