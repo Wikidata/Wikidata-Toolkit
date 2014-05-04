@@ -297,16 +297,22 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
-			this.rdfConversionBuffer
-					.addDatatypeProperty(this.currentPropertyIdValue);
-			return this.rdfWriter.getLiteral(value.getString());
+			String valueUri = LinkedDataProperties.getUriForPropertyValue(
+					this.currentPropertyIdValue, value.getString());
+			if (valueUri == null) {
+				this.rdfConversionBuffer
+						.addDatatypeProperty(this.currentPropertyIdValue);
+				return this.rdfWriter.getLiteral(value.getString());
+			} else {
+				this.rdfConversionBuffer
+						.addObjectProperty(this.currentPropertyIdValue);
+				return this.rdfWriter.getUri(valueUri);
+			}
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
 			this.rdfConversionBuffer
 					.addObjectProperty(this.currentPropertyIdValue);
-			// TODO use a smarter function to build those URLs
-			return this.rdfWriter
-					.getUri("http://commons.wikimedia.org/wiki/File:"
-							+ value.getString().replace(' ', '_'));
+			return this.rdfWriter.getUri(LinkedDataProperties
+					.getCommonsUrl(value.getString()));
 		case DatatypeIdValue.DT_URL:
 			this.rdfConversionBuffer
 					.addObjectProperty(this.currentPropertyIdValue);
