@@ -52,6 +52,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("am", "am");
 		LANGUAGE_CODES.put("an", "an");
 		LANGUAGE_CODES.put("ang", "ang");
+		LANGUAGE_CODES.put("anp", "anp");
 		LANGUAGE_CODES.put("ar", "ar");
 		LANGUAGE_CODES.put("arc", "arc");
 		LANGUAGE_CODES.put("arz", "arz");
@@ -75,13 +76,16 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("be-x-old", "be-tarask"); // TODO might be redundant
 		LANGUAGE_CODES.put("bg", "bg");
 		LANGUAGE_CODES.put("bh", "bh");
+		LANGUAGE_CODES.put("bho", "bho");
 		LANGUAGE_CODES.put("bi", "bi");
 		LANGUAGE_CODES.put("bjn", "bjn");
 		LANGUAGE_CODES.put("bm", "bm");
 		LANGUAGE_CODES.put("bn", "bn");
 		LANGUAGE_CODES.put("bo", "bo");
 		LANGUAGE_CODES.put("bpy", "bpy");
+		LANGUAGE_CODES.put("bqi", "bqi");
 		LANGUAGE_CODES.put("br", "br");
+		LANGUAGE_CODES.put("brh", "brh");
 		LANGUAGE_CODES.put("bs", "bs");
 		LANGUAGE_CODES.put("bug", "bug");
 		LANGUAGE_CODES.put("bxr", "bxr");
@@ -96,8 +100,11 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("chy", "chy");
 		LANGUAGE_CODES.put("ckb", "ckb");
 		LANGUAGE_CODES.put("co", "co");
+		LANGUAGE_CODES.put("cps", "cps");
 		LANGUAGE_CODES.put("cr", "cr");
 		LANGUAGE_CODES.put("crh", "crh-Latn"); // TODO might be redundant
+		LANGUAGE_CODES.put("crh-cyrl", "crh-Cyrl"); // Crimean Tatar/Crimean
+													// Turkish; script Cyrillic
 		LANGUAGE_CODES.put("crh-latn", "crh-Latn"); // Crimean Tatar/Crimean
 													// Turkish; script Latin
 		LANGUAGE_CODES.put("csb", "csb");
@@ -220,6 +227,8 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("kn", "kn");
 		LANGUAGE_CODES.put("koi", "koi");
 		LANGUAGE_CODES.put("ko", "ko");
+		LANGUAGE_CODES.put("ko-kp", "ko-KP"); // Korean; Democratic People's
+												// Republic of Korea
 		LANGUAGE_CODES.put("kr", "kr");
 		LANGUAGE_CODES.put("krc", "krc");
 		LANGUAGE_CODES.put("krj", "krj");
@@ -253,6 +262,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("lt", "lt");
 		LANGUAGE_CODES.put("lv", "lv");
 		LANGUAGE_CODES.put("lzh", "lzh"); // Literary Chinese
+		LANGUAGE_CODES.put("mai", "mai");
 		LANGUAGE_CODES.put("map-bms", "jv-x-bms"); // Basa Banyumasan has no
 													// code; jv is a superset
 													// (Javanese)
@@ -327,6 +337,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("pt", "pt"); // Portuguese
 		LANGUAGE_CODES.put("qu", "qu");
 		LANGUAGE_CODES.put("rgn", "rgn");
+		LANGUAGE_CODES.put("rif", "rif");
 		LANGUAGE_CODES.put("rm", "rm");
 		LANGUAGE_CODES.put("rmy", "rmy");
 		LANGUAGE_CODES.put("rn", "rn");
@@ -383,6 +394,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("tet", "tet");
 		LANGUAGE_CODES.put("tg", "tg");
 		LANGUAGE_CODES.put("tg-latn", "tg-Latn"); // Tajik; script Latin
+		LANGUAGE_CODES.put("tg-cyrl", "tg-Cyrl"); // Tajik; script Cyrillic
 		LANGUAGE_CODES.put("th", "th");
 		LANGUAGE_CODES.put("ti", "ti");
 		LANGUAGE_CODES.put("tk", "tk");
@@ -404,7 +416,9 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ty", "ty");
 		LANGUAGE_CODES.put("tyv", "tyv");
 		LANGUAGE_CODES.put("udm", "udm");
-		LANGUAGE_CODES.put("ug", "ug");
+		LANGUAGE_CODES.put("ug", "ug"); // Uyghur
+		LANGUAGE_CODES.put("ug-arab", "ug-Arab"); // Uyghur, Arab script
+		LANGUAGE_CODES.put("ug-latn", "ug-Latn"); // Uyghur, Latin script
 		LANGUAGE_CODES.put("uk", "uk");
 		LANGUAGE_CODES.put("ur", "ur");
 		LANGUAGE_CODES.put("uz", "uz");
