@@ -118,7 +118,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 		if (timeValue.getPrecision() >= TimeValue.PREC_DAY) {
 			if (timeValue.getPrecision() > TimeValue.PREC_DAY) {
-				logger.error("Time values with times of day not supported yet. Exporting only date of "
+				logger.warn("Time values with times of day not supported yet. Exporting only date of "
 						+ timeValue.toString());
 			}
 			this.rdfWriter.writeTripleLiteralObject(

@@ -44,8 +44,8 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	RdfConverter rdfConverter;
-	RdfWriter rdfWriter;
+	final RdfConverter rdfConverter;
+	final RdfWriter rdfWriter;
 
 	/**
 	 * Creates a new RDF serializer for the specified format and output stream.
@@ -60,6 +60,37 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites) {
 		this.rdfWriter = new RdfWriter(format, output);
 		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
+	}
+
+	/**
+	 * Sets whether or not terms (labels, descriptions, aliases) should be
+	 * converted.
+	 * 
+	 * @param termsEnabled
+	 *            defines whether terms are converted
+	 */
+	public void setTermsEnabled(boolean termsEnabled) {
+		this.rdfConverter.setTermsEnabled(termsEnabled);
+	}
+
+	/**
+	 * Sets whether or not statements should be converted.
+	 * 
+	 * @param statementsEnabled
+	 *            defines whether statements are converted
+	 */
+	public void setStatementsEnabled(boolean statementsEnabled) {
+		this.rdfConverter.setStatementsEnabled(statementsEnabled);
+	}
+
+	/**
+	 * Sets whether or not site links should be converted.
+	 * 
+	 * @param siteLinksEnabled
+	 *            defines whether site links are converted
+	 */
+	public void setSiteLinksEnabled(boolean siteLinksEnabled) {
+		this.rdfConverter.setSiteLinksEnabled(siteLinksEnabled);
 	}
 
 	/**

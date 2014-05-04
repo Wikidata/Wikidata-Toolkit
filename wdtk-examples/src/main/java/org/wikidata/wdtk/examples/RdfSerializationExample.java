@@ -57,17 +57,42 @@ public class RdfSerializationExample {
 
 		// Write the output to a BZip2-compressed file
 		Sites sites = dumpProcessingController.getSitesInformation();
-		BZip2CompressorOutputStream outputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("WikidataDump.n3.bz2"));
-		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				outputStream, sites);
+
+		BZip2CompressorOutputStream termsOutputStream = new BZip2CompressorOutputStream(
+				new FileOutputStream("Wikidata-terms.n3.bz2"));
+		RdfSerializer termSerializer = new RdfSerializer(RDFFormat.NTRIPLES,
+				termsOutputStream, sites);
+		termSerializer.setStatementsEnabled(false);
+		termSerializer.setSiteLinksEnabled(false);
+
+		BZip2CompressorOutputStream statementsOutputStream = new BZip2CompressorOutputStream(
+				new FileOutputStream("Wikidata-statements.n3.bz2"));
+		RdfSerializer statementSerializer = new RdfSerializer(
+				RDFFormat.NTRIPLES, statementsOutputStream, sites);
+		statementSerializer.setTermsEnabled(false);
+		statementSerializer.setSiteLinksEnabled(false);
+
+		BZip2CompressorOutputStream siteLinksOutputStream = new BZip2CompressorOutputStream(
+				new FileOutputStream("Wikidata-sitelinks.n3.bz2"));
+		RdfSerializer siteLinkSerializer = new RdfSerializer(
+				RDFFormat.NTRIPLES, siteLinksOutputStream, sites);
+		siteLinkSerializer.setTermsEnabled(false);
+		siteLinkSerializer.setStatementsEnabled(false);
 
 		// Subscribe to the most recent entity documents of type wikibase item
 		// and property:
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				termSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				termSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				statementSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				statementSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				siteLinkSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				siteLinkSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -77,19 +102,31 @@ public class RdfSerializationExample {
 				null, true);
 
 		// Set up the serializer and write headers
-		serializer.startSerialization();
+		termSerializer.startSerialization();
+		statementSerializer.startSerialization();
+		siteLinkSerializer.startSerialization();
 
 		// Start processing (may trigger downloads where needed)
 		dumpProcessingController.processAllRecentRevisionDumps();
-		// // Process just a recent daily dump for testing:
-		// dumpProcessingController.processMostRecentDailyDump();
+		// // Process just a recent main dump for testing:
+		// dumpProcessingController.processMostRecentMainDump();
 
 		// Finish the serialization
-		serializer.finishSerialization();
-		outputStream.close();
+		termSerializer.finishSerialization();
+		statementSerializer.finishSerialization();
+		siteLinkSerializer.finishSerialization();
+		termsOutputStream.close();
+		statementsOutputStream.close();
+		siteLinksOutputStream.close();
 
 		System.out.println("*** Finished serialization of "
-				+ serializer.getTripleCount() + " RDF triples.");
+				+ termSerializer.getTripleCount() + " RDF term triples.");
+		System.out.println("*** Finished serialization of "
+				+ statementSerializer.getTripleCount()
+				+ " RDF statement triples.");
+		System.out.println("*** Finished serialization of "
+				+ siteLinkSerializer.getTripleCount()
+				+ " RDF site link triples.");
 	}
 
 	/**

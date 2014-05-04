@@ -58,20 +58,57 @@ public class RdfConverter {
 	final ValueRdfConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
 	final RdfConversionBuffer rdfConversionBuffer;
-	final PropertyTypes propertyTypes;
+	// TODO Making propertyTypes static is a hack to enable a shared property
+	// type lookup that is used by many serializers; this needs to be managed on
+	// a per-site basis (like the API-URL). A static factory method could do
+	// this.
+	final static PropertyTypes propertyTypes = new PropertyTypes(
+			"http://www.wikidata.org/w/api.php");
 	final Sites sites;
+
+	boolean convertTerms = true;
+	boolean convertStatements = true;
+	boolean convertSiteLinks = true;
 
 	public RdfConverter(RdfWriter writer, Sites sites) {
 		this.sites = sites;
 		this.writer = writer;
-		this.propertyTypes = new PropertyTypes(
-				"http://www.wikidata.org/w/api.php");
 		this.rdfConversionBuffer = new RdfConversionBuffer();
 		this.valueRdfConverter = new ValueRdfConverter(writer,
-				this.rdfConversionBuffer, this.propertyTypes);
+				this.rdfConversionBuffer, propertyTypes);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
-				this.rdfConversionBuffer, this.propertyTypes,
-				this.valueRdfConverter);
+				this.rdfConversionBuffer, propertyTypes, this.valueRdfConverter);
+	}
+
+	/**
+	 * Sets whether or not terms (labels, descriptions, aliases) should be
+	 * converted.
+	 * 
+	 * @param termsEnabled
+	 *            defines whether terms are converted
+	 */
+	public void setTermsEnabled(boolean termsEnabled) {
+		this.convertTerms = termsEnabled;
+	}
+
+	/**
+	 * Sets whether or not statements should be converted.
+	 * 
+	 * @param statementsEnabled
+	 *            defines whether statements are converted
+	 */
+	public void setStatementsEnabled(boolean statementsEnabled) {
+		this.convertStatements = statementsEnabled;
+	}
+
+	/**
+	 * Sets whether or not site links should be converted.
+	 * 
+	 * @param siteLinksEnabled
+	 *            defines whether site links are converted
+	 */
+	public void setSiteLinksEnabled(boolean siteLinksEnabled) {
+		this.convertSiteLinks = siteLinksEnabled;
 	}
 
 	/**
@@ -114,19 +151,22 @@ public class RdfConverter {
 
 		writeDocumentTerms(subject, document);
 
-		for (StatementGroup statementGroup : document.getStatementGroups()) {
-			for (Statement statement : statementGroup.getStatements()) {
-				URI property = this.writer.getUri(Vocabulary.getPropertyUri(
-						statement.getClaim().getMainSnak().getPropertyId(),
-						PropertyContext.STATEMENT));
-				this.writer.writeTripleUriObject(subject, property,
-						Vocabulary.getStatementUri(statement));
+		if (this.convertStatements) {
+			for (StatementGroup statementGroup : document.getStatementGroups()) {
+				URI property = this.writer
+						.getUri(Vocabulary.getPropertyUri(
+								statementGroup.getProperty(),
+								PropertyContext.STATEMENT));
+				for (Statement statement : statementGroup.getStatements()) {
+					this.writer.writeTripleUriObject(subject, property,
+							Vocabulary.getStatementUri(statement));
+				}
 			}
-		}
 
-		for (StatementGroup statementGroup : document.getStatementGroups()) {
-			for (Statement statement : statementGroup.getStatements()) {
-				writeStatement(statement);
+			for (StatementGroup statementGroup : document.getStatementGroups()) {
+				for (Statement statement : statementGroup.getStatements()) {
+					writeStatement(statement);
+				}
 			}
 		}
 
@@ -153,7 +193,7 @@ public class RdfConverter {
 		this.writer.writeTripleValueObject(subject, RdfWriter.WB_PROPERTY_TYPE,
 				this.valueRdfConverter.getDatatypeIdValueLiteral(document
 						.getDatatype()));
-		this.propertyTypes.setPropertyType(document.getPropertyId(), document
+		propertyTypes.setPropertyType(document.getPropertyId(), document
 				.getDatatype().getIri());
 
 		// Most of these should do nothing for properties, but this might change
@@ -165,6 +205,10 @@ public class RdfConverter {
 
 	void writeDocumentTerms(Resource subject, TermedDocument document)
 			throws RDFHandlerException {
+
+		if (!this.convertTerms) {
+			return;
+		}
 
 		writeTermTriples(subject, RdfWriter.RDFS_LABEL, document.getLabels()
 				.values());
@@ -238,6 +282,11 @@ public class RdfConverter {
 
 	void writeSiteLinks(Resource subject, Map<String, SiteLink> siteLinks)
 			throws RDFHandlerException {
+
+		if (!this.convertSiteLinks) {
+			return;
+		}
+
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
 			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
