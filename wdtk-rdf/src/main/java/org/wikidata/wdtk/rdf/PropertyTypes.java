@@ -163,7 +163,8 @@ public class PropertyTypes implements ValueVisitor<String> {
 		case "commonsMedia":
 			return DatatypeIdValue.DT_COMMONS_MEDIA;
 		default:
-			throw new IOException("Got unkown datatype " + datatype);
+			logger.error("Got unkown datatype " + datatype);
+			return null;
 		}
 	}
 
