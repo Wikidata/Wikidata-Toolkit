@@ -224,7 +224,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(EntityIdValue value) {
-		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+		String datatype = this.propertyTypes.setPropertyTypeFromEntityIdValue(
 				this.currentPropertyIdValue, value);
 
 		switch (datatype) {
@@ -241,8 +241,9 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
 
-		String datatype = this.propertyTypes.setPropertyTypeFromValue(
-				this.currentPropertyIdValue, value);
+		String datatype = this.propertyTypes
+				.setPropertyTypeFromGlobeCoordinatesValue(
+						this.currentPropertyIdValue, value);
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
@@ -270,7 +271,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(QuantityValue value) {
 
-		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+		String datatype = this.propertyTypes.setPropertyTypeFromQuantityValue(
 				this.currentPropertyIdValue, value);
 
 		switch (datatype) {
@@ -291,7 +292,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(StringValue value) {
-		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+		String datatype = this.propertyTypes.setPropertyTypeFromStringValue(
 				this.currentPropertyIdValue, value);
 
 		switch (datatype) {
@@ -319,7 +320,7 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 	@Override
 	public Value visit(TimeValue value) {
 
-		String datatype = this.propertyTypes.setPropertyTypeFromValue(
+		String datatype = this.propertyTypes.setPropertyTypeFromTimeValue(
 				this.currentPropertyIdValue, value);
 
 		switch (datatype) {

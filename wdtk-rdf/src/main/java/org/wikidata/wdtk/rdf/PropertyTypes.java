@@ -86,27 +86,31 @@ public class PropertyTypes implements ValueVisitor<String> {
 		propertyTypes.put(propertyIdValue.getId(), datatypeIri);
 	}
 
+	@Deprecated
 	public String setPropertyTypeFromValue(PropertyIdValue propertyIdValue,
 			Value value) {
 		propertyRegister = propertyIdValue;
 		return value.accept(this);
 	}
 
-	public String setPropertyTypeFromEntityIdValue(PropertyIdValue propertyIdValue, EntityIdValue value) {
+	public String setPropertyTypeFromEntityIdValue(
+			PropertyIdValue propertyIdValue, EntityIdValue value) {
 		// Only Items can be used as entity values so far
 		return DatatypeIdValue.DT_ITEM;
 	}
 
-	public String setPropertyTypeFromGlobeCoordinatesValue(PropertyIdValue propertyIdValue, GlobeCoordinatesValue value) {
+	public String setPropertyTypeFromGlobeCoordinatesValue(
+			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value) {
 		return DatatypeIdValue.DT_GLOBE_COORDINATES;
 	}
 
-
-	public String setPropertyTypeFromQuantityValue(PropertyIdValue propertyIdValue, QuantityValue value) {
+	public String setPropertyTypeFromQuantityValue(
+			PropertyIdValue propertyIdValue, QuantityValue value) {
 		return DatatypeIdValue.DT_QUANTITY;
 	}
 
-	public String setPropertyTypeFromStringValue(PropertyIdValue propertyIdValue, StringValue value) {
+	public String setPropertyTypeFromStringValue(
+			PropertyIdValue propertyIdValue, StringValue value) {
 		String datatype = getPropertyType(propertyIdValue);
 		if (datatype.equals(null)) {
 			return DatatypeIdValue.DT_STRING; // default type for StringValue
@@ -114,12 +118,12 @@ public class PropertyTypes implements ValueVisitor<String> {
 			return datatype;
 		}
 	}
-	
-	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue, TimeValue value) {
+
+	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
+			TimeValue value) {
 		return DatatypeIdValue.DT_TIME;
 	}
 
-	
 	/**
 	 * Find the datatype of a property online.
 	 * 
