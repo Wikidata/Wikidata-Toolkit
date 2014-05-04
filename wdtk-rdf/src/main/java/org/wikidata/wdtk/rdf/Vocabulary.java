@@ -32,6 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
@@ -90,10 +92,11 @@ public class Vocabulary {
 	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
 	public static final String XSD_STRING = PREFIX_XSD + "string";
 
-	// Prefixes for value URI construction
+	// Prefixes for value/reference URI construction
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
 	static final String VALUE_PREFIX_QUANTITY = "VQ";
 	static final String VALUE_PREFIX_TIME = "VT";
+	static final String VALUE_PREFIX_REFERENCE = "R";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -356,8 +359,15 @@ public class Vocabulary {
 	}
 
 	public static String getReferenceUri(Reference reference) {
-		// TODO maybe change that
-		return PREFIX_WIKIDATA + "R" + reference.hashCode();
+		md.reset();
+		for (SnakGroup snakgroup : reference.getSnakGroups()) {
+			for (Snak snak : snakgroup.getSnaks()) {
+				updateMessageDigestWithInt(md, snak.hashCode());
+			}
+		}
+
+		return PREFIX_WIKIDATA + VALUE_PREFIX_REFERENCE
+				+ bytesToHex(md.digest());
 	}
 
 	public static String getTimeValueUri(TimeValue value) {

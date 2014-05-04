@@ -24,8 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,6 @@ public class RdfConverter {
 
 	static final Logger logger = LoggerFactory.getLogger(RdfConverter.class);
 
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final RdfWriter writer;
 	final ValueRdfConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
@@ -107,15 +105,16 @@ public class RdfConverter {
 			throws RDFHandlerException {
 
 		String subjectUri = document.getEntityId().getIri();
+		Resource subject = this.writer.getUri(subjectUri);
 
-		this.writer.writeTripleUriObject(subjectUri, Vocabulary.RDF_TYPE,
+		this.writer.writeTripleUriObject(subject, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_ITEM);
 
-		writeDocumentTerms(document);
+		writeDocumentTerms(subject, document);
 
 		for (StatementGroup statementGroup : document.getStatementGroups()) {
 			for (Statement statement : statementGroup.getStatements()) {
-				this.writer.writeTripleUriObject(subjectUri, Vocabulary
+				this.writer.writeTripleUriObject(subject, Vocabulary
 						.getPropertyUri(statement.getClaim().getMainSnak()
 								.getPropertyId(), PropertyContext.STATEMENT),
 						Vocabulary.getStatementUri(statement));
@@ -128,94 +127,104 @@ public class RdfConverter {
 			}
 		}
 
-		writeSiteLinks(subjectUri, document.getSiteLinks());
+		writeSiteLinks(subject, document.getSiteLinks());
 
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
 		this.rdfConversionBuffer
 				.writePropertyRestrictions(this.snakRdfConverter);
+		this.rdfConversionBuffer.writeReferences(this);
 	}
 
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
 		String propertyUri = document.getEntityId().getIri();
+		Resource subject = this.writer.getUri(propertyUri);
 
-		this.writer.writeTripleUriObject(propertyUri, Vocabulary.RDF_TYPE,
+		this.writer.writeTripleUriObject(subject, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_PROPERTY);
 
-		writeDocumentTerms(document);
+		writeDocumentTerms(subject, document);
 
-		this.writer.writeTripleValueObject(propertyUri,
+		this.writer.writeTripleValueObject(subject,
 				Vocabulary.WB_PROPERTY_TYPE, this.valueRdfConverter
 						.getDatatypeIdValueLiteral(document.getDatatype()));
 		this.propertyTypes.setPropertyType(document.getPropertyId(), document
 				.getDatatype().getIri());
 
+		// Most of these should do nothing for properties, but this might change
+		// in the future:
 		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
 		this.rdfConversionBuffer.writePropertyDeclarations(this.writer);
+		this.rdfConversionBuffer.writeReferences(this);
 	}
 
-	void writeDocumentTerms(TermedDocument document) throws RDFHandlerException {
-		String subjectUri = document.getEntityId().getIri();
+	void writeDocumentTerms(Resource subject, TermedDocument document)
+			throws RDFHandlerException {
 
-		writeTermTriples(subjectUri, Vocabulary.RDFS_LABEL, document
-				.getLabels().values());
-		writeTermTriples(subjectUri, Vocabulary.SCHEMA_DESCRIPTION, document
+		writeTermTriples(subject, Vocabulary.RDFS_LABEL, document.getLabels()
+				.values());
+		writeTermTriples(subject, Vocabulary.SCHEMA_DESCRIPTION, document
 				.getDescriptions().values());
 		for (List<MonolingualTextValue> aliases : document.getAliases()
 				.values()) {
-			writeTermTriples(subjectUri, Vocabulary.SKOS_ALT_LABEL, aliases);
+			writeTermTriples(subject, Vocabulary.SKOS_ALT_LABEL, aliases);
 		}
 	}
 
-	void writeTermTriples(String subjectUri, String predicateUri,
+	void writeTermTriples(Resource subject, String predicateUri,
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
-			this.writer.writeTripleValueObject(subjectUri, predicateUri,
+			this.writer.writeTripleValueObject(subject, predicateUri,
 					this.valueRdfConverter.getMonolingualTextValueLiteral(mtv));
 		}
 	}
 
 	void writeStatement(Statement statement) throws RDFHandlerException {
 		String statementUri = Vocabulary.getStatementUri(statement);
+		Resource statementResource = this.writer.getUri(statementUri);
 
-		this.writer.writeTripleUriObject(statementUri, Vocabulary.RDF_TYPE,
-				Vocabulary.WB_STATEMENT);
-		writeClaim(statementUri, statement.getClaim());
+		this.writer.writeTripleUriObject(statementResource,
+				Vocabulary.RDF_TYPE, Vocabulary.WB_STATEMENT);
+		writeClaim(statementResource, statement.getClaim());
 
-		writeReferences(statementUri, statement.getReferences());
-		// What about the RANK?
+		writeReferences(statementResource, statement.getReferences());
+		// TODO What about the RANK?
 
 	}
 
-	String writeReference(Reference reference) throws RDFHandlerException {
-		String referenceUri = Vocabulary.getReferenceUri(reference);
-		this.writer.writeTripleUriObject(referenceUri, Vocabulary.RDF_TYPE,
+	void writeReference(Reference reference, Resource resource)
+			throws RDFHandlerException {
+
+		this.writer.writeTripleUriObject(resource, Vocabulary.RDF_TYPE,
 				Vocabulary.WB_REFERENCE);
 		for (SnakGroup snakGroup : reference.getSnakGroups()) {
-			this.snakRdfConverter.setSnakContext(referenceUri,
+			this.snakRdfConverter.setSnakContext(resource,
 					PropertyContext.REFERENCE);
 			for (Snak snak : snakGroup.getSnaks()) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}
-		return referenceUri;
 	}
 
-	void writeReferences(String statementUri,
+	void writeReferences(Resource statementResource,
 			List<? extends Reference> references) throws RDFHandlerException {
-		for (Reference ref : references) {
-			this.writer.writeTripleUriObject(statementUri,
-					Vocabulary.PROV_WAS_DERIVED_FROM, writeReference(ref));
+		for (Reference reference : references) {
+			String referenceUri = Vocabulary.getReferenceUri(reference);
+			Resource resource = this.writer.getUri(referenceUri);
+			this.rdfConversionBuffer.addReference(reference, resource);
+			this.writer.writeTripleValueObject(statementResource,
+					Vocabulary.PROV_WAS_DERIVED_FROM, resource);
 		}
 	}
 
-	void writeClaim(String claimUri, Claim claim) {
-		this.snakRdfConverter.setSnakContext(claimUri, PropertyContext.VALUE);
+	void writeClaim(Resource claimResource, Claim claim) {
+		this.snakRdfConverter.setSnakContext(claimResource,
+				PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
 
-		this.snakRdfConverter.setSnakContext(claimUri,
+		this.snakRdfConverter.setSnakContext(claimResource,
 				PropertyContext.QUALIFIER);
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
 			for (Snak snak : snakGroup.getSnaks()) {
@@ -224,7 +233,7 @@ public class RdfConverter {
 		}
 	}
 
-	void writeSiteLinks(String subjectUri, Map<String, SiteLink> siteLinks)
+	void writeSiteLinks(Resource subject, Map<String, SiteLink> siteLinks)
 			throws RDFHandlerException {
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
@@ -232,8 +241,8 @@ public class RdfConverter {
 			if (siteLinkUrl != null) {
 				this.writer.writeTripleUriObject(siteLinkUrl,
 						Vocabulary.RDF_TYPE, Vocabulary.WB_ARTICLE);
-				this.writer.writeTripleUriObject(siteLinkUrl,
-						Vocabulary.SCHEMA_ABOUT, subjectUri);
+				this.writer.writeTripleValueObject(siteLinkUrl,
+						Vocabulary.SCHEMA_ABOUT, subject);
 				// Commons has no uniform language; don't export
 				if (!"commonswiki".equals(siteLink.getSiteKey())) {
 					String siteLanguageCode = this.sites

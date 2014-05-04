@@ -30,6 +30,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
@@ -76,6 +77,9 @@ public class RdfConversionBuffer {
 	final HashSet<Resource> declaredValues;
 	final List<PropertyRestriction> someValuesQueue;
 	final List<PropertyRestriction> noValuesQueue;
+	final List<Reference> referenceQueue;
+	final List<Resource> referenceSubjectQueue;
+	final HashSet<Resource> declaredReferences;
 
 	public RdfConversionBuffer() {
 		this.quantityValueQueue = new ArrayList<QuantityValue>();
@@ -90,6 +94,9 @@ public class RdfConversionBuffer {
 		this.declaredValues = new HashSet<Resource>();
 		this.someValuesQueue = new ArrayList<PropertyRestriction>();
 		this.noValuesQueue = new ArrayList<PropertyRestriction>();
+		this.referenceQueue = new ArrayList<Reference>();
+		this.referenceSubjectQueue = new ArrayList<Resource>();
+		this.declaredReferences = new HashSet<Resource>();
 	}
 
 	/**
@@ -164,6 +171,20 @@ public class RdfConversionBuffer {
 	}
 
 	/**
+	 * Adds the given reference to the list of references that should still be
+	 * serialized. The given RDF resource will be used as a subject.
+	 * 
+	 * @param reference
+	 *            the reference to be serialized
+	 * @param resource
+	 *            the RDF resource that is used as a subject for serialization
+	 */
+	public void addReference(Reference reference, Resource resource) {
+		this.referenceQueue.add(reference);
+		this.referenceSubjectQueue.add(resource);
+	}
+
+	/**
 	 * Adds the given property id value to the list of properties that should be
 	 * declared as OWL object properties.
 	 * 
@@ -189,6 +210,16 @@ public class RdfConversionBuffer {
 		}
 	}
 
+	/**
+	 * Writes OWL declarations for properties that have been added recently.
+	 * Declared properties are stored so that duplicate declarations are
+	 * avoided.
+	 * 
+	 * @param rdfWriter
+	 *            the writer to write the declarations to
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the declarations
+	 */
 	public void writePropertyDeclarations(RdfWriter rdfWriter)
 			throws RDFHandlerException {
 		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
@@ -230,6 +261,15 @@ public class RdfConversionBuffer {
 		this.datatypePropertyQueue.clear();
 	}
 
+	/**
+	 * Writes RDF for encoding complex values that have been added recently.
+	 * Written values are stored so that duplicate definitions are avoided.
+	 * 
+	 * @param valueRdfConverter
+	 *            the object to use for writing values
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the values
+	 */
 	public void writeValues(ValueRdfConverter valueRdfConverter)
 			throws RDFHandlerException {
 		Iterator<QuantityValue> quantitiyValueIterator = this.quantityValueQueue
@@ -270,6 +310,14 @@ public class RdfConversionBuffer {
 		this.coordinatesValueQueue.clear();
 	}
 
+	/**
+	 * Writes OWL property restrictions that have been added recently.
+	 * 
+	 * @param snakRdfConverter
+	 *            the object to use for writing restrictions
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the restrictions
+	 */
 	public void writePropertyRestrictions(SnakRdfConverter snakRdfConverter)
 			throws RDFHandlerException {
 		for (PropertyRestriction pr : this.someValuesQueue) {
@@ -284,4 +332,27 @@ public class RdfConversionBuffer {
 		}
 		this.noValuesQueue.clear();
 	}
+
+	/**
+	 * Writes references that have been added recently.
+	 * 
+	 * @param rdfConverter
+	 *            the object to use for writing references
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the restrictions
+	 */
+	public void writeReferences(RdfConverter rdfConverter)
+			throws RDFHandlerException {
+		Iterator<Reference> referenceIterator = this.referenceQueue.iterator();
+		for (Resource resource : this.referenceSubjectQueue) {
+			if (!this.declaredReferences.add(resource)) {
+				continue;
+			}
+			Reference reference = referenceIterator.next();
+			rdfConverter.writeReference(reference, resource);
+		}
+		this.referenceSubjectQueue.clear();
+		this.referenceQueue.clear();
+	}
+
 }

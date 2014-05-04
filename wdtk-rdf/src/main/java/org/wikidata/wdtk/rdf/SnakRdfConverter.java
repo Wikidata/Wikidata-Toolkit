@@ -21,8 +21,6 @@ package org.wikidata.wdtk.rdf;
  */
 import org.openrdf.model.Resource;
 import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +39,11 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	final ValueRdfConverter valueRdfConverter;
 
-	final ValueFactory factory = ValueFactoryImpl.getInstance();
 	final RdfWriter rdfWriter;
 	final PropertyTypes propertyTypes;
 	final RdfConversionBuffer rdfConversionBuffer;
 
-	String currentSubjectUri;
+	Resource currentSubject;
 	PropertyContext currentPropertyContext;
 
 	public SnakRdfConverter(RdfWriter rdfWriter,
@@ -58,16 +55,15 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.valueRdfConverter = valueRdfConverter;
 	}
 
-	public void writeSnak(Snak snak, String subjectUri,
+	public void writeSnak(Snak snak, Resource subject,
 			PropertyContext propertyContext) {
-		this.currentSubjectUri = subjectUri;
+		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
 		snak.accept(this);
 	}
 
-	public void setSnakContext(String subjectUri,
-			PropertyContext propertyContext) {
-		this.currentSubjectUri = subjectUri;
+	public void setSnakContext(Resource subject, PropertyContext propertyContext) {
+		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
 	}
 
@@ -84,7 +80,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		}
 
 		try {
-			this.rdfWriter.writeTripleValueObject(this.currentSubjectUri,
+			this.rdfWriter.writeTripleValueObject(this.currentSubject,
 					propertyUri, value);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
@@ -107,7 +103,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.rdfConversionBuffer.addSomeValuesRestriction(bnode, propertyUri,
 				rangeUri);
 		try {
-			this.rdfWriter.writeTripleValueObject(this.currentSubjectUri,
+			this.rdfWriter.writeTripleValueObject(this.currentSubject,
 					Vocabulary.RDF_TYPE, bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
@@ -133,7 +129,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.rdfConversionBuffer.addNoValuesRestriction(bnode, propertyUri,
 				rangeUri);
 		try {
-			this.rdfWriter.writeTripleValueObject(this.currentSubjectUri,
+			this.rdfWriter.writeTripleValueObject(this.currentSubject,
 					Vocabulary.RDF_TYPE, bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
