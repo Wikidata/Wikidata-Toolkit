@@ -259,6 +259,10 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			// TODO use a smarter function to build those URLs
 			return factory.createURI("http://commons.wikimedia.org/wiki/File:"
 					+ value.getString().replace(' ', '_'));
+		case DatatypeIdValue.DT_URL:
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			return factory.createURI(value.getString());
 		default:
 			logIncompatibleValueError(datatype, "string");
 			return null;
