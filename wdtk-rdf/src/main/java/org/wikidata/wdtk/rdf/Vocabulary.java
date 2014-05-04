@@ -389,17 +389,19 @@ public class Vocabulary {
 				+ bytesToHex(md.digest());
 	}
 
-	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE);
+	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE / 8);
 
 	static void updateMessageDigestWithLong(MessageDigest md, long x) {
 		longByteBuffer.putLong(0, x);
+		longByteBuffer.rewind(); // important!
 		md.update(longByteBuffer);
 	}
 
-	static ByteBuffer intByteBuffer = ByteBuffer.allocate(Integer.SIZE);
+	static ByteBuffer intByteBuffer = ByteBuffer.allocate(Integer.SIZE / 8);
 
 	static void updateMessageDigestWithInt(MessageDigest md, int x) {
 		intByteBuffer.putInt(0, x);
+		intByteBuffer.rewind(); // important!
 		md.update(intByteBuffer);
 	}
 
