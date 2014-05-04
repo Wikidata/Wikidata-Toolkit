@@ -64,10 +64,9 @@ public class RdfConverter {
 	public RdfConverter(RdfWriter writer, Sites sites) {
 		this.sites = sites;
 		this.writer = writer;
-		this.propertyTypes = new PropertyTypes(sites);
+		this.propertyTypes = new PropertyTypes("http://www.wikidata.org/w/api.php");
 		this.rdfConversionBuffer = new RdfConversionBuffer();
-		this.valueRdfConverter = new ValueRdfConverter(writer,
-				this.rdfConversionBuffer, this.propertyTypes, this.sites);
+		this.valueRdfConverter = new ValueRdfConverter(writer, this.rdfConversionBuffer, this.propertyTypes);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
 				this.rdfConversionBuffer, this.propertyTypes,
 				this.valueRdfConverter);

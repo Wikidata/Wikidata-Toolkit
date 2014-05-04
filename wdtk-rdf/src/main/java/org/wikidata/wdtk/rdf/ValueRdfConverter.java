@@ -31,7 +31,6 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
@@ -49,7 +48,6 @@ import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
  */
 public class ValueRdfConverter implements ValueVisitor<Value> {
 
-	final Sites sites;
 	final PropertyTypes propertyTypes;
 	final RdfWriter rdfWriter;
 	final RdfConversionBuffer rdfConversionBuffer;
@@ -60,11 +58,9 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 			.getLogger(ValueRdfConverter.class);
 
 	public ValueRdfConverter(RdfWriter rdfWriter,
-			RdfConversionBuffer rdfConversionBuffer,
-			PropertyTypes propertyTypes, Sites sites) {
+			RdfConversionBuffer rdfConversionBuffer, PropertyTypes propertyTypes) {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = rdfConversionBuffer;
-		this.sites = sites;
 		this.propertyTypes = propertyTypes;
 	}
 
