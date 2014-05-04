@@ -104,6 +104,9 @@ public class PropertyTypes implements ValueVisitor<String> {
 	 */
 	String fetchPropertyType(PropertyIdValue propertyIdValue)
 			throws IOException, URISyntaxException {
+		logger.info("Fetching datatype of property " + propertyIdValue.getId()
+				+ " online.");
+
 		WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 		URIBuilder uriBuilder;
 		uriBuilder = new URIBuilder(this.sites.getFileUrl("wikidatawiki",
@@ -112,7 +115,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 		uriBuilder.setParameter("ids", propertyIdValue.getId());
 		uriBuilder.setParameter("format", "json");
 		uriBuilder.setParameter("props", "datatype");
-		System.out.println(uriBuilder.toString());
+		// System.out.println(uriBuilder.toString());
 		InputStream inStream = webResourceFetcher
 				.getInputStreamForUrl(uriBuilder.toString());
 		JSONObject jsonResult = new JSONObject(IOUtils.toString(inStream));
@@ -173,9 +176,9 @@ public class PropertyTypes implements ValueVisitor<String> {
 	@Override
 	public String visit(StringValue value) {
 		String datatype = getPropertyType(propertyRegister);
-		if (datatype.equals(null)){
+		if (datatype.equals(null)) {
 			return DatatypeIdValue.DT_STRING; // default type for StringValue
-		}else{
+		} else {
 			return datatype;
 		}
 	}
