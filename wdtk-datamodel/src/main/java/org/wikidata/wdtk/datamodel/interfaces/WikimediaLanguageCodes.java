@@ -65,6 +65,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("bar", "bar");
 		LANGUAGE_CODES.put("bat-smg", "sgs"); // TODO might be redundant
 												// (Samogitian)
+		LANGUAGE_CODES.put("bbc-latn", "bbc-Latn"); // Batak Toba, Latin script
 		LANGUAGE_CODES.put("bcc", "bcc");
 		LANGUAGE_CODES.put("bcl", "bcl");
 		LANGUAGE_CODES.put("be", "be");
@@ -90,6 +91,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ceb", "ceb");
 		LANGUAGE_CODES.put("ce", "ce");
 		LANGUAGE_CODES.put("ch", "ch");
+		LANGUAGE_CODES.put("cho", "cho");
 		LANGUAGE_CODES.put("chr", "chr");
 		LANGUAGE_CODES.put("chy", "chy");
 		LANGUAGE_CODES.put("ckb", "ckb");
@@ -171,6 +173,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ht", "ht");
 		LANGUAGE_CODES.put("hu", "hu");
 		LANGUAGE_CODES.put("hy", "hy");
+		LANGUAGE_CODES.put("hz", "hz");
 		LANGUAGE_CODES.put("ia", "ia");
 		LANGUAGE_CODES.put("id", "id");
 		LANGUAGE_CODES.put("ie", "ie");
@@ -199,6 +202,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("kbd", "kbd");
 		LANGUAGE_CODES.put("kg", "kg");
 		LANGUAGE_CODES.put("ki", "ki");
+		LANGUAGE_CODES.put("kj", "kj");
 		LANGUAGE_CODES.put("kiu", "kiu");
 		LANGUAGE_CODES.put("kk-arab", "kk-Arab");// Kazakh; script Arabic
 		LANGUAGE_CODES.put("kk-cn", "kk-CN"); // Kazakh; PR China
@@ -216,6 +220,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("kn", "kn");
 		LANGUAGE_CODES.put("koi", "koi");
 		LANGUAGE_CODES.put("ko", "ko");
+		LANGUAGE_CODES.put("kr", "kr");
 		LANGUAGE_CODES.put("krc", "krc");
 		LANGUAGE_CODES.put("krj", "krj");
 		LANGUAGE_CODES.put("ksh", "mis-x-rip"); // Ripuarian (the code "ksh"
@@ -253,6 +258,7 @@ public class WikimediaLanguageCodes {
 													// (Javanese)
 		LANGUAGE_CODES.put("mdf", "mdf");
 		LANGUAGE_CODES.put("mg", "mg");
+		LANGUAGE_CODES.put("mh", "mh");
 		LANGUAGE_CODES.put("mhr", "mhr");
 		LANGUAGE_CODES.put("mi", "mi");
 		LANGUAGE_CODES.put("min", "min");
@@ -264,6 +270,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("mr", "mr");
 		LANGUAGE_CODES.put("ms", "ms");
 		LANGUAGE_CODES.put("mt", "mt");
+		LANGUAGE_CODES.put("mus", "mus");
 		LANGUAGE_CODES.put("mwl", "mwl");
 		LANGUAGE_CODES.put("my", "my");
 		LANGUAGE_CODES.put("myv", "myv");
@@ -306,6 +313,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("pap", "pap");
 		LANGUAGE_CODES.put("pcd", "pcd");
 		LANGUAGE_CODES.put("pdc", "pdc");
+		LANGUAGE_CODES.put("pdt", "pdt");
 		LANGUAGE_CODES.put("pfl", "pfl");
 		LANGUAGE_CODES.put("pih", "pih");
 		LANGUAGE_CODES.put("pi", "pi");
@@ -348,6 +356,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("si", "si");
 		LANGUAGE_CODES.put("sk", "sk");
 		LANGUAGE_CODES.put("sl", "sl");
+		LANGUAGE_CODES.put("sli", "sli");
 		LANGUAGE_CODES.put("sma", "sma");
 		LANGUAGE_CODES.put("sm", "sm");
 		LANGUAGE_CODES.put("sn", "sn");
