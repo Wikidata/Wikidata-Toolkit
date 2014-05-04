@@ -66,7 +66,7 @@ public class RdfConverter {
 		this.writer = writer;
 		this.rdfConversionBuffer = new RdfConversionBuffer();
 		this.valueRdfConverter = new ValueRdfConverter(writer,
-				this.rdfConversionBuffer, this.sites);
+				this.rdfConversionBuffer);
 		this.snakRdfConverter = new SnakRdfConverter(writer,
 				this.valueRdfConverter);
 	}

@@ -37,7 +37,6 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -58,14 +57,14 @@ public class PropertyTypes implements ValueVisitor<String> {
 	static final Logger logger = LoggerFactory.getLogger(PropertyTypes.class);
 
 	final Map<String, String> propertyTypes;
-	final Sites sites;
 
 	PropertyIdValue propertyRegister = null;
+	String webAPIUrl;
 
-	public PropertyTypes(Sites sites) {
+	public PropertyTypes(String webAPIUrl) {
 		this.propertyTypes = new HashMap<String, String>();
 		this.propertyTypes.putAll(PropertyTypes.KNOWN_PROPERTY_TYPES);
-		this.sites = sites;
+		this.webAPIUrl = webAPIUrl;
 	}
 
 	public String getPropertyType(PropertyIdValue propertyIdValue) {
@@ -93,6 +92,34 @@ public class PropertyTypes implements ValueVisitor<String> {
 		return value.accept(this);
 	}
 
+	public String setPropertyTypeFromEntityIdValue(PropertyIdValue propertyIdValue, EntityIdValue value) {
+		// Only Items can be used as entity values so far
+		return DatatypeIdValue.DT_ITEM;
+	}
+
+	public String setPropertyTypeFromGlobeCoordinatesValue(PropertyIdValue propertyIdValue, GlobeCoordinatesValue value) {
+		return DatatypeIdValue.DT_GLOBE_COORDINATES;
+	}
+
+
+	public String setPropertyTypeFromQuantityValue(PropertyIdValue propertyIdValue, QuantityValue value) {
+		return DatatypeIdValue.DT_QUANTITY;
+	}
+
+	public String setPropertyTypeFromStringValue(PropertyIdValue propertyIdValue, StringValue value) {
+		String datatype = getPropertyType(propertyIdValue);
+		if (datatype.equals(null)) {
+			return DatatypeIdValue.DT_STRING; // default type for StringValue
+		} else {
+			return datatype;
+		}
+	}
+	
+	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue, TimeValue value) {
+		return DatatypeIdValue.DT_TIME;
+	}
+
+	
 	/**
 	 * Find the datatype of a property online.
 	 * 
@@ -109,8 +136,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 
 		WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 		URIBuilder uriBuilder;
-		uriBuilder = new URIBuilder(this.sites.getFileUrl("wikidatawiki",
-				"api.php"));
+		uriBuilder = new URIBuilder(this.webAPIUrl);
 		uriBuilder.setParameter("action", "wbgetentities");
 		uriBuilder.setParameter("ids", propertyIdValue.getId());
 		uriBuilder.setParameter("format", "json");
@@ -141,7 +167,7 @@ public class PropertyTypes implements ValueVisitor<String> {
 		}
 	}
 
-	public void registerProperty(PropertyIdValue propertyIdValue) {
+	void registerProperty(PropertyIdValue propertyIdValue) {
 		propertyRegister = propertyIdValue;
 	}
 
