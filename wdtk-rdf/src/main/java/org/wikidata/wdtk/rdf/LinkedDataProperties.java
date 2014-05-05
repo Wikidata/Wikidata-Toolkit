@@ -65,6 +65,7 @@ public class LinkedDataProperties {
 			return null;
 		}
 	}
+	
 
 	/**
 	 * Returns the Wikimedia Commons page URL for the given page name.
