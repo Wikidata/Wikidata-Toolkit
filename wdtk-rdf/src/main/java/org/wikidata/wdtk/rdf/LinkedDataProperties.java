@@ -32,6 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class LinkedDataProperties {
 	
+	static final String HTTP = "http://";
 	static final String MUSIC_BRAINZ_URL = "http://musicbrainz.org/";
 	static final String ISNI_URL = "http://www.isni.org/search&q=";
 	static final String VIAF_PERMALINK_URL = "http://viaf.org/viaf/";
@@ -51,12 +52,20 @@ public class LinkedDataProperties {
 			String value) {
 		
 		// NOTE: none of these functions is bulletproof
-		// there is no guarantee that the generated links will always work
+		// there is no guarantee that the generated URIs will work in any case
+		// so check the html return codes if requesting one
+		
 		switch (property.getId()) {
 		case "P213": // ISNI // no RDF-export available yet
 			return ISNI_URL + value;
 		case "P214": // VIAF
 			return VIAF_PERMALINK_URL + value + ".rdf";
+		case "P227":
+			return getGndUri(value);
+		case "P244": // LCNAF
+			return getLcnafUri(value);
+		case "P269":
+			return getSudocUri(value);
 			
 		// --- Chemical Identifiers as resolved by chemspider.com	
 		case "P231":// CAS registry number
@@ -65,25 +74,41 @@ public class LinkedDataProperties {
 		case "P234": // InChIs
 			return CHEMSPIDER + formatInChI(value);
 			
+		// --- MusicBrainz //NOTE: no useful RDF yet	
 		case "P434":
 			return getMusicBrainz(value, "artist");
 		case "P435":
 			return getMusicBrainz(value, "work");
 		case "P436":
 			return getMusicBrainz(value, "release-group");
-		case "P646":
-			return getFreebaseUri(value);
 		case "P966":
 			return getMusicBrainz(value, "label");
 		case "P982":
 			return getMusicBrainz(value, "area");
 		case "P1004":
 			return getMusicBrainz(value, "place");
+		
+		// --- Freebase
+		case "P646":
+			return getFreebaseUri(value);
 		default:
 			return null;
 		}
 	}
 	
+	private static String getSudocUri(String value) {
+		return HTTP + "www.idref.fr/" + value + ".rdf";
+	}
+
+	/**
+	 * Gets the RDF URIs for the given item in the LCNAF.
+	 * @param value
+	 * @return
+	 */
+	static String getLcnafUri(String value) {
+		return HTTP + "id.loc.gov/authorities/names/" + value + ".rdf";
+	}
+
 
 	/**
 	 * Returns the Wikimedia Commons page URL for the given page name.
@@ -139,6 +164,16 @@ public class LinkedDataProperties {
 		// there are no "+"-signs allowed in the url, replace them properly
 		inChi.replaceAll("+", "%2b");
 		return inChi;
+	}
+	
+	/**
+	 * See also <b>http://www.dnb.de/SharedDocs/Downloads/DE/DNB/service/linkedDataZugriff.pdf?__blob=publicationFile</b>
+	 * (Description in german)
+	 * @param identifier
+	 * @return
+	 */
+	static String getGndUri(String identifier){
+		return HTTP + "d-nb.info/gnd" + identifier + "/about/rdf";
 	}
 	
 }
