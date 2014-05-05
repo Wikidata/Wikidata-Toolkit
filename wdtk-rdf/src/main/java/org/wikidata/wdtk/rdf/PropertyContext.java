@@ -28,5 +28,5 @@ package org.wikidata.wdtk.rdf;
  * 
  */
 public enum PropertyContext {
-	STATEMENT, VALUE, QUALIFIER, REFERENCE
+	STATEMENT, VALUE, QUALIFIER, REFERENCE, SIMPLE_CLAIM
 }

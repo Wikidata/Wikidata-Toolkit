@@ -26,17 +26,16 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * @author Michael Günther
  * 
  */
-public interface EntityDocumentsSerializer extends EntityDocumentProcessor{
+public interface EntityDocumentsSerializer extends EntityDocumentProcessor {
 
 	/**
-	 * Setup the serializer and writes the header on the output
+	 * Initializes the serializer and writes the header (if any) to the output.
 	 */
-	void startSerialization();
+	void start();
 
 	/**
-	 * Writes the footer on the output. Can do additional stuff after the
-	 * serialization process
+	 * Writes the footer (if any) on the output and closes the output stream.
 	 */
-	void finishSerialization();
+	void close();
 
 }

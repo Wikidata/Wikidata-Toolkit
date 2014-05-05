@@ -113,7 +113,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void startSerialization() {
+	public void start() {
 		restartProcess();
 
 		try {
@@ -127,9 +127,10 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void finishSerialization() {
+	public void close() {
 		try {
 			this.out.write("}}".getBytes(StandardCharsets.UTF_8));
+			this.out.close();
 		} catch (IOException e) {
 			// fail: we cannot produce useful JSON if some bytes are lost
 			logger.error("Failed to write JSON export:" + e.toString());

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import org.openrdf.rio.RDFFormat;
@@ -51,14 +52,18 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	public static final int TASK_ALIASES = 0x00000040;
 	public static final int TASK_TERMS = TASK_LABELS | TASK_DESCRIPTIONS
 			| TASK_ALIASES;
-	static final int TASK_TAXONOMY = 0x00010000;
+	public static final int TASK_ALL_EXACT_DATA = TASK_TERMS | TASK_STATEMENTS
+			| TASK_SITELINKS;
+
+	public static final int TASK_TAXONOMY = 0x00010000;
+	public static final int TASK_INSTANCE_OF = 0x00020000;
+	public static final int TASK_SIMPLE_STATEMENTS = 0x00040000;
 
 	public static final int TASK_ITEMS = 0x00000100;
 	public static final int TASK_PROPERTIES = 0x00000200;
-	public static final int TASK_ALL_EXACT_DATA = TASK_TERMS | TASK_STATEMENTS
-			| TASK_SITELINKS;
 	public static final int TASK_ALL_ENTITIES = TASK_ITEMS | TASK_PROPERTIES;
 
+	final OutputStream output;
 	final RdfConverter rdfConverter;
 	final RdfWriter rdfWriter;
 
@@ -73,6 +78,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	 *            information about site links
 	 */
 	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites) {
+		this.output = output;
 		this.rdfWriter = new RdfWriter(format, output);
 		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
 	}
@@ -98,7 +104,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void startSerialization() {
+	public void start() {
 		try {
 			this.rdfWriter.start();
 			this.rdfConverter.writeNamespaceDeclarations();
@@ -132,10 +138,15 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void finishSerialization() {
+	public void close() {
 		try {
 			this.rdfWriter.finish();
 		} catch (RDFHandlerException e) { // we cannot recover here
+			throw new RuntimeException(e.toString(), e);
+		}
+		try {
+			this.output.close();
+		} catch (IOException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
 	}
