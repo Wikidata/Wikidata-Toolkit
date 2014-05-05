@@ -39,11 +39,11 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
  * This class shows how convert data from wikidata.org to RDF in N3 format. The
- * compressed output will be written into a file named WikidataDump.n3.bz2. You
- * can find it in the example directory after you ran the example code.
+ * compressed output will be written into several files that will be placed in
+ * the example directory.
  * 
  * @author Michael Günther
- * 
+ * @author Markus Kroetzsch
  */
 public class RdfSerializationExample {
 
@@ -100,6 +100,25 @@ public class RdfSerializationExample {
 		closeSerializers();
 	}
 
+	/**
+	 * Creates a new RDF Serializer. Output is written to the file of the given
+	 * name (it will always be a compressed file, so the name should reflect
+	 * that). The tasks define what the serializer will be writing into this
+	 * file. The new serializer is also registered in an internal list, so it
+	 * can be started and closed more conveniently.
+	 * 
+	 * @param outputFileName
+	 *            filename to write output to
+	 * @param tasks
+	 *            an integer that is a bitwise OR of flags like
+	 *            {@link RdfSerializer#TASK_LABELS}.
+	 * @return the newly created serializer
+	 * @throws FileNotFoundException
+	 *             if the given file cannot be opened for writing for some
+	 *             reason
+	 * @throws IOException
+	 *             if it was not possible to write the BZ2 header to the file
+	 */
 	private static RdfSerializer createRdfSerializer(String outputFileName,
 			int tasks) throws FileNotFoundException, IOException {
 		OutputStream simpleStatementsOutputStream = new BZip2CompressorOutputStream(
@@ -119,12 +138,20 @@ public class RdfSerializationExample {
 		return serializer;
 	}
 
+	/**
+	 * Starts the serializers. This includes the writing of headers if any (N3
+	 * has no headers, but other formats have).
+	 */
 	private static void startSerializers() {
 		for (RdfSerializer serializer : serializers) {
 			serializer.start();
 		}
 	}
 
+	/**
+	 * Closes the serializers (and their output streams), and prints a short
+	 * summary of the number of triples serialized by each.
+	 */
 	private static void closeSerializers() {
 		Iterator<String> nameIterator = serializerNames.iterator();
 		for (RdfSerializer serializer : serializers) {
@@ -144,7 +171,7 @@ public class RdfSerializationExample {
 		System.out.println("*** Wikidata Toolkit: Serialization Example");
 		System.out.println("*** ");
 		System.out
-				.println("*** This program will download dumps from Wikidata and serialize the data in a json format.");
+				.println("*** This program will download dumps from Wikidata and serialize the data in a RDF format.");
 		System.out
 				.println("*** Downloading may take some time initially. After that, files");
 		System.out
