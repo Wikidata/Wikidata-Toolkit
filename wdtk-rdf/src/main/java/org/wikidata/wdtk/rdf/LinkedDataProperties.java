@@ -35,8 +35,7 @@ public class LinkedDataProperties {
 	static final String MUSIC_BRAINZ_URL = "http://musicbrainz.org/";
 	static final String ISNI_URL = "http://www.isni.org/search&q=";
 	static final String VIAF_PERMALINK_URL = "http://viaf.org/viaf/";
-	static final String CAS_SEARCH = "http://www.commonchemistry.org/ChemicalDetail.aspx?ref=";
-	static final String INCHI_RESOLVER = "http://www.chemspider.com/inchi-resolver/Resolver.aspx?q=";
+	static final String CHEMSPIDER = "http://rdf.chemspider.com/search/";
 
 	/**
 	 * Returns the URI string that should be used to represent the given value
@@ -54,16 +53,18 @@ public class LinkedDataProperties {
 		// NOTE: none of these functions is bulletproof
 		// there is no guarantee that the generated links will always work
 		switch (property.getId()) {
-		case "P213":
+		case "P213": // ISNI // no RDF-export available yet
 			return ISNI_URL + value;
-		case "P214":
-			return VIAF_PERMALINK_URL + value;
-		case "P231":
-			return CAS_SEARCH + value;
-		case "P234": // InChIs
-			return getInChiReasolver(value);
+		case "P214": // VIAF
+			return VIAF_PERMALINK_URL + value + ".rdf";
+			
+		// --- Chemical Identifiers as resolved by chemspider.com	
+		case "P231":// CAS registry number
 		case "P235": // InChI-Keys
-			return INCHI_RESOLVER + value;
+			return CHEMSPIDER + value;	
+		case "P234": // InChIs
+			return CHEMSPIDER + formatInChI(value);
+			
 		case "P434":
 			return getMusicBrainz(value, "artist");
 		case "P435":
@@ -123,14 +124,21 @@ public class LinkedDataProperties {
 		return MUSIC_BRAINZ_URL + infix + "/" + identifier;
 	}
 	
-	static String getInChiReasolver(String inChi){
+	/**
+	 * Format InChI-identifiers to be used with the chemspider.com search
+	 * Do not use for InChI-Keys!
+	 * @param inChi
+	 * if the "InChI="- prefix is missing, it will be added.
+	 * @return
+	 */
+	static String formatInChI(String inChi){
 		// make sure it is prefixed
 		if(!inChi.startsWith("InChI=")){
 			inChi = "InChI="+inChi;
 		}
 		// there are no "+"-signs allowed in the url, replace them properly
 		inChi.replaceAll("+", "%2b");
-		return INCHI_RESOLVER + inChi;
+		return inChi;
 	}
 	
 }
