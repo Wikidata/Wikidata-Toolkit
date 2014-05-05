@@ -47,13 +47,14 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	public static final int TASK_STATEMENTS = 0x00000001;
 	public static final int TASK_SITELINKS = 0x00000002;
+	public static final int TASK_DATATYPES = 0x00000004;
 	public static final int TASK_LABELS = 0x00000010;
 	public static final int TASK_DESCRIPTIONS = 0x00000020;
 	public static final int TASK_ALIASES = 0x00000040;
 	public static final int TASK_TERMS = TASK_LABELS | TASK_DESCRIPTIONS
 			| TASK_ALIASES;
 	public static final int TASK_ALL_EXACT_DATA = TASK_TERMS | TASK_STATEMENTS
-			| TASK_SITELINKS;
+			| TASK_SITELINKS | TASK_DATATYPES;
 
 	public static final int TASK_TAXONOMY = 0x00010000;
 	public static final int TASK_INSTANCE_OF = 0x00020000;

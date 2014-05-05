@@ -301,9 +301,11 @@ public class RdfConverter {
 
 		writeDocumentTerms(subject, document);
 
-		this.rdfWriter.writeTripleValueObject(subject,
-				RdfWriter.WB_PROPERTY_TYPE, this.valueRdfConverter
-						.getDatatypeIdValueLiteral(document.getDatatype()));
+		if (hasTask(RdfSerializer.TASK_DATATYPES)) {
+			this.rdfWriter.writeTripleValueObject(subject,
+					RdfWriter.WB_PROPERTY_TYPE, this.valueRdfConverter
+							.getDatatypeIdValueLiteral(document.getDatatype()));
+		}
 
 		// Most of these should do nothing for properties, but this might change
 		// in the future:
