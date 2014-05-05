@@ -33,6 +33,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class LinkedDataProperties {
 	
 	static final String MUSIC_BRAINZ_URL = "http://musicbrainz.org/";
+	static final String ISNI_URL = "http://www.isni.org/search&q=";
+	static final String VIAF_PERMALINK_URL = "http://viaf.org/viaf/";
 
 	/**
 	 * Returns the URI string that should be used to represent the given value
@@ -47,6 +49,10 @@ public class LinkedDataProperties {
 	public static String getUriForPropertyValue(PropertyIdValue property,
 			String value) {
 		switch (property.getId()) {
+		case "P213":
+			return ISNI_URL + value;
+		case "P214":
+			return VIAF_PERMALINK_URL + value;
 		case "P434":
 			return getMusicBrainz(value, "artist");
 		case "P435":
