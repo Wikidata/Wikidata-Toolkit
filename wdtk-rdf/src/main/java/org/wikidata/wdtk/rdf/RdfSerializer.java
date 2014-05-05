@@ -44,6 +44,21 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
+	public static final int TASK_STATEMENTS = 0x00000001;
+	public static final int TASK_SITELINKS = 0x00000002;
+	public static final int TASK_LABELS = 0x00000010;
+	public static final int TASK_DESCRIPTIONS = 0x00000020;
+	public static final int TASK_ALIASES = 0x00000040;
+	public static final int TASK_TERMS = TASK_LABELS | TASK_DESCRIPTIONS
+			| TASK_ALIASES;
+	static final int TASK_TAXONOMY = 0x00010000;
+
+	public static final int TASK_ITEMS = 0x00000100;
+	public static final int TASK_PROPERTIES = 0x00000200;
+	public static final int TASK_ALL_EXACT_DATA = TASK_TERMS | TASK_STATEMENTS
+			| TASK_SITELINKS;
+	public static final int TASK_ALL_ENTITIES = TASK_ITEMS | TASK_PROPERTIES;
+
 	final RdfConverter rdfConverter;
 	final RdfWriter rdfWriter;
 
@@ -63,34 +78,14 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	}
 
 	/**
-	 * Sets whether or not terms (labels, descriptions, aliases) should be
-	 * converted.
+	 * Sets the tasks that should be performed during export. The value should
+	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
 	 * 
-	 * @param termsEnabled
-	 *            defines whether terms are converted
+	 * @param tasks
+	 *            the tasks to be performed
 	 */
-	public void setTermsEnabled(boolean termsEnabled) {
-		this.rdfConverter.setTermsEnabled(termsEnabled);
-	}
-
-	/**
-	 * Sets whether or not statements should be converted.
-	 * 
-	 * @param statementsEnabled
-	 *            defines whether statements are converted
-	 */
-	public void setStatementsEnabled(boolean statementsEnabled) {
-		this.rdfConverter.setStatementsEnabled(statementsEnabled);
-	}
-
-	/**
-	 * Sets whether or not site links should be converted.
-	 * 
-	 * @param siteLinksEnabled
-	 *            defines whether site links are converted
-	 */
-	public void setSiteLinksEnabled(boolean siteLinksEnabled) {
-		this.rdfConverter.setSiteLinksEnabled(siteLinksEnabled);
+	public void setTasks(int tasks) {
+		this.rdfConverter.setTasks(tasks);
 	}
 
 	/**

@@ -66,9 +66,8 @@ public class RdfConverter {
 			"http://www.wikidata.org/w/api.php");
 	final Sites sites;
 
-	boolean convertTerms = true;
-	boolean convertStatements = true;
-	boolean convertSiteLinks = true;
+	int tasks = RdfSerializer.TASK_ALL_ENTITIES
+			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
 	public RdfConverter(RdfWriter writer, Sites sites) {
 		this.sites = sites;
@@ -81,34 +80,14 @@ public class RdfConverter {
 	}
 
 	/**
-	 * Sets whether or not terms (labels, descriptions, aliases) should be
-	 * converted.
+	 * Sets the tasks that should be performed during export. The value should
+	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
 	 * 
-	 * @param termsEnabled
-	 *            defines whether terms are converted
+	 * @param tasks
+	 *            the tasks to be performed
 	 */
-	public void setTermsEnabled(boolean termsEnabled) {
-		this.convertTerms = termsEnabled;
-	}
-
-	/**
-	 * Sets whether or not statements should be converted.
-	 * 
-	 * @param statementsEnabled
-	 *            defines whether statements are converted
-	 */
-	public void setStatementsEnabled(boolean statementsEnabled) {
-		this.convertStatements = statementsEnabled;
-	}
-
-	/**
-	 * Sets whether or not site links should be converted.
-	 * 
-	 * @param siteLinksEnabled
-	 *            defines whether site links are converted
-	 */
-	public void setSiteLinksEnabled(boolean siteLinksEnabled) {
-		this.convertSiteLinks = siteLinksEnabled;
+	public void setTasks(int tasks) {
+		this.tasks = tasks;
 	}
 
 	/**
@@ -143,6 +122,10 @@ public class RdfConverter {
 	public void writeItemDocument(ItemDocument document)
 			throws RDFHandlerException {
 
+		if (!hasTask(RdfSerializer.TASK_ITEMS)) {
+			return;
+		}
+
 		String subjectUri = document.getEntityId().getIri();
 		Resource subject = this.writer.getUri(subjectUri);
 
@@ -151,7 +134,7 @@ public class RdfConverter {
 
 		writeDocumentTerms(subject, document);
 
-		if (this.convertStatements) {
+		if (hasTask(RdfSerializer.TASK_STATEMENTS)) {
 			for (StatementGroup statementGroup : document.getStatementGroups()) {
 				URI property = this.writer
 						.getUri(Vocabulary.getPropertyUri(
@@ -182,6 +165,13 @@ public class RdfConverter {
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
+		propertyTypes.setPropertyType(document.getPropertyId(), document
+				.getDatatype().getIri());
+
+		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
+			return;
+		}
+
 		String propertyUri = document.getEntityId().getIri();
 		Resource subject = this.writer.getUri(propertyUri);
 
@@ -193,8 +183,6 @@ public class RdfConverter {
 		this.writer.writeTripleValueObject(subject, RdfWriter.WB_PROPERTY_TYPE,
 				this.valueRdfConverter.getDatatypeIdValueLiteral(document
 						.getDatatype()));
-		propertyTypes.setPropertyType(document.getPropertyId(), document
-				.getDatatype().getIri());
 
 		// Most of these should do nothing for properties, but this might change
 		// in the future:
@@ -205,18 +193,19 @@ public class RdfConverter {
 
 	void writeDocumentTerms(Resource subject, TermedDocument document)
 			throws RDFHandlerException {
-
-		if (!this.convertTerms) {
-			return;
+		if (hasTask(RdfSerializer.TASK_LABELS)) {
+			writeTermTriples(subject, RdfWriter.RDFS_LABEL, document
+					.getLabels().values());
 		}
-
-		writeTermTriples(subject, RdfWriter.RDFS_LABEL, document.getLabels()
-				.values());
-		writeTermTriples(subject, RdfWriter.SCHEMA_DESCRIPTION, document
-				.getDescriptions().values());
-		for (List<MonolingualTextValue> aliases : document.getAliases()
-				.values()) {
-			writeTermTriples(subject, RdfWriter.SKOS_ALT_LABEL, aliases);
+		if (hasTask(RdfSerializer.TASK_DESCRIPTIONS)) {
+			writeTermTriples(subject, RdfWriter.SCHEMA_DESCRIPTION, document
+					.getDescriptions().values());
+		}
+		if (hasTask(RdfSerializer.TASK_ALIASES)) {
+			for (List<MonolingualTextValue> aliases : document.getAliases()
+					.values()) {
+				writeTermTriples(subject, RdfWriter.SKOS_ALT_LABEL, aliases);
+			}
 		}
 	}
 
@@ -283,7 +272,7 @@ public class RdfConverter {
 	void writeSiteLinks(Resource subject, Map<String, SiteLink> siteLinks)
 			throws RDFHandlerException {
 
-		if (!this.convertSiteLinks) {
+		if (!hasTask(RdfSerializer.TASK_SITELINKS)) {
 			return;
 		}
 
@@ -320,6 +309,17 @@ public class RdfConverter {
 						+ siteLink.getSiteKey() + "\"");
 			}
 		}
+	}
+
+	/**
+	 * Checks if the given task (or set of tasks) is to be performed.
+	 * 
+	 * @param task
+	 *            the task (or set of tasks) to be checked
+	 * @return true if the tasks include the given task
+	 */
+	boolean hasTask(int task) {
+		return ((this.tasks & task) == task);
 	}
 
 }

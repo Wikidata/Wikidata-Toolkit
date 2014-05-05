@@ -55,29 +55,29 @@ public class RdfSerializationExample {
 				"wikidatawiki");
 		// dumpProcessingController.setOfflineMode(true);
 
-		// Write the output to a BZip2-compressed file
+		// Write the output to BZip2-compressed files
 		Sites sites = dumpProcessingController.getSitesInformation();
 
 		BZip2CompressorOutputStream termsOutputStream = new BZip2CompressorOutputStream(
 				new FileOutputStream("Wikidata-terms.n3.bz2"));
 		RdfSerializer termSerializer = new RdfSerializer(RDFFormat.NTRIPLES,
 				termsOutputStream, sites);
-		termSerializer.setStatementsEnabled(false);
-		termSerializer.setSiteLinksEnabled(false);
+		termSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
+				| RdfSerializer.TASK_TERMS);
 
 		BZip2CompressorOutputStream statementsOutputStream = new BZip2CompressorOutputStream(
 				new FileOutputStream("Wikidata-statements.n3.bz2"));
 		RdfSerializer statementSerializer = new RdfSerializer(
 				RDFFormat.NTRIPLES, statementsOutputStream, sites);
-		statementSerializer.setTermsEnabled(false);
-		statementSerializer.setSiteLinksEnabled(false);
+		statementSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
+				| RdfSerializer.TASK_STATEMENTS);
 
 		BZip2CompressorOutputStream siteLinksOutputStream = new BZip2CompressorOutputStream(
 				new FileOutputStream("Wikidata-sitelinks.n3.bz2"));
 		RdfSerializer siteLinkSerializer = new RdfSerializer(
 				RDFFormat.NTRIPLES, siteLinksOutputStream, sites);
-		siteLinkSerializer.setTermsEnabled(false);
-		siteLinkSerializer.setStatementsEnabled(false);
+		siteLinkSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
+				| RdfSerializer.TASK_SITELINKS);
 
 		// Subscribe to the most recent entity documents of type wikibase item
 		// and property:
@@ -106,10 +106,10 @@ public class RdfSerializationExample {
 		statementSerializer.startSerialization();
 		siteLinkSerializer.startSerialization();
 
-		// Start processing (may trigger downloads where needed)
-		dumpProcessingController.processAllRecentRevisionDumps();
-		// // Process just a recent main dump for testing:
-		// dumpProcessingController.processMostRecentMainDump();
+		// // Start processing (may trigger downloads where needed)
+		// dumpProcessingController.processAllRecentRevisionDumps();
+		// Process just the most recent main dump:
+		dumpProcessingController.processMostRecentMainDump();
 
 		// Finish the serialization
 		termSerializer.finishSerialization();
