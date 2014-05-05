@@ -66,20 +66,21 @@ public class RdfSerializationExample {
 
 		sites = dumpProcessingController.getSitesInformation();
 
-		createRdfSerializer("Wikidata-terms.n3.bz2",
-				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_TERMS);
-		createRdfSerializer("Wikidata-statements.n3.bz2",
-				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_STATEMENTS);
-		createRdfSerializer("Wikidata-simple-statements.n3.bz2",
-				RdfSerializer.TASK_ALL_ENTITIES
-						| RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		createRdfSerializer("Wikidata-taxonomy.n3.bz2",
+		createRdfSerializer("Wikidata-properties.nt.bz2",
+				RdfSerializer.TASK_PROPERTIES
+						| RdfSerializer.TASK_ALL_EXACT_DATA);
+		createRdfSerializer("Wikidata-terms.nt.bz2", RdfSerializer.TASK_ITEMS
+				| RdfSerializer.TASK_TERMS);
+		createRdfSerializer("Wikidata-statements.nt.bz2",
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
+		createRdfSerializer("Wikidata-simple-statements.nt.bz2",
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		createRdfSerializer("Wikidata-taxonomy.nt.bz2",
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
-		createRdfSerializer("Wikidata-instances.n3.bz2",
-				RdfSerializer.TASK_ALL_ENTITIES
-						| RdfSerializer.TASK_INSTANCE_OF);
-		createRdfSerializer("Wikidata-sitelinks.n3.bz2",
-				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_SITELINKS);
+		createRdfSerializer("Wikidata-instances.nt.bz2",
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
+		createRdfSerializer("Wikidata-sitelinks.nt.bz2",
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
