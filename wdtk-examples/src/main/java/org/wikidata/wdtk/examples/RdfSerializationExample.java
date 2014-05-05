@@ -20,8 +20,13 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.openrdf.rio.RDFFormat;
@@ -34,13 +39,18 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
  * This class shows how convert data from wikidata.org to RDF in N3 format. The
- * compressed output will be written into a file named WikidataDump.n3.bz2. You
- * can find it in the example directory after you ran the example code.
+ * compressed output will be written into several files that will be placed in
+ * the example directory.
  * 
  * @author Michael Günther
- * 
+ * @author Markus Kroetzsch
  */
 public class RdfSerializationExample {
+
+	private static Sites sites;
+	private static DumpProcessingController dumpProcessingController;
+	private static List<RdfSerializer> serializers = new ArrayList<RdfSerializer>();
+	private static List<String> serializerNames = new ArrayList<String>();
 
 	public static void main(String[] args) throws IOException {
 
@@ -51,48 +61,25 @@ public class RdfSerializationExample {
 		printDocumentation();
 
 		// Controller object for processing dumps:
-		DumpProcessingController dumpProcessingController = new DumpProcessingController(
-				"wikidatawiki");
+		dumpProcessingController = new DumpProcessingController("wikidatawiki");
 		// dumpProcessingController.setOfflineMode(true);
 
-		// Write the output to BZip2-compressed files
-		Sites sites = dumpProcessingController.getSitesInformation();
+		sites = dumpProcessingController.getSitesInformation();
 
-		BZip2CompressorOutputStream termsOutputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("Wikidata-terms.n3.bz2"));
-		RdfSerializer termSerializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				termsOutputStream, sites);
-		termSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
-				| RdfSerializer.TASK_TERMS);
-
-		BZip2CompressorOutputStream statementsOutputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("Wikidata-statements.n3.bz2"));
-		RdfSerializer statementSerializer = new RdfSerializer(
-				RDFFormat.NTRIPLES, statementsOutputStream, sites);
-		statementSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
-				| RdfSerializer.TASK_STATEMENTS);
-
-		BZip2CompressorOutputStream siteLinksOutputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("Wikidata-sitelinks.n3.bz2"));
-		RdfSerializer siteLinkSerializer = new RdfSerializer(
-				RDFFormat.NTRIPLES, siteLinksOutputStream, sites);
-		siteLinkSerializer.setTasks(RdfSerializer.TASK_ALL_ENTITIES
-				| RdfSerializer.TASK_SITELINKS);
-
-		// Subscribe to the most recent entity documents of type wikibase item
-		// and property:
-		dumpProcessingController.registerEntityDocumentProcessor(
-				termSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				termSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				statementSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				statementSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				siteLinkSerializer, MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				siteLinkSerializer, MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+		createRdfSerializer("Wikidata-terms.n3.bz2",
+				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_TERMS);
+		createRdfSerializer("Wikidata-statements.n3.bz2",
+				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_STATEMENTS);
+		createRdfSerializer("Wikidata-simple-statements.n3.bz2",
+				RdfSerializer.TASK_ALL_ENTITIES
+						| RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		createRdfSerializer("Wikidata-taxonomy.n3.bz2",
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
+		createRdfSerializer("Wikidata-instances.n3.bz2",
+				RdfSerializer.TASK_ALL_ENTITIES
+						| RdfSerializer.TASK_INSTANCE_OF);
+		createRdfSerializer("Wikidata-sitelinks.n3.bz2",
+				RdfSerializer.TASK_ALL_ENTITIES | RdfSerializer.TASK_SITELINKS);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -102,9 +89,7 @@ public class RdfSerializationExample {
 				null, true);
 
 		// Set up the serializer and write headers
-		termSerializer.startSerialization();
-		statementSerializer.startSerialization();
-		siteLinkSerializer.startSerialization();
+		startSerializers();
 
 		// // Start processing (may trigger downloads where needed)
 		// dumpProcessingController.processAllRecentRevisionDumps();
@@ -112,21 +97,69 @@ public class RdfSerializationExample {
 		dumpProcessingController.processMostRecentMainDump();
 
 		// Finish the serialization
-		termSerializer.finishSerialization();
-		statementSerializer.finishSerialization();
-		siteLinkSerializer.finishSerialization();
-		termsOutputStream.close();
-		statementsOutputStream.close();
-		siteLinksOutputStream.close();
+		closeSerializers();
+	}
 
-		System.out.println("*** Finished serialization of "
-				+ termSerializer.getTripleCount() + " RDF term triples.");
-		System.out.println("*** Finished serialization of "
-				+ statementSerializer.getTripleCount()
-				+ " RDF statement triples.");
-		System.out.println("*** Finished serialization of "
-				+ siteLinkSerializer.getTripleCount()
-				+ " RDF site link triples.");
+	/**
+	 * Creates a new RDF Serializer. Output is written to the file of the given
+	 * name (it will always be a compressed file, so the name should reflect
+	 * that). The tasks define what the serializer will be writing into this
+	 * file. The new serializer is also registered in an internal list, so it
+	 * can be started and closed more conveniently.
+	 * 
+	 * @param outputFileName
+	 *            filename to write output to
+	 * @param tasks
+	 *            an integer that is a bitwise OR of flags like
+	 *            {@link RdfSerializer#TASK_LABELS}.
+	 * @return the newly created serializer
+	 * @throws FileNotFoundException
+	 *             if the given file cannot be opened for writing for some
+	 *             reason
+	 * @throws IOException
+	 *             if it was not possible to write the BZ2 header to the file
+	 */
+	private static RdfSerializer createRdfSerializer(String outputFileName,
+			int tasks) throws FileNotFoundException, IOException {
+		OutputStream simpleStatementsOutputStream = new BZip2CompressorOutputStream(
+				new FileOutputStream(outputFileName));
+		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
+				simpleStatementsOutputStream, sites);
+		serializer.setTasks(tasks);
+
+		dumpProcessingController.registerEntityDocumentProcessor(serializer,
+				MwRevision.MODEL_WIKIBASE_ITEM, true);
+		dumpProcessingController.registerEntityDocumentProcessor(serializer,
+				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+
+		serializers.add(serializer);
+		serializerNames.add(outputFileName);
+
+		return serializer;
+	}
+
+	/**
+	 * Starts the serializers. This includes the writing of headers if any (N3
+	 * has no headers, but other formats have).
+	 */
+	private static void startSerializers() {
+		for (RdfSerializer serializer : serializers) {
+			serializer.start();
+		}
+	}
+
+	/**
+	 * Closes the serializers (and their output streams), and prints a short
+	 * summary of the number of triples serialized by each.
+	 */
+	private static void closeSerializers() {
+		Iterator<String> nameIterator = serializerNames.iterator();
+		for (RdfSerializer serializer : serializers) {
+			serializer.close();
+			System.out.println("*** Finished serialization of "
+					+ serializer.getTripleCount() + " RDF triples in file "
+					+ nameIterator.next());
+		}
 	}
 
 	/**
@@ -138,7 +171,7 @@ public class RdfSerializationExample {
 		System.out.println("*** Wikidata Toolkit: Serialization Example");
 		System.out.println("*** ");
 		System.out
-				.println("*** This program will download dumps from Wikidata and serialize the data in a json format.");
+				.println("*** This program will download dumps from Wikidata and serialize the data in a RDF format.");
 		System.out
 				.println("*** Downloading may take some time initially. After that, files");
 		System.out

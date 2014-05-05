@@ -53,6 +53,8 @@ public class RdfWriter {
 			.createURI(Vocabulary.RDFS_LABEL);
 	public static final URI RDFS_LITERAL = factory
 			.createURI(Vocabulary.RDFS_LITERAL);
+	public static final URI RDFS_SUBCLASS_OF = factory
+			.createURI(Vocabulary.RDFS_SUBCLASS_OF);
 	public static final URI OWL_THING = factory.createURI(Vocabulary.OWL_THING);
 	public static final URI OWL_CLASS = factory.createURI(Vocabulary.OWL_CLASS);
 	public static final URI OWL_OBJECT_PROPERTY = factory

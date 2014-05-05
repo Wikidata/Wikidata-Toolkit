@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFHandlerException;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
@@ -80,6 +81,8 @@ public class RdfConversionBuffer {
 	final List<Reference> referenceQueue;
 	final List<Resource> referenceSubjectQueue;
 	final HashSet<Resource> declaredReferences;
+	final List<EntityIdValue> classEntityQueue;
+	final HashSet<EntityIdValue> declaredClassEntities;
 
 	public RdfConversionBuffer() {
 		this.quantityValueQueue = new ArrayList<QuantityValue>();
@@ -97,6 +100,8 @@ public class RdfConversionBuffer {
 		this.referenceQueue = new ArrayList<Reference>();
 		this.referenceSubjectQueue = new ArrayList<Resource>();
 		this.declaredReferences = new HashSet<Resource>();
+		this.classEntityQueue = new ArrayList<EntityIdValue>();
+		this.declaredClassEntities = new HashSet<EntityIdValue>();
 	}
 
 	/**
@@ -211,33 +216,60 @@ public class RdfConversionBuffer {
 	}
 
 	/**
+	 * Adds the given entity id value to the list of entities that should be
+	 * declared as OWL classes.
+	 * 
+	 * @param entityIdValue
+	 *            the property to declare
+	 */
+	public void addClass(EntityIdValue entityIdValue) {
+		if (!this.declaredClassEntities.contains(entityIdValue)) {
+			this.classEntityQueue.add(entityIdValue);
+		}
+	}
+
+	/**
 	 * Writes OWL declarations for properties that have been added recently.
 	 * Declared properties are stored so that duplicate declarations are
 	 * avoided.
 	 * 
 	 * @param rdfWriter
 	 *            the writer to write the declarations to
+	 * @param fullStatements
+	 *            if true, then properties need to export full statements (with
+	 *            qualifiers and references) will be declared
+	 * @param simpleClaims
+	 *            if true, then properties to export simple claims (flat
+	 *            triples) will be declared
 	 * @throws RDFHandlerException
 	 *             if there was a problem writing the declarations
 	 */
-	public void writePropertyDeclarations(RdfWriter rdfWriter)
+	public void writePropertyDeclarations(RdfWriter rdfWriter,
+			boolean fullStatements, boolean simpleClaims)
 			throws RDFHandlerException {
 		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
 			}
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.STATEMENT),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.VALUE),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.QUALIFIER),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.REFERENCE),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			if (fullStatements) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.STATEMENT),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.QUALIFIER),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.REFERENCE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			}
+			if (simpleClaims) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_CLAIM),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			}
 		}
 		this.objectPropertyQueue.clear();
 
@@ -245,20 +277,47 @@ public class RdfConversionBuffer {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
 			}
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.STATEMENT),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.VALUE),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.QUALIFIER),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.REFERENCE),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+			if (fullStatements) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.STATEMENT),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.QUALIFIER),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.REFERENCE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+			}
+			if (simpleClaims) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_CLAIM),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+			}
 		}
 		this.datatypePropertyQueue.clear();
+	}
+
+	/**
+	 * Writes OWL declarations for classes that have been added recently.
+	 * Declared classes are stored so that duplicate declarations are avoided.
+	 * 
+	 * @param rdfWriter
+	 *            the writer to write the declarations to
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the declarations
+	 */
+	public void writeClassDeclarations(RdfWriter rdfWriter)
+			throws RDFHandlerException {
+		for (EntityIdValue entityIdValue : this.classEntityQueue) {
+			if (!this.declaredClassEntities.add(entityIdValue)) {
+				continue;
+			}
+			rdfWriter.writeTripleValueObject(entityIdValue.getIri(),
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
+		}
 	}
 
 	/**
