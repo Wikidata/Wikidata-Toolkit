@@ -295,31 +295,37 @@ public class ValueRdfConverter implements ValueVisitor<Value> {
 		String datatype = this.propertyTypes.setPropertyTypeFromStringValue(
 				this.currentPropertyIdValue, value);
 
+		String valueUriString;
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
-			String valueUri = LinkedDataProperties.getUriForPropertyValue(
+			valueUriString = LinkedDataProperties.getUriForPropertyValue(
 					this.currentPropertyIdValue, value.getString());
-			if (valueUri == null) {
-				this.rdfConversionBuffer
-						.addDatatypeProperty(this.currentPropertyIdValue);
-				return this.rdfWriter.getLiteral(value.getString());
-			} else {
-				this.rdfConversionBuffer
-						.addObjectProperty(this.currentPropertyIdValue);
-				return this.rdfWriter.getUri(valueUri);
-			}
+			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			this.rdfConversionBuffer
-					.addObjectProperty(this.currentPropertyIdValue);
-			return this.rdfWriter.getUri(LinkedDataProperties
-					.getCommonsUrl(value.getString()));
+			valueUriString = LinkedDataProperties.getCommonsUrl(value.getString());
+			break;
 		case DatatypeIdValue.DT_URL:
-			this.rdfConversionBuffer
-					.addObjectProperty(this.currentPropertyIdValue);
-			return this.rdfWriter.getUri(value.getString());
+			valueUriString = value.getString();
+			break;
 		default:
 			logIncompatibleValueError(datatype, "string");
 			return null;
+		}
+
+		if (valueUriString == null) {
+			this.rdfConversionBuffer
+					.addDatatypeProperty(this.currentPropertyIdValue);
+			return this.rdfWriter.getLiteral(value.getString());
+		} else {
+			this.rdfConversionBuffer
+					.addObjectProperty(this.currentPropertyIdValue);
+			try {
+				return this.rdfWriter.getUri(valueUriString);
+			} catch (IllegalArgumentException e) {
+				logger.error("Invalid URI \"" + valueUriString
+						+ "\". Not serializing value.");
+				return null;
+			}
 		}
 	}
 

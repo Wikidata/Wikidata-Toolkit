@@ -151,6 +151,16 @@ public class RdfWriter {
 		return factory.createBNode();
 	}
 
+	/**
+	 * Creates a URI object for the given URI string. Callers who use this with
+	 * user-provided data should check for exceptions.
+	 * 
+	 * @param uri
+	 *            the URI string
+	 * @return the URI object
+	 * @throws IllegalArgumentException
+	 *             if the string is not a valid absolute URI.
+	 */
 	public URI getUri(String uri) {
 		return factory.createURI(uri);
 	}
