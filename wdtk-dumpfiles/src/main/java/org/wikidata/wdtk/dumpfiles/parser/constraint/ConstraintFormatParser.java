@@ -20,6 +20,8 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 
@@ -35,9 +37,13 @@ class ConstraintFormatParser implements ConstraintParser {
 
 	public ConstraintFormat parse(Template template) {
 		ConstraintFormat ret = null;
+		String page = template.getPage();
 		if (template.getParameters().size() > 0) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
 			String pattern = template.getParameters().get(0);
-			ret = new ConstraintFormat(pattern);
+			ret = new ConstraintFormat(constrainedProperty, pattern);
 		}
 		return ret;
 	}

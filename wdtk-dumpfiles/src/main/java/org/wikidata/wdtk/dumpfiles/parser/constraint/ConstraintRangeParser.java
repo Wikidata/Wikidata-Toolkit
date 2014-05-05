@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.DateAndNow;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
@@ -75,12 +77,23 @@ class ConstraintRangeParser implements ConstraintParser {
 
 	public ConstraintRange parse(Template template) {
 		ConstraintRange ret = null;
+		String page = template.getPage();
 		String minStr = template.get(ConstraintParserConstant.P_MIN);
 		String maxStr = template.get(ConstraintParserConstant.P_MAX);
-		if (minStr != null && maxStr != null) {
-			DateAndNow min = parseDate(minStr);
-			DateAndNow max = parseDate(maxStr);
-			ret = new ConstraintRange(min, max);
+		if (page != null && minStr != null && maxStr != null) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+			DateAndNow minDate = parseDate(minStr);
+			DateAndNow maxDate = parseDate(maxStr);
+			if (minDate != null && maxDate != null) {
+				ret = new ConstraintRange(constrainedProperty, minDate, maxDate);
+			}
+			Double minNum = Double.parseDouble(minStr);
+			Double maxNum = Double.parseDouble(maxStr);
+			if (minNum != null && maxNum != null) {
+				ret = new ConstraintRange(constrainedProperty, minNum, maxNum);
+			}
 		}
 		return ret;
 	}

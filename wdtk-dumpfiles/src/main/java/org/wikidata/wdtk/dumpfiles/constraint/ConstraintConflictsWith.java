@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -35,9 +36,19 @@ public class ConstraintConflictsWith implements Constraint {
 
 	final List<PropertyValues> list = new ArrayList<PropertyValues>();
 
-	public ConstraintConflictsWith(List<PropertyValues> list) {
+	public ConstraintConflictsWith(PropertyIdValue constrainedProperty,
+			List<PropertyValues> list) {
 		Validate.notNull(list, "List cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.list.addAll(list);
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public List<PropertyValues> getList() {

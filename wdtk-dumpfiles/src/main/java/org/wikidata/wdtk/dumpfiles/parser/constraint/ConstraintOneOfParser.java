@@ -20,6 +20,8 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintOneOf;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 
@@ -35,9 +37,14 @@ class ConstraintOneOfParser implements ConstraintParser {
 
 	public ConstraintOneOf parse(Template template) {
 		ConstraintOneOf ret = null;
+		String page = template.getPage();
 		String listStr = template.get(ConstraintParserConstant.P_LIST);
-		if (listStr != null) {
-			ret = new ConstraintOneOf(
+		if (page != null && listStr != null) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+
+			ret = new ConstraintOneOf(constrainedProperty,
 					ConstraintMainParser.parseListOfItems(listStr));
 		}
 		return ret;

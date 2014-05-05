@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.Validate;
+
 /**
  * 
  * @author Julian Mendez
@@ -172,7 +174,9 @@ public class TemplateParser {
 		return ret;
 	}
 
-	public Template parse(String line) {
+	public Template parse(String page, String line) {
+		Validate.notNull(page, "Page cannot be null.");
+		Validate.notNull(line, "Line cannot be null.");
 		if (!line.startsWith(ParserConstant.OPENING_BRACES)
 				|| !line.endsWith(ParserConstant.CLOSING_BRACES)) {
 			throw new IllegalArgumentException(
@@ -193,7 +197,7 @@ public class TemplateParser {
 			list.remove(0);
 		}
 		Map<String, String> parameters = getParameterMap(list);
-		return new Template(id, parameters);
+		return new Template(page, id, parameters);
 	}
 
 }

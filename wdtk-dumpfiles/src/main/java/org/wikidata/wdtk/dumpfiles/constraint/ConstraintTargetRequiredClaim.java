@@ -34,17 +34,29 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 	final PropertyIdValue property;
 	final ItemIdValue item;
 
-	public ConstraintTargetRequiredClaim(PropertyIdValue property) {
+	public ConstraintTargetRequiredClaim(PropertyIdValue constrainedProperty,
+			PropertyIdValue property) {
 		Validate.notNull(property, "Property cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.property = property;
 		this.item = null;
 	}
 
-	public ConstraintTargetRequiredClaim(PropertyIdValue property,
-			ItemIdValue item) {
+	public ConstraintTargetRequiredClaim(PropertyIdValue constrainedProperty,
+			PropertyIdValue property, ItemIdValue item) {
 		Validate.notNull(property, "Property cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.property = property;
 		this.item = item;
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public PropertyIdValue getProperty() {

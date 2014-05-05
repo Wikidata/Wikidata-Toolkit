@@ -29,30 +29,31 @@ public class TemplateParserTest {
 	public void testParser() {
 		TemplateParser parser = new TemplateParser();
 
-		Template template0 = parser
-				.parse("{{Constraint:Type|class=Q1048835|relation=instance}}");
+		Template template0 = parser.parse("P31",
+				"{{Constraint:Type|class=Q1048835|relation=instance}}");
 		Assert.assertEquals("Constraint:Type", template0.getId());
 		Assert.assertEquals("Q1048835", template0.get("class"));
 		Assert.assertEquals("instance", template0.get("relation"));
 		Assert.assertEquals(2, template0.getParameters().size());
 
-		Template template1 = parser
-				.parse("{{Constraint:Value type|class=Q5|relation=instance}}");
+		Template template1 = parser.parse("P31",
+				"{{Constraint:Value type|class=Q5|relation=instance}}");
 		Assert.assertEquals("Constraint:Value type", template1.getId());
 		Assert.assertEquals("Q5", template1.getParameters().get("class"));
 		Assert.assertEquals("instance",
 				template1.getParameters().get("relation"));
 		Assert.assertEquals(2, template1.getParameters().size());
 
-		Template template2 = parser
-				.parse("{{Constraint:Target required claim|property=P21}}");
+		Template template2 = parser.parse("P31",
+				"{{Constraint:Target required claim|property=P21}}");
 		Assert.assertEquals("Constraint:Target required claim",
 				template2.getId());
 		Assert.assertEquals("P21", template2.getParameters().get("property"));
 		Assert.assertEquals(1, template2.getParameters().size());
 
 		Template template3 = parser
-				.parse("{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}");
+				.parse("P31",
+						"{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}");
 		Assert.assertEquals("Constraint:One of", template3.getId());
 		Assert.assertEquals(
 				"{{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}",

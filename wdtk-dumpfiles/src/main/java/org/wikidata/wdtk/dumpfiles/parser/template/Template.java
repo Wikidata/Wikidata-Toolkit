@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.Validate;
+
 /**
  * 
  * @author Julian Mendez
@@ -33,16 +35,14 @@ import java.util.TreeMap;
 public class Template {
 
 	final String id;
-
+	final String page;
 	final Map<String, String> parameters = new TreeMap<String, String>();
 
-	public Template(String id, Map<String, String> parameters) {
-		if (id == null) {
-			throw new IllegalArgumentException("Null argument.");
-		}
-		if (parameters == null) {
-			throw new IllegalArgumentException("Null argument.");
-		}
+	public Template(String page, String id, Map<String, String> parameters) {
+		Validate.notNull(page, "Page cannot be null.");
+		Validate.notNull(id, "ID cannot be null.");
+		Validate.notNull(parameters, "Parameters cannot be null.");
+		this.page = page;
 		this.id = id.trim();
 		for (String key : parameters.keySet()) {
 			String value = parameters.get(key);
@@ -57,6 +57,10 @@ public class Template {
 
 	public String getId() {
 		return id;
+	}
+
+	public String getPage() {
+		return page;
 	}
 
 	public Map<String, String> getParameters() {

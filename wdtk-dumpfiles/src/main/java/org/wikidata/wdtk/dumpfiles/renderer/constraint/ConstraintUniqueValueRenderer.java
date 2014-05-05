@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.parser.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 
 /*
  * #%L
@@ -20,30 +20,36 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
-import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 
 /**
  * 
  * @author Julian Mendez
  * 
  */
-class ConstraintUniqueValueParser implements ConstraintParser {
+class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 
-	public ConstraintUniqueValueParser() {
+	public ConstraintUniqueValueRenderer() {
 	}
 
-	public ConstraintUniqueValue parse(Template template) {
-		ConstraintUniqueValue ret = null;
-		String page = template.getPage();
-		if (page != null) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page, ConstraintMainParser.DEFAULT_BASE_IRI);
-			ret = new ConstraintUniqueValue(constrainedProperty);
+	@Override
+	public List<String> renderConstraint(Constraint c) {
+		if (c instanceof ConstraintUniqueValue) {
+			return render((ConstraintUniqueValue) c);
 		}
+		return null;
+	}
+
+	public List<String> render(ConstraintUniqueValue c) {
+		List<String> ret = new ArrayList<String>();
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		ret.add(f.aInverseFunctionalObjectProperty(f.aPs(c
+				.getConstrainedProperty())));
+		ret.add(f.aHasKey(f.owlThing(), f.aPv(c.getConstrainedProperty())));
 		return ret;
 	}
 

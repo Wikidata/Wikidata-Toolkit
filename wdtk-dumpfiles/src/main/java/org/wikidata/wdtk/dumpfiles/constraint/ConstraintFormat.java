@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -31,9 +32,18 @@ public class ConstraintFormat implements Constraint {
 
 	final String pattern;
 
-	public ConstraintFormat(String pattern) {
+	public ConstraintFormat(PropertyIdValue constrainedProperty, String pattern) {
 		Validate.notNull(pattern, "Pattern cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.pattern = pattern;
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public String getPattern() {

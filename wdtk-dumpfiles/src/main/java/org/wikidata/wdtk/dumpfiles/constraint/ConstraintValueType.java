@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -33,11 +34,21 @@ public class ConstraintValueType implements Constraint {
 	final ItemIdValue classId;
 	final RelationType relation;
 
-	public ConstraintValueType(ItemIdValue classId, RelationType relation) {
+	public ConstraintValueType(PropertyIdValue constrainedProperty,
+			ItemIdValue classId, RelationType relation) {
 		Validate.notNull(classId, "Class cannot be null.");
 		Validate.notNull(relation, "Relation cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.classId = classId;
 		this.relation = relation;
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public ItemIdValue getClassId() {

@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
@@ -38,16 +39,21 @@ class ConstraintTypeParser implements ConstraintParser {
 
 	public ConstraintType parse(Template template) {
 		ConstraintType ret = null;
+		String page = template.getPage();
 		String classStr = template.get(ConstraintParserConstant.P_CLASS);
 		String relationStr = template.get(ConstraintParserConstant.P_RELATION);
-		if (classStr != null && relationStr != null) {
+		if (page != null && classStr != null && relationStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
 			ItemIdValue classId = factory.getItemIdValue(classStr,
 					ConstraintMainParser.DEFAULT_BASE_IRI);
 			if (relationStr.equals(ConstraintParserConstant.V_INSTANCE)) {
-				ret = new ConstraintType(classId, RelationType.INSTANCE);
+				ret = new ConstraintType(constrainedProperty, classId,
+						RelationType.INSTANCE);
 			} else if (relationStr.equals(ConstraintParserConstant.V_SUBCLASS)) {
-				ret = new ConstraintType(classId, RelationType.SUBCLASS);
+				ret = new ConstraintType(constrainedProperty, classId,
+						RelationType.SUBCLASS);
 			}
 		}
 		return ret;

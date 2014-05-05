@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -29,22 +30,66 @@ import org.apache.commons.lang3.Validate;
  */
 public class ConstraintRange implements Constraint {
 
-	final DateAndNow min;
-	final DateAndNow max;
+	final PropertyIdValue constrainedProperty;
+	final DateAndNow minDate;
+	final DateAndNow maxDate;
+	final Double minNum;
+	final Double maxNum;
+	final boolean isTime;
 
-	public ConstraintRange(DateAndNow min, DateAndNow max) {
-		Validate.notNull(min, "Min date cannot be null.");
-		Validate.notNull(max, "Max date cannot be null.");
-		this.min = min;
-		this.max = max;
+	public ConstraintRange(PropertyIdValue constrainedProperty,
+			DateAndNow minDate, DateAndNow maxDate) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		Validate.notNull(minDate, "Min date cannot be null.");
+		Validate.notNull(maxDate, "Max date cannot be null.");
+		this.constrainedProperty = constrainedProperty;
+		this.minDate = minDate;
+		this.maxDate = maxDate;
+		this.minNum = null;
+		this.maxNum = null;
+		this.isTime = true;
 	}
 
-	public DateAndNow getMin() {
-		return min;
+	public ConstraintRange(PropertyIdValue constrainedProperty,
+			Double minNum, Double maxNum) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		Validate.notNull(minNum, "Min date cannot be null.");
+		Validate.notNull(maxNum, "Max date cannot be null.");
+		this.constrainedProperty = constrainedProperty;
+		this.minNum = minNum;
+		this.maxNum = maxNum;
+		this.minDate = null;
+		this.maxDate = null;
+		this.isTime = false;
 	}
 
-	public DateAndNow getMax() {
-		return max;
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
+	}
+
+	public boolean isQuantity() {
+		return !isTime;
+	}
+
+	public boolean isTime() {
+		return isTime;
+	}
+
+	public Double getMinNum() {
+		return minNum;
+	}
+
+	public Double getMaxNum() {
+		return maxNum;
+	}
+
+	public DateAndNow getMinDate() {
+		return minDate;
+	}
+
+	public DateAndNow getMaxDate() {
+		return maxDate;
 	}
 
 	@Override

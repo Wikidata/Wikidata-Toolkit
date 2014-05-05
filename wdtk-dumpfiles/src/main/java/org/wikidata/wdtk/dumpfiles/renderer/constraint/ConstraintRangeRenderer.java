@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 
 /*
  * #%L
@@ -20,32 +20,32 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
 
 /**
  * 
  * @author Julian Mendez
  * 
  */
-public class ConstraintSingleValue implements Constraint {
+class ConstraintRangeRenderer implements ConstraintRenderer {
 
-	public ConstraintSingleValue(PropertyIdValue constrainedProperty) {
-		Validate.notNull(constrainedProperty, "Property cannot be null.");
-		this.constrainedProperty = constrainedProperty;
-	}
-
-	final PropertyIdValue constrainedProperty;
-
-	@Override
-	public PropertyIdValue getConstrainedProperty() {
-		return this.constrainedProperty;
+	public ConstraintRangeRenderer() {
 	}
 
 	@Override
-	public <T> T accept(ConstraintVisitor<T> visitor) {
-		Validate.notNull(visitor, "Visitor cannot be null.");
-		return visitor.visit(this);
+	public List<String> renderConstraint(Constraint c) {
+		if (c instanceof ConstraintRange) {
+			return render((ConstraintRange) c);
+		}
+		return null;
+	}
+
+	public List<String> render(ConstraintRange c) {
+		return new ArrayList<String>();
 	}
 
 }

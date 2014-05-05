@@ -23,7 +23,7 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
 /**
  * 
  * @author Julian Mendez
- *
+ * 
  */
 public interface ConstraintParserConstant {
 

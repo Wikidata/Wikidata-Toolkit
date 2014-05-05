@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.dumpfiles.constraint;
 
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -37,5 +39,7 @@ public interface Constraint {
 	 * @return the visit result
 	 */
 	<T> T accept(ConstraintVisitor<T> visitor);
+
+	PropertyIdValue getConstrainedProperty();
 
 }

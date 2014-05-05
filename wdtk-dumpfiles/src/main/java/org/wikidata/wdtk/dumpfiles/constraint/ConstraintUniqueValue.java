@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -29,7 +30,16 @@ import org.apache.commons.lang3.Validate;
  */
 public class ConstraintUniqueValue implements Constraint {
 
-	public ConstraintUniqueValue() {
+	public ConstraintUniqueValue(PropertyIdValue constrainedProperty) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	@Override

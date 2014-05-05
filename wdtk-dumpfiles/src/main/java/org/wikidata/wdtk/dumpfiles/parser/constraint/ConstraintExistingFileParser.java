@@ -20,6 +20,8 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintExistingFile;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 
@@ -34,7 +36,15 @@ class ConstraintExistingFileParser implements ConstraintParser {
 	}
 
 	public ConstraintExistingFile parse(Template template) {
-		return new ConstraintExistingFile();
+		ConstraintExistingFile ret = null;
+		String page = template.getPage();
+		if (page != null) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+			ret = new ConstraintExistingFile(constrainedProperty);
+		}
+		return ret;
 	}
 
 }

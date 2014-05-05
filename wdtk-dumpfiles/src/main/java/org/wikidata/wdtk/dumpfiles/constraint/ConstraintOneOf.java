@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * 
@@ -36,9 +37,19 @@ public class ConstraintOneOf implements Constraint {
 
 	final List<ItemIdValue> values = new ArrayList<ItemIdValue>();
 
-	public ConstraintOneOf(List<ItemIdValue> values) {
+	public ConstraintOneOf(PropertyIdValue constrainedProperty,
+			List<ItemIdValue> values) {
 		Validate.notNull(values, "List of values cannot be null.");
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.values.addAll(values);
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public List<ItemIdValue> getValues() {

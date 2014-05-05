@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintConflictsWith;
 import org.wikidata.wdtk.dumpfiles.constraint.PropertyValues;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
@@ -52,9 +54,13 @@ class ConstraintConflictsWithParser implements ConstraintParser {
 
 	public ConstraintConflictsWith parse(Template template) {
 		ConstraintConflictsWith ret = null;
+		String page = template.getPage();
 		String listStr = template.get(ConstraintParserConstant.P_LIST);
-		if (listStr != null) {
-			ret = new ConstraintConflictsWith(
+		if (page != null && listStr != null) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+			ret = new ConstraintConflictsWith(constrainedProperty,
 					ConstraintMainParser.parseListOfPropertyValues(listStr));
 		}
 		return ret;

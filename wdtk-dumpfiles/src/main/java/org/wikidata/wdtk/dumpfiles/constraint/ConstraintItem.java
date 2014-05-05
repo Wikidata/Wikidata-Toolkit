@@ -41,15 +41,25 @@ public class ConstraintItem implements Constraint {
 	final List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 	final List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 
-	public ConstraintItem(PropertyIdValue property, ItemIdValue item,
+	public ConstraintItem(PropertyIdValue constrainedProperty,
+			PropertyIdValue property, ItemIdValue item,
 			PropertyIdValue property2, ItemIdValue item2,
 			List<ItemIdValue> items, List<ItemIdValue> exceptions) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.property = property;
 		this.item = item;
 		this.property2 = property2;
 		this.item2 = item2;
 		this.items.addAll(items);
 		this.exceptions.addAll(exceptions);
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public PropertyIdValue getProperty() {

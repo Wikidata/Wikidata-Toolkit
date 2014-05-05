@@ -38,12 +38,15 @@ class ConstraintInverseParser implements ConstraintParser {
 
 	public ConstraintInverse parse(Template template) {
 		ConstraintInverse ret = null;
+		String page = template.getPage();
 		String propertyStr = template.get(ConstraintParserConstant.P_PROPERTY);
-		if (propertyStr != null) {
+		if (page != null && propertyStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					page, ConstraintMainParser.DEFAULT_BASE_IRI);
 			PropertyIdValue property = factory.getPropertyIdValue(propertyStr,
 					ConstraintMainParser.DEFAULT_BASE_IRI);
-			ret = new ConstraintInverse(property);
+			ret = new ConstraintInverse(constrainedProperty, property);
 		}
 		return ret;
 	}

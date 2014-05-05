@@ -67,7 +67,8 @@ class PropertyConstraintMwRevisionProcessor implements MwRevisionProcessor {
 					.getTemplates(text);
 			List<Template> listOfTemplates = new ArrayList<Template>();
 			for (String templateStr : listOfTemplateStr) {
-				listOfTemplates.add(this.templateParser.parse(templateStr));
+				listOfTemplates.add(this.templateParser.parse(propertyName,
+						templateStr));
 			}
 			this.map.put(propertyName, listOfTemplates);
 		}

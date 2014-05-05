@@ -32,9 +32,19 @@ public class ConstraintInverse implements Constraint {
 
 	final PropertyIdValue property;
 
-	public ConstraintInverse(PropertyIdValue property) {
+	public ConstraintInverse(PropertyIdValue constrainedProperty,
+			PropertyIdValue property) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		Validate.notNull(property, "Property cannot be null.");
+		this.constrainedProperty = constrainedProperty;
 		this.property = property;
+	}
+
+	final PropertyIdValue constrainedProperty;
+
+	@Override
+	public PropertyIdValue getConstrainedProperty() {
+		return this.constrainedProperty;
 	}
 
 	public PropertyIdValue getProperty() {
