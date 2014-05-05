@@ -27,10 +27,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * properties to URIs of other RDF datasets that they refer to. This is useful
  * to convert string identifiers to proper RDF identifiers.
  * 
- * @author Markus Kroetzsch
+ * @author Markus Kroetzsch, Fredo Erxleben
  * 
  */
 public class LinkedDataProperties {
+	
+	static final String MUSIC_BRAINZ_URL = "http://musicbrainz.org/";
 
 	/**
 	 * Returns the URI string that should be used to represent the given value
@@ -45,8 +47,20 @@ public class LinkedDataProperties {
 	public static String getUriForPropertyValue(PropertyIdValue property,
 			String value) {
 		switch (property.getId()) {
+		case "P434":
+			return getMusicBrainz(value, "artist");
+		case "P435":
+			return getMusicBrainz(value, "work");
+		case "P436":
+			return getMusicBrainz(value, "release-group");
 		case "P646":
 			return getFreebaseUri(value);
+		case "P966":
+			return getMusicBrainz(value, "label");
+		case "P982":
+			return getMusicBrainz(value, "area");
+		case "P1004":
+			return getMusicBrainz(value, "place");
 		default:
 			return null;
 		}
@@ -63,7 +77,7 @@ public class LinkedDataProperties {
 		return "http://commons.wikimedia.org/wiki/File:"
 				+ pageName.replace(' ', '_');
 	}
-
+	
 	/**
 	 * Returns the Freebase URI for the given Freebase identifier.
 	 * 
@@ -76,4 +90,20 @@ public class LinkedDataProperties {
 				+ value.substring(1).replace('/', '.');
 	}
 
+	/**
+	 * Creates the MusicBrainz URI for a given identifier and infix.
+	 * The infix determines what the identifier refers to and is dependent on the property that the identifier belongs to.
+	 * 
+	 * An identifier "<i>abcd</i>" and the infix "<b>label</b>" will create the URI
+	 * "http://musicbrainz.org/<b>label</b>/<i>abcd</i>"
+	 * 
+	 * @param identifier
+	 * @param infix
+	 * @return
+	 */
+	static String getMusicBrainz(String identifier, String infix){
+		return MUSIC_BRAINZ_URL + infix + "/" + identifier;
+	}
+	
+	
 }
