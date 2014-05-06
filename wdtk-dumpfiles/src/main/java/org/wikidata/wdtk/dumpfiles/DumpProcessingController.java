@@ -23,10 +23,15 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
@@ -66,6 +71,46 @@ public class DumpProcessingController {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(DumpProcessingController.class);
+
+	/**
+	 * Helper value class to store the registration settings of one listener.
+	 * 
+	 * @author Markus Kroetzsch
+	 * 
+	 */
+	class ListenerRegistration {
+		final String model;
+		final boolean onlyCurrentRevisions;
+
+		ListenerRegistration(String model, boolean onlyCurrentRevisions) {
+			this.model = model;
+			this.onlyCurrentRevisions = onlyCurrentRevisions;
+		}
+
+		@Override
+		public int hashCode() {
+			return 2 * this.model.hashCode()
+					+ (this.onlyCurrentRevisions ? 1 : 0);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof ListenerRegistration)) {
+				return false;
+			}
+			ListenerRegistration other = (ListenerRegistration) obj;
+			return this.model.equals(other.model)
+					&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+		}
+	}
+
+	final HashMap<ListenerRegistration, List<EntityDocumentProcessor>> entityDocumentProcessors;
 
 	/**
 	 * The name of the project whose dumps are processed here.
@@ -110,6 +155,7 @@ public class DumpProcessingController {
 	 */
 	public DumpProcessingController(String projectName) {
 		this.projectName = projectName;
+		this.entityDocumentProcessors = new HashMap<ListenerRegistration, List<EntityDocumentProcessor>>();
 
 		try {
 			setDownloadDirectory(System.getProperty("user.dir"));
@@ -200,8 +246,15 @@ public class DumpProcessingController {
 	public void registerEntityDocumentProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String model,
 			boolean onlyCurrentRevisions) {
-		registerMwRevisionProcessor(new WikibaseRevisionProcessor(
-				entityDocumentProcessor), model, onlyCurrentRevisions);
+		ListenerRegistration listenerRegistration = new ListenerRegistration(
+				model, onlyCurrentRevisions);
+		if (!this.entityDocumentProcessors.containsKey(listenerRegistration)) {
+			this.entityDocumentProcessors.put(listenerRegistration,
+					new ArrayList<EntityDocumentProcessor>());
+		}
+
+		this.entityDocumentProcessors.get(listenerRegistration).add(
+				entityDocumentProcessor);
 	}
 
 	/**
@@ -240,6 +293,7 @@ public class DumpProcessingController {
 	 *      MwDumpFileProcessor)
 	 */
 	public void processAllRecentRevisionDumps() {
+		setupEntityDocumentProcessors();
 		WmfDumpFileManager wmfDumpFileManager;
 		try {
 			wmfDumpFileManager = getWmfDumpFileManager();
@@ -316,6 +370,7 @@ public class DumpProcessingController {
 	 */
 	public void processMostRecentDump(DumpContentType dumpContentType,
 			MwDumpFileProcessor dumpFileProcessor) {
+		setupEntityDocumentProcessors();
 		WmfDumpFileManager wmfDumpFileManager;
 		try {
 			wmfDumpFileManager = getWmfDumpFileManager();
@@ -381,6 +436,33 @@ public class DumpProcessingController {
 	 */
 	MwDumpFileProcessor getRevisionDumpFileProcessor() {
 		return new MwRevisionDumpFileProcessor(this.mwRevisionProcessorBroker);
+	}
+
+	/**
+	 * Creates a suitable processing pipeline for the entity document processors
+	 * currently registered. If multiple processors are registered for the same
+	 * entity documents, an additional {@link EntityDocumentProcessorBroker}
+	 * will be used.
+	 */
+	void setupEntityDocumentProcessors() {
+		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> entry : this.entityDocumentProcessors
+				.entrySet()) {
+			if (entry.getValue().size() == 1) {
+				registerMwRevisionProcessor(new WikibaseRevisionProcessor(entry
+						.getValue().get(0)), entry.getKey().model,
+						entry.getKey().onlyCurrentRevisions);
+			} else {
+				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
+				registerMwRevisionProcessor(
+						new WikibaseRevisionProcessor(edpb),
+						entry.getKey().model,
+						entry.getKey().onlyCurrentRevisions);
+				for (EntityDocumentProcessor edp : entry.getValue()) {
+					edpb.registerEntityDocumentProcessor(edp);
+				}
+			}
+		}
+		this.entityDocumentProcessors.clear();
 	}
 
 }

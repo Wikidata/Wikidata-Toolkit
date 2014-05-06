@@ -58,7 +58,9 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	public void startRevisionProcessing(String siteName, String baseUrl,
 			Map<Integer, String> namespaces) {
 		// FIXME the baseUrl from the dump is not the baseIri we need here
-		this.jsonConverter = new JsonConverter(baseUrl, this.dataObjectFactory);
+		// Compute this properly.
+		this.jsonConverter = new JsonConverter(
+				"http://www.wikidata.org/entity/", this.dataObjectFactory);
 	}
 
 	@Override
