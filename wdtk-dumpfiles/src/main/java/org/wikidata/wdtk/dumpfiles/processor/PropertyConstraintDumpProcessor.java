@@ -21,9 +21,11 @@ package org.wikidata.wdtk.dumpfiles.processor;
  */
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
+import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 
 /**
  * 
@@ -34,12 +36,28 @@ public class PropertyConstraintDumpProcessor {
 
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
-	public static void main(String[] args) throws IOException {
+	public void run() {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
-		MwRevisionProcessor processor = new PropertyConstraintMwRevisionProcessor();
-		controller.registerMwRevisionProcessor(processor, null, true);
+		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
+		ConstraintTemplateMwRevisionProcessor constraintTemplateProcessor = new ConstraintTemplateMwRevisionProcessor();
+		PropertyMwRevisionProcessor propertyProcessor = new PropertyMwRevisionProcessor();
+		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
+				null, true);
+		controller.registerMwRevisionProcessor(constraintTemplateProcessor,
+				null, true);
+		controller.registerMwRevisionProcessor(propertyProcessor, null, true);
 		controller.processAllRecentRevisionDumps();
+
+		Map<String, List<Template>> propertyTalkTemplateMap = propertyTalkTemplateProcessor
+				.getMap();
+		Map<String, List<Template>> constraintTemplateMap = constraintTemplateProcessor
+				.getMap();
+		Map<String, String> propertyMap = propertyProcessor.getMap();
+	}
+
+	public static void main(String[] args) throws IOException {
+		(new PropertyConstraintDumpProcessor()).run();
 	}
 
 }

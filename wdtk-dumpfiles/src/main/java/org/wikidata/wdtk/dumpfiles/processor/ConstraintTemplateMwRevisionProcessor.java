@@ -37,30 +37,32 @@ import org.wikidata.wdtk.dumpfiles.parser.template.TemplateScanner;
  * @author Julian Mendez
  * 
  */
-class PropertyConstraintMwRevisionProcessor implements MwRevisionProcessor {
+class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 
-	public static final int PROPERTY_TALK_NS = 121;
+	public static final int TEMPLATE_NS = 10;
+	public static final String CONSTRAINT_PREFIX = "Constraint";
 	public static final String COLON = ":";
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();
 	final Map<String, List<Template>> map = new TreeMap<String, List<Template>>();
-	String propertyTalkPrefix = "";
+	String constraintTemplatePrefix = "";
 
-	public PropertyConstraintMwRevisionProcessor() {
+	public ConstraintTemplateMwRevisionProcessor() {
 	}
 
 	@Override
 	public void startRevisionProcessing(String siteName, String baseUrl,
 			Map<Integer, String> namespaces) {
-		this.propertyTalkPrefix = namespaces.get(PROPERTY_TALK_NS) + COLON;
+		this.constraintTemplatePrefix = namespaces.get(TEMPLATE_NS) + COLON
+				+ CONSTRAINT_PREFIX + COLON;
 	}
 
 	@Override
 	public void processRevision(MwRevision mwRevision) {
 		String title = mwRevision.getPrefixedTitle();
-		if (title.startsWith(this.propertyTalkPrefix)) {
-			String propertyName = title.substring(this.propertyTalkPrefix
+		if (title.startsWith(this.constraintTemplatePrefix)) {
+			String propertyName = title.substring(this.constraintTemplatePrefix
 					.length());
 			String text = mwRevision.getText();
 			List<String> listOfTemplateStr = this.templateScanner
