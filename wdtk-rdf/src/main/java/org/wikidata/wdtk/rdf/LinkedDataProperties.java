@@ -36,7 +36,7 @@ public class LinkedDataProperties {
 	static final String MUSIC_BRAINZ_URL = "http://musicbrainz.org/";
 	static final String ISNI_URL = "http://www.isni.org/search&q=";
 	static final String VIAF_PERMALINK_URL = "http://viaf.org/viaf/";
-	static final String CHEMSPIDER = "http://rdf.chemspider.com/search/";
+	static final String CHEMSPIDER = "http://rdf.chemspider.com/";
 
 	/**
 	 * Returns the URI string that should be used to represent the given value
@@ -56,38 +56,47 @@ public class LinkedDataProperties {
 		// so check the html return codes if requesting one
 		
 		switch (property.getId()) {
-		case "P213": // ISNI // no RDF-export available yet
-			return ISNI_URL + value;
+		
+//		case "P213": // ISNI // no RDF-export available yet
+//			return ISNI_URL + value;
 		case "P214": // VIAF
 			return VIAF_PERMALINK_URL + value + ".rdf";
-		case "P227":
+		case "P227": // GND
 			return getGndUri(value);
+		case "P243": // OCLC
+			return getOclcUri(value);
 		case "P244": // LCNAF
 			return getLcnafUri(value);
-		case "P269":
+		case "P269": // SUDOC
 			return getSudocUri(value);
-			
+
 		// --- Chemical Identifiers as resolved by chemspider.com	
-		case "P231":// CAS registry number
+		case "P231": // CAS registry number
+		case "P233": // SMILES
 		case "P235": // InChI-Keys
+		case "P661": // ChemSpider ID
 			return CHEMSPIDER + value;	
-		case "P234": // InChIs
-			return CHEMSPIDER + formatInChI(value);
+			
+		case "P662": // PubChem (CID)
+			return getPubChemCidUri(value);
+			
+//		case "P234": // InChIs
+//			return CHEMSPIDER + formatInChI(value);
 			
 		// --- MusicBrainz //NOTE: no useful RDF yet	
-		case "P434":
-			return getMusicBrainz(value, "artist");
-		case "P435":
-			return getMusicBrainz(value, "work");
-		case "P436":
-			return getMusicBrainz(value, "release-group");
-		case "P966":
-			return getMusicBrainz(value, "label");
-		case "P982":
-			return getMusicBrainz(value, "area");
-		case "P1004":
-			return getMusicBrainz(value, "place");
-		
+//		case "P434":
+//			return getMusicBrainz(value, "artist");
+//		case "P435":
+//			return getMusicBrainz(value, "work");
+//		case "P436":
+//			return getMusicBrainz(value, "release-group");
+//		case "P966":
+//			return getMusicBrainz(value, "label");
+//		case "P982":
+//			return getMusicBrainz(value, "area");
+//		case "P1004":
+//			return getMusicBrainz(value, "place");
+			
 		// --- Freebase
 		case "P646":
 			return getFreebaseUri(value);
@@ -96,6 +105,19 @@ public class LinkedDataProperties {
 		}
 	}
 	
+	/**
+	 * Note that there is also an SID, which is not covered by this method.
+	 * @param value
+	 * @return
+	 */
+	static String getPubChemCidUri(String value) {
+		return HTTP + "rdf.ncbi.nlm.nih.gov/pubchem/compound/CID" + value;
+	}
+
+	static String getOclcUri(String value) {
+		return HTTP + "www.worldcat.org/oclc/" + value;
+	}
+
 	private static String getSudocUri(String value) {
 		return HTTP + "www.idref.fr/" + value + ".rdf";
 	}
