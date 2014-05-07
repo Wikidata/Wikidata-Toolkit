@@ -23,6 +23,8 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTargetRequiredClaim;
 
@@ -45,13 +47,23 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintTargetRequiredClaim c) {
+		return render(c.getConstrainedProperty(), c.getProperty(), c.getItem());
+	}
+
+	public List<String> render(PropertyIdValue p, PropertyIdValue r,
+			ItemIdValue q) {
 		List<String> ret = new ArrayList<String>();
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		ret.add(f.aInverseFunctionalObjectProperty(f.aPs(c
-				.getConstrainedProperty())));
-
-		// TODO
-
+		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		if (q == null) {
+			ret.add(f.aObjectPropertyRange(f.a_v(p),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+		} else {
+			ret.add(f.aObjectPropertyRange(
+					f.a_v(p),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
+							f.a_v(r), f.aObjectOneOf(q)))));
+		}
 		return ret;
 	}
 

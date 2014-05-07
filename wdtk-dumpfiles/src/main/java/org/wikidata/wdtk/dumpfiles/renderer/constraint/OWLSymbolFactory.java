@@ -20,95 +20,140 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
+import java.util.List;
+
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
+/**
+ * 
+ * @author Julian Mendez
+ * 
+ */
 public class OWLSymbolFactory {
 
-	public String aPs(PropertyIdValue property) {
-		return "ps";
+	public String a_s(PropertyIdValue property) {
+		return property.toString() + "_s";
 	}
 
-	public String aPv(PropertyIdValue property) {
-		return "pv";
+	public String a_v(PropertyIdValue property) {
+		return property.toString() + "_v";
 	}
 
-	public String aPa(PropertyIdValue property) {
-		return "pa";
+	public String aQ(ItemIdValue item) {
+		return item.toString();
 	}
 
-	private String parentheses(String object, String arg) {
+	public String aRp(PropertyIdValue property) {
+		return property.toString() + "rp";
+	}
+
+	private String makeFunction(String object, String arg) {
 		return object + ConstraintRendererConstant.C_PAR_A
 				+ ConstraintRendererConstant.C_SPACE + arg
 				+ ConstraintRendererConstant.C_SPACE
 				+ ConstraintRendererConstant.C_PAR_B;
 	}
 
-	public String pair(String arg0, String arg1) {
+	public String makePair(String arg0, String arg1) {
 		return arg0 + ConstraintRendererConstant.C_SPACE + arg1;
 	}
 
+	public String makeList(List<ItemIdValue> list) {
+		StringBuilder ret = new StringBuilder();
+		for (ItemIdValue q : list) {
+			ret.append(aQ(q));
+			ret.append(ConstraintRendererConstant.C_SPACE);
+		}
+		return ret.toString();
+	}
+
+	public String aDataPropertyRange(String arg0, String arg1) {
+		return makeFunction(ConstraintRendererConstant.DataPropertyRange,
+				makePair(arg0, arg1));
+	}
+
 	public String aDatatype(String arg) {
-		return parentheses(ConstraintRendererConstant.Datatype, arg);
+		return makeFunction(ConstraintRendererConstant.Datatype, arg);
 	}
 
-	public String aDatatypeDefinition(String arg) {
-		return parentheses(ConstraintRendererConstant.DatatypeDefinition, arg);
+	public String aDatatypeDefinition(String arg0, String arg1) {
+		return makeFunction(ConstraintRendererConstant.DatatypeDefinition,
+				makePair(arg0, arg1));
 	}
 
-	public String aDatatypeRestriction(String arg) {
-		return parentheses(ConstraintRendererConstant.DatatypeRestriction, arg);
+	public String aDatatypeRestriction(String arg0, String arg1, String arg2) {
+		return makeFunction(ConstraintRendererConstant.DatatypeRestriction,
+				makePair(arg0, makePair(arg1, arg2)));
 	}
 
 	public String aDeclaration(String arg) {
-		return parentheses(ConstraintRendererConstant.Declaration, arg);
+		return makeFunction(ConstraintRendererConstant.Declaration, arg);
+	}
+
+	public String aDisjointClasses(String arg0 , String arg1) {
+		return makeFunction(ConstraintRendererConstant.DisjointClasses, makePair(arg0, arg1));
 	}
 
 	public String aFunctionalObjectProperty(String arg) {
-		return parentheses(ConstraintRendererConstant.FunctionalObjectProperty,
-				arg);
+		return makeFunction(
+				ConstraintRendererConstant.FunctionalObjectProperty, arg);
 	}
 
-	public String aHasKey(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.HasKey, pair(arg0, arg1));
+	public String aHasKey(String arg0, String arg1, String arg2) {
+		return makeFunction(
+				ConstraintRendererConstant.HasKey,
+				makePair(
+						arg0,
+						makePair(makeFunction("", arg1), makeFunction("", arg2))));
 	}
 
 	public String aInverseFunctionalObjectProperty(String arg) {
-		return parentheses(
+		return makeFunction(
 				ConstraintRendererConstant.InverseFunctionalObjectProperty, arg);
 	}
 
 	public String aObjectComplementOf(String arg) {
-		return parentheses(ConstraintRendererConstant.ObjectComplementOf, arg);
+		return makeFunction(ConstraintRendererConstant.ObjectComplementOf, arg);
 	}
 
 	public String aObjectExactCardinality(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.ObjectExactCardinality,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.ObjectExactCardinality,
+				makePair(arg0, arg1));
+	}
+
+	public String aObjectOneOf(ItemIdValue q) {
+		return makeFunction(ConstraintRendererConstant.ObjectOneOf, aQ(q));
+	}
+
+	public String aObjectOneOf(List<ItemIdValue> list) {
+		return makeFunction(ConstraintRendererConstant.ObjectOneOf,
+				makeList(list));
 	}
 
 	public String aObjectPropertyDomain(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.ObjectPropertyDomain,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.ObjectPropertyDomain,
+				makePair(arg0, arg1));
 	}
 
 	public String aObjectPropertyRange(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.ObjectPropertyRange,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.ObjectPropertyRange,
+				makePair(arg0, arg1));
 	}
 
 	public String aObjectSomeValuesFrom(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.ObjectSomeValuesFrom,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.ObjectSomeValuesFrom,
+				makePair(arg0, arg1));
 	}
 
 	public String aObjectUnionOf(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.ObjectUnionOf,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.ObjectUnionOf,
+				makePair(arg0, arg1));
 	}
 
 	public String aSubClassOf(String arg0, String arg1) {
-		return parentheses(ConstraintRendererConstant.SubClassOf,
-				pair(arg0, arg1));
+		return makeFunction(ConstraintRendererConstant.SubClassOf,
+				makePair(arg0, arg1));
 	}
 
 	public String owlThing() {

@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintValueType;
 
@@ -47,8 +48,8 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 	public List<String> render(ConstraintValueType c) {
 		List<String> ret = new ArrayList<String>();
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		ret.add(f.aInverseFunctionalObjectProperty(f.aPs(c
-				.getConstrainedProperty())));
+		PropertyIdValue p = c.getConstrainedProperty();
+		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 
 		// TODO
 

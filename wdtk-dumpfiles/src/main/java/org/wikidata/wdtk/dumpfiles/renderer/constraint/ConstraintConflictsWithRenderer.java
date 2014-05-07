@@ -23,6 +23,8 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintConflictsWith;
 
@@ -47,11 +49,28 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 	public List<String> render(ConstraintConflictsWith c) {
 		List<String> ret = new ArrayList<String>();
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		ret.add(f.aInverseFunctionalObjectProperty(f.aPs(c
-				.getConstrainedProperty())));
+		PropertyIdValue p = c.getConstrainedProperty();
+		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 
 		// TODO
 
+		return ret;
+	}
+	
+	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
+			List<ItemIdValue> q) {
+		List<String> ret = new ArrayList<String>();
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		if (q == null) {
+			ret.add(f.aDisjointClasses(
+					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+		} else {
+			ret.add(f.aDisjointClasses(
+					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
+							f.a_v(r), f.aObjectOneOf(q)))));
+		}
 		return ret;
 	}
 
