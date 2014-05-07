@@ -85,6 +85,9 @@ public class LinkedDataProperties {
 //		case "P234": // InChIs
 //			return CHEMSPIDER + formatInChI(value);
 			
+		case "P686":
+			return getGeneOnthologyUri(value);
+		
 		// --- MusicBrainz //NOTE: no useful RDF yet	
 //		case "P434":
 //			return getMusicBrainz(value, "artist");
@@ -107,6 +110,13 @@ public class LinkedDataProperties {
 		}
 	}
 	
+	static String getGeneOnthologyUri(String value) {
+		// NOTE: should work in theory,
+		// but delivers 404s
+		// see http://www.geneontology.org/GO.format.rdfxml.shtml
+		return HTTP + "www.geneontology.org/go#GO:" + value;
+	}
+
 	static String getNdlUri(String value) {
 		return HTTP + "id.ndl.go.jp/auth/ndlna/" + value + ".rdf";
 	}
