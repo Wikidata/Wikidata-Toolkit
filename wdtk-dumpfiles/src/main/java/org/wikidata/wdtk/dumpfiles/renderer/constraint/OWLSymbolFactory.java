@@ -40,7 +40,7 @@ public class OWLSymbolFactory {
 		return property.toString() + "_v";
 	}
 
-	public String aQ(ItemIdValue item) {
+	public String aItem(ItemIdValue item) {
 		return item.toString();
 	}
 
@@ -62,14 +62,24 @@ public class OWLSymbolFactory {
 	public String makeList(List<ItemIdValue> list) {
 		StringBuilder ret = new StringBuilder();
 		for (ItemIdValue q : list) {
-			ret.append(aQ(q));
+			ret.append(aItem(q));
 			ret.append(ConstraintRendererConstant.C_SPACE);
 		}
 		return ret.toString();
 	}
 
+	public String aDataIntersectionOf(String arg0, String arg1) {
+		return makeFunction(ConstraintRendererConstant.DataIntersectionOf,
+				makePair(arg0, arg1));
+	}
+
 	public String aDataPropertyRange(String arg0, String arg1) {
 		return makeFunction(ConstraintRendererConstant.DataPropertyRange,
+				makePair(arg0, arg1));
+	}
+
+	public String aDataSomeValuesFrom(String arg0, String arg1) {
+		return makeFunction(ConstraintRendererConstant.DataSomeValuesFrom,
 				makePair(arg0, arg1));
 	}
 
@@ -91,8 +101,9 @@ public class OWLSymbolFactory {
 		return makeFunction(ConstraintRendererConstant.Declaration, arg);
 	}
 
-	public String aDisjointClasses(String arg0 , String arg1) {
-		return makeFunction(ConstraintRendererConstant.DisjointClasses, makePair(arg0, arg1));
+	public String aDisjointClasses(String arg0, String arg1) {
+		return makeFunction(ConstraintRendererConstant.DisjointClasses,
+				makePair(arg0, arg1));
 	}
 
 	public String aFunctionalObjectProperty(String arg) {
@@ -113,6 +124,13 @@ public class OWLSymbolFactory {
 				ConstraintRendererConstant.InverseFunctionalObjectProperty, arg);
 	}
 
+	public String aLiteral(String value, String type) {
+		return ConstraintRendererConstant.C_QUOTATION_MARK + value
+				+ ConstraintRendererConstant.C_QUOTATION_MARK
+				+ ConstraintRendererConstant.C_CARET
+				+ ConstraintRendererConstant.C_CARET + type;
+	}
+
 	public String aObjectComplementOf(String arg) {
 		return makeFunction(ConstraintRendererConstant.ObjectComplementOf, arg);
 	}
@@ -123,7 +141,7 @@ public class OWLSymbolFactory {
 	}
 
 	public String aObjectOneOf(ItemIdValue q) {
-		return makeFunction(ConstraintRendererConstant.ObjectOneOf, aQ(q));
+		return makeFunction(ConstraintRendererConstant.ObjectOneOf, aItem(q));
 	}
 
 	public String aObjectOneOf(List<ItemIdValue> list) {

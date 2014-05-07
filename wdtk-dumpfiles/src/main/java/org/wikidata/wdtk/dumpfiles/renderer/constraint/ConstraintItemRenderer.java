@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintItem;
@@ -46,13 +47,49 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintItem c) {
+		return render(c.getConstrainedProperty(), c.getProperty(), c.getItem(),
+				c.getProperty2(), c.getItem2(), c.getItems(), c.getExceptions());
+	}
+
+	public List<String> render(PropertyIdValue p, PropertyIdValue r1,
+			ItemIdValue q1, PropertyIdValue r2, ItemIdValue q2,
+			List<ItemIdValue> values, List<ItemIdValue> exceptions) {
 		List<String> ret = new ArrayList<String>();
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		PropertyIdValue p = c.getConstrainedProperty();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		ret.addAll(renderPart(p, r1, q1));
+		ret.addAll(renderPart(p, r2, q2));
+		ret.addAll(renderPart(p, values));
+		ret.addAll(renderPart(p, exceptions));
+		return ret;
+	}
 
-		// TODO
+	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
+			ItemIdValue q) {
+		List<String> ret = new ArrayList<String>();
+		if (p == null || r == null) {
+			return ret;
+		}
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		if (q == null) {
+			ret.add(f.aObjectPropertyDomain(f.a_s(p),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+		} else {
+			ret.add(f.aObjectPropertyDomain(
+					f.a_s(p),
+					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
+							f.a_v(r), f.aObjectOneOf(q)))));
+		}
+		return ret;
+	}
 
+	public List<String> renderPart(PropertyIdValue p, List<ItemIdValue> values) {
+		List<String> ret = new ArrayList<String>();
+		if (p == null || values == null) {
+			return ret;
+		}
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(values)));
 		return ret;
 	}
 

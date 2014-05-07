@@ -52,6 +52,9 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 
 	public List<String> render(PropertyIdValue p, List<ItemIdValue> values) {
 		List<String> ret = new ArrayList<String>();
+		if (p == null || values == null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aObjectPropertyRange(f.a_v(p), f.aObjectOneOf(values)));

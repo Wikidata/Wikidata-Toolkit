@@ -30,7 +30,11 @@ public interface ConstraintRendererConstant {
 	String C_PAR_A = "(";
 	String C_PAR_B = ")";
 	String C_SPACE = " ";
+	String C_CARET = "^";
+	String C_QUOTATION_MARK = "\"";
+	String DataIntersectionOf = "DataIntersectionOf";
 	String DataPropertyRange = "DataPropertyRange";
+	String DataSomeValuesFrom = "DataSomeValuesFrom";
 	String Datatype = "Datatype";
 	String DatatypeDefinition = "DatatypeDefinition";
 	String DatatypeRestriction = "DatatypeRestriction";
@@ -46,8 +50,8 @@ public interface ConstraintRendererConstant {
 	String ObjectPropertyRange = "ObjectPropertyRange";
 	String ObjectSomeValuesFrom = "ObjectSomeValuesFrom";
 	String ObjectUnionOf = "ObjectUnionOf";
-	String owl_Thing = "owl:Thing";
 	String SubClassOf = "SubClassOf";
+	String owl_Thing = "owl:Thing";
 	String xsd_dateTime = "xsd:dateTime";
 	String xsd_decimal = "xsd:decimal";
 	String xsd_maxInclusive = "xsd:maxInclusive";

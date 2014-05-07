@@ -55,6 +55,9 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 
 	public List<String> render(PropertyIdValue p, String pattern) {
 		List<String> ret = new ArrayList<String>();
+		if (p==null || pattern==null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		String rp = f.aRp(p);
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));

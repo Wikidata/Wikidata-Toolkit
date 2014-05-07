@@ -60,6 +60,9 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
 			List<ItemIdValue> q) {
 		List<String> ret = new ArrayList<String>();
+		if (p==null || r==null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		if (q == null) {
 			ret.add(f.aDisjointClasses(

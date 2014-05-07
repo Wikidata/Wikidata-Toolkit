@@ -23,9 +23,11 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
+import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
 
 /**
  * 
@@ -46,13 +48,34 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintType c) {
+		if (c.getRelation().equals(RelationType.INSTANCE)) {
+			return renderInstanceOf(c.getConstrainedProperty(), c.getClassId());
+		} else {
+			return renderSubclassOf(c.getConstrainedProperty(), c.getClassId());
+		}
+	}
+
+	public List<String> renderInstanceOf(PropertyIdValue p, ItemIdValue q) {
 		List<String> ret = new ArrayList<String>();
+		if (p == null || q == null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		PropertyIdValue p = c.getConstrainedProperty();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(q)));
+		return ret;
+	}
 
-		// TODO
-
+	public List<String> renderSubclassOf(PropertyIdValue p, ItemIdValue q) {
+		ConstraintItemRenderer otherRenderer = new ConstraintItemRenderer();
+		List<String> ret = new ArrayList<String>();
+		if (p == null || q == null) {
+			return ret;
+		}
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		PropertyIdValue subclassOf = null; // FIXME
+		ret.addAll(otherRenderer.renderPart(p, subclassOf, q));
 		return ret;
 	}
 

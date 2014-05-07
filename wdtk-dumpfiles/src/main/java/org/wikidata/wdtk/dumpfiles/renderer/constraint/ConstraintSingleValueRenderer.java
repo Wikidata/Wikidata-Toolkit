@@ -51,6 +51,9 @@ class ConstraintSingleValueRenderer implements ConstraintRenderer {
 
 	public List<String> render(PropertyIdValue p) {
 		List<String> ret = new ArrayList<String>();
+		if (p == null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aFunctionalObjectProperty(f.a_s(p)));

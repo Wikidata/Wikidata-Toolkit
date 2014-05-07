@@ -53,6 +53,9 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 	public List<String> render(PropertyIdValue p, PropertyIdValue r,
 			ItemIdValue q) {
 		List<String> ret = new ArrayList<String>();
+		if (p == null || r == null) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		if (q == null) {
