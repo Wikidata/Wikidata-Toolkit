@@ -45,7 +45,14 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintValueType c) {
-		return new ArrayList<String>();
+		List<String> ret = new ArrayList<String>();
+		OWLSymbolFactory f = new OWLSymbolFactory();
+		ret.add(f.aInverseFunctionalObjectProperty(f.aPs(c
+				.getConstrainedProperty())));
+
+		// TODO
+
+		return ret;
 	}
 
 }
