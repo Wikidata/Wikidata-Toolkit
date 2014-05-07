@@ -69,6 +69,8 @@ public class LinkedDataProperties {
 			return getLcnafUri(value);
 		case "P269": // SUDOC
 			return getSudocUri(value);
+		case "P349":
+			return getNdlUri(value);
 
 		// --- Chemical Identifiers as resolved by chemspider.com	
 		case "P231": // CAS registry number
@@ -105,6 +107,10 @@ public class LinkedDataProperties {
 		}
 	}
 	
+	static String getNdlUri(String value) {
+		return HTTP + "id.ndl.go.jp/auth/ndlna/" + value + ".rdf";
+	}
+
 	/**
 	 * Note that there is also an SID, which is not covered by this method.
 	 * @param value
