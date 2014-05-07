@@ -57,6 +57,9 @@ public class LinkedDataProperties {
 		
 		switch (property.getId()) {
 		
+		case "P220": // ISO 639-3 language code
+			return getIso639_3Uri(value);
+		
 //		case "P213": // ISNI // no RDF-export available yet
 //			return ISNI_URL + value;
 		case "P214": // VIAF
@@ -85,7 +88,7 @@ public class LinkedDataProperties {
 //		case "P234": // InChIs
 //			return CHEMSPIDER + formatInChI(value);
 			
-		case "P686":
+		case "P686": // GeneOnthology ID
 			return getGeneOnthologyUri(value);
 		
 		// --- MusicBrainz //NOTE: no useful RDF yet	
@@ -110,6 +113,10 @@ public class LinkedDataProperties {
 		}
 	}
 	
+	static String getIso639_3Uri(String value) {
+		return HTTP + "www.lexvo.org/data/iso639-3/" + value;
+	}
+
 	static String getGeneOnthologyUri(String value) {
 		// NOTE: should work in theory,
 		// but delivers 404s
