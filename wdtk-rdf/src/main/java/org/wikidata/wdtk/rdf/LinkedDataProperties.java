@@ -57,6 +57,9 @@ public class LinkedDataProperties {
 		
 		switch (property.getId()) {
 		
+		case "P220": // ISO 639-3 language code
+			return getIso639_3Uri(value);
+		
 //		case "P213": // ISNI // no RDF-export available yet
 //			return ISNI_URL + value;
 		case "P214": // VIAF
@@ -69,6 +72,8 @@ public class LinkedDataProperties {
 			return getLcnafUri(value);
 		case "P269": // SUDOC
 			return getSudocUri(value);
+		case "P349":
+			return getNdlUri(value);
 
 		// --- Chemical Identifiers as resolved by chemspider.com	
 		case "P231": // CAS registry number
@@ -83,6 +88,9 @@ public class LinkedDataProperties {
 //		case "P234": // InChIs
 //			return CHEMSPIDER + formatInChI(value);
 			
+		case "P686": // GeneOnthology ID
+			return getGeneOnthologyUri(value);
+		
 		// --- MusicBrainz //NOTE: no useful RDF yet	
 //		case "P434":
 //			return getMusicBrainz(value, "artist");
@@ -105,6 +113,21 @@ public class LinkedDataProperties {
 		}
 	}
 	
+	static String getIso639_3Uri(String value) {
+		return HTTP + "www.lexvo.org/data/iso639-3/" + value;
+	}
+
+	static String getGeneOnthologyUri(String value) {
+		// NOTE: should work in theory,
+		// but delivers 404s
+		// see http://www.geneontology.org/GO.format.rdfxml.shtml
+		return HTTP + "www.geneontology.org/go#GO:" + value;
+	}
+
+	static String getNdlUri(String value) {
+		return HTTP + "id.ndl.go.jp/auth/ndlna/" + value + ".rdf";
+	}
+
 	/**
 	 * Note that there is also an SID, which is not covered by this method.
 	 * @param value
