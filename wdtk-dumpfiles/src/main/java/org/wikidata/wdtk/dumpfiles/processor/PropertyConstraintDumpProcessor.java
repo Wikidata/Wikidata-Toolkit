@@ -20,12 +20,19 @@ package org.wikidata.wdtk.dumpfiles.processor;
  * #L%
  */
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
+import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 
 /**
  * 
@@ -36,28 +43,67 @@ public class PropertyConstraintDumpProcessor {
 
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
-	public void run() {
+	public static final String OWL_START = ""
+			+ "Prefix(:=<http://www.wikidata.org/owl/constraints/>)"
+			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
+			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
+			+ "\nOntology(<http://www.wikidata.org/owl/constraints>" + "\n\n";
+
+	public static final String OWL_END = "\n\n)\n\n";
+
+	public static void main(String[] args) throws IOException {
+		(new PropertyConstraintDumpProcessor()).run(args);
+	}
+
+	public void printLines(List<String> lines, BufferedWriter output)
+			throws IOException {
+		for (String line : lines) {
+			output.write(line);
+			output.newLine();
+		}
+		output.flush();
+	}
+
+	public void processDumps(BufferedWriter output) throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
-		ConstraintTemplateMwRevisionProcessor constraintTemplateProcessor = new ConstraintTemplateMwRevisionProcessor();
-		PropertyMwRevisionProcessor propertyProcessor = new PropertyMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-		controller.registerMwRevisionProcessor(constraintTemplateProcessor,
-				null, true);
-		controller.registerMwRevisionProcessor(propertyProcessor, null, true);
 		controller.processAllRecentRevisionDumps();
-
-		Map<String, List<Template>> propertyTalkTemplateMap = propertyTalkTemplateProcessor
-				.getMap();
-		Map<String, List<Template>> constraintTemplateMap = constraintTemplateProcessor
-				.getMap();
-		Map<String, String> propertyMap = propertyProcessor.getMap();
+		List<String> lines = processTemplates(propertyTalkTemplateProcessor
+				.getMap());
+		output.write(OWL_START);
+		printLines(lines, output);
+		output.write(OWL_END);
 	}
 
-	public static void main(String[] args) throws IOException {
-		(new PropertyConstraintDumpProcessor()).run();
+	public List<String> processTemplates(Map<String, List<Template>> templateMap) {
+		List<String> ret = new ArrayList<String>();
+		ConstraintMainParser parser = new ConstraintMainParser();
+		ConstraintMainRenderer renderer = new ConstraintMainRenderer();
+		TemplateExpander expander = new TemplateExpander();
+		List<String> lines = new ArrayList<String>();
+		for (String key : templateMap.keySet()) {
+			List<Template> templates = expander.expand(key,
+					templateMap.get(key));
+			for (Template template : templates) {
+				Constraint constraint = parser.parse(template);
+				lines.addAll(constraint.accept(renderer));
+			}
+		}
+		return ret;
+	}
+
+	public void run(String[] args) throws IOException {
+		BufferedWriter output;
+		if (args.length == 0) {
+			output = new BufferedWriter(new OutputStreamWriter(System.out));
+		} else {
+			output = new BufferedWriter(new FileWriter(args[0]));
+		}
+		processDumps(output);
+		output.close();
 	}
 
 }

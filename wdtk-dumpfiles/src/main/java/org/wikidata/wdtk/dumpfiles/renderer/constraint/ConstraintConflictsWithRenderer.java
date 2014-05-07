@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintConflictsWith;
+import org.wikidata.wdtk.dumpfiles.constraint.PropertyValues;
 
 /**
  * 
@@ -47,20 +48,23 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintConflictsWith c) {
+		return render(c.getConstrainedProperty(), c.getList());
+	}
+
+	public List<String> render(PropertyIdValue p, List<PropertyValues> list) {
 		List<String> ret = new ArrayList<String>();
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		PropertyIdValue p = c.getConstrainedProperty();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-
-		// TODO
-
+		for (PropertyValues propertyValues : list) {
+			ret.addAll(renderPart(p, propertyValues.getProperty(), propertyValues.getItems()));
+		}
 		return ret;
 	}
-	
+
 	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
 			List<ItemIdValue> q) {
 		List<String> ret = new ArrayList<String>();
-		if (p==null || r==null) {
+		if (p == null || r == null) {
 			return ret;
 		}
 		OWLSymbolFactory f = new OWLSymbolFactory();

@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.rdf.PropertyContext;
+import org.wikidata.wdtk.rdf.Vocabulary;
 
 /**
  * 
@@ -33,19 +35,19 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class OWLSymbolFactory {
 
 	public String a_s(PropertyIdValue property) {
-		return property.toString() + "_s";
+		return Vocabulary.getPropertyUri(property, PropertyContext.STATEMENT);
 	}
 
 	public String a_v(PropertyIdValue property) {
-		return property.toString() + "_v";
+		return Vocabulary.getPropertyUri(property, PropertyContext.VALUE);
 	}
 
 	public String aItem(ItemIdValue item) {
-		return item.toString();
+		return item.toString(); // FIXME
 	}
 
 	public String aRp(PropertyIdValue property) {
-		return property.toString() + "rp";
+		return property.toString() + "aux"; // FIXME
 	}
 
 	private String makeFunction(String object, String arg) {

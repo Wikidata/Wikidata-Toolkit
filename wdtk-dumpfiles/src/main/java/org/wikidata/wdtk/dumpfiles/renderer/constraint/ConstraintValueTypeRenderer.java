@@ -23,11 +23,13 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintValueType;
 import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 
 /**
  * 
@@ -36,7 +38,14 @@ import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
  */
 class ConstraintValueTypeRenderer implements ConstraintRenderer {
 
+	public static final String P_SUBCLASS_OF = "P279";
+
+	final PropertyIdValue subclassOf;
+
 	public ConstraintValueTypeRenderer() {
+		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+		this.subclassOf = factory.getPropertyIdValue(P_SUBCLASS_OF,
+				ConstraintMainParser.DEFAULT_BASE_IRI);
 	}
 
 	@Override
@@ -71,8 +80,7 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 			return new ArrayList<String>();
 		}
 		ConstraintTargetRequiredClaimRenderer otherRenderer = new ConstraintTargetRequiredClaimRenderer();
-		PropertyIdValue subclassOf = null; // FIXME
-		return otherRenderer.render(p, subclassOf, q);
+		return otherRenderer.render(p, this.subclassOf, q);
 	}
 
 }

@@ -23,11 +23,13 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 
 /**
  * 
@@ -36,7 +38,14 @@ import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
  */
 class ConstraintTypeRenderer implements ConstraintRenderer {
 
+	public static final String P_SUBCLASS_OF = "P279";
+
+	final PropertyIdValue subclassOf;
+
 	public ConstraintTypeRenderer() {
+		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+		this.subclassOf = factory.getPropertyIdValue(P_SUBCLASS_OF,
+				ConstraintMainParser.DEFAULT_BASE_IRI);
 	}
 
 	@Override
@@ -74,8 +83,7 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		PropertyIdValue subclassOf = null; // FIXME
-		ret.addAll(otherRenderer.renderPart(p, subclassOf, q));
+		ret.addAll(otherRenderer.renderPart(p, this.subclassOf, q));
 		return ret;
 	}
 

@@ -46,7 +46,7 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 	}
 
 	private String transform(String pattern) {
-		return pattern;
+		return pattern; // TODO
 	}
 
 	public List<String> render(ConstraintFormat c) {
@@ -55,7 +55,7 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 
 	public List<String> render(PropertyIdValue p, String pattern) {
 		List<String> ret = new ArrayList<String>();
-		if (p==null || pattern==null) {
+		if (p == null || pattern == null) {
 			return ret;
 		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
