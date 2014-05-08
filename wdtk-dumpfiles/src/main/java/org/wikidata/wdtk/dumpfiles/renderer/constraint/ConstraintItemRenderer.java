@@ -88,6 +88,9 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		if (p == null || values == null) {
 			return ret;
 		}
+		if (values.isEmpty()) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(values)));
 		return ret;
