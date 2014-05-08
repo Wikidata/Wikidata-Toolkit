@@ -28,6 +28,8 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 public interface ConstraintRendererConstant {
 
 	String C_CARET = "^";
+	String C_LT = "<";
+	String C_GT = ">";
 	String C_PAR_A = "(";
 	String C_PAR_B = ")";
 	String C_QUOTATION_MARK = "\"";

@@ -53,10 +53,14 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 
 	public List<String> render(PropertyIdValue p, List<PropertyValues> list) {
 		List<String> ret = new ArrayList<String>();
+		if (p == null || list == null || list.isEmpty()) {
+			return ret;
+		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		for (PropertyValues propertyValues : list) {
-			ret.addAll(renderPart(p, propertyValues.getProperty(), propertyValues.getItems()));
+			ret.addAll(renderPart(p, propertyValues.getProperty(),
+					propertyValues.getItems()));
 		}
 		return ret;
 	}
@@ -68,7 +72,7 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 			return ret;
 		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		if (q == null) {
+		if (q == null || q.isEmpty()) {
 			ret.add(f.aDisjointClasses(
 					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),
 					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));

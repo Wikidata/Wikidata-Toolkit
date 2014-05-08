@@ -35,19 +35,26 @@ import org.wikidata.wdtk.rdf.Vocabulary;
 public class OWLSymbolFactory {
 
 	public String a_s(PropertyIdValue property) {
-		return Vocabulary.getPropertyUri(property, PropertyContext.STATEMENT);
+		return ConstraintRendererConstant.C_LT
+				+ Vocabulary
+						.getPropertyUri(property, PropertyContext.STATEMENT)
+				+ ConstraintRendererConstant.C_GT;
 	}
 
 	public String a_v(PropertyIdValue property) {
-		return Vocabulary.getPropertyUri(property, PropertyContext.VALUE);
+		return ConstraintRendererConstant.C_LT
+				+ Vocabulary.getPropertyUri(property, PropertyContext.VALUE)
+				+ ConstraintRendererConstant.C_GT;
 	}
 
 	public String aItem(ItemIdValue item) {
-		return item.getIri();
+		return ConstraintRendererConstant.C_LT + item.getIri()
+				+ ConstraintRendererConstant.C_GT;
 	}
 
 	public String aRp(PropertyIdValue property) {
-		return property.getIri() + "aux";
+		return ConstraintRendererConstant.C_LT + property.getIri() + "aux"
+				+ ConstraintRendererConstant.C_GT;
 	}
 
 	private String makeFunction(String object, String arg) {
@@ -123,7 +130,8 @@ public class OWLSymbolFactory {
 
 	public String aInverseFunctionalObjectProperty(String arg) {
 		return makeFunction(
-				ConstraintRendererConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY, arg);
+				ConstraintRendererConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
+				arg);
 	}
 
 	public String aLiteral(String value, String type) {
@@ -134,11 +142,13 @@ public class OWLSymbolFactory {
 	}
 
 	public String aObjectComplementOf(String arg) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_COMPLEMENT_OF, arg);
+		return makeFunction(ConstraintRendererConstant.OBJECT_COMPLEMENT_OF,
+				arg);
 	}
 
 	public String aObjectExactCardinality(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_EXACT_CARDINALITY,
+		return makeFunction(
+				ConstraintRendererConstant.OBJECT_EXACT_CARDINALITY,
 				makePair(arg0, arg1));
 	}
 
