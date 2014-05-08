@@ -46,7 +46,13 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 	}
 
 	private String transform(String pattern) {
-		return pattern; // TODO
+
+		// FIXME this does not cover all cases
+		String newPattern = pattern.replace(
+				ConstraintRendererConstant.C_QUOTATION_MARK, "");
+
+		return ConstraintRendererConstant.C_QUOTATION_MARK + newPattern
+				+ ConstraintRendererConstant.C_QUOTATION_MARK;
 	}
 
 	public List<String> render(ConstraintFormat c) {
