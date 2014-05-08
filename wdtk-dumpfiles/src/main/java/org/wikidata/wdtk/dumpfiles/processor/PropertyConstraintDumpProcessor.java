@@ -39,10 +39,12 @@ import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
  */
 public class PropertyConstraintDumpProcessor {
 
+	public static final String COMMENT_A = "AnnotationAssertion( rdfs:comment ";
+	public static final String COMMENT_B = "\"";
+	public static final String COMMENT_C = "\" )";
+
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
-
 	public static final String OWL_END = "\n\n)\n\n";
-
 	public static final String OWL_START = ""
 			+ "Prefix(:=<http://www.wikidata.org/owl/constraints/>)"
 			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
@@ -66,6 +68,24 @@ public class PropertyConstraintDumpProcessor {
 		output.flush();
 	}
 
+	public String escapeChars(String str) {
+		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
+				.replaceAll("<", "&lt;").replaceAll("'", "&apos;");
+	}
+
+	public void printTemplates(Map<String, List<Template>> templateMap,
+			BufferedWriter output) throws IOException {
+		for (String key : templateMap.keySet()) {
+			List<Template> templates = templateMap.get(key);
+			output.write(COMMENT_A);
+			output.write(":" + key);
+			output.write(COMMENT_B);
+			output.write(escapeChars(templates.toString()));
+			output.write(COMMENT_C);
+			output.newLine();
+		}
+	}
+
 	public void processDumps(BufferedWriter output) throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
@@ -75,6 +95,7 @@ public class PropertyConstraintDumpProcessor {
 		controller.processAllRecentRevisionDumps();
 
 		output.write(OWL_START);
+		printTemplates(propertyTalkTemplateProcessor.getMap(), output);
 		processTemplates(propertyTalkTemplateProcessor.getMap(), output);
 		output.write(OWL_END);
 	}
@@ -85,16 +106,31 @@ public class PropertyConstraintDumpProcessor {
 		ConstraintMainRenderer renderer = new ConstraintMainRenderer();
 		TemplateExpander expander = new TemplateExpander();
 		for (String key : templateMap.keySet()) {
+			output.newLine();
 			List<Template> templates = expander.expand(key,
 					templateMap.get(key));
 			for (Template template : templates) {
-				Constraint constraint = parser.parse(template);
-				List<String> owlLines = null;
+
+				Constraint constraint = null;
 				try {
-					owlLines = constraint.accept(renderer);
+					constraint = parser.parse(template);
 				} catch (Exception e) {
+					System.out.println("Exception while parsing " + key);
+					System.out.println("Template: " + template.toString());
 					e.printStackTrace();
 				}
+
+				List<String> owlLines = null;
+				try {
+					if (constraint != null) {
+						owlLines = constraint.accept(renderer);
+					}
+				} catch (Exception e) {
+					System.out.println("Exception while rendering " + key);
+					System.out.println("Constraint: " + constraint.toString());
+					e.printStackTrace();
+				}
+
 				printLines(owlLines, output);
 			}
 		}
