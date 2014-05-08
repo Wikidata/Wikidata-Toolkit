@@ -41,16 +41,16 @@ public class TemplateExpander {
 	public static final String CONSTRAINT_TAXON = "Constraint:Taxon";
 
 	public static final String TEMPLATE_CONSTRAINT_PERSON = ""
-			+ "{{Constraint:Type|class=Q215627|relation=instance}}\n"
-			+ "{{Constraint:Item|property=P21}}\n"
-			+ "{{Constraint:Item|property=P19}}\n"
-			+ "{{Constraint:Item|property=P569}}\n";
+			+ "{{Constraint:Type|class=Q215627|relation=instance}}"
+			+ "\n{{Constraint:Item|property=P21}}"
+			+ "\n{{Constraint:Item|property=P19}}"
+			+ "\n{{Constraint:Item|property=P569}}" + "\n";
 
 	public static final String TEMPLATE_CONSTRAINT_TAXON = ""
-			+ "{{Constraint:Type|class=Q16521|relation=instance}}\n"
-			+ "{{Constraint:Item|property=P225}}\n"
-			+ "{{Constraint:Item|property=P171}}\n"
-			+ "{{Constraint:Item|property=P105}}\n";
+			+ "{{Constraint:Type|class=Q16521|relation=instance}}"
+			+ "\n{{Constraint:Item|property=P225}}"
+			+ "\n{{Constraint:Item|property=P171}}"
+			+ "\n{{Constraint:Item|property=P105}}" + "\n";
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();

@@ -23,12 +23,16 @@ package org.wikidata.wdtk.dumpfiles.processor;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintParserConstant;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 
@@ -38,6 +42,9 @@ import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
  * 
  */
 public class PropertyConstraintDumpProcessor {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(PropertyConstraintDumpProcessor.class);
 
 	public static final String COMMENT_A = "AnnotationAssertion( rdfs:comment ";
 	public static final String COMMENT_B = " \"";
@@ -51,7 +58,6 @@ public class PropertyConstraintDumpProcessor {
 			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
 			+ "\nPrefix(entity:=<" + ENTITY_PREFIX + ">)" + "\nOntology(<"
 			+ DEFAULT_PREFIX + ">" + "\n\n";
-
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
 	public static void main(String[] args) throws IOException {
@@ -62,6 +68,33 @@ public class PropertyConstraintDumpProcessor {
 		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
 				.replaceAll("<", "&lt;").replaceAll("'", "&apos;")
 				.replaceAll("\n", "  ");
+	}
+
+	private List<Template> getConstraintTemplates(List<Template> list) {
+		List<Template> ret = new ArrayList<Template>();
+		for (Template template : list) {
+			if (template.getId().startsWith(
+					ConstraintParserConstant.T_CONSTRAINT)) {
+				ret.add(template);
+			}
+		}
+		return ret;
+	}
+
+	public void printConstraintTemplates(
+			Map<String, List<Template>> templateMap, BufferedWriter output)
+			throws IOException {
+		for (String key : templateMap.keySet()) {
+			List<Template> templates = getConstraintTemplates(templateMap
+					.get(key));
+			output.write(COMMENT_A);
+			output.write("entity:" + key);
+			output.write(COMMENT_B);
+			output.write(escapeChars(templates.toString()));
+			output.write(COMMENT_C);
+			output.newLine();
+		}
+		output.flush();
 	}
 
 	void printLines(List<String> lines, BufferedWriter output)
@@ -75,20 +108,6 @@ public class PropertyConstraintDumpProcessor {
 		output.flush();
 	}
 
-	public void printTemplates(Map<String, List<Template>> templateMap,
-			BufferedWriter output) throws IOException {
-		for (String key : templateMap.keySet()) {
-			List<Template> templates = templateMap.get(key);
-			output.write(COMMENT_A);
-			output.write("entity:" + key);
-			output.write(COMMENT_B);
-			output.write(escapeChars(templates.toString()));
-			output.write(COMMENT_C);
-			output.newLine();
-		}
-		output.flush();
-	}
-
 	public void processDumps(BufferedWriter output) throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
@@ -98,7 +117,7 @@ public class PropertyConstraintDumpProcessor {
 		controller.processMostRecentMainDump();
 
 		output.write(OWL_START);
-		printTemplates(propertyTalkTemplateProcessor.getMap(), output);
+		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);
 		processTemplates(propertyTalkTemplateProcessor.getMap(), output);
 		output.write(OWL_END);
 	}
