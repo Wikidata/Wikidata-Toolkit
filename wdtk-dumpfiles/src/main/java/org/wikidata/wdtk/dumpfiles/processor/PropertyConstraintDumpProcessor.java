@@ -40,9 +40,8 @@ import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 public class PropertyConstraintDumpProcessor {
 
 	public static final String COMMENT_A = "AnnotationAssertion( rdfs:comment ";
-	public static final String COMMENT_B = "\"";
+	public static final String COMMENT_B = " \"";
 	public static final String COMMENT_C = "\" )";
-
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
 	public static final String OWL_END = "\n\n)\n\n";
 	public static final String OWL_START = ""
@@ -57,6 +56,11 @@ public class PropertyConstraintDumpProcessor {
 		(new PropertyConstraintDumpProcessor()).run(args);
 	}
 
+	public String escapeChars(String str) {
+		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
+				.replaceAll("<", "&lt;").replaceAll("'", "&apos;");
+	}
+
 	void printLines(List<String> lines, BufferedWriter output)
 			throws IOException {
 		if (lines != null) {
@@ -66,11 +70,6 @@ public class PropertyConstraintDumpProcessor {
 			}
 		}
 		output.flush();
-	}
-
-	public String escapeChars(String str) {
-		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
-				.replaceAll("<", "&lt;").replaceAll("'", "&apos;");
 	}
 
 	public void printTemplates(Map<String, List<Template>> templateMap,
@@ -84,6 +83,7 @@ public class PropertyConstraintDumpProcessor {
 			output.write(COMMENT_C);
 			output.newLine();
 		}
+		output.flush();
 	}
 
 	public void processDumps(BufferedWriter output) throws IOException {
@@ -127,6 +127,7 @@ public class PropertyConstraintDumpProcessor {
 					}
 				} catch (Exception e) {
 					System.out.println("Exception while rendering " + key);
+					System.out.println("Template: " + template.toString());
 					System.out.println("Constraint: " + constraint.toString());
 					e.printStackTrace();
 				}
