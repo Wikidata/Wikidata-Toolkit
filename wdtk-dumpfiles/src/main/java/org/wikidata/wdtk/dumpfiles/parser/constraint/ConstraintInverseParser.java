@@ -43,8 +43,9 @@ class ConstraintInverseParser implements ConstraintParser {
 		if (page != null && propertyStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page, ConstraintMainParser.DEFAULT_BASE_IRI);
-			PropertyIdValue property = factory.getPropertyIdValue(propertyStr,
+					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
+			PropertyIdValue property = factory.getPropertyIdValue(
+					propertyStr.toUpperCase(),
 					ConstraintMainParser.DEFAULT_BASE_IRI);
 			ret = new ConstraintInverse(constrainedProperty, property);
 		}

@@ -38,7 +38,7 @@ import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 /**
  * 
  * @author Julian Mendez
- *
+ * 
  */
 public class ConstraintMainParser implements ConstraintParser {
 
@@ -65,7 +65,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		StringTokenizer stok = new StringTokenizer(str, ParserConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			String itemStr = stok.nextToken().trim();
-			ItemIdValue item = factory.getItemIdValue(itemStr,
+			ItemIdValue item = factory.getItemIdValue(itemStr.toUpperCase(),
 					ConstraintMainParser.DEFAULT_BASE_IRI);
 			ret.add(item);
 		}
@@ -83,12 +83,13 @@ public class ConstraintMainParser implements ConstraintParser {
 			int pos = propertyValuesStr.indexOf(ParserConstant.COLON);
 			if (pos == -1) {
 				PropertyIdValue property = factory.getPropertyIdValue(
-						propertyValuesStr,
+						propertyValuesStr.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 				ret.add(new PropertyValues(property));
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
-						propertyValuesStr.substring(0, pos).trim(),
+						propertyValuesStr.substring(0, pos).trim()
+								.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));

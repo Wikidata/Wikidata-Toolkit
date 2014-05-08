@@ -41,7 +41,7 @@ class ConstraintFormatParser implements ConstraintParser {
 		if (template.getParameters().size() > 0) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
 			String pattern = template.getParameters().get(0);
 			ret = new ConstraintFormat(constrainedProperty, pattern);
 		}

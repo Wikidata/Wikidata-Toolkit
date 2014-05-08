@@ -59,7 +59,7 @@ class ConstraintConflictsWithParser implements ConstraintParser {
 		if (page != null && listStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
 			ret = new ConstraintConflictsWith(constrainedProperty,
 					ConstraintMainParser.parseListOfPropertyValues(listStr));
 		}

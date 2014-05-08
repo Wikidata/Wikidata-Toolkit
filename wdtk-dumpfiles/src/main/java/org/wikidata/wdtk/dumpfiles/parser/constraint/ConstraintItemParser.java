@@ -60,21 +60,23 @@ class ConstraintItemParser implements ConstraintParser {
 			List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page, ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
 			if (propertyStr != null) {
-				property = factory.getPropertyIdValue(propertyStr,
+				property = factory.getPropertyIdValue(
+						propertyStr.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (itemStr != null) {
-				item = factory.getItemIdValue(itemStr,
+				item = factory.getItemIdValue(itemStr.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (property2Str != null) {
-				property2 = factory.getPropertyIdValue(propertyStr,
+				property2 = factory.getPropertyIdValue(
+						propertyStr.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (item2Str != null) {
-				item2 = factory.getItemIdValue(itemStr,
+				item2 = factory.getItemIdValue(itemStr.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (itemsStr != null) {
