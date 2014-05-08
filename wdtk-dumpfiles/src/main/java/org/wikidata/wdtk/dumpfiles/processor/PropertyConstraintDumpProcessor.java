@@ -23,8 +23,6 @@ package org.wikidata.wdtk.dumpfiles.processor;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +39,9 @@ import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
  */
 public class PropertyConstraintDumpProcessor {
 
-	public static final String WIKIDATAWIKI = "wikidatawiki";
+	public static final String DEFAULT_FILE_NAME = "constraints.owl";
+
+	public static final String OWL_END = "\n\n)\n\n";
 
 	public static final String OWL_START = ""
 			+ "Prefix(:=<http://www.wikidata.org/owl/constraints/>)"
@@ -49,17 +49,19 @@ public class PropertyConstraintDumpProcessor {
 			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
 			+ "\nOntology(<http://www.wikidata.org/owl/constraints>" + "\n\n";
 
-	public static final String OWL_END = "\n\n)\n\n";
+	public static final String WIKIDATAWIKI = "wikidatawiki";
 
 	public static void main(String[] args) throws IOException {
 		(new PropertyConstraintDumpProcessor()).run(args);
 	}
 
-	public void printLines(List<String> lines, BufferedWriter output)
+	void printLines(List<String> lines, BufferedWriter output)
 			throws IOException {
-		for (String line : lines) {
-			output.write(line);
-			output.newLine();
+		if (lines != null) {
+			for (String line : lines) {
+				output.write(line);
+				output.newLine();
+			}
 		}
 		output.flush();
 	}
@@ -71,37 +73,39 @@ public class PropertyConstraintDumpProcessor {
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
 		controller.processAllRecentRevisionDumps();
-		List<String> lines = processTemplates(propertyTalkTemplateProcessor
-				.getMap());
+
 		output.write(OWL_START);
-		printLines(lines, output);
+		processTemplates(propertyTalkTemplateProcessor.getMap(), output);
 		output.write(OWL_END);
 	}
 
-	public List<String> processTemplates(Map<String, List<Template>> templateMap) {
-		List<String> ret = new ArrayList<String>();
+	public void processTemplates(Map<String, List<Template>> templateMap,
+			BufferedWriter output) throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
 		ConstraintMainRenderer renderer = new ConstraintMainRenderer();
 		TemplateExpander expander = new TemplateExpander();
-		List<String> lines = new ArrayList<String>();
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = expander.expand(key,
 					templateMap.get(key));
 			for (Template template : templates) {
 				Constraint constraint = parser.parse(template);
-				lines.addAll(constraint.accept(renderer));
+				List<String> owlLines = null;
+				try {
+					owlLines = constraint.accept(renderer);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				printLines(owlLines, output);
 			}
 		}
-		return ret;
 	}
 
 	public void run(String[] args) throws IOException {
-		BufferedWriter output;
-		if (args.length == 0) {
-			output = new BufferedWriter(new OutputStreamWriter(System.out));
-		} else {
-			output = new BufferedWriter(new FileWriter(args[0]));
+		String fileName = DEFAULT_FILE_NAME;
+		if (args.length > 0) {
+			fileName = args[0];
 		}
+		BufferedWriter output = new BufferedWriter(new FileWriter(fileName));
 		processDumps(output);
 		output.close();
 	}
