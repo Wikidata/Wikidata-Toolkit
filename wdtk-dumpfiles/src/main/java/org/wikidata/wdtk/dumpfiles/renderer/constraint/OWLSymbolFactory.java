@@ -43,11 +43,11 @@ public class OWLSymbolFactory {
 	}
 
 	public String aItem(ItemIdValue item) {
-		return item.toString(); // FIXME
+		return item.getIri();
 	}
 
 	public String aRp(PropertyIdValue property) {
-		return property.toString() + "aux"; // FIXME
+		return property.getIri() + "aux";
 	}
 
 	private String makeFunction(String object, String arg) {
@@ -71,51 +71,51 @@ public class OWLSymbolFactory {
 	}
 
 	public String aDataIntersectionOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DataIntersectionOf,
+		return makeFunction(ConstraintRendererConstant.DATA_INTERSECTION_OF,
 				makePair(arg0, arg1));
 	}
 
 	public String aDataPropertyRange(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DataPropertyRange,
+		return makeFunction(ConstraintRendererConstant.DATA_PROPERTY_RANGE,
 				makePair(arg0, arg1));
 	}
 
 	public String aDataSomeValuesFrom(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DataSomeValuesFrom,
+		return makeFunction(ConstraintRendererConstant.DATA_SOME_VALUES_FROM,
 				makePair(arg0, arg1));
 	}
 
 	public String aDatatype(String arg) {
-		return makeFunction(ConstraintRendererConstant.Datatype, arg);
+		return makeFunction(ConstraintRendererConstant.DATATYPE, arg);
 	}
 
 	public String aDatatypeDefinition(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DatatypeDefinition,
+		return makeFunction(ConstraintRendererConstant.DATATYPE_DEFINITION,
 				makePair(arg0, arg1));
 	}
 
 	public String aDatatypeRestriction(String arg0, String arg1, String arg2) {
-		return makeFunction(ConstraintRendererConstant.DatatypeRestriction,
+		return makeFunction(ConstraintRendererConstant.DATATYPE_RESTRICTION,
 				makePair(arg0, makePair(arg1, arg2)));
 	}
 
 	public String aDeclaration(String arg) {
-		return makeFunction(ConstraintRendererConstant.Declaration, arg);
+		return makeFunction(ConstraintRendererConstant.DECLARATION, arg);
 	}
 
 	public String aDisjointClasses(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DisjointClasses,
+		return makeFunction(ConstraintRendererConstant.DISJOINT_CLASSES,
 				makePair(arg0, arg1));
 	}
 
 	public String aFunctionalObjectProperty(String arg) {
 		return makeFunction(
-				ConstraintRendererConstant.FunctionalObjectProperty, arg);
+				ConstraintRendererConstant.FUNCTIONAL_OBJECT_PROPERTY, arg);
 	}
 
 	public String aHasKey(String arg0, String arg1, String arg2) {
 		return makeFunction(
-				ConstraintRendererConstant.HasKey,
+				ConstraintRendererConstant.HAS_KEY,
 				makePair(
 						arg0,
 						makePair(makeFunction("", arg1), makeFunction("", arg2))));
@@ -123,7 +123,7 @@ public class OWLSymbolFactory {
 
 	public String aInverseFunctionalObjectProperty(String arg) {
 		return makeFunction(
-				ConstraintRendererConstant.InverseFunctionalObjectProperty, arg);
+				ConstraintRendererConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY, arg);
 	}
 
 	public String aLiteral(String value, String type) {
@@ -134,74 +134,74 @@ public class OWLSymbolFactory {
 	}
 
 	public String aObjectComplementOf(String arg) {
-		return makeFunction(ConstraintRendererConstant.ObjectComplementOf, arg);
+		return makeFunction(ConstraintRendererConstant.OBJECT_COMPLEMENT_OF, arg);
 	}
 
 	public String aObjectExactCardinality(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.ObjectExactCardinality,
+		return makeFunction(ConstraintRendererConstant.OBJECT_EXACT_CARDINALITY,
 				makePair(arg0, arg1));
 	}
 
 	public String aObjectOneOf(ItemIdValue q) {
-		return makeFunction(ConstraintRendererConstant.ObjectOneOf, aItem(q));
+		return makeFunction(ConstraintRendererConstant.OBJECT_ONE_OF, aItem(q));
 	}
 
 	public String aObjectOneOf(List<ItemIdValue> list) {
-		return makeFunction(ConstraintRendererConstant.ObjectOneOf,
+		return makeFunction(ConstraintRendererConstant.OBJECT_ONE_OF,
 				makeList(list));
 	}
 
 	public String aObjectPropertyDomain(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.ObjectPropertyDomain,
+		return makeFunction(ConstraintRendererConstant.OBJECT_PROPERTY_DOMAIN,
 				makePair(arg0, arg1));
 	}
 
 	public String aObjectPropertyRange(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.ObjectPropertyRange,
+		return makeFunction(ConstraintRendererConstant.OBJECT_PROPERTY_RANGE,
 				makePair(arg0, arg1));
 	}
 
 	public String aObjectSomeValuesFrom(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.ObjectSomeValuesFrom,
+		return makeFunction(ConstraintRendererConstant.OBJECT_SOME_VALUES_FROM,
 				makePair(arg0, arg1));
 	}
 
 	public String aObjectUnionOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.ObjectUnionOf,
+		return makeFunction(ConstraintRendererConstant.OBJECT_UNION_OF,
 				makePair(arg0, arg1));
 	}
 
 	public String aSubClassOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.SubClassOf,
+		return makeFunction(ConstraintRendererConstant.SUB_CLASS_OF,
 				makePair(arg0, arg1));
 	}
 
 	public String owlThing() {
-		return ConstraintRendererConstant.owl_Thing;
+		return ConstraintRendererConstant.OWL_THING;
 	}
 
 	public String xsdDateTime() {
-		return ConstraintRendererConstant.xsd_dateTime;
+		return ConstraintRendererConstant.XSD_DATE_TIME;
 	}
 
 	public String xsdDecimal() {
-		return ConstraintRendererConstant.xsd_decimal;
+		return ConstraintRendererConstant.XSD_DECIMAL;
 	}
 
 	public String xsdMaxInclusive() {
-		return ConstraintRendererConstant.xsd_maxInclusive;
+		return ConstraintRendererConstant.XSD_MAX_INCLUSIVE;
 	}
 
 	public String xsdMinInclusive() {
-		return ConstraintRendererConstant.xsd_minInclusive;
+		return ConstraintRendererConstant.XSD_MIN_INCLUSIVE;
 	}
 
 	public String xsdPattern() {
-		return ConstraintRendererConstant.xsd_pattern;
+		return ConstraintRendererConstant.XSD_PATTERN;
 	}
 
 	public String xsdString() {
-		return ConstraintRendererConstant.xsd_string;
+		return ConstraintRendererConstant.XSD_STRING;
 	}
 
 }
