@@ -35,6 +35,10 @@ class ConstraintFormatParser implements ConstraintParser {
 	public ConstraintFormatParser() {
 	}
 
+	private String removeNowiki(String str) {
+		return str.replaceAll("<nowiki>", "").replaceAll("</nowiki>", "");
+	}
+
 	public ConstraintFormat parse(Template template) {
 		ConstraintFormat ret = null;
 		String page = template.getPage();
@@ -42,7 +46,9 @@ class ConstraintFormatParser implements ConstraintParser {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
-			String pattern = template.getParameters().get(0);
+			String plainPattern = template.getParameters().get(
+					ConstraintParserConstant.P_PATTERN);
+			String pattern = removeNowiki(plainPattern);
 			ret = new ConstraintFormat(constrainedProperty, pattern);
 		}
 		return ret;

@@ -58,7 +58,8 @@ public class PropertyConstraintDumpProcessor {
 
 	public String escapeChars(String str) {
 		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
-				.replaceAll("<", "&lt;").replaceAll("'", "&apos;");
+				.replaceAll("<", "&lt;").replaceAll("'", "&apos;")
+				.replaceAll("\n", "  ");
 	}
 
 	void printLines(List<String> lines, BufferedWriter output)
