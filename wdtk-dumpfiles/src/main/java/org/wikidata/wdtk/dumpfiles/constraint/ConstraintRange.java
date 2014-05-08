@@ -31,36 +31,19 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class ConstraintRange implements Constraint {
 
 	final PropertyIdValue constrainedProperty;
-	final DateAndNow minDate;
-	final DateAndNow maxDate;
-	final Double minNum;
-	final Double maxNum;
+	final String min;
+	final String max;
 	final boolean isTime;
 
-	public ConstraintRange(PropertyIdValue constrainedProperty,
-			DateAndNow minDate, DateAndNow maxDate) {
+	public ConstraintRange(PropertyIdValue constrainedProperty, String min,
+			String max, boolean isTime) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
-		Validate.notNull(minDate, "Min date cannot be null.");
-		Validate.notNull(maxDate, "Max date cannot be null.");
+		Validate.notNull(min, "Min cannot be null.");
+		Validate.notNull(max, "Max cannot be null.");
 		this.constrainedProperty = constrainedProperty;
-		this.minDate = minDate;
-		this.maxDate = maxDate;
-		this.minNum = null;
-		this.maxNum = null;
-		this.isTime = true;
-	}
-
-	public ConstraintRange(PropertyIdValue constrainedProperty,
-			Double minNum, Double maxNum) {
-		Validate.notNull(constrainedProperty, "Property cannot be null.");
-		Validate.notNull(minNum, "Min date cannot be null.");
-		Validate.notNull(maxNum, "Max date cannot be null.");
-		this.constrainedProperty = constrainedProperty;
-		this.minNum = minNum;
-		this.maxNum = maxNum;
-		this.minDate = null;
-		this.maxDate = null;
-		this.isTime = false;
+		this.min = min;
+		this.max = max;
+		this.isTime = isTime;
 	}
 
 	@Override
@@ -76,20 +59,12 @@ public class ConstraintRange implements Constraint {
 		return isTime;
 	}
 
-	public Double getMinNum() {
-		return minNum;
+	public String getMin() {
+		return min;
 	}
 
-	public Double getMaxNum() {
-		return maxNum;
-	}
-
-	public DateAndNow getMinDate() {
-		return minDate;
-	}
-
-	public DateAndNow getMaxDate() {
-		return maxDate;
+	public String getMax() {
+		return max;
 	}
 
 	@Override

@@ -50,14 +50,15 @@ public class PropertyConstraintDumpProcessor {
 	public static final String COMMENT_B = " \"";
 	public static final String COMMENT_C = "\" )";
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
-	public static final String DEFAULT_PREFIX = "http://www.wikidata.org/entity/constraints/";
 	public static final String ENTITY_PREFIX = "http://www.wikidata.org/entity/";
 	public static final String OWL_END = "\n\n)\n\n";
-	public static final String OWL_START = "" + "Prefix(:=<" + DEFAULT_PREFIX
-			+ ">)" + "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
+	public static final String OWL_START = ""
+			+ "Prefix(:=<http://www.wikidata.org/entity/constraints/>)"
+			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
 			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
-			+ "\nPrefix(entity:=<" + ENTITY_PREFIX + ">)" + "\nOntology(<"
-			+ DEFAULT_PREFIX + ">" + "\n\n";
+			+ "\nPrefix(entity:=<" + ENTITY_PREFIX + ">)"
+			+ "\nOntology(<http://www.wikidata.org/entity/constraints/ont>"
+			+ "\n\n";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
 	public static void main(String[] args) throws IOException {
@@ -114,7 +115,7 @@ public class PropertyConstraintDumpProcessor {
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-		controller.processMostRecentMainDump();
+		controller.processAllRecentRevisionDumps();
 
 		output.write(OWL_START);
 		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);

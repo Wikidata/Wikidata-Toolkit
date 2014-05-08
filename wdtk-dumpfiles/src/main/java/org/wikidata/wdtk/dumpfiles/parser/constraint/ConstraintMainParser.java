@@ -51,6 +51,7 @@ public class ConstraintMainParser implements ConstraintParser {
 	}
 
 	static String removeBrackets(String str) {
+		Validate.notNull(str);
 		return str.replace(ParserConstant.OPENING_BRACKETS, "")
 				.replace(ParserConstant.CLOSING_BRACKETS, "")
 				.replace(ParserConstant.OPENING_BRACES, "")
@@ -59,6 +60,7 @@ public class ConstraintMainParser implements ConstraintParser {
 	}
 
 	static List<ItemIdValue> parseListOfItems(String listOfItems) {
+		Validate.notNull(listOfItems);
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		String str = removeBrackets(listOfItems);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
@@ -73,6 +75,7 @@ public class ConstraintMainParser implements ConstraintParser {
 	}
 
 	static List<PropertyValues> parseListOfPropertyValues(String listOfItems) {
+		Validate.notNull(listOfItems);
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		String str = removeBrackets(listOfItems);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();

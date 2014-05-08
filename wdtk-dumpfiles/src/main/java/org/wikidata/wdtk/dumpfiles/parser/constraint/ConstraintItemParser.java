@@ -72,18 +72,19 @@ class ConstraintItemParser implements ConstraintParser {
 			}
 			if (property2Str != null) {
 				property2 = factory.getPropertyIdValue(
-						propertyStr.toUpperCase(),
+						property2Str.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (item2Str != null) {
-				item2 = factory.getItemIdValue(itemStr.toUpperCase(),
+				item2 = factory.getItemIdValue(item2Str.toUpperCase(),
 						ConstraintMainParser.DEFAULT_BASE_IRI);
 			}
 			if (itemsStr != null) {
 				items = ConstraintMainParser.parseListOfItems(itemsStr);
 			}
 			if (exceptionsStr != null) {
-				exceptions = ConstraintMainParser.parseListOfItems(itemsStr);
+				exceptions = ConstraintMainParser
+						.parseListOfItems(exceptionsStr);
 			}
 			ret = new ConstraintItem(constrainedProperty, property, item,
 					property2, item2, items, exceptions);

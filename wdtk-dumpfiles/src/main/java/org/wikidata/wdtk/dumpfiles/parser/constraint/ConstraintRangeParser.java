@@ -87,12 +87,14 @@ class ConstraintRangeParser implements ConstraintParser {
 			DateAndNow minDate = parseDate(minStr);
 			DateAndNow maxDate = parseDate(maxStr);
 			if (minDate != null && maxDate != null) {
-				ret = new ConstraintRange(constrainedProperty, minDate, maxDate);
+				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
+						true);
 			}
 			Double minNum = Double.parseDouble(minStr);
 			Double maxNum = Double.parseDouble(maxStr);
 			if (minNum != null && maxNum != null) {
-				ret = new ConstraintRange(constrainedProperty, minNum, maxNum);
+				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
+						false);
 			}
 		}
 		return ret;

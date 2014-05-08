@@ -26,7 +26,6 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
-import org.wikidata.wdtk.dumpfiles.constraint.DateAndNow;
 
 /**
  * 
@@ -47,47 +46,47 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintRange c) {
+		List<String> ret = new ArrayList<String>();
 		if (c.isQuantity()) {
-			return renderQuantity(c.getConstrainedProperty(), c.getMinNum(),
-					c.getMaxNum());
-		} else {
-			return renderTime(c.getConstrainedProperty(), c.getMinDate(),
-					c.getMaxDate());
+			ret = renderQuantity(c.getConstrainedProperty(), c.getMin(),
+					c.getMax());
 		}
+		if (c.isTime()) {
+			ret = renderTime(c.getConstrainedProperty(), c.getMin(), c.getMax());
+		}
+		return ret;
 	}
 
-	public List<String> renderQuantity(PropertyIdValue p, Double min, Double max) {
+	public List<String> renderQuantity(PropertyIdValue p, String min, String max) {
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		return render(p, "value", min.toString(), max.toString(),
+		return render(p, ":value", min.toString(), max.toString(),
 				f.xsdDecimal()); // FIXME fix parameter
 	}
 
-	public List<String> renderTime(PropertyIdValue p, DateAndNow min,
-			DateAndNow max) {
+	public List<String> renderTime(PropertyIdValue p, String min, String max) {
 		OWLSymbolFactory f = new OWLSymbolFactory();
-		return render(p, "time", min.toString(), max.toString(),
+		return render(p, ":time", min.toString(), max.toString(),
 				f.xsdDateTime()); // FIXME fix parameter
 	}
 
 	public List<String> render(PropertyIdValue p, String param, String min,
 			String max, String type) {
 		List<String> ret = new ArrayList<String>();
-		if (p ==null || param==null) {
+		if (p == null || param == null) {
 			return ret;
 		}
 		OWLSymbolFactory f = new OWLSymbolFactory();
+		String rp = f.aRp(p);
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aDataPropertyRange(
-				f.a_v(p),
-				f.aDataSomeValuesFrom(
-						param,
-						f.aDataIntersectionOf(
-								f.aDatatypeRestriction(type,
-										f.xsdMinInclusive(),
-										f.aLiteral(min, type)),
-								f.aDatatypeRestriction(type,
-										f.xsdMaxInclusive(),
-										f.aLiteral(max, type))))));
+		ret.add(f.aDatatypeDefinition(
+				rp,
+				f.aDataIntersectionOf(
+						f.aDatatypeRestriction(type, f.xsdMinInclusive(),
+								f.aLiteral(min, type)),
+						f.aDatatypeRestriction(type, f.xsdMaxInclusive(),
+								f.aLiteral(max, type)))));
+		ret.add(f.aObjectPropertyRange(f.a_v(p),
+				f.aDataSomeValuesFrom(param, rp)));
 		return ret;
 	}
 
