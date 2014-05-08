@@ -60,6 +60,13 @@ public class TemplateParserTest {
 				template3.get("values"));
 		Assert.assertEquals(1, template3.getParameters().size());
 
+		Template template4 = parser.parse("P814",
+				"{{Constraint:Item|property=P17||exceptions={{Q|3593529}}}}");
+		Assert.assertEquals("Constraint:Item", template4.getId());
+		Assert.assertEquals("P17", template4.get("property"));
+		Assert.assertEquals("{{Q|3593529}}", template4.get("exceptions"));
+		Assert.assertEquals(2, template4.getParameters().size());
+
 	}
 
 }

@@ -146,7 +146,9 @@ public class TemplateParser {
 		for (String line : list) {
 			String key = getKey(line);
 			String value = getValue(line);
-			ret.put(key, value);
+			if (!key.trim().isEmpty()) {
+				ret.put(key, value);
+			}
 		}
 		return ret;
 	}
