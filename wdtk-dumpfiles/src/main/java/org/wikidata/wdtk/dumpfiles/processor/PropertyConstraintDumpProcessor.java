@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintParserConstant;
@@ -51,6 +50,7 @@ public class PropertyConstraintDumpProcessor {
 	public static final String COMMENT_A = "AnnotationAssertion( rdfs:comment ";
 	public static final String COMMENT_B = " \"";
 	public static final String COMMENT_C = "\" )";
+	public static final String DEFAULT_DUMP_DATE = "20140331";
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
 	public static final String ENTITY_PREFIX = "http://www.wikidata.org/entity/";
 	public static final String OWL_END = "\n\n)\n\n";
@@ -114,10 +114,16 @@ public class PropertyConstraintDumpProcessor {
 	public void processDumps(BufferedWriter output) throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
+
+		// set offline mode true to read only offline dumps
+		// controller.setOfflineMode(true);
+
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-		controller.processAllDumps(DumpContentType.CURRENT, "20140331", "20140331");
+
+		controller.processAllDumps(DumpContentType.CURRENT, DEFAULT_DUMP_DATE,
+				DEFAULT_DUMP_DATE);
 
 		output.write(OWL_START);
 		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);
