@@ -315,9 +315,16 @@ public class DumpProcessingController {
 	 * (MwRevisionProcessor or EntityDocumentProcessor objects) will be notified
 	 * of all data they registered for.
 	 * 
+	 * @param minDate
+	 *            earliest date (inclusive) in YYYYMMDD format of dumps accepted
+	 *            to be processed, or <code>null</code> to ignore this limit
+	 * @param maxDate
+	 *            latest date (inclusive) in YYYYMMDD format of dumps accepted
+	 *            to be processed, or <code>null</code> to ignore this limit
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 */
-	public void processAllDumps(DumpContentType dumpContentType) {
+	public void processAllDumps(DumpContentType dumpContentType,
+			String minDate, String maxDate) {
 		setupEntityDocumentProcessors();
 		WmfDumpFileManager wmfDumpFileManager;
 		try {
@@ -329,9 +336,16 @@ public class DumpProcessingController {
 
 		MwDumpFileProcessor dumpFileProcessor = getRevisionDumpFileProcessor();
 
-		for (MwDumpFile dumpFile : wmfDumpFileManager
-				.findAllDumps(dumpContentType)) {
-			processDumpFile(dumpFile, dumpFileProcessor);
+		List<MwDumpFile> listOfDumpFiles = wmfDumpFileManager
+				.findAllDumps(dumpContentType);
+		for (MwDumpFile dumpFile : listOfDumpFiles) {
+			if (minDate == null
+					|| dumpFile.getDateStamp().compareTo(minDate) >= 0) {
+				if (maxDate == null
+						|| dumpFile.getDateStamp().compareTo(maxDate) <= 0) {
+					processDumpFile(dumpFile, dumpFileProcessor);
+				}
+			}
 		}
 	}
 

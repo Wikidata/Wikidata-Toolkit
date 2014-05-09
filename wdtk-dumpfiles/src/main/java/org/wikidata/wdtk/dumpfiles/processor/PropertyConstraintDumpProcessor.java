@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintParserConstant;
@@ -116,7 +117,7 @@ public class PropertyConstraintDumpProcessor {
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-		controller.processAllDumps(DumpContentType.CURRENT);
+		controller.processAllDumps(DumpContentType.CURRENT, "20140331", "20140331");
 
 		output.write(OWL_START);
 		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);
@@ -162,6 +163,7 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	public void run(String[] args) throws IOException {
+		ExampleHelpers.configureLogging();
 		String fileName = DEFAULT_FILE_NAME;
 		if (args.length > 0) {
 			fileName = args[0];
