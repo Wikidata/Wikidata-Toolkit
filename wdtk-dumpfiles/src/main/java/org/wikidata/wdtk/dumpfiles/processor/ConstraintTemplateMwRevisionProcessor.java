@@ -42,6 +42,7 @@ class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 	public static final int TEMPLATE_NS = 10;
 	public static final String CONSTRAINT_PREFIX = "Constraint";
 	public static final String COLON = ":";
+	public static final String SLASH = "/";
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();
@@ -61,7 +62,8 @@ class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 	@Override
 	public void processRevision(MwRevision mwRevision) {
 		String title = mwRevision.getPrefixedTitle();
-		if (title.startsWith(this.constraintTemplatePrefix)) {
+		if (title.startsWith(this.constraintTemplatePrefix)
+				&& (title.indexOf(SLASH) == -1)) {
 			String propertyName = title.substring(this.constraintTemplatePrefix
 					.length());
 			String text = mwRevision.getText();

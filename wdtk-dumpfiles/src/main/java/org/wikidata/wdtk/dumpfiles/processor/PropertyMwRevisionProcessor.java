@@ -36,6 +36,7 @@ class PropertyMwRevisionProcessor implements MwRevisionProcessor {
 
 	public static final int PROPERTY_NS = 120;
 	public static final String COLON = ":";
+	public static final String SLASH = "/";
 
 	final Map<String, String> map = new TreeMap<String, String>();
 	String propertyPrefix = "";
@@ -52,7 +53,8 @@ class PropertyMwRevisionProcessor implements MwRevisionProcessor {
 	@Override
 	public void processRevision(MwRevision mwRevision) {
 		String title = mwRevision.getPrefixedTitle();
-		if (title.startsWith(this.propertyPrefix)) {
+		if (title.startsWith(this.propertyPrefix)
+				&& (title.indexOf(SLASH) == -1)) {
 			String propertyName = title.substring(this.propertyPrefix.length());
 			String text = mwRevision.getText();
 

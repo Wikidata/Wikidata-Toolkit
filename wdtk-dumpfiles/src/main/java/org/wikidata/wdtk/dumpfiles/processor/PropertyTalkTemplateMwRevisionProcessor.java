@@ -41,6 +41,7 @@ class PropertyTalkTemplateMwRevisionProcessor implements MwRevisionProcessor {
 
 	public static final int PROPERTY_TALK_NS = 121;
 	public static final String COLON = ":";
+	public static final String SLASH = "/";
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();
@@ -59,7 +60,8 @@ class PropertyTalkTemplateMwRevisionProcessor implements MwRevisionProcessor {
 	@Override
 	public void processRevision(MwRevision mwRevision) {
 		String title = mwRevision.getPrefixedTitle();
-		if (title.startsWith(this.propertyTalkPrefix)) {
+		if (title.startsWith(this.propertyTalkPrefix)
+				&& (title.indexOf(SLASH) == -1)) {
 			String propertyName = title.substring(this.propertyTalkPrefix
 					.length());
 			String text = mwRevision.getText();
