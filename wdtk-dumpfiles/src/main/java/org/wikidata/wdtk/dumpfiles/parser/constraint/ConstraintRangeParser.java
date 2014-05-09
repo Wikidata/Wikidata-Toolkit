@@ -69,7 +69,16 @@ class ConstraintRangeParser implements ConstraintParser {
 			}
 			return null;
 		}
+	}
 
+	public Double parseDouble(String str) {
+		Validate.notNull(str);
+		Double ret = null;
+		try {
+			ret = Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+		}
+		return ret;
 	}
 
 	public ConstraintRangeParser() {
@@ -78,24 +87,31 @@ class ConstraintRangeParser implements ConstraintParser {
 	public ConstraintRange parse(Template template) {
 		ConstraintRange ret = null;
 		String page = template.getPage();
-		String minStr = template.get(ConstraintParserConstant.P_MIN);
-		String maxStr = template.get(ConstraintParserConstant.P_MAX);
+		String minStr = template.get(ConstraintParserConstant.P_MIN)
+				.toLowerCase().trim();
+		String maxStr = template.get(ConstraintParserConstant.P_MAX)
+				.toLowerCase().trim();
 		if (page != null && minStr != null && maxStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
+
+			// FIXME this parser does not use the property date type yet
+
 			DateAndNow minDate = parseDate(minStr);
 			DateAndNow maxDate = parseDate(maxStr);
 			if (minDate != null && maxDate != null) {
 				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
 						true);
 			}
-			Double minNum = Double.parseDouble(minStr);
-			Double maxNum = Double.parseDouble(maxStr);
+
+			Double minNum = parseDouble(minStr);
+			Double maxNum = parseDouble(maxStr);
 			if (minNum != null && maxNum != null) {
 				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
 						false);
 			}
+
 		}
 		return ret;
 	}
