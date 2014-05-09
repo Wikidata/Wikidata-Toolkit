@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
@@ -115,7 +116,7 @@ public class PropertyConstraintDumpProcessor {
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-		controller.processAllRecentRevisionDumps();
+		controller.processAllDumps(DumpContentType.CURRENT);
 
 		output.write(OWL_START);
 		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);
