@@ -311,6 +311,31 @@ public class DumpProcessingController {
 	}
 
 	/**
+	 * Processes all dumps in order. The registered listeners
+	 * (MwRevisionProcessor or EntityDocumentProcessor objects) will be notified
+	 * of all data they registered for.
+	 * 
+	 * @see DumpProcessingController#processAllRecentRevisionDumps()
+	 */
+	public void processAllDumps(DumpContentType dumpContentType) {
+		setupEntityDocumentProcessors();
+		WmfDumpFileManager wmfDumpFileManager;
+		try {
+			wmfDumpFileManager = getWmfDumpFileManager();
+		} catch (IOException e) {
+			logger.error("Could not create dump file manager: " + e.toString());
+			return;
+		}
+
+		MwDumpFileProcessor dumpFileProcessor = getRevisionDumpFileProcessor();
+
+		for (MwDumpFile dumpFile : wmfDumpFileManager
+				.findAllDumps(dumpContentType)) {
+			processDumpFile(dumpFile, dumpFileProcessor);
+		}
+	}
+
+	/**
 	 * Processes the most recent incremental (daily) dump that is available.
 	 * This is mainly useful for testing, since these dumps are much smaller
 	 * than the main dumps. The registered listeners (MwRevisionProcessor or
