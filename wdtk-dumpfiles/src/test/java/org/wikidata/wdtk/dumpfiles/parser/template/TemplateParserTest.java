@@ -20,6 +20,8 @@ package org.wikidata.wdtk.dumpfiles.parser.template;
  * #L%
  */
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -92,6 +94,20 @@ public class TemplateParserTest {
 		Assert.assertEquals("{{Q|35120}}, {{Q|14897293}}",
 				template6.get("exceptions"));
 		Assert.assertEquals(2, template6.getParameters().size());
+
+		TemplateScanner scanner = new TemplateScanner();
+		List<String> list = scanner
+				.getTemplates("{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, <!-- more values -->{{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}");
+		Assert.assertEquals(1, list.size());
+
+		Template template3b = parser.parse("P21", list.get(0));
+		Assert.assertEquals("P21", template3b.getPage());
+		Assert.assertEquals("Constraint:One of", template3b.getId());
+		Assert.assertEquals(
+				"{{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}",
+				template3b.get("values"));
+		Assert.assertEquals(1, template3b.getParameters().size());
+
 	}
 
 }

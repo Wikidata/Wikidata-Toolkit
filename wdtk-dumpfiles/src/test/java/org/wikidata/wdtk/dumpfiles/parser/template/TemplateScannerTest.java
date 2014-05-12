@@ -28,10 +28,10 @@ import org.junit.Test;
 
 public class TemplateScannerTest {
 
-	private static final String text = "\n{{Constraint:Type|class=Q1048835|relation=instance}}"
-			+ "\n{{Constraint:Value type|class=Q5|relation=instance}}"
-			+ "\n{{Constraint:Target required claim|property=P21}}"
-			+ "\n{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}"
+	private static final String text = "\n<!-- ignored -->{{Constraint:Type|class=Q1048835|relation=instance}}"
+			+ "\n{{Constraint:Value type|class=Q5|relation<!---->=instance}}"
+			+ "\n{<!--ignored --->{Constraint:Target required claim|property=P21}}"
+			+ "\n{{Constraint:One of|values=<!-- ignored-->{{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}"
 			+ "\n";
 
 	@Test

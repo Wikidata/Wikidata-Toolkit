@@ -35,7 +35,7 @@ public class TemplateScanner {
 	}
 
 	public List<String> getTemplates(String str) {
-		return Collections.unmodifiableList(parse(str));
+		return Collections.unmodifiableList(parse(removeHTMLComments(str)));
 	}
 
 	List<String> parse(String str) {
@@ -66,6 +66,10 @@ public class TemplateScanner {
 			}
 		}
 		return ret;
+	}
+
+	String removeHTMLComments(String str) {
+		return str.replaceAll(ParserConstant.REG_EXP_HTML_COMMENT, "");
 	}
 
 }

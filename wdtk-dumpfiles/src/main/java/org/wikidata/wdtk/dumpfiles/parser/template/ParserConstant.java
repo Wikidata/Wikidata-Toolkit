@@ -40,4 +40,13 @@ public interface ParserConstant {
 	String SEMICOLON = ";";
 	String NEWLINE = "\n";
 
+	/**
+	 * Regular expression to identify all HTML comments in a string.
+	 * <p>
+	 * (?s) makes dot '.' also match new lines '\n'
+	 * <p>
+	 * .*? is a reluctant quantifier
+	 */
+	String REG_EXP_HTML_COMMENT = "(?s)<!--.*?-->";
+
 }
