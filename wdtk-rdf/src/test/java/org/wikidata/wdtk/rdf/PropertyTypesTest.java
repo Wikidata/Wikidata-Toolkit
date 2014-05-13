@@ -24,6 +24,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,8 +65,13 @@ public class PropertyTypesTest {
 	}
 
 	@Test
-	public void testSetPropertyTypeFromEntityIdValue(){
-		assertEquals(propertyTypes.setPropertyTypeFromEntityIdValue(factory.getPropertyIdValue("P1001", "http://www.wikidata.org/property"), factory.getItemIdValue("Q20", "http://www.wikidata.org/entity/")), DatatypeIdValue.DT_ITEM);
+	public void testSetPropertyTypeFromEntityIdValue() {
+		assertEquals(propertyTypes.setPropertyTypeFromEntityIdValue(
+				factory.getPropertyIdValue("P1001",
+						"http://www.wikidata.org/property"), factory
+						.getItemIdValue("Q20",
+								"http://www.wikidata.org/entity/")),
+				DatatypeIdValue.DT_ITEM);
 	}
 
 	@Test
@@ -76,4 +83,41 @@ public class PropertyTypesTest {
 				"http://www.wikidata.org/ontology#propertyTypeString");
 	}
 
+	void printList(List<String> list) {
+		for (String str : list) {
+			System.out.println(str);
+		}
+	}
+
+	@Test
+	public void testQuicksort() {
+		List<String> propertyList = new ArrayList<String>();
+
+		propertyList.add("P17");
+		propertyList.add("P107");
+		propertyList.add("P3");
+		propertyList.add("P29");
+		propertyList.add("P17");
+		propertyList.add("P89");
+
+		List<String> sortedList = new ArrayList<String>();
+
+		sortedList.add("P3");
+		sortedList.add("P17");
+		sortedList.add("P17");
+		sortedList.add("P29");
+		sortedList.add("P89");
+		sortedList.add("P107");
+
+		propertyTypes.sortByPropertyKey(propertyList);
+
+		assertEquals(propertyList, sortedList);
+
+	}
+
+	@Test
+	public void testGetPropertyList() throws IOException {
+		
+//		propertyTypes.getPropertyList(System.out);
+	}
 }
