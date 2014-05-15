@@ -22,8 +22,12 @@ package org.wikidata.wdtk.rdf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -217,6 +221,91 @@ public class PropertyTypes implements ValueVisitor<String> {
 	@Override
 	public String visit(TimeValue value) {
 		return DatatypeIdValue.DT_TIME;
+	}
+
+	int getIntId(String propertyId) {
+		return Integer.parseInt(propertyId.substring(1));
+	}
+
+	void quicksort(List<String> list, int low, int high) {
+		int i = low;
+		int j = high;
+		String pivotString = list.get(low + (high - low) / 2);
+		int pivot = getIntId(pivotString);
+		while (i <= j) {
+			while (getIntId(list.get(i)) < pivot) {
+				i++;
+			}
+			while (getIntId(list.get(j)) > pivot) {
+				j--;
+			}
+			if (i <= j) {
+				String tmp = list.get(i);
+				list.set(i, list.get(j));
+				list.set(j, tmp);
+				i++;
+				j--;
+			}
+		}
+		if ((i >= list.size()) || (j < 0)) {
+			return;
+		}
+
+		if (low < j) {
+			quicksort(list, low, j);
+		}
+		if (j < high) {
+			quicksort(list, i, high);
+		}
+	}
+
+	List<String> sortByPropertyKey(List<String> keyList) {
+		quicksort(keyList, 0, keyList.size() - 1);
+		return keyList;
+	}
+
+	public void getPropertyList(OutputStream out) throws IOException {
+		out.write("	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();\n	static {\n"
+				.getBytes(StandardCharsets.UTF_8));
+		List<String> keyList = sortByPropertyKey(new ArrayList<String>(
+				propertyTypes.keySet()));
+		for (String key : keyList) {
+			String datatypeNotation = new String();
+			String typeIri = propertyTypes.get(key);
+			switch (typeIri) {
+			case DatatypeIdValue.DT_COMMONS_MEDIA:
+				datatypeNotation = "DT_COMMONS_MEDIA";
+				break;
+			case DatatypeIdValue.DT_GLOBE_COORDINATES:
+				datatypeNotation = "DT_GLOBE_COORDINATES";
+				break;
+			case DatatypeIdValue.DT_ITEM:
+				datatypeNotation = "DT_ITEM";
+				break;
+			case DatatypeIdValue.DT_QUANTITY:
+				datatypeNotation = "DT_QUANTITY";
+				break;
+			case DatatypeIdValue.DT_STRING:
+				datatypeNotation = "DT_STRING";
+				break;
+			case DatatypeIdValue.DT_TIME:
+				datatypeNotation = "DT_TIME";
+				break;
+			case DatatypeIdValue.DT_URL:
+				datatypeNotation = "DT_URL";
+				break;
+			default:
+				logger.warn("unknown IRI " + typeIri);
+				datatypeNotation = null;
+
+			}
+			if (datatypeNotation != null) {
+				out.write(("		KNOWN_PROPERTY_TYPES.put(\"" + key
+						+ "\", DatatypeIdValue." + datatypeNotation + ");\n")
+						.getBytes(StandardCharsets.UTF_8));
+			}
+		}
+		out.write("}".getBytes(StandardCharsets.UTF_8));
 	}
 
 	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();
