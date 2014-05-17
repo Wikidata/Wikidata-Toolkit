@@ -172,6 +172,11 @@ public class ConstraintMainParser implements ConstraintParser {
 				new ConstraintMultiValueParser());
 		register(ConstraintParserConstant.C_CONFLICTS_WITH,
 				new ConstraintConflictsWithParser());
+		register(ConstraintParserConstant.C_QUALIFIER,
+				new ConstraintQualifierParser());
+		register(ConstraintParserConstant.C_PERSON,
+				new ConstraintPersonParser());
+		register(ConstraintParserConstant.C_TAXON, new ConstraintTaxonParser());
 	}
 
 }

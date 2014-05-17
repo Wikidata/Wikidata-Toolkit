@@ -57,4 +57,10 @@ public interface ConstraintVisitor<T> {
 
 	T visit(ConstraintConflictsWith constraint);
 
+	T visit(ConstraintQualifier constraint);
+
+	T visit(ConstraintPerson constraint);
+
+	T visit(ConstraintTaxon constraint);
+
 }

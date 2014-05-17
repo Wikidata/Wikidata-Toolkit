@@ -43,6 +43,9 @@ public interface ConstraintParserConstant {
 	String C_RANGE = "Range";
 	String C_MULTI_VALUE = "Multi value";
 	String C_CONFLICTS_WITH = "Conflicts with";
+	String C_QUALIFIER = "Qualifier";
+	String C_PERSON = "Person";
+	String C_TAXON = "Taxon";
 
 	String P_CLASS = "class";
 	String P_RELATION = "relation";

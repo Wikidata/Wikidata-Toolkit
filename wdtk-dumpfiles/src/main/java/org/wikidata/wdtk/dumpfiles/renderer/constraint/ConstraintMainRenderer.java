@@ -29,10 +29,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintOneOf;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintPerson;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintQualifier;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTargetRequiredClaim;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintValueType;
@@ -116,6 +119,21 @@ public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
 	@Override
 	public List<String> visit(ConstraintConflictsWith constraint) {
 		return (new ConstraintConflictsWithRenderer()).render(constraint);
+	}
+
+	@Override
+	public List<String> visit(ConstraintQualifier constraint) {
+		return (new ConstraintQualifierRenderer()).render(constraint);
+	}
+
+	@Override
+	public List<String> visit(ConstraintPerson constraint) {
+		return (new ConstraintPersonRenderer()).render(constraint);
+	}
+
+	@Override
+	public List<String> visit(ConstraintTaxon constraint) {
+		return (new ConstraintTaxonRenderer()).render(constraint);
 	}
 
 }
