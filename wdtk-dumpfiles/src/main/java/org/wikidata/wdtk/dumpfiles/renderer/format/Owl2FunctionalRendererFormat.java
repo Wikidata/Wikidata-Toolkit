@@ -38,6 +38,27 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public String getStart() {
+		return Owl2FunctionalConstant.OWL_START;
+	}
+
+	@Override
+	public String getEnd() {
+		return Owl2FunctionalConstant.OWL_END;
+	}
+
+	@Override
+	public String aAnnotationComment(String key, String comment) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_A);
+		sb.append(key);
+		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_B);
+		sb.append(comment);
+		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_C);
+		return sb.toString();
+	}
+
+	@Override
 	public String a_s(PropertyIdValue property) {
 		return Owl2FunctionalConstant.C_LT
 				+ Vocabulary
@@ -71,13 +92,11 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				+ Owl2FunctionalConstant.C_PAR_B;
 	}
 
-	@Override
-	public String makePair(String arg0, String arg1) {
+	private String makePair(String arg0, String arg1) {
 		return arg0 + Owl2FunctionalConstant.C_SPACE + arg1;
 	}
 
-	@Override
-	public String makeList(List<ItemIdValue> list) {
+	private String makeList(List<ItemIdValue> list) {
 		StringBuilder ret = new StringBuilder();
 		for (ItemIdValue q : list) {
 			ret.append(aItem(q));

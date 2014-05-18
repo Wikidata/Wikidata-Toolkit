@@ -49,20 +49,8 @@ public class PropertyConstraintDumpProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
 
-	public static final String COMMENT_A = "AnnotationAssertion( rdfs:comment ";
-	public static final String COMMENT_B = " \"";
-	public static final String COMMENT_C = "\" )";
 	public static final String DEFAULT_DUMP_DATE = "20140331";
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
-	public static final String ENTITY_PREFIX = "http://www.wikidata.org/entity/";
-	public static final String OWL_END = "\n\n)\n\n";
-	public static final String OWL_START = ""
-			+ "Prefix(:=<http://www.wikidata.org/entity/constraints/>)"
-			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
-			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
-			+ "\nPrefix(entity:=<" + ENTITY_PREFIX + ">)"
-			+ "\nOntology(<http://www.wikidata.org/entity/constraints/ont>"
-			+ "\n\n";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
 	public static void main(String[] args) throws IOException {
@@ -90,16 +78,14 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	public void printConstraintTemplates(
-			Map<String, List<Template>> templateMap, BufferedWriter output)
-			throws IOException {
+			Map<String, List<Template>> templateMap, BufferedWriter output,
+			RendererFormat rendererFormat) throws IOException {
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(key));
-			output.write(COMMENT_A);
-			output.write("entity:" + key);
-			output.write(COMMENT_B);
-			output.write(escapeChars(templates.toString()));
-			output.write(COMMENT_C);
+			String statement = rendererFormat.aAnnotationComment(key,
+					escapeChars(templates.toString()));
+			output.write(statement);
 			output.newLine();
 		}
 		output.flush();
@@ -123,6 +109,8 @@ public class PropertyConstraintDumpProcessor {
 		// set offline mode true to read only offline dumps
 		// controller.setOfflineMode(true);
 
+		RendererFormat rendererFormat = new Owl2FunctionalRendererFormat();
+
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
@@ -130,16 +118,18 @@ public class PropertyConstraintDumpProcessor {
 		controller.processAllDumps(DumpContentType.CURRENT, DEFAULT_DUMP_DATE,
 				DEFAULT_DUMP_DATE);
 
-		output.write(OWL_START);
-		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(), output);
-		processTemplates(propertyTalkTemplateProcessor.getMap(), output);
-		output.write(OWL_END);
+		output.write(rendererFormat.getStart());
+		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(),
+				output, rendererFormat);
+		processTemplates(propertyTalkTemplateProcessor.getMap(), output,
+				rendererFormat);
+		output.write(rendererFormat.getEnd());
 	}
 
 	public void processTemplates(Map<String, List<Template>> templateMap,
-			BufferedWriter output) throws IOException {
+			BufferedWriter output, RendererFormat rendererFormat)
+			throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
-		RendererFormat rendererFormat = new Owl2FunctionalRendererFormat();
 		ConstraintMainRenderer renderer = new ConstraintMainRenderer(
 				rendererFormat);
 		TemplateExpander expander = new TemplateExpander();

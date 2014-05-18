@@ -27,6 +27,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 public interface RendererFormat {
 
+	String getStart();
+
+	String getEnd();
+
+	String aAnnotationComment(String key, String comment);
+
 	String a_s(PropertyIdValue property);
 
 	String a_v(PropertyIdValue property);
@@ -34,10 +40,6 @@ public interface RendererFormat {
 	String aItem(ItemIdValue item);
 
 	String aRp(PropertyIdValue property);
-
-	String makePair(String arg0, String arg1);
-
-	String makeList(List<ItemIdValue> list);
 
 	String aDataIntersectionOf(String arg0, String arg1);
 

@@ -61,4 +61,17 @@ public interface Owl2FunctionalConstant {
 	String XSD_PATTERN = "xsd:pattern";
 	String XSD_STRING = "xsd:string";
 
+	String OWL_START = ""
+			+ "Prefix(:=<http://www.wikidata.org/entity/constraints/>)"
+			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
+			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
+			+ "\nPrefix(entity:=<http://www.wikidata.org/entity/>)"
+			+ "\nOntology(<http://www.wikidata.org/entity/constraints/ont>"
+			+ "\n\n";
+	String OWL_END = "\n\n)\n\n";
+
+	String ANNOTATION_ASSERTION_A = "AnnotationAssertion( rdfs:comment entity:";
+	String ANNOTATION_ASSERTION_B = " \"";
+	String ANNOTATION_ASSERTION_C = "\" )";
+
 }
