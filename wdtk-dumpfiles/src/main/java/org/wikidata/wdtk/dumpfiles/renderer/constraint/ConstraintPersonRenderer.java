@@ -41,6 +41,11 @@ import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
  */
 class ConstraintPersonRenderer implements ConstraintRenderer {
 
+	public static final String Q_PERSON = "Q215627";
+	public static final String P_SEX_OR_GENDER = "P21";
+	public static final String P_PLACE_OF_BIRTH = "P19";
+	public static final String P_DATE_OF_BIRTH = "P569";
+
 	final RendererFormat f;
 
 	/**
@@ -57,23 +62,23 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 		List<Constraint> ret = new ArrayList<Constraint>();
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
-		ItemIdValue q215627 = factory.getItemIdValue("Q215627",
+		ItemIdValue qPerson = factory.getItemIdValue(Q_PERSON,
 				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p21 = factory.getPropertyIdValue("P21",
-				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p19 = factory.getPropertyIdValue("P19",
-				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p569 = factory.getPropertyIdValue("P569",
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue pSexOrGender = factory.getPropertyIdValue(
+				P_SEX_OR_GENDER, ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue pPlaceOfBirth = factory.getPropertyIdValue(
+				P_PLACE_OF_BIRTH, ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue pDateOfBirth = factory.getPropertyIdValue(
+				P_DATE_OF_BIRTH, ConstraintMainParser.DEFAULT_BASE_IRI);
 
-		ret.add(new ConstraintType(constrainedProperty, q215627,
+		ret.add(new ConstraintType(constrainedProperty, qPerson,
 				RelationType.INSTANCE));
-		ret.add(new ConstraintItem(constrainedProperty, p21, null, null, null,
-				null, null));
-		ret.add(new ConstraintItem(constrainedProperty, p19, null, null, null,
-				null, null));
-		ret.add(new ConstraintItem(constrainedProperty, p569, null, null, null,
-				null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pSexOrGender, null,
+				null, null, null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pPlaceOfBirth, null,
+				null, null, null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pDateOfBirth, null,
+				null, null, null, null));
 
 		return ret;
 	}

@@ -41,6 +41,11 @@ import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
  */
 class ConstraintTaxonRenderer implements ConstraintRenderer {
 
+	public static final String Q_TAXON = "Q16521";
+	public static final String P_TAXON_NAME = "P225";
+	public static final String P_PARENT_TAXON = "P171";
+	public static final String P_TAXON_RANK = "P105";
+
 	final RendererFormat f;
 
 	/**
@@ -57,23 +62,23 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 		List<Constraint> ret = new ArrayList<Constraint>();
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
-		ItemIdValue q16521 = factory.getItemIdValue("Q16521",
+		ItemIdValue qTaxon = factory.getItemIdValue(Q_TAXON,
 				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p225 = factory.getPropertyIdValue("P225",
+		PropertyIdValue pTaxonName = factory.getPropertyIdValue(P_TAXON_NAME,
 				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p171 = factory.getPropertyIdValue("P171",
-				ConstraintMainParser.DEFAULT_BASE_IRI);
-		PropertyIdValue p105 = factory.getPropertyIdValue("P105",
+		PropertyIdValue pParentTaxon = factory.getPropertyIdValue(
+				P_PARENT_TAXON, ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue pTaxonRank = factory.getPropertyIdValue(P_TAXON_RANK,
 				ConstraintMainParser.DEFAULT_BASE_IRI);
 
-		ret.add(new ConstraintType(constrainedProperty, q16521,
+		ret.add(new ConstraintType(constrainedProperty, qTaxon,
 				RelationType.INSTANCE));
-		ret.add(new ConstraintItem(constrainedProperty, p225, null, null, null,
-				null, null));
-		ret.add(new ConstraintItem(constrainedProperty, p171, null, null, null,
-				null, null));
-		ret.add(new ConstraintItem(constrainedProperty, p105, null, null, null,
-				null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pTaxonName, null, null,
+				null, null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pParentTaxon, null,
+				null, null, null, null));
+		ret.add(new ConstraintItem(constrainedProperty, pTaxonRank, null, null,
+				null, null, null));
 
 		return ret;
 	}
