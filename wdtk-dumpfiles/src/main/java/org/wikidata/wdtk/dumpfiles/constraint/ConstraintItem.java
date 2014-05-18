@@ -51,8 +51,12 @@ public class ConstraintItem implements Constraint {
 		this.item = item;
 		this.property2 = property2;
 		this.item2 = item2;
-		this.items.addAll(items);
-		this.exceptions.addAll(exceptions);
+		if (items != null) {
+			this.items.addAll(items);
+		}
+		if (exceptions != null) {
+			this.exceptions.addAll(exceptions);
+		}
 	}
 
 	final PropertyIdValue constrainedProperty;
