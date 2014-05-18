@@ -132,11 +132,9 @@ public class PropertyConstraintDumpProcessor {
 		ConstraintMainParser parser = new ConstraintMainParser();
 		ConstraintMainRenderer renderer = new ConstraintMainRenderer(
 				rendererFormat);
-		TemplateExpander expander = new TemplateExpander();
 		for (String key : templateMap.keySet()) {
 			output.newLine();
-			List<Template> templates = expander.expand(key,
-					templateMap.get(key));
+			List<Template> templates = templateMap.get(key);
 			for (Template template : templates) {
 
 				Constraint constraint = null;
