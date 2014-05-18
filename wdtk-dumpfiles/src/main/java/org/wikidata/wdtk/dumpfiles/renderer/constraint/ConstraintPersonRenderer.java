@@ -32,6 +32,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintPerson;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -40,8 +41,9 @@ import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
  */
 class ConstraintPersonRenderer implements ConstraintRenderer {
 
+	final RendererFormat f;
+
 	/**
-	 * 
 	 * Constructs a sequence of constraints according to the following list:
 	 * {{Constraint:Type|class=Q215627|relation=instance}}
 	 * {{Constraint:Item|property=P21}} {{Constraint:Item|property=P19}}
@@ -76,7 +78,8 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 		return ret;
 	}
 
-	public ConstraintPersonRenderer() {
+	public ConstraintPersonRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -88,7 +91,7 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintPerson c) {
-		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer();
+		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(f);
 		List<String> ret = new ArrayList<String>();
 		List<Constraint> sequence = getConstraintSequence(c
 				.getConstrainedProperty());

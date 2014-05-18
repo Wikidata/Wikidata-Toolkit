@@ -28,6 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintConflictsWith;
 import org.wikidata.wdtk.dumpfiles.constraint.PropertyValues;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -36,7 +37,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.PropertyValues;
  */
 class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 
-	public ConstraintConflictsWithRenderer() {
+	final RendererFormat f;
+
+	public ConstraintConflictsWithRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -56,7 +60,6 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 		if (p == null || list == null || list.isEmpty()) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		for (PropertyValues propertyValues : list) {
 			ret.addAll(renderPart(p, propertyValues.getProperty(),
@@ -71,7 +74,6 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 		if (p == null || r == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		if (q == null || q.isEmpty()) {
 			ret.add(f.aDisjointClasses(
 					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),

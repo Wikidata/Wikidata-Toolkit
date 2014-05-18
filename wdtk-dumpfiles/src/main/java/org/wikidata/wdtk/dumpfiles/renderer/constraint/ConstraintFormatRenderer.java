@@ -26,6 +26,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -34,7 +35,12 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintFormat;
  */
 class ConstraintFormatRenderer implements ConstraintRenderer {
 
-	public ConstraintFormatRenderer() {
+	public static final String C_QUOTATION_MARK = "\"";
+
+	final RendererFormat f;
+
+	public ConstraintFormatRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -48,11 +54,9 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 	private String transform(String pattern) {
 
 		// FIXME this does not cover all cases
-		String newPattern = pattern.replace(
-				ConstraintRendererConstant.C_QUOTATION_MARK, "");
+		String newPattern = pattern.replace(C_QUOTATION_MARK, "");
 
-		return ConstraintRendererConstant.C_QUOTATION_MARK + newPattern
-				+ ConstraintRendererConstant.C_QUOTATION_MARK;
+		return C_QUOTATION_MARK + newPattern + C_QUOTATION_MARK;
 	}
 
 	public List<String> render(ConstraintFormat c) {
@@ -64,7 +68,6 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 		if (p == null || pattern == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		String rp = f.aRp(p);
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aDatatypeDefinition(rp, f.aDatatypeRestriction(f.xsdString(),

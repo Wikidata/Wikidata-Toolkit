@@ -40,6 +40,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintValueType;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintVisitor;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -48,27 +49,33 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintVisitor;
  */
 public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
 
-	public ConstraintMainRenderer() {
+	final RendererFormat rendererFormat;
+
+	public ConstraintMainRenderer(RendererFormat rendererFormat) {
+		this.rendererFormat = rendererFormat;
 	}
 
 	@Override
 	public List<String> visit(ConstraintSingleValue constraint) {
-		return (new ConstraintSingleValueRenderer()).render(constraint);
+		return (new ConstraintSingleValueRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintUniqueValue constraint) {
-		return (new ConstraintUniqueValueRenderer()).render(constraint);
+		return (new ConstraintUniqueValueRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintFormat constraint) {
-		return (new ConstraintFormatRenderer()).render(constraint);
+		return (new ConstraintFormatRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintOneOf constraint) {
-		return (new ConstraintOneOfRenderer()).render(constraint);
+		return (new ConstraintOneOfRenderer(rendererFormat)).render(constraint);
 	}
 
 	@Override
@@ -88,37 +95,41 @@ public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
 
 	@Override
 	public List<String> visit(ConstraintTargetRequiredClaim constraint) {
-		return (new ConstraintTargetRequiredClaimRenderer()).render(constraint);
+		return (new ConstraintTargetRequiredClaimRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintItem constraint) {
-		return (new ConstraintItemRenderer()).render(constraint);
+		return (new ConstraintItemRenderer(rendererFormat)).render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintType constraint) {
-		return (new ConstraintTypeRenderer()).render(constraint);
+		return (new ConstraintTypeRenderer(rendererFormat)).render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintValueType constraint) {
-		return (new ConstraintValueTypeRenderer()).render(constraint);
+		return (new ConstraintValueTypeRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintRange constraint) {
-		return (new ConstraintRangeRenderer()).render(constraint);
+		return (new ConstraintRangeRenderer(rendererFormat)).render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintMultiValue constraint) {
-		return (new ConstraintMultiValueRenderer()).render(constraint);
+		return (new ConstraintMultiValueRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintConflictsWith constraint) {
-		return (new ConstraintConflictsWithRenderer()).render(constraint);
+		return (new ConstraintConflictsWithRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
@@ -128,12 +139,13 @@ public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
 
 	@Override
 	public List<String> visit(ConstraintPerson constraint) {
-		return (new ConstraintPersonRenderer()).render(constraint);
+		return (new ConstraintPersonRenderer(rendererFormat))
+				.render(constraint);
 	}
 
 	@Override
 	public List<String> visit(ConstraintTaxon constraint) {
-		return (new ConstraintTaxonRenderer()).render(constraint);
+		return (new ConstraintTaxonRenderer(rendererFormat)).render(constraint);
 	}
 
 }

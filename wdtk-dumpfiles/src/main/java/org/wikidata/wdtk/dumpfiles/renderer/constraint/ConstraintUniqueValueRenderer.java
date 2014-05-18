@@ -26,6 +26,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -34,7 +35,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
  */
 class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 
-	public ConstraintUniqueValueRenderer() {
+	final RendererFormat f;
+
+	public ConstraintUniqueValueRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -54,7 +58,6 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 		if (p == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aHasKey(f.owlThing(), f.a_v(p), ""));
 		return ret;

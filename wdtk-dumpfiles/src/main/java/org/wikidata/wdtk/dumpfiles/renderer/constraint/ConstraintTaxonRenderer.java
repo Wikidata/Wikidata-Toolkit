@@ -32,6 +32,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -39,6 +40,8 @@ import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
  * 
  */
 class ConstraintTaxonRenderer implements ConstraintRenderer {
+
+	final RendererFormat f;
 
 	/**
 	 * Constructs a sequence of constraints according to the following list:
@@ -75,7 +78,8 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 		return ret;
 	}
 
-	public ConstraintTaxonRenderer() {
+	public ConstraintTaxonRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -87,7 +91,7 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintTaxon c) {
-		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer();
+		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(f);
 		List<String> ret = new ArrayList<String>();
 		List<Constraint> sequence = getConstraintSequence(c
 				.getConstrainedProperty());

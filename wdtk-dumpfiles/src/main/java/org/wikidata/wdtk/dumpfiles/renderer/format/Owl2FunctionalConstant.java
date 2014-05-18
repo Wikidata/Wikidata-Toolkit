@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.renderer.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 /*
  * #%L
@@ -25,7 +25,7 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * @author Julian Mendez
  * 
  */
-public interface ConstraintRendererConstant {
+public interface Owl2FunctionalConstant {
 
 	String C_CARET = "^";
 	String C_LT = "<";

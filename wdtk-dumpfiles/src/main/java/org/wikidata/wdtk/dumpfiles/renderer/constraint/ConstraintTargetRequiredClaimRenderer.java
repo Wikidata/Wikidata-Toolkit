@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTargetRequiredClaim;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -35,7 +36,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintTargetRequiredClaim;
  */
 class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 
-	public ConstraintTargetRequiredClaimRenderer() {
+	final RendererFormat f;
+
+	public ConstraintTargetRequiredClaimRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -56,7 +60,6 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 		if (p == null || r == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		if (q == null) {
 			ret.add(f.aObjectPropertyRange(f.a_v(p),

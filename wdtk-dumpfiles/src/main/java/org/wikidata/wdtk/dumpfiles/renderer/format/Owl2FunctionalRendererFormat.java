@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.renderer.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 /*
  * #%L
@@ -32,186 +32,220 @@ import org.wikidata.wdtk.rdf.Vocabulary;
  * @author Julian Mendez
  * 
  */
-public class OWLSymbolFactory {
+public class Owl2FunctionalRendererFormat implements RendererFormat {
 
+	public Owl2FunctionalRendererFormat() {
+	}
+
+	@Override
 	public String a_s(PropertyIdValue property) {
-		return ConstraintRendererConstant.C_LT
+		return Owl2FunctionalConstant.C_LT
 				+ Vocabulary
 						.getPropertyUri(property, PropertyContext.STATEMENT)
-				+ ConstraintRendererConstant.C_GT;
+				+ Owl2FunctionalConstant.C_GT;
 	}
 
+	@Override
 	public String a_v(PropertyIdValue property) {
-		return ConstraintRendererConstant.C_LT
+		return Owl2FunctionalConstant.C_LT
 				+ Vocabulary.getPropertyUri(property, PropertyContext.VALUE)
-				+ ConstraintRendererConstant.C_GT;
+				+ Owl2FunctionalConstant.C_GT;
 	}
 
+	@Override
 	public String aItem(ItemIdValue item) {
-		return ConstraintRendererConstant.C_LT + item.getIri()
-				+ ConstraintRendererConstant.C_GT;
+		return Owl2FunctionalConstant.C_LT + item.getIri()
+				+ Owl2FunctionalConstant.C_GT;
 	}
 
+	@Override
 	public String aRp(PropertyIdValue property) {
-		return ConstraintRendererConstant.C_LT + property.getIri() + "aux"
-				+ ConstraintRendererConstant.C_GT;
+		return Owl2FunctionalConstant.C_LT + property.getIri() + "aux"
+				+ Owl2FunctionalConstant.C_GT;
 	}
 
 	private String makeFunction(String object, String arg) {
-		return object + ConstraintRendererConstant.C_PAR_A
-				+ ConstraintRendererConstant.C_SPACE + arg
-				+ ConstraintRendererConstant.C_SPACE
-				+ ConstraintRendererConstant.C_PAR_B;
+		return object + Owl2FunctionalConstant.C_PAR_A
+				+ Owl2FunctionalConstant.C_SPACE + arg
+				+ Owl2FunctionalConstant.C_SPACE
+				+ Owl2FunctionalConstant.C_PAR_B;
 	}
 
+	@Override
 	public String makePair(String arg0, String arg1) {
-		return arg0 + ConstraintRendererConstant.C_SPACE + arg1;
+		return arg0 + Owl2FunctionalConstant.C_SPACE + arg1;
 	}
 
+	@Override
 	public String makeList(List<ItemIdValue> list) {
 		StringBuilder ret = new StringBuilder();
 		for (ItemIdValue q : list) {
 			ret.append(aItem(q));
-			ret.append(ConstraintRendererConstant.C_SPACE);
+			ret.append(Owl2FunctionalConstant.C_SPACE);
 		}
 		return ret.toString();
 	}
 
+	@Override
 	public String aDataIntersectionOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DATA_INTERSECTION_OF,
+		return makeFunction(Owl2FunctionalConstant.DATA_INTERSECTION_OF,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aDataPropertyRange(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DATA_PROPERTY_RANGE,
+		return makeFunction(Owl2FunctionalConstant.DATA_PROPERTY_RANGE,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aDataSomeValuesFrom(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DATA_SOME_VALUES_FROM,
+		return makeFunction(Owl2FunctionalConstant.DATA_SOME_VALUES_FROM,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aDatatype(String arg) {
-		return makeFunction(ConstraintRendererConstant.DATATYPE, arg);
+		return makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
 	}
 
+	@Override
 	public String aDatatypeDefinition(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DATATYPE_DEFINITION,
+		return makeFunction(Owl2FunctionalConstant.DATATYPE_DEFINITION,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aDatatypeRestriction(String arg0, String arg1, String arg2) {
-		return makeFunction(ConstraintRendererConstant.DATATYPE_RESTRICTION,
+		return makeFunction(Owl2FunctionalConstant.DATATYPE_RESTRICTION,
 				makePair(arg0, makePair(arg1, arg2)));
 	}
 
+	@Override
 	public String aDeclaration(String arg) {
-		return makeFunction(ConstraintRendererConstant.DECLARATION, arg);
+		return makeFunction(Owl2FunctionalConstant.DECLARATION, arg);
 	}
 
+	@Override
 	public String aDisjointClasses(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.DISJOINT_CLASSES,
+		return makeFunction(Owl2FunctionalConstant.DISJOINT_CLASSES,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aFunctionalObjectProperty(String arg) {
-		return makeFunction(
-				ConstraintRendererConstant.FUNCTIONAL_OBJECT_PROPERTY, arg);
+		return makeFunction(Owl2FunctionalConstant.FUNCTIONAL_OBJECT_PROPERTY,
+				arg);
 	}
 
+	@Override
 	public String aHasKey(String arg0, String arg1, String arg2) {
 		return makeFunction(
-				ConstraintRendererConstant.HAS_KEY,
+				Owl2FunctionalConstant.HAS_KEY,
 				makePair(
 						arg0,
 						makePair(makeFunction("", arg1), makeFunction("", arg2))));
 	}
 
+	@Override
 	public String aInverseFunctionalObjectProperty(String arg) {
 		return makeFunction(
-				ConstraintRendererConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
-				arg);
+				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY, arg);
 	}
 
+	@Override
 	public String aLiteral(String value, String type) {
-		return ConstraintRendererConstant.C_QUOTATION_MARK + value
-				+ ConstraintRendererConstant.C_QUOTATION_MARK
-				+ ConstraintRendererConstant.C_CARET
-				+ ConstraintRendererConstant.C_CARET + type;
+		return Owl2FunctionalConstant.C_QUOTATION_MARK + value
+				+ Owl2FunctionalConstant.C_QUOTATION_MARK
+				+ Owl2FunctionalConstant.C_CARET
+				+ Owl2FunctionalConstant.C_CARET + type;
 	}
 
+	@Override
 	public String aObjectComplementOf(String arg) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_COMPLEMENT_OF,
-				arg);
+		return makeFunction(Owl2FunctionalConstant.OBJECT_COMPLEMENT_OF, arg);
 	}
 
+	@Override
 	public String aObjectExactCardinality(String arg0, String arg1) {
-		return makeFunction(
-				ConstraintRendererConstant.OBJECT_EXACT_CARDINALITY,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_EXACT_CARDINALITY,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aObjectOneOf(ItemIdValue q) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_ONE_OF, aItem(q));
+		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF, aItem(q));
 	}
 
+	@Override
 	public String aObjectOneOf(List<ItemIdValue> list) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_ONE_OF,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF,
 				makeList(list));
 	}
 
+	@Override
 	public String aObjectPropertyDomain(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_PROPERTY_DOMAIN,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY_DOMAIN,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aObjectPropertyRange(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_PROPERTY_RANGE,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY_RANGE,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aObjectSomeValuesFrom(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_SOME_VALUES_FROM,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_SOME_VALUES_FROM,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aObjectUnionOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.OBJECT_UNION_OF,
+		return makeFunction(Owl2FunctionalConstant.OBJECT_UNION_OF,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String aSubClassOf(String arg0, String arg1) {
-		return makeFunction(ConstraintRendererConstant.SUB_CLASS_OF,
+		return makeFunction(Owl2FunctionalConstant.SUB_CLASS_OF,
 				makePair(arg0, arg1));
 	}
 
+	@Override
 	public String owlThing() {
-		return ConstraintRendererConstant.OWL_THING;
+		return Owl2FunctionalConstant.OWL_THING;
 	}
 
+	@Override
 	public String xsdDateTime() {
-		return ConstraintRendererConstant.XSD_DATE_TIME;
+		return Owl2FunctionalConstant.XSD_DATE_TIME;
 	}
 
+	@Override
 	public String xsdDecimal() {
-		return ConstraintRendererConstant.XSD_DECIMAL;
+		return Owl2FunctionalConstant.XSD_DECIMAL;
 	}
 
+	@Override
 	public String xsdMaxInclusive() {
-		return ConstraintRendererConstant.XSD_MAX_INCLUSIVE;
+		return Owl2FunctionalConstant.XSD_MAX_INCLUSIVE;
 	}
 
+	@Override
 	public String xsdMinInclusive() {
-		return ConstraintRendererConstant.XSD_MIN_INCLUSIVE;
+		return Owl2FunctionalConstant.XSD_MIN_INCLUSIVE;
 	}
 
+	@Override
 	public String xsdPattern() {
-		return ConstraintRendererConstant.XSD_PATTERN;
+		return Owl2FunctionalConstant.XSD_PATTERN;
 	}
 
+	@Override
 	public String xsdString() {
-		return ConstraintRendererConstant.XSD_STRING;
+		return Owl2FunctionalConstant.XSD_STRING;
 	}
 
 }

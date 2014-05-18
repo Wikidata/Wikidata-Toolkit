@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintOneOf;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -35,7 +36,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintOneOf;
  */
 class ConstraintOneOfRenderer implements ConstraintRenderer {
 
-	public ConstraintOneOfRenderer() {
+	final RendererFormat f;
+
+	public ConstraintOneOfRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -55,7 +59,6 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 		if (p == null || values == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aObjectPropertyRange(f.a_v(p), f.aObjectOneOf(values)));
 		return ret;

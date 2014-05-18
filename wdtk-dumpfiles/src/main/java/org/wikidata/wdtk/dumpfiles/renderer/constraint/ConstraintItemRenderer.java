@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintItem;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -35,7 +36,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintItem;
  */
 class ConstraintItemRenderer implements ConstraintRenderer {
 
-	public ConstraintItemRenderer() {
+	final RendererFormat f;
+
+	public ConstraintItemRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -55,7 +59,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			ItemIdValue q1, PropertyIdValue r2, ItemIdValue q2,
 			List<ItemIdValue> values, List<ItemIdValue> exceptions) {
 		List<String> ret = new ArrayList<String>();
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.addAll(renderPart(p, r1, q1));
 		ret.addAll(renderPart(p, r2, q2));
@@ -70,7 +73,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		if (p == null || r == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		if (q == null) {
 			ret.add(f.aObjectPropertyDomain(f.a_s(p),
 					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
@@ -91,7 +93,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		if (values.isEmpty()) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(values)));
 		return ret;
 	}

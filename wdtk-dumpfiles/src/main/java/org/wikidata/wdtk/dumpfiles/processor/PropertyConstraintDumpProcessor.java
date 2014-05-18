@@ -36,6 +36,8 @@ import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintParserConstant;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
+import org.wikidata.wdtk.dumpfiles.renderer.format.Owl2FunctionalRendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -134,7 +136,9 @@ public class PropertyConstraintDumpProcessor {
 	public void processTemplates(Map<String, List<Template>> templateMap,
 			BufferedWriter output) throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
-		ConstraintMainRenderer renderer = new ConstraintMainRenderer();
+		RendererFormat rendererFormat = new Owl2FunctionalRendererFormat();
+		ConstraintMainRenderer renderer = new ConstraintMainRenderer(
+				rendererFormat);
 		TemplateExpander expander = new TemplateExpander();
 		for (String key : templateMap.keySet()) {
 			output.newLine();

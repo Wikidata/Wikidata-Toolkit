@@ -26,6 +26,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 
 /**
  * 
@@ -34,7 +35,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
  */
 class ConstraintRangeRenderer implements ConstraintRenderer {
 
-	public ConstraintRangeRenderer() {
+	final RendererFormat f;
+
+	public ConstraintRangeRenderer(RendererFormat rendererFormat) {
+		this.f = rendererFormat;
 	}
 
 	@Override
@@ -58,13 +62,11 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> renderQuantity(PropertyIdValue p, String min, String max) {
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		return render(p, ":value", min.toString(), max.toString(),
 				f.xsdDecimal()); // FIXME fix parameter
 	}
 
 	public List<String> renderTime(PropertyIdValue p, String min, String max) {
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		return render(p, ":time", min.toString(), max.toString(),
 				f.xsdDateTime()); // FIXME fix parameter
 	}
@@ -75,7 +77,6 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 		if (p == null || param == null) {
 			return ret;
 		}
-		OWLSymbolFactory f = new OWLSymbolFactory();
 		String rp = f.aRp(p);
 		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
 		ret.add(f.aDatatypeDefinition(
