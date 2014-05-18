@@ -23,8 +23,15 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintPerson;
+import org.wikidata.wdtk.dumpfiles.constraint.ConstraintType;
+import org.wikidata.wdtk.dumpfiles.constraint.RelationType;
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 
 /**
  * 
@@ -32,6 +39,42 @@ import org.wikidata.wdtk.dumpfiles.constraint.ConstraintPerson;
  * 
  */
 class ConstraintPersonRenderer implements ConstraintRenderer {
+
+	/**
+	 * 
+	 * Constructs a sequence of constraints according to the following list:
+	 * {{Constraint:Type|class=Q215627|relation=instance}}
+	 * {{Constraint:Item|property=P21}} {{Constraint:Item|property=P19}}
+	 * {{Constraint:Item|property=P569}}
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @return a sequence of constraints
+	 */
+	List<Constraint> getConstraintSequence(PropertyIdValue constrainedProperty) {
+		List<Constraint> ret = new ArrayList<Constraint>();
+		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+
+		ItemIdValue q215627 = factory.getItemIdValue("Q215627",
+				ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue p21 = factory.getPropertyIdValue("P21",
+				ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue p19 = factory.getPropertyIdValue("P19",
+				ConstraintMainParser.DEFAULT_BASE_IRI);
+		PropertyIdValue p569 = factory.getPropertyIdValue("P569",
+				ConstraintMainParser.DEFAULT_BASE_IRI);
+
+		ret.add(new ConstraintType(constrainedProperty, q215627,
+				RelationType.INSTANCE));
+		ret.add(new ConstraintItem(constrainedProperty, p21, null, null, null,
+				null, null));
+		ret.add(new ConstraintItem(constrainedProperty, p19, null, null, null,
+				null, null));
+		ret.add(new ConstraintItem(constrainedProperty, p569, null, null, null,
+				null, null));
+
+		return ret;
+	}
 
 	public ConstraintPersonRenderer() {
 	}
@@ -45,7 +88,14 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 	}
 
 	public List<String> render(ConstraintPerson c) {
-		return new ArrayList<String>();
+		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer();
+		List<String> ret = new ArrayList<String>();
+		List<Constraint> sequence = getConstraintSequence(c
+				.getConstrainedProperty());
+		for (Constraint constraint : sequence) {
+			ret.addAll(constraint.accept(mainRenderer));
+		}
+		return ret;
 	}
 
 }
