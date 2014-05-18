@@ -76,10 +76,13 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	private List<Template> getConstraintTemplates(List<Template> list) {
+		ConstraintMainParser mainParser = new ConstraintMainParser();
 		List<Template> ret = new ArrayList<Template>();
 		for (Template template : list) {
-			if (template.getId().startsWith(
-					ConstraintParserConstant.T_CONSTRAINT)) {
+			String templateId = mainParser.normalize(template.getId());
+			String prefix = mainParser
+					.normalize(ConstraintParserConstant.T_CONSTRAINT);
+			if (templateId.startsWith(prefix)) {
 				ret.add(template);
 			}
 		}
