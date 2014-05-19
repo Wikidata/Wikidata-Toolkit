@@ -65,6 +65,8 @@ public class PropertyTypes implements ValueVisitor<String> {
 	PropertyIdValue propertyRegister = null;
 	String webAPIUrl;
 
+	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
+
 	public PropertyTypes(String webAPIUrl) {
 		this.propertyTypes = new HashMap<String, String>();
 		this.propertyTypes.putAll(PropertyTypes.KNOWN_PROPERTY_TYPES);
@@ -142,7 +144,6 @@ public class PropertyTypes implements ValueVisitor<String> {
 		logger.info("Fetching datatype of property " + propertyIdValue.getId()
 				+ " online.");
 
-		WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 		URIBuilder uriBuilder;
 		uriBuilder = new URIBuilder(this.webAPIUrl);
 		uriBuilder.setParameter("action", "wbgetentities");

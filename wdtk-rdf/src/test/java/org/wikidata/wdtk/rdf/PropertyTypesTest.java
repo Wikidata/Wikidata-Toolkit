@@ -27,12 +27,15 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class PropertyTypesTest {
 
@@ -45,6 +48,14 @@ public class PropertyTypesTest {
 
 	@Before
 	public void setUp() throws Exception {
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		propertyTypes.webResourceFetcher = wrf;
+		wrf.setWebResourceContents(
+				"http://www.wikidata.org/w/api.php?action=wbgetentities&ids=P10&format=json&props=datatype",
+				"{\"entities\":{\"P10\":{\"id\":\"P10\",\"type\":\"property\",\"datatype\":\"commonsMedia\"}},\"success\":1}");
+		wrf.setWebResourceContents(
+				"http://www.wikidata.org/w/api.php?action=wbgetentities&ids=P1245&format=json&props=datatype",
+				"{\"entities\":{\"P1245\":{\"id\":\"P1245\",\"type\":\"property\",\"datatype\":\"string\"}},\"success\":1}");
 	}
 
 	@Test
@@ -58,6 +69,7 @@ public class PropertyTypesTest {
 
 	@Test
 	public void testFetchPropertyType() throws IOException, URISyntaxException {
+
 		assertEquals(propertyTypes.fetchPropertyType(factory
 				.getPropertyIdValue("P10", "base/")),
 				DatatypeIdValue.DT_COMMONS_MEDIA);
@@ -117,7 +129,7 @@ public class PropertyTypesTest {
 
 	@Test
 	public void testGetPropertyList() throws IOException {
-		
-//		propertyTypes.getPropertyList(System.out);
+
+		// propertyTypes.getPropertyList(System.out);
 	}
 }
