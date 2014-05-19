@@ -12,6 +12,7 @@ New features:
 * Support for serializing Wikibase data in JSON (as illustrated in new example)
 
 Bug fixes:
+* Support changed Wikimedia dump HTML page format, which caused download to fail (Issue #70)
 * Support processing of property documents when parsing dumps (Issue #67)
 * Support SomeValueSnak and NoValueSnak in references (Issue #44)
 * Use correct site links when importing data from dumps (Issue #37)
@@ -21,7 +22,9 @@ Incompatible changes:
 * The processing of dumpfiles was simplified, using a new class DumpProcessingController.
   The former method WmfDumpFileManager#processRecentRevisionDumps() was replaced by
   DumpProcessingController#processAllRecentRevisionDumps(). See the examples for example
-  code. 
+  code.
+* Dump files no longer support the retrieval of the maximal revision id, since this
+  information is no longer published for the main dumps on the Wikimedia site.
 
 
 Version 0.1.0
