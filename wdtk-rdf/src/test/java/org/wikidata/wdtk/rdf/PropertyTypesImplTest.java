@@ -27,24 +27,21 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
-public class PropertyTypesTest {
+public class PropertyTypesImplTest {
 
 	final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	SitesImpl sites = new SitesImpl();
 
-	final PropertyTypes propertyTypes = new PropertyTypes(
-			"http://www.wikidata.org/w/api.php");
+	final PropertyTypesImpl propertyTypes = new PropertyTypesImpl();
 
 	@Before
 	public void setUp() throws Exception {

@@ -65,8 +65,7 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new PropertyTypes(
-			"http://www.wikidata.org/w/api.php");
+	final static PropertyTypes propertyTypes = new PropertyTypesImpl();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
