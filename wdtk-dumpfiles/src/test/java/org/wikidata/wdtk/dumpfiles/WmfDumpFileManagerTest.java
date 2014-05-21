@@ -88,14 +88,13 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);
-		dm.setFileContents(
-				thisDumpPath.resolve("wikidatawiki-" + dateStamp
-						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
-				"Contents of " + dumpContentType.toString().toLowerCase() + " "
-						+ dateStamp);
+		dm.setDirectory(thisDumpPath);
 		if (isDone) {
-			dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"),
-					"123456789");
+			dm.setFileContents(
+					thisDumpPath.resolve("wikidatawiki-" + dateStamp
+							+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
+					"Contents of " + dumpContentType.toString().toLowerCase()
+							+ " " + dateStamp);
 		}
 	}
 
