@@ -95,15 +95,8 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.SITES, false);
 	}
 
-	/**
-	 * The name of the file where a dump's maximal revision id should be stored
-	 * locally.
-	 */
-	static final String LOCAL_FILENAME_MAXREVID = "maxrevid.txt";
-
 	final String dateStamp;
 	final String projectName;
-	Long maxRevId;
 	Boolean isDone;
 
 	public WmfDumpFile(String dateStamp, String projectName) {
@@ -130,14 +123,6 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	@Override
-	public Long getMaximalRevisionId() {
-		if (this.maxRevId == null) {
-			this.maxRevId = fetchMaximalRevisionId();
-		}
-		return this.maxRevId;
-	}
-
-	@Override
 	public String toString() {
 		return this.projectName + "-"
 				+ getDumpContentType().toString().toLowerCase() + "-"
@@ -149,13 +134,6 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		return new BufferedReader(new InputStreamReader(getDumpFileStream(),
 				StandardCharsets.UTF_8));
 	}
-
-	/**
-	 * Returns the maximal revision id for this dump.
-	 * 
-	 * @return maximal revision id or -1 if it was not found
-	 */
-	protected abstract Long fetchMaximalRevisionId();
 
 	/**
 	 * Finds out if the dump is ready.

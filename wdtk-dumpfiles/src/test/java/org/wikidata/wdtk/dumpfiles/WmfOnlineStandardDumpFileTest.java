@@ -45,7 +45,7 @@ public class WmfOnlineStandardDumpFileTest {
 	}
 
 	@Test
-	public void validCurrentDumpProperties() throws IOException {
+	public void validCurrentDumpPropertiesOldFormat() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html", this.getClass());
@@ -63,7 +63,29 @@ public class WmfOnlineStandardDumpFileTest {
 		assertEquals(br.readLine(), "Line1");
 		assertEquals(br.readLine(), null);
 		assertTrue(dump.isAvailable());
-		assertEquals(new Long(108891795), dump.getMaximalRevisionId());
+		assertEquals("20140210", dump.getDateStamp());
+		assertEquals(DumpContentType.CURRENT, dump.getDumpContentType());
+	}
+
+	@Test
+	public void validCurrentDumpPropertiesNewFormat() throws IOException {
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"/wikidatawiki-20140508-index.html", this.getClass());
+		wrf.setWebResourceContents(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"Line1");
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
+		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
+				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
+
+		BufferedReader br = dump.getDumpFileReader();
+
+		assertEquals(br.readLine(), "Line1");
+		assertEquals(br.readLine(), null);
+		assertTrue(dump.isAvailable());
 		assertEquals("20140210", dump.getDateStamp());
 		assertEquals(DumpContentType.CURRENT, dump.getDumpContentType());
 	}
@@ -74,7 +96,6 @@ public class WmfOnlineStandardDumpFileTest {
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
 		assertTrue(!dump.isAvailable());
-		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
 		assertEquals("20140210", dump.getDateStamp());
 	}
 
@@ -95,7 +116,6 @@ public class WmfOnlineStandardDumpFileTest {
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
 
 		assertTrue(!dump.isAvailable());
-		assertEquals(new Long(-1), dump.getMaximalRevisionId());
 	}
 
 	@Test
@@ -107,17 +127,8 @@ public class WmfOnlineStandardDumpFileTest {
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
 
 		assertTrue(!dump.isAvailable());
-		assertEquals(new Long(108995868), dump.getMaximalRevisionId());
 		assertEquals("20140210", dump.getDateStamp());
 		assertEquals(DumpContentType.FULL, dump.getDumpContentType());
-	}
-
-	@Test
-	public void emptyFullDumpRevisionId() throws IOException {
-		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
-				"wikidatawiki", wrf, dm, DumpContentType.FULL);
-
-		assertEquals(new Long(-1), dump.getMaximalRevisionId());
 	}
 
 	@Test(expected = IOException.class)
