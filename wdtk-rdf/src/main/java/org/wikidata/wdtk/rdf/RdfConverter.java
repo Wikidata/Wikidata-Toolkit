@@ -403,8 +403,9 @@ public class RdfConverter {
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
 			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
-			URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
 			if (siteLinkUrl != null) {
+				URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
+
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
 						RdfWriter.RDF_TYPE, RdfWriter.WB_ARTICLE);
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
