@@ -65,8 +65,7 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new PropertyTypes(
-			"http://www.wikidata.org/w/api.php");
+	final static PropertyTypes propertyTypes = new PropertyTypesImpl();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
@@ -404,8 +403,9 @@ public class RdfConverter {
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
 			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
-			URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
 			if (siteLinkUrl != null) {
+				URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
+
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
 						RdfWriter.RDF_TYPE, RdfWriter.WB_ARTICLE);
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,

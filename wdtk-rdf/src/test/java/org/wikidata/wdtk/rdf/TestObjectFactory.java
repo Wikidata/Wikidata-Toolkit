@@ -59,7 +59,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class TestObjectFactory {
 
 	private final DataObjectFactory factory = new DataObjectFactoryImpl();
-	private static String baseIri = "test";
+	private static String baseIri = "http://www.wikidata.org/";
 
 	/**
 	 * Creates an empty {@link PropertyDocument}
@@ -78,7 +78,7 @@ public class TestObjectFactory {
 		List<MonolingualTextValue> descriptions = new LinkedList<>();
 		List<MonolingualTextValue> aliases = new LinkedList<>();
 		DatatypeIdValue datatypeId = this.factory
-				.getDatatypeIdValue("globe-coordinate");
+				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
 		PropertyDocument document = this.factory.getPropertyDocument(
 				propertyId, labels, descriptions, aliases, datatypeId);
 		return document;
@@ -96,7 +96,7 @@ public class TestObjectFactory {
 	 * </p>
 	 * <ul>
 	 * <li>ItemId: "Q10"</li>
-	 * <li>baseIri: "base/"</li>
+	 * <li>baseIri: baseIri</li>
 	 * <li>Labels: {@link #createLabels Labs}</li>
 	 * <li>Descriptions: {@link #createDescriptions Descs}</li>
 	 * <li>Aliases: {@link #createAliases Aliases}</li>
@@ -104,8 +104,8 @@ public class TestObjectFactory {
 	 * <ul>
 	 * <li>StatementGroup1
 	 * <ul>
-	 * <li>PropertyId: "P11"</li>
-	 * <li>baseIri: "base/"</li>
+	 * <li>PropertyId: "P10"</li>
+	 * <li>baseIri: baseIri</li>
 	 * <li>Statement1
 	 * <ul>
 	 * <li>Mainsnak: NoValueSnak</li>
@@ -116,7 +116,7 @@ public class TestObjectFactory {
 	 * <li>StatementGroup2
 	 * <ul>
 	 * <li>PropertyId: "P1040"</li>
-	 * <li>baseIri: "base/"</li>
+	 * <li>baseIri: baseIri</li>
 	 * <li>Statement2
 	 * <ul>
 	 * <li>Mainsnak: {@link #createValueSnakTimeValue ValSnakTime}</li>
@@ -142,27 +142,27 @@ public class TestObjectFactory {
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
 
 		List<Statement> statements1 = new ArrayList<Statement>();
-		Claim claim1 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
-				factory.getNoValueSnak(factory.getPropertyIdValue("P11",
-						"base/")), Collections.<SnakGroup> emptyList());
+		Claim claim1 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P10",
+						baseIri)), Collections.<SnakGroup> emptyList());
 		statements1.add(factory.getStatement(claim1,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
 		statementGroups.add(factory.getStatementGroup(statements1));
 
 		List<Statement> statements2 = new ArrayList<Statement>();
-		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				createValueSnakTimeValue("P1040"), createQualifiers());
 		statements2.add(factory.getStatement(claim2, createReferences(),
 				StatementRank.NORMAL, "none2"));
-		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", "base/"),
+		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				createValueSnakStringValue("P1040"),
 				Collections.<SnakGroup> emptyList());
 		statements2.add(factory.getStatement(claim3,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
 		statementGroups.add(factory.getStatementGroup(statements2));
-		return factory.getItemDocument(factory.getItemIdValue("Q10", "base/"),
+		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),
 				statementGroups, createSiteLinks());
 	}
