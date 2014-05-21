@@ -20,13 +20,9 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
-import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 /**
@@ -112,40 +108,10 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	protected Long fetchMaximalRevisionId() {
-		if (!WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
-			return -1L;
-		}
-
-		String inputLine;
-		try (InputStream in = this.localDumpfileDirectoryManager
-				.getInputStreamForFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
-						CompressionType.NONE)) {
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(in, StandardCharsets.UTF_8));
-			inputLine = bufferedReader.readLine();
-			bufferedReader.close();
-		} catch (IOException e) {
-			return -1L;
-		}
-
-		if (inputLine != null) {
-			try {
-				return new Long(inputLine);
-			} catch (NumberFormatException e) {
-				// fall through
-			}
-		}
-		return -1L;
-	}
-
-	@Override
 	protected boolean fetchIsDone() {
 		return this.localDumpfileDirectoryManager.hasFile(WmfDumpFile
 				.getDumpFileName(this.dumpContentType, this.projectName,
-						this.dateStamp))
-				&& (this.getMaximalRevisionId() >= 0 || !WmfDumpFile
-						.isRevisionDumpFile(this.dumpContentType));
+						this.dateStamp));
 	}
 
 }

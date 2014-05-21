@@ -110,11 +110,6 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 					"Dump file not available (yet). Aborting dump retrieval.");
 		}
 
-		if (this.getMaximalRevisionId() == -1L) {
-			throw new IOException(
-					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
-		}
-
 		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.DAILY, this.dateStamp));
@@ -124,36 +119,10 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 			dailyDirectoryManager.createFile(fileName, inputStream);
 		}
 
-		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
-				this.getMaximalRevisionId().toString());
-
 		this.isPrepared = true;
 
 		logger.info("... completed download of daily dump file " + fileName
 				+ " from " + urlString);
-	}
-
-	@Override
-	protected Long fetchMaximalRevisionId() {
-		String inputLine;
-		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(getBaseUrl() + "maxrevid.txt")) {
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(in, StandardCharsets.UTF_8));
-			inputLine = bufferedReader.readLine();
-			bufferedReader.close();
-		} catch (IOException e) {
-			return -1L;
-		}
-
-		if (inputLine != null) {
-			try {
-				return new Long(inputLine);
-			} catch (NumberFormatException e) {
-				// fall through
-			}
-		}
-		return -1L;
 	}
 
 	@Override
