@@ -49,7 +49,7 @@ public class PropertyConstraintDumpProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
 
-	public static final String DEFAULT_DUMP_DATE = "20140331";
+	public static final String DEFAULT_DUMP_DATE = "20140420";
 	public static final String DEFAULT_FILE_NAME = "constraints.owl";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
