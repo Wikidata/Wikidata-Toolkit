@@ -22,26 +22,21 @@ package org.wikidata.wdtk.rdf;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Model;
-import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.Rio;
-import org.openrdf.rio.helpers.StatementCollector;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.rdf.RdfConverter;
 import org.wikidata.wdtk.rdf.TestObjectFactory;
-import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class RdfConverterTest {
 
@@ -52,55 +47,60 @@ public class RdfConverterTest {
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 
-	public String getResourceFromFile(String fileName) throws IOException {
-		return MockStringContentFactory.getStringFromUrl(this.getClass()
-				.getResource("/" + fileName));
-	}
-
-	public Model parseRdf(String rdfResource) throws RDFParseException,
-			RDFHandlerException, IOException {
-		InputStream inStream = new ByteArrayInputStream(rdfResource.getBytes());
-		RDFParser parser = Rio.createParser(RDFFormat.N3);
-		parser.parse(inStream, "http://test/");
-		Model graph = new LinkedHashModel();
-		parser.setRDFHandler(new StatementCollector(graph));
-		return graph;
-	}
-
 	@Before
 	public void setUp() throws Exception {
-		out = new ByteArrayOutputStream();
-		rdfWriter = new RdfWriter(RDFFormat.N3, out);
-		rdfConverter = new RdfConverter(rdfWriter, new SitesImpl());
-		rdfWriter.start();
+		this.out = new ByteArrayOutputStream();
+		this.rdfWriter = new RdfWriter(RDFFormat.N3, out);
+		this.rdfConverter = new RdfConverter(this.rdfWriter, new SitesImpl());
+		this.rdfWriter.start();
 	}
 
 	@Test
 	public void testWriteItemDocument() throws RDFHandlerException,
 			IOException, RDFParseException {
-		org.wikidata.wdtk.datamodel.interfaces.ItemDocument document = objectFactory
-				.createItemDocument();
-		rdfConverter.writeItemDocument(document);
-		rdfWriter.finish();
-		Model model = parseRdf(out.toString());
-		assertEquals(model, parseRdf(getResourceFromFile("ItemDocument.rdf")));
+		ItemDocument document = this.objectFactory.createItemDocument();
+		this.rdfConverter.writeItemDocument(document);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("ItemDocument.rdf")));
 	}
 
 	@Test
 	public void testWritePropertyDocument() throws RDFHandlerException,
 			RDFParseException, IOException {
-		org.wikidata.wdtk.datamodel.interfaces.PropertyDocument document = objectFactory
+		PropertyDocument document = this.objectFactory
 				.createEmptyPropertyDocument();
-		rdfConverter.writePropertyDocument(document);
-		rdfWriter.finish();
-		Model model = parseRdf(out.toString());
-		assertEquals(model,
-				parseRdf(getResourceFromFile("EmptyPropertyDocument.rdf")));
+		this.rdfConverter.writePropertyDocument(document);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("EmptyPropertyDocument.rdf")));
+	}
+
+	@Test
+	public void testWriteBasicDeclarations() throws RDFHandlerException,
+			RDFParseException, IOException {
+		this.rdfConverter.writeBasicDeclarations();
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("BasicDeclarations.rdf")));
+
+	}
+
+	@Test
+	public void testWriteNamespaceDeclarations() throws RDFHandlerException,
+			RDFParseException, IOException {
+		this.rdfConverter.writeNamespaceDeclarations();
+		this.rdfWriter.finish();
+		assertEquals(this.out.toString(),
+				RdfTestHelpers.getResourceFromFile("Namespaces.rdf"));
 	}
 
 	@After
 	public void clear() throws RDFHandlerException, IOException {
-		out.close();
+		this.out.close();
 	}
 
 }
