@@ -22,6 +22,9 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 import java.util.List;
 
+import org.openrdf.model.BNode;
+import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
@@ -31,70 +34,70 @@ public interface RendererFormat {
 
 	String getEnd();
 
-	String aAnnotationComment(String key, String comment);
+	URI a_s(PropertyIdValue property);
 
-	String a_s(PropertyIdValue property);
+	URI a_v(PropertyIdValue property);
 
-	String a_v(PropertyIdValue property);
+	URI aItem(ItemIdValue item);
 
-	String aItem(ItemIdValue item);
+	URI aRp(PropertyIdValue property);
 
-	String aRp(PropertyIdValue property);
+	URI owlThing();
 
-	String aDataIntersectionOf(String arg0, String arg1);
+	URI xsdDateTime();
 
-	String aDataPropertyRange(String arg0, String arg1);
+	URI xsdDecimal();
 
-	String aDataSomeValuesFrom(String arg0, String arg1);
+	URI xsdMaxInclusive();
 
-	String aDatatype(String arg);
+	URI xsdMinInclusive();
 
-	String aDatatypeDefinition(String arg0, String arg1);
+	URI xsdPattern();
 
-	String aDatatypeRestriction(String arg0, String arg1, String arg2);
+	URI xsdString();
 
-	String aDeclaration(String arg);
+	BNode getDataIntersectionOf(Resource arg0, Resource arg1);
 
-	String aDisjointClasses(String arg0, String arg1);
+	BNode getDataSomeValuesFrom(Resource arg0, Resource arg1);
 
-	String aFunctionalObjectProperty(String arg);
+	BNode getDatatype(Resource arg);
 
-	String aHasKey(String arg0, String arg1, String arg2);
+	BNode getDatatypeRestriction(Resource arg0, Resource arg1, Resource arg2);
 
-	String aInverseFunctionalObjectProperty(String arg);
+	BNode getLiteral(Resource value, Resource type);
 
-	String aLiteral(String value, String type);
+	BNode getObjectComplementOf(Resource arg);
 
-	String aObjectComplementOf(String arg);
+	BNode getObjectExactCardinality(Resource arg0, Resource arg1);
 
-	String aObjectExactCardinality(String arg0, String arg1);
+	BNode getObjectOneOf(ItemIdValue q);
 
-	String aObjectOneOf(ItemIdValue q);
+	BNode getObjectOneOf(List<ItemIdValue> list);
 
-	String aObjectOneOf(List<ItemIdValue> list);
+	BNode getObjectSomeValuesFrom(Resource arg0, Resource arg1);
 
-	String aObjectPropertyDomain(String arg0, String arg1);
+	BNode getObjectUnionOf(Resource arg0, Resource arg1);
 
-	String aObjectPropertyRange(String arg0, String arg1);
+	boolean addAnnotationComment(Resource key, Resource comment);
 
-	String aObjectSomeValuesFrom(String arg0, String arg1);
+	boolean addDataPropertyRange(Resource arg0, Resource arg1);
 
-	String aObjectUnionOf(String arg0, String arg1);
+	boolean addDatatypeDefinition(Resource arg0, Resource arg1);
 
-	String aSubClassOf(String arg0, String arg1);
+	boolean addDeclaration(Resource arg);
 
-	String owlThing();
+	boolean addDisjointClasses(Resource arg0, Resource arg1);
 
-	String xsdDateTime();
+	boolean addFunctionalObjectProperty(Resource arg);
 
-	String xsdDecimal();
+	boolean addHasKey(Resource arg0, Resource arg1, Resource arg2);
 
-	String xsdMaxInclusive();
+	boolean addInverseFunctionalObjectProperty(Resource arg);
 
-	String xsdMinInclusive();
+	boolean addObjectPropertyDomain(Resource arg0, Resource arg1);
 
-	String xsdPattern();
+	boolean addObjectPropertyRange(Resource arg0, Resource arg1);
 
-	String xsdString();
+	boolean addSubClassOf(Resource arg0, Resource arg1);
 
 }

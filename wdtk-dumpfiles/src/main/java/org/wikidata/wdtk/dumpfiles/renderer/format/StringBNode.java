@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.renderer.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 /*
  * #%L
@@ -20,27 +20,42 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.ConstraintSymmetric;
+import org.openrdf.model.BNode;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 
 /**
  * 
  * @author Julian Mendez
  * 
  */
-class ConstraintSymmetricRenderer implements ConstraintRenderer {
+public class StringBNode implements BNode {
 
-	public ConstraintSymmetricRenderer() {
+	private static final long serialVersionUID = 7443641686881565110L;
+
+	final ValueFactory factory = ValueFactoryImpl.getInstance();
+
+	final String str;
+	final BNode bnode;
+
+	public StringBNode(String str) {
+		this.str = str;
+		this.bnode = this.factory.createBNode();
 	}
 
 	@Override
-	public void renderConstraint(Constraint c) {
-		if (c instanceof ConstraintSymmetric) {
-			render((ConstraintSymmetric) c);
-		}
+	public String stringValue() {
+		return this.str;
 	}
 
-	public void render(ConstraintSymmetric c) {
+	@Override
+	public String toString() {
+		return this.str;
+	}
+
+	@Override
+	public String getID() {
+		return this.bnode.getID();
 	}
 
 }

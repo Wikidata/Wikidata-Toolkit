@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.model.BNode;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -88,20 +89,19 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintTaxon) {
-			return render((ConstraintTaxon) c);
+			render((ConstraintTaxon) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintTaxon c) {
-		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(f);
-		List<String> ret = new ArrayList<String>();
+	public List<BNode> render(ConstraintTaxon c) {
+		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(this.f);
+		List<BNode> ret = new ArrayList<BNode>();
 		List<Constraint> sequence = getConstraintSequence(c
 				.getConstrainedProperty());
 		for (Constraint constraint : sequence) {
-			ret.addAll(constraint.accept(mainRenderer));
+			constraint.accept(mainRenderer);
 		}
 		return ret;
 	}

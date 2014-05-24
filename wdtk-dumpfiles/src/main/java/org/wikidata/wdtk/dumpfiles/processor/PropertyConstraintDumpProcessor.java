@@ -38,6 +38,7 @@ import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.renderer.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -77,18 +78,15 @@ public class PropertyConstraintDumpProcessor {
 		return ret;
 	}
 
-	public void printConstraintTemplates(
-			Map<String, List<Template>> templateMap, BufferedWriter output,
+	public void processAnnotationsOfConstraintTemplates(
+			Map<String, List<Template>> templateMap,
 			RendererFormat rendererFormat) throws IOException {
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(key));
-			String statement = rendererFormat.aAnnotationComment(key,
-					escapeChars(templates.toString()));
-			output.write(statement);
-			output.newLine();
+			rendererFormat.addAnnotationComment(new StringResource(key),
+					new StringResource(escapeChars(templates.toString())));
 		}
-		output.flush();
 	}
 
 	void printLines(List<String> lines, BufferedWriter output)
@@ -109,7 +107,9 @@ public class PropertyConstraintDumpProcessor {
 		// set offline mode true to read only offline dumps
 		// controller.setOfflineMode(true);
 
-		RendererFormat rendererFormat = new Owl2FunctionalRendererFormat();
+		List<String> owlLines = new ArrayList<String>();
+		Owl2FunctionalRendererFormat rendererFormat = new Owl2FunctionalRendererFormat(
+				owlLines);
 
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
@@ -119,10 +119,12 @@ public class PropertyConstraintDumpProcessor {
 				DEFAULT_DUMP_DATE);
 
 		output.write(rendererFormat.getStart());
-		printConstraintTemplates(propertyTalkTemplateProcessor.getMap(),
-				output, rendererFormat);
+		processAnnotationsOfConstraintTemplates(
+				propertyTalkTemplateProcessor.getMap(), rendererFormat);
 		processTemplates(propertyTalkTemplateProcessor.getMap(), output,
 				rendererFormat);
+		printLines(owlLines, output);
+
 		output.write(rendererFormat.getEnd());
 	}
 
@@ -146,10 +148,9 @@ public class PropertyConstraintDumpProcessor {
 					e.printStackTrace();
 				}
 
-				List<String> owlLines = null;
 				try {
 					if (constraint != null) {
-						owlLines = constraint.accept(renderer);
+						constraint.accept(renderer);
 					}
 				} catch (Exception e) {
 					System.out.println("Exception while rendering " + key);
@@ -157,8 +158,6 @@ public class PropertyConstraintDumpProcessor {
 					System.out.println("Constraint: " + constraint.toString());
 					e.printStackTrace();
 				}
-
-				printLines(owlLines, output);
 			}
 		}
 	}

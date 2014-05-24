@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
@@ -43,34 +40,32 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintTargetRequiredClaim) {
-			return render((ConstraintTargetRequiredClaim) c);
+			render((ConstraintTargetRequiredClaim) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintTargetRequiredClaim c) {
-		return render(c.getConstrainedProperty(), c.getProperty(), c.getItem());
+	public void render(ConstraintTargetRequiredClaim c) {
+		render(c.getConstrainedProperty(), c.getProperty(), c.getItem());
 	}
 
-	public List<String> render(PropertyIdValue p, PropertyIdValue r,
-			ItemIdValue q) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || r == null) {
-			return ret;
+	public void render(PropertyIdValue p, PropertyIdValue r, ItemIdValue q) {
+		if ((p == null) || (r == null)) {
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
 		if (q == null) {
-			ret.add(f.aObjectPropertyRange(f.a_v(p),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+			this.f.addObjectPropertyRange(
+					this.f.a_v(p),
+					this.f.getObjectSomeValuesFrom(this.f.a_s(r),
+							this.f.owlThing()));
 		} else {
-			ret.add(f.aObjectPropertyRange(
-					f.a_v(p),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
-							f.a_v(r), f.aObjectOneOf(q)))));
+			this.f.addObjectPropertyRange(this.f.a_v(p), this.f
+					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
+							.getObjectSomeValuesFrom(this.f.a_v(r),
+									this.f.getObjectOneOf(q))));
 		}
-		return ret;
 	}
 
 }

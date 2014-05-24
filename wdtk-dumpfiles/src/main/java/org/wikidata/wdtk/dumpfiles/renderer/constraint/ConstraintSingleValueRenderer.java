@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintSingleValue;
@@ -42,25 +39,22 @@ class ConstraintSingleValueRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintSingleValue) {
-			return render((ConstraintSingleValue) c);
+			render((ConstraintSingleValue) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintSingleValue c) {
-		return render(c.getConstrainedProperty());
+	public void render(ConstraintSingleValue c) {
+		render(c.getConstrainedProperty());
 	}
 
-	public List<String> render(PropertyIdValue p) {
-		List<String> ret = new ArrayList<String>();
+	public void render(PropertyIdValue p) {
 		if (p == null) {
-			return ret;
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aFunctionalObjectProperty(f.a_s(p)));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addFunctionalObjectProperty(this.f.a_s(p));
 	}
 
 }

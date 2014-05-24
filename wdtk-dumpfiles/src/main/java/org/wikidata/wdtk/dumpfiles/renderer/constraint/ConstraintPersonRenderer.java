@@ -88,22 +88,19 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintPerson) {
-			return render((ConstraintPerson) c);
+			render((ConstraintPerson) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintPerson c) {
-		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(f);
-		List<String> ret = new ArrayList<String>();
+	public void render(ConstraintPerson c) {
+		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(this.f);
 		List<Constraint> sequence = getConstraintSequence(c
 				.getConstrainedProperty());
 		for (Constraint constraint : sequence) {
-			ret.addAll(constraint.accept(mainRenderer));
+			constraint.accept(mainRenderer);
 		}
-		return ret;
 	}
 
 }

@@ -20,13 +20,13 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -44,36 +44,36 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintFormat) {
-			return render((ConstraintFormat) c);
+			render((ConstraintFormat) c);
 		}
-		return null;
 	}
 
-	private String transform(String pattern) {
+	private Resource transform(String pattern) {
 
 		// FIXME this does not cover all cases
 		String newPattern = pattern.replace(C_QUOTATION_MARK, "");
 
-		return C_QUOTATION_MARK + newPattern + C_QUOTATION_MARK;
+		return new StringResource(C_QUOTATION_MARK + newPattern
+				+ C_QUOTATION_MARK);
 	}
 
-	public List<String> render(ConstraintFormat c) {
-		return render(c.getConstrainedProperty(), c.getPattern());
+	public void render(ConstraintFormat c) {
+		render(c.getConstrainedProperty(), c.getPattern());
 	}
 
-	public List<String> render(PropertyIdValue p, String pattern) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || pattern == null) {
-			return ret;
+	public void render(PropertyIdValue p, String pattern) {
+		if ((p == null) || (pattern == null)) {
+			return;
 		}
-		String rp = f.aRp(p);
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aDatatypeDefinition(rp, f.aDatatypeRestriction(f.xsdString(),
-				f.xsdPattern(), transform(pattern))));
-		ret.add(f.aDataPropertyRange(f.a_v(p), rp));
-		return ret;
+		URI rp = this.f.aRp(p);
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addDatatypeDefinition(
+				rp,
+				this.f.getDatatypeRestriction(this.f.xsdString(),
+						this.f.xsdPattern(), transform(pattern)));
+		this.f.addDataPropertyRange(this.f.a_v(p), rp);
 	}
 
 }

@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintQualifier;
 
@@ -37,15 +34,13 @@ class ConstraintQualifierRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintQualifier) {
-			return render((ConstraintQualifier) c);
+			render((ConstraintQualifier) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintQualifier c) {
-		return new ArrayList<String>();
+	public void render(ConstraintQualifier c) {
 	}
 
 }

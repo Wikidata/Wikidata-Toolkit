@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintExistingFile;
 
@@ -37,15 +34,13 @@ class ConstraintExistingFileRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintExistingFile) {
-			return render((ConstraintExistingFile) c);
+			render((ConstraintExistingFile) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintExistingFile c) {
-		return new ArrayList<String>();
+	public void render(ConstraintExistingFile c) {
 	}
 
 }

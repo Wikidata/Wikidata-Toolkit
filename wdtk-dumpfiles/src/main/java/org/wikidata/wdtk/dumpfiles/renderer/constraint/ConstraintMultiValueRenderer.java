@@ -20,13 +20,11 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -42,26 +40,24 @@ class ConstraintMultiValueRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintMultiValue) {
-			return render((ConstraintMultiValue) c);
+			render((ConstraintMultiValue) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintMultiValue c) {
-		return render(c.getConstrainedProperty());
+	public void render(ConstraintMultiValue c) {
+		render(c.getConstrainedProperty());
 	}
 
-	public List<String> render(PropertyIdValue p) {
-		List<String> ret = new ArrayList<String>();
+	public void render(PropertyIdValue p) {
 		if (p == null) {
-			return ret;
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aSubClassOf(f.owlThing(),
-				f.aObjectComplementOf(f.aObjectExactCardinality("1", f.a_s(p)))));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addSubClassOf(this.f.owlThing(), this.f
+				.getObjectComplementOf(this.f.getObjectExactCardinality(
+						new StringResource("1"), this.f.a_s(p))));
 	}
 
 }

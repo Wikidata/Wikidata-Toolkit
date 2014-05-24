@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.renderer.constraint;
+package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 /*
  * #%L
@@ -20,27 +20,31 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.ConstraintSymmetric;
+import org.openrdf.model.Resource;
 
 /**
  * 
  * @author Julian Mendez
  * 
  */
-class ConstraintSymmetricRenderer implements ConstraintRenderer {
+public class StringResource implements Resource {
 
-	public ConstraintSymmetricRenderer() {
+	private static final long serialVersionUID = 6895761579959801235L;
+
+	final String str;
+
+	public StringResource(String str) {
+		this.str = str;
 	}
 
 	@Override
-	public void renderConstraint(Constraint c) {
-		if (c instanceof ConstraintSymmetric) {
-			render((ConstraintSymmetric) c);
-		}
+	public String stringValue() {
+		return this.str;
 	}
 
-	public void render(ConstraintSymmetric c) {
+	@Override
+	public String toString() {
+		return this.str;
 	}
 
 }

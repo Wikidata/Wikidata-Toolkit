@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -54,40 +51,36 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintType) {
-			return render((ConstraintType) c);
+			render((ConstraintType) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintType c) {
+	public void render(ConstraintType c) {
 		if (c.getRelation().equals(RelationType.INSTANCE)) {
-			return renderInstanceOf(c.getConstrainedProperty(), c.getClassId());
+			renderInstanceOf(c.getConstrainedProperty(), c.getClassId());
 		} else {
-			return renderSubclassOf(c.getConstrainedProperty(), c.getClassId());
+			renderSubclassOf(c.getConstrainedProperty(), c.getClassId());
 		}
 	}
 
-	public List<String> renderInstanceOf(PropertyIdValue p, ItemIdValue q) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || q == null) {
-			return ret;
+	public void renderInstanceOf(PropertyIdValue p, ItemIdValue q) {
+		if ((p == null) || (q == null)) {
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(q)));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addObjectPropertyDomain(this.f.a_s(p), this.f.getObjectOneOf(q));
 	}
 
-	public List<String> renderSubclassOf(PropertyIdValue p, ItemIdValue q) {
-		ConstraintItemRenderer otherRenderer = new ConstraintItemRenderer(f);
-		List<String> ret = new ArrayList<String>();
-		if (p == null || q == null) {
-			return ret;
+	public void renderSubclassOf(PropertyIdValue p, ItemIdValue q) {
+		ConstraintItemRenderer otherRenderer = new ConstraintItemRenderer(
+				this.f);
+		if ((p == null) || (q == null)) {
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.addAll(otherRenderer.renderPart(p, this.subclassOf, q));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		otherRenderer.renderPart(p, this.subclassOf, q);
 	}
 
 }

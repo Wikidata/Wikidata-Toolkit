@@ -20,9 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintInverse;
 
@@ -38,15 +35,13 @@ class ConstraintInverseRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintInverse) {
-			return render((ConstraintInverse) c);
+			render((ConstraintInverse) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintInverse c) {
-		return new ArrayList<String>();
+	public void render(ConstraintInverse c) {
 	}
 
 }

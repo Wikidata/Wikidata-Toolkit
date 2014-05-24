@@ -20,8 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.List;
-
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 
 /**
@@ -31,6 +29,6 @@ import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
  */
 public interface ConstraintRenderer {
 
-	List<String> renderConstraint(Constraint c);
+	void renderConstraint(Constraint c);
 
 }

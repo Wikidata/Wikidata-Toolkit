@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -43,58 +42,53 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintItem) {
-			return render((ConstraintItem) c);
+			render((ConstraintItem) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintItem c) {
-		return render(c.getConstrainedProperty(), c.getProperty(), c.getItem(),
+	public void render(ConstraintItem c) {
+		render(c.getConstrainedProperty(), c.getProperty(), c.getItem(),
 				c.getProperty2(), c.getItem2(), c.getItems(), c.getExceptions());
 	}
 
-	public List<String> render(PropertyIdValue p, PropertyIdValue r1,
-			ItemIdValue q1, PropertyIdValue r2, ItemIdValue q2,
-			List<ItemIdValue> values, List<ItemIdValue> exceptions) {
-		List<String> ret = new ArrayList<String>();
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.addAll(renderPart(p, r1, q1));
-		ret.addAll(renderPart(p, r2, q2));
-		ret.addAll(renderPart(p, values));
-		ret.addAll(renderPart(p, exceptions));
-		return ret;
+	public void render(PropertyIdValue p, PropertyIdValue r1, ItemIdValue q1,
+			PropertyIdValue r2, ItemIdValue q2, List<ItemIdValue> values,
+			List<ItemIdValue> exceptions) {
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		renderPart(p, r1, q1);
+		renderPart(p, r2, q2);
+		renderPart(p, values);
+		renderPart(p, exceptions);
 	}
 
-	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
-			ItemIdValue q) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || r == null) {
-			return ret;
+	public void renderPart(PropertyIdValue p, PropertyIdValue r, ItemIdValue q) {
+		if ((p == null) || (r == null)) {
+			return;
 		}
 		if (q == null) {
-			ret.add(f.aObjectPropertyDomain(f.a_s(p),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+			this.f.addObjectPropertyDomain(
+					this.f.a_s(p),
+					this.f.getObjectSomeValuesFrom(this.f.a_s(r),
+							this.f.owlThing()));
 		} else {
-			ret.add(f.aObjectPropertyDomain(
-					f.a_s(p),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
-							f.a_v(r), f.aObjectOneOf(q)))));
+			this.f.addObjectPropertyDomain(this.f.a_s(p), this.f
+					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
+							.getObjectSomeValuesFrom(this.f.a_v(r),
+									this.f.getObjectOneOf(q))));
 		}
-		return ret;
 	}
 
-	public List<String> renderPart(PropertyIdValue p, List<ItemIdValue> values) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || values == null) {
-			return ret;
+	public void renderPart(PropertyIdValue p, List<ItemIdValue> values) {
+		if ((p == null) || (values == null)) {
+			return;
 		}
 		if (values.isEmpty()) {
-			return ret;
+			return;
 		}
-		ret.add(f.aObjectPropertyDomain(f.a_s(p), f.aObjectOneOf(values)));
-		return ret;
+		this.f.addObjectPropertyDomain(this.f.a_s(p),
+				this.f.getObjectOneOf(values));
 	}
 
 }

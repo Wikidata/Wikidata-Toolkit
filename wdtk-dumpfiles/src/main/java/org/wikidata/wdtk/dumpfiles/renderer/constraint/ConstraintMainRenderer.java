@@ -20,8 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.List;
-
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintConflictsWith;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintExistingFile;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintFormat;
@@ -47,7 +45,7 @@ import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
  * @author Julian Mendez
  * 
  */
-public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
+public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 
 	final RendererFormat rendererFormat;
 
@@ -56,96 +54,113 @@ public class ConstraintMainRenderer implements ConstraintVisitor<List<String>> {
 	}
 
 	@Override
-	public List<String> visit(ConstraintSingleValue constraint) {
-		return (new ConstraintSingleValueRenderer(rendererFormat))
+	public Boolean visit(ConstraintSingleValue constraint) {
+		(new ConstraintSingleValueRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintUniqueValue constraint) {
-		return (new ConstraintUniqueValueRenderer(rendererFormat))
+	public Boolean visit(ConstraintUniqueValue constraint) {
+		(new ConstraintUniqueValueRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintFormat constraint) {
-		return (new ConstraintFormatRenderer(rendererFormat))
+	public Boolean visit(ConstraintFormat constraint) {
+		(new ConstraintFormatRenderer(this.rendererFormat)).render(constraint);
+		return true;
+
+	}
+
+	@Override
+	public Boolean visit(ConstraintOneOf constraint) {
+		(new ConstraintOneOfRenderer(this.rendererFormat)).render(constraint);
+		return true;
+
+	}
+
+	@Override
+	public Boolean visit(ConstraintSymmetric constraint) {
+		(new ConstraintSymmetricRenderer()).render(constraint);
+		return true;
+	}
+
+	@Override
+	public Boolean visit(ConstraintInverse constraint) {
+		(new ConstraintInverseRenderer()).render(constraint);
+		return true;
+	}
+
+	@Override
+	public Boolean visit(ConstraintExistingFile constraint) {
+		(new ConstraintExistingFileRenderer()).render(constraint);
+		return true;
+	}
+
+	@Override
+	public Boolean visit(ConstraintTargetRequiredClaim constraint) {
+		(new ConstraintTargetRequiredClaimRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintOneOf constraint) {
-		return (new ConstraintOneOfRenderer(rendererFormat)).render(constraint);
+	public Boolean visit(ConstraintItem constraint) {
+		(new ConstraintItemRenderer(this.rendererFormat)).render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintSymmetric constraint) {
-		return (new ConstraintSymmetricRenderer()).render(constraint);
+	public Boolean visit(ConstraintType constraint) {
+		(new ConstraintTypeRenderer(this.rendererFormat)).render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintInverse constraint) {
-		return (new ConstraintInverseRenderer()).render(constraint);
-	}
-
-	@Override
-	public List<String> visit(ConstraintExistingFile constraint) {
-		return (new ConstraintExistingFileRenderer()).render(constraint);
-	}
-
-	@Override
-	public List<String> visit(ConstraintTargetRequiredClaim constraint) {
-		return (new ConstraintTargetRequiredClaimRenderer(rendererFormat))
+	public Boolean visit(ConstraintValueType constraint) {
+		(new ConstraintValueTypeRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintItem constraint) {
-		return (new ConstraintItemRenderer(rendererFormat)).render(constraint);
+	public Boolean visit(ConstraintRange constraint) {
+		(new ConstraintRangeRenderer(this.rendererFormat)).render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintType constraint) {
-		return (new ConstraintTypeRenderer(rendererFormat)).render(constraint);
-	}
-
-	@Override
-	public List<String> visit(ConstraintValueType constraint) {
-		return (new ConstraintValueTypeRenderer(rendererFormat))
+	public Boolean visit(ConstraintMultiValue constraint) {
+		(new ConstraintMultiValueRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintRange constraint) {
-		return (new ConstraintRangeRenderer(rendererFormat)).render(constraint);
-	}
-
-	@Override
-	public List<String> visit(ConstraintMultiValue constraint) {
-		return (new ConstraintMultiValueRenderer(rendererFormat))
+	public Boolean visit(ConstraintConflictsWith constraint) {
+		(new ConstraintConflictsWithRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintConflictsWith constraint) {
-		return (new ConstraintConflictsWithRenderer(rendererFormat))
-				.render(constraint);
+	public Boolean visit(ConstraintQualifier constraint) {
+		(new ConstraintQualifierRenderer()).render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintQualifier constraint) {
-		return (new ConstraintQualifierRenderer()).render(constraint);
+	public Boolean visit(ConstraintPerson constraint) {
+		(new ConstraintPersonRenderer(this.rendererFormat)).render(constraint);
+		return true;
 	}
 
 	@Override
-	public List<String> visit(ConstraintPerson constraint) {
-		return (new ConstraintPersonRenderer(rendererFormat))
-				.render(constraint);
-	}
-
-	@Override
-	public List<String> visit(ConstraintTaxon constraint) {
-		return (new ConstraintTaxonRenderer(rendererFormat)).render(constraint);
+	public Boolean visit(ConstraintTaxon constraint) {
+		(new ConstraintTaxonRenderer(this.rendererFormat)).render(constraint);
+		return true;
 	}
 
 }

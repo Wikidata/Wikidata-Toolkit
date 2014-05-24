@@ -20,13 +20,13 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -42,53 +42,55 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintRange) {
-			return render((ConstraintRange) c);
+			render((ConstraintRange) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintRange c) {
-		List<String> ret = new ArrayList<String>();
+	public void render(ConstraintRange c) {
 		if (c.isQuantity()) {
-			ret = renderQuantity(c.getConstrainedProperty(), c.getMin(),
-					c.getMax());
+			renderQuantity(c.getConstrainedProperty(),
+					new StringResource(c.getMin()),
+					new StringResource(c.getMax()));
 		}
 		if (c.isTime()) {
-			ret = renderTime(c.getConstrainedProperty(), c.getMin(), c.getMax());
+			renderTime(c.getConstrainedProperty(),
+					new StringResource(c.getMin()),
+					new StringResource(c.getMax()));
 		}
-		return ret;
 	}
 
-	public List<String> renderQuantity(PropertyIdValue p, String min, String max) {
-		return render(p, ":value", min.toString(), max.toString(),
-				f.xsdDecimal()); // FIXME fix parameter
+	public void renderQuantity(PropertyIdValue p, Resource min, Resource max) {
+		render(p, new StringResource(":value"), min, max, this.f.xsdDecimal()); // FIXME
+																				// fix
+																				// parameter
 	}
 
-	public List<String> renderTime(PropertyIdValue p, String min, String max) {
-		return render(p, ":time", min.toString(), max.toString(),
-				f.xsdDateTime()); // FIXME fix parameter
+	public void renderTime(PropertyIdValue p, Resource min, Resource max) {
+		render(p, new StringResource(":time"), min, max, this.f.xsdDateTime()); // FIXME
+																				// fix
+																				// parameter
 	}
 
-	public List<String> render(PropertyIdValue p, String param, String min,
-			String max, String type) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || param == null) {
-			return ret;
+	public void render(PropertyIdValue p, Resource param, Resource min,
+			Resource max, Resource type) {
+		if ((p == null) || (param == null)) {
+			return;
 		}
-		String rp = f.aRp(p);
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aDatatypeDefinition(
+		URI rp = this.f.aRp(p);
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addDatatypeDefinition(
 				rp,
-				f.aDataIntersectionOf(
-						f.aDatatypeRestriction(type, f.xsdMinInclusive(),
-								f.aLiteral(min, type)),
-						f.aDatatypeRestriction(type, f.xsdMaxInclusive(),
-								f.aLiteral(max, type)))));
-		ret.add(f.aObjectPropertyRange(f.a_v(p),
-				f.aDataSomeValuesFrom(param, rp)));
-		return ret;
+				this.f.getDataIntersectionOf(
+						this.f.getDatatypeRestriction(type,
+								this.f.xsdMinInclusive(),
+								this.f.getLiteral(min, type)),
+						this.f.getDatatypeRestriction(type,
+								this.f.xsdMaxInclusive(),
+								this.f.getLiteral(max, type))));
+		this.f.addObjectPropertyRange(this.f.a_v(p),
+				this.f.getDataSomeValuesFrom(param, rp));
 	}
 
 }

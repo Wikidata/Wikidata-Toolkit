@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -44,47 +43,45 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintConflictsWith) {
-			return render((ConstraintConflictsWith) c);
+			render((ConstraintConflictsWith) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintConflictsWith c) {
-		return render(c.getConstrainedProperty(), c.getList());
+	public void render(ConstraintConflictsWith c) {
+		render(c.getConstrainedProperty(), c.getList());
 	}
 
-	public List<String> render(PropertyIdValue p, List<PropertyValues> list) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || list == null || list.isEmpty()) {
-			return ret;
+	public void render(PropertyIdValue p, List<PropertyValues> list) {
+		if ((p == null) || (list == null) || list.isEmpty()) {
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
 		for (PropertyValues propertyValues : list) {
-			ret.addAll(renderPart(p, propertyValues.getProperty(),
-					propertyValues.getItems()));
+			renderPart(p, propertyValues.getProperty(),
+					propertyValues.getItems());
 		}
-		return ret;
 	}
 
-	public List<String> renderPart(PropertyIdValue p, PropertyIdValue r,
+	public void renderPart(PropertyIdValue p, PropertyIdValue r,
 			List<ItemIdValue> q) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || r == null) {
-			return ret;
+		if ((p == null) || (r == null)) {
+			return;
 		}
-		if (q == null || q.isEmpty()) {
-			ret.add(f.aDisjointClasses(
-					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.owlThing())));
+		if ((q == null) || q.isEmpty()) {
+			this.f.addDisjointClasses(
+					this.f.getObjectSomeValuesFrom(this.f.a_v(p),
+							this.f.owlThing()),
+					this.f.getObjectSomeValuesFrom(this.f.a_s(r),
+							this.f.owlThing()));
 		} else {
-			ret.add(f.aDisjointClasses(
-					f.aObjectSomeValuesFrom(f.a_v(p), f.owlThing()),
-					f.aObjectSomeValuesFrom(f.a_s(r), f.aObjectSomeValuesFrom(
-							f.a_v(r), f.aObjectOneOf(q)))));
+			this.f.addDisjointClasses(this.f.getObjectSomeValuesFrom(
+					this.f.a_v(p), this.f.owlThing()), this.f
+					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
+							.getObjectSomeValuesFrom(this.f.a_v(r),
+									this.f.getObjectOneOf(q))));
 		}
-		return ret;
 	}
 
 }

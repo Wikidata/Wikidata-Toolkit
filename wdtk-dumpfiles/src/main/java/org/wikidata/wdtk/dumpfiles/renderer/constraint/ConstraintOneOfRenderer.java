@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -43,25 +42,23 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintOneOf) {
-			return render((ConstraintOneOf) c);
+			render((ConstraintOneOf) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintOneOf c) {
-		return render(c.getConstrainedProperty(), c.getValues());
+	public void render(ConstraintOneOf c) {
+		render(c.getConstrainedProperty(), c.getValues());
 	}
 
-	public List<String> render(PropertyIdValue p, List<ItemIdValue> values) {
-		List<String> ret = new ArrayList<String>();
-		if (p == null || values == null) {
-			return ret;
+	public void render(PropertyIdValue p, List<ItemIdValue> values) {
+		if ((p == null) || (values == null)) {
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aObjectPropertyRange(f.a_v(p), f.aObjectOneOf(values)));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addObjectPropertyRange(this.f.a_v(p),
+				this.f.getObjectOneOf(values));
 	}
 
 }

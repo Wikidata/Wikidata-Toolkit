@@ -20,13 +20,11 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -42,25 +40,23 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 	}
 
 	@Override
-	public List<String> renderConstraint(Constraint c) {
+	public void renderConstraint(Constraint c) {
 		if (c instanceof ConstraintUniqueValue) {
-			return render((ConstraintUniqueValue) c);
+			render((ConstraintUniqueValue) c);
 		}
-		return null;
 	}
 
-	public List<String> render(ConstraintUniqueValue c) {
-		return render(c.getConstrainedProperty());
+	public void render(ConstraintUniqueValue c) {
+		render(c.getConstrainedProperty());
 	}
 
-	public List<String> render(PropertyIdValue p) {
-		List<String> ret = new ArrayList<String>();
+	public void render(PropertyIdValue p) {
 		if (p == null) {
-			return ret;
+			return;
 		}
-		ret.add(f.aInverseFunctionalObjectProperty(f.a_s(p)));
-		ret.add(f.aHasKey(f.owlThing(), f.a_v(p), ""));
-		return ret;
+		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addHasKey(this.f.owlThing(), this.f.a_v(p), new StringResource(
+				""));
 	}
 
 }
