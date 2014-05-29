@@ -20,8 +20,10 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.model.Resource;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
@@ -76,8 +78,17 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			this.f.addObjectPropertyDomain(this.f.a_s(p), this.f
 					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
 							.getObjectSomeValuesFrom(this.f.a_v(r),
-									this.f.getObjectOneOf(q))));
+									this.f.getObjectOneOf(this.f.aItem(q)))));
 		}
+	}
+
+	public static List<Resource> getListOfItems(RendererFormat f,
+			List<ItemIdValue> list) {
+		List<Resource> ret = new ArrayList<Resource>();
+		for (ItemIdValue q : list) {
+			ret.add(f.aItem(q));
+		}
+		return ret;
 	}
 
 	public void renderPart(PropertyIdValue p, List<ItemIdValue> values) {
@@ -88,7 +99,7 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addObjectPropertyDomain(this.f.a_s(p),
-				this.f.getObjectOneOf(values));
+				this.f.getObjectOneOf(getListOfItems(this.f, values)));
 	}
 
 }

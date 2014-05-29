@@ -84,8 +84,8 @@ public class PropertyConstraintDumpProcessor {
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(key));
-			rendererFormat.addAnnotationComment(new StringResource(key),
-					new StringResource(escapeChars(templates.toString())));
+			rendererFormat.addAnnotationAssertion(new StringResource(key),
+					escapeChars(templates.toString()));
 		}
 	}
 

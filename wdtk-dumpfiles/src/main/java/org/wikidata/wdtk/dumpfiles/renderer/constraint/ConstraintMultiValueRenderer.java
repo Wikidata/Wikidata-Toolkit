@@ -24,7 +24,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
-import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -56,8 +55,8 @@ class ConstraintMultiValueRenderer implements ConstraintRenderer {
 		}
 		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
 		this.f.addSubClassOf(this.f.owlThing(), this.f
-				.getObjectComplementOf(this.f.getObjectExactCardinality(
-						new StringResource("1"), this.f.a_s(p))));
+				.getObjectComplementOf(this.f.getObjectExactCardinality(1,
+						this.f.a_s(p))));
 	}
 
 }

@@ -65,11 +65,11 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 	}
 
 	public void renderPart(PropertyIdValue p, PropertyIdValue r,
-			List<ItemIdValue> q) {
+			List<ItemIdValue> values) {
 		if ((p == null) || (r == null)) {
 			return;
 		}
-		if ((q == null) || q.isEmpty()) {
+		if ((values == null) || values.isEmpty()) {
 			this.f.addDisjointClasses(
 					this.f.getObjectSomeValuesFrom(this.f.a_v(p),
 							this.f.owlThing()),
@@ -79,8 +79,9 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 			this.f.addDisjointClasses(this.f.getObjectSomeValuesFrom(
 					this.f.a_v(p), this.f.owlThing()), this.f
 					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
-							.getObjectSomeValuesFrom(this.f.a_v(r),
-									this.f.getObjectOneOf(q))));
+							.getObjectSomeValuesFrom(this.f.a_v(r), this.f
+									.getObjectOneOf(ConstraintItemRenderer
+											.getListOfItems(this.f, values)))));
 		}
 	}
 

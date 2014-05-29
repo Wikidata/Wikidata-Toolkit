@@ -69,7 +69,8 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addObjectPropertyRange(this.f.a_v(p), this.f.getObjectOneOf(q));
+		this.f.addObjectPropertyRange(this.f.a_v(p),
+				this.f.getObjectOneOf(this.f.aItem(q)));
 	}
 
 	public void renderSubclassOf(PropertyIdValue p, ItemIdValue q) {

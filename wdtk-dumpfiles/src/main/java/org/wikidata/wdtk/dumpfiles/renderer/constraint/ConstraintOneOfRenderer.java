@@ -57,8 +57,8 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addObjectPropertyRange(this.f.a_v(p),
-				this.f.getObjectOneOf(values));
+		this.f.addObjectPropertyRange(this.f.a_v(p), this.f
+				.getObjectOneOf(ConstraintItemRenderer.getListOfItems(this.f,
+						values)));
 	}
-
 }

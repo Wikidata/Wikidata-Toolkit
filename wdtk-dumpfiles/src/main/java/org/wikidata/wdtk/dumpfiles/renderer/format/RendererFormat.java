@@ -68,23 +68,33 @@ public interface RendererFormat {
 
 	BNode getObjectComplementOf(Resource arg);
 
-	BNode getObjectExactCardinality(Resource arg0, Resource arg1);
+	BNode getObjectExactCardinality(int cardinality, Resource property);
 
-	BNode getObjectOneOf(ItemIdValue q);
+	BNode getObjectOneOf(Resource clss);
 
-	BNode getObjectOneOf(List<ItemIdValue> list);
+	BNode getObjectOneOf(List<Resource> list);
 
 	BNode getObjectSomeValuesFrom(Resource arg0, Resource arg1);
 
 	BNode getObjectUnionOf(Resource arg0, Resource arg1);
 
-	boolean addAnnotationComment(Resource key, Resource comment);
+	boolean addAnnotationAssertion(Resource key, String comment);
 
 	boolean addDataPropertyRange(Resource arg0, Resource arg1);
 
 	boolean addDatatypeDefinition(Resource arg0, Resource arg1);
 
-	boolean addDeclaration(Resource arg);
+	boolean addDeclarationAnnotationProperty(Resource arg);
+
+	boolean addDeclarationClass(Resource arg);
+
+	boolean addDeclarationDatatype(Resource arg);
+
+	boolean addDeclarationDatatypeProperty(Resource arg);
+
+	boolean addDeclarationNamedIndividual(Resource arg);
+
+	boolean addDeclarationObjectProperty(Resource arg);
 
 	boolean addDisjointClasses(Resource arg0, Resource arg1);
 

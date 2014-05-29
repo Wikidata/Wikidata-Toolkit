@@ -64,7 +64,7 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 			this.f.addObjectPropertyRange(this.f.a_v(p), this.f
 					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
 							.getObjectSomeValuesFrom(this.f.a_v(r),
-									this.f.getObjectOneOf(q))));
+									this.f.getObjectOneOf(this.f.aItem(q)))));
 		}
 	}
 

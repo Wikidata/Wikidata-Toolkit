@@ -34,20 +34,26 @@ public interface Owl2FunctionalConstant {
 	String C_PAR_B = ")";
 	String C_QUOTATION_MARK = "\"";
 	String C_SPACE = " ";
+
+	String ANNOTATION_PROPERTY = "AnnotationProperty";
+	String CLASS = "Class";
 	String DATA_INTERSECTION_OF = "DataIntersectionOf";
 	String DATA_PROPERTY_RANGE = "DataPropertyRange";
 	String DATA_SOME_VALUES_FROM = "DataSomeValuesFrom";
 	String DATATYPE = "Datatype";
 	String DATATYPE_DEFINITION = "DatatypeDefinition";
+	String DATATYPE_PROPERTY = "DatatypeProperty";
 	String DATATYPE_RESTRICTION = "DatatypeRestriction";
 	String DECLARATION = "Declaration";
 	String DISJOINT_CLASSES = "DisjointClasses";
 	String FUNCTIONAL_OBJECT_PROPERTY = "FunctionalObjectProperty";
 	String HAS_KEY = "HasKey";
 	String INVERSE_FUNCTIONAL_OBJECT_PROPERTY = "InverseFunctionalObjectProperty";
+	String NAMED_INDIVIDUAL = "NamedIndividual";
 	String OBJECT_COMPLEMENT_OF = "ObjectComplementOf";
 	String OBJECT_EXACT_CARDINALITY = "ObjectExactCardinality";
 	String OBJECT_ONE_OF = "ObjectOneOf";
+	String OBJECT_PROPERTY = "ObjectProperty";
 	String OBJECT_PROPERTY_DOMAIN = "ObjectPropertyDomain";
 	String OBJECT_PROPERTY_RANGE = "ObjectPropertyRange";
 	String OBJECT_SOME_VALUES_FROM = "ObjectSomeValuesFrom";

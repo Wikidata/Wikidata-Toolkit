@@ -74,10 +74,10 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return new StringBNode(arg0 + Owl2FunctionalConstant.C_SPACE + arg1);
 	}
 
-	private String makeList(List<ItemIdValue> list) {
+	private String makeList(List<Resource> list) {
 		StringBuilder ret = new StringBuilder();
-		for (ItemIdValue q : list) {
-			ret.append(aItem(q));
+		for (Resource q : list) {
+			ret.append(q.stringValue());
 			ret.append(Owl2FunctionalConstant.C_SPACE);
 		}
 		return ret.toString();
@@ -193,18 +193,18 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getObjectExactCardinality(Resource arg0, Resource arg1) {
+	public BNode getObjectExactCardinality(int arg0, Resource arg1) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_EXACT_CARDINALITY,
-				makePair(arg0, arg1));
+				makePair(new StringResource("" + arg0), arg1));
 	}
 
 	@Override
-	public BNode getObjectOneOf(ItemIdValue q) {
-		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF, aItem(q));
+	public BNode getObjectOneOf(Resource clss) {
+		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF, clss);
 	}
 
 	@Override
-	public BNode getObjectOneOf(List<ItemIdValue> list) {
+	public BNode getObjectOneOf(List<Resource> list) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF,
 				makeList(list));
 	}
@@ -222,7 +222,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationComment(Resource key, Resource comment) {
+	public boolean addAnnotationAssertion(Resource key, String comment) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_A);
 		sb.append(key);
@@ -241,7 +241,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return true;
 	}
 
-	@Override
 	public boolean addDeclaration(Resource arg) {
 		BNode ret = makeFunction(Owl2FunctionalConstant.DECLARATION, arg);
 		this.model.add(ret.toString());
@@ -314,6 +313,50 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	public boolean addSubClassOf(Resource arg0, Resource arg1) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.SUB_CLASS_OF,
 				makePair(arg0, arg1));
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationAnnotationProperty(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.ANNOTATION_PROPERTY,
+				arg);
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationClass(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.CLASS, arg);
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatype(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatypeProperty(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE_PROPERTY,
+				arg);
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationNamedIndividual(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.NAMED_INDIVIDUAL, arg);
+		this.model.add(bnode.toString());
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationObjectProperty(Resource arg) {
+		BNode bnode = makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY, arg);
 		this.model.add(bnode.toString());
 		return true;
 	}
