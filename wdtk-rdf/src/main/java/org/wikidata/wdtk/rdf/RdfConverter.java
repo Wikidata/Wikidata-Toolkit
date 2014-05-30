@@ -65,19 +65,19 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new PropertyTypesImpl();
+	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
-	public RdfConverter(RdfWriter writer, Sites sites) {
+	public RdfConverter(RdfWriter rdfWriter, Sites sites) {
 		this.sites = sites;
-		this.rdfWriter = writer;
+		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = new RdfConversionBuffer();
-		this.valueRdfConverter = new ValueRdfConverter(writer,
+		this.valueRdfConverter = new ValueRdfConverter(rdfWriter,
 				this.rdfConversionBuffer, propertyTypes);
-		this.snakRdfConverter = new SnakRdfConverter(writer,
+		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
 				this.rdfConversionBuffer, propertyTypes, this.valueRdfConverter);
 	}
 

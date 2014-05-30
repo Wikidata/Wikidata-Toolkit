@@ -6,7 +6,7 @@
 	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;
 	<http://www.wikidata.org/P1040s> <http://www.wikidata.org/Q10Snone2> , <http://www.wikidata.org/Q10Snone> .
 
-<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> , _: .
+<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> , _:node18ok9vj5mx1 .
 
 <http://www.wikidata.org/Q10Snone2> a <http://www.wikidata.org/ontology#Statement> ;
 	<http://www.wikidata.org/P1040v> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
@@ -44,10 +44,10 @@
 
 <http://www.wikidata.org/P15r> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-_: a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _: .
+_:node18ok9vj5mx1 a <http://www.w3.org/2002/07/owl#Class> ;
+	<http://www.w3.org/2002/07/owl#complementOf> _:node18ok9vj5mx2 .
 
-_: a <http://www.w3.org/2002/07/owl#Restriction> ;
+_:node18ok9vj5mx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P10v> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 

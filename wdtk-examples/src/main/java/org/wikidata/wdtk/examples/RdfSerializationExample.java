@@ -20,15 +20,21 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
+import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.openrdf.rio.RDFFormat;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
@@ -46,6 +52,10 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * @author Markus Kroetzsch
  */
 public class RdfSerializationExample {
+
+	final static String COMPRESS_BZ2 = ".bz2";
+	final static String COMPRESS_GZIP = ".gz";
+	final static String COMPRESS_NONE = "";
 
 	private static Sites sites;
 	private static DumpProcessingController dumpProcessingController;
@@ -66,20 +76,20 @@ public class RdfSerializationExample {
 
 		sites = dumpProcessingController.getSitesInformation();
 
-		createRdfSerializer("Wikidata-properties.nt.bz2",
+		createRdfSerializer("wikidata-properties.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_PROPERTIES
 						| RdfSerializer.TASK_ALL_EXACT_DATA);
-		createRdfSerializer("Wikidata-terms.nt.bz2", RdfSerializer.TASK_ITEMS
-				| RdfSerializer.TASK_TERMS);
-		createRdfSerializer("Wikidata-statements.nt.bz2",
+		createRdfSerializer("wikidata-terms.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
+		createRdfSerializer("wikidata-statements.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
-		createRdfSerializer("Wikidata-simple-statements.nt.bz2",
+		createRdfSerializer("wikidata-simple-statements.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		createRdfSerializer("Wikidata-taxonomy.nt.bz2",
+		createRdfSerializer("wikidata-taxonomy.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
-		createRdfSerializer("Wikidata-instances.nt.bz2",
+		createRdfSerializer("wikidata-instances.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
-		createRdfSerializer("Wikidata-sitelinks.nt.bz2",
+		createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
 
 		// General statistics and time keeping:
@@ -110,6 +120,9 @@ public class RdfSerializationExample {
 	 * 
 	 * @param outputFileName
 	 *            filename to write output to
+	 * @param compressionExtension
+	 *            the extension of the chosen compression format or the empty
+	 *            string for no compression
 	 * @param tasks
 	 *            an integer that is a bitwise OR of flags like
 	 *            {@link RdfSerializer#TASK_LABELS}.
@@ -120,12 +133,43 @@ public class RdfSerializationExample {
 	 * @throws IOException
 	 *             if it was not possible to write the BZ2 header to the file
 	 */
+	@SuppressWarnings("resource")
 	private static RdfSerializer createRdfSerializer(String outputFileName,
-			int tasks) throws FileNotFoundException, IOException {
-		OutputStream simpleStatementsOutputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream(outputFileName));
+			String compressionExtension, int tasks)
+			throws FileNotFoundException, IOException {
+
+		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
+				new FileOutputStream(outputFileName + compressionExtension),
+				1024 * 1024 * 5);
+
+		OutputStream compressorOutputStream = null;
+		switch (compressionExtension) {
+		case COMPRESS_BZ2:
+			compressorOutputStream = new BZip2CompressorOutputStream(
+					bufferedFileOutputStream);
+			break;
+		case COMPRESS_GZIP:
+			GzipParameters gzipParameters = new GzipParameters();
+			gzipParameters.setCompressionLevel(7);
+			compressorOutputStream = new GzipCompressorOutputStream(
+					bufferedFileOutputStream, gzipParameters);
+			break;
+		case COMPRESS_NONE:
+			compressorOutputStream = bufferedFileOutputStream;
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Unsupported compression format: " + compressionExtension);
+		}
+
+		OutputStream exportOutputStream = asynchronousOutputStream(compressorOutputStream);
+		// // Alternative code: if not using separate threads, increase
+		// // pre-compression buffer:
+		// OutputStream exportOutputStream = new
+		// BufferedOutputStream(compressorOutputStream,1024 * 1024 * 50);
+
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				simpleStatementsOutputStream, sites);
+				exportOutputStream, sites);
 		serializer.setTasks(tasks);
 
 		dumpProcessingController.registerEntityDocumentProcessor(serializer,
@@ -185,5 +229,59 @@ public class RdfSerializationExample {
 				.println("*** The output will be stored in the directory of the example.");
 		System.out
 				.println("********************************************************************");
+	}
+
+	/**
+	 * Creates a separate thread for writing into the given output stream and
+	 * returns a pipe output stream that can be used to pass data to this
+	 * thread.
+	 * <p>
+	 * This code is inspired by
+	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
+	 * -that-does-its-compression-in-a-separate-thread
+	 * 
+	 * @param outputStream
+	 *            the stream to write to in the thread
+	 * @return a new stream that data should be written to
+	 * @throws IOException
+	 *             if the pipes could not be created for some reason
+	 */
+	public static OutputStream asynchronousOutputStream(
+			final OutputStream outputStream) throws IOException {
+		final int SIZE = 1024 * 1024 * 10;
+		final PipedOutputStream pos = new PipedOutputStream();
+		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					byte[] bytes = new byte[SIZE];
+					for (int len; (len = pis.read(bytes)) > 0;) {
+						outputStream.write(bytes, 0, len);
+					}
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				} finally {
+					close(pis);
+					close(outputStream);
+				}
+			}
+		}, "async-output-stream").start();
+		return pos;
+	}
+
+	/**
+	 * Closes a Closeable and swallows any exceptions that might occur in the
+	 * process.
+	 * 
+	 * @param closeable
+	 */
+	static void close(Closeable closeable) {
+		if (closeable != null) {
+			try {
+				closeable.close();
+			} catch (IOException ignored) {
+			}
+		}
 	}
 }
