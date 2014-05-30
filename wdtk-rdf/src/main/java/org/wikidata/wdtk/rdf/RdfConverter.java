@@ -71,13 +71,13 @@ public class RdfConverter {
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
-	public RdfConverter(RdfWriter writer, Sites sites) {
+	public RdfConverter(RdfWriter rdfWriter, Sites sites) {
 		this.sites = sites;
-		this.rdfWriter = writer;
+		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = new RdfConversionBuffer();
-		this.valueRdfConverter = new ValueRdfConverter(writer,
+		this.valueRdfConverter = new ValueRdfConverter(rdfWriter,
 				this.rdfConversionBuffer, propertyTypes);
-		this.snakRdfConverter = new SnakRdfConverter(writer,
+		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
 				this.rdfConversionBuffer, propertyTypes, this.valueRdfConverter);
 	}
 
