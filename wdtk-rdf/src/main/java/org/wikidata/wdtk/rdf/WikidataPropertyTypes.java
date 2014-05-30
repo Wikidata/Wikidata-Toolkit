@@ -53,9 +53,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * @author Markus Kroetzsch
  * 
  */
-public class PropertyTypesImpl implements PropertyTypes {
+public class WikidataPropertyTypes implements PropertyTypes {
 
-	static final Logger logger = LoggerFactory.getLogger(PropertyTypesImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(WikidataPropertyTypes.class);
 	
 	final String WEB_API_URL = "http://www.wikidata.org/w/api.php";
 
@@ -66,9 +66,9 @@ public class PropertyTypesImpl implements PropertyTypes {
 
 	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 
-	public PropertyTypesImpl() {
+	public WikidataPropertyTypes() {
 		this.propertyTypes = new HashMap<String, String>();
-		this.propertyTypes.putAll(PropertyTypesImpl.KNOWN_PROPERTY_TYPES);
+		this.propertyTypes.putAll(WikidataPropertyTypes.KNOWN_PROPERTY_TYPES);
 		this.webAPIUrl = this.WEB_API_URL;
 	}
 

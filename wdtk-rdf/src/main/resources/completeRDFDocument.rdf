@@ -1,0 +1,112 @@
+@prefix id: <http://www.wikidata.org/entity/> .
+@prefix wo: <http://www.wikidata.org/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+wo:propertyType a owl:ObjectProperty .
+
+prov:wasDerivedFrom a owl:ObjectProperty .
+
+wo:longitude a owl:DatatypeProperty .
+
+wo:timePrecision a owl:DatatypeProperty .
+
+schema:description a owl:DatatypeProperty .
+
+wo:QuantityValue a owl:Class .
+
+wo:upperBound a owl:DatatypeProperty .
+
+wo:time a owl:DatatypeProperty .
+
+wo:gcPrecision a owl:DatatypeProperty .
+
+skos:altLabel a owl:DatatypeProperty .
+
+wo:globe a owl:ObjectProperty .
+
+wo:preferredCalendar a owl:ObjectProperty .
+
+schema:inLanguage a owl:DatatypeProperty .
+
+wo:lowerBound a owl:DatatypeProperty .
+
+wo:Reference a owl:Class .
+
+wo:GlobeCoordinatesValue a owl:Class .
+
+wo:TimeValue a owl:Class .
+
+wo:Statement a owl:Class .
+
+wo:latitude a owl:DatatypeProperty .
+
+wo:Article a owl:Class .
+
+wo:numericValue a owl:DatatypeProperty .
+
+schema:about a owl:ObjectProperty .
+
+wo:Item a owl:Class .
+
+wo:Property a owl:Class .
+
+<http://www.wikidata.org/Q10> a wo:Item ;
+	rdfs:label "bar"@lc2 , "foo"@lc ;
+	schema:description "it's bar"@lc2 , "it's foo"@lc ;
+	skos:altLabel "foo"@lc , "bar"@lc ;
+	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;
+	<http://www.wikidata.org/P1040s> <http://www.wikidata.org/Q10Snone2> , <http://www.wikidata.org/Q10Snone> .
+
+<http://www.wikidata.org/Q10Snone> a wo:Statement , _:node18omsmhaux1 .
+
+<http://www.wikidata.org/Q10Snone2> a wo:Statement ;
+	<http://www.wikidata.org/P1040v> id:VTec11d94e4f5bb7b00a79196734f49066 ;
+	<http://www.wikidata.org/P15q> id:VTec11d94e4f5bb7b00a79196734f49066 ;
+	prov:wasDerivedFrom id:R0a804970328cb6325b5f43c60934df3c .
+
+<http://www.wikidata.org/Q10Snone> a wo:Statement .
+
+id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
+	wo:time "0306-11-03"^^xsd:date ;
+	wo:timePrecision "32"^^xsd:int ;
+	wo:preferredCalendar id:Q1985727 .
+
+<http://www.wikidata.org/P10s> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P10v> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P10q> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P10r> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P1040s> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P1040v> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P1040q> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P1040r> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P15s> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P15v> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P15q> a owl:ObjectProperty .
+
+<http://www.wikidata.org/P15r> a owl:ObjectProperty .
+
+_:node18omsmhaux1 a owl:Class ;
+	owl:complementOf _:node18omsmhaux2 .
+
+_:node18omsmhaux2 a owl:Restriction ;
+	owl:onProperty <http://www.wikidata.org/P10v> ;
+	owl:someValuesFrom owl:Thing .
+
+id:R0a804970328cb6325b5f43c60934df3c a wo:Reference ;
+	<http://www.wikidata.org/P112r> id:VTec11d94e4f5bb7b00a79196734f49066 .

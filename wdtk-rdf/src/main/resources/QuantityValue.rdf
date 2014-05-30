@@ -1,0 +1,6 @@
+
+<http://test.org/> a <http://www.wikidata.org/ontology#QuantityValue> ;
+	<http://www.wikidata.org/ontology#numericValue> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://www.wikidata.org/ontology#lowerBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://www.wikidata.org/ontology#upperBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+	

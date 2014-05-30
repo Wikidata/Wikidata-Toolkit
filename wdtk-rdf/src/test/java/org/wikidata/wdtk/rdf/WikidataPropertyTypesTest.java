@@ -35,13 +35,13 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
-public class PropertyTypesImplTest {
+public class WikidataPropertyTypesTest {
 
 	final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	SitesImpl sites = new SitesImpl();
 
-	final PropertyTypesImpl propertyTypes = new PropertyTypesImpl();
+	final WikidataPropertyTypes propertyTypes = new WikidataPropertyTypes();
 
 	@Before
 	public void setUp() throws Exception {
