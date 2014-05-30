@@ -43,6 +43,23 @@ public class StringResource implements Resource {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof StringResource)) {
+			return false;
+		}
+		StringResource other = (StringResource) obj;
+		return stringValue().equals(other.stringValue());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.str.hashCode();
+	}
+
+	@Override
 	public String toString() {
 		return this.str;
 	}

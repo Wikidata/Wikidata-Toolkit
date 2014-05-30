@@ -84,7 +84,7 @@ public class PropertyConstraintDumpProcessor {
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(key));
-			rendererFormat.addAnnotationAssertion(new StringResource(key),
+			rendererFormat.addAnnotationAssertionComment(new StringResource(key),
 					escapeChars(templates.toString()));
 		}
 	}
@@ -118,14 +118,14 @@ public class PropertyConstraintDumpProcessor {
 		controller.processAllDumps(DumpContentType.CURRENT, DEFAULT_DUMP_DATE,
 				DEFAULT_DUMP_DATE);
 
-		output.write(rendererFormat.getStart());
+		rendererFormat.start();
 		processAnnotationsOfConstraintTemplates(
 				propertyTalkTemplateProcessor.getMap(), rendererFormat);
 		processTemplates(propertyTalkTemplateProcessor.getMap(), output,
 				rendererFormat);
-		printLines(owlLines, output);
+		rendererFormat.finish();
 
-		output.write(rendererFormat.getEnd());
+		printLines(owlLines, output);
 	}
 
 	public void processTemplates(Map<String, List<Template>> templateMap,

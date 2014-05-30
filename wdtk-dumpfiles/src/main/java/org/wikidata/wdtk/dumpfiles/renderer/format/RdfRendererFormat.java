@@ -21,7 +21,9 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
  */
 
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Resource;
@@ -37,6 +39,8 @@ import org.wikidata.wdtk.rdf.RdfWriter;
 public class RdfRendererFormat implements RendererFormat {
 
 	static final ValueFactory factory = ValueFactoryImpl.getInstance();
+
+	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
 	final RdfWriter rdfWriter;
 
@@ -62,339 +66,6 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public URI aRp(PropertyIdValue property) {
 		return factory.createURI(property.getIri());
-	}
-
-	@Override
-	public BNode getDataIntersectionOf(Resource datatype0, Resource datatype1) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getDataSomeValuesFrom(Resource datatypeProperty,
-			Resource datatype) {
-		BNode ret = factory.createBNode();
-		try {
-			this.rdfWriter.writeTripleValueObject(datatype,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
-			this.rdfWriter.writeTripleValueObject(datatypeProperty,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_DATATYPE_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_RESTRICTION);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ON_PROPERTY, datatypeProperty);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_SOME_VALUES_FROM, datatype);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
-	}
-
-	@Override
-	public BNode getDatatype(Resource arg) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getLiteral(Resource value, Resource type) {
-		// FIXME
-
-		return factory.createBNode();
-	}
-
-	@Override
-	public BNode getObjectComplementOf(Resource clss) {
-		BNode ret = factory.createBNode();
-		try {
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_COMPLEMENT_OF, clss);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
-	}
-
-	@Override
-	public BNode getObjectExactCardinality(int cardinality, Resource property) {
-		BNode ret = factory.createBNode();
-		try {
-			this.rdfWriter
-					.writeTripleValueObject(property, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_RESTRICTION);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ON_PROPERTY, property);
-
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ON_CLASS, RdfUriConstant.OWL_THING);
-			// this is not necessary
-
-			this.rdfWriter.writeTripleIntegerObject(ret,
-					RdfUriConstant.OWL_QUALIFIED_CARDINALITY, cardinality);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
-	}
-
-	@Override
-	public BNode getObjectOneOf(Resource clss) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getObjectOneOf(List<Resource> list) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getObjectSomeValuesFrom(Resource propertyUri, Resource rangeUri) {
-		BNode ret = factory.createBNode();
-		try {
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_RESTRICTION);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ON_PROPERTY, propertyUri);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_SOME_VALUES_FROM, rangeUri);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
-	}
-
-	@Override
-	public BNode getObjectUnionOf(Resource class0, Resource class1) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getDatatypeRestriction(Resource arg0, Resource arg1,
-			Resource arg2) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public boolean addAnnotationAssertion(Resource entity, String comment) {
-		try {
-			this.rdfWriter.writeTripleStringObject(entity,
-					RdfUriConstant.RDFS_COMMENT, comment);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDataPropertyRange(Resource property, Resource datatype) {
-		try {
-			this.rdfWriter.writeTripleValueObject(datatype,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_DATATYPE_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDFS_RANGE, datatype);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDatatypeDefinition(Resource arg0, Resource arg1) {
-		// FIXME
-
-		return false;
-	}
-
-	@Override
-	public boolean addDeclarationAnnotationProperty(Resource entity) {
-		try {
-			this.rdfWriter.writeTripleValueObject(entity,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_ANNOTATION_PROPERTY);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationClass(Resource entity) {
-		try {
-			this.rdfWriter.writeTripleValueObject(entity,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationDatatype(Resource entity) {
-		try {
-			this.rdfWriter.writeTripleValueObject(entity,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationDatatypeProperty(Resource entity) {
-		try {
-			this.rdfWriter.writeTripleValueObject(entity,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_DATATYPE_PROPERTY);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationNamedIndividual(Resource entity) {
-		try {
-			this.rdfWriter.writeTripleValueObject(entity,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_NAMED_INDIVIDUAL);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationObjectProperty(Resource entity) {
-		try {
-			this.rdfWriter
-					.writeTripleValueObject(entity, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDisjointClasses(Resource arg0, Resource arg1) {
-		// FIXME
-
-		return false;
-	}
-
-	@Override
-	public boolean addFunctionalObjectProperty(Resource property) {
-		try {
-			this.rdfWriter
-					.writeTripleValueObject(property, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_FUNCTIONAL_PROPERTY);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addHasKey(Resource arg0, Resource arg1, Resource arg2) {
-		// FIXME
-
-		return false;
-	}
-
-	@Override
-	public boolean addInverseFunctionalObjectProperty(Resource property) {
-		try {
-			this.rdfWriter
-					.writeTripleValueObject(property, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addObjectPropertyDomain(Resource property, Resource domain) {
-		try {
-			this.rdfWriter.writeTripleValueObject(domain,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
-			this.rdfWriter
-					.writeTripleValueObject(property, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDFS_DOMAIN, domain);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addObjectPropertyRange(Resource property, Resource range) {
-		try {
-			this.rdfWriter.writeTripleValueObject(range,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
-			this.rdfWriter
-					.writeTripleValueObject(property, RdfUriConstant.RDF_TYPE,
-							RdfUriConstant.OWL_OBJECT_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(property,
-					RdfUriConstant.RDFS_RANGE, range);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addSubClassOf(Resource subClass, Resource superClass) {
-		try {
-			this.rdfWriter.writeTripleValueObject(subClass,
-					RdfUriConstant.RDFS_SUB_CLASS_OF, superClass);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public String getEnd() {
-		// FIXME
-		return " ";
-	}
-
-	@Override
-	public String getStart() {
-		// FIXME
-		return " ";
 	}
 
 	@Override
@@ -432,8 +103,376 @@ public class RdfRendererFormat implements RendererFormat {
 		return RdfUriConstant.XSD_STRING;
 	}
 
+	@Override
+	public BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public BNode getDataSomeValuesFrom(Resource datatypeProperty,
+			Resource dataRange) {
+		BNode ret = factory.createBNode();
+		try {
+			addDeclarationDatatypeProperty(datatypeProperty);
+			addDeclarationDatatype(dataRange);
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_RESTRICTION);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ON_PROPERTY, datatypeProperty);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_SOME_VALUES_FROM, dataRange);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	@Override
+	public BNode getDatatype(Resource arg) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public BNode getDatatypeRestriction(Resource dataType, Resource facet,
+			Resource value) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public BNode getLiteral(Resource value, Resource type) {
+		// FIXME
+
+		return factory.createBNode();
+	}
+
+	@Override
+	public BNode getObjectComplementOf(Resource clss) {
+		BNode ret = factory.createBNode();
+		try {
+			addDeclarationClass(clss);
+
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_COMPLEMENT_OF, clss);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	@Override
+	public BNode getObjectExactCardinality(int cardinality,
+			Resource objectProperty) {
+		BNode ret = factory.createBNode();
+		try {
+			addDeclarationObjectProperty(objectProperty);
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_RESTRICTION);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ON_PROPERTY, objectProperty);
+
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ON_CLASS, RdfUriConstant.OWL_THING);
+			// this is not necessary
+
+			this.rdfWriter.writeTripleIntegerObject(ret,
+					RdfUriConstant.OWL_QUALIFIED_CARDINALITY, cardinality);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	@Override
+	public BNode getObjectOneOf(Resource individual) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public BNode getObjectOneOf(List<Resource> listOfIndividuals) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public BNode getObjectSomeValuesFrom(Resource property, Resource clss) {
+		BNode ret = factory.createBNode();
+		try {
+			addDeclarationObjectProperty(property);
+			addDeclarationClass(clss);
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_RESTRICTION);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ON_PROPERTY, property);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_SOME_VALUES_FROM, clss);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	@Override
+	public BNode getObjectUnionOf(Resource class0, Resource class1) {
+		// FIXME
+		BNode ret = factory.createBNode();
+
+		return ret;
+	}
+
+	@Override
+	public boolean addAnnotationAssertionComment(Resource subject, String value) {
+		try {
+			this.rdfWriter.writeTripleStringObject(subject,
+					RdfUriConstant.RDFS_COMMENT, value);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDataPropertyRange(Resource dataProperty,
+			Resource dataRange) {
+		try {
+			addDeclarationDatatypeProperty(dataProperty);
+			addDeclarationDatatype(dataRange);
+
+			this.rdfWriter.writeTripleValueObject(dataProperty,
+					RdfUriConstant.RDFS_RANGE, dataRange);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDatatypeDefinition(Resource datatype, Resource dataRange) {
+		// FIXME
+
+		return false;
+	}
+
+	@Override
+	public boolean addDeclarationAnnotationProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter.writeTripleValueObject(entity,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_ANNOTATION_PROPERTY);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationClass(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter.writeTripleValueObject(entity,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatype(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter.writeTripleValueObject(entity,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatypeProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter.writeTripleValueObject(entity,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_DATATYPE_PROPERTY);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationNamedIndividual(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter.writeTripleValueObject(entity,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_NAMED_INDIVIDUAL);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationObjectProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		try {
+			this.rdfWriter
+					.writeTripleValueObject(entity, RdfUriConstant.RDF_TYPE,
+							RdfUriConstant.OWL_OBJECT_PROPERTY);
+			this.declaredEntities.add(entity);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addDisjointClasses(Resource class0, Resource class1) {
+		// FIXME
+
+		return false;
+	}
+
+	@Override
+	public boolean addFunctionalObjectProperty(Resource objectProperty) {
+		try {
+			addDeclarationObjectProperty(objectProperty);
+
+			this.rdfWriter.writeTripleValueObject(objectProperty,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_FUNCTIONAL_PROPERTY);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addHasKey(Resource clss, Resource objectProperty,
+			Resource dataProperty) {
+		// FIXME
+
+		return false;
+	}
+
+	@Override
+	public boolean addInverseFunctionalObjectProperty(Resource objectProperty) {
+		try {
+			addDeclarationObjectProperty(objectProperty);
+
+			this.rdfWriter.writeTripleValueObject(objectProperty,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addObjectPropertyDomain(Resource objectProperty,
+			Resource clss) {
+		try {
+			addDeclarationObjectProperty(objectProperty);
+			addDeclarationClass(clss);
+
+			this.rdfWriter.writeTripleValueObject(objectProperty,
+					RdfUriConstant.RDFS_DOMAIN, clss);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addObjectPropertyRange(Resource objectProperty, Resource clss) {
+		try {
+			addDeclarationObjectProperty(objectProperty);
+			addDeclarationClass(clss);
+
+			this.rdfWriter.writeTripleValueObject(objectProperty,
+					RdfUriConstant.RDFS_RANGE, clss);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addSubClassOf(Resource subClass, Resource superClass) {
+		try {
+			addDeclarationClass(subClass);
+			addDeclarationClass(superClass);
+
+			this.rdfWriter.writeTripleValueObject(subClass,
+					RdfUriConstant.RDFS_SUB_CLASS_OF, superClass);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+	@Override
+	public void start() {
+		try {
+			this.rdfWriter.start();
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void finish() {
+		try {
+			this.rdfWriter.finish();
+			this.declaredEntities.clear();
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public boolean addClassAssertion(Resource clss, Resource individual) {
 		try {
+			addDeclarationClass(clss);
+			addDeclarationNamedIndividual(individual);
+
 			this.rdfWriter.writeTripleValueObject(individual,
 					RdfUriConstant.RDF_TYPE, clss);
 		} catch (RDFHandlerException e) {
@@ -444,9 +483,13 @@ public class RdfRendererFormat implements RendererFormat {
 
 	public boolean addClassNegativeAssertion(Resource clss, Resource individual) {
 		try {
+			addDeclarationClass(clss);
+			addDeclarationNamedIndividual(individual);
+
 			BNode bnode = factory.createBNode();
-			this.rdfWriter.writeTripleValueObject(bnode,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
+
+			addDeclarationClass(bnode);
+
 			this.rdfWriter.writeTripleValueObject(bnode,
 					RdfUriConstant.OWL_COMPLEMENT_OF, clss);
 

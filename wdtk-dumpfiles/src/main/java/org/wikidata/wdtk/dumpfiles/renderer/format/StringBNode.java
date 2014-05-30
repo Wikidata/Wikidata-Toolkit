@@ -49,13 +49,31 @@ public class StringBNode implements BNode {
 	}
 
 	@Override
-	public String toString() {
-		return this.str;
+	public String getID() {
+		return this.bnode.getID();
 	}
 
 	@Override
-	public String getID() {
-		return this.bnode.getID();
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof StringBNode)) {
+			return false;
+		}
+		StringBNode other = (StringBNode) obj;
+		return stringValue().equals(other.stringValue())
+				&& getID().equals(other.getID());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.str.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return this.str;
 	}
 
 }

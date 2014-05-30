@@ -30,10 +30,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 public interface RendererFormat {
 
-	String getStart();
-
-	String getEnd();
-
 	URI a_s(PropertyIdValue property);
 
 	URI a_v(PropertyIdValue property);
@@ -56,58 +52,64 @@ public interface RendererFormat {
 
 	URI xsdString();
 
-	BNode getDataIntersectionOf(Resource arg0, Resource arg1);
+	BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1);
 
-	BNode getDataSomeValuesFrom(Resource arg0, Resource arg1);
+	BNode getDataSomeValuesFrom(Resource dataProperty, Resource dataRange);
 
 	BNode getDatatype(Resource arg);
 
-	BNode getDatatypeRestriction(Resource arg0, Resource arg1, Resource arg2);
+	BNode getDatatypeRestriction(Resource dataType, Resource facet,
+			Resource value);
 
 	BNode getLiteral(Resource value, Resource type);
 
-	BNode getObjectComplementOf(Resource arg);
+	BNode getObjectComplementOf(Resource clss);
 
-	BNode getObjectExactCardinality(int cardinality, Resource property);
+	BNode getObjectExactCardinality(int cardinality, Resource objectProperty);
 
-	BNode getObjectOneOf(Resource clss);
+	BNode getObjectOneOf(Resource individual);
 
-	BNode getObjectOneOf(List<Resource> list);
+	BNode getObjectOneOf(List<Resource> listOfIndividuals);
 
-	BNode getObjectSomeValuesFrom(Resource arg0, Resource arg1);
+	BNode getObjectSomeValuesFrom(Resource property, Resource clss);
 
-	BNode getObjectUnionOf(Resource arg0, Resource arg1);
+	BNode getObjectUnionOf(Resource class0, Resource class1);
 
-	boolean addAnnotationAssertion(Resource key, String comment);
+	boolean addAnnotationAssertionComment(Resource subject, String value);
 
-	boolean addDataPropertyRange(Resource arg0, Resource arg1);
+	boolean addDataPropertyRange(Resource dataProperty, Resource dataRange);
 
-	boolean addDatatypeDefinition(Resource arg0, Resource arg1);
+	boolean addDatatypeDefinition(Resource datatype, Resource dataRange);
 
-	boolean addDeclarationAnnotationProperty(Resource arg);
+	boolean addDeclarationAnnotationProperty(Resource entity);
 
-	boolean addDeclarationClass(Resource arg);
+	boolean addDeclarationClass(Resource entity);
 
-	boolean addDeclarationDatatype(Resource arg);
+	boolean addDeclarationDatatype(Resource entity);
 
-	boolean addDeclarationDatatypeProperty(Resource arg);
+	boolean addDeclarationDatatypeProperty(Resource entity);
 
-	boolean addDeclarationNamedIndividual(Resource arg);
+	boolean addDeclarationNamedIndividual(Resource entity);
 
-	boolean addDeclarationObjectProperty(Resource arg);
+	boolean addDeclarationObjectProperty(Resource entity);
 
-	boolean addDisjointClasses(Resource arg0, Resource arg1);
+	boolean addDisjointClasses(Resource class0, Resource class1);
 
-	boolean addFunctionalObjectProperty(Resource arg);
+	boolean addFunctionalObjectProperty(Resource objectProperty);
 
-	boolean addHasKey(Resource arg0, Resource arg1, Resource arg2);
+	boolean addHasKey(Resource clss, Resource objectProperty,
+			Resource dataProperty);
 
-	boolean addInverseFunctionalObjectProperty(Resource arg);
+	boolean addInverseFunctionalObjectProperty(Resource objectProperty);
 
-	boolean addObjectPropertyDomain(Resource arg0, Resource arg1);
+	boolean addObjectPropertyDomain(Resource objectProperty, Resource clss);
 
-	boolean addObjectPropertyRange(Resource arg0, Resource arg1);
+	boolean addObjectPropertyRange(Resource objectProperty, Resource clss);
 
-	boolean addSubClassOf(Resource arg0, Resource arg1);
+	boolean addSubClassOf(Resource subClass, Resource superClass);
+
+	void start();
+
+	void finish();
 
 }

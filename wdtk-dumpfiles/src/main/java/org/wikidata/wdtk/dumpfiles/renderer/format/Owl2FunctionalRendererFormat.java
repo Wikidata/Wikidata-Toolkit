@@ -20,7 +20,9 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
  * #L%
  */
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.BNode;
 import org.openrdf.model.Resource;
@@ -40,6 +42,8 @@ import org.wikidata.wdtk.rdf.Vocabulary;
 public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	static final ValueFactory factory = ValueFactoryImpl.getInstance();
+
+	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
 	final List<String> model;
 
@@ -84,13 +88,14 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public String getStart() {
-		return Owl2FunctionalConstant.OWL_START;
+	public void start() {
+		this.model.add(Owl2FunctionalConstant.OWL_START);
 	}
 
 	@Override
-	public String getEnd() {
-		return Owl2FunctionalConstant.OWL_END;
+	public void finish() {
+		this.model.add(Owl2FunctionalConstant.OWL_END);
+		this.declaredEntities.clear();
 	}
 
 	@Override
@@ -156,15 +161,15 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDataIntersectionOf(Resource arg0, Resource arg1) {
+	public BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1) {
 		return makeFunction(Owl2FunctionalConstant.DATA_INTERSECTION_OF,
-				makePair(arg0, arg1));
+				makePair(dataRange0, dataRange1));
 	}
 
 	@Override
-	public BNode getDataSomeValuesFrom(Resource arg0, Resource arg1) {
+	public BNode getDataSomeValuesFrom(Resource dataProperty, Resource dataRange) {
 		return makeFunction(Owl2FunctionalConstant.DATA_SOME_VALUES_FROM,
-				makePair(arg0, arg1));
+				makePair(dataProperty, dataRange));
 	}
 
 	@Override
@@ -173,10 +178,10 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDatatypeRestriction(Resource arg0, Resource arg1,
-			Resource arg2) {
+	public BNode getDatatypeRestriction(Resource dataType, Resource facet,
+			Resource value) {
 		return makeFunction(Owl2FunctionalConstant.DATATYPE_RESTRICTION,
-				makePair(arg0, makePair(arg1, arg2)));
+				makePair(dataType, makePair(facet, value)));
 	}
 
 	@Override
@@ -188,175 +193,205 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getObjectComplementOf(Resource arg) {
-		return makeFunction(Owl2FunctionalConstant.OBJECT_COMPLEMENT_OF, arg);
+	public BNode getObjectComplementOf(Resource clss) {
+		return makeFunction(Owl2FunctionalConstant.OBJECT_COMPLEMENT_OF, clss);
 	}
 
 	@Override
-	public BNode getObjectExactCardinality(int arg0, Resource arg1) {
+	public BNode getObjectExactCardinality(int cardinality,
+			Resource objectProperty) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_EXACT_CARDINALITY,
-				makePair(new StringResource("" + arg0), arg1));
+				makePair(new StringResource("" + cardinality), objectProperty));
 	}
 
 	@Override
-	public BNode getObjectOneOf(Resource clss) {
-		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF, clss);
+	public BNode getObjectOneOf(Resource individual) {
+		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF, individual);
 	}
 
 	@Override
-	public BNode getObjectOneOf(List<Resource> list) {
+	public BNode getObjectOneOf(List<Resource> listOfIndividuals) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_ONE_OF,
-				makeList(list));
+				makeList(listOfIndividuals));
 	}
 
 	@Override
-	public BNode getObjectSomeValuesFrom(Resource arg0, Resource arg1) {
+	public BNode getObjectSomeValuesFrom(Resource property, Resource clss) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_SOME_VALUES_FROM,
-				makePair(arg0, arg1));
+				makePair(property, clss));
 	}
 
 	@Override
-	public BNode getObjectUnionOf(Resource arg0, Resource arg1) {
+	public BNode getObjectUnionOf(Resource class0, Resource class1) {
 		return makeFunction(Owl2FunctionalConstant.OBJECT_UNION_OF,
-				makePair(arg0, arg1));
+				makePair(class0, class1));
 	}
 
 	@Override
-	public boolean addAnnotationAssertion(Resource key, String comment) {
+	public boolean addAnnotationAssertionComment(Resource subject, String value) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_A);
-		sb.append(key);
+		sb.append(subject);
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_B);
-		sb.append(comment);
+		sb.append(value);
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_C);
 		this.model.add(sb.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addDatatypeDefinition(Resource arg0, Resource arg1) {
+	public boolean addDatatypeDefinition(Resource dataProperty,
+			Resource dataRange) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE_DEFINITION,
-				makePair(arg0, arg1));
+				makePair(dataProperty, dataRange));
 		this.model.add(bnode.toString());
 		return true;
 	}
 
-	public boolean addDeclaration(Resource arg) {
-		BNode ret = makeFunction(Owl2FunctionalConstant.DECLARATION, arg);
-		this.model.add(ret.toString());
+	@Override
+	public boolean addDeclarationAnnotationProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(
+				Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.ANNOTATION_PROPERTY, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
 		return true;
 	}
 
 	@Override
-	public boolean addDisjointClasses(Resource arg0, Resource arg1) {
+	public boolean addDeclarationClass(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.CLASS, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatype(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.DATATYPE, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationDatatypeProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.DATATYPE_PROPERTY, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationNamedIndividual(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.NAMED_INDIVIDUAL, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
+		return true;
+	}
+
+	@Override
+	public boolean addDeclarationObjectProperty(Resource entity) {
+		if (this.declaredEntities.contains(entity)) {
+			return false;
+		}
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
+				makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY, entity));
+		this.model.add(bnode.toString());
+		this.declaredEntities.add(entity);
+		return true;
+	}
+
+	@Override
+	public boolean addDisjointClasses(Resource class0, Resource class1) {
 		BNode ret = makeFunction(Owl2FunctionalConstant.DISJOINT_CLASSES,
-				makePair(arg0, arg1));
+				makePair(class0, class1));
 		this.model.add(ret.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addFunctionalObjectProperty(Resource arg) {
+	public boolean addFunctionalObjectProperty(Resource objectProperty) {
 		BNode ret = makeFunction(
-				Owl2FunctionalConstant.FUNCTIONAL_OBJECT_PROPERTY, arg);
+				Owl2FunctionalConstant.FUNCTIONAL_OBJECT_PROPERTY,
+				objectProperty);
 		this.model.add(ret.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addHasKey(Resource arg0, Resource arg1, Resource arg2) {
+	public boolean addHasKey(Resource clss, Resource objectProperty,
+			Resource dataProperty) {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.HAS_KEY,
 				makePair(
-						arg0,
-						makePair(makeFunction("", arg1), makeFunction("", arg2))));
+						clss,
+						makePair(makeFunction("", objectProperty),
+								makeFunction("", dataProperty))));
 		this.model.add(bnode.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addInverseFunctionalObjectProperty(Resource arg) {
+	public boolean addInverseFunctionalObjectProperty(Resource objectProperty) {
 		BNode ret = makeFunction(
-				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY, arg);
+				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
+				objectProperty);
 		this.model.add(ret.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addObjectPropertyDomain(Resource arg0, Resource arg1) {
+	public boolean addObjectPropertyDomain(Resource objectProperty,
+			Resource clss) {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.OBJECT_PROPERTY_DOMAIN,
-				makePair(arg0, arg1));
+				makePair(objectProperty, clss));
 		this.model.add(bnode.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addObjectPropertyRange(Resource arg0, Resource arg1) {
+	public boolean addObjectPropertyRange(Resource objectProperty, Resource clss) {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.OBJECT_PROPERTY_RANGE,
-				makePair(arg0, arg1));
+				makePair(objectProperty, clss));
 		this.model.add(bnode.toString());
 		return true;
 
 	}
 
 	@Override
-	public boolean addDataPropertyRange(Resource arg0, Resource arg1) {
+	public boolean addDataPropertyRange(Resource objectProperty, Resource clss) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATA_PROPERTY_RANGE,
-				makePair(arg0, arg1));
+				makePair(objectProperty, clss));
 		this.model.add(bnode.toString());
 		return true;
 	}
 
 	@Override
-	public boolean addSubClassOf(Resource arg0, Resource arg1) {
+	public boolean addSubClassOf(Resource subClass, Resource superClass) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.SUB_CLASS_OF,
-				makePair(arg0, arg1));
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationAnnotationProperty(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.ANNOTATION_PROPERTY,
-				arg);
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationClass(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.CLASS, arg);
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationDatatype(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationDatatypeProperty(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE_PROPERTY,
-				arg);
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationNamedIndividual(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.NAMED_INDIVIDUAL, arg);
-		this.model.add(bnode.toString());
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationObjectProperty(Resource arg) {
-		BNode bnode = makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY, arg);
+				makePair(subClass, superClass));
 		this.model.add(bnode.toString());
 		return true;
 	}
