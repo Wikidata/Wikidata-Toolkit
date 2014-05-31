@@ -129,7 +129,7 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource dataRange) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			addDeclarationDatatypeProperty(datatypeProperty);
+			// addDeclarationDatatypeProperty(datatypeProperty);
 			addDeclarationDatatype(dataRange);
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
@@ -469,7 +469,7 @@ public class RdfRendererFormat implements RendererFormat {
 		try {
 			addDeclarationClass(clss);
 			addDeclarationObjectProperty(objectProperty);
-			addDeclarationDatatypeProperty(dataProperty);
+			// addDeclarationDatatypeProperty(dataProperty);
 
 			BNode bnode0 = this.rdfWriter.getFreshBNode();
 			BNode bnode1 = this.rdfWriter.getFreshBNode();

@@ -28,10 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
@@ -88,12 +91,18 @@ public class PropertyConstraintDumpProcessor {
 	public void processAnnotationsOfConstraintTemplates(
 			Map<String, List<Template>> templateMap,
 			RendererFormat rendererFormat) throws IOException {
+
+		DataObjectFactoryImpl dataObjectFactory = new DataObjectFactoryImpl();
+
 		for (String key : templateMap.keySet()) {
 			try {
 				List<Template> templates = getConstraintTemplates(templateMap
 						.get(key));
-				rendererFormat.addAnnotationAssertionComment(
-						factory.createURI(key),
+				PropertyIdValue property = dataObjectFactory
+						.getPropertyIdValue(key.toUpperCase(),
+								ConstraintMainParser.DEFAULT_BASE_IRI);
+				URI propertyUri = factory.createURI(property.getIri());
+				rendererFormat.addAnnotationAssertionComment(propertyUri,
 						escapeChars(templates.toString()));
 			} catch (Exception e) {
 				System.out

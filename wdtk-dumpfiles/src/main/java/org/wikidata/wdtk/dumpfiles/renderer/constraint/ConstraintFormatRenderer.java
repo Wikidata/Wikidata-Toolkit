@@ -51,12 +51,9 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 	}
 
 	private Resource transform(String pattern) {
-
 		// FIXME this does not cover all cases
 		String newPattern = pattern.replace(C_QUOTATION_MARK, "");
-
-		return new StringResource(C_QUOTATION_MARK + newPattern
-				+ C_QUOTATION_MARK);
+		return new StringResource(newPattern);
 	}
 
 	public void render(ConstraintFormat c) {
