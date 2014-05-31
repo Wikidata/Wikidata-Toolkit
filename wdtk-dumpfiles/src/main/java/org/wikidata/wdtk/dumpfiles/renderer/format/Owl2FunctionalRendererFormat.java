@@ -114,7 +114,19 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public URI a_s(PropertyIdValue property) {
+	public URI getItem(ItemIdValue item) {
+		return factory.createURI(Owl2FunctionalConstant.C_LT + item.getIri()
+				+ Owl2FunctionalConstant.C_GT);
+	}
+
+	@Override
+	public URI getProperty(PropertyIdValue property) {
+		return factory.createURI(Owl2FunctionalConstant.C_LT
+				+ property.getIri() + Owl2FunctionalConstant.C_GT);
+	}
+
+	@Override
+	public URI getPs(PropertyIdValue property) {
 		return factory.createURI(Owl2FunctionalConstant.C_LT
 				+ Vocabulary
 						.getPropertyUri(property, PropertyContext.STATEMENT)
@@ -122,32 +134,30 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public URI a_v(PropertyIdValue property) {
+	public URI getPv(PropertyIdValue property) {
 		return factory.createURI(Owl2FunctionalConstant.C_LT
 				+ Vocabulary.getPropertyUri(property, PropertyContext.VALUE)
 				+ Owl2FunctionalConstant.C_GT);
 	}
 
 	@Override
-	public URI aItem(ItemIdValue item) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT + item.getIri()
-				+ Owl2FunctionalConstant.C_GT);
-	}
-
-	@Override
-	public URI aRp(PropertyIdValue property) {
+	public URI getRp(PropertyIdValue property) {
 		return factory.createURI(Owl2FunctionalConstant.C_LT
 				+ property.getIri() + "aux" + Owl2FunctionalConstant.C_GT);
 	}
 
 	@Override
 	public URI wbTimeValue() {
-		return factory.createURI(Owl2FunctionalConstant.WB_TIME_VALUE);
+		return factory.createURI(Owl2FunctionalConstant.C_LT
+				+ Owl2FunctionalConstant.WB_TIME_VALUE
+				+ Owl2FunctionalConstant.C_GT);
 	}
 
 	@Override
 	public URI wbQuantityValue() {
-		return factory.createURI(Owl2FunctionalConstant.WB_QUANTITY_VALUE);
+		return factory.createURI(Owl2FunctionalConstant.C_LT
+				+ Owl2FunctionalConstant.WB_QUANTITY_VALUE
+				+ Owl2FunctionalConstant.C_GT);
 	}
 
 	@Override

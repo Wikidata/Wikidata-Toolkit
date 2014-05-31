@@ -58,7 +58,7 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 	public void render(PropertyIdValue p, PropertyIdValue r1, ItemIdValue q1,
 			PropertyIdValue r2, ItemIdValue q2, List<ItemIdValue> values,
 			List<ItemIdValue> exceptions) {
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		renderPart(p, r1, q1);
 		renderPart(p, r2, q2);
 		renderPart(p, values);
@@ -71,14 +71,14 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		}
 		if (q == null) {
 			this.f.addObjectPropertyDomain(
-					this.f.a_s(p),
-					this.f.getObjectSomeValuesFrom(this.f.a_s(r),
+					this.f.getPs(p),
+					this.f.getObjectSomeValuesFrom(this.f.getPs(r),
 							this.f.owlThing()));
 		} else {
-			this.f.addObjectPropertyDomain(this.f.a_s(p), this.f
-					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
-							.getObjectSomeValuesFrom(this.f.a_v(r),
-									this.f.getObjectOneOf(this.f.aItem(q)))));
+			this.f.addObjectPropertyDomain(this.f.getPs(p), this.f
+					.getObjectSomeValuesFrom(this.f.getPs(r), this.f
+							.getObjectSomeValuesFrom(this.f.getPv(r),
+									this.f.getObjectOneOf(this.f.getItem(q)))));
 		}
 	}
 
@@ -86,7 +86,7 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			List<ItemIdValue> list) {
 		List<Resource> ret = new ArrayList<Resource>();
 		for (ItemIdValue q : list) {
-			ret.add(f.aItem(q));
+			ret.add(f.getItem(q));
 		}
 		return ret;
 	}
@@ -98,7 +98,7 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		if (values.isEmpty()) {
 			return;
 		}
-		this.f.addObjectPropertyDomain(this.f.a_s(p),
+		this.f.addObjectPropertyDomain(this.f.getPs(p),
 				this.f.getObjectOneOf(getListOfItems(this.f, values)));
 	}
 

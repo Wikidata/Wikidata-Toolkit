@@ -68,9 +68,9 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 		if ((p == null) || (q == null)) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addObjectPropertyRange(this.f.a_v(p),
-				this.f.getObjectOneOf(this.f.aItem(q)));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+		this.f.addObjectPropertyRange(this.f.getPv(p),
+				this.f.getObjectOneOf(this.f.getItem(q)));
 	}
 
 	public void renderSubclassOf(PropertyIdValue p, ItemIdValue q) {

@@ -30,13 +30,15 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 public interface RendererFormat {
 
-	URI a_s(PropertyIdValue property);
+	URI getItem(ItemIdValue item);
 
-	URI a_v(PropertyIdValue property);
+	URI getProperty(PropertyIdValue property);
 
-	URI aItem(ItemIdValue item);
+	URI getPs(PropertyIdValue property);
 
-	URI aRp(PropertyIdValue property);
+	URI getPv(PropertyIdValue property);
+
+	URI getRp(PropertyIdValue property);
 
 	URI owlThing();
 

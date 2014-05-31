@@ -53,10 +53,10 @@ class ConstraintMultiValueRenderer implements ConstraintRenderer {
 		if (p == null) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		this.f.addSubClassOf(this.f.owlThing(), this.f
 				.getObjectComplementOf(this.f.getObjectExactCardinality(1,
-						this.f.a_s(p))));
+						this.f.getPs(p))));
 	}
 
 }

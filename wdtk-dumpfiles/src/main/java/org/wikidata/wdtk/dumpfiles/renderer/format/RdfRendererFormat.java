@@ -46,22 +46,27 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public URI a_s(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri());
-	}
-
-	@Override
-	public URI a_v(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri());
-	}
-
-	@Override
-	public URI aItem(ItemIdValue item) {
+	public URI getItem(ItemIdValue item) {
 		return this.rdfWriter.getUri(item.getIri());
 	}
 
 	@Override
-	public URI aRp(PropertyIdValue property) {
+	public URI getProperty(PropertyIdValue property) {
+		return this.rdfWriter.getUri(property.getIri());
+	}
+
+	@Override
+	public URI getPs(PropertyIdValue property) {
+		return this.rdfWriter.getUri(property.getIri());
+	}
+
+	@Override
+	public URI getPv(PropertyIdValue property) {
+		return this.rdfWriter.getUri(property.getIri());
+	}
+
+	@Override
+	public URI getRp(PropertyIdValue property) {
 		return this.rdfWriter.getUri(property.getIri());
 	}
 

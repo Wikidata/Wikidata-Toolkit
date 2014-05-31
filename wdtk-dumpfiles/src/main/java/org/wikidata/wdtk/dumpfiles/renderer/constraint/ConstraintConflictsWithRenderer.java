@@ -57,7 +57,7 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 		if ((p == null) || (list == null) || list.isEmpty()) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		for (PropertyValues propertyValues : list) {
 			renderPart(p, propertyValues.getProperty(),
 					propertyValues.getItems());
@@ -71,15 +71,15 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 		}
 		if ((values == null) || values.isEmpty()) {
 			this.f.addDisjointClasses(
-					this.f.getObjectSomeValuesFrom(this.f.a_v(p),
+					this.f.getObjectSomeValuesFrom(this.f.getPv(p),
 							this.f.owlThing()),
-					this.f.getObjectSomeValuesFrom(this.f.a_s(r),
+					this.f.getObjectSomeValuesFrom(this.f.getPs(r),
 							this.f.owlThing()));
 		} else {
 			this.f.addDisjointClasses(this.f.getObjectSomeValuesFrom(
-					this.f.a_v(p), this.f.owlThing()), this.f
-					.getObjectSomeValuesFrom(this.f.a_s(r), this.f
-							.getObjectSomeValuesFrom(this.f.a_v(r), this.f
+					this.f.getPv(p), this.f.owlThing()), this.f
+					.getObjectSomeValuesFrom(this.f.getPs(r), this.f
+							.getObjectSomeValuesFrom(this.f.getPv(r), this.f
 									.getObjectOneOf(ConstraintItemRenderer
 											.getListOfItems(this.f, values)))));
 		}

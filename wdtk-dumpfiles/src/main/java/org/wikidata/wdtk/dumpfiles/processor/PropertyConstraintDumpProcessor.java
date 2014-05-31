@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -55,8 +53,6 @@ public class PropertyConstraintDumpProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
-
-	static final ValueFactory factory = ValueFactoryImpl.getInstance();
 
 	public static final String DEFAULT_DUMP_DATE = "20140420";
 	public static final String DEFAULT_FILE_NAME = "constraints";
@@ -101,7 +97,7 @@ public class PropertyConstraintDumpProcessor {
 				PropertyIdValue property = dataObjectFactory
 						.getPropertyIdValue(key.toUpperCase(),
 								ConstraintMainParser.DEFAULT_BASE_IRI);
-				URI propertyUri = factory.createURI(property.getIri());
+				URI propertyUri = rendererFormat.getProperty(property);
 				rendererFormat.addAnnotationAssertionComment(propertyUri,
 						escapeChars(templates.toString()));
 			} catch (Exception e) {

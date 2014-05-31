@@ -69,9 +69,9 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 		if ((p == null) || (q == null)) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addObjectPropertyDomain(this.f.a_s(p),
-				this.f.getObjectOneOf(this.f.aItem(q)));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+		this.f.addObjectPropertyDomain(this.f.getPs(p),
+				this.f.getObjectOneOf(this.f.getItem(q)));
 	}
 
 	public void renderSubclassOf(PropertyIdValue p, ItemIdValue q) {
@@ -80,7 +80,7 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 		if ((p == null) || (q == null)) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		otherRenderer.renderPart(p, this.subclassOf, q);
 	}
 

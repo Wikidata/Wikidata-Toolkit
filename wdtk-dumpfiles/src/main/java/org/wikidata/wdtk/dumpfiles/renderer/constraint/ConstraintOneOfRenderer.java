@@ -56,8 +56,8 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 		if ((p == null) || (values == null)) {
 			return;
 		}
-		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addObjectPropertyRange(this.f.a_v(p), this.f
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+		this.f.addObjectPropertyRange(this.f.getPv(p), this.f
 				.getObjectOneOf(ConstraintItemRenderer.getListOfItems(this.f,
 						values)));
 	}
