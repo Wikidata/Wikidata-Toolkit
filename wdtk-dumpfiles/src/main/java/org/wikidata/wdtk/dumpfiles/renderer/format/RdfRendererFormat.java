@@ -29,8 +29,6 @@ import java.util.Set;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -38,8 +36,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public class RdfRendererFormat implements RendererFormat {
-
-	static final ValueFactory factory = ValueFactoryImpl.getInstance();
 
 	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
@@ -51,22 +47,22 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public URI a_s(PropertyIdValue property) {
-		return factory.createURI(property.getIri());
+		return this.rdfWriter.getUri(property.getIri());
 	}
 
 	@Override
 	public URI a_v(PropertyIdValue property) {
-		return factory.createURI(property.getIri());
+		return this.rdfWriter.getUri(property.getIri());
 	}
 
 	@Override
 	public URI aItem(ItemIdValue item) {
-		return factory.createURI(item.getIri());
+		return this.rdfWriter.getUri(item.getIri());
 	}
 
 	@Override
 	public URI aRp(PropertyIdValue property) {
-		return factory.createURI(property.getIri());
+		return this.rdfWriter.getUri(property.getIri());
 	}
 
 	@Override
@@ -106,11 +102,11 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
-			BNode bnode1 = factory.createBNode();
-			BNode bnode2 = factory.createBNode();
+			BNode bnode1 = this.rdfWriter.getFreshBNode();
+			BNode bnode2 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.RDFS_DATATYPE);
@@ -131,7 +127,7 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public BNode getDataSomeValuesFrom(Resource datatypeProperty,
 			Resource dataRange) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
 			addDeclarationDatatypeProperty(datatypeProperty);
 			addDeclarationDatatype(dataRange);
@@ -151,12 +147,12 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public BNode getDatatypeRestriction(Resource datatype, URI facet,
 			Resource value) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
 			addDeclarationDatatype(datatype);
 
-			BNode bnode1 = factory.createBNode();
-			BNode bnode2 = factory.createBNode();
+			BNode bnode1 = this.rdfWriter.getFreshBNode();
+			BNode bnode2 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(ret,
 					RdfUriConstant.OWL_ON_DATATYPE, datatype);
@@ -175,7 +171,7 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectComplementOf(Resource clss) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
 			addDeclarationClass(clss);
 
@@ -190,7 +186,7 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public BNode getObjectExactCardinality(int cardinality,
 			Resource objectProperty) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
 			addDeclarationObjectProperty(objectProperty);
 
@@ -213,10 +209,10 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectOneOf(Resource individual) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
-			BNode bnode1 = factory.createBNode();
+			BNode bnode1 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_CLASS);
@@ -232,10 +228,10 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectOneOf(List<Resource> listOfIndividuals) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
-			BNode currentBnode = factory.createBNode();
+			BNode currentBnode = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_CLASS);
@@ -248,7 +244,7 @@ public class RdfRendererFormat implements RendererFormat {
 				this.rdfWriter.writeTripleValueObject(currentBnode,
 						RdfUriConstant.RDF_FIRST, currentIndividual);
 				if (it.hasNext()) {
-					BNode nextBnode = factory.createBNode();
+					BNode nextBnode = this.rdfWriter.getFreshBNode();
 					this.rdfWriter.writeTripleValueObject(currentBnode,
 							RdfUriConstant.RDF_REST, nextBnode);
 					currentBnode = nextBnode;
@@ -262,7 +258,7 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectSomeValuesFrom(Resource property, Resource clss) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
 			addDeclarationObjectProperty(property);
 			addDeclarationClass(clss);
@@ -281,14 +277,14 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectUnionOf(Resource class0, Resource class1) {
-		BNode ret = factory.createBNode();
+		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
 			addDeclarationClass(class0);
 			addDeclarationClass(class1);
 
-			BNode bnode1 = factory.createBNode();
-			BNode bnode2 = factory.createBNode();
+			BNode bnode1 = this.rdfWriter.getFreshBNode();
+			BNode bnode2 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_CLASS);
@@ -475,8 +471,8 @@ public class RdfRendererFormat implements RendererFormat {
 			addDeclarationObjectProperty(objectProperty);
 			addDeclarationDatatypeProperty(dataProperty);
 
-			BNode bnode0 = factory.createBNode();
-			BNode bnode1 = factory.createBNode();
+			BNode bnode0 = this.rdfWriter.getFreshBNode();
+			BNode bnode1 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(objectProperty,
 					RdfUriConstant.OWL_HAS_KEY, bnode0);
@@ -586,7 +582,7 @@ public class RdfRendererFormat implements RendererFormat {
 			addDeclarationClass(clss);
 			addDeclarationNamedIndividual(individual);
 
-			BNode bnode = factory.createBNode();
+			BNode bnode = this.rdfWriter.getFreshBNode();
 
 			addDeclarationClass(bnode);
 

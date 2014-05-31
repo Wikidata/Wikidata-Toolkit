@@ -20,6 +20,11 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
  * #L%
  */
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,14 +50,24 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
-	final List<String> model;
+	final BufferedWriter writer;
 
-	public Owl2FunctionalRendererFormat(List<String> model) {
-		this.model = model;
+	public Owl2FunctionalRendererFormat(OutputStream output) {
+		this.writer = new BufferedWriter(new OutputStreamWriter(output));
 	}
 
-	public List<String> getModel() {
-		return this.model;
+	public Owl2FunctionalRendererFormat(Writer writer) {
+		this.writer = new BufferedWriter(writer);
+	}
+
+	private void add(BNode bnode) {
+		try {
+			this.writer.write(bnode.toString());
+			this.writer.newLine();
+			this.writer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private BNode makeFunction(String object, Resource arg) {
@@ -89,12 +104,12 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	@Override
 	public void start() {
-		this.model.add(Owl2FunctionalConstant.OWL_START);
+		add(new StringBNode(Owl2FunctionalConstant.OWL_START));
 	}
 
 	@Override
 	public void finish() {
-		this.model.add(Owl2FunctionalConstant.OWL_END);
+		add(new StringBNode(Owl2FunctionalConstant.OWL_END));
 		this.declaredEntities.clear();
 	}
 
@@ -172,10 +187,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				makePair(dataProperty, dataRange));
 	}
 
-	// public BNode getDatatype(Resource arg) {
-	// return makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
-	// }
-
 	@Override
 	public BNode getDatatypeRestriction(Resource dataType, URI facet,
 			Resource value) {
@@ -234,7 +245,8 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_B);
 		sb.append(value);
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_C);
-		this.model.add(sb.toString());
+		BNode bnode = new StringBNode(sb.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -243,7 +255,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 			Resource dataRange) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE_DEFINITION,
 				makePair(dataProperty, dataRange));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -255,7 +267,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.ANNOTATION_PROPERTY, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
@@ -267,7 +279,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.CLASS, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
@@ -279,7 +291,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.DATATYPE, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
@@ -291,7 +303,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.DATATYPE_PROPERTY, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
@@ -303,7 +315,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.NAMED_INDIVIDUAL, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
@@ -315,25 +327,25 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
 				makeFunction(Owl2FunctionalConstant.OBJECT_PROPERTY, entity));
-		this.model.add(bnode.toString());
+		add(bnode);
 		this.declaredEntities.add(entity);
 		return true;
 	}
 
 	@Override
 	public boolean addDisjointClasses(Resource class0, Resource class1) {
-		BNode ret = makeFunction(Owl2FunctionalConstant.DISJOINT_CLASSES,
+		BNode bnode = makeFunction(Owl2FunctionalConstant.DISJOINT_CLASSES,
 				makePair(class0, class1));
-		this.model.add(ret.toString());
+		add(bnode);
 		return true;
 	}
 
 	@Override
 	public boolean addFunctionalObjectProperty(Resource objectProperty) {
-		BNode ret = makeFunction(
+		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.FUNCTIONAL_OBJECT_PROPERTY,
 				objectProperty);
-		this.model.add(ret.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -346,16 +358,16 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 						clss,
 						makePair(makeFunction("", objectProperty),
 								makeFunction("", dataProperty))));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 	}
 
 	@Override
 	public boolean addInverseFunctionalObjectProperty(Resource objectProperty) {
-		BNode ret = makeFunction(
+		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
 				objectProperty);
-		this.model.add(ret.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -365,7 +377,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.OBJECT_PROPERTY_DOMAIN,
 				makePair(objectProperty, clss));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -374,7 +386,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.OBJECT_PROPERTY_RANGE,
 				makePair(objectProperty, clss));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 
 	}
@@ -383,7 +395,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	public boolean addDataPropertyRange(Resource objectProperty, Resource clss) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATA_PROPERTY_RANGE,
 				makePair(objectProperty, clss));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 	}
 
@@ -391,7 +403,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	public boolean addSubClassOf(Resource subClass, Resource superClass) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.SUB_CLASS_OF,
 				makePair(subClass, superClass));
-		this.model.add(bnode.toString());
+		add(bnode);
 		return true;
 	}
 

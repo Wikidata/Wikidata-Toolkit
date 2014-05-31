@@ -20,7 +20,8 @@ package org.wikidata.wdtk.dumpfiles.processor;
  * #L%
  */
 
-import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintParserConstant;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
 import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.renderer.format.Owl2FunctionalRendererFormat;
+import org.wikidata.wdtk.dumpfiles.renderer.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
@@ -51,7 +53,9 @@ public class PropertyConstraintDumpProcessor {
 			.getLogger(PropertyConstraintDumpProcessor.class);
 
 	public static final String DEFAULT_DUMP_DATE = "20140420";
-	public static final String DEFAULT_FILE_NAME = "constraints.owl";
+	public static final String DEFAULT_FILE_NAME = "constraints";
+	public static final String OWL_FILE_EXTENSION = ".owl";
+	public static final String RDF_FILE_EXTENSION = ".rdf";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
 	public static void main(String[] args) throws IOException {
@@ -84,32 +88,17 @@ public class PropertyConstraintDumpProcessor {
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(key));
-			rendererFormat.addAnnotationAssertionComment(new StringResource(key),
-					escapeChars(templates.toString()));
+			rendererFormat.addAnnotationAssertionComment(
+					new StringResource(key), escapeChars(templates.toString()));
 		}
 	}
 
-	void printLines(List<String> lines, BufferedWriter output)
-			throws IOException {
-		if (lines != null) {
-			for (String line : lines) {
-				output.write(line);
-				output.newLine();
-			}
-		}
-		output.flush();
-	}
-
-	public void processDumps(BufferedWriter output) throws IOException {
+	public void processDumps(RendererFormat rendererFormat) throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
 
 		// set offline mode true to read only offline dumps
 		// controller.setOfflineMode(true);
-
-		List<String> owlLines = new ArrayList<String>();
-		Owl2FunctionalRendererFormat rendererFormat = new Owl2FunctionalRendererFormat(
-				owlLines);
 
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
@@ -121,21 +110,16 @@ public class PropertyConstraintDumpProcessor {
 		rendererFormat.start();
 		processAnnotationsOfConstraintTemplates(
 				propertyTalkTemplateProcessor.getMap(), rendererFormat);
-		processTemplates(propertyTalkTemplateProcessor.getMap(), output,
-				rendererFormat);
+		processTemplates(propertyTalkTemplateProcessor.getMap(), rendererFormat);
 		rendererFormat.finish();
-
-		printLines(owlLines, output);
 	}
 
 	public void processTemplates(Map<String, List<Template>> templateMap,
-			BufferedWriter output, RendererFormat rendererFormat)
-			throws IOException {
+			RendererFormat rendererFormat) throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
 		ConstraintMainRenderer renderer = new ConstraintMainRenderer(
 				rendererFormat);
 		for (String key : templateMap.keySet()) {
-			output.newLine();
 			List<Template> templates = templateMap.get(key);
 			for (Template template : templates) {
 
@@ -162,15 +146,29 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
+	public void storeOwl(File file) throws IOException {
+		FileWriter output = new FileWriter(file);
+		Owl2FunctionalRendererFormat rendererFormat = new Owl2FunctionalRendererFormat(
+				output);
+		processDumps(rendererFormat);
+		output.close();
+	}
+
+	public void storeRdf(File file) throws IOException {
+		FileOutputStream output = new FileOutputStream(file);
+		RdfRendererFormat rendererFormat = new RdfRendererFormat(output);
+		processDumps(rendererFormat);
+		output.close();
+	}
+
 	public void run(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		String fileName = DEFAULT_FILE_NAME;
 		if (args.length > 0) {
 			fileName = args[0];
 		}
-		BufferedWriter output = new BufferedWriter(new FileWriter(fileName));
-		processDumps(output);
-		output.close();
+		storeRdf(new File(fileName + RDF_FILE_EXTENSION));
+		storeOwl(new File(fileName + OWL_FILE_EXTENSION));
 	}
 
 }
