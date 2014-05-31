@@ -303,7 +303,7 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertionComment(Resource subject, String value) {
+	public boolean addAnnotationAssertionComment(URI subject, String value) {
 		try {
 			this.rdfWriter.writeTripleStringObject(subject,
 					RdfUriConstant.RDFS_COMMENT, value);

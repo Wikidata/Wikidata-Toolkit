@@ -238,7 +238,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertionComment(Resource subject, String value) {
+	public boolean addAnnotationAssertionComment(URI subject, String value) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_A);
 		sb.append(subject);

@@ -70,7 +70,7 @@ public interface RendererFormat {
 
 	BNode getObjectUnionOf(Resource class0, Resource class1);
 
-	boolean addAnnotationAssertionComment(Resource subject, String value);
+	boolean addAnnotationAssertionComment(URI subject, String value);
 
 	boolean addDataPropertyRange(Resource dataProperty, Resource dataRange);
 

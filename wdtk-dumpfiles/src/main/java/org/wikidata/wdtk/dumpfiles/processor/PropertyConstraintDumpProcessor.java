@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
@@ -40,7 +42,6 @@ import org.wikidata.wdtk.dumpfiles.renderer.constraint.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.renderer.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
-import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -51,6 +52,8 @@ public class PropertyConstraintDumpProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
+
+	static final ValueFactory factory = ValueFactoryImpl.getInstance();
 
 	public static final String DEFAULT_DUMP_DATE = "20140420";
 	public static final String DEFAULT_FILE_NAME = "constraints";
@@ -86,10 +89,19 @@ public class PropertyConstraintDumpProcessor {
 			Map<String, List<Template>> templateMap,
 			RendererFormat rendererFormat) throws IOException {
 		for (String key : templateMap.keySet()) {
-			List<Template> templates = getConstraintTemplates(templateMap
-					.get(key));
-			rendererFormat.addAnnotationAssertionComment(
-					new StringResource(key), escapeChars(templates.toString()));
+			try {
+				List<Template> templates = getConstraintTemplates(templateMap
+						.get(key));
+				rendererFormat.addAnnotationAssertionComment(
+						factory.createURI(key),
+						escapeChars(templates.toString()));
+			} catch (Exception e) {
+				System.out
+						.println("Exception while rendering annotation assertion for '"
+								+ key + "'.");
+				e.printStackTrace();
+
+			}
 		}
 	}
 
@@ -151,6 +163,7 @@ public class PropertyConstraintDumpProcessor {
 		Owl2FunctionalRendererFormat rendererFormat = new Owl2FunctionalRendererFormat(
 				output);
 		processDumps(rendererFormat);
+		output.flush();
 		output.close();
 	}
 
@@ -158,6 +171,7 @@ public class PropertyConstraintDumpProcessor {
 		FileOutputStream output = new FileOutputStream(file);
 		RdfRendererFormat rendererFormat = new RdfRendererFormat(output);
 		processDumps(rendererFormat);
+		output.flush();
 		output.close();
 	}
 
@@ -167,8 +181,18 @@ public class PropertyConstraintDumpProcessor {
 		if (args.length > 0) {
 			fileName = args[0];
 		}
-		storeRdf(new File(fileName + RDF_FILE_EXTENSION));
-		storeOwl(new File(fileName + OWL_FILE_EXTENSION));
+		try {
+			storeOwl(new File(fileName + OWL_FILE_EXTENSION));
+		} catch (Exception e) {
+			System.out.println("Exception while rendering OWL 2 Functional.");
+			e.printStackTrace();
+		}
+		try {
+			storeRdf(new File(fileName + RDF_FILE_EXTENSION));
+		} catch (Exception e) {
+			System.out.println("Exception while rending RDF.");
+			e.printStackTrace();
+		}
 	}
 
 }
