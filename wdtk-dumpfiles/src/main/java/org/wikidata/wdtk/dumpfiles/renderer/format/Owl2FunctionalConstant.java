@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.dumpfiles.renderer.format;
 
+import org.wikidata.wdtk.rdf.Vocabulary;
+
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -60,6 +62,8 @@ public interface Owl2FunctionalConstant {
 	String OBJECT_UNION_OF = "ObjectUnionOf";
 	String OWL_THING = "owl:Thing";
 	String SUB_CLASS_OF = "SubClassOf";
+	String WB_TIME_VALUE = Vocabulary.WB_TIME_VALUE;
+	String WB_QUANTITY_VALUE = Vocabulary.WB_QUANTITY_VALUE;
 	String XSD_DATE_TIME = "xsd:dateTime";
 	String XSD_DECIMAL = "xsd:decimal";
 	String XSD_MAX_INCLUSIVE = "xsd:maxInclusive";

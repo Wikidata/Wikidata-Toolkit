@@ -40,6 +40,10 @@ public interface RendererFormat {
 
 	URI owlThing();
 
+	URI wbTimeValue();
+
+	URI wbQuantityValue();
+
 	URI xsdDateTime();
 
 	URI xsdDecimal();
@@ -54,54 +58,62 @@ public interface RendererFormat {
 
 	BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1);
 
-	BNode getDataSomeValuesFrom(Resource dataProperty, Resource dataRange);
+	BNode getDataSomeValuesFrom(URI dataPropertyExpression, Resource dataRange);
 
-	BNode getDatatypeRestriction(Resource dataType, URI facet, Resource value);
+	BNode getDatatypeRestriction(URI datatype, URI constrainingFacet,
+			Resource restrictionValue);
 
-	BNode getObjectComplementOf(Resource clss);
+	BNode getObjectComplementOf(Resource classExpression);
 
-	BNode getObjectExactCardinality(int cardinality, Resource objectProperty);
+	BNode getObjectExactCardinality(int nonNegativeInteger,
+			Resource objectPropertyExpression);
 
 	BNode getObjectOneOf(Resource individual);
 
 	BNode getObjectOneOf(List<Resource> listOfIndividuals);
 
-	BNode getObjectSomeValuesFrom(Resource property, Resource clss);
+	BNode getObjectSomeValuesFrom(Resource objectPropertyExpression,
+			Resource classExpression);
 
-	BNode getObjectUnionOf(Resource class0, Resource class1);
+	BNode getObjectUnionOf(Resource classExpression0, Resource classExpression1);
 
-	boolean addAnnotationAssertionComment(URI subject, String value);
+	boolean addAnnotationAssertionComment(URI annotationSubject,
+			String annotationValue);
 
-	boolean addDataPropertyRange(Resource dataProperty, Resource dataRange);
+	boolean addDataPropertyRange(URI dataPropertyExpression, Resource dataRange);
 
-	boolean addDatatypeDefinition(Resource datatype, Resource dataRange);
+	boolean addDatatypeDefinition(URI datatype, Resource dataRange);
 
-	boolean addDeclarationAnnotationProperty(Resource entity);
+	boolean addDeclarationAnnotationProperty(URI annotationProperty);
 
-	boolean addDeclarationClass(Resource entity);
+	boolean addDeclarationClass(URI clss);
 
-	boolean addDeclarationDatatype(Resource entity);
+	boolean addDeclarationDatatype(URI datatype);
 
-	boolean addDeclarationDatatypeProperty(Resource entity);
+	boolean addDeclarationDatatypeProperty(URI datatypeProperty);
 
-	boolean addDeclarationNamedIndividual(Resource entity);
+	boolean addDeclarationNamedIndividual(URI namedIndividual);
 
-	boolean addDeclarationObjectProperty(Resource entity);
+	boolean addDeclarationObjectProperty(URI objectProperty);
 
-	boolean addDisjointClasses(Resource class0, Resource class1);
+	boolean addDisjointClasses(Resource classExpression0,
+			Resource classExpression1);
 
-	boolean addFunctionalObjectProperty(Resource objectProperty);
+	boolean addFunctionalObjectProperty(Resource objectPropertyExpression);
 
-	boolean addHasKey(Resource clss, Resource objectProperty,
-			Resource dataProperty);
+	boolean addHasKey(Resource classExpression,
+			Resource objectPropertyExpression);
 
-	boolean addInverseFunctionalObjectProperty(Resource objectProperty);
+	boolean addInverseFunctionalObjectProperty(Resource objectPropertyExpression);
 
-	boolean addObjectPropertyDomain(Resource objectProperty, Resource clss);
+	boolean addObjectPropertyDomain(Resource objectPropertyExpression,
+			Resource classExpression);
 
-	boolean addObjectPropertyRange(Resource objectProperty, Resource clss);
+	boolean addObjectPropertyRange(Resource objectPropertyExpression,
+			Resource classExpression);
 
-	boolean addSubClassOf(Resource subClass, Resource superClass);
+	boolean addSubClassOf(Resource subClassExpression,
+			Resource superClassExpression);
 
 	void start();
 

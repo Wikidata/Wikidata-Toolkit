@@ -62,19 +62,15 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 	}
 
 	public void renderQuantity(PropertyIdValue p, Resource min, Resource max) {
-		render(p, new StringResource(":value"), min, max, this.f.xsdDecimal()); // FIXME
-																				// fix
-																				// parameter
+		render(p, this.f.wbQuantityValue(), min, max, this.f.xsdDecimal());
 	}
 
 	public void renderTime(PropertyIdValue p, Resource min, Resource max) {
-		render(p, new StringResource(":time"), min, max, this.f.xsdDateTime()); // FIXME
-																				// fix
-																				// parameter
+		render(p, this.f.wbTimeValue(), min, max, this.f.xsdDateTime());
 	}
 
-	public void render(PropertyIdValue p, Resource param, Resource min,
-			Resource max, Resource type) {
+	public void render(PropertyIdValue p, URI param, Resource min,
+			Resource max, URI type) {
 		if ((p == null) || (param == null)) {
 			return;
 		}

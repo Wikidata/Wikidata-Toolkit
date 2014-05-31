@@ -59,6 +59,8 @@ public interface RdfStringConstant {
 	String RDFS_DOMAIN = PREFIX_RDFS + "domain";
 	String RDFS_RANGE = PREFIX_RDFS + "range";
 	String RDFS_SUB_CLASS_OF = PREFIX_RDFS + "subClassOf";
+	String WB_TIME_VALUE = Vocabulary.WB_TIME_VALUE;
+	String WB_QUANTITY_VALUE = Vocabulary.WB_QUANTITY_VALUE;
 	String XSD_DATE_TIME = PREFIX_XSD + "dateTime";
 	String XSD_DECIMAL = PREFIX_XSD + "decimal";
 	String XSD_MAX_INCLUSIVE = PREFIX_XSD + "maxInclusive";

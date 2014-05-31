@@ -24,7 +24,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
-import org.wikidata.wdtk.dumpfiles.renderer.format.StringResource;
 
 /**
  * 
@@ -55,8 +54,7 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addInverseFunctionalObjectProperty(this.f.a_s(p));
-		this.f.addHasKey(this.f.owlThing(), this.f.a_v(p), new StringResource(
-				""));
+		this.f.addHasKey(this.f.owlThing(), this.f.a_v(p));
 	}
 
 }

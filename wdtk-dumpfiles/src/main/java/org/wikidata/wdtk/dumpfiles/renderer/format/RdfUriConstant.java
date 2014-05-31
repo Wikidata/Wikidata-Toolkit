@@ -72,6 +72,9 @@ public interface RdfUriConstant {
 	URI RDFS_RANGE = factory.createURI(RdfStringConstant.RDFS_RANGE);
 	URI RDFS_SUB_CLASS_OF = factory
 			.createURI(RdfStringConstant.RDFS_SUB_CLASS_OF);
+	URI WB_QUANTITY_VALUE = factory
+			.createURI(RdfStringConstant.WB_QUANTITY_VALUE);
+	URI WB_TIME_VALUE = factory.createURI(RdfStringConstant.WB_TIME_VALUE);
 	URI XSD_DATE_TIME = factory.createURI(RdfStringConstant.XSD_DATE_TIME);
 	URI XSD_DECIMAL = factory.createURI(RdfStringConstant.XSD_DECIMAL);
 	URI XSD_MAX_INCLUSIVE = factory
