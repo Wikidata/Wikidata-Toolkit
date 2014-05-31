@@ -23,25 +23,18 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
-import org.wikidata.wdtk.rdf.Vocabulary;
 
 public interface RdfUriConstant {
 
 	static final ValueFactory factory = ValueFactoryImpl.getInstance();
 
-	URI OWL_ANNOTATION_COMMENT = factory
-			.createURI(RdfStringConstant.OWL_ANNOTATION_COMMENT);
 	URI OWL_ANNOTATION_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_ANNOTATION_PROPERTY);
 	URI OWL_CLASS = factory.createURI(RdfStringConstant.OWL_CLASS);
 	URI OWL_COMPLEMENT_OF = factory
 			.createURI(RdfStringConstant.OWL_COMPLEMENT_OF);
-	URI OWL_DATA_PROPERTY_RANGE = factory
-			.createURI(RdfStringConstant.OWL_DATA_PROPERTY_RANGE);
 	URI OWL_DATATYPE_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_DATATYPE_PROPERTY);
-	URI OWL_DECLARATION = factory.createURI(RdfStringConstant.OWL_DECLARATION);
-	URI OWL_DESCRIPTION = factory.createURI(RdfStringConstant.OWL_DESCRIPTION);
 	URI OWL_DISJOINT_WITH = factory
 			.createURI(RdfStringConstant.OWL_DISJOINT_WITH);
 	URI OWL_EQUIVALENT_CLASS = factory
@@ -55,14 +48,8 @@ public interface RdfUriConstant {
 			.createURI(RdfStringConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
 	URI OWL_NAMED_INDIVIDUAL = factory
 			.createURI(RdfStringConstant.OWL_NAMED_INDIVIDUAL);
-	URI OWL_OBJECT_COMPLEMENT_OF = factory
-			.createURI(RdfStringConstant.OWL_OBJECT_COMPLEMENT_OF);
 	URI OWL_OBJECT_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_OBJECT_PROPERTY);
-	URI OWL_OBJECT_PROPERTY_DOMAIN = factory
-			.createURI(RdfStringConstant.OWL_OBJECT_PROPERTY_DOMAIN);
-	URI OWL_OBJECT_PROPERTY_RANGE = factory
-			.createURI(RdfStringConstant.OWL_OBJECT_PROPERTY_RANGE);
 	URI OWL_ON_CLASS = factory.createURI(RdfStringConstant.OWL_ON_CLASS);
 	URI OWL_ON_DATATYPE = factory.createURI(RdfStringConstant.OWL_ON_DATATYPE);
 	URI OWL_ON_PROPERTY = factory.createURI(RdfStringConstant.OWL_ON_PROPERTY);
@@ -76,59 +63,16 @@ public interface RdfUriConstant {
 	URI OWL_UNION_OF = factory.createURI(RdfStringConstant.OWL_UNION_OF);
 	URI OWL_WITH_RESTRICTIONS = factory
 			.createURI(RdfStringConstant.OWL_WITH_RESTRICTIONS);
-	URI PROV_WAS_DERIVED_FROM = factory
-			.createURI(Vocabulary.PROV_WAS_DERIVED_FROM);
 	URI RDF_FIRST = factory.createURI(RdfStringConstant.RDF_FIRST);
-	URI RDF_LIST = factory.createURI(RdfStringConstant.RDF_LIST);
-	URI RDF_PARSE_TYPE = factory.createURI(RdfStringConstant.RDF_PARSE_TYPE);
-	URI RDF_PROPERTY = factory.createURI(RdfStringConstant.RDF_PROPERTY);
 	URI RDF_REST = factory.createURI(RdfStringConstant.RDF_REST);
 	URI RDF_TYPE = factory.createURI(RdfStringConstant.RDF_TYPE);
-	URI RDFS_CLASS = factory.createURI(RdfStringConstant.RDFS_CLASS);
 	URI RDFS_COMMENT = factory.createURI(RdfStringConstant.RDFS_COMMENT);
-	URI RDFS_CONTAINER_MEMBERSHIP_PROPERTY = factory
-			.createURI(RdfStringConstant.RDFS_CONTAINER_MEMBERSHIP_PROPERTY);
 	URI RDFS_DATATYPE = factory.createURI(RdfStringConstant.RDFS_DATATYPE);
 	URI RDFS_DOMAIN = factory.createURI(RdfStringConstant.RDFS_DOMAIN);
-	URI RDFS_LABEL = factory.createURI(RdfStringConstant.RDFS_LABEL);
-	URI RDFS_LITERAL = factory.createURI(RdfStringConstant.RDFS_LITERAL);
-	URI RDFS_MEMBER = factory.createURI(RdfStringConstant.RDFS_MEMBER);
 	URI RDFS_RANGE = factory.createURI(RdfStringConstant.RDFS_RANGE);
-	URI RDFS_RESOURCE = factory.createURI(RdfStringConstant.RDFS_RESOURCE);
 	URI RDFS_SUB_CLASS_OF = factory
 			.createURI(RdfStringConstant.RDFS_SUB_CLASS_OF);
-	URI RDFS_SUB_PROPERTY_OF = factory
-			.createURI(RdfStringConstant.RDFS_SUB_PROPERTY_OF);
-	URI SCHEMA_ABOUT = factory.createURI(Vocabulary.SCHEMA_ABOUT);
-	URI SCHEMA_DESCRIPTION = factory.createURI(Vocabulary.SCHEMA_DESCRIPTION);
-	URI SCHEMA_IN_LANGUAGE = factory.createURI(Vocabulary.SCHEMA_IN_LANGUAGE);
-	URI SKOS_ALT_LABEL = factory.createURI(Vocabulary.SKOS_ALT_LABEL);
-	URI WB_ARTICLE = factory.createURI(Vocabulary.WB_ARTICLE);
-	URI WB_GC_PRECISION = factory.createURI(Vocabulary.WB_GC_PRECISION);
-	URI WB_GLOBE = factory.createURI(Vocabulary.WB_GLOBE);
-	URI WB_GLOBE_COORDINATES_VALUE = factory
-			.createURI(Vocabulary.WB_GLOBE_COORDINATES_VALUE);
-	URI WB_ITEM = factory.createURI(Vocabulary.WB_ITEM);
-	URI WB_LATITUDE = factory.createURI(Vocabulary.WB_LATITUDE);
-	URI WB_LONGITUDE = factory.createURI(Vocabulary.WB_LONGITUDE);
-	URI WB_LOWER_BOUND = factory.createURI(Vocabulary.WB_LOWER_BOUND);
-	URI WB_NUMERIC_VALUE = factory.createURI(Vocabulary.WB_NUMERIC_VALUE);
-	URI WB_PREFERRED_CALENDAR = factory
-			.createURI(Vocabulary.WB_PREFERRED_CALENDAR);
-	URI WB_PROPERTY = factory.createURI(Vocabulary.WB_PROPERTY);
-	URI WB_PROPERTY_TYPE = factory.createURI(Vocabulary.WB_PROPERTY_TYPE);
-	URI WB_QUANTITY_VALUE = factory.createURI(Vocabulary.WB_QUANTITY_VALUE);
-	URI WB_REFERENCE = factory.createURI(Vocabulary.WB_REFERENCE);
-	URI WB_STATEMENT = factory.createURI(Vocabulary.WB_STATEMENT);
-	URI WB_TIME = factory.createURI(Vocabulary.WB_TIME);
-	URI WB_TIME_PRECISION = factory.createURI(Vocabulary.WB_TIME_PRECISION);
-	URI WB_TIME_VALUE = factory.createURI(Vocabulary.WB_TIME_VALUE);
-	URI WB_UPPER_BOUND = factory.createURI(Vocabulary.WB_UPPER_BOUND);
-	// URI XSD_INT = factory.createURI(Vocabulary.XSD_INT);
-	// URI XSD_DATE = factory.createURI(Vocabulary.XSD_DATE);
-	// URI XSD_G_YEAR = factory.createURI(Vocabulary.XSD_G_YEAR);
-	// URI XSD_G_YEAR_MONTH = factory.createURI(Vocabulary.XSD_G_YEAR_MONTH);
-	URI XSD_DATE_TIME = factory.createURI(RdfStringConstant.XSD_DATETIME);
+	URI XSD_DATE_TIME = factory.createURI(RdfStringConstant.XSD_DATE_TIME);
 	URI XSD_DECIMAL = factory.createURI(RdfStringConstant.XSD_DECIMAL);
 	URI XSD_MAX_INCLUSIVE = factory
 			.createURI(RdfStringConstant.XSD_MAX_INCLUSIVE);
