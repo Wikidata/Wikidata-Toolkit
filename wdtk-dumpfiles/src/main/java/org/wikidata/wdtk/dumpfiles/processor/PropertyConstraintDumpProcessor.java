@@ -98,6 +98,7 @@ public class PropertyConstraintDumpProcessor {
 						.getPropertyIdValue(key.toUpperCase(),
 								ConstraintMainParser.DEFAULT_BASE_IRI);
 				URI propertyUri = rendererFormat.getProperty(property);
+				rendererFormat.addDeclarationObjectProperty(propertyUri);
 				rendererFormat.addAnnotationAssertionComment(propertyUri,
 						escapeChars(templates.toString()));
 			} catch (Exception e) {

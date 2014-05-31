@@ -65,6 +65,11 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 			return;
 		}
 		URI rp = this.f.getRp(p);
+
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addDeclarationObjectProperty(this.f.getPv(p));
+		this.f.addDeclarationObjectProperty(rp);
+
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		this.f.addDatatypeDefinition(
 				rp,

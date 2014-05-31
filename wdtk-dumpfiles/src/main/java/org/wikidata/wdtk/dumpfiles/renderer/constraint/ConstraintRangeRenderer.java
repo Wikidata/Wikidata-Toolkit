@@ -75,6 +75,10 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 			return;
 		}
 		URI rp = this.f.getRp(p);
+		this.f.addDeclarationObjectProperty(rp);
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addDeclarationObjectProperty(this.f.getPv(p));
+
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		this.f.addDatatypeDefinition(
 				rp,
@@ -86,4 +90,5 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 		this.f.addObjectPropertyRange(this.f.getPv(p),
 				this.f.getDataSomeValuesFrom(param, rp));
 	}
+
 }

@@ -144,7 +144,7 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource dataRange) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			addDeclarationDatatypeProperty(datatypePropertyExpression);
+			// addDeclarationDatatypeProperty(datatypePropertyExpression);
 			// addDeclarationDatatype(dataRange);
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
@@ -164,7 +164,7 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource restrictionValue) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			addDeclarationDatatype(datatype);
+			// addDeclarationDatatype(datatype);
 
 			BNode bnode1 = this.rdfWriter.getFreshBNode();
 			BNode bnode2 = this.rdfWriter.getFreshBNode();
@@ -336,7 +336,7 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addDataPropertyRange(URI dataPropertyExpression,
 			Resource dataRange) {
 		try {
-			addDeclarationDatatypeProperty(dataPropertyExpression);
+			// addDeclarationDatatypeProperty(dataPropertyExpression);
 			// addDeclarationDatatype(dataRange);
 
 			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
@@ -350,7 +350,7 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public boolean addDatatypeDefinition(URI datatype, Resource dataRange) {
 		try {
-			addDeclarationDatatype(datatype);
+			// addDeclarationDatatype(datatype);
 
 			this.rdfWriter.writeTripleValueObject(datatype,
 					RdfUriConstant.OWL_EQUIVALENT_CLASS, dataRange);

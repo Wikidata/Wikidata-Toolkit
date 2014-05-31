@@ -54,6 +54,10 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 		if ((p == null) || (r == null)) {
 			return;
 		}
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addDeclarationObjectProperty(this.f.getPv(p));
+		this.f.addDeclarationObjectProperty(this.f.getPs(r));
+
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		if (q == null) {
 			this.f.addObjectPropertyRange(
@@ -61,6 +65,9 @@ class ConstraintTargetRequiredClaimRenderer implements ConstraintRenderer {
 					this.f.getObjectSomeValuesFrom(this.f.getPs(r),
 							this.f.owlThing()));
 		} else {
+			this.f.addDeclarationObjectProperty(this.f.getPv(r));
+			this.f.addDeclarationNamedIndividual(this.f.getItem(q));
+
 			this.f.addObjectPropertyRange(this.f.getPv(p), this.f
 					.getObjectSomeValuesFrom(this.f.getPs(r), this.f
 							.getObjectSomeValuesFrom(this.f.getPv(r),

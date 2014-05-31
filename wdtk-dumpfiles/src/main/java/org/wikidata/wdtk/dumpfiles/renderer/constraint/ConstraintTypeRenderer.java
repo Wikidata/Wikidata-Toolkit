@@ -69,6 +69,9 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 		if ((p == null) || (q == null)) {
 			return;
 		}
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addDeclarationNamedIndividual(this.f.getItem(q));
+
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		this.f.addObjectPropertyDomain(this.f.getPs(p),
 				this.f.getObjectOneOf(this.f.getItem(q)));
@@ -80,6 +83,8 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 		if ((p == null) || (q == null)) {
 			return;
 		}
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		otherRenderer.renderPart(p, this.subclassOf, q);
 	}
