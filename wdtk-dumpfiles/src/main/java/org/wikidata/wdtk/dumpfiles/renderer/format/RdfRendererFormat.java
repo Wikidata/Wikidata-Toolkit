@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
 
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -105,9 +106,25 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1) {
-		// FIXME
 		BNode ret = factory.createBNode();
 
+		try {
+			BNode bnode1 = factory.createBNode();
+			BNode bnode2 = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_INTERSECTION_OF, bnode1);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_FIRST, dataRange0);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_REST, bnode2);
+			this.rdfWriter.writeTripleValueObject(bnode2,
+					RdfUriConstant.RDF_FIRST, dataRange1);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
 		return ret;
 	}
 
@@ -132,27 +149,28 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDatatype(Resource arg) {
-		// FIXME
-		BNode ret = factory.createBNode();
-
-		return ret;
-	}
-
-	@Override
-	public BNode getDatatypeRestriction(Resource dataType, Resource facet,
+	public BNode getDatatypeRestriction(Resource datatype, URI facet,
 			Resource value) {
-		// FIXME
 		BNode ret = factory.createBNode();
+		try {
+			addDeclarationDatatype(datatype);
+
+			BNode bnode1 = factory.createBNode();
+			BNode bnode2 = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ON_DATATYPE, datatype);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_WITH_RESTRICTIONS, bnode1);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_FIRST, bnode2);
+			this.rdfWriter.writeTripleStringObject(bnode2, facet,
+					value.stringValue());
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
 
 		return ret;
-	}
-
-	@Override
-	public BNode getLiteral(Resource value, Resource type) {
-		// FIXME
-
-		return factory.createBNode();
 	}
 
 	@Override
@@ -195,17 +213,50 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectOneOf(Resource individual) {
-		// FIXME
 		BNode ret = factory.createBNode();
 
+		try {
+			BNode bnode1 = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_CLASS);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ONE_OF, bnode1);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_FIRST, individual);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
 		return ret;
 	}
 
 	@Override
 	public BNode getObjectOneOf(List<Resource> listOfIndividuals) {
-		// FIXME
 		BNode ret = factory.createBNode();
 
+		try {
+			BNode currentBnode = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_CLASS);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ONE_OF, currentBnode);
+
+			Iterator<Resource> it = listOfIndividuals.iterator();
+			while (it.hasNext()) {
+				Resource currentIndividual = it.next();
+				this.rdfWriter.writeTripleValueObject(currentBnode,
+						RdfUriConstant.RDF_FIRST, currentIndividual);
+				if (it.hasNext()) {
+					BNode nextBnode = factory.createBNode();
+					this.rdfWriter.writeTripleValueObject(currentBnode,
+							RdfUriConstant.RDF_REST, nextBnode);
+					currentBnode = nextBnode;
+				}
+			}
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
 		return ret;
 	}
 
@@ -283,9 +334,15 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addDatatypeDefinition(Resource datatype, Resource dataRange) {
-		// FIXME
+		try {
+			addDeclarationDatatype(datatype);
 
-		return false;
+			this.rdfWriter.writeTripleValueObject(datatype,
+					RdfUriConstant.OWL_EQUIVALENT_CLASS, dataRange);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 
 	@Override
@@ -384,9 +441,16 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addDisjointClasses(Resource class0, Resource class1) {
-		// FIXME
+		try {
+			addDeclarationClass(class0);
+			addDeclarationClass(class1);
 
-		return false;
+			this.rdfWriter.writeTripleValueObject(class0,
+					RdfUriConstant.OWL_DISJOINT_WITH, class1);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 
 	@Override
@@ -406,9 +470,26 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public boolean addHasKey(Resource clss, Resource objectProperty,
 			Resource dataProperty) {
-		// FIXME
+		try {
+			addDeclarationClass(clss);
+			addDeclarationObjectProperty(objectProperty);
+			addDeclarationDatatypeProperty(dataProperty);
 
-		return false;
+			BNode bnode0 = factory.createBNode();
+			BNode bnode1 = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(objectProperty,
+					RdfUriConstant.OWL_HAS_KEY, bnode0);
+			this.rdfWriter.writeTripleValueObject(bnode0,
+					RdfUriConstant.RDF_FIRST, objectProperty);
+			this.rdfWriter.writeTripleValueObject(bnode0,
+					RdfUriConstant.RDF_REST, bnode1);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_FIRST, dataProperty);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
 	}
 
 	@Override

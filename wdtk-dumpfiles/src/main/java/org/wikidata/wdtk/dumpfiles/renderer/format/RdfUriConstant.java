@@ -36,23 +36,21 @@ public interface RdfUriConstant {
 	URI OWL_CLASS = factory.createURI(RdfStringConstant.OWL_CLASS);
 	URI OWL_COMPLEMENT_OF = factory
 			.createURI(RdfStringConstant.OWL_COMPLEMENT_OF);
-	URI OWL_DATA_INTERSECTION_OF = factory
-			.createURI(RdfStringConstant.OWL_DATA_INTERSECTION_OF);
 	URI OWL_DATA_PROPERTY_RANGE = factory
 			.createURI(RdfStringConstant.OWL_DATA_PROPERTY_RANGE);
-	URI OWL_DATATYPE_DEFINITION = factory
-			.createURI(RdfStringConstant.OWL_DATATYPE_DEFINITION);
 	URI OWL_DATATYPE_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_DATATYPE_PROPERTY);
-	URI OWL_DATATYPE_RESTRICTION = factory
-			.createURI(RdfStringConstant.OWL_DATATYPE_RESTRICTION);
 	URI OWL_DECLARATION = factory.createURI(RdfStringConstant.OWL_DECLARATION);
 	URI OWL_DESCRIPTION = factory.createURI(RdfStringConstant.OWL_DESCRIPTION);
-	URI OWL_DISJOINT_CLASSES = factory
-			.createURI(RdfStringConstant.OWL_DISJOINT_CLASSES);
+	URI OWL_DISJOINT_WITH = factory
+			.createURI(RdfStringConstant.OWL_DISJOINT_WITH);
+	URI OWL_EQUIVALENT_CLASS = factory
+			.createURI(RdfStringConstant.OWL_EQUIVALENT_CLASS);
 	URI OWL_FUNCTIONAL_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_FUNCTIONAL_PROPERTY);
 	URI OWL_HAS_KEY = factory.createURI(RdfStringConstant.OWL_HAS_KEY);
+	URI OWL_INTERSECTION_OF = factory
+			.createURI(RdfStringConstant.OWL_INTERSECTION_OF);
 	URI OWL_INVERSE_FUNCTIONAL_PROPERTY = factory
 			.createURI(RdfStringConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
 	URI OWL_NAMED_INDIVIDUAL = factory

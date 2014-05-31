@@ -84,13 +84,10 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 				rp,
 				this.f.getDataIntersectionOf(
 						this.f.getDatatypeRestriction(type,
-								this.f.xsdMinInclusive(),
-								this.f.getLiteral(min, type)),
+								this.f.xsdMinInclusive(), min),
 						this.f.getDatatypeRestriction(type,
-								this.f.xsdMaxInclusive(),
-								this.f.getLiteral(max, type))));
+								this.f.xsdMaxInclusive(), max)));
 		this.f.addObjectPropertyRange(this.f.a_v(p),
 				this.f.getDataSomeValuesFrom(param, rp));
 	}
-
 }

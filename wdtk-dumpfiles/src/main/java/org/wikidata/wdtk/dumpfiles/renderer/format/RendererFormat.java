@@ -56,12 +56,7 @@ public interface RendererFormat {
 
 	BNode getDataSomeValuesFrom(Resource dataProperty, Resource dataRange);
 
-	BNode getDatatype(Resource arg);
-
-	BNode getDatatypeRestriction(Resource dataType, Resource facet,
-			Resource value);
-
-	BNode getLiteral(Resource value, Resource type);
+	BNode getDatatypeRestriction(Resource dataType, URI facet, Resource value);
 
 	BNode getObjectComplementOf(Resource clss);
 

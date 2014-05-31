@@ -172,19 +172,18 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				makePair(dataProperty, dataRange));
 	}
 
-	@Override
-	public BNode getDatatype(Resource arg) {
-		return makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
-	}
+	// public BNode getDatatype(Resource arg) {
+	// return makeFunction(Owl2FunctionalConstant.DATATYPE, arg);
+	// }
 
 	@Override
-	public BNode getDatatypeRestriction(Resource dataType, Resource facet,
+	public BNode getDatatypeRestriction(Resource dataType, URI facet,
 			Resource value) {
-		return makeFunction(Owl2FunctionalConstant.DATATYPE_RESTRICTION,
-				makePair(dataType, makePair(facet, value)));
+		return makeFunction(
+				Owl2FunctionalConstant.DATATYPE_RESTRICTION,
+				makePair(dataType, makePair(facet, getLiteral(value, dataType))));
 	}
 
-	@Override
 	public BNode getLiteral(Resource value, Resource type) {
 		return new StringBNode(Owl2FunctionalConstant.C_QUOTATION_MARK + value
 				+ Owl2FunctionalConstant.C_QUOTATION_MARK

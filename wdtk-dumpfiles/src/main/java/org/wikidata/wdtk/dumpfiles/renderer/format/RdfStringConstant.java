@@ -40,16 +40,15 @@ public interface RdfStringConstant {
 	String OWL_ANNOTATION_PROPERTY = PREFIX_OWL + "AnnotationProperty";
 	String OWL_CLASS = PREFIX_OWL + "Class";
 	String OWL_COMPLEMENT_OF = PREFIX_OWL + "complementOf";
-	String OWL_DATA_INTERSECTION_OF = PREFIX_OWL + "dataIntersectionOf";
 	String OWL_DATA_PROPERTY_RANGE = PREFIX_OWL + "dataPropertyRange";
-	String OWL_DATATYPE_DEFINITION = PREFIX_OWL + "datatypeDefinition";
 	String OWL_DATATYPE_PROPERTY = PREFIX_OWL + "DatatypeProperty";
-	String OWL_DATATYPE_RESTRICTION = PREFIX_OWL + "datatypeRestriction";
 	String OWL_DECLARATION = PREFIX_OWL + "declaration";
 	String OWL_DESCRIPTION = PREFIX_OWL + "Description";
-	String OWL_DISJOINT_CLASSES = PREFIX_OWL + "disjointClasses";
+	String OWL_DISJOINT_WITH = PREFIX_OWL + "disjointWith";
+	String OWL_EQUIVALENT_CLASS = PREFIX_OWL + "equivalentClass";
 	String OWL_FUNCTIONAL_PROPERTY = PREFIX_OWL + "FunctionalProperty";
 	String OWL_HAS_KEY = PREFIX_OWL + "hasKey";
+	String OWL_INTERSECTION_OF = PREFIX_OWL + "intersectionOf";
 	String OWL_INVERSE_FUNCTIONAL_PROPERTY = PREFIX_OWL
 			+ "InverseFunctionalProperty";
 	String OWL_NAMED_INDIVIDUAL = PREFIX_OWL + "NamedIndividual";
