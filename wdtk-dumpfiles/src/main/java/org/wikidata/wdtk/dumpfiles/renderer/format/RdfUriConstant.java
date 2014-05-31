@@ -80,8 +80,11 @@ public interface RdfUriConstant {
 			.createURI(RdfStringConstant.OWL_WITH_RESTRICTIONS);
 	URI PROV_WAS_DERIVED_FROM = factory
 			.createURI(Vocabulary.PROV_WAS_DERIVED_FROM);
+	URI RDF_FIRST = factory.createURI(RdfStringConstant.RDF_FIRST);
+	URI RDF_LIST = factory.createURI(RdfStringConstant.RDF_LIST);
 	URI RDF_PARSE_TYPE = factory.createURI(RdfStringConstant.RDF_PARSE_TYPE);
 	URI RDF_PROPERTY = factory.createURI(RdfStringConstant.RDF_PROPERTY);
+	URI RDF_REST = factory.createURI(RdfStringConstant.RDF_REST);
 	URI RDF_TYPE = factory.createURI(RdfStringConstant.RDF_TYPE);
 	URI RDFS_CLASS = factory.createURI(RdfStringConstant.RDFS_CLASS);
 	URI RDFS_COMMENT = factory.createURI(RdfStringConstant.RDFS_COMMENT);

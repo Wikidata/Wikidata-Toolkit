@@ -67,8 +67,11 @@ public interface RdfStringConstant {
 	String OWL_THING = PREFIX_OWL + "Thing";
 	String OWL_UNION_OF = PREFIX_OWL + "unionOf";
 	String OWL_WITH_RESTRICTIONS = PREFIX_OWL + "withRestrictions";
+	String RDF_FIRST = PREFIX_RDF + "first";
+	String RDF_LIST = PREFIX_RDF + "List";
 	String RDF_PARSE_TYPE = PREFIX_RDF + "parseType";
 	String RDF_PROPERTY = PREFIX_RDF + "Property";
+	String RDF_REST = PREFIX_RDF + "rest";
 	String RDF_TYPE = PREFIX_RDF + "type";
 	String RDFS_CLASS = PREFIX_RDFS + "Class";
 	String RDFS_COMMENT = PREFIX_RDFS + "comment";

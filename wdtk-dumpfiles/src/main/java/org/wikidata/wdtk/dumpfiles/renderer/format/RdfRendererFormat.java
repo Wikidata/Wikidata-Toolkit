@@ -230,9 +230,28 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectUnionOf(Resource class0, Resource class1) {
-		// FIXME
 		BNode ret = factory.createBNode();
 
+		try {
+			addDeclarationClass(class0);
+			addDeclarationClass(class1);
+
+			BNode bnode1 = factory.createBNode();
+			BNode bnode2 = factory.createBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_CLASS);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_UNION_OF, bnode1);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_FIRST, class0);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_REST, bnode2);
+			this.rdfWriter.writeTripleValueObject(bnode2,
+					RdfUriConstant.RDF_FIRST, class1);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
 		return ret;
 	}
 
