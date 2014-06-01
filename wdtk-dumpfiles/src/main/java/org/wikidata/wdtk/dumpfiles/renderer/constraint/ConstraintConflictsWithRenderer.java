@@ -74,7 +74,6 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 		if ((values == null) || values.isEmpty()) {
 			this.f.addDeclarationObjectProperty(this.f.getPv(p));
 			this.f.addDeclarationObjectProperty(this.f.getPs(r));
-
 			this.f.addDisjointClasses(
 					this.f.getObjectSomeValuesFrom(this.f.getPv(p),
 							this.f.owlThing()),
@@ -84,7 +83,6 @@ class ConstraintConflictsWithRenderer implements ConstraintRenderer {
 			this.f.addDeclarationObjectProperty(this.f.getPv(p));
 			this.f.addDeclarationObjectProperty(this.f.getPs(r));
 			this.f.addDeclarationObjectProperty(this.f.getPv(r));
-
 			this.f.addDisjointClasses(this.f.getObjectSomeValuesFrom(
 					this.f.getPv(p), this.f.owlThing()), this.f
 					.getObjectSomeValuesFrom(this.f.getPs(r), this.f

@@ -74,7 +74,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		if (q == null) {
 			this.f.addDeclarationObjectProperty(this.f.getPs(p));
 			this.f.addDeclarationObjectProperty(this.f.getPs(r));
-
 			this.f.addObjectPropertyDomain(
 					this.f.getPs(p),
 					this.f.getObjectSomeValuesFrom(this.f.getPs(r),
@@ -84,7 +83,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			this.f.addDeclarationObjectProperty(this.f.getPs(r));
 			this.f.addDeclarationObjectProperty(this.f.getPv(r));
 			this.f.addDeclarationNamedIndividual(this.f.getItem(q));
-
 			this.f.addObjectPropertyDomain(this.f.getPs(p), this.f
 					.getObjectSomeValuesFrom(this.f.getPs(r), this.f
 							.getObjectSomeValuesFrom(this.f.getPv(r),
@@ -97,7 +95,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		List<Resource> ret = new ArrayList<Resource>();
 		for (ItemIdValue q : list) {
 			f.addDeclarationNamedIndividual(f.getItem(q));
-
 			ret.add(f.getItem(q));
 		}
 		return ret;
@@ -111,7 +108,6 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
-
 		this.f.addObjectPropertyDomain(this.f.getPs(p),
 				this.f.getObjectOneOf(getListAndDeclareItems(this.f, values)));
 	}

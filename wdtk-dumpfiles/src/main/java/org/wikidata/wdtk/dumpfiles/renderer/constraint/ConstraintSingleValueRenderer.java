@@ -54,7 +54,6 @@ class ConstraintSingleValueRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
-
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 		this.f.addFunctionalObjectProperty(this.f.getPs(p));
 	}

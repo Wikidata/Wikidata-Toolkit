@@ -57,11 +57,12 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
-		this.f.addDeclarationObjectProperty(this.f.getPv(p));
-
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+
+		this.f.addDeclarationObjectProperty(this.f.getPv(p));
 		this.f.addObjectPropertyRange(this.f.getPv(p), this.f
 				.getObjectOneOf(ConstraintItemRenderer.getListAndDeclareItems(
 						this.f, values)));
 	}
+
 }

@@ -70,9 +70,9 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 			return;
 		}
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
-		this.f.addDeclarationNamedIndividual(this.f.getItem(q));
-
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+
+		this.f.addDeclarationNamedIndividual(this.f.getItem(q));
 		this.f.addObjectPropertyDomain(this.f.getPs(p),
 				this.f.getObjectOneOf(this.f.getItem(q)));
 	}
