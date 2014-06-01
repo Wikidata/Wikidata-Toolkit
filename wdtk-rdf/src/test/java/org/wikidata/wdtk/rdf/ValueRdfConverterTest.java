@@ -75,7 +75,6 @@ public class ValueRdfConverterTest {
 		valueConverter.writeValue(value, this.resource);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		// System.out.println(out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("QuantityValue.rdf")));
 	}

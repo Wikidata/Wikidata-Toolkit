@@ -24,6 +24,9 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -36,10 +39,22 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.rdf.RdfConverter;
 import org.wikidata.wdtk.rdf.TestObjectFactory;
 
@@ -56,6 +71,7 @@ public class RdfConverterTest {
 	Resource resource = rdfFactory.createURI("http://test.org/");
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
+	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
 	@Before
 	public void setUp() throws Exception {
@@ -110,7 +126,8 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testWriteSiteLinks() throws RDFHandlerException, IOException, RDFParseException {
+	public void testWriteSiteLinks() throws RDFHandlerException, IOException,
+			RDFParseException {
 		this.sites.setSiteInformation("enwiki", "wikipedia", "en", "mediawiki",
 				"http://en.wikipedia.org/w/$1",
 				"http://en.wikipedia.org/wiki/$1");
@@ -121,7 +138,47 @@ public class RdfConverterTest {
 		this.rdfConverter.writeSiteLinks(this.resource, siteLinks);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers.getResourceFromFile("SiteLinks.rdf")));
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("SiteLinks.rdf")));
+
+	}
+
+	@Test
+	public void testWriteInstanceOfStatements() throws RDFHandlerException {
+		this.rdfConverter.tasks = RdfSerializer.TASK_INSTANCE_OF;
+		ItemIdValue itemValue = dataObjectFactory.getItemIdValue("Q100",
+				"http://www.wikidata.org/Q10");
+		ItemIdValue value = dataObjectFactory.getItemIdValue("Q10",
+				"http://www.wikidata.org/");
+		PropertyIdValue propertyIdValue = dataObjectFactory.getPropertyIdValue(
+				"P31", "http://www.wikidata.org/");
+		ValueSnak mainSnak = dataObjectFactory.getValueSnak(propertyIdValue,
+				value);
+		Claim claim = dataObjectFactory.getClaim(itemValue, mainSnak,
+				Collections.<SnakGroup> emptyList());
+		Statement statement = dataObjectFactory.getStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"10103");
+		List<Statement> statementList = new ArrayList<Statement>();
+		statementList.add(statement);
+		StatementGroup statementGroup = this.dataObjectFactory
+				.getStatementGroup(statementList);
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		statementGroups.add(statementGroup);
+		ItemDocument document = dataObjectFactory.getItemDocument(itemValue,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				statementGroups, Collections.<String, SiteLink> emptyMap());
+
+		this.rdfConverter.writeInstanceOfStatements(resource, document);
+		this.rdfWriter.finish();
+		assertEquals(out.toString(),
+				"\n<http://test.org/> a <http://www.wikidata.org/Q10> .\n");
+	}
+
+	@Test
+	public void testWriteSubclassOfStatements() {
 
 	}
 
