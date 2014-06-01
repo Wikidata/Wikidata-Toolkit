@@ -75,6 +75,11 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				+ Owl2FunctionalConstant.C_QUOTATION_MARK;
 	}
 
+	private URI createURI(String value) {
+		return factory.createURI(Owl2FunctionalConstant.C_LT + value
+				+ Owl2FunctionalConstant.C_GT);
+	}
+
 	private BNode makeFunction(String object, Resource arg) {
 		return makeFunction(object, arg.toString());
 	}
@@ -120,50 +125,39 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	@Override
 	public URI getItem(ItemIdValue item) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT + item.getIri()
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(item.getIri());
 	}
 
 	@Override
 	public URI getProperty(PropertyIdValue property) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ property.getIri() + Owl2FunctionalConstant.C_GT);
+		return createURI(property.getIri());
 	}
 
 	@Override
 	public URI getPs(PropertyIdValue property) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ Vocabulary
-						.getPropertyUri(property, PropertyContext.STATEMENT)
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(Vocabulary.getPropertyUri(property,
+				PropertyContext.STATEMENT));
 	}
 
 	@Override
 	public URI getPv(PropertyIdValue property) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ Vocabulary.getPropertyUri(property, PropertyContext.VALUE)
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(Vocabulary.getPropertyUri(property,
+				PropertyContext.VALUE));
 	}
 
 	@Override
 	public URI getRp(PropertyIdValue property) {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ property.getIri() + Owl2FunctionalConstant.AUX
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(property.getIri() + Owl2FunctionalConstant.AUX);
 	}
 
 	@Override
 	public URI wbTimeValue() {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ Owl2FunctionalConstant.WB_TIME_VALUE
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(Owl2FunctionalConstant.WB_TIME_VALUE);
 	}
 
 	@Override
 	public URI wbQuantityValue() {
-		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ Owl2FunctionalConstant.WB_QUANTITY_VALUE
-				+ Owl2FunctionalConstant.C_GT);
+		return createURI(Owl2FunctionalConstant.WB_QUANTITY_VALUE);
 	}
 
 	@Override

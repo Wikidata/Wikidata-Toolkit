@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.processor;
  * #L%
  */
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -84,34 +83,8 @@ public class PropertyConstraintDumpProcessor {
 		return ret;
 	}
 
-	public void processAnnotationsOfConstraintTemplates(
-			Map<String, List<Template>> templateMap,
-			RendererFormat rendererFormat) throws IOException {
-
-		DataObjectFactoryImpl dataObjectFactory = new DataObjectFactoryImpl();
-
-		for (String key : templateMap.keySet()) {
-			try {
-				List<Template> templates = getConstraintTemplates(templateMap
-						.get(key));
-				PropertyIdValue property = dataObjectFactory
-						.getPropertyIdValue(key.toUpperCase(),
-								ConstraintMainParser.DEFAULT_BASE_IRI);
-				URI propertyUri = rendererFormat.getProperty(property);
-				rendererFormat.addDeclarationObjectProperty(propertyUri);
-				rendererFormat.addAnnotationAssertionComment(propertyUri,
-						escapeChars(templates.toString()));
-			} catch (Exception e) {
-				System.out
-						.println("Exception while rendering annotation assertion for '"
-								+ key + "'.");
-				e.printStackTrace();
-
-			}
-		}
-	}
-
-	public void processDumps(RendererFormat rendererFormat) throws IOException {
+	public void processDumps(List<RendererFormat> rendererFormats)
+			throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
 
@@ -125,18 +98,52 @@ public class PropertyConstraintDumpProcessor {
 		controller.processAllDumps(DumpContentType.CURRENT, DEFAULT_DUMP_DATE,
 				DEFAULT_DUMP_DATE);
 
-		rendererFormat.start();
+		start(rendererFormats);
 		processAnnotationsOfConstraintTemplates(
-				propertyTalkTemplateProcessor.getMap(), rendererFormat);
-		processTemplates(propertyTalkTemplateProcessor.getMap(), rendererFormat);
-		rendererFormat.finish();
+				propertyTalkTemplateProcessor.getMap(), rendererFormats);
+		processTemplates(propertyTalkTemplateProcessor.getMap(),
+				rendererFormats);
+		finish(rendererFormats);
+	}
+
+	public void start(List<RendererFormat> rendererFormats) {
+		for (RendererFormat rendererFormat : rendererFormats) {
+			rendererFormat.start();
+		}
+	}
+
+	public void processAnnotationsOfConstraintTemplates(
+			Map<String, List<Template>> templateMap,
+			List<RendererFormat> rendererFormats) throws IOException {
+
+		DataObjectFactoryImpl dataObjectFactory = new DataObjectFactoryImpl();
+
+		for (String key : templateMap.keySet()) {
+			try {
+				List<Template> templates = getConstraintTemplates(templateMap
+						.get(key));
+				PropertyIdValue property = dataObjectFactory
+						.getPropertyIdValue(key.toUpperCase(),
+								ConstraintMainParser.DEFAULT_BASE_IRI);
+				for (RendererFormat rendererFormat : rendererFormats) {
+					URI propertyUri = rendererFormat.getProperty(property);
+					rendererFormat.addDeclarationObjectProperty(propertyUri);
+					rendererFormat.addAnnotationAssertionComment(propertyUri,
+							escapeChars(templates.toString()));
+				}
+			} catch (Exception e) {
+				System.out
+						.println("Exception while rendering annotation assertion for '"
+								+ key + "'.");
+				e.printStackTrace();
+
+			}
+		}
 	}
 
 	public void processTemplates(Map<String, List<Template>> templateMap,
-			RendererFormat rendererFormat) throws IOException {
+			List<RendererFormat> rendererFormats) throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
-		ConstraintMainRenderer renderer = new ConstraintMainRenderer(
-				rendererFormat);
 		for (String key : templateMap.keySet()) {
 			List<Template> templates = templateMap.get(key);
 			for (Template template : templates) {
@@ -152,7 +159,11 @@ public class PropertyConstraintDumpProcessor {
 
 				try {
 					if (constraint != null) {
-						constraint.accept(renderer);
+						for (RendererFormat rendererFormat : rendererFormats) {
+							ConstraintMainRenderer renderer = new ConstraintMainRenderer(
+									rendererFormat);
+							constraint.accept(renderer);
+						}
 					}
 				} catch (Exception e) {
 					System.out.println("Exception while rendering " + key);
@@ -164,21 +175,10 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
-	public void storeOwl(File file) throws IOException {
-		FileWriter output = new FileWriter(file);
-		Owl2FunctionalRendererFormat rendererFormat = new Owl2FunctionalRendererFormat(
-				output);
-		processDumps(rendererFormat);
-		output.flush();
-		output.close();
-	}
-
-	public void storeRdf(File file) throws IOException {
-		FileOutputStream output = new FileOutputStream(file);
-		RdfRendererFormat rendererFormat = new RdfRendererFormat(output);
-		processDumps(rendererFormat);
-		output.flush();
-		output.close();
+	public void finish(List<RendererFormat> rendererFormats) {
+		for (RendererFormat rendererFormat : rendererFormats) {
+			rendererFormat.finish();
+		}
 	}
 
 	public void run(String[] args) throws IOException {
@@ -187,18 +187,21 @@ public class PropertyConstraintDumpProcessor {
 		if (args.length > 0) {
 			fileName = args[0];
 		}
-		try {
-			storeOwl(new File(fileName + OWL_FILE_EXTENSION));
-		} catch (Exception e) {
-			System.out.println("Exception while rendering OWL 2 Functional.");
-			e.printStackTrace();
-		}
-		try {
-			storeRdf(new File(fileName + RDF_FILE_EXTENSION));
-		} catch (Exception e) {
-			System.out.println("Exception while rending RDF.");
-			e.printStackTrace();
-		}
+		FileWriter owl2FunctionalOutput = new FileWriter(fileName
+				+ OWL_FILE_EXTENSION);
+		FileOutputStream rdfOutput = new FileOutputStream(fileName
+				+ RDF_FILE_EXTENSION);
+
+		List<RendererFormat> rendererFormats = new ArrayList<RendererFormat>();
+		rendererFormats.add(new Owl2FunctionalRendererFormat(
+				owl2FunctionalOutput));
+		rendererFormats.add(new RdfRendererFormat(rdfOutput));
+		processDumps(rendererFormats);
+
+		owl2FunctionalOutput.flush();
+		rdfOutput.flush();
+		owl2FunctionalOutput.close();
+		rdfOutput.close();
 	}
 
 }
