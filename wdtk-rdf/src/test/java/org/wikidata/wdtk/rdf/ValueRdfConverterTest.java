@@ -20,7 +20,7 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,13 +40,16 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.rdf.values.GlobeCoordinatesValueConverter;
+import org.wikidata.wdtk.rdf.values.QuantityValueConverter;
+import org.wikidata.wdtk.rdf.values.TimeValueConverter;
 
 public class ValueRdfConverterTest {
 
-	ValueRdfConverter valueConverter;
-
 	ByteArrayOutputStream out;
-	RdfWriter writer;
+	RdfWriter rdfWriter;
+	OwlDeclarationBuffer rdfConversionBuffer;
+	PropertyTypes propertyTypes = new WikidataPropertyTypes();
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
 	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
@@ -56,19 +59,21 @@ public class ValueRdfConverterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.writer = new RdfWriter(RDFFormat.N3, this.out);
-		this.valueConverter = new ValueRdfConverter(this.writer,
-				new RdfConversionBuffer(), new WikidataPropertyTypes());
-		this.writer.start();
+		this.rdfWriter = new RdfWriter(RDFFormat.N3, this.out);
+		this.rdfConversionBuffer = new OwlDeclarationBuffer();
+		this.rdfWriter.start();
 	}
 
 	@Test
 	public void testWriteQuantityValue() throws RDFHandlerException,
 			RDFParseException, IOException {
+		QuantityValueConverter valueConverter = new QuantityValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
 		QuantityValue value = this.objectFactory.getQuantityValue(
 				new BigDecimal(100), new BigDecimal(100), new BigDecimal(100));
-		this.valueConverter.writeQuantityValue(value, this.resource);
-		this.writer.finish();
+		valueConverter.writeValue(value, this.resource);
+		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		// System.out.println(out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -78,14 +83,17 @@ public class ValueRdfConverterTest {
 	@Test
 	public void testWriteGlobeCoordinatesValue() throws RDFHandlerException,
 			RDFParseException, IOException {
+		GlobeCoordinatesValueConverter valueConverter = new GlobeCoordinatesValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
 		GlobeCoordinatesValue value = this.objectFactory
 				.getGlobeCoordinatesValue(
 						(long) (51.033333333333 * GlobeCoordinatesValue.PREC_DEGREE),
 						(long) (13.733333333333 * GlobeCoordinatesValue.PREC_DEGREE),
-						(long) (GlobeCoordinatesValue.PREC_ARCMINUTE),
+						(GlobeCoordinatesValue.PREC_ARCMINUTE),
 						"http://www.wikidata.org/entity/Q2");
-		this.valueConverter.writeGlobeCoordinatesValue(value, this.resource);
-		this.writer.finish();
+		valueConverter.writeValue(value, this.resource);
+		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("GlobeCoordinatesValue.rdf")));
@@ -94,11 +102,14 @@ public class ValueRdfConverterTest {
 	@Test
 	public void testWriteTimeValue() throws RDFHandlerException,
 			RDFParseException, IOException {
+		TimeValueConverter valueConverter = new TimeValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
 		TimeValue value = objectFactory.getTimeValue(2008, (byte) 1, (byte) 1,
 				(byte) 0, (byte) 0, (byte) 0, (byte) 9, 0, 0, 0,
 				"http://www.wikidata.org/entity/Q1985727");
-		valueConverter.writeTimeValue(value, resource);
-		this.writer.finish();
+		valueConverter.writeValue(value, resource);
+		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("TimeValue.rdf")));

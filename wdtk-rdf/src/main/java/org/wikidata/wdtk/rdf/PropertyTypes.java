@@ -31,7 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
- * Interface to for getting the primitive types of Properties.
+ * Interface for retrieving the primitive types of Wikibase properties.
  * 
  * @author Michael Günther
  * 

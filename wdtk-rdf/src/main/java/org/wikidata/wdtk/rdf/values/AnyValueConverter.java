@@ -1,0 +1,140 @@
+package org.wikidata.wdtk.rdf.values;
+
+/*
+ * #%L
+ * Wikidata Toolkit RDF
+ * %%
+ * Copyright (C) 2014 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+import org.openrdf.model.Value;
+import org.openrdf.rio.RDFHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
+import org.wikidata.wdtk.rdf.RdfWriter;
+
+/**
+ * Class to convert Wikibase data values to RDF. The class is a visitor that
+ * that computes an RDF value (URI or literal) to represent any kind of Wikibase
+ * data value. Some values are complex and require further RDF triples to be
+ * written. In such cases, the class stores the values to a buffer. Methods for
+ * writing additional triples for these buffered values can be called later.
+ * 
+ * @author Markus Kroetzsch
+ * 
+ */
+public class AnyValueConverter implements
+		ValueConverter<org.wikidata.wdtk.datamodel.interfaces.Value>,
+		ValueVisitor<Value> {
+
+	final EntityIdValueConverter entityIdValueConverter;
+	final StringValueConverter stringValueConverter;
+	final TimeValueConverter timeValueConverter;
+	final GlobeCoordinatesValueConverter globeCoordinatesValueConverter;
+	final QuantityValueConverter quantityValueConverter;
+
+	PropertyIdValue currentPropertyIdValue;
+
+	static final Logger logger = LoggerFactory
+			.getLogger(AnyValueConverter.class);
+
+	public AnyValueConverter(RdfWriter rdfWriter,
+			OwlDeclarationBuffer rdfConversionBuffer, PropertyTypes propertyTypes) {
+
+		this.entityIdValueConverter = new EntityIdValueConverter(rdfWriter,
+				propertyTypes, rdfConversionBuffer);
+		this.stringValueConverter = new StringValueConverter(rdfWriter,
+				propertyTypes, rdfConversionBuffer);
+		this.timeValueConverter = new TimeValueConverter(rdfWriter,
+				propertyTypes, rdfConversionBuffer);
+		this.globeCoordinatesValueConverter = new GlobeCoordinatesValueConverter(
+				rdfWriter, propertyTypes, rdfConversionBuffer);
+		this.quantityValueConverter = new QuantityValueConverter(rdfWriter,
+				propertyTypes, rdfConversionBuffer);
+	}
+
+	@Override
+	public Value getRdfValue(
+			org.wikidata.wdtk.datamodel.interfaces.Value value,
+			PropertyIdValue propertyIdValue) {
+		this.currentPropertyIdValue = propertyIdValue;
+		return value.accept(this);
+	}
+
+	@Override
+	public Value visit(DatatypeIdValue value) {
+		throw new RuntimeException(
+				"DatatypeIdValue cannot be processed like a value of a user-defined property. "
+						+ "Use getDatatypeIdValueLiteral() to get a Literal for such values.");
+	}
+
+	@Override
+	public Value visit(EntityIdValue value) {
+		return this.entityIdValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue);
+	}
+
+	@Override
+	public Value visit(GlobeCoordinatesValue value) {
+		return this.globeCoordinatesValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue);
+	}
+
+	@Override
+	public Value visit(MonolingualTextValue value) {
+		throw new RuntimeException(
+				"MonolingualTextValue cannot be processed like a value of a user-defined property. "
+						+ "Use getMonolingualTextValueLiteral() to get a Literal for such values.");
+	}
+
+	@Override
+	public Value visit(QuantityValue value) {
+		return this.quantityValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue);
+	}
+
+	@Override
+	public Value visit(StringValue value) {
+		return this.stringValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue);
+	}
+
+	@Override
+	public Value visit(TimeValue value) {
+		return this.timeValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue);
+	}
+
+	@Override
+	public void writeAuxiliaryTriples() throws RDFHandlerException {
+		this.entityIdValueConverter.writeAuxiliaryTriples();
+		this.stringValueConverter.writeAuxiliaryTriples();
+		this.globeCoordinatesValueConverter.writeAuxiliaryTriples();
+		this.timeValueConverter.writeAuxiliaryTriples();
+		this.quantityValueConverter.writeAuxiliaryTriples();
+	}
+
+}
