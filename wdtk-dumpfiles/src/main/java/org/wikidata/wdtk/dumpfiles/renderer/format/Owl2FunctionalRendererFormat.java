@@ -148,7 +148,8 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	@Override
 	public URI getRp(PropertyIdValue property) {
 		return factory.createURI(Owl2FunctionalConstant.C_LT
-				+ property.getIri() + "aux" + Owl2FunctionalConstant.C_GT);
+				+ property.getIri() + Owl2FunctionalConstant.AUX
+				+ Owl2FunctionalConstant.C_GT);
 	}
 
 	@Override

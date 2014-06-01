@@ -33,7 +33,9 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.rdf.PropertyContext;
 import org.wikidata.wdtk.rdf.RdfWriter;
+import org.wikidata.wdtk.rdf.Vocabulary;
 
 public class RdfRendererFormat implements RendererFormat {
 
@@ -57,17 +59,19 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public URI getPs(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri());
+		return this.rdfWriter.getUri(Vocabulary.getPropertyUri(property,
+				PropertyContext.STATEMENT));
 	}
 
 	@Override
 	public URI getPv(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri());
+		return this.rdfWriter.getUri(Vocabulary.getPropertyUri(property,
+				PropertyContext.VALUE));
 	}
 
 	@Override
 	public URI getRp(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri());
+		return this.rdfWriter.getUri(property.getIri() + RdfStringConstant.AUX);
 	}
 
 	@Override

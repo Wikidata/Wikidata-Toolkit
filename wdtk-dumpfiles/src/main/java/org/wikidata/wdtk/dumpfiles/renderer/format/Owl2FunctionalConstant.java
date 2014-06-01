@@ -36,6 +36,7 @@ public interface Owl2FunctionalConstant {
 	String C_PAR_B = ")";
 	String C_QUOTATION_MARK = "\"";
 	String C_SPACE = " ";
+	String AUX = "aux";
 
 	String ANNOTATION_ASSERTION = "AnnotationAssertion";
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
