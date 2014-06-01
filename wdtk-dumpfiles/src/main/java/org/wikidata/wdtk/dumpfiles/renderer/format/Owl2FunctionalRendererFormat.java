@@ -375,7 +375,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.DECLARATION,
-				makeFunction(Owl2FunctionalConstant.DATATYPE_PROPERTY,
+				makeFunction(Owl2FunctionalConstant.DATA_PROPERTY,
 						datatypeProperty));
 		add(bnode);
 		this.declaredEntities.add(datatypeProperty);
@@ -430,13 +430,13 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addHasKey(Resource classExpression,
-			Resource objectPropertyExpression) {
+			Resource dataPropertyExpression) {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.HAS_KEY,
 				makePair(
 						classExpression,
-						makePair(makeFunction("", objectPropertyExpression),
-								makeFunction("", ""))));
+						makePair(makeFunction("", ""),
+								makeFunction("", dataPropertyExpression))));
 		add(bnode);
 		return true;
 	}

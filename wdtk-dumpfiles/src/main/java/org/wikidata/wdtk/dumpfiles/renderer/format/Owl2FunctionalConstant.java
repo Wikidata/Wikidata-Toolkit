@@ -54,11 +54,11 @@ public interface Owl2FunctionalConstant {
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
 	String CLASS = "Class";
 	String DATA_INTERSECTION_OF = "DataIntersectionOf";
+	String DATA_PROPERTY = "DataProperty";
 	String DATA_PROPERTY_RANGE = "DataPropertyRange";
 	String DATA_SOME_VALUES_FROM = "DataSomeValuesFrom";
 	String DATATYPE = "Datatype";
 	String DATATYPE_DEFINITION = "DatatypeDefinition";
-	String DATATYPE_PROPERTY = "DatatypeProperty";
 	String DATATYPE_RESTRICTION = "DatatypeRestriction";
 	String DECLARATION = "Declaration";
 	String DISJOINT_CLASSES = "DisjointClasses";

@@ -134,6 +134,15 @@ public class RdfRendererFormat implements RendererFormat {
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(bnode2,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(dataRange0,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(dataRange1,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+
 			this.rdfWriter.writeTripleValueObject(ret,
 					RdfUriConstant.OWL_INTERSECTION_OF, bnode1);
 			this.rdfWriter.writeTripleValueObject(bnode1,
@@ -153,8 +162,11 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource dataRange) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			// addDeclarationDatatypeProperty(datatypePropertyExpression);
-			// addDeclarationDatatype(dataRange);
+			this.rdfWriter.writeTripleValueObject(datatypePropertyExpression,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_DATATYPE_PROPERTY);
+			this.rdfWriter.writeTripleValueObject(dataRange,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
 
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_RESTRICTION);
@@ -173,10 +185,13 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource restrictionValue) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			// addDeclarationDatatype(datatype);
-
 			BNode bnode1 = this.rdfWriter.getFreshBNode();
 			BNode bnode2 = this.rdfWriter.getFreshBNode();
+
+			this.rdfWriter.writeTripleValueObject(datatype,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.RDFS_DATATYPE);
 
 			this.rdfWriter.writeTripleValueObject(ret,
 					RdfUriConstant.OWL_ON_DATATYPE, datatype);
@@ -197,8 +212,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public BNode getObjectComplementOf(Resource classExpression) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			// addDeclarationClass(classExpression);
-
 			this.rdfWriter.writeTripleValueObject(ret,
 					RdfUriConstant.OWL_COMPLEMENT_OF, classExpression);
 		} catch (RDFHandlerException e) {
@@ -212,8 +225,6 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource objectPropertyExpression) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			// addDeclarationObjectProperty(objectPropertyExpression);
-
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_RESTRICTION);
 			this.rdfWriter.writeTripleValueObject(ret,
@@ -286,9 +297,6 @@ public class RdfRendererFormat implements RendererFormat {
 			Resource classExpression) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 		try {
-			// addDeclarationObjectProperty(objectPropertyExpression);
-			// addDeclarationClass(classExpression);
-
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_RESTRICTION);
 			this.rdfWriter.writeTripleValueObject(ret,
@@ -307,9 +315,6 @@ public class RdfRendererFormat implements RendererFormat {
 		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
-			// addDeclarationClass(classExpression0);
-			// addDeclarationClass(classExpression1);
-
 			BNode bnode1 = this.rdfWriter.getFreshBNode();
 			BNode bnode2 = this.rdfWriter.getFreshBNode();
 
@@ -345,8 +350,11 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addDataPropertyRange(URI dataPropertyExpression,
 			Resource dataRange) {
 		try {
-			// addDeclarationDatatypeProperty(dataPropertyExpression);
-			// addDeclarationDatatype(dataRange);
+			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_DATATYPE_PROPERTY);
+			this.rdfWriter.writeTripleValueObject(dataRange,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
 
 			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
 					RdfUriConstant.RDFS_RANGE, dataRange);
@@ -359,7 +367,10 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public boolean addDatatypeDefinition(URI datatype, Resource dataRange) {
 		try {
-			// addDeclarationDatatype(datatype);
+			this.rdfWriter.writeTripleValueObject(datatype,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
+			this.rdfWriter.writeTripleValueObject(dataRange,
+					RdfUriConstant.RDF_TYPE, RdfUriConstant.RDFS_DATATYPE);
 
 			this.rdfWriter.writeTripleValueObject(datatype,
 					RdfUriConstant.OWL_EQUIVALENT_CLASS, dataRange);
@@ -468,9 +479,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addDisjointClasses(Resource classExpression0,
 			Resource classExpression1) {
 		try {
-			// addDeclarationClass(classExpression0);
-			// addDeclarationClass(classExpression1);
-
 			this.rdfWriter.writeTripleValueObject(classExpression0,
 					RdfUriConstant.OWL_DISJOINT_WITH, classExpression1);
 		} catch (RDFHandlerException e) {
@@ -482,8 +490,6 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public boolean addFunctionalObjectProperty(Resource objectPropertyExpression) {
 		try {
-			// addDeclarationObjectProperty(objectProperty);
-
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_FUNCTIONAL_PROPERTY);
@@ -495,18 +501,17 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addHasKey(Resource classExpression,
-			Resource objectPropertyExpression) {
+			Resource dataPropertyExpression) {
 		try {
-			// addDeclarationClass(classExpression);
-			// addDeclarationObjectProperty(objectPropertyExpression);
-			// addDeclarationDatatypeProperty(dataProperty);
-
 			BNode bnode0 = this.rdfWriter.getFreshBNode();
 
-			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
+			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
+					RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_DATATYPE_PROPERTY);
+			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
 					RdfUriConstant.OWL_HAS_KEY, bnode0);
 			this.rdfWriter.writeTripleValueObject(bnode0,
-					RdfUriConstant.RDF_FIRST, objectPropertyExpression);
+					RdfUriConstant.RDF_FIRST, dataPropertyExpression);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -517,8 +522,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addInverseFunctionalObjectProperty(
 			Resource objectPropertyExpression) {
 		try {
-			// addDeclarationObjectProperty(objectPropertyExpression);
-
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
@@ -532,9 +535,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addObjectPropertyDomain(Resource objectPropertyExpression,
 			Resource classExpression) {
 		try {
-			// addDeclarationObjectProperty(objectPropertyExpression);
-			// addDeclarationClass(classExpression);
-
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDFS_DOMAIN, classExpression);
 		} catch (RDFHandlerException e) {
@@ -547,9 +547,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addObjectPropertyRange(Resource objectPropertyExpression,
 			Resource classExpression) {
 		try {
-			// addDeclarationObjectProperty(objectPropertyExpression);
-			// addDeclarationClass(classExpression);
-
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDFS_RANGE, classExpression);
 		} catch (RDFHandlerException e) {
@@ -562,9 +559,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addSubClassOf(Resource subClassExpression,
 			Resource superClassExpression) {
 		try {
-			// addDeclarationClass(subClassExpression);
-			// addDeclarationClass(superClassExpression);
-
 			this.rdfWriter.writeTripleValueObject(subClassExpression,
 					RdfUriConstant.RDFS_SUB_CLASS_OF, superClassExpression);
 		} catch (RDFHandlerException e) {
@@ -595,9 +589,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addClassAssertion(Resource classExpression,
 			Resource individual) {
 		try {
-			// addDeclarationClass(classExpression);
-			// addDeclarationNamedIndividual(individual);
-
 			this.rdfWriter.writeTripleValueObject(individual,
 					RdfUriConstant.RDF_TYPE, classExpression);
 		} catch (RDFHandlerException e) {
@@ -609,9 +600,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public boolean addClassNegativeAssertion(Resource classExpression,
 			Resource individual) {
 		try {
-			// addDeclarationClass(classExpression);
-			// addDeclarationNamedIndividual(individual);
-
 			BNode bnode = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(bnode,
