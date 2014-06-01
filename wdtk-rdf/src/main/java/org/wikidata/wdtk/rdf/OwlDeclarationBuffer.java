@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.openrdf.model.URI;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -42,20 +43,20 @@ public class OwlDeclarationBuffer {
 
 	final List<PropertyIdValue> objectPropertyQueue;
 	final List<PropertyIdValue> datatypePropertyQueue;
-	final List<String> objectPropertyUriQueue;
-	final List<String> datatypePropertyUriQueue;
+	final List<URI> objectPropertyUriQueue;
+	final List<URI> datatypePropertyUriQueue;
 	final HashSet<PropertyIdValue> declaredProperties;
-	final HashSet<String> declaredPropertyUris;
+	final HashSet<URI> declaredPropertyUris;
 	final List<EntityIdValue> classEntityQueue;
 	final HashSet<EntityIdValue> declaredClassEntities;
 
 	public OwlDeclarationBuffer() {
 		this.objectPropertyQueue = new ArrayList<PropertyIdValue>();
 		this.datatypePropertyQueue = new ArrayList<PropertyIdValue>();
-		this.objectPropertyUriQueue = new ArrayList<String>();
-		this.datatypePropertyUriQueue = new ArrayList<String>();
+		this.objectPropertyUriQueue = new ArrayList<URI>();
+		this.datatypePropertyUriQueue = new ArrayList<URI>();
 		this.declaredProperties = new HashSet<PropertyIdValue>();
-		this.declaredPropertyUris = new HashSet<String>();
+		this.declaredPropertyUris = new HashSet<URI>();
 		this.classEntityQueue = new ArrayList<EntityIdValue>();
 		this.declaredClassEntities = new HashSet<EntityIdValue>();
 	}
@@ -80,7 +81,7 @@ public class OwlDeclarationBuffer {
 	 * @param propertyUri
 	 *            the property to declare
 	 */
-	public void addObjectProperty(String propertyUri) {
+	public void addObjectProperty(URI propertyUri) {
 		if (!this.declaredPropertyUris.contains(propertyUri)) {
 			this.objectPropertyUriQueue.add(propertyUri);
 		}
@@ -106,7 +107,7 @@ public class OwlDeclarationBuffer {
 	 * @param propertyUri
 	 *            the property to declare
 	 */
-	public void addDatatypeProperty(String propertyUri) {
+	public void addDatatypeProperty(URI propertyUri) {
 		if (!this.declaredPropertyUris.contains(propertyUri)) {
 			this.datatypePropertyUriQueue.add(propertyUri);
 		}
@@ -196,7 +197,7 @@ public class OwlDeclarationBuffer {
 		}
 		this.datatypePropertyQueue.clear();
 
-		for (String propertyUri : this.objectPropertyUriQueue) {
+		for (URI propertyUri : this.objectPropertyUriQueue) {
 			if (!this.declaredPropertyUris.add(propertyUri)) {
 				continue;
 			}
@@ -205,7 +206,7 @@ public class OwlDeclarationBuffer {
 		}
 		this.objectPropertyUriQueue.clear();
 
-		for (String propertyUri : this.datatypePropertyUriQueue) {
+		for (URI propertyUri : this.datatypePropertyUriQueue) {
 			if (!this.declaredPropertyUris.add(propertyUri)) {
 				continue;
 			}

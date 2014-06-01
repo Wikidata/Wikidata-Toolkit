@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
-import org.wikidata.wdtk.rdf.PropertyTypes;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
+import org.wikidata.wdtk.rdf.PropertyTypes;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 /**
@@ -57,12 +57,14 @@ public class AnyValueConverter implements
 	final QuantityValueConverter quantityValueConverter;
 
 	PropertyIdValue currentPropertyIdValue;
+	boolean simple;
 
 	static final Logger logger = LoggerFactory
 			.getLogger(AnyValueConverter.class);
 
 	public AnyValueConverter(RdfWriter rdfWriter,
-			OwlDeclarationBuffer rdfConversionBuffer, PropertyTypes propertyTypes) {
+			OwlDeclarationBuffer rdfConversionBuffer,
+			PropertyTypes propertyTypes) {
 
 		this.entityIdValueConverter = new EntityIdValueConverter(rdfWriter,
 				propertyTypes, rdfConversionBuffer);
@@ -79,8 +81,9 @@ public class AnyValueConverter implements
 	@Override
 	public Value getRdfValue(
 			org.wikidata.wdtk.datamodel.interfaces.Value value,
-			PropertyIdValue propertyIdValue) {
+			PropertyIdValue propertyIdValue, boolean simple) {
 		this.currentPropertyIdValue = propertyIdValue;
+		this.simple = simple;
 		return value.accept(this);
 	}
 
@@ -94,13 +97,13 @@ public class AnyValueConverter implements
 	@Override
 	public Value visit(EntityIdValue value) {
 		return this.entityIdValueConverter.getRdfValue(value,
-				this.currentPropertyIdValue);
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
 		return this.globeCoordinatesValueConverter.getRdfValue(value,
-				this.currentPropertyIdValue);
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override
@@ -113,19 +116,19 @@ public class AnyValueConverter implements
 	@Override
 	public Value visit(QuantityValue value) {
 		return this.quantityValueConverter.getRdfValue(value,
-				this.currentPropertyIdValue);
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override
 	public Value visit(StringValue value) {
 		return this.stringValueConverter.getRdfValue(value,
-				this.currentPropertyIdValue);
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override
 	public Value visit(TimeValue value) {
 		return this.timeValueConverter.getRdfValue(value,
-				this.currentPropertyIdValue);
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override

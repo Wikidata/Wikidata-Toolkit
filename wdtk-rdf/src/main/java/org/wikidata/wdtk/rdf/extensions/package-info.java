@@ -1,9 +1,12 @@
 /**
- * Package for code related to the conversion of data values to RDF in various ways.
+ * This package contains code for extending the RDF exports with
+ * helpful data, such as adding links to other linked data sets for
+ * certain statements/claims/snaks etc.
  * 
  * @author Markus Kroetzsch
+ *
  */
-package org.wikidata.wdtk.rdf.values;
+package org.wikidata.wdtk.rdf.extensions;
 
 /*
  * #%L

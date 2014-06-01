@@ -63,6 +63,7 @@ public class RdfConverter {
 	final SnakRdfConverter snakRdfConverter;
 	final OwlDeclarationBuffer owlDeclarationBuffer;
 	final ReferenceRdfConverter referenceRdfConverter;
+
 	// TODO Making propertyTypes static is a hack to enable a shared property
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
@@ -178,35 +179,34 @@ public class RdfConverter {
 
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
-	
+
 		propertyTypes.setPropertyType(document.getPropertyId(), document
 				.getDatatype().getIri());
-	
+
 		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
 			return;
 		}
-	
+
 		String propertyUri = document.getEntityId().getIri();
 		Resource subject = this.rdfWriter.getUri(propertyUri);
-	
+
 		this.rdfWriter.writeTripleValueObject(subject, RdfWriter.RDF_TYPE,
 				RdfWriter.WB_PROPERTY);
-	
+
 		writeDocumentTerms(subject, document);
-	
+
 		if (hasTask(RdfSerializer.TASK_DATATYPES)) {
 			this.rdfWriter.writeTripleValueObject(subject,
 					RdfWriter.WB_PROPERTY_TYPE,
 					this.rdfWriter.getUri(document.getDatatype().getIri()));
 		}
-	
-		// Most of these should do nothing for properties, but this might change
-		// in the future:
-		this.snakRdfConverter.writeAuxiliaryTriples();
-		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
-				hasTask(RdfSerializer.TASK_STATEMENTS),
-				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
-		this.referenceRdfConverter.writeReferences();
+
+		// Not needed for properties -- might change in future:
+		// this.snakRdfConverter.writeAuxiliaryTriples();
+		// this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
+		// hasTask(RdfSerializer.TASK_STATEMENTS),
+		// hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
+		// this.referenceRdfConverter.writeReferences();
 	}
 
 	void writeStatements(Resource subject, ItemDocument itemDocument)
@@ -251,8 +251,9 @@ public class RdfConverter {
 
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
 							.getMainSnak();
-					Value value = this.valueRdfConverter.getRdfValue(
-							mainSnak.getValue(), mainSnak.getPropertyId());
+					Value value = this.valueRdfConverter
+							.getRdfValue(mainSnak.getValue(),
+									mainSnak.getPropertyId(), true);
 					if (value == null) {
 						logger.error("Could not serialize instance of snak: missing value (Snak: "
 								+ mainSnak.toString() + ")");
@@ -296,7 +297,8 @@ public class RdfConverter {
 					if (statement.getClaim().getQualifiers().size() == 0
 							&& isSubPropertyOf) {
 						Value value = this.valueRdfConverter.getRdfValue(
-								mainSnak.getValue(), mainSnak.getPropertyId());
+								mainSnak.getValue(), mainSnak.getPropertyId(),
+								true);
 						if (value == null) {
 							logger.error("Could not serialize subclass of snak: missing value (Snak: "
 									+ mainSnak.toString() + ")");

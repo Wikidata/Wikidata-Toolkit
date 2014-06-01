@@ -1,9 +1,4 @@
-/**
- * Package for code related to the conversion of data values to RDF in various ways.
- * 
- * @author Markus Kroetzsch
- */
-package org.wikidata.wdtk.rdf.values;
+package org.wikidata.wdtk.rdf.extensions;
 
 /*
  * #%L
@@ -24,3 +19,26 @@ package org.wikidata.wdtk.rdf.values;
  * limitations under the License.
  * #L%
  */
+
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
+/**
+ * Export extension for converting Freebase identifiers into Freebase URIs.
+ * 
+ * @author Markus Kroetzsch
+ * 
+ */
+public class FreebaseExportExtension extends StringIdExportExtension {
+
+	@Override
+	public String getPropertyPostfix() {
+		return "freebase";
+	}
+
+	@Override
+	public String getValueUri(StringValue value) {
+		return "http://rdf.freebase.com/ns/"
+				+ value.getString().substring(1).replace('/', '.');
+	}
+
+}

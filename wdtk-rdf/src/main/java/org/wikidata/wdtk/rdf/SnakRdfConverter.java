@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.rdf.extensions.ExportExtensions;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 
 /**
@@ -80,20 +81,26 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	final RdfWriter rdfWriter;
 	final PropertyTypes propertyTypes;
 	final OwlDeclarationBuffer rdfConversionBuffer;
+	final ExportExtensions exportExtensions;
 
 	final List<PropertyRestriction> someValuesQueue;
 	final List<PropertyRestriction> noValuesQueue;
 
 	Resource currentSubject;
 	PropertyContext currentPropertyContext;
+	boolean simple;
 
 	public SnakRdfConverter(RdfWriter rdfWriter,
-			OwlDeclarationBuffer rdfConversionBuffer,
+			OwlDeclarationBuffer owlDeclarationBuffer,
 			PropertyTypes propertyTypes, AnyValueConverter valueRdfConverter) {
 		this.rdfWriter = rdfWriter;
-		this.rdfConversionBuffer = rdfConversionBuffer;
+		this.rdfConversionBuffer = owlDeclarationBuffer;
 		this.propertyTypes = propertyTypes;
 		this.valueRdfConverter = valueRdfConverter;
+		this.exportExtensions = new ExportExtensions(rdfWriter,
+				owlDeclarationBuffer);
+		ExportExtensions
+				.registerWikidataExportExtensions(this.exportExtensions);
 
 		this.someValuesQueue = new ArrayList<PropertyRestriction>();
 		this.noValuesQueue = new ArrayList<PropertyRestriction>();
@@ -135,6 +142,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public void setSnakContext(Resource subject, PropertyContext propertyContext) {
 		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
+		this.simple = (this.currentPropertyContext == PropertyContext.SIMPLE_CLAIM);
 	}
 
 	@Override
@@ -143,7 +151,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				this.currentPropertyContext);
 		URI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
-				snak.getPropertyId());
+				snak.getPropertyId(), this.simple);
 		if (value == null) {
 			logger.error("Could not serialize snak: missing value (Snak: "
 					+ snak.toString() + ")");
@@ -156,6 +164,10 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
+
+		this.exportExtensions.writeValueSnakExtensions(snak,
+				this.currentSubject);
+
 		return null;
 	}
 
