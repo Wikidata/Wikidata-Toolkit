@@ -5,6 +5,8 @@ Version 0.2.0
 -------------
 
 New features:
+* Support for serializing Wikibase data in RDF (as illustrated in new example);
+  see http://korrekt.org/page/Introducing_Wikidata_to_the_Linked_Data_Web for details
 * Simplified code for dump file processing: new helper class DumpProcessingController
 * Support for resolving site links, based on information from the sites table dump
   (as demonstrated in a new example program)
