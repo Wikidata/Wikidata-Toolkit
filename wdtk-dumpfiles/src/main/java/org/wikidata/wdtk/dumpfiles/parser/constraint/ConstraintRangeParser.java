@@ -84,6 +84,7 @@ class ConstraintRangeParser implements ConstraintParser {
 	public ConstraintRangeParser() {
 	}
 
+	@Override
 	public ConstraintRange parse(Template template) {
 		ConstraintRange ret = null;
 		String page = template.getPage();
@@ -91,7 +92,7 @@ class ConstraintRangeParser implements ConstraintParser {
 				.toLowerCase().trim();
 		String maxStr = template.get(ConstraintParserConstant.P_MAX)
 				.toLowerCase().trim();
-		if (page != null && minStr != null && maxStr != null) {
+		if ((page != null) && (minStr != null) && (maxStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
@@ -100,14 +101,14 @@ class ConstraintRangeParser implements ConstraintParser {
 
 			DateAndNow minDate = parseDate(minStr);
 			DateAndNow maxDate = parseDate(maxStr);
-			if (minDate != null && maxDate != null) {
+			if ((minDate != null) && (maxDate != null)) {
 				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
 						true);
 			}
 
 			Double minNum = parseDouble(minStr);
 			Double maxNum = parseDouble(maxStr);
-			if (minNum != null && maxNum != null) {
+			if ((minNum != null) && (maxNum != null)) {
 				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
 						false);
 			}

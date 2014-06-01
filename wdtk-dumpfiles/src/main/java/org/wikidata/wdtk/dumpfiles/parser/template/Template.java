@@ -56,11 +56,11 @@ public class Template {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getPage() {
-		return page;
+		return this.page;
 	}
 
 	public Map<String, String> getParameters() {
@@ -82,7 +82,7 @@ public class Template {
 			sb.append(ParserConstant.SPACE);
 			sb.append(key);
 			String value = this.parameters.get(key);
-			if (value != null && !value.isEmpty()) {
+			if ((value != null) && !value.isEmpty()) {
 				sb.append(ParserConstant.EQUALS_SIGN);
 				sb.append(value);
 			}

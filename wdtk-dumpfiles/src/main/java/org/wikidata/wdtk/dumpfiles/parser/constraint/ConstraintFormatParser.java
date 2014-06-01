@@ -39,6 +39,7 @@ class ConstraintFormatParser implements ConstraintParser {
 		return str.replaceAll("<nowiki>", "").replaceAll("</nowiki>", "");
 	}
 
+	@Override
 	public ConstraintFormat parse(Template template) {
 		ConstraintFormat ret = null;
 		String page = template.getPage();

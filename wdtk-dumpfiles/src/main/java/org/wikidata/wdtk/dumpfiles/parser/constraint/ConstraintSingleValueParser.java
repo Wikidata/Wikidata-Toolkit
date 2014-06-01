@@ -35,6 +35,7 @@ class ConstraintSingleValueParser implements ConstraintParser {
 	public ConstraintSingleValueParser() {
 	}
 
+	@Override
 	public ConstraintSingleValue parse(Template template) {
 		ConstraintSingleValue ret = null;
 		String page = template.getPage();

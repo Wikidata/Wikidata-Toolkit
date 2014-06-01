@@ -67,7 +67,7 @@ class PropertyMwRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public Map<String, String> getMap() {
-		return Collections.unmodifiableMap(map);
+		return Collections.unmodifiableMap(this.map);
 	}
 
 }

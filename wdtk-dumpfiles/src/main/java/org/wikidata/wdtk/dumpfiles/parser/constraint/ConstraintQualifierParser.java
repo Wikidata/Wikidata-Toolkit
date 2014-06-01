@@ -35,6 +35,7 @@ class ConstraintQualifierParser implements ConstraintParser {
 	public ConstraintQualifierParser() {
 	}
 
+	@Override
 	public ConstraintQualifier parse(Template template) {
 		String page = template.getPage();
 		ConstraintQualifier ret = null;

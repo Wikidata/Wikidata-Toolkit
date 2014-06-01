@@ -35,6 +35,7 @@ class ConstraintPersonParser implements ConstraintParser {
 	public ConstraintPersonParser() {
 	}
 
+	@Override
 	public ConstraintPerson parse(Template template) {
 		String page = template.getPage();
 		ConstraintPerson ret = null;

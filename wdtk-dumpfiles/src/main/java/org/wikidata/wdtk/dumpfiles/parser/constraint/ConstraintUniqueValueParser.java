@@ -35,6 +35,7 @@ class ConstraintUniqueValueParser implements ConstraintParser {
 	public ConstraintUniqueValueParser() {
 	}
 
+	@Override
 	public ConstraintUniqueValue parse(Template template) {
 		ConstraintUniqueValue ret = null;
 		String page = template.getPage();

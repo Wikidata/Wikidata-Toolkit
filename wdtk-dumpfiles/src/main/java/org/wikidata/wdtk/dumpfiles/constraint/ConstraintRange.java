@@ -52,19 +52,19 @@ public class ConstraintRange implements Constraint {
 	}
 
 	public boolean isQuantity() {
-		return !isTime;
+		return !this.isTime;
 	}
 
 	public boolean isTime() {
-		return isTime;
+		return this.isTime;
 	}
 
 	public String getMin() {
-		return min;
+		return this.min;
 	}
 
 	public String getMax() {
-		return max;
+		return this.max;
 	}
 
 	@Override

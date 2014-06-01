@@ -83,7 +83,7 @@ class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public Map<String, List<Template>> getMap() {
-		return Collections.unmodifiableMap(map);
+		return Collections.unmodifiableMap(this.map);
 	}
 
 }

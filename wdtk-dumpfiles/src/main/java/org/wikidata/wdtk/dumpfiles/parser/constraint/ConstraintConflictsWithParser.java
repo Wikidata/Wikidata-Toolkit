@@ -52,11 +52,12 @@ class ConstraintConflictsWithParser implements ConstraintParser {
 		return Collections.unmodifiableList(this.list);
 	}
 
+	@Override
 	public ConstraintConflictsWith parse(Template template) {
 		ConstraintConflictsWith ret = null;
 		String page = template.getPage();
 		String listStr = template.get(ConstraintParserConstant.P_LIST);
-		if (page != null && listStr != null) {
+		if ((page != null) && (listStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);

@@ -47,8 +47,10 @@ public class TemplateParser {
 			this.item = item;
 		}
 
+		@Override
 		public int compareTo(LookAhead other) {
-			if (this.position == other.position && this.item.equals(other.item)) {
+			if ((this.position == other.position)
+					&& this.item.equals(other.item)) {
 				return 0;
 			}
 			if (this.position == -1) {
@@ -66,8 +68,9 @@ public class TemplateParser {
 			}
 		}
 
+		@Override
 		public String toString() {
-			return "" + item.toString() + "@" + position;
+			return "" + this.item.toString() + "@" + this.position;
 		}
 	}
 

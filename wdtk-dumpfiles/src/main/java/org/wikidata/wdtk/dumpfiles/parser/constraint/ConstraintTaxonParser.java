@@ -35,6 +35,7 @@ class ConstraintTaxonParser implements ConstraintParser {
 	public ConstraintTaxonParser() {
 	}
 
+	@Override
 	public ConstraintTaxon parse(Template template) {
 		String page = template.getPage();
 		ConstraintTaxon ret = null;

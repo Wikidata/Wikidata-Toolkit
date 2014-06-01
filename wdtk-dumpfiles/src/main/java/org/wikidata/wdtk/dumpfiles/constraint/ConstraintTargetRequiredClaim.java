@@ -60,11 +60,11 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 	}
 
 	public PropertyIdValue getProperty() {
-		return property;
+		return this.property;
 	}
 
 	public ItemIdValue getItem() {
-		return item;
+		return this.item;
 	}
 
 	@Override

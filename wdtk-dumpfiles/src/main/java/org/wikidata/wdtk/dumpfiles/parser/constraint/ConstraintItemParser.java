@@ -39,6 +39,7 @@ class ConstraintItemParser implements ConstraintParser {
 	public ConstraintItemParser() {
 	}
 
+	@Override
 	public ConstraintItem parse(Template template) {
 		ConstraintItem ret = null;
 		String page = template.getPage();

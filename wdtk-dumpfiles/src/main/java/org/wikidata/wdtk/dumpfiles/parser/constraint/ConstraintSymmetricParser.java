@@ -35,6 +35,7 @@ class ConstraintSymmetricParser implements ConstraintParser {
 	public ConstraintSymmetricParser() {
 	}
 
+	@Override
 	public ConstraintSymmetric parse(Template template) {
 		String page = template.getPage();
 		ConstraintSymmetric ret = null;

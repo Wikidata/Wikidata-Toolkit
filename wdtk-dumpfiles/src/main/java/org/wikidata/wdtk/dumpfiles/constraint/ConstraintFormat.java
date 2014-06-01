@@ -47,7 +47,7 @@ public class ConstraintFormat implements Constraint {
 	}
 
 	public String getPattern() {
-		return pattern;
+		return this.pattern;
 	}
 
 	@Override

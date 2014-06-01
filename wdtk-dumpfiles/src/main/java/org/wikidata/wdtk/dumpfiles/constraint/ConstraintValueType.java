@@ -56,7 +56,7 @@ public class ConstraintValueType implements Constraint {
 	}
 
 	public RelationType getRelation() {
-		return relation;
+		return this.relation;
 	}
 
 	@Override

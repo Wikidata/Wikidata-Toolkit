@@ -49,7 +49,7 @@ public class TemplateScanner {
 			if (nextEnd == -1) {
 				pos = -1;
 			} else {
-				if (nextBegin != -1 && nextBegin < nextEnd) {
+				if ((nextBegin != -1) && (nextBegin < nextEnd)) {
 					pos = nextBegin + ParserConstant.OPENING_BRACES.length();
 					if (level == 0) {
 						lastBegin = nextBegin;
