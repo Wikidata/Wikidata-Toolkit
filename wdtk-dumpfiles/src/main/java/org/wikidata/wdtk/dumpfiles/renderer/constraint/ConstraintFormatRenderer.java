@@ -74,7 +74,7 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 				this.f.getDatatypeRestriction(this.f.xsdString(),
 						this.f.xsdPattern(), transform(pattern)));
 
-		this.f.addDeclarationObjectProperty(this.f.getPv(p));
+		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
 		this.f.addDataPropertyRange(this.f.getPv(p), rp);
 	}
 

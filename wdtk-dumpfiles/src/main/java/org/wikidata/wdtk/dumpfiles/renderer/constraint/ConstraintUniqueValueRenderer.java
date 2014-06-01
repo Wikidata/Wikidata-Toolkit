@@ -56,7 +56,7 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
-		this.f.addDeclarationObjectProperty(this.f.getPv(p));
+		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
 		this.f.addHasKey(this.f.owlThing(), this.f.getPv(p));
 	}
 
