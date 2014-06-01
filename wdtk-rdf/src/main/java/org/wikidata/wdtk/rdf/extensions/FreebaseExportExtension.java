@@ -1,8 +1,8 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+package org.wikidata.wdtk.rdf.extensions;
 
 /*
  * #%L
- * Wikidata Toolkit Data Model
+ * Wikidata Toolkit RDF
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
@@ -20,22 +20,25 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
 /**
- * Interface for classes which serialize {@link EntityDocument} objects.
+ * Export extension for converting Freebase identifiers into Freebase URIs.
  * 
- * @author Michael Günther
+ * @author Markus Kroetzsch
  * 
  */
-public interface EntityDocumentsSerializer extends EntityDocumentProcessor {
+public class FreebaseExportExtension extends StringIdExportExtension {
 
-	/**
-	 * Initializes the serializer and writes the header (if any) to the output.
-	 */
-	void start();
+	@Override
+	public String getPropertyPostfix() {
+		return "freebase";
+	}
 
-	/**
-	 * Writes the footer (if any) on the output and closes the output stream.
-	 */
-	void close();
+	@Override
+	public String getValueUri(StringValue value) {
+		return "http://rdf.freebase.com/ns/"
+				+ value.getString().substring(1).replace('/', '.');
+	}
 
 }

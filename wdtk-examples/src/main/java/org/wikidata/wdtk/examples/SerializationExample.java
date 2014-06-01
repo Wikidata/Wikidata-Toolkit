@@ -83,7 +83,7 @@ public class SerializationExample {
 				null, true);
 
 		// Set up the serializer and write headers
-		serializer.startSerialization();
+		serializer.start();
 
 		// Start processing (may trigger downloads where needed)
 		dumpProcessingController.processAllRecentRevisionDumps();
@@ -91,8 +91,7 @@ public class SerializationExample {
 		// dumpProcessingController.processMostRecentDailyDump();
 
 		// Finish the serialization
-		serializer.finishSerialization();
-		outputStream.close();
+		serializer.close();
 	}
 
 	/**

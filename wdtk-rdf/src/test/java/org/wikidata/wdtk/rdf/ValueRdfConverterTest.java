@@ -1,0 +1,117 @@
+package org.wikidata.wdtk.rdf;
+
+/*
+ * #%L
+ * Wikidata Toolkit RDF
+ * %%
+ * Copyright (C) 2014 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openrdf.model.Model;
+import org.openrdf.model.Resource;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.rdf.values.GlobeCoordinatesValueConverter;
+import org.wikidata.wdtk.rdf.values.QuantityValueConverter;
+import org.wikidata.wdtk.rdf.values.TimeValueConverter;
+
+public class ValueRdfConverterTest {
+
+	ByteArrayOutputStream out;
+	RdfWriter rdfWriter;
+	OwlDeclarationBuffer rdfConversionBuffer;
+	PropertyTypes propertyTypes = new WikidataPropertyTypes();
+
+	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
+	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
+
+	Resource resource = rdfFactory.createURI("http://test.org/");
+
+	@Before
+	public void setUp() throws Exception {
+		this.out = new ByteArrayOutputStream();
+		this.rdfWriter = new RdfWriter(RDFFormat.N3, this.out);
+		this.rdfConversionBuffer = new OwlDeclarationBuffer();
+		this.rdfWriter.start();
+	}
+
+	@Test
+	public void testWriteQuantityValue() throws RDFHandlerException,
+			RDFParseException, IOException {
+		QuantityValueConverter valueConverter = new QuantityValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
+		QuantityValue value = this.objectFactory.getQuantityValue(
+				new BigDecimal(100), new BigDecimal(100), new BigDecimal(100));
+		valueConverter.writeValue(value, this.resource);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("QuantityValue.rdf")));
+	}
+
+	@Test
+	public void testWriteGlobeCoordinatesValue() throws RDFHandlerException,
+			RDFParseException, IOException {
+		GlobeCoordinatesValueConverter valueConverter = new GlobeCoordinatesValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
+		GlobeCoordinatesValue value = this.objectFactory
+				.getGlobeCoordinatesValue(
+						(long) (51.033333333333 * GlobeCoordinatesValue.PREC_DEGREE),
+						(long) (13.733333333333 * GlobeCoordinatesValue.PREC_DEGREE),
+						(GlobeCoordinatesValue.PREC_ARCMINUTE),
+						"http://www.wikidata.org/entity/Q2");
+		valueConverter.writeValue(value, this.resource);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("GlobeCoordinatesValue.rdf")));
+	}
+
+	@Test
+	public void testWriteTimeValue() throws RDFHandlerException,
+			RDFParseException, IOException {
+		TimeValueConverter valueConverter = new TimeValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
+		TimeValue value = objectFactory.getTimeValue(2008, (byte) 1, (byte) 1,
+				(byte) 0, (byte) 0, (byte) 0, (byte) 9, 0, 0, 0,
+				"http://www.wikidata.org/entity/Q1985727");
+		valueConverter.writeValue(value, resource);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("TimeValue.rdf")));
+	}
+
+}
