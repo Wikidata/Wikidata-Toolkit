@@ -79,18 +79,18 @@ public class RdfSerializationExample {
 		createRdfSerializer("wikidata-properties.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_PROPERTIES
 						| RdfSerializer.TASK_ALL_EXACT_DATA);
-		createRdfSerializer("wikidata-terms.nt", COMPRESS_GZIP,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
-		createRdfSerializer("wikidata-statements.nt", COMPRESS_GZIP,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
+		// createRdfSerializer("wikidata-terms.nt", COMPRESS_GZIP,
+		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
+		// createRdfSerializer("wikidata-statements.nt", COMPRESS_GZIP,
+		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
 		createRdfSerializer("wikidata-simple-statements.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		createRdfSerializer("wikidata-taxonomy.nt", COMPRESS_GZIP,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
-		createRdfSerializer("wikidata-instances.nt", COMPRESS_GZIP,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
-		createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
+		// createRdfSerializer("wikidata-taxonomy.nt", COMPRESS_GZIP,
+		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
+		// createRdfSerializer("wikidata-instances.nt", COMPRESS_GZIP,
+		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
+		// createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
+		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -140,7 +140,7 @@ public class RdfSerializationExample {
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 				new FileOutputStream(outputFileName + compressionExtension),
-				1024 * 1024 * 5);
+				1024 * 1024 * 5 * 0 + 100);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
