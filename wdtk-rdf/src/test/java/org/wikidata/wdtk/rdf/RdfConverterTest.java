@@ -24,17 +24,22 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Model;
+import org.openrdf.model.Resource;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.rdf.RdfConverter;
 import org.wikidata.wdtk.rdf.TestObjectFactory;
 
@@ -45,13 +50,19 @@ public class RdfConverterTest {
 	RdfWriter rdfWriter;
 	RdfConverter rdfConverter;
 
+	SitesImpl sites;
+
+	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
+	Resource resource = rdfFactory.createURI("http://test.org/");
+
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
 		this.rdfWriter = new RdfWriter(RDFFormat.N3, out);
-		this.rdfConverter = new RdfConverter(this.rdfWriter, new SitesImpl());
+		this.sites = new SitesImpl();
+		this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites);
 		this.rdfWriter.start();
 	}
 
@@ -96,6 +107,22 @@ public class RdfConverterTest {
 		this.rdfWriter.finish();
 		assertEquals(this.out.toString(),
 				RdfTestHelpers.getResourceFromFile("Namespaces.rdf"));
+	}
+
+	@Test
+	public void testWriteSiteLinks() throws RDFHandlerException, IOException, RDFParseException {
+		this.sites.setSiteInformation("enwiki", "wikipedia", "en", "mediawiki",
+				"http://en.wikipedia.org/w/$1",
+				"http://en.wikipedia.org/wiki/$1");
+		this.sites.setSiteInformation("dewiki", "wikipedia", "de", "mediawiki",
+				"http://de.wikipedia.org/w/$1",
+				"http://de.wikipedia.org/wiki/$1");
+		Map<String, SiteLink> siteLinks = objectFactory.createSiteLinks();
+		this.rdfConverter.writeSiteLinks(this.resource, siteLinks);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers.getResourceFromFile("SiteLinks.rdf")));
+
 	}
 
 	@After
