@@ -1,8 +1,13 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+/**
+ * Package for code related to the conversion of data values to RDF in various ways.
+ * 
+ * @author Markus Kroetzsch
+ */
+package org.wikidata.wdtk.rdf.values;
 
 /*
  * #%L
- * Wikidata Toolkit Data Model
+ * Wikidata Toolkit RDF
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
@@ -19,23 +24,3 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
-
-/**
- * Interface for classes which serialize {@link EntityDocument} objects.
- * 
- * @author Michael Günther
- * 
- */
-public interface EntityDocumentsSerializer extends EntityDocumentProcessor {
-
-	/**
-	 * Initializes the serializer and writes the header (if any) to the output.
-	 */
-	void start();
-
-	/**
-	 * Writes the footer (if any) on the output and closes the output stream.
-	 */
-	void close();
-
-}

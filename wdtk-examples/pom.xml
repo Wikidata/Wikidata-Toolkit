@@ -28,6 +28,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-rdf</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>

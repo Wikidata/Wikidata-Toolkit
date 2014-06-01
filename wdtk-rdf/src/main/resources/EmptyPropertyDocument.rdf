@@ -1,0 +1,4 @@
+
+<http://www.wikidata.org/P1> a <http://www.wikidata.org/ontology#Property> ;
+	<http://www.wikidata.org/ontology#propertyType> <http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates> .
+
