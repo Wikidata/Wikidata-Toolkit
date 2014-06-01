@@ -75,6 +75,11 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI rdfsComment() {
+		return RdfUriConstant.RDFS_COMMENT;
+	}
+
+	@Override
 	public URI wbTimeValue() {
 		return RdfUriConstant.WB_TIME_VALUE;
 	}
@@ -325,11 +330,11 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertionComment(URI annotationSubject,
-			String annotationValue) {
+	public boolean addAnnotationAssertion(URI annotationProperty,
+			URI annotationSubject, String annotationValue) {
 		try {
 			this.rdfWriter.writeTripleStringObject(annotationSubject,
-					RdfUriConstant.RDFS_COMMENT, annotationValue);
+					annotationProperty, annotationValue);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

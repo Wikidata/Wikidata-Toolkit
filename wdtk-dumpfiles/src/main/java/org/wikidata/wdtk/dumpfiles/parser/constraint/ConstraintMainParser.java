@@ -42,7 +42,7 @@ import org.wikidata.wdtk.dumpfiles.parser.template.Template;
  */
 public class ConstraintMainParser implements ConstraintParser {
 
-	public static final String DEFAULT_BASE_IRI = "http://www.wikidata.org/entity/";
+	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
 	final Map<String, ConstraintParser> mapOfParsers = new HashMap<String, ConstraintParser>();
 
@@ -68,7 +68,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		while (stok.hasMoreTokens()) {
 			String itemStr = stok.nextToken().trim();
 			ItemIdValue item = factory.getItemIdValue(itemStr.toUpperCase(),
-					ConstraintMainParser.DEFAULT_BASE_IRI);
+					ConstraintMainParser.PREFIX_WIKIDATA);
 			ret.add(item);
 		}
 		return ret;
@@ -87,13 +87,13 @@ public class ConstraintMainParser implements ConstraintParser {
 			if (pos == -1) {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.toUpperCase(),
-						ConstraintMainParser.DEFAULT_BASE_IRI);
+						ConstraintMainParser.PREFIX_WIKIDATA);
 				ret.add(new PropertyValues(property));
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.substring(0, pos).trim()
 								.toUpperCase(),
-						ConstraintMainParser.DEFAULT_BASE_IRI);
+						ConstraintMainParser.PREFIX_WIKIDATA);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));
 				ret.add(new PropertyValues(property, values));
@@ -111,6 +111,7 @@ public class ConstraintMainParser implements ConstraintParser {
 	 * @return a constraint based on a template, or <code>null</code> if the
 	 *         template does not correspond to a known constraint
 	 */
+	@Override
 	public Constraint parse(Template template) {
 		Validate.notNull(template);
 		Constraint ret = null;

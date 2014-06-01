@@ -124,11 +124,12 @@ public class PropertyConstraintDumpProcessor {
 						.get(key));
 				PropertyIdValue property = dataObjectFactory
 						.getPropertyIdValue(key.toUpperCase(),
-								ConstraintMainParser.DEFAULT_BASE_IRI);
+								ConstraintMainParser.PREFIX_WIKIDATA);
 				for (RendererFormat rendererFormat : rendererFormats) {
 					URI propertyUri = rendererFormat.getProperty(property);
 					rendererFormat.addDeclarationObjectProperty(propertyUri);
-					rendererFormat.addAnnotationAssertionComment(propertyUri,
+					rendererFormat.addAnnotationAssertion(
+							rendererFormat.rdfsComment(), propertyUri,
 							escapeChars(templates.toString()));
 				}
 			} catch (Exception e) {

@@ -112,14 +112,43 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return ret.toString();
 	}
 
+	boolean addPrefix(String prefixName, URI value) {
+		BNode bnode = new StringBNode(Owl2FunctionalConstant.PREFIX
+				+ Owl2FunctionalConstant.C_PAR_A + prefixName
+				+ Owl2FunctionalConstant.C_COLON_EQUALS + value
+				+ Owl2FunctionalConstant.C_PAR_B);
+		add(bnode);
+		return true;
+	}
+
 	@Override
 	public void start() {
-		add(new StringBNode(Owl2FunctionalConstant.OWL_START));
+		addPrefix("", createURI(Owl2FunctionalConstant.PREFIX_CONSTRAINTS));
+		addPrefix(Owl2FunctionalConstant.OWL,
+				createURI(Owl2FunctionalConstant.PREFIX_OWL));
+		addPrefix(Owl2FunctionalConstant.RDF,
+				createURI(Owl2FunctionalConstant.PREFIX_RDF));
+		addPrefix(Owl2FunctionalConstant.XML,
+				createURI(Owl2FunctionalConstant.PREFIX_XML));
+		addPrefix(Owl2FunctionalConstant.XSD,
+				createURI(Owl2FunctionalConstant.PREFIX_XSD));
+		addPrefix(Owl2FunctionalConstant.RDFS,
+				createURI(Owl2FunctionalConstant.PREFIX_RDFS));
+		addPrefix(Owl2FunctionalConstant.ENTITY,
+				createURI(Owl2FunctionalConstant.PREFIX_WIKIDATA));
+		add(new StringBNode(""));
+		add(new StringBNode(""));
+		add(new StringBNode(Owl2FunctionalConstant.ONTOLOGY
+				+ Owl2FunctionalConstant.C_PAR_A
+				+ createURI(Owl2FunctionalConstant.PREFIX_ONTOLOGY)));
+		add(new StringBNode(""));
 	}
 
 	@Override
 	public void finish() {
-		add(new StringBNode(Owl2FunctionalConstant.OWL_END));
+		add(new StringBNode(""));
+		add(new StringBNode(Owl2FunctionalConstant.C_PAR_B));
+		add(new StringBNode(""));
 		this.declaredEntities.clear();
 	}
 
@@ -151,6 +180,11 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI rdfsComment() {
+		return createURI(Owl2FunctionalConstant.RDFS_COMMENT);
+	}
+
+	@Override
 	public URI wbTimeValue() {
 		return createURI(Owl2FunctionalConstant.WB_TIME_VALUE);
 	}
@@ -162,37 +196,37 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	@Override
 	public URI owlThing() {
-		return factory.createURI(Owl2FunctionalConstant.OWL_THING);
+		return createURI(Owl2FunctionalConstant.OWL_THING);
 	}
 
 	@Override
 	public URI xsdDateTime() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_DATE_TIME);
+		return createURI(Owl2FunctionalConstant.XSD_DATE_TIME);
 	}
 
 	@Override
 	public URI xsdDecimal() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_DECIMAL);
+		return createURI(Owl2FunctionalConstant.XSD_DECIMAL);
 	}
 
 	@Override
 	public URI xsdMaxInclusive() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_MAX_INCLUSIVE);
+		return createURI(Owl2FunctionalConstant.XSD_MAX_INCLUSIVE);
 	}
 
 	@Override
 	public URI xsdMinInclusive() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_MIN_INCLUSIVE);
+		return createURI(Owl2FunctionalConstant.XSD_MIN_INCLUSIVE);
 	}
 
 	@Override
 	public URI xsdPattern() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_PATTERN);
+		return createURI(Owl2FunctionalConstant.XSD_PATTERN);
 	}
 
 	@Override
 	public URI xsdString() {
-		return factory.createURI(Owl2FunctionalConstant.XSD_STRING);
+		return createURI(Owl2FunctionalConstant.XSD_STRING);
 	}
 
 	@Override
@@ -266,12 +300,12 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertionComment(URI annotationSubject,
-			String annotationValue) {
+	public boolean addAnnotationAssertion(URI annotationProperty,
+			URI annotationSubject, String annotationValue) {
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.ANNOTATION_ASSERTION,
 				makePair(
-						new StringResource(Owl2FunctionalConstant.RDFS_COMMENT),
+						annotationProperty,
 						makePair(annotationSubject,
 								addQuotationMarks(annotationValue))));
 		add(bnode);

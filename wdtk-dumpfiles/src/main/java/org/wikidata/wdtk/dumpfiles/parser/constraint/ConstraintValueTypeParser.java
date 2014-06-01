@@ -45,10 +45,10 @@ class ConstraintValueTypeParser implements ConstraintParser {
 		if (page != null && classStr != null && relationStr != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 			ItemIdValue classId = factory.getItemIdValue(
 					classStr.toUpperCase(),
-					ConstraintMainParser.DEFAULT_BASE_IRI);
+					ConstraintMainParser.PREFIX_WIKIDATA);
 			if (relationStr.equals(ConstraintParserConstant.V_INSTANCE)) {
 				ret = new ConstraintValueType(constrainedProperty, classId,
 						RelationType.INSTANCE);

@@ -46,7 +46,7 @@ class ConstraintValueTypeRenderer implements ConstraintRenderer {
 		this.f = rendererFormat;
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		this.subclassOf = factory.getPropertyIdValue(P_SUBCLASS_OF,
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+				ConstraintMainParser.PREFIX_WIKIDATA);
 	}
 
 	@Override

@@ -63,13 +63,13 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
 		ItemIdValue qPerson = factory.getItemIdValue(Q_PERSON,
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+				ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pSexOrGender = factory.getPropertyIdValue(
-				P_SEX_OR_GENDER, ConstraintMainParser.DEFAULT_BASE_IRI);
+				P_SEX_OR_GENDER, ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pPlaceOfBirth = factory.getPropertyIdValue(
-				P_PLACE_OF_BIRTH, ConstraintMainParser.DEFAULT_BASE_IRI);
+				P_PLACE_OF_BIRTH, ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pDateOfBirth = factory.getPropertyIdValue(
-				P_DATE_OF_BIRTH, ConstraintMainParser.DEFAULT_BASE_IRI);
+				P_DATE_OF_BIRTH, ConstraintMainParser.PREFIX_WIKIDATA);
 
 		ret.add(new ConstraintType(constrainedProperty, qPerson,
 				RelationType.INSTANCE));

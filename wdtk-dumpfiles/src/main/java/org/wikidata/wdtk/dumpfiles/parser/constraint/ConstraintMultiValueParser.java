@@ -41,7 +41,7 @@ class ConstraintMultiValueParser implements ConstraintParser {
 		if (page != null) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 
 			ret = new ConstraintMultiValue(constrainedProperty);
 		}

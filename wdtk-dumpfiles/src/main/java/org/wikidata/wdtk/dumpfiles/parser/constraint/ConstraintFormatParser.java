@@ -45,7 +45,7 @@ class ConstraintFormatParser implements ConstraintParser {
 		if (template.getParameters().size() > 0) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.DEFAULT_BASE_IRI);
+					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 			String plainPattern = template.getParameters().get(
 					ConstraintParserConstant.P_PATTERN);
 			String pattern = removeNowiki(plainPattern);

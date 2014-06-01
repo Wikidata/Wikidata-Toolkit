@@ -64,13 +64,13 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
 		ItemIdValue qTaxon = factory.getItemIdValue(Q_TAXON,
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+				ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pTaxonName = factory.getPropertyIdValue(P_TAXON_NAME,
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+				ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pParentTaxon = factory.getPropertyIdValue(
-				P_PARENT_TAXON, ConstraintMainParser.DEFAULT_BASE_IRI);
+				P_PARENT_TAXON, ConstraintMainParser.PREFIX_WIKIDATA);
 		PropertyIdValue pTaxonRank = factory.getPropertyIdValue(P_TAXON_RANK,
-				ConstraintMainParser.DEFAULT_BASE_IRI);
+				ConstraintMainParser.PREFIX_WIKIDATA);
 
 		ret.add(new ConstraintType(constrainedProperty, qTaxon,
 				RelationType.INSTANCE));

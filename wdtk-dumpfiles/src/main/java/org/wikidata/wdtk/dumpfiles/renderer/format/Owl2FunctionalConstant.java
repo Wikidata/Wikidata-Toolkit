@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.dumpfiles.renderer.format;
 
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 /*
@@ -32,11 +33,22 @@ public interface Owl2FunctionalConstant {
 	String C_CARET = "^";
 	String C_LT = "<";
 	String C_GT = ">";
+	String C_COLON_EQUALS = ":=";
 	String C_PAR_A = "(";
 	String C_PAR_B = ")";
 	String C_QUOTATION_MARK = "\"";
 	String C_SPACE = " ";
 	String AUX = "aux";
+
+	String PREFIX_WIKIDATA = ConstraintMainParser.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
+	String PREFIX_CONSTRAINTS = PREFIX_WIKIDATA + "constraints/"; // "http://www.wikidata.org/entity/constraints/";
+	String PREFIX_ONTOLOGY = PREFIX_CONSTRAINTS + "ont"; // "http://www.wikidata.org/entity/constraints/ont";
+	String PREFIX_XML = "http://www.w3.org/XML/1998/namespace";
+
+	String PREFIX_OWL = Vocabulary.PREFIX_OWL; // "http://www.w3.org/2002/07/owl#";
+	String PREFIX_RDF = Vocabulary.PREFIX_RDF; // "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	String PREFIX_RDFS = Vocabulary.PREFIX_RDFS; // "http://www.w3.org/2000/01/rdf-schema#";
+	String PREFIX_XSD = Vocabulary.PREFIX_XSD; // "http://www.w3.org/2001/XMLSchema#";
 
 	String ANNOTATION_ASSERTION = "AnnotationAssertion";
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
@@ -62,25 +74,26 @@ public interface Owl2FunctionalConstant {
 	String OBJECT_PROPERTY_RANGE = "ObjectPropertyRange";
 	String OBJECT_SOME_VALUES_FROM = "ObjectSomeValuesFrom";
 	String OBJECT_UNION_OF = "ObjectUnionOf";
-	String OWL_THING = "owl:Thing";
+	String OWL_THING = PREFIX_OWL + "Thing";
 	String SUB_CLASS_OF = "SubClassOf";
-	String RDFS_COMMENT = "rdfs:comment";
+	String RDFS_COMMENT = PREFIX_RDFS + "comment";
 	String WB_TIME_VALUE = Vocabulary.WB_TIME_VALUE;
 	String WB_QUANTITY_VALUE = Vocabulary.WB_QUANTITY_VALUE;
-	String XSD_DATE_TIME = "xsd:dateTime";
-	String XSD_DECIMAL = "xsd:decimal";
-	String XSD_MAX_INCLUSIVE = "xsd:maxInclusive";
-	String XSD_MIN_INCLUSIVE = "xsd:minInclusive";
-	String XSD_PATTERN = "xsd:pattern";
-	String XSD_STRING = "xsd:string";
+	String XSD_DATE_TIME = PREFIX_XSD + "dateTime";
+	String XSD_DECIMAL = PREFIX_XSD + "decimal";
+	String XSD_MAX_INCLUSIVE = PREFIX_XSD + "maxInclusive";
+	String XSD_MIN_INCLUSIVE = PREFIX_XSD + "minInclusive";
+	String XSD_PATTERN = PREFIX_XSD + "pattern";
+	String XSD_STRING = PREFIX_XSD + "string";
 
-	String OWL_START = ""
-			+ "Prefix(:=<http://www.wikidata.org/entity/constraints/>)"
-			+ "\nPrefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)"
-			+ "\nPrefix(owl:=<http://www.w3.org/2002/07/owl#>)"
-			+ "\nPrefix(entity:=<http://www.wikidata.org/entity/>)"
-			+ "\nOntology(<http://www.wikidata.org/entity/constraints/ont>"
-			+ "\n\n";
-	String OWL_END = "\n\n)\n\n";
+	String PREFIX = "Prefix";
+	String ONTOLOGY = "Ontology";
+
+	String OWL = "owl";
+	String RDF = "rdf";
+	String XML = "xml";
+	String XSD = "xsd";
+	String RDFS = "rdfs";
+	String ENTITY = "entity";
 
 }
