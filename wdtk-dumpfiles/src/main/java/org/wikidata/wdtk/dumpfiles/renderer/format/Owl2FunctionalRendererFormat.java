@@ -70,6 +70,11 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		}
 	}
 
+	private String addQuotationMarks(String value) {
+		return Owl2FunctionalConstant.C_QUOTATION_MARK + value
+				+ Owl2FunctionalConstant.C_QUOTATION_MARK;
+	}
+
 	private BNode makeFunction(String object, Resource arg) {
 		return makeFunction(object, arg.toString());
 	}
@@ -220,8 +225,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	BNode getLiteral(Resource value, Resource type) {
-		return new StringBNode(Owl2FunctionalConstant.C_QUOTATION_MARK + value
-				+ Owl2FunctionalConstant.C_QUOTATION_MARK
+		return new StringBNode(addQuotationMarks(value.stringValue())
 				+ Owl2FunctionalConstant.C_CARET
 				+ Owl2FunctionalConstant.C_CARET + type);
 	}
@@ -269,13 +273,12 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	@Override
 	public boolean addAnnotationAssertionComment(URI annotationSubject,
 			String annotationValue) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_A);
-		sb.append(annotationSubject);
-		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_B);
-		sb.append(annotationValue);
-		sb.append(Owl2FunctionalConstant.ANNOTATION_ASSERTION_C);
-		BNode bnode = new StringBNode(sb.toString());
+		BNode bnode = makeFunction(
+				Owl2FunctionalConstant.ANNOTATION_ASSERTION,
+				makePair(
+						new StringResource(Owl2FunctionalConstant.RDFS_COMMENT),
+						makePair(annotationSubject,
+								addQuotationMarks(annotationValue))));
 		add(bnode);
 		return true;
 	}

@@ -37,6 +37,7 @@ public interface Owl2FunctionalConstant {
 	String C_QUOTATION_MARK = "\"";
 	String C_SPACE = " ";
 
+	String ANNOTATION_ASSERTION = "AnnotationAssertion";
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
 	String CLASS = "Class";
 	String DATA_INTERSECTION_OF = "DataIntersectionOf";
@@ -62,6 +63,7 @@ public interface Owl2FunctionalConstant {
 	String OBJECT_UNION_OF = "ObjectUnionOf";
 	String OWL_THING = "owl:Thing";
 	String SUB_CLASS_OF = "SubClassOf";
+	String RDFS_COMMENT = "rdfs:comment";
 	String WB_TIME_VALUE = Vocabulary.WB_TIME_VALUE;
 	String WB_QUANTITY_VALUE = Vocabulary.WB_QUANTITY_VALUE;
 	String XSD_DATE_TIME = "xsd:dateTime";
@@ -79,9 +81,5 @@ public interface Owl2FunctionalConstant {
 			+ "\nOntology(<http://www.wikidata.org/entity/constraints/ont>"
 			+ "\n\n";
 	String OWL_END = "\n\n)\n\n";
-
-	String ANNOTATION_ASSERTION_A = "AnnotationAssertion( rdfs:comment entity:";
-	String ANNOTATION_ASSERTION_B = " \"";
-	String ANNOTATION_ASSERTION_C = "\" )";
 
 }
