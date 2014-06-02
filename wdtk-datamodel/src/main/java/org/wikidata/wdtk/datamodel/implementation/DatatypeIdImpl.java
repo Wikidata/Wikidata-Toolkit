@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link DatatypeIdValue}
@@ -49,6 +50,11 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	@Override
 	public String getIri() {
 		return iri;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	/*

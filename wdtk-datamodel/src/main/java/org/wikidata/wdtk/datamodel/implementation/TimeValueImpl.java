@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link TimeValue}.
@@ -147,6 +148,11 @@ public class TimeValueImpl implements TimeValue {
 	@Override
 	public int getAfterTolerance() {
 		return this.afterTolerance;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	/*

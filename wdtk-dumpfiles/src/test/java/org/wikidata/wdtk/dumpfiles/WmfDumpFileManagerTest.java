@@ -103,8 +103,7 @@ public class WmfDumpFileManagerTest {
 	public void getAllDailyDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
-				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML, this.getClass());
+				"/other-incr-wikidatawiki-index.html", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.CURRENT, true);
@@ -116,7 +115,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, wrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllDailyDumps();
+				.findAllDumps(DumpContentType.DAILY);
 
 		String[] dumpDates = { "20140221", "20140220", "20140219", "20140218",
 				"20140217", "20140216", "20140215", "20140214", "20140213",
@@ -131,9 +130,13 @@ public class WmfDumpFileManagerTest {
 					DumpContentType.DAILY);
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
-				assertTrue(dumpFiles.get(i) instanceof WmfLocalDumpFile);
+				assertTrue(
+						"Dumpfile " + dumpFiles.get(i) + " should be local.",
+						dumpFiles.get(i) instanceof WmfLocalDumpFile);
 			} else {
-				assertTrue(dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile);
+				assertTrue("Dumpfile " + dumpFiles.get(i)
+						+ " should be online.",
+						dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile);
 			}
 		}
 	}
@@ -142,8 +145,7 @@ public class WmfDumpFileManagerTest {
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
-				this.getClass());
+				"/wikidatawiki-index.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
 		setLocalDump("20140123", DumpContentType.CURRENT, true);
@@ -155,7 +157,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, wrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllCurrentDumps();
+				.findAllDumps(DumpContentType.CURRENT);
 
 		String[] dumpDates = { "20140210", "20140123", "20140106", "20131221",
 				"20131201" };
@@ -178,8 +180,7 @@ public class WmfDumpFileManagerTest {
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
-				this.getClass());
+				"/wikidatawiki-index.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
 		setLocalDump("20140123", DumpContentType.FULL, true);
@@ -191,7 +192,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, wrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllFullDumps();
+				.findAllDumps(DumpContentType.FULL);
 
 		String[] dumpDates = { "20140210", "20140123", "20140106", "20131221",
 				"20131201" };
@@ -219,7 +220,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, null);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllDailyDumps();
+				.findAllDumps(DumpContentType.DAILY);
 
 		String[] dumpDates = { "20140220", "20140205" };
 
@@ -241,7 +242,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, null);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllCurrentDumps();
+				.findAllDumps(DumpContentType.CURRENT);
 
 		String[] dumpDates = { "20140220", "20140205" };
 
@@ -263,7 +264,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, null);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllFullDumps();
+				.findAllDumps(DumpContentType.FULL);
 
 		String[] dumpDates = { "20140220", "20140205" };
 
@@ -280,12 +281,13 @@ public class WmfDumpFileManagerTest {
 	public void getAllRelevantDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
-				"/other-incr-wikidatawiki-index.html",
-				MockWebResourceFetcher.TYPE_HTML, this.getClass());
+				"/other-incr-wikidatawiki-index.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", MockWebResourceFetcher.TYPE_HTML,
-				this.getClass());
+				"/wikidatawiki-index.html", this.getClass());
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
 		setLocalDump("20140219", DumpContentType.FULL, true);
@@ -295,7 +297,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, wrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllRelevantDumps(true);
+				.findAllRelevantRevisionDumps(true);
 
 		String[] dumpDates = { "20140221", "20140220", "20140219", "20140218",
 				"20140217", "20140216", "20140215", "20140214", "20140213",
@@ -330,7 +332,7 @@ public class WmfDumpFileManagerTest {
 				"wikidatawiki", dm, wrf);
 
 		List<? extends MwDumpFile> dumpFiles = dumpFileManager
-				.findAllRelevantDumps(false);
+				.findAllRelevantRevisionDumps(false);
 
 		assertEquals(dumpFiles.size(), 1);
 		assertEquals(dumpFiles.get(0).getDumpContentType(),
@@ -351,7 +353,10 @@ public class WmfDumpFileManagerTest {
 
 		TestDumpfileProcessor dfp = new TestDumpfileProcessor();
 
-		dumpFileManager.processAllRecentDumps(dfp, true);
+		for (MwDumpFile dumpFile : dumpFileManager
+				.findAllRelevantRevisionDumps(true)) {
+			dfp.processDumpFileContents(dumpFile.getDumpFileStream(), dumpFile);
+		}
 
 		assertEquals(
 				dfp.result,

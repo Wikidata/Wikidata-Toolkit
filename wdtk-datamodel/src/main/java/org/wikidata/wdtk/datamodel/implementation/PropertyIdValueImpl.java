@@ -49,7 +49,8 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 
 		if (!id.matches("^P[1-9][0-9]*$")) {
 			throw new IllegalArgumentException(
-					"Wikibase property ids must have the form \"P<positive integer>\"");
+					"Wikibase property ids must have the form \"P<positive integer>\". Given id was \""
+							+ id + "\"");
 		}
 	}
 
@@ -59,8 +60,8 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 	}
 
 	@Override
-	public String toString(){
-		return "(PropertyId)" + this.baseIri +"/"+ this.id;
+	public String toString() {
+		return "(PropertyId)" + this.baseIri + "/" + this.id;
 	}
-	
+
 }

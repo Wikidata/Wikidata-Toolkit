@@ -44,4 +44,5 @@ public interface MonolingualTextValue extends Value {
 	 * @return a string that represents language
 	 */
 	String getLanguageCode();
+
 }

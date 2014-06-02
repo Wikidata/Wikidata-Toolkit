@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -40,9 +39,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 /**
  * Class for providing access to available dumpfiles provided by the Wikimedia
  * Foundation. The preferred access point for this class if
- * {@link #processAllRecentDumps(MwDumpFileProcessor, boolean)}, since this
- * method takes care of freeing resources and might also provide parallelized
- * downloading/processing in the future.
+ * {@link #processAllRecentRevisionDumps(MwDumpFileProcessor, boolean)}, since
+ * this method takes care of freeing resources and might also provide
+ * parallelized downloading/processing in the future.
  * <p>
  * Typically, the Web will be accessed to find information about dumps available
  * online. This Web access is mediated by a {@link WebResourceFetcherImpl}
@@ -108,37 +107,9 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Processes all relevant dumps in order. For further details on the
-	 * parameters, see {@link #findAllRelevantDumps(boolean)}.
-	 * 
-	 * @param preferCurrent
-	 *            should dumps with current revisions be preferred?
-	 * @return most recent main dump or null if no such dump exists
-	 */
-	public void processAllRecentDumps(MwDumpFileProcessor dumpFileProcessor,
-			boolean preferCurrent) {
-
-		for (MwDumpFile dumpFile : findAllRelevantDumps(preferCurrent)) {
-			try (InputStream inputStream = dumpFile.getDumpFileStream()) {
-				logger.info("Processing dump file " + dumpFile.toString());
-				dumpFileProcessor
-						.processDumpFileContents(inputStream, dumpFile);
-			} catch (FileAlreadyExistsException e) {
-				logger.error("Dump file "
-						+ dumpFile.toString()
-						+ " could not be processed since file "
-						+ e.getFile()
-						+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.");
-			} catch (IOException e) {
-				logger.error("Dump file " + dumpFile.toString()
-						+ " could not be processed: " + e.toString());
-			}
-		}
-	}
-
-	/**
-	 * Finds all dump files, online or locally, that are relevant to obtain the
-	 * most current state of the data.
+	 * Finds all page revision dump files, online or locally, that are relevant
+	 * to obtain the most current state of the data. Revision dump files are
+	 * dumps that contain page revisions in MediaWiki's XML format.
 	 * <p>
 	 * If the parameter <b>preferCurrent</b> is true, then dumps that contain
 	 * only the current versions of all files will be preferred if available
@@ -158,15 +129,20 @@ public class WmfDumpFileManager {
 	 *            should dumps with current revisions be preferred?
 	 * @return an ordered list of all dump files that match the given criteria
 	 */
-	public List<MwDumpFile> findAllRelevantDumps(boolean preferCurrent) {
-		MwDumpFile mainDump = findMostRecentMainDump(preferCurrent);
+	public List<MwDumpFile> findAllRelevantRevisionDumps(boolean preferCurrent) {
+		MwDumpFile mainDump;
+		if (preferCurrent) {
+			mainDump = findMostRecentDump(DumpContentType.CURRENT);
+		} else {
+			mainDump = findMostRecentDump(DumpContentType.FULL);
+		}
 		if (mainDump == null) {
-			return findAllDailyDumps();
+			return findAllDumps(DumpContentType.DAILY);
 		}
 
 		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
-		for (MwDumpFile dumpFile : findAllDailyDumps()) {
+		for (MwDumpFile dumpFile : findAllDumps(DumpContentType.DAILY)) {
 			if (dumpFile.getDateStamp().compareTo(mainDump.getDateStamp()) > 0) {
 				result.add(dumpFile);
 			}
@@ -174,78 +150,49 @@ public class WmfDumpFileManager {
 
 		result.add(mainDump);
 
+		if (logger.isInfoEnabled()) {
+			StringBuilder logMessage = new StringBuilder();
+			logMessage.append("Found " + result.size()
+					+ " relevant dumps to process:");
+			for (MwDumpFile dumpFile : result) {
+				logMessage.append("\n * ").append(dumpFile.toString());
+			}
+			logger.info(logMessage.toString());
+		}
+
 		return result;
 	}
 
 	/**
-	 * Finds the most recent main dump (non-incremental dump). For further
-	 * details on the parameters, see {@link #findAllRelevantDumps(boolean)}.
+	 * Finds the most recent dump of the given type that is actually available.
 	 * 
-	 * @param preferCurrent
-	 *            should dumps with current revisions be preferred?
+	 * @param dumpContentType
+	 *            the type of the dump to look for
 	 * @return most recent main dump or null if no such dump exists
 	 */
-	public MwDumpFile findMostRecentMainDump(boolean preferCurrent) {
-		List<MwDumpFile> mainDumps;
-		if (preferCurrent) {
-			mainDumps = findAllCurrentDumps();
-		} else {
-			mainDumps = findAllFullDumps();
-		}
+	public MwDumpFile findMostRecentDump(DumpContentType dumpContentType) {
+		List<MwDumpFile> dumps = findAllDumps(dumpContentType);
 
-		if (mainDumps.size() == 0) {
-			return null;
-		} else {
-			return mainDumps.get(0);
+		for (int i = 0; i < dumps.size(); i++) {
+			if (dumps.get(i).isAvailable()) {
+				return dumps.get(i);
+			}
 		}
-
+		return null;
 	}
 
 	/**
-	 * Returns a list of all daily dump files available either online or
-	 * locally. For dumps available both online and locally, the local version
-	 * is included. The list is order with most recent dump date first.
+	 * Returns a list of all dump files of the given type available either
+	 * online or locally. For dumps available both online and locally, the local
+	 * version is included. The list is order with most recent dump date first.
+	 * Online dumps found by this method might not be available yet.
 	 * 
-	 * @return a list of daily dump files
+	 * @return a list of dump files of the given type
 	 */
-	public List<MwDumpFile> findAllDailyDumps() {
-		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.DAILY);
+	public List<MwDumpFile> findAllDumps(DumpContentType dumpContentType) {
+		List<MwDumpFile> localDumps = findDumpsLocally(dumpContentType);
 		if (this.webResourceFetcher != null) {
-			List<MwDumpFile> onlineDumps = findDailyDumpsOnline();
-			return mergeDumpLists(localDumps, onlineDumps);
-		} else {
-			return localDumps;
-		}
-	}
-
-	/**
-	 * Returns a list of all current dump files available either online or
-	 * locally. For dumps available both online and locally, the local version
-	 * is included. The list is order with most recent dump date first.
-	 * 
-	 * @return a list of current dump files
-	 */
-	public List<MwDumpFile> findAllCurrentDumps() {
-		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.CURRENT);
-		if (this.webResourceFetcher != null) {
-			List<MwDumpFile> onlineDumps = findCurrentDumpsOnline();
-			return mergeDumpLists(localDumps, onlineDumps);
-		} else {
-			return localDumps;
-		}
-	}
-
-	/**
-	 * Finds a list of all full dump files available either online or locally.
-	 * For dumps available both online and locally, the local version is
-	 * included. The list is order with most recent dump date first.
-	 * 
-	 * @return a list of full dump files
-	 */
-	public List<MwDumpFile> findAllFullDumps() {
-		List<MwDumpFile> localDumps = findDumpsLocally(DumpContentType.FULL);
-		if (this.webResourceFetcher != null) {
-			List<MwDumpFile> onlineDumps = findFullDumpsOnline();
+			List<MwDumpFile> onlineDumps = findDumpsOnline(dumpContentType);
 			return mergeDumpLists(localDumps, onlineDumps);
 		} else {
 			return localDumps;
@@ -328,66 +275,29 @@ public class WmfDumpFileManager {
 	}
 
 	/**
-	 * Finds out which daily dump files are available for download. The result
-	 * is a list of objects that describe the available dump files, in
-	 * descending order by their date. Not all of the dumps included might be
-	 * actually available.
-	 * 
-	 * @return list of objects that provide information on available daily dumps
-	 */
-	List<MwDumpFile> findDailyDumpsOnline() {
-		List<String> dumpFileDates = findDumpDatesOnline(WmfDumpFile.DAILY_WEB_DIRECTORY);
-
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
-
-		for (String dateStamp : dumpFileDates) {
-			result.add(new WmfOnlineDailyDumpFile(dateStamp, this.projectName,
-					this.webResourceFetcher, this.dumpfileDirectoryManager));
-		}
-
-		return result;
-	}
-
-	/**
-	 * Finds out which current version dump files are available for download.
+	 * Finds out which dump files of the given type are available for download.
 	 * The result is a list of objects that describe the available dump files,
 	 * in descending order by their date. Not all of the dumps included might be
 	 * actually available.
 	 * 
-	 * @return list of objects that provide information on available current
-	 *         dumps
-	 */
-	List<MwDumpFile> findCurrentDumpsOnline() {
-		List<String> dumpFileDates = findDumpDatesOnline("");
-
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
-
-		for (String dateStamp : dumpFileDates) {
-			result.add(new WmfOnlineStandardDumpFile(dateStamp,
-					this.projectName, this.webResourceFetcher,
-					this.dumpfileDirectoryManager, DumpContentType.CURRENT));
-		}
-
-		return result;
-	}
-
-	/**
-	 * Finds out which full dump files are available for download. The result is
-	 * a list of objects that describe the available dump files, in descending
-	 * order by their date. Not all of the dumps included might be actually
-	 * available.
-	 * 
 	 * @return list of objects that provide information on available full dumps
 	 */
-	List<MwDumpFile> findFullDumpsOnline() {
-		List<String> dumpFileDates = findDumpDatesOnline("");
+	List<MwDumpFile> findDumpsOnline(DumpContentType dumpContentType) {
+		List<String> dumpFileDates = findDumpDatesOnline(WmfDumpFile
+				.getDumpFileWebDirectory(dumpContentType));
 
 		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
 		for (String dateStamp : dumpFileDates) {
-			result.add(new WmfOnlineStandardDumpFile(dateStamp,
-					this.projectName, this.webResourceFetcher,
-					this.dumpfileDirectoryManager, DumpContentType.FULL));
+			if (dumpContentType == DumpContentType.DAILY) {
+				result.add(new WmfOnlineDailyDumpFile(dateStamp,
+						this.projectName, this.webResourceFetcher,
+						this.dumpfileDirectoryManager));
+			} else {
+				result.add(new WmfOnlineStandardDumpFile(dateStamp,
+						this.projectName, this.webResourceFetcher,
+						this.dumpfileDirectoryManager, dumpContentType));
+			}
 		}
 
 		return result;

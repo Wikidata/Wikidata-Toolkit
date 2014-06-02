@@ -21,6 +21,7 @@
 		<module>wdtk-testing</module>
 		<module>wdtk-examples</module>
 		<module>wdtk-distribution</module>
+		<module>wdtk-rdf</module>
 	</modules>
 
 	<licenses>

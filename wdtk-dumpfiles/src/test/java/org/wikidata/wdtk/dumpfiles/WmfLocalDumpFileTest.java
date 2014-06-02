@@ -61,55 +61,11 @@ public class WmfLocalDumpFileTest {
 	}
 
 	@Test
-	public void malformattedRevisionId() {
-		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
-		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
-				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
-				"Contents of daily 20140220");
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "invalid");
-
-		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, DumpContentType.DAILY);
-		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
-		assertEquals(dumpFile.isAvailable(), false);
-	}
-
-	@Test
-	public void emptyRevisionId() {
-		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
-		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
-				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
-				"Contents of daily 20140220");
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "");
-
-		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, DumpContentType.DAILY);
-		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
-	}
-
-	@Test
-	public void unreadaleRevisionId() {
-		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
-		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-20140220"
-				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.DAILY)),
-				"Contents of daily 20140220");
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "1234567");
-		dm.setReturnFailingReaders(true);
-
-		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
-				"wikidatawiki", dm, DumpContentType.DAILY);
-		assertEquals(dumpFile.getMaximalRevisionId(), new Long(-1));
-		assertEquals(dumpFile.isAvailable(), false);
-	}
-
-	@Test
 	public void missingDumpFile() {
 		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "12345678");
-
+		dm.setDirectory(thisDumpPath);
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
 				"wikidatawiki", dm, DumpContentType.DAILY);
-		assertEquals(dumpFile.getMaximalRevisionId(), new Long(12345678));
 		assertEquals(dumpFile.isAvailable(), false);
 	}
 

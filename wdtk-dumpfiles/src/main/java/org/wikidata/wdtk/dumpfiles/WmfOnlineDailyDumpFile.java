@@ -48,6 +48,11 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	final DirectoryManager dumpfileDirectoryManager;
 
 	/**
+	 * Set to true when all required files have been downloaded successfully.
+	 */
+	boolean isPrepared = false;
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param dateStamp
@@ -83,17 +88,27 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.DAILY, this.dateStamp));
 
-		return dailyDirectoryManager.getInputStreamForBz2File(fileName);
+		return dailyDirectoryManager.getInputStreamForFile(fileName,
+				WmfDumpFile.getDumpFileCompressionType(DumpContentType.DAILY));
 	}
 
 	@Override
 	public void prepareDumpFile() throws IOException {
+		if (this.isPrepared) {
+			return;
+		}
+
 		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
 		logger.info("Downloading daily dump file " + fileName + " from "
 				+ urlString + " ...");
+
+		if (!isAvailable()) {
+			throw new IOException(
+					"Dump file not available (yet). Aborting dump retrieval.");
+		}
 
 		if (this.getMaximalRevisionId() == -1L) {
 			throw new IOException(
@@ -112,7 +127,9 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 		dailyDirectoryManager.createFile(WmfDumpFile.LOCAL_FILENAME_MAXREVID,
 				this.getMaximalRevisionId().toString());
 
-		logger.info("... Completed download of daily dump file " + fileName
+		this.isPrepared = true;
+
+		logger.info("... completed download of daily dump file " + fileName
 				+ " from " + urlString);
 	}
 
@@ -161,7 +178,8 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL + WmfDumpFile.DAILY_WEB_DIRECTORY
+		return WmfDumpFile.DUMP_SITE_BASE_URL
+				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY)
 				+ this.projectName + "/" + this.dateStamp + "/";
 	}
 

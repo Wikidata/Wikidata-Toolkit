@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
@@ -57,7 +58,9 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	public void startRevisionProcessing(String siteName, String baseUrl,
 			Map<Integer, String> namespaces) {
 		// FIXME the baseUrl from the dump is not the baseIri we need here
-		this.jsonConverter = new JsonConverter(baseUrl, this.dataObjectFactory);
+		// Compute this properly.
+		this.jsonConverter = new JsonConverter(
+				"http://www.wikidata.org/entity/", this.dataObjectFactory);
 	}
 
 	@Override
@@ -102,7 +105,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	@Override
 	public void finishRevisionProcessing() {
-		// Nothing to do
+		this.entityDocumentProcessor.finishProcessingEntityDocuments();
 	}
 
 }

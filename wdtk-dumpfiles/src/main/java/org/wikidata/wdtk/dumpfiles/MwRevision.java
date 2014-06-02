@@ -47,10 +47,26 @@ public interface MwRevision {
 	static final String MODEL_WIKIBASE_PROPERTY = "wikibase-property";
 
 	/**
-	 * Returns the title string of the revised page. The string is formatted as
-	 * it would be on an HTML page and not as in the URL used by MediaWiki for
-	 * the page. For example, spaces are represented as spaces and not as
-	 * underscores.
+	 * Returns the title string of the revised page, including namespace
+	 * prefixes and subpages, if any. The string is formatted as it would be on
+	 * an HTML page and not as in the URL used by MediaWiki for the page. For
+	 * example, spaces are represented as spaces and not as underscores. For
+	 * example
+	 * <p>
+	 * On a single MediaWiki site, the prefixed page title is a key for a page
+	 * at any given moment. However, users may change the title and namespace by
+	 * moving pages. The page id provides a better clue to identify pages across
+	 * history.
+	 * 
+	 * @return title string
+	 */
+	String getPrefixedTitle();
+
+	/**
+	 * Returns the title string of the revised page without any namespace
+	 * prefixes. The string is formatted as it would be on an HTML page and not
+	 * as in the URL used by MediaWiki for the page. For example, spaces are
+	 * represented as spaces and not as underscores. For example
 	 * <p>
 	 * On a single MediaWiki site, the combination of page title and page
 	 * namespace is a key for a page at any given moment. However, users may

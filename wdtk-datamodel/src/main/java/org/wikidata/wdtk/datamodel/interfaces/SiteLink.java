@@ -27,6 +27,11 @@ import java.util.List;
  * site, and a list of "badges" that this article holds. Badges are specific
  * tags used on Wikimedia project sites for some articles, most prominently for
  * "featured articles".
+ * <p>
+ * In spite of its name, the site link does not specify a full URL that it links
+ * to. It only provides a page title and a site key that may be used to find a
+ * URL. To do this, the site links need to be resolved using a {@link Sites}
+ * object.
  * 
  * @author Markus Kroetzsch
  * 
@@ -34,11 +39,11 @@ import java.util.List;
 public interface SiteLink {
 
 	/**
-	 * Get the string title of the linked article.
+	 * Get the string title of the linked page.
 	 * 
 	 * @return
 	 */
-	String getArticleTitle();
+	String getPageTitle();
 
 	/**
 	 * Get the string key of the linked site.
@@ -46,13 +51,6 @@ public interface SiteLink {
 	 * @return
 	 */
 	String getSiteKey();
-
-	/**
-	 * Get the full IRI (URL) of the linked article.
-	 * 
-	 * @return
-	 */
-	String getUrl();
 
 	/**
 	 * Get the list of badges of the linked article.

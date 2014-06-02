@@ -33,37 +33,6 @@ import java.io.InputStream;
 public interface WebResourceFetcher {
 
 	/**
-	 * Returns a BufferedReader for the document at the given URL. The reader
-	 * should be closed after use. The bytes found at the given URL will be
-	 * interpreted as UTF-8 for this operation.
-	 * 
-	 * @param urlString
-	 *            the URL of the document
-	 * @return BufferedReader for the requested document
-	 * @throws IOException
-	 *             if the document at the URL could not be opended or the URL
-	 *             was invalid
-	 */
-	// BufferedReader getBufferedReaderForUrl(String urlString) throws
-	// IOException;
-
-	/**
-	 * Returns a BufferedReader for the Gzip-compressed document at the given
-	 * URL. The reader should be closed after use. The bytes found in the
-	 * gzipped file at the given URL will be interpreted as UTF-8 for this
-	 * operation.
-	 * 
-	 * @param urlString
-	 *            the URL of the gzipped document
-	 * @return BufferedReader for the requested document
-	 * @throws IOException
-	 *             if the document at the URL could not be opended or the URL
-	 *             was invalid
-	 */
-	// BufferedReader getBufferedReaderForGzipUrl(String urlString)
-	// throws IOException;
-
-	/**
 	 * Returns an InputStream for the document at the given URL. This can be
 	 * used for downloading. The stream should be closed after use.
 	 * 
@@ -75,18 +44,5 @@ public interface WebResourceFetcher {
 	 *             invalid
 	 */
 	InputStream getInputStreamForUrl(String urlString) throws IOException;
-
-	/**
-	 * Returns an InputStream for the Gzip-compressed document at the given URL.
-	 * This can be used for downloading. The stream should be closed after use.
-	 * 
-	 * @param urlString
-	 *            the URL of the document
-	 * @return InputStream for the requested document
-	 * @throws IOException
-	 *             if the document at the URL could not be opened or the URL was
-	 *             invalid
-	 */
-	InputStream getInputStreamForGzipUrl(String urlString) throws IOException;
 
 }

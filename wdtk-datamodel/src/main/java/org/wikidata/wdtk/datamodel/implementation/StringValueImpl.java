@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link StringValue}.
@@ -46,6 +47,11 @@ public class StringValueImpl implements StringValue {
 	@Override
 	public String getString() {
 		return string;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	/*

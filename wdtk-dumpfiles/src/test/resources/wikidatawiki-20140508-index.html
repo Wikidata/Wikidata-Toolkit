@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>wikidatawiki dump progress on 20140508</title>
+        <style type="text/css">
+                html, body {
+                        background-color: #eee;
+                        color: black;
+                }
+                .siteinfo {
+                        text-align: center;
+                }
+                li {
+                        background-color: #f4f4f4;
+                        list-style-type: none;
+                }
+                li li {
+                        background-color: white;
+                }
+                li ul {
+                        margin-top: 4px;
+                        margin-bottom: 8px;
+                }
+                .detail {
+                        font-weight: normal;
+                        font-style: italic;
+                }
+                .updates {
+                        font: monospace;
+                        font-size: smaller;
+                }
+                .status {
+                        font-weight: bold;
+                }
+                .status, .checksum {
+                        padding-left: 1em;
+                        padding-right: 1em;
+                }
+                .in-progress {
+                        font-weight: bold;
+                }
+                .failed {
+                        color: Maroon;
+                        font-weight: bold;
+                }
+                .notice {
+                        color: Maroon;
+                        font-weight: normal;
+                }
+                .waiting {
+                        color: Silver; /* Gray ? */
+                }
+                .progress {
+                        font-family: monospace;
+                        font-size: 80%;
+                        margin-left: .5in;
+                }
+        </style>
+</head>
+
+<body>
+        <h1>wikidatawiki dump progress on 20140508</h1>
+
+        <p class="siteinfo">
+                This is the Wikimedia dump service.
+                Please read the <a href='../../legal.html'>copyrights</a> information.
+                See <a href="http://meta.wikimedia.org/wiki/Data_dumps">Meta:Data dumps</a>
+                for documentation on the provided data formats.
+        </p>
+
+        <p class="notice"></p>
+
+        <p>See <a href="../../backup-index.html">all databases list</a>.</p>
+
+        <p class="previous">
+                <a href="../20140420/">Last dumped on 2014-04-20</a>
+        </p>
+
+        <p class="status">
+                <span class='done'>Dump complete</span>
+        </p>
+
+        <p class="checksum">
+                Verify downloaded files against the <a href="/wikidatawiki/20140508/wikidatawiki-20140508-md5sums.txt">MD5 checksums</a>
+                to check for corrupted files.
+        </p>
+
+        <ul>
+                <li class='done'><span class='updates'>2014-05-16 03:49:29</span> <span class='status'>done</span> <span class='title'>Articles, templates, media/file descriptions, and primary meta-pages, in multiple bz2 streams, 100 pages per stream</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-articles-multistream.xml.bz2">wikidatawiki-20140508-pages-articles-multistream.xml.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-articles-multistream-index.txt.bz2">wikidatawiki-20140508-pages-articles-multistream-index.txt.bz2</a> 52.3 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-16 01:17:21</span> <span class='status'>done</span> <span class='title'>All pages with complete edit history (.7z)</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-meta-history.xml.7z">wikidatawiki-20140508-pages-meta-history.xml.7z</a> 9.1 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-15 07:30:41</span> <span class='status'>done</span> <span class='title'>All pages with complete page edit history (.bz2)</span><div class='progress'>2014-05-15 07:30:39: wikidatawiki (ID 12404) 15435260 pages (43.2|7831559.4/sec all|curr), 124868628 revs (349.5|318.6/sec all|curr), 95.6%|95.6% prefetched (all|curr), ETA 2014-05-15 10:00:42 [max 128014929]</div>
+<ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-meta-history.xml.bz2">wikidatawiki-20140508-pages-meta-history.xml.bz2</a> 11.6 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-11 04:15:48</span> <span class='status'>done</span> <span class='title'>This contains the SiteMatrix information from meta.wikimedia.org provided as a table.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-sites.sql.gz">wikidatawiki-20140508-sites.sql.gz</a> 15 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-11 04:15:22</span> <span class='status'>done</span> <span class='title'>Contains a mapping of page ids and entity ids, with an additional entity type column.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-wb_entity_per_page.sql.gz">wikidatawiki-20140508-wb_entity_per_page.sql.gz</a> 75.2 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-11 04:14:45</span> <span class='status'>done</span> <span class='title'>For each Wikidata item, this contains rows with a label, an alias and  a description of the item in a given language.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-wb_terms.sql.gz">wikidatawiki-20140508-wb_terms.sql.gz</a> 1.2 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-11 04:09:36</span> <span class='status'>done</span> <span class='title'>For each Wikidata item, this contains rows with the corresnponding page name on a given wiki project.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-wb_items_per_site.sql.gz">wikidatawiki-20140508-wb_items_per_site.sql.gz</a> 541.8 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-11 03:55:28</span> <span class='status'>done</span> <span class='title'>Log events to all pages and users.</span><ul><li class='detail'>This contains the log of actions performed on pages and users.</li>
+<li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-logging.xml.gz">wikidatawiki-20140508-pages-logging.xml.gz</a> 2.2 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-10 19:45:42</span> <span class='status'>done</span> <span class='title'>All pages, current versions only.</span><div class='progress'>2014-05-10 19:45:40: wikidatawiki (ID 28477) 15435260 pages (397.4|15245318.0/sec all|curr), 15435260 revs (397.4|256.8/sec all|curr), 84.8%|84.8% prefetched (all|curr), ETA 2014-05-14 02:09:44 [max 127610299]</div>
+<ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-meta-current.xml.bz2">wikidatawiki-20140508-pages-meta-current.xml.bz2</a> 2.4 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-10 08:57:30</span> <span class='status'>done</span> <span class='title'><big><b>Articles, templates, media/file descriptions, and primary meta-pages.</b></big></span><div class='progress'>2014-05-10 08:57:28: wikidatawiki (ID 25010) 15411476 pages (386.9|11217026.6/sec all|curr), 15411476 revs (386.9|346.4/sec all|curr), 84.7%|84.7% prefetched (all|curr), ETA 2014-05-13 17:22:19 [max 127425566]</div>
+<ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pages-articles.xml.bz2">wikidatawiki-20140508-pages-articles.xml.bz2</a> 2.4 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-09 21:51:39</span> <span class='status'>done</span> <span class='title'>First-pass for page XML data dumps</span><div class='progress'>2014-05-09 21:45:09: wikidatawiki (ID 21753) 15435260 pages (395.0|3224916.0/sec all|curr), 124868628 revs (3195.4|1802.7/sec all|curr), ETA 2014-05-09 21:57:27 [max 127227682]</div>
+<ul><li class='detail'>These files contain no page text, only revision metadata.</li>
+<li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-stub-meta-history.xml.gz">wikidatawiki-20140508-stub-meta-history.xml.gz</a> 7.0 GB</li>
+<li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-stub-meta-current.xml.gz">wikidatawiki-20140508-stub-meta-current.xml.gz</a> 948.3 MB</li>
+<li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-stub-articles.xml.gz">wikidatawiki-20140508-stub-articles.xml.gz</a> 945.5 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-09 10:50:50</span> <span class='status'>done</span> <span class='title'>Extracted page abstracts for Yahoo</span><div class='progress'>2014-05-09 10:50:48: wikidatawiki (ID 12301) 15431686 pages (255.5|7342163.8/sec all|curr), 15431686 revs (255.5|326.4/sec all|curr), ETA 2014-05-09 14:03:29 [max 18385958]</div>
+<ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-abstract.xml">wikidatawiki-20140508-abstract.xml</a> 15.5 GB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:04:18</span> <span class='status'>done</span> <span class='title'>List of all page titles</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-all-titles.gz">wikidatawiki-20140508-all-titles.gz</a> 32.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:04:01</span> <span class='status'>done</span> <span class='title'>List of page titles in main namespace</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-all-titles-in-ns0.gz">wikidatawiki-20140508-all-titles-in-ns0.gz</a> 32.3 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:43</span> <span class='status'>done</span> <span class='title'>Interwiki link tracking records</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-iwlinks.sql.gz">wikidatawiki-20140508-iwlinks.sql.gz</a> 3.3 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:37</span> <span class='status'>done</span> <span class='title'>Redirect list</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-redirect.sql.gz">wikidatawiki-20140508-redirect.sql.gz</a> 21 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:35</span> <span class='status'>done</span> <span class='title'>Nonexistent pages that have been protected.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-protected_titles.sql.gz">wikidatawiki-20140508-protected_titles.sql.gz</a> 1 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:33</span> <span class='status'>done</span> <span class='title'>Name/value pairs for pages.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-page_props.sql.gz">wikidatawiki-20140508-page_props.sql.gz</a> 9.6 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:09</span> <span class='status'>done</span> <span class='title'>Newer per-page restrictions table.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-page_restrictions.sql.gz">wikidatawiki-20140508-page_restrictions.sql.gz</a> 4 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 18:03:05</span> <span class='status'>done</span> <span class='title'>Base per-page data (id, title, old restrictions, etc).</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-page.sql.gz">wikidatawiki-20140508-page.sql.gz</a> 374.2 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:19</span> <span class='status'>done</span> <span class='title'>Category information.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-category.sql.gz">wikidatawiki-20140508-category.sql.gz</a> 23 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:17</span> <span class='status'>done</span> <span class='title'>User group assignments.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-user_groups.sql.gz">wikidatawiki-20140508-user_groups.sql.gz</a> 2 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:15</span> <span class='status'>done</span> <span class='title'>Set of defined interwiki prefixes and links for this wiki.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-interwiki.sql.gz">wikidatawiki-20140508-interwiki.sql.gz</a> 726 bytes</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:13</span> <span class='status'>done</span> <span class='title'>Wiki interlanguage link records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-langlinks.sql.gz">wikidatawiki-20140508-langlinks.sql.gz</a> 40 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:11</span> <span class='status'>done</span> <span class='title'>Wiki external URL link records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-externallinks.sql.gz">wikidatawiki-20140508-externallinks.sql.gz</a> 5.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:59:05</span> <span class='status'>done</span> <span class='title'>Wiki template inclusion link records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-templatelinks.sql.gz">wikidatawiki-20140508-templatelinks.sql.gz</a> 1.8 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:58:59</span> <span class='status'>done</span> <span class='title'>Wiki media/files usage records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-imagelinks.sql.gz">wikidatawiki-20140508-imagelinks.sql.gz</a> 204 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:58:57</span> <span class='status'>done</span> <span class='title'>Wiki category membership link records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-categorylinks.sql.gz">wikidatawiki-20140508-categorylinks.sql.gz</a> 511 KB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:58:51</span> <span class='status'>done</span> <span class='title'>Wiki page-to-page link records.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-pagelinks.sql.gz">wikidatawiki-20140508-pagelinks.sql.gz</a> 252.2 MB</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:39:39</span> <span class='status'>done</span> <span class='title'>Metadata on current versions of uploaded media/files.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-image.sql.gz">wikidatawiki-20140508-image.sql.gz</a> 1013 bytes</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:39:36</span> <span class='status'>done</span> <span class='title'>A few statistics such as the page count.</span><ul><li class='file'><a href="/wikidatawiki/20140508/wikidatawiki-20140508-site_stats.sql.gz">wikidatawiki-20140508-site_stats.sql.gz</a> 808 bytes</li></ul></li>
+<li class='done'><span class='updates'>2014-05-08 17:39:34</span> <span class='status'>done</span> <span class='title'>Metadata on prior versions of uploaded images. (private)</span></li>
+<li class='done'><span class='updates'>2014-05-08 17:39:32</span> <span class='status'>done</span> <span class='title'>Data for various events (deletions, uploads, etc). (private)</span></li>
+<li class='done'><span class='updates'>2014-05-08 17:28:50</span> <span class='status'>done</span> <span class='title'>Deleted page and revision data. (private)</span></li>
+<li class='done'><span class='updates'>2014-05-08 17:28:27</span> <span class='status'>done</span> <span class='title'>Data for blocks of IP addresses, ranges, and users. (private)</span></li>
+<li class='done'><span class='updates'>2014-05-08 17:28:25</span> <span class='status'>done</span> <span class='title'>Users' watchlist settings. (private)</span></li>
+<li class='done'><span class='updates'>2014-05-08 17:27:21</span> <span class='status'>done</span> <span class='title'>User account data. (private)</span></li>
+        </ul>
+
+</body>
+</html>

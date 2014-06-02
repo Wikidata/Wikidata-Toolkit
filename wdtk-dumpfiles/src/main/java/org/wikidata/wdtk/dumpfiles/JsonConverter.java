@@ -82,7 +82,7 @@ public class JsonConverter {
 	private static final String KEY_LINK = "links";
 
 	private final DataObjectFactory factory;
-	private String baseIri = "";
+	private final String baseIri;
 	private final MonolingualTextValueHandler mltvHandler;
 	private final StatementGroupBuilder statementGroupBuilder;
 
@@ -99,7 +99,10 @@ public class JsonConverter {
 	 *            data model
 	 */
 	public JsonConverter(String baseIri, DataObjectFactory factory) {
-		this.setBaseIri(baseIri);
+		Validate.notNull(baseIri);
+		Validate.notNull(factory);
+
+		this.baseIri = baseIri;
 		this.factory = factory;
 
 		mltvHandler = new MonolingualTextValueHandler(this.factory);
@@ -348,9 +351,6 @@ public class JsonConverter {
 
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 
-		// FIXME we need to get the proper IRI instead
-		String siteIri = "";
-
 		// json.org does not type its Iterator: unchecked cast needed
 		@SuppressWarnings("unchecked")
 		Iterator<String> linkIterator = jsonObject.keys();
@@ -376,8 +376,7 @@ public class JsonConverter {
 			}
 
 			// create the SiteLink instance
-			SiteLink siteLink = factory.getSiteLink(title, siteKey, siteIri,
-					badges);
+			SiteLink siteLink = factory.getSiteLink(title, siteKey, badges);
 			result.put(siteKey, siteLink);
 		}
 
@@ -404,23 +403,28 @@ public class JsonConverter {
 		List<Statement> statementsFromJson = new ArrayList<Statement>(
 				jsonStatements.length());
 
-		// iterate over all the statements in the item and decompose them
+		// Get the (flat) list of all Statements from JSON:
 		for (int i = 0; i < jsonStatements.length(); i++) {
-			
-			// snak conversion might fail
-			// so gracefully skip them and log a debug message
 			JSONObject statementJson = jsonStatements.getJSONObject(i);
-			try { // only conversion exceptions are to be caught
-			Statement statement = this.getStatement(statementJson,
-					entityIdValue);
-			statementsFromJson.add(statement);
-			} catch( IllegalArgumentException | JSONException e){
-				logger.debug("Encountered an exception during statement parsing:\n"
-						+ e.getMessage() + "\nIn statement\n" + statementJson.toString(2));
+
+			// Skip only current Statement in case of errors, but log error
+			try {
+				Statement statement = this.getStatement(statementJson,
+						entityIdValue);
+				statementsFromJson.add(statement);
+			} catch (IllegalArgumentException e) {
+				logger.error("IllegalArgumentException during statement parsing:\n"
+						+ e.getMessage()
+						+ "\nIn statement: \n"
+						+ statementJson.toString(2));
+			} catch (JSONException e) {
+				logger.error("JSONException during statement parsing:\n"
+						+ e.getMessage() + "\nIn statement: \n"
+						+ statementJson.toString(2));
 			}
 		}
 
-		// process the list of statements into a list of statement groups
+		// Process the list of statements into a list of statement groups:
 		result = this.statementGroupBuilder
 				.buildFromStatementList(statementsFromJson);
 
@@ -927,19 +931,6 @@ public class JsonConverter {
 
 	public String getBaseIri() {
 		return baseIri;
-	}
-
-	/**
-	 * For the <i>baseIri</i> see also
-	 * {@link org.wikidata.wdtk.datamodel.interfaces.ItemId}
-	 * 
-	 * @param baseIri
-	 *            the new baseIRI to be set. If the given string is null,
-	 *            nothing will be done.
-	 */
-	public void setBaseIri(String baseIri) {
-		Validate.notNull(baseIri);
-		this.baseIri = baseIri;
 	}
 
 }

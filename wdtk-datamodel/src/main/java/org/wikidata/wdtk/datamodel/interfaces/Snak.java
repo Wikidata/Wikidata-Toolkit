@@ -41,4 +41,13 @@ public interface Snak {
 	 */
 	PropertyIdValue getPropertyId();
 
+	/**
+	 * Accept a SnakVisitor and return its output.
+	 * 
+	 * @param snakVisitor
+	 *            the SnakVisitor
+	 * @return output of the visitor
+	 */
+	<T> T accept(SnakVisitor<T> snakVisitor);
+
 }

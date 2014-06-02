@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 public class MonolingualTextValueImpl implements MonolingualTextValue {
 
@@ -52,6 +53,11 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 	@Override
 	public String getLanguageCode() {
 		return this.languageCode;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	/*

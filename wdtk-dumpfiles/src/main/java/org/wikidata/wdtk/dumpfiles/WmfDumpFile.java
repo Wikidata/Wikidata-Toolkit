@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.wikidata.wdtk.util.CompressionType;
 
 /*
  * #%L
@@ -37,14 +41,59 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * The default URL of the website to obtain the dump files from.
 	 */
 	static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
-	/**
-	 * The subdirectory of the dumpfile site where daily dumps are kept.
-	 */
-	static final String DAILY_WEB_DIRECTORY = "other/incr/";
 
-	static final String POSTFIX_DAILY_DUMP_FILE = "-pages-meta-hist-incr.xml.bz2";
-	static final String POSTFIX_CURRENT_DUMP_FILE = "-pages-meta-current.xml.bz2";
-	static final String POSTFIX_FULL_DUMP_FILE = "-pages-meta-history.xml.bz2";
+	/**
+	 * Hash map defining the relative Web directory of each type of dump.
+	 */
+	static final Map<DumpContentType, String> WEB_DIRECTORY = new HashMap<DumpContentType, String>();
+	static {
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.DAILY, "other/incr/");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.CURRENT, "");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.FULL, "");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.SITES, "");
+	}
+
+	/**
+	 * Hash map defining file name ending of each type of dump.
+	 */
+	static final Map<DumpContentType, String> POSTFIXES = new HashMap<DumpContentType, String>();
+	static {
+		WmfDumpFile.POSTFIXES.put(DumpContentType.DAILY,
+				"-pages-meta-hist-incr.xml.bz2");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.CURRENT,
+				"-pages-meta-current.xml.bz2");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.FULL,
+				"-pages-meta-history.xml.bz2");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.SITES, "-sites.sql.gz");
+	}
+
+	/**
+	 * Hash map defining the compression type of each type of dump.
+	 */
+	static final Map<DumpContentType, CompressionType> COMPRESSION_TYPE = new HashMap<DumpContentType, CompressionType>();
+	static {
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.DAILY,
+				CompressionType.BZ2);
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.CURRENT,
+				CompressionType.BZ2);
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.FULL,
+				CompressionType.BZ2);
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.SITES,
+				CompressionType.GZIP);
+	}
+
+	/**
+	 * Hash map defining whether a certain type of dump is a dump of page
+	 * revisions or not. Dumps with page revisions have a maximal revision id,
+	 * while other dump files do not.
+	 */
+	static final Map<DumpContentType, Boolean> REVISION_DUMP = new HashMap<DumpContentType, Boolean>();
+	static {
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.DAILY, true);
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.CURRENT, true);
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.FULL, true);
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.SITES, false);
+	}
 
 	/**
 	 * The name of the file where a dump's maximal revision id should be stored
@@ -126,15 +175,49 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 *             if the given dump file type is not known
 	 */
 	public static String getDumpFilePostfix(DumpContentType dumpContentType) {
-		switch (dumpContentType) {
-		case DAILY:
-			return WmfDumpFile.POSTFIX_DAILY_DUMP_FILE;
-		case CURRENT:
-			return WmfDumpFile.POSTFIX_CURRENT_DUMP_FILE;
-		case FULL:
-			return WmfDumpFile.POSTFIX_FULL_DUMP_FILE;
-		default:
-			throw new IllegalArgumentException("Unsupported dump type");
+		if (WmfDumpFile.POSTFIXES.containsKey(dumpContentType)) {
+			return WmfDumpFile.POSTFIXES.get(dumpContentType);
+		} else {
+			throw new IllegalArgumentException("Unsupported dump type "
+					+ dumpContentType);
+		}
+	}
+
+	/**
+	 * Returns the relative directory on the Web site where dumpfiles of the
+	 * given type can be found.
+	 * 
+	 * @param dumpContentType
+	 *            the type of dump
+	 * @return relative web directory for the current dumpfiles
+	 * @throws IllegalArgumentException
+	 *             if the given dump file type is not known
+	 */
+	public static String getDumpFileWebDirectory(DumpContentType dumpContentType) {
+		if (WmfDumpFile.WEB_DIRECTORY.containsKey(dumpContentType)) {
+			return WmfDumpFile.WEB_DIRECTORY.get(dumpContentType);
+		} else {
+			throw new IllegalArgumentException("Unsupported dump type "
+					+ dumpContentType);
+		}
+	}
+
+	/**
+	 * Returns the compression type of this kind of dump file.
+	 * 
+	 * @param dumpContentType
+	 *            the type of dump
+	 * @return compression type
+	 * @throws IllegalArgumentException
+	 *             if the given dump file type is not known
+	 */
+	public static CompressionType getDumpFileCompressionType(
+			DumpContentType dumpContentType) {
+		if (WmfDumpFile.COMPRESSION_TYPE.containsKey(dumpContentType)) {
+			return WmfDumpFile.COMPRESSION_TYPE.get(dumpContentType);
+		} else {
+			throw new IllegalArgumentException("Unsupported dump type "
+					+ dumpContentType);
 		}
 	}
 
@@ -185,6 +268,26 @@ public abstract class WmfDumpFile implements MwDumpFile {
 			String projectName, String dateStamp) {
 		return projectName + "-" + dateStamp
 				+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
+	}
+
+	/**
+	 * Returns true if the given dump file type contains page revisions and
+	 * false if it does not. Dumps that do not contain pages are for auxiliary
+	 * information such as linked sites.
+	 * 
+	 * @param dumpContentType
+	 *            the type of dump
+	 * @return true if the dumpfile contains revisions
+	 * @throws IllegalArgumentException
+	 *             if the given dump file type is not known
+	 */
+	public static boolean isRevisionDumpFile(DumpContentType dumpContentType) {
+		if (WmfDumpFile.REVISION_DUMP.containsKey(dumpContentType)) {
+			return WmfDumpFile.REVISION_DUMP.get(dumpContentType);
+		} else {
+			throw new IllegalArgumentException("Unsupported dump type "
+					+ dumpContentType);
+		}
 	}
 
 }

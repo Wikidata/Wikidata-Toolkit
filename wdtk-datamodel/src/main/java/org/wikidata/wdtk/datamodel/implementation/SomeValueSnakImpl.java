@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
 public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
@@ -63,8 +64,15 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 
 		return this.propertyId.equals(((SomeValueSnak) obj).getPropertyId());
 	}
+
+	@Override
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
+	}
+
 	@Override
 	public String toString(){
 		return "SomeValueSnak {pId = " + this.propertyId + "}";
 	}
+
 }

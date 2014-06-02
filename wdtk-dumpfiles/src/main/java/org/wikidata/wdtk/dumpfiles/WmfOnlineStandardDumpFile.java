@@ -51,6 +51,11 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	final DumpContentType dumpContentType;
 
 	/**
+	 * Set to true when all required files have been downloaded successfully.
+	 */
+	boolean isPrepared = false;
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param dateStamp
@@ -83,7 +88,6 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
-
 		prepareDumpFile();
 
 		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
@@ -92,11 +96,16 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						this.dumpContentType, this.dateStamp));
 
-		return thisDumpDirectoryManager.getInputStreamForBz2File(fileName);
+		return thisDumpDirectoryManager.getInputStreamForFile(fileName,
+				WmfDumpFile.getDumpFileCompressionType(this.dumpContentType));
 	}
 
 	@Override
 	public void prepareDumpFile() throws IOException {
+		if (this.isPrepared) {
+			return;
+		}
+
 		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
@@ -105,7 +114,13 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
 				+ fileName + " from " + urlString + " ...");
 
-		if (this.getMaximalRevisionId() == -1) {
+		if (!isAvailable()) {
+			throw new IOException(
+					"Dump file not available (yet). Aborting dump retrieval.");
+		}
+
+		if (WmfDumpFile.isRevisionDumpFile(this.dumpContentType)
+				&& this.getMaximalRevisionId() == -1) {
 			throw new IOException(
 					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
 		}
@@ -119,17 +134,26 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 			thisDumpDirectoryManager.createFile(fileName, inputStream);
 		}
 
-		thisDumpDirectoryManager.createFile(
-				WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
-						.getMaximalRevisionId().toString());
+		if (WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
+			thisDumpDirectoryManager.createFile(
+					WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
+							.getMaximalRevisionId().toString());
+		}
 
-		logger.info("... Completed download of "
+		this.isPrepared = true;
+
+		logger.info("... completed download of "
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
 				+ fileName + " from " + urlString);
+
 	}
 
 	@Override
 	protected Long fetchMaximalRevisionId() {
+		if (!WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
+			return -1L;
+		}
+
 		Long maxRevId = -1L;
 		String urlString = getBaseUrl();
 		try (InputStream in = this.webResourceFetcher
@@ -196,8 +220,9 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL + this.projectName + "/"
-				+ this.dateStamp + "/";
+		return WmfDumpFile.DUMP_SITE_BASE_URL
+				+ WmfDumpFile.getDumpFileWebDirectory(this.dumpContentType)
+				+ this.projectName + "/" + this.dateStamp + "/";
 	}
 
 }

@@ -226,9 +226,9 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetSiteLink() {
 		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
-				"http://en.wikipedia.org", Collections.<String> emptyList());
+				Collections.<String> emptyList());
 		SiteLink o2 = factory.getSiteLink("SOLID", "enwiki",
-				"http://en.wikipedia.org", Collections.<String> emptyList());
+				Collections.<String> emptyList());
 		assertEquals(o1, o2);
 	}
 
