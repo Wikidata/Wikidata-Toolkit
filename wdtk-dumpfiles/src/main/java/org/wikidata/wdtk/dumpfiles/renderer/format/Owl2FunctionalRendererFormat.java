@@ -121,8 +121,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return true;
 	}
 
-	@Override
-	public void start() {
+	public boolean addNamespaceDeclarations() {
 		addPrefix("", createURI(Owl2FunctionalConstant.PREFIX_CONSTRAINTS));
 		addPrefix(Owl2FunctionalConstant.OWL,
 				createURI(Owl2FunctionalConstant.PREFIX_OWL));
@@ -134,8 +133,16 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				createURI(Owl2FunctionalConstant.PREFIX_XSD));
 		addPrefix(Owl2FunctionalConstant.RDFS,
 				createURI(Owl2FunctionalConstant.PREFIX_RDFS));
-		addPrefix(Owl2FunctionalConstant.ENTITY,
+		addPrefix(Owl2FunctionalConstant.WO,
+				createURI(Owl2FunctionalConstant.PREFIX_WBONTO));
+		addPrefix(Owl2FunctionalConstant.ID,
 				createURI(Owl2FunctionalConstant.PREFIX_WIKIDATA));
+		return true;
+	}
+
+	@Override
+	public void start() {
+		addNamespaceDeclarations();
 		add(new StringBNode(""));
 		add(new StringBNode(""));
 		add(new StringBNode(Owl2FunctionalConstant.ONTOLOGY

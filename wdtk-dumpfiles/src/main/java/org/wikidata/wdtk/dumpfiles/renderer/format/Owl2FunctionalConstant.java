@@ -49,6 +49,7 @@ public interface Owl2FunctionalConstant {
 	String PREFIX_RDF = Vocabulary.PREFIX_RDF; // "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	String PREFIX_RDFS = Vocabulary.PREFIX_RDFS; // "http://www.w3.org/2000/01/rdf-schema#";
 	String PREFIX_XSD = Vocabulary.PREFIX_XSD; // "http://www.w3.org/2001/XMLSchema#";
+	String PREFIX_WBONTO = Vocabulary.PREFIX_WBONTO; // "http://www.wikidata.org/ontology#";
 
 	String ANNOTATION_ASSERTION = "AnnotationAssertion";
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
@@ -94,6 +95,7 @@ public interface Owl2FunctionalConstant {
 	String XML = "xml";
 	String XSD = "xsd";
 	String RDFS = "rdfs";
-	String ENTITY = "entity";
+	String WO = "wo";
+	String ID = "id";
 
 }

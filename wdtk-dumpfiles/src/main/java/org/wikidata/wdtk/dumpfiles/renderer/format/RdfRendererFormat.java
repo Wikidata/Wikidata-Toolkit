@@ -567,10 +567,32 @@ public class RdfRendererFormat implements RendererFormat {
 		return true;
 	}
 
+	public void addNamespaceDeclarations() {
+		try {
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.OWL,
+					RdfStringConstant.PREFIX_OWL);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.RDF,
+					RdfStringConstant.PREFIX_RDF);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.XML,
+					RdfStringConstant.PREFIX_XML);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.XSD,
+					RdfStringConstant.PREFIX_XSD);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.RDFS,
+					RdfStringConstant.PREFIX_RDFS);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.WO,
+					RdfStringConstant.PREFIX_WBONTO);
+			this.rdfWriter.writeNamespaceDeclaration(RdfStringConstant.ID,
+					RdfStringConstant.PREFIX_WIKIDATA);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	@Override
 	public void start() {
 		try {
 			this.rdfWriter.start();
+			addNamespaceDeclarations();
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

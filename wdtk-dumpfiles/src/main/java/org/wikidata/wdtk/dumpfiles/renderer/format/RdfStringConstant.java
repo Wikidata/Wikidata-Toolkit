@@ -20,15 +20,22 @@ package org.wikidata.wdtk.dumpfiles.renderer.format;
  * #L%
  */
 
+import org.wikidata.wdtk.dumpfiles.parser.constraint.ConstraintMainParser;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 public interface RdfStringConstant {
 
 	String AUX = "aux";
+
+	String PREFIX_WIKIDATA = ConstraintMainParser.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
+	String PREFIX_XML = "http://www.w3.org/XML/1998/namespace";
+
 	String PREFIX_OWL = Vocabulary.PREFIX_OWL; // "http://www.w3.org/2002/07/owl#";
 	String PREFIX_RDF = Vocabulary.PREFIX_RDF; // "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	String PREFIX_RDFS = Vocabulary.PREFIX_RDFS; // "http://www.w3.org/2000/01/rdf-schema#";
 	String PREFIX_XSD = Vocabulary.PREFIX_XSD; // "http://www.w3.org/2001/XMLSchema#";
+	String PREFIX_WBONTO = Vocabulary.PREFIX_WBONTO; // "http://www.wikidata.org/ontology#";
+
 	String OWL_ANNOTATION_PROPERTY = PREFIX_OWL + "AnnotationProperty";
 	String OWL_CLASS = PREFIX_OWL + "Class";
 	String OWL_COMPLEMENT_OF = PREFIX_OWL + "complementOf";
@@ -68,5 +75,13 @@ public interface RdfStringConstant {
 	String XSD_MIN_INCLUSIVE = PREFIX_XSD + "minInclusive";
 	String XSD_PATTERN = PREFIX_XSD + "pattern";
 	String XSD_STRING = PREFIX_XSD + "string";
+
+	String OWL = "owl";
+	String RDF = "rdf";
+	String XML = "xml";
+	String XSD = "xsd";
+	String RDFS = "rdfs";
+	String WO = "wo";
+	String ID = "id";
 
 }
