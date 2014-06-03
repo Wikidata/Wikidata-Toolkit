@@ -62,4 +62,34 @@ public class DateAndNow {
 		return this.isNow;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof DateAndNow)) {
+			return false;
+		}
+		DateAndNow other = (DateAndNow) obj;
+		return (this.isNow == other.isNow) && (this.date.equals(other.date));
+	}
+
+	@Override
+	public int hashCode() {
+		if (this.date != null) {
+			return this.date.hashCode();
+		} else {
+			return 1;
+		}
+	}
+
+	@Override
+	public String toString() {
+		if (this.isNow) {
+			return "NOW";
+		} else {
+			return this.date.toString();
+		}
+	}
+
 }

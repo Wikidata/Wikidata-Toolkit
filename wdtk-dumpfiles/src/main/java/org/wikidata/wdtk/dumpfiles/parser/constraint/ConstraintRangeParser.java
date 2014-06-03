@@ -23,13 +23,16 @@ package org.wikidata.wdtk.dumpfiles.parser.constraint;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.DateAndNow;
 import org.wikidata.wdtk.dumpfiles.parser.template.Template;
+import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 /**
  * 
@@ -42,7 +45,9 @@ class ConstraintRangeParser implements ConstraintParser {
 
 		@Override
 		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat ret = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			ret.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return ret;
 		}
 
 	};
@@ -61,11 +66,11 @@ class ConstraintRangeParser implements ConstraintParser {
 			}
 			if (str.length() == 10) {
 				str += " 00:00:00";
-				try {
-					Date date = dateFormat.get().parse(dateOrNow);
-					return new DateAndNow(date);
-				} catch (ParseException e) {
-				}
+			}
+			try {
+				Date date = dateFormat.get().parse(str);
+				return new DateAndNow(date);
+			} catch (ParseException e) {
 			}
 			return null;
 		}
@@ -97,20 +102,31 @@ class ConstraintRangeParser implements ConstraintParser {
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 
-			// FIXME this parser does not use the property date type yet
+			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
+			String propertyType = wdPropertyTypes
+					.getPropertyType(constrainedProperty);
 
-			DateAndNow minDate = parseDate(minStr);
-			DateAndNow maxDate = parseDate(maxStr);
-			if ((minDate != null) && (maxDate != null)) {
-				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
-						true);
-			}
+			if (propertyType.equals(DatatypeIdValue.DT_TIME)) {
+				DateAndNow minDate = parseDate(minStr);
+				DateAndNow maxDate = parseDate(maxStr);
+				if ((minDate != null) && (maxDate != null)) {
+					ret = new ConstraintRange(constrainedProperty, minStr,
+							maxStr, true);
+				}
 
-			Double minNum = parseDouble(minStr);
-			Double maxNum = parseDouble(maxStr);
-			if ((minNum != null) && (maxNum != null)) {
-				ret = new ConstraintRange(constrainedProperty, minStr, maxStr,
-						false);
+			} else if (propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
+				Double minNum = parseDouble(minStr);
+				Double maxNum = parseDouble(maxStr);
+				if ((minNum != null) && (maxNum != null)) {
+					ret = new ConstraintRange(constrainedProperty, minStr,
+							maxStr, false);
+				}
+
+			} else {
+				throw new IllegalArgumentException("Property '"
+						+ constrainedProperty + "' has type '" + propertyType
+						+ "' and cannot have a range constraint as in '"
+						+ template + "'.");
 			}
 
 		}
