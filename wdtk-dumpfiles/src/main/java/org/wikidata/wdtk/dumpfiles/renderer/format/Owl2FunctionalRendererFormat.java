@@ -52,6 +52,8 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	final BufferedWriter writer;
 
+	int auxiliaryEntityCounter = 0;
+
 	public Owl2FunctionalRendererFormat(OutputStream output) {
 		this.writer = new BufferedWriter(new OutputStreamWriter(output));
 	}
@@ -170,6 +172,14 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI getDaux(PropertyIdValue property) {
+		URI ret = createURI(property.getIri() + Owl2FunctionalConstant.AUX
+				+ this.auxiliaryEntityCounter);
+		this.auxiliaryEntityCounter++;
+		return ret;
+	}
+
+	@Override
 	public URI getPs(PropertyIdValue property) {
 		return createURI(Vocabulary.getPropertyUri(property,
 				PropertyContext.STATEMENT));
@@ -179,11 +189,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	public URI getPv(PropertyIdValue property) {
 		return createURI(Vocabulary.getPropertyUri(property,
 				PropertyContext.VALUE));
-	}
-
-	@Override
-	public URI getRp(PropertyIdValue property) {
-		return createURI(property.getIri() + Owl2FunctionalConstant.AUX);
 	}
 
 	@Override

@@ -34,11 +34,11 @@ public interface RendererFormat {
 
 	URI getProperty(PropertyIdValue property);
 
+	URI getDaux(PropertyIdValue property);
+
 	URI getPs(PropertyIdValue property);
 
 	URI getPv(PropertyIdValue property);
-
-	URI getRp(PropertyIdValue property);
 
 	URI rdfsComment();
 

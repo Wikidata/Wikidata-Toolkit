@@ -64,18 +64,19 @@ class ConstraintFormatRenderer implements ConstraintRenderer {
 		if ((p == null) || (pattern == null)) {
 			return;
 		}
-		URI rp = this.f.getRp(p);
+		URI dAux = this.f.getDaux(p);
+
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
-		this.f.addDeclarationObjectProperty(rp);
+		this.f.addDeclarationDatatype(dAux);
 		this.f.addDatatypeDefinition(
-				rp,
+				dAux,
 				this.f.getDatatypeRestriction(this.f.xsdString(),
 						this.f.xsdPattern(), transform(pattern)));
 
 		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
-		this.f.addDataPropertyRange(this.f.getPv(p), rp);
+		this.f.addDataPropertyRange(this.f.getPv(p), dAux);
 	}
 
 }

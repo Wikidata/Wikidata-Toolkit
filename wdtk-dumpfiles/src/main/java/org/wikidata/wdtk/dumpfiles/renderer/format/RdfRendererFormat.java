@@ -43,6 +43,8 @@ public class RdfRendererFormat implements RendererFormat {
 
 	final RdfWriter rdfWriter;
 
+	int auxiliaryEntityCounter = 0;
+
 	public RdfRendererFormat(OutputStream outputStream) {
 		this.rdfWriter = new RdfWriter(RDFFormat.RDFXML, outputStream);
 	}
@@ -58,6 +60,14 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI getDaux(PropertyIdValue property) {
+		URI ret = this.rdfWriter.getUri(property.getIri()
+				+ RdfStringConstant.AUX + this.auxiliaryEntityCounter);
+		this.auxiliaryEntityCounter++;
+		return ret;
+	}
+
+	@Override
 	public URI getPs(PropertyIdValue property) {
 		return this.rdfWriter.getUri(Vocabulary.getPropertyUri(property,
 				PropertyContext.STATEMENT));
@@ -67,11 +77,6 @@ public class RdfRendererFormat implements RendererFormat {
 	public URI getPv(PropertyIdValue property) {
 		return this.rdfWriter.getUri(Vocabulary.getPropertyUri(property,
 				PropertyContext.VALUE));
-	}
-
-	@Override
-	public URI getRp(PropertyIdValue property) {
-		return this.rdfWriter.getUri(property.getIri() + RdfStringConstant.AUX);
 	}
 
 	@Override

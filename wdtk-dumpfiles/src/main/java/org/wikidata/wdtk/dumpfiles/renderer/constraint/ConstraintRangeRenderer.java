@@ -74,14 +74,14 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 		if ((p == null) || (param == null)) {
 			return;
 		}
-		URI rp = this.f.getRp(p);
+		URI dAux = this.f.getDaux(p);
 
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
-		this.f.addDeclarationObjectProperty(rp);
+		this.f.addDeclarationDatatype(dAux);
 		this.f.addDatatypeDefinition(
-				rp,
+				dAux,
 				this.f.getDataIntersectionOf(
 						this.f.getDatatypeRestriction(type,
 								this.f.xsdMinInclusive(), min),
@@ -90,7 +90,7 @@ class ConstraintRangeRenderer implements ConstraintRenderer {
 
 		this.f.addDeclarationObjectProperty(this.f.getPv(p));
 		this.f.addObjectPropertyRange(this.f.getPv(p),
-				this.f.getDataSomeValuesFrom(param, rp));
+				this.f.getDataSomeValuesFrom(param, dAux));
 	}
 
 }
