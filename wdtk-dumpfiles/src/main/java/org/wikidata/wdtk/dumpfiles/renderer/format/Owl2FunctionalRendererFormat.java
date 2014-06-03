@@ -50,6 +50,8 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
+	final Set<Resource> inverseFunctionalObjectProperties = new HashSet<Resource>();
+
 	final BufferedWriter writer;
 
 	int auxiliaryEntityCounter = 0;
@@ -159,6 +161,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		add(new StringBNode(Owl2FunctionalConstant.C_PAR_B));
 		add(new StringBNode(""));
 		this.declaredEntities.clear();
+		this.inverseFunctionalObjectProperties.clear();
 	}
 
 	@Override
@@ -456,6 +459,10 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	@Override
 	public boolean addInverseFunctionalObjectProperty(
 			Resource objectPropertyExpression) {
+		if (this.inverseFunctionalObjectProperties
+				.contains(objectPropertyExpression)) {
+			return false;
+		}
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
 				objectPropertyExpression);

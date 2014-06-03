@@ -41,6 +41,8 @@ public class RdfRendererFormat implements RendererFormat {
 
 	final Set<Resource> declaredEntities = new HashSet<Resource>();
 
+	final Set<Resource> inverseFunctionalObjectProperties = new HashSet<Resource>();
+
 	final RdfWriter rdfWriter;
 
 	int auxiliaryEntityCounter = 0;
@@ -539,6 +541,10 @@ public class RdfRendererFormat implements RendererFormat {
 	@Override
 	public boolean addInverseFunctionalObjectProperty(
 			Resource objectPropertyExpression) {
+		if (this.inverseFunctionalObjectProperties
+				.contains(objectPropertyExpression)) {
+			return false;
+		}
 		try {
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDF_TYPE,
@@ -621,6 +627,7 @@ public class RdfRendererFormat implements RendererFormat {
 		try {
 			this.rdfWriter.finish();
 			this.declaredEntities.clear();
+			this.inverseFunctionalObjectProperties.clear();
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
