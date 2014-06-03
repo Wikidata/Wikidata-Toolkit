@@ -156,6 +156,8 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.RDF_REST, bnode2);
 			this.rdfWriter.writeTripleValueObject(bnode2,
 					RdfUriConstant.RDF_FIRST, dataRange1);
+			this.rdfWriter.writeTripleValueObject(bnode2,
+					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -204,6 +206,8 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.OWL_WITH_RESTRICTIONS, bnode1);
 			this.rdfWriter.writeTripleValueObject(bnode1,
 					RdfUriConstant.RDF_FIRST, bnode2);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 			this.rdfWriter.writeTripleStringObject(bnode2, constrainingFacet,
 					restrictionValue.stringValue());
 		} catch (RDFHandlerException e) {
@@ -261,6 +265,8 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.OWL_ONE_OF, bnode1);
 			this.rdfWriter.writeTripleValueObject(bnode1,
 					RdfUriConstant.RDF_FIRST, individual);
+			this.rdfWriter.writeTripleValueObject(bnode1,
+					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -289,6 +295,9 @@ public class RdfRendererFormat implements RendererFormat {
 					this.rdfWriter.writeTripleValueObject(currentBnode,
 							RdfUriConstant.RDF_REST, nextBnode);
 					currentBnode = nextBnode;
+				} else {
+					this.rdfWriter.writeTripleValueObject(currentBnode,
+							RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 				}
 			}
 		} catch (RDFHandlerException e) {
@@ -333,6 +342,8 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.RDF_REST, bnode2);
 			this.rdfWriter.writeTripleValueObject(bnode2,
 					RdfUriConstant.RDF_FIRST, classExpression1);
+			this.rdfWriter.writeTripleValueObject(bnode2,
+					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -517,6 +528,8 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.OWL_HAS_KEY, bnode0);
 			this.rdfWriter.writeTripleValueObject(bnode0,
 					RdfUriConstant.RDF_FIRST, dataPropertyExpression);
+			this.rdfWriter.writeTripleValueObject(bnode0,
+					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

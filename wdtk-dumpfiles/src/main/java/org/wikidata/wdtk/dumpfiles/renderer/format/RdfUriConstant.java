@@ -64,6 +64,7 @@ public interface RdfUriConstant {
 	URI OWL_WITH_RESTRICTIONS = factory
 			.createURI(RdfStringConstant.OWL_WITH_RESTRICTIONS);
 	URI RDF_FIRST = factory.createURI(RdfStringConstant.RDF_FIRST);
+	URI RDF_NIL = factory.createURI(RdfStringConstant.RDF_NIL);
 	URI RDF_REST = factory.createURI(RdfStringConstant.RDF_REST);
 	URI RDF_TYPE = factory.createURI(RdfStringConstant.RDF_TYPE);
 	URI RDFS_COMMENT = factory.createURI(RdfStringConstant.RDFS_COMMENT);
