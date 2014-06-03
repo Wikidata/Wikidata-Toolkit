@@ -549,6 +549,8 @@ public class RdfRendererFormat implements RendererFormat {
 			this.rdfWriter.writeTripleValueObject(objectPropertyExpression,
 					RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_INVERSE_FUNCTIONAL_PROPERTY);
+			this.inverseFunctionalObjectProperties
+					.add(objectPropertyExpression);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

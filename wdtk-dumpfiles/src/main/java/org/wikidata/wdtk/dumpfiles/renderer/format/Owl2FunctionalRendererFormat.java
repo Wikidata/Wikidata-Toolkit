@@ -467,6 +467,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				Owl2FunctionalConstant.INVERSE_FUNCTIONAL_OBJECT_PROPERTY,
 				objectPropertyExpression);
 		add(bnode);
+		this.inverseFunctionalObjectProperties.add(objectPropertyExpression);
 		return true;
 	}
 
