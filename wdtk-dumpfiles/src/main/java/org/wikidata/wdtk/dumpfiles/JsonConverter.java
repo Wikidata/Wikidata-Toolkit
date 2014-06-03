@@ -213,7 +213,7 @@ public class JsonConverter {
 	 * @return the corresponding ItemIdValue
 	 * @throws JSONException
 	 */
-	private ItemIdValue getItemIdValue(String id) throws JSONException {
+	ItemIdValue getItemIdValue(String id) throws JSONException {
 		try {
 			return this.factory.getItemIdValue(id.toUpperCase(), this.baseIri);
 		} catch (IllegalArgumentException e) { // invalid id format
@@ -231,7 +231,7 @@ public class JsonConverter {
 	 * @return the corresponding PropertyIdValue
 	 * @throws JSONException
 	 */
-	private PropertyIdValue getPropertyIdValue(String id) throws JSONException {
+	PropertyIdValue getPropertyIdValue(String id) throws JSONException {
 		try {
 			return this.factory.getPropertyIdValue(id.toUpperCase(),
 					this.baseIri);
@@ -515,7 +515,7 @@ public class JsonConverter {
 	 *            the rank as integer
 	 * @return the corresponding StatementRank
 	 */
-	private StatementRank getStatementRank(int intRank) {
+	StatementRank getStatementRank(int intRank) {
 
 		switch (intRank) {
 		case 0:
@@ -540,7 +540,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private Snak getSnak(JSONArray jsonSnak) throws JSONException {
+	Snak getSnak(JSONArray jsonSnak) throws JSONException {
 		switch (jsonSnak.getString(0)) {
 		case "value":
 			return this.getValueSnak(jsonSnak);
@@ -624,7 +624,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private ValueSnak getValueSnak(JSONArray jsonValueSnak)
+	ValueSnak getValueSnak(JSONArray jsonValueSnak)
 			throws JSONException {
 
 		// get the property id value
@@ -670,7 +670,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the datatype string is not known
 	 */
-	private DatatypeIdValue getDatatypeIdValue(String jsonDataTypeId)
+	DatatypeIdValue getDatatypeIdValue(String jsonDataTypeId)
 			throws JSONException {
 		return this.factory.getDatatypeIdValue(getDatatypeIri(jsonDataTypeId));
 	}
@@ -727,7 +727,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private QuantityValue getQuantityValue(JSONObject jsonQuantityValue)
+	QuantityValue getQuantityValue(JSONObject jsonQuantityValue)
 			throws JSONException {
 		BigDecimal numericValue = new BigDecimal(
 				jsonQuantityValue.getString("amount"));
@@ -771,7 +771,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private GlobeCoordinatesValue getGlobeCoordinatesValue(
+	GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
 
 		// convert latitude and longitude from double (degrees) to long
@@ -802,8 +802,8 @@ public class JsonConverter {
 				precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
 			} else if (doublePrecision > 0.001) {
 				precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-			} else if (doublePrecision > 0.00027777777777778) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+//			} else if (doublePrecision > 0.00027777777777778) {
+//				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
 			} else if (doublePrecision > 0.0001) {
 				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
 			} else if (doublePrecision > 0.00002777777777778) {
@@ -815,7 +815,7 @@ public class JsonConverter {
 			} else if (doublePrecision > 0.000001) {
 				precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
 			} else if (doublePrecision > 0.00000027777777778) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
+				precision = GlobeCoordinatesValue.PREC_MICRO_DEGREE;
 			} else {
 				precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
 			}
@@ -899,7 +899,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private TimeValue getTimeValue(JSONObject jsonTimeValue)
+	TimeValue getTimeValue(JSONObject jsonTimeValue)
 			throws JSONException {
 
 		String stringTime = jsonTimeValue.getString("time");

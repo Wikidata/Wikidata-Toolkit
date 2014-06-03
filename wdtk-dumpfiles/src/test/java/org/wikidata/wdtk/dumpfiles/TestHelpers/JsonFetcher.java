@@ -3,6 +3,7 @@ package org.wikidata.wdtk.dumpfiles.TestHelpers;
 import java.io.IOException;
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -39,6 +40,25 @@ public class JsonFetcher {
 		String jsonString = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
 		return new JSONObject(jsonString);
+	}
+	
+	/**
+	 * Returns a JSON array for the JSON stored in the given resource.
+	 * 
+	 * @param resourceName
+	 *            a file name without any path information
+	 * @return the JSONArray
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public JSONArray getJsonArrayForResource(String resourceName)
+			throws IOException, JSONException {
+
+		URL resourceUrl = this.getClass().getResource(
+				JsonFetcher.SAMPLE_FILES_BASE_PATH + resourceName);
+		String jsonString = MockStringContentFactory
+				.getStringFromUrl(resourceUrl);
+		return new JSONArray(jsonString);
 	}
 
 	/**

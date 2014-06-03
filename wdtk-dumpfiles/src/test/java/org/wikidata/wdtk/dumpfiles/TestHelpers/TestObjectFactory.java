@@ -47,6 +47,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.dumpfiles.StatementGroupBuilder;
 
@@ -74,7 +75,7 @@ public class TestObjectFactory {
 	 * 
 	 * @return empty {@link PropertyDocument}
 	 */
-	public PropertyDocument createEmptyPropertyDocument(String baseIri) {
+	public static PropertyDocument createEmptyPropertyDocument(String baseIri) {
 
 		PropertyIdValue propertyId = factory.getPropertyIdValue("P1",
 				baseIri);
@@ -95,7 +96,7 @@ public class TestObjectFactory {
 	 * 
 	 * @return empty {@link ItemDocument}
 	 */
-	public ItemDocument createEmptyItemDocument(String baseIri) {
+	public static ItemDocument createEmptyItemDocument(String baseIri) {
 
 		ItemIdValue itemId = factory.getItemIdValue("Q1",
 				baseIri);
@@ -232,10 +233,8 @@ public class TestObjectFactory {
 	 */
 	public Map<String, SiteLink> createSiteLinks() {
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
-		result.put("enwiki", factory.getSiteLink("title_en", "siteKey",
-				baseIri, new LinkedList<String>()));
-		result.put("auwiki", factory.getSiteLink("title_au", "siteKey",
-				baseIri, new LinkedList<String>()));
+		result.put("enwiki", factory.getSiteLink("title_en", "siteKey", new LinkedList<String>()));
+		result.put("auwiki", factory.getSiteLink("title_au", "siteKey", new LinkedList<String>()));
 		return result;
 	}
 
@@ -427,6 +426,15 @@ public class TestObjectFactory {
 	}
 
 	/**
+	 * Uses the coordinates (0, 0) to be independent of precision
+	 * @param precision
+	 * @return
+	 */
+	static public GlobeCoordinatesValue createGlobalCoordinatesValue(long precision){
+		return factory.getGlobeCoordinatesValue(0, 0, precision,
+				"http://www.wikidata.org/entity/Q2");
+	}
+	/**
 	 * Creates a {@link ValueSnak} with an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
 	 * 
@@ -454,6 +462,7 @@ public class TestObjectFactory {
 				factory.getQuantityValue(new BigDecimal(3), new BigDecimal(3),
 						new BigDecimal(3)));
 	}
+	
 
 	/**
 	 * Creates a {@link ValueSnak} with an
@@ -467,7 +476,6 @@ public class TestObjectFactory {
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
-	 * <li>baseIri: "test"</li>
 	 * <li>year: 306</li>
 	 * <li>month: 11</li>
 	 * <li>day: 3</li>
@@ -486,11 +494,15 @@ public class TestObjectFactory {
 	 * 
 	 * @return {@link ValueSnak}
 	 */
-	public ValueSnak createValueSnakTimeValue(String pId) {
+	static public ValueSnak createValueSnakTimeValue(String pId) {
 		return factory.getValueSnak(factory.getPropertyIdValue(pId, baseIri),
-				factory.getTimeValue(306, (byte) 11, (byte) 3, (byte) 13,
-						(byte) 7, (byte) 6, (byte) 32, 17, 43, 0,
-						"http://www.wikidata.org/entity/Q1985727"));
+				createTimeValue());
+	}
+	
+	static public TimeValue createTimeValue(){
+		return factory.getTimeValue(306, (byte) 11, (byte) 3, (byte) 13,
+				(byte) 7, (byte) 6, (byte) 32, 17, 43, 0,
+				"http://www.wikidata.org/entity/Q1985727");
 	}
 
 	/**
@@ -542,8 +554,8 @@ public class TestObjectFactory {
 	public Map<String, SiteLink> createTestLinks() {
 		
 		Map<String, SiteLink> result = new HashMap<>();
-		result.put("enwiki", factory.getSiteLink("test", "enwiki", baseIri, Collections.<String>singletonList("testBadge")));
-		result.put("dewiki", factory.getSiteLink("TEST", "dewiki", baseIri, Collections.<String>emptyList()));
+		result.put("enwiki", factory.getSiteLink("test", "enwiki", Collections.<String>singletonList("testBadge")));
+		result.put("dewiki", factory.getSiteLink("TEST", "dewiki", Collections.<String>emptyList()));
 		
 		return result;
 	}
