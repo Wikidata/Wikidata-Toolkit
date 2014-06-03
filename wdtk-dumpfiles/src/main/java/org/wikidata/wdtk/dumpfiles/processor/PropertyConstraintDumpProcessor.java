@@ -59,8 +59,22 @@ public class PropertyConstraintDumpProcessor {
 	public static final String RDF_FILE_EXTENSION = ".rdf";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
+	final boolean renderingComments;
+
 	public static void main(String[] args) throws IOException {
 		(new PropertyConstraintDumpProcessor()).run(args);
+	}
+
+	public PropertyConstraintDumpProcessor() {
+		this(false);
+	}
+
+	public PropertyConstraintDumpProcessor(boolean renderingComments) {
+		this.renderingComments = renderingComments;
+	}
+
+	public boolean isRenderingComments() {
+		return this.renderingComments;
 	}
 
 	public String escapeChars(String str) {
@@ -99,10 +113,15 @@ public class PropertyConstraintDumpProcessor {
 				DEFAULT_DUMP_DATE);
 
 		start(rendererFormats);
-		processAnnotationsOfConstraintTemplates(
-				propertyTalkTemplateProcessor.getMap(), rendererFormats);
+
+		if (this.renderingComments) {
+			processAnnotationsOfConstraintTemplates(
+					propertyTalkTemplateProcessor.getMap(), rendererFormats);
+		}
+
 		processTemplates(propertyTalkTemplateProcessor.getMap(),
 				rendererFormats);
+
 		finish(rendererFormats);
 	}
 
