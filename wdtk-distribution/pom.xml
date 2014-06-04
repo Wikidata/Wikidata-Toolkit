@@ -27,44 +27,6 @@
 			<artifactId>wdtk-rdf</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- For source dependencies, all sources need to be listed (no transitive depencency) -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-datamodel</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-dumpfiles</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-rdf</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-storage</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-util</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-		<!-- For javadocs, we only use the aggregate javadoc from parent -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>wdtk-parent</artifactId>
-			<version>${project.version}</version>
-			<classifier>javadoc</classifier>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -88,37 +50,94 @@
 							</descriptors>
 						</configuration>
 					</execution>
-					<execution>
-						<id>create-source-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>wikidata-toolkit-${project.version}</finalName>
-							<descriptors>
-								<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-					<execution>
-						<id>create-javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>wikidata-toolkit-${project.version}</finalName>
-							<descriptors>
-								<descriptor>${basedir}/src/main/assembly/javadoc.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<dependencies>
+				<!-- For source dependencies, all sources need to be listed (no transitive depencency) -->
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-datamodel</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-dumpfiles</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-rdf</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-storage</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-util</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<!-- For javadocs, we only use the aggregate javadoc from parent -->
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-parent</artifactId>
+					<version>${project.version}</version>
+					<classifier>javadoc</classifier>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>create-source-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>wikidata-toolkit-${project.version}</finalName>
+									<descriptors>
+										<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>create-javadoc-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>wikidata-toolkit-${project.version}</finalName>
+									<descriptors>
+										<descriptor>${basedir}/src/main/assembly/javadoc.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
 
