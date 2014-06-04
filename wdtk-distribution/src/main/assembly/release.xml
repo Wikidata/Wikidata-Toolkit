@@ -3,8 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-
-
 	<id>release</id>
 
 	<formats>
@@ -13,36 +11,23 @@
 
 	<baseDirectory>.</baseDirectory>
 
+	<dependencySets>
+		<dependencySet>
+			<includes>
+				<include>org.wikidata.wdtk:*</include>
+			</includes>
+			<excludes>
+				<exclude>org.wikidata.wdtk:*:*:sources</exclude>
+				<exclude>org.wikidata.wdtk:*:*:javadoc</exclude>
+			</excludes>
+			<outputDirectory>.</outputDirectory>
+			<unpack>true</unpack>
+			<scope>runtime</scope>
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+	</dependencySets>
+  
 	<fileSets>
-
-		<fileSet>
-			<directory>${basedir}/../wdtk-datamodel/target/classes/</directory>
-			<includes>
-				<include>**</include>
-			</includes>
-			<outputDirectory>.</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>${basedir}/../wdtk-dumpfiles/target/classes/</directory>
-			<includes>
-				<include>**</include>
-			</includes>
-			<outputDirectory>.</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>${basedir}/../wdtk-storage/target/classes/</directory>
-			<includes>
-				<include>**</include>
-			</includes>
-			<outputDirectory>.</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>${basedir}/../wdtk-util/target/classes/</directory>
-			<includes>
-				<include>**</include>
-			</includes>
-			<outputDirectory>.</outputDirectory>
-		</fileSet>
 		<fileSet>
 			<directory>${basedir}</directory>
 			<includes>
@@ -50,7 +35,6 @@
 			</includes>
 			<outputDirectory></outputDirectory>
 		</fileSet>
-
 	</fileSets>
 
 </assembly>
