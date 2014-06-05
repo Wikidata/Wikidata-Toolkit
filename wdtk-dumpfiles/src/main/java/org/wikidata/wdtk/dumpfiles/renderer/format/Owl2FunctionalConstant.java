@@ -38,6 +38,7 @@ public interface Owl2FunctionalConstant {
 	String C_PAR_B = ")";
 	String C_QUOTATION_MARK = "\"";
 	String C_SPACE = " ";
+	String C_BACKSLASH = "\\";
 	String AUX = "aux";
 
 	String PREFIX_WIKIDATA = ConstraintMainParser.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";

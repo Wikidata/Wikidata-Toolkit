@@ -79,6 +79,15 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 				+ Owl2FunctionalConstant.C_QUOTATION_MARK;
 	}
 
+	private String escapeBackslash(String value) {
+		return value.replaceAll(Owl2FunctionalConstant.C_BACKSLASH
+				+ Owl2FunctionalConstant.C_BACKSLASH,
+				Owl2FunctionalConstant.C_BACKSLASH
+						+ Owl2FunctionalConstant.C_BACKSLASH
+						+ Owl2FunctionalConstant.C_BACKSLASH
+						+ Owl2FunctionalConstant.C_BACKSLASH);
+	}
+
 	private URI createURI(String value) {
 		return factory.createURI(Owl2FunctionalConstant.C_LT + value
 				+ Owl2FunctionalConstant.C_GT);
@@ -269,9 +278,10 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	BNode getLiteral(Resource value, Resource type) {
-		return new StringBNode(addQuotationMarks(value.stringValue())
-				+ Owl2FunctionalConstant.C_CARET
-				+ Owl2FunctionalConstant.C_CARET + type);
+		return new StringBNode(
+				addQuotationMarks(escapeBackslash(value.stringValue()))
+						+ Owl2FunctionalConstant.C_CARET
+						+ Owl2FunctionalConstant.C_CARET + type);
 	}
 
 	@Override
