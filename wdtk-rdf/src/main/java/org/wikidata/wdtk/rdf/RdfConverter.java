@@ -45,6 +45,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
+import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
@@ -58,28 +59,32 @@ public class RdfConverter {
 	static final Logger logger = LoggerFactory.getLogger(RdfConverter.class);
 
 	final RdfWriter rdfWriter;
-	final ValueRdfConverter valueRdfConverter;
+	final AnyValueConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
-	final RdfConversionBuffer rdfConversionBuffer;
+	final OwlDeclarationBuffer owlDeclarationBuffer;
+	final ReferenceRdfConverter referenceRdfConverter;
+
 	// TODO Making propertyTypes static is a hack to enable a shared property
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new PropertyTypes(
-			"http://www.wikidata.org/w/api.php");
+	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
-	public RdfConverter(RdfWriter writer, Sites sites) {
+	public RdfConverter(RdfWriter rdfWriter, Sites sites) {
 		this.sites = sites;
-		this.rdfWriter = writer;
-		this.rdfConversionBuffer = new RdfConversionBuffer();
-		this.valueRdfConverter = new ValueRdfConverter(writer,
-				this.rdfConversionBuffer, propertyTypes);
-		this.snakRdfConverter = new SnakRdfConverter(writer,
-				this.rdfConversionBuffer, propertyTypes, this.valueRdfConverter);
+		this.rdfWriter = rdfWriter;
+		this.owlDeclarationBuffer = new OwlDeclarationBuffer();
+		this.valueRdfConverter = new AnyValueConverter(rdfWriter,
+				this.owlDeclarationBuffer, propertyTypes);
+		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
+				this.owlDeclarationBuffer, propertyTypes,
+				this.valueRdfConverter);
+		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
+				this.snakRdfConverter);
 	}
 
 	/**
@@ -162,16 +167,46 @@ public class RdfConverter {
 		writeSiteLinks(subject, document.getSiteLinks());
 
 		if (hasTask(RdfSerializer.TASK_TAXONOMY)) {
-			this.rdfConversionBuffer.writeClassDeclarations(this.rdfWriter);
+			this.owlDeclarationBuffer.writeClassDeclarations(this.rdfWriter);
 		}
 
-		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
-		this.rdfConversionBuffer.writePropertyDeclarations(this.rdfWriter,
+		this.snakRdfConverter.writeAuxiliaryTriples();
+		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
 				hasTask(RdfSerializer.TASK_STATEMENTS),
 				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
-		this.rdfConversionBuffer
-				.writePropertyRestrictions(this.snakRdfConverter);
-		this.rdfConversionBuffer.writeReferences(this);
+		this.referenceRdfConverter.writeReferences();
+	}
+
+	public void writePropertyDocument(PropertyDocument document)
+			throws RDFHandlerException {
+
+		propertyTypes.setPropertyType(document.getPropertyId(), document
+				.getDatatype().getIri());
+
+		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
+			return;
+		}
+
+		String propertyUri = document.getEntityId().getIri();
+		Resource subject = this.rdfWriter.getUri(propertyUri);
+
+		this.rdfWriter.writeTripleValueObject(subject, RdfWriter.RDF_TYPE,
+				RdfWriter.WB_PROPERTY);
+
+		writeDocumentTerms(subject, document);
+
+		if (hasTask(RdfSerializer.TASK_DATATYPES)) {
+			this.rdfWriter.writeTripleValueObject(subject,
+					RdfWriter.WB_PROPERTY_TYPE,
+					this.rdfWriter.getUri(document.getDatatype().getIri()));
+		}
+
+		// Not needed for properties -- might change in future:
+		// this.snakRdfConverter.writeAuxiliaryTriples();
+		// this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
+		// hasTask(RdfSerializer.TASK_STATEMENTS),
+		// hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
+		// this.referenceRdfConverter.writeReferences();
 	}
 
 	void writeStatements(Resource subject, ItemDocument itemDocument)
@@ -217,8 +252,8 @@ public class RdfConverter {
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
 							.getMainSnak();
 					Value value = this.valueRdfConverter
-							.getRdfValueForWikidataValue(mainSnak.getValue(),
-									mainSnak.getPropertyId());
+							.getRdfValue(mainSnak.getValue(),
+									mainSnak.getPropertyId(), true);
 					if (value == null) {
 						logger.error("Could not serialize instance of snak: missing value (Snak: "
 								+ mainSnak.toString() + ")");
@@ -251,20 +286,19 @@ public class RdfConverter {
 							.getMainSnak();
 
 					if (isSubPropertyOf) {
-						this.rdfConversionBuffer.addClass(itemDocument
+						this.owlDeclarationBuffer.addClass(itemDocument
 								.getEntityId());
 					}
 					if (mainSnak.getValue() instanceof EntityIdValue) {
-						this.rdfConversionBuffer
+						this.owlDeclarationBuffer
 								.addClass((EntityIdValue) mainSnak.getValue());
 					}
 
 					if (statement.getClaim().getQualifiers().size() == 0
 							&& isSubPropertyOf) {
-						Value value = this.valueRdfConverter
-								.getRdfValueForWikidataValue(
-										mainSnak.getValue(),
-										mainSnak.getPropertyId());
+						Value value = this.valueRdfConverter.getRdfValue(
+								mainSnak.getValue(), mainSnak.getPropertyId(),
+								true);
 						if (value == null) {
 							logger.error("Could not serialize subclass of snak: missing value (Snak: "
 									+ mainSnak.toString() + ")");
@@ -281,39 +315,6 @@ public class RdfConverter {
 				}
 			}
 		}
-	}
-
-	public void writePropertyDocument(PropertyDocument document)
-			throws RDFHandlerException {
-
-		propertyTypes.setPropertyType(document.getPropertyId(), document
-				.getDatatype().getIri());
-
-		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
-			return;
-		}
-
-		String propertyUri = document.getEntityId().getIri();
-		Resource subject = this.rdfWriter.getUri(propertyUri);
-
-		this.rdfWriter.writeTripleValueObject(subject, RdfWriter.RDF_TYPE,
-				RdfWriter.WB_PROPERTY);
-
-		writeDocumentTerms(subject, document);
-
-		if (hasTask(RdfSerializer.TASK_DATATYPES)) {
-			this.rdfWriter.writeTripleValueObject(subject,
-					RdfWriter.WB_PROPERTY_TYPE, this.valueRdfConverter
-							.getDatatypeIdValueLiteral(document.getDatatype()));
-		}
-
-		// Most of these should do nothing for properties, but this might change
-		// in the future:
-		this.rdfConversionBuffer.writeValues(this.valueRdfConverter);
-		this.rdfConversionBuffer.writePropertyDeclarations(this.rdfWriter,
-				hasTask(RdfSerializer.TASK_STATEMENTS),
-				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
-		this.rdfConversionBuffer.writeReferences(this);
 	}
 
 	void writeDocumentTerms(Resource subject, TermedDocument document)
@@ -338,7 +339,7 @@ public class RdfConverter {
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
 			this.rdfWriter.writeTripleValueObject(subject, predicate,
-					this.valueRdfConverter.getMonolingualTextValueLiteral(mtv));
+					getMonolingualTextValueLiteral(mtv));
 		}
 	}
 
@@ -355,26 +356,11 @@ public class RdfConverter {
 
 	}
 
-	void writeReference(Reference reference, Resource resource)
-			throws RDFHandlerException {
-
-		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
-				RdfWriter.WB_REFERENCE);
-		for (SnakGroup snakGroup : reference.getSnakGroups()) {
-			this.snakRdfConverter.setSnakContext(resource,
-					PropertyContext.REFERENCE);
-			for (Snak snak : snakGroup.getSnaks()) {
-				snak.accept(this.snakRdfConverter);
-			}
-		}
-	}
-
 	void writeReferences(Resource statementResource,
 			List<? extends Reference> references) throws RDFHandlerException {
 		for (Reference reference : references) {
-			String referenceUri = Vocabulary.getReferenceUri(reference);
-			Resource resource = this.rdfWriter.getUri(referenceUri);
-			this.rdfConversionBuffer.addReference(reference, resource);
+			Resource resource = this.referenceRdfConverter
+					.addReference(reference);
 			this.rdfWriter.writeTripleValueObject(statementResource,
 					RdfWriter.PROV_WAS_DERIVED_FROM, resource);
 		}
@@ -404,8 +390,9 @@ public class RdfConverter {
 		for (String key : siteLinks.keySet()) {
 			SiteLink siteLink = siteLinks.get(key);
 			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
-			URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
 			if (siteLinkUrl != null) {
+				URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
+
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
 						RdfWriter.RDF_TYPE, RdfWriter.WB_ARTICLE);
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
@@ -434,6 +421,20 @@ public class RdfConverter {
 						+ siteLink.getSiteKey() + "\"");
 			}
 		}
+	}
+
+	Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
+		String languageCode;
+		try {
+			languageCode = WikimediaLanguageCodes.getLanguageCode(value
+					.getLanguageCode());
+		} catch (IllegalArgumentException e) {
+			languageCode = value.getLanguageCode();
+			logger.warn("Unknown Wikimedia language code \""
+					+ languageCode
+					+ "\". Using this code in RDF now, but this might be wrong.");
+		}
+		return this.rdfWriter.getLiteral(value.getText(), languageCode);
 	}
 
 	/**

@@ -175,6 +175,10 @@ public class RdfWriter {
 		return factory.createLiteral(value, languageCode);
 	}
 
+	public Literal getLiteral(String value, URI datatypeUri) {
+		return factory.createLiteral(value, datatypeUri);
+	}
+
 	public void writeNamespaceDeclaration(String prefix, String uri)
 			throws RDFHandlerException {
 		this.writer.handleNamespace(prefix, uri);
