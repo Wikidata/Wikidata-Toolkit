@@ -275,9 +275,6 @@ public class MwDumpFileProcessingTest {
 				thisDumpPath.resolve("wikidatawiki-" + dateStamp
 						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
 				MockStringContentFactory.getStringFromUrl(resourceUrl));
-
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "123"
-				+ dateStamp);
 	}
 
 	/**
@@ -336,9 +333,6 @@ public class MwDumpFileProcessingTest {
 				thisDumpPath.resolve("wikidatawiki-" + dateStamp
 						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
 				dumpContents);
-
-		dm.setFileContents(thisDumpPath.resolve("maxrevid.txt"), "123"
-				+ dateStamp);
 	}
 
 	@Test

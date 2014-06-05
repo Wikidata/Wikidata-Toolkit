@@ -58,7 +58,7 @@ public interface MwDumpFile {
 	 * 
 	 * @return true if the dump file is likely to be available
 	 */
-	public boolean isAvailable();
+	boolean isAvailable();
 
 	/**
 	 * Returns the project name for this dump. Together with the dump content
@@ -67,7 +67,7 @@ public interface MwDumpFile {
 	 * 
 	 * @return a project name string
 	 */
-	public String getProjectName();
+	String getProjectName();
 
 	/**
 	 * Returns the date stamp for this dump. Together with the project name and
@@ -76,7 +76,7 @@ public interface MwDumpFile {
 	 * 
 	 * @return a string that represents a date in format YYYYMMDD
 	 */
-	public String getDateStamp();
+	String getDateStamp();
 
 	/**
 	 * Returns information about the content of the dump. Together with the
@@ -85,15 +85,7 @@ public interface MwDumpFile {
 	 * 
 	 * @return the content type of this dump
 	 */
-	public DumpContentType getDumpContentType();
-
-	/**
-	 * Returns the maximal revision id of a revision within this dump. The
-	 * number "-1" will be returned if this information is not available.
-	 * 
-	 * @return maximal revision id or -1 if not available
-	 */
-	public Long getMaximalRevisionId();
+	DumpContentType getDumpContentType();
 
 	/**
 	 * Returns an input stream that provides access to the (uncompressed) text
@@ -105,7 +97,7 @@ public interface MwDumpFile {
 	 * @throws IOException
 	 *             if the dump file contents could not be accessed
 	 */
-	public InputStream getDumpFileStream() throws IOException;
+	InputStream getDumpFileStream() throws IOException;
 
 	/**
 	 * Returns a buffered reader that provides access to the (uncompressed) text
@@ -117,7 +109,7 @@ public interface MwDumpFile {
 	 * @throws IOException
 	 *             if the dump file contents could not be accessed
 	 */
-	public BufferedReader getDumpFileReader() throws IOException;
+	BufferedReader getDumpFileReader() throws IOException;
 
 	/**
 	 * Prepares the dump file for access via {@link #getDumpFileStream()} or
@@ -127,5 +119,5 @@ public interface MwDumpFile {
 	 * @throws IOException
 	 *             if there was a problem preparing the files
 	 */
-	public void prepareDumpFile() throws IOException;
+	void prepareDumpFile() throws IOException;
 }

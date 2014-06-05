@@ -47,10 +47,6 @@ public class WmfOnlineDailyDumpFileTest {
 	@Test
 	public void validDumpProperties() throws IOException {
 		String dateStamp = "20140220";
-		String maxRevId = "110690987";
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", maxRevId);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "done");
@@ -67,7 +63,6 @@ public class WmfOnlineDailyDumpFileTest {
 		assertEquals(br.readLine(), null);
 		assertTrue(dump.isAvailable());
 		assertTrue(dump.isAvailable()); // second time should use cached entry
-		assertEquals(new Long(maxRevId), dump.getMaximalRevisionId());
 		assertEquals(dateStamp, dump.getDateStamp());
 		assertEquals("wikidatawiki", dump.getProjectName());
 		assertEquals("wikidatawiki-daily-" + dateStamp, dump.toString());
@@ -81,7 +76,6 @@ public class WmfOnlineDailyDumpFileTest {
 				"wikidatawiki", wrf, dm);
 
 		assertTrue(!dump.isAvailable());
-		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
 		assertEquals(dateStamp, dump.getDateStamp());
 	}
 
@@ -90,49 +84,17 @@ public class WmfOnlineDailyDumpFileTest {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "");
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
 		assertTrue(!dump.isAvailable());
-		assertEquals(new Long(-1), dump.getMaximalRevisionId());
 		assertEquals(dateStamp, dump.getDateStamp());
-	}
-
-	@Test
-	public void malformedRevisionId() {
-		String dateStamp = "20140220";
-		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
-				"wikidatawiki", wrf, dm);
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "nan");
-
-		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
-	}
-
-	@Test
-	public void inaccessibleRevisionId() {
-		String dateStamp = "20140220";
-		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
-				"wikidatawiki", wrf, dm);
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "1234567");
-		wrf.setReturnFailingReaders(true);
-
-		assertEquals(dump.getMaximalRevisionId(), new Long(-1));
 	}
 
 	@Test
 	public void inaccessibleStatus() {
 		String dateStamp = "20140220";
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", "1234567");
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "done");
@@ -158,10 +120,6 @@ public class WmfOnlineDailyDumpFileTest {
 	@Test(expected = IOException.class)
 	public void downloadNoDumpFile() throws IOException {
 		String dateStamp = "20140220";
-		String maxRevId = "110690987";
-		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
-						+ dateStamp + "/maxrevid.txt", maxRevId);
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "done");

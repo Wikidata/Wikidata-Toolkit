@@ -119,12 +119,6 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 					"Dump file not available (yet). Aborting dump retrieval.");
 		}
 
-		if (WmfDumpFile.isRevisionDumpFile(this.dumpContentType)
-				&& this.getMaximalRevisionId() == -1) {
-			throw new IOException(
-					"Failed to retrieve maximal revision id. Aborting dump retrieval.");
-		}
-
 		DirectoryManager thisDumpDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						this.dumpContentType, this.dateStamp));
@@ -134,61 +128,12 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 			thisDumpDirectoryManager.createFile(fileName, inputStream);
 		}
 
-		if (WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
-			thisDumpDirectoryManager.createFile(
-					WmfDumpFile.LOCAL_FILENAME_MAXREVID, this
-							.getMaximalRevisionId().toString());
-		}
-
 		this.isPrepared = true;
 
 		logger.info("... completed download of "
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
 				+ fileName + " from " + urlString);
 
-	}
-
-	@Override
-	protected Long fetchMaximalRevisionId() {
-		if (!WmfDumpFile.isRevisionDumpFile(this.dumpContentType)) {
-			return -1L;
-		}
-
-		Long maxRevId = -1L;
-		String urlString = getBaseUrl();
-		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(urlString)) {
-			// Search for the line with the download link. The line just before
-			// that contains the maximal revision id, formatted as
-			// "[max 123456789]".
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(in, StandardCharsets.UTF_8));
-			String inputLine;
-			String previousLine = "";
-			String linePattern = WmfDumpFile.getDumpFileName(
-					this.dumpContentType, this.projectName, this.dateStamp);
-			while (maxRevId < 0
-					&& (inputLine = bufferedReader.readLine()) != null) {
-				if (inputLine.indexOf(linePattern) >= 0) {
-					int startIndex = previousLine.lastIndexOf("[max ") + 5;
-					int endIndex = previousLine.indexOf("]", startIndex);
-					if (endIndex != -1) {
-						try {
-							maxRevId = new Long(previousLine.substring(
-									startIndex, endIndex));
-						} catch (NumberFormatException e) {
-							// could not parse number; just continue and
-							// probably return -1
-						}
-					}
-				}
-				previousLine = inputLine;
-			}
-			bufferedReader.close();
-		} catch (IOException e) {
-			// file not found or not readable; just fall through to return -1
-		}
-		return maxRevId;
 	}
 
 	@Override

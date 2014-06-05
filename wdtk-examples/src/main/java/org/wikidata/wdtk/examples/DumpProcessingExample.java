@@ -20,11 +20,20 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
@@ -71,10 +80,10 @@ public class DumpProcessingExample {
 				null, true);
 
 		// Start processing (may trigger downloads where needed)
-		dumpProcessingController.processAllRecentRevisionDumps();
+		// dumpProcessingController.processAllRecentRevisionDumps();
 
 		// // Process just a recent daily dump for testing:
-		// dumpProcessingController.processMostRecentDailyDump();
+		dumpProcessingController.processMostRecentMainDump();
 	}
 
 	/**
@@ -119,6 +128,10 @@ public class DumpProcessingExample {
 		long countStatements = 0;
 		long countSiteLinks = 0;
 
+		final HashMap<PropertyIdValue, Integer> propertyCountsMain = new HashMap<PropertyIdValue, Integer>();
+		final HashMap<PropertyIdValue, Integer> propertyCountsQualifier = new HashMap<PropertyIdValue, Integer>();
+		final HashMap<PropertyIdValue, Integer> propertyCountsReferences = new HashMap<PropertyIdValue, Integer>();
+
 		@Override
 		public void processItemDocument(ItemDocument itemDocument) {
 			this.countItems++;
@@ -130,6 +143,19 @@ public class DumpProcessingExample {
 			}
 			for (StatementGroup sg : itemDocument.getStatementGroups()) {
 				this.countStatements += sg.getStatements().size();
+				countPropertyMain(sg.getProperty(), sg.getStatements().size());
+				for (Statement s : sg.getStatements()) {
+					for (SnakGroup q : s.getClaim().getQualifiers()) {
+						countPropertyQualifier(q.getProperty(), q.getSnaks()
+								.size());
+					}
+					for (Reference r : s.getReferences()) {
+						for (SnakGroup snakGroup : r.getSnakGroups()) {
+							countPropertyReference(snakGroup.getProperty(),
+									snakGroup.getSnaks().size());
+						}
+					}
+				}
 			}
 			this.countSiteLinks += itemDocument.getSiteLinks().size();
 
@@ -149,6 +175,24 @@ public class DumpProcessingExample {
 		@Override
 		public void finishProcessingEntityDocuments() {
 			printReport(); // print a final report
+
+			PrintStream out;
+			try {
+				out = new PrintStream(new FileOutputStream(
+						"property-counts.csv"));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return;
+			}
+			for (Entry<PropertyIdValue, Integer> entry : this.propertyCountsMain
+					.entrySet()) {
+				int qCount = this.propertyCountsQualifier.get(entry.getKey());
+				int rCount = this.propertyCountsReferences.get(entry.getKey());
+				int total = entry.getValue() + qCount + rCount;
+				out.println(entry.getKey().getId() + "," + entry.getValue()
+						+ "," + qCount + "," + rCount + "," + total);
+			}
+			out.close();
 		}
 
 		/**
@@ -163,5 +207,30 @@ public class DumpProcessingExample {
 			System.out.println(" * Site links: " + this.countSiteLinks);
 		}
 
+		private void countPropertyMain(PropertyIdValue property, int count) {
+			addPropertyCounters(property);
+			this.propertyCountsMain.put(property,
+					this.propertyCountsMain.get(property) + count);
+		}
+
+		private void countPropertyQualifier(PropertyIdValue property, int count) {
+			addPropertyCounters(property);
+			this.propertyCountsQualifier.put(property,
+					this.propertyCountsQualifier.get(property) + count);
+		}
+
+		private void countPropertyReference(PropertyIdValue property, int count) {
+			addPropertyCounters(property);
+			this.propertyCountsReferences.put(property,
+					this.propertyCountsReferences.get(property) + count);
+		}
+
+		private void addPropertyCounters(PropertyIdValue property) {
+			if (!this.propertyCountsMain.containsKey(property)) {
+				this.propertyCountsMain.put(property, 0);
+				this.propertyCountsQualifier.put(property, 0);
+				this.propertyCountsReferences.put(property, 0);
+			}
+		}
 	}
 }
