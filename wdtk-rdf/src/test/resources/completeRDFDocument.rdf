@@ -61,16 +61,25 @@ wo:Property a owl:Class .
 	schema:description "it's bar"@lc2 , "it's foo"@lc ;
 	skos:altLabel "foo"@lc , "bar"@lc ;
 	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;
-	<http://www.wikidata.org/P1040s> <http://www.wikidata.org/Q10Snone2> , <http://www.wikidata.org/Q10Snone> .
+	<http://www.wikidata.org/P569s> <http://www.wikidata.org/Q10Snone2> ;
+	<http://www.wikidata.org/P549s> <http://www.wikidata.org/Q10Snone> .
 
-<http://www.wikidata.org/Q10Snone> a wo:Statement , _:node18omsmhaux1 .
+<http://www.wikidata.org/Q10Snone> a wo:Statement , _:node18pjmhdbgx1 .
 
 <http://www.wikidata.org/Q10Snone2> a wo:Statement ;
-	<http://www.wikidata.org/P1040v> id:VTec11d94e4f5bb7b00a79196734f49066 ;
+	<http://www.wikidata.org/P569v> id:VTec11d94e4f5bb7b00a79196734f49066 ;
 	<http://www.wikidata.org/P15q> id:VTec11d94e4f5bb7b00a79196734f49066 ;
 	prov:wasDerivedFrom id:R0a804970328cb6325b5f43c60934df3c .
 
-<http://www.wikidata.org/Q10Snone> a wo:Statement .
+<http://www.wikidata.org/Q10Snone> a wo:Statement ;
+	<http://www.wikidata.org/P549v> "TestString" .
+
+_:node18pjmhdbgx1 a owl:Class ;
+	owl:complementOf _:node18pjmhdbgx2 .
+
+_:node18pjmhdbgx2 a owl:Restriction ;
+	owl:onProperty <http://www.wikidata.org/P10v> ;
+	owl:someValuesFrom owl:Thing .
 
 id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 	wo:time "0306-11-03"^^xsd:date ;
@@ -85,13 +94,13 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 <http://www.wikidata.org/P10r> a owl:ObjectProperty .
 
-<http://www.wikidata.org/P1040s> a owl:ObjectProperty .
+<http://www.wikidata.org/P569s> a owl:ObjectProperty .
 
-<http://www.wikidata.org/P1040v> a owl:ObjectProperty .
+<http://www.wikidata.org/P569v> a owl:ObjectProperty .
 
-<http://www.wikidata.org/P1040q> a owl:ObjectProperty .
+<http://www.wikidata.org/P569q> a owl:ObjectProperty .
 
-<http://www.wikidata.org/P1040r> a owl:ObjectProperty .
+<http://www.wikidata.org/P569r> a owl:ObjectProperty .
 
 <http://www.wikidata.org/P15s> a owl:ObjectProperty .
 
@@ -101,12 +110,14 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 <http://www.wikidata.org/P15r> a owl:ObjectProperty .
 
-_:node18omsmhaux1 a owl:Class ;
-	owl:complementOf _:node18omsmhaux2 .
+<http://www.wikidata.org/P549s> a owl:ObjectProperty .
 
-_:node18omsmhaux2 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/P10v> ;
-	owl:someValuesFrom owl:Thing .
+<http://www.wikidata.org/P549v> a owl:DatatypeProperty .
+
+<http://www.wikidata.org/P549q> a owl:DatatypeProperty .
+
+<http://www.wikidata.org/P549r> a owl:DatatypeProperty .
 
 id:R0a804970328cb6325b5f43c60934df3c a wo:Reference ;
 	<http://www.wikidata.org/P112r> id:VTec11d94e4f5bb7b00a79196734f49066 .
+
