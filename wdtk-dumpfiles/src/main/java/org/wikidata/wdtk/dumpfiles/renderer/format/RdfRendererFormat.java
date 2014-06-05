@@ -524,9 +524,6 @@ public class RdfRendererFormat implements RendererFormat {
 			BNode bnode0 = this.rdfWriter.getFreshBNode();
 
 			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_DATATYPE_PROPERTY);
-			this.rdfWriter.writeTripleValueObject(dataPropertyExpression,
 					RdfUriConstant.OWL_HAS_KEY, bnode0);
 			this.rdfWriter.writeTripleValueObject(bnode0,
 					RdfUriConstant.RDF_FIRST, dataPropertyExpression);
