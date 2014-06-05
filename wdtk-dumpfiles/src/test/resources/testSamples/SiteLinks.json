@@ -1,0 +1,4 @@
+{ 
+	"enwiki": {"name": "test", "badges":["testBadge"] },
+	"dewiki": "TEST"
+}

@@ -5,8 +5,10 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,13 +17,17 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
@@ -222,6 +228,38 @@ public class JsonConverterTest {
 	}
 
 	@Test
+	public void testGetEntityIdValue() {
+
+		// 0: item
+		String asString = "{\"entity-type\":\"item\",\"numeric-id\":842256}";
+		JSONObject asJson = new JSONObject(asString);
+
+		EntityIdValue result = this.classUnderTest.getEntityIdValue(asJson);
+		assert (result.getEntityType() == EntityIdValue.ET_ITEM);
+		assert (result.getId().equals("Q842256"));
+
+		// 1: property
+		asString = "{\"entity-type\":\"property\",\"numeric-id\":842256}";
+		asJson = new JSONObject(asString);
+
+		result = this.classUnderTest.getEntityIdValue(asJson);
+		assert (result.getEntityType() == EntityIdValue.ET_PROPERTY);
+		assert (result.getId().equals("P842256"));
+
+		// 2: wrong type
+		asString = "{\"entity-type\":\"something else\",\"numeric-id\":842256}";
+		asJson = new JSONObject(asString);
+
+		try {
+			result = this.classUnderTest.getEntityIdValue(asJson);
+			fail("Should throw exception");
+		} catch (JSONException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
+	}
+
+	@Test
 	public void testGetGlobeCoordinatesValue() {
 
 		// TODO improve: test arc-based precisions
@@ -291,7 +329,7 @@ public class JsonConverterTest {
 		shouldBe = TestObjectFactory
 				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE);
 		assertEquals(value, shouldBe);
-		
+
 		// 2h) 0.000'001 degrees
 		value = this.classUnderTest
 				.getGlobeCoordinatesValue(testObjects.get(8));
@@ -346,7 +384,64 @@ public class JsonConverterTest {
 		snak = this.classUnderTest.getValueSnak(jsonArray);
 		assertEquals(snak,
 				factory.getValueSnak(pid, TestObjectFactory.createTimeValue()));
+		
+		// 3: EntityIdValue
+		jsonArray = new JSONArray(prefix + "\"wikibase-entityid\",{\"entity-type\":\"item\",\"numeric-id\":842256}" + "]");
+		snak = this.classUnderTest.getValueSnak(jsonArray);
+		assertEquals(snak.getValue(), factory.getItemIdValue("Q842256", baseIri));
+	}
 
+	@Test
+	public void testGetSnakGroups() {
+
+		// 0: empty group
+		String groupAsString = "[" + "]";
+		JSONArray groupAsJson = new JSONArray(groupAsString);
+
+		List<SnakGroup> result = this.classUnderTest.getSnakGroups(groupAsJson);
+		assert (result.isEmpty());
+
+		// 1: multiple groups, multiple items
+		groupAsJson = fetchTestObject("SnakGroups.json").getJSONArray(
+				"snakGroup");
+		result = this.classUnderTest.getSnakGroups(groupAsJson);
+		assert (!result.isEmpty());
+		assert (result.size() == 2);
+
+	}
+
+	@Test
+	public void testGetStatementGroups() {
+
+		EntityIdValue testEntityId = factory.getItemIdValue("Q1", baseIri);
+
+		// 0: empty group
+		String groupAsString = "[" + "]";
+		JSONArray groupAsJson = new JSONArray(groupAsString);
+
+		List<StatementGroup> result = this.classUnderTest.getStatementGroups(
+				groupAsJson, testEntityId);
+		assert (result.isEmpty());
+
+		// 1: multiple groups, multiple items
+		groupAsJson = fetchTestObject("StatementGroups.json").getJSONArray(
+				"statementGroup");
+		result = this.classUnderTest.getStatementGroups(groupAsJson,
+				testEntityId);
+		assert (!result.isEmpty());
+		assert (result.size() == 4);
+
+	}
+
+	@Test
+	public void testGetSiteLinks() {
+
+		JSONObject object = fetchTestObject("SiteLinks.json");
+		Map<String, SiteLink> result = this.classUnderTest.getSiteLinks(object);
+
+		assert (!result.isEmpty());
+		assert (result.containsKey("enwiki"));
+		assert (result.containsKey("dewiki"));
 	}
 
 	@Test
@@ -363,11 +458,19 @@ public class JsonConverterTest {
 	@Test
 	public void testConvertToItemDocument() {
 
+		// 0: empty document
 		JSONObject testObject = this.fetchTestObject("Item_Empty.json");
 
 		ItemDocument document = this.classUnderTest.convertToItemDocument(
 				testObject, "Q1");
 		assertEquals(document,
 				TestObjectFactory.createEmptyItemDocument(baseIri));
+
+		// 1: things that might happen
+		testObject = this.fetchTestObject("Item_Errors.json");
+
+		document = this.classUnderTest.convertToItemDocument(testObject, "Q1");
+
+		assertEquals(document.getStatementGroups(), Collections.emptyList());
 	}
 }

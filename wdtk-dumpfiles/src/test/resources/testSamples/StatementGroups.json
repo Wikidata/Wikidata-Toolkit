@@ -1,0 +1,37 @@
+{
+"statementGroup":
+[
+	{
+		"m":["novalue",1],
+		"g":"defaultTestStatement",
+		"q":[],
+		"rank":1,
+		"refs":[]
+	}, {
+		"m":["novalue",2],
+		"g":"rankTestStatement",
+		"q":[],
+		"rank":0,
+		"refs":[]
+	}, {
+		"m":["novalue",2],
+		"g":"rankTestStatement",
+		"q":[],
+		"rank":2,
+		"refs":[]
+	}, {
+		"m":["somevalue",3],
+		"g":"somevalueTestStatement",
+		"q":[],
+		"rank":1,
+		"refs":[]
+	}, 	{
+		"m":["novalue",4],
+		"g":"referencedTestStatement",
+		"q":[],
+		"rank":1,
+		"refs":[[["value", 1, "string", "TestString"]]]
+	},
+	{"Invalid Statement":""}
+]
+}

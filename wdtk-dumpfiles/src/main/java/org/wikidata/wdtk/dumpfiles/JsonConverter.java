@@ -304,7 +304,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private List<SnakGroup> getSnakGroups(JSONArray jsonArray)
+	List<SnakGroup> getSnakGroups(JSONArray jsonArray)
 			throws JSONException {
 		Map<PropertyIdValue, List<Snak>> groupedSnaks = new HashMap<PropertyIdValue, List<Snak>>();
 
@@ -346,7 +346,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private Map<String, SiteLink> getSiteLinks(JSONObject jsonObject)
+	Map<String, SiteLink> getSiteLinks(JSONObject jsonObject)
 			throws JSONException {
 
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
@@ -396,7 +396,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private List<StatementGroup> getStatementGroups(JSONArray jsonStatements,
+	List<StatementGroup> getStatementGroups(JSONArray jsonStatements,
 			EntityIdValue entityIdValue) throws JSONException {
 
 		List<StatementGroup> result;
@@ -860,7 +860,7 @@ public class JsonConverter {
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
 	 */
-	private EntityIdValue getEntityIdValue(JSONObject jsonObject)
+	EntityIdValue getEntityIdValue(JSONObject jsonObject)
 			throws JSONException {
 
 		String entityType = jsonObject.getString("entity-type");
