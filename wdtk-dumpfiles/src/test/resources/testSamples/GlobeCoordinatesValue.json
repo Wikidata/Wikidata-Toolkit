@@ -1,0 +1,73 @@
+[
+{
+	"latitude":51.835,
+	"longitude":10.785277777778,
+	"altitude":null,
+	"precision":0.00027777777777778,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":10,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":1,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.1,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.01,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.001,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.0001,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.00001,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+},
+
+{
+	"latitude":0,
+	"longitude":0,
+	"altitude":null,
+	"precision":0.000001,
+	"globe":"http:\/\/www.wikidata.org\/entity\/Q2"
+}
+]

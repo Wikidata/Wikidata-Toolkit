@@ -1,0 +1,8 @@
+{
+	"snakGroup":
+	[
+		["value", 1, "string", "Group1String"],
+		["value", 1, "string", "Group1OtherString"],
+		["value", 2, "string", "Group2String"]
+	]
+}

@@ -1,0 +1,11 @@
+{
+"label":{},
+"description":{},
+"aliases":[],
+"links":{ 
+	"enwiki": {"name": "test", "badges":["testBadge"] },
+	"dewiki": "TEST"
+},
+"entity":["item",1],
+"claims":[]
+}

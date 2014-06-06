@@ -1,0 +1,11 @@
+{
+"label":{},
+"description":{},
+"aliases":{
+	"en":"testAlias",
+	"de":["testAlias2", "testAlias3"]
+},
+"links":{},
+"entity":["item",1],
+"claims":[]
+}

@@ -1,279 +1,476 @@
 package org.wikidata.wdtk.dumpfiles;
 
-/*
- * #%L
- * Wikidata Toolkit Dump File Handling
- * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URL;
+import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.dumpfiles.TestHelpers.JsonFetcher;
+import org.wikidata.wdtk.dumpfiles.TestHelpers.TestObjectFactory;
 
 /**
- * The test setup uses several files containing JSON. These files are read by
- * the org.json-parser into sample objects to be converted.
+ * Tests the JsonConverter-class from the dumpfile-module.
  * 
  * @author Fredo Erxleben
  * 
  */
 public class JsonConverterTest {
 
-	private static final String SAMPLE_FILES_BASE_PATH = "/testSamples/";
-	private static final String BASE_IRI = "test";
+	private static String baseIri = "foo";
+	private static DataObjectFactory factory = new DataObjectFactoryImpl();
+	private static JsonFetcher fetcher = new JsonFetcher();
+	private JsonConverter classUnderTest = new JsonConverter(baseIri, factory);
 
-	private JsonConverter unitUnderTest;
-	private DataObjectFactory factory;
+	private JSONObject fetchTestObject(String ressource) {
 
-	@Before
-	public void setUp() {
-		this.factory = new DataObjectFactoryImpl();
-		this.unitUnderTest = new JsonConverter(BASE_IRI,
-				new DataObjectFactoryImpl());
-	}
-
-	@Test
-	public void testEmptyProperty() throws JSONException, IOException {
-		PropertyDocument propertyDocument = getPropertyDocumentFromResource(
-				"EmptyProperty.json", "P1");
-
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				BASE_IRI);
-		DatatypeIdValue datatypeId = this.factory
-				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
-		PropertyDocument emptyPropertyDocument = this.factory
-				.getPropertyDocument(propertyId,
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						datatypeId);
-
-		assertEquals(propertyDocument, emptyPropertyDocument);
-	}
-
-	@Test
-	public void testEmptyItem() throws JSONException, IOException {
-		ItemDocument itemDocument = getItemDocumentFromResource(
-				"EmptyItem.json", "Q1");
-
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
-		Map<String, SiteLink> siteLinks = new HashMap<>();
-		ItemDocument emptyItemDocument = this.factory.getItemDocument(
-				itemIdValue, Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), siteLinks);
-
-		assertEquals(itemDocument, emptyItemDocument);
-	}
-
-	@Test
-	public void testBasicItem() throws JSONException, IOException {
-		ItemDocument basicItemDocument = this.createBasicItemDocument();
-		ItemDocument itemDocument = getItemDocumentFromResource(
-				"BasicItem.json", "Q1");
-
-		assertEquals(itemDocument.getEntityId(),
-				basicItemDocument.getEntityId());
-		assertEquals(itemDocument.getItemId(), basicItemDocument.getItemId());
-		assertEquals(itemDocument.getDescriptions(),
-				basicItemDocument.getDescriptions());
-		assertEquals(itemDocument.getAliases(), basicItemDocument.getAliases());
-		assertEquals(itemDocument.getLabels(), basicItemDocument.getLabels());
-		assertEquals(itemDocument.getSiteLinks(),
-				basicItemDocument.getSiteLinks());
-		assertEquals(itemDocument.getStatementGroups(),
-				basicItemDocument.getStatementGroups());
-
-		assertEquals(itemDocument, basicItemDocument);
-	}
-
-	private ItemDocument createBasicItemDocument() {
-
-		ItemIdValue itemIdValue = this.factory.getItemIdValue("Q1", BASE_IRI);
-
-		List<MonolingualTextValue> labels = Collections
-				.singletonList(this.factory.getMonolingualTextValue("test",
-						"en"));
-
-		List<MonolingualTextValue> descriptions = new LinkedList<>();
-		descriptions.add(this.factory.getMonolingualTextValue("this is a test",
-				"en"));
-
-		List<MonolingualTextValue> aliases = new LinkedList<>();
-		aliases.add(this.factory.getMonolingualTextValue("TEST", "en"));
-		aliases.add(this.factory.getMonolingualTextValue("Test", "en"));
-
-		List<StatementGroup> statementGroups = new LinkedList<>();
-		List<Statement> statements = new LinkedList<>();
-
-		PropertyIdValue propertyId = this.factory.getPropertyIdValue("P1",
-				BASE_IRI);
-		Value value = this.factory.getItemIdValue("Q1", BASE_IRI);
-		Snak mainSnak = factory.getValueSnak(propertyId, value);
-		Claim claim = this.factory.getClaim(itemIdValue, mainSnak,
-				Collections.<SnakGroup> emptyList());
-
-		List<? extends Reference> references = new LinkedList<>();
-		StatementRank rank = StatementRank.NORMAL;
-		String statementId = "foo";
-		statements.add(this.factory.getStatement(claim, references, rank,
-				statementId));
-
-		statementGroups.add(this.factory.getStatementGroup(statements));
-
-		Map<String, SiteLink> siteLinks = new HashMap<>();
-		siteLinks.put(
-				"enwiki",
-				this.factory.getSiteLink("test", "enwiki",
-						Collections.<String> emptyList()));
-
-		ItemDocument document = this.factory.getItemDocument(itemIdValue,
-				labels, descriptions, aliases, statementGroups, siteLinks);
-		return document;
-	}
-
-	@Test
-	public void testRealItems() throws JSONException, IOException {
-		getItemDocumentFromResource("Chicago.json", "Q1");
-		getItemDocumentFromResource("Haaften.json", "Q1");
-		getItemDocumentFromResource("Tours.json", "Q1");
-		getItemDocumentFromResource("JohnPaulII.json", "Q1");
-		getItemDocumentFromResource("Wernigerode.json", "Q1");
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	@Test
-	public void testClaims() throws JSONException, IOException {
-		getItemDocumentFromResource("GlobalCoordinates.json", "Q1");
-		getItemDocumentFromResource("StatementRanks.json", "Q1");
-		getItemDocumentFromResource("SnakTypes.json", "Q1");
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	@Test
-	public void testDifferentNotations() throws JSONException, IOException {
-		getItemDocumentFromResource("DifferentNotations.json", "Q1");
-		getItemDocumentFromResource("StringEntityItem.json", "Q1");
-		getPropertyDocumentFromResource("StringEntityProperty.json", "P1");
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	@Test(expected = JSONException.class)
-	public void testPropertyDocumentLacksDatatype() throws JSONException,
-			IOException {
-		getPropertyDocumentFromResource("NoEntityDocument.json", "P1");
-	}
-
-	@Test
-	public void testItemDocumentWithErrors() throws JSONException, IOException {
-		getItemDocumentFromResource("MiscErrors.json", "Q1");
-		// FIXME this does not test anything (copied from earlier test file)
-	}
-
-	@Test
-	public void testUniverse() throws JSONException, IOException {
-		getItemDocumentFromResource("Universe.json", "Q1");
-		// FIXME this does not test anything (copied from earlier test file)
+		try {
+			return fetcher.getJsonObjectForResource(ressource);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fail("JSON parsing failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Reading file failed");
+		}
+		return null;
 	}
 
 	/**
-	 * Applies the JSON converter to the JSON stored in the given resource to
-	 * return an ItemDocument.
+	 * Used to allow multiple test case JSONObjects in one file, written down as
+	 * an JSONArray.
 	 * 
-	 * @param fileName
-	 *            the file name only, no path information
-	 * @param itemId
-	 *            the string id of the item
-	 * @throws IOException
-	 * @throws JSONException
-	 * @return the ItemDocument
+	 * @param ressource
+	 * @return
 	 */
-	private ItemDocument getItemDocumentFromResource(String fileName,
-			String itemId) throws IOException, JSONException {
-		JSONObject jsonObject = getJsonObjectForResource(fileName);
-		return this.unitUnderTest.convertToItemDocument(jsonObject, itemId);
+	private List<JSONObject> fetchTestObjects(String ressource) {
+
+		List<JSONObject> result = new LinkedList<>();
+
+		try {
+			JSONArray array = fetcher.getJsonArrayForResource(ressource);
+			for (int i = 0; i < array.length(); i++) {
+				result.add(array.getJSONObject(i));
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			fail("JSON parsing failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Reading file failed");
+		}
+		return result;
 	}
 
-	/**
-	 * Applies the JSON converter to the JSON stored in the given resource to
-	 * return a PropertyDocument.
-	 * 
-	 * @param fileName
-	 *            the file name only, no path information. The file is supposed
-	 *            to be in the "resources/testSamples/"-directory.
-	 * @param propertyId
-	 *            the string id of the property
-	 * @return the PropertyDocument
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	private PropertyDocument getPropertyDocumentFromResource(String fileName,
-			String propertyId) throws IOException, JSONException {
-		JSONObject jsonObject = getJsonObjectForResource(fileName);
-		return this.unitUnderTest.convertToPropertyDocument(jsonObject,
-				propertyId);
+	@Test
+	public void testGetPropertyIdValue() {
+
+		PropertyIdValue shouldBe = factory
+				.getPropertyIdValue("P12345", baseIri);
+
+		// 1: PropertyId with uppercase letter
+		PropertyIdValue pid = this.classUnderTest.getPropertyIdValue("P12345");
+		assertEquals(shouldBe, pid);
+
+		// 2: PropertyId with lowercase letter
+		pid = this.classUnderTest.getPropertyIdValue("p12345");
+		assertEquals(shouldBe, pid);
+
+		// 3: test malformed PropertyId
+		try {
+			pid = this.classUnderTest.getPropertyIdValue("12345");
+			fail("Should throw exception");
+		} catch (JSONException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
 	}
 
-	/**
-	 * Returns a JSON object for the JSON stored in the given resource.
-	 * 
-	 * @param resourceName
-	 *            a file name without any path information
-	 * @return the JSONObject
-	 * @throws IOException
-	 * @throws JSONException
-	 */
-	private JSONObject getJsonObjectForResource(String resourceName)
-			throws IOException, JSONException {
-		URL resourceUrl = this.getClass().getResource(
-				JsonConverterTest.SAMPLE_FILES_BASE_PATH + resourceName);
-		String jsonString = MockStringContentFactory
-				.getStringFromUrl(resourceUrl);
-		return new JSONObject(jsonString);
+	@Test
+	public void testGetItemIdValue() {
+
+		ItemIdValue shouldBe = factory.getItemIdValue("Q12345", baseIri);
+
+		// 1: ItemId with uppercase letter
+		ItemIdValue qid = this.classUnderTest.getItemIdValue("Q12345");
+		assertEquals(shouldBe, qid);
+
+		// 2: ItemId with lowercase letter
+		qid = this.classUnderTest.getItemIdValue("q12345");
+		assertEquals(shouldBe, qid);
+
+		// 3: test malformed ItemId
+		try {
+			qid = this.classUnderTest.getItemIdValue("");
+			fail("Should throw exception");
+		} catch (JSONException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
 	}
 
+	@Test
+	public void testGetDataTypeIri() {
+
+		DatatypeIdValue idValue;
+		idValue = this.classUnderTest.getDatatypeIdValue("wikibase-item");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("string");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_STRING));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("url");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_URL));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("commonsMedia");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("time");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("globe-coordinate");
+		assertEquals(
+				idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES));
+
+		idValue = this.classUnderTest.getDatatypeIdValue("quantity");
+		assertEquals(idValue,
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_QUANTITY));
+
+		try {
+			idValue = this.classUnderTest.getDatatypeIdValue("unknown");
+			fail("Should throw exception");
+		} catch (JSONException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
+	}
+
+	@Test
+	public void testGetStatemantRank() {
+
+		StatementRank rank;
+
+		rank = this.classUnderTest.getStatementRank(0);
+		assertEquals(rank, StatementRank.DEPRECATED);
+
+		rank = this.classUnderTest.getStatementRank(1);
+		assertEquals(rank, StatementRank.NORMAL);
+
+		rank = this.classUnderTest.getStatementRank(2);
+		assertEquals(rank, StatementRank.PREFERRED);
+
+		try {
+			rank = this.classUnderTest.getStatementRank(3);
+			fail("Should throw exception");
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
+	}
+
+	@Test
+	public void testGetQuantityValue() {
+
+		JSONObject testObject = this.fetchTestObject("QuantityValue.json");
+
+		QuantityValue value = this.classUnderTest.getQuantityValue(testObject);
+		QuantityValue shouldBe = factory.getQuantityValue(
+				new BigDecimal(34196), new BigDecimal(34195), new BigDecimal(
+						34197));
+
+		assertEquals(value, shouldBe);
+	}
+
+	@Test
+	public void testGetTimeValue() {
+
+		JSONObject testObject = this.fetchTestObject("TimeValue.json");
+
+		TimeValue value = this.classUnderTest.getTimeValue(testObject);
+		TimeValue shouldBe = factory.getTimeValue(2012L, (byte) 6, (byte) 30,
+				(byte) 0, (byte) 0, (byte) 0, (byte) 11, (byte) 0, (byte) 0,
+				(byte) 0, "http://www.wikidata.org/entity/Q1985727");
+
+		assertEquals(value, shouldBe);
+	}
+
+	@Test
+	public void testGetEntityIdValue() {
+
+		// 0: item
+		String asString = "{\"entity-type\":\"item\",\"numeric-id\":842256}";
+		JSONObject asJson = new JSONObject(asString);
+
+		EntityIdValue result = this.classUnderTest.getEntityIdValue(asJson);
+		assert (result.getEntityType() == EntityIdValue.ET_ITEM);
+		assert (result.getId().equals("Q842256"));
+
+		// 1: property
+		asString = "{\"entity-type\":\"property\",\"numeric-id\":842256}";
+		asJson = new JSONObject(asString);
+
+		result = this.classUnderTest.getEntityIdValue(asJson);
+		assert (result.getEntityType() == EntityIdValue.ET_PROPERTY);
+		assert (result.getId().equals("P842256"));
+
+		// 2: wrong type
+		asString = "{\"entity-type\":\"something else\",\"numeric-id\":842256}";
+		asJson = new JSONObject(asString);
+
+		try {
+			result = this.classUnderTest.getEntityIdValue(asJson);
+			fail("Should throw exception");
+		} catch (JSONException e) {
+		} catch (Exception e) {
+			fail("Wrong exception thrown");
+		}
+	}
+
+	@Test
+	public void testGetGlobeCoordinatesValue() {
+
+		// TODO improve: test arc-based precisions
+		// TODO improve: test default precision
+
+		List<JSONObject> testObjects = this
+				.fetchTestObjects("GlobeCoordinatesValue.json");
+
+		// 1: default case
+		GlobeCoordinatesValue value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(0));
+		GlobeCoordinatesValue shouldBe = factory.getGlobeCoordinatesValue(
+				(long) (51.835 * GlobeCoordinatesValue.PREC_DEGREE),
+				(long) (10.785277777778 * GlobeCoordinatesValue.PREC_DEGREE),
+				GlobeCoordinatesValue.PREC_MILLI_DEGREE,
+				"http://www.wikidata.org/entity/Q2");
+
+		assertEquals(value, shouldBe);
+
+		// 2: different precisions
+
+		// 2a) 10 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(1));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_TEN_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2b) 1 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(2));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2c) 0.1 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(3));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_DECI_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2d) 0.01 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(4));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_CENTI_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2e) 0.001 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(5));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_MILLI_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2f) 0.000'1 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(6));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2g) 0.000'01 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(7));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE);
+		assertEquals(value, shouldBe);
+
+		// 2h) 0.000'001 degrees
+		value = this.classUnderTest
+				.getGlobeCoordinatesValue(testObjects.get(8));
+		shouldBe = TestObjectFactory
+				.createGlobalCoordinatesValue(GlobeCoordinatesValue.PREC_MICRO_DEGREE);
+		assertEquals(value, shouldBe);
+	}
+
+	@Test
+	public void testGetSnak() {
+
+		PropertyIdValue pid = factory.getPropertyIdValue("P40", baseIri);
+
+		// 1: noValue snak
+		JSONArray jsonArray = new JSONArray("[\"novalue\",40]");
+
+		Snak snak = this.classUnderTest.getSnak(jsonArray);
+		assertEquals(snak, factory.getNoValueSnak(pid));
+
+		// 2: someValue snak
+		jsonArray = new JSONArray("[\"somevalue\",40]");
+
+		snak = this.classUnderTest.getSnak(jsonArray);
+		assertEquals(snak, factory.getSomeValueSnak(pid));
+
+		// 3: value snak
+		// in seperate test
+
+		// 4: unknown value
+		// TODO
+
+	}
+
+	@Test
+	public void testGetValueSnak() {
+		PropertyIdValue pid = factory.getPropertyIdValue("P40", baseIri);
+		String prefix = "[\"value\",40,";
+
+		// 1: string value
+		StringValue stringValue = factory.getStringValue("foo");
+		JSONArray jsonArray = new JSONArray(prefix + "string,"
+				+ stringValue.getString() + "]");
+
+		ValueSnak snak = this.classUnderTest.getValueSnak(jsonArray);
+		assertEquals(snak, factory.getValueSnak(pid, stringValue));
+
+		// 2: TimeValue
+		JSONObject timeValue = fetchTestObject("TestObject_TimeValue.json");
+
+		jsonArray = new JSONArray(prefix + "time," + timeValue.toString() + "]");
+
+		snak = this.classUnderTest.getValueSnak(jsonArray);
+		assertEquals(snak,
+				factory.getValueSnak(pid, TestObjectFactory.createTimeValue()));
+		
+		// 3: EntityIdValue
+		jsonArray = new JSONArray(prefix + "\"wikibase-entityid\",{\"entity-type\":\"item\",\"numeric-id\":842256}" + "]");
+		snak = this.classUnderTest.getValueSnak(jsonArray);
+		assertEquals(snak.getValue(), factory.getItemIdValue("Q842256", baseIri));
+	}
+
+	@Test
+	public void testGetSnakGroups() {
+
+		// 0: empty group
+		String groupAsString = "[" + "]";
+		JSONArray groupAsJson = new JSONArray(groupAsString);
+
+		List<SnakGroup> result = this.classUnderTest.getSnakGroups(groupAsJson);
+		assert (result.isEmpty());
+
+		// 1: multiple groups, multiple items
+		groupAsJson = fetchTestObject("SnakGroups.json").getJSONArray(
+				"snakGroup");
+		result = this.classUnderTest.getSnakGroups(groupAsJson);
+		assert (!result.isEmpty());
+		assert (result.size() == 2);
+
+	}
+
+	@Test
+	public void testGetStatementGroups() {
+
+		EntityIdValue testEntityId = factory.getItemIdValue("Q1", baseIri);
+
+		// 0: empty group
+		String groupAsString = "[" + "]";
+		JSONArray groupAsJson = new JSONArray(groupAsString);
+
+		List<StatementGroup> result = this.classUnderTest.getStatementGroups(
+				groupAsJson, testEntityId);
+		assert (result.isEmpty());
+
+		// 1: multiple groups, multiple items
+		groupAsJson = fetchTestObject("StatementGroups.json").getJSONArray(
+				"statementGroup");
+		result = this.classUnderTest.getStatementGroups(groupAsJson,
+				testEntityId);
+		assert (!result.isEmpty());
+		assert (result.size() == 4);
+
+	}
+
+	@Test
+	public void testGetSiteLinks() {
+
+		JSONObject object = fetchTestObject("SiteLinks.json");
+		Map<String, SiteLink> result = this.classUnderTest.getSiteLinks(object);
+
+		assert (!result.isEmpty());
+		assert (result.containsKey("enwiki"));
+		assert (result.containsKey("dewiki"));
+	}
+
+	@Test
+	public void testConvertToPropertyDocument() {
+
+		JSONObject testObject = this.fetchTestObject("Property_Empty.json");
+
+		PropertyDocument document = this.classUnderTest
+				.convertToPropertyDocument(testObject, "P1");
+		assertEquals(document,
+				TestObjectFactory.createEmptyPropertyDocument(baseIri));
+	}
+
+	@Test
+	public void testConvertToItemDocument() {
+
+		// 0: empty document
+		JSONObject testObject = this.fetchTestObject("Item_Empty.json");
+
+		ItemDocument document = this.classUnderTest.convertToItemDocument(
+				testObject, "Q1");
+		assertEquals(document,
+				TestObjectFactory.createEmptyItemDocument(baseIri));
+
+		// 1: things that might happen
+		testObject = this.fetchTestObject("Item_Errors.json");
+
+		document = this.classUnderTest.convertToItemDocument(testObject, "Q1");
+
+		assertEquals(document.getStatementGroups(), Collections.emptyList());
+	}
 }
