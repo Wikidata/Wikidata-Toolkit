@@ -115,7 +115,7 @@ public class TestObjectFactory {
 	 * </li>
 	 * <li>StatementGroup2
 	 * <ul>
-	 * <li>PropertyId: "P1040"</li>
+	 * <li>PropertyId: "P569"</li>
 	 * <li>baseIri: baseIri</li>
 	 * <li>Statement2
 	 * <ul>
@@ -124,6 +124,12 @@ public class TestObjectFactory {
 	 * <li>Rank: normal</li>
 	 * </ul>
 	 * </li>
+	 * </ul>
+	 * </li>
+	 * <li>StatementGroup3
+	 * <ul>
+	 * <li>PropertyId: "P549"</li>
+	 * <li>baseIri: baseIri</li>
 	 * <li>Statement3
 	 * <ul>
 	 * <li>Mainsnak: {@link #createValueSnakStringValue ValSnakStr}</li>
@@ -135,6 +141,7 @@ public class TestObjectFactory {
 	 * </ul>
 	 * </li>
 	 * </ul>
+	 * </li> </ul>
 	 * 
 	 * @return {@link ItemDocument}
 	 */
@@ -152,21 +159,23 @@ public class TestObjectFactory {
 
 		List<Statement> statements2 = new ArrayList<Statement>();
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
-				createValueSnakTimeValue("P1040"), createQualifiers());
+				createValueSnakTimeValue("P569"), createQualifiers());
 		statements2.add(factory.getStatement(claim2, createReferences(),
 				StatementRank.NORMAL, "none2"));
+		statementGroups.add(factory.getStatementGroup(statements2));
+		List<Statement> statements3 = new ArrayList<Statement>();
 		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
-				createValueSnakStringValue("P1040"),
+				createValueSnakStringValue("P549"),
 				Collections.<SnakGroup> emptyList());
-		statements2.add(factory.getStatement(claim3,
+		statements3.add(factory.getStatement(claim3,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"none"));
-		statementGroups.add(factory.getStatementGroup(statements2));
+		statementGroups.add(factory.getStatementGroup(statements3));
 		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),
 				statementGroups, createSiteLinks());
 	}
-	
+
 	/**
 	 * Creates a {@link Statement} with entity-id qId, property-id pId
 	 * 

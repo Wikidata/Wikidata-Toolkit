@@ -47,6 +47,9 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * This class shows how convert data from wikidata.org to RDF in N3 format. The
  * compressed output will be written into several files that will be placed in
  * the example directory.
+ * <p>
+ * In the future, this will probably become a stand-alone tool that can be
+ * called directly.
  * 
  * @author Michael Günther
  * @author Markus Kroetzsch
@@ -74,23 +77,25 @@ public class RdfSerializationExample {
 		dumpProcessingController = new DumpProcessingController("wikidatawiki");
 		// dumpProcessingController.setOfflineMode(true);
 
+		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();
 
+		// Create serializers for several data parts and encodings:
 		createRdfSerializer("wikidata-properties.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_PROPERTIES
 						| RdfSerializer.TASK_ALL_EXACT_DATA);
-		// createRdfSerializer("wikidata-terms.nt", COMPRESS_GZIP,
-		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
-		// createRdfSerializer("wikidata-statements.nt", COMPRESS_GZIP,
-		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
+		createRdfSerializer("wikidata-terms.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
+		createRdfSerializer("wikidata-statements.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
 		createRdfSerializer("wikidata-simple-statements.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		// createRdfSerializer("wikidata-taxonomy.nt", COMPRESS_GZIP,
-		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
-		// createRdfSerializer("wikidata-instances.nt", COMPRESS_GZIP,
-		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
-		// createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
-		// RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
+		createRdfSerializer("wikidata-taxonomy.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
+		createRdfSerializer("wikidata-instances.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
+		createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
+				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
 
 		// General statistics and time keeping:
 		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -102,9 +107,7 @@ public class RdfSerializationExample {
 		// Set up the serializer and write headers
 		startSerializers();
 
-		// // Start processing (may trigger downloads where needed)
-		// dumpProcessingController.processAllRecentRevisionDumps();
-		// Process just the most recent main dump:
+		// Start processing (may trigger downloads where needed)
 		dumpProcessingController.processMostRecentMainDump();
 
 		// Finish the serialization

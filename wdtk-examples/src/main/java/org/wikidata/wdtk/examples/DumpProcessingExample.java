@@ -79,11 +79,14 @@ public class DumpProcessingExample {
 		dumpProcessingController.registerMwRevisionProcessor(rpRevisionStats,
 				null, true);
 
-		// Start processing (may trigger downloads where needed)
-		// dumpProcessingController.processAllRecentRevisionDumps();
+		// Start processing (may trigger downloads where needed):
 
-		// // Process just a recent daily dump for testing:
-		dumpProcessingController.processMostRecentMainDump();
+		// Process all recent dumps (including daily dumps as far as avaiable)
+		dumpProcessingController.processAllRecentRevisionDumps();
+		// // Alternatively: Process just a recent daily dump (for testing):
+		// dumpProcessingController.processMostRecentDailyDump();
+		// // Alternatively: Process just the most recent main dump:
+		// dumpProcessingController.processMostRecentMainDump();
 	}
 
 	/**
@@ -112,9 +115,12 @@ public class DumpProcessingExample {
 
 	/**
 	 * A simple example class that processes EntityDocuments to compute basic
-	 * statistics that are printed to the standard output. This could be
-	 * replaced with any other class that processes entity documents in some
-	 * way.
+	 * statistics that are printed to the standard output. Moreover, that shows
+	 * how often certain properties are used in the data. This CSV file is
+	 * stored under the name property-counts.csv.
+	 * <p>
+	 * This could be replaced with any other class that processes entity
+	 * documents in some way.
 	 * 
 	 * @author Markus Kroetzsch
 	 * 
@@ -207,24 +213,57 @@ public class DumpProcessingExample {
 			System.out.println(" * Site links: " + this.countSiteLinks);
 		}
 
+		/**
+		 * Counts additional occurrences of a property as the main property of
+		 * statements.
+		 * 
+		 * @param property
+		 *            the property to count
+		 * @param count
+		 *            the number of times to count the property
+		 */
 		private void countPropertyMain(PropertyIdValue property, int count) {
 			addPropertyCounters(property);
 			this.propertyCountsMain.put(property,
 					this.propertyCountsMain.get(property) + count);
 		}
 
+		/**
+		 * Counts additional occurrences of a property as qualifier property of
+		 * statements.
+		 * 
+		 * @param property
+		 *            the property to count
+		 * @param count
+		 *            the number of times to count the property
+		 */
 		private void countPropertyQualifier(PropertyIdValue property, int count) {
 			addPropertyCounters(property);
 			this.propertyCountsQualifier.put(property,
 					this.propertyCountsQualifier.get(property) + count);
 		}
 
+		/**
+		 * Counts additional occurrences of a property as property in
+		 * references.
+		 * 
+		 * @param property
+		 *            the property to count
+		 * @param count
+		 *            the number of times to count the property
+		 */
 		private void countPropertyReference(PropertyIdValue property, int count) {
 			addPropertyCounters(property);
 			this.propertyCountsReferences.put(property,
 					this.propertyCountsReferences.get(property) + count);
 		}
 
+		/**
+		 * Initializes the counters for a property to zero if not done yet.
+		 * 
+		 * @param property
+		 *            the property to count
+		 */
 		private void addPropertyCounters(PropertyIdValue property) {
 			if (!this.propertyCountsMain.containsKey(property)) {
 				this.propertyCountsMain.put(property, 0);
