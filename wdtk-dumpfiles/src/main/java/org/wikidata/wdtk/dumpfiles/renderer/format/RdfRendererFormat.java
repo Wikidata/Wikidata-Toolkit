@@ -519,20 +519,46 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addHasKey(Resource classExpression,
-			Resource dataPropertyExpression) {
+			Resource objectPropertyExpression, Resource dataPropertyExpression) {
+		if ((objectPropertyExpression == null)
+				&& (dataPropertyExpression == null)) {
+			throw new IllegalArgumentException(
+					"HasKey requires at least one property and both were null.");
+		}
+
 		try {
 			BNode bnode0 = this.rdfWriter.getFreshBNode();
 
-			if (dataPropertyExpression instanceof URI) {
-				addDeclarationDatatypeProperty((URI) dataPropertyExpression);
-			}
-
 			this.rdfWriter.writeTripleValueObject(classExpression,
 					RdfUriConstant.OWL_HAS_KEY, bnode0);
-			this.rdfWriter.writeTripleValueObject(bnode0,
-					RdfUriConstant.RDF_FIRST, dataPropertyExpression);
-			this.rdfWriter.writeTripleValueObject(bnode0,
-					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+
+			if (objectPropertyExpression == null) {
+				// HasKey( CE () ( DPE ) )
+				this.rdfWriter.writeTripleValueObject(bnode0,
+						RdfUriConstant.RDF_FIRST, dataPropertyExpression);
+				this.rdfWriter.writeTripleValueObject(bnode0,
+						RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+
+			} else {
+				this.rdfWriter.writeTripleValueObject(bnode0,
+						RdfUriConstant.RDF_FIRST, objectPropertyExpression);
+				if (dataPropertyExpression == null) {
+					// HasKey( CE ( OPE ) ( ) )
+					this.rdfWriter.writeTripleValueObject(bnode0,
+							RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+
+				} else {
+					// HasKey( CE ( OPE ) ( DPE ) )
+					BNode bnode1 = this.rdfWriter.getFreshBNode();
+					this.rdfWriter.writeTripleValueObject(bnode0,
+							RdfUriConstant.RDF_REST, bnode1);
+					this.rdfWriter.writeTripleValueObject(bnode1,
+							RdfUriConstant.RDF_FIRST, dataPropertyExpression);
+					this.rdfWriter.writeTripleValueObject(bnode1,
+							RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+
+				}
+			}
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

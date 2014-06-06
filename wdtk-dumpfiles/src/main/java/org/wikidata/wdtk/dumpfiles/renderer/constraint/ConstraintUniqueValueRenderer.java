@@ -20,10 +20,12 @@ package org.wikidata.wdtk.dumpfiles.renderer.constraint;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.renderer.format.RendererFormat;
+import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 /**
  * 
@@ -49,6 +51,13 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 		render(c.getConstrainedProperty());
 	}
 
+	public boolean isObjectProperty(PropertyIdValue constrainedProperty) {
+		WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
+		String propertyType = wdPropertyTypes
+				.getPropertyType(constrainedProperty);
+		return propertyType.equals(DatatypeIdValue.DT_ITEM);
+	}
+
 	public void render(PropertyIdValue p) {
 		if (p == null) {
 			return;
@@ -56,8 +65,13 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 		this.f.addDeclarationObjectProperty(this.f.getPs(p));
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
-		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
-		this.f.addHasKey(this.f.owlThing(), this.f.getPv(p));
+		if (isObjectProperty(p)) {
+			this.f.addDeclarationObjectProperty(this.f.getPv(p));
+			this.f.addHasKey(this.f.owlThing(), this.f.getPv(p), null);
+		} else {
+			this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
+			this.f.addHasKey(this.f.owlThing(), null, this.f.getPv(p));
+		}
 	}
 
 }

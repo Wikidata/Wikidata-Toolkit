@@ -105,7 +105,8 @@ public interface RendererFormat {
 
 	boolean addFunctionalObjectProperty(Resource objectPropertyExpression);
 
-	boolean addHasKey(Resource classExpression, Resource dataPropertyExpression);
+	boolean addHasKey(Resource classExpression,
+			Resource objectPropertyExpression, Resource dataPropertyExpression);
 
 	boolean addInverseFunctionalObjectProperty(Resource objectPropertyExpression);
 

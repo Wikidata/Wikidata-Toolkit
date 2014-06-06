@@ -455,13 +455,20 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	@Override
 	public boolean addHasKey(Resource classExpression,
-			Resource dataPropertyExpression) {
+			Resource objectPropertyExpression, Resource dataPropertyExpression) {
+
+		Resource objectProperty = (objectPropertyExpression == null) ? new StringResource(
+				"") : objectPropertyExpression;
+
+		Resource dataProperty = (dataPropertyExpression == null) ? new StringResource(
+				"") : dataPropertyExpression;
+
 		BNode bnode = makeFunction(
 				Owl2FunctionalConstant.HAS_KEY,
 				makePair(
 						classExpression,
-						makePair(makeFunction("", ""),
-								makeFunction("", dataPropertyExpression))));
+						makePair(makeFunction("", objectProperty),
+								makeFunction("", dataProperty))));
 		add(bnode);
 		return true;
 	}
