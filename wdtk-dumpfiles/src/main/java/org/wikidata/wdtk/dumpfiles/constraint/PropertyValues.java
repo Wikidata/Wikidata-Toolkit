@@ -28,6 +28,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * An object of this class represents a set of pairs property-value, for a fixed
+ * property. It can be constructed to span all possible values, or to have only
+ * some specific values.
  * 
  * @author Julian Mendez
  * 
@@ -39,7 +42,7 @@ public class PropertyValues {
 	final List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 
 	/**
-	 * Constructs a set of pairs for all the items;
+	 * Constructs a set of pairs for all the items.
 	 * 
 	 * @param property
 	 *            property
@@ -51,10 +54,12 @@ public class PropertyValues {
 	}
 
 	/**
-	 * Constructs a set of pairs for some items;
+	 * Constructs a set of pairs for some items.
 	 * 
 	 * @param property
 	 *            property
+	 * @param list
+	 *            of items
 	 */
 	public PropertyValues(PropertyIdValue property, List<ItemIdValue> items) {
 		Validate.notNull(property, "Property cannot be null.");
@@ -64,15 +69,31 @@ public class PropertyValues {
 		this.hasAllValues = false;
 	}
 
+	/**
+	 * Returns the property.
+	 * 
+	 * @return the property
+	 */
 	public PropertyIdValue getProperty() {
 		return this.property;
 	}
 
+	/**
+	 * Tells whether this objects has been constructed to include all values.
+	 * 
+	 * @return <code>true</code> if and only if this objects has been
+	 *         constructed to include all values
+	 */
 	public boolean hasAllValues() {
 		return this.hasAllValues;
 
 	}
 
+	/**
+	 * Returns the items.
+	 * 
+	 * @return the items
+	 */
 	public List<ItemIdValue> getItems() {
 		return this.items;
 	}

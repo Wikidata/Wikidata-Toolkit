@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 
 /**
+ * This models a relation type, which can be 'instance of' or 'subclass of'.
  * 
  * @author Julian Mendez
  * 

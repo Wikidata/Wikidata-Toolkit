@@ -24,12 +24,23 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property should contain a
+ * well-formed filename of a file available on Wikimedia Commons.
+ * <p>
+ * For example, <i>flag image (P41)</i> is a picture to connect to the picture
+ * of an item's flag.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintExistingFile implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintExistingFile}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintExistingFile(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

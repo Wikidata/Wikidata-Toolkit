@@ -28,6 +28,13 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property creates a
+ * conflict with the provided properties and values. If no values are specified
+ * for a given property, it is assumed that all values are in conflict.
+ * <p>
+ * For example, <i>ICD-10 (P494)</i>, the ICD catalogue codes for diseases -
+ * Version 10, cannot be used together with <i>taxon name (P225)</i>, the
+ * scientific name of a taxon (in biology).
  * 
  * @author Julian Mendez
  * 
@@ -36,6 +43,15 @@ public class ConstraintConflictsWith implements Constraint {
 
 	final List<PropertyValues> list = new ArrayList<PropertyValues>();
 
+	/**
+	 * Constructs a new {@link ConstraintConflictWith}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param list
+	 *            list of property values that are in conflict with the
+	 *            constrained property
+	 */
 	public ConstraintConflictsWith(PropertyIdValue constrainedProperty,
 			List<PropertyValues> list) {
 		Validate.notNull(list, "List cannot be null.");
@@ -51,6 +67,11 @@ public class ConstraintConflictsWith implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns a list of property values in conflict.
+	 * 
+	 * @return a list of property values in conflict
+	 */
 	public List<PropertyValues> getList() {
 		return Collections.unmodifiableList(this.list);
 	}

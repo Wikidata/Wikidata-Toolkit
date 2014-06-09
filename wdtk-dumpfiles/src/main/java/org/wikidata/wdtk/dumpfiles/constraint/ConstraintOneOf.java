@@ -29,6 +29,12 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property must have one of
+ * the specified values.
+ * <p>
+ * For example, <i>voice type (P412)</i> can have the following values: <i>tenor
+ * (Q27914)</i>, <i>soprano (Q30903)</i>, <i>baritone (Q31687)</i>, <i>contralto
+ * (Q37137)</i>, <i>mezzo-soprano (Q186506)</i>, <i>bass (Q27911)</i>.
  * 
  * @author Julian Mendez
  * 
@@ -37,6 +43,14 @@ public class ConstraintOneOf implements Constraint {
 
 	final List<ItemIdValue> values = new ArrayList<ItemIdValue>();
 
+	/**
+	 * Constructs a new {@link ConstraintOneOf}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param values
+	 *            possible values that a property can have
+	 */
 	public ConstraintOneOf(PropertyIdValue constrainedProperty,
 			List<ItemIdValue> values) {
 		Validate.notNull(values, "List of values cannot be null.");
@@ -52,6 +66,11 @@ public class ConstraintOneOf implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns the values that a property can have.
+	 * 
+	 * @return the values that a property can have
+	 */
 	public List<ItemIdValue> getValues() {
 		return Collections.unmodifiableList(this.values);
 	}

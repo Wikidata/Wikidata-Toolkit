@@ -24,12 +24,22 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property is symmetric.
+ * <p>
+ * For example, <i>spouse (P26)</i> is a symmetric property, since if <i>a</i>
+ * is a spouse of <i>b</i>, <i>b</i> is a spouse of <i>a</i>.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintSymmetric implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintSymmetric}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintSymmetric(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

@@ -24,12 +24,23 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property generally
+ * contains a single value.
+ * <p>
+ * For example, property <i>capital (P36)</i> relates an <i>administrative
+ * division (Q56061)</i> to a single <i>human settlement (Q486972)</i>.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintSingleValue implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintSingleValue}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintSingleValue(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

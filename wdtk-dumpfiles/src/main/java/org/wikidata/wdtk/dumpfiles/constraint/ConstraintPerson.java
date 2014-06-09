@@ -24,12 +24,20 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property is applied to
+ * persons. This is actually model as a set of other property constraints.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintPerson implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintPerson}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintPerson(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

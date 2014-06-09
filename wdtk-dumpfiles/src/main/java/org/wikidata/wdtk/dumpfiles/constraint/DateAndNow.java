@@ -23,6 +23,8 @@ package org.wikidata.wdtk.dumpfiles.constraint;
 import java.util.Date;
 
 /**
+ * An object of this class is a date with a distinguished value to represent the
+ * current moment ('now').
  * 
  * @author Julian Mendez
  * 
@@ -33,7 +35,8 @@ public class DateAndNow {
 	final boolean isNow;
 
 	/**
-	 * Constructor to represent 'now'.
+	 * Creates a new {@link DateAndNow} that represents the current moment
+	 * ('now').
 	 */
 	public DateAndNow() {
 		this.date = null;
@@ -41,7 +44,8 @@ public class DateAndNow {
 	}
 
 	/**
-	 * Constructor to represent a date that is not necessarily now.
+	 * Creates a new {@link DateAndNow} that represents a date that is not
+	 * necessarily the current moment.
 	 * 
 	 * @param date
 	 *            date
@@ -51,6 +55,11 @@ public class DateAndNow {
 		this.isNow = false;
 	}
 
+	/**
+	 * Returns current moment if this date is 'now', otherwise the stored date.
+	 * 
+	 * @return current moment if this date is 'now', otherwise the stored date
+	 */
 	public Date getDate() {
 		if (this.isNow) {
 			return new Date();
@@ -58,6 +67,12 @@ public class DateAndNow {
 		return this.date;
 	}
 
+	/**
+	 * Tells whether this object represents the current moment ('now').
+	 * 
+	 * @return <code>true</code> if and only if this object represents the
+	 *         current moment ('now')
+	 */
 	public boolean isNow() {
 		return this.isNow;
 	}

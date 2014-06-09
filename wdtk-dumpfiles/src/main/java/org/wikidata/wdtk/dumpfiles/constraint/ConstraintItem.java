@@ -28,6 +28,22 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that for every item that has this
+ * property with some other item, the former has also property
+ * <i>r<sub>1</sub></i>, optionally with value <i>s<sub>1</sub></i>, analogously
+ * for <i>r<sub>2</sub></i> and <i>s<sub>2</sub></i>, and the list of items
+ * <i>q<sub>1</sub></i> &hellip; <i>q<sub>n</sub></i>.
+ * <p>
+ * For example, property <i>mother (P25)</i> relates an item (the child) to
+ * another one (the mother), and the former must also have a <i>date of birth
+ * (P569)</i>.
+ * <p>
+ * Another example is property <i>IUCN conservation status (P141)</i>, the
+ * conservation status assigned by the International Union for Conservation of
+ * Nature, that relates items to another one such that the former has a <i>taxon
+ * rank (P105)</i>, a level in a taxonomic hierarchy, which could be a
+ * <i>species (Q7432)</i>, a <i>subspecies (Q68947)</i>, or a <i>variety
+ * (Q767728)</i>.
  * 
  * @author Julian Mendez
  * 
@@ -41,6 +57,24 @@ public class ConstraintItem implements Constraint {
 	final List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 	final List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 
+	/**
+	 * Constructs a new {@link ConstraintItem}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param property
+	 *            a property
+	 * @param item
+	 *            an item
+	 * @param property2
+	 *            another property
+	 * @param item2
+	 *            another item
+	 * @param items
+	 *            list of items
+	 * @param exceptions
+	 *            list of exceptions
+	 */
 	public ConstraintItem(PropertyIdValue constrainedProperty,
 			PropertyIdValue property, ItemIdValue item,
 			PropertyIdValue property2, ItemIdValue item2,
@@ -66,18 +100,38 @@ public class ConstraintItem implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns the (first) property.
+	 * 
+	 * @return the (first) property
+	 */
 	public PropertyIdValue getProperty() {
 		return this.property;
 	}
 
+	/**
+	 * Returns the (first) item.
+	 * 
+	 * @return the (first) item
+	 */
 	public ItemIdValue getItem() {
 		return this.item;
 	}
 
+	/**
+	 * Returns the second property.
+	 * 
+	 * @return the second property
+	 */
 	public PropertyIdValue getProperty2() {
 		return this.property2;
 	}
 
+	/**
+	 * Returns the second item.
+	 * 
+	 * @return the second item
+	 */
 	public ItemIdValue getItem2() {
 		return this.item2;
 	}
@@ -86,6 +140,11 @@ public class ConstraintItem implements Constraint {
 		return this.items;
 	}
 
+	/**
+	 * Returns the exceptions.
+	 * 
+	 * @return the exceptions
+	 */
 	public List<ItemIdValue> getExceptions() {
 		return this.exceptions;
 	}

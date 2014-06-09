@@ -25,6 +25,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that for every item that has a
+ * property with some other item, the latter has also property <i>r</i>,
+ * optionally with value <i>q</i>.
+ * <p>
+ * For example, property <i>sister (P9)</i> has a constraint that the item has
+ * to have <i>sex or gender (P21)</i> and that value must be <i>female
+ * (Q6581072)</i>.
  * 
  * @author Julian Mendez
  * 
@@ -34,6 +41,14 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 	final PropertyIdValue property;
 	final ItemIdValue item;
 
+	/**
+	 * Constructs a new {@link ConstraintTargetRequiredClaim}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param property
+	 *            another property
+	 */
 	public ConstraintTargetRequiredClaim(PropertyIdValue constrainedProperty,
 			PropertyIdValue property) {
 		Validate.notNull(property, "Property cannot be null.");
@@ -43,6 +58,16 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 		this.item = null;
 	}
 
+	/**
+	 * Constructs a new ConstraintTargetRequiredClaim.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param property
+	 *            another property
+	 * @param item
+	 *            an item
+	 */
 	public ConstraintTargetRequiredClaim(PropertyIdValue constrainedProperty,
 			PropertyIdValue property, ItemIdValue item) {
 		Validate.notNull(property, "Property cannot be null.");

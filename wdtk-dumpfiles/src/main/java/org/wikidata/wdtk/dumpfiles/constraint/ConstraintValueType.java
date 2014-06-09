@@ -25,6 +25,14 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that for every item that has a
+ * property with some other item, the latter has also a relation <i>instance of
+ * (P31)</i> or <i>subclass of (P279)</i> to an item <i>q</i>. This is a
+ * particular case of {@link ConstraintTargetRequiredClaim}.
+ * <p>
+ * For example, property <i>continent (Q5107)</i>, continent of which the
+ * subject is a part, is related to an item that is an instance of <i>continent
+ * (Q5107)</i>.
  * 
  * @author Julian Mendez
  * 
@@ -34,6 +42,16 @@ public class ConstraintValueType implements Constraint {
 	final ItemIdValue classId;
 	final RelationType relation;
 
+	/**
+	 * Constructs a new {@link ConstraintValueType}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param classId
+	 *            class identifier
+	 * @param relation
+	 *            relation type (instance-of or subclass-of)
+	 */
 	public ConstraintValueType(PropertyIdValue constrainedProperty,
 			ItemIdValue classId, RelationType relation) {
 		Validate.notNull(classId, "Class cannot be null.");
@@ -51,10 +69,20 @@ public class ConstraintValueType implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns the class identifier.
+	 * 
+	 * @return the class identifier
+	 */
 	public ItemIdValue getClassId() {
 		return this.classId;
 	}
 
+	/**
+	 * Returns the relation type.
+	 * 
+	 * @return the relation type
+	 */
 	public RelationType getRelation() {
 		return this.relation;
 	}

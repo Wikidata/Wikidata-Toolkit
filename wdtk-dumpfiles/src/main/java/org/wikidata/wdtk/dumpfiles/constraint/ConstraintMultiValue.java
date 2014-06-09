@@ -24,12 +24,24 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property has at least two
+ * values, when it has any value.
+ * <p>
+ * For example, <i>category combines topics (P971)</i> is a property used to
+ * state which Wikimedia categories (<i>Wikimedia category page (Q4167836)</i>)
+ * combines two or more topics.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintMultiValue implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintMultiValue}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintMultiValue(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

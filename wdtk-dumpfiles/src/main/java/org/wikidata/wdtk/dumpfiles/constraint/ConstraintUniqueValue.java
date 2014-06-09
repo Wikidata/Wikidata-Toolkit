@@ -24,12 +24,24 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraints that says that a property likely contains
+ * a unique value.
+ * <p>
+ * For example, property <i>IATA airport code (P238)</i> has a three-letter code
+ * to designate airports. This is expected to have a unique value, i.e. no two
+ * airports have the same three-letter code.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintUniqueValue implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintUniqueValue}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintUniqueValue(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;
@@ -45,7 +57,6 @@ public class ConstraintUniqueValue implements Constraint {
 	@Override
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
-
 		return visitor.visit(this);
 	}
 

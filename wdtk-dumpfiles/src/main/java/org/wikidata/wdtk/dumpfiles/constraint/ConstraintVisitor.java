@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 
 /**
- * This class models a visitor of <code>Constraint</code>.
+ * This class models a visitor of {@link Constraint}.
  * 
  * @author Julian Mendez
  * 
@@ -29,38 +29,157 @@ package org.wikidata.wdtk.dumpfiles.constraint;
  */
 public interface ConstraintVisitor<T> {
 
+	/**
+	 * Visits a {@link ConstraintSingleValue}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintSingleValue constraint);
 
+	/**
+	 * Visits a {@link ConstraintUniqueValue}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintUniqueValue constraint);
 
+	/**
+	 * Visits a {@link ConstraintFormat}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintFormat constraint);
 
+	/**
+	 * Visits a {@link ConstraintOneOf}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintOneOf constraint);
 
+	/**
+	 * Visits a {@link ConstraintSymmetric}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintSymmetric constraint);
 
+	/**
+	 * Visits a {@link ConstraintInverse}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintInverse constraint);
 
+	/**
+	 * Visits a {@link ConstraintExistingFile}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintExistingFile constraint);
 
+	/**
+	 * Visits a {@link ConstraintTargetRequiredClaim}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintTargetRequiredClaim constraint);
 
+	/**
+	 * Visits a {@link ConstraintItem}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintItem constraint);
 
+	/**
+	 * Visits a {@link ConstraintType}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintType constraint);
 
+	/**
+	 * Visits a {@link ConstraintValueType}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintValueType constraint);
 
+	/**
+	 * Visits a {@link ConstraintRange}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintRange constraint);
 
+	/**
+	 * Visits a {@link ConstraintMultiValue}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintMultiValue constraint);
 
+	/**
+	 * Visits a {@link ConstraintConflictsWith}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintConflictsWith constraint);
 
+	/**
+	 * Visits a {@link ConstraintQualifier}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintQualifier constraint);
 
+	/**
+	 * Visits a {@link ConstraintPerson}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintPerson constraint);
 
+	/**
+	 * Visits a {@link ConstraintTaxon}.
+	 * 
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
 	T visit(ConstraintTaxon constraint);
 
 }

@@ -24,6 +24,11 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that defines the inverse property of
+ * another one.
+ * <p>
+ * For example, <i>preceded by (P155)</i> and <i>succeeded by (P156)</i> are
+ * mutually one the inverse of the other.
  * 
  * @author Julian Mendez
  * 
@@ -32,6 +37,14 @@ public class ConstraintInverse implements Constraint {
 
 	final PropertyIdValue property;
 
+	/**
+	 * Constructs a new {@link ConstraintInverse}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param property
+	 *            the inverse property of the given property
+	 */
 	public ConstraintInverse(PropertyIdValue constrainedProperty,
 			PropertyIdValue property) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
@@ -47,6 +60,11 @@ public class ConstraintInverse implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns the inverse property.
+	 * 
+	 * @return the inverse property
+	 */
 	public PropertyIdValue getProperty() {
 		return this.property;
 	}

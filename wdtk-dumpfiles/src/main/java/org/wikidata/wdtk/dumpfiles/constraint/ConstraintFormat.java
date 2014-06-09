@@ -24,6 +24,12 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that the value of a property must
+ * be formatted using some pattern, which is expressed as a regular expression.
+ * <p>
+ * For example, <i>ISO 639-1 (P218)</i> is a code for languages. It is
+ * constrained with pattern <i>[a-z]{2}</i>, which says that the code contains
+ * exactly two lower case letters.
  * 
  * @author Julian Mendez
  * 
@@ -32,6 +38,14 @@ public class ConstraintFormat implements Constraint {
 
 	final String pattern;
 
+	/**
+	 * Constructs a new {@link ConstraintFormat}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param pattern
+	 *            pattern expressed as a regular expression
+	 */
 	public ConstraintFormat(PropertyIdValue constrainedProperty, String pattern) {
 		Validate.notNull(pattern, "Pattern cannot be null.");
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
@@ -46,6 +60,11 @@ public class ConstraintFormat implements Constraint {
 		return this.constrainedProperty;
 	}
 
+	/**
+	 * Returns the pattern.
+	 * 
+	 * @return the pattern
+	 */
 	public String getPattern() {
 		return this.pattern;
 	}

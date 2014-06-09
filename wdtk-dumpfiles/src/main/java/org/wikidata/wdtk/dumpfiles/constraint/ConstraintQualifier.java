@@ -24,12 +24,20 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
+ * This models a property constraint that says that a property is used as
+ * qualifier.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintQualifier implements Constraint {
 
+	/**
+	 * Constructs a new {@link ConstraintQualifier}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 */
 	public ConstraintQualifier(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;

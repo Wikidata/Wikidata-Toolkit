@@ -23,6 +23,26 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 
 /**
+ * This models a property constraint. It is a restriction applied to a property.
+ * <p>
+ * Constraints are actually templates transcluded from the property talk page.
+ * They help understand the semantics of the different properties and are a
+ * useful tool available to detect possible mistakes. For example, property
+ * <i>occupation (P106)</i> has a constraint that says that all elements related
+ * by that property have to be instances of item <i>occupation (Q13516667)</i>.
+ * <p>
+ * Constraints are defined and used according to common sense. They are designed
+ * to be flexible regarding language ambiguity and polysemy. Exceptions in
+ * constraints are at some extent beyond the purpose of this modeling.
+ * <p>
+ * Some constraints are violated because the exceptions are rare. Every
+ * constraint has a category of properties using it and a list of violations.
+ * Both, the category and the list, are useful tools to detect mistakes or
+ * anomalies.
+ * <p>
+ * Other constraints are violated because properties used to describe fictional
+ * things are the same as the ones used for real-world things. An item in a
+ * fictional universe does not need to follow a real-world behavior.
  * 
  * @author Julian Mendez
  * 
@@ -30,7 +50,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public interface Constraint {
 
 	/**
-	 * Applies a visitor to this constraint.
+	 * Accepts a visitor for this constraint.
 	 * 
 	 * @param <T>
 	 *            the return type of the visitor's methods
@@ -40,6 +60,11 @@ public interface Constraint {
 	 */
 	<T> T accept(ConstraintVisitor<T> visitor);
 
+	/**
+	 * Returns the constrained property.
+	 * 
+	 * @return the constrained property
+	 */
 	PropertyIdValue getConstrainedProperty();
 
 }
