@@ -21,9 +21,11 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
+import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 /**
  * 
@@ -39,14 +41,32 @@ class ConstraintOneOfParser implements ConstraintParser {
 	public ConstraintOneOf parse(Template template) {
 		ConstraintOneOf ret = null;
 		String page = template.getPage();
-		String listStr = template.get(ConstraintParserConstant.P_VALUES);
-		if ((page != null) && (listStr != null)) {
+		String values = template.get(ConstraintParserConstant.P_VALUES);
+		if ((page != null) && (values != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
 					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 
-			ret = new ConstraintOneOf(constrainedProperty,
-					ConstraintMainParser.parseListOfItems(listStr));
+			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
+			String propertyType = wdPropertyTypes
+					.getPropertyType(constrainedProperty);
+
+			if (propertyType.equals(DatatypeIdValue.DT_ITEM)) {
+				ret = new ConstraintOneOf(constrainedProperty,
+						ConstraintMainParser.parseListOfItems(values));
+
+			} else if (propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
+				ret = new ConstraintOneOf(
+						ConstraintMainParser.parseListOfQuantities(values),
+						constrainedProperty);
+
+			} else {
+				throw new IllegalArgumentException(
+						"'Constraint:One of' cannot be used for property '"
+								+ template.getPage()
+								+ "' because its type is '" + propertyType
+								+ "'.");
+			}
 		}
 		return ret;
 	}

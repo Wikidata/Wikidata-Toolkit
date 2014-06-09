@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -42,7 +43,9 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class ConstraintOneOf implements Constraint {
 
 	final PropertyIdValue constrainedProperty;
-	final List<ItemIdValue> values = new ArrayList<ItemIdValue>();
+	final List<ItemIdValue> itemValues = new ArrayList<ItemIdValue>();
+	final List<Integer> quantityValues = new ArrayList<Integer>();
+	final boolean hasItems;
 
 	/**
 	 * Constructs a new {@link ConstraintOneOf}.
@@ -57,7 +60,17 @@ public class ConstraintOneOf implements Constraint {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		Validate.notNull(values, "List of values cannot be null.");
 		this.constrainedProperty = constrainedProperty;
-		this.values.addAll(values);
+		this.itemValues.addAll(values);
+		this.hasItems = true;
+	}
+
+	public ConstraintOneOf(List<Integer> values,
+			PropertyIdValue constrainedProperty) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		Validate.notNull(values, "List of values cannot be null.");
+		this.constrainedProperty = constrainedProperty;
+		this.quantityValues.addAll(values);
+		this.hasItems = false;
 	}
 
 	@Override
@@ -66,12 +79,30 @@ public class ConstraintOneOf implements Constraint {
 	}
 
 	/**
-	 * Returns the values that a property can have.
+	 * Returns the item values that a property can have.
 	 * 
-	 * @return the values that a property can have
+	 * @return the item values that a property can have
 	 */
-	public List<ItemIdValue> getValues() {
-		return Collections.unmodifiableList(this.values);
+	public List<ItemIdValue> getItemValues() {
+		return Collections.unmodifiableList(this.itemValues);
+	}
+
+	/**
+	 * Returns the quantity values that a property can have.
+	 * 
+	 * @return the quantity values that a property can have
+	 */
+	public List<Integer> getQuantityValues() {
+		return Collections.unmodifiableList(this.quantityValues);
+	}
+
+	/**
+	 * Tells whether the values are only items.
+	 * 
+	 * @return <code>true</code> if and only if the values are only items
+	 */
+	public boolean hasItems() {
+		return this.hasItems;
 	}
 
 	@Override
@@ -89,14 +120,28 @@ public class ConstraintOneOf implements Constraint {
 			return false;
 		}
 		ConstraintOneOf other = (ConstraintOneOf) obj;
-		return (this.constrainedProperty.equals(other.constrainedProperty) && this.values
-				.equals(other.values));
+		return (this.constrainedProperty.equals(other.constrainedProperty)
+				&& (this.hasItems == other.hasItems)
+				&& this.itemValues.equals(other.itemValues) && this.quantityValues
+					.equals(other.quantityValues));
 	}
 
 	@Override
 	public int hashCode() {
-		return (this.constrainedProperty.hashCode() + (0x1F * this.values
-				.hashCode()));
+		return (this.constrainedProperty.hashCode() + (0x1F * (this.itemValues
+				.hashCode() + (0x1F * this.quantityValues.hashCode()))));
+	}
+
+	static String toString(List<Integer> values) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<Integer> it = values.iterator();
+		while (it.hasNext()) {
+			sb.append(it.next());
+			if (it.hasNext()) {
+				sb.append(", ");
+			}
+		}
+		return sb.toString();
 	}
 
 	@Override
@@ -107,7 +152,11 @@ public class ConstraintOneOf implements Constraint {
 		sb.append("|");
 		sb.append("values");
 		sb.append("=");
-		sb.append(ConstraintItem.toString(this.values));
+		if (this.hasItems) {
+			sb.append(ConstraintItem.toString(this.itemValues));
+		} else {
+			sb.append(toString(this.quantityValues));
+		}
 		sb.append("}}");
 		return sb.toString();
 	}

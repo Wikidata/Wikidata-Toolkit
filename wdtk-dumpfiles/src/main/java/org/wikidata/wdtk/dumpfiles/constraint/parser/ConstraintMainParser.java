@@ -102,6 +102,17 @@ public class ConstraintMainParser implements ConstraintParser {
 		return ret;
 	}
 
+	static List<Integer> parseListOfQuantities(String listOfQuantities) {
+		Validate.notNull(listOfQuantities);
+		List<Integer> ret = new ArrayList<Integer>();
+		StringTokenizer stok = new StringTokenizer(listOfQuantities,
+				ParserConstant.COMMA);
+		while (stok.hasMoreTokens()) {
+			ret.add(Integer.parseInt(stok.nextToken()));
+		}
+		return ret;
+	}
+
 	/**
 	 * Creates a constraint based on a template, or <code>null</code> if the
 	 * template does not correspond to a known constraint

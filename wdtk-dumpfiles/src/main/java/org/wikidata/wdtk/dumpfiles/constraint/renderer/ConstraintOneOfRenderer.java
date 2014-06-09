@@ -49,10 +49,14 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 	}
 
 	public void render(ConstraintOneOf c) {
-		render(c.getConstrainedProperty(), c.getValues());
+		if (c.hasItems()) {
+			renderItems(c.getConstrainedProperty(), c.getItemValues());
+		} else {
+			renderQuantities(c.getConstrainedProperty(), c.getQuantityValues());
+		}
 	}
 
-	public void render(PropertyIdValue p, List<ItemIdValue> values) {
+	public void renderItems(PropertyIdValue p, List<ItemIdValue> values) {
 		if ((p == null) || (values == null)) {
 			return;
 		}
@@ -63,6 +67,17 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 		this.f.addObjectPropertyRange(this.f.getPv(p), this.f
 				.getObjectOneOf(ConstraintItemRenderer.getListAndDeclareItems(
 						this.f, values)));
+	}
+
+	public void renderQuantities(PropertyIdValue p, List<Integer> values) {
+		if ((p == null) || (values == null)) {
+			return;
+		}
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+
+		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
+		// FIXME
 	}
 
 }
