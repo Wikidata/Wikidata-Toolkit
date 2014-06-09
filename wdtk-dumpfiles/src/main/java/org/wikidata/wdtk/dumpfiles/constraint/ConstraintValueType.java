@@ -39,6 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintValueType implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
 	final ItemIdValue classId;
 	final RelationType relation;
 
@@ -61,8 +62,6 @@ public class ConstraintValueType implements Constraint {
 		this.classId = classId;
 		this.relation = relation;
 	}
-
-	final PropertyIdValue constrainedProperty;
 
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
@@ -91,6 +90,27 @@ public class ConstraintValueType implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintValueType)) {
+			return false;
+		}
+		ConstraintValueType other = (ConstraintValueType) obj;
+		return (this.constrainedProperty.equals(other.constrainedProperty)
+				&& this.classId.equals(other.classId) && this.relation
+					.equals(other.relation));
+	}
+
+	@Override
+	public int hashCode() {
+		return this.constrainedProperty.hashCode()
+				+ (0x1F * (this.classId.hashCode() + (0x1F * this.relation
+						.hashCode())));
 	}
 
 }

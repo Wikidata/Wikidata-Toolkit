@@ -34,6 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintSymmetric implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
+
 	/**
 	 * Constructs a new {@link ConstraintSymmetric}.
 	 * 
@@ -45,8 +47,6 @@ public class ConstraintSymmetric implements Constraint {
 		this.constrainedProperty = constrainedProperty;
 	}
 
-	final PropertyIdValue constrainedProperty;
-
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
 		return this.constrainedProperty;
@@ -56,6 +56,23 @@ public class ConstraintSymmetric implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintSymmetric)) {
+			return false;
+		}
+		ConstraintSymmetric other = (ConstraintSymmetric) obj;
+		return this.constrainedProperty.equals(other.constrainedProperty);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.constrainedProperty.hashCode();
 	}
 
 }

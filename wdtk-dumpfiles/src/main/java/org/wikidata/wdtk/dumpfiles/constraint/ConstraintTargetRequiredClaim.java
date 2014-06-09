@@ -38,6 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintTargetRequiredClaim implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
 	final PropertyIdValue property;
 	final ItemIdValue item;
 
@@ -77,8 +78,6 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 		this.item = item;
 	}
 
-	final PropertyIdValue constrainedProperty;
-
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
 		return this.constrainedProperty;
@@ -96,6 +95,35 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintTargetRequiredClaim)) {
+			return false;
+		}
+		ConstraintTargetRequiredClaim other = (ConstraintTargetRequiredClaim) obj;
+		boolean ret = this.constrainedProperty
+				.equals(other.constrainedProperty)
+				&& this.property.equals(other.property)
+				&& equals(this.item, other.item);
+		return ret;
+	}
+
+	private boolean equals(Object obj0, Object obj1) {
+		if (obj0 == null) {
+			return (obj1 == null);
+		}
+		return obj0.equals(obj1);
+	}
+
+	@Override
+	public int hashCode() {
+		return (this.constrainedProperty.hashCode() + (0x1F * this.property
+				.hashCode()));
 	}
 
 }

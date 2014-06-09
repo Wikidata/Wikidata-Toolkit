@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintConflictsWith implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
 	final List<PropertyValues> list = new ArrayList<PropertyValues>();
 
 	/**
@@ -60,8 +61,6 @@ public class ConstraintConflictsWith implements Constraint {
 		this.list.addAll(list);
 	}
 
-	final PropertyIdValue constrainedProperty;
-
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
 		return this.constrainedProperty;
@@ -80,6 +79,25 @@ public class ConstraintConflictsWith implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintConflictsWith)) {
+			return false;
+		}
+		ConstraintConflictsWith other = (ConstraintConflictsWith) obj;
+		return (this.constrainedProperty.equals(other.constrainedProperty) && this.list
+				.equals(other.list));
+	}
+
+	@Override
+	public int hashCode() {
+		return (this.constrainedProperty.hashCode() + (0x1F * this.list
+				.hashCode()));
 	}
 
 }

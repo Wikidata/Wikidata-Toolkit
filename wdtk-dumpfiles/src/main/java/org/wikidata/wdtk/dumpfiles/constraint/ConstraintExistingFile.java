@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintExistingFile implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
+
 	/**
 	 * Constructs a new {@link ConstraintExistingFile}.
 	 * 
@@ -46,8 +48,6 @@ public class ConstraintExistingFile implements Constraint {
 		this.constrainedProperty = constrainedProperty;
 	}
 
-	final PropertyIdValue constrainedProperty;
-
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
 		return this.constrainedProperty;
@@ -57,6 +57,23 @@ public class ConstraintExistingFile implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintExistingFile)) {
+			return false;
+		}
+		ConstraintExistingFile other = (ConstraintExistingFile) obj;
+		return this.constrainedProperty.equals(other.constrainedProperty);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.constrainedProperty.hashCode();
 	}
 
 }

@@ -50,6 +50,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintItem implements Constraint {
 
+	final PropertyIdValue constrainedProperty;
 	final PropertyIdValue property;
 	final ItemIdValue item;
 	final PropertyIdValue property2;
@@ -92,8 +93,6 @@ public class ConstraintItem implements Constraint {
 			this.exceptions.addAll(exceptions);
 		}
 	}
-
-	final PropertyIdValue constrainedProperty;
 
 	@Override
 	public PropertyIdValue getConstrainedProperty() {
@@ -153,6 +152,39 @@ public class ConstraintItem implements Constraint {
 	public <T> T accept(ConstraintVisitor<T> visitor) {
 		Validate.notNull(visitor, "Visitor cannot be null.");
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintItem)) {
+			return false;
+		}
+		ConstraintItem other = (ConstraintItem) obj;
+		boolean ret = this.constrainedProperty
+				.equals(other.constrainedProperty)
+				&& equals(this.property, other.property)
+				&& equals(this.item, other.item)
+				&& equals(this.property2, other.property2)
+				&& equals(this.item2, other.item2)
+				&& equals(this.items, other.items)
+				&& equals(this.exceptions, other.exceptions);
+		return ret;
+	}
+
+	private boolean equals(Object obj0, Object obj1) {
+		if (obj0 == null) {
+			return (obj1 == null);
+		}
+		return obj0.equals(obj1);
+	}
+
+	@Override
+	public int hashCode() {
+		return (this.constrainedProperty.hashCode() + (0x1F * this.property
+				.hashCode()));
 	}
 
 }

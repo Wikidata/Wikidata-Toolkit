@@ -98,4 +98,23 @@ public class PropertyValues {
 		return this.items;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof PropertyValues)) {
+			return false;
+		}
+		PropertyValues other = (PropertyValues) obj;
+		return (this.property.equals(other.property)
+				&& (this.hasAllValues == other.hasAllValues) && this.items
+					.equals(other.items));
+	}
+
+	@Override
+	public int hashCode() {
+		return (this.property.hashCode() + (0x1F * this.items.hashCode()));
+	}
+
 }

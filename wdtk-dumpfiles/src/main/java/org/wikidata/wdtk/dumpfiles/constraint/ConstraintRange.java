@@ -116,4 +116,24 @@ public class ConstraintRange implements Constraint {
 		return visitor.visit(this);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ConstraintRange)) {
+			return false;
+		}
+		ConstraintRange other = (ConstraintRange) obj;
+		return this.constrainedProperty.equals(other.constrainedProperty)
+				&& (this.isTime == other.isTime)
+				&& (this.min.equals(other.min)) && (this.max.equals(other.max));
+	}
+
+	@Override
+	public int hashCode() {
+		return this.constrainedProperty.hashCode()
+				+ (0x1F * (this.min.hashCode() + (0x1F * this.max.hashCode())));
+	}
+
 }
