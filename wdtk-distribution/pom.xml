@@ -1,65 +1,51 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
+		<version>0.2.0</version>
 	</parent>
 
 	<artifactId>wdtk-distribution</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit Distribution</name>
-	<description>Module to create the Wikidata Toolkit Distribution</description>
+	<description>Module to package Wikidata Toolkit for releases</description>
+	
+	<dependencies>
+		<!-- For binary dependencies, we only need the main functional packages; others are included transitively-->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-dumpfiles</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-rdf</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 
 	<build>
-
-		<finalName>wdtk-distribution-${project.version}</finalName>
-
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<executions>
 					<execution>
-						<id>create-release</id>
+						<id>create-binary-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
 							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>wikidata-toolkit-${project.version}</finalName>
 							<descriptors>
 								<descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-					<execution>
-						<id>create-source-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-					<execution>
-						<id>create-javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>${basedir}/src/main/assembly/javadoc.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>
@@ -68,6 +54,89 @@
 
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<dependencies>
+				<!-- For source dependencies, all sources need to be listed (no transitive depencency) -->
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-datamodel</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-dumpfiles</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-rdf</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-storage</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-util</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<!-- For javadocs, we only use the aggregate javadoc from parent -->
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-parent</artifactId>
+					<version>${project.version}</version>
+					<classifier>javadoc</classifier>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>create-source-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>wikidata-toolkit-${project.version}</finalName>
+									<descriptors>
+										<descriptor>${basedir}/src/main/assembly/sources.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>create-javadoc-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>wikidata-toolkit-${project.version}</finalName>
+									<descriptors>
+										<descriptor>${basedir}/src/main/assembly/javadoc.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
 
