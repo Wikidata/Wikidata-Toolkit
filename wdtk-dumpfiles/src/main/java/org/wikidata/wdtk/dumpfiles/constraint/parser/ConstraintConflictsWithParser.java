@@ -20,15 +20,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
-import org.wikidata.wdtk.dumpfiles.constraint.model.PropertyValues;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -38,18 +32,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  */
 class ConstraintConflictsWithParser implements ConstraintParser {
 
-	final List<PropertyValues> list = new ArrayList<PropertyValues>();
-
 	public ConstraintConflictsWithParser() {
-	}
-
-	public ConstraintConflictsWithParser(List<PropertyValues> list) {
-		Validate.notNull(list, "List cannot be null.");
-		this.list.addAll(list);
-	}
-
-	public List<PropertyValues> getList() {
-		return Collections.unmodifiableList(this.list);
 	}
 
 	@Override
