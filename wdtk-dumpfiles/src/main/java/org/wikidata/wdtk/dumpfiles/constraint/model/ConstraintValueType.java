@@ -113,4 +113,26 @@ public class ConstraintValueType implements Constraint {
 						.hashCode())));
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Value type");
+		sb.append("|");
+		sb.append("class");
+		sb.append("=");
+		sb.append(this.classId.getId());
+		sb.append("|");
+		sb.append("relation");
+		sb.append("=");
+		sb.append(this.relation.toString().toLowerCase());
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

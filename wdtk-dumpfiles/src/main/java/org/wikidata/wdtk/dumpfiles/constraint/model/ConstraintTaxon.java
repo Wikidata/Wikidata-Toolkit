@@ -73,4 +73,18 @@ public class ConstraintTaxon implements Constraint {
 		return this.constrainedProperty.hashCode();
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Taxon");
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

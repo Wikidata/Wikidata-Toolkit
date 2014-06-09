@@ -93,4 +93,22 @@ public class ConstraintFormat implements Constraint {
 				.hashCode()));
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Format");
+		sb.append("|");
+		sb.append("pattern=");
+		sb.append("<nowiki>");
+		sb.append(this.pattern);
+		sb.append("</nowiki>");
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
 }

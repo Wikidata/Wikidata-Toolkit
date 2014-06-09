@@ -93,4 +93,21 @@ public class ConstraintInverse implements Constraint {
 				.hashCode()));
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Inverse");
+		sb.append("|");
+		sb.append("property=");
+		sb.append(this.property);
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

@@ -67,4 +67,11 @@ public interface Constraint {
 	 */
 	PropertyIdValue getConstrainedProperty();
 
+	/**
+	 * Returns a template-like String representation of this constraint.
+	 * 
+	 * @return a template-like String representation of this constraint
+	 */
+	String getTemplate();
+
 }

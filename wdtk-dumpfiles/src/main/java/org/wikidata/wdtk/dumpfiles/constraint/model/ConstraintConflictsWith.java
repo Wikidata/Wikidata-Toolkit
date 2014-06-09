@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -98,6 +99,30 @@ public class ConstraintConflictsWith implements Constraint {
 	public int hashCode() {
 		return (this.constrainedProperty.hashCode() + (0x1F * this.list
 				.hashCode()));
+	}
+
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Conflicts with");
+		sb.append("|");
+		sb.append("list");
+		sb.append("=");
+		Iterator<PropertyValues> it = this.list.iterator();
+		while (it.hasNext()) {
+			sb.append(it.next());
+			if (it.hasNext()) {
+				sb.append("; ");
+			}
+		}
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
 	}
 
 }

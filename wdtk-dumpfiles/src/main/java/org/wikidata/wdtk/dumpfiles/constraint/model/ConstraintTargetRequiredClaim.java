@@ -126,4 +126,28 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 				.hashCode()));
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Target required claim");
+		sb.append("|");
+		sb.append("property");
+		sb.append("=");
+		sb.append(this.property.getId());
+		if (this.item != null) {
+			sb.append("|");
+			sb.append("item");
+			sb.append("=");
+			sb.append(this.item.getId());
+		}
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

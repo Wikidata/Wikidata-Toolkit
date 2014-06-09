@@ -20,7 +20,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * #L%
  */
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * An object of this class is a date with a distinguished value to represent the
@@ -30,6 +32,17 @@ import java.util.Date;
  * 
  */
 public class DateAndNow {
+
+	private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
+
+		@Override
+		protected SimpleDateFormat initialValue() {
+			SimpleDateFormat ret = new SimpleDateFormat("yyyy-MM-dd");
+			ret.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return ret;
+		}
+
+	};
 
 	final Date date;
 	final boolean isNow;
@@ -101,9 +114,9 @@ public class DateAndNow {
 	@Override
 	public String toString() {
 		if (this.isNow) {
-			return "NOW";
+			return "now";
 		} else {
-			return this.date.toString();
+			return dateFormat.get().format(this.date);
 		}
 	}
 

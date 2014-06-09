@@ -76,4 +76,18 @@ public class ConstraintExistingFile implements Constraint {
 		return this.constrainedProperty.hashCode();
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Existing file");
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

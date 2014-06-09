@@ -136,4 +136,26 @@ public class ConstraintRange implements Constraint {
 				+ (0x1F * (this.min.hashCode() + (0x1F * this.max.hashCode())));
 	}
 
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Range");
+		sb.append("|");
+		sb.append("min");
+		sb.append("=");
+		sb.append(this.min);
+		sb.append("|");
+		sb.append("max");
+		sb.append("=");
+		sb.append(this.max);
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
+	}
+
 }

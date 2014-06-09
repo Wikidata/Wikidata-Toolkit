@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -115,6 +116,33 @@ public class PropertyValues {
 	@Override
 	public int hashCode() {
 		return (this.property.hashCode() + (0x1F * this.items.hashCode()));
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("P");
+		sb.append("|");
+		String pNumber = this.property.getId().substring(1);
+		sb.append(pNumber);
+		sb.append("}}");
+		if (!this.hasAllValues) {
+			sb.append(": ");
+			Iterator<ItemIdValue> it = this.items.iterator();
+			while (it.hasNext()) {
+				sb.append("{{");
+				sb.append("Q");
+				sb.append("|");
+				String qNumber = it.next().getId().substring(1);
+				sb.append(qNumber);
+				sb.append("}}");
+				if (it.hasNext()) {
+					sb.append(", ");
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 }

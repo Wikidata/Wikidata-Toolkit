@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -185,6 +186,73 @@ public class ConstraintItem implements Constraint {
 	public int hashCode() {
 		return (this.constrainedProperty.hashCode() + (0x1F * this.property
 				.hashCode()));
+	}
+
+	static String toString(List<ItemIdValue> list) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<ItemIdValue> it = list.iterator();
+		while (it.hasNext()) {
+			sb.append("{{");
+			sb.append("Q");
+			sb.append("|");
+			String qNumber = it.next().getId().substring(1);
+			sb.append(qNumber);
+			sb.append("}}");
+			if (it.hasNext()) {
+				sb.append(", ");
+			}
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:Item");
+		if (this.property != null) {
+			sb.append("|");
+			sb.append("property");
+			sb.append("=");
+			sb.append(this.property.getId());
+		}
+		if (this.item != null) {
+			sb.append("|");
+			sb.append("item");
+			sb.append("=");
+			sb.append(this.item.getId());
+		}
+		if (this.property2 != null) {
+			sb.append("|");
+			sb.append("property2");
+			sb.append("=");
+			sb.append(this.property2.getId());
+		}
+		if (this.item2 != null) {
+			sb.append("|");
+			sb.append("item2");
+			sb.append("=");
+			sb.append(this.item2.getId());
+		}
+		if (!this.items.isEmpty()) {
+			sb.append("|");
+			sb.append("items");
+			sb.append("=");
+			sb.append(toString(this.items));
+		}
+		if (!this.exceptions.isEmpty()) {
+			sb.append("|");
+			sb.append("exceptions");
+			sb.append("=");
+			sb.append(toString(this.exceptions));
+		}
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
 	}
 
 }

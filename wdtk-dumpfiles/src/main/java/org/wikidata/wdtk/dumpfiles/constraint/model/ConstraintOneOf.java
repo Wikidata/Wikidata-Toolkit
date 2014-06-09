@@ -54,8 +54,8 @@ public class ConstraintOneOf implements Constraint {
 	 */
 	public ConstraintOneOf(PropertyIdValue constrainedProperty,
 			List<ItemIdValue> values) {
-		Validate.notNull(values, "List of values cannot be null.");
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		Validate.notNull(values, "List of values cannot be null.");
 		this.constrainedProperty = constrainedProperty;
 		this.values.addAll(values);
 	}
@@ -97,6 +97,24 @@ public class ConstraintOneOf implements Constraint {
 	public int hashCode() {
 		return (this.constrainedProperty.hashCode() + (0x1F * this.values
 				.hashCode()));
+	}
+
+	@Override
+	public String getTemplate() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{{");
+		sb.append("Constraint:One of");
+		sb.append("|");
+		sb.append("values");
+		sb.append("=");
+		sb.append(ConstraintItem.toString(this.values));
+		sb.append("}}");
+		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return this.constrainedProperty.getId() + " " + getTemplate();
 	}
 
 }
