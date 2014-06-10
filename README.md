@@ -10,6 +10,8 @@ following the original [Wikibase Toolkit IEG proposal](https://meta.wikimedia.or
 
 Documentation: [Wikidata Toolkit homepage](https://www.mediawiki.org/wiki/Wikidata_Toolkit)
 
+API documentation: [Wikidata Toolkit Javadocs](http://wikidata.github.io/Wikidata-Toolkit/)
+
 Authors: [Markus Kroetzsch](http://korrekt.org), [Julian Mendez](http://lat.inf.tu-dresden.de/~mendez/), [Fredo Erxleben](https://github.com/fer-rum), [Michael Guenther](https://github.com/guenthermi)
 
 License: [Apache 2.0](LICENSE.txt)
