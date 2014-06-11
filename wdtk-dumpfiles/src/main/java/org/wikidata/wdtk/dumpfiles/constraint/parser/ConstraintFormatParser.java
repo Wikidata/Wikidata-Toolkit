@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
@@ -40,13 +39,11 @@ class ConstraintFormatParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintFormat parse(Template template) {
+	public ConstraintFormat parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintFormat ret = null;
-		String page = template.getPage();
-		if (template.getParameters().size() > 0) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
+		if ((constrainedProperty != null)
+				&& (template.getParameters().size() > 0)) {
 			String plainPattern = template.getParameters().get(
 					ConstraintParserConstant.P_PATTERN);
 			String pattern = removeNowiki(plainPattern);

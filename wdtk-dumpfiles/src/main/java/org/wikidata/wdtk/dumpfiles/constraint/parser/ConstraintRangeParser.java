@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
@@ -90,18 +89,15 @@ class ConstraintRangeParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintRange parse(Template template) {
+	public ConstraintRange parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintRange ret = null;
-		String page = template.getPage();
 		String minStr = template.get(ConstraintParserConstant.P_MIN)
 				.toLowerCase().trim();
 		String maxStr = template.get(ConstraintParserConstant.P_MAX)
 				.toLowerCase().trim();
-		if ((page != null) && (minStr != null) && (maxStr != null)) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
-
+		if ((constrainedProperty != null) && (minStr != null)
+				&& (maxStr != null)) {
 			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
 			String propertyType = wdPropertyTypes
 					.getPropertyType(constrainedProperty);
@@ -124,7 +120,8 @@ class ConstraintRangeParser implements ConstraintParser {
 
 			} else {
 				throw new IllegalArgumentException("Property '"
-						+ constrainedProperty + "' has type '" + propertyType
+						+ constrainedProperty.getId() + "' has type '"
+						+ propertyType
 						+ "' and cannot have a range constraint as in '"
 						+ template + "'.");
 			}

@@ -26,8 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
+import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateScanner;
@@ -45,7 +48,7 @@ class PropertyTalkTemplateMwRevisionProcessor implements MwRevisionProcessor {
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();
-	final Map<String, List<Template>> map = new TreeMap<String, List<Template>>();
+	final Map<PropertyIdValue, List<Template>> map = new TreeMap<PropertyIdValue, List<Template>>();
 	String propertyTalkPrefix = "";
 
 	public PropertyTalkTemplateMwRevisionProcessor() {
@@ -69,10 +72,14 @@ class PropertyTalkTemplateMwRevisionProcessor implements MwRevisionProcessor {
 					.getTemplates(text);
 			List<Template> listOfTemplates = new ArrayList<Template>();
 			for (String templateStr : listOfTemplateStr) {
-				listOfTemplates.add(this.templateParser.parse(propertyName,
-						templateStr));
+				listOfTemplates.add(this.templateParser.parse(templateStr));
 			}
-			this.map.put(propertyName, listOfTemplates);
+
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
+					propertyName, ConstraintMainParser.PREFIX_WIKIDATA);
+
+			this.map.put(constrainedProperty, listOfTemplates);
 		}
 	}
 
@@ -80,7 +87,7 @@ class PropertyTalkTemplateMwRevisionProcessor implements MwRevisionProcessor {
 	public void finishRevisionProcessing() {
 	}
 
-	public Map<String, List<Template>> getMap() {
+	public Map<PropertyIdValue, List<Template>> getMap() {
 		return Collections.unmodifiableMap(this.map);
 	}
 

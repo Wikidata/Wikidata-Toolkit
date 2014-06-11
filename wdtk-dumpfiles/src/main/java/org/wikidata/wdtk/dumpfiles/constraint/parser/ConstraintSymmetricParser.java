@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
@@ -36,13 +35,10 @@ class ConstraintSymmetricParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintSymmetric parse(Template template) {
-		String page = template.getPage();
+	public ConstraintSymmetric parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintSymmetric ret = null;
-		if (page != null) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
+		if (constrainedProperty != null) {
 			ret = new ConstraintSymmetric(constrainedProperty);
 		}
 		return ret;

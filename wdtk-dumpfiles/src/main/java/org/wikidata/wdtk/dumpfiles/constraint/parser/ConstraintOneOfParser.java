@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
@@ -38,15 +37,11 @@ class ConstraintOneOfParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintOneOf parse(Template template) {
+	public ConstraintOneOf parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintOneOf ret = null;
-		String page = template.getPage();
 		String values = template.get(ConstraintParserConstant.P_VALUES);
-		if ((page != null) && (values != null)) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
-
+		if ((constrainedProperty != null) && (values != null)) {
 			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
 			String propertyType = wdPropertyTypes
 					.getPropertyType(constrainedProperty);
@@ -63,7 +58,7 @@ class ConstraintOneOfParser implements ConstraintParser {
 			} else {
 				throw new IllegalArgumentException(
 						"'Constraint:One of' cannot be used for property '"
-								+ template.getPage()
+								+ constrainedProperty.getId()
 								+ "' because its type is '" + propertyType
 								+ "'.");
 			}

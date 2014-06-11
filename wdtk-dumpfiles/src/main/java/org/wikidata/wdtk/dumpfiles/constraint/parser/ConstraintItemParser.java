@@ -40,10 +40,10 @@ class ConstraintItemParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintItem parse(Template template) {
+	public ConstraintItem parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintItem ret = null;
-		String page = template.getPage();
-		if (page != null) {
+		if (constrainedProperty != null) {
 			String propertyStr = template
 					.get(ConstraintParserConstant.P_PROPERTY);
 			PropertyIdValue property = null;
@@ -60,8 +60,6 @@ class ConstraintItemParser implements ConstraintParser {
 					.get(ConstraintParserConstant.P_EXCEPTIONS);
 			List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 			if (propertyStr != null) {
 				property = factory.getPropertyIdValue(
 						propertyStr.toUpperCase(),

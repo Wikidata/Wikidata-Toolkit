@@ -29,20 +29,19 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * 
+ * This class represents a particular transclusion of a Wikibase template.
+ * 
  * @author Julian Mendez
  * 
  */
 public class Template {
 
 	final String id;
-	final String page;
 	final Map<String, String> parameters = new TreeMap<String, String>();
 
-	public Template(String page, String id, Map<String, String> parameters) {
-		Validate.notNull(page, "Page cannot be null.");
+	public Template(String id, Map<String, String> parameters) {
 		Validate.notNull(id, "ID cannot be null.");
 		Validate.notNull(parameters, "Parameters cannot be null.");
-		this.page = page;
 		this.id = id.trim();
 		for (String key : parameters.keySet()) {
 			String value = parameters.get(key);
@@ -57,10 +56,6 @@ public class Template {
 
 	public String getId() {
 		return this.id;
-	}
-
-	public String getPage() {
-		return this.page;
 	}
 
 	public Map<String, String> getParameters() {

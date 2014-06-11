@@ -37,14 +37,12 @@ class ConstraintInverseParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintInverse parse(Template template) {
+	public ConstraintInverse parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintInverse ret = null;
-		String page = template.getPage();
 		String propertyStr = template.get(ConstraintParserConstant.P_PROPERTY);
-		if ((page != null) && (propertyStr != null)) {
+		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 			PropertyIdValue property = factory.getPropertyIdValue(
 					propertyStr.toUpperCase(),
 					ConstraintMainParser.PREFIX_WIKIDATA);

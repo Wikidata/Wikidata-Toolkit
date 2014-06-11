@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.PropertyValues;
-import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * 
@@ -123,7 +123,9 @@ public class ConstraintMainParser implements ConstraintParser {
 	 *         template does not correspond to a known constraint
 	 */
 	@Override
-	public Constraint parse(Template template) {
+	public Constraint parse(PropertyIdValue constrainedProperty,
+			Template template) {
+		Validate.notNull(constrainedProperty);
 		Validate.notNull(template);
 		Constraint ret = null;
 		String templateId = normalize(template.getId());
@@ -133,7 +135,7 @@ public class ConstraintMainParser implements ConstraintParser {
 					.length()));
 			ConstraintParser constraintParser = getConstraintParser(constraintId);
 			if (constraintParser != null) {
-				ret = constraintParser.parse(template);
+				ret = constraintParser.parse(constrainedProperty, template);
 			}
 		}
 		return ret;
@@ -146,8 +148,11 @@ public class ConstraintMainParser implements ConstraintParser {
 	public String normalize(String str) {
 		String ret = "";
 		if (str != null) {
-			ret = str.trim().toLowerCase()
-					.replace(TemplateConstant.UNDERSCORE, TemplateConstant.SPACE);
+			ret = str
+					.trim()
+					.toLowerCase()
+					.replace(TemplateConstant.UNDERSCORE,
+							TemplateConstant.SPACE);
 			if (ret.length() > 0) {
 				ret = ret.substring(0, 1).toUpperCase() + ret.substring(1);
 			}

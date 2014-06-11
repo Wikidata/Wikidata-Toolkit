@@ -38,15 +38,14 @@ class ConstraintValueTypeParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintValueType parse(Template template) {
+	public ConstraintValueType parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintValueType ret = null;
-		String page = template.getPage();
 		String classStr = template.get(ConstraintParserConstant.P_CLASS);
 		String relationStr = template.get(ConstraintParserConstant.P_RELATION);
-		if ((page != null) && (classStr != null) && (relationStr != null)) {
+		if ((constrainedProperty != null) && (classStr != null)
+				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
 			ItemIdValue classId = factory.getItemIdValue(
 					classStr.toUpperCase(),
 					ConstraintMainParser.PREFIX_WIKIDATA);

@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
@@ -36,13 +35,10 @@ class ConstraintTaxonParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintTaxon parse(Template template) {
-		String page = template.getPage();
+	public ConstraintTaxon parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintTaxon ret = null;
-		if (page != null) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
+		if (constrainedProperty != null) {
 			ret = new ConstraintTaxon(constrainedProperty);
 		}
 		return ret;

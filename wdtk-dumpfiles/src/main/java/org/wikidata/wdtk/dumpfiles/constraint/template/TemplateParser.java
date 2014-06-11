@@ -173,14 +173,13 @@ public class TemplateParser {
 		String ret = "";
 		int pos = parameter.indexOf(TemplateConstant.EQUALS_SIGN);
 		if (pos != -1) {
-			ret = parameter
-					.substring(pos + TemplateConstant.EQUALS_SIGN.length());
+			ret = parameter.substring(pos
+					+ TemplateConstant.EQUALS_SIGN.length());
 		}
 		return ret;
 	}
 
-	public Template parse(String page, String line) {
-		Validate.notNull(page, "Page cannot be null.");
+	public Template parse(String line) {
 		Validate.notNull(line, "Line cannot be null.");
 		if (!line.startsWith(TemplateConstant.OPENING_BRACES)
 				|| !line.endsWith(TemplateConstant.CLOSING_BRACES)) {
@@ -202,7 +201,7 @@ public class TemplateParser {
 			list.remove(0);
 		}
 		Map<String, String> parameters = getParameterMap(list);
-		return new Template(page, id, parameters);
+		return new Template(id, parameters);
 	}
 
 }

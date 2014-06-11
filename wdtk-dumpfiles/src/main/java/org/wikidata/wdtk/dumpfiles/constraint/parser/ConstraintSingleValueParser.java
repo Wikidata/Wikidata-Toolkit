@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
@@ -36,13 +35,10 @@ class ConstraintSingleValueParser implements ConstraintParser {
 	}
 
 	@Override
-	public ConstraintSingleValue parse(Template template) {
+	public ConstraintSingleValue parse(PropertyIdValue constrainedProperty,
+			Template template) {
 		ConstraintSingleValue ret = null;
-		String page = template.getPage();
-		if (page != null) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					page.toUpperCase(), ConstraintMainParser.PREFIX_WIKIDATA);
+		if (constrainedProperty != null) {
 			ret = new ConstraintSingleValue(constrainedProperty);
 		}
 		return ret;

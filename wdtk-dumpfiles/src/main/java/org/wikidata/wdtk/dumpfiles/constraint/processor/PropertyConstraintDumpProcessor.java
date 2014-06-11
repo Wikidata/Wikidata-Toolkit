@@ -30,7 +30,6 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
@@ -132,20 +131,16 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	public void processAnnotationsOfConstraintTemplates(
-			Map<String, List<Template>> templateMap,
+			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
 
-		DataObjectFactoryImpl dataObjectFactory = new DataObjectFactoryImpl();
-
-		for (String key : templateMap.keySet()) {
+		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
 			try {
 				List<Template> templates = getConstraintTemplates(templateMap
-						.get(key));
-				PropertyIdValue property = dataObjectFactory
-						.getPropertyIdValue(key.toUpperCase(),
-								ConstraintMainParser.PREFIX_WIKIDATA);
+						.get(constrainedProperty));
 				for (RendererFormat rendererFormat : rendererFormats) {
-					URI propertyUri = rendererFormat.getProperty(property);
+					URI propertyUri = rendererFormat
+							.getProperty(constrainedProperty);
 					rendererFormat.addDeclarationObjectProperty(propertyUri);
 					rendererFormat.addAnnotationAssertion(
 							rendererFormat.rdfsComment(), propertyUri,
@@ -154,25 +149,28 @@ public class PropertyConstraintDumpProcessor {
 			} catch (Exception e) {
 				System.out
 						.println("Exception while rendering annotation assertion for '"
-								+ key + "'.");
+								+ constrainedProperty.getId() + "'.");
 				e.printStackTrace();
 
 			}
 		}
 	}
 
-	public void processTemplates(Map<String, List<Template>> templateMap,
+	public void processTemplates(
+			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
 		ConstraintMainParser parser = new ConstraintMainParser();
-		for (String key : templateMap.keySet()) {
-			List<Template> templates = templateMap.get(key);
+		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
+
+			List<Template> templates = templateMap.get(constrainedProperty);
 			for (Template template : templates) {
 
 				Constraint constraint = null;
 				try {
-					constraint = parser.parse(template);
+					constraint = parser.parse(constrainedProperty, template);
 				} catch (Exception e) {
-					System.out.println("Exception while parsing " + key);
+					System.out.println("Exception while parsing "
+							+ constrainedProperty.getId());
 					System.out.println("Template: " + template.toString());
 					e.printStackTrace();
 				}
@@ -186,7 +184,8 @@ public class PropertyConstraintDumpProcessor {
 						}
 					}
 				} catch (Exception e) {
-					System.out.println("Exception while rendering " + key);
+					System.out.println("Exception while rendering "
+							+ constrainedProperty.getId());
 					System.out.println("Template: " + template.toString());
 					System.out.println("Constraint: " + constraint.toString());
 					e.printStackTrace();

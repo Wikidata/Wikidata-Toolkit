@@ -20,6 +20,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
@@ -30,6 +31,6 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  */
 public interface ConstraintParser {
 
-	Constraint parse(Template template);
+	Constraint parse(PropertyIdValue constrainedProperty, Template template);
 
 }
