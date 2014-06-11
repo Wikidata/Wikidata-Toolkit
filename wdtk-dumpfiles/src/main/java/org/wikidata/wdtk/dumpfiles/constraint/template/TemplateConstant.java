@@ -21,11 +21,13 @@ package org.wikidata.wdtk.dumpfiles.constraint.template;
  */
 
 /**
+ * This interface contains constants used to have a string representation of
+ * Wikibase templates.
  * 
  * @author Julian Mendez
  * 
  */
-public interface ParserConstant {
+public interface TemplateConstant {
 
 	String OPENING_BRACES = "{{";
 	String CLOSING_BRACES = "}}";

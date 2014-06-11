@@ -105,7 +105,7 @@ public class TemplateParser {
 
 	private String getKey(String parameter) {
 		String ret = parameter;
-		int pos = parameter.indexOf(ParserConstant.EQUALS_SIGN);
+		int pos = parameter.indexOf(TemplateConstant.EQUALS_SIGN);
 		if (pos != -1) {
 			ret = parameter.substring(0, pos);
 		}
@@ -158,23 +158,23 @@ public class TemplateParser {
 
 	private String getString(LookAheadItem item) {
 		if (item.equals(LookAheadItem.OPENING_BRACES)) {
-			return ParserConstant.OPENING_BRACES;
+			return TemplateConstant.OPENING_BRACES;
 		}
 		if (item.equals(LookAheadItem.CLOSING_BRACES)) {
-			return ParserConstant.CLOSING_BRACES;
+			return TemplateConstant.CLOSING_BRACES;
 		}
 		if (item.equals(LookAheadItem.VERTICAL_BAR)) {
-			return ParserConstant.VERTICAL_BAR;
+			return TemplateConstant.VERTICAL_BAR;
 		}
 		return "";
 	}
 
 	private String getValue(String parameter) {
 		String ret = "";
-		int pos = parameter.indexOf(ParserConstant.EQUALS_SIGN);
+		int pos = parameter.indexOf(TemplateConstant.EQUALS_SIGN);
 		if (pos != -1) {
 			ret = parameter
-					.substring(pos + ParserConstant.EQUALS_SIGN.length());
+					.substring(pos + TemplateConstant.EQUALS_SIGN.length());
 		}
 		return ret;
 	}
@@ -182,19 +182,19 @@ public class TemplateParser {
 	public Template parse(String page, String line) {
 		Validate.notNull(page, "Page cannot be null.");
 		Validate.notNull(line, "Line cannot be null.");
-		if (!line.startsWith(ParserConstant.OPENING_BRACES)
-				|| !line.endsWith(ParserConstant.CLOSING_BRACES)) {
+		if (!line.startsWith(TemplateConstant.OPENING_BRACES)
+				|| !line.endsWith(TemplateConstant.CLOSING_BRACES)) {
 			throw new IllegalArgumentException(
 					"This string is not a valid template: '" + line
 							+ "'. The line must start with \""
-							+ ParserConstant.OPENING_BRACES
+							+ TemplateConstant.OPENING_BRACES
 							+ "\" and end with \""
-							+ ParserConstant.CLOSING_BRACES + "\".");
+							+ TemplateConstant.CLOSING_BRACES + "\".");
 		}
 
 		String id = "";
-		String str = line.substring(ParserConstant.OPENING_BRACES.length(),
-				line.length() - ParserConstant.CLOSING_BRACES.length());
+		String str = line.substring(TemplateConstant.OPENING_BRACES.length(),
+				line.length() - TemplateConstant.CLOSING_BRACES.length());
 
 		List<String> list = getParameterList(str);
 		if (list.size() > 0) {

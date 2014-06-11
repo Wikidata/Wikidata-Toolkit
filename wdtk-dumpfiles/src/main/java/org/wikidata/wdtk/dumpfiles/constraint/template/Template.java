@@ -74,21 +74,21 @@ public class Template {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(ParserConstant.OPENING_BRACES);
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append(this.id);
 		for (String key : this.parameters.keySet()) {
-			sb.append(ParserConstant.NEWLINE);
-			sb.append(ParserConstant.VERTICAL_BAR);
-			sb.append(ParserConstant.SPACE);
+			sb.append(TemplateConstant.NEWLINE);
+			sb.append(TemplateConstant.VERTICAL_BAR);
+			sb.append(TemplateConstant.SPACE);
 			sb.append(key);
 			String value = this.parameters.get(key);
 			if ((value != null) && !value.isEmpty()) {
-				sb.append(ParserConstant.EQUALS_SIGN);
+				sb.append(TemplateConstant.EQUALS_SIGN);
 				sb.append(value);
 			}
 		}
-		sb.append(ParserConstant.NEWLINE);
-		sb.append(ParserConstant.CLOSING_BRACES);
+		sb.append(TemplateConstant.NEWLINE);
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

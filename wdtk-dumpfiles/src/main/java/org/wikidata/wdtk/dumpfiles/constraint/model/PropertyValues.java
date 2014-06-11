@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * An object of this class represents a set of pairs property-value, for a fixed
@@ -121,24 +122,26 @@ public class PropertyValues {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("P");
-		sb.append("|");
+		sb.append(TemplateConstant.VERTICAL_BAR);
 		String pNumber = this.property.getId().substring(1);
 		sb.append(pNumber);
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		if (!this.hasAllValues) {
-			sb.append(": ");
+			sb.append(TemplateConstant.COLON);
+			sb.append(TemplateConstant.SPACE);
 			Iterator<ItemIdValue> it = this.items.iterator();
 			while (it.hasNext()) {
-				sb.append("{{");
+				sb.append(TemplateConstant.OPENING_BRACES);
 				sb.append("Q");
-				sb.append("|");
+				sb.append(TemplateConstant.VERTICAL_BAR);
 				String qNumber = it.next().getId().substring(1);
 				sb.append(qNumber);
-				sb.append("}}");
+				sb.append(TemplateConstant.CLOSING_BRACES);
 				if (it.hasNext()) {
-					sb.append(", ");
+					sb.append(TemplateConstant.COMMA);
+					sb.append(TemplateConstant.SPACE);
 				}
 			}
 		}

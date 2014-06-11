@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.PropertyValues;
-import org.wikidata.wdtk.dumpfiles.constraint.template.ParserConstant;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -52,11 +52,11 @@ public class ConstraintMainParser implements ConstraintParser {
 
 	static String removeBrackets(String str) {
 		Validate.notNull(str);
-		return str.replace(ParserConstant.OPENING_BRACKETS, "")
-				.replace(ParserConstant.CLOSING_BRACKETS, "")
-				.replace(ParserConstant.OPENING_BRACES, "")
-				.replace(ParserConstant.CLOSING_BRACES, "")
-				.replace(ParserConstant.VERTICAL_BAR, "");
+		return str.replace(TemplateConstant.OPENING_BRACKETS, "")
+				.replace(TemplateConstant.CLOSING_BRACKETS, "")
+				.replace(TemplateConstant.OPENING_BRACES, "")
+				.replace(TemplateConstant.CLOSING_BRACES, "")
+				.replace(TemplateConstant.VERTICAL_BAR, "");
 	}
 
 	static List<ItemIdValue> parseListOfItems(String listOfItems) {
@@ -64,7 +64,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		String str = removeBrackets(listOfItems);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-		StringTokenizer stok = new StringTokenizer(str, ParserConstant.COMMA);
+		StringTokenizer stok = new StringTokenizer(str, TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			String itemStr = stok.nextToken().trim();
 			ItemIdValue item = factory.getItemIdValue(itemStr.toUpperCase(),
@@ -80,10 +80,10 @@ public class ConstraintMainParser implements ConstraintParser {
 		String str = removeBrackets(listOfItems);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		StringTokenizer stok = new StringTokenizer(str,
-				ParserConstant.SEMICOLON);
+				TemplateConstant.SEMICOLON);
 		while (stok.hasMoreTokens()) {
 			String propertyValuesStr = stok.nextToken().trim();
-			int pos = propertyValuesStr.indexOf(ParserConstant.COLON);
+			int pos = propertyValuesStr.indexOf(TemplateConstant.COLON);
 			if (pos == -1) {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.toUpperCase(),
@@ -106,7 +106,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		Validate.notNull(listOfQuantities);
 		List<Integer> ret = new ArrayList<Integer>();
 		StringTokenizer stok = new StringTokenizer(listOfQuantities,
-				ParserConstant.COMMA);
+				TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			ret.add(Integer.parseInt(stok.nextToken()));
 		}
@@ -147,7 +147,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		String ret = "";
 		if (str != null) {
 			ret = str.trim().toLowerCase()
-					.replace(ParserConstant.UNDERSCORE, ParserConstant.SPACE);
+					.replace(TemplateConstant.UNDERSCORE, TemplateConstant.SPACE);
 			if (ret.length() > 0) {
 				ret = ret.substring(0, 1).toUpperCase() + ret.substring(1);
 			}

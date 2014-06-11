@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that a property creates a
@@ -104,19 +105,20 @@ public class ConstraintConflictsWith implements Constraint {
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("Constraint:Conflicts with");
-		sb.append("|");
+		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("list");
-		sb.append("=");
+		sb.append(TemplateConstant.EQUALS_SIGN);
 		Iterator<PropertyValues> it = this.list.iterator();
 		while (it.hasNext()) {
 			sb.append(it.next());
 			if (it.hasNext()) {
-				sb.append("; ");
+				sb.append(TemplateConstant.COLON);
+				sb.append(TemplateConstant.SPACE);
 			}
 		}
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

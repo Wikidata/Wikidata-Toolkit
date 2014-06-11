@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that a property must have one of
@@ -147,17 +148,17 @@ public class ConstraintOneOf implements Constraint {
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("Constraint:One of");
-		sb.append("|");
+		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("values");
-		sb.append("=");
+		sb.append(TemplateConstant.EQUALS_SIGN);
 		if (this.hasItems) {
 			sb.append(ConstraintItem.toString(this.itemValues));
 		} else {
 			sb.append(toString(this.quantityValues));
 		}
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

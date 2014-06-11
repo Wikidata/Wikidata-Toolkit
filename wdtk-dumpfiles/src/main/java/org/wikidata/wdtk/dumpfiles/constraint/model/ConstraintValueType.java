@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that for every item that has a
@@ -116,17 +117,17 @@ public class ConstraintValueType implements Constraint {
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("Constraint:Value type");
-		sb.append("|");
+		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("class");
-		sb.append("=");
+		sb.append(TemplateConstant.EQUALS_SIGN);
 		sb.append(this.classId.getId());
-		sb.append("|");
+		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("relation");
-		sb.append("=");
+		sb.append(TemplateConstant.EQUALS_SIGN);
 		sb.append(this.relation.toString().toLowerCase());
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

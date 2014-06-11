@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that for every item that has this
@@ -192,14 +193,15 @@ public class ConstraintItem implements Constraint {
 		StringBuilder sb = new StringBuilder();
 		Iterator<ItemIdValue> it = list.iterator();
 		while (it.hasNext()) {
-			sb.append("{{");
+			sb.append(TemplateConstant.OPENING_BRACES);
 			sb.append("Q");
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			String qNumber = it.next().getId().substring(1);
 			sb.append(qNumber);
-			sb.append("}}");
+			sb.append(TemplateConstant.CLOSING_BRACES);
 			if (it.hasNext()) {
-				sb.append(", ");
+				sb.append(TemplateConstant.COMMA);
+				sb.append(TemplateConstant.SPACE);
 			}
 		}
 		return sb.toString();
@@ -208,45 +210,45 @@ public class ConstraintItem implements Constraint {
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("Constraint:Item");
 		if (this.property != null) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("property");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(this.property.getId());
 		}
 		if (this.item != null) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("item");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(this.item.getId());
 		}
 		if (this.property2 != null) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("property2");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(this.property2.getId());
 		}
 		if (this.item2 != null) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("item2");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(this.item2.getId());
 		}
 		if (!this.items.isEmpty()) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("items");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(toString(this.items));
 		}
 		if (!this.exceptions.isEmpty()) {
-			sb.append("|");
+			sb.append(TemplateConstant.VERTICAL_BAR);
 			sb.append("exceptions");
-			sb.append("=");
+			sb.append(TemplateConstant.EQUALS_SIGN);
 			sb.append(toString(this.exceptions));
 		}
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

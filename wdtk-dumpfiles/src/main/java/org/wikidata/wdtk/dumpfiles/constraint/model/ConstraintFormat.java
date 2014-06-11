@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that the value of a property must
@@ -96,14 +97,15 @@ public class ConstraintFormat implements Constraint {
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{{");
+		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append("Constraint:Format");
-		sb.append("|");
-		sb.append("pattern=");
+		sb.append(TemplateConstant.VERTICAL_BAR);
+		sb.append("pattern");
+		sb.append(TemplateConstant.EQUALS_SIGN);
 		sb.append("<nowiki>");
 		sb.append(this.pattern);
 		sb.append("</nowiki>");
-		sb.append("}}");
+		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
 

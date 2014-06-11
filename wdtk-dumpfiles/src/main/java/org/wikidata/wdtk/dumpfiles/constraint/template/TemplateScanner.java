@@ -44,13 +44,13 @@ public class TemplateScanner {
 		int level = 0;
 		int lastBegin = 0;
 		while (pos != -1) {
-			int nextBegin = str.indexOf(ParserConstant.OPENING_BRACES, pos);
-			int nextEnd = str.indexOf(ParserConstant.CLOSING_BRACES, pos);
+			int nextBegin = str.indexOf(TemplateConstant.OPENING_BRACES, pos);
+			int nextEnd = str.indexOf(TemplateConstant.CLOSING_BRACES, pos);
 			if (nextEnd == -1) {
 				pos = -1;
 			} else {
 				if ((nextBegin != -1) && (nextBegin < nextEnd)) {
-					pos = nextBegin + ParserConstant.OPENING_BRACES.length();
+					pos = nextBegin + TemplateConstant.OPENING_BRACES.length();
 					if (level == 0) {
 						lastBegin = nextBegin;
 					}
@@ -59,9 +59,9 @@ public class TemplateScanner {
 					level--;
 					if (level == 0) {
 						ret.add(str.substring(lastBegin, nextEnd
-								+ ParserConstant.CLOSING_BRACES.length()));
+								+ TemplateConstant.CLOSING_BRACES.length()));
 					}
-					pos = nextEnd + ParserConstant.CLOSING_BRACES.length();
+					pos = nextEnd + TemplateConstant.CLOSING_BRACES.length();
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public class TemplateScanner {
 	}
 
 	String removeHTMLComments(String str) {
-		return str.replaceAll(ParserConstant.REG_EXP_HTML_COMMENT, "");
+		return str.replaceAll(TemplateConstant.REG_EXP_HTML_COMMENT, "");
 	}
 
 }
