@@ -143,34 +143,56 @@ public class RdfConverterTest {
 
 	}
 
-	@Test
-	public void testWriteInstanceOfStatements() throws RDFHandlerException {
-		this.rdfConverter.tasks = RdfSerializer.TASK_INSTANCE_OF;
+	private ItemDocument createTestItemDocument() {
 		ItemIdValue itemValue = dataObjectFactory.getItemIdValue("Q100",
-				"http://www.wikidata.org/Q10");
-		ItemIdValue value = dataObjectFactory.getItemIdValue("Q10",
 				"http://www.wikidata.org/");
-		PropertyIdValue propertyIdValue = dataObjectFactory.getPropertyIdValue(
-				"P31", "http://www.wikidata.org/");
-		ValueSnak mainSnak = dataObjectFactory.getValueSnak(propertyIdValue,
-				value);
-		Claim claim = dataObjectFactory.getClaim(itemValue, mainSnak,
+		ItemIdValue value1 = dataObjectFactory.getItemIdValue("Q10",
+				"http://www.wikidata.org/");
+		ItemIdValue value2 = dataObjectFactory.getItemIdValue("Q11",
+				"http://www.wikidata.org/");
+		PropertyIdValue propertyIdValueP31 = dataObjectFactory
+				.getPropertyIdValue("P31", "http://www.wikidata.org/");
+		PropertyIdValue propertyIdValueP279 = dataObjectFactory
+				.getPropertyIdValue("P279", "http://www.wikidata.org/");
+		// Statement InstaceOf - P31
+		ValueSnak mainSnak1 = dataObjectFactory.getValueSnak(
+				propertyIdValueP31, value1);
+		Claim claim1 = dataObjectFactory.getClaim(itemValue, mainSnak1,
 				Collections.<SnakGroup> emptyList());
-		Statement statement = dataObjectFactory.getStatement(claim,
+		Statement statement1 = dataObjectFactory.getStatement(claim1,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"10103");
-		List<Statement> statementList = new ArrayList<Statement>();
-		statementList.add(statement);
-		StatementGroup statementGroup = this.dataObjectFactory
-				.getStatementGroup(statementList);
+		List<Statement> statementList1 = new ArrayList<Statement>();
+		statementList1.add(statement1);
+		StatementGroup statementGroup1 = this.dataObjectFactory
+				.getStatementGroup(statementList1);
+		// Statement SubclassOf - P279
+		ValueSnak mainSnak2 = dataObjectFactory.getValueSnak(
+				propertyIdValueP279, value2);
+		Claim claim2 = dataObjectFactory.getClaim(itemValue, mainSnak2,
+				Collections.<SnakGroup> emptyList());
+		Statement statement2 = dataObjectFactory.getStatement(claim2,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"10104");
+		List<Statement> statementList2 = new ArrayList<Statement>();
+		statementList2.add(statement2);
+		StatementGroup statementGroup2 = this.dataObjectFactory
+				.getStatementGroup(statementList2);
+
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
-		statementGroups.add(statementGroup);
-		ItemDocument document = dataObjectFactory.getItemDocument(itemValue,
+		statementGroups.add(statementGroup1);
+		statementGroups.add(statementGroup2);
+		return dataObjectFactory.getItemDocument(itemValue,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, Collections.<String, SiteLink> emptyMap());
+	}
 
+	@Test
+	public void testWriteInstanceOfStatements() throws RDFHandlerException {
+		this.rdfConverter.tasks = RdfSerializer.TASK_INSTANCE_OF;
+		ItemDocument document = createTestItemDocument();
 		this.rdfConverter.writeInstanceOfStatements(resource, document);
 		this.rdfWriter.finish();
 		assertEquals(out.toString(),
@@ -178,8 +200,36 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testWriteSubclassOfStatements() {
+	public void testWriteSubclassOfStatements() throws RDFHandlerException {
+		ItemDocument document = createTestItemDocument();
+		this.rdfConverter.writeSubclassOfStatements(resource, document);
+		this.rdfWriter.finish();
+		assertEquals(
+				out.toString(),
+				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.wikidata.org/Q11> .\n");
+	}
 
+	@Test
+	public void testTaxonomy() throws RDFHandlerException, RDFParseException,
+			IOException {
+		ItemDocument document = createTestItemDocument();
+		rdfConverter.tasks = RdfSerializer.TASK_TAXONOMY
+				| RdfSerializer.TASK_ITEMS;
+		rdfConverter.writeItemDocument(document);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("taxonomy.rdf")));
+	}
+
+	@Test
+	public void testWriteSimpleStatements() throws RDFHandlerException {
+		ItemDocument document = createTestItemDocument();
+		this.rdfConverter.writeSimpleStatements(resource, document);
+		this.rdfWriter.finish();
+		assertEquals(
+				out.toString(),
+				"\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n");
 	}
 
 	@After

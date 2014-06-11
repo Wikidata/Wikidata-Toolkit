@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -59,53 +59,32 @@ class StatementGroupBuilder {
 	 * Creates a list of StatementGroups from a list of ungrouped Statements.
 	 * 
 	 * @param statements
-	 *            a list of Statements concerning the same subject. The list
-	 *            will be decomposed in the process.
+	 *            a list of Statements
 	 * @return
 	 */
 	List<StatementGroup> buildFromStatementList(List<Statement> statements) {
-		// NOTE: the list of statements will be modified.
-		// Is this acceptable or do we need to work with a copy?
-
 		List<StatementGroup> result = new ArrayList<>();
 
-		Map<Snak, List<Statement>> groups = new HashMap<>();
+		Map<PropertyIdValue, List<Statement>> groups = new HashMap<>();
 
-		while (!statements.isEmpty()) {
-			// pick the first statement and check
-			// if an according group already exists
-			// Therefore extract the main snak
+		for (Statement currentStatement : statements) {
+			PropertyIdValue propertyIdValue = currentStatement.getClaim()
+					.getMainSnak().getPropertyId();
 
-			Statement currentStatement = statements.get(0);
-			Snak currentSnak = currentStatement.getClaim().getMainSnak();
-
-			if (groups.containsKey(currentSnak)) {
-				// add currentStatement to the list of statements
-				// corresponding to this key
-				List<Statement> value = groups.get(currentSnak);
-				value.add(currentStatement);
+			if (groups.containsKey(propertyIdValue)) {
+				groups.get(propertyIdValue).add(currentStatement);
 			} else {
-				// create a new group
-				List<Statement> value = new ArrayList<>();
-				value.add(currentStatement);
-				groups.put(currentSnak, value);
+				List<Statement> groupedStatements = new ArrayList<Statement>();
+				groupedStatements.add(currentStatement);
+				groups.put(propertyIdValue, groupedStatements);
 			}
-
-			// remove processed (first) statements
-			statements.remove(0);
 		}
 
-		// now, sort each list by rank
-		// NOTE that one could extend the code
-		// to sort the statements, using other criteria
-		// by implementing other comparators.
-
-		for (Snak s : groups.keySet()) {
-			List<Statement> value = groups.get(s);
-			Collections.sort(value,
+		// Sort each list of grouped statements by rank:
+		for (List<Statement> groupeStatements : groups.values()) {
+			Collections.sort(groupeStatements,
 					Collections.reverseOrder(new RankComparator()));
-			StatementGroup toAdd = this.factory.getStatementGroup(value);
-			result.add(toAdd);
+			result.add(this.factory.getStatementGroup(groupeStatements));
 		}
 
 		return result;

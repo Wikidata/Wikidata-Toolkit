@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.rdf;
+package org.wikidata.wdtk.rdf.values;
 
 /*
  * #%L
@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
@@ -38,8 +39,14 @@ import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
+import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.RdfTestHelpers;
+import org.wikidata.wdtk.rdf.RdfWriter;
+import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 import org.wikidata.wdtk.rdf.values.GlobeCoordinatesValueConverter;
 import org.wikidata.wdtk.rdf.values.QuantityValueConverter;
 import org.wikidata.wdtk.rdf.values.TimeValueConverter;
@@ -72,7 +79,11 @@ public class ValueRdfConverterTest {
 
 		QuantityValue value = this.objectFactory.getQuantityValue(
 				new BigDecimal(100), new BigDecimal(100), new BigDecimal(100));
-		valueConverter.writeValue(value, this.resource);
+		PropertyIdValue propertyIdValue = objectFactory.getPropertyIdValue(
+				"P1081", "http://www.wikidata.org/entity/");
+		Value valueURI = valueConverter.getRdfValue(value, propertyIdValue,
+				false);
+		valueConverter.writeValue(value, (Resource) valueURI);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -91,7 +102,11 @@ public class ValueRdfConverterTest {
 						(long) (13.733333333333 * GlobeCoordinatesValue.PREC_DEGREE),
 						(GlobeCoordinatesValue.PREC_ARCMINUTE),
 						"http://www.wikidata.org/entity/Q2");
-		valueConverter.writeValue(value, this.resource);
+		PropertyIdValue propertyIdValue = objectFactory.getPropertyIdValue(
+				"P625", "http://www.wikidata.org/entity/");
+		Value valueURI = valueConverter.getRdfValue(value, propertyIdValue,
+				false);
+		valueConverter.writeValue(value, (Resource) valueURI);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -107,7 +122,11 @@ public class ValueRdfConverterTest {
 		TimeValue value = objectFactory.getTimeValue(2008, (byte) 1, (byte) 1,
 				(byte) 0, (byte) 0, (byte) 0, (byte) 9, 0, 0, 0,
 				"http://www.wikidata.org/entity/Q1985727");
-		valueConverter.writeValue(value, resource);
+		PropertyIdValue propertyIdValue = objectFactory.getPropertyIdValue(
+				"P569", "http://www.wikidata.org/entity/");
+		Value valueURI = valueConverter.getRdfValue(value, propertyIdValue,
+				false);
+		valueConverter.writeValue(value, (Resource) valueURI);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers

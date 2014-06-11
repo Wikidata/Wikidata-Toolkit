@@ -31,11 +31,10 @@ import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 
 /**
- * This class shows how convert data from wikidata.org to another format. By
- * default, this will be the JSON format as used in the Wikibase API, but the
- * code can also be modified to produce serializations in different formats. The
- * compressed output will be written into a file named WikidataDump.json.bz2.
- * You can find it in the example directory after you ran the example code.
+ * This class shows how convert data from wikidata.org to the JSON format as
+ * used in the Wikibase API. The compressed output will be written into a file
+ * named WikidataDump.json.bz2. You can find it in the example directory after
+ * you ran the example code.
  * 
  * @author Michael Günther
  * 
@@ -59,14 +58,6 @@ public class SerializationExample {
 				new FileOutputStream("WikidataDump.json.bz2"));
 		// Create an object for managing the serialization process
 		JsonSerializer serializer = new JsonSerializer(outputStream);
-
-		// // Alternative code to write RDF instead:
-		// // Write the output to a BZip2-compressed file
-		// BZip2CompressorOutputStream outputStream = new
-		// BZip2CompressorOutputStream(
-		// new FileOutputStream("WikidataDump.ttl.bz2"));
-		// RdfSerializer serializer = new RdfSerializer(RDFFormat.TURTLE,
-		// outputStream);
 
 		// Subscribe to the most recent entity documents of type wikibase item
 		// and property:

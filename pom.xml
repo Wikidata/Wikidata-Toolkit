@@ -1,16 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
 	<description>A Java-based library for working with Wikidata and Wikibase</description>
 	<url>https://www.mediawiki.org/wiki/Wikidata_Toolkit</url>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<modules>
 		<module>wdtk-datamodel</module>
@@ -98,7 +103,7 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
 					<version>1.6</version>
-					<configuration></configuration>
+					<configuration />
 					<executions>
 						<execution>
 							<id>first</id>
@@ -181,6 +186,28 @@
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
+			<plugin>
+				<!-- Plugin for creating Javadocs; goal for preparing docs for upload to github: javadoc:aggregate -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<bottom><![CDATA[Copyright &#169; {inceptionYear}&#x2013;{currentYear} {organizationName}. Generated from source code published under the Apache License 2.0. For more information, see the <a href="https://www.mediawiki.org/wiki/Wikidata_Toolkit">Wikidata Toolkit homepage</a>]]></bottom>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- Plugin for uploading Javadocs to github; goal: scm-publish:publish-scm -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-publish-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+					<checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+					<content>${project.reporting.outputDirectory}/apidocs</content>
+					<pubScmUrl>scm:git:https://github.com/Wikidata/Wikidata-Toolkit.git</pubScmUrl>
+					<scmBranch>gh-pages</scmBranch>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -242,8 +269,8 @@
 
 	<scm>
 		<url>https://github.com/Wikidata/Wikidata-Toolkit.git</url>
-		<connection>scm:git:git://github.com/Wikidata/Wikidata-Toolkit.git</connection>
-		<developerConnection>scm:git:git://github.com/Wikidata/Wikidata-Toolkit.git</developerConnection>
+		<connection>scm:git:https://github.com/Wikidata/Wikidata-Toolkit.git</connection>
+		<developerConnection>scm:git:https://github.com/Wikidata/Wikidata-Toolkit.git</developerConnection>
 	</scm>
 
 </project>
