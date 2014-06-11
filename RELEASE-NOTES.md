@@ -1,6 +1,13 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.3.0
+-------------
+
+Bug fixes:
+* Fix grouping of Statements when reading data from dumps (Issue #78)
+
+
 Version 0.2.0
 -------------
 
