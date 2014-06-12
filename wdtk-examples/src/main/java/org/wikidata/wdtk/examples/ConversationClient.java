@@ -74,15 +74,20 @@ public class ConversationClient {
 
 	Options options;
 
-	String outputFormat;
-	String outputDestination;
-	String dumplocation;
+	String outputFormat = "none";
+	String outputDestination = "";
+	String dumplocation = null;
 	Boolean stdout = false;
 	Boolean offlineMode = false;
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ConversationClient.class);
 
+	/**
+	 * Builds up serializers for the different rdf files.
+	 * 
+	 * @throws IOException
+	 */
 	public void setupForRdfSerialization() throws IOException {
 		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();
@@ -113,11 +118,23 @@ public class ConversationClient {
 
 	}
 
+	/**
+	 * Builds up a serializer for json.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void setupForJsonSerialization() throws FileNotFoundException,
 			IOException {
-		// Write the output to a BZip2-compressed file
-		BZip2CompressorOutputStream outputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("WikidataDump.json.bz2"));
+		OutputStream outputStream;
+		if (stdout) {
+			outputStream = System.out;
+		} else {
+			// Write the output to a BZip2-compressed file
+			outputStream = new BZip2CompressorOutputStream(
+					new FileOutputStream(outputDestination
+							+ "WikidataDump.json.bz2"));
+		}
 		// Create an object for managing the serialization process
 		JsonSerializer serializer = new JsonSerializer(outputStream);
 
@@ -130,7 +147,10 @@ public class ConversationClient {
 	}
 
 	/**
-	 * Manages the serialization process.
+	 * Manages the serialization process. Therefore a
+	 * {@link DumpProcessingController} and a serializer for the chosen output
+	 * format will be set up. After that the serialization process will be
+	 * initiated.
 	 * 
 	 * @throws IOException
 	 */
@@ -151,8 +171,10 @@ public class ConversationClient {
 		switch (outputFormat) {
 		case "json":
 			setupForJsonSerialization();
+			break;
 		case "rdf":
 			setupForRdfSerialization();
+			break;
 		default:
 			logger.warn("no output format or unknown output format specified - only statistics will be processed (except the case that stdout flag is set)");
 		}
@@ -165,6 +187,10 @@ public class ConversationClient {
 			// Subscribe to all current revisions (null = no filter):
 			dumpProcessingController.registerMwRevisionProcessor(
 					rpRevisionStats, null, true);
+		}
+
+		if (dumplocation != null) {
+			dumpProcessingController.setDownloadDirectory(dumplocation);
 		}
 
 		// Set up the serializer and write headers
@@ -205,8 +231,8 @@ public class ConversationClient {
 			throws FileNotFoundException, IOException {
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(outputFileName + compressionExtension),
-				1024 * 1024 * 5 * 0 + 100);
+				new FileOutputStream(outputDestination + outputFileName
+						+ compressionExtension), 1024 * 1024 * 5 * 0 + 100);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
@@ -340,7 +366,8 @@ public class ConversationClient {
 	}
 
 	/**
-	 * Builds up a list of legal options for apache commons cli
+	 * Builds up a list of legal options and store them into the options
+	 * objects.
 	 */
 	public void addOptions() {
 		Option format = OptionBuilder.withArgName("file").hasArg()
