@@ -70,4 +70,17 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 		return this.language;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(this == o){
+			return true;
+		}
+		
+		if(!(o instanceof MonolingualTextValue)){
+			return false;
+		}
+		
+		return this.getLanguageCode().equals(((MonolingualTextValue) o).getLanguageCode())
+				&& this.getText().equals(((MonolingualTextValue) o).getText());
+	}
 }

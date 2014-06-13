@@ -1,0 +1,125 @@
+package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+
+/*
+ * #%L
+ * Wikidata Toolkit Data Model
+ * %%
+ * Copyright (C) 2014 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ItemDocumentImpl extends EntityDocumentImpl implements
+		ItemDocument {
+
+	Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
+	Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
+	Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
+
+	// TODO Map deserializer takes apart claims
+	// generates one statement group per map line
+
+	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
+		this.labels = labels;
+	}
+
+	@Override
+	public Map<String, MonolingualTextValue> getLabels() {
+
+		// because of the typing provided by the interface one has to
+		// re-create the map anew, simple casting is not possible
+		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
+		returnMap.putAll(this.labels);
+		return returnMap;
+	}
+
+	public void setDescriptions(
+			Map<String, MonolingualTextValueImpl> descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	@Override
+	public Map<String, MonolingualTextValue> getDescriptions() {
+
+		// because of the typing provided by the interface one has to
+		// re-create the map anew, simple casting is not possible
+		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
+		returnMap.putAll(this.descriptions);
+		return returnMap;
+	}
+
+	@Override
+	public Map<String, List<MonolingualTextValue>> getAliases() {
+
+		// because of the typing provided by the interface one has to
+		// re-create the map anew, simple casting is not possible
+		Map<String, List<MonolingualTextValue>> returnMap = new HashMap<>();
+
+		for (Entry<String, List<MonolingualTextValueImpl>> entry : this.aliases
+				.entrySet()) {
+			List<MonolingualTextValue> mltvList = new LinkedList<>();
+			mltvList.addAll(entry.getValue());
+			returnMap.put(entry.getKey(), mltvList);
+		}
+		return returnMap;
+	}
+
+	@Override
+	public ItemIdValue getItemId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public List<StatementGroup> getStatementGroups() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public Map<String, SiteLink> getSiteLinks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public EntityIdValue getEntityId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

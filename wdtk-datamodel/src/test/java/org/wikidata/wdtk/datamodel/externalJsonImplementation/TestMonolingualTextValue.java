@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.externalJsonImplementation;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -36,15 +37,18 @@ public class TestMonolingualTextValue {
 
 	ObjectMapper mapper = new ObjectMapper();
 	String testJson = "{\"language\": \"en\", \"value\": \"foobar\"}";
-	
+
+	/**
+	 * Tests the conversion of MonolingualTextValues from Json to Pojo
+	 */
 	@Test
-	public void testJsonToJava(){
+	public void testMonolingualTextValueToJava(){
 		
 		try {
 			MonolingualTextValueImpl result = mapper.readValue(testJson, MonolingualTextValueImpl.class);
 			
-			assertEquals(result.getLanguageCode(), "en");
-			assertEquals(result.getText(), "foobar");
+			assertEquals("en", result.getLanguageCode());
+			assertEquals("foobar", result.getText());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -58,19 +62,33 @@ public class TestMonolingualTextValue {
 		}	
 	}
 	
+	/**
+	 * Tests the conversion of MonolingualTextValues from Pojo to Json
+	 */
 	@Test
-	public void testJavaToJson(){
+	public void testMonolingualTextValueToJson(){
 		
 		MonolingualTextValueImpl pojo = new MonolingualTextValueImpl("en", "foobar");
 		try {
 			String result = mapper.writeValueAsString(pojo);
 			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(result.replaceAll("\\s+",""), testJson.replaceAll("\\s+",""));
+			assertEquals(testJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
 		}
 	}
 	
-	
+	@Test
+	public void testEquals(){
+		MonolingualTextValueImpl reference = new MonolingualTextValueImpl("en", "foobar");
+		MonolingualTextValueImpl match = new MonolingualTextValueImpl("en", "foobar");
+		MonolingualTextValueImpl wrongLanguage = new MonolingualTextValueImpl("de", "foobar");
+		MonolingualTextValueImpl wrongValue = new MonolingualTextValueImpl("en", "barfoo");
+		
+		assertEquals(reference, reference);
+		assertEquals(reference, match);
+		assertFalse(reference.equals(wrongLanguage));
+		assertFalse(reference.equals(wrongValue));
+	}
 }
