@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
 
 /**
+ * Test class for {@link ConstraintRangeParser}
  * 
  * @author Julian Mendez
  * 

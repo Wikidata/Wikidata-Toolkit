@@ -41,8 +41,8 @@ class ConstraintValueTypeParser implements ConstraintParser {
 	public ConstraintValueType parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintValueType ret = null;
-		String classStr = template.get(ConstraintParserConstant.P_CLASS);
-		String relationStr = template.get(ConstraintParserConstant.P_RELATION);
+		String classStr = template.getValue(ConstraintParserConstant.P_CLASS);
+		String relationStr = template.getValue(ConstraintParserConstant.P_RELATION);
 		if ((constrainedProperty != null) && (classStr != null)
 				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();

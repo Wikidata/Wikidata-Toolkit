@@ -25,27 +25,50 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * An object of this class scans a text to get pieces of text with template
+ * transclusions. HTML comments are ignored.
  * 
  * @author Julian Mendez
  * 
  */
 public class TemplateScanner {
 
+	/**
+	 * Creates a new template scanner.
+	 */
 	public TemplateScanner() {
 	}
 
-	public List<String> getTemplates(String str) {
-		return Collections.unmodifiableList(parse(removeHTMLComments(str)));
+	/**
+	 * Scans a test and returns a list with all the pieces of text that can be
+	 * template transclusions. HTML comments are ignored.
+	 * 
+	 * @param text
+	 *            text
+	 * @return a list with all the pieces of text that can be template
+	 *         transclusions
+	 */
+	public List<String> getTemplates(String text) {
+		return Collections.unmodifiableList(parse(removeHTMLComments(text)));
 	}
 
-	List<String> parse(String str) {
+	/**
+	 * Scans a test and returns a list with all the pieces of text that can be
+	 * template transclusions.
+	 * 
+	 * @param text
+	 *            text
+	 * @return a list with all the pieces of text that can be template
+	 *         transclusions
+	 */
+	List<String> parse(String text) {
 		List<String> ret = new ArrayList<String>();
 		int pos = 0;
 		int level = 0;
 		int lastBegin = 0;
 		while (pos != -1) {
-			int nextBegin = str.indexOf(TemplateConstant.OPENING_BRACES, pos);
-			int nextEnd = str.indexOf(TemplateConstant.CLOSING_BRACES, pos);
+			int nextBegin = text.indexOf(TemplateConstant.OPENING_BRACES, pos);
+			int nextEnd = text.indexOf(TemplateConstant.CLOSING_BRACES, pos);
 			if (nextEnd == -1) {
 				pos = -1;
 			} else {
@@ -58,7 +81,7 @@ public class TemplateScanner {
 				} else {
 					level--;
 					if (level == 0) {
-						ret.add(str.substring(lastBegin, nextEnd
+						ret.add(text.substring(lastBegin, nextEnd
 								+ TemplateConstant.CLOSING_BRACES.length()));
 					}
 					pos = nextEnd + TemplateConstant.CLOSING_BRACES.length();
@@ -68,8 +91,15 @@ public class TemplateScanner {
 		return ret;
 	}
 
-	String removeHTMLComments(String str) {
-		return str.replaceAll(TemplateConstant.REG_EXP_HTML_COMMENT, "");
+	/**
+	 * Returns a text without its HTML comments.
+	 * 
+	 * @param text
+	 *            text
+	 * @return text without its HTML comments
+	 */
+	String removeHTMLComments(String text) {
+		return text.replaceAll(TemplateConstant.REG_EXP_HTML_COMMENT, "");
 	}
 
 }

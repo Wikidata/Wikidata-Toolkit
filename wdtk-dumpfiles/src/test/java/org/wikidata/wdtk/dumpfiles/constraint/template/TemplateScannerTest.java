@@ -25,8 +25,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateScanner;
 
+/**
+ * Test class for {@link TemplateScanner}.
+ * 
+ * @author Julian Mendez
+ * 
+ */
 public class TemplateScannerTest {
 
 	private static final String text = "\n<!-- ignored -->{{Constraint:Type|class=Q1048835\n|relation=instance<!-- ignored -->}}"

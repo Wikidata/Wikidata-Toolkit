@@ -28,21 +28,42 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.Validate;
 
 /**
+ * An object of this class parses strings and returns transclusion of Wikibase
+ * templates.
  * 
  * @author Julian Mendez
  * 
  */
 public class TemplateParser {
 
+	/**
+	 * An instance of this class is an auxiliary class of the parser. It is used
+	 * to keep a look ahead during the parsing.
+	 * 
+	 * @author Julian Mendez
+	 * 
+	 */
 	class LookAhead implements Comparable<LookAhead> {
 
 		LookAheadItem item = LookAheadItem.UNDEFINED;
 		int position = -1;
 
+		/**
+		 * Creates a new look ahead.
+		 */
 		LookAhead() {
 		}
 
-		LookAhead(int position, boolean found, LookAheadItem item) {
+		/**
+		 * Creates a new look ahead pointing at a particular position, to a
+		 * particular item.
+		 * 
+		 * @param position
+		 *            position
+		 * @param item
+		 *            item
+		 */
+		LookAhead(int position, LookAheadItem item) {
 			this.position = position;
 			this.item = item;
 		}
@@ -74,10 +95,19 @@ public class TemplateParser {
 		}
 	}
 
+	/**
+	 * This items are the possible ones that a look ahead can point to.
+	 * 
+	 * @author Julian Mendez
+	 * 
+	 */
 	enum LookAheadItem {
 		CLOSING_BRACES, OPENING_BRACES, UNDEFINED, VERTICAL_BAR
 	}
 
+	/**
+	 * Creates a new template parser.
+	 */
 	public TemplateParser() {
 	}
 
@@ -97,7 +127,7 @@ public class TemplateParser {
 		if (item != LookAheadItem.UNDEFINED) {
 			int nextPos = str.indexOf(getString(item), pos);
 			if (nextPos != -1) {
-				ret = new LookAhead(nextPos, true, item);
+				ret = new LookAhead(nextPos, item);
 			}
 		}
 		return ret;
@@ -179,6 +209,15 @@ public class TemplateParser {
 		return ret;
 	}
 
+	/**
+	 * Returns a template obtained by parsing the specified line.
+	 * 
+	 * @param line
+	 *            line containing the template
+	 * @return a template obtained by parsing the specified line
+	 * @throws IllegalArgumentException
+	 *             if the specified line is not a valid template
+	 */
 	public Template parse(String line) {
 		Validate.notNull(line, "Line cannot be null.");
 		if (!line.startsWith(TemplateConstant.OPENING_BRACES)

@@ -92,9 +92,9 @@ class ConstraintRangeParser implements ConstraintParser {
 	public ConstraintRange parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintRange ret = null;
-		String minStr = template.get(ConstraintParserConstant.P_MIN)
+		String minStr = template.getValue(ConstraintParserConstant.P_MIN)
 				.toLowerCase().trim();
-		String maxStr = template.get(ConstraintParserConstant.P_MAX)
+		String maxStr = template.getValue(ConstraintParserConstant.P_MAX)
 				.toLowerCase().trim();
 		if ((constrainedProperty != null) && (minStr != null)
 				&& (maxStr != null)) {

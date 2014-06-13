@@ -86,7 +86,7 @@ public class PropertyConstraintDumpProcessor {
 		ConstraintMainParser mainParser = new ConstraintMainParser();
 		List<Template> ret = new ArrayList<Template>();
 		for (Template template : list) {
-			String templateId = mainParser.normalize(template.getId());
+			String templateId = mainParser.normalize(template.getName());
 			String prefix = mainParser
 					.normalize(ConstraintParserConstant.T_CONSTRAINT);
 			if (templateId.startsWith(prefix)) {

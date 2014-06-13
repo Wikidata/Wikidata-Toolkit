@@ -29,12 +29,20 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
+ * Test class for {@link ConstraintTemplateString}.
  * 
  * @author Julian Mendez
  * 
  */
 public class ConstraintTemplateStringTest {
 
+	/**
+	 * Returns the property id value for the specified property name.
+	 * 
+	 * @param propertyName
+	 *            property name
+	 * @return the property id value for the specified property name
+	 */
 	PropertyIdValue getPropertyIdValue(String propertyName) {
 		return (new DataObjectFactoryImpl()).getPropertyIdValue(propertyName,
 				ConstraintMainParser.PREFIX_WIKIDATA);

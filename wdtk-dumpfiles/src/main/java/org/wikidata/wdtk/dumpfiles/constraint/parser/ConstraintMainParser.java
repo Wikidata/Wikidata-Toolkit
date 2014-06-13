@@ -128,7 +128,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		Validate.notNull(constrainedProperty);
 		Validate.notNull(template);
 		Constraint ret = null;
-		String templateId = normalize(template.getId());
+		String templateId = normalize(template.getName());
 		String prefix = normalize(ConstraintParserConstant.T_CONSTRAINT);
 		if (templateId.startsWith(prefix)) {
 			String constraintId = normalize(templateId.substring(prefix

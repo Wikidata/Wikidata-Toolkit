@@ -40,7 +40,7 @@ class ConstraintOneOfParser implements ConstraintParser {
 	public ConstraintOneOf parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintOneOf ret = null;
-		String values = template.get(ConstraintParserConstant.P_VALUES);
+		String values = template.getValue(ConstraintParserConstant.P_VALUES);
 		if ((constrainedProperty != null) && (values != null)) {
 			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
 			String propertyType = wdPropertyTypes

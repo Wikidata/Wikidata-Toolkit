@@ -40,13 +40,13 @@ class ConstraintTargetRequiredClaimParser implements ConstraintParser {
 	public ConstraintTargetRequiredClaim parse(
 			PropertyIdValue constrainedProperty, Template template) {
 		ConstraintTargetRequiredClaim ret = null;
-		String propertyStr = template.get(ConstraintParserConstant.P_PROPERTY);
+		String propertyStr = template.getValue(ConstraintParserConstant.P_PROPERTY);
 		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue property = factory.getPropertyIdValue(
 					propertyStr.toUpperCase(),
 					ConstraintMainParser.PREFIX_WIKIDATA);
-			String itemStr = template.get(ConstraintParserConstant.P_ITEM);
+			String itemStr = template.getValue(ConstraintParserConstant.P_ITEM);
 			if (itemStr != null) {
 				ItemIdValue item = factory.getItemIdValue(
 						itemStr.toUpperCase(),

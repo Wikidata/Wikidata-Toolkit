@@ -38,7 +38,7 @@ class ConstraintConflictsWithParser implements ConstraintParser {
 	public ConstraintConflictsWith parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintConflictsWith ret = null;
-		String listStr = template.get(ConstraintParserConstant.P_LIST);
+		String listStr = template.getValue(ConstraintParserConstant.P_LIST);
 		if ((constrainedProperty != null) && (listStr != null)) {
 			ret = new ConstraintConflictsWith(constrainedProperty,
 					ConstraintMainParser.parseListOfPropertyValues(listStr));

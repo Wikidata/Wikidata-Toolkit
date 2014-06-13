@@ -45,19 +45,19 @@ class ConstraintItemParser implements ConstraintParser {
 		ConstraintItem ret = null;
 		if (constrainedProperty != null) {
 			String propertyStr = template
-					.get(ConstraintParserConstant.P_PROPERTY);
+					.getValue(ConstraintParserConstant.P_PROPERTY);
 			PropertyIdValue property = null;
-			String itemStr = template.get(ConstraintParserConstant.P_ITEM);
+			String itemStr = template.getValue(ConstraintParserConstant.P_ITEM);
 			ItemIdValue item = null;
 			String property2Str = template
-					.get(ConstraintParserConstant.P_PROPERTY_2);
+					.getValue(ConstraintParserConstant.P_PROPERTY_2);
 			PropertyIdValue property2 = null;
-			String item2Str = template.get(ConstraintParserConstant.P_ITEM_2);
+			String item2Str = template.getValue(ConstraintParserConstant.P_ITEM_2);
 			ItemIdValue item2 = null;
-			String itemsStr = template.get(ConstraintParserConstant.P_ITEMS);
+			String itemsStr = template.getValue(ConstraintParserConstant.P_ITEMS);
 			List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 			String exceptionsStr = template
-					.get(ConstraintParserConstant.P_EXCEPTIONS);
+					.getValue(ConstraintParserConstant.P_EXCEPTIONS);
 			List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			if (propertyStr != null) {
