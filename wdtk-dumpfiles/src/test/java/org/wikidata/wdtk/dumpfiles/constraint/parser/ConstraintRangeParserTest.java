@@ -25,7 +25,6 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintRangeParser;
 
 /**
  * 
@@ -37,12 +36,14 @@ public class ConstraintRangeParserTest {
 	@Test
 	public void testParseDate() {
 		ConstraintRangeParser parser = new ConstraintRangeParser();
-		Date datePreNow = new Date();
+		Date datePreNow0 = new Date();
 		DateAndNow dateNow = parser.parseDate("now");
-		Date datePostNow = new Date();
+		Date datePreNow1 = new Date();
 
-		Assert.assertTrue(datePreNow.getTime() <= dateNow.getDate().getTime());
-		Assert.assertTrue(dateNow.getDate().getTime() <= datePostNow.getTime());
+		Assert.assertTrue(datePreNow0.getTime() <= dateNow.getDate().getTime());
+
+		// 'now' comes always after any other previously created current date
+		Assert.assertTrue(datePreNow1.getTime() <= dateNow.getDate().getTime());
 
 		DateAndNow date0 = parser.parseDate("2014");
 		DateAndNow date1 = parser.parseDate("2014");
@@ -58,5 +59,4 @@ public class ConstraintRangeParserTest {
 		Assert.assertEquals(new Date(1390348800000L), date3.getDate());
 		Assert.assertEquals(new Date(1390410872000L), date4.getDate());
 	}
-
 }
