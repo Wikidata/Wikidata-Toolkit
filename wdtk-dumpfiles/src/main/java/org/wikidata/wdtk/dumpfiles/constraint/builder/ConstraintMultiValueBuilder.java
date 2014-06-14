@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Multi value' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintMultiValueBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintMultiValueBuilder() {
 	}
 

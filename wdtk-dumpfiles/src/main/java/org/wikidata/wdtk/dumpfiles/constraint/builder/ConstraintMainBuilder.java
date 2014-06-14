@@ -44,8 +44,11 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 
 	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
-	final Map<String, ConstraintBuilder> mapOfParsers = new HashMap<String, ConstraintBuilder>();
+	final Map<String, ConstraintBuilder> mapOfBuilders = new HashMap<String, ConstraintBuilder>();
 
+	/**
+	 * Constructs a new main builder.
+	 */
 	public ConstraintMainBuilder() {
 		registerIds();
 	}
@@ -133,16 +136,16 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		if (templateId.startsWith(prefix)) {
 			String constraintId = normalize(templateId.substring(prefix
 					.length()));
-			ConstraintBuilder constraintParser = getConstraintParser(constraintId);
-			if (constraintParser != null) {
-				ret = constraintParser.parse(constrainedProperty, template);
+			ConstraintBuilder constraintBuilder = getConstraintBuilder(constraintId);
+			if (constraintBuilder != null) {
+				ret = constraintBuilder.parse(constrainedProperty, template);
 			}
 		}
 		return ret;
 	}
 
-	public ConstraintBuilder getConstraintParser(String str) {
-		return this.mapOfParsers.get(str);
+	public ConstraintBuilder getConstraintBuilder(String str) {
+		return this.mapOfBuilders.get(str);
 	}
 
 	public String normalize(String str) {
@@ -160,8 +163,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	private void register(String str, ConstraintBuilder parser) {
-		this.mapOfParsers.put(normalize(str), parser);
+	private void register(String str, ConstraintBuilder builder) {
+		this.mapOfBuilders.put(normalize(str), builder);
 	}
 
 	private void registerIds() {
@@ -171,7 +174,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				new ConstraintUniqueValueBuilder());
 		register(ConstraintBuilderConstant.C_FORMAT,
 				new ConstraintFormatBuilder());
-		register(ConstraintBuilderConstant.C_ONE_OF, new ConstraintOneOfBuilder());
+		register(ConstraintBuilderConstant.C_ONE_OF,
+				new ConstraintOneOfBuilder());
 		register(ConstraintBuilderConstant.C_SYMMETRIC,
 				new ConstraintSymmetricBuilder());
 		register(ConstraintBuilderConstant.C_INVERSE,
@@ -184,7 +188,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		register(ConstraintBuilderConstant.C_TYPE, new ConstraintTypeBuilder());
 		register(ConstraintBuilderConstant.C_VALUE_TYPE,
 				new ConstraintValueTypeBuilder());
-		register(ConstraintBuilderConstant.C_RANGE, new ConstraintRangeBuilder());
+		register(ConstraintBuilderConstant.C_RANGE,
+				new ConstraintRangeBuilder());
 		register(ConstraintBuilderConstant.C_MULTI_VALUE,
 				new ConstraintMultiValueBuilder());
 		register(ConstraintBuilderConstant.C_CONFLICTS_WITH,
@@ -193,7 +198,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				new ConstraintQualifierBuilder());
 		register(ConstraintBuilderConstant.C_PERSON,
 				new ConstraintPersonBuilder());
-		register(ConstraintBuilderConstant.C_TAXON, new ConstraintTaxonBuilder());
+		register(ConstraintBuilderConstant.C_TAXON,
+				new ConstraintTaxonBuilder());
 	}
 
 }

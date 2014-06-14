@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintPerson;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Person' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintPersonBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintPersonBuilder() {
 	}
 

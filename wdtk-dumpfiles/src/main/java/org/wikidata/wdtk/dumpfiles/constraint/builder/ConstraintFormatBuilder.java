@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Format' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintFormatBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintFormatBuilder() {
 	}
 

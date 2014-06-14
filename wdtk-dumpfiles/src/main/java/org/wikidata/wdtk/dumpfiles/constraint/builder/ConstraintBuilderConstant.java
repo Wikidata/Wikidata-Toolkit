@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  */
 
 /**
+ * This is a set of constants used to construct constraints.
  * 
  * @author Julian Mendez
  * 

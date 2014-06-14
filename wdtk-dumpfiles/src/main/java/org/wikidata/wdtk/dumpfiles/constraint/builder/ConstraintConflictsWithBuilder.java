@@ -26,11 +26,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
  * 
+ * An object of this class is a builder of a 'Conflict with' constraint.
+ * 
  * @author Julian Mendez
  * 
  */
 class ConstraintConflictsWithBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintConflictsWithBuilder() {
 	}
 

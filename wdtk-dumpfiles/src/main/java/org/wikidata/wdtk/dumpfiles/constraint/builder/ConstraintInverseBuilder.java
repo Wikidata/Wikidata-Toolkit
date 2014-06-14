@@ -26,6 +26,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Inverse' constraint.
  * 
  * @author Julian Mendez
  * 
@@ -33,6 +34,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 class ConstraintInverseBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintInverseBuilder() {
 	}
 
@@ -40,7 +44,8 @@ class ConstraintInverseBuilder implements ConstraintBuilder {
 	public ConstraintInverse parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintInverse ret = null;
-		String propertyStr = template.getValue(ConstraintBuilderConstant.P_PROPERTY);
+		String propertyStr = template
+				.getValue(ConstraintBuilderConstant.P_PROPERTY);
 		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue property = factory.getPropertyIdValue(

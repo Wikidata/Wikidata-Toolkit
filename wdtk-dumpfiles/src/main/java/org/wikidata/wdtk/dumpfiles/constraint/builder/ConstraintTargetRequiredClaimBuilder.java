@@ -27,12 +27,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClai
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Target required claim'.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintTargetRequiredClaimBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintTargetRequiredClaimBuilder() {
 	}
 
@@ -40,13 +44,15 @@ class ConstraintTargetRequiredClaimBuilder implements ConstraintBuilder {
 	public ConstraintTargetRequiredClaim parse(
 			PropertyIdValue constrainedProperty, Template template) {
 		ConstraintTargetRequiredClaim ret = null;
-		String propertyStr = template.getValue(ConstraintBuilderConstant.P_PROPERTY);
+		String propertyStr = template
+				.getValue(ConstraintBuilderConstant.P_PROPERTY);
 		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue property = factory.getPropertyIdValue(
 					propertyStr.toUpperCase(),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
-			String itemStr = template.getValue(ConstraintBuilderConstant.P_ITEM);
+			String itemStr = template
+					.getValue(ConstraintBuilderConstant.P_ITEM);
 			if (itemStr != null) {
 				ItemIdValue item = factory.getItemIdValue(
 						itemStr.toUpperCase(),

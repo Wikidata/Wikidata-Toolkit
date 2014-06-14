@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Symmetric' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintSymmetricBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintSymmetricBuilder() {
 	}
 

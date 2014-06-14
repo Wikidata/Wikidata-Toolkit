@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Single value' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintSingleValueBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintSingleValueBuilder() {
 	}
 

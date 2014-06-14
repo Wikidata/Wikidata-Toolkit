@@ -28,12 +28,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Value type' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintValueTypeBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintValueTypeBuilder() {
 	}
 
@@ -42,7 +46,8 @@ class ConstraintValueTypeBuilder implements ConstraintBuilder {
 			Template template) {
 		ConstraintValueType ret = null;
 		String classStr = template.getValue(ConstraintBuilderConstant.P_CLASS);
-		String relationStr = template.getValue(ConstraintBuilderConstant.P_RELATION);
+		String relationStr = template
+				.getValue(ConstraintBuilderConstant.P_RELATION);
 		if ((constrainedProperty != null) && (classStr != null)
 				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();

@@ -30,12 +30,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of an 'Item' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintItemBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintItemBuilder() {
 	}
 
@@ -47,14 +51,17 @@ class ConstraintItemBuilder implements ConstraintBuilder {
 			String propertyStr = template
 					.getValue(ConstraintBuilderConstant.P_PROPERTY);
 			PropertyIdValue property = null;
-			String itemStr = template.getValue(ConstraintBuilderConstant.P_ITEM);
+			String itemStr = template
+					.getValue(ConstraintBuilderConstant.P_ITEM);
 			ItemIdValue item = null;
 			String property2Str = template
 					.getValue(ConstraintBuilderConstant.P_PROPERTY_2);
 			PropertyIdValue property2 = null;
-			String item2Str = template.getValue(ConstraintBuilderConstant.P_ITEM_2);
+			String item2Str = template
+					.getValue(ConstraintBuilderConstant.P_ITEM_2);
 			ItemIdValue item2 = null;
-			String itemsStr = template.getValue(ConstraintBuilderConstant.P_ITEMS);
+			String itemsStr = template
+					.getValue(ConstraintBuilderConstant.P_ITEMS);
 			List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 			String exceptionsStr = template
 					.getValue(ConstraintBuilderConstant.P_EXCEPTIONS);

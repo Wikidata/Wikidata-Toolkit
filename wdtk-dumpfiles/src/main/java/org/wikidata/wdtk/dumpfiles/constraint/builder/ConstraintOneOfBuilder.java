@@ -27,12 +27,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 /**
+ * An object of this class is a builder of a 'One of' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintOneOfBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintOneOfBuilder() {
 	}
 

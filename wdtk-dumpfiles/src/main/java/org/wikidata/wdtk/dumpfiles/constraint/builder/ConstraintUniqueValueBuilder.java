@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of a 'Unique value' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintUniqueValueBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintUniqueValueBuilder() {
 	}
 

@@ -25,12 +25,23 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * This interface models a constraint builder, which reads a template
+ * transclusion and creates a new constraint.
  * 
  * @author Julian Mendez
  * 
  */
 public interface ConstraintBuilder {
 
+	/**
+	 * Returns a new constraint based on a template transclusion.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param template
+	 *            template transclusion
+	 * @return
+	 */
 	Constraint parse(PropertyIdValue constrainedProperty, Template template);
 
 }

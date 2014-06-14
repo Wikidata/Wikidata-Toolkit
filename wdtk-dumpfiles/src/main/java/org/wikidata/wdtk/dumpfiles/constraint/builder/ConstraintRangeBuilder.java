@@ -34,6 +34,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 /**
+ * An object of this class is a builder of a 'Range' constraint.
  * 
  * @author Julian Mendez
  * 
@@ -85,6 +86,9 @@ class ConstraintRangeBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintRangeBuilder() {
 	}
 

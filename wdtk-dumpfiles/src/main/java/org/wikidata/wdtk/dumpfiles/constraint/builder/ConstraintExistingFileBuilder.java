@@ -25,12 +25,16 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is a builder of an 'Existing file' constraint.
  * 
  * @author Julian Mendez
  * 
  */
 class ConstraintExistingFileBuilder implements ConstraintBuilder {
 
+	/**
+	 * Constructs a new builder.
+	 */
 	public ConstraintExistingFileBuilder() {
 	}
 
