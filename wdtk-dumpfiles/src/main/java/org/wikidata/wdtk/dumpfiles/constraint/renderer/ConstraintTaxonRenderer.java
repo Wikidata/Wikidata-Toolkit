@@ -27,13 +27,13 @@ import org.openrdf.model.BNode;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
 
 /**
  * 
@@ -64,13 +64,13 @@ class ConstraintTaxonRenderer implements ConstraintRenderer {
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
 		ItemIdValue qTaxon = factory.getItemIdValue(Q_TAXON,
-				ConstraintMainParser.PREFIX_WIKIDATA);
+				ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pTaxonName = factory.getPropertyIdValue(P_TAXON_NAME,
-				ConstraintMainParser.PREFIX_WIKIDATA);
+				ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pParentTaxon = factory.getPropertyIdValue(
-				P_PARENT_TAXON, ConstraintMainParser.PREFIX_WIKIDATA);
+				P_PARENT_TAXON, ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pTaxonRank = factory.getPropertyIdValue(P_TAXON_RANK,
-				ConstraintMainParser.PREFIX_WIKIDATA);
+				ConstraintMainBuilder.PREFIX_WIKIDATA);
 
 		ret.add(new ConstraintType(constrainedProperty, qTaxon,
 				RelationType.INSTANCE));

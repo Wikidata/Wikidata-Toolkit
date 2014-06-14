@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -20,9 +20,8 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -30,23 +29,17 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
+class ConstraintMultiValueBuilder implements ConstraintBuilder {
 
-class ConstraintInverseParser implements ConstraintParser {
-
-	public ConstraintInverseParser() {
+	public ConstraintMultiValueBuilder() {
 	}
 
 	@Override
-	public ConstraintInverse parse(PropertyIdValue constrainedProperty,
+	public ConstraintMultiValue parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintInverse ret = null;
-		String propertyStr = template.getValue(ConstraintParserConstant.P_PROPERTY);
-		if ((constrainedProperty != null) && (propertyStr != null)) {
-			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue property = factory.getPropertyIdValue(
-					propertyStr.toUpperCase(),
-					ConstraintMainParser.PREFIX_WIKIDATA);
-			ret = new ConstraintInverse(constrainedProperty, property);
+		ConstraintMultiValue ret = null;
+		if (constrainedProperty != null) {
+			ret = new ConstraintMultiValue(constrainedProperty);
 		}
 		return ret;
 	}

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -24,19 +24,20 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintRangeBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
 
 /**
- * Test class for {@link ConstraintRangeParser}
+ * Test class for {@link ConstraintRangeBuilder}
  * 
  * @author Julian Mendez
  * 
  */
-public class ConstraintRangeParserTest {
+public class ConstraintRangeBuilderTest {
 
 	@Test
 	public void testParseDate() {
-		ConstraintRangeParser parser = new ConstraintRangeParser();
+		ConstraintRangeBuilder parser = new ConstraintRangeBuilder();
 		Date datePreNow0 = new Date();
 		DateAndNow dateNow = parser.parseDate("now");
 		Date datePreNow1 = new Date();

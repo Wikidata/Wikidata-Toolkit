@@ -20,14 +20,14 @@ package org.wikidata.wdtk.dumpfiles.constraint.format;
  * #L%
  */
 
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 public interface RdfStringConstant {
 
 	String AUX = "aux";
 
-	String PREFIX_WIKIDATA = ConstraintMainParser.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
+	String PREFIX_WIKIDATA = ConstraintMainBuilder.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
 	String PREFIX_XML = "http://www.w3.org/XML/1998/namespace";
 
 	String PREFIX_OWL = Vocabulary.PREFIX_OWL; // "http://www.w3.org/2002/07/owl#";

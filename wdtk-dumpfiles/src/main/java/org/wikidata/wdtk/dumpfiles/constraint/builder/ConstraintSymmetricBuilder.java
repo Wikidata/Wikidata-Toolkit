@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,19 +29,17 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintConflictsWithParser implements ConstraintParser {
+class ConstraintSymmetricBuilder implements ConstraintBuilder {
 
-	public ConstraintConflictsWithParser() {
+	public ConstraintSymmetricBuilder() {
 	}
 
 	@Override
-	public ConstraintConflictsWith parse(PropertyIdValue constrainedProperty,
+	public ConstraintSymmetric parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintConflictsWith ret = null;
-		String listStr = template.getValue(ConstraintParserConstant.P_LIST);
-		if ((constrainedProperty != null) && (listStr != null)) {
-			ret = new ConstraintConflictsWith(constrainedProperty,
-					ConstraintMainParser.parseListOfPropertyValues(listStr));
+		ConstraintSymmetric ret = null;
+		if (constrainedProperty != null) {
+			ret = new ConstraintSymmetric(constrainedProperty);
 		}
 		return ret;
 	}

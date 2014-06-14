@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -29,9 +29,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintFormatParser implements ConstraintParser {
+class ConstraintFormatBuilder implements ConstraintBuilder {
 
-	public ConstraintFormatParser() {
+	public ConstraintFormatBuilder() {
 	}
 
 	private String removeNowiki(String str) {
@@ -45,7 +45,7 @@ class ConstraintFormatParser implements ConstraintParser {
 		if ((constrainedProperty != null)
 				&& (template.getParameters().size() > 0)) {
 			String plainPattern = template.getParameters().get(
-					ConstraintParserConstant.P_PATTERN);
+					ConstraintBuilderConstant.P_PATTERN);
 			String pattern = removeNowiki(plainPattern);
 			ret = new ConstraintFormat(constrainedProperty, pattern);
 		}

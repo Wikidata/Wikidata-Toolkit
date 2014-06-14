@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -23,7 +23,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintValueType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
@@ -32,28 +32,28 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintTypeParser implements ConstraintParser {
+class ConstraintValueTypeBuilder implements ConstraintBuilder {
 
-	public ConstraintTypeParser() {
+	public ConstraintValueTypeBuilder() {
 	}
 
 	@Override
-	public ConstraintType parse(PropertyIdValue constrainedProperty,
+	public ConstraintValueType parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintType ret = null;
-		String classStr = template.getValue(ConstraintParserConstant.P_CLASS);
-		String relationStr = template.getValue(ConstraintParserConstant.P_RELATION);
+		ConstraintValueType ret = null;
+		String classStr = template.getValue(ConstraintBuilderConstant.P_CLASS);
+		String relationStr = template.getValue(ConstraintBuilderConstant.P_RELATION);
 		if ((constrainedProperty != null) && (classStr != null)
 				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			ItemIdValue classId = factory.getItemIdValue(
 					classStr.toUpperCase(),
-					ConstraintMainParser.PREFIX_WIKIDATA);
-			if (relationStr.equals(ConstraintParserConstant.V_INSTANCE)) {
-				ret = new ConstraintType(constrainedProperty, classId,
+					ConstraintMainBuilder.PREFIX_WIKIDATA);
+			if (relationStr.equals(ConstraintBuilderConstant.V_INSTANCE)) {
+				ret = new ConstraintValueType(constrainedProperty, classId,
 						RelationType.INSTANCE);
-			} else if (relationStr.equals(ConstraintParserConstant.V_SUBCLASS)) {
-				ret = new ConstraintType(constrainedProperty, classId,
+			} else if (relationStr.equals(ConstraintBuilderConstant.V_SUBCLASS)) {
+				ret = new ConstraintValueType(constrainedProperty, classId,
 						RelationType.SUBCLASS);
 			}
 		}

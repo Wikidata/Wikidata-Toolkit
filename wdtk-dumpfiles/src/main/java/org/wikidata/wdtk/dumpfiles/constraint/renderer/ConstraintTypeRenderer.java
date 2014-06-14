@@ -23,11 +23,11 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
 
 /**
  * 
@@ -47,7 +47,7 @@ class ConstraintTypeRenderer implements ConstraintRenderer {
 
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		this.subclassOf = factory.getPropertyIdValue(P_SUBCLASS_OF,
-				ConstraintMainParser.PREFIX_WIKIDATA);
+				ConstraintMainBuilder.PREFIX_WIKIDATA);
 	}
 
 	@Override

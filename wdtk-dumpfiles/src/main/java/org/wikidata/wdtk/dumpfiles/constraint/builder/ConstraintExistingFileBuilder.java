@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,17 +29,17 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintSymmetricParser implements ConstraintParser {
+class ConstraintExistingFileBuilder implements ConstraintBuilder {
 
-	public ConstraintSymmetricParser() {
+	public ConstraintExistingFileBuilder() {
 	}
 
 	@Override
-	public ConstraintSymmetric parse(PropertyIdValue constrainedProperty,
+	public ConstraintExistingFile parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintSymmetric ret = null;
+		ConstraintExistingFile ret = null;
 		if (constrainedProperty != null) {
-			ret = new ConstraintSymmetric(constrainedProperty);
+			ret = new ConstraintExistingFile(constrainedProperty);
 		}
 		return ret;
 	}

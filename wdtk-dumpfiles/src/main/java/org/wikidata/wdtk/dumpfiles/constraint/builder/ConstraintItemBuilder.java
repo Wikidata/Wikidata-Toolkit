@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -34,9 +34,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintItemParser implements ConstraintParser {
+class ConstraintItemBuilder implements ConstraintBuilder {
 
-	public ConstraintItemParser() {
+	public ConstraintItemBuilder() {
 	}
 
 	@Override
@@ -45,44 +45,44 @@ class ConstraintItemParser implements ConstraintParser {
 		ConstraintItem ret = null;
 		if (constrainedProperty != null) {
 			String propertyStr = template
-					.getValue(ConstraintParserConstant.P_PROPERTY);
+					.getValue(ConstraintBuilderConstant.P_PROPERTY);
 			PropertyIdValue property = null;
-			String itemStr = template.getValue(ConstraintParserConstant.P_ITEM);
+			String itemStr = template.getValue(ConstraintBuilderConstant.P_ITEM);
 			ItemIdValue item = null;
 			String property2Str = template
-					.getValue(ConstraintParserConstant.P_PROPERTY_2);
+					.getValue(ConstraintBuilderConstant.P_PROPERTY_2);
 			PropertyIdValue property2 = null;
-			String item2Str = template.getValue(ConstraintParserConstant.P_ITEM_2);
+			String item2Str = template.getValue(ConstraintBuilderConstant.P_ITEM_2);
 			ItemIdValue item2 = null;
-			String itemsStr = template.getValue(ConstraintParserConstant.P_ITEMS);
+			String itemsStr = template.getValue(ConstraintBuilderConstant.P_ITEMS);
 			List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 			String exceptionsStr = template
-					.getValue(ConstraintParserConstant.P_EXCEPTIONS);
+					.getValue(ConstraintBuilderConstant.P_EXCEPTIONS);
 			List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			if (propertyStr != null) {
 				property = factory.getPropertyIdValue(
 						propertyStr.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (itemStr != null) {
 				item = factory.getItemIdValue(itemStr.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (property2Str != null) {
 				property2 = factory.getPropertyIdValue(
 						property2Str.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (item2Str != null) {
 				item2 = factory.getItemIdValue(item2Str.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (itemsStr != null) {
-				items = ConstraintMainParser.parseListOfItems(itemsStr);
+				items = ConstraintMainBuilder.parseListOfItems(itemsStr);
 			}
 			if (exceptionsStr != null) {
-				exceptions = ConstraintMainParser
+				exceptions = ConstraintMainBuilder
 						.parseListOfItems(exceptionsStr);
 			}
 			ret = new ConstraintItem(constrainedProperty, property, item,

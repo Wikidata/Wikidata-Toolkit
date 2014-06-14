@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTaxon;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,17 +29,19 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintTaxonParser implements ConstraintParser {
+class ConstraintConflictsWithBuilder implements ConstraintBuilder {
 
-	public ConstraintTaxonParser() {
+	public ConstraintConflictsWithBuilder() {
 	}
 
 	@Override
-	public ConstraintTaxon parse(PropertyIdValue constrainedProperty,
+	public ConstraintConflictsWith parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintTaxon ret = null;
-		if (constrainedProperty != null) {
-			ret = new ConstraintTaxon(constrainedProperty);
+		ConstraintConflictsWith ret = null;
+		String listStr = template.getValue(ConstraintBuilderConstant.P_LIST);
+		if ((constrainedProperty != null) && (listStr != null)) {
+			ret = new ConstraintConflictsWith(constrainedProperty,
+					ConstraintMainBuilder.parseListOfPropertyValues(listStr));
 		}
 		return ret;
 	}

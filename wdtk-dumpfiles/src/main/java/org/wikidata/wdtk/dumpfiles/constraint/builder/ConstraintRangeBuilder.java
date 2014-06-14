@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -38,7 +38,7 @@ import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
  * @author Julian Mendez
  * 
  */
-class ConstraintRangeParser implements ConstraintParser {
+class ConstraintRangeBuilder implements ConstraintBuilder {
 
 	private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
 
@@ -85,16 +85,16 @@ class ConstraintRangeParser implements ConstraintParser {
 		return ret;
 	}
 
-	public ConstraintRangeParser() {
+	public ConstraintRangeBuilder() {
 	}
 
 	@Override
 	public ConstraintRange parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintRange ret = null;
-		String minStr = template.getValue(ConstraintParserConstant.P_MIN)
+		String minStr = template.getValue(ConstraintBuilderConstant.P_MIN)
 				.toLowerCase().trim();
-		String maxStr = template.getValue(ConstraintParserConstant.P_MAX)
+		String maxStr = template.getValue(ConstraintBuilderConstant.P_MAX)
 				.toLowerCase().trim();
 		if ((constrainedProperty != null) && (minStr != null)
 				&& (maxStr != null)) {

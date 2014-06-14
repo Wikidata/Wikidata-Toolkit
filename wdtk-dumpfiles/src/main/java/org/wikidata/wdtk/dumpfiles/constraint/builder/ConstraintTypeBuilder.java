@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -23,7 +23,8 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClaim;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
+import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -31,31 +32,29 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintTargetRequiredClaimParser implements ConstraintParser {
+class ConstraintTypeBuilder implements ConstraintBuilder {
 
-	public ConstraintTargetRequiredClaimParser() {
+	public ConstraintTypeBuilder() {
 	}
 
 	@Override
-	public ConstraintTargetRequiredClaim parse(
-			PropertyIdValue constrainedProperty, Template template) {
-		ConstraintTargetRequiredClaim ret = null;
-		String propertyStr = template.getValue(ConstraintParserConstant.P_PROPERTY);
-		if ((constrainedProperty != null) && (propertyStr != null)) {
+	public ConstraintType parse(PropertyIdValue constrainedProperty,
+			Template template) {
+		ConstraintType ret = null;
+		String classStr = template.getValue(ConstraintBuilderConstant.P_CLASS);
+		String relationStr = template.getValue(ConstraintBuilderConstant.P_RELATION);
+		if ((constrainedProperty != null) && (classStr != null)
+				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
-			PropertyIdValue property = factory.getPropertyIdValue(
-					propertyStr.toUpperCase(),
-					ConstraintMainParser.PREFIX_WIKIDATA);
-			String itemStr = template.getValue(ConstraintParserConstant.P_ITEM);
-			if (itemStr != null) {
-				ItemIdValue item = factory.getItemIdValue(
-						itemStr.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
-				ret = new ConstraintTargetRequiredClaim(constrainedProperty,
-						property, item);
-			} else {
-				ret = new ConstraintTargetRequiredClaim(constrainedProperty,
-						property);
+			ItemIdValue classId = factory.getItemIdValue(
+					classStr.toUpperCase(),
+					ConstraintMainBuilder.PREFIX_WIKIDATA);
+			if (relationStr.equals(ConstraintBuilderConstant.V_INSTANCE)) {
+				ret = new ConstraintType(constrainedProperty, classId,
+						RelationType.INSTANCE);
+			} else if (relationStr.equals(ConstraintBuilderConstant.V_SUBCLASS)) {
+				ret = new ConstraintType(constrainedProperty, classId,
+						RelationType.SUBCLASS);
 			}
 		}
 		return ret;

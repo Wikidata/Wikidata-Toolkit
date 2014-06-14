@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -31,16 +31,16 @@ import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
  * @author Julian Mendez
  * 
  */
-class ConstraintOneOfParser implements ConstraintParser {
+class ConstraintOneOfBuilder implements ConstraintBuilder {
 
-	public ConstraintOneOfParser() {
+	public ConstraintOneOfBuilder() {
 	}
 
 	@Override
 	public ConstraintOneOf parse(PropertyIdValue constrainedProperty,
 			Template template) {
 		ConstraintOneOf ret = null;
-		String values = template.getValue(ConstraintParserConstant.P_VALUES);
+		String values = template.getValue(ConstraintBuilderConstant.P_VALUES);
 		if ((constrainedProperty != null) && (values != null)) {
 			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
 			String propertyType = wdPropertyTypes
@@ -48,11 +48,11 @@ class ConstraintOneOfParser implements ConstraintParser {
 
 			if (propertyType.equals(DatatypeIdValue.DT_ITEM)) {
 				ret = new ConstraintOneOf(constrainedProperty,
-						ConstraintMainParser.parseListOfItems(values));
+						ConstraintMainBuilder.parseListOfItems(values));
 
 			} else if (propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
 				ret = new ConstraintOneOf(
-						ConstraintMainParser.parseListOfQuantities(values),
+						ConstraintMainBuilder.parseListOfQuantities(values),
 						constrainedProperty);
 
 			} else {

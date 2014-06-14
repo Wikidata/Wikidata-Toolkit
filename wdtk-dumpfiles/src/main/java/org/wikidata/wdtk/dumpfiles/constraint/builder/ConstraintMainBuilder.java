@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -40,13 +40,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
  * @author Julian Mendez
  * 
  */
-public class ConstraintMainParser implements ConstraintParser {
+public class ConstraintMainBuilder implements ConstraintBuilder {
 
 	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
-	final Map<String, ConstraintParser> mapOfParsers = new HashMap<String, ConstraintParser>();
+	final Map<String, ConstraintBuilder> mapOfParsers = new HashMap<String, ConstraintBuilder>();
 
-	public ConstraintMainParser() {
+	public ConstraintMainBuilder() {
 		registerIds();
 	}
 
@@ -68,7 +68,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		while (stok.hasMoreTokens()) {
 			String itemStr = stok.nextToken().trim();
 			ItemIdValue item = factory.getItemIdValue(itemStr.toUpperCase(),
-					ConstraintMainParser.PREFIX_WIKIDATA);
+					ConstraintMainBuilder.PREFIX_WIKIDATA);
 			ret.add(item);
 		}
 		return ret;
@@ -87,13 +87,13 @@ public class ConstraintMainParser implements ConstraintParser {
 			if (pos == -1) {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				ret.add(new PropertyValues(property));
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.substring(0, pos).trim()
 								.toUpperCase(),
-						ConstraintMainParser.PREFIX_WIKIDATA);
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));
 				ret.add(new PropertyValues(property, values));
@@ -129,11 +129,11 @@ public class ConstraintMainParser implements ConstraintParser {
 		Validate.notNull(template);
 		Constraint ret = null;
 		String templateId = normalize(template.getName());
-		String prefix = normalize(ConstraintParserConstant.T_CONSTRAINT);
+		String prefix = normalize(ConstraintBuilderConstant.T_CONSTRAINT);
 		if (templateId.startsWith(prefix)) {
 			String constraintId = normalize(templateId.substring(prefix
 					.length()));
-			ConstraintParser constraintParser = getConstraintParser(constraintId);
+			ConstraintBuilder constraintParser = getConstraintParser(constraintId);
 			if (constraintParser != null) {
 				ret = constraintParser.parse(constrainedProperty, template);
 			}
@@ -141,7 +141,7 @@ public class ConstraintMainParser implements ConstraintParser {
 		return ret;
 	}
 
-	public ConstraintParser getConstraintParser(String str) {
+	public ConstraintBuilder getConstraintParser(String str) {
 		return this.mapOfParsers.get(str);
 	}
 
@@ -160,40 +160,40 @@ public class ConstraintMainParser implements ConstraintParser {
 		return ret;
 	}
 
-	private void register(String str, ConstraintParser parser) {
+	private void register(String str, ConstraintBuilder parser) {
 		this.mapOfParsers.put(normalize(str), parser);
 	}
 
 	private void registerIds() {
-		register(ConstraintParserConstant.C_SINGLE_VALUE,
-				new ConstraintSingleValueParser());
-		register(ConstraintParserConstant.C_UNIQUE_VALUE,
-				new ConstraintUniqueValueParser());
-		register(ConstraintParserConstant.C_FORMAT,
-				new ConstraintFormatParser());
-		register(ConstraintParserConstant.C_ONE_OF, new ConstraintOneOfParser());
-		register(ConstraintParserConstant.C_SYMMETRIC,
-				new ConstraintSymmetricParser());
-		register(ConstraintParserConstant.C_INVERSE,
-				new ConstraintInverseParser());
-		register(ConstraintParserConstant.C_EXISTING_FILE,
-				new ConstraintExistingFileParser());
-		register(ConstraintParserConstant.C_TARGET_REQUIRED_CLAIM,
-				new ConstraintTargetRequiredClaimParser());
-		register(ConstraintParserConstant.C_ITEM, new ConstraintItemParser());
-		register(ConstraintParserConstant.C_TYPE, new ConstraintTypeParser());
-		register(ConstraintParserConstant.C_VALUE_TYPE,
-				new ConstraintValueTypeParser());
-		register(ConstraintParserConstant.C_RANGE, new ConstraintRangeParser());
-		register(ConstraintParserConstant.C_MULTI_VALUE,
-				new ConstraintMultiValueParser());
-		register(ConstraintParserConstant.C_CONFLICTS_WITH,
-				new ConstraintConflictsWithParser());
-		register(ConstraintParserConstant.C_QUALIFIER,
-				new ConstraintQualifierParser());
-		register(ConstraintParserConstant.C_PERSON,
-				new ConstraintPersonParser());
-		register(ConstraintParserConstant.C_TAXON, new ConstraintTaxonParser());
+		register(ConstraintBuilderConstant.C_SINGLE_VALUE,
+				new ConstraintSingleValueBuilder());
+		register(ConstraintBuilderConstant.C_UNIQUE_VALUE,
+				new ConstraintUniqueValueBuilder());
+		register(ConstraintBuilderConstant.C_FORMAT,
+				new ConstraintFormatBuilder());
+		register(ConstraintBuilderConstant.C_ONE_OF, new ConstraintOneOfBuilder());
+		register(ConstraintBuilderConstant.C_SYMMETRIC,
+				new ConstraintSymmetricBuilder());
+		register(ConstraintBuilderConstant.C_INVERSE,
+				new ConstraintInverseBuilder());
+		register(ConstraintBuilderConstant.C_EXISTING_FILE,
+				new ConstraintExistingFileBuilder());
+		register(ConstraintBuilderConstant.C_TARGET_REQUIRED_CLAIM,
+				new ConstraintTargetRequiredClaimBuilder());
+		register(ConstraintBuilderConstant.C_ITEM, new ConstraintItemBuilder());
+		register(ConstraintBuilderConstant.C_TYPE, new ConstraintTypeBuilder());
+		register(ConstraintBuilderConstant.C_VALUE_TYPE,
+				new ConstraintValueTypeBuilder());
+		register(ConstraintBuilderConstant.C_RANGE, new ConstraintRangeBuilder());
+		register(ConstraintBuilderConstant.C_MULTI_VALUE,
+				new ConstraintMultiValueBuilder());
+		register(ConstraintBuilderConstant.C_CONFLICTS_WITH,
+				new ConstraintConflictsWithBuilder());
+		register(ConstraintBuilderConstant.C_QUALIFIER,
+				new ConstraintQualifierBuilder());
+		register(ConstraintBuilderConstant.C_PERSON,
+				new ConstraintPersonBuilder());
+		register(ConstraintBuilderConstant.C_TAXON, new ConstraintTaxonBuilder());
 	}
 
 }

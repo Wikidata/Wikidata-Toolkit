@@ -26,13 +26,13 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintPerson;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
 
 /**
  * 
@@ -63,13 +63,13 @@ class ConstraintPersonRenderer implements ConstraintRenderer {
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 
 		ItemIdValue qPerson = factory.getItemIdValue(Q_PERSON,
-				ConstraintMainParser.PREFIX_WIKIDATA);
+				ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pSexOrGender = factory.getPropertyIdValue(
-				P_SEX_OR_GENDER, ConstraintMainParser.PREFIX_WIKIDATA);
+				P_SEX_OR_GENDER, ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pPlaceOfBirth = factory.getPropertyIdValue(
-				P_PLACE_OF_BIRTH, ConstraintMainParser.PREFIX_WIKIDATA);
+				P_PLACE_OF_BIRTH, ConstraintMainBuilder.PREFIX_WIKIDATA);
 		PropertyIdValue pDateOfBirth = factory.getPropertyIdValue(
-				P_DATE_OF_BIRTH, ConstraintMainParser.PREFIX_WIKIDATA);
+				P_DATE_OF_BIRTH, ConstraintMainBuilder.PREFIX_WIKIDATA);
 
 		ret.add(new ConstraintType(constrainedProperty, qPerson,
 				RelationType.INSTANCE));

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -25,7 +25,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * @author Julian Mendez
  * 
  */
-public interface ConstraintParserConstant {
+public interface ConstraintBuilderConstant {
 
 	String T_CONSTRAINT = "Constraint:";
 

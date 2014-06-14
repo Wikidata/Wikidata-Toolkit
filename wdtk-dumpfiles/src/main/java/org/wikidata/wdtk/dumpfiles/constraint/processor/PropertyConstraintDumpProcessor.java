@@ -33,12 +33,12 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintBuilderConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintParserConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
@@ -83,12 +83,12 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	private List<Template> getConstraintTemplates(List<Template> list) {
-		ConstraintMainParser mainParser = new ConstraintMainParser();
+		ConstraintMainBuilder mainParser = new ConstraintMainBuilder();
 		List<Template> ret = new ArrayList<Template>();
 		for (Template template : list) {
 			String templateId = mainParser.normalize(template.getName());
 			String prefix = mainParser
-					.normalize(ConstraintParserConstant.T_CONSTRAINT);
+					.normalize(ConstraintBuilderConstant.T_CONSTRAINT);
 			if (templateId.startsWith(prefix)) {
 				ret.add(template);
 			}
@@ -159,7 +159,7 @@ public class PropertyConstraintDumpProcessor {
 	public void processTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
-		ConstraintMainParser parser = new ConstraintMainParser();
+		ConstraintMainBuilder parser = new ConstraintMainBuilder();
 		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
 
 			List<Template> templates = templateMap.get(constrainedProperty);

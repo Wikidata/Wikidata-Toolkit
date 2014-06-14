@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateScanner;
@@ -79,7 +79,7 @@ class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue constrainedProperty = factory.getPropertyIdValue(
-					propertyName, ConstraintMainParser.PREFIX_WIKIDATA);
+					propertyName, ConstraintMainBuilder.PREFIX_WIKIDATA);
 
 			this.map.put(constrainedProperty, listOfTemplates);
 		}

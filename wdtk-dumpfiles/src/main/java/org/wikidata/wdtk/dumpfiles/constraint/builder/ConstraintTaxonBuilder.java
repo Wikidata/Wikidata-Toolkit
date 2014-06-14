@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,8 +29,19 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-public interface ConstraintParser {
+class ConstraintTaxonBuilder implements ConstraintBuilder {
 
-	Constraint parse(PropertyIdValue constrainedProperty, Template template);
+	public ConstraintTaxonBuilder() {
+	}
+
+	@Override
+	public ConstraintTaxon parse(PropertyIdValue constrainedProperty,
+			Template template) {
+		ConstraintTaxon ret = null;
+		if (constrainedProperty != null) {
+			ret = new ConstraintTaxon(constrainedProperty);
+		}
+		return ret;
+	}
 
 }

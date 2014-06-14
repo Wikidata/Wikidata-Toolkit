@@ -1,6 +1,6 @@
 package org.wikidata.wdtk.dumpfiles.constraint.format;
 
-import org.wikidata.wdtk.dumpfiles.constraint.parser.ConstraintMainParser;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 /*
@@ -41,7 +41,7 @@ public interface Owl2FunctionalConstant {
 	String C_BACKSLASH = "\\";
 	String AUX = "aux";
 
-	String PREFIX_WIKIDATA = ConstraintMainParser.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
+	String PREFIX_WIKIDATA = ConstraintMainBuilder.PREFIX_WIKIDATA; // "http://www.wikidata.org/entity/";
 	String PREFIX_CONSTRAINTS = PREFIX_WIKIDATA + "constraints/"; // "http://www.wikidata.org/entity/constraints/";
 	String PREFIX_ONTOLOGY = PREFIX_CONSTRAINTS + "ont"; // "http://www.wikidata.org/entity/constraints/ont";
 	String PREFIX_XML = "http://www.w3.org/XML/1998/namespace";

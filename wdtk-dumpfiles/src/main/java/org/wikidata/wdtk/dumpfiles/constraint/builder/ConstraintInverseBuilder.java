@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -20,8 +20,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,17 +30,23 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintExistingFileParser implements ConstraintParser {
 
-	public ConstraintExistingFileParser() {
+class ConstraintInverseBuilder implements ConstraintBuilder {
+
+	public ConstraintInverseBuilder() {
 	}
 
 	@Override
-	public ConstraintExistingFile parse(PropertyIdValue constrainedProperty,
+	public ConstraintInverse parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintExistingFile ret = null;
-		if (constrainedProperty != null) {
-			ret = new ConstraintExistingFile(constrainedProperty);
+		ConstraintInverse ret = null;
+		String propertyStr = template.getValue(ConstraintBuilderConstant.P_PROPERTY);
+		if ((constrainedProperty != null) && (propertyStr != null)) {
+			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+			PropertyIdValue property = factory.getPropertyIdValue(
+					propertyStr.toUpperCase(),
+					ConstraintMainBuilder.PREFIX_WIKIDATA);
+			ret = new ConstraintInverse(constrainedProperty, property);
 		}
 		return ret;
 	}

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.constraint.parser;
+package org.wikidata.wdtk.dumpfiles.constraint.builder;
 
 /*
  * #%L
@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.parser;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifier;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -29,17 +29,17 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintQualifierParser implements ConstraintParser {
+class ConstraintSingleValueBuilder implements ConstraintBuilder {
 
-	public ConstraintQualifierParser() {
+	public ConstraintSingleValueBuilder() {
 	}
 
 	@Override
-	public ConstraintQualifier parse(PropertyIdValue constrainedProperty,
+	public ConstraintSingleValue parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintQualifier ret = null;
+		ConstraintSingleValue ret = null;
 		if (constrainedProperty != null) {
-			ret = new ConstraintQualifier(constrainedProperty);
+			ret = new ConstraintSingleValue(constrainedProperty);
 		}
 		return ret;
 	}
