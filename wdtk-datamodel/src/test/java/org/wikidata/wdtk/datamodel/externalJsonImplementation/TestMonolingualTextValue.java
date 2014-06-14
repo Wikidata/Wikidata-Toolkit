@@ -36,7 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestMonolingualTextValue {
 
 	ObjectMapper mapper = new ObjectMapper();
-	String testJson = "{\"language\": \"en\", \"value\": \"foobar\"}";
+	static final String testJson = "{\"language\": \"en\", \"value\": \"foobar\"}";
+	static final MonolingualTextValueImpl testMltv = new MonolingualTextValueImpl("en", "foobar");
 
 	/**
 	 * Tests the conversion of MonolingualTextValues from Json to Pojo
@@ -68,9 +69,8 @@ public class TestMonolingualTextValue {
 	@Test
 	public void testMonolingualTextValueToJson(){
 		
-		MonolingualTextValueImpl pojo = new MonolingualTextValueImpl("en", "foobar");
 		try {
-			String result = mapper.writeValueAsString(pojo);
+			String result = mapper.writeValueAsString(testMltv);
 			// remove all whitespaces, they cause might the test to fail unjustified
 			assertEquals(testJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
 		} catch (JsonProcessingException e) {
@@ -81,14 +81,13 @@ public class TestMonolingualTextValue {
 	
 	@Test
 	public void testEquals(){
-		MonolingualTextValueImpl reference = new MonolingualTextValueImpl("en", "foobar");
 		MonolingualTextValueImpl match = new MonolingualTextValueImpl("en", "foobar");
 		MonolingualTextValueImpl wrongLanguage = new MonolingualTextValueImpl("de", "foobar");
 		MonolingualTextValueImpl wrongValue = new MonolingualTextValueImpl("en", "barfoo");
 		
-		assertEquals(reference, reference);
-		assertEquals(reference, match);
-		assertFalse(reference.equals(wrongLanguage));
-		assertFalse(reference.equals(wrongValue));
+		assertEquals(testMltv, testMltv);
+		assertEquals(testMltv, match);
+		assertFalse(testMltv.equals(wrongLanguage));
+		assertFalse(testMltv.equals(wrongValue));
 	}
 }

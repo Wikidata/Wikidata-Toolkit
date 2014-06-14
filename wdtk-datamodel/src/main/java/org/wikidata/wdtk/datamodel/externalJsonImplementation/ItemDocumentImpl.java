@@ -46,9 +46,9 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
 	Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
 	Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
-
-	// TODO Map deserializer takes apart claims
-	// generates one statement group per map line
+	// TODO entityId
+	// TODO siteLinks
+	// TODO StatementGroups (claims)
 
 	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
 		this.labels = labels;
@@ -79,6 +79,10 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 		return returnMap;
 	}
 
+	public void setAliases(Map<String, List<MonolingualTextValueImpl>> aliases){
+		this.aliases = aliases;
+	}
+	
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
 

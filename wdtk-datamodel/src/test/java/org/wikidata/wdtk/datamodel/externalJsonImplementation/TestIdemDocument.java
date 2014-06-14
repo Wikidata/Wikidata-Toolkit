@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,21 +22,27 @@ public class TestIdemDocument {
 	
 	ObjectMapper mapper = new ObjectMapper();
 	
+	// wrapping into item document structure for dedicated tests
+	static final String testLabelJson = "{\"labels\":{\"en\":" + TestMonolingualTextValue.testJson + "}}";
+	static final String testDescriptionJson = "{\"descriptions\":{\"en\":" + TestMonolingualTextValue.testJson + "}}";
+	static final String testAliasJson = "{ \"aliases\":{\"en\":[" + TestMonolingualTextValue.testJson + "]}}";
+	
 	// puzzle pieces for creation of the test object
 	Map<String, MonolingualTextValueImpl> testMltvMap;
 	Map<String, List<MonolingualTextValueImpl>> testAliases;
 	
-	String testMltvJson = "{\"en\":{\"language\":\"en\", \"value\":\"fooLabel\"}}";
-	
 	@Before
 	public void setupTestMltv(){
 		testMltvMap = new HashMap<>();
-		MonolingualTextValueImpl fooLabel =  new MonolingualTextValueImpl("en", "fooLabel");
-		testMltvMap.put("en", fooLabel);
+		testMltvMap.put("en", TestMonolingualTextValue.testMltv);
 	}
 
+	@Before
 	public void setupTestAliases(){
-		// TODO
+		testAliases = new HashMap<>();
+		List<MonolingualTextValueImpl> aliases = new LinkedList<>();
+		aliases.add(TestMonolingualTextValue.testMltv);
+		testAliases.put("en", aliases);
 	}
 	
 	/**
@@ -45,13 +52,11 @@ public class TestIdemDocument {
 	public void testLabelsToJson(){
 		ItemDocumentImpl document = new ItemDocumentImpl();
 		document.setLabels(testMltvMap);
-		// wrap up the label json in the ItemDocument description
-		String expected = "{\"labels\":" + testMltvJson + "}";
 		
 		try {
 			String result = mapper.writeValueAsString(document);
 			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(expected.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			assertEquals(testLabelJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -64,11 +69,8 @@ public class TestIdemDocument {
 	@Test
 	public void testLabelToJava(){
 		
-		// wrap up the label json in the ItemDocument description
-		String testJson = "{\"labels\":" + testMltvJson + "}";
-		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(testLabelJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.labels);
@@ -92,13 +94,11 @@ public class TestIdemDocument {
 	public void testDescriptionsToJson(){
 		ItemDocumentImpl document = new ItemDocumentImpl();
 		document.setDescriptions(testMltvMap);
-		// wrap up the label json in the ItemDocument description
-		String expected = "{\"descriptions\":" + testMltvJson + "}";
 		
 		try {
 			String result = mapper.writeValueAsString(document);
 			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(expected.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			assertEquals(testDescriptionJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -111,11 +111,8 @@ public class TestIdemDocument {
 	@Test
 	public void testDescriptionsToJava(){
 		
-		// wrap up the label json in the ItemDocument description
-		String testJson = "{\"descriptions\":" + testMltvJson + "}";
-		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(testDescriptionJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.descriptions);
@@ -132,8 +129,39 @@ public class TestIdemDocument {
 		}
 	}
 
+	@Test
 	public void testAliasesToJson(){
 		ItemDocumentImpl document = new ItemDocumentImpl();
+		document.setAliases(testAliases);
 		
+		try {
+			String result = mapper.writeValueAsString(document);
+			// remove all whitespaces, they cause might the test to fail unjustified
+			assertEquals(testAliasJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			fail("Converting Pojo to Json failed");
+		}
+	}
+	
+	@Test
+	public void testAliasesToJava(){
+		
+		try {
+			ItemDocumentImpl result = mapper.readValue(testAliasJson, ItemDocumentImpl.class);
+			
+			assertNotNull(result);
+			assertEquals(testAliases, result.aliases);
+			
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			fail("Parsing failed");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			fail("Json mapping failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("IO failed");
+		}
 	}
 }
