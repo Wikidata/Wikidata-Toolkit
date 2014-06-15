@@ -37,16 +37,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDocumentImpl extends EntityDocumentImpl implements
 		ItemDocument {
+	
+	// the type field will be ignored.
+	// this is an ItemDocument, so the type is clear.
+	// for writing out to external Json there is a hard-coded solution
 
 	Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
 	Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
 	Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
-	// TODO entityId
+	
+	// the following is not mapped directly towards Json
+	// rather split up into two Json fields
+	@JsonIgnore
+	ItemIdValueImpl itemId = new ItemIdValueImpl();
+	
 	// TODO siteLinks
 	// TODO StatementGroups (claims)
 
@@ -99,10 +109,30 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 		return returnMap;
 	}
 
+	@JsonProperty("id")
+	public void setId(String id){
+		this.itemId.setId(id);
+	}
+	
+	@JsonProperty("id")
+	public String getId(){
+		return this.itemId.getId();
+	}
+	
+	@JsonProperty("type")
+	public String getType(){
+		return "item";
+	}
+	
+	@JsonIgnore
+	public void setItemId(ItemIdValueImpl itemId){
+		this.itemId = itemId;
+	}
+	
+	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.itemId;
 	}
 
 	@JsonIgnore
