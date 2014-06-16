@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestMonolingualTextValue {
 
 	ObjectMapper mapper = new ObjectMapper();
-	static final String testJson = "{\"language\": \"en\", \"value\": \"foobar\"}";
+	static final String testMltvJson = "{\"language\": \"en\", \"value\": \"foobar\"}";
 	static final MonolingualTextValueImpl testMltv = new MonolingualTextValueImpl("en", "foobar");
 
 	/**
@@ -46,7 +46,7 @@ public class TestMonolingualTextValue {
 	public void testMonolingualTextValueToJava(){
 		
 		try {
-			MonolingualTextValueImpl result = mapper.readValue(testJson, MonolingualTextValueImpl.class);
+			MonolingualTextValueImpl result = mapper.readValue(testMltvJson, MonolingualTextValueImpl.class);
 			
 			assertEquals("en", result.getLanguageCode());
 			assertEquals("foobar", result.getText());
@@ -71,8 +71,7 @@ public class TestMonolingualTextValue {
 		
 		try {
 			String result = mapper.writeValueAsString(testMltv);
-			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(testJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			JsonComparator.compareJsonStrings(testMltvJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");

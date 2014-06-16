@@ -18,15 +18,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestIdemDocument {
+public class TestItemDocument {
 	
 	ObjectMapper mapper = new ObjectMapper();
 	
 	// wrapping into item document structure for dedicated tests
 	static final String typeJson = "\"type\":\"item\"";
-	static final String testLabelJson = "{\"labels\":{\"en\":" + TestMonolingualTextValue.testJson + "}," + typeJson + "}";
-	static final String testDescriptionJson = "{\"descriptions\":{\"en\":" + TestMonolingualTextValue.testJson + "}," + typeJson + "}";
-	static final String testAliasJson = "{ \"aliases\":{\"en\":[" + TestMonolingualTextValue.testJson + "]}," + typeJson + "}";
+	static final String testLabelJson = "{\"labels\":{\"en\":" + TestMonolingualTextValue.testMltvJson + "}," + typeJson + "}";
+	static final String testDescriptionJson = "{\"descriptions\":{\"en\":" + TestMonolingualTextValue.testMltvJson + "}," + typeJson + "}";
+	static final String testAliasJson = "{ \"aliases\":{\"en\":[" + TestMonolingualTextValue.testMltvJson + "]}," + typeJson + "}";
 	static final String testItemIdJson = "{\"id\":\"Q1\"," + typeJson + "}";
 	
 	
@@ -65,7 +65,7 @@ public class TestIdemDocument {
 		try {
 			String result = mapper.writeValueAsString(document);
 			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(testLabelJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			JsonComparator.compareJsonStrings(testLabelJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -106,8 +106,7 @@ public class TestIdemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(testDescriptionJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			JsonComparator.compareJsonStrings(testDescriptionJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -145,8 +144,7 @@ public class TestIdemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(testAliasJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			JsonComparator.compareJsonStrings(testAliasJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -181,8 +179,7 @@ public class TestIdemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			// remove all whitespaces, they cause might the test to fail unjustified
-			assertEquals(testItemIdJson.replaceAll("\\s+",""), result.replaceAll("\\s+",""));
+			JsonComparator.compareJsonStrings(testItemIdJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");

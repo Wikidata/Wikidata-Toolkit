@@ -152,8 +152,7 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	@JsonIgnore
 	@Override
 	public EntityIdValue getEntityId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.itemId;
 	}
 
 }
