@@ -38,7 +38,7 @@ public class TemplateParser {
 
 	/**
 	 * An instance of this class is an auxiliary class of the parser. It is used
-	 * to keep a look ahead during the parsing.
+	 * to keep a look-ahead during the parsing.
 	 * 
 	 * @author Julian Mendez
 	 * 
@@ -49,13 +49,13 @@ public class TemplateParser {
 		int position = -1;
 
 		/**
-		 * Creates a new look ahead.
+		 * Creates a new look-ahead.
 		 */
 		LookAhead() {
 		}
 
 		/**
-		 * Creates a new look ahead pointing at a particular position, to a
+		 * Creates a new look-ahead pointing at a particular position, to a
 		 * particular item.
 		 * 
 		 * @param position
@@ -96,7 +96,7 @@ public class TemplateParser {
 	}
 
 	/**
-	 * This items are the possible ones that a look ahead can point to.
+	 * This items are the possible ones that a look-ahead can point to.
 	 * 
 	 * @author Julian Mendez
 	 * 
@@ -124,7 +124,7 @@ public class TemplateParser {
 
 	private LookAhead findItem(String str, LookAheadItem item, int pos) {
 		LookAhead ret = new LookAhead();
-		if (item != LookAheadItem.UNDEFINED) {
+		if (!item.equals(LookAheadItem.UNDEFINED)) {
 			int nextPos = str.indexOf(getString(item), pos);
 			if (nextPos != -1) {
 				ret = new LookAhead(nextPos, item);
