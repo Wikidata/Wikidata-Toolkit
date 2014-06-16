@@ -126,9 +126,7 @@ public class Template {
 		sb.append(TemplateConstant.OPENING_BRACES);
 		sb.append(this.name);
 		for (String key : this.parameters.keySet()) {
-			sb.append(TemplateConstant.NEWLINE);
 			sb.append(TemplateConstant.VERTICAL_BAR);
-			sb.append(TemplateConstant.SPACE);
 			sb.append(key);
 			String value = this.parameters.get(key);
 			if ((value != null) && !value.isEmpty()) {
@@ -136,7 +134,6 @@ public class Template {
 				sb.append(value);
 			}
 		}
-		sb.append(TemplateConstant.NEWLINE);
 		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
