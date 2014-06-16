@@ -40,7 +40,7 @@ public class TemplateScanner {
 	}
 
 	/**
-	 * Scans a test and returns a list with all the pieces of text that can be
+	 * Scans a text and returns a list with all the pieces of text that can be
 	 * template transclusions. HTML comments are ignored.
 	 * 
 	 * @param text
@@ -53,7 +53,7 @@ public class TemplateScanner {
 	}
 
 	/**
-	 * Scans a test and returns a list with all the pieces of text that can be
+	 * Scans a text and returns a list with all the pieces of text that can be
 	 * template transclusions.
 	 * 
 	 * @param text

@@ -93,6 +93,7 @@ public class TemplateParser {
 		public String toString() {
 			return "" + this.item.toString() + "@" + this.position;
 		}
+
 	}
 
 	/**
@@ -186,6 +187,16 @@ public class TemplateParser {
 		return ret;
 	}
 
+	private String getValue(String parameter) {
+		String ret = "";
+		int pos = parameter.indexOf(TemplateConstant.EQUALS_SIGN);
+		if (pos != -1) {
+			ret = parameter.substring(pos
+					+ TemplateConstant.EQUALS_SIGN.length());
+		}
+		return ret;
+	}
+
 	private String getString(LookAheadItem item) {
 		if (item.equals(LookAheadItem.OPENING_BRACES)) {
 			return TemplateConstant.OPENING_BRACES;
@@ -197,16 +208,6 @@ public class TemplateParser {
 			return TemplateConstant.VERTICAL_BAR;
 		}
 		return "";
-	}
-
-	private String getValue(String parameter) {
-		String ret = "";
-		int pos = parameter.indexOf(TemplateConstant.EQUALS_SIGN);
-		if (pos != -1) {
-			ret = parameter.substring(pos
-					+ TemplateConstant.EQUALS_SIGN.length());
-		}
-		return ret;
 	}
 
 	/**

@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class TemplateScannerTest {
 
-	private static final String text = "\n<!-- ignored -->{{Constraint:Type|class=Q1048835\n|relation=instance<!-- ignored -->}}"
+	static final String text = "\n<!-- ignored -->{{Constraint:Type|class=Q1048835\n|relation=instance<!-- ignored -->}}"
 			+ "\n{{Constraint:Value <!-- ignored \n \n -->type|class=Q5|relation<!---->=instance}}<!-- nothing here -->"
 			+ "\n{<!--ignored --->{Constraint:Target required claim|property=P21}}"
 			+ "\n{{Constraint:One of|values=<!-- ignored-->{{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}"

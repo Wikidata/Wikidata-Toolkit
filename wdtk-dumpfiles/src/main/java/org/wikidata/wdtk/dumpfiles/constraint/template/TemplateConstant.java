@@ -33,8 +33,8 @@ public interface TemplateConstant {
 	String CLOSING_BRACES = "}}";
 	String OPENING_BRACKETS = "[[";
 	String CLOSING_BRACKETS = "]]";
-	String EQUALS_SIGN = "=";
 	String VERTICAL_BAR = "|";
+	String EQUALS_SIGN = "=";
 	String UNDERSCORE = "_";
 	String SPACE = " ";
 	String COMMA = ",";

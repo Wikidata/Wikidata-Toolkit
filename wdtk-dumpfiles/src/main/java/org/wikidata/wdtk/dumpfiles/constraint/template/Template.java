@@ -81,17 +81,6 @@ public class Template {
 	}
 
 	/**
-	 * Returns the value associated to the specified parameter name
-	 * 
-	 * @param parameterName
-	 *            the parameter name
-	 * @return the value associated to the specified parameter name
-	 */
-	public String getValue(String parameterName) {
-		return this.parameters.get(parameterName);
-	}
-
-	/**
 	 * Returns the identifier of this template.
 	 * 
 	 * @return the identifier of this template
@@ -118,6 +107,17 @@ public class Template {
 	 */
 	public Set<String> getParameterNames() {
 		return this.parameters.keySet();
+	}
+
+	/**
+	 * Returns the value associated to the specified parameter name
+	 * 
+	 * @param parameterName
+	 *            the parameter name
+	 * @return the value associated to the specified parameter name
+	 */
+	public String getValue(String parameterName) {
+		return this.parameters.get(parameterName);
 	}
 
 	@Override

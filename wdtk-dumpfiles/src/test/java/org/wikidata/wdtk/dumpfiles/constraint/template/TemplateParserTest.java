@@ -49,7 +49,6 @@ public class TemplateParserTest {
 		Assert.assertEquals(2, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
 		Assert.assertEquals(str, template.toString());
-
 	}
 
 	@Test
@@ -67,7 +66,6 @@ public class TemplateParserTest {
 		Assert.assertEquals(2, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
 		Assert.assertEquals(str, template.toString());
-
 	}
 
 	@Test
@@ -83,7 +81,6 @@ public class TemplateParserTest {
 		Assert.assertEquals(1, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
 		Assert.assertEquals(str, template.toString());
-
 	}
 
 	@Test
@@ -100,64 +97,6 @@ public class TemplateParserTest {
 		Assert.assertEquals(1, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
 		Assert.assertEquals(str, template.toString());
-
-	}
-
-	@Test
-	public void testParser4() {
-		TemplateParser parser = new TemplateParser();
-		String str = "{{Constraint:Item|property=P17||exceptions={{Q|3593529}}}}";
-		String strNorm = "{{Constraint:Item|exceptions={{Q|3593529}}|property=P17}}";
-		Set<String> parameterNames = new TreeSet<String>();
-		parameterNames.add("property");
-		parameterNames.add("exceptions");
-		Template template = parser.parse(str);
-		Assert.assertEquals("Constraint:Item", template.getName());
-		Assert.assertEquals("P17", template.getValue("property"));
-		Assert.assertEquals("{{Q|3593529}}", template.getValue("exceptions"));
-		Assert.assertEquals(2, template.getParameters().size());
-		Assert.assertEquals(parameterNames, template.getParameterNames());
-		Assert.assertEquals(strNorm, template.toString());
-
-	}
-
-	@Test
-	public void testParser5() {
-		TemplateParser parser = new TemplateParser();
-		String str = "{{Constraint:Target required claim|property=P279|exceptions ={{Q|35120}}}}";
-		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
-		Set<String> parameterNames = new TreeSet<String>();
-		parameterNames.add("property");
-		parameterNames.add("exceptions");
-		Template template = parser.parse(str);
-		Assert.assertEquals("Constraint:Target required claim",
-				template.getName());
-		Assert.assertEquals("P279", template.getValue("property"));
-		Assert.assertEquals("{{Q|35120}}", template.getValue("exceptions"));
-		Assert.assertEquals(2, template.getParameters().size());
-		Assert.assertEquals(parameterNames, template.getParameterNames());
-		Assert.assertEquals(strNorm, template.toString());
-
-	}
-
-	@Test
-	public void testParser6() {
-		TemplateParser parser = new TemplateParser();
-		String str = "{{Constraint:Target required claim|property=P279|exceptions={{Q|35120}}, {{Q|14897293}}}}";
-		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}, {{Q|14897293}}|property=P279}}";
-		Set<String> parameterNames = new TreeSet<String>();
-		parameterNames.add("property");
-		parameterNames.add("exceptions");
-		Template template = parser.parse(str);
-		Assert.assertEquals("Constraint:Target required claim",
-				template.getName());
-		Assert.assertEquals("P279", template.getValue("property"));
-		Assert.assertEquals("{{Q|35120}}, {{Q|14897293}}",
-				template.getValue("exceptions"));
-		Assert.assertEquals(2, template.getParameters().size());
-		Assert.assertEquals(parameterNames, template.getParameterNames());
-		Assert.assertEquals(strNorm, template.toString());
-
 	}
 
 	@Test
@@ -179,7 +118,60 @@ public class TemplateParserTest {
 		Assert.assertEquals(1, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
 		Assert.assertEquals(strNorm, template.toString());
+	}
 
+	@Test
+	public void testParser4() {
+		TemplateParser parser = new TemplateParser();
+		String str = "{{Constraint:Item|property=P17||exceptions={{Q|3593529}}}}";
+		String strNorm = "{{Constraint:Item|exceptions={{Q|3593529}}|property=P17}}";
+		Set<String> parameterNames = new TreeSet<String>();
+		parameterNames.add("property");
+		parameterNames.add("exceptions");
+		Template template = parser.parse(str);
+		Assert.assertEquals("Constraint:Item", template.getName());
+		Assert.assertEquals("P17", template.getValue("property"));
+		Assert.assertEquals("{{Q|3593529}}", template.getValue("exceptions"));
+		Assert.assertEquals(2, template.getParameters().size());
+		Assert.assertEquals(parameterNames, template.getParameterNames());
+		Assert.assertEquals(strNorm, template.toString());
+	}
+
+	@Test
+	public void testParser5() {
+		TemplateParser parser = new TemplateParser();
+		String str = "{{Constraint:Target required claim|property=P279|exceptions ={{Q|35120}}}}";
+		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
+		Set<String> parameterNames = new TreeSet<String>();
+		parameterNames.add("property");
+		parameterNames.add("exceptions");
+		Template template = parser.parse(str);
+		Assert.assertEquals("Constraint:Target required claim",
+				template.getName());
+		Assert.assertEquals("P279", template.getValue("property"));
+		Assert.assertEquals("{{Q|35120}}", template.getValue("exceptions"));
+		Assert.assertEquals(2, template.getParameters().size());
+		Assert.assertEquals(parameterNames, template.getParameterNames());
+		Assert.assertEquals(strNorm, template.toString());
+	}
+
+	@Test
+	public void testParser6() {
+		TemplateParser parser = new TemplateParser();
+		String str = "{{Constraint:Target required claim|property=P279|exceptions={{Q|35120}}, {{Q|14897293}}}}";
+		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}, {{Q|14897293}}|property=P279}}";
+		Set<String> parameterNames = new TreeSet<String>();
+		parameterNames.add("property");
+		parameterNames.add("exceptions");
+		Template template = parser.parse(str);
+		Assert.assertEquals("Constraint:Target required claim",
+				template.getName());
+		Assert.assertEquals("P279", template.getValue("property"));
+		Assert.assertEquals("{{Q|35120}}, {{Q|14897293}}",
+				template.getValue("exceptions"));
+		Assert.assertEquals(2, template.getParameters().size());
+		Assert.assertEquals(parameterNames, template.getParameterNames());
+		Assert.assertEquals(strNorm, template.toString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -225,7 +217,6 @@ public class TemplateParserTest {
 				Assert.assertEquals(expected, lookAhead.toString());
 			}
 		}).testLookAhead();
-
 	}
 
 }
