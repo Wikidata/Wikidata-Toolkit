@@ -102,7 +102,7 @@ public class ConstraintInverse implements Constraint {
 		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("property");
 		sb.append(TemplateConstant.EQUALS_SIGN);
-		sb.append(this.property);
+		sb.append(this.property.getId());
 		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}

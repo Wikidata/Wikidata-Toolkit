@@ -24,7 +24,6 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintRangeBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
 
 /**
@@ -37,9 +36,9 @@ public class ConstraintRangeBuilderTest {
 
 	@Test
 	public void testParseDate() {
-		ConstraintRangeBuilder parser = new ConstraintRangeBuilder();
+		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();
 		Date datePreNow0 = new Date();
-		DateAndNow dateNow = parser.parseDate("now");
+		DateAndNow dateNow = builder.parseDate("now");
 		Date datePreNow1 = new Date();
 
 		Assert.assertTrue(datePreNow0.getTime() <= dateNow.getDate().getTime());
@@ -47,11 +46,11 @@ public class ConstraintRangeBuilderTest {
 		// 'now' comes always after any other previously created current date
 		Assert.assertTrue(datePreNow1.getTime() <= dateNow.getDate().getTime());
 
-		DateAndNow date0 = parser.parseDate("2014");
-		DateAndNow date1 = parser.parseDate("2014");
-		DateAndNow date2 = parser.parseDate("2014-01");
-		DateAndNow date3 = parser.parseDate("2014-01-22");
-		DateAndNow date4 = parser.parseDate("2014-01-22 17:14:32");
+		DateAndNow date0 = builder.parseDate("2014");
+		DateAndNow date1 = builder.parseDate("2014");
+		DateAndNow date2 = builder.parseDate("2014-01");
+		DateAndNow date3 = builder.parseDate("2014-01-22");
+		DateAndNow date4 = builder.parseDate("2014-01-22 17:14:32");
 
 		Assert.assertEquals(new Date(1388534400000L), date0.getDate());
 		Assert.assertEquals(date0, date1);
@@ -61,4 +60,5 @@ public class ConstraintRangeBuilderTest {
 		Assert.assertEquals(new Date(1390348800000L), date3.getDate());
 		Assert.assertEquals(new Date(1390410872000L), date4.getDate());
 	}
+
 }

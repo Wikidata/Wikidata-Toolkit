@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
@@ -52,11 +51,11 @@ public class ConstraintTemplateStringTest {
 	@Test
 	public void testConstraintOneOf() {
 		TemplateParser parser = new TemplateParser();
-		ConstraintMainBuilder constraintParser = new ConstraintMainBuilder();
+		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
 		Template template0 = parser.parse(text0);
-		Constraint c0 = constraintParser.parse(getPropertyIdValue("P21"),
+		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P21"),
 				template0);
 		Assert.assertEquals(text0, c0.getTemplate());
 	}
@@ -64,17 +63,17 @@ public class ConstraintTemplateStringTest {
 	@Test
 	public void testConstraintTargetRequiredClaim() {
 		TemplateParser parser = new TemplateParser();
-		ConstraintMainBuilder constraintParser = new ConstraintMainBuilder();
+		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Target required claim|property=P21}}";
 		Template template0 = parser.parse(text0);
-		Constraint c0 = constraintParser.parse(getPropertyIdValue("P6"),
+		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P6"),
 				template0);
 		Assert.assertEquals(text0, c0.getTemplate());
 
 		String text1 = "{{Constraint:Target required claim|property=P279}}";
 		Template template1 = parser.parse(text1);
-		Constraint c1 = constraintParser.parse(getPropertyIdValue("P31"),
+		Constraint c1 = constraintBuilder.parse(getPropertyIdValue("P31"),
 				template1);
 		Assert.assertEquals(text1, c1.getTemplate());
 	}
@@ -82,11 +81,11 @@ public class ConstraintTemplateStringTest {
 	@Test
 	public void testConstraintItem() {
 		TemplateParser parser = new TemplateParser();
-		ConstraintMainBuilder constraintParser = new ConstraintMainBuilder();
+		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Item|property=P17|exceptions={{Q|3593529}}}}";
 		Template template0 = parser.parse(text0);
-		Constraint c0 = constraintParser.parse(getPropertyIdValue("P814"),
+		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P814"),
 				template0);
 		Assert.assertEquals(text0, c0.getTemplate());
 	}
@@ -94,11 +93,11 @@ public class ConstraintTemplateStringTest {
 	@Test
 	public void testConstraintType() {
 		TemplateParser parser = new TemplateParser();
-		ConstraintMainBuilder constraintParser = new ConstraintMainBuilder();
+		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Type|class=Q1048835|relation=instance}}";
 		Template template0 = parser.parse(text0);
-		Constraint c0 = constraintParser.parse(getPropertyIdValue("P6"),
+		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P6"),
 				template0);
 		Assert.assertEquals(text0, c0.getTemplate());
 	}
@@ -106,11 +105,11 @@ public class ConstraintTemplateStringTest {
 	@Test
 	public void testConstraintValueType() {
 		TemplateParser parser = new TemplateParser();
-		ConstraintMainBuilder constraintParser = new ConstraintMainBuilder();
+		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Value type|class=Q5|relation=instance}}";
 		Template template0 = parser.parse(text0);
-		Constraint c0 = constraintParser.parse(getPropertyIdValue("P6"),
+		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P6"),
 				template0);
 		Assert.assertEquals(text0, c0.getTemplate());
 	}
