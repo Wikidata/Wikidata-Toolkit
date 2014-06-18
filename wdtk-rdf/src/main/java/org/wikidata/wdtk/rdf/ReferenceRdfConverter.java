@@ -97,11 +97,10 @@ public class ReferenceRdfConverter {
 	public void writeReferences() throws RDFHandlerException {
 		Iterator<Reference> referenceIterator = this.referenceQueue.iterator();
 		for (Resource resource : this.referenceSubjectQueue) {
-			if (!this.declaredReferences.add(resource)) {
-				continue;
+			final Reference reference = referenceIterator.next();
+			if (this.declaredReferences.add(resource)) {
+				writeReference(reference, resource);
 			}
-			Reference reference = referenceIterator.next();
-			writeReference(reference, resource);
 		}
 		this.referenceSubjectQueue.clear();
 		this.referenceQueue.clear();
