@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -69,6 +70,25 @@ public class ConstraintItemTest {
 				constraint.getConstrainedProperty());
 		Assert.assertEquals(property, constraint.getProperty());
 		Assert.assertEquals(getItems(), constraint.getItems());
+		Assert.assertEquals(null, constraint.getItem());
+		Assert.assertEquals(Collections.<ItemIdValue> emptyList(),
+				constraint.getExceptions());
+	}
+
+	@Test
+	public void testParameters2() {
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue("P1031");
+		PropertyIdValue property = ConstraintTestHelper
+				.getPropertyIdValue("P1001");
+		PropertyIdValue property2 = ConstraintTestHelper
+				.getPropertyIdValue("P953");
+		ConstraintItem constraint = new ConstraintItem(constrainedProperty,
+				property, null, property2, null, null, null);
+		Assert.assertEquals(constrainedProperty,
+				constraint.getConstrainedProperty());
+		Assert.assertEquals(property, constraint.getProperty());
+		Assert.assertEquals(property2, constraint.getProperty2());
 	}
 
 	@Test
@@ -99,6 +119,43 @@ public class ConstraintItemTest {
 				.getPropertyIdValue("P105");
 		ConstraintItem constraint = new ConstraintItem(constrainedProperty,
 				property, null, null, null, getItems(), null);
+		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(string, constraint.toString());
+
+		ConstraintTestHelper.testVisit(constraint);
+	}
+
+	@Test
+	public void testToStringAndVisit2() {
+		String propertyName = "P1031";
+		String template = "{{Constraint:Item|property=P1001|property2=P953}}";
+		String string = propertyName + " " + template;
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		PropertyIdValue property = ConstraintTestHelper
+				.getPropertyIdValue("P1001");
+		PropertyIdValue property2 = ConstraintTestHelper
+				.getPropertyIdValue("P953");
+		ConstraintItem constraint = new ConstraintItem(constrainedProperty,
+				property, null, property2, null, null, null);
+		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(string, constraint.toString());
+
+		ConstraintTestHelper.testVisit(constraint);
+	}
+
+	@Test
+	public void testToStringAndVisit3() {
+		String propertyName = "P240";
+		String template = "{{Constraint:Item|property=P17|item=Q30}}";
+		String string = propertyName + " " + template;
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		PropertyIdValue property = ConstraintTestHelper
+				.getPropertyIdValue("P17");
+		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q30");
+		ConstraintItem constraint = new ConstraintItem(constrainedProperty,
+				property, item, null, null, null, null);
 		Assert.assertEquals(template, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 

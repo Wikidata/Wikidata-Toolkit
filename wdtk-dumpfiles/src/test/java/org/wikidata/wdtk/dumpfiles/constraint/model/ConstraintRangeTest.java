@@ -40,6 +40,10 @@ public class ConstraintRangeTest {
 				"1957-10-04", "now", true);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals("1957-10-04", constraint.getMin());
+		Assert.assertEquals("now", constraint.getMax());
+		Assert.assertTrue(constraint.isTime());
+		Assert.assertFalse(constraint.isQuantity());
 	}
 
 	@Test
@@ -50,6 +54,10 @@ public class ConstraintRangeTest {
 				"1", "118", false);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals("1", constraint.getMin());
+		Assert.assertEquals("118", constraint.getMax());
+		Assert.assertTrue(constraint.isQuantity());
+		Assert.assertFalse(constraint.isTime());
 	}
 
 	@Test

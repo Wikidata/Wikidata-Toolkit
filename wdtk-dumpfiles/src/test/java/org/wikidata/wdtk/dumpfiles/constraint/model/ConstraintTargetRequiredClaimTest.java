@@ -46,6 +46,9 @@ public class ConstraintTargetRequiredClaimTest {
 				constraint.getConstrainedProperty());
 		Assert.assertEquals(property, constraint.getProperty());
 		Assert.assertEquals(item, constraint.getItem());
+
+		Assert.assertTrue(constraint.equals(null, null));
+		Assert.assertFalse(constraint.equals(null, new Object()));
 	}
 
 	@Test
@@ -82,6 +85,7 @@ public class ConstraintTargetRequiredClaimTest {
 				new ConstraintTargetRequiredClaim(constrainedProperty0,
 						property, item0), new ConstraintTargetRequiredClaim(
 						constrainedProperty1, property, item1));
+
 	}
 
 }

@@ -42,6 +42,9 @@ public class ConstraintTypeTest {
 				item, RelationType.INSTANCE);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals(item, constraint.getClassId());
+		Assert.assertEquals(RelationType.INSTANCE, constraint.getRelation());
+		Assert.assertNotEquals(RelationType.SUBCLASS, constraint.getRelation());
 	}
 
 	@Test
@@ -66,11 +69,11 @@ public class ConstraintTypeTest {
 				.getPropertyIdValue("P30");
 		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q2221906");
 
-		ConstraintTestHelper.testEquals(new ConstraintType(
+		ConstraintTestHelper.testEquals(new ConstraintType(constrainedProperty,
+				item, RelationType.INSTANCE), new ConstraintType(
 				constrainedProperty, item, RelationType.INSTANCE),
 				new ConstraintType(constrainedProperty, item,
-						RelationType.INSTANCE), new ConstraintType(
-						constrainedProperty, item, RelationType.SUBCLASS));
+						RelationType.SUBCLASS));
 	}
 
 }

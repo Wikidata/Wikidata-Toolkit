@@ -64,8 +64,10 @@ public class ConstraintOneOfTest {
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
 		Assert.assertEquals(getItemValues(), constraint.getItemValues());
+		Assert.assertTrue(constraint.hasItems());
 	}
 
+	@Test
 	public void testParameters1() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P1088");
@@ -74,6 +76,7 @@ public class ConstraintOneOfTest {
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
 		Assert.assertEquals(getQuantityValues(), constraint.getQuantityValues());
+		Assert.assertFalse(constraint.hasItems());
 	}
 
 	@Test
