@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,9 +51,7 @@ public class PropertyValues {
 	 *            property
 	 */
 	public PropertyValues(PropertyIdValue property) {
-		Validate.notNull(property, "Property cannot be null.");
-		this.property = property;
-		this.hasAllValues = true;
+		this(property, Collections.<ItemIdValue> emptyList(), true);
 	}
 
 	/**
@@ -64,11 +63,36 @@ public class PropertyValues {
 	 *            of items
 	 */
 	public PropertyValues(PropertyIdValue property, List<ItemIdValue> items) {
+		this(property, items, false);
+	}
+
+	/**
+	 * Constructs a set of pairs for some items.
+	 * 
+	 * @param other
+	 *            other set of pairs property-value
+	 */
+	public PropertyValues(PropertyValues other) {
+		this(other.getProperty(), other.getItems(), other.hasAllValues());
+	}
+
+	/**
+	 * Constructs a set of pairs for some items.
+	 * 
+	 * @param property
+	 *            property
+	 * @param list
+	 *            of items
+	 * @param hasAllValues
+	 *            <code>true</code> if the property spans all values
+	 */
+	private PropertyValues(PropertyIdValue property, List<ItemIdValue> items,
+			boolean hasAllValues) {
 		Validate.notNull(property, "Property cannot be null.");
 		Validate.notNull(items, "List of items cannot be null.");
 		this.property = property;
 		this.items.addAll(items);
-		this.hasAllValues = false;
+		this.hasAllValues = hasAllValues;
 	}
 
 	/**

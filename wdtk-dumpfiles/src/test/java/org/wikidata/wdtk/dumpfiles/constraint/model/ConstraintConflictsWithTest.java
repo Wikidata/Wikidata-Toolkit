@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
@@ -35,34 +36,101 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintConflictsWithTest {
 
-	List<PropertyValues> getList() {
+	List<PropertyValues> getList0() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
 				.getPropertyIdValue("P225")));
 		return ret;
 	}
 
+	List<PropertyValues> getList1() {
+		List<PropertyValues> ret = new ArrayList<PropertyValues>();
+		List<ItemIdValue> list = new ArrayList<ItemIdValue>();
+		list.add(ConstraintTestHelper.getItemIdValue("Q5"));
+		ret.add(new PropertyValues(ConstraintTestHelper
+				.getPropertyIdValue("P31"), list));
+		return ret;
+	}
+
+	PropertyValues getAndTestPropertyValues() {
+		List<ItemIdValue> list = new ArrayList<ItemIdValue>();
+		list.add(ConstraintTestHelper.getItemIdValue("Q14756018"));
+		list.add(ConstraintTestHelper.getItemIdValue("Q14073567"));
+		list.add(ConstraintTestHelper.getItemIdValue("Q4167410"));
+		PropertyIdValue property = ConstraintTestHelper
+				.getPropertyIdValue("P31");
+		PropertyValues ret = new PropertyValues(property, list);
+		Assert.assertEquals(property, ret.getProperty());
+		Assert.assertEquals(list, ret.getItems());
+		return ret;
+	}
+
+	List<PropertyValues> getList2() {
+		List<PropertyValues> ret = new ArrayList<PropertyValues>();
+		ret.add(new PropertyValues(ConstraintTestHelper
+				.getPropertyIdValue("P527")));
+		ret.add(getAndTestPropertyValues());
+		ret.add(new PropertyValues(ConstraintTestHelper
+				.getPropertyIdValue("P625")));
+		return ret;
+	}
+
 	@Test
-	public void testParameters() {
+	public void testPropertyValues() {
+		PropertyValues ret = getAndTestPropertyValues();
+		Assert.assertFalse(ret.hasAllValues());
+		Assert.assertEquals(ret, ret);
+		Assert.assertEquals(ret, new PropertyValues(ret));
+		Assert.assertNotEquals(ret, new PropertyValues(ret.getProperty()));
+		Assert.assertNotEquals(ret, null);
+		Assert.assertNotEquals(ret, new Object());
+	}
+
+	@Test
+	public void testParameters0() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P494");
 
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList());
+				constrainedProperty, getList0());
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
-		Assert.assertEquals(getList(), constraint.getList());
+		Assert.assertEquals(getList0(), constraint.getList());
 	}
 
 	@Test
-	public void testToStringAndVisit() {
+	public void testParameters1() {
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue("P969");
+
+		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
+				constrainedProperty, getList1());
+		Assert.assertEquals(constrainedProperty,
+				constraint.getConstrainedProperty());
+		Assert.assertEquals(getList1(), constraint.getList());
+	}
+
+	@Test
+	public void testParameters2() {
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue("P569");
+
+		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
+				constrainedProperty, getList2());
+		Assert.assertEquals(constrainedProperty,
+				constraint.getConstrainedProperty());
+		Assert.assertEquals(getList2(), constraint.getList());
+	}
+
+	@Test
+	public void testToStringAndVisit0() {
 		String propertyName = "P494";
 		String template = "{{Constraint:Conflicts with|list={{P|225}}}}";
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList());
+				constrainedProperty, getList0());
 		Assert.assertEquals(template, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -70,16 +138,59 @@ public class ConstraintConflictsWithTest {
 	}
 
 	@Test
-	public void testEquals() {
+	public void testToStringAndVisit1() {
+		String propertyName = "P969";
+		String template = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
+		String string = propertyName + " " + template;
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
+				constrainedProperty, getList1());
+		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(string, constraint.toString());
+
+		ConstraintTestHelper.testVisit(constraint);
+	}
+
+	@Test
+	public void testToStringAndVisit2() {
+		String propertyName = "P569";
+		String template = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
+		String string = propertyName + " " + template;
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
+				constrainedProperty, getList2());
+		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(string, constraint.toString());
+
+		ConstraintTestHelper.testVisit(constraint);
+	}
+
+	@Test
+	public void testEquals0() {
 		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
 				.getPropertyIdValue("P494");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
 				.getPropertyIdValue("P969");
 
 		ConstraintTestHelper.testEquals(new ConstraintConflictsWith(
-				constrainedProperty0, getList()), new ConstraintConflictsWith(
-				constrainedProperty0, getList()), new ConstraintConflictsWith(
-				constrainedProperty1, getList()));
+				constrainedProperty0, getList0()), new ConstraintConflictsWith(
+				constrainedProperty0, getList0()), new ConstraintConflictsWith(
+				constrainedProperty1, getList1()));
+	}
+
+	@Test
+	public void testEquals1() {
+		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
+				.getPropertyIdValue("P569");
+		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
+				.getPropertyIdValue("P494");
+
+		ConstraintTestHelper.testEquals(new ConstraintConflictsWith(
+				constrainedProperty0, getList2()), new ConstraintConflictsWith(
+				constrainedProperty0, getList2()), new ConstraintConflictsWith(
+				constrainedProperty1, getList0()));
 	}
 
 }

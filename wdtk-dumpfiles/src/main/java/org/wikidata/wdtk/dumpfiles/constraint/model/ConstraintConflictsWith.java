@@ -114,7 +114,7 @@ public class ConstraintConflictsWith implements Constraint {
 		while (it.hasNext()) {
 			sb.append(it.next());
 			if (it.hasNext()) {
-				sb.append(TemplateConstant.COLON);
+				sb.append(TemplateConstant.SEMICOLON);
 				sb.append(TemplateConstant.SPACE);
 			}
 		}
