@@ -42,6 +42,9 @@ public class ConstraintValueTypeTest {
 				constrainedProperty, item, RelationType.INSTANCE);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals(item, constraint.getClassId());
+		Assert.assertEquals(RelationType.INSTANCE, constraint.getRelation());
+		Assert.assertNotEquals(RelationType.SUBCLASS, constraint.getRelation());
 	}
 
 	@Test

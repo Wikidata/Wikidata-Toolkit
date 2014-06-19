@@ -20,6 +20,8 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * #L%
  */
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -115,6 +117,28 @@ public class ConstraintRangeTest {
 				constrainedProperty0, "1", "118", false), new ConstraintRange(
 				constrainedProperty0, "1", "118", false), new ConstraintRange(
 				constrainedProperty1, "0", "1", false));
+	}
+
+	@Test
+	public void testDateAndNow() {
+		DateAndNow date0 = new DateAndNow();
+		Assert.assertTrue(date0.isNow());
+		Assert.assertEquals("now", date0.toString());
+		DateAndNow date1 = new DateAndNow(new Date(0)); // 1970-01-01
+		Assert.assertFalse(date1.isNow());
+
+		Assert.assertEquals(new Date(0), date1.getDate());
+		Assert.assertEquals("1970-01-01", date1.toString());
+		Assert.assertEquals(date0, date0);
+		Assert.assertEquals(date0.hashCode(), (new DateAndNow()).hashCode());
+		Assert.assertEquals(date1.hashCode(),
+				(new DateAndNow(new Date(0))).hashCode());
+		Assert.assertEquals(date1, new DateAndNow(new Date(0)));
+
+		Assert.assertNotEquals(date0, new DateAndNow(new Date(0)));
+		Assert.assertNotEquals(date0, null);
+		Assert.assertNotEquals(date0, date1);
+		Assert.assertNotEquals(date0, new Object());
 	}
 
 }

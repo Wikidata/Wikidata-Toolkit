@@ -176,7 +176,7 @@ public class ConstraintItem implements Constraint {
 		return ret;
 	}
 
-	private boolean equals(Object obj0, Object obj1) {
+	boolean equals(Object obj0, Object obj1) {
 		if (obj0 == null) {
 			return (obj1 == null);
 		}
