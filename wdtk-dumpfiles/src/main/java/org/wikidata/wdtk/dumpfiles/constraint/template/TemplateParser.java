@@ -23,7 +23,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.template;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.Validate;
 
@@ -103,7 +105,7 @@ public class TemplateParser {
 	 * 
 	 */
 	enum LookAheadItem {
-		CLOSING_BRACES, OPENING_BRACES, UNDEFINED, VERTICAL_BAR
+		UNDEFINED, OPENING_BRACES, CLOSING_BRACES, OPENING_NOWIKI, CLOSING_NOWIKI, VERTICAL_BAR
 	}
 
 	/**
@@ -112,15 +114,16 @@ public class TemplateParser {
 	public TemplateParser() {
 	}
 
-	private LookAhead findItem(String str, int pos) {
-		LookAhead nextOpeningBraces = findItem(str,
-				LookAheadItem.OPENING_BRACES, pos);
-		LookAhead nextClosingBraces = findItem(str,
-				LookAheadItem.CLOSING_BRACES, pos);
-		LookAhead nextVerticalBar = findItem(str, LookAheadItem.VERTICAL_BAR,
-				pos);
-		return getMin(getMin(nextOpeningBraces, nextClosingBraces),
-				nextVerticalBar);
+	private LookAhead findItem(String str, int pos, boolean nowiki) {
+		Set<LookAhead> set = new TreeSet<LookAhead>();
+		set.add(findItem(str, LookAheadItem.OPENING_NOWIKI, pos));
+		set.add(findItem(str, LookAheadItem.CLOSING_NOWIKI, pos));
+		if (!nowiki) {
+			set.add(findItem(str, LookAheadItem.OPENING_BRACES, pos));
+			set.add(findItem(str, LookAheadItem.CLOSING_BRACES, pos));
+			set.add(findItem(str, LookAheadItem.VERTICAL_BAR, pos));
+		}
+		return set.iterator().next();
 	}
 
 	private LookAhead findItem(String str, LookAheadItem item, int pos) {
@@ -143,17 +146,10 @@ public class TemplateParser {
 		return ret;
 	}
 
-	private LookAhead getMin(LookAhead a, LookAhead b) {
-		if (a.compareTo(b) <= 0) {
-			return a;
-		} else {
-			return b;
-		}
-	}
-
 	private List<String> getParameterList(String str) {
 		ArrayList<String> ret = new ArrayList<String>();
-		LookAhead nextItem = findItem(str, 0);
+		boolean nowiki = false;
+		LookAhead nextItem = findItem(str, 0, nowiki);
 		int level = 0;
 		int lastPos = 0;
 		while (!nextItem.item.equals(LookAheadItem.UNDEFINED)) {
@@ -161,6 +157,10 @@ public class TemplateParser {
 				level++;
 			} else if (nextItem.item.equals(LookAheadItem.CLOSING_BRACES)) {
 				level--;
+			} else if (nextItem.item.equals(LookAheadItem.OPENING_NOWIKI)) {
+				nowiki = true;
+			} else if (nextItem.item.equals(LookAheadItem.CLOSING_NOWIKI)) {
+				nowiki = false;
 			} else if (nextItem.item.equals(LookAheadItem.VERTICAL_BAR)) {
 				if (level == 0) {
 					ret.add(str.substring(lastPos, nextItem.position));
@@ -169,7 +169,8 @@ public class TemplateParser {
 				}
 			}
 			nextItem = findItem(str,
-					nextItem.position + getString(nextItem.item).length());
+					nextItem.position + getString(nextItem.item).length(),
+					nowiki);
 		}
 		ret.add(str.substring(lastPos));
 		return ret;
@@ -203,6 +204,12 @@ public class TemplateParser {
 		}
 		if (item.equals(LookAheadItem.CLOSING_BRACES)) {
 			return TemplateConstant.CLOSING_BRACES;
+		}
+		if (item.equals(LookAheadItem.OPENING_NOWIKI)) {
+			return TemplateConstant.OPENING_NOWIKI;
+		}
+		if (item.equals(LookAheadItem.CLOSING_NOWIKI)) {
+			return TemplateConstant.CLOSING_NOWIKI;
 		}
 		if (item.equals(LookAheadItem.VERTICAL_BAR)) {
 			return TemplateConstant.VERTICAL_BAR;

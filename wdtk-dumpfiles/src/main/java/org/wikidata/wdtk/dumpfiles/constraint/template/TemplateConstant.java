@@ -33,6 +33,8 @@ public interface TemplateConstant {
 	String CLOSING_BRACES = "}}";
 	String OPENING_BRACKETS = "[[";
 	String CLOSING_BRACKETS = "]]";
+	String OPENING_NOWIKI = "<nowiki>";
+	String CLOSING_NOWIKI = "</nowiki>";
 	String VERTICAL_BAR = "|";
 	String EQUALS_SIGN = "=";
 	String UNDERSCORE = "_";
