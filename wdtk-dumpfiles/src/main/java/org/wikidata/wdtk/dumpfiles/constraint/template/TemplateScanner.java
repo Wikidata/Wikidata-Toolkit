@@ -66,25 +66,49 @@ public class TemplateScanner {
 		int pos = 0;
 		int level = 0;
 		int lastBegin = 0;
+		boolean nowiki = false;
 		while (pos != -1) {
-			int nextBegin = text.indexOf(TemplateConstant.OPENING_BRACES, pos);
-			int nextEnd = text.indexOf(TemplateConstant.CLOSING_BRACES, pos);
-			if (nextEnd == -1) {
+			int nextClosingBraces = text.indexOf(
+					TemplateConstant.CLOSING_BRACES, pos);
+			if (nextClosingBraces == -1) {
 				pos = -1;
 			} else {
-				if ((nextBegin != -1) && (nextBegin < nextEnd)) {
-					pos = nextBegin + TemplateConstant.OPENING_BRACES.length();
-					if (level == 0) {
-						lastBegin = nextBegin;
+				if (nowiki) {
+					int nextClosingNowiki = text.indexOf(
+							TemplateConstant.CLOSING_NOWIKI, pos);
+					if (nextClosingNowiki == -1) {
+						pos = -1;
+					} else {
+						pos = nextClosingNowiki
+								+ TemplateConstant.CLOSING_NOWIKI.length();
 					}
-					level++;
 				} else {
-					level--;
-					if (level == 0) {
-						ret.add(text.substring(lastBegin, nextEnd
-								+ TemplateConstant.CLOSING_BRACES.length()));
+					int nextOpeningBraces = text.indexOf(
+							TemplateConstant.OPENING_BRACES, pos);
+					int nextOpeningNowiki = text.indexOf(
+							TemplateConstant.OPENING_NOWIKI, pos);
+					if ((nextOpeningNowiki != -1)
+							&& (nextOpeningNowiki < nextOpeningBraces)) {
+						pos = nextOpeningNowiki
+								+ TemplateConstant.OPENING_NOWIKI.length();
+						nowiki = true;
+					} else if ((nextOpeningBraces != -1)
+							&& (nextOpeningBraces < nextClosingBraces)) {
+						pos = nextOpeningBraces
+								+ TemplateConstant.OPENING_BRACES.length();
+						if (level == 0) {
+							lastBegin = nextOpeningBraces;
+						}
+						level++;
+					} else {
+						level--;
+						if (level == 0) {
+							ret.add(text.substring(lastBegin, nextClosingBraces
+									+ TemplateConstant.CLOSING_BRACES.length()));
+						}
+						pos = nextClosingBraces
+								+ TemplateConstant.CLOSING_BRACES.length();
 					}
-					pos = nextEnd + TemplateConstant.CLOSING_BRACES.length();
 				}
 			}
 		}
