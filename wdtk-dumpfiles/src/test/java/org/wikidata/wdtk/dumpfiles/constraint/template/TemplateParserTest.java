@@ -174,6 +174,61 @@ public class TemplateParserTest {
 		Assert.assertEquals(strNorm, template.toString());
 	}
 
+	@Test
+	public void testParser7() {
+		TemplateParser parser = new TemplateParser();
+		String patternProperty1014 = "<nowiki>\\d{2,9}|\\-</nowiki>";
+		String str = "{{Constraint:Format|pattern=" + patternProperty1014
+				+ "}}";
+		Set<String> parameterNames = new TreeSet<String>();
+		parameterNames.add("pattern");
+		Template template = parser.parse(str);
+		Assert.assertEquals("Constraint:Format", template.getName());
+		Assert.assertEquals(patternProperty1014, template.getValue("pattern"));
+		Assert.assertEquals(1, template.getParameters().size());
+		Assert.assertEquals(parameterNames, template.getParameterNames());
+		Assert.assertEquals(str, template.toString());
+	}
+
+	@Test
+	public void testParser8() {
+		TemplateParser parser = new TemplateParser();
+		String patternProperty212 = "<nowiki>97[89]-("
+				+ "[0-57]-\\d-\\d\\d\\d\\d\\d\\d\\d|"
+				+ "[0-57]-\\d\\d-\\d\\d\\d\\d\\d\\d|"
+				+ "[0-57]-\\d\\d\\d-\\d\\d\\d\\d\\d|"
+				+ "[0-57]-\\d\\d\\d\\d-\\d\\d\\d\\d|"
+				+ "[0-57]-\\d\\d\\d\\d\\d-\\d\\d\\d|"
+				+ "[0-57]-\\d\\d\\d\\d\\d\\d-\\d\\d|"
+				+ "[0-57]-\\d\\d\\d\\d\\d\\d\\d-\\d|"
+				+ "[89]\\d-\\d-\\d\\d\\d\\d\\d\\d|"
+				+ "[89]\\d-\\d\\d-\\d\\d\\d\\d\\d|"
+				+ "[89]\\d-\\d\\d\\d-\\d\\d\\d\\d|"
+				+ "[89]\\d-\\d\\d\\d\\d-\\d\\d\\d|"
+				+ "[89]\\d-\\d\\d\\d\\d\\d-\\d\\d|"
+				+ "[89]\\d-\\d\\d\\d\\d\\d\\d-\\d|"
+				+ "[69]\\d\\d-\\d-\\d\\d\\d\\d\\d|"
+				+ "[69]\\d\\d-\\d\\d-\\d\\d\\d\\d|"
+				+ "[69]\\d\\d-\\d\\d\\d-\\d\\d\\d|"
+				+ "[69]\\d\\d-\\d\\d\\d\\d-\\d\\d|"
+				+ "[69]\\d\\d-\\d\\d\\d\\d\\d-\\d|"
+				+ "99[0-8]\\d-\\d-\\d\\d\\d\\d|"
+				+ "99[0-8]\\d-\\d\\d-\\d\\d\\d|"
+				+ "99[0-8]\\d-\\d\\d\\d-\\d\\d|"
+				+ "99[0-8]\\d-\\d\\d\\d\\d-\\d|" + "999\\d\\d-\\d-\\d\\d\\d|"
+				+ "999\\d\\d-\\d\\d-\\d\\d|"
+				+ "999\\d\\d-\\d\\d\\d-\\d)-\\d</nowiki>";
+		String str = "{{Constraint:Format|pattern=" + patternProperty212 + "}}";
+		Set<String> parameterNames = new TreeSet<String>();
+		parameterNames.add("pattern");
+		Template template = parser.parse(str);
+		Assert.assertEquals("Constraint:Format", template.getName());
+		Assert.assertEquals(patternProperty212, template.getValue("pattern"));
+		Assert.assertEquals(1, template.getParameters().size());
+		Assert.assertEquals(parameterNames, template.getParameterNames());
+		Assert.assertEquals(str, template.toString());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidTemplate0() {
 		TemplateParser parser = new TemplateParser();
