@@ -116,7 +116,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 	public String setPropertyTypeFromStringValue(
 			PropertyIdValue propertyIdValue, StringValue value) {
 		String datatype = getPropertyType(propertyIdValue);
-		if (datatype.equals(null)) {
+		if (datatype == null) {
 			return DatatypeIdValue.DT_STRING; // default type for StringValue
 		} else {
 			return datatype;
