@@ -1,4 +1,5 @@
-package org.wikidata.wdtk.examples;
+package org.wikidata.wdtk.clt;
+
 
 /*
  * #%L

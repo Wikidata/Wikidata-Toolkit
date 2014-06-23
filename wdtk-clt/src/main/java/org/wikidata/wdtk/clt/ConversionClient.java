@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.examples;
+package org.wikidata.wdtk.clt;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
@@ -16,6 +16,9 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +69,7 @@ public class ConversionClient {
 	private static List<String> serializerNames = new ArrayList<String>();
 
 	List<ConversionConfiguration> configuration;
-	
+
 	// true if any of the serializers want to put its output to stdout
 	Boolean stdout = false;
 	// true if any conversion format was specified
@@ -78,12 +81,10 @@ public class ConversionClient {
 	public List<ConversionConfiguration> getConfiguration() {
 		return this.configuration;
 	}
-	
+
 	public Boolean getConvertAnything() {
 		return convertAnything;
 	}
-
-
 
 	/**
 	 * Builds up serializers for the different rdf files.
@@ -206,6 +207,26 @@ public class ConversionClient {
 	}
 
 	/**
+	 * Defines how messages should be logged. This method can be modified to
+	 * restrict the logging messages that are shown on the console or to change
+	 * their formatting. See the documentation of Log4J for details on how to do
+	 * this.
+	 */
+	public static void configureLogging() {
+		// Create the appender that will write log messages to the console.
+		ConsoleAppender consoleAppender = new ConsoleAppender();
+		// Define the pattern of log messages.
+		// Insert the string "%c{1}:%L" to also show class name and line.
+		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
+		consoleAppender.setLayout(new PatternLayout(pattern));
+		// Change to Level.ERROR for fewer messages:
+		consoleAppender.setThreshold(Level.INFO);
+
+		consoleAppender.activateOptions();
+		org.apache.log4j.Logger.getRootLogger().addAppender(consoleAppender);
+	}
+
+	/**
 	 * Manages the serialization process. Therefore a
 	 * {@link DumpProcessingController} and a serializer for the chosen output
 	 * formats will be set up. After that the serialization process will be
@@ -215,26 +236,23 @@ public class ConversionClient {
 	 * @throws IOException
 	 */
 	public void convert() throws IOException {
-		
+
 		if (!stdout) {
 			// Define where log messages go
-			ExampleHelpers.configureLogging();
+			configureLogging();
 		}
-		
+
 		// Controller object for processing dumps:
-		dumpProcessingController = new DumpProcessingController(
-				"wikidatawiki");
+		dumpProcessingController = new DumpProcessingController("wikidatawiki");
 
 		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();
-		
+
 		if (configuration.get(0).getOfflineMode()) {
 			dumpProcessingController.setOfflineMode(true);
 		}
-		
-		for (ConversionConfiguration props : configuration) {
-			System.out.println(props.getOutputFormat());
 
+		for (ConversionConfiguration props : configuration) {
 			switch (props.getOutputFormat()) {
 			case "json":
 				setupForJsonSerialization(props);
@@ -263,6 +281,7 @@ public class ConversionClient {
 		// Set up the serializer and write headers
 		startSerializers();
 
+		System.out.println("processMostrecentMainDump");
 		// Start processing (may trigger downloads where needed)
 		dumpProcessingController.processMostRecentMainDump();
 
@@ -434,7 +453,7 @@ public class ConversionClient {
 			if (configuration.getStdout() == true) {
 				this.stdout = true;
 			}
-			if (configuration.getOutputFormat() != "none"){
+			if (configuration.getOutputFormat() != "none") {
 				this.convertAnything = true;
 			}
 		}
@@ -443,9 +462,9 @@ public class ConversionClient {
 
 	public static void main(String[] args) throws ParseException, IOException {
 		ConversionClient client = new ConversionClient(args);
-		if (client.getConvertAnything()){
+		if (client.getConvertAnything()) {
 			client.convert();
 		}
-		
+
 	}
 }
