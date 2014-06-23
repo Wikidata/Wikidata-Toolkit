@@ -12,13 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -61,7 +54,7 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * @author Michael Günther
  * 
  */
-public class ConversationClient {
+public class ConversionClient {
 
 	final static String COMPRESS_BZ2 = ".bz2";
 	final static String COMPRESS_GZIP = ".gz";
@@ -72,68 +65,134 @@ public class ConversationClient {
 	private static List<RdfSerializer> serializers = new ArrayList<RdfSerializer>();
 	private static List<String> serializerNames = new ArrayList<String>();
 
-	Options options;
-
-	String outputFormat = "none";
-	String outputDestination = "";
-	String dumplocation = null;
+	List<ConversionConfiguration> configuration;
+	
+	// true if any of the serializers want to put its output to stdout
 	Boolean stdout = false;
-	Boolean offlineMode = false;
+	// true if any conversion format was specified
+	Boolean convertAnything = false;
 
 	static final Logger logger = LoggerFactory
-			.getLogger(ConversationClient.class);
+			.getLogger(ConversionClient.class);
+
+	public List<ConversionConfiguration> getConfiguration() {
+		return this.configuration;
+	}
+	
+	public Boolean getConvertAnything() {
+		return convertAnything;
+	}
+
+
 
 	/**
 	 * Builds up serializers for the different rdf files.
 	 * 
 	 * @throws IOException
 	 */
-	public void setupForRdfSerialization() throws IOException {
-		// Initialize sites; needed to link to Wikipedia pages in RDF
-		sites = dumpProcessingController.getSitesInformation();
+	public void setupForRdfSerialization(
+			ConversionConfiguration conversionConfiguration) throws IOException {
+		String compressionExtension = conversionConfiguration
+				.getCompressionExtension();
 
-		String compressionExtension = COMPRESS_NONE;
-
-		if (!stdout) {
-			compressionExtension = COMPRESS_GZIP;
+		// Create serializers for several data parts and encodings depending on
+		// the Rdfdump property:
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("all_exact_data")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-properties.nt", compressionExtension,
+					RdfSerializer.TASK_PROPERTIES
+							| RdfSerializer.TASK_ALL_EXACT_DATA,
+					conversionConfiguration.getStdout());
 		}
-
-		// Create serializers for several data parts and encodings:
-		createRdfSerializer("wikidata-properties.nt", compressionExtension,
-				RdfSerializer.TASK_PROPERTIES
-						| RdfSerializer.TASK_ALL_EXACT_DATA);
-		createRdfSerializer("wikidata-terms.nt", compressionExtension,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
-		createRdfSerializer("wikidata-statements.nt", compressionExtension,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS);
-		createRdfSerializer("wikidata-simple-statements.nt",
-				compressionExtension, RdfSerializer.TASK_ITEMS
-						| RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		createRdfSerializer("wikidata-taxonomy.nt", compressionExtension,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY);
-		createRdfSerializer("wikidata-instances.nt", compressionExtension,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF);
-		createRdfSerializer("wikidata-sitelinks.nt", compressionExtension,
-				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
+		if (conversionConfiguration.getRdfdump().toLowerCase().equals("terms")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-terms.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS,
+					conversionConfiguration.getStdout());
+		}
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("statements")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-statements.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS,
+					conversionConfiguration.getStdout());
+		}
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("simple_statements")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-simple-statements.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS
+							| RdfSerializer.TASK_SIMPLE_STATEMENTS,
+					conversionConfiguration.getStdout());
+		}
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("taxonomy")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-taxonomy.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY,
+					conversionConfiguration.getStdout());
+		}
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("instance_of")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-instances.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF,
+					conversionConfiguration.getStdout());
+		}
+		if (conversionConfiguration.getRdfdump().toLowerCase()
+				.equals("sitelinks")) {
+			createRdfSerializer(conversionConfiguration.getOutputDestination()
+					+ "wikidata-sitelinks.nt", compressionExtension,
+					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS,
+					conversionConfiguration.getStdout());
+		}
 
 	}
 
 	/**
 	 * Builds up a serializer for json.
 	 * 
+	 * @param conversionConfiguration
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void setupForJsonSerialization() throws FileNotFoundException,
-			IOException {
+	public void setupForJsonSerialization(
+			ConversionConfiguration conversionConfiguration)
+			throws FileNotFoundException, IOException {
 		OutputStream outputStream;
-		if (stdout) {
+		if (conversionConfiguration.getStdout()) {
 			outputStream = System.out;
 		} else {
-			// Write the output to a BZip2-compressed file
-			outputStream = new BZip2CompressorOutputStream(
-					new FileOutputStream(outputDestination
-							+ "WikidataDump.json.bz2"));
+			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
+					new FileOutputStream(
+							conversionConfiguration.getOutputDestination()
+									+ "WikidataDump.json"
+									+ conversionConfiguration
+											.getCompressionExtension()), 1024
+							* 1024 * 5 * 0 + 100);
+
+			switch (conversionConfiguration.getCompressionExtension()) {
+			case COMPRESS_BZ2:
+				outputStream = new BZip2CompressorOutputStream(
+						bufferedFileOutputStream);
+				break;
+			case COMPRESS_GZIP:
+				GzipParameters gzipParameters = new GzipParameters();
+				gzipParameters.setCompressionLevel(7);
+				outputStream = new GzipCompressorOutputStream(
+						bufferedFileOutputStream, gzipParameters);
+				break;
+			case COMPRESS_NONE:
+				outputStream = bufferedFileOutputStream;
+				break;
+			default:
+				bufferedFileOutputStream.close();
+				throw new IllegalArgumentException(
+						"Unsupported compression format: "
+								+ conversionConfiguration
+										.getCompressionExtension());
+			}
 		}
 		// Create an object for managing the serialization process
 		JsonSerializer serializer = new JsonSerializer(outputStream);
@@ -149,36 +208,43 @@ public class ConversationClient {
 	/**
 	 * Manages the serialization process. Therefore a
 	 * {@link DumpProcessingController} and a serializer for the chosen output
-	 * format will be set up. After that the serialization process will be
+	 * formats will be set up. After that the serialization process will be
 	 * initiated.
 	 * 
+	 * @param conversionConfiguration
 	 * @throws IOException
 	 */
 	public void convert() throws IOException {
-
+		
 		if (!stdout) {
 			// Define where log messages go
 			ExampleHelpers.configureLogging();
 		}
-
+		
 		// Controller object for processing dumps:
-		dumpProcessingController = new DumpProcessingController("wikidatawiki");
+		dumpProcessingController = new DumpProcessingController(
+				"wikidatawiki");
 
-		if (offlineMode) {
+		// Initialize sites; needed to link to Wikipedia pages in RDF
+		sites = dumpProcessingController.getSitesInformation();
+		
+		if (configuration.get(0).getOfflineMode()) {
 			dumpProcessingController.setOfflineMode(true);
 		}
+		
+		for (ConversionConfiguration props : configuration) {
+			System.out.println(props.getOutputFormat());
 
-		switch (outputFormat) {
-		case "json":
-			setupForJsonSerialization();
-			break;
-		case "rdf":
-			setupForRdfSerialization();
-			break;
-		default:
-			logger.warn("no output format or unknown output format specified - only statistics will be processed (except the case that stdout flag is set)");
+			switch (props.getOutputFormat()) {
+			case "json":
+				setupForJsonSerialization(props);
+				break;
+			case "rdf":
+				setupForRdfSerialization(props);
+				break;
+			}
+
 		}
-
 		if (!stdout) {
 			// General statistics and time keeping:
 			MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -189,8 +255,9 @@ public class ConversationClient {
 					rpRevisionStats, null, true);
 		}
 
-		if (dumplocation != null) {
-			dumpProcessingController.setDownloadDirectory(dumplocation);
+		if (configuration.get(0).getDumplocation() != null) {
+			dumpProcessingController.setDownloadDirectory(configuration.get(0)
+					.getDumplocation());
 		}
 
 		// Set up the serializer and write headers
@@ -218,6 +285,7 @@ public class ConversationClient {
 	 * @param tasks
 	 *            an integer that is a bitwise OR of flags like
 	 *            {@link RdfSerializer#TASK_LABELS}.
+	 * @param stdout
 	 * @return the newly created serializer
 	 * @throws FileNotFoundException
 	 *             if the given file cannot be opened for writing for some
@@ -227,12 +295,12 @@ public class ConversationClient {
 	 */
 	@SuppressWarnings("resource")
 	private RdfSerializer createRdfSerializer(String outputFileName,
-			String compressionExtension, int tasks)
+			String compressionExtension, int tasks, Boolean stdout)
 			throws FileNotFoundException, IOException {
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(outputDestination + outputFileName
-						+ compressionExtension), 1024 * 1024 * 5 * 0 + 100);
+				new FileOutputStream(outputFileName + compressionExtension),
+				1024 * 1024 * 5 * 0 + 100);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
@@ -250,6 +318,7 @@ public class ConversationClient {
 			compressorOutputStream = bufferedFileOutputStream;
 			break;
 		default:
+			bufferedFileOutputStream.close();
 			throw new IllegalArgumentException(
 					"Unsupported compression format: " + compressionExtension);
 		}
@@ -355,90 +424,28 @@ public class ConversationClient {
 		}
 	}
 
-	public Options getOptions() {
-		return options;
-	}
+	public ConversionClient(String args[]) throws ParseException, IOException {
+		ConversionProperties conversionProperties = new ConversionProperties(
+				args);
+		this.configuration = conversionProperties.getProperties();
 
-	public ConversationClient() {
-		// create Options object
-		options = new Options();
-
-	}
-
-	/**
-	 * Builds up a list of legal options and store them into the options
-	 * objects.
-	 */
-	public void addOptions() {
-		Option format = OptionBuilder.withArgName("file").hasArg()
-				.withDescription("data format of the dump")
-				.withLongOpt("format").create("f");
-		Option destination = OptionBuilder
-				.withArgName("path")
-				.hasArg()
-				.withDescription(
-						"place the output into the directory located at <path>")
-				.withLongOpt("destination").create("d");
-		Option dumplocation = OptionBuilder.withArgName("path").hasArg()
-				.withDescription("defines the location of the dumpfiles")
-				.withLongOpt("dumplocation").create("l");
-
-		options.addOption(format);
-		options.addOption(destination);
-		options.addOption(dumplocation);
-		options.addOption("n", "offline mode", false,
-				"offline mode - converter should use only previousely downloaded dumps");
-		options.addOption("h", "help", false, "print this message");
-
-		options.addOption("s", "stdout", false, "write output to stdout");
-	}
-
-	/**
-	 * This function interprets the arguments of the main function. By doing
-	 * this it will set flags for the dump generation. See in the help text for
-	 * more specific information about the options.
-	 * 
-	 * @param args
-	 *            array of arguments from the main function.
-	 * @throws ParseException
-	 */
-	public void handleArguments(String[] args) throws ParseException {
-		CommandLineParser parser = new GnuParser();
-		CommandLine cmd = parser.parse(getOptions(), args);
-
-		if (cmd.hasOption("h")) {
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("ConversationClient", getOptions());
-		}
-
-		if (cmd.hasOption("s")) {
-			stdout = true;
-		}
-
-		if (cmd.hasOption("d")) {
-			outputDestination = cmd.getOptionValue("d");
-		}
-
-		if (cmd.hasOption("f")) {
-			outputFormat = cmd.getOptionValue("f");
-		} else {
-			logger.warn("No output format specified!");
-		}
-
-		if (cmd.hasOption("l")) {
-			dumplocation = cmd.getOptionValue("l");
-		}
-
-		if (cmd.hasOption("n")) {
-			offlineMode = true;
+		// set stdout flag
+		for (ConversionConfiguration configuration : this.getConfiguration()) {
+			if (configuration.getStdout() == true) {
+				this.stdout = true;
+			}
+			if (configuration.getOutputFormat() != "none"){
+				this.convertAnything = true;
+			}
 		}
 
 	}
 
 	public static void main(String[] args) throws ParseException, IOException {
-		ConversationClient client = new ConversationClient();
-		client.addOptions();
-		client.handleArguments(args);
-		client.convert();
+		ConversionClient client = new ConversionClient(args);
+		if (client.getConvertAnything()){
+			client.convert();
+		}
+		
 	}
 }
