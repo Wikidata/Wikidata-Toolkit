@@ -1,0 +1,11 @@
+usage: ConversionClient
+-c,--config <file>                         set a config file <file> for complexer conversation tasks
+-d,--destination <path>                    place the output into the directory located at <path>
+-e,--compression <compression extention>   define a compression format. Supported fromats: .bz2, .gz
+-f,--format <format>                       data format of the dump ("json" or "rdf")
+-h,--help                                  print this message
+-l,--dumplocation <path>                   define the location of the dumpfiles
+-n,--offline                               execute conversion in offline mode - converter should use only previousely downloaded dumps
+-r,--rdfdump <arg>                         specifies the kind of rdf dump
+-s,--stdout                                write output to stdout
+

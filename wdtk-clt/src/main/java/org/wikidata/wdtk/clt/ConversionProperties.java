@@ -71,8 +71,11 @@ public class ConversionProperties {
 	 */
 	public void initOptions() {
 		this.options = new Options();
-		Option format = OptionBuilder.withArgName("file").hasArg()
-				.withDescription("data format of the dump")
+		Option format = OptionBuilder
+				.withArgName("format")
+				.hasArg()
+				.withDescription(
+						"data format of the dump (\"json\" or \"rdf\")")
 				.withLongOpt("format").create("f");
 		Option destination = OptionBuilder
 				.withArgName("path")
@@ -81,13 +84,13 @@ public class ConversionProperties {
 						"place the output into the directory located at <path>")
 				.withLongOpt("destination").create("d");
 		Option dumplocation = OptionBuilder.withArgName("path").hasArg()
-				.withDescription("defines the location of the dumpfiles")
+				.withDescription("define the location of the dumpfiles")
 				.withLongOpt("dumplocation").create("l");
 		Option config = OptionBuilder
 				.withArgName("file")
 				.hasArg()
 				.withDescription(
-						"defines config file for complexer conversation tasks")
+						"set a config file <file> for complexer conversation tasks")
 				.withLongOpt("config").create("c");
 		Option rdfdump = OptionBuilder.hasArgs()
 				.withDescription("specifies the kind of rdf dump")
@@ -96,13 +99,15 @@ public class ConversionProperties {
 				.withArgName("compression extention")
 				.hasArg()
 				.withDescription(
-						"Defines a compression format. Supported fromats: .bz2, .gz")
+						"define a compression format. Supported fromats: .bz2, .gz")
 				.withLongOpt("compression").create("e");
 
 		options.addOption(config);
 		options.addOption(format);
 		options.addOption(destination);
 		options.addOption(dumplocation);
+		options.addOption(compressionExtention);
+		options.addOption(rdfdump);
 		options.addOption(
 				"n",
 				"offline",
@@ -161,6 +166,10 @@ public class ConversionProperties {
 
 		if (cmd.hasOption("e")) {
 			firstConfiguration.setCompressionExtension(cmd.getOptionValue("e"));
+		}
+
+		if (cmd.hasOption("r")) {
+			firstConfiguration.setRdfdump(cmd.getOptionValue("r"));
 		}
 
 		if (cmd.hasOption("c")) {
