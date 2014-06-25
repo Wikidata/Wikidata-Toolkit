@@ -461,7 +461,6 @@ public class ConversionClient {
 	}
 
 	public static void main(String[] args) throws ParseException, IOException {
-//		System.out.println(args[0] + args[1]);
 		ConversionClient client = new ConversionClient(args);
 		if (client.getConvertAnything()) {
 			client.convert();
