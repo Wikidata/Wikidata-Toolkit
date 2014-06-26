@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;

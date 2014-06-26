@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -48,18 +48,51 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	// this is an ItemDocument, so the type is clear.
 	// for writing out to external Json there is a hard-coded solution
 
-	Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
-	Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
-	Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
+	private Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
+	private Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
+	private Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
+	
+	@JsonProperty("sitelinks") // different name in Json
+	private Map<String, SiteLinkImpl> siteLinks = new HashMap<>(); 
 	
 	// the following is not mapped directly towards Json
 	// rather split up into two Json fields
 	@JsonIgnore
-	ItemIdValueImpl itemId = new ItemIdValueImpl();
+	private ItemIdImpl itemId = new ItemIdImpl();
 	
-	// TODO siteLinks
 	// TODO StatementGroups (claims)
 
+	public ItemDocumentImpl(){}
+	public ItemDocumentImpl(ItemDocument source){
+		
+		// build aliases
+		for( Entry<String, List<MonolingualTextValue>> mltvs : source.getAliases().entrySet()){
+			List<MonolingualTextValueImpl> value = new LinkedList<>();
+			for(MonolingualTextValue mltv : mltvs.getValue()){
+				value.add(new MonolingualTextValueImpl(mltv));
+			}
+			this.aliases.put(mltvs.getKey(), value);
+		}
+		
+		// build labels
+		for( Entry<String, MonolingualTextValue> mltvs : source.getLabels().entrySet()){
+			this.labels.put(mltvs.getKey(), new MonolingualTextValueImpl(mltvs.getValue()));
+		}
+		// build descriptions
+		for( Entry<String, MonolingualTextValue> mltvs : source.getDescriptions().entrySet()){
+			this.descriptions.put(mltvs.getKey(), new MonolingualTextValueImpl(mltvs.getValue()));
+		}
+		// build siteLinks
+		for( Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()){
+			this.siteLinks.put(mltvs.getKey(), new SiteLinkImpl(mltvs.getValue()));
+		}
+		// build StatementGroups
+		// TODO
+	}
+	
+	
+	
+	
 	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
 		this.labels = labels;
 	}
@@ -125,7 +158,7 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	}
 	
 	@JsonIgnore
-	public void setItemId(ItemIdValueImpl itemId){
+	public void setItemId(ItemIdImpl itemId){
 		this.itemId = itemId;
 	}
 	
@@ -142,11 +175,19 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 		return null;
 	}
 
-	@JsonIgnore
+	public void setSitelinks(Map<String, SiteLinkImpl> sitelinks){
+		this.siteLinks = sitelinks;
+	}
+	
+	@JsonProperty("sitelinks")
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// because of the typing provided by the interface one has to
+		// re-create the map anew, simple casting is not possible
+		Map<String, SiteLink> returnMap = new HashMap<>();
+		returnMap.putAll(this.siteLinks);
+		return returnMap;
 	}
 
 	@JsonIgnore

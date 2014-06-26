@@ -1,11 +1,13 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,5 +52,17 @@ public class TestSiteLink {
 			e.printStackTrace();
 			fail("IO failed");
 		}
+	}
+	
+	@Test
+	public void testEquals(){
+		SiteLinkImpl match = new SiteLinkImpl("enwiki", "foobar");
+		SiteLinkImpl wrongLanguage = new SiteLinkImpl("dewiki", "foobar");
+		SiteLinkImpl wrongValue = new SiteLinkImpl("enwiki", "barfoo");
+		
+		assertEquals(testSiteLink, testSiteLink);
+		assertEquals(testSiteLink, match);
+		assertFalse(testSiteLink.equals(wrongLanguage));
+		assertFalse(testSiteLink.equals(wrongValue));
 	}
 }

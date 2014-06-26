@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -39,6 +39,9 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 	public MonolingualTextValueImpl(String language, String value){
 		this.language = language;
 		this.value = value;
+	}
+	public MonolingualTextValueImpl(MonolingualTextValue mltv) {
+		this(mltv.getLanguageCode(), mltv.getText());
 	}
 
 	String language;

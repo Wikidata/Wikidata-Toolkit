@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +12,10 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.json.jackson.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.ItemIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,12 +32,14 @@ public class TestItemDocument {
 	static final String testDescriptionJson = "{\"descriptions\":{\"en\":" + TestMonolingualTextValue.testMltvJson + "}," + typeJson + "}";
 	static final String testAliasJson = "{ \"aliases\":{\"en\":[" + TestMonolingualTextValue.testMltvJson + "]}," + typeJson + "}";
 	static final String testItemIdJson = "{\"id\":\"Q1\"," + typeJson + "}";
+	static final String testSiteLinkJson = "{\"sitelinks\":{\"enwiki\":" + TestSiteLink.testSiteLinkJson + "}," + typeJson + "}";
 	
 	
 	// puzzle pieces for creation of the test object
 	Map<String, MonolingualTextValueImpl> testMltvMap;
 	Map<String, List<MonolingualTextValueImpl>> testAliases;
-	ItemIdValueImpl testItemId;
+	ItemIdImpl testItemId;
+	Map<String, SiteLinkImpl> testSiteLinkMap;
 	
 	@Before
 	public void setupTestMltv(){
@@ -51,7 +57,13 @@ public class TestItemDocument {
 	
 	@Before
 	public void setupTestItemId(){
-		testItemId = new ItemIdValueImpl("Q1");
+		testItemId = new ItemIdImpl("Q1");
+	}
+	
+	@Before
+	public void setupTestSiteLinks(){
+		testSiteLinkMap = new HashMap<>();
+		testSiteLinkMap.put("enwiki", TestSiteLink.testSiteLink);
 	}
 	
 	/**
@@ -82,7 +94,7 @@ public class TestItemDocument {
 			ItemDocumentImpl result = mapper.readValue(testLabelJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
-			assertEquals(testMltvMap, result.labels);
+			assertEquals(testMltvMap, result.getLabels());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -123,7 +135,7 @@ public class TestItemDocument {
 			ItemDocumentImpl result = mapper.readValue(testDescriptionJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
-			assertEquals(testMltvMap, result.descriptions);
+			assertEquals(testMltvMap, result.getDescriptions());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -158,7 +170,7 @@ public class TestItemDocument {
 			ItemDocumentImpl result = mapper.readValue(testAliasJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
-			assertEquals(testAliases, result.aliases);
+			assertEquals(testAliases, result.getAliases());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -193,7 +205,42 @@ public class TestItemDocument {
 			ItemDocumentImpl result = mapper.readValue(testItemIdJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
-			assertEquals(testItemId, result.itemId);
+			assertEquals(testItemId, result.getEntityId());
+			
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			fail("Parsing failed");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			fail("Json mapping failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("IO failed");
+		}
+	}
+	
+	@Test
+	public void testSiteLinksToJson(){
+		ItemDocumentImpl document = new ItemDocumentImpl();
+		document.setSitelinks(testSiteLinkMap);
+		
+		try {
+			String result = mapper.writeValueAsString(document);
+			JsonComparator.compareJsonStrings(testSiteLinkJson, result);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			fail("Converting Pojo to Json failed");
+		}
+	}
+	
+	@Test
+	public void testSiteLinksToJava(){
+		
+		try {
+			ItemDocumentImpl result = mapper.readValue(testSiteLinkJson, ItemDocumentImpl.class);
+			
+			assertNotNull(result);
+			assertEquals(testSiteLinkMap, result.getSiteLinks());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();

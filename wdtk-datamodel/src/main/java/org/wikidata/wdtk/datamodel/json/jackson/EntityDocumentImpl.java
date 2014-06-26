@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.externalJsonImplementation;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -20,29 +20,12 @@ package org.wikidata.wdtk.datamodel.externalJsonImplementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-public abstract class EntityIdValueImpl implements EntityIdValue {
-	
-	String id;
-	
-	public void setId(String id){
-		this.id = id;
-	}
+public abstract class EntityDocumentImpl implements EntityDocument {
 
 	@Override
-	public abstract String getIri();
-
-	@Override
-	public abstract <T> T accept(ValueVisitor<T> valueVisitor);
-
-	@Override
-	public abstract String getEntityType();
-
-	@Override
-	public String getId(){
-		return this.id;
-	}
+	public abstract EntityIdValue getEntityId();
 
 }
