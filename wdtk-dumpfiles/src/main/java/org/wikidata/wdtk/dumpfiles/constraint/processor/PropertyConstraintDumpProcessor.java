@@ -27,14 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintBuilderConstant;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
@@ -58,22 +57,11 @@ public class PropertyConstraintDumpProcessor {
 	public static final String RDF_FILE_EXTENSION = ".rdf";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
-	final boolean renderingComments;
-
 	public static void main(String[] args) throws IOException {
 		(new PropertyConstraintDumpProcessor()).run(args);
 	}
 
 	public PropertyConstraintDumpProcessor() {
-		this(false);
-	}
-
-	public PropertyConstraintDumpProcessor(boolean renderingComments) {
-		this.renderingComments = renderingComments;
-	}
-
-	public boolean isRenderingComments() {
-		return this.renderingComments;
 	}
 
 	public String escapeChars(String str) {
@@ -113,10 +101,8 @@ public class PropertyConstraintDumpProcessor {
 
 		start(rendererFormats);
 
-		if (this.renderingComments) {
-			processAnnotationsOfConstraintTemplates(
-					propertyTalkTemplateProcessor.getMap(), rendererFormats);
-		}
+		logger.info(getConstraintTemplates(
+				propertyTalkTemplateProcessor.getMap(), rendererFormats));
 
 		processTemplates(propertyTalkTemplateProcessor.getMap(),
 				rendererFormats);
@@ -130,30 +116,18 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
-	public void processAnnotationsOfConstraintTemplates(
+	public String getConstraintTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
-
+		StringBuilder sb = new StringBuilder();
 		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
-			try {
-				List<Template> templates = getConstraintTemplates(templateMap
-						.get(constrainedProperty));
-				for (RendererFormat rendererFormat : rendererFormats) {
-					URI propertyUri = rendererFormat
-							.getProperty(constrainedProperty);
-					rendererFormat.addDeclarationObjectProperty(propertyUri);
-					rendererFormat.addAnnotationAssertion(
-							rendererFormat.rdfsComment(), propertyUri,
-							escapeChars(templates.toString()));
-				}
-			} catch (Exception e) {
-				System.out
-						.println("Exception while rendering annotation assertion for '"
-								+ constrainedProperty.getId() + "'.");
-				e.printStackTrace();
-
-			}
+			List<Template> templates = getConstraintTemplates(templateMap
+					.get(constrainedProperty));
+			sb.append(constrainedProperty.getId());
+			sb.append(escapeChars(templates.toString()));
+			sb.append("\n");
 		}
+		return sb.toString();
 	}
 
 	public void processTemplates(
@@ -166,29 +140,14 @@ public class PropertyConstraintDumpProcessor {
 			for (Template template : templates) {
 
 				Constraint constraint = null;
-				try {
-					constraint = parser.parse(constrainedProperty, template);
-				} catch (Exception e) {
-					System.out.println("Exception while parsing "
-							+ constrainedProperty.getId());
-					System.out.println("Template: " + template.toString());
-					e.printStackTrace();
-				}
+				constraint = parser.parse(constrainedProperty, template);
 
-				try {
-					if (constraint != null) {
-						for (RendererFormat rendererFormat : rendererFormats) {
-							ConstraintMainRenderer renderer = new ConstraintMainRenderer(
-									rendererFormat);
-							constraint.accept(renderer);
-						}
+				if (constraint != null) {
+					for (RendererFormat rendererFormat : rendererFormats) {
+						ConstraintMainRenderer renderer = new ConstraintMainRenderer(
+								rendererFormat);
+						constraint.accept(renderer);
 					}
-				} catch (Exception e) {
-					System.out.println("Exception while rendering "
-							+ constrainedProperty.getId());
-					System.out.println("Template: " + template.toString());
-					System.out.println("Constraint: " + constraint.toString());
-					e.printStackTrace();
 				}
 			}
 		}
