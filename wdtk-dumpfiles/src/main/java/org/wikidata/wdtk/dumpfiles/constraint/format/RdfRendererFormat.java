@@ -168,18 +168,12 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getDataOneOf(Resource literal) {
-		// FIXME
-		// TODO
-		BNode ret = this.rdfWriter.getFreshBNode();
-		return ret;
+		return getOneOf(literal);
 	}
 
 	@Override
 	public BNode getDataOneOf(List<Resource> listOfLiterals) {
-		// FIXME
-		// TODO
-		BNode ret = this.rdfWriter.getFreshBNode();
-		return ret;
+		return getOneOf(listOfLiterals);
 	}
 
 	@Override
@@ -272,50 +266,12 @@ public class RdfRendererFormat implements RendererFormat {
 
 	@Override
 	public BNode getObjectOneOf(Resource individual) {
-		BNode ret = this.rdfWriter.getFreshBNode();
-
-		try {
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_CLASS);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ONE_OF, individual);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
+		return getOneOf(individual);
 	}
 
 	@Override
 	public BNode getObjectOneOf(List<Resource> listOfIndividuals) {
-		BNode ret = this.rdfWriter.getFreshBNode();
-
-		try {
-			BNode currentBnode = this.rdfWriter.getFreshBNode();
-
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_CLASS);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ONE_OF, currentBnode);
-
-			Iterator<Resource> it = listOfIndividuals.iterator();
-			while (it.hasNext()) {
-				Resource currentIndividual = it.next();
-				this.rdfWriter.writeTripleValueObject(currentBnode,
-						RdfUriConstant.RDF_FIRST, currentIndividual);
-				if (it.hasNext()) {
-					BNode nextBnode = this.rdfWriter.getFreshBNode();
-					this.rdfWriter.writeTripleValueObject(currentBnode,
-							RdfUriConstant.RDF_REST, nextBnode);
-					currentBnode = nextBnode;
-				} else {
-					this.rdfWriter.writeTripleValueObject(currentBnode,
-							RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
-				}
-			}
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
+		return getOneOf(listOfIndividuals);
 	}
 
 	@Override
@@ -356,6 +312,53 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.RDF_FIRST, classExpression1);
 			this.rdfWriter.writeTripleValueObject(bnode2,
 					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	BNode getOneOf(Resource resource) {
+		BNode ret = this.rdfWriter.getFreshBNode();
+
+		try {
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_CLASS);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ONE_OF, resource);
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return ret;
+	}
+
+	BNode getOneOf(List<Resource> listOfResources) {
+
+		BNode ret = this.rdfWriter.getFreshBNode();
+
+		try {
+			BNode currentBnode = this.rdfWriter.getFreshBNode();
+
+			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
+					RdfUriConstant.OWL_CLASS);
+			this.rdfWriter.writeTripleValueObject(ret,
+					RdfUriConstant.OWL_ONE_OF, currentBnode);
+
+			Iterator<Resource> it = listOfResources.iterator();
+			while (it.hasNext()) {
+				Resource currentResource = it.next();
+				this.rdfWriter.writeTripleValueObject(currentBnode,
+						RdfUriConstant.RDF_FIRST, currentResource);
+				if (it.hasNext()) {
+					BNode nextBnode = this.rdfWriter.getFreshBNode();
+					this.rdfWriter.writeTripleValueObject(currentBnode,
+							RdfUriConstant.RDF_REST, nextBnode);
+					currentBnode = nextBnode;
+				} else {
+					this.rdfWriter.writeTripleValueObject(currentBnode,
+							RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+				}
+			}
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

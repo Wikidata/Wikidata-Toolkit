@@ -56,6 +56,7 @@ public interface Owl2FunctionalConstant {
 	String ANNOTATION_PROPERTY = "AnnotationProperty";
 	String CLASS = "Class";
 	String DATA_INTERSECTION_OF = "DataIntersectionOf";
+	String DATA_ONE_OF = "DataOneOf";
 	String DATA_PROPERTY = "DataProperty";
 	String DATA_PROPERTY_RANGE = "DataPropertyRange";
 	String DATA_SOME_VALUES_FROM = "DataSomeValuesFrom";
