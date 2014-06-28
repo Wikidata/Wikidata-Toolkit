@@ -22,9 +22,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.processor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -49,7 +49,7 @@ class ConstraintTemplateMwRevisionProcessor implements MwRevisionProcessor {
 
 	final TemplateScanner templateScanner = new TemplateScanner();
 	final TemplateParser templateParser = new TemplateParser();
-	final Map<PropertyIdValue, List<Template>> map = new TreeMap<PropertyIdValue, List<Template>>();
+	final Map<PropertyIdValue, List<Template>> map = new HashMap<PropertyIdValue, List<Template>>();
 	String constraintTemplatePrefix = "";
 
 	public ConstraintTemplateMwRevisionProcessor() {

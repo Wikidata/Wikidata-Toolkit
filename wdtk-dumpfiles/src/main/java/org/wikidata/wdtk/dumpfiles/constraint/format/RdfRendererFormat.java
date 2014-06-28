@@ -167,6 +167,22 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public BNode getDataOneOf(Resource literal) {
+		// FIXME
+		// TODO
+		BNode ret = this.rdfWriter.getFreshBNode();
+		return ret;
+	}
+
+	@Override
+	public BNode getDataOneOf(List<Resource> listOfLiterals) {
+		// FIXME
+		// TODO
+		BNode ret = this.rdfWriter.getFreshBNode();
+		return ret;
+	}
+
+	@Override
 	public BNode getDataSomeValuesFrom(URI datatypePropertyExpression,
 			Resource dataRange) {
 		BNode ret = this.rdfWriter.getFreshBNode();
@@ -259,16 +275,10 @@ public class RdfRendererFormat implements RendererFormat {
 		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
-			BNode bnode1 = this.rdfWriter.getFreshBNode();
-
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_CLASS);
 			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_ONE_OF, bnode1);
-			this.rdfWriter.writeTripleValueObject(bnode1,
-					RdfUriConstant.RDF_FIRST, individual);
-			this.rdfWriter.writeTripleValueObject(bnode1,
-					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
+					RdfUriConstant.OWL_ONE_OF, individual);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}

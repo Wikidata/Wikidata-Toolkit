@@ -260,6 +260,20 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public BNode getDataOneOf(Resource literal) {
+		// TODO
+		// FIXME
+		return new StringBNode("");
+	}
+
+	@Override
+	public BNode getDataOneOf(List<Resource> listOfLiterals) {
+		// TODO
+		// FIXME
+		return new StringBNode("");
+	}
+
+	@Override
 	public BNode getDataSomeValuesFrom(URI dataPropertyExpression,
 			Resource dataRange) {
 		return makeFunction(Owl2FunctionalConstant.DATA_SOME_VALUES_FROM,

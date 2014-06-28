@@ -90,12 +90,16 @@ class ConstraintItemRenderer implements ConstraintRenderer {
 		}
 	}
 
+	public static Resource getAndDeclareItem(RendererFormat f, ItemIdValue q) {
+		f.addDeclarationNamedIndividual(f.getItem(q));
+		return f.getItem(q);
+	}
+
 	public static List<Resource> getListAndDeclareItems(RendererFormat f,
 			List<ItemIdValue> list) {
 		List<Resource> ret = new ArrayList<Resource>();
 		for (ItemIdValue q : list) {
-			f.addDeclarationNamedIndividual(f.getItem(q));
-			ret.add(f.getItem(q));
+			ret.add(getAndDeclareItem(f, q));
 		}
 		return ret;
 	}

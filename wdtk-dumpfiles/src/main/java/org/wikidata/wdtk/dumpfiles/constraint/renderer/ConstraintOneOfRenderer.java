@@ -20,11 +20,14 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.model.Resource;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.format.StringResource;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
 
@@ -64,9 +67,15 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
 		this.f.addDeclarationObjectProperty(this.f.getPv(p));
-		this.f.addObjectPropertyRange(this.f.getPv(p), this.f
-				.getObjectOneOf(ConstraintItemRenderer.getListAndDeclareItems(
-						this.f, values)));
+
+		Resource resource = //
+		(values.size() == 1) ? //
+		this.f.getObjectOneOf(ConstraintItemRenderer.getAndDeclareItem(
+				this.f, values.iterator().next())) //
+				: this.f.getObjectOneOf(ConstraintItemRenderer
+						.getListAndDeclareItems(this.f, values));
+
+		this.f.addObjectPropertyRange(this.f.getPv(p), resource);
 	}
 
 	public void renderQuantities(PropertyIdValue p, List<Integer> values) {
@@ -77,7 +86,20 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
 
 		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
-		// FIXME
+
+		Resource resource = (values.size() == 1) ? //
+		this.f.getDataOneOf(new StringResource("" + values.iterator().next())) //
+				: this.f.getDataOneOf(getLiterals(values));
+
+		this.f.addDataPropertyRange(this.f.getPv(p), resource);
+	}
+
+	public List<Resource> getLiterals(List<Integer> literals) {
+		List<Resource> ret = new ArrayList<Resource>();
+		for (Integer literal : literals) {
+			ret.add(new StringResource("" + literal));
+		}
+		return ret;
 	}
 
 }
