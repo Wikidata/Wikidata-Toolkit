@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,12 +120,24 @@ public class PropertyConstraintDumpProcessor {
 	public String getConstraintTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
-		StringBuilder sb = new StringBuilder();
+
+		Map<Integer, String> mapOfProperties = new TreeMap<Integer, String>();
+
 		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
+			StringBuilder strb = new StringBuilder();
 			List<Template> templates = getConstraintTemplates(templateMap
 					.get(constrainedProperty));
-			sb.append(constrainedProperty.getId());
-			sb.append(escapeChars(templates.toString()));
+			Integer propNumber = Integer.parseInt(constrainedProperty.getId()
+					.substring(1));
+			strb.append(constrainedProperty.getId());
+			strb.append("=");
+			strb.append(escapeChars(templates.toString()));
+			mapOfProperties.put(propNumber, strb.toString());
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (Integer propertyNumber : mapOfProperties.keySet()) {
+			sb.append(mapOfProperties.get(propertyNumber));
 			sb.append("\n");
 		}
 		return sb.toString();

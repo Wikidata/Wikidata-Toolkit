@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -44,6 +46,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 
 	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
+	static final Logger logger = LoggerFactory
+			.getLogger(ConstraintMainBuilder.class);
 	final Map<String, ConstraintBuilder> mapOfBuilders = new HashMap<String, ConstraintBuilder>();
 
 	/**
@@ -70,9 +74,16 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		StringTokenizer stok = new StringTokenizer(str, TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			String itemStr = stok.nextToken().trim();
-			ItemIdValue item = factory.getItemIdValue(itemStr.toUpperCase(),
-					ConstraintMainBuilder.PREFIX_WIKIDATA);
-			ret.add(item);
+			try {
+				ItemIdValue item = factory.getItemIdValue(
+						itemStr.toUpperCase(),
+						ConstraintMainBuilder.PREFIX_WIKIDATA);
+				ret.add(item);
+			} catch (IllegalArgumentException e) {
+				logger.warn("WARNING: Ignoring invalid item: '" + itemStr
+						+ "'.");
+				logger.warn(e.toString());
+			}
 		}
 		return ret;
 	}
