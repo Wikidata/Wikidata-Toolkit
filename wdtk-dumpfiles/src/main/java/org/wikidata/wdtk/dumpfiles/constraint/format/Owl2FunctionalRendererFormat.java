@@ -125,6 +125,15 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return ret.toString();
 	}
 
+	private String makeListInt(List<Integer> list) {
+		StringBuilder ret = new StringBuilder();
+		for (Integer number : list) {
+			ret.append("" + number);
+			ret.append(Owl2FunctionalConstant.C_SPACE);
+		}
+		return ret.toString();
+	}
+
 	boolean addPrefix(String prefixName, URI value) {
 		BNode bnode = new StringBNode(Owl2FunctionalConstant.PREFIX
 				+ Owl2FunctionalConstant.C_PAR_A + prefixName
@@ -260,14 +269,15 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDataOneOf(Resource literal) {
-		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF, literal);
+	public BNode getDataOneOf(Integer literal) {
+		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
+				new StringResource("" + literal));
 	}
 
 	@Override
-	public BNode getDataOneOf(List<Resource> listOfLiterals) {
+	public BNode getDataOneOf(List<Integer> listOfLiterals) {
 		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
-				makeList(listOfLiterals));
+				makeListInt(listOfLiterals));
 	}
 
 	@Override

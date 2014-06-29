@@ -72,6 +72,7 @@ public interface RdfStringConstant {
 	String WB_QUANTITY_VALUE = Vocabulary.WB_QUANTITY_VALUE;
 	String XSD_DATE_TIME = PREFIX_XSD + "dateTime";
 	String XSD_DECIMAL = PREFIX_XSD + "decimal";
+	String XSD_INTEGER = PREFIX_XSD + "integer";
 	String XSD_MAX_INCLUSIVE = PREFIX_XSD + "maxInclusive";
 	String XSD_MIN_INCLUSIVE = PREFIX_XSD + "minInclusive";
 	String XSD_PATTERN = PREFIX_XSD + "pattern";

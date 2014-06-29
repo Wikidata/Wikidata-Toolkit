@@ -62,9 +62,9 @@ public interface RendererFormat {
 
 	BNode getDataIntersectionOf(Resource dataRange0, Resource dataRange1);
 
-	BNode getDataOneOf(Resource literal);
+	BNode getDataOneOf(Integer literal);
 
-	BNode getDataOneOf(List<Resource> listOfLiterals);
+	BNode getDataOneOf(List<Integer> listOfLiterals);
 
 	BNode getDataSomeValuesFrom(URI dataPropertyExpression, Resource dataRange);
 

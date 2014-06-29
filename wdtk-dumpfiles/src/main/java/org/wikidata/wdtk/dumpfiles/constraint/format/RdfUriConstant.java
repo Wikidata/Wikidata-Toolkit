@@ -82,6 +82,7 @@ public interface RdfUriConstant {
 			.createURI(RdfStringConstant.XSD_MAX_INCLUSIVE);
 	URI XSD_MIN_INCLUSIVE = factory
 			.createURI(RdfStringConstant.XSD_MIN_INCLUSIVE);
+	URI XSD_INTEGER = factory.createURI(RdfStringConstant.XSD_INTEGER);
 	URI XSD_PATTERN = factory.createURI(RdfStringConstant.XSD_PATTERN);
 	URI XSD_STRING = factory.createURI(RdfStringConstant.XSD_STRING);
 
