@@ -122,7 +122,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		StringTokenizer stok = new StringTokenizer(listOfQuantities,
 				TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
-			ret.add(Integer.parseInt(stok.nextToken()));
+			String str = stok.nextToken().trim();
+			ret.add(Integer.parseInt(str));
 		}
 		return ret;
 	}
