@@ -2,6 +2,7 @@ package org.wikidata.wdtk.clt;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,7 +71,8 @@ public class ConversionClient {
 
 	List<ConversionConfiguration> configuration;
 
-	// true if any of the serializers want to put its output to stdout
+	// true if any of the serializers want to put its output to stdout to
+	// prevent logging things to stdout
 	Boolean stdout = false;
 	// true if any conversion format was specified
 	Boolean convertAnything = false;
@@ -84,6 +86,10 @@ public class ConversionClient {
 
 	public Boolean getConvertAnything() {
 		return convertAnything;
+	}
+
+	public Boolean getStdout() {
+		return stdout;
 	}
 
 	/**
@@ -100,51 +106,51 @@ public class ConversionClient {
 		// the Rdfdump property:
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("all_exact_data")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-properties.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-properties.nt", compressionExtension,
 					RdfSerializer.TASK_PROPERTIES
 							| RdfSerializer.TASK_ALL_EXACT_DATA,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase().equals("terms")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-terms.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-terms.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("statements")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-statements.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-statements.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("simple_statements")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-simple-statements.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-simple-statements.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS
 							| RdfSerializer.TASK_SIMPLE_STATEMENTS,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("taxonomy")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-taxonomy.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-taxonomy.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("instance_of")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-instances.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-instances.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF,
 					conversionConfiguration.getStdout());
 		}
 		if (conversionConfiguration.getRdfdump().toLowerCase()
 				.equals("sitelinks")) {
-			createRdfSerializer(conversionConfiguration.getOutputDestination()
-					+ "wikidata-sitelinks.nt", compressionExtension,
+			createRdfSerializer(conversionConfiguration.getOutputDestination(),
+					"wikidata-sitelinks.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS,
 					conversionConfiguration.getStdout());
 		}
@@ -165,6 +171,7 @@ public class ConversionClient {
 		if (conversionConfiguration.getStdout()) {
 			outputStream = System.out;
 		} else {
+			new File(conversionConfiguration.getOutputDestination()).mkdirs();
 			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 					new FileOutputStream(
 							conversionConfiguration.getOutputDestination()
@@ -263,6 +270,7 @@ public class ConversionClient {
 			}
 
 		}
+
 		if (!stdout) {
 			// General statistics and time keeping:
 			MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
@@ -313,13 +321,13 @@ public class ConversionClient {
 	 *             if it was not possible to write the BZ2 header to the file
 	 */
 	@SuppressWarnings("resource")
-	private RdfSerializer createRdfSerializer(String outputFileName,
-			String compressionExtension, int tasks, Boolean stdout)
-			throws FileNotFoundException, IOException {
-
+	private RdfSerializer createRdfSerializer(String outputDestination,
+			String outputFileName, String compressionExtension, int tasks,
+			Boolean stdout) throws FileNotFoundException, IOException {
+		new File(outputDestination).mkdirs();
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(outputFileName + compressionExtension),
-				1024 * 1024 * 5 * 0 + 100);
+				new FileOutputStream(outputDestination + outputFileName
+						+ compressionExtension), 1024 * 1024 * 5 * 0 + 100);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
@@ -448,7 +456,7 @@ public class ConversionClient {
 				args);
 		this.configuration = conversionProperties.getProperties();
 
-		// set stdout flag
+		// set flags (stdout and convertAnything)
 		for (ConversionConfiguration configuration : this.getConfiguration()) {
 			if (configuration.getStdout() == true) {
 				this.stdout = true;

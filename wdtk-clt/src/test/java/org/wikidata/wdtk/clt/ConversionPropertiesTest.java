@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +32,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.rdf.RdfTestHelpers;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 public class ConversionPropertiesTest {

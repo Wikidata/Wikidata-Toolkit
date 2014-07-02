@@ -22,13 +22,27 @@ package org.wikidata.wdtk.clt;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+import org.apache.commons.cli.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ConversionClientTest {
 
+	final static String[] TEST_ARGS = new String[] { "-s", "-d", "/somewhere/",
+			"-f", "rdf", "-r", "TERMS", "-n", "-e", ".bz2", "-l",
+			"dumps/wikidata/" };
+
 	@Before
 	public void setUp() throws Exception {
+	}
+
+	@Test
+	public void testConstructor() throws ParseException, IOException {
+		ConversionClient client = new ConversionClient(TEST_ARGS);
+		assertTrue(client.getConvertAnything());
+		assertTrue(client.getStdout());
 	}
 
 }
