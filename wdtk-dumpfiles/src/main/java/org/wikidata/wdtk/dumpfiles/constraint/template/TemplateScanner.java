@@ -81,6 +81,7 @@ public class TemplateScanner {
 					} else {
 						pos = nextClosingNowiki
 								+ TemplateConstant.CLOSING_NOWIKI.length();
+						nowiki = false;
 					}
 				} else {
 					int nextOpeningBraces = text.indexOf(
