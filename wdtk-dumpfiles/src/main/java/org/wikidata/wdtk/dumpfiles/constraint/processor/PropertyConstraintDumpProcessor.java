@@ -24,9 +24,11 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +87,46 @@ public class PropertyConstraintDumpProcessor {
 		return ret;
 	}
 
+	private String getConstraintTemplatesString(
+			Map<PropertyIdValue, List<Template>> templateMap,
+			List<RendererFormat> rendererFormats) throws IOException {
+
+		List<PropertyIdValue> listOfProperties = getListOfProperties(templateMap
+				.keySet());
+		StringBuilder strb = new StringBuilder();
+		for (PropertyIdValue constrainedProperty : listOfProperties) {
+			List<Template> templates = getConstraintTemplates(templateMap
+					.get(constrainedProperty));
+			strb.append(constrainedProperty.getId());
+			strb.append("=");
+			strb.append(escapeChars(templates.toString()));
+			strb.append("\n");
+		}
+		return strb.toString();
+	}
+
+	List<PropertyIdValue> getListOfProperties(
+			Collection<PropertyIdValue> collectionOfProperties) {
+		List<PropertyIdValue> list = new ArrayList<PropertyIdValue>();
+		list.addAll(collectionOfProperties);
+		Collections.sort(list, new Comparator<PropertyIdValue>() {
+
+			@Override
+			public int compare(PropertyIdValue prop0, PropertyIdValue prop1) {
+				int ret = prop0.toString().compareTo(prop1.toString());
+				try {
+					int num0 = Integer.parseInt(prop0.getId().substring(1));
+					int num1 = Integer.parseInt(prop1.getId().substring(1));
+					ret = num1 - num0;
+				} catch (NumberFormatException e) {
+				}
+				return ret;
+			}
+
+		});
+		return list;
+	}
+
 	public void processDumps(List<RendererFormat> rendererFormats)
 			throws IOException {
 		DumpProcessingController controller = new DumpProcessingController(
@@ -102,7 +144,7 @@ public class PropertyConstraintDumpProcessor {
 
 		start(rendererFormats);
 
-		logger.info(getConstraintTemplates(
+		logger.info(getConstraintTemplatesString(
 				propertyTalkTemplateProcessor.getMap(), rendererFormats));
 
 		processTemplates(propertyTalkTemplateProcessor.getMap(),
@@ -117,37 +159,13 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
-	public String getConstraintTemplates(
-			Map<PropertyIdValue, List<Template>> templateMap,
-			List<RendererFormat> rendererFormats) throws IOException {
-
-		Map<Integer, String> mapOfProperties = new TreeMap<Integer, String>();
-
-		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
-			StringBuilder strb = new StringBuilder();
-			List<Template> templates = getConstraintTemplates(templateMap
-					.get(constrainedProperty));
-			Integer propNumber = Integer.parseInt(constrainedProperty.getId()
-					.substring(1));
-			strb.append(constrainedProperty.getId());
-			strb.append("=");
-			strb.append(escapeChars(templates.toString()));
-			mapOfProperties.put(propNumber, strb.toString());
-		}
-
-		StringBuilder sb = new StringBuilder();
-		for (Integer propertyNumber : mapOfProperties.keySet()) {
-			sb.append(mapOfProperties.get(propertyNumber));
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
-
 	public void processTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
 		ConstraintMainBuilder parser = new ConstraintMainBuilder();
-		for (PropertyIdValue constrainedProperty : templateMap.keySet()) {
+		List<PropertyIdValue> listOfProperties = getListOfProperties(templateMap
+				.keySet());
+		for (PropertyIdValue constrainedProperty : listOfProperties) {
 
 			List<Template> templates = templateMap.get(constrainedProperty);
 			for (Template template : templates) {
