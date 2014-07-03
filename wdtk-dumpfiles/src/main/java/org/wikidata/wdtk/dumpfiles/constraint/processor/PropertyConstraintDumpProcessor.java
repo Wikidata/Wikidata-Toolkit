@@ -117,7 +117,7 @@ public class PropertyConstraintDumpProcessor {
 				try {
 					int num0 = Integer.parseInt(prop0.getId().substring(1));
 					int num1 = Integer.parseInt(prop1.getId().substring(1));
-					ret = num1 - num0;
+					ret = num0 - num1;
 				} catch (NumberFormatException e) {
 				}
 				return ret;
