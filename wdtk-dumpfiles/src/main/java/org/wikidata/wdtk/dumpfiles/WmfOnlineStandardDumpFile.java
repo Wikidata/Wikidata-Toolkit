@@ -123,16 +123,18 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						this.dumpContentType, this.dateStamp));
 
+		long size = 0;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
-			thisDumpDirectoryManager.createFile(fileName, inputStream);
+			size = thisDumpDirectoryManager.createFileAtomic(fileName,
+					inputStream);
 		}
 
 		this.isPrepared = true;
 
 		logger.info("... completed download of "
 				+ this.dumpContentType.toString().toLowerCase() + " dump file "
-				+ fileName + " from " + urlString);
+				+ fileName + " from " + urlString + " (" + size + " bytes)");
 
 	}
 
