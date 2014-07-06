@@ -95,6 +95,7 @@ public class ConversionClient {
 	/**
 	 * Builds up serializers for the different rdf files.
 	 * 
+	 * @param conversionConfiguration
 	 * @throws IOException
 	 */
 	public void setupForRdfSerialization(
@@ -304,6 +305,8 @@ public class ConversionClient {
 	 * file. The new serializer is also registered in an internal list, so it
 	 * can be started and closed more conveniently.
 	 * 
+	 * @param outputDestination
+	 *            path to output directory
 	 * @param outputFileName
 	 *            filename to write output to
 	 * @param compressionExtension
@@ -313,6 +316,7 @@ public class ConversionClient {
 	 *            an integer that is a bitwise OR of flags like
 	 *            {@link RdfSerializer#TASK_LABELS}.
 	 * @param stdout
+	 *            stdout flag
 	 * @return the newly created serializer
 	 * @throws FileNotFoundException
 	 *             if the given file cannot be opened for writing for some

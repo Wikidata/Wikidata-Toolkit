@@ -125,7 +125,7 @@ public class ConversionProperties {
 	 * 
 	 * @param args
 	 *            array of arguments from the main function.
-	 * @return
+	 * @return list of {@link ConversionConfiguration}
 	 * @throws ParseException
 	 * @throws IOException
 	 */
@@ -199,7 +199,7 @@ public class ConversionProperties {
 	 * 
 	 * @param path
 	 *            filename and path of the configuration file
-	 * @return
+	 * @return the list with configurations for all output dumps
 	 * @throws IOException
 	 */
 	public List<ConversionConfiguration> readOutConfigFile(String path)
