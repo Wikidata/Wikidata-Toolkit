@@ -132,10 +132,23 @@ public class ConversionProperties {
 	public List<ConversionConfiguration> handleArguments(String[] args)
 			throws ParseException, IOException {
 		List<ConversionConfiguration> configuration = new ArrayList<ConversionConfiguration>();
-		ConversionConfiguration firstConfiguration = new ConversionConfiguration();
-		configuration.add(firstConfiguration);
+		ConversionConfiguration firstConfiguration;
 		CommandLineParser parser = new GnuParser();
 		CommandLine cmd = parser.parse(getOptions(), args);
+
+		// fill configuration list with all properties from a configuration file
+		// (if some configuration file was specified), element 0 specifies
+		// general options
+		if (cmd.hasOption("c")) {
+			List<ConversionConfiguration> configFile = readOutConfigFile(cmd
+					.getOptionValue("c"));
+			configuration.addAll(configFile);
+			firstConfiguration = configFile.get(0);
+		} else {
+			firstConfiguration = new ConversionConfiguration();
+		}
+
+		configuration.add(firstConfiguration);
 
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
@@ -172,31 +185,39 @@ public class ConversionProperties {
 			firstConfiguration.setRdfdump(cmd.getOptionValue("r"));
 		}
 
-		if (cmd.hasOption("c")) {
-			configuration.addAll(readOutConfigFile(cmd.getOptionValue("c")));
-		}
-
 		return configuration;
 
 	}
 
 	/**
-	 * Returns a set of configuration property blocks stored in
-	 * {@link ConversionConfiguration} objects.
+	 * Reads out the properties defined in a configuration file. Returns a set
+	 * of configuration property blocks stored in
+	 * {@link ConversionConfiguration} objects. The first element of the list
+	 * contains general information (about all dumps). Take note, that the
+	 * specific information in the other sections have higher priority the the
+	 * general section.
 	 * 
 	 * @param path
 	 *            filename and path of the configuration file
 	 * @return
 	 * @throws IOException
 	 */
-	public Set<ConversionConfiguration> readOutConfigFile(String path)
+	public List<ConversionConfiguration> readOutConfigFile(String path)
 			throws IOException {
-		Set<ConversionConfiguration> result = new HashSet<ConversionConfiguration>();
+		List<ConversionConfiguration> result = new ArrayList<ConversionConfiguration>();
 		FileReader reader = new FileReader(path);
+		Boolean general = false;
 		configFile = true;
 		properties = new Ini(reader);
+		result.add(0, new ConversionConfiguration());
 		for (Section section : properties.values()) {
-			ConversionConfiguration configurationSection = new ConversionConfiguration();
+			ConversionConfiguration configurationSection;
+			if (section.getName().toLowerCase().equals("general")) {
+				configurationSection = result.get(0);
+				general = true;
+			} else {
+				configurationSection = new ConversionConfiguration();
+			}
 			for (String key : section.keySet()) {
 				if (key.toLowerCase().equals("offline")) {
 					if (section.get(key).toLowerCase().equals("true")) {
@@ -229,7 +250,11 @@ public class ConversionProperties {
 				}
 
 			}
-			result.add(configurationSection);
+			if (general) {
+				general = false;
+			} else {
+				result.add(configurationSection);
+			}
 		}
 		return result;
 	}

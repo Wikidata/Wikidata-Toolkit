@@ -93,7 +93,7 @@ public class ConversionPropertiesTest {
 
 	@Test
 	public void testReadOutConfigFile() throws IOException {
-		Set<ConversionConfiguration> configurations = properties
+		List<ConversionConfiguration> configurations = properties
 				.readOutConfigFile("src/test/resources/testConf.ini");
 
 		ConversionConfiguration comparison = new ConversionConfiguration();
@@ -106,9 +106,7 @@ public class ConversionPropertiesTest {
 		comparison.setOutputDestination("/tmp/");
 		comparison.setDumplocation("dumps/wikidata/");
 
-		for (ConversionConfiguration conf : configurations) {
-			assertTrue(compareConfigurations(conf, comparison));
-		}
+		assertTrue(compareConfigurations(configurations.get(1), comparison));
 	}
 
 	@Test

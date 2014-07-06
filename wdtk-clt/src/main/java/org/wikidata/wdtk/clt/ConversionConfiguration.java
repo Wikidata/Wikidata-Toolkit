@@ -1,6 +1,5 @@
 package org.wikidata.wdtk.clt;
 
-
 /*
  * #%L
  * Wikidata Toolkit Examples
@@ -35,47 +34,59 @@ public class ConversionConfiguration {
 	String compressionExtension = ConversionClient.COMPRESS_NONE;
 	Boolean stdout = false;
 	Boolean offlineMode = false;
-	
-	
+
 	public String getCompressionExtension() {
 		return compressionExtension;
 	}
+
 	public void setCompressionExtension(String compressionExtention) {
 		this.compressionExtension = compressionExtention;
 	}
+
 	public String getRdfdump() {
 		return rdfdump;
 	}
+
 	public void setRdfdump(String rdfdump) {
 		this.rdfdump = rdfdump;
 	}
+
 	public String getOutputFormat() {
 		return outputFormat;
 	}
+
 	public void setOutputFormat(String outputFormat) {
 		this.outputFormat = outputFormat;
 	}
+
 	public String getOutputDestination() {
 		return outputDestination;
 	}
+
 	public void setOutputDestination(String outputDestination) {
 		this.outputDestination = outputDestination;
 	}
+
 	public String getDumplocation() {
 		return dumplocation;
 	}
+
 	public void setDumplocation(String dumplocation) {
 		this.dumplocation = dumplocation;
 	}
+
 	public Boolean getStdout() {
 		return stdout;
 	}
+
 	public void setStdout(Boolean stdout) {
 		this.stdout = stdout;
 	}
+
 	public Boolean getOfflineMode() {
 		return offlineMode;
 	}
+
 	public void setOfflineMode(Boolean offlineMode) {
 		this.offlineMode = offlineMode;
 	}
