@@ -78,11 +78,11 @@ public interface RdfUriConstant {
 	URI WB_TIME_VALUE = factory.createURI(RdfStringConstant.WB_TIME_VALUE);
 	URI XSD_DATE_TIME = factory.createURI(RdfStringConstant.XSD_DATE_TIME);
 	URI XSD_DECIMAL = factory.createURI(RdfStringConstant.XSD_DECIMAL);
+	URI XSD_INTEGER = factory.createURI(RdfStringConstant.XSD_INTEGER);
 	URI XSD_MAX_INCLUSIVE = factory
 			.createURI(RdfStringConstant.XSD_MAX_INCLUSIVE);
 	URI XSD_MIN_INCLUSIVE = factory
 			.createURI(RdfStringConstant.XSD_MIN_INCLUSIVE);
-	URI XSD_INTEGER = factory.createURI(RdfStringConstant.XSD_INTEGER);
 	URI XSD_PATTERN = factory.createURI(RdfStringConstant.XSD_PATTERN);
 	URI XSD_STRING = factory.createURI(RdfStringConstant.XSD_STRING);
 

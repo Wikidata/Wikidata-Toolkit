@@ -128,7 +128,8 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	private String makeListInt(List<Integer> list) {
 		StringBuilder ret = new StringBuilder();
 		for (Integer number : list) {
-			ret.append("" + number);
+			BNode literal = getLiteral(number);
+			ret.append(literal.stringValue());
 			ret.append(Owl2FunctionalConstant.C_SPACE);
 		}
 		return ret.toString();
@@ -243,6 +244,11 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI xsdInteger() {
+		return createURI(Owl2FunctionalConstant.XSD_INTEGER);
+	}
+
+	@Override
 	public URI xsdMaxInclusive() {
 		return createURI(Owl2FunctionalConstant.XSD_MAX_INCLUSIVE);
 	}
@@ -271,7 +277,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	@Override
 	public BNode getDataOneOf(Integer literal) {
 		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
-				new StringResource("" + literal));
+				getLiteral(literal));
 	}
 
 	@Override
@@ -296,6 +302,10 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 						datatype,
 						makePair(constrainingFacet,
 								getLiteral(restrictionValue, datatype))));
+	}
+
+	BNode getLiteral(Integer literal) {
+		return getLiteral(new StringResource("" + literal), xsdInteger());
 	}
 
 	BNode getLiteral(Resource value, Resource type) {

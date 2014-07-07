@@ -52,6 +52,8 @@ public interface RendererFormat {
 
 	URI xsdDecimal();
 
+	URI xsdInteger();
+
 	URI xsdMaxInclusive();
 
 	URI xsdMinInclusive();

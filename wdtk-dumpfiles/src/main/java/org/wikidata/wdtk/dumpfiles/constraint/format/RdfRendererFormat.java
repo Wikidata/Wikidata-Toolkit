@@ -112,6 +112,11 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
+	public URI xsdInteger() {
+		return RdfUriConstant.XSD_INTEGER;
+	}
+
+	@Override
 	public URI xsdMaxInclusive() {
 		return RdfUriConstant.XSD_MAX_INCLUSIVE;
 	}
@@ -175,7 +180,7 @@ public class RdfRendererFormat implements RendererFormat {
 					RdfUriConstant.OWL_CLASS);
 			this.rdfWriter.writeTripleLiteralObject(ret,
 					RdfUriConstant.OWL_ONE_OF, "" + literal,
-					RdfUriConstant.XSD_DECIMAL);
+					RdfUriConstant.XSD_INTEGER);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -199,7 +204,7 @@ public class RdfRendererFormat implements RendererFormat {
 				String currentLiteral = "" + it.next();
 				this.rdfWriter.writeTripleLiteralObject(currentBnode,
 						RdfUriConstant.RDF_FIRST, currentLiteral,
-						RdfUriConstant.XSD_DECIMAL);
+						RdfUriConstant.XSD_INTEGER);
 				if (it.hasNext()) {
 					BNode nextBnode = this.rdfWriter.getFreshBNode();
 					this.rdfWriter.writeTripleValueObject(currentBnode,
