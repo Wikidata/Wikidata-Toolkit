@@ -78,7 +78,17 @@ public class ConstraintOneOfRendererTest {
 		String expected = "Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1088s> ) )\n"
 				+ "InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P1088s> )\n"
 				+ "Declaration( DataProperty( <http://www.wikidata.org/entity/P1088v> ) )\n"
-				+ "DataPropertyRange( <http://www.wikidata.org/entity/P1088v> DataOneOf( 1 2 3 4 5 6 7 8 9 10  ) )\n";
+				+ "DataPropertyRange( <http://www.wikidata.org/entity/P1088v> DataOneOf( "
+				+ "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"3\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"4\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"5\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"6\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"7\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"8\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"9\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"10\"^^<http://www.w3.org/2001/XMLSchema#integer>  ) )\n";
 
 		Assert.assertEquals(expected, output.toString());
 	}
@@ -109,7 +119,9 @@ public class ConstraintOneOfRendererTest {
 		String expected = "Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1123s> ) )\n"
 				+ "InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P1123s> )\n"
 				+ "Declaration( DataProperty( <http://www.wikidata.org/entity/P1123v> ) )\n"
-				+ "DataPropertyRange( <http://www.wikidata.org/entity/P1123v> DataOneOf( -1 1  ) )\n";
+				+ "DataPropertyRange( <http://www.wikidata.org/entity/P1123v> DataOneOf( "
+				+ "\"-1\"^^<http://www.w3.org/2001/XMLSchema#integer> "
+				+ "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>  ) )\n";
 
 		Assert.assertEquals(expected, output.toString());
 	}
