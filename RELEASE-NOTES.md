@@ -4,6 +4,10 @@ Wikidata Toolkit Release Notes
 Version 0.3.0
 -------------
 
+New features:
+* Added iterator access to all statements of an itemdocument, all statements in a statement
+  group, all qualifiers in a claim, all snaks in a snak group, and all snaks in a reference
+
 Bug fixes:
 * Fix grouping of Statements when reading data from dumps (Issue #78)
 
