@@ -25,9 +25,11 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,8 @@ public class ItemDocumentImplTest {
 	ItemDocument ir1;
 	ItemDocument ir2;
 
+	Statement s;
+
 	ItemIdValue iid;
 	List<StatementGroup> statementGroups;
 	Map<String, SiteLink> sitelinks;
@@ -62,7 +66,7 @@ public class ItemDocumentImplTest {
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.<SnakGroup> emptyList());
-		Statement s = new StatementImpl(c, Collections.<Reference> emptyList(),
+		s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
 		statementGroups = Collections.singletonList(sg);
@@ -205,6 +209,15 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, null);
+	}
+
+	@Test
+	public void iterateOverAllStatements() {
+		Iterator<Statement> statements = ir1.getAllStatements();
+
+		assertTrue(statements.hasNext());
+		assertEquals(s, statements.next());
+		assertFalse(statements.hasNext());
 	}
 
 }

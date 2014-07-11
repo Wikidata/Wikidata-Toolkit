@@ -21,11 +21,14 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link Reference}.
@@ -51,6 +54,11 @@ public class ReferenceImpl implements Reference {
 	@Override
 	public List<SnakGroup> getSnakGroups() {
 		return Collections.unmodifiableList(this.snakGroups);
+	}
+
+	@Override
+	public Iterator<Snak> getAllSnaks() {
+		return new NestedIterator<>(this.snakGroups);
 	}
 
 	/*
@@ -81,7 +89,7 @@ public class ReferenceImpl implements Reference {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return this.snakGroups.toString();
 	}
 }

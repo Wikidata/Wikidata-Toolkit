@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,4 +41,11 @@ public interface Reference {
 	 */
 	List<SnakGroup> getSnakGroups();
 
+	/**
+	 * Returns an interator over all snaks, without considering snak groups. The
+	 * relative order of snaks is preserved.
+	 * 
+	 * @return iterator of snaks
+	 */
+	Iterator<Snak> getAllSnaks();
 }
