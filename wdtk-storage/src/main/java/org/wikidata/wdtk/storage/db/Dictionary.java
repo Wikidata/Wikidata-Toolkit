@@ -20,8 +20,6 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.Value;
 
 /**
  * A dictionary for objects of type T. Objects that are inserted into the
@@ -32,16 +30,7 @@ import org.wikidata.wdtk.storage.datamodel.Value;
  * 
  * @param <T>
  */
-public interface Dictionary<T extends Value> extends Iterable<T> {
-
-	/**
-	 * Returns the sort of objects stored in this dictionary. Dictionaries
-	 * generally store objects of this sort only (even if other sorts use the
-	 * same type T for their associated objects).
-	 * 
-	 * @return sort of object managed in this dictionary
-	 */
-	Sort getSort();
+public interface Dictionary<T> extends Iterable<T> {
 
 	/**
 	 * Returns the value for the given id, or null if no object in the

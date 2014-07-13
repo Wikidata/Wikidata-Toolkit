@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
@@ -94,13 +95,13 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 			nextSnak.accept(this.helpers.getSnakAdaptor());
 			return this.helpers.getSnakAdaptor();
 		} else if (!this.rankDone) { // rank
-			this.propertyForPropertyValuePair = WdtkDatabaseManager.PROP_RANK;
+			this.propertyForPropertyValuePair = WdtkSorts.PROP_RANK;
 			this.valueForPropertyValuePair = new StringValueImpl(this.statement
-					.getRank().name(), this.helpers.getStringSort());
+					.getRank().name(), Sort.SORT_STRING);
 			this.rankDone = true;
 			return this;
 		} else { // references
-			this.propertyForPropertyValuePair = WdtkDatabaseManager.PROP_REFERENCE;
+			this.propertyForPropertyValuePair = WdtkSorts.PROP_REFERENCE;
 			this.valueForPropertyValuePair = new ReferenceAdaptor(
 					this.referenceIterator.next(), this.helpers);
 			return this;

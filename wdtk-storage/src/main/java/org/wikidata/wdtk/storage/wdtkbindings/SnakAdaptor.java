@@ -63,7 +63,7 @@ public class SnakAdaptor implements SnakVisitor<PropertyValuePair>,
 
 	@Override
 	public PropertyValuePair visit(NoValueSnak snak) {
-		this.currentProperty = WdtkDatabaseManager.PROP_NOVALUE;
+		this.currentProperty = WdtkSorts.PROP_NOVALUE;
 		this.currentValue = snak.getPropertyId().accept(
 				this.helpers.getValueAdaptor());
 		return this;

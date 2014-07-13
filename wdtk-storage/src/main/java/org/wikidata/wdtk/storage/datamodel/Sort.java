@@ -35,6 +35,14 @@ public class Sort implements Serializable {
 
 	private static final long serialVersionUID = -4309351376613799056L;
 
+	public static final String SORTNAME_STRING = "string";
+	public static final String SORTNAME_LONG = "long";
+
+	public static final Sort SORT_STRING = new Sort(SORTNAME_STRING,
+			SortType.STRING, null);
+	public static final Sort SORT_LONG = new Sort(SORTNAME_LONG, SortType.LONG,
+			null);
+
 	final String name;
 	final SortType sortType;
 	final List<PropertyRange> propertyRanges;

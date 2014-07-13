@@ -41,7 +41,7 @@ public class ReferenceAdaptor implements ObjectValue,
 
 	@Override
 	public Sort getSort() {
-		return this.helpers.getReferenceSort();
+		return WdtkSorts.SORT_REFERENCE;
 	}
 
 	@Override

@@ -24,75 +24,79 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
 
 import org.mapdb.Serializer;
-import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyRange;
-import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
 
-public class RecordSerializer implements Serializer<ObjectValue>, Serializable {
+public class RecordSerializer implements
+		Serializer<RecordValueForSerialization>, Serializable {
 
 	private static final long serialVersionUID = 4397282628980400400L;
 
 	final Sort sort;
+	transient int stringCount;
+	transient int longCount;
+	transient int fixedSize;
 
 	public RecordSerializer(Sort sort) {
 		this.sort = sort;
+		initAuxliliaryFields();
 	}
 
 	@Override
-	public ObjectValue deserialize(DataInput in, int available)
+	public RecordValueForSerialization deserialize(DataInput in, int available)
 			throws IOException {
-		List<PropertyValuePair> propertyValuePairs; // TODO we don't have an
-													// implementation yet
-		// TODO deserialize lazily, esp. for the object ref resolution
-		for (PropertyRange pr : this.sort.getPropertyRanges()) {
-			// TODO read values
+		long[] longs = new long[this.longCount];
+		String[] strings = new String[this.stringCount];
+
+		for (int i = 0; i < this.longCount; i++) {
+			longs[i] = in.readLong();
 		}
-		return null;
+		for (int i = 0; i < this.stringCount; i++) {
+			strings[i] = in.readUTF();
+		}
+
+		return new RecordValueForSerialization(longs, strings);
 	}
 
 	@Override
 	public int fixedSize() {
-		return -1;
+		return this.fixedSize;
 	}
 
 	@Override
-	public void serialize(DataOutput out, ObjectValue objectValue)
+	public void serialize(DataOutput out, RecordValueForSerialization rvfs)
 			throws IOException {
-		Iterator<PropertyRange> propertyRanges = this.sort.getPropertyRanges()
-				.iterator();
-		for (PropertyValuePair pvp : objectValue) {
-			PropertyRange pr = propertyRanges.next();
 
-			// TODO evaluate the performance hit of this check; maybe use
-			// assertions instead
-			if (!pr.getProperty().equals(pvp.getProperty())
-					|| !pr.getRange()
-							.equals(pvp.getValue().getSort().getName())) {
-				throw new IllegalArgumentException(
-						"The given object value does not match the sort specification for this record.");
-			}
+		for (int i = 0; i < this.longCount; i++) {
+			out.writeLong(rvfs.getLongs()[i]);
+		}
+		for (int i = 0; i < this.stringCount; i++) {
+			out.writeUTF(rvfs.getStrings()[i]);
+		}
+	}
 
-			if (SortSchema.SORTNAME_STRING.equals(pr.getRange())) {
-				// Inline strings:
-				// TODO do we really want/need this type check?
-				if (pvp.getValue() instanceof StringValue) {
-					out.writeUTF(((StringValue) pvp.getValue()).getString());
-				} else {
-					throw new IllegalArgumentException("Expected StringValue");
-				}
-			} else {
-				// TODO
-				// declared sorts -> long id
-				throw new UnsupportedOperationException(
-						"Serialization only implemented for strings yet.");
+	protected void initAuxliliaryFields() {
+		int sCount = 0;
+		for (PropertyRange pr : sort.getPropertyRanges()) {
+			if (Sort.SORTNAME_STRING.equals(pr.getRange())) {
+				sCount++;
 			}
 		}
+		this.stringCount = sCount;
+		this.longCount = sort.getPropertyRanges().size() - sCount;
+
+		if (this.stringCount == 0) {
+			this.fixedSize = 8 * this.longCount;
+		} else {
+			this.fixedSize = -1;
+		}
+	}
+
+	private void readObject(java.io.ObjectInputStream in) throws IOException,
+			ClassNotFoundException {
+		in.defaultReadObject();
+		initAuxliliaryFields();
 	}
 }

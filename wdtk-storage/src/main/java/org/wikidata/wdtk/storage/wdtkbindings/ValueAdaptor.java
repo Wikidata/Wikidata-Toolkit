@@ -28,6 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
@@ -54,7 +55,7 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 	public Value visit(GlobeCoordinatesValue value) {
 		// TODO Auto-generated method stub
 		return new StringValueImpl("UNSUPPORTED GlobeCoordinates",
-				this.helpers.getStringSort());
+				Sort.SORT_STRING);
 	}
 
 	@Override
@@ -65,21 +66,18 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 	@Override
 	public Value visit(QuantityValue value) {
 		// TODO Auto-generated method stub
-		return new StringValueImpl("UNSUPPORTED Quantity",
-				this.helpers.getStringSort());
+		return new StringValueImpl("UNSUPPORTED Quantity", Sort.SORT_STRING);
 	}
 
 	@Override
 	public Value visit(StringValue value) {
-		return new StringValueImpl(value.getString(),
-				this.helpers.getStringSort());
+		return new StringValueImpl(value.getString(), Sort.SORT_STRING);
 	}
 
 	@Override
 	public Value visit(TimeValue value) {
 		// TODO Auto-generated method stub
-		return new StringValueImpl("UNSUPPORTED Time",
-				this.helpers.getStringSort());
+		return new StringValueImpl("UNSUPPORTED Time", Sort.SORT_STRING);
 	}
 
 }

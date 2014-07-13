@@ -20,41 +20,16 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.wikidata.wdtk.storage.datamodel.PropertyRange;
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
-import org.wikidata.wdtk.storage.datamodel.SortType;
 import org.wikidata.wdtk.storage.db.DatabaseManager;
 
 public class WdtkDatabaseManager extends DatabaseManager {
 
-	public static final String SORTNAME_ENTITY = "entity";
-	public static final String SORTNAME_MTV = "monotext";
-	public static final String SORTNAME_REFERENCE = "reference";
-
-	public static final String PROP_NOVALUE = "novalue";
-	public static final String PROP_RANK = "rank";
-	public static final String PROP_REFERENCE = "ref";
-	public static final String PROP_MTV_TEXT = "text";
-	public static final String PROP_MTV_LANG = "language";
-
-	public static final List<PropertyRange> PROPLIST_MONOLINGUAL_TEXT_VALUE = new ArrayList<>();
-	static {
-		PROPLIST_MONOLINGUAL_TEXT_VALUE.add(new PropertyRange(PROP_MTV_TEXT,
-				SortSchema.SORTNAME_STRING));
-		PROPLIST_MONOLINGUAL_TEXT_VALUE.add(new PropertyRange(PROP_MTV_LANG,
-				SortSchema.SORTNAME_STRING));
-	}
-
 	public WdtkDatabaseManager(String dbName) {
 		super(dbName);
 
-		this.sortSchema.declareSort(SORTNAME_ENTITY, SortType.STRING, null);
-		this.sortSchema.declareSort(SORTNAME_MTV, SortType.RECORD,
-				PROPLIST_MONOLINGUAL_TEXT_VALUE);
-		this.sortSchema.declareSort(SORTNAME_REFERENCE, SortType.OBJECT, null);
+		this.sortSchema.declareSort(WdtkSorts.SORT_ENTITY);
+		this.sortSchema.declareSort(WdtkSorts.SORT_MTV);
+		this.sortSchema.declareSort(WdtkSorts.SORT_REFERENCE);
 	}
 
 }

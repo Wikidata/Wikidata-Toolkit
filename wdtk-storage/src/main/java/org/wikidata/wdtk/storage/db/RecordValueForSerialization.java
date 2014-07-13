@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.db;
 
 /*
  * #%L
@@ -20,30 +20,21 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
+public class RecordValueForSerialization {
 
-public class WdtkAdaptorHelper {
+	final long[] longs;
+	final String[] strings;
 
-	final SortSchema sortSchema;
-	final ValueAdaptor valueAdaptor;
-	final SnakAdaptor snakAdaptor;
-
-	public WdtkAdaptorHelper(SortSchema sortSchema) {
-		this.sortSchema = sortSchema;
-		this.valueAdaptor = new ValueAdaptor(this);
-		this.snakAdaptor = new SnakAdaptor(this);
+	public RecordValueForSerialization(long[] longs, String[] strings) {
+		this.longs = longs;
+		this.strings = strings;
 	}
 
-	public SortSchema getSortSchema() {
-		return this.sortSchema;
+	public long[] getLongs() {
+		return this.longs;
 	}
 
-	public ValueAdaptor getValueAdaptor() {
-		return this.valueAdaptor;
+	public String[] getStrings() {
+		return this.strings;
 	}
-
-	public SnakAdaptor getSnakAdaptor() {
-		return this.snakAdaptor;
-	}
-
 }

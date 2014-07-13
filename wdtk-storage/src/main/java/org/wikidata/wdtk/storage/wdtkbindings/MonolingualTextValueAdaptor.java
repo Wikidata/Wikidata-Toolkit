@@ -44,7 +44,7 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 
 	@Override
 	public Sort getSort() {
-		return this.helper.getMtvSort();
+		return WdtkSorts.SORT_MTV;
 	}
 
 	@Override
@@ -62,14 +62,14 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 	public PropertyValuePair next() {
 		this.iteratorPos++;
 		if (this.iteratorPos == 1) {
-			return new PropertyValuePairImpl(WdtkDatabaseManager.PROP_MTV_TEXT,
+			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_TEXT,
 					new StringValueImpl(this.monolingualTextValue.getText(),
-							this.helper.getStringSort()));
+							Sort.SORT_STRING));
 		} else if (this.iteratorPos == 2) {
-			return new PropertyValuePairImpl(WdtkDatabaseManager.PROP_MTV_LANG,
+			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_LANG,
 					new StringValueImpl(
 							this.monolingualTextValue.getLanguageCode(),
-							this.helper.getStringSort()));
+							Sort.SORT_STRING));
 		} else {
 			return null;
 		}

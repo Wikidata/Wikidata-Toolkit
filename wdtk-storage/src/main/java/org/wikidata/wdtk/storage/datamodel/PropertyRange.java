@@ -20,9 +20,14 @@ package org.wikidata.wdtk.storage.datamodel;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 
-public class PropertyRange {
+public class PropertyRange implements Serializable {
+
+	private static final long serialVersionUID = 4355864646833130912L;
+
 	final String property;
 	final String rangeSort;
 

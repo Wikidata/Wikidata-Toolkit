@@ -21,33 +21,64 @@ package org.wikidata.wdtk.storage.db;
  */
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentNavigableMap;
 
 import org.apache.commons.lang3.Validate;
+import org.mapdb.Atomic;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.SortSchema;
 
-public class DbSortSchema extends SortSchema {
+public class DbSortSchema implements SortSchema {
 
 	final DatabaseManager databaseManager;
+	protected final Map<String, Sort> sorts;
+	protected final Map<String, Integer> sortIds;
+	protected final Atomic.Integer nextId;
 
-	public static DbSortSchema create(DatabaseManager databaseManager) {
+	protected DbSortSchema(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
-		ConcurrentNavigableMap<String, Sort> sorts = databaseManager.getDb()
-				.createTreeMap("sorts").valueSerializer(new SortSerializer())
+		nextId = databaseManager.getDb().getAtomicInteger("sorts-inc");
+
+		this.sorts = databaseManager.getDb().createHashMap("sorts")
+				.valueSerializer(new SortSerializer()).makeOrGet();
+		this.sortIds = databaseManager.getDb().createHashMap("sorts-ids")
 				.makeOrGet();
-		// DEBUG:
-		// for (Sort sort : sorts.values()) {
-		// System.out.println("Found sort: " + sort.getName());
-		// }
-		return new DbSortSchema(sorts, databaseManager);
+
+		this.databaseManager = databaseManager;
+
+		for (Sort sort : sorts.values()) {
+			this.databaseManager.initializeDictionary(sort);
+			// DEBUG:
+			// System.out.println("Found sort: " + sort.getName());
+		}
+		this.declareSort(Sort.SORT_STRING);
+		this.declareSort(Sort.SORT_LONG);
 	}
 
-	protected DbSortSchema(Map<String, Sort> sorts,
-			DatabaseManager databaseManager) {
-		super(sorts);
-		this.databaseManager = databaseManager;
+	@Override
+	public Sort declareSort(Sort sort) {
+		if (this.sorts.containsKey(sort.getName())) {
+			if (!sort.equals(this.sorts.get(sort.getName()))) {
+				throw new IllegalArgumentException("Sort \"" + sort.getName()
+						+ "\" already declared. Cannot redeclare sorts.");
+			} // else: no action; sort already declared
+		} else {
+			int id = this.nextId.incrementAndGet();
+			this.sorts.put(sort.getName(), sort);
+			this.sortIds.put(sort.getName(), id);
+			this.databaseManager.initializeDictionary(sort);
+		}
+		return sort;
+	}
+
+	@Override
+	public Sort getSort(String name) {
+		return this.sorts.get(name);
+	}
+
+	public int getSortId(String name) {
+		Integer result = this.sortIds.get(name);
+		return (result == null) ? -1 : result;
 	}
 
 }

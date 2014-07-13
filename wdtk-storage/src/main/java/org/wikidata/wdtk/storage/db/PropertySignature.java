@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.db;
 
 /*
  * #%L
@@ -20,30 +20,28 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
+public class PropertySignature {
 
-public class WdtkAdaptorHelper {
+	final int domainId;
+	final int rangeId;
+	final String propertyName;
 
-	final SortSchema sortSchema;
-	final ValueAdaptor valueAdaptor;
-	final SnakAdaptor snakAdaptor;
-
-	public WdtkAdaptorHelper(SortSchema sortSchema) {
-		this.sortSchema = sortSchema;
-		this.valueAdaptor = new ValueAdaptor(this);
-		this.snakAdaptor = new SnakAdaptor(this);
+	public PropertySignature(String propertyName, int domainId, int rangeId) {
+		this.propertyName = propertyName;
+		this.domainId = domainId;
+		this.rangeId = rangeId;
 	}
 
-	public SortSchema getSortSchema() {
-		return this.sortSchema;
+	public String getPropertyName() {
+		return this.propertyName;
 	}
 
-	public ValueAdaptor getValueAdaptor() {
-		return this.valueAdaptor;
+	public int getDomainId() {
+		return this.domainId;
 	}
 
-	public SnakAdaptor getSnakAdaptor() {
-		return this.snakAdaptor;
+	public int getRangeId() {
+		return this.rangeId;
 	}
 
 }

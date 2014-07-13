@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.db;
 
 /*
  * #%L
@@ -20,30 +20,17 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
+import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class WdtkAdaptorHelper {
+public interface ValueDictionary extends Dictionary<Value> {
 
-	final SortSchema sortSchema;
-	final ValueAdaptor valueAdaptor;
-	final SnakAdaptor snakAdaptor;
-
-	public WdtkAdaptorHelper(SortSchema sortSchema) {
-		this.sortSchema = sortSchema;
-		this.valueAdaptor = new ValueAdaptor(this);
-		this.snakAdaptor = new SnakAdaptor(this);
-	}
-
-	public SortSchema getSortSchema() {
-		return this.sortSchema;
-	}
-
-	public ValueAdaptor getValueAdaptor() {
-		return this.valueAdaptor;
-	}
-
-	public SnakAdaptor getSnakAdaptor() {
-		return this.snakAdaptor;
-	}
-
+	/**
+	 * Returns the sort of objects stored in this dictionary. Dictionaries
+	 * generally store objects of this sort only (even if other sorts use the
+	 * same type T for their associated objects).
+	 * 
+	 * @return sort of object managed in this dictionary
+	 */
+	Sort getSort();
 }

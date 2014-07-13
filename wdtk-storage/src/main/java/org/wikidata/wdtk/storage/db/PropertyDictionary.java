@@ -26,57 +26,50 @@ import java.util.Map;
 import org.apache.commons.lang3.Validate;
 import org.mapdb.Atomic;
 import org.mapdb.Bind;
-import org.wikidata.wdtk.storage.datamodel.ObjectValue;
-import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.mapdb.Serializer;
 
-public class RecordDictionary implements Dictionary<ObjectValue> {
+public class PropertyDictionary implements Dictionary<PropertySignature> {
 
-	final Sort sort;
-	final Atomic.Long nextId;
-	final Bind.MapWithModificationListener<Long, ObjectValue> values;
-	final Map<ObjectValue, Long> ids;
+	protected final Atomic.Long nextId;
+	protected final DatabaseManager databaseManager;
+	final Bind.MapWithModificationListener<Long, PropertySignature> values;
+	final Map<PropertySignature, Long> ids;
 
-	public RecordDictionary(Sort sort, DatabaseManager databaseManager) {
-		Validate.notNull(sort, "sort cannot be null");
+	public PropertyDictionary(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
-		this.sort = sort;
+		this.databaseManager = databaseManager;
 
-		nextId = databaseManager.getDb().getAtomicLong(
-				"sort-inc-" + sort.getName());
+		nextId = databaseManager.getDb().getAtomicLong("properties-inc");
+
+		Serializer<PropertySignature> serializer = new PropertySignatureSerializer();
 
 		this.values = databaseManager.getDb()
-				.createHashMap("sort-values-" + sort.getName())
-				.valueSerializer(new RecordSerializer(sort)).makeOrGet();
-		this.ids = databaseManager.getDb()
-				.createHashMap("sort-ids-" + sort.getName())
-				.keySerializer(new RecordSerializer(sort)).makeOrGet();
+				.createHashMap("properties-values").valueSerializer(serializer)
+				.makeOrGet();
+		this.ids = databaseManager.getDb().createHashMap("properties-ids")
+				.keySerializer(serializer).makeOrGet();
 		Bind.mapInverse(this.values, this.ids);
 	}
 
 	@Override
-	public Iterator<ObjectValue> iterator() {
+	public Iterator<PropertySignature> iterator() {
 		return this.values.values().iterator();
 	}
 
 	@Override
-	public Sort getSort() {
-		return this.sort;
-	}
-
-	@Override
-	public ObjectValue getValue(long id) {
+	public PropertySignature getValue(long id) {
 		return this.values.get(id);
 	}
 
 	@Override
-	public long getId(ObjectValue value) {
+	public long getId(PropertySignature value) {
 		Long result = this.ids.get(value);
 		return (result == null) ? -1L : result;
 	}
 
 	@Override
-	public long getOrCreateId(ObjectValue value) {
+	public long getOrCreateId(PropertySignature value) {
 		long id = getId(value);
 		if (id == -1L) {
 			id = this.nextId.incrementAndGet();

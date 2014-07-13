@@ -32,6 +32,8 @@ import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.SortType;
 
+// TODO rely on POJO serializer instead? 
+// maybe efficiency gain is negligible for the small number of sorts
 public class SortSerializer implements Serializer<Sort>, Serializable {
 
 	private static final long serialVersionUID = -4225023564347516207L;

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.db;
 
 /*
  * #%L
@@ -20,29 +20,30 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.apache.commons.lang3.Validate;
+import org.mapdb.Atomic;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
 
-public class EntityValueAdaptor implements StringValue {
+public abstract class BaseValueDictionary implements ValueDictionary {
 
-	final EntityIdValue entityIdValue;
-	final WdtkAdaptorHelper helpers;
+	protected final Sort sort;
+	protected final Atomic.Long nextId;
+	protected final DatabaseManager databaseManager;
 
-	public EntityValueAdaptor(EntityIdValue entityValue,
-			WdtkAdaptorHelper helpers) {
-		this.entityIdValue = entityValue;
-		this.helpers = helpers;
+	public BaseValueDictionary(Sort sort, DatabaseManager databaseManager) {
+		Validate.notNull(sort, "sort cannot be null");
+		Validate.notNull(databaseManager, "database manager cannot be null");
+
+		this.sort = sort;
+		this.databaseManager = databaseManager;
+
+		nextId = databaseManager.getDb().getAtomicLong(
+				"sort-inc-" + sort.getName());
 	}
 
 	@Override
 	public Sort getSort() {
-		return WdtkSorts.SORT_ENTITY;
-	}
-
-	@Override
-	public String getString() {
-		return this.entityIdValue.getIri();
+		return this.sort;
 	}
 
 }
