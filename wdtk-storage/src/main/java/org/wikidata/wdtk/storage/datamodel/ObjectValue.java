@@ -20,7 +20,6 @@ package org.wikidata.wdtk.storage.datamodel;
  * #L%
  */
 
-
 /**
  * Value for representing objects that are specified as lists of property-value
  * pairs. A property can have zero, one, or more values.
@@ -30,4 +29,5 @@ package org.wikidata.wdtk.storage.datamodel;
  */
 public interface ObjectValue extends Value, Iterable<PropertyValuePair> {
 
+	public int size();
 }

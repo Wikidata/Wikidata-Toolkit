@@ -80,4 +80,9 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public int size() {
+		return this.getSort().getPropertyRanges().size();
+	}
+
 }

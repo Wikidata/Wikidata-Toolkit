@@ -47,7 +47,8 @@ public class DbSortSchema implements SortSchema {
 		this.databaseManager = databaseManager;
 
 		for (Sort sort : sorts.values()) {
-			this.databaseManager.initializeDictionary(sort);
+			this.databaseManager.initializeDictionary(sort,
+					sortIds.get(sort.getName()));
 			// DEBUG:
 			// System.out.println("Found sort: " + sort.getName());
 		}
@@ -66,7 +67,18 @@ public class DbSortSchema implements SortSchema {
 			int id = this.nextId.incrementAndGet();
 			this.sorts.put(sort.getName(), sort);
 			this.sortIds.put(sort.getName(), id);
-			this.databaseManager.initializeDictionary(sort);
+			this.databaseManager.initializeDictionary(sort, id);
+			// TODO It would be nice to register record properties, but this can
+			// only be done after all sorts are registered; i.e., not during
+			// sort declaration -- not clear where to do this
+			// // Make Record properties known; they won't be introduced for
+			// // serialization but the DB should have them anyway:
+			// if (sort.getType() == SortType.RECORD) {
+			// for (PropertyRange pr : sort.getPropertyRanges()) {
+			// this.databaseManager.getOrCreatePropertyId(
+			// pr.getProperty(), sort.getName(), pr.getRange());
+			// }
+			// }
 		}
 		return sort;
 	}
@@ -76,9 +88,25 @@ public class DbSortSchema implements SortSchema {
 		return this.sorts.get(name);
 	}
 
+	/**
+	 * Returns the id of the sort of the given name. If no such sort is known,
+	 * the method fails with an exception. To check if a sort is known, use
+	 * {@link DbSortSchema#getSort(String)} instead.
+	 * 
+	 * @param name
+	 *            the name of the sort
+	 * @return the id of the sort
+	 * @throws IllegalArgumentException
+	 *             if no sort of this name is known
+	 */
 	public int getSortId(String name) {
 		Integer result = this.sortIds.get(name);
-		return (result == null) ? -1 : result;
+		if (result == null) {
+			throw new IllegalArgumentException("Sort \"" + name
+					+ "\" not known.");
+		} else {
+			return result;
+		}
 	}
 
 }

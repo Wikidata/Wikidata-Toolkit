@@ -34,14 +34,16 @@ public class TermsAdaptor implements PropertyTargets,
 
 	final String property;
 	final Iterator<MonolingualTextValue> monolingualTextValues;
+	final int targetCount;
 	MonolingualTextValue currentValue;
 	final WdtkAdaptorHelper helper;
 
 	public TermsAdaptor(String property,
-			Iterator<MonolingualTextValue> monolongualTextValues,
-			WdtkAdaptorHelper helper) {
+			Iterator<MonolingualTextValue> monolingualTextValues,
+			int targetCount, WdtkAdaptorHelper helper) {
 		this.property = property;
-		this.monolingualTextValues = monolongualTextValues;
+		this.monolingualTextValues = monolingualTextValues;
+		this.targetCount = targetCount;
 		this.helper = helper;
 	}
 
@@ -67,6 +69,11 @@ public class TermsAdaptor implements PropertyTargets,
 	}
 
 	@Override
+	public int getTargetCount() {
+		return this.targetCount;
+	}
+
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
@@ -79,6 +86,11 @@ public class TermsAdaptor implements PropertyTargets,
 	@Override
 	public Iterable<PropertyValuePair> getQualifiers() {
 		return Collections.<PropertyValuePair> emptyList();
+	}
+
+	@Override
+	public int getQualifierCount() {
+		return 0;
 	}
 
 }

@@ -26,14 +26,20 @@ public interface EdgeContainer extends Iterable<PropertyTargets> {
 
 	public interface PropertyTargets extends Iterable<TargetQualifiers> {
 		String getProperty();
+
+		int getTargetCount();
 	}
 
 	public interface TargetQualifiers {
 		Value getTarget();
 
 		Iterable<PropertyValuePair> getQualifiers();
+
+		int getQualifierCount();
 	}
 
 	Value getSource();
+
+	int getEdgeCount();
 
 }

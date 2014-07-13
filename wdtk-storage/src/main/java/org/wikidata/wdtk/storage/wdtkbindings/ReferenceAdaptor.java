@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
@@ -31,10 +32,12 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 public class ReferenceAdaptor implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
+	final Reference reference;
 	final WdtkAdaptorHelper helpers;
 	final Iterator<Snak> snakIterator;
 
 	public ReferenceAdaptor(Reference reference, WdtkAdaptorHelper helpers) {
+		this.reference = reference;
 		this.snakIterator = reference.getAllSnaks();
 		this.helpers = helpers;
 	}
@@ -63,6 +66,15 @@ public class ReferenceAdaptor implements ObjectValue,
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		int size = 0;
+		for (SnakGroup sg : this.reference.getSnakGroups()) {
+			size += sg.getSnaks().size();
+		}
+		return size;
 	}
 
 }

@@ -28,8 +28,7 @@ package org.wikidata.wdtk.storage.datamodel;
  * 
  */
 public enum SortType {
-	STRING((byte) 1), LONG((byte) 2), EDGE((byte) 3), RECORD((byte) 4), OBJECT(
-			(byte) 5);
+	STRING((byte) 1), LONG((byte) 2), RECORD((byte) 4), OBJECT((byte) 5);
 
 	final byte value;
 
@@ -47,8 +46,6 @@ public enum SortType {
 			return SortType.STRING;
 		case 2:
 			return SortType.LONG;
-		case 3:
-			return SortType.EDGE;
 		case 4:
 			return SortType.RECORD;
 		case 5:

@@ -67,4 +67,9 @@ public class StatementGroupAdaptor implements PropertyTargets,
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public int getTargetCount() {
+		return this.statementGroup.getStatements().size();
+	}
+
 }

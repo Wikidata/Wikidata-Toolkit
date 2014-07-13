@@ -20,21 +20,40 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-public class RecordValueForSerialization {
+public class EdgeContainerForSerialization {
 
-	final long[] refs;
-	final String[] strings;
+	final long source;
+	final long[] properties;
+	final long[][][] targetQualifiers;
 
-	public RecordValueForSerialization(long[] refs, String[] strings) {
-		this.refs = refs;
-		this.strings = strings;
+	public EdgeContainerForSerialization(long source, long[] properties,
+			long[][][] targetQualifiers) {
+		assert (properties.length == targetQualifiers.length);
+
+		this.source = source;
+		this.properties = properties;
+		this.targetQualifiers = targetQualifiers;
 	}
 
-	public long[] getRefs() {
-		return this.refs;
+	/**
+	 * @return the source
+	 */
+	public long getSource() {
+		return source;
 	}
 
-	public String[] getStrings() {
-		return this.strings;
+	/**
+	 * @return the properties
+	 */
+	public long[] getProperties() {
+		return properties;
 	}
+
+	/**
+	 * @return the targetQualifiers
+	 */
+	public long[][][] getTargetQualifiers() {
+		return targetQualifiers;
+	}
+
 }

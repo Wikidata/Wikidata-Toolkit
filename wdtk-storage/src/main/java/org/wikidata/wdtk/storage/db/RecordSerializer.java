@@ -36,7 +36,7 @@ public class RecordSerializer implements
 
 	final Sort sort;
 	transient int stringCount;
-	transient int longCount;
+	transient int refCount;
 	transient int fixedSize;
 
 	public RecordSerializer(Sort sort) {
@@ -47,17 +47,17 @@ public class RecordSerializer implements
 	@Override
 	public RecordValueForSerialization deserialize(DataInput in, int available)
 			throws IOException {
-		long[] longs = new long[this.longCount];
+		long[] refs = new long[this.refCount];
 		String[] strings = new String[this.stringCount];
 
-		for (int i = 0; i < this.longCount; i++) {
-			longs[i] = in.readLong();
+		for (int i = 0; i < this.refCount; i++) {
+			refs[i] = in.readLong();
 		}
 		for (int i = 0; i < this.stringCount; i++) {
 			strings[i] = in.readUTF();
 		}
 
-		return new RecordValueForSerialization(longs, strings);
+		return new RecordValueForSerialization(refs, strings);
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class RecordSerializer implements
 	public void serialize(DataOutput out, RecordValueForSerialization rvfs)
 			throws IOException {
 
-		for (int i = 0; i < this.longCount; i++) {
-			out.writeLong(rvfs.getLongs()[i]);
+		for (int i = 0; i < this.refCount; i++) {
+			out.writeLong(rvfs.getRefs()[i]);
 		}
 		for (int i = 0; i < this.stringCount; i++) {
 			out.writeUTF(rvfs.getStrings()[i]);
@@ -85,10 +85,10 @@ public class RecordSerializer implements
 			}
 		}
 		this.stringCount = sCount;
-		this.longCount = sort.getPropertyRanges().size() - sCount;
+		this.refCount = sort.getPropertyRanges().size() - sCount;
 
 		if (this.stringCount == 0) {
-			this.fixedSize = 8 * this.longCount;
+			this.fixedSize = 8 * this.refCount;
 		} else {
 			this.fixedSize = -1;
 		}

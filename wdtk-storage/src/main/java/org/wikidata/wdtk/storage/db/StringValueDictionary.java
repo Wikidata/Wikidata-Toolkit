@@ -20,93 +20,42 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.mapdb.BTreeKeySerializer;
-import org.mapdb.Bind;
+import org.mapdb.Bind.MapWithModificationListener;
 import org.mapdb.Serializer;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
-import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class StringValueDictionary extends BaseValueDictionary {
-
-	class StringValueIterator implements Iterator<Value> {
-
-		final Iterator<String> rawValueIterator;
-
-		public StringValueIterator(Iterator<String> rawValueIterator) {
-			this.rawValueIterator = rawValueIterator;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.rawValueIterator.hasNext();
-		}
-
-		@Override
-		public Value next() {
-			String rvfs = this.rawValueIterator.next();
-			return new StringValueImpl(rvfs, StringValueDictionary.this.sort);
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	final Bind.MapWithModificationListener<Long, String> values;
-	final Map<String, Long> ids;
+public class StringValueDictionary extends
+		BaseValueDictionary<StringValue, String> {
 
 	public StringValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		super(sort, databaseManager);
+	}
 
-		this.values = databaseManager.getDb()
-				.createTreeMap("sort-values-" + sort.getName())
+	@Override
+	protected String getInnerObject(StringValue outer) {
+		return outer.getString();
+	}
+
+	@Override
+	protected StringValue getOuterObject(String inner) {
+		return new StringValueImpl(inner, this.sort);
+	}
+
+	@Override
+	protected MapWithModificationListener<Long, String> initValues(String name) {
+		return databaseManager.getDb().createTreeMap(name)
 				.valueSerializer(Serializer.STRING).makeOrGet();
-		this.ids = databaseManager.getDb()
-				.createTreeMap("sort-ids-" + sort.getName())
+	}
+
+	@Override
+	protected Map<String, Long> initIds(String name) {
+		return databaseManager.getDb().createTreeMap(name)
 				.keySerializer(BTreeKeySerializer.STRING).makeOrGet();
-		Bind.mapInverse(this.values, this.ids);
-	}
-
-	@Override
-	public Value getValue(long id) {
-		String string = this.values.get(id);
-		if (string == null) {
-			return null;
-		} else {
-			return new StringValueImpl(string, this.sort);
-		}
-	}
-
-	@Override
-	public long getId(Value value) {
-		return getIdInternal(((StringValue) value).getString());
-	}
-
-	private long getIdInternal(String string) {
-		Long result = this.ids.get(string);
-		return (result == null) ? -1L : result;
-	}
-
-	@Override
-	public long getOrCreateId(Value value) {
-		String string = ((StringValue) value).getString();
-		long id = getIdInternal(string);
-		if (id == -1L) {
-			id = this.nextId.incrementAndGet();
-			this.values.put(id, string);
-		}
-		return id;
-	}
-
-	@Override
-	public Iterator<Value> iterator() {
-		return new StringValueIterator(this.values.values().iterator());
 	}
 
 }

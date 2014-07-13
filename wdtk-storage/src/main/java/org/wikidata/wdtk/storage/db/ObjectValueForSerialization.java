@@ -20,14 +20,33 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-public class RecordValueForSerialization {
+public class ObjectValueForSerialization {
 
+	public static final byte TYPE_REF = 1;
+	public static final byte TYPE_STRING = 2;
+
+	final long[] properties;
+	final byte[] types;
 	final long[] refs;
 	final String[] strings;
 
-	public RecordValueForSerialization(long[] refs, String[] strings) {
+	ObjectValueForSerialization(long[] properties, byte[] types, long[] refs,
+			String[] strings) {
+		assert (properties.length == types.length);
+		assert (properties.length == refs.length + strings.length);
+
+		this.properties = properties;
+		this.types = types;
 		this.refs = refs;
 		this.strings = strings;
+	}
+
+	public long[] getProperties() {
+		return this.properties;
+	}
+
+	public byte[] getTypes() {
+		return this.types;
 	}
 
 	public long[] getRefs() {

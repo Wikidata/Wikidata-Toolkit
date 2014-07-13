@@ -21,6 +21,7 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  */
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -97,7 +98,8 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	@Override
 	public boolean hasNext() {
 		return this.propertyIteratorPos < this.statementOffset
-				+ this.itemDocument.getStatementGroups().size() - 1; // this.maxOffset;
+				+ this.itemDocument.getStatementGroups().size() - 1; // TODO
+																		// this.maxOffset;
 	}
 
 	@Override
@@ -105,14 +107,21 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 		this.propertyIteratorPos++;
 		if (this.propertyIteratorPos == this.labelOffset) {
 			return new TermsAdaptor("wdtk:labels", this.itemDocument
-					.getLabels().values().iterator(), this.helpers);
+					.getLabels().values().iterator(), this.itemDocument
+					.getLabels().size(), this.helpers);
 		} else if (this.propertyIteratorPos == this.descriptionOffset) {
 			return new TermsAdaptor("wdtk:descriptions", this.itemDocument
-					.getDescriptions().values().iterator(), this.helpers);
+					.getDescriptions().values().iterator(), this.itemDocument
+					.getDescriptions().values().size(), this.helpers);
 		} else if (this.propertyIteratorPos == this.aliasOffset) {
+			int targetCount = 0;
+			for (List<MonolingualTextValue> l : this.itemDocument.getAliases()
+					.values()) {
+				targetCount += l.size();
+			}
 			return new TermsAdaptor("wdtk:aliases",
 					new NestedIterator<MonolingualTextValue>(this.itemDocument
-							.getAliases().values()), this.helpers);
+							.getAliases().values()), targetCount, this.helpers);
 		} else if (this.statementOffset >= 0
 				&& this.propertyIteratorPos - this.statementOffset < this.itemDocument
 						.getStatementGroups().size()) {
@@ -127,6 +136,13 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getEdgeCount() {
+		return this.statementOffset
+				+ this.itemDocument.getStatementGroups().size(); // TODO
+																	// this.maxOffset;
 	}
 
 }

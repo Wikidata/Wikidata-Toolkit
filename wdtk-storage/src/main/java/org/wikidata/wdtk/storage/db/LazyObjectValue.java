@@ -28,26 +28,27 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class LazyRecordValue implements ObjectValue,
+public class LazyObjectValue implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
-	final RecordValueDictionary recordDictionary;
-	final RecordValueForSerialization rvfs;
+	final ObjectValueForSerialization ovfs;
+	final ObjectValueDictionary objectValueDictionary;
 
 	int iLong;
 	int iString;
 	int i;
-	boolean atString;
+	byte currentType;
+	PropertySignature currentProperty;
 
-	public LazyRecordValue(RecordValueForSerialization rvfs,
-			RecordValueDictionary recordDictionary) {
-		this.recordDictionary = recordDictionary;
-		this.rvfs = rvfs;
+	public LazyObjectValue(ObjectValueForSerialization ovfs,
+			ObjectValueDictionary objectValueDictionary) {
+		this.ovfs = ovfs;
+		this.objectValueDictionary = objectValueDictionary;
 	}
 
 	@Override
 	public Sort getSort() {
-		return this.recordDictionary.getSort();
+		return this.objectValueDictionary.getSort();
 	}
 
 	@Override
@@ -60,20 +61,20 @@ public class LazyRecordValue implements ObjectValue,
 
 	@Override
 	public boolean hasNext() {
-		return (this.iLong + 1 < this.rvfs.getRefs().length)
-				|| (this.iString + 1 < this.rvfs.getStrings().length);
+		return this.i < this.ovfs.getTypes().length;
 	}
 
 	@Override
 	public PropertyValuePair next() {
 		this.i++;
-		if (this.recordDictionary.isString(this.i)) {
-			this.iString++;
-			this.atString = true;
-		} else {
+		if (this.ovfs.getTypes()[this.i] == ObjectValueForSerialization.TYPE_REF) {
 			this.iLong++;
-			this.atString = false;
+			this.currentType = ObjectValueForSerialization.TYPE_REF;
+		} else if (this.ovfs.getTypes()[this.i] == ObjectValueForSerialization.TYPE_STRING) {
+			this.iString++;
+			this.currentType = ObjectValueForSerialization.TYPE_STRING;
 		}
+		this.currentProperty = null;
 		return this;
 	}
 
@@ -84,26 +85,35 @@ public class LazyRecordValue implements ObjectValue,
 
 	@Override
 	public String getProperty() {
-		return this.recordDictionary.getSort().getPropertyRanges().get(this.i)
-				.getProperty();
+		return getCurrentPropertySignature().getPropertyName();
 	}
 
 	@Override
 	public Value getValue() {
-		if (this.atString) {
-			return new StringValueImpl(this.rvfs.getStrings()[this.iString],
+		if (this.currentType == ObjectValueForSerialization.TYPE_STRING) {
+			return new StringValueImpl(this.ovfs.getStrings()[this.iString],
 					Sort.SORT_STRING);
+		} else if (this.currentType == ObjectValueForSerialization.TYPE_REF) {
+			return this.objectValueDictionary.databaseManager.fetchValue(
+					this.ovfs.getRefs()[this.iLong],
+					getCurrentPropertySignature().getRangeId());
 		} else {
-			return this.recordDictionary.databaseManager.fetchValue(
-					this.rvfs.getRefs()[this.iLong], this.recordDictionary
-							.getSort().getPropertyRanges().get(this.i)
-							.getRange());
+			throw new UnsupportedOperationException(
+					"Cannot reconstruct objects of type " + this.currentType);
 		}
+	}
+
+	PropertySignature getCurrentPropertySignature() {
+		if (this.currentProperty == null) {
+			this.currentProperty = this.objectValueDictionary.databaseManager
+					.fetchPropertySignature(this.ovfs.getProperties()[this.i - 1]);
+		}
+		return this.currentProperty;
 	}
 
 	@Override
 	public int size() {
-		return this.getSort().getPropertyRanges().size();
+		return this.ovfs.getTypes().length;
 	}
 
 }

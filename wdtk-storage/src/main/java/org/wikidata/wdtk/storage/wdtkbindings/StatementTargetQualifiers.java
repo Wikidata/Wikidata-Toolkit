@@ -25,6 +25,7 @@ import java.util.Iterator;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -44,6 +45,7 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 	final WdtkAdaptorHelper helpers;
 	final Iterator<Snak> snakIterator;
 	Iterator<? extends Reference> referenceIterator;
+	final int qualifierCount;
 
 	String propertyForPropertyValuePair;
 	Value valueForPropertyValuePair;
@@ -54,6 +56,13 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 		this.helpers = helpers;
 		this.referenceIterator = statement.getReferences().iterator();
 		this.snakIterator = statement.getClaim().getAllQualifiers();
+
+		int claimQualifierCount = 0;
+		for (SnakGroup sg : statement.getClaim().getQualifiers()) {
+			claimQualifierCount += sg.getSnaks().size();
+		}
+		this.qualifierCount = claimQualifierCount + statement.getReferences().size()
+				+ 1 /* rank */;
 	}
 
 	@Override
@@ -121,6 +130,11 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 	@Override
 	public Value getValue() {
 		return valueForPropertyValuePair;
+	}
+
+	@Override
+	public int getQualifierCount() {
+		return this.qualifierCount;
 	}
 
 }
