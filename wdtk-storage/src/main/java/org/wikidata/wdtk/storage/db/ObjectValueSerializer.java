@@ -35,7 +35,7 @@ public class ObjectValueSerializer implements
 	@Override
 	public void serialize(DataOutput out, ObjectValueForSerialization value)
 			throws IOException {
-		out.write(value.getTypes().length);
+		out.writeInt(value.getTypes().length);
 		out.write(value.getTypes());
 
 		for (long propertyId : value.getProperties()) {
@@ -64,8 +64,10 @@ public class ObjectValueSerializer implements
 			types[i] = in.readByte();
 			if (types[i] == ObjectValueForSerialization.TYPE_REF) {
 				refCount++;
-			} else {
+			} else if (types[i] == ObjectValueForSerialization.TYPE_STRING) {
 				stringCount++;
+			} else {
+				throw new RuntimeException("Type bytes make no sense.");
 			}
 		}
 
@@ -79,7 +81,7 @@ public class ObjectValueSerializer implements
 			refs[i] = in.readLong();
 		}
 
-		String[] strings = new String[refCount];
+		String[] strings = new String[stringCount];
 		for (int i = 0; i < stringCount; i++) {
 			strings[i] = in.readUTF();
 		}

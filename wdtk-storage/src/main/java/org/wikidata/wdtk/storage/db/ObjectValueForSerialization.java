@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.storage.db;
 
+import java.util.Arrays;
+
 /*
  * #%L
  * Wikidata Toolkit Storage
@@ -55,5 +57,57 @@ public class ObjectValueForSerialization {
 
 	public String[] getStrings() {
 		return this.strings;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ObjectValueForSerialization [properties="
+				+ Arrays.toString(properties) + ", types="
+				+ Arrays.toString(types) + ", refs=" + Arrays.toString(refs)
+				+ ", strings=" + Arrays.toString(strings) + "]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(properties);
+		result = prime * result + Arrays.hashCode(refs);
+		result = prime * result + Arrays.hashCode(strings);
+		result = prime * result + Arrays.hashCode(types);
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ObjectValueForSerialization)) {
+			return false;
+		}
+		ObjectValueForSerialization other = (ObjectValueForSerialization) obj;
+		return Arrays.equals(types, other.types)
+				&& Arrays.equals(refs, other.refs)
+				&& Arrays.equals(strings, other.strings)
+				&& Arrays.equals(properties, other.properties);
 	}
 }

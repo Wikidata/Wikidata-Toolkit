@@ -87,7 +87,7 @@ public class ObjectValueDictionary extends
 	}
 
 	@Override
-	protected ObjectValue getOuterObject(ObjectValueForSerialization inner) {
+	public ObjectValue getOuterObject(ObjectValueForSerialization inner) {
 		return new LazyObjectValue(inner, this);
 	}
 

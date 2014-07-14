@@ -47,23 +47,24 @@ public class DatabaseManager {
 	protected final Map<String, ValueDictionary> sortNameDictionaries;
 	protected final Map<Integer, ValueDictionary> sortIdDictionaries;
 
-	protected final Map<String, EdgeContainerIndex> sortNameEdgeSpoqs;
+	protected final Map<String, EdgeContainerIndex> sortNameEdgeContainerIndexes;
 
 	protected final PropertyDictionary propertyDictionary;
 
 	public DatabaseManager(String dbName) {
 		File dbFile = new File(dbName + ".mapdb");
 		// this.db = DBMaker.newMemoryDirectDB().make();
-		this.db = DBMaker.newFileDB(dbFile).closeOnJvmShutdown().make();
+
+		this.db = DBMaker.newFileDB(dbFile).transactionDisable()
+				.mmapFileEnableIfSupported().cacheSize(1000000)
+				.asyncWriteEnable().closeOnJvmShutdown().make();
 
 		this.sortNameDictionaries = new HashMap<>();
 		this.sortIdDictionaries = new HashMap<>();
 		this.propertyDictionary = new PropertyDictionary(this);
-		this.sortNameEdgeSpoqs = new HashMap<>();
+		this.sortNameEdgeContainerIndexes = new HashMap<>();
 
 		this.sortSchema = new DbSortSchema(this);
-
-		// TODO open dictionaries for basic sorts; maybe just for string
 	}
 
 	public SortSchema getSortSchema() {
@@ -83,29 +84,14 @@ public class DatabaseManager {
 	}
 
 	public void updateEdges(EdgeContainer edgeContainer) {
-		EdgeContainerIndex eci = this.getEdgeSpoqBySortName(edgeContainer
-				.getSource().getSort().getName());
+		EdgeContainerIndex eci = this
+				.getEdgeContainerIndexBySortName(edgeContainer.getSource()
+						.getSort().getName());
 		eci.updateEdges(edgeContainer);
+	}
 
-		// Recursively convert values to ids based on dictionaries
-		// Build bytes for edge table
-		// put
-		// commit
-
-		// for (PropertyTargets pt : edgeContainer) {
-		// for (TargetQualifiers tq : pt) {
-		// if (tq.getTarget() == null) {
-		// continue;
-		// }
-		// if (WdtkSorts.SORTNAME_MTV.equals(tq.getTarget().getSort()
-		// .getName())) {
-		// if (tq.getTarget() instanceof LazyRecordValue) {
-		// System.out.println("*** We need to talk. ***");
-		// }
-		// this.getOrCreateValueId(tq.getTarget());
-		// }
-		// }
-		// }
+	public Iterable<EdgeContainer> edgeContainerIterator(String sortName) {
+		return this.getEdgeContainerIndexBySortName(sortName);
 	}
 
 	public Value fetchValue(long id, String sortName) {
@@ -122,6 +108,22 @@ public class DatabaseManager {
 		return this.propertyDictionary.getValue(id);
 	}
 
+	public EdgeContainer fetchEdgeContainer(Value value) {
+		Dictionary<Value> dictionary = getDictionaryBySortName(value.getSort()
+				.getName());
+		long id = dictionary.getId(value);
+		if (id == -1L) {
+			return null;
+		} else {
+			return fetchEdgeContainer(id, value.getSort().getName());
+		}
+	}
+
+	public EdgeContainer fetchEdgeContainer(long id, String sortName) {
+		EdgeContainerIndex eci = this.getEdgeContainerIndexBySortName(sortName);
+		return eci.getEdgeContainer(id);
+	}
+
 	public long getOrCreateValueId(Value value) {
 		Dictionary<Value> dictionary = getDictionaryBySortName(value.getSort()
 				.getName());
@@ -133,6 +135,13 @@ public class DatabaseManager {
 		int domainId = this.sortSchema.getSortId(domainSort);
 		int rangeId = this.sortSchema.getSortId(rangeSort);
 
+		return this.propertyDictionary.getOrCreateId(new PropertySignature(
+				propertyName, domainId, rangeId));
+	}
+
+	public long getOrCreatePropertyId(String propertyName, int domainId,
+			int rangeId) {
+		// TODO for testing; maybe not needed as public?
 		return this.propertyDictionary.getOrCreateId(new PropertySignature(
 				propertyName, domainId, rangeId));
 	}
@@ -165,12 +174,13 @@ public class DatabaseManager {
 		}
 	}
 
-	EdgeContainerIndex getEdgeSpoqBySortName(String sortName) {
-		EdgeContainerIndex eci = this.sortNameEdgeSpoqs.get(sortName);
+	EdgeContainerIndex getEdgeContainerIndexBySortName(String sortName) {
+		EdgeContainerIndex eci = this.sortNameEdgeContainerIndexes
+				.get(sortName);
 		if (eci == null) {
 			Sort sort = this.sortSchema.getSort(sortName);
 			eci = new EdgeContainerIndex(sort, this);
-			this.sortNameEdgeSpoqs.put(sortName, eci);
+			this.sortNameEdgeContainerIndexes.put(sortName, eci);
 		}
 		return eci;
 	}

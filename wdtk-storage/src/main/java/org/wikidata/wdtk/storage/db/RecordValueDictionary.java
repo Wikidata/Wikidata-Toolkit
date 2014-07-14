@@ -108,7 +108,7 @@ public class RecordValueDictionary extends
 	}
 
 	@Override
-	protected ObjectValue getOuterObject(RecordValueForSerialization inner) {
+	public ObjectValue getOuterObject(RecordValueForSerialization inner) {
 		return new LazyRecordValue(inner, this);
 	}
 

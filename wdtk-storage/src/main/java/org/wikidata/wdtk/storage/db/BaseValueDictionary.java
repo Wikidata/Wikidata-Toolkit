@@ -30,32 +30,7 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
 public abstract class BaseValueDictionary<Outer extends Value, Inner>
-		implements ValueDictionary {
-
-	class LazyValueIterator implements Iterator<Value> {
-
-		final Iterator<Inner> rawValueIterator;
-
-		public LazyValueIterator(Iterator<Inner> rawValueIterator) {
-			this.rawValueIterator = rawValueIterator;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.rawValueIterator.hasNext();
-		}
-
-		@Override
-		public Value next() {
-			Inner inner = this.rawValueIterator.next();
-			return getOuterObject(inner);
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
+		implements ValueDictionary, InnerToOuterObjectConverter<Inner, Outer> {
 
 	protected final Sort sort;
 	protected final Atomic.Long nextId;
@@ -87,7 +62,8 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 
 	@Override
 	public Iterator<Value> iterator() {
-		return new LazyValueIterator(this.values.values().iterator());
+		return new LazyOuterObjectIterator<Inner, Value>(this.values.values()
+				.iterator(), this);
 	}
 
 	@Override
@@ -125,7 +101,8 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 
 	protected abstract Inner getInnerObject(Outer outer);
 
-	protected abstract Outer getOuterObject(Inner inner);
+	@Override
+	public abstract Outer getOuterObject(Inner inner);
 
 	protected abstract Bind.MapWithModificationListener<Long, Inner> initValues(
 			String name);

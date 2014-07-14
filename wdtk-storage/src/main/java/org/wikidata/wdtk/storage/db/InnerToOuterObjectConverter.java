@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.db;
 
 /*
  * #%L
@@ -20,26 +20,7 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
+public interface InnerToOuterObjectConverter<Inner, Outer> {
 
-public class EntityValueAdaptor implements StringValue {
-
-	final EntityIdValue entityIdValue;
-
-	public EntityValueAdaptor(EntityIdValue entityValue) {
-		this.entityIdValue = entityValue;
-	}
-
-	@Override
-	public Sort getSort() {
-		return WdtkSorts.SORT_ENTITY;
-	}
-
-	@Override
-	public String getString() {
-		return this.entityIdValue.getIri();
-	}
-
+	Outer getOuterObject(Inner inner);
 }

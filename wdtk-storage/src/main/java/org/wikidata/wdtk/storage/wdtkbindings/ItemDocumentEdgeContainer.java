@@ -74,12 +74,12 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 			this.statementOffset = totalOffset;
 			totalOffset += itemDocument.getStatementGroups().size();
 		}
-		if (itemDocument.getSiteLinks().isEmpty()) {
-			this.sitelinkOffset = -1;
-		} else {
-			this.sitelinkOffset = totalOffset;
-			totalOffset++;
-		}
+		// if (itemDocument.getSiteLinks().isEmpty()) {
+		// this.sitelinkOffset = -1;
+		// } else {
+		// this.sitelinkOffset = totalOffset;
+		// totalOffset++;
+		// }
 		this.maxOffset = totalOffset - 1;
 	}
 
@@ -91,15 +91,12 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 
 	@Override
 	public Value getSource() {
-		return new EntityValueAdaptor(this.itemDocument.getEntityId(),
-				this.helpers);
+		return new EntityValueAdaptor(this.itemDocument.getEntityId());
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.propertyIteratorPos < this.statementOffset
-				+ this.itemDocument.getStatementGroups().size() - 1; // TODO
-																		// this.maxOffset;
+		return this.propertyIteratorPos < this.maxOffset;
 	}
 
 	@Override
@@ -140,9 +137,7 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 
 	@Override
 	public int getEdgeCount() {
-		return this.statementOffset
-				+ this.itemDocument.getStatementGroups().size(); // TODO
-																	// this.maxOffset;
+		return this.maxOffset + 1;
 	}
 
 }

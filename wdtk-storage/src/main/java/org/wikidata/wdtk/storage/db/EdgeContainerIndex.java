@@ -20,6 +20,8 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
+import java.util.Iterator;
+
 import org.mapdb.Bind;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
@@ -27,19 +29,22 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 
-public class EdgeContainerIndex {
+public class EdgeContainerIndex
+		implements
+		Iterable<EdgeContainer>,
+		InnerToOuterObjectConverter<EdgeContainerForSerialization, EdgeContainer> {
 
-	final Sort domainSort;
+	final Sort sourceSort;
 	final DatabaseManager databaseManager;
 
 	final Bind.MapWithModificationListener<Long, EdgeContainerForSerialization> values;
 
-	public EdgeContainerIndex(Sort domainSort, DatabaseManager databaseManager) {
-		this.domainSort = domainSort;
+	public EdgeContainerIndex(Sort sourceSort, DatabaseManager databaseManager) {
+		this.sourceSort = sourceSort;
 		this.databaseManager = databaseManager;
 
 		this.values = databaseManager.getDb()
-				.createHashMap("edges-spo-" + domainSort.getName())
+				.createHashMap("edges-spo-" + sourceSort.getName())
 				.valueSerializer(new EdgeContainerSerializer()).makeOrGet();
 
 	}
@@ -49,6 +54,34 @@ public class EdgeContainerIndex {
 				.getSource());
 		this.values.put(source,
 				getEdgeContainerForSerialization(edgeContainer, source));
+	}
+
+	public EdgeContainer getEdgeContainer(long id) {
+		EdgeContainerForSerialization inner = this.values.get(id);
+		if (inner == null) {
+			return null;
+		} else {
+			return getOuterObject(inner);
+		}
+	}
+
+	@Override
+	public Iterator<EdgeContainer> iterator() {
+		return new LazyOuterObjectIterator<>(this.values.values().iterator(),
+				this);
+	}
+
+	@Override
+	public EdgeContainer getOuterObject(EdgeContainerForSerialization inner) {
+		return new LazyEdgeContainer(inner, this);
+	}
+
+	public DatabaseManager getDatabaseManager() {
+		return this.databaseManager;
+	}
+
+	public Sort getSourceSort() {
+		return this.sourceSort;
 	}
 
 	EdgeContainerForSerialization getEdgeContainerForSerialization(
@@ -85,7 +118,7 @@ public class EdgeContainerIndex {
 			}
 
 			properties[i] = this.databaseManager.getOrCreatePropertyId(
-					pts.getProperty(), this.domainSort.getName(), rangeSort);
+					pts.getProperty(), this.sourceSort.getName(), rangeSort);
 			i++;
 		}
 

@@ -48,7 +48,7 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(EntityIdValue value) {
-		return new EntityValueAdaptor(value, this.helpers);
+		return new EntityValueAdaptor(value);
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class StringValueDictionary extends
 	}
 
 	@Override
-	protected StringValue getOuterObject(String inner) {
+	public StringValue getOuterObject(String inner) {
 		return new StringValueImpl(inner, this.sort);
 	}
 

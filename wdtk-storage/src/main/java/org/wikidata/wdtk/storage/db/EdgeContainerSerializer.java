@@ -71,7 +71,7 @@ public class EdgeContainerSerializer implements
 			targetQualifiers[i] = new long[targetCount][];
 			for (int j = 0; j < targetCount; j++) {
 				int qualifierCount = in.readInt();
-				targetQualifiers[i][j] = new long[qualifierCount];
+				targetQualifiers[i][j] = new long[1 + 2 * qualifierCount];
 				targetQualifiers[i][j][0] = in.readLong();
 				for (int k = 0; k < qualifierCount; k++) {
 					targetQualifiers[i][j][2 * k + 1] = in.readLong();

@@ -44,4 +44,52 @@ public class PropertySignature {
 		return this.rangeId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "PropertySignature [domainId=" + domainId + ", rangeId="
+				+ rangeId + ", propertyName=" + propertyName + "]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + domainId;
+		result = prime * result + propertyName.hashCode();
+		result = prime * result + rangeId;
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof PropertySignature)) {
+			return false;
+		}
+		PropertySignature other = (PropertySignature) obj;
+		return (domainId == other.domainId)
+				&& propertyName.equals(other.propertyName)
+				&& (rangeId == other.rangeId);
+	}
+
 }

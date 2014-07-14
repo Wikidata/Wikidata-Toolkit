@@ -61,8 +61,8 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 		for (SnakGroup sg : statement.getClaim().getQualifiers()) {
 			claimQualifierCount += sg.getSnaks().size();
 		}
-		this.qualifierCount = claimQualifierCount + statement.getReferences().size()
-				+ 1 /* rank */;
+		this.qualifierCount = claimQualifierCount
+				+ statement.getReferences().size() + 1 /* rank */;
 	}
 
 	@Override
@@ -71,9 +71,9 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 			return ((ValueSnak) this.statement.getClaim().getMainSnak())
 					.getValue().accept(this.helpers.getValueAdaptor());
 		} else if (this.statement.getClaim().getMainSnak() instanceof SomeValueSnak) {
-			return null;
+			return new StringValueImpl("SomeValue", Sort.SORT_STRING); // FIXME
 		} else if (this.statement.getClaim().getMainSnak() instanceof NoValueSnak) {
-			return null; // TODO this is not correct
+			return new StringValueImpl("NoValue", Sort.SORT_STRING); // FIXME
 		} else {
 			throw new RuntimeException("Unexpected snak type "
 					+ this.statement.getClaim().getMainSnak().getClass());

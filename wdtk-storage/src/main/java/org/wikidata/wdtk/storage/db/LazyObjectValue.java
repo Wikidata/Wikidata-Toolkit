@@ -61,7 +61,7 @@ public class LazyObjectValue implements ObjectValue,
 
 	@Override
 	public boolean hasNext() {
-		return this.i < this.ovfs.getTypes().length;
+		return this.i + 1 < this.ovfs.getTypes().length;
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class LazyObjectValue implements ObjectValue,
 	PropertySignature getCurrentPropertySignature() {
 		if (this.currentProperty == null) {
 			this.currentProperty = this.objectValueDictionary.databaseManager
-					.fetchPropertySignature(this.ovfs.getProperties()[this.i - 1]);
+					.fetchPropertySignature(this.ovfs.getProperties()[this.i]);
 		}
 		return this.currentProperty;
 	}
