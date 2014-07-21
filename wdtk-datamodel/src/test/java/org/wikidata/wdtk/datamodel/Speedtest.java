@@ -37,7 +37,7 @@ public class Speedtest {
 	}
 
 	@Test
-	public void runSerializationTest() throws JsonProcessingException {
+	public void runSerializationTest() throws IOException {
 		ItemDocument document = this.createItemDocument();
 		
 		int runs = 1000;
@@ -90,6 +90,25 @@ public class Speedtest {
 		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
 		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
 		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
+		
+		// jackson (deserialization)
+		
+		String token = mapper.writeValueAsString(altDocument);
+		
+		t = new Timer(baseIri, Timer.RECORD_ALL);
+		mapper = new ObjectMapper();
+		for (int i = 0; i < runs; i++) {
+			t.start();
+			mapper.readValue(token, ItemDocumentImpl.class);
+			t.stop();
+		}
+		
+		System.err.println("Jackson (deserialization)");
+		System.err.println("Avg. CPU: \t" + t.getAvgCpuTime());
+		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
+		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
+		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
+		
 	}
 
 	private ItemDocument createItemDocument() {

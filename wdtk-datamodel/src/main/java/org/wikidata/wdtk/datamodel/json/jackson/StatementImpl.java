@@ -32,12 +32,6 @@ public class StatementImpl implements Statement {
 	 */
 	private SnakImpl mainsnak; 
 	
-	/**
-	 * This is not in the Json, just to satisfy the wdtk data model.
-	 */
-	@JsonIgnore
-	private ClaimImpl claim;
-	
 	private Map<String, List<SnakImpl>> qualifiers;
 
 	/**
@@ -50,10 +44,10 @@ public class StatementImpl implements Statement {
 		return "statement";
 	}
 
+	@JsonIgnore // not in the JSON, just to satisfy the interface
 	@Override
 	public Claim getClaim() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ClaimImpl(this);
 	}
 
 	@Override
@@ -64,11 +58,14 @@ public class StatementImpl implements Statement {
 	public void setRank(StatementRank rank) {
 		this.rank = rank;
 	}
-
+	
 	@Override
 	public List<? extends Reference> getReferences() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.references;
+	}
+	
+	public void setReferences(List<ReferenceImpl> references){
+		this.references = references;
 	}
 
 	@JsonProperty("id")
@@ -88,5 +85,13 @@ public class StatementImpl implements Statement {
 	
 	public void setMainsnak(SnakImpl mainsnak){
 		this.mainsnak = mainsnak;
+	}
+	
+	public void setQualifiers(Map<String, List<SnakImpl>> qualifiers){
+		this.qualifiers = qualifiers;
+	}
+	
+	public Map<String, List<SnakImpl>> getQualifiers(){
+		return this.qualifiers;
 	}
 }

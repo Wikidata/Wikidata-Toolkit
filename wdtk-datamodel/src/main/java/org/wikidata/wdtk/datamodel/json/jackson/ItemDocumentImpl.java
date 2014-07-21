@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,56 +44,67 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDocumentImpl extends EntityDocumentImpl implements
 		ItemDocument {
-	
-	// the type field will be ignored.
-	// this is an ItemDocument, so the type is clear.
-	// for writing out to external Json there is a hard-coded solution
 
 	private Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
 	private Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
 	private Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
-	
-	@JsonProperty("sitelinks") // different name in Json
-	private Map<String, SiteLinkImpl> siteLinks = new HashMap<>(); 
-	
-	// the following is not mapped directly towards Json
-	// rather split up into two Json fields
+	private Map<String, List<StatementImpl>> claim = new HashMap<>();
+
+	@JsonProperty("sitelinks") // has a different name in the JSON files
+	private Map<String, SiteLinkImpl> siteLinks = new HashMap<>();
+
+	// the following is not mapped directly towards JSON
+	// rather split up into two JSON fields:
+	// "type" and "id"
+	// the type field in the JSON will be ignored.
+	// this is an ItemDocument, so the type is clear.
+	// for writing out to external JSON there is a hard-coded solution
 	@JsonIgnore
 	private ItemIdImpl itemId = new ItemIdImpl();
-	
-	// TODO StatementGroups (claims)
 
-	public ItemDocumentImpl(){}
-	public ItemDocumentImpl(ItemDocument source){
-		
+	public ItemDocumentImpl() {
+	}
+
+	/**
+	 * A constructor for generating ItemDocumentImpl-objects from other
+	 * implementations that satisfy the ItemDocument-interface. This can be used
+	 * for converting other implementations into this one for later export.
+	 * 
+	 * @param source is the implementation to be used as a base.
+	 */
+	public ItemDocumentImpl(ItemDocument source) {
+
 		// build aliases
-		for( Entry<String, List<MonolingualTextValue>> mltvs : source.getAliases().entrySet()){
+		for (Entry<String, List<MonolingualTextValue>> mltvs : source
+				.getAliases().entrySet()) {
 			List<MonolingualTextValueImpl> value = new LinkedList<>();
-			for(MonolingualTextValue mltv : mltvs.getValue()){
+			for (MonolingualTextValue mltv : mltvs.getValue()) {
 				value.add(new MonolingualTextValueImpl(mltv));
 			}
 			this.aliases.put(mltvs.getKey(), value);
 		}
-		
+
 		// build labels
-		for( Entry<String, MonolingualTextValue> mltvs : source.getLabels().entrySet()){
-			this.labels.put(mltvs.getKey(), new MonolingualTextValueImpl(mltvs.getValue()));
+		for (Entry<String, MonolingualTextValue> mltvs : source.getLabels()
+				.entrySet()) {
+			this.labels.put(mltvs.getKey(),
+					new MonolingualTextValueImpl(mltvs.getValue()));
 		}
 		// build descriptions
-		for( Entry<String, MonolingualTextValue> mltvs : source.getDescriptions().entrySet()){
-			this.descriptions.put(mltvs.getKey(), new MonolingualTextValueImpl(mltvs.getValue()));
+		for (Entry<String, MonolingualTextValue> mltvs : source
+				.getDescriptions().entrySet()) {
+			this.descriptions.put(mltvs.getKey(), new MonolingualTextValueImpl(
+					mltvs.getValue()));
 		}
 		// build siteLinks
-		for( Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()){
-			this.siteLinks.put(mltvs.getKey(), new SiteLinkImpl(mltvs.getValue()));
+		for (Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()) {
+			this.siteLinks.put(mltvs.getKey(),
+					new SiteLinkImpl(mltvs.getValue()));
 		}
 		// build StatementGroups
 		// TODO
 	}
-	
-	
-	
-	
+
 	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
 		this.labels = labels;
 	}
@@ -122,10 +134,10 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 		return returnMap;
 	}
 
-	public void setAliases(Map<String, List<MonolingualTextValueImpl>> aliases){
+	public void setAliases(Map<String, List<MonolingualTextValueImpl>> aliases) {
 		this.aliases = aliases;
 	}
-	
+
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
 
@@ -143,46 +155,49 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	}
 
 	@JsonProperty("id")
-	public void setId(String id){
+	public void setId(String id) {
 		this.itemId.setId(id);
 	}
-	
+
 	@JsonProperty("id")
-	public String getId(){
+	public String getId() {
 		return this.itemId.getId();
 	}
-	
+
 	@JsonProperty("type")
-	public String getType(){
+	public String getType() {
 		return "item";
 	}
-	
-	@JsonIgnore
-	public void setItemId(ItemIdImpl itemId){
+
+	@JsonIgnore // ignored since the JSON field is handled by setId()
+	public void setItemId(ItemIdImpl itemId) {
 		this.itemId = itemId;
 	}
-	
-	@JsonIgnore
-	@Override
+
+	@JsonIgnore // ignored since the JSON field is handled by getId()
+	@Override 
 	public ItemIdValue getItemId() {
 		return this.itemId;
 	}
 
-	@JsonIgnore
+	@JsonIgnore // only needed to satisfy the interface
 	@Override
 	public List<StatementGroup> getStatementGroups() {
-		// TODO Auto-generated method stub
-		return null;
+		List<StatementGroup> resultList = new ArrayList<>();
+		for(StatementGroupImpl statementGroup : Helper.buildStatementGroups(this.claim)){
+			resultList.add(statementGroup);
+		}
+		return resultList;
 	}
 
-	public void setSitelinks(Map<String, SiteLinkImpl> sitelinks){
+	public void setSitelinks(Map<String, SiteLinkImpl> sitelinks) {
 		this.siteLinks = sitelinks;
 	}
-	
+
 	@JsonProperty("sitelinks")
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		
+
 		// because of the typing provided by the interface one has to
 		// re-create the map anew, simple casting is not possible
 		Map<String, SiteLink> returnMap = new HashMap<>();
@@ -190,10 +205,17 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 		return returnMap;
 	}
 
-	@JsonIgnore
+	@JsonIgnore // not needed in JSON, just to satisfy the interface
 	@Override
 	public EntityIdValue getEntityId() {
 		return this.itemId;
 	}
 
+	public void setClaim(Map<String, List<StatementImpl>> claim){
+		this.claim = claim;
+	}
+	
+	public Map<String, List<StatementImpl>> getClaim(){
+		return this.claim;
+	}
 }
