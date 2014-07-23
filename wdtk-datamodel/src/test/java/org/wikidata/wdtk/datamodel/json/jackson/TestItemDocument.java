@@ -20,20 +20,8 @@ import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestItemDocument {
-	
-	ObjectMapper mapper = new ObjectMapper();
-	
-	// wrapping into item document structure for dedicated tests
-	static final String typeJson = "\"type\":\"item\"";
-	static final String testLabelJson = "{\"labels\":{\"en\":" + TestMonolingualTextValue.testMltvJson + "}," + typeJson + "}";
-	static final String testDescriptionJson = "{\"descriptions\":{\"en\":" + TestMonolingualTextValue.testMltvJson + "}," + typeJson + "}";
-	static final String testAliasJson = "{ \"aliases\":{\"en\":[" + TestMonolingualTextValue.testMltvJson + "]}," + typeJson + "}";
-	static final String testItemIdJson = "{\"id\":\"Q1\"," + typeJson + "}";
-	static final String testSiteLinkJson = "{\"sitelinks\":{\"enwiki\":" + TestSiteLink.testSiteLinkJson + "}," + typeJson + "}";
-	
+public class TestItemDocument extends JsonConversionTest {
 	
 	// puzzle pieces for creation of the test object
 	Map<String, MonolingualTextValueImpl> testMltvMap;
@@ -57,7 +45,7 @@ public class TestItemDocument {
 	
 	@Before
 	public void setupTestItemId(){
-		testItemId = new ItemIdImpl("Q1");
+		testItemId = new ItemIdImpl(itemId);
 	}
 	
 	@Before
@@ -76,8 +64,7 @@ public class TestItemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			// remove all whitespaces, they cause might the test to fail unjustified
-			JsonComparator.compareJsonStrings(testLabelJson, result);
+			JsonComparator.compareJsonStrings(wrappedLabelJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -91,7 +78,7 @@ public class TestItemDocument {
 	public void testLabelToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testLabelJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(wrappedLabelJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getLabels());
@@ -118,7 +105,7 @@ public class TestItemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(testDescriptionJson, result);
+			JsonComparator.compareJsonStrings(wrappedDescriptionJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -132,7 +119,7 @@ public class TestItemDocument {
 	public void testDescriptionsToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testDescriptionJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(wrappedDescriptionJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getDescriptions());
@@ -156,7 +143,7 @@ public class TestItemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(testAliasJson, result);
+			JsonComparator.compareJsonStrings(wrappedAliasJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -167,7 +154,7 @@ public class TestItemDocument {
 	public void testAliasesToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testAliasJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(wrappedAliasJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testAliases, result.getAliases());
@@ -191,7 +178,7 @@ public class TestItemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(testItemIdJson, result);
+			JsonComparator.compareJsonStrings(wrappedItemIdJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -202,7 +189,7 @@ public class TestItemDocument {
 	public void testItemIdToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testItemIdJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(wrappedItemIdJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testItemId, result.getEntityId());
@@ -226,7 +213,7 @@ public class TestItemDocument {
 		
 		try {
 			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(testSiteLinkJson, result);
+			JsonComparator.compareJsonStrings(wrappedSiteLinkJson, result);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			fail("Converting Pojo to Json failed");
@@ -237,7 +224,7 @@ public class TestItemDocument {
 	public void testSiteLinksToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(testSiteLinkJson, ItemDocumentImpl.class);
+			ItemDocumentImpl result = mapper.readValue(wrappedSiteLinkJson, ItemDocumentImpl.class);
 			
 			assertNotNull(result);
 			assertEquals(testSiteLinkMap, result.getSiteLinks());
