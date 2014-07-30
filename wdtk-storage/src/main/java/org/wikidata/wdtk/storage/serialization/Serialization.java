@@ -25,9 +25,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
-import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
-import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
@@ -122,37 +119,6 @@ public class Serialization {
 		}
 	}
 
-	public static void serializeEdgeContainer(DataOutput out,
-			EdgeContainer edgeContainer, int sourceId, Sort sourceSort,
-			DatabaseManager databaseManager) throws IOException {
-
-		out.writeInt(sourceId);
-
-		out.writeInt(edgeContainer.getEdgeCount());
-
-		for (PropertyTargets pts : edgeContainer) {
-			String rangeSort = null;
-			for (TargetQualifiers tqs : pts) {
-				if (rangeSort == null) {
-					rangeSort = tqs.getTarget().getSort().getName();
-					out.writeInt(databaseManager.getOrCreatePropertyId(
-							pts.getProperty(), sourceSort.getName(), rangeSort));
-					out.writeInt(pts.getTargetCount());
-				}
-
-				out.writeInt(tqs.getQualifierCount());
-				serializeValue(out, tqs.getTarget(), databaseManager);
-
-				for (PropertyValuePair pvp : tqs.getQualifiers()) {
-					out.writeInt(databaseManager.getOrCreatePropertyId(
-							pvp.getProperty(), rangeSort, pvp.getValue()
-									.getSort().getName()));
-					serializeValue(out, pvp.getValue(), databaseManager);
-				}
-			}
-		}
-	}
-
 	public static StringValue deserializeStringValue(DataInput in, Sort sort)
 			throws IOException {
 		return new StringValueImpl(in.readUTF(), sort);
@@ -216,70 +182,6 @@ public class Serialization {
 
 		return new LazyObjectValue(properties, refs, values, sort,
 				databaseManager);
-	}
-
-	public static EdgeContainer deserializeEdgeContainer(DataInput in,
-			Sort sourceSort, DatabaseManager databaseManager)
-			throws IOException {
-
-		int sourceId = in.readInt();
-		int propertyCount = in.readInt();
-
-		PropertySignature[] properties = new PropertySignature[propertyCount];
-		Object[][][] targetQualifiers = new Object[propertyCount][][];
-
-		for (int i = 0; i < propertyCount; i++) {
-			int propertyId = in.readInt();
-			properties[i] = databaseManager.fetchPropertySignature(propertyId);
-			Sort propertySort = databaseManager.getSortSchema().getSort(
-					properties[i].getRangeId());
-			boolean useDictionary = databaseManager.getSortSchema()
-					.useDictionary(propertySort.getName());
-
-			int targetCount = in.readInt();
-			targetQualifiers[i] = new Object[targetCount][];
-			for (int j = 0; j < targetCount; j++) {
-				int qualifierCount = in.readInt();
-
-				targetQualifiers[i][j] = new Object[1 + 2 * qualifierCount];
-
-				if (useDictionary) {
-					targetQualifiers[i][j][0] = in.readInt();
-				} else {
-					targetQualifiers[i][j][0] = deserializeInlineValue(in,
-							propertySort, databaseManager);
-				}
-
-				for (int k = 0; k < qualifierCount; k++) {
-					int qualifierPropertyId = in.readInt();
-					PropertySignature qualifierSignature = databaseManager
-							.fetchPropertySignature(qualifierPropertyId);
-					targetQualifiers[i][j][2 * k + 1] = qualifierSignature;
-					if (qualifierSignature == null) {
-						System.out.println("Something bad has happened: "
-								+ qualifierPropertyId
-								+ " not found. We are in object " + sourceId
-								+ " reading statement " + j + " of property "
-								+ propertyId + " ("
-								+ properties[i].getPropertyName()
-								+ "), processing the qualifier " + k + " of "
-								+ qualifierCount);
-					}
-					Sort qualifierSort = databaseManager.getSortSchema()
-							.getSort(qualifierSignature.getRangeId());
-					if (databaseManager.getSortSchema().useDictionary(
-							qualifierSort.getName())) {
-						targetQualifiers[i][j][2 * k + 2] = in.readInt();
-					} else {
-						targetQualifiers[i][j][2 * k + 2] = deserializeInlineValue(
-								in, qualifierSort, databaseManager);
-					}
-				}
-			}
-		}
-
-		return new LazyEdgeContainer(sourceId, sourceSort, properties,
-				targetQualifiers, databaseManager);
 	}
 
 	protected static void deserializeSortedValues(DataInput in, Sort[] sorts,
