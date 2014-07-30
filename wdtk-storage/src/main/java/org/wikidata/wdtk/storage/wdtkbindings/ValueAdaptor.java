@@ -34,16 +34,10 @@ import org.wikidata.wdtk.storage.datamodel.Value;
 
 public class ValueAdaptor implements ValueVisitor<Value> {
 
-	final WdtkAdaptorHelper helpers;
-
-	public ValueAdaptor(WdtkAdaptorHelper helpers) {
-		this.helpers = helpers;
-	}
-
 	@Override
 	public Value visit(DatatypeIdValue value) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(
+				"DatatypeIdValues not supported yet");
 	}
 
 	@Override
@@ -60,7 +54,7 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
-		return new MonolingualTextValueAdaptor(value, this.helpers);
+		return new MonolingualTextValueAdaptor(value, WdtkSorts.SORT_MTV);
 	}
 
 	@Override

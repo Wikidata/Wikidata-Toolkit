@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.serialization;
 
 /*
  * #%L
@@ -25,7 +25,10 @@ import java.util.Iterator;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.db.DatabaseManager;
+import org.wikidata.wdtk.storage.db.PropertySignature;
 
 public class LazyEdgeContainer implements EdgeContainer,
 		Iterator<PropertyTargets> {
@@ -34,13 +37,12 @@ public class LazyEdgeContainer implements EdgeContainer,
 			Iterator<TargetQualifiers> {
 
 		int iTarget;
-		final long propertyId;
-		final long[][] targets;
+		final PropertySignature propertySignature;
+		final Object[][] targets;
 
-		PropertySignature propertySignature = null;
-
-		public LazyPropertyTargets(long propertyId, long[][] targets) {
-			this.propertyId = propertyId;
+		public LazyPropertyTargets(PropertySignature propertySignature,
+				Object[][] targets) {
+			this.propertySignature = propertySignature;
 			this.targets = targets;
 		}
 
@@ -52,7 +54,7 @@ public class LazyEdgeContainer implements EdgeContainer,
 
 		@Override
 		public String getProperty() {
-			return getPropertySignature().getPropertyName();
+			return this.propertySignature.getPropertyName();
 		}
 
 		@Override
@@ -69,21 +71,12 @@ public class LazyEdgeContainer implements EdgeContainer,
 		public TargetQualifiers next() {
 			this.iTarget++;
 			return new LazyTargetQualifiers(this.targets[this.iTarget],
-					getPropertySignature().getRangeId());
+					this.propertySignature.getRangeId());
 		}
 
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-		}
-
-		PropertySignature getPropertySignature() {
-			if (this.propertySignature == null) {
-				this.propertySignature = LazyEdgeContainer.this.edgeContainerIndex
-						.getDatabaseManager().fetchPropertySignature(
-								this.propertyId);
-			}
-			return this.propertySignature;
 		}
 
 	}
@@ -92,14 +85,14 @@ public class LazyEdgeContainer implements EdgeContainer,
 			Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
 			PropertyValuePair {
 
-		final long[] targetQualifiers;
+		final Object[] targetQualifiers;
 		final int sortId;
 		final int qualifierCount;
 
 		int iQualifier;
-		PropertySignature qualifierPropertySignature;
+		PropertySignature currentQualifierPropertySignature;
 
-		public LazyTargetQualifiers(long[] targetQualifiers, int sortId) {
+		public LazyTargetQualifiers(Object[] targetQualifiers, int sortId) {
 			this.targetQualifiers = targetQualifiers;
 			this.sortId = sortId;
 			this.qualifierCount = (this.targetQualifiers.length - 1) / 2;
@@ -107,9 +100,12 @@ public class LazyEdgeContainer implements EdgeContainer,
 
 		@Override
 		public Value getTarget() {
-			return LazyEdgeContainer.this.edgeContainerIndex
-					.getDatabaseManager().fetchValue(this.targetQualifiers[0],
-							sortId);
+			if (this.targetQualifiers[0] instanceof Integer) {
+				return LazyEdgeContainer.this.databaseManager.fetchValue(
+						(Integer) this.targetQualifiers[0], this.sortId);
+			} else {
+				return (Value) this.targetQualifiers[0];
+			}
 		}
 
 		@Override
@@ -125,7 +121,7 @@ public class LazyEdgeContainer implements EdgeContainer,
 		@Override
 		public Iterator<PropertyValuePair> iterator() {
 			this.iQualifier = -1;
-			this.qualifierPropertySignature = null;
+			this.currentQualifierPropertySignature = null;
 			return this;
 		}
 
@@ -137,7 +133,7 @@ public class LazyEdgeContainer implements EdgeContainer,
 		@Override
 		public PropertyValuePair next() {
 			this.iQualifier++;
-			this.qualifierPropertySignature = null;
+			this.currentQualifierPropertySignature = null;
 			return this;
 		}
 
@@ -148,38 +144,44 @@ public class LazyEdgeContainer implements EdgeContainer,
 
 		@Override
 		public String getProperty() {
-			return getPropertySignature().getPropertyName();
+			return getCurrentPropertySignature().getPropertyName();
 		}
 
 		@Override
 		public Value getValue() {
-			return LazyEdgeContainer.this.edgeContainerIndex
-					.getDatabaseManager().fetchValue(
-							this.targetQualifiers[2 + (2 * this.iQualifier)],
-							getPropertySignature().rangeId);
+			Object valueObject = this.targetQualifiers[2 + (2 * this.iQualifier)];
+			if (valueObject instanceof Integer) {
+				return LazyEdgeContainer.this.databaseManager.fetchValue(
+						(Integer) valueObject, getCurrentPropertySignature()
+								.getRangeId());
+			} else {
+				return (Value) valueObject;
+			}
+
 		}
 
-		PropertySignature getPropertySignature() {
-			if (this.qualifierPropertySignature == null) {
-				this.qualifierPropertySignature = LazyEdgeContainer.this.edgeContainerIndex
-						.getDatabaseManager()
-						.fetchPropertySignature(
-								this.targetQualifiers[1 + (2 * this.iQualifier)]);
-			}
-			return this.qualifierPropertySignature;
+		PropertySignature getCurrentPropertySignature() {
+			return (PropertySignature) this.targetQualifiers[1 + (2 * this.iQualifier)];
 		}
 
 	}
 
-	final EdgeContainerForSerialization ecfs;
-	final EdgeContainerIndex edgeContainerIndex;
+	final DatabaseManager databaseManager;
+	final int sourceId;
+	final Sort sourceSort;
+	final PropertySignature[] properties;
+	final Object[][][] targetQualifiers;
 
 	int iProperty;
 
-	public LazyEdgeContainer(EdgeContainerForSerialization ecfs,
-			EdgeContainerIndex edgeContainerIndex) {
-		this.ecfs = ecfs;
-		this.edgeContainerIndex = edgeContainerIndex;
+	public LazyEdgeContainer(int sourceId, Sort sourceSort,
+			PropertySignature[] properties, Object[][][] targetQualifiers,
+			DatabaseManager databaseManager) {
+		this.sourceId = sourceId;
+		this.sourceSort = sourceSort;
+		this.properties = properties;
+		this.targetQualifiers = targetQualifiers;
+		this.databaseManager = databaseManager;
 	}
 
 	@Override
@@ -190,31 +192,30 @@ public class LazyEdgeContainer implements EdgeContainer,
 
 	@Override
 	public Value getSource() {
-		return this.edgeContainerIndex.databaseManager.fetchValue(
-				this.ecfs.source, this.edgeContainerIndex.getSourceSort()
-						.getName());
+		return this.databaseManager.fetchValue(this.sourceId,
+				this.sourceSort.getName());
 	}
 
 	@Override
 	public int getEdgeCount() {
-		return this.ecfs.getProperties().length;
+		return this.properties.length;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.iProperty + 1 < this.ecfs.getProperties().length;
+		return this.iProperty + 1 < this.properties.length;
 	}
 
 	@Override
 	public PropertyTargets next() {
 		this.iProperty++;
-		return new LazyPropertyTargets(
-				this.ecfs.getProperties()[LazyEdgeContainer.this.iProperty],
-				this.ecfs.getTargetQualifiers()[LazyEdgeContainer.this.iProperty]);
+		return new LazyPropertyTargets(this.properties[this.iProperty],
+				this.targetQualifiers[this.iProperty]);
 	}
 
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
+
 }

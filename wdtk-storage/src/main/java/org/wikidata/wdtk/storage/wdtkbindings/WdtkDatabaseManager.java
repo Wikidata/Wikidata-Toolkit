@@ -27,9 +27,15 @@ public class WdtkDatabaseManager extends DatabaseManager {
 	public WdtkDatabaseManager(String dbName) {
 		super(dbName);
 
-		this.sortSchema.declareSort(WdtkSorts.SORT_ENTITY);
-		this.sortSchema.declareSort(WdtkSorts.SORT_MTV);
-		this.sortSchema.declareSort(WdtkSorts.SORT_REFERENCE);
+		this.sortSchema.declareSort(WdtkSorts.SORT_ENTITY, true);
+		this.sortSchema.declareSort(WdtkSorts.SORT_MTV, false);
+		this.sortSchema.declareSort(WdtkSorts.SORT_LABEL, false);
+		this.sortSchema.declareSort(WdtkSorts.SORT_LABEL_STRING, false);
+		this.sortSchema.declareSort(WdtkSorts.SORT_DESCRIPTION, false);
+		this.sortSchema.declareSort(WdtkSorts.SORT_ALIAS, false);
+		// this.sortSchema.declareSort(WdtkSorts.SORT_TERMS, true);
+		this.sortSchema.declareSort(WdtkSorts.SORT_REFERENCE, true);
+		this.sortSchema.declareSort(WdtkSorts.SORT_SITE_LINK, false);
 	}
 
 }

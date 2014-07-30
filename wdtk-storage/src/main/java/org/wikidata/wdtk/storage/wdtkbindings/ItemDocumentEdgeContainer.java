@@ -39,6 +39,7 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	int labelOffset;
 	int descriptionOffset;
 	int aliasOffset;
+	int termBlobOffset;
 	int statementOffset;
 	int sitelinkOffset;
 	int maxOffset;
@@ -49,24 +50,35 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 		this.helpers = helpers;
 		this.propertyIteratorPos = 0;
 
+		boolean termsAsBlob = false;
+
 		int totalOffset = 0;
-		if (itemDocument.getLabels().isEmpty()) {
+		if (termsAsBlob || itemDocument.getLabels().isEmpty()) {
 			this.labelOffset = -1;
 		} else {
 			this.labelOffset = totalOffset;
 			totalOffset++;
 		}
-		if (itemDocument.getDescriptions().isEmpty()) {
+		if (termsAsBlob || itemDocument.getDescriptions().isEmpty()) {
 			this.descriptionOffset = -1;
 		} else {
 			this.descriptionOffset = totalOffset;
 			totalOffset++;
 		}
-		if (itemDocument.getAliases().isEmpty()) {
+		if (termsAsBlob || itemDocument.getAliases().isEmpty()) {
 			this.aliasOffset = -1;
 		} else {
 			this.aliasOffset = totalOffset;
 			totalOffset++;
+		}
+		if (termsAsBlob
+				&& !(itemDocument.getLabels().isEmpty()
+						&& itemDocument.getDescriptions().isEmpty() && itemDocument
+						.getAliases().isEmpty())) {
+			this.termBlobOffset = totalOffset;
+			totalOffset++;
+		} else {
+			this.termBlobOffset = -1;
 		}
 		if (itemDocument.getStatementGroups().isEmpty()) {
 			this.statementOffset = -1;
@@ -74,12 +86,12 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 			this.statementOffset = totalOffset;
 			totalOffset += itemDocument.getStatementGroups().size();
 		}
-		// if (itemDocument.getSiteLinks().isEmpty()) {
-		// this.sitelinkOffset = -1;
-		// } else {
-		// this.sitelinkOffset = totalOffset;
-		// totalOffset++;
-		// }
+		if (itemDocument.getSiteLinks().isEmpty()) {
+			this.sitelinkOffset = -1;
+		} else {
+			this.sitelinkOffset = totalOffset;
+			totalOffset++;
+		}
 		this.maxOffset = totalOffset - 1;
 	}
 
@@ -103,22 +115,26 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	public PropertyTargets next() {
 		this.propertyIteratorPos++;
 		if (this.propertyIteratorPos == this.labelOffset) {
-			return new TermsAdaptor("wdtk:labels", this.itemDocument
+			return new TermsAdaptor(WdtkSorts.PROP_LABEL, this.itemDocument
 					.getLabels().values().iterator(), this.itemDocument
-					.getLabels().size(), this.helpers);
+					.getLabels().size(), WdtkSorts.SORT_LABEL);
 		} else if (this.propertyIteratorPos == this.descriptionOffset) {
-			return new TermsAdaptor("wdtk:descriptions", this.itemDocument
-					.getDescriptions().values().iterator(), this.itemDocument
-					.getDescriptions().values().size(), this.helpers);
+			return new TermsAdaptor(WdtkSorts.PROP_DESCRIPTION,
+					this.itemDocument.getDescriptions().values().iterator(),
+					this.itemDocument.getDescriptions().values().size(),
+					WdtkSorts.SORT_DESCRIPTION);
 		} else if (this.propertyIteratorPos == this.aliasOffset) {
 			int targetCount = 0;
 			for (List<MonolingualTextValue> l : this.itemDocument.getAliases()
 					.values()) {
 				targetCount += l.size();
 			}
-			return new TermsAdaptor("wdtk:aliases",
+			return new TermsAdaptor(WdtkSorts.PROP_ALIAS,
 					new NestedIterator<MonolingualTextValue>(this.itemDocument
-							.getAliases().values()), targetCount, this.helpers);
+							.getAliases().values()), targetCount,
+					WdtkSorts.SORT_ALIAS);
+		} else if (this.propertyIteratorPos == this.termBlobOffset) {
+			return new TermBlobAdaptor(this.itemDocument);
 		} else if (this.statementOffset >= 0
 				&& this.propertyIteratorPos - this.statementOffset < this.itemDocument
 						.getStatementGroups().size()) {
@@ -126,6 +142,9 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 					.getStatementGroups().get(
 							this.propertyIteratorPos - this.statementOffset),
 					this.helpers);
+		} else if (this.sitelinkOffset >= 0) {
+			return new SiteLinksAdaptor(this.itemDocument.getSiteLinks()
+					.values());
 		}
 		return null;
 	}

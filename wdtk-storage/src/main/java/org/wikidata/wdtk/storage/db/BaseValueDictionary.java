@@ -28,31 +28,38 @@ import org.mapdb.Atomic;
 import org.mapdb.Bind;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.util.Timer;
 
 public abstract class BaseValueDictionary<Outer extends Value, Inner>
 		implements ValueDictionary, InnerToOuterObjectConverter<Inner, Outer> {
 
+	final Timer timerGet;
+	final Timer timerPut;
+
 	protected final Sort sort;
-	protected final Atomic.Long nextId;
+	protected final Atomic.Integer nextId;
 	protected final DatabaseManager databaseManager;
 
-	final Bind.MapWithModificationListener<Long, Inner> values;
-	final Map<Inner, Long> ids;
+	final Bind.MapWithModificationListener<Integer, Inner> values;
+	final Map<Inner, Integer> ids;
 
 	public BaseValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		Validate.notNull(sort, "sort cannot be null");
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
+		this.timerGet = Timer.getNamedTimer("Get-values-" + sort.getName());
+		this.timerPut = Timer.getNamedTimer("Put-" + sort.getName());
+
 		this.sort = sort;
 		this.databaseManager = databaseManager;
 
-		nextId = databaseManager.getDb().getAtomicLong(
+		nextId = databaseManager.getDb().getAtomicInteger(
 				"sort-inc-" + sort.getName());
 
 		this.values = initValues("sort-values-" + sort.getName());
 		this.ids = initIds("sort-ids-" + sort.getName());
 
-		Bind.mapInverse(this.values, this.ids);
+		// Bind.mapInverse(this.values, this.ids);
 	}
 
 	@Override
@@ -67,7 +74,7 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 	}
 
 	@Override
-	public Value getValue(long id) {
+	public Value getValue(int id) {
 		Inner inner = this.values.get(id);
 		if (inner == null) {
 			return null;
@@ -78,34 +85,45 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public long getId(Value value) {
+	public int getId(Value value) {
 		return getIdInternal(getInnerObject((Outer) value));
 	}
 
-	private long getIdInternal(Inner inner) {
-		Long result = this.ids.get(inner);
-		return (result == null) ? -1L : result;
-	}
-
 	@Override
-	public long getOrCreateId(Value value) {
+	public int getOrCreateId(Value value) {
 		@SuppressWarnings("unchecked")
 		Inner inner = getInnerObject((Outer) value);
-		long id = getIdInternal(inner);
-		if (id == -1L) {
+		int id = getIdInternal(inner);
+		if (id == -1) {
+			this.timerPut.start();
 			id = this.nextId.incrementAndGet();
 			this.values.put(id, inner);
+			this.ids.put(inner, id);
+			this.timerPut.stop();
+			if (this.timerPut.getMeasurements() % 100000 == 0) {
+				System.out.println(this.timerPut);
+			}
 		}
 		return id;
 	}
 
-	protected abstract Inner getInnerObject(Outer outer);
-
 	@Override
 	public abstract Outer getOuterObject(Inner inner);
 
-	protected abstract Bind.MapWithModificationListener<Long, Inner> initValues(
+	protected abstract Inner getInnerObject(Outer outer);
+
+	protected abstract Bind.MapWithModificationListener<Integer, Inner> initValues(
 			String name);
 
-	protected abstract Map<Inner, Long> initIds(String name);
+	protected abstract Map<Inner, Integer> initIds(String name);
+
+	private int getIdInternal(Inner inner) {
+		this.timerGet.start();
+		Integer result = this.ids.get(inner);
+		this.timerGet.stop();
+		if (this.timerGet.getMeasurements() % 100000 == 0) {
+			System.out.println(this.timerGet);
+		}
+		return (result == null) ? -1 : result;
+	}
 }

@@ -22,7 +22,7 @@ package org.wikidata.wdtk.storage.db;
 
 import java.util.Iterator;
 
-class LazyOuterObjectIterator<Inner, Outer> implements Iterator<Outer> {
+public class LazyOuterObjectIterator<Inner, Outer> implements Iterator<Outer> {
 
 	final Iterator<Inner> rawValueIterator;
 	final InnerToOuterObjectConverter<Inner, ? extends Outer> converter;

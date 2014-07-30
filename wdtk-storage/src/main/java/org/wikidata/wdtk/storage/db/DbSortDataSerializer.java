@@ -34,12 +34,17 @@ import org.wikidata.wdtk.storage.datamodel.SortType;
 
 // TODO rely on POJO serializer instead? 
 // maybe efficiency gain is negligible for the small number of sorts
-public class SortSerializer implements Serializer<Sort>, Serializable {
+public class DbSortDataSerializer implements Serializer<DbSortData>,
+		Serializable {
 
 	private static final long serialVersionUID = -4225023564347516207L;
 
 	@Override
-	public Sort deserialize(DataInput in, int available) throws IOException {
+	public DbSortData deserialize(DataInput in, int available)
+			throws IOException {
+		int id = in.readInt();
+		boolean useDictionary = in.readBoolean();
+
 		SortType sortType = SortType.getByNumericValue(in.readByte());
 		String name = in.readUTF();
 		int propRangeSize = in.readInt();
@@ -52,7 +57,9 @@ public class SortSerializer implements Serializer<Sort>, Serializable {
 				propertyRanges.add(new PropertyRange(property, range));
 			}
 		}
-		return new Sort(name, sortType, propertyRanges);
+		Sort sort = new Sort(name, sortType, propertyRanges);
+
+		return new DbSortData(sort, id, useDictionary);
 	}
 
 	@Override
@@ -61,14 +68,17 @@ public class SortSerializer implements Serializer<Sort>, Serializable {
 	}
 
 	@Override
-	public void serialize(DataOutput out, Sort sort) throws IOException {
-		out.writeByte(sort.getType().getValue());
-		out.writeUTF(sort.getName());
-		if (sort.getPropertyRanges() == null) {
+	public void serialize(DataOutput out, DbSortData sortData)
+			throws IOException {
+		out.writeInt(sortData.id);
+		out.writeBoolean(sortData.useDictionary);
+		out.writeByte(sortData.sort.getType().getValue());
+		out.writeUTF(sortData.sort.getName());
+		if (sortData.sort.getPropertyRanges() == null) {
 			out.writeInt(0);
 		} else {
-			out.writeInt(sort.getPropertyRanges().size());
-			for (PropertyRange pr : sort.getPropertyRanges()) {
+			out.writeInt(sortData.sort.getPropertyRanges().size());
+			for (PropertyRange pr : sortData.sort.getPropertyRanges()) {
 				out.writeUTF(pr.getProperty());
 				out.writeUTF(pr.getRange());
 			}

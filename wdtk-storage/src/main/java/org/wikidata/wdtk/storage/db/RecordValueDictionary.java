@@ -20,109 +20,63 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-import java.util.Iterator;
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.Map;
 
+import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind.MapWithModificationListener;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
-import org.wikidata.wdtk.storage.datamodel.PropertyRange;
-import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
+import org.wikidata.wdtk.storage.serialization.Serialization;
 
 public class RecordValueDictionary extends
-		BaseValueDictionary<ObjectValue, RecordValueForSerialization> {
-
-	final int propertyCount;
-	final int stringCount;
-	final int refCount;
-	final boolean[] valueIsString;
+		BaseValueDictionary<ObjectValue, byte[]> {
 
 	public RecordValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		super(sort, databaseManager);
+	}
 
-		this.propertyCount = sort.getPropertyRanges().size();
-		this.valueIsString = new boolean[this.propertyCount];
-
-		int sCount = 0;
-		int i = 0;
-		for (PropertyRange pr : sort.getPropertyRanges()) {
-			if (Sort.SORTNAME_STRING.equals(pr.getRange())) {
-				sCount++;
-				this.valueIsString[i] = true;
-			} else {
-				this.valueIsString[i] = false;
-			}
-			i++;
+	@Override
+	protected byte[] getInnerObject(ObjectValue outer) {
+		DataOutput2 out = new DataOutput2();
+		try {
+			Serialization
+					.serializeRecordValue(out, outer, this.databaseManager);
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
 		}
-		this.stringCount = sCount;
-		this.refCount = sort.getPropertyRanges().size() - sCount;
-	}
-
-	boolean isString(int i) {
-		return this.valueIsString[i];
+		return out.copyBytes();
 	}
 
 	@Override
-	protected RecordValueForSerialization getInnerObject(ObjectValue outer) {
-		String[] strings = new String[this.stringCount];
-		int iString = 0;
-		long[] refs = new long[this.refCount];
-		int iRef = 0;
-
-		Iterator<PropertyValuePair> propertyValuePairs = outer.iterator();
-		Iterator<PropertyRange> propertyRanges = this.sort.getPropertyRanges()
-				.iterator();
-
-		for (int i = 0; i < this.propertyCount; i++) {
-			PropertyValuePair pvp = propertyValuePairs.next();
-			PropertyRange pr = propertyRanges.next();
-
-			// TODO evaluate the performance hit of this check; maybe use
-			// assertions instead
-			if (!pr.getProperty().equals(pvp.getProperty())
-					|| !pr.getRange()
-							.equals(pvp.getValue().getSort().getName())) {
-				String message = "The given object value of type "
-						+ outer.getClass()
-						+ "\ndoes not match the sort specification of \""
-						+ this.sort.getName() + "\":\n" + "Position " + i
-						+ " should be " + pr.getProperty() + ":"
-						+ pr.getRange() + " but was " + pvp.getProperty() + ":"
-						+ pvp.getValue().getSort().getName();
-				throw new IllegalArgumentException(message);
-			}
-
-			if (this.valueIsString[i]) {
-				// Inline strings:
-				strings[iString] = ((StringValue) pvp.getValue()).getString();
-				iString++;
-			} else {
-				refs[iRef] = this.databaseManager.getOrCreateValueId(pvp
-						.getValue());
-				iRef++;
-			}
+	public ObjectValue getOuterObject(byte[] inner) {
+		// TODO Use DataInputByteArray as soon as available in stable MapDB
+		// DataInput in = new DataIO.DataInputByteArray(inner);
+		DataInput in = new DataInput2(inner);
+		try {
+			return Serialization.deserializeRecordValue(in, this.sort,
+					this.databaseManager);
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
 		}
-
-		return new RecordValueForSerialization(refs, strings);
 	}
 
 	@Override
-	public ObjectValue getOuterObject(RecordValueForSerialization inner) {
-		return new LazyRecordValue(inner, this);
-	}
-
-	@Override
-	protected MapWithModificationListener<Long, RecordValueForSerialization> initValues(
+	protected MapWithModificationListener<Integer, byte[]> initValues(
 			String name) {
-		return databaseManager.getDb().createHashMap(name)
-				.valueSerializer(new RecordSerializer(sort)).makeOrGet();
+		return databaseManager.getDb().createTreeMap(name)
+				.keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_INT)
+				// .valuesOutsideNodesEnable() // much slower; maybe enable
+				// selectively for large records based on sort?
+				.makeOrGet();
 	}
 
 	@Override
-	protected Map<RecordValueForSerialization, Long> initIds(String name) {
-		return databaseManager.getDb().createHashMap(name)
-				.keySerializer(new RecordSerializer(sort)).makeOrGet();
+	protected Map<byte[], Integer> initIds(String name) {
+		return databaseManager.getDb().createHashMap(name).makeOrGet();
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 /*
  * #%L
@@ -26,38 +26,38 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.mapdb.Serializer;
-import org.wikidata.wdtk.storage.datamodel.PropertyRange;
-import org.wikidata.wdtk.storage.datamodel.Sort;
 
 public class RecordSerializer implements
 		Serializer<RecordValueForSerialization>, Serializable {
 
 	private static final long serialVersionUID = 4397282628980400400L;
 
-	final Sort sort;
-	transient int stringCount;
+	transient int objectCount;
 	transient int refCount;
 	transient int fixedSize;
+	final byte[] types;
 
-	public RecordSerializer(Sort sort) {
-		this.sort = sort;
+	public RecordSerializer(byte[] types) {
+		this.types = types;
 		initAuxliliaryFields();
+	}
+
+	@Override
+	public void serialize(DataOutput out, RecordValueForSerialization rvfs)
+			throws IOException {
+		Serialization.serializeTypedFields(out, this.types, rvfs.getRefs(),
+				rvfs.getObjects());
 	}
 
 	@Override
 	public RecordValueForSerialization deserialize(DataInput in, int available)
 			throws IOException {
-		long[] refs = new long[this.refCount];
-		String[] strings = new String[this.stringCount];
+		int[] refs = new int[this.refCount];
+		Object[] objects = new Object[this.objectCount];
 
-		for (int i = 0; i < this.refCount; i++) {
-			refs[i] = in.readLong();
-		}
-		for (int i = 0; i < this.stringCount; i++) {
-			strings[i] = in.readUTF();
-		}
+		Serialization.deserializeTypedFields(in, this.types, refs, objects);
 
-		return new RecordValueForSerialization(refs, strings);
+		return new RecordValueForSerialization(refs, objects);
 	}
 
 	@Override
@@ -65,30 +65,18 @@ public class RecordSerializer implements
 		return this.fixedSize;
 	}
 
-	@Override
-	public void serialize(DataOutput out, RecordValueForSerialization rvfs)
-			throws IOException {
-
-		for (int i = 0; i < this.refCount; i++) {
-			out.writeLong(rvfs.getRefs()[i]);
-		}
-		for (int i = 0; i < this.stringCount; i++) {
-			out.writeUTF(rvfs.getStrings()[i]);
-		}
-	}
-
 	protected void initAuxliliaryFields() {
-		int sCount = 0;
-		for (PropertyRange pr : sort.getPropertyRanges()) {
-			if (Sort.SORTNAME_STRING.equals(pr.getRange())) {
-				sCount++;
+		int rCount = 0;
+		for (byte type : this.types) {
+			if (type == SerializationConverter.TYPE_REF) {
+				rCount++;
 			}
 		}
-		this.stringCount = sCount;
-		this.refCount = sort.getPropertyRanges().size() - sCount;
+		this.refCount = rCount;
+		this.objectCount = this.types.length - rCount;
 
-		if (this.stringCount == 0) {
-			this.fixedSize = 8 * this.refCount;
+		if (this.objectCount == 0) {
+			this.fixedSize = (Integer.SIZE / 8) * this.refCount;
 		} else {
 			this.fixedSize = -1;
 		}
@@ -99,4 +87,9 @@ public class RecordSerializer implements
 		in.defaultReadObject();
 		initAuxliliaryFields();
 	}
+
+	// private void writeObject(java.io.ObjectOutputStream stream)
+	// throws IOException {
+	//
+	// }
 }

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 /*
  * #%L
@@ -35,12 +35,12 @@ public class EdgeContainerSerializer implements
 	@Override
 	public void serialize(DataOutput out, EdgeContainerForSerialization value)
 			throws IOException {
-		out.writeLong(value.getSource());
+		out.writeInt(value.getSource());
 
 		int propertyCount = value.getProperties().length;
 		out.writeInt(propertyCount);
 		for (int i = 0; i < propertyCount; i++) {
-			out.writeLong(value.getProperties()[i]);
+			out.writeInt(value.getProperties()[i]);
 
 			int targetCount = value.getTargetQualifiers()[i].length;
 			out.writeInt(targetCount);
@@ -48,10 +48,10 @@ public class EdgeContainerSerializer implements
 				int qualifierCount = (value.getTargetQualifiers()[i][j].length - 1) / 2;
 				out.writeInt(qualifierCount);
 
-				out.writeLong(value.getTargetQualifiers()[i][j][0]);
+				out.writeInt(value.getTargetQualifiers()[i][j][0]);
 				for (int k = 0; k < qualifierCount; k++) {
-					out.writeLong(value.getTargetQualifiers()[i][j][2 * k + 1]);
-					out.writeLong(value.getTargetQualifiers()[i][j][2 * k + 2]);
+					out.writeInt(value.getTargetQualifiers()[i][j][2 * k + 1]);
+					out.writeInt(value.getTargetQualifiers()[i][j][2 * k + 2]);
 				}
 			}
 		}
@@ -60,22 +60,22 @@ public class EdgeContainerSerializer implements
 	@Override
 	public EdgeContainerForSerialization deserialize(DataInput in, int available)
 			throws IOException {
-		long source = in.readLong();
+		int source = in.readInt();
 		int propertyCount = in.readInt();
-		long[] properties = new long[propertyCount];
-		long[][][] targetQualifiers = new long[propertyCount][][];
+		int[] properties = new int[propertyCount];
+		int[][][] targetQualifiers = new int[propertyCount][][];
 
 		for (int i = 0; i < propertyCount; i++) {
-			properties[i] = in.readLong();
+			properties[i] = in.readInt();
 			int targetCount = in.readInt();
-			targetQualifiers[i] = new long[targetCount][];
+			targetQualifiers[i] = new int[targetCount][];
 			for (int j = 0; j < targetCount; j++) {
 				int qualifierCount = in.readInt();
-				targetQualifiers[i][j] = new long[1 + 2 * qualifierCount];
-				targetQualifiers[i][j][0] = in.readLong();
+				targetQualifiers[i][j] = new int[1 + 2 * qualifierCount];
+				targetQualifiers[i][j][0] = in.readInt();
 				for (int k = 0; k < qualifierCount; k++) {
-					targetQualifiers[i][j][2 * k + 1] = in.readLong();
-					targetQualifiers[i][j][2 * k + 2] = in.readLong();
+					targetQualifiers[i][j][2 * k + 1] = in.readInt();
+					targetQualifiers[i][j][2 * k + 2] = in.readInt();
 				}
 			}
 		}

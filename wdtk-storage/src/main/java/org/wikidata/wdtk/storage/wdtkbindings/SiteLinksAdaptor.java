@@ -20,32 +20,27 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
-import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class TermsAdaptor implements PropertyTargets,
+public class SiteLinksAdaptor implements PropertyTargets,
 		Iterator<TargetQualifiers>, TargetQualifiers {
 
-	final String property;
-	final Iterator<MonolingualTextValue> monolingualTextValues;
+	final Iterator<SiteLink> siteLinks;
 	final int targetCount;
-	final Sort sort;
-	MonolingualTextValue currentValue;
 
-	public TermsAdaptor(String property,
-			Iterator<MonolingualTextValue> monolingualTextValues,
-			int targetCount, Sort sort) {
-		this.property = property;
-		this.monolingualTextValues = monolingualTextValues;
-		this.targetCount = targetCount;
-		this.sort = sort;
+	SiteLink currentValue;
+
+	public SiteLinksAdaptor(Collection<SiteLink> siteLinks) {
+		this.targetCount = siteLinks.size();
+		this.siteLinks = siteLinks.iterator();
 	}
 
 	@Override
@@ -55,23 +50,23 @@ public class TermsAdaptor implements PropertyTargets,
 
 	@Override
 	public String getProperty() {
-		return this.property;
-	}
-
-	@Override
-	public boolean hasNext() {
-		return this.monolingualTextValues.hasNext();
-	}
-
-	@Override
-	public TargetQualifiers next() {
-		this.currentValue = this.monolingualTextValues.next();
-		return this;
+		return WdtkSorts.PROP_SITE_LINK;
 	}
 
 	@Override
 	public int getTargetCount() {
 		return this.targetCount;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return this.siteLinks.hasNext();
+	}
+
+	@Override
+	public TargetQualifiers next() {
+		this.currentValue = this.siteLinks.next();
+		return this;
 	}
 
 	@Override
@@ -81,7 +76,7 @@ public class TermsAdaptor implements PropertyTargets,
 
 	@Override
 	public Value getTarget() {
-		return new MonolingualTextValueAdaptor(this.currentValue, this.sort);
+		return new SiteLinkAdaptor(this.currentValue);
 	}
 
 	@Override

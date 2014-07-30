@@ -71,9 +71,9 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 			return ((ValueSnak) this.statement.getClaim().getMainSnak())
 					.getValue().accept(this.helpers.getValueAdaptor());
 		} else if (this.statement.getClaim().getMainSnak() instanceof SomeValueSnak) {
-			return new StringValueImpl("SomeValue", Sort.SORT_STRING); // FIXME
+			return new StringValueImpl("SomeValue", WdtkSorts.SORT_ENTITY); // FIXME
 		} else if (this.statement.getClaim().getMainSnak() instanceof NoValueSnak) {
-			return new StringValueImpl("NoValue", Sort.SORT_STRING); // FIXME
+			return new StringValueImpl("NoValue", WdtkSorts.SORT_ENTITY); // FIXME
 		} else {
 			throw new RuntimeException("Unexpected snak type "
 					+ this.statement.getClaim().getMainSnak().getClass());

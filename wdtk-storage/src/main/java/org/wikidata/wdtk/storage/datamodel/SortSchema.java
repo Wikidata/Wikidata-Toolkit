@@ -22,8 +22,6 @@ package org.wikidata.wdtk.storage.datamodel;
 
 public interface SortSchema {
 
-	public Sort declareSort(Sort sort);
-
 	public Sort getSort(String name);
 
 }

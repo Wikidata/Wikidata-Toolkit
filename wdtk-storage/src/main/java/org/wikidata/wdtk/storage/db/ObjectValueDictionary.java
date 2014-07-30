@@ -20,87 +20,60 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.Map;
 
+import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind.MapWithModificationListener;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
-import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.SortType;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
+import org.wikidata.wdtk.storage.serialization.Serialization;
 
 public class ObjectValueDictionary extends
-		BaseValueDictionary<ObjectValue, ObjectValueForSerialization> {
+		BaseValueDictionary<ObjectValue, byte[]> {
 
 	public ObjectValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		super(sort, databaseManager);
 	}
 
 	@Override
-	protected ObjectValueForSerialization getInnerObject(ObjectValue outer) {
-		int length = outer.size();
-		byte[] types = new byte[length];
-		long[] properties = new long[length];
-		Object[] values = new Object[length];
-
-		int refCount = 0;
-		int stringCount = 0;
-
-		int i = 0;
-		for (PropertyValuePair pvp : outer) {
-			properties[i] = this.databaseManager.getOrCreatePropertyId(
-					pvp.getProperty(), outer.getSort().getName(), pvp
-							.getValue().getSort().getName());
-
-			if (pvp.getValue().getSort().getType() == SortType.STRING) {
-				types[i] = ObjectValueForSerialization.TYPE_STRING;
-				values[i] = ((StringValue) pvp.getValue()).getString();
-				stringCount++;
-			} else if (pvp.getValue().getSort().getType() == SortType.OBJECT
-					|| pvp.getValue().getSort().getType() == SortType.RECORD) {
-				types[i] = ObjectValueForSerialization.TYPE_REF;
-				values[i] = Long.valueOf(this.databaseManager
-						.getOrCreateValueId(pvp.getValue()));
-				refCount++;
-			} else {
-				throw new IllegalArgumentException(
-						"Value sort not supported yet");
-			}
-			i++;
+	protected byte[] getInnerObject(ObjectValue outer) {
+		DataOutput2 out = new DataOutput2();
+		try {
+			Serialization
+					.serializeObjectValue(out, outer, this.databaseManager);
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
 		}
-
-		long[] refs = new long[refCount];
-		int iRef = 0;
-		String[] strings = new String[stringCount];
-		int iString = 0;
-		for (int j = 0; j < length; j++) {
-			if (types[j] == ObjectValueForSerialization.TYPE_REF) {
-				refs[iRef] = ((Long) values[j]).longValue();
-				iRef++;
-			} else if (types[j] == ObjectValueForSerialization.TYPE_STRING) {
-				strings[iString] = ((String) values[j]);
-				iString++;
-			}
-		}
-
-		return new ObjectValueForSerialization(properties, types, refs, strings);
+		return out.copyBytes();
 	}
 
 	@Override
-	public ObjectValue getOuterObject(ObjectValueForSerialization inner) {
-		return new LazyObjectValue(inner, this);
+	public ObjectValue getOuterObject(byte[] inner) {
+		// TODO Use DataInputByteArray as soon as available in stable MapDB
+		// DataInput in = new DataIO.DataInputByteArray(inner);
+		DataInput in = new DataInput2(inner);
+		try {
+			return Serialization.deserializeObjectValue(in, this.sort,
+					this.databaseManager);
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
 	}
 
 	@Override
-	protected MapWithModificationListener<Long, ObjectValueForSerialization> initValues(
+	protected MapWithModificationListener<Integer, byte[]> initValues(
 			String name) {
-		return databaseManager.getDb().createHashMap(name)
-				.valueSerializer(new ObjectValueSerializer()).makeOrGet();
+		return databaseManager.getDb().createTreeMap(name)
+				.keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_INT)
+				.makeOrGet();
 	}
 
 	@Override
-	protected Map<ObjectValueForSerialization, Long> initIds(String name) {
-		return databaseManager.getDb().createHashMap(name)
-				.keySerializer(new ObjectValueSerializer()).makeOrGet();
+	protected Map<byte[], Integer> initIds(String name) {
+		return databaseManager.getDb().createHashMap(name).makeOrGet();
 	}
 }

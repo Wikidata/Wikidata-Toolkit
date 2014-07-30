@@ -33,18 +33,18 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
 	final MonolingualTextValue monolingualTextValue;
-	final WdtkAdaptorHelper helper;
-	int iteratorPos = 0;
+	final Sort sort;
+	int iteratorPos;
 
 	public MonolingualTextValueAdaptor(
-			MonolingualTextValue monolingualTextValue, WdtkAdaptorHelper helper) {
+			MonolingualTextValue monolingualTextValue, Sort sort) {
 		this.monolingualTextValue = monolingualTextValue;
-		this.helper = helper;
+		this.sort = sort;
 	}
 
 	@Override
 	public Sort getSort() {
-		return WdtkSorts.SORT_MTV;
+		return this.sort;
 	}
 
 	@Override
@@ -55,16 +55,22 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 
 	@Override
 	public boolean hasNext() {
-		return (this.iteratorPos < 2);
+		return (this.iteratorPos < getSort().getPropertyRanges().size());
 	}
 
 	@Override
 	public PropertyValuePair next() {
 		this.iteratorPos++;
 		if (this.iteratorPos == 1) {
+			Sort valueSort;
+			// if (this.sort.getName().equals(WdtkSorts.SORTNAME_LABEL)) {
+			// valueSort = WdtkSorts.SORT_LABEL_STRING;
+			// } else {
+			valueSort = Sort.SORT_STRING;
+			// }
 			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_TEXT,
 					new StringValueImpl(this.monolingualTextValue.getText(),
-							Sort.SORT_STRING));
+							valueSort));
 		} else if (this.iteratorPos == 2) {
 			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_LANG,
 					new StringValueImpl(
@@ -82,7 +88,7 @@ public class MonolingualTextValueAdaptor implements ObjectValue,
 
 	@Override
 	public int size() {
-		return this.getSort().getPropertyRanges().size();
+		return getSort().getPropertyRanges().size();
 	}
 
 }

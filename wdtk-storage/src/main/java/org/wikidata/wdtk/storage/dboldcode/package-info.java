@@ -1,4 +1,9 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+/**
+ * Place to move old code to.
+ * @author Markus Kroetzsch
+ *
+ */
+package org.wikidata.wdtk.storage.dboldcode;
 
 /*
  * #%L
@@ -19,31 +24,3 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * limitations under the License.
  * #L%
  */
-
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
-
-public class WdtkAdaptorHelper {
-
-	final SortSchema sortSchema;
-	final ValueAdaptor valueAdaptor;
-	final SnakAdaptor snakAdaptor;
-
-	public WdtkAdaptorHelper(SortSchema sortSchema) {
-		this.sortSchema = sortSchema;
-		this.valueAdaptor = new ValueAdaptor();
-		this.snakAdaptor = new SnakAdaptor(this);
-	}
-
-	public SortSchema getSortSchema() {
-		return this.sortSchema;
-	}
-
-	public ValueAdaptor getValueAdaptor() {
-		return this.valueAdaptor;
-	}
-
-	public SnakAdaptor getSnakAdaptor() {
-		return this.snakAdaptor;
-	}
-
-}

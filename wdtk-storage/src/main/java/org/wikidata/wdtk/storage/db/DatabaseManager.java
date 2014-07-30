@@ -27,9 +27,10 @@ import java.util.Map;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
+import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.SortSchema;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.serialization.EdgeContainerIndex;
 
 /**
  * Overall management class for a database instance. Manages schema information
@@ -42,7 +43,10 @@ public class DatabaseManager {
 
 	protected final DbSortSchema sortSchema;
 
+	protected final String dbName;
+
 	protected final DB db;
+	protected final Map<String, DB> auxDbs;
 
 	protected final Map<String, ValueDictionary> sortNameDictionaries;
 	protected final Map<Integer, ValueDictionary> sortIdDictionaries;
@@ -52,12 +56,15 @@ public class DatabaseManager {
 	protected final PropertyDictionary propertyDictionary;
 
 	public DatabaseManager(String dbName) {
+		this.dbName = dbName;
+
 		File dbFile = new File(dbName + ".mapdb");
 		// this.db = DBMaker.newMemoryDirectDB().make();
 
 		this.db = DBMaker.newFileDB(dbFile).transactionDisable()
 				.mmapFileEnableIfSupported().cacheSize(1000000)
 				.asyncWriteEnable().closeOnJvmShutdown().make();
+		this.auxDbs = new HashMap<>();
 
 		this.sortNameDictionaries = new HashMap<>();
 		this.sortIdDictionaries = new HashMap<>();
@@ -67,7 +74,7 @@ public class DatabaseManager {
 		this.sortSchema = new DbSortSchema(this);
 	}
 
-	public SortSchema getSortSchema() {
+	public DbSortSchema getSortSchema() {
 		return this.sortSchema;
 	}
 
@@ -75,12 +82,31 @@ public class DatabaseManager {
 		return this.db;
 	}
 
+	public DB getAuxDb(String name) {
+		if (!this.auxDbs.containsKey(name)) {
+			File dbFile = new File(this.dbName + "-" + name + ".mapdb");
+			// this.db = DBMaker.newMemoryDirectDB().make();
+
+			this.auxDbs.put(name, DBMaker.newFileDB(dbFile)
+					.transactionDisable().mmapFileEnableIfSupported()
+					.cacheSize(1000000).asyncWriteEnable().closeOnJvmShutdown()
+					.make());
+		}
+		return this.auxDbs.get(name);
+	}
+
 	public void commit() {
 		this.db.commit();
+		for (DB auxDb : this.auxDbs.values()) {
+			auxDb.commit();
+		}
 	}
 
 	public void close() {
 		this.db.close();
+		for (DB auxDb : this.auxDbs.values()) {
+			auxDb.close();
+		}
 	}
 
 	public void updateEdges(EdgeContainer edgeContainer) {
@@ -94,43 +120,43 @@ public class DatabaseManager {
 		return this.getEdgeContainerIndexBySortName(sortName);
 	}
 
-	public Value fetchValue(long id, String sortName) {
+	public Value fetchValue(int id, String sortName) {
 		Dictionary<Value> dictionary = getDictionaryBySortName(sortName);
 		return dictionary.getValue(id);
 	}
 
-	public Value fetchValue(long id, int sortId) {
+	public Value fetchValue(int id, int sortId) {
 		Dictionary<Value> dictionary = getDictionaryBySortId(sortId);
 		return dictionary.getValue(id);
 	}
 
-	public PropertySignature fetchPropertySignature(long id) {
+	public PropertySignature fetchPropertySignature(int id) {
 		return this.propertyDictionary.getValue(id);
 	}
 
 	public EdgeContainer fetchEdgeContainer(Value value) {
 		Dictionary<Value> dictionary = getDictionaryBySortName(value.getSort()
 				.getName());
-		long id = dictionary.getId(value);
-		if (id == -1L) {
+		int id = dictionary.getId(value);
+		if (id == -1) {
 			return null;
 		} else {
 			return fetchEdgeContainer(id, value.getSort().getName());
 		}
 	}
 
-	public EdgeContainer fetchEdgeContainer(long id, String sortName) {
+	public EdgeContainer fetchEdgeContainer(int id, String sortName) {
 		EdgeContainerIndex eci = this.getEdgeContainerIndexBySortName(sortName);
 		return eci.getEdgeContainer(id);
 	}
 
-	public long getOrCreateValueId(Value value) {
+	public int getOrCreateValueId(Value value) {
 		Dictionary<Value> dictionary = getDictionaryBySortName(value.getSort()
 				.getName());
 		return dictionary.getOrCreateId(value);
 	}
 
-	public long getOrCreatePropertyId(String propertyName, String domainSort,
+	public int getOrCreatePropertyId(String propertyName, String domainSort,
 			String rangeSort) {
 		int domainId = this.sortSchema.getSortId(domainSort);
 		int rangeId = this.sortSchema.getSortId(rangeSort);
@@ -139,7 +165,7 @@ public class DatabaseManager {
 				propertyName, domainId, rangeId));
 	}
 
-	public long getOrCreatePropertyId(String propertyName, int domainId,
+	public int getOrCreatePropertyId(String propertyName, int domainId,
 			int rangeId) {
 		// TODO for testing; maybe not needed as public?
 		return this.propertyDictionary.getOrCreateId(new PropertySignature(
@@ -185,26 +211,39 @@ public class DatabaseManager {
 		return eci;
 	}
 
-	ValueDictionary initializeDictionary(Sort sort, int id) {
-		ValueDictionary dictionary = null;
+	protected ValueDictionary createSortDictionary(Sort sort) {
 		switch (sort.getType()) {
 		case STRING:
-			dictionary = new StringValueDictionary(sort, this);
-			break;
+			return new StringValueDictionary(sort, this);
 		case OBJECT:
-			dictionary = new ObjectValueDictionary(sort, this);
-			break;
+			return new ObjectValueDictionary(sort, this);
 		case RECORD:
-			dictionary = new RecordValueDictionary(sort, this);
-			break;
+			boolean isStringRecord = true;
+			for (PropertyRange pr : sort.getPropertyRanges()) {
+				if (!Sort.SORTNAME_STRING.equals(pr.getRange())) {
+					isStringRecord = false;
+					break;
+				}
+			}
+			if (isStringRecord) {
+				return new StringRecordValueDictionary(sort, this);
+			} else {
+				return new RecordValueDictionary(sort, this);
+			}
 		default:
-			System.out.println("Not setting up dictionary for sort "
-					+ sort.getName());
+			return null;
 		}
+	}
+
+	ValueDictionary initializeDictionary(Sort sort, int id) {
+		ValueDictionary dictionary = createSortDictionary(sort);
 
 		if (dictionary != null) {
 			this.sortNameDictionaries.put(sort.getName(), dictionary);
 			this.sortIdDictionaries.put(id, dictionary);
+		} else {
+			System.out.println("Not setting up dictionary for sort "
+					+ sort.getName());
 		}
 
 		return dictionary;

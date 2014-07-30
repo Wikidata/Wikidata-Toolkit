@@ -31,12 +31,27 @@ public class WdtkSorts {
 	public static final String SORTNAME_ENTITY = "entity";
 	public static final String SORTNAME_MTV = "monotext";
 	public static final String SORTNAME_REFERENCE = "reference";
+	public static final String SORTNAME_LABEL = "label";
+	public static final String SORTNAME_DESCRIPTION = "desc";
+	public static final String SORTNAME_ALIAS = "alias";
+	public static final String SORTNAME_TERMS = "terms";
+	public static final String SORTNAME_SITE_LINK = "site";
+	public static final String SORTNAME_LABEL_STRING = "mtvlabel";
+
+	public static final String PROP_LABEL = "wdtk:label";
+	public static final String PROP_DESCRIPTION = "wdtk:desc";
+	public static final String PROP_ALIAS = "wdtk:alias";
+	public static final String PROP_TERMS = "wdtk:terms";
+	public static final String PROP_SITE_LINK = "wdtk:site";
 
 	public static final String PROP_NOVALUE = "novalue";
+	public static final String PROP_SOMEVALUE = "somevalue";
 	public static final String PROP_RANK = "rank";
 	public static final String PROP_REFERENCE = "ref";
 	public static final String PROP_MTV_TEXT = "text";
 	public static final String PROP_MTV_LANG = "language";
+	public static final String PROP_SITE_PAGE = "page";
+	public static final String PROP_SITE_KEY = "key";
 
 	public static final List<PropertyRange> PROPLIST_MONOLINGUAL_TEXT_VALUE = new ArrayList<>();
 	static {
@@ -46,10 +61,38 @@ public class WdtkSorts {
 				Sort.SORTNAME_STRING));
 	}
 
+	public static final List<PropertyRange> PROPLIST_LABEL_VALUE = new ArrayList<>();
+	static {
+		PROPLIST_LABEL_VALUE.add(new PropertyRange(PROP_MTV_TEXT,
+				Sort.SORTNAME_STRING));
+		PROPLIST_LABEL_VALUE.add(new PropertyRange(PROP_MTV_LANG,
+				Sort.SORTNAME_STRING));
+	}
+
+	public static final List<PropertyRange> PROPLIST_SITE_LINK = new ArrayList<>();
+	static {
+		PROPLIST_SITE_LINK.add(new PropertyRange(PROP_SITE_PAGE,
+				Sort.SORTNAME_STRING));
+		PROPLIST_SITE_LINK.add(new PropertyRange(PROP_SITE_KEY,
+				Sort.SORTNAME_STRING));
+	}
+
 	public static final Sort SORT_ENTITY = new Sort(SORTNAME_ENTITY,
 			SortType.STRING, null);
+	public static final Sort SORT_LABEL_STRING = new Sort(
+			SORTNAME_LABEL_STRING, SortType.STRING, null);
 	public static final Sort SORT_MTV = new Sort(SORTNAME_MTV, SortType.RECORD,
 			PROPLIST_MONOLINGUAL_TEXT_VALUE);
+	public static final Sort SORT_LABEL = new Sort(SORTNAME_LABEL,
+			SortType.RECORD, PROPLIST_LABEL_VALUE);
+	public static final Sort SORT_DESCRIPTION = new Sort(SORTNAME_DESCRIPTION,
+			SortType.RECORD, PROPLIST_MONOLINGUAL_TEXT_VALUE);
+	public static final Sort SORT_ALIAS = new Sort(SORTNAME_ALIAS,
+			SortType.RECORD, PROPLIST_MONOLINGUAL_TEXT_VALUE);
+	public static final Sort SORT_TERMS = new Sort(SORTNAME_TERMS,
+			SortType.STRING, null);
 	public static final Sort SORT_REFERENCE = new Sort(SORTNAME_REFERENCE,
 			SortType.OBJECT, null);
+	public static final Sort SORT_SITE_LINK = new Sort(SORTNAME_SITE_LINK,
+			SortType.RECORD, PROPLIST_SITE_LINK);
 }

@@ -20,11 +20,10 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-
 /**
  * A dictionary for objects of type T. Objects that are inserted into the
- * dictionary are assigned a long id. Objects can be retrieved by id and ids can
- * be found for existing objects.
+ * dictionary are assigned a numeric id. Objects can be retrieved by id and ids
+ * can be found for existing objects.
  * 
  * @author Markus Kroetzsch
  * 
@@ -40,7 +39,7 @@ public interface Dictionary<T> extends Iterable<T> {
 	 *            the object id to look up
 	 * @return the object for the id, or null
 	 */
-	T getValue(long id);
+	T getValue(int id);
 
 	/**
 	 * Returns the id of the given object, or -1L if the object is not in the
@@ -50,7 +49,7 @@ public interface Dictionary<T> extends Iterable<T> {
 	 *            the object to look up
 	 * @return the id of the object, or -1L
 	 */
-	long getId(T value);
+	int getId(T value);
 
 	/**
 	 * Returns an id for the given object, inserting it into the dictionary if
@@ -60,6 +59,6 @@ public interface Dictionary<T> extends Iterable<T> {
 	 *            the object to look up or insert
 	 * @return the existing or newly assigned id
 	 */
-	long getOrCreateId(T value);
+	int getOrCreateId(T value);
 
 }

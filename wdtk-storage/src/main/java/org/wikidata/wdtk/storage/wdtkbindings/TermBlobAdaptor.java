@@ -22,56 +22,52 @@ package org.wikidata.wdtk.storage.wdtkbindings;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
-import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class TermsAdaptor implements PropertyTargets,
+public class TermBlobAdaptor implements PropertyTargets,
 		Iterator<TargetQualifiers>, TargetQualifiers {
 
-	final String property;
-	final Iterator<MonolingualTextValue> monolingualTextValues;
-	final int targetCount;
-	final Sort sort;
-	MonolingualTextValue currentValue;
+	final TermedDocument termedDocument;
 
-	public TermsAdaptor(String property,
-			Iterator<MonolingualTextValue> monolingualTextValues,
-			int targetCount, Sort sort) {
-		this.property = property;
-		this.monolingualTextValues = monolingualTextValues;
-		this.targetCount = targetCount;
-		this.sort = sort;
+	boolean iteratorAtStart;
+
+	public TermBlobAdaptor(TermedDocument document) {
+		this.termedDocument = document;
 	}
 
 	@Override
 	public Iterator<TargetQualifiers> iterator() {
+		this.iteratorAtStart = true;
 		return this;
 	}
 
 	@Override
 	public String getProperty() {
-		return this.property;
-	}
-
-	@Override
-	public boolean hasNext() {
-		return this.monolingualTextValues.hasNext();
-	}
-
-	@Override
-	public TargetQualifiers next() {
-		this.currentValue = this.monolingualTextValues.next();
-		return this;
+		return WdtkSorts.PROP_TERMS;
 	}
 
 	@Override
 	public int getTargetCount() {
-		return this.targetCount;
+		return 1;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return this.iteratorAtStart;
+	}
+
+	@Override
+	public TargetQualifiers next() {
+		this.iteratorAtStart = false;
+		return this;
 	}
 
 	@Override
@@ -81,7 +77,24 @@ public class TermsAdaptor implements PropertyTargets,
 
 	@Override
 	public Value getTarget() {
-		return new MonolingualTextValueAdaptor(this.currentValue, this.sort);
+		// FIXME not decodable; just for test:
+		StringBuilder sb = new StringBuilder();
+		for (MonolingualTextValue mtv : this.termedDocument.getLabels()
+				.values()) {
+			sb.append(mtv.getLanguageCode()).append("@").append(mtv.getText());
+		}
+		for (MonolingualTextValue mtv : this.termedDocument.getDescriptions()
+				.values()) {
+			sb.append(mtv.getLanguageCode()).append("@").append(mtv.getText());
+		}
+		for (List<MonolingualTextValue> mtvList : this.termedDocument
+				.getAliases().values()) {
+			for (MonolingualTextValue mtv : mtvList) {
+				sb.append(mtv.getLanguageCode()).append("@")
+						.append(mtv.getText());
+			}
+		}
+		return new StringValueImpl(sb.toString(), WdtkSorts.SORT_TERMS);
 	}
 
 	@Override

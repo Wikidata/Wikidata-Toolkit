@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 import java.util.Arrays;
 
@@ -22,41 +22,28 @@ import java.util.Arrays;
  * #L%
  */
 
-public class ObjectValueForSerialization {
+public class ObjectValueForSerialization extends RecordValueForSerialization {
 
-	public static final byte TYPE_REF = 1;
-	public static final byte TYPE_STRING = 2;
-
-	final long[] properties;
+	final int[] properties;
 	final byte[] types;
-	final long[] refs;
-	final String[] strings;
 
-	ObjectValueForSerialization(long[] properties, byte[] types, long[] refs,
-			String[] strings) {
+	ObjectValueForSerialization(int[] properties, byte[] types, int[] refs,
+			Object[] objects) {
+		super(refs, objects);
+
 		assert (properties.length == types.length);
-		assert (properties.length == refs.length + strings.length);
+		assert (properties.length == refs.length + objects.length);
 
 		this.properties = properties;
 		this.types = types;
-		this.refs = refs;
-		this.strings = strings;
 	}
 
-	public long[] getProperties() {
+	public int[] getProperties() {
 		return this.properties;
 	}
 
 	public byte[] getTypes() {
 		return this.types;
-	}
-
-	public long[] getRefs() {
-		return this.refs;
-	}
-
-	public String[] getStrings() {
-		return this.strings;
 	}
 
 	/*
@@ -69,7 +56,7 @@ public class ObjectValueForSerialization {
 		return "ObjectValueForSerialization [properties="
 				+ Arrays.toString(properties) + ", types="
 				+ Arrays.toString(types) + ", refs=" + Arrays.toString(refs)
-				+ ", strings=" + Arrays.toString(strings) + "]";
+				+ ", strings=" + Arrays.toString(objects) + "]";
 	}
 
 	/*
@@ -83,7 +70,7 @@ public class ObjectValueForSerialization {
 		int result = 1;
 		result = prime * result + Arrays.hashCode(properties);
 		result = prime * result + Arrays.hashCode(refs);
-		result = prime * result + Arrays.hashCode(strings);
+		result = prime * result + Arrays.hashCode(objects);
 		result = prime * result + Arrays.hashCode(types);
 		return result;
 	}
@@ -107,7 +94,7 @@ public class ObjectValueForSerialization {
 		ObjectValueForSerialization other = (ObjectValueForSerialization) obj;
 		return Arrays.equals(types, other.types)
 				&& Arrays.equals(refs, other.refs)
-				&& Arrays.equals(strings, other.strings)
+				&& Arrays.equals(objects, other.objects)
 				&& Arrays.equals(properties, other.properties);
 	}
 }

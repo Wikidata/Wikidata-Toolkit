@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
@@ -30,8 +31,8 @@ import org.wikidata.wdtk.storage.datamodel.SortSchema;
 public class DbSortSchema implements SortSchema {
 
 	final DatabaseManager databaseManager;
-	protected final Map<String, Sort> sorts;
-	protected final Map<String, Integer> sortIds;
+	protected final Map<String, DbSortData> dbSorts;
+	protected final Map<Integer, DbSortData> sortsById;
 	protected final Atomic.Integer nextId;
 
 	protected DbSortSchema(DatabaseManager databaseManager) {
@@ -39,35 +40,45 @@ public class DbSortSchema implements SortSchema {
 
 		nextId = databaseManager.getDb().getAtomicInteger("sorts-inc");
 
-		this.sorts = databaseManager.getDb().createHashMap("sorts")
-				.valueSerializer(new SortSerializer()).makeOrGet();
-		this.sortIds = databaseManager.getDb().createHashMap("sorts-ids")
-				.makeOrGet();
+		this.dbSorts = databaseManager.getDb().createHashMap("sorts")
+				.valueSerializer(new DbSortDataSerializer()).makeOrGet();
+		this.sortsById = new HashMap<>();
 
 		this.databaseManager = databaseManager;
 
-		for (Sort sort : sorts.values()) {
-			this.databaseManager.initializeDictionary(sort,
-					sortIds.get(sort.getName()));
+		for (DbSortData dbSortData : dbSorts.values()) {
+			this.sortsById.put(dbSortData.id, dbSortData);
+			if (dbSortData.useDictionary) {
+				this.databaseManager.initializeDictionary(dbSortData.sort,
+						dbSortData.id);
+			}
 			// DEBUG:
 			// System.out.println("Found sort: " + sort.getName());
 		}
-		this.declareSort(Sort.SORT_STRING);
-		this.declareSort(Sort.SORT_LONG);
+
+		declareSort(Sort.SORT_STRING, false);
+		declareSort(Sort.SORT_LONG, false);
 	}
 
-	@Override
-	public Sort declareSort(Sort sort) {
-		if (this.sorts.containsKey(sort.getName())) {
-			if (!sort.equals(this.sorts.get(sort.getName()))) {
+	public void declareSort(Sort sort, boolean useDictionary) {
+		if (this.dbSorts.containsKey(sort.getName())) {
+			DbSortData dbSort = this.dbSorts.get(sort.getName());
+			if (dbSort.useDictionary != useDictionary
+					|| !sort.equals(dbSort.sort)) {
 				throw new IllegalArgumentException("Sort \"" + sort.getName()
 						+ "\" already declared. Cannot redeclare sorts.");
 			} // else: no action; sort already declared
 		} else {
 			int id = this.nextId.incrementAndGet();
-			this.sorts.put(sort.getName(), sort);
-			this.sortIds.put(sort.getName(), id);
-			this.databaseManager.initializeDictionary(sort, id);
+			DbSortData dbSortData = new DbSortData(sort, id, useDictionary);
+
+			this.dbSorts.put(sort.getName(), dbSortData);
+			this.sortsById.put(id, dbSortData);
+
+			if (dbSortData.useDictionary) {
+				this.databaseManager.initializeDictionary(sort, id);
+			}
+
 			// TODO It would be nice to register record properties, but this can
 			// only be done after all sorts are registered; i.e., not during
 			// sort declaration -- not clear where to do this
@@ -80,12 +91,15 @@ public class DbSortSchema implements SortSchema {
 			// }
 			// }
 		}
-		return sort;
 	}
 
 	@Override
 	public Sort getSort(String name) {
-		return this.sorts.get(name);
+		return this.dbSorts.get(name).sort;
+	}
+
+	public Sort getSort(int id) {
+		return this.sortsById.get(id).sort;
 	}
 
 	/**
@@ -100,13 +114,18 @@ public class DbSortSchema implements SortSchema {
 	 *             if no sort of this name is known
 	 */
 	public int getSortId(String name) {
-		Integer result = this.sortIds.get(name);
-		if (result == null) {
+		DbSortData dbSortData = this.dbSorts.get(name);
+
+		if (dbSortData == null) {
 			throw new IllegalArgumentException("Sort \"" + name
 					+ "\" not known.");
 		} else {
-			return result;
+			return dbSortData.id;
 		}
+	}
+
+	public boolean useDictionary(String name) {
+		return this.dbSorts.get(name).useDictionary;
 	}
 
 }

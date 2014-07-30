@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 /*
  * #%L
@@ -38,17 +38,13 @@ public class ObjectValueSerializer implements
 		out.writeInt(value.getTypes().length);
 		out.write(value.getTypes());
 
-		for (long propertyId : value.getProperties()) {
-			out.writeLong(propertyId);
+		for (int propertyId : value.getProperties()) {
+			out.writeInt(propertyId);
 		}
 
-		for (long l : value.getRefs()) {
-			out.writeLong(l);
-		}
+		Serialization.serializeTypedFields(out, value.getTypes(),
+				value.getRefs(), value.getObjects());
 
-		for (String s : value.getStrings()) {
-			out.writeUTF(s);
-		}
 	}
 
 	@Override
@@ -59,34 +55,23 @@ public class ObjectValueSerializer implements
 		byte[] types = new byte[length];
 
 		int refCount = 0;
-		int stringCount = 0;
 		for (int i = 0; i < length; i++) {
 			types[i] = in.readByte();
-			if (types[i] == ObjectValueForSerialization.TYPE_REF) {
+			if (types[i] == SerializationConverter.TYPE_REF) {
 				refCount++;
-			} else if (types[i] == ObjectValueForSerialization.TYPE_STRING) {
-				stringCount++;
-			} else {
-				throw new RuntimeException("Type bytes make no sense.");
 			}
 		}
 
-		long[] properties = new long[length];
+		int[] properties = new int[length];
 		for (int i = 0; i < length; i++) {
-			properties[i] = in.readLong();
+			properties[i] = in.readInt();
 		}
 
-		long[] refs = new long[refCount];
-		for (int i = 0; i < refCount; i++) {
-			refs[i] = in.readLong();
-		}
+		int[] refs = new int[refCount];
+		Object[] objects = new Object[length - refCount];
+		Serialization.deserializeTypedFields(in, types, refs, objects);
 
-		String[] strings = new String[stringCount];
-		for (int i = 0; i < stringCount; i++) {
-			strings[i] = in.readUTF();
-		}
-
-		return new ObjectValueForSerialization(properties, types, refs, strings);
+		return new ObjectValueForSerialization(properties, types, refs, objects);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 import java.util.Arrays;
 
@@ -24,20 +24,20 @@ import java.util.Arrays;
 
 public class RecordValueForSerialization {
 
-	final long[] refs;
-	final String[] strings;
+	final int[] refs;
+	final Object[] objects;
 
-	public RecordValueForSerialization(long[] refs, String[] strings) {
+	public RecordValueForSerialization(int[] refs, Object[] strings) {
 		this.refs = refs;
-		this.strings = strings;
+		this.objects = strings;
 	}
 
-	public long[] getRefs() {
+	public int[] getRefs() {
 		return this.refs;
 	}
 
-	public String[] getStrings() {
-		return this.strings;
+	public Object[] getObjects() {
+		return this.objects;
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class RecordValueForSerialization {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Arrays.hashCode(refs);
-		result = prime * result + Arrays.hashCode(strings);
+		result = prime * result + Arrays.hashCode(objects);
 		return result;
 	}
 
@@ -72,6 +72,6 @@ public class RecordValueForSerialization {
 		}
 		RecordValueForSerialization other = (RecordValueForSerialization) obj;
 		return Arrays.equals(refs, other.refs)
-				&& Arrays.equals(strings, other.strings);
+				&& Arrays.equals(objects, other.objects);
 	}
 }

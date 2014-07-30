@@ -25,39 +25,57 @@ import java.util.Map;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind.MapWithModificationListener;
 import org.mapdb.Serializer;
+import org.wikidata.wdtk.storage.datamodel.ObjectValue;
+import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
-import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 
-public class StringValueDictionary extends
-		BaseValueDictionary<StringValue, String> {
+public class StringRecordValueDictionary extends
+		BaseValueDictionary<ObjectValue, String> {
 
-	public StringValueDictionary(Sort sort, DatabaseManager databaseManager) {
+	public StringRecordValueDictionary(Sort sort,
+			DatabaseManager databaseManager) {
 		super(sort, databaseManager);
 	}
 
 	@Override
-	protected String getInnerObject(StringValue outer) {
-		return outer.getString();
+	public ObjectValue getOuterObject(String inner) {
+		return new LazyStringRecordValue(inner, this.sort);
 	}
 
 	@Override
-	public StringValue getOuterObject(String inner) {
-		return new StringValueImpl(inner, this.sort);
+	protected String getInnerObject(ObjectValue outer) {
+		StringBuilder stringBuilder = new StringBuilder();
+
+		boolean isFirst = true;
+		for (PropertyValuePair pvp : outer) {
+			if (isFirst) {
+				isFirst = false;
+			} else {
+				stringBuilder.append("|");
+			}
+			stringBuilder.append(((StringValue) pvp.getValue()).getString()
+					.replace("@", "@@").replace("|", "@i"));
+		}
+
+		return stringBuilder.toString();
 	}
 
 	@Override
 	protected MapWithModificationListener<Integer, String> initValues(
 			String name) {
-		return databaseManager.getDb().createTreeMap(name)
+		return this.databaseManager.getAuxDb(this.sort.getName() + "-values")
+				.createTreeMap(name)
 				.keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_INT)
+				// .nodeSize(120)
 				.valueSerializer(Serializer.STRING).makeOrGet();
 	}
 
 	@Override
 	protected Map<String, Integer> initIds(String name) {
-		return databaseManager.getDb().createTreeMap(name)
-				.keySerializer(BTreeKeySerializer.STRING).makeOrGet();
+		return this.databaseManager.getAuxDb(this.sort.getName() + "-ids")
+				.createTreeMap(name).keySerializer(BTreeKeySerializer.STRING)
+				.makeOrGet();
 	}
 
 }

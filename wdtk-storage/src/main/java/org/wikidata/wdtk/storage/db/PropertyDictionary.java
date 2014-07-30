@@ -25,28 +25,30 @@ import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 import org.mapdb.Atomic;
+import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind;
 import org.mapdb.Serializer;
 
 public class PropertyDictionary implements Dictionary<PropertySignature> {
 
-	protected final Atomic.Long nextId;
+	protected final Atomic.Integer nextId;
 	protected final DatabaseManager databaseManager;
-	final Bind.MapWithModificationListener<Long, PropertySignature> values;
-	final Map<PropertySignature, Long> ids;
+	final Bind.MapWithModificationListener<Integer, PropertySignature> values;
+	final Map<PropertySignature, Integer> ids;
 
 	public PropertyDictionary(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
 		this.databaseManager = databaseManager;
 
-		nextId = databaseManager.getDb().getAtomicLong("properties-inc");
+		nextId = databaseManager.getDb().getAtomicInteger("properties-inc");
 
 		Serializer<PropertySignature> serializer = new PropertySignatureSerializer();
 
 		this.values = databaseManager.getDb()
-				.createHashMap("properties-values").valueSerializer(serializer)
-				.makeOrGet();
+				.createTreeMap("properties-values")
+				.keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_INT)
+				.valueSerializer(serializer).makeOrGet();
 		this.ids = databaseManager.getDb().createHashMap("properties-ids")
 				.keySerializer(serializer).makeOrGet();
 		Bind.mapInverse(this.values, this.ids);
@@ -58,20 +60,20 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 	}
 
 	@Override
-	public PropertySignature getValue(long id) {
+	public PropertySignature getValue(int id) {
 		return this.values.get(id);
 	}
 
 	@Override
-	public long getId(PropertySignature value) {
-		Long result = this.ids.get(value);
-		return (result == null) ? -1L : result;
+	public int getId(PropertySignature value) {
+		Integer result = this.ids.get(value);
+		return (result == null) ? -1 : result;
 	}
 
 	@Override
-	public long getOrCreateId(PropertySignature value) {
-		long id = getId(value);
-		if (id == -1L) {
+	public int getOrCreateId(PropertySignature value) {
+		int id = getId(value);
+		if (id == -1) {
 			id = this.nextId.incrementAndGet();
 			this.values.put(id, value);
 		}

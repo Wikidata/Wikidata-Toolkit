@@ -22,45 +22,54 @@ package org.wikidata.wdtk.storage.wdtkbindings;
 
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 
-public class ReferenceAdaptor implements ObjectValue,
+public class SiteLinkAdaptor implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
-	final Reference reference;
-	final WdtkAdaptorHelper helpers;
-	Iterator<Snak> snakIterator;
+	final SiteLink siteLink;
 
-	public ReferenceAdaptor(Reference reference, WdtkAdaptorHelper helpers) {
-		this.reference = reference;
-		this.helpers = helpers;
+	int iteratorPos;
+
+	public SiteLinkAdaptor(SiteLink siteLink) {
+		this.siteLink = siteLink;
 	}
 
 	@Override
 	public Sort getSort() {
-		return WdtkSorts.SORT_REFERENCE;
+		return WdtkSorts.SORT_SITE_LINK;
 	}
 
 	@Override
 	public Iterator<PropertyValuePair> iterator() {
-		this.snakIterator = reference.getAllSnaks();
+		this.iteratorPos = 0;
 		return this;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.snakIterator.hasNext();
+		return this.iteratorPos < getSort().getPropertyRanges().size();
 	}
 
 	@Override
 	public PropertyValuePair next() {
-		this.snakIterator.next().accept(this.helpers.getSnakAdaptor());
-		return this.helpers.getSnakAdaptor();
+		this.iteratorPos++;
+		if (this.iteratorPos == 1) {
+			return new PropertyValuePairImpl(WdtkSorts.PROP_SITE_PAGE,
+					new StringValueImpl(this.siteLink.getPageTitle(),
+							Sort.SORT_STRING));
+		} else if (this.iteratorPos == 2) {
+			return new PropertyValuePairImpl(WdtkSorts.PROP_SITE_KEY,
+					new StringValueImpl(this.siteLink.getSiteKey(),
+							Sort.SORT_STRING));
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -70,11 +79,7 @@ public class ReferenceAdaptor implements ObjectValue,
 
 	@Override
 	public int size() {
-		int size = 0;
-		for (SnakGroup sg : this.reference.getSnakGroups()) {
-			size += sg.getSnaks().size();
-		}
-		return size;
+		return getSort().getPropertyRanges().size();
 	}
 
 }

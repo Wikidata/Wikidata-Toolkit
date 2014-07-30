@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.dboldcode;
 
 /*
  * #%L
@@ -24,40 +24,40 @@ import java.util.Map;
 
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind.MapWithModificationListener;
-import org.mapdb.Serializer;
+import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
-import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
+import org.wikidata.wdtk.storage.db.BaseValueDictionary;
+import org.wikidata.wdtk.storage.db.DatabaseManager;
 
-public class StringValueDictionary extends
-		BaseValueDictionary<StringValue, String> {
+public class ObjectValueDictionary extends
+		BaseValueDictionary<ObjectValue, ObjectValueForSerialization> {
 
-	public StringValueDictionary(Sort sort, DatabaseManager databaseManager) {
+	public ObjectValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		super(sort, databaseManager);
 	}
 
 	@Override
-	protected String getInnerObject(StringValue outer) {
-		return outer.getString();
+	protected ObjectValueForSerialization getInnerObject(ObjectValue outer) {
+		return SerializationConverter.makeObjectValueForSerialization(outer,
+				this.databaseManager);
 	}
 
 	@Override
-	public StringValue getOuterObject(String inner) {
-		return new StringValueImpl(inner, this.sort);
+	public ObjectValue getOuterObject(ObjectValueForSerialization inner) {
+		return new LazyObjectValue(inner, this.sort, this.databaseManager);
 	}
 
 	@Override
-	protected MapWithModificationListener<Integer, String> initValues(
+	protected MapWithModificationListener<Integer, ObjectValueForSerialization> initValues(
 			String name) {
 		return databaseManager.getDb().createTreeMap(name)
 				.keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_INT)
-				.valueSerializer(Serializer.STRING).makeOrGet();
+				.valueSerializer(new ObjectValueSerializer()).makeOrGet();
 	}
 
 	@Override
-	protected Map<String, Integer> initIds(String name) {
-		return databaseManager.getDb().createTreeMap(name)
-				.keySerializer(BTreeKeySerializer.STRING).makeOrGet();
+	protected Map<ObjectValueForSerialization, Integer> initIds(String name) {
+		return databaseManager.getDb().createHashMap(name)
+				.keySerializer(new ObjectValueSerializer()).makeOrGet();
 	}
-
 }

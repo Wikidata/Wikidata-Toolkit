@@ -20,40 +20,20 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
-public class EdgeContainerForSerialization {
+import java.io.Serializable;
 
-	final long source;
-	final long[] properties;
-	final long[][][] targetQualifiers;
+import org.wikidata.wdtk.storage.datamodel.Sort;
 
-	public EdgeContainerForSerialization(long source, long[] properties,
-			long[][][] targetQualifiers) {
-		assert (properties.length == targetQualifiers.length);
+class DbSortData implements Serializable {
+	private static final long serialVersionUID = -261524859509400983L;
 
-		this.source = source;
-		this.properties = properties;
-		this.targetQualifiers = targetQualifiers;
+	public final Sort sort;
+	public final int id;
+	public final boolean useDictionary;
+
+	public DbSortData(Sort sort, int id, boolean useDictionary) {
+		this.sort = sort;
+		this.id = id;
+		this.useDictionary = useDictionary;
 	}
-
-	/**
-	 * @return the source
-	 */
-	public long getSource() {
-		return source;
-	}
-
-	/**
-	 * @return the properties
-	 */
-	public long[] getProperties() {
-		return properties;
-	}
-
-	/**
-	 * @return the targetQualifiers
-	 */
-	public long[][][] getTargetQualifiers() {
-		return targetQualifiers;
-	}
-
 }

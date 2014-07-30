@@ -28,52 +28,43 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class LazyRecordValue implements ObjectValue,
+public class LazyStringRecordValue implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
-	final RecordValueDictionary recordDictionary;
-	final RecordValueForSerialization rvfs;
+	final String[] strings;
+	final Sort sort;
 
-	int iLong;
-	int iString;
-	int i;
-	boolean atString;
+	int currentPosition;
 
-	public LazyRecordValue(RecordValueForSerialization rvfs,
-			RecordValueDictionary recordDictionary) {
-		this.recordDictionary = recordDictionary;
-		this.rvfs = rvfs;
+	public LazyStringRecordValue(String innerString, Sort sort) {
+		this.sort = sort;
+		this.strings = innerString.split("\\|");
 	}
 
 	@Override
 	public Sort getSort() {
-		return this.recordDictionary.getSort();
+		return this.sort;
 	}
 
 	@Override
 	public Iterator<PropertyValuePair> iterator() {
-		this.iLong = -1;
-		this.iString = -1;
-		this.i = -1;
+		this.currentPosition = -1;
 		return this;
 	}
 
 	@Override
+	public int size() {
+		return this.strings.length;
+	}
+
+	@Override
 	public boolean hasNext() {
-		return (this.iLong + 1 < this.rvfs.getRefs().length)
-				|| (this.iString + 1 < this.rvfs.getStrings().length);
+		return this.currentPosition + 1 < this.strings.length;
 	}
 
 	@Override
 	public PropertyValuePair next() {
-		this.i++;
-		if (this.recordDictionary.isString(this.i)) {
-			this.iString++;
-			this.atString = true;
-		} else {
-			this.iLong++;
-			this.atString = false;
-		}
+		this.currentPosition++;
 		return this;
 	}
 
@@ -84,26 +75,14 @@ public class LazyRecordValue implements ObjectValue,
 
 	@Override
 	public String getProperty() {
-		return this.recordDictionary.getSort().getPropertyRanges().get(this.i)
+		return this.sort.getPropertyRanges().get(this.currentPosition)
 				.getProperty();
 	}
 
 	@Override
 	public Value getValue() {
-		if (this.atString) {
-			return new StringValueImpl(this.rvfs.getStrings()[this.iString],
-					Sort.SORT_STRING);
-		} else {
-			return this.recordDictionary.databaseManager.fetchValue(
-					this.rvfs.getRefs()[this.iLong], this.recordDictionary
-							.getSort().getPropertyRanges().get(this.i)
-							.getRange());
-		}
-	}
-
-	@Override
-	public int size() {
-		return this.getSort().getPropertyRanges().size();
+		return new StringValueImpl(this.strings[this.currentPosition].replace(
+				"@i", "|").replace("@@", "@"), Sort.SORT_STRING);
 	}
 
 }
