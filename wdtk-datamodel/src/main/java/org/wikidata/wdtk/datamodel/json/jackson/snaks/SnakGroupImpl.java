@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
 /**
  * This class is not actually used in the JSON model, but needed to satisfy the
@@ -18,7 +19,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
  */
 public class SnakGroupImpl implements SnakGroup {
 
-	private PropertyIdValueImpl property;
+	private PropertyIdImpl property;
 	private List<SnakImpl> snaks;
 
 	@Override

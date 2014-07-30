@@ -33,7 +33,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Fredo Erxleben
  *
  */
-public class MonolingualTextValueImpl implements MonolingualTextValue {
+public class MonolingualTextValueImpl 
+implements MonolingualTextValue {
 	
 	public MonolingualTextValueImpl(){}
 	public MonolingualTextValueImpl(String language, String value){

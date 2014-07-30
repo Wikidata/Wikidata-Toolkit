@@ -1,7 +1,8 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

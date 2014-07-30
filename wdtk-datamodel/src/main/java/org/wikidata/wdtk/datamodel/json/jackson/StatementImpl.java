@@ -9,6 +9,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.StatementRankDeserializer;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.StatementRankSerializer;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

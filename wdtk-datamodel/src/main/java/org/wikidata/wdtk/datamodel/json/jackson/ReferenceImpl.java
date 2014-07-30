@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

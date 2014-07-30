@@ -12,10 +12,10 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.ItemIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -174,7 +174,7 @@ public class TestItemDocument extends JsonConversionTest {
 	@Test
 	public void testItemIdToJson(){
 		ItemDocumentImpl document = new ItemDocumentImpl();
-		document.setItemId(testItemId);
+		document.setId(testItemId.getId());
 		
 		try {
 			String result = mapper.writeValueAsString(document);

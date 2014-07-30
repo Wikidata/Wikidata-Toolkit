@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;

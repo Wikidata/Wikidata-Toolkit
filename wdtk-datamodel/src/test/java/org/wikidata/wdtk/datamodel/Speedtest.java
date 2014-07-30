@@ -17,7 +17,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
-import org.wikidata.wdtk.datamodel.json.jackson.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
 import org.wikidata.wdtk.util.Timer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

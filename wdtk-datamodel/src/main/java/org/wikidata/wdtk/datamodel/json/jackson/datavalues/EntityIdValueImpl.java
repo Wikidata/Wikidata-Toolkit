@@ -1,8 +1,6 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
 
-// TODO test
 public class EntityIdValueImpl extends ValueImpl {
 
 	private EntityId value;

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
 
 /*
  * #%L
@@ -20,12 +20,37 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-public abstract class EntityDocumentImpl implements EntityDocument {
+public abstract class EntityIdImpl 
+implements EntityIdValue {
+	
+	// TODO has a fixed baseIRI at the moment
+	private static final String baseIRI = "http://www.wikidata.org/entity/";
+	
+	protected String id;
+	
+	public void setId(String id){
+		this.id = id;
+	}
 
 	@Override
-	public abstract EntityIdValue getEntityId();
+	public String getIri() {
+		return baseIRI;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor){
+		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public abstract String getEntityType();
+
+	@Override
+	public String getId(){
+		return this.id;
+	}
 
 }

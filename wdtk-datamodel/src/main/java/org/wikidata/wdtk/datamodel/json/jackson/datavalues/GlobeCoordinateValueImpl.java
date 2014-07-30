@@ -1,7 +1,6 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

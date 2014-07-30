@@ -1,4 +1,5 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
+
 
 /**
  * This represents a string value.

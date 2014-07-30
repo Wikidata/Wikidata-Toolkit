@@ -1,7 +1,8 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.TimeValueImpl;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -13,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
     @Type(value = TimeValueImpl.class, name = "time"),  
     @Type(value = EntityIdValueImpl.class, name = "wikibase-entityid"),
     @Type(value = GlobeCoordinateValueImpl.class, name = "globecoordinate")}) 
-public abstract class ValueImpl implements Value {
+public abstract class ValueImpl 
+implements Value {
 	
 	public static final String typeString = "string";
 	public static final String typeTime = "time";

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
 
 /*
  * #%L
@@ -20,43 +20,33 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-//import com.fasterxml.jackson.annotation.JsonCreator;
-
-public class PropertyIdValueImpl
+public class PropertyIdImpl
 extends EntityIdImpl
 implements PropertyIdValue {
 	
-//	@JsonCreator
-	PropertyIdValueImpl(
-			String propertyId){
-		
+	public PropertyIdImpl(){}
+	public PropertyIdImpl(String id){
+		this.id = id;
 	}
 
 	@Override
 	public String getEntityType() {
-		// TODO Auto-generated method stub
-		return null;
+		return EntityIdValue.ET_PROPERTY;
 	}
-
+	
 	@Override
-	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
 
-	@Override
-	public String getIri() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		if (!(o instanceof PropertyIdImpl)) {
+			return false;
+		}
 
-	@Override
-	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		// TODO Auto-generated method stub
-		return null;
+		return ((ItemIdImpl) o).getId().equalsIgnoreCase(this.id);
 	}
-
 }

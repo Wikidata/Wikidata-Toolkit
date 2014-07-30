@@ -19,7 +19,7 @@ public class SiteLinkImpl implements SiteLink {
 		this.title = title;
 	}
 	
-	SiteLinkImpl(SiteLink value) {
+	public SiteLinkImpl(SiteLink value) {
 		this(value.getSiteKey(), value.getPageTitle());
 	}
 	

@@ -3,6 +3,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakGroupImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
+
 /**
  * A class that provides several helper methods.
  * @author Fredo Erxleben

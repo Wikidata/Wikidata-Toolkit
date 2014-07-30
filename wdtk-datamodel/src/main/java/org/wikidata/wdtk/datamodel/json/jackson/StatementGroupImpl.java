@@ -20,28 +20,41 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
+/**
+ * This class is merely there to be compatible with the WDTK-data model interface
+ * There is no concept of dedicated statement group objects in the JSON rather
+ * then a list of statements relating to a property.
+ * 
+ * @author Fredo Erxleben
+ *
+ */
 public class StatementGroupImpl implements StatementGroup {
 
-	PropertyIdValueImpl propertyId;
+	PropertyIdImpl propertyId;
 	List<StatementImpl> statements;
-	
+
 	@Override
 	public List<Statement> getStatements() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO rework, once the interface changes
+		List<Statement> returnList = new ArrayList<>();
+		for(StatementImpl statement : this.statements){
+			returnList.add(statement);
+		}
+		return returnList;
 	}
 
 	@Override
 	public PropertyIdValue getProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.propertyId;
 	}
 
 	@Override
