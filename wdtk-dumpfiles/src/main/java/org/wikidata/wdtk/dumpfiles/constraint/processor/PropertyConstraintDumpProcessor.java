@@ -54,7 +54,7 @@ public class PropertyConstraintDumpProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
 
-	public static final String DEFAULT_DUMP_DATE = "20140526";
+	public static final String DEFAULT_DUMP_DATE = "20140705";
 	public static final String DEFAULT_FILE_NAME = "constraints";
 	public static final String OWL_FILE_EXTENSION = ".owl";
 	public static final String RDF_FILE_EXTENSION = ".rdf";
