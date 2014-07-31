@@ -47,9 +47,8 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-		// TODO Auto-generated method stub
-		return new StringValueImpl("UNSUPPORTED GlobeCoordinates",
-				Sort.SORT_STRING);
+		return new GlobeCoordinatesValueAdaptor(value,
+				WdtkSorts.SORT_GLOBE_COORDINATES_VALUE);
 	}
 
 	@Override
@@ -70,8 +69,7 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(TimeValue value) {
-		// TODO Auto-generated method stub
-		return new StringValueImpl("UNSUPPORTED Time", Sort.SORT_STRING);
+		return new TimeValueAdaptor(value, WdtkSorts.SORT_TIME_VALUE);
 	}
 
 }

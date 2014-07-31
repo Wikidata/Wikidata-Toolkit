@@ -35,6 +35,8 @@ public class DbSortSchema implements SortSchema {
 	protected final Map<Integer, DbSortData> sortsById;
 	protected final Atomic.Integer nextId;
 
+	protected final Map<String, DbSortData> dbSortsCache;
+
 	protected DbSortSchema(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
@@ -43,11 +45,13 @@ public class DbSortSchema implements SortSchema {
 		this.dbSorts = databaseManager.getDb().createHashMap("sorts")
 				.valueSerializer(new DbSortDataSerializer()).makeOrGet();
 		this.sortsById = new HashMap<>();
+		this.dbSortsCache = new HashMap<>();
 
 		this.databaseManager = databaseManager;
 
 		for (DbSortData dbSortData : dbSorts.values()) {
 			this.sortsById.put(dbSortData.id, dbSortData);
+			this.dbSortsCache.put(dbSortData.sort.getName(), dbSortData);
 			if (dbSortData.useDictionary) {
 				this.databaseManager.initializeDictionary(dbSortData.sort,
 						dbSortData.id);
@@ -95,7 +99,7 @@ public class DbSortSchema implements SortSchema {
 
 	@Override
 	public Sort getSort(String name) {
-		return this.dbSorts.get(name).sort;
+		return getDbSortsData(name).sort;
 	}
 
 	public Sort getSort(int id) {
@@ -114,7 +118,7 @@ public class DbSortSchema implements SortSchema {
 	 *             if no sort of this name is known
 	 */
 	public int getSortId(String name) {
-		DbSortData dbSortData = this.dbSorts.get(name);
+		DbSortData dbSortData = getDbSortsData(name);
 
 		if (dbSortData == null) {
 			throw new IllegalArgumentException("Sort \"" + name
@@ -125,7 +129,16 @@ public class DbSortSchema implements SortSchema {
 	}
 
 	public boolean useDictionary(String name) {
-		return this.dbSorts.get(name).useDictionary;
+		return getDbSortsData(name).useDictionary;
+	}
+
+	DbSortData getDbSortsData(String name) {
+		DbSortData result = this.dbSortsCache.get(name);
+		if (result == null) {
+			result = this.dbSorts.get(name);
+			this.dbSortsCache.put(name, result);
+		}
+		return result;
 	}
 
 }

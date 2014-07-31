@@ -20,40 +20,38 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
-import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 
-public class MonolingualTextValueAdaptor extends BaseValueAdaptor {
+public class QuantityValueAdaptor extends BaseValueAdaptor {
 
-	final MonolingualTextValue monolingualTextValue;
+	QuantityValue value;
 
-	public MonolingualTextValueAdaptor(
-			MonolingualTextValue monolingualTextValue, Sort sort) {
+	public QuantityValueAdaptor(QuantityValue value, Sort sort) {
 		super(sort);
-		this.monolingualTextValue = monolingualTextValue;
+		this.value = value;
 	}
 
 	@Override
 	public PropertyValuePair next() {
 		this.iteratorPos++;
+		// TODO how to serialize bigdecimal?
 		if (this.iteratorPos == 1) {
-			Sort valueSort;
-			// if (this.sort.getName().equals(WdtkSorts.SORTNAME_LABEL)) {
-			// valueSort = WdtkSorts.SORT_LABEL_STRING;
-			// } else {
-			valueSort = Sort.SORT_STRING;
-			// }
-			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_TEXT,
-					new StringValueImpl(this.monolingualTextValue.getText(),
-							valueSort));
+			return null;
+			// return new PropertyValuePairImpl(
+			// WdtkSorts.PROP_QUANTITY_VALUE, new LongValueImpl(
+			// this.value.getNumericValue(), Sort.SORT_LONG));
 		} else if (this.iteratorPos == 2) {
-			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_LANG,
-					new StringValueImpl(
-							this.monolingualTextValue.getLanguageCode(),
-							Sort.SORT_STRING));
+			return null;
+			// return new PropertyValuePairImpl(
+			// WdtkSorts.PROP_COORDINATES_LONGITUDE, new LongValueImpl(
+			// this.value.getLongitude(), Sort.SORT_LONG));
+		} else if (this.iteratorPos == 3) {
+			return null;
+			// return new PropertyValuePairImpl(
+			// WdtkSorts.PROP_COORDINATES_PRECISION, new LongValueImpl(
+			// this.value.getPrecision(), Sort.SORT_LONG));
 		} else {
 			return null;
 		}
@@ -61,7 +59,7 @@ public class MonolingualTextValueAdaptor extends BaseValueAdaptor {
 
 	@Override
 	public int size() {
-		return 2;
+		return 3;
 	}
 
 }

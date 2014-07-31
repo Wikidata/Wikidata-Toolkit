@@ -20,40 +20,39 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.storage.datamodel.LongValueImpl;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 
-public class MonolingualTextValueAdaptor extends BaseValueAdaptor {
+public class TimeValueAdaptor extends BaseValueAdaptor {
 
-	final MonolingualTextValue monolingualTextValue;
+	final TimeValue value;
 
-	public MonolingualTextValueAdaptor(
-			MonolingualTextValue monolingualTextValue, Sort sort) {
+	public TimeValueAdaptor(TimeValue timeValue, Sort sort) {
 		super(sort);
-		this.monolingualTextValue = monolingualTextValue;
+		this.value = timeValue;
 	}
 
 	@Override
 	public PropertyValuePair next() {
 		this.iteratorPos++;
 		if (this.iteratorPos == 1) {
-			Sort valueSort;
-			// if (this.sort.getName().equals(WdtkSorts.SORTNAME_LABEL)) {
-			// valueSort = WdtkSorts.SORT_LABEL_STRING;
-			// } else {
-			valueSort = Sort.SORT_STRING;
-			// }
-			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_TEXT,
-					new StringValueImpl(this.monolingualTextValue.getText(),
-							valueSort));
+			return new PropertyValuePairImpl(WdtkSorts.PROP_TIME_YEAR,
+					new LongValueImpl(this.value.getYear(), Sort.SORT_LONG));
 		} else if (this.iteratorPos == 2) {
-			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_LANG,
-					new StringValueImpl(
-							this.monolingualTextValue.getLanguageCode(),
-							Sort.SORT_STRING));
+			return new PropertyValuePairImpl(WdtkSorts.PROP_TIME_MONTH,
+					new LongValueImpl(this.value.getMonth(), Sort.SORT_LONG));
+		} else if (this.iteratorPos == 3) {
+			return new PropertyValuePairImpl(WdtkSorts.PROP_TIME_DAY,
+					new LongValueImpl(this.value.getDay(), Sort.SORT_LONG));
+		} else if (this.iteratorPos == 4) {
+			return new PropertyValuePairImpl(
+					WdtkSorts.PROP_TIME_CALENDAR_MODEL, new StringValueImpl(
+							this.value.getPreferredCalendarModel(),
+							WdtkSorts.SORT_ENTITY));
 		} else {
 			return null;
 		}
@@ -61,7 +60,6 @@ public class MonolingualTextValueAdaptor extends BaseValueAdaptor {
 
 	@Override
 	public int size() {
-		return 2;
+		return 4;
 	}
-
 }

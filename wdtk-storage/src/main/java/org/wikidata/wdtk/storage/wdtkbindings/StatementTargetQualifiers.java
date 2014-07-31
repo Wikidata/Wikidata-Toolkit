@@ -22,11 +22,9 @@ package org.wikidata.wdtk.storage.wdtkbindings;
 
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
@@ -70,15 +68,14 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 		if (this.statement.getClaim().getMainSnak() instanceof ValueSnak) {
 			return ((ValueSnak) this.statement.getClaim().getMainSnak())
 					.getValue().accept(this.helpers.getValueAdaptor());
-		} else if (this.statement.getClaim().getMainSnak() instanceof SomeValueSnak) {
-			return new StringValueImpl("SomeValue", WdtkSorts.SORT_ENTITY); // FIXME
-		} else if (this.statement.getClaim().getMainSnak() instanceof NoValueSnak) {
-			return new StringValueImpl("NoValue", WdtkSorts.SORT_ENTITY); // FIXME
 		} else {
-			throw new RuntimeException("Unexpected snak type "
-					+ this.statement.getClaim().getMainSnak().getClass());
+			// if (this.statement.getClaim().getMainSnak() instanceof
+			// SomeValueSnak) {
+			// if (this.statement.getClaim().getMainSnak() instanceof
+			// NoValueSnak) {
+			return this.statement.getClaim().getMainSnak().getPropertyId()
+					.accept(this.helpers.getValueAdaptor());
 		}
-
 	}
 
 	@Override

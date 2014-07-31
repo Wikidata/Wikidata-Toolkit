@@ -28,6 +28,7 @@ import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind.MapWithModificationListener;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
+import org.mapdb.Hasher;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.serialization.Serialization;
@@ -76,7 +77,8 @@ public class RecordValueDictionary extends
 
 	@Override
 	protected Map<byte[], Integer> initIds(String name) {
-		return databaseManager.getDb().createHashMap(name).makeOrGet();
+		return databaseManager.getDb().createHashMap(name)
+				.hasher(Hasher.BYTE_ARRAY).makeOrGet();
 	}
 
 }

@@ -29,7 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.db.DatabaseManager;
 
-public class LazyRecordValue implements ObjectValue,
+public class RecordValueFromSerialization implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
 	final int[] refs;
@@ -43,7 +43,7 @@ public class LazyRecordValue implements ObjectValue,
 	boolean curRef;
 	PropertyRange curPropertyRange;
 
-	public LazyRecordValue(int[] refs, Value[] values, Sort sort,
+	public RecordValueFromSerialization(int[] refs, Value[] values, Sort sort,
 			DatabaseManager databaseManager) {
 		this.sort = sort;
 		this.databaseManager = databaseManager;

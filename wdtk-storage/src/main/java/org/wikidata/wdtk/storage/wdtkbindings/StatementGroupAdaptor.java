@@ -20,10 +20,13 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 
@@ -31,34 +34,44 @@ public class StatementGroupAdaptor implements PropertyTargets,
 		Iterator<TargetQualifiers> {
 
 	final WdtkAdaptorHelper helpers;
-	final StatementGroup statementGroup;
-	final Iterator<Statement> statements;
+	final String property;
+	final List<Statement> valueStatements;
 
-	public StatementGroupAdaptor(StatementGroup statementGroup,
-			WdtkAdaptorHelper helpers) {
-		this.statementGroup = statementGroup;
-		this.statements = statementGroup.getStatements().iterator();
+	Statement nextProperStatement;
+	Iterator<Statement> statementIterator;
+
+	public StatementGroupAdaptor(String property,
+			Collection<Statement> statements, WdtkAdaptorHelper helpers) {
+		this.property = property;
 		this.helpers = helpers;
+
+		this.valueStatements = new ArrayList<>(statements.size());
+		for (Statement s : statements) {
+			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
+				this.valueStatements.add(s);
+			}
+		}
 	}
 
 	@Override
 	public Iterator<TargetQualifiers> iterator() {
+		this.statementIterator = this.valueStatements.iterator();
 		return this;
 	}
 
 	@Override
 	public String getProperty() {
-		return this.statementGroup.getProperty().getIri();
+		return this.property;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.statements.hasNext();
+		return this.statementIterator.hasNext();
 	}
 
 	@Override
 	public TargetQualifiers next() {
-		return new StatementTargetQualifiers(this.statements.next(),
+		return new StatementTargetQualifiers(this.statementIterator.next(),
 				this.helpers);
 	}
 
@@ -69,7 +82,7 @@ public class StatementGroupAdaptor implements PropertyTargets,
 
 	@Override
 	public int getTargetCount() {
-		return this.statementGroup.getStatements().size();
+		return this.valueStatements.size();
 	}
 
 }

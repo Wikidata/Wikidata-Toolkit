@@ -29,7 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.db.DatabaseManager;
 import org.wikidata.wdtk.storage.db.PropertySignature;
 
-public class LazyObjectValue implements ObjectValue,
+public class ObjectValueFromSerialization implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
 	final Sort sort;
@@ -44,7 +44,7 @@ public class LazyObjectValue implements ObjectValue,
 	boolean curRef;
 	PropertySignature currentPropertySignature;
 
-	public LazyObjectValue(int[] properties, int[] refs, Value[] values,
+	public ObjectValueFromSerialization(int[] properties, int[] refs, Value[] values,
 			Sort sort, DatabaseManager databaseManager) {
 		this.properties = properties;
 		this.refs = refs;

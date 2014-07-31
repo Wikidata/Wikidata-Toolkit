@@ -62,7 +62,7 @@ public class DatabaseManager {
 		// this.db = DBMaker.newMemoryDirectDB().make();
 
 		this.db = DBMaker.newFileDB(dbFile).transactionDisable()
-				.mmapFileEnableIfSupported().cacheSize(1000000)
+				.mmapFileEnableIfSupported().cacheSize(100000)
 				.asyncWriteEnable().closeOnJvmShutdown().make();
 		this.auxDbs = new HashMap<>();
 
@@ -89,7 +89,7 @@ public class DatabaseManager {
 
 			this.auxDbs.put(name, DBMaker.newFileDB(dbFile)
 					.transactionDisable().mmapFileEnableIfSupported()
-					.cacheSize(1000000).asyncWriteEnable().closeOnJvmShutdown()
+					.cacheSize(50000).asyncWriteEnable().closeOnJvmShutdown()
 					.make());
 		}
 		return this.auxDbs.get(name);

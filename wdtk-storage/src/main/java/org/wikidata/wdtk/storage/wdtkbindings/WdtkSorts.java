@@ -30,6 +30,9 @@ import org.wikidata.wdtk.storage.datamodel.SortType;
 public class WdtkSorts {
 	public static final String SORTNAME_ENTITY = "entity";
 	public static final String SORTNAME_MTV = "monotext";
+	public static final String SORTNAME_TIME_VALUE = "time";
+	public static final String SORTNAME_GLOBE_COORDINATES_VALUE = "coord";
+	public static final String SORTNAME_QUANTITY_VALUE = "quant";
 	public static final String SORTNAME_REFERENCE = "reference";
 	public static final String SORTNAME_LABEL = "label";
 	public static final String SORTNAME_DESCRIPTION = "desc";
@@ -52,6 +55,17 @@ public class WdtkSorts {
 	public static final String PROP_MTV_LANG = "language";
 	public static final String PROP_SITE_PAGE = "page";
 	public static final String PROP_SITE_KEY = "key";
+	public static final String PROP_TIME_YEAR = "year";
+	public static final String PROP_TIME_MONTH = "month";
+	public static final String PROP_TIME_DAY = "day";
+	public static final String PROP_TIME_CALENDAR_MODEL = "cm";
+	public static final String PROP_COORDINATES_LATITUDE = "lat";
+	public static final String PROP_COORDINATES_LONGITUDE = "lon";
+	public static final String PROP_COORDINATES_GLOBE = "globe";
+	public static final String PROP_COORDINATES_PRECISION = "prec";
+	public static final String PROP_QUANTITY_VALUE = "qval";
+	public static final String PROP_QUANTITY_LOWER = "qlow";
+	public static final String PROP_QUANTITY_UPPER = "qup";
 
 	public static final List<PropertyRange> PROPLIST_MONOLINGUAL_TEXT_VALUE = new ArrayList<>();
 	static {
@@ -77,6 +91,30 @@ public class WdtkSorts {
 				Sort.SORTNAME_STRING));
 	}
 
+	public static final List<PropertyRange> PROPLIST_TIME_VALUE = new ArrayList<>();
+	static {
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_YEAR,
+				Sort.SORTNAME_LONG));
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_MONTH,
+				Sort.SORTNAME_LONG));
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_DAY,
+				Sort.SORTNAME_LONG));
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_CALENDAR_MODEL,
+				SORTNAME_ENTITY));
+	}
+
+	public static final List<PropertyRange> PROPLIST_GLOBE_COORDINATES_VALUE = new ArrayList<>();
+	static {
+		PROPLIST_GLOBE_COORDINATES_VALUE.add(new PropertyRange(
+				PROP_COORDINATES_LATITUDE, Sort.SORTNAME_LONG));
+		PROPLIST_GLOBE_COORDINATES_VALUE.add(new PropertyRange(
+				PROP_COORDINATES_LONGITUDE, Sort.SORTNAME_LONG));
+		PROPLIST_GLOBE_COORDINATES_VALUE.add(new PropertyRange(
+				PROP_COORDINATES_PRECISION, Sort.SORTNAME_LONG));
+		PROPLIST_GLOBE_COORDINATES_VALUE.add(new PropertyRange(
+				PROP_COORDINATES_GLOBE, SORTNAME_ENTITY));
+	}
+
 	public static final Sort SORT_ENTITY = new Sort(SORTNAME_ENTITY,
 			SortType.STRING, null);
 	public static final Sort SORT_LABEL_STRING = new Sort(
@@ -95,4 +133,9 @@ public class WdtkSorts {
 			SortType.OBJECT, null);
 	public static final Sort SORT_SITE_LINK = new Sort(SORTNAME_SITE_LINK,
 			SortType.RECORD, PROPLIST_SITE_LINK);
+	public static final Sort SORT_TIME_VALUE = new Sort(SORTNAME_TIME_VALUE,
+			SortType.RECORD, PROPLIST_TIME_VALUE);
+	public static final Sort SORT_GLOBE_COORDINATES_VALUE = new Sort(
+			SORTNAME_GLOBE_COORDINATES_VALUE, SortType.RECORD,
+			PROPLIST_GLOBE_COORDINATES_VALUE);
 }

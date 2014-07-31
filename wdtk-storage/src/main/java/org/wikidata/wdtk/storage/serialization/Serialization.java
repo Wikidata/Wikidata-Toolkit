@@ -25,6 +25,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.wikidata.wdtk.storage.datamodel.LongValue;
+import org.wikidata.wdtk.storage.datamodel.LongValueImpl;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
@@ -59,6 +63,9 @@ public class Serialization {
 			break;
 		case STRING:
 			out.writeUTF(((StringValue) value).getString());
+			break;
+		case LONG:
+			DataOutput2.packLong(out, ((LongValue) value).getLong());
 			break;
 		default:
 			throw new RuntimeException("Unsupported sort type");
@@ -151,7 +158,8 @@ public class Serialization {
 		Value[] values = new Value[propertyCount - refCount];
 		deserializeSortedValues(in, sorts, databaseManager, refs, values);
 
-		return new LazyRecordValue(refs, values, sort, databaseManager);
+		return new RecordValueFromSerialization(refs, values, sort,
+				databaseManager);
 	}
 
 	public static ObjectValue deserializeObjectValue(DataInput in, Sort sort,
@@ -180,7 +188,7 @@ public class Serialization {
 		Value[] values = new Value[propertyCount - refCount];
 		deserializeSortedValues(in, sorts, databaseManager, refs, values);
 
-		return new LazyObjectValue(properties, refs, values, sort,
+		return new ObjectValueFromSerialization(properties, refs, values, sort,
 				databaseManager);
 	}
 
@@ -210,6 +218,8 @@ public class Serialization {
 			return deserializeRecordValue(in, sort, databaseManager);
 		case STRING:
 			return new StringValueImpl(in.readUTF(), sort);
+		case LONG:
+			return new LongValueImpl(DataInput2.unpackLong(in), sort);
 		default:
 			throw new RuntimeException("Unsupported sort type");
 		}

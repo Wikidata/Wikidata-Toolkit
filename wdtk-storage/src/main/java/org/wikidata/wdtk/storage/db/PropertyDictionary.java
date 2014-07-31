@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 	final Bind.MapWithModificationListener<Integer, PropertySignature> values;
 	final Map<PropertySignature, Integer> ids;
 
+	PropertySignature[] valueCache;
+
 	public PropertyDictionary(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
@@ -51,7 +54,15 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 				.valueSerializer(serializer).makeOrGet();
 		this.ids = databaseManager.getDb().createHashMap("properties-ids")
 				.keySerializer(serializer).makeOrGet();
-		Bind.mapInverse(this.values, this.ids);
+		// Bind.mapInverse(this.values, this.ids);
+
+		int maxKey = 0;
+		for (Integer key : this.values.keySet()) {
+			if (key > maxKey) {
+				maxKey = key;
+			}
+		}
+		this.valueCache = new PropertySignature[maxKey + 1];
 	}
 
 	@Override
@@ -61,7 +72,21 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 
 	@Override
 	public PropertySignature getValue(int id) {
-		return this.values.get(id);
+		PropertySignature result = null;
+
+		if (this.valueCache.length > id) {
+			result = this.valueCache[id];
+		}
+		if (result == null) {
+			result = this.values.get(id);
+			if (this.valueCache.length <= id) {
+				int newSize = Math.max(id + 1, this.valueCache.length * 2);
+				this.valueCache = Arrays.copyOf(this.valueCache, newSize);
+			}
+			this.valueCache[id] = result;
+		}
+
+		return result;
 	}
 
 	@Override
@@ -76,6 +101,7 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 		if (id == -1) {
 			id = this.nextId.incrementAndGet();
 			this.values.put(id, value);
+			this.ids.put(value, id);
 		}
 		return id;
 	}
