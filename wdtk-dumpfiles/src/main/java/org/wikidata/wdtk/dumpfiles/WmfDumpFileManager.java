@@ -38,10 +38,10 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 /**
  * Class for providing access to available dumpfiles provided by the Wikimedia
- * Foundation. The preferred access point for this class if
- * {@link #processAllRecentRevisionDumps(MwDumpFileProcessor, boolean)}, since
- * this method takes care of freeing resources and might also provide
- * parallelized downloading/processing in the future.
+ * Foundation. The preferred access point for this class is
+ * {@link DumpProcessingController#processAllRecentRevisionDumps()}, since this
+ * method takes care of freeing resources and might also provide parallelized
+ * downloading/processing in the future.
  * <p>
  * Typically, the Web will be accessed to find information about dumps available
  * online. This Web access is mediated by a {@link WebResourceFetcherImpl}
