@@ -4,6 +4,10 @@ Wikidata Toolkit Release Notes
 Version 0.3.0
 -------------
 
+New features:
+* Dump files are downloaded to temporary files first to prevent incomplete downloads
+  from causing errors
+
 Bug fixes:
 * Fix grouping of Statements when reading data from dumps (Issue #78)
 
