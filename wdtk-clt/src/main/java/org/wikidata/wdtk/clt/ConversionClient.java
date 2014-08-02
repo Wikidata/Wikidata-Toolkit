@@ -52,7 +52,7 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  */
 
 /**
- * This class provides a java comand line client to generate dumps in various
+ * This class provides a java command line client to generate dumps in various
  * data formats like json and rdf.
  * 
  * @author Michael Günther
@@ -240,7 +240,6 @@ public class ConversionClient {
 	 * formats will be set up. After that the serialization process will be
 	 * initiated.
 	 * 
-	 * @param conversionConfiguration
 	 * @throws IOException
 	 */
 	public void convert() throws IOException {
@@ -455,6 +454,14 @@ public class ConversionClient {
 		}
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param args
+	 *            command line arguments to configure the conversion.
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public ConversionClient(String args[]) throws ParseException, IOException {
 		ConversionProperties conversionProperties = new ConversionProperties(
 				args);

@@ -23,9 +23,7 @@ package org.wikidata.wdtk.clt;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -69,6 +67,7 @@ public class ConversionProperties {
 	 * Builds up a list of legal options and store them into the options
 	 * objects.
 	 */
+	@SuppressWarnings("static-access")
 	public void initOptions() {
 		this.options = new Options();
 		Option format = OptionBuilder
@@ -259,6 +258,15 @@ public class ConversionProperties {
 		return result;
 	}
 
+	/**
+	 * Returns a list of {@link ConversionConfiguration} objects by parsing the
+	 * arguments given to the constructor. See
+	 * {@link #handleArguments(String[])} for more detailed information.
+	 * 
+	 * @return list of {@link ConversionConfiguration}
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public List<ConversionConfiguration> getProperties() throws ParseException,
 			IOException {
 		return handleArguments(args);
