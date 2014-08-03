@@ -59,8 +59,7 @@ public class ValueToValueVisitor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(QuantityValue value) {
-		// TODO Auto-generated method stub
-		return new StringValueImpl("UNSUPPORTED Quantity", Sort.SORT_STRING);
+		return new QuantityValueAsValue(value, WdtkSorts.SORT_QUANTITY_VALUE);
 	}
 
 	@Override

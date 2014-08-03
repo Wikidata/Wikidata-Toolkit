@@ -97,7 +97,7 @@ public class Serialization {
 			DataOutput2.packLong(out, longValue);
 		} catch (ArithmeticException e) {
 			DataOutput2.packLong(out, 0L); // marker for string encoding
-			out.writeUTF(decimalValue.toString());
+			out.writeUTF(decimalValue.getDecimal().toString());
 		}
 	}
 
@@ -257,6 +257,8 @@ public class Serialization {
 			return new StringValueImpl(in.readUTF(), sort);
 		case LONG:
 			return new LongValueImpl(DataInput2.unpackLong(in), sort);
+		case DECIMAL:
+			return deserializeDecimalValue(in, sort);
 		default:
 			throw new RuntimeException("Unsupported sort type");
 		}

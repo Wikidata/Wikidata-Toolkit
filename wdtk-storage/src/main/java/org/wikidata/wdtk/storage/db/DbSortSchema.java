@@ -63,6 +63,7 @@ public class DbSortSchema implements SortSchema {
 		declareSort(Sort.SORT_EDGES, false);
 		declareSort(Sort.SORT_STRING, false);
 		declareSort(Sort.SORT_LONG, false);
+		declareSort(Sort.SORT_DECIMAL, false);
 	}
 
 	public void declareSort(Sort sort, boolean useDictionary) {
