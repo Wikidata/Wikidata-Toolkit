@@ -143,7 +143,7 @@ public class RdfSerializationExample {
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 				new FileOutputStream(outputFileName + compressionExtension),
-				1024 * 1024 * 5 * 0 + 100);
+				1024 * 1024 * 5);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
