@@ -39,9 +39,9 @@ Iterator<PropertyTargets> {
 	Iterator<TargetQualifiers> {
 
 		final int iProperty;
-		final PropertySignature propertySignature;
-		final Sort valueSort;
-		final boolean isRefSort;
+		PropertySignature propertySignature = null;
+		Sort valueSort = null;
+		boolean isRefSort;
 		int targetIdx = -1;
 		int targetCount;
 		DataInput2 targetInput;
@@ -50,12 +50,6 @@ Iterator<PropertyTargets> {
 
 		public PropertyTargetsFromSerialization(int iProperty) {
 			this.iProperty = iProperty;
-			this.propertySignature = getDatabaseManager()
-					.fetchPropertySignature(getProperties()[2 + 2 * iProperty]);
-			this.valueSort = getDatabaseManager().getSortSchema().getSort(
-					this.propertySignature.getRangeId());
-			this.isRefSort = getDatabaseManager().getSortSchema()
-					.useDictionary(this.valueSort.getName());
 		}
 
 		@Override
@@ -92,7 +86,11 @@ Iterator<PropertyTargets> {
 
 		@Override
 		public String getProperty() {
-			return this.propertySignature.getPropertyName();
+			return getPropertySignature().getPropertyName();
+		}
+
+		public int getPropertyId() {
+			return this.iProperty;
 		}
 
 		@Override
@@ -101,8 +99,25 @@ Iterator<PropertyTargets> {
 			return this.targetCount;
 		}
 
+		private PropertySignature getPropertySignature() {
+			if (this.propertySignature == null) {
+				this.propertySignature = getDatabaseManager()
+						.fetchPropertySignature(
+								getPropertyIdInternal(iProperty));
+			}
+			return this.propertySignature;
+		}
+
+		private void initSortInformation() {
+			this.valueSort = getDatabaseManager().getSortSchema().getSort(
+					getPropertySignature().getRangeId());
+			this.isRefSort = getDatabaseManager().getSortSchema()
+					.useDictionary(this.valueSort.getName());
+		}
+
 		private void initTargetData() {
 			if (this.targetIdx < 0) {
+				initSortInformation();
 				this.targetIdx = getProperties()[3 + 2 * iProperty];
 				// TODO Use DataInputByteArray as soon as available in stable
 				// MapDB:
@@ -416,6 +431,14 @@ Iterator<PropertyTargets> {
 	@Override
 	public int getEdgeCount() {
 		return getProperties()[1];
+	}
+
+	public int getPropertyIdInternal(int index) {
+		return getProperties()[2 + 2 * index];
+	}
+
+	public PropertyTargetsFromSerialization getPropertyTargetsInternal(int index) {
+		return new PropertyTargetsFromSerialization(index);
 	}
 
 	protected DatabaseManager getDatabaseManager() {
