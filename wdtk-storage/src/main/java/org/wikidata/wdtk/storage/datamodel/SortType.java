@@ -30,7 +30,7 @@ package org.wikidata.wdtk.storage.datamodel;
  */
 public enum SortType {
 	STRING((byte) 1), LONG((byte) 2), RECORD((byte) 4), OBJECT((byte) 5), EDGES(
-			(byte) 6);
+			(byte) 6), DECIMAL((byte) 7);
 
 	final byte value;
 
@@ -54,6 +54,8 @@ public enum SortType {
 			return SortType.OBJECT;
 		case 6:
 			return SortType.EDGES;
+		case 7:
+			return SortType.DECIMAL;
 		default:
 			return null;
 		}

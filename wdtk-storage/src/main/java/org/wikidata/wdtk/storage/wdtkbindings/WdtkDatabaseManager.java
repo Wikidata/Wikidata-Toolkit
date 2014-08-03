@@ -39,6 +39,7 @@ public class WdtkDatabaseManager extends DatabaseManager {
 		this.sortSchema.declareSort(WdtkSorts.SORT_TIME_VALUE, true);
 		this.sortSchema.declareSort(WdtkSorts.SORT_GLOBE_COORDINATES_VALUE,
 				true);
+		this.sortSchema.declareSort(WdtkSorts.SORT_QUANTITY_VALUE, true);
 		this.sortSchema.declareSort(WdtkSorts.SORT_SITE_LINK, false);
 	}
 

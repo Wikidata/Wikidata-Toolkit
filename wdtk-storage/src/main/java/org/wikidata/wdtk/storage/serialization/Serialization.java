@@ -23,10 +23,13 @@ package org.wikidata.wdtk.storage.serialization;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
+import org.wikidata.wdtk.storage.datamodel.DecimalValue;
+import org.wikidata.wdtk.storage.datamodel.DecimalValueImpl;
 import org.wikidata.wdtk.storage.datamodel.LongValue;
 import org.wikidata.wdtk.storage.datamodel.LongValueImpl;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
@@ -62,10 +65,13 @@ public class Serialization {
 			serializeRecordValue(out, ((ObjectValue) value), databaseManager);
 			break;
 		case STRING:
-			out.writeUTF(((StringValue) value).getString());
+			serializeStringValue(out, (StringValue) value);
 			break;
 		case LONG:
 			DataOutput2.packLong(out, ((LongValue) value).getLong());
+			break;
+		case DECIMAL:
+			serializeDecimalValue(out, (DecimalValue) value);
 			break;
 		default:
 			throw new RuntimeException("Unsupported sort type");
@@ -77,9 +83,27 @@ public class Serialization {
 		out.writeUTF(stringValue.getString());
 	}
 
+	public static void serializeDecimalValue(DataOutput out,
+			DecimalValue decimalValue) throws IOException {
+		try {
+			long longValue = decimalValue.getDecimal().longValueExact();
+			if (longValue == Long.MIN_VALUE) {
+				throw new ArithmeticException(
+						"Cannot decrement this long. Store as string.");
+			}
+			if (longValue <= 0) { // never store 0
+				longValue--;
+			}
+			DataOutput2.packLong(out, longValue);
+		} catch (ArithmeticException e) {
+			DataOutput2.packLong(out, 0L); // marker for string encoding
+			out.writeUTF(decimalValue.toString());
+		}
+	}
+
 	public static void serializeRecordValue(DataOutput out,
 			ObjectValue recordValue, DatabaseManager databaseManager)
-			throws IOException {
+					throws IOException {
 
 		Iterator<PropertyValuePair> propertyValuePairs = recordValue.iterator();
 		int i = 0;
@@ -90,7 +114,7 @@ public class Serialization {
 			// assertions instead
 			if (!pr.getProperty().equals(pvp.getProperty())
 					|| !pr.getRange()
-							.equals(pvp.getValue().getSort().getName())) {
+					.equals(pvp.getValue().getSort().getName())) {
 				String message = "The given object value of type "
 						+ recordValue.getClass()
 						+ "\ndoes not match the sort specification of \""
@@ -109,7 +133,7 @@ public class Serialization {
 
 	public static void serializeObjectValue(DataOutput out,
 			ObjectValue objectValue, DatabaseManager databaseManager)
-			throws IOException {
+					throws IOException {
 
 		out.writeInt(objectValue.size());
 
@@ -129,6 +153,19 @@ public class Serialization {
 	public static StringValue deserializeStringValue(DataInput in, Sort sort)
 			throws IOException {
 		return new StringValueImpl(in.readUTF(), sort);
+	}
+
+	public static DecimalValue deserializeDecimalValue(DataInput in, Sort sort)
+			throws IOException {
+		long longValue = DataInput2.unpackLong(in);
+		if (longValue == 0) {
+			return new DecimalValueImpl(new BigDecimal(in.readUTF()), sort);
+		} else {
+			if (longValue < 0) {
+				longValue++;
+			}
+			return new DecimalValueImpl(new BigDecimal(longValue), sort);
+		}
 	}
 
 	public static ObjectValue deserializeRecordValue(DataInput in, Sort sort,
@@ -194,7 +231,7 @@ public class Serialization {
 
 	protected static void deserializeSortedValues(DataInput in, Sort[] sorts,
 			DatabaseManager databaseManager, int[] refs, Value[] values)
-			throws IOException {
+					throws IOException {
 		int iRef = 0;
 		int iObject = 0;
 		for (Sort valueSort : sorts) {

@@ -21,14 +21,17 @@ package org.wikidata.wdtk.storage.wdtktodb;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.storage.datamodel.DecimalValueImpl;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class QuantityValueAsObjectValue extends BaseValueAsValue {
+public class QuantityValueAsValue extends BaseValueAsValue {
 
 	QuantityValue value;
 
-	public QuantityValueAsObjectValue(QuantityValue value, Sort sort) {
+	public QuantityValueAsValue(QuantityValue value, Sort sort) {
 		super(sort);
 		this.value = value;
 	}
@@ -36,22 +39,18 @@ public class QuantityValueAsObjectValue extends BaseValueAsValue {
 	@Override
 	public PropertyValuePair next() {
 		this.iteratorPos++;
-		// TODO how to serialize bigdecimal?
 		if (this.iteratorPos == 1) {
-			return null;
-			// return new PropertyValuePairImpl(
-			// WdtkSorts.PROP_QUANTITY_VALUE, new LongValueImpl(
-			// this.value.getNumericValue(), Sort.SORT_LONG));
+			return new PropertyValuePairImpl(WdtkSorts.PROP_QUANTITY_VALUE,
+					new DecimalValueImpl(this.value.getNumericValue(),
+							Sort.SORT_DECIMAL));
 		} else if (this.iteratorPos == 2) {
-			return null;
-			// return new PropertyValuePairImpl(
-			// WdtkSorts.PROP_COORDINATES_LONGITUDE, new LongValueImpl(
-			// this.value.getLongitude(), Sort.SORT_LONG));
+			return new PropertyValuePairImpl(WdtkSorts.PROP_QUANTITY_LOWER,
+					new DecimalValueImpl(this.value.getLowerBound(),
+							Sort.SORT_DECIMAL));
 		} else if (this.iteratorPos == 3) {
-			return null;
-			// return new PropertyValuePairImpl(
-			// WdtkSorts.PROP_COORDINATES_PRECISION, new LongValueImpl(
-			// this.value.getPrecision(), Sort.SORT_LONG));
+			return new PropertyValuePairImpl(WdtkSorts.PROP_QUANTITY_UPPER,
+					new DecimalValueImpl(this.value.getUpperBound(),
+							Sort.SORT_DECIMAL));
 		} else {
 			return null;
 		}

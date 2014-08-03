@@ -38,6 +38,7 @@ public class Sort implements Serializable {
 	public static final String SORTNAME_EDGES = "edges";
 	public static final String SORTNAME_STRING = "string";
 	public static final String SORTNAME_LONG = "long";
+	public static final String SORTNAME_DECIMAL = "decimal";
 
 	public static final Sort SORT_EDGES = new Sort(SORTNAME_EDGES,
 			SortType.EDGES, null);
@@ -45,6 +46,8 @@ public class Sort implements Serializable {
 			SortType.STRING, null);
 	public static final Sort SORT_LONG = new Sort(SORTNAME_LONG, SortType.LONG,
 			null);
+	public static final Sort SORT_DECIMAL = new Sort(SORTNAME_DECIMAL,
+			SortType.DECIMAL, null);
 
 	final String name;
 	final SortType sortType;
@@ -85,7 +88,7 @@ public class Sort implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -101,7 +104,7 @@ public class Sort implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

@@ -126,7 +126,14 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 
 	private int getIdInternal(Inner inner) {
 		this.timerGetId.start();
-		Integer result = this.ids.get(inner);
+		Integer result = this.idsCache.get(inner);
+		if (result == null) {
+			result = this.ids.get(inner);
+			if (this.idsCache.size() > getMaxCacheSize()) {
+				this.idsCache.clear();
+			}
+			this.idsCache.put(inner, result);
+		}
 		this.timerGetId.stop();
 		if (this.timerGetId.getMeasurements() % 100000 == 0) {
 			System.out.println(this.timerGetId);

@@ -21,13 +21,13 @@ package org.wikidata.wdtk.storage.db;
  */
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 import org.mapdb.Atomic;
 import org.mapdb.BTreeKeySerializer;
-import org.mapdb.Bind;
 import org.mapdb.Serializer;
 import org.wikidata.wdtk.util.Timer;
 
@@ -37,10 +37,11 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 
 	protected final Atomic.Integer nextId;
 	protected final DatabaseManager databaseManager;
-	final Bind.MapWithModificationListener<Integer, PropertySignature> values;
+	final Map<Integer, PropertySignature> values;
 	final Map<PropertySignature, Integer> ids;
 
 	PropertySignature[] valueCache;
+	final Map<PropertySignature, Integer> idCache;
 
 	public PropertyDictionary(DatabaseManager databaseManager) {
 		Validate.notNull(databaseManager, "database manager cannot be null");
@@ -57,7 +58,6 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 				.valueSerializer(serializer).makeOrGet();
 		this.ids = databaseManager.getDb().createHashMap("properties-ids")
 				.keySerializer(serializer).makeOrGet();
-		// Bind.mapInverse(this.values, this.ids);
 
 		int maxKey = 0;
 		for (Integer key : this.values.keySet()) {
@@ -66,8 +66,9 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 			}
 		}
 		this.valueCache = new PropertySignature[maxKey + 1];
+		this.idCache = new HashMap<>(maxKey + 1);
 
-		this.timerGetId = Timer.getNamedTimer("Get-property-id");
+		this.timerGetId = Timer.getNamedTimer("Id-get-property");
 	}
 
 	@Override
@@ -97,7 +98,11 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 	@Override
 	public int getId(PropertySignature value) {
 		this.timerGetId.start();
-		Integer result = this.ids.get(value);
+		Integer result = this.idCache.get(value);
+		if (result == null) {
+			result = this.ids.get(value);
+			this.idCache.put(value, result);
+		}
 		this.timerGetId.stop();
 		if (this.timerGetId.getMeasurements() % 100000 == 0) {
 			System.out.println(this.timerGetId);

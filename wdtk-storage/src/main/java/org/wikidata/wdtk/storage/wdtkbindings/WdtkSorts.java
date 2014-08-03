@@ -121,6 +121,16 @@ public class WdtkSorts {
 				PROP_COORDINATES_GLOBE, SORTNAME_ENTITY));
 	}
 
+	public static final List<PropertyRange> PROPLIST_QUANTITY_VALUE = new ArrayList<>();
+	static {
+		PROPLIST_QUANTITY_VALUE.add(new PropertyRange(PROP_QUANTITY_VALUE,
+				Sort.SORTNAME_DECIMAL));
+		PROPLIST_QUANTITY_VALUE.add(new PropertyRange(PROP_QUANTITY_LOWER,
+				Sort.SORTNAME_DECIMAL));
+		PROPLIST_QUANTITY_VALUE.add(new PropertyRange(PROP_QUANTITY_UPPER,
+				Sort.SORTNAME_DECIMAL));
+	}
+
 	public static final Sort SORT_ENTITY = new Sort(SORTNAME_ENTITY,
 			SortType.STRING, null);
 	public static final Sort SORT_SPECIAL_STRING = new Sort(
@@ -146,4 +156,6 @@ public class WdtkSorts {
 	public static final Sort SORT_GLOBE_COORDINATES_VALUE = new Sort(
 			SORTNAME_GLOBE_COORDINATES_VALUE, SortType.RECORD,
 			PROPLIST_GLOBE_COORDINATES_VALUE);
+	public static final Sort SORT_QUANTITY_VALUE = new Sort(
+			SORTNAME_QUANTITY_VALUE, SortType.RECORD, PROPLIST_QUANTITY_VALUE);
 }
