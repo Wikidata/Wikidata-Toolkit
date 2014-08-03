@@ -59,13 +59,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
-	public ItemIdValue getItemIdValue(String id, String baseIri) {
-		return new ItemIdValueImpl(id, baseIri);
+	public ItemIdValue getItemIdValue(String id, String siteIri) {
+		return new ItemIdValueImpl(id, siteIri);
 	}
 
 	@Override
-	public PropertyIdValue getPropertyIdValue(String id, String baseIri) {
-		return new PropertyIdValueImpl(id, baseIri);
+	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
+		return new PropertyIdValueImpl(id, siteIri);
 	}
 
 	@Override

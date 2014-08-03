@@ -26,11 +26,21 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * entities are Items (with identifiers of the form Q1234) and Properties (with
  * identifiers of the form P1234).
  * <p>
+ * When considering entities from multiple sites, the (local) ID alone is not
+ * enough to identify an entity unambiguously. In this case, the site IRI also
+ * needs to be taken into account.
+ * <p>
+ * An alternative to using the local ID and site IRI together is to use the full
+ * IRI. By default, this is computed by appending the local ID to the site IRI.
+ * However, for some sites and some entity types, more elaborate computations
+ * might be required, so this construction scheme for IRIs should not be
+ * presumed.
+ * <p>
  * The full IRI of an entity is used in export formats like RDF, but also
  * internally, e.g., for identifying the calendar model of time values.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface EntityIdValue extends IriIdentifiedValue {
 
@@ -44,19 +54,27 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	static final String ET_PROPERTY = "http://www.wikidata.org/ontology#Property";
 
 	/**
-	 * Get the type of this entity. This should be an IRI that identifies an
+	 * Returns the type of this entity. This should be an IRI that identifies an
 	 * entity type, such as {@link EntityIdValue#ET_ITEM} or
 	 * {@link EntityIdValue#ET_PROPERTY}.
-	 * 
-	 * @return String
+	 *
+	 * @return IRI string to identify the type of the entity
 	 */
 	String getEntityType();
 
 	/**
-	 * Get the id of this entity.
-	 * 
+	 * Returns the id of this entity.
+	 *
 	 * @return String id of this entity
 	 */
 	String getId();
+
+	/**
+	 * Returns an IRI that identifies the site that this entity comes from,,
+	 * e.g., "http://www.wikidata.org/entity/" for Wikidata.
+	 *
+	 * @return the site IRI string
+	 */
+	String getSiteIri();
 
 }

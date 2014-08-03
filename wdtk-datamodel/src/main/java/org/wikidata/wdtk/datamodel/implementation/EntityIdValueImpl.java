@@ -28,47 +28,53 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 /**
  * Generic implementation of {@link EntityIdValue} that works with arbitrary
  * Wikibase instances: it requires a baseIri that identifies the site globally.
- * 
+ *
  * TODO It would be cleaner to have an object that manages the site context
  * instead of passing a base IRI string that is simply concatenated.
- * 
+ *
  * TODO For our common use case that Wikidata entities are processed, it might
  * be useful to have a more lightweight object that does not store this known
  * base IRI.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public abstract class EntityIdValueImpl implements EntityIdValue {
 
 	final String id;
-	final String baseIri;
+	final String siteIri;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param id
 	 *            the ID string, e.g., "Q1234". The required format depends on
 	 *            the specific type of entity
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
 	 */
-	EntityIdValueImpl(String id, String baseIri) {
+	EntityIdValueImpl(String id, String siteIri) {
 		Validate.notNull(id, "Entity ids cannot be null");
-		Validate.notNull(baseIri, "Entity base IRIs cannot be null");
+		Validate.notNull(siteIri, "Entity site IRIs cannot be null");
 		this.id = id;
-		this.baseIri = baseIri;
+		this.siteIri = siteIri;
 	}
 
 	@Override
 	public String getIri() {
-		return baseIri.concat(id);
+		return siteIri.concat(id);
 	}
 
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public String getSiteIri() {
+		return this.siteIri;
 	}
 
 	@Override
@@ -83,7 +89,7 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(773, 241).append(baseIri).append(id)
+		return new HashCodeBuilder(773, 241).append(siteIri).append(id)
 				.toHashCode();
 	}
 
@@ -105,7 +111,7 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 		}
 
 		EntityIdValueImpl other = (EntityIdValueImpl) obj;
-		return id.equals(other.id) && baseIri.equals(other.baseIri);
+		return id.equals(other.id) && siteIri.equals(other.siteIri);
 	}
-	
+
 }
