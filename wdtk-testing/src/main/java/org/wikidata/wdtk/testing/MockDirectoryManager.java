@@ -157,6 +157,12 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	@Override
+	public long createFileAtomic(String fileName, InputStream inputStream)
+			throws IOException {
+		return createFile(fileName, inputStream);
+	}
+
+	@Override
 	public void createFile(String fileName, String fileContents)
 			throws IOException {
 		if (this.hasFile(fileName)) {

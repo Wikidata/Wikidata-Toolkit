@@ -28,7 +28,7 @@ import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
- * Test class for {@link RankedRankedBitVectorImpl}.
+ * Test class for {@link RankedBitVectorImpl}.
  * 
  * @author Julian Mendez
  * 

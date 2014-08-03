@@ -55,8 +55,8 @@ public class JsonConverter {
 	/**
 	 * Returns a JSONObject that encodes the given {@link ItemDocument}.
 	 * 
-	 * @param itemDocument
-	 *            the document to be converted
+	 * @param document
+	 *            the ItemDocument to be converted
 	 * @return corresponding JSON representation
 	 */
 	public JSONObject getJsonForItemDocument(ItemDocument document) {
@@ -84,8 +84,8 @@ public class JsonConverter {
 	/**
 	 * Returns a JSONObject that encodes the given {@link PropertyDocument}.
 	 * 
-	 * @param propertyDocument
-	 *            the document to be converted
+	 * @param document
+	 *            the PropertyDocument to be converted
 	 * @return corresponding JSON representation
 	 */
 	public JSONObject getJsonForPropertyDocument(PropertyDocument document) {

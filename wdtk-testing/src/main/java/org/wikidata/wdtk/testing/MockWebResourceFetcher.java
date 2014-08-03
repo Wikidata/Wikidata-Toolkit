@@ -41,8 +41,6 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	/**
 	 * Constructor.
 	 * 
-	 * @param resourceClass
-	 *            the Class that should be used to resolve resources
 	 */
 	public MockWebResourceFetcher() {
 		this.webResources = new HashMap<String, String>();
