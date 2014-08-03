@@ -61,7 +61,7 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 
 	@Override
 	public String toString() {
-		return "(PropertyId)" + this.baseIri + "/" + this.id;
+		return "(PropertyId)" + this.siteIri + "/" + this.id;
 	}
 
 }
