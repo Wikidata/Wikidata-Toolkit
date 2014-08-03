@@ -30,7 +30,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface StatementGroup {
+public interface StatementGroup extends Iterable<Statement> {
 
 	/**
 	 * Get the list of Statements of this group.
