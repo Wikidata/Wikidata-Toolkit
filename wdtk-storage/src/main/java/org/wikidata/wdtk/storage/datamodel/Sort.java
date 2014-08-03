@@ -27,17 +27,20 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * Representation of one sort. Sorts are like datatypes for Value objects.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class Sort implements Serializable {
 
 	private static final long serialVersionUID = -4309351376613799056L;
 
+	public static final String SORTNAME_EDGES = "edges";
 	public static final String SORTNAME_STRING = "string";
 	public static final String SORTNAME_LONG = "long";
 
+	public static final Sort SORT_EDGES = new Sort(SORTNAME_EDGES,
+			SortType.EDGES, null);
 	public static final Sort SORT_STRING = new Sort(SORTNAME_STRING,
 			SortType.STRING, null);
 	public static final Sort SORT_LONG = new Sort(SORTNAME_LONG, SortType.LONG,
@@ -82,7 +85,7 @@ public class Sort implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -98,7 +101,7 @@ public class Sort implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

@@ -22,46 +22,38 @@ package org.wikidata.wdtk.storage.wdtktodb;
 
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class ItemDocumentAsEdgeContainer implements EdgeContainer,
-Iterator<PropertyTargets> {
+public class PropertyDocumentAsEdgeContainer implements EdgeContainer,
+		Iterator<PropertyTargets> {
 
 	private static final byte DO_DOCTYPE = 1;
-	private static final byte DO_SITELINKS = 2;
+	private static final byte DO_DATATYPE = 2;
 
-	final ItemDocument itemDocument;
+	final PropertyDocument propertyDocument;
 	final WdtkAdaptorHelper helpers;
 
 	final TermsPropertyTargetIterator termPropertyTargetIterator;
-	final StatementsPropertyTargetIterator statementsPropertyTargetIterator;
 
 	int todos;
 
-	public ItemDocumentAsEdgeContainer(ItemDocument itemDocument,
+	public PropertyDocumentAsEdgeContainer(PropertyDocument propertyDocument,
 			WdtkAdaptorHelper helpers) {
-		this.itemDocument = itemDocument;
+		this.propertyDocument = propertyDocument;
 		this.helpers = helpers;
 
 		this.termPropertyTargetIterator = new TermsPropertyTargetIterator(
-				itemDocument);
-		this.statementsPropertyTargetIterator = new StatementsPropertyTargetIterator(
-				itemDocument.getStatementGroups(), helpers);
+				propertyDocument);
 	}
 
 	protected void reset() {
 		this.termPropertyTargetIterator.reset();
-		this.statementsPropertyTargetIterator.reset();
-
-		this.todos = DO_DOCTYPE;
-		if (!itemDocument.getSiteLinks().isEmpty()) {
-			this.todos |= DO_SITELINKS;
-		}
+		this.todos = DO_DOCTYPE | DO_DATATYPE;
 	}
 
 	@Override
@@ -72,13 +64,12 @@ Iterator<PropertyTargets> {
 
 	@Override
 	public Value getSource() {
-		return new EntityValueAsValue(this.itemDocument.getEntityId());
+		return new EntityValueAsValue(this.propertyDocument.getEntityId());
 	}
 
 	@Override
 	public boolean hasNext() {
-		return (this.todos != 0) || this.termPropertyTargetIterator.hasNext()
-				|| this.statementsPropertyTargetIterator.hasNext();
+		return (this.todos != 0) || this.termPropertyTargetIterator.hasNext();
 	}
 
 	@Override
@@ -86,16 +77,15 @@ Iterator<PropertyTargets> {
 		if ((this.todos & DO_DOCTYPE) != 0) {
 			this.todos = this.todos & ~DO_DOCTYPE;
 			return new SimplePropertyTargets(WdtkSorts.PROP_DOCTYPE,
-					new StringValueImpl(WdtkSorts.VALUE_DOCTYPE_ITEM,
+					new StringValueImpl(WdtkSorts.VALUE_DOCTYPE_PROPERTY,
 							WdtkSorts.SORT_SPECIAL_STRING));
-		} else if (this.statementsPropertyTargetIterator.hasNext()) {
-			return this.statementsPropertyTargetIterator.next();
+		} else if ((this.todos & DO_DATATYPE) != 0) {
+			this.todos = this.todos & ~DO_DATATYPE;
+			return new SimplePropertyTargets(WdtkSorts.PROP_DATATYPE,
+					new StringValueImpl(this.propertyDocument.getDatatype()
+							.getIri(), WdtkSorts.SORT_SPECIAL_STRING));
 		} else if (this.termPropertyTargetIterator.hasNext()) {
 			return this.termPropertyTargetIterator.next();
-		} else if ((this.todos & DO_SITELINKS) != 0) {
-			this.todos = this.todos & ~DO_SITELINKS;
-			return new SiteLinksAsPropertyTargets(this.itemDocument
-					.getSiteLinks().values());
 		} else {
 			return null;
 		}
@@ -108,9 +98,6 @@ Iterator<PropertyTargets> {
 
 	@Override
 	public int getEdgeCount() {
-		return 1 + this.termPropertyTargetIterator.getEdgeCount()
-				+ this.statementsPropertyTargetIterator.getEdgeCount()
-				+ (this.itemDocument.getSiteLinks().isEmpty() ? 0 : 1);
+		return 2 + this.termPropertyTargetIterator.getEdgeCount();
 	}
-
 }

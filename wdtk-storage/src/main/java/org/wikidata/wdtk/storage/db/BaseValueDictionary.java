@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.db;
  * #L%
  */
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,21 +34,23 @@ import org.wikidata.wdtk.util.Timer;
 public abstract class BaseValueDictionary<Outer extends Value, Inner>
 		implements ValueDictionary, InnerToOuterObjectConverter<Inner, Outer> {
 
-	final Timer timerGet;
+	final Timer timerGetId;
 	final Timer timerPut;
 
 	protected final Sort sort;
 	protected final Atomic.Integer nextId;
 	protected final DatabaseManager databaseManager;
 
-	final Bind.MapWithModificationListener<Integer, Inner> values;
+	final Map<Integer, Inner> values;
 	final Map<Inner, Integer> ids;
+	final Map<Integer, Inner> valuesCache;
+	final Map<Inner, Integer> idsCache;
 
 	public BaseValueDictionary(Sort sort, DatabaseManager databaseManager) {
 		Validate.notNull(sort, "sort cannot be null");
 		Validate.notNull(databaseManager, "database manager cannot be null");
 
-		this.timerGet = Timer.getNamedTimer("Get-values-" + sort.getName());
+		this.timerGetId = Timer.getNamedTimer("Id-get-" + sort.getName());
 		this.timerPut = Timer.getNamedTimer("Put-" + sort.getName());
 
 		this.sort = sort;
@@ -58,8 +61,12 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 
 		this.values = initValues("sort-values-" + sort.getName());
 		this.ids = initIds("sort-ids-" + sort.getName());
+		this.idsCache = new HashMap<>();
+		this.valuesCache = new HashMap<>();
+	}
 
-		// Bind.mapInverse(this.values, this.ids);
+	protected int getMaxCacheSize() {
+		return 5000;
 	}
 
 	@Override
@@ -118,11 +125,11 @@ public abstract class BaseValueDictionary<Outer extends Value, Inner>
 	protected abstract Map<Inner, Integer> initIds(String name);
 
 	private int getIdInternal(Inner inner) {
-		this.timerGet.start();
+		this.timerGetId.start();
 		Integer result = this.ids.get(inner);
-		this.timerGet.stop();
-		if (this.timerGet.getMeasurements() % 100000 == 0) {
-			System.out.println(this.timerGet);
+		this.timerGetId.stop();
+		if (this.timerGetId.getMeasurements() % 100000 == 0) {
+			System.out.println(this.timerGetId);
 		}
 		return (result == null) ? -1 : result;
 	}

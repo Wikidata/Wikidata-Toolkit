@@ -29,8 +29,11 @@ import org.mapdb.Atomic;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.Bind;
 import org.mapdb.Serializer;
+import org.wikidata.wdtk.util.Timer;
 
 public class PropertyDictionary implements Dictionary<PropertySignature> {
+
+	final Timer timerGetId;
 
 	protected final Atomic.Integer nextId;
 	protected final DatabaseManager databaseManager;
@@ -63,6 +66,8 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 			}
 		}
 		this.valueCache = new PropertySignature[maxKey + 1];
+
+		this.timerGetId = Timer.getNamedTimer("Get-property-id");
 	}
 
 	@Override
@@ -91,7 +96,12 @@ public class PropertyDictionary implements Dictionary<PropertySignature> {
 
 	@Override
 	public int getId(PropertySignature value) {
+		this.timerGetId.start();
 		Integer result = this.ids.get(value);
+		this.timerGetId.stop();
+		if (this.timerGetId.getMeasurements() % 100000 == 0) {
+			System.out.println(this.timerGetId);
+		}
 		return (result == null) ? -1 : result;
 	}
 

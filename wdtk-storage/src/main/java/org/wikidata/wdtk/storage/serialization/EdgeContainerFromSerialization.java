@@ -33,10 +33,10 @@ import org.wikidata.wdtk.storage.db.DatabaseManager;
 import org.wikidata.wdtk.storage.db.PropertySignature;
 
 public class EdgeContainerFromSerialization implements EdgeContainer,
-		Iterator<PropertyTargets> {
+Iterator<PropertyTargets> {
 
 	class PropertyTargetsFromSerialization implements PropertyTargets,
-			Iterator<TargetQualifiers> {
+	Iterator<TargetQualifiers> {
 
 		final int iProperty;
 		final PropertySignature propertySignature;
@@ -137,8 +137,8 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 				PropertySignature qualifierSignature = getDatabaseManager()
 						.fetchPropertySignature(qualifierPropertyId);
 				targetQualifiers[2 * k + 1] = qualifierSignature;
-				if (qualifierSignature == null) {
-					System.out.println("Something bad has happened: "
+				if (qualifierSignature == null) { // DEBUG
+					System.err.println("Something bad has happened: "
 							+ qualifierPropertyId
 							+ " not found. We are in object " + sourceId
 							+ " reading statement " + this.iTarget
@@ -181,8 +181,8 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 	}
 
 	class ValueTargetQualifiersFromSerialization implements TargetQualifiers,
-			Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-			PropertyValuePair {
+	Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
+	PropertyValuePair {
 
 		final Object[] targetQualifiers;
 		final int sortId;
@@ -262,8 +262,8 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 	}
 
 	class RefTargetQualifiersFromSerialization implements TargetQualifiers,
-			Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-			PropertyValuePair {
+	Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
+	PropertyValuePair {
 
 		final int[] targetQualifiers;
 		final int sortId;

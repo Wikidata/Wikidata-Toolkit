@@ -22,13 +22,15 @@ package org.wikidata.wdtk.storage.datamodel;
 
 /**
  * Basic types of sorts supported. RECORD is the only one that requires
- * configuration.
- * 
+ * configuration. EDGES is used to represent the domain of qualifier properties;
+ * edges are otherwise not treated as "values" that have a sort.
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public enum SortType {
-	STRING((byte) 1), LONG((byte) 2), RECORD((byte) 4), OBJECT((byte) 5);
+	STRING((byte) 1), LONG((byte) 2), RECORD((byte) 4), OBJECT((byte) 5), EDGES(
+			(byte) 6);
 
 	final byte value;
 
@@ -50,6 +52,8 @@ public enum SortType {
 			return SortType.RECORD;
 		case 5:
 			return SortType.OBJECT;
+		case 6:
+			return SortType.EDGES;
 		default:
 			return null;
 		}

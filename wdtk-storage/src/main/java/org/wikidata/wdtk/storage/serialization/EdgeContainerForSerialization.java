@@ -97,16 +97,27 @@ public class EdgeContainerForSerialization {
 			}
 
 			if (isRefSort) {
-				encodeRefTargetQualifiers(tqs, valueSortName);
+				encodeRefTargetQualifiers(tqs);
 			} else {
-				encodeValueTargetQualifiers(tqs, valueSortName);
+				encodeValueTargetQualifiers(tqs);
 			}
 
 		}
+
+		if (valueSortName == null) {
+			// If this happens, the property won't have been added to the
+			// property array, and we can't fix this because we don't know
+			// the value sort of the property to compute an id.
+			throw new RuntimeException(
+					"Property "
+							+ pts.getProperty()
+							+ " had zero values, "
+							+ "but properties in edge containers must have at least one value.");
+		}
 	}
 
-	protected void encodeValueTargetQualifiers(TargetQualifiers tqs,
-			String valueSortName) throws IOException {
+	protected void encodeValueTargetQualifiers(TargetQualifiers tqs)
+			throws IOException {
 
 		this.values.writeInt(tqs.getQualifierCount());
 		Serialization.serializeValue(this.values, tqs.getTarget(),
@@ -114,15 +125,15 @@ public class EdgeContainerForSerialization {
 
 		for (PropertyValuePair pvp : tqs.getQualifiers()) {
 			this.values.writeInt(databaseManager.getOrCreatePropertyId(
-					pvp.getProperty(), valueSortName, pvp.getValue().getSort()
-							.getName()));
+					pvp.getProperty(), Sort.SORTNAME_EDGES, pvp.getValue()
+							.getSort().getName()));
 			Serialization.serializeValue(this.values, pvp.getValue(),
 					databaseManager);
 		}
 	}
 
-	protected void encodeRefTargetQualifiers(TargetQualifiers tqs,
-			String valueSortName) throws IOException {
+	protected void encodeRefTargetQualifiers(TargetQualifiers tqs)
+			throws IOException {
 
 		this.refs.writeInt(tqs.getQualifierCount());
 		// We already know that the value is in a dictionary:
@@ -131,8 +142,8 @@ public class EdgeContainerForSerialization {
 
 		for (PropertyValuePair pvp : tqs.getQualifiers()) {
 			this.refs.writeInt(databaseManager.getOrCreatePropertyId(
-					pvp.getProperty(), valueSortName, pvp.getValue().getSort()
-							.getName()));
+					pvp.getProperty(), Sort.SORTNAME_EDGES, pvp.getValue()
+					.getSort().getName()));
 			if (databaseManager.getSortSchema().useDictionary(
 					pvp.getValue().getSort().getName())) {
 				this.refs.writeInt(this.databaseManager.getOrCreateValueId(pvp

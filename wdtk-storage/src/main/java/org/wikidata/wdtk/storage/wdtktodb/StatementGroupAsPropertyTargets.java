@@ -35,27 +35,32 @@ public class StatementGroupAsPropertyTargets implements PropertyTargets,
 
 	final WdtkAdaptorHelper helpers;
 	final String property;
-	final List<Statement> valueStatements;
+	final List<Statement> statements;
 
 	Statement nextProperStatement;
 	Iterator<Statement> statementIterator;
 
 	public StatementGroupAsPropertyTargets(String property,
-			Collection<Statement> statements, WdtkAdaptorHelper helpers) {
+			Collection<Statement> statements, boolean valueStatements,
+			WdtkAdaptorHelper helpers) {
 		this.property = property;
 		this.helpers = helpers;
 
-		this.valueStatements = new ArrayList<>(statements.size());
+		this.statements = new ArrayList<>(statements.size());
 		for (Statement s : statements) {
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				this.valueStatements.add(s);
+			if (valueStatements
+					&& s.getClaim().getMainSnak() instanceof ValueSnak) {
+				this.statements.add(s);
+			} else if (!valueStatements
+					&& !(s.getClaim().getMainSnak() instanceof ValueSnak)) {
+				this.statements.add(s);
 			}
 		}
 	}
 
 	@Override
 	public Iterator<TargetQualifiers> iterator() {
-		this.statementIterator = this.valueStatements.iterator();
+		this.statementIterator = this.statements.iterator();
 		return this;
 	}
 
@@ -82,7 +87,7 @@ public class StatementGroupAsPropertyTargets implements PropertyTargets,
 
 	@Override
 	public int getTargetCount() {
-		return this.valueStatements.size();
+		return this.statements.size();
 	}
 
 }

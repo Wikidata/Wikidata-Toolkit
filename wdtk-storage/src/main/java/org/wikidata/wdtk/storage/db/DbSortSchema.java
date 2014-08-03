@@ -60,6 +60,7 @@ public class DbSortSchema implements SortSchema {
 			// System.out.println("Found sort: " + sort.getName());
 		}
 
+		declareSort(Sort.SORT_EDGES, false);
 		declareSort(Sort.SORT_STRING, false);
 		declareSort(Sort.SORT_LONG, false);
 	}
@@ -110,7 +111,7 @@ public class DbSortSchema implements SortSchema {
 	 * Returns the id of the sort of the given name. If no such sort is known,
 	 * the method fails with an exception. To check if a sort is known, use
 	 * {@link DbSortSchema#getSort(String)} instead.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the sort
 	 * @return the id of the sort

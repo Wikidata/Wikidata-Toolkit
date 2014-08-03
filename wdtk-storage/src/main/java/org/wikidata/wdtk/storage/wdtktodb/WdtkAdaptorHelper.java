@@ -38,7 +38,7 @@ public class WdtkAdaptorHelper {
 		return this.sortSchema;
 	}
 
-	public ValueToValueVisitor getValueAdaptor() {
+	public ValueToValueVisitor getValueTovalueVisitor() {
 		return this.valueAdaptor;
 	}
 

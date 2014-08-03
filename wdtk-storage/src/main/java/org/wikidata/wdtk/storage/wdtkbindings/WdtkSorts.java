@@ -29,6 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.SortType;
 
 public class WdtkSorts {
 	public static final String SORTNAME_ENTITY = "entity";
+	public static final String SORTNAME_SPECIAL_STRING = "specialStr";
 	public static final String SORTNAME_MTV = "monotext";
 	public static final String SORTNAME_TIME_VALUE = "time";
 	public static final String SORTNAME_GLOBE_COORDINATES_VALUE = "coord";
@@ -42,6 +43,7 @@ public class WdtkSorts {
 	public static final String SORTNAME_LABEL_STRING = "mtvlabel";
 
 	public static final String PROP_DOCTYPE = "wdtk:doctype";
+	public static final String PROP_DATATYPE = "wdtk:datatype";
 	public static final String PROP_LABEL = "wdtk:label";
 	public static final String PROP_DESCRIPTION = "wdtk:desc";
 	public static final String PROP_ALIAS = "wdtk:alias";
@@ -121,8 +123,8 @@ public class WdtkSorts {
 
 	public static final Sort SORT_ENTITY = new Sort(SORTNAME_ENTITY,
 			SortType.STRING, null);
-	public static final Sort SORT_SPECIAL_STRING = new Sort(SORTNAME_ENTITY,
-			SortType.STRING, null);
+	public static final Sort SORT_SPECIAL_STRING = new Sort(
+			SORTNAME_SPECIAL_STRING, SortType.STRING, null);
 	public static final Sort SORT_LABEL_STRING = new Sort(
 			SORTNAME_LABEL_STRING, SortType.STRING, null);
 	public static final Sort SORT_MTV = new Sort(SORTNAME_MTV, SortType.RECORD,

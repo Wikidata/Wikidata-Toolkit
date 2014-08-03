@@ -67,14 +67,14 @@ PropertyValuePair {
 	public Value getTarget() {
 		if (this.statement.getClaim().getMainSnak() instanceof ValueSnak) {
 			return ((ValueSnak) this.statement.getClaim().getMainSnak())
-					.getValue().accept(this.helpers.getValueAdaptor());
+					.getValue().accept(this.helpers.getValueTovalueVisitor());
 		} else {
 			// if (this.statement.getClaim().getMainSnak() instanceof
 			// SomeValueSnak) {
 			// if (this.statement.getClaim().getMainSnak() instanceof
 			// NoValueSnak) {
 			return this.statement.getClaim().getMainSnak().getPropertyId()
-					.accept(this.helpers.getValueAdaptor());
+					.accept(this.helpers.getValueTovalueVisitor());
 		}
 	}
 

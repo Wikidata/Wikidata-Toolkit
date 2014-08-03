@@ -29,7 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
 public class SimplePropertyTargets implements PropertyTargets,
-		Iterator<TargetQualifiers>, TargetQualifiers {
+Iterator<TargetQualifiers>, TargetQualifiers {
 
 	final String property;
 	final Value value;
@@ -64,7 +64,12 @@ public class SimplePropertyTargets implements PropertyTargets,
 
 	@Override
 	public TargetQualifiers next() {
-		return this;
+		if (this.hasNext) {
+			this.hasNext = false;
+			return this;
+		} else {
+			return null;
+		}
 	}
 
 	@Override

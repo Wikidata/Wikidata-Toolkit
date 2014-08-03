@@ -44,7 +44,7 @@ public class SnakToPropertyValuePairVisitor implements
 	public PropertyValuePair visit(ValueSnak snak) {
 		this.currentProperty = snak.getPropertyId().getIri();
 		this.currentValue = snak.getValue().accept(
-				this.helpers.getValueAdaptor());
+				this.helpers.getValueTovalueVisitor());
 		return this;
 	}
 
@@ -52,7 +52,7 @@ public class SnakToPropertyValuePairVisitor implements
 	public PropertyValuePair visit(SomeValueSnak snak) {
 		this.currentProperty = WdtkSorts.PROP_SOMEVALUE;
 		this.currentValue = snak.getPropertyId().accept(
-				this.helpers.getValueAdaptor());
+				this.helpers.getValueTovalueVisitor());
 		return this;
 	}
 
@@ -60,7 +60,7 @@ public class SnakToPropertyValuePairVisitor implements
 	public PropertyValuePair visit(NoValueSnak snak) {
 		this.currentProperty = WdtkSorts.PROP_NOVALUE;
 		this.currentValue = snak.getPropertyId().accept(
-				this.helpers.getValueAdaptor());
+				this.helpers.getValueTovalueVisitor());
 		return this;
 	}
 
