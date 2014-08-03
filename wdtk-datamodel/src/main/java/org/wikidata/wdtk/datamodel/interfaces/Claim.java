@@ -43,7 +43,7 @@ public interface Claim {
 
 	/**
 	 * Main Snak of the statement. This Snak refers directly to the subject,
-	 * e.g., the {@ValueSnak} "Population: 3000000".
+	 * e.g., the {@link ValueSnak} "Population: 3000000".
 	 * 
 	 * @return the main snak
 	 */

@@ -61,7 +61,7 @@ public interface ItemDocument extends TermedDocument {
 	/**
 	 * Get a Map of site keys to {@link SiteLink} objects.
 	 * 
-	 * @return
+	 * @return map of SiteLinks
 	 */
 	Map<String, SiteLink> getSiteLinks();
 

@@ -83,6 +83,30 @@ public interface DirectoryManager {
 			throws IOException;
 
 	/**
+	 * Creates a new file in the current directory, and fill it with the data
+	 * from the given input stream. This is done by first writing the data to a
+	 * temporary file that uses a suffix to the file name, and then moving the
+	 * completed file to the new location. This should be used when fetching
+	 * larger files through from slow stream (e.g., a download) to prevent
+	 * partially finished file downloads lying around if the program is
+	 * terminated during download. The temporary file will still be lying
+	 * around, but it will not be mistaken for the completed download by any
+	 * other parts of the program.
+	 * <p>
+	 * If the stream encodes a string, then it should generally be encoded in
+	 * UTF-8, since access methods assume this.
+	 * 
+	 * @param fileName
+	 *            the name of the file
+	 * @param inputStream
+	 *            the input stream from which to load the file
+	 * @return size of the new file in bytes
+	 * @throws IOException
+	 */
+	long createFileAtomic(String fileName, InputStream inputStream)
+			throws IOException;
+
+	/**
 	 * Creates a new file in the current directory, and fill it with the given
 	 * data, encoded in UTF-8. Should only be used for short pieces of data.
 	 * 

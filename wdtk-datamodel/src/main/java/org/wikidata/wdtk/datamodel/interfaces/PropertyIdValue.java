@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * The id of a Wikibase Property. Objects implementing this interface always return
- * {@link EntityIdValue.EntityType#PROPERTY} for {@link EntityIdValue#getEntityType()
+ * {@link EntityIdValue#ET_PROPERTY} for {@link EntityIdValue#getEntityType()
  * getEntityType}.
  * 
  * @author Markus Kroetzsch

@@ -205,7 +205,7 @@ public class DumpProcessingController {
 	 * <p>
 	 * Importantly, the {@link MwRevision} that the registered processors will
 	 * receive is is valid only during the execution of
-	 * {@link MwRevisionProcessor#processRevision(MwRevision, boolean)}, but it
+	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it
 	 * will not be permanent. If the data is to be retained permanently, the
 	 * revision processor needs to make its own copy.
 	 * 
