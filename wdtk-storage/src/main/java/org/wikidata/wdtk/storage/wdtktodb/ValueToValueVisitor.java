@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -31,8 +31,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class ValueAdaptor implements ValueVisitor<Value> {
+public class ValueToValueVisitor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(DatatypeIdValue value) {
@@ -42,18 +43,18 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(EntityIdValue value) {
-		return new EntityValueAdaptor(value);
+		return new EntityValueAsValue(value);
 	}
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-		return new GlobeCoordinatesValueAdaptor(value,
+		return new GlobeCoordinatesValueAsValue(value,
 				WdtkSorts.SORT_GLOBE_COORDINATES_VALUE);
 	}
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
-		return new MonolingualTextValueAdaptor(value, WdtkSorts.SORT_MTV);
+		return new MonolingualTextValueAsValue(value, WdtkSorts.SORT_MTV);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class ValueAdaptor implements ValueVisitor<Value> {
 
 	@Override
 	public Value visit(TimeValue value) {
-		return new TimeValueAdaptor(value, WdtkSorts.SORT_TIME_VALUE);
+		return new TimeValueAsValue(value, WdtkSorts.SORT_TIME_VALUE);
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -30,7 +30,7 @@ import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
 
-public class TermsAdaptor implements PropertyTargets,
+public class TermsAsPropertyTargets implements PropertyTargets,
 		Iterator<TargetQualifiers>, TargetQualifiers {
 
 	final String property;
@@ -39,7 +39,7 @@ public class TermsAdaptor implements PropertyTargets,
 	final Sort sort;
 	MonolingualTextValue currentValue;
 
-	public TermsAdaptor(String property,
+	public TermsAsPropertyTargets(String property,
 			Iterator<MonolingualTextValue> monolingualTextValues,
 			int targetCount, Sort sort) {
 		this.property = property;
@@ -81,7 +81,7 @@ public class TermsAdaptor implements PropertyTargets,
 
 	@Override
 	public Value getTarget() {
-		return new MonolingualTextValueAdaptor(this.currentValue, this.sort);
+		return new MonolingualTextValueAsValue(this.currentValue, this.sort);
 	}
 
 	@Override

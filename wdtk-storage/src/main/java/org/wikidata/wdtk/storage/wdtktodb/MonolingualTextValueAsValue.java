@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -20,52 +20,40 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import java.util.Iterator;
-
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.storage.datamodel.ObjectValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class SiteLinkAdaptor implements ObjectValue,
-		Iterator<PropertyValuePair> {
+public class MonolingualTextValueAsValue extends BaseValueAsValue {
 
-	final SiteLink siteLink;
+	final MonolingualTextValue monolingualTextValue;
 
-	int iteratorPos;
-
-	public SiteLinkAdaptor(SiteLink siteLink) {
-		this.siteLink = siteLink;
-	}
-
-	@Override
-	public Sort getSort() {
-		return WdtkSorts.SORT_SITE_LINK;
-	}
-
-	@Override
-	public Iterator<PropertyValuePair> iterator() {
-		this.iteratorPos = 0;
-		return this;
-	}
-
-	@Override
-	public boolean hasNext() {
-		return this.iteratorPos < getSort().getPropertyRanges().size();
+	public MonolingualTextValueAsValue(
+			MonolingualTextValue monolingualTextValue, Sort sort) {
+		super(sort);
+		this.monolingualTextValue = monolingualTextValue;
 	}
 
 	@Override
 	public PropertyValuePair next() {
 		this.iteratorPos++;
 		if (this.iteratorPos == 1) {
-			return new PropertyValuePairImpl(WdtkSorts.PROP_SITE_PAGE,
-					new StringValueImpl(this.siteLink.getPageTitle(),
-							Sort.SORT_STRING));
+			Sort valueSort;
+			// if (this.sort.getName().equals(WdtkSorts.SORTNAME_LABEL)) {
+			// valueSort = WdtkSorts.SORT_LABEL_STRING;
+			// } else {
+			valueSort = Sort.SORT_STRING;
+			// }
+			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_TEXT,
+					new StringValueImpl(this.monolingualTextValue.getText(),
+							valueSort));
 		} else if (this.iteratorPos == 2) {
-			return new PropertyValuePairImpl(WdtkSorts.PROP_SITE_KEY,
-					new StringValueImpl(this.siteLink.getSiteKey(),
+			return new PropertyValuePairImpl(WdtkSorts.PROP_MTV_LANG,
+					new StringValueImpl(
+							this.monolingualTextValue.getLanguageCode(),
 							Sort.SORT_STRING));
 		} else {
 			return null;
@@ -73,13 +61,8 @@ public class SiteLinkAdaptor implements ObjectValue,
 	}
 
 	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public int size() {
-		return getSort().getPropertyRanges().size();
+		return 2;
 	}
 
 }

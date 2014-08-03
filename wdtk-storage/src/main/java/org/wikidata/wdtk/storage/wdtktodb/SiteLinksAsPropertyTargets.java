@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -20,59 +20,54 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
+import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class StatementGroupAdaptor implements PropertyTargets,
-		Iterator<TargetQualifiers> {
+public class SiteLinksAsPropertyTargets implements PropertyTargets,
+		Iterator<TargetQualifiers>, TargetQualifiers {
 
-	final WdtkAdaptorHelper helpers;
-	final String property;
-	final List<Statement> valueStatements;
+	final Iterator<SiteLink> siteLinks;
+	final int targetCount;
 
-	Statement nextProperStatement;
-	Iterator<Statement> statementIterator;
+	SiteLink currentValue;
 
-	public StatementGroupAdaptor(String property,
-			Collection<Statement> statements, WdtkAdaptorHelper helpers) {
-		this.property = property;
-		this.helpers = helpers;
-
-		this.valueStatements = new ArrayList<>(statements.size());
-		for (Statement s : statements) {
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				this.valueStatements.add(s);
-			}
-		}
+	public SiteLinksAsPropertyTargets(Collection<SiteLink> siteLinks) {
+		this.targetCount = siteLinks.size();
+		this.siteLinks = siteLinks.iterator();
 	}
 
 	@Override
 	public Iterator<TargetQualifiers> iterator() {
-		this.statementIterator = this.valueStatements.iterator();
 		return this;
 	}
 
 	@Override
 	public String getProperty() {
-		return this.property;
+		return WdtkSorts.PROP_SITE_LINK;
+	}
+
+	@Override
+	public int getTargetCount() {
+		return this.targetCount;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.statementIterator.hasNext();
+		return this.siteLinks.hasNext();
 	}
 
 	@Override
 	public TargetQualifiers next() {
-		return new StatementTargetQualifiers(this.statementIterator.next(),
-				this.helpers);
+		this.currentValue = this.siteLinks.next();
+		return this;
 	}
 
 	@Override
@@ -81,8 +76,18 @@ public class StatementGroupAdaptor implements PropertyTargets,
 	}
 
 	@Override
-	public int getTargetCount() {
-		return this.valueStatements.size();
+	public Value getTarget() {
+		return new SiteLinkAsObjectValue(this.currentValue);
+	}
+
+	@Override
+	public Iterable<PropertyValuePair> getQualifiers() {
+		return Collections.<PropertyValuePair> emptyList();
+	}
+
+	@Override
+	public int getQualifierCount() {
+		return 0;
 	}
 
 }

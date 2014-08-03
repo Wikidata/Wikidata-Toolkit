@@ -41,6 +41,7 @@ public class WdtkSorts {
 	public static final String SORTNAME_SITE_LINK = "site";
 	public static final String SORTNAME_LABEL_STRING = "mtvlabel";
 
+	public static final String PROP_DOCTYPE = "wdtk:doctype";
 	public static final String PROP_LABEL = "wdtk:label";
 	public static final String PROP_DESCRIPTION = "wdtk:desc";
 	public static final String PROP_ALIAS = "wdtk:alias";
@@ -66,6 +67,9 @@ public class WdtkSorts {
 	public static final String PROP_QUANTITY_VALUE = "qval";
 	public static final String PROP_QUANTITY_LOWER = "qlow";
 	public static final String PROP_QUANTITY_UPPER = "qup";
+
+	public static final String VALUE_DOCTYPE_ITEM = "item";
+	public static final String VALUE_DOCTYPE_PROPERTY = "prop";
 
 	public static final List<PropertyRange> PROPLIST_MONOLINGUAL_TEXT_VALUE = new ArrayList<>();
 	static {
@@ -116,6 +120,8 @@ public class WdtkSorts {
 	}
 
 	public static final Sort SORT_ENTITY = new Sort(SORTNAME_ENTITY,
+			SortType.STRING, null);
+	public static final Sort SORT_SPECIAL_STRING = new Sort(SORTNAME_ENTITY,
 			SortType.STRING, null);
 	public static final Sort SORT_LABEL_STRING = new Sort(
 			SORTNAME_LABEL_STRING, SortType.STRING, null);

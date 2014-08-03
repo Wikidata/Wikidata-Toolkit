@@ -28,6 +28,7 @@ public class WdtkDatabaseManager extends DatabaseManager {
 		super(dbName);
 
 		this.sortSchema.declareSort(WdtkSorts.SORT_ENTITY, true);
+		this.sortSchema.declareSort(WdtkSorts.SORT_SPECIAL_STRING, true);
 		this.sortSchema.declareSort(WdtkSorts.SORT_MTV, false);
 		this.sortSchema.declareSort(WdtkSorts.SORT_LABEL, false);
 		this.sortSchema.declareSort(WdtkSorts.SORT_LABEL_STRING, false);

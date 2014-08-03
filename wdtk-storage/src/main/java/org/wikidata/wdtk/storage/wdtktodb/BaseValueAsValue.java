@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -26,13 +26,13 @@ import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 
-public abstract class BaseValueAdaptor implements ObjectValue,
+public abstract class BaseValueAsValue implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
 	final Sort sort;
 	int iteratorPos;
 
-	public BaseValueAdaptor(Sort sort) {
+	public BaseValueAsValue(Sort sort) {
 		this.sort = sort;
 	}
 

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -26,12 +26,13 @@ import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class GlobeCoordinatesValueAdaptor extends BaseValueAdaptor {
+public class GlobeCoordinatesValueAsValue extends BaseValueAsValue {
 
 	GlobeCoordinatesValue value;
 
-	public GlobeCoordinatesValueAdaptor(GlobeCoordinatesValue value, Sort sort) {
+	public GlobeCoordinatesValueAsValue(GlobeCoordinatesValue value, Sort sort) {
 		super(sort);
 		this.value = value;
 	}

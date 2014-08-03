@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -26,12 +26,13 @@ import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePairImpl;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class TimeValueAdaptor extends BaseValueAdaptor {
+public class TimeValueAsValue extends BaseValueAsValue {
 
 	final TimeValue value;
 
-	public TimeValueAdaptor(TimeValue timeValue, Sort sort) {
+	public TimeValueAsValue(TimeValue timeValue, Sort sort) {
 		super(sort);
 		this.value = timeValue;
 	}

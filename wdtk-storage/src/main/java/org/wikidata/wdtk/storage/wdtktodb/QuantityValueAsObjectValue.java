@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -24,11 +24,11 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 
-public class QuantityValueAdaptor extends BaseValueAdaptor {
+public class QuantityValueAsObjectValue extends BaseValueAsValue {
 
 	QuantityValue value;
 
-	public QuantityValueAdaptor(QuantityValue value, Sort sort) {
+	public QuantityValueAsObjectValue(QuantityValue value, Sort sort) {
 		super(sort);
 		this.value = value;
 	}

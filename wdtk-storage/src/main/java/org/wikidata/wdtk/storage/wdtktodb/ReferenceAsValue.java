@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -28,15 +28,16 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class ReferenceAdaptor implements ObjectValue,
+public class ReferenceAsValue implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
 	final Reference reference;
 	final WdtkAdaptorHelper helpers;
 	Iterator<Snak> snakIterator;
 
-	public ReferenceAdaptor(Reference reference, WdtkAdaptorHelper helpers) {
+	public ReferenceAsValue(Reference reference, WdtkAdaptorHelper helpers) {
 		this.reference = reference;
 		this.helpers = helpers;
 	}

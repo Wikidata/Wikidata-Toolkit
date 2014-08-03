@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -29,13 +29,13 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
-import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class StatementTargetQualifiers implements TargetQualifiers,
-		Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-		PropertyValuePair {
+public class StatementAsTargetQualifiers implements TargetQualifiers,
+Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
+PropertyValuePair {
 
 	final Statement statement;
 
@@ -48,7 +48,7 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 	String propertyForPropertyValuePair;
 	Value valueForPropertyValuePair;
 
-	public StatementTargetQualifiers(Statement statement,
+	public StatementAsTargetQualifiers(Statement statement,
 			WdtkAdaptorHelper helpers) {
 		this.statement = statement;
 		this.helpers = helpers;
@@ -103,12 +103,12 @@ public class StatementTargetQualifiers implements TargetQualifiers,
 		} else if (!this.rankDone) { // rank
 			this.propertyForPropertyValuePair = WdtkSorts.PROP_RANK;
 			this.valueForPropertyValuePair = new StringValueImpl(this.statement
-					.getRank().name(), Sort.SORT_STRING);
+					.getRank().name(), WdtkSorts.SORT_SPECIAL_STRING);
 			this.rankDone = true;
 			return this;
 		} else { // references
 			this.propertyForPropertyValuePair = WdtkSorts.PROP_REFERENCE;
-			this.valueForPropertyValuePair = new ReferenceAdaptor(
+			this.valueForPropertyValuePair = new ReferenceAsValue(
 					this.referenceIterator.next(), this.helpers);
 			return this;
 		}

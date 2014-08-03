@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -26,23 +26,17 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class SnakAdaptor implements SnakVisitor<PropertyValuePair>,
-		PropertyValuePair {
-
-	// TODO delete
-	interface MutablePropertyValuePair extends PropertyValuePair {
-		void setProperty(String property);
-
-		void setValue(Value value);
-	}
+public class SnakToPropertyValuePairVisitor implements
+		SnakVisitor<PropertyValuePair>, PropertyValuePair {
 
 	String currentProperty;
 	Value currentValue;
 
 	final WdtkAdaptorHelper helpers;
 
-	public SnakAdaptor(WdtkAdaptorHelper helpers) {
+	public SnakToPropertyValuePairVisitor(WdtkAdaptorHelper helpers) {
 		this.helpers = helpers;
 	}
 

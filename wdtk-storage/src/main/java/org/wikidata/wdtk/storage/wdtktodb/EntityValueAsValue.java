@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -23,12 +23,13 @@ package org.wikidata.wdtk.storage.wdtkbindings;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class EntityValueAdaptor implements StringValue {
+public class EntityValueAsValue implements StringValue {
 
 	final EntityIdValue entityIdValue;
 
-	public EntityValueAdaptor(EntityIdValue entityValue) {
+	public EntityValueAsValue(EntityIdValue entityValue) {
 		this.entityIdValue = entityValue;
 	}
 

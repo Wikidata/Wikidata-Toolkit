@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtkbindings;
+package org.wikidata.wdtk.storage.wdtktodb;
 
 /*
  * #%L
@@ -33,10 +33,12 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
+import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 import org.wikidata.wdtk.util.NestedIterator;
 
-public class ItemDocumentEdgeContainer implements EdgeContainer,
+public class ItemDocumentAsEdgeContainer implements EdgeContainer,
 		Iterator<PropertyTargets> {
 
 	final ItemDocument itemDocument;
@@ -45,14 +47,14 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	final List<Statement> noValueStatements;
 	final List<Statement> someValueStatements;
 
-	static final byte MODE_NODATA = -1;
-	static final byte MODE_STATEMENTS = 0;
-	static final byte MODE_NOVALUE = 1;
-	static final byte MODE_SOMEVALUE = 2;
-	static final byte MODE_LABELS = 3;
-	static final byte MODE_DESCRIPTIONS = 4;
-	static final byte MODE_ALIASES = 5;
-	static final byte MODE_SITELINKS = 6;
+	static final byte MODE_DOCTYPE = 0;
+	static final byte MODE_STATEMENTS = 1;
+	static final byte MODE_NOVALUE = 2;
+	static final byte MODE_SOMEVALUE = 3;
+	static final byte MODE_LABELS = 4;
+	static final byte MODE_DESCRIPTIONS = 5;
+	static final byte MODE_ALIASES = 6;
+	static final byte MODE_SITELINKS = 7;
 	static final byte MODE_DONE = 100;
 	byte currentMode;
 	Iterator<StatementGroup> statementGroupIterator;
@@ -60,7 +62,7 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	byte maxMode;
 	int edgeCount;
 
-	public ItemDocumentEdgeContainer(ItemDocument itemDocument,
+	public ItemDocumentAsEdgeContainer(ItemDocument itemDocument,
 			WdtkAdaptorHelper helpers) {
 		this.itemDocument = itemDocument;
 		this.helpers = helpers;
@@ -85,8 +87,8 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 			}
 		}
 
-		this.edgeCount = 0;
-		this.maxMode = MODE_NODATA;
+		this.edgeCount = 1;
+		this.maxMode = MODE_DOCTYPE;
 		if (!this.properStatementGroups.isEmpty()) {
 			this.maxMode = MODE_STATEMENTS;
 			this.edgeCount += this.properStatementGroups.size();
@@ -126,7 +128,7 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 
 	@Override
 	public Value getSource() {
-		return new EntityValueAdaptor(this.itemDocument.getEntityId());
+		return new EntityValueAsValue(this.itemDocument.getEntityId());
 	}
 
 	@Override
@@ -137,14 +139,21 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 	@Override
 	public PropertyTargets next() {
 
+		if (this.currentMode == MODE_DOCTYPE) {
+			this.currentMode = MODE_STATEMENTS;
+			return new SimplePropertyTargets(WdtkSorts.PROP_DOCTYPE,
+					new StringValueImpl(WdtkSorts.VALUE_DOCTYPE_ITEM,
+							WdtkSorts.SORT_SPECIAL_STRING));
+		}
+
 		if (this.currentMode == MODE_STATEMENTS) {
 			if (this.statementGroupIterator.hasNext()) {
 				StatementGroup sg = this.statementGroupIterator.next();
 				if (!this.statementGroupIterator.hasNext()) {
 					this.currentMode = MODE_NOVALUE;
 				}
-				return new StatementGroupAdaptor(sg.getProperty().getIri(),
-						sg.getStatements(), this.helpers);
+				return new StatementGroupAsPropertyTargets(sg.getProperty()
+						.getIri(), sg.getStatements(), this.helpers);
 			} else {
 				this.currentMode = MODE_NOVALUE;
 			}
@@ -153,32 +162,35 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 		if (this.currentMode == MODE_NOVALUE) {
 			this.currentMode = MODE_SOMEVALUE;
 			if (!this.noValueStatements.isEmpty()) {
-				return new StatementGroupAdaptor(WdtkSorts.PROP_NOVALUE,
-						this.noValueStatements, this.helpers);
+				return new StatementGroupAsPropertyTargets(
+						WdtkSorts.PROP_NOVALUE, this.noValueStatements,
+						this.helpers);
 			}
 		}
 
 		if (this.currentMode == MODE_SOMEVALUE) {
 			this.currentMode = MODE_LABELS;
 			if (!this.someValueStatements.isEmpty()) {
-				return new StatementGroupAdaptor(WdtkSorts.PROP_SOMEVALUE,
-						this.someValueStatements, this.helpers);
+				return new StatementGroupAsPropertyTargets(
+						WdtkSorts.PROP_SOMEVALUE, this.someValueStatements,
+						this.helpers);
 			}
 		}
 
 		if (this.currentMode == MODE_LABELS) {
 			this.currentMode = MODE_DESCRIPTIONS;
 			if (!itemDocument.getLabels().isEmpty()) {
-				return new TermsAdaptor(WdtkSorts.PROP_LABEL, this.itemDocument
-						.getLabels().values().iterator(), this.itemDocument
-						.getLabels().size(), WdtkSorts.SORT_LABEL);
+				return new TermsAsPropertyTargets(WdtkSorts.PROP_LABEL,
+						this.itemDocument.getLabels().values().iterator(),
+						this.itemDocument.getLabels().size(),
+						WdtkSorts.SORT_LABEL);
 			}
 		}
 
 		if (this.currentMode == MODE_DESCRIPTIONS) {
 			this.currentMode = MODE_ALIASES;
 			if (!itemDocument.getDescriptions().isEmpty()) {
-				return new TermsAdaptor(
+				return new TermsAsPropertyTargets(
 						WdtkSorts.PROP_DESCRIPTION,
 						this.itemDocument.getDescriptions().values().iterator(),
 						this.itemDocument.getDescriptions().values().size(),
@@ -194,18 +206,18 @@ public class ItemDocumentEdgeContainer implements EdgeContainer,
 						.getAliases().values()) {
 					targetCount += l.size();
 				}
-				return new TermsAdaptor(WdtkSorts.PROP_ALIAS,
+				return new TermsAsPropertyTargets(WdtkSorts.PROP_ALIAS,
 						new NestedIterator<MonolingualTextValue>(
 								this.itemDocument.getAliases().values()),
-						targetCount, WdtkSorts.SORT_ALIAS);
+								targetCount, WdtkSorts.SORT_ALIAS);
 			}
 		}
 
 		if (this.currentMode == MODE_SITELINKS) {
 			this.currentMode = MODE_DONE;
 			if (!itemDocument.getSiteLinks().isEmpty()) {
-				return new SiteLinksAdaptor(this.itemDocument.getSiteLinks()
-						.values());
+				return new SiteLinksAsPropertyTargets(this.itemDocument
+						.getSiteLinks().values());
 			}
 		}
 
