@@ -120,6 +120,27 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	}
 
 	@Override
+	public long createFileAtomic(String fileName, InputStream inputStream)
+			throws IOException {
+		long fileSize;
+		Path filePath = this.directory.resolve(fileName);
+		Path fileTempPath = this.directory.resolve(fileName + ".part");
+
+		try (ReadableByteChannel readableByteChannel = Channels
+				.newChannel(inputStream);
+				FileChannel fc = FileChannel.open(fileTempPath,
+						StandardOpenOption.WRITE,
+						StandardOpenOption.TRUNCATE_EXISTING,
+						StandardOpenOption.CREATE)) {
+			fileSize = fc.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+		}
+
+		Files.move(fileTempPath, filePath);
+
+		return fileSize;
+	}
+
+	@Override
 	public void createFile(String fileName, String fileContents)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);

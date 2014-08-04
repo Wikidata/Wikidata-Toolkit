@@ -42,7 +42,6 @@ public interface PropertyTypes {
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
 	 * 
 	 * @param propertyIdValue
-	 * @return
 	 */
 	public String getPropertyType(PropertyIdValue propertyIdValue);
 
@@ -58,11 +57,10 @@ public interface PropertyTypes {
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
-	 * {@link EnitityIdValue} objects.
+	 * {@link EntityIdValue} objects.
 	 * 
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromEntityIdValue(
 			PropertyIdValue propertyIdValue, EntityIdValue value);
@@ -73,7 +71,6 @@ public interface PropertyTypes {
 	 * 
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromGlobeCoordinatesValue(
 			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value);
@@ -84,7 +81,6 @@ public interface PropertyTypes {
 	 * 
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromQuantityValue(
 			PropertyIdValue propertyIdValue, QuantityValue value);
@@ -95,7 +91,6 @@ public interface PropertyTypes {
 	 * 
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromStringValue(
 			PropertyIdValue propertyIdValue, StringValue value);
@@ -106,7 +101,6 @@ public interface PropertyTypes {
 	 * 
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
 			TimeValue value);

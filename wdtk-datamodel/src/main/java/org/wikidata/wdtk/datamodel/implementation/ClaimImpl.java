@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -29,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link Claim}.
@@ -75,7 +77,12 @@ public class ClaimImpl implements Claim {
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		return Collections.unmodifiableList(qualifiers);
+		return Collections.unmodifiableList(this.qualifiers);
+	}
+
+	@Override
+	public Iterator<Snak> getAllQualifiers() {
+		return new NestedIterator<>(this.qualifiers);
 	}
 
 	/*
@@ -108,12 +115,11 @@ public class ClaimImpl implements Claim {
 				&& this.mainSnak.equals(other.mainSnak)
 				&& this.qualifiers.equals(other.qualifiers);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "Claim { main snak = " + this.mainSnak
-				+ ", subject = " + this.subject + ", " 
-				+ this.qualifiers.size() + " qualifiers}";
+	public String toString() {
+		return "Claim { main snak = " + this.mainSnak + ", subject = "
+				+ this.subject + ", " + this.qualifiers.size() + " qualifiers}";
 	}
 
 }

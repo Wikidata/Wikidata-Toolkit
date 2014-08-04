@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -112,9 +113,14 @@ public class StatementGroupImpl implements StatementGroup {
 	}
 
 	@Override
-	public String toString(){
-		return "[" + "subject: " + this.getSubject() 
-				+ ", pId: " + this.getProperty() + ", " 
-				+ this.statements.size() + " items]";
+	public String toString() {
+		return "[" + "subject: " + this.getSubject() + ", pId: "
+				+ this.getProperty() + ", " + this.statements.size()
+				+ " items]";
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return this.statements.iterator();
 	}
 }

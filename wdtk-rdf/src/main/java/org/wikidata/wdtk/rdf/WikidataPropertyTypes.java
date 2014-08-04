@@ -133,7 +133,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 	 * Find the datatype of a property online.
 	 * 
 	 * @param propertyIdValue
-	 * @return
+	 * @return IRI of the datatype
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 *             , IOException

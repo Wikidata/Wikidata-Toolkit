@@ -29,7 +29,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface SnakGroup {
+public interface SnakGroup extends Iterable<Snak> {
 
 	/**
 	 * Get the list of Snaks of this group.

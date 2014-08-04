@@ -104,7 +104,6 @@ public class MwDumpFileProcessingTest {
 	 * Generates a simple item revision for testing purposes.
 	 * 
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getItemRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
@@ -126,7 +125,6 @@ public class MwDumpFileProcessingTest {
 	 * Generates a simple property revision for testing purposes.
 	 * 
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getPropertyRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
@@ -149,7 +147,6 @@ public class MwDumpFileProcessingTest {
 	 * Generates a simple page revision for testing purposes.
 	 * 
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getPageRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
