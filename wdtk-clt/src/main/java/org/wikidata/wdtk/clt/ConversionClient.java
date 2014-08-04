@@ -330,7 +330,7 @@ public class ConversionClient {
 		new File(outputDestination).mkdirs();
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 				new FileOutputStream(outputDestination + outputFileName
-						+ compressionExtension), 1024 * 1024 * 5 * 0 + 100);
+						+ compressionExtension), 1024 * 1024 * 5);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
