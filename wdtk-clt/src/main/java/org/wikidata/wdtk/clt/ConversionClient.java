@@ -178,8 +178,8 @@ public class ConversionClient {
 							conversionConfiguration.getOutputDestination()
 									+ "WikidataDump.json"
 									+ conversionConfiguration
-											.getCompressionExtension()), 1024
-							* 1024 * 5 * 0 + 100);
+											.getCompressionExtension()),
+					1024 * 1024 * 5);
 
 			switch (conversionConfiguration.getCompressionExtension()) {
 			case COMPRESS_BZ2:
