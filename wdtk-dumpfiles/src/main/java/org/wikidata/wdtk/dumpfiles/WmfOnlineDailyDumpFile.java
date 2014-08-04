@@ -114,15 +114,17 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.DAILY, this.dateStamp));
 
+		long size = 0;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
-			dailyDirectoryManager.createFile(fileName, inputStream);
+			size = dailyDirectoryManager
+					.createFileAtomic(fileName, inputStream);
 		}
 
 		this.isPrepared = true;
 
 		logger.info("... completed download of daily dump file " + fileName
-				+ " from " + urlString);
+				+ " from " + urlString + " (" + size + " bytes)");
 	}
 
 	@Override

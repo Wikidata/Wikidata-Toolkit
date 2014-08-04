@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * The id of a Wikibase Item. Objects implementing this interface always return
- * {@link EntityIdValue.EntityType#ITEM} for {@link EntityIdValue#getEntityType()
+ * {@link EntityIdValue#ET_ITEM} for {@link EntityIdValue#getEntityType()
  * getEntityType}.
  * 
  * @author Markus Kroetzsch

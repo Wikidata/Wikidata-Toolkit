@@ -29,7 +29,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * interface to access IRIs uniformly for values that provide them.
  * <p>
  * This interface is intended as a general interface for all types of
- * {@link Value} that provide an IRI for their content. See {@link UrlValue} for
+ * {@link Value} that provide an IRI for their content. See {@link StringValue} for
  * the value that is used when users enter a URL (or IRI) directly in Wikibase.
  * 
  * @author Markus Kroetzsch

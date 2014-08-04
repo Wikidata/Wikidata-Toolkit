@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -42,7 +43,7 @@ public interface Claim {
 
 	/**
 	 * Main Snak of the statement. This Snak refers directly to the subject,
-	 * e.g., the {@ValueSnak} "Population: 3000000".
+	 * e.g., the {@link ValueSnak} "Population: 3000000".
 	 * 
 	 * @return the main snak
 	 */
@@ -57,4 +58,12 @@ public interface Claim {
 	 * @return list of snak groups
 	 */
 	List<SnakGroup> getQualifiers();
+
+	/**
+	 * Returns an iterator over all qualifiers, without considering qualifier
+	 * groups. The relative order of qualifiers is preserved.
+	 * 
+	 * @return iterator over all qualifier snaks
+	 */
+	Iterator<Snak> getAllQualifiers();
 }

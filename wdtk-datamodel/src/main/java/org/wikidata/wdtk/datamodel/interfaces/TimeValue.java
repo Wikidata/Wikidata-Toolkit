@@ -26,8 +26,8 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * information about its precision, and the preferred calendar model and
  * timezone (for display). Moreover, time values can describe some uncertainty
  * regarding the exact position in time. This is achieved by tolerance values
- * that specify how much {@link getBeforeTolerance() before} or {@link
- * getBeforeTolerance() after} the given time point an event might have
+ * that specify how much {@link #getBeforeTolerance() before} or
+ * {@link #getBeforeTolerance() after} the given time point an event might have
  * occurred.
  * <p>
  * Time points cannot describe durations (which are quantities), recurring
@@ -42,8 +42,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * as entered.
  * <p>
  * "Y0K issue": Neither the Gregorian nor the Julian calendar assume a year 0,
- * i.e., the year 1 BCE was followed by 1 CE in these calendars. See
- * {@link http://en.wikipedia.org/wiki/Year_zero}. Wikibase internally uses the
+ * i.e., the year 1 BCE was followed by 1 CE in these calendars. See <a
+ * href="http://en.wikipedia.org/wiki/Year_zero"
+ * >http://en.wikipedia.org/wiki/Year_zero</a>. Wikibase internally uses the
  * year 0. This is the same as ISO-8601, where 1 BCE is represented as "0000".
  * However, note that XML Schema dates (1.0 and 2.0) do not have a year 0, so in
  * their case 1BCE is represented as "-1". Understanding the difference is
@@ -191,7 +192,7 @@ public interface TimeValue extends Value {
 
 	/**
 	 * Get the precision hint of this date. The return value will be in the
-	 * range of {@link TimeValue#PREC_DAY}, ..., {@link TimeValue#PREC_GY}.
+	 * range of {@link TimeValue#PREC_DAY}, ..., {@link TimeValue#PREC_1GY}.
 	 * 
 	 * @return precision hint for this date
 	 */
@@ -215,7 +216,7 @@ public interface TimeValue extends Value {
 
 	/**
 	 * Get a tolerance value that specifies how much earlier in time the value
-	 * could at most be, measured as a multiple of {@link getPrecision()
+	 * could at most be, measured as a multiple of {@link #getPrecision()
 	 * precision}. The value is a non-negative integer.
 	 * <p>
 	 * For example, for the date 2007-05-12T10:45:00 with precision
@@ -240,7 +241,7 @@ public interface TimeValue extends Value {
 
 	/**
 	 * Get a tolerance value that specifies how much later in time the value
-	 * could at most be, measured as a multiple of {@link getPrecision()
+	 * could at most be, measured as a multiple of {@link #getPrecision()
 	 * precision}. The value is a positive integer.
 	 * <p>
 	 * For example, for the date 2007-05-12T10:45:00 with precision

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -97,8 +98,16 @@ public class SnakGroupImpl implements SnakGroup {
 		SnakGroupImpl other = (SnakGroupImpl) obj;
 		return this.snaks.equals(other.snaks);
 	}
+
 	@Override
-	public String toString(){
-		return "SnakGroup {pId = " + this.getProperty() + ", " + this.snaks.size() + " snaks}";
+	public String toString() {
+		return "SnakGroup {pId = " + this.getProperty() + ", "
+				+ this.snaks.size() + " snaks}";
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<Snak> iterator() {
+		return (Iterator<Snak>) this.snaks.iterator();
 	}
 }
