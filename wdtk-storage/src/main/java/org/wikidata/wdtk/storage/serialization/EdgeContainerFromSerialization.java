@@ -33,10 +33,10 @@ import org.wikidata.wdtk.storage.db.DatabaseManager;
 import org.wikidata.wdtk.storage.db.PropertySignature;
 
 public class EdgeContainerFromSerialization implements EdgeContainer,
-Iterator<PropertyTargets> {
+		Iterator<PropertyTargets> {
 
-	class PropertyTargetsFromSerialization implements PropertyTargets,
-	Iterator<TargetQualifiers> {
+	public class PropertyTargetsFromSerialization implements PropertyTargets,
+			Iterator<TargetQualifiers> {
 
 		final int iProperty;
 		PropertySignature propertySignature = null;
@@ -138,7 +138,7 @@ Iterator<PropertyTargets> {
 			}
 		}
 
-		private TargetQualifiers getNextValueTargetQualifiers()
+		private ValueTargetQualifiersFromSerialization getNextValueTargetQualifiers()
 				throws IOException {
 			int qualifierCount = this.targetInput.readInt();
 
@@ -179,7 +179,7 @@ Iterator<PropertyTargets> {
 					this.propertySignature.getRangeId());
 		}
 
-		private TargetQualifiers getNextRefTargetQualifiers()
+		private RefTargetQualifiersFromSerialization getNextRefTargetQualifiers()
 				throws IOException {
 			int qualifierCount = this.targetInput.readInt();
 			int[] targetQualifiers = new int[1 + 2 * qualifierCount];
@@ -195,9 +195,9 @@ Iterator<PropertyTargets> {
 		}
 	}
 
-	class ValueTargetQualifiersFromSerialization implements TargetQualifiers,
-	Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-	PropertyValuePair {
+	public class ValueTargetQualifiersFromSerialization implements
+			TargetQualifiers, Iterable<PropertyValuePair>,
+			Iterator<PropertyValuePair>, PropertyValuePair {
 
 		final Object[] targetQualifiers;
 		final int sortId;
@@ -276,9 +276,9 @@ Iterator<PropertyTargets> {
 		}
 	}
 
-	class RefTargetQualifiersFromSerialization implements TargetQualifiers,
-	Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-	PropertyValuePair {
+	public class RefTargetQualifiersFromSerialization implements
+			TargetQualifiers, Iterable<PropertyValuePair>,
+			Iterator<PropertyValuePair>, PropertyValuePair {
 
 		final int[] targetQualifiers;
 		final int sortId;
@@ -298,6 +298,10 @@ Iterator<PropertyTargets> {
 		public Value getTarget() {
 			return getDatabaseManager().fetchValue(this.targetQualifiers[0],
 					this.sortId);
+		}
+
+		public int getInternalTargetId() {
+			return this.targetQualifiers[0];
 		}
 
 		@Override

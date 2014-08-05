@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,46 +35,37 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
-import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
+import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.util.NestedIterator;
 
-public class EdgeContainerAsItemDocument implements ItemDocument {
+public class ItemDocumentFromEdgeContainer implements ItemDocument {
 
 	final DataObjectFactory dataObjectFactory;
+	final EdgeContainer edgeContainer;
 
-	PropertyTargets labels = null;
-	PropertyTargets descriptions = null;
-	PropertyTargets aliases = null;
-	PropertyTargets siteLinks = null;
+	final PropertyTargets labels;
+	final PropertyTargets descriptions;
+	final PropertyTargets aliases;
+	final PropertyTargets siteLinks;
+	final List<StatementGroup> statementGroups;
 
-	public EdgeContainerAsItemDocument(EdgeContainer edgeContainer,
+	public ItemDocumentFromEdgeContainer(EdgeContainer edgeContainer,
+			PropertyTargets labels, PropertyTargets descriptions,
+			PropertyTargets aliases, PropertyTargets siteLinks,
+			List<PropertyTargets> statements,
 			DataObjectFactory dataObjectFactory) {
 		this.dataObjectFactory = dataObjectFactory;
+		this.edgeContainer = edgeContainer;
+		this.labels = labels;
+		this.descriptions = descriptions;
+		this.aliases = aliases;
+		this.siteLinks = siteLinks;
 
-		for (PropertyTargets pts : edgeContainer) {
-			switch (pts.getProperty()) {
-			case WdtkSorts.PROP_DOCTYPE:
-				// expect this to be item? -> the whole switch could be in a
-				// factory method
-				break;
-			case WdtkSorts.PROP_LABEL:
-				this.labels = pts;
-				break;
-			case WdtkSorts.PROP_DESCRIPTION:
-				this.descriptions = pts;
-				break;
-			case WdtkSorts.PROP_ALIAS:
-				this.aliases = pts;
-				break;
-			case WdtkSorts.PROP_SITE_LINK:
-				this.siteLinks = pts;
-				break;
-			default:
-				// some statement property
-				break;
-			}
+		this.statementGroups = new ArrayList<>(statements.size());
+		for (PropertyTargets pts : statements) {
+			this.statementGroups.add(new StatementGroupFromPropertyTargets(pts,
+					this));
 		}
-
 	}
 
 	@Override
@@ -101,14 +93,13 @@ public class EdgeContainerAsItemDocument implements ItemDocument {
 
 	@Override
 	public ItemIdValue getItemId() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ItemIdValueFromValue(
+				(StringValue) this.edgeContainer.getSource());
 	}
 
 	@Override
 	public List<StatementGroup> getStatementGroups() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.statementGroups;
 	}
 
 	@Override

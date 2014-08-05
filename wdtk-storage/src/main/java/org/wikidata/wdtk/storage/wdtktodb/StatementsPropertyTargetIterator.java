@@ -91,8 +91,10 @@ public class StatementsPropertyTargetIterator {
 
 		if (this.statementGroupIterator.hasNext()) {
 			StatementGroup sg = this.statementGroupIterator.next();
-			return new StatementGroupAsPropertyTargets(sg.getProperty()
-					.getIri(), sg.getStatements(), true, this.helpers);
+			return new StatementGroupAsPropertyTargets(
+					WdtkAdaptorHelper.getStringForEntityIdValue(sg
+							.getProperty()), sg.getStatements(), true,
+					this.helpers);
 		} else if ((this.todos & DO_NOVALUE) != 0) {
 			this.todos = this.todos & ~DO_NOVALUE;
 			return new StatementGroupAsPropertyTargets(WdtkSorts.PROP_NOVALUE,

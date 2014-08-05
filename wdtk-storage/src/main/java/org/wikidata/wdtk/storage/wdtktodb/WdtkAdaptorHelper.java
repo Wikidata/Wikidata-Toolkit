@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.wdtktodb;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.storage.datamodel.SortSchema;
 
 public class WdtkAdaptorHelper {
@@ -44,6 +45,19 @@ public class WdtkAdaptorHelper {
 
 	public SnakToPropertyValuePairVisitor getSnakAdaptor() {
 		return this.snakAdaptor;
+	}
+
+	public static String getStringForEntityIdValue(EntityIdValue entityIdValue) {
+		// ">" is invalid in URLs, so it should be safe to assume that this
+		// will be the first occurrence of this character in the combined string
+		return entityIdValue.getSiteIri() + ">" + entityIdValue.getId();
+	}
+
+	public static String getStringForEntityIdValue(String entityId,
+			String siteIri, String entityType) {
+		// ">" is invalid in URLs, so it should be safe to assume that this
+		// will be the first occurrence of this character in the combined string
+		return siteIri + ">" + entityId;
 	}
 
 }

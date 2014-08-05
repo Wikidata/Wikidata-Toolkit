@@ -20,7 +20,23 @@ package org.wikidata.wdtk.storage.wdtkbindings;
  * #L%
  */
 
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
+import org.wikidata.wdtk.storage.datamodel.StringValueImpl;
+import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.db.DatabaseManager;
+import org.wikidata.wdtk.storage.db.PropertySignature;
+import org.wikidata.wdtk.storage.dbquery.ScanEdgeContainerIterator;
+import org.wikidata.wdtk.storage.dbtowdtk.EntityDocumentFromEdgeContainerIterator;
+import org.wikidata.wdtk.storage.dbtowdtk.WdtkFromDb;
+import org.wikidata.wdtk.storage.wdtktodb.ValueToValueVisitor;
+import org.wikidata.wdtk.storage.wdtktodb.WdtkAdaptorHelper;
 
 public class WdtkDatabaseManager extends DatabaseManager {
 
@@ -43,4 +59,79 @@ public class WdtkDatabaseManager extends DatabaseManager {
 		this.sortSchema.declareSort(WdtkSorts.SORT_SITE_LINK, false);
 	}
 
+	public EntityDocument getEntityDocument(EntityIdValue entityIdValue) {
+		return getEntityDocument(entityIdValue.getId(),
+				entityIdValue.getSiteIri(), entityIdValue.getEntityType());
+	}
+
+	public EntityDocument getEntityDocument(String entityId, String siteIri,
+			String entityType) {
+		String entityName = WdtkAdaptorHelper.getStringForEntityIdValue(
+				entityId, siteIri, entityType);
+		EdgeContainer edgeContainer = fetchEdgeContainer(new StringValueImpl(
+				entityName, WdtkSorts.SORT_ENTITY));
+		if (edgeContainer == null) {
+			return null;
+		} else {
+			return WdtkFromDb.EntityDocumentFromEdgeContainer(edgeContainer,
+					new DataObjectFactoryImpl());
+		}
+	}
+
+	public Iterator<EntityDocument> entityDocuments() {
+		return new EntityDocumentFromEdgeContainerIterator(edgeContainers(
+				WdtkSorts.SORTNAME_ENTITY).iterator());
+	}
+
+	public Iterator<EntityDocument> findEntityDocuments(
+			PropertyIdValue propertyIdValue,
+			org.wikidata.wdtk.datamodel.interfaces.Value value) {
+		return new EntityDocumentFromEdgeContainerIterator(findEdgeContainers(
+				propertyIdValue, value));
+	}
+
+	public Iterator<? extends EdgeContainer> findEdgeContainers(
+			PropertyIdValue propertyIdValue,
+			org.wikidata.wdtk.datamodel.interfaces.Value value) {
+
+		if (propertyIdValue == null) {
+			return edgeContainers(WdtkSorts.SORTNAME_ENTITY).iterator();
+		}
+
+		String propertyName = WdtkAdaptorHelper
+				.getStringForEntityIdValue(propertyIdValue);
+
+		int valueId;
+		String rangeSort;
+		if (value != null) {
+			ValueToValueVisitor vtvv = new ValueToValueVisitor();
+			Value v = value.accept(vtvv);
+			valueId = getValueId(v);
+			rangeSort = v.getSort().getName();
+		} else {
+			valueId = -1;
+			int entitySortId = getSortSchema().getSortId(
+					WdtkSorts.SORTNAME_ENTITY);
+			rangeSort = null;
+			for (PropertySignature ps : properties()) {
+				if (entitySortId == ps.getDomainId()
+						&& propertyName.equals(ps.getPropertyName())) {
+					rangeSort = getSortSchema().getSort(ps.getRangeId())
+							.getName();
+					break;
+				}
+			}
+
+		}
+
+		if (rangeSort != null) {
+			int propId = getOrCreatePropertyId(propertyName,
+					WdtkSorts.SORTNAME_ENTITY, rangeSort);
+
+			return new ScanEdgeContainerIterator(WdtkSorts.SORTNAME_ENTITY,
+					propId, valueId, this);
+		} else {
+			return Collections.<EdgeContainer> emptyList().iterator();
+		}
+	}
 }

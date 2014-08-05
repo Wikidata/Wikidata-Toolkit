@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtktodb;
+package org.wikidata.wdtk.storage.dbtowdtk;
 
 /*
  * #%L
@@ -21,26 +21,18 @@ package org.wikidata.wdtk.storage.wdtktodb;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
-import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class EntityValueAsValue implements StringValue {
+public class ItemIdValueFromValue extends EntityIdValueFromValue implements
+ItemIdValue {
 
-	final EntityIdValue entityIdValue;
-
-	public EntityValueAsValue(EntityIdValue entityValue) {
-		this.entityIdValue = entityValue;
+	public ItemIdValueFromValue(StringValue value) {
+		super(value);
 	}
 
 	@Override
-	public Sort getSort() {
-		return WdtkSorts.SORT_ENTITY;
+	public String getEntityType() {
+		return EntityIdValue.ET_ITEM;
 	}
-
-	@Override
-	public String getString() {
-		return WdtkAdaptorHelper.getStringForEntityIdValue(this.entityIdValue);
-	}
-
 }

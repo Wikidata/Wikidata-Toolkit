@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.wdtktodb;
+package org.wikidata.wdtk.storage.dbtowdtk;
 
 /*
  * #%L
@@ -20,27 +20,26 @@ package org.wikidata.wdtk.storage.wdtktodb;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
-import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
-public class EntityValueAsValue implements StringValue {
+public class StringValueFromStringValue implements
+		org.wikidata.wdtk.datamodel.interfaces.StringValue {
 
-	final EntityIdValue entityIdValue;
+	final StringValue value;
 
-	public EntityValueAsValue(EntityIdValue entityValue) {
-		this.entityIdValue = entityValue;
+	public StringValueFromStringValue(StringValue value) {
+		this.value = value;
 	}
 
 	@Override
-	public Sort getSort() {
-		return WdtkSorts.SORT_ENTITY;
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 
 	@Override
 	public String getString() {
-		return WdtkAdaptorHelper.getStringForEntityIdValue(this.entityIdValue);
+		return this.value.getString();
 	}
 
 }

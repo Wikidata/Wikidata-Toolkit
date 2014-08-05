@@ -29,7 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class SnakToPropertyValuePairVisitor implements
-		SnakVisitor<PropertyValuePair>, PropertyValuePair {
+SnakVisitor<PropertyValuePair>, PropertyValuePair {
 
 	String currentProperty;
 	Value currentValue;
@@ -42,7 +42,8 @@ public class SnakToPropertyValuePairVisitor implements
 
 	@Override
 	public PropertyValuePair visit(ValueSnak snak) {
-		this.currentProperty = snak.getPropertyId().getIri();
+		this.currentProperty = WdtkAdaptorHelper.getStringForEntityIdValue(snak
+				.getPropertyId());
 		this.currentValue = snak.getValue().accept(
 				this.helpers.getValueTovalueVisitor());
 		return this;

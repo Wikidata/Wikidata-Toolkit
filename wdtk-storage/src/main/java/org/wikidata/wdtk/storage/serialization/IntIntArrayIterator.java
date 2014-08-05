@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.db;
+package org.wikidata.wdtk.storage.serialization;
 
 /*
  * #%L
@@ -22,30 +22,41 @@ package org.wikidata.wdtk.storage.db;
 
 import java.util.Iterator;
 
-public class LazyOuterObjectIterator<Inner, Outer> implements Iterator<Outer> {
+public class IntIntArrayIterator implements Iterator<int[]> {
 
-	final Iterator<Inner> rawValueIterator;
-	final InnerToOuterObjectConverter<Inner, ? extends Outer> converter;
+	int pos;
+	final int[][] array;
+	int[] nextArray;
 
-	public LazyOuterObjectIterator(Iterator<Inner> rawValueIterator,
-			InnerToOuterObjectConverter<Inner, ? extends Outer> converter) {
-		this.rawValueIterator = rawValueIterator;
-		this.converter = converter;
+	public IntIntArrayIterator(int[][] array) {
+		this.array = array;
+		this.pos = 0;
+		findNextArray();
+	}
+
+	private void findNextArray() {
+		this.nextArray = null;
+		while (this.nextArray == null && this.pos < this.array.length) {
+			this.nextArray = this.array[this.pos];
+			this.pos++;
+		}
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.rawValueIterator.hasNext();
+		return this.nextArray != null;
 	}
 
 	@Override
-	public Outer next() {
-		Inner inner = this.rawValueIterator.next();
-		return converter.getOuterObject(inner);
+	public int[] next() {
+		int[] current = this.nextArray;
+		findNextArray();
+		return current;
 	}
 
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
+
 }

@@ -1,4 +1,10 @@
-package org.wikidata.wdtk.storage.wdtktodb;
+/**
+ * Components related to fetching data from the store.
+ *
+ * @author Markus Kroetzsch
+ *
+ */
+package org.wikidata.wdtk.storage.dbquery;
 
 /*
  * #%L
@@ -19,28 +25,3 @@ package org.wikidata.wdtk.storage.wdtktodb;
  * limitations under the License.
  * #L%
  */
-
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.storage.datamodel.Sort;
-import org.wikidata.wdtk.storage.datamodel.StringValue;
-import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
-
-public class EntityValueAsValue implements StringValue {
-
-	final EntityIdValue entityIdValue;
-
-	public EntityValueAsValue(EntityIdValue entityValue) {
-		this.entityIdValue = entityValue;
-	}
-
-	@Override
-	public Sort getSort() {
-		return WdtkSorts.SORT_ENTITY;
-	}
-
-	@Override
-	public String getString() {
-		return WdtkAdaptorHelper.getStringForEntityIdValue(this.entityIdValue);
-	}
-
-}

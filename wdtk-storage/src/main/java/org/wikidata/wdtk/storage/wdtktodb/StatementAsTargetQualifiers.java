@@ -26,6 +26,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
@@ -34,14 +35,14 @@ import org.wikidata.wdtk.storage.datamodel.Value;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class StatementAsTargetQualifiers implements TargetQualifiers,
-Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
-PropertyValuePair {
+		Iterable<PropertyValuePair>, Iterator<PropertyValuePair>,
+		PropertyValuePair {
 
 	final Statement statement;
 
 	boolean rankDone = false;
 	final WdtkAdaptorHelper helpers;
-	final Iterator<Snak> snakIterator;
+	Iterator<Snak> snakIterator;
 	Iterator<? extends Reference> referenceIterator;
 	final int qualifierCount;
 
@@ -52,15 +53,15 @@ PropertyValuePair {
 			WdtkAdaptorHelper helpers) {
 		this.statement = statement;
 		this.helpers = helpers;
-		this.referenceIterator = statement.getReferences().iterator();
-		this.snakIterator = statement.getClaim().getAllQualifiers();
 
 		int claimQualifierCount = 0;
 		for (SnakGroup sg : statement.getClaim().getQualifiers()) {
 			claimQualifierCount += sg.getSnaks().size();
 		}
 		this.qualifierCount = claimQualifierCount
-				+ statement.getReferences().size() + 1 /* rank */;
+				+ statement.getReferences().size()
+				+ (this.statement.getRank().equals(StatementRank.NORMAL) ? 0
+						: 1) /* rank; only write non-NORMAL ranks */;
 	}
 
 	@Override
@@ -85,6 +86,9 @@ PropertyValuePair {
 
 	@Override
 	public Iterator<PropertyValuePair> iterator() {
+		this.referenceIterator = this.statement.getReferences().iterator();
+		this.snakIterator = this.statement.getClaim().getAllQualifiers();
+		this.rankDone = this.statement.getRank().equals(StatementRank.NORMAL);
 		return this;
 	}
 

@@ -27,16 +27,74 @@ import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 import org.wikidata.wdtk.storage.datamodel.ObjectValue;
 import org.wikidata.wdtk.storage.datamodel.PropertyValuePair;
+import org.wikidata.wdtk.storage.datamodel.Sort;
+import org.wikidata.wdtk.storage.datamodel.SortType;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class WdtkFromDb {
+
+	public static EntityDocument EntityDocumentFromEdgeContainer(
+			EdgeContainer edgeContainer, DataObjectFactory dataObjectFactory) {
+
+		PropertyTargets labels = null;
+		PropertyTargets descriptions = null;
+		PropertyTargets aliases = null;
+		PropertyTargets siteLinks = null;
+		List<PropertyTargets> statements = new ArrayList<>(
+				edgeContainer.getEdgeCount());
+
+		String docType = null;
+
+		for (PropertyTargets pts : edgeContainer) {
+			switch (pts.getProperty()) {
+			case WdtkSorts.PROP_DOCTYPE:
+				docType = ((StringValue) pts.iterator().next().getTarget())
+				.getString();
+				break;
+			case WdtkSorts.PROP_LABEL:
+				labels = pts;
+				break;
+			case WdtkSorts.PROP_DESCRIPTION:
+				descriptions = pts;
+				break;
+			case WdtkSorts.PROP_ALIAS:
+				aliases = pts;
+				break;
+			case WdtkSorts.PROP_SITE_LINK:
+				siteLinks = pts;
+				break;
+			case WdtkSorts.PROP_NOVALUE:
+				// TODO
+				break;
+			case WdtkSorts.PROP_SOMEVALUE:
+				// TODO
+				break;
+			default:
+				statements.add(pts);
+				break;
+			}
+		}
+
+		if (WdtkSorts.VALUE_DOCTYPE_ITEM.equals(docType)) {
+			return new ItemDocumentFromEdgeContainer(edgeContainer, labels,
+					descriptions, aliases, siteLinks, statements,
+					dataObjectFactory);
+		} else {
+			return null;
+		}
+
+	}
 
 	public static Map<String, MonolingualTextValue> getMtvMapFromPropertyTargets(
 			PropertyTargets propertyTargets, DataObjectFactory dataObjectFactory) {
@@ -104,4 +162,48 @@ public class WdtkFromDb {
 		}
 		return result;
 	}
+
+	public static Value getValueFromValue(
+			org.wikidata.wdtk.storage.datamodel.Value value) {
+		if (SortType.STRING.equals(value.getSort().getType())) {
+			switch (value.getSort().getName()) {
+			case WdtkSorts.SORTNAME_ENTITY:
+				return getEntityIdValueFromStringValue((StringValue) value);
+			case Sort.SORTNAME_STRING:
+				return new StringValueFromStringValue((StringValue) value);
+			default:
+				throw new RuntimeException("Unsupported string sort "
+						+ value.getSort().getName());
+			}
+		} else if (SortType.RECORD.equals(value.getSort().getType())) {
+			switch (value.getSort().getName()) {
+			case WdtkSorts.SORTNAME_QUANTITY_VALUE:
+				return new QuantityValueFromObjectValue((ObjectValue) value);
+			case WdtkSorts.SORTNAME_TIME_VALUE:
+				return new TimeValueFromObjectValue((ObjectValue) value);
+			case WdtkSorts.SORTNAME_GLOBE_COORDINATES_VALUE:
+				return new GlobeCoordinatesValueFromObjectValue(
+						(ObjectValue) value);
+			default:
+				throw new RuntimeException("Unsupported record sort "
+						+ value.getSort().getName());
+			}
+		} else {
+			throw new RuntimeException("Unsupported sort type "
+					+ value.getSort().getType().toString());
+		}
+	}
+
+	public static EntityIdValue getEntityIdValueFromStringValue(
+			StringValue value) {
+		// FIXME change entity string encoding to include
+		// type of entity on first char; this will not be reliable:
+		int index = value.getString().indexOf('>');
+		if (value.getString().charAt(index + 1) == 'Q') {
+			return new ItemIdValueFromValue(value);
+		} else {
+			return new PropertyIdValueFromPropertyName(value.getString());
+		}
+	}
+
 }

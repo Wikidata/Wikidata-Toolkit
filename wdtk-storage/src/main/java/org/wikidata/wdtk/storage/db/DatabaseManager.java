@@ -30,14 +30,15 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.serialization.EdgeContainerFromSerialization;
 import org.wikidata.wdtk.storage.serialization.EdgeContainerIndex;
 
 /**
  * Overall management class for a database instance. Manages schema information
  * as well as data access.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DatabaseManager {
 
@@ -116,7 +117,8 @@ public class DatabaseManager {
 		eci.updateEdges(edgeContainer);
 	}
 
-	public Iterable<EdgeContainer> edgeContainerIterator(String sortName) {
+	public Iterable<EdgeContainerFromSerialization> edgeContainers(
+			String sortName) {
 		return this.getEdgeContainerIndexBySortName(sortName);
 	}
 
@@ -156,6 +158,12 @@ public class DatabaseManager {
 		return dictionary.getOrCreateId(value);
 	}
 
+	public int getValueId(Value value) {
+		Dictionary<Value> dictionary = getDictionaryBySortName(value.getSort()
+				.getName());
+		return dictionary.getId(value);
+	}
+
 	public int getOrCreatePropertyId(String propertyName, String domainSort,
 			String rangeSort) {
 		int domainId = this.sortSchema.getSortId(domainSort);
@@ -172,11 +180,11 @@ public class DatabaseManager {
 				propertyName, domainId, rangeId));
 	}
 
-	public Iterable<Value> valueIterator(String sortName) {
+	public Iterable<Value> values(String sortName) {
 		return getDictionaryBySortName(sortName);
 	}
 
-	public Iterable<PropertySignature> propertyIterator() {
+	public Iterable<PropertySignature> properties() {
 		return this.propertyDictionary;
 	}
 
