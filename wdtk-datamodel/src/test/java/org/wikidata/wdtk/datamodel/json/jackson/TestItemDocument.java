@@ -5,17 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,35 +16,29 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class TestItemDocument extends JsonConversionTest {
 	
-	// puzzle pieces for creation of the test object
-	Map<String, MonolingualTextValueImpl> testMltvMap;
-	Map<String, List<MonolingualTextValueImpl>> testAliases;
-	ItemIdImpl testItemId;
-	Map<String, SiteLinkImpl> testSiteLinkMap;
+	// TODO test statements (JSON claim)
+	
+	ItemDocumentImpl fullDocument;
 	
 	@Before
-	public void setupTestMltv(){
-		testMltvMap = new HashMap<>();
-		testMltvMap.put("en", TestMonolingualTextValue.testMltv);
-	}
-
-	@Before
-	public void setupTestAliases(){
-		testAliases = new HashMap<>();
-		List<MonolingualTextValueImpl> aliases = new LinkedList<>();
-		aliases.add(TestMonolingualTextValue.testMltv);
-		testAliases.put("en", aliases);
+	public void setupTestFullDocument(){
+		fullDocument = new ItemDocumentImpl();
+		fullDocument.setId(testItemId.getId());
+		fullDocument.setAliases(testAliases);
+		fullDocument.setDescriptions(testMltvMap);
+		fullDocument.setLabels(testMltvMap);
 	}
 	
-	@Before
-	public void setupTestItemId(){
-		testItemId = new ItemIdImpl(itemId);
-	}
-	
-	@Before
-	public void setupTestSiteLinks(){
-		testSiteLinkMap = new HashMap<>();
-		testSiteLinkMap.put("enwiki", TestSiteLink.testSiteLink);
+	@Test
+	public void testFullDocumentSetup(){
+		assertNotNull(fullDocument.getAliases());
+		assertNotNull(fullDocument.getDescriptions());
+		assertNotNull(fullDocument.getLabels());
+		assertNotNull(fullDocument.getId());
+		assertNotNull(fullDocument.getItemId());
+		assertNotNull(fullDocument.getEntityId());
+		
+		assertEquals(fullDocument.getItemId().getId(), fullDocument.getId());
 	}
 	
 	/**
@@ -239,5 +226,11 @@ public class TestItemDocument extends JsonConversionTest {
 			e.printStackTrace();
 			fail("IO failed");
 		}
+	}
+	
+	@Test
+	public void testGenerationFromOtherItemDocument(){
+		ItemDocumentImpl copy = new ItemDocumentImpl(fullDocument);
+		assertEquals(fullDocument, copy);
 	}
 }

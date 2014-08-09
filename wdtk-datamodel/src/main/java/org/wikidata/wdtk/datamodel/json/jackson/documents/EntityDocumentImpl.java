@@ -67,7 +67,7 @@ implements EntityDocument, TermedDocument {
 	public EntityDocumentImpl(TermedDocument source) {
 		
 		// build id
-		this.setId(source.getEntityId().getId());
+		this.id = (EntityIdImpl) source.getEntityId();
 
 		// build aliases
 		for (Entry<String, List<MonolingualTextValue>> mltvs : source
@@ -165,4 +165,18 @@ implements EntityDocument, TermedDocument {
 	 */
 	@JsonProperty("type")
 	public abstract String getType();
+	
+	@Override
+	public boolean equals(Object o){
+		if(this == o){ return true; }
+		if(!(o instanceof EntityDocumentImpl)){
+			return false;
+		}
+		EntityDocumentImpl other = (EntityDocumentImpl)o;
+		
+		return this.id.equals(other.id)
+				&& this.aliases.equals(other.aliases)
+				&& this.descriptions.equals(other.descriptions)
+				&& this.labels.equals(other.labels);
+	}
 }

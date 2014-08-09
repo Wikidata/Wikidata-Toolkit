@@ -44,12 +44,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemDocumentImpl 
-extends EntityDocumentImpl 
-implements ItemDocument {
+public class ItemDocumentImpl extends EntityDocumentImpl implements
+		ItemDocument {
 
-	// TODO instead of building the statement groups on demand, maybe cache them?
-	
+	// TODO instead of building the statement groups on demand, maybe cache
+	// them?
+
 	private Map<String, List<StatementImpl>> claim = new HashMap<>();
 	private Map<String, SiteLinkImpl> sitelinks = new HashMap<>();
 
@@ -62,11 +62,12 @@ implements ItemDocument {
 	 * implementations that satisfy the ItemDocument-interface. This can be used
 	 * for converting other implementations into this one for later export.
 	 * 
-	 * @param source is the implementation to be used as a base.
+	 * @param source
+	 *            is the implementation to be used as a base.
 	 */
 	public ItemDocumentImpl(ItemDocument source) {
 		super(source);
-		
+
 		// set id
 		this.id = new ItemIdImpl(source.getItemId().getId());
 
@@ -82,17 +83,20 @@ implements ItemDocument {
 		return typeItem;
 	}
 
-	@JsonIgnore // here for the interface; JSON field is handled by getId()
-	@Override 
+	@JsonIgnore
+	// here for the interface; JSON field is handled by getId()
+	@Override
 	public ItemIdValue getItemId() {
-		return (ItemIdImpl)this.id;
+		return (ItemIdImpl) this.id;
 	}
 
-	@JsonIgnore // only needed to satisfy the interface
+	@JsonIgnore
+	// only needed to satisfy the interface
 	@Override
 	public List<StatementGroup> getStatementGroups() {
 		List<StatementGroup> resultList = new ArrayList<>();
-		for(StatementGroupImpl statementGroup : Helper.buildStatementGroups(this.claim)){
+		for (StatementGroupImpl statementGroup : Helper
+				.buildStatementGroups(this.claim)) {
 			resultList.add(statementGroup);
 		}
 		return resultList;
@@ -102,7 +106,8 @@ implements ItemDocument {
 		this.sitelinks = sitelinks;
 	}
 
-	@JsonProperty("sitelinks") // camel case to be compatible with interface
+	@JsonProperty("sitelinks")
+	// camel case to be compatible with interface
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
 
@@ -113,11 +118,43 @@ implements ItemDocument {
 		return returnMap;
 	}
 
-	public void setClaim(Map<String, List<StatementImpl>> claim){
+	/**
+	 * This is needed for the JSON model, where claims are similar to statement
+	 * groups. <b>Do not confuse this with claims as stated in the WDTK data
+	 * model.</b> This will probably only be used by the Jacksons' ObjectMapper.
+	 * 
+	 * @param claim
+	 */
+	public void setClaim(Map<String, List<StatementImpl>> claim) {
 		this.claim = claim;
 	}
-	
-	public Map<String, List<StatementImpl>> getClaim(){
+
+	public Map<String, List<StatementImpl>> getClaim() {
 		return this.claim;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof ItemDocumentImpl)) {
+			return false;
+		}
+		ItemDocumentImpl other = (ItemDocumentImpl) o;
+
+		return this.getItemId().equals(other.getItemId())
+				&& super.equals(other)
+				&& this.claim.equals(other.claim)
+				&& this.sitelinks.equals(other.sitelinks);
+
+	}
+
+	/**
+	 * Recreate the claims from the JSON for the data model. Has to be run after
+	 * all statements are set.
+	 */
+	void buildClaims() {
+		// TODO
 	}
 }

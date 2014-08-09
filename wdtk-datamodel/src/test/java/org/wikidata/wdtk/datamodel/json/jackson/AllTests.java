@@ -9,8 +9,14 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestItemDocument.class, TestMonolingualTextValue.class,
-		TestSiteLink.class, TestSnakJson.class, TestValue.class })
+@Suite.SuiteClasses({ 
+	TestItemDocument.class, 
+	TestMonolingualTextValue.class,
+	TestSiteLink.class, 
+	TestSnakJson.class, 
+	TestValue.class, 
+	TestStatement.class,
+	TestDatatypeId.class})
 public class AllTests {
 	// nothing
 }

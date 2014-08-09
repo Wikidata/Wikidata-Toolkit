@@ -12,10 +12,15 @@ import org.wikidata.wdtk.datamodel.json.jackson.serializers.StatementRankSeriali
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StatementImpl implements Statement {
 
 	private String id;
@@ -23,7 +28,7 @@ public class StatementImpl implements Statement {
 	@JsonSerialize(using = StatementRankSerializer.class)
 	@JsonDeserialize(using = StatementRankDeserializer.class)
 	private StatementRank rank;
-	
+
 	private List<ReferenceImpl> references;
 
 	/**
@@ -31,12 +36,30 @@ public class StatementImpl implements Statement {
 	 * "mainsnak" in the external JSON. There a claim is the entirety of
 	 * statements in their respective groups.
 	 */
-	private SnakImpl mainsnak; 
-	
+	private SnakImpl mainsnak;
+
 	private Map<String, List<SnakImpl>> qualifiers;
 
+	// TODO set claim externally
 	/**
-	 * Only needed for correct Json serialization
+	 * This is needed to satisfy the interface. Since from the JSON the subject
+	 * of the claim can not be derived, after the deserialization the claim has
+	 * to be derived by the statement group.
+	 */
+	@JsonIgnore
+	private ClaimImpl claim;
+
+	public StatementImpl() {
+	}
+
+	public StatementImpl(String id, SnakImpl mainsnak) {
+		this.id = id;
+		this.rank = StatementRank.NORMAL;
+		this.mainsnak = mainsnak;
+	}
+
+	/**
+	 * Only needed for correct JSON serialization
 	 * 
 	 * @return "statement"
 	 */
@@ -45,10 +68,15 @@ public class StatementImpl implements Statement {
 		return "statement";
 	}
 
-	@JsonIgnore // not in the JSON, just to satisfy the interface
+	@JsonIgnore
 	@Override
 	public Claim getClaim() {
-		return new ClaimImpl(this);
+		return this.claim;
+	}
+	
+	@JsonIgnore
+	public void setClaim(ClaimImpl claim){
+		this.claim = claim;
 	}
 
 	@Override
@@ -59,13 +87,13 @@ public class StatementImpl implements Statement {
 	public void setRank(StatementRank rank) {
 		this.rank = rank;
 	}
-	
+
 	@Override
 	public List<? extends Reference> getReferences() {
 		return this.references;
 	}
-	
-	public void setReferences(List<ReferenceImpl> references){
+
+	public void setReferences(List<ReferenceImpl> references) {
 		this.references = references;
 	}
 
@@ -80,19 +108,44 @@ public class StatementImpl implements Statement {
 		this.id = id;
 	}
 
-	public SnakImpl getMainsnak(){
+	public SnakImpl getMainsnak() {
 		return this.mainsnak;
 	}
-	
-	public void setMainsnak(SnakImpl mainsnak){
+
+	public void setMainsnak(SnakImpl mainsnak) {
 		this.mainsnak = mainsnak;
 	}
-	
-	public void setQualifiers(Map<String, List<SnakImpl>> qualifiers){
+
+	public void setQualifiers(Map<String, List<SnakImpl>> qualifiers) {
 		this.qualifiers = qualifiers;
 	}
-	
-	public Map<String, List<SnakImpl>> getQualifiers(){
+
+	public Map<String, List<SnakImpl>> getQualifiers() {
 		return this.qualifiers;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof StatementImpl)) {
+			return false;
+		}
+		StatementImpl other = (StatementImpl) o;
+
+		if (!(this.id.equals(other.id) && this.rank.equals(other.rank) && this.mainsnak
+				.equals(other.mainsnak))) {
+			return false;
+		}
+		if (this.qualifiers != null
+				&& !(this.qualifiers.equals(other.qualifiers))) {
+			return false;
+		}
+		if (this.references != null
+				&& !(this.references.equals(other.references))) {
+			return false;
+		}
+		return true;
 	}
 }

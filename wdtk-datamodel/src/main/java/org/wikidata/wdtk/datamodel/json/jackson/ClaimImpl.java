@@ -17,15 +17,16 @@ import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakGroupImpl;
 public class ClaimImpl implements Claim {
 
 	private StatementImpl statement;
+	private EntityIdValue subject;
 	
-	ClaimImpl(StatementImpl statement){
+	ClaimImpl(StatementImpl statement, EntityIdValue subject){
 		this.statement = statement;
+		this.subject = subject;
 	}
 	
 	@Override
 	public EntityIdValue getSubject() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.subject;
 	}
 
 	@Override

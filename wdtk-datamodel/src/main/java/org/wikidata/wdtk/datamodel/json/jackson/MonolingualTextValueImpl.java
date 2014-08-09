@@ -58,8 +58,7 @@ implements MonolingualTextValue {
 	
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueVisitor.visit(this);
 	}
 
 	@JsonProperty("value")

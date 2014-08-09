@@ -28,7 +28,7 @@ implements DatatypeIdValue {
 		case jsonTypeUrl : this.iri = DT_URL; break;
 		case jsonTypeCommonsMedia : this.iri = DT_COMMONS_MEDIA; break;
 		case jsonTypeTime : this.iri = DT_TIME; break;
-		case jsonTypeQuantity : this.iri = DT_TIME; break;
+		case jsonTypeQuantity : this.iri = DT_QUANTITY; break;
 		case jsonTypeString : this.iri = DT_STRING; break;		
 		default : this.iri = null;
 		}

@@ -1,5 +1,13 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
@@ -7,6 +15,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueI
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.NoValueSnakImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SomeValueSnakImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.TimeValueImpl;
@@ -34,6 +43,10 @@ public abstract class JsonConversionTest {
 	protected static final String propertyId = "P1";
 	protected static final String itemId = "Q1";
 	protected static final int numericId = 1;
+	protected static final String statementId = "statement_foobar";
+	protected static final String rankNormal = "normal";
+	protected static final String rankDeprecated = "deprecated";
+	protected static final String rankPreferred = "preferred";
 	
 	// stand-alone descriptions of Value-parts
 	protected static final String stringValueJson = "{\"type\":\"" + ValueImpl.typeString + "\",\"value\":\"foobar\"}";
@@ -56,6 +69,8 @@ public abstract class JsonConversionTest {
 	protected static final String wrappedItemIdJson = "{\"id\":\"" + itemId + "\"," + itemTypeJson + "}";
 	protected static final String wrappedSiteLinkJson = "{\"sitelinks\":{\"enwiki\":" + siteLinkJson + "}," + itemTypeJson + "}";
 
+	protected static final String emptyStatementJson = "{\"type\":\"statement\",\"id\":\"" + statementId + "\",\"rank\":\"" + rankNormal + "\",\"mainsnak\":" + noValueSnakJson + "}";
+	
 	// objects to test against
 	// should (of course) correspond to the JSON strings counterpart
 	protected static final MonolingualTextValueImpl testMltv = new MonolingualTextValueImpl("en", "foobar");
@@ -70,6 +85,38 @@ public abstract class JsonConversionTest {
 	protected static final SomeValueSnakImpl testSomeValueSnak = new SomeValueSnakImpl(propertyId);
 	protected static final ValueSnakImpl testCommonsValueSnak = new ValueSnakImpl(propertyId, ValueSnakImpl.datatypeCommons, testStringValue);
 	// TODO continue testing using stringValueSnak, timeValueSnak, globeCoordinateValueSnak
+	protected static final StatementImpl testEmptyStatement = new StatementImpl(statementId, testNoValueSnak);
+	
+	// puzzle pieces for creation of the test of ItemDocument and PropertyDocument
+	protected Map<String, MonolingualTextValueImpl> testMltvMap;
+	protected Map<String, List<MonolingualTextValueImpl>> testAliases;
+	protected ItemIdImpl testItemId;
+	protected Map<String, SiteLinkImpl> testSiteLinkMap;
+	
+	@Before
+	public void setupTestMltv(){
+		testMltvMap = new HashMap<>();
+		testMltvMap.put("en", TestMonolingualTextValue.testMltv);
+	}
 
+	@Before
+	public void setupTestAliases(){
+		testAliases = new HashMap<>();
+		List<MonolingualTextValueImpl> aliases = new LinkedList<>();
+		aliases.add(TestMonolingualTextValue.testMltv);
+		testAliases.put("en", aliases);
+	}
+	
+	@Before
+	public void setupTestItemId(){
+		testItemId = new ItemIdImpl(itemId);
+		assertEquals(testItemId.getId(), itemId);
+	}
+	
+	@Before
+	public void setupTestSiteLinks(){
+		testSiteLinkMap = new HashMap<>();
+		testSiteLinkMap.put("enwiki", TestSiteLink.testSiteLink);
+	}
 	
 }
