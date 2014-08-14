@@ -40,15 +40,11 @@ public interface SiteLink {
 
 	/**
 	 * Get the string title of the linked page.
-	 * 
-	 * @return
 	 */
 	String getPageTitle();
 
 	/**
 	 * Get the string key of the linked site.
-	 * 
-	 * @return
 	 */
 	String getSiteKey();
 
@@ -57,8 +53,6 @@ public interface SiteLink {
 	 * 
 	 * TODO This feature is not used yet in Wikibase. This interface might
 	 * change when more details are known.
-	 * 
-	 * @return
 	 */
 	List<String> getBadges();
 

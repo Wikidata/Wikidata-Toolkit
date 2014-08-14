@@ -64,7 +64,7 @@ public interface DataObjectFactory {
 	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
 	 * since there might be extensions that provide additional types.
 	 * 
-	 * @param datatypeIri
+	 * @param id
 	 *            the IRI string that identifies the datatype
 	 * @return a {@link DatatypeIdValue} corresponding to the input
 	 */
@@ -87,7 +87,7 @@ public interface DataObjectFactory {
 	 *            a second number between 0 and 60 (possible leap second)
 	 * @param precision
 	 *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
-	 *            {@link TimeValue#PREC_GY}
+	 *            {@link TimeValue#PREC_1GY}
 	 * @param beforeTolerance
 	 *            non-negative integer tolerance before the value; see
 	 *            {@link TimeValue#getBeforeTolerance()}
@@ -138,7 +138,7 @@ public interface DataObjectFactory {
 	 *            the text of the value
 	 * @param languageCode
 	 *            the language code of the value
-	 * @return a {@link MonolingualValue} corresponding to the input
+	 * @return a {@link MonolingualTextValue} corresponding to the input
 	 */
 	MonolingualTextValue getMonolingualTextValue(String text,
 			String languageCode);

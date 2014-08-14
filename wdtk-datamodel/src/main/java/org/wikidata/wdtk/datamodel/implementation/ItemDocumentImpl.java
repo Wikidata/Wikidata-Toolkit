@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
 		ItemDocument {
@@ -99,6 +102,11 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
+	public Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(statementGroups);
+	}
+
+	@Override
 	public Map<String, SiteLink> getSiteLinks() {
 		return Collections.unmodifiableMap(siteLinks);
 	}
@@ -141,13 +149,11 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
-	public String toString(){
-		return "ItemDocument {qId = " + this.itemId 
-				+ ", " + this.labels.size() + " labels, "
-				+ this.descriptions.size() + " descriptions, "
-				+ this.aliases.size() + " aliases, "
-				+ this.siteLinks.size() + " site links, "
-				+ this.statementGroups.size() + " statement groups"
-				+ "}";
+	public String toString() {
+		return "ItemDocument {qId = " + this.itemId + ", " + this.labels.size()
+				+ " labels, " + this.descriptions.size() + " descriptions, "
+				+ this.aliases.size() + " aliases, " + this.siteLinks.size()
+				+ " site links, " + this.statementGroups.size()
+				+ " statement groups" + "}";
 	}
 }

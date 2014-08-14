@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,17 @@ public interface ItemDocument extends TermedDocument {
 	List<StatementGroup> getStatementGroups();
 
 	/**
+	 * Returns an iterator that provides access to all statements, without
+	 * considering the statement groups. The order of statements is preserved.
+	 * 
+	 * @return iterator over all statements
+	 */
+	Iterator<Statement> getAllStatements();
+
+	/**
 	 * Get a Map of site keys to {@link SiteLink} objects.
 	 * 
-	 * @return
+	 * @return map of SiteLinks
 	 */
 	Map<String, SiteLink> getSiteLinks();
 

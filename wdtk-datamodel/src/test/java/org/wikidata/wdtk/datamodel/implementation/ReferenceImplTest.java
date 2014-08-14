@@ -25,8 +25,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +44,7 @@ public class ReferenceImplTest {
 	Reference r1;
 	Reference r2;
 	SnakGroup snakGroup;
+	ValueSnak valueSnak;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,7 +52,7 @@ public class ReferenceImplTest {
 				"http://wikidata.org/entity/");
 		PropertyIdValue property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
-		ValueSnak valueSnak = new ValueSnakImpl(property, subject);
+		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
 				Collections.<Snak> singletonList(valueSnak));
 		r1 = new ReferenceImpl(Collections.<SnakGroup> singletonList(snakGroup));
@@ -81,6 +84,15 @@ public class ReferenceImplTest {
 	@Test(expected = NullPointerException.class)
 	public void snakListNotNull() {
 		new ReferenceImpl(null);
+	}
+
+	@Test
+	public void iterateOverAllSnaks() {
+		Iterator<Snak> snaks = r1.getAllSnaks();
+
+		assertTrue(snaks.hasNext());
+		assertEquals(valueSnak, snaks.next());
+		assertFalse(snaks.hasNext());
 	}
 
 }
