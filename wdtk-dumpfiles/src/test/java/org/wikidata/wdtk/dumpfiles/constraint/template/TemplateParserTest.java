@@ -36,7 +36,7 @@ import org.junit.Test;
 public class TemplateParserTest {
 
 	@Test
-	public void testParser0() {
+	public void testParserConstraintType() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Type|class=Q1048835|relation=instance}}";
 		Set<String> parameterNames = new TreeSet<String>();
@@ -52,7 +52,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser1() {
+	public void testParserConstraintValueType() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Value type|class=Q5|relation=instance}}";
 		Set<String> parameterNames = new TreeSet<String>();
@@ -69,7 +69,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser2() {
+	public void testParserConstraintTargetRequiredClaim() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Target required claim|property=P21}}";
 		Set<String> parameterNames = new TreeSet<String>();
@@ -84,7 +84,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser3() {
+	public void testParserConstraintOneOf() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
 		Set<String> parameterNames = new TreeSet<String>();
@@ -100,7 +100,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser3b() {
+	public void testParserConstraintOneOfWithComments() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, <!-- more values -->{{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
 		String strNorm = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
@@ -121,7 +121,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser4() {
+	public void testParserConstraintItem() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Item|property=P17||exceptions={{Q|3593529}}}}";
 		String strNorm = "{{Constraint:Item|exceptions={{Q|3593529}}|property=P17}}";
@@ -138,7 +138,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser5() {
+	public void testParserConstraintTargetRequiredClaimWithOneExceptions() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Target required claim|property=P279|exceptions ={{Q|35120}}}}";
 		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
@@ -156,7 +156,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser6() {
+	public void testParserConstraintTargetRequiredClaimWithManyExceptions() {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Target required claim|property=P279|exceptions={{Q|35120}}, {{Q|14897293}}}}";
 		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}, {{Q|14897293}}|property=P279}}";
@@ -175,7 +175,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser7() {
+	public void testParserFormatSmall() {
 		TemplateParser parser = new TemplateParser();
 		String patternProperty1014 = "<nowiki>\\d{2,9}|\\-</nowiki>";
 		String str = "{{Constraint:Format|pattern=" + patternProperty1014
@@ -191,7 +191,7 @@ public class TemplateParserTest {
 	}
 
 	@Test
-	public void testParser8() {
+	public void testParserFormatLarge() {
 		TemplateParser parser = new TemplateParser();
 		String patternProperty212 = "<nowiki>97[89]-("
 				+ "[0-57]-\\d-\\d\\d\\d\\d\\d\\d\\d|"
@@ -230,13 +230,13 @@ public class TemplateParserTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidTemplate0() {
+	public void testInvalidTemplateMissingOpeningBrace() {
 		TemplateParser parser = new TemplateParser();
 		parser.parse("{Constraint:Type|class=Q1048835|relation=instance}}");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidTemplate1() {
+	public void testInvalidTemplateMissingClosingBrace() {
 		TemplateParser parser = new TemplateParser();
 		parser.parse("{{Constraint:Type|class=Q1048835|relation=instance}");
 	}
