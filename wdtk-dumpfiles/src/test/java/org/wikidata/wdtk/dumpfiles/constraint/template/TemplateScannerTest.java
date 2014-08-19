@@ -47,7 +47,7 @@ public class TemplateScannerTest {
 			+ "<code>&lt;nowiki>{{Constraint:Item|property=P107|item=Q386724|item2=Q215627|item3=Q43229}}</nowiki></code> (yes, organization is already there) ";
 
 	@Test
-	public void testScanner0() {
+	public void testScannerMultipleTemplates() {
 		List<String> expected = new ArrayList<String>();
 		expected.add("{{Constraint:Type|class=Q1048835\n|relation=instance}}");
 		expected.add("{{Constraint:Value type|class=Q5|relation=instance}}");
@@ -59,7 +59,7 @@ public class TemplateScannerTest {
 	}
 
 	@Test
-	public void testScanner1() {
+	public void testScannerWithNowiki() {
 		List<String> expected = new ArrayList<String>();
 
 		TemplateScanner scanner = new TemplateScanner();
@@ -71,7 +71,7 @@ public class TemplateScannerTest {
 	}
 
 	@Test
-	public void testScanner2() {
+	public void testScannerMultipleTemplatesMultipleLines() {
 		String str = ""
 				+ "{{Property documentation\n"
 				+ "|description=FIPS code for US states (numeric or alpha) per former FIPS 5-2 standard, see {{Q|917824}}. See also: <br>\n"

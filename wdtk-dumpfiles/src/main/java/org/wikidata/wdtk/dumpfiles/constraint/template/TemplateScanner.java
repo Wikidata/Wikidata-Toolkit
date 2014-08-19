@@ -49,7 +49,7 @@ public class TemplateScanner {
 	 *         transclusions
 	 */
 	public List<String> getTemplates(String text) {
-		return Collections.unmodifiableList(parse(removeHTMLComments(text)));
+		return Collections.unmodifiableList(extractTemplates(removeHTMLComments(text)));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class TemplateScanner {
 	 * @return a list with all the pieces of text that can be template
 	 *         transclusions
 	 */
-	List<String> parse(String text) {
+	List<String> extractTemplates(String text) {
 		List<String> ret = new ArrayList<String>();
 		int pos = 0;
 		int level = 0;
