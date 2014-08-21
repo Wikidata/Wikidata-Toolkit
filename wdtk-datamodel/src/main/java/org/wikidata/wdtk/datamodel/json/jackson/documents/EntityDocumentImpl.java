@@ -35,7 +35,15 @@ import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
+@JsonSubTypes({  
+    @Type(value = ItemDocumentImpl.class, name = "item"),  
+    @Type(value = PropertyDocumentImpl.class, name = "property")
+})
 public abstract class EntityDocumentImpl 
 implements EntityDocument, TermedDocument {
 	

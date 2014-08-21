@@ -42,6 +42,12 @@ public class StatementGroupImpl implements StatementGroup {
 	PropertyIdImpl propertyId;
 	List<StatementImpl> statements;
 
+	public StatementGroupImpl(PropertyIdImpl propertyId, List<StatementImpl> statements) {
+		this.propertyId = propertyId;
+		this.statements = statements;
+		// TODO sort statements by rank
+	}
+
 	@Override
 	public List<Statement> getStatements() {
 		// TODO rework, once the interface changes
@@ -59,8 +65,7 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public EntityIdValue getSubject() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.propertyId;
 	}
 
 }
