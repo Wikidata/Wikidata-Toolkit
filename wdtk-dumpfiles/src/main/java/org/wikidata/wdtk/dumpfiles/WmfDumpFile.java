@@ -40,7 +40,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * The default URL of the website to obtain the dump files from.
 	 */
-	static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
+	protected static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
 
 	/**
 	 * Hash map defining the relative Web directory of each type of dump.
@@ -51,6 +51,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.CURRENT, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.FULL, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.SITES, "");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.JSON, "other/");
 	}
 
 	/**
@@ -65,6 +66,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.POSTFIXES.put(DumpContentType.FULL,
 				"-pages-meta-history.xml.bz2");
 		WmfDumpFile.POSTFIXES.put(DumpContentType.SITES, "-sites.sql.gz");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.JSON, ".json.gz");
 	}
 
 	/**
@@ -80,6 +82,8 @@ public abstract class WmfDumpFile implements MwDumpFile {
 				CompressionType.BZ2);
 		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.SITES,
 				CompressionType.GZIP);
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.JSON,
+				CompressionType.GZIP);
 	}
 
 	/**
@@ -93,10 +97,11 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.CURRENT, true);
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.FULL, true);
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.SITES, false);
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.JSON, false);
 	}
 
-	final String dateStamp;
-	final String projectName;
+	protected final String dateStamp;
+	protected final String projectName;
 	Boolean isDone;
 
 	public WmfDumpFile(String dateStamp, String projectName) {
@@ -237,13 +242,16 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param projectName
-	 *            the project name, e.g., wikidatawiki
+	 *            the project name, e.g. "wikidatawiki" or "wikidata" (for JSON dumps)
 	 * @param dateStamp
 	 *            the date of the dump in format YYYYMMDD
 	 * @return file name string
 	 */
 	public static String getDumpFileName(DumpContentType dumpContentType,
 			String projectName, String dateStamp) {
+		if(dumpContentType == DumpContentType.JSON){
+			return dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType);
+		}
 		return projectName + "-" + dateStamp
 				+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
 	}

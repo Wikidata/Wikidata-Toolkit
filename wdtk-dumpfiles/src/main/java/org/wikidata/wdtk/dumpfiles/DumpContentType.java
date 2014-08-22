@@ -28,5 +28,5 @@ package org.wikidata.wdtk.dumpfiles;
  * 
  */
 public enum DumpContentType {
-	DAILY, CURRENT, FULL, SITES
+	DAILY, CURRENT, FULL, SITES, JSON
 }

@@ -1,0 +1,114 @@
+package org.wikidata.wdtk.dumpfiles.json;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.WmfDumpFile;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.WebResourceFetcher;
+
+public class JsonOnlineDumpFile extends WmfDumpFile {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(JsonOnlineDumpFile.class);
+
+	final WebResourceFetcher webResourceFetcher;
+	final DirectoryManager dumpfileDirectoryManager;
+
+	private boolean isPrepared;
+	
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param dateStamp
+	 *            dump date in format YYYYMMDD
+	 * @param projectName
+	 *            project name string (e.g. "wikidata")
+	 * @param webResourceFetcher
+	 *            object to use for accessing the web
+	 * @param dumpfileDirectoryManager
+	 *            the directory manager for the directory where dumps should be
+	 *            downloaded to
+	 */
+	public JsonOnlineDumpFile(String dateStamp, String projectName,
+			WebResourceFetcher webResourceFetcher,
+			DirectoryManager dumpfileDirectoryManager) {
+		super(dateStamp, projectName);
+		this.webResourceFetcher = webResourceFetcher;
+		this.dumpfileDirectoryManager = dumpfileDirectoryManager;
+	}
+
+	@Override
+	public DumpContentType getDumpContentType() {
+		return DumpContentType.JSON;
+	}
+
+	@Override
+	public InputStream getDumpFileStream() throws IOException {
+		prepareDumpFile();
+
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
+				this.projectName, this.dateStamp);
+		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
+				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
+						DumpContentType.JSON, this.dateStamp));
+
+		return dailyDirectoryManager.getInputStreamForFile(fileName,
+				WmfDumpFile.getDumpFileCompressionType(DumpContentType.JSON));
+	}
+
+	@Override
+	public void prepareDumpFile() throws IOException {
+		if (this.isPrepared) {
+			return;
+		}
+
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
+				this.projectName, this.dateStamp);
+		String urlString = getBaseUrl() + fileName;
+
+		logger.info("Downloading JSON dump file " + fileName + " from "
+				+ urlString + " ...");
+
+		if (!isAvailable()) {
+			throw new IOException(
+					"Dump file not available (yet). Aborting dump retrieval.");
+		}
+
+		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
+				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
+						DumpContentType.JSON, this.dateStamp));
+
+		try (InputStream inputStream = webResourceFetcher
+				.getInputStreamForUrl(urlString)) {
+			dailyDirectoryManager.createFile(fileName, inputStream);
+		}
+
+		this.isPrepared = true;
+
+		logger.info("... completed download of JSON dump file " + fileName
+				+ " from " + urlString);
+	}
+
+	@Override
+	protected boolean fetchIsDone() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Returns the base URL under which the files for this dump are found.
+	 * 
+	 * @return base URL
+	 */
+	String getBaseUrl() {
+		return WmfDumpFile.DUMP_SITE_BASE_URL
+				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON)
+				+ this.projectName + "/";
+	}
+	
+}

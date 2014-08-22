@@ -80,7 +80,7 @@ public class WmfDumpFileManager {
 	 * 
 	 * @param projectName
 	 *            name of the project to obtain dumps for as used in the folder
-	 *            structure of the dump site, e.g., "wikidatawiki"
+	 *            structure of the dump site, e.g., "wikidatawiki" (or "wikidata" for JSON)
 	 * @param downloadDirectoryManager
 	 *            the directory manager for the directory where the download
 	 *            directory for dump files should be; it will be created if
