@@ -10,6 +10,13 @@ New features:
 * Dump files are downloaded to temporary files first to prevent incomplete downloads
   from causing errors
 
+Minor changes:
+* ItemIdValue and PropertyIdValue objects now have a "site IRI" that can be retrieved.
+  This was called "base IRI" in earlier releases and was only used to construct the full
+  IRI. The new concept is that this IRI is actually the identifier for the site that the
+  entity comes from. It is important to make it retrievable since it is needed (like in
+  previous versions) to construct the object using the factory.
+
 Bug fixes:
 * Fix grouping of Statements when reading data from dumps (Issue #78)
 

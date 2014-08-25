@@ -60,6 +60,6 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	@Override
 	public String toString() {
-		return "(ItemId)" + this.baseIri + "/" + this.id;
+		return "(ItemId)" + this.siteIri + "/" + this.id;
 	}
 }
