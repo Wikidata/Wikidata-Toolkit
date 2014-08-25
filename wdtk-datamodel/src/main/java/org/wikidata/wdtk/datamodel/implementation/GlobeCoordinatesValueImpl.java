@@ -21,14 +21,17 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link GlobeCoordinatesValue}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 
@@ -39,7 +42,7 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param latitude
 	 *            the latitude of the coordinates in nanodegrees
 	 * @param longitude
@@ -109,54 +112,19 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + globeIri.hashCode();
-		long temp;
-		temp = Double.doubleToLongBits(latitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(longitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(precision);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/**
-	 * Compare two globe coordinates. The implementation compares the numeric
-	 * value of the double components, which is safe since NaN is not allowed in
-	 * our implementation, and since positive and negative zero are considered
-	 * equal in this class.
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof GlobeCoordinatesValueImpl)) {
-			return false;
-		}
-		GlobeCoordinatesValueImpl other = (GlobeCoordinatesValueImpl) obj;
-		return globeIri.equals(other.globeIri) && latitude == other.latitude
-				&& longitude == other.longitude && precision == other.precision;
+		return Equality.equalsGlobeCoordinatesValue(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return "(Coordinate)" + this.latitude + "°N, " + this.longitude + "°E (±" 
-				+ this.precision + ") " + this.globeIri;
+	public String toString() {
+		return ToString.toString(this);
 	}
-	
+
 }

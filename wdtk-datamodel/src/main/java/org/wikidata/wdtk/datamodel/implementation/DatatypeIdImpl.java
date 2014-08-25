@@ -21,14 +21,17 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link DatatypeIdValue}
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DatatypeIdImpl implements DatatypeIdValue {
 
@@ -38,7 +41,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 * Constructor. The datatype IRI is usually one of the constants defined in
 	 * {@link DatatypeIdValue}, but this is not enforced, since there might be
 	 * extensions that provide additional types.
-	 * 
+	 *
 	 * @param datatypeIri
 	 *            the IRI string that identifies the datatype
 	 */
@@ -57,39 +60,19 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return iri.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof DatatypeIdValue)) {
-			return false;
-		}
-
-		return iri.equals(((DatatypeIdValue) obj).getIri());
+		return Equality.equalsDatatypeIdValue(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return this.iri;
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

@@ -33,9 +33,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 /**
  * Implementation of {@link TermedDocument}. This abstract class defines the
  * code for shared functionality of concrete types of TermedDocument.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public abstract class TermedDocumentImpl implements TermedDocument {
 
@@ -45,7 +45,7 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param labels
 	 *            the list of labels of this entity, with at most one label for
 	 *            each language code
@@ -110,43 +110,6 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 		// TODO This still allows inner lists of aliases to be modified. Do
 		// we have to protect against this?
 		return Collections.unmodifiableMap(aliases);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + aliases.hashCode();
-		result = prime * result + descriptions.hashCode();
-		result = prime * result + labels.hashCode();
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof TermedDocumentImpl)) {
-			return false;
-		}
-		TermedDocumentImpl other = (TermedDocumentImpl) obj;
-		return aliases.equals(other.aliases)
-				&& descriptions.equals(other.descriptions)
-				&& labels.equals(other.labels);
 	}
 
 }

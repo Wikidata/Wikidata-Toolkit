@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DataFormatter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.json.DatatypeConverters;
 
 public class DatatypeConvertersTest {
 
@@ -39,7 +39,7 @@ public class DatatypeConvertersTest {
 	public void testFormatTimeISO8601() {
 		TimeValue time = (TimeValue) testObjectFactory
 				.createValueSnakTimeValue("P17").getValue();
-		assertEquals(DatatypeConverters.formatTimeISO8601(time),
+		assertEquals(DataFormatter.formatTimeISO8601(time),
 				"+00000000306-11-03T13:07:06Z");
 
 	}
@@ -47,7 +47,7 @@ public class DatatypeConvertersTest {
 	@Test
 	public void testBigDecimals() {
 		BigDecimal test = new BigDecimal(3638);
-		assertEquals(DatatypeConverters.formatBigDecimal(test), "+3638");
+		assertEquals(DataFormatter.formatBigDecimal(test), "+3638");
 	}
 
 }

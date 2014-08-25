@@ -21,14 +21,17 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link StringValue}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class StringValueImpl implements StringValue {
 
@@ -36,7 +39,7 @@ public class StringValueImpl implements StringValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param string
 	 */
 	StringValueImpl(String string) {
@@ -54,38 +57,19 @@ public class StringValueImpl implements StringValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return string.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof StringValueImpl)) {
-			return false;
-		}
-		return string.equals(((StringValueImpl) obj).string);
+		return Equality.equalsStringValue(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return "(String)"+ this.string;
+	public String toString() {
+		return ToString.toString(this);
 	}
-	
+
 }

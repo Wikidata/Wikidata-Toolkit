@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wikidata.wdtk.datamodel.helpers.DataFormatter;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -115,12 +116,12 @@ public class ValueJsonConverter implements ValueVisitor<JSONObject> {
 		result.put(JsonConstants.KEY_VALUE, valueResult);
 
 		valueResult.put("amount",
-				DatatypeConverters.formatBigDecimal(value.getNumericValue()));
+				DataFormatter.formatBigDecimal(value.getNumericValue()));
 		valueResult.put("unit", STD_UNIT_VALUE);
 		valueResult.put("upperBound",
-				DatatypeConverters.formatBigDecimal(value.getUpperBound()));
+				DataFormatter.formatBigDecimal(value.getUpperBound()));
 		valueResult.put("lowerBound",
-				DatatypeConverters.formatBigDecimal(value.getLowerBound()));
+				DataFormatter.formatBigDecimal(value.getLowerBound()));
 
 		result.put(JsonConstants.KEY_TYPE, "quantity");
 
@@ -142,7 +143,7 @@ public class ValueJsonConverter implements ValueVisitor<JSONObject> {
 
 		result.put(JsonConstants.KEY_VALUE, valueResult);
 
-		valueResult.put("time", DatatypeConverters.formatTimeISO8601(value));
+		valueResult.put("time", DataFormatter.formatTimeISO8601(value));
 		valueResult.put("timezone", value.getTimezoneOffset());
 		valueResult.put("before", value.getBeforeTolerance());
 		valueResult.put("after", value.getAfterTolerance());

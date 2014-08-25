@@ -23,14 +23,17 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link QuantityValue}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class QuantityValueImpl implements QuantityValue {
 
@@ -40,7 +43,7 @@ public class QuantityValueImpl implements QuantityValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param numericValue
 	 *            the numeric value of this quantity
 	 * @param lowerBound
@@ -87,48 +90,19 @@ public class QuantityValueImpl implements QuantityValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + numericValue.hashCode();
-		result = prime * result + lowerBound.hashCode();
-		result = prime * result + upperBound.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof QuantityValueImpl)) {
-			return false;
-		}
-		QuantityValueImpl other = (QuantityValueImpl) obj;
-		return numericValue.equals(other.numericValue)
-				&& lowerBound.equals(other.lowerBound)
-				&& upperBound.equals(other.upperBound);
+		return Equality.equalsQuantityValue(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "(Quantity)" + this.lowerBound 
-				+ " <= " + this.numericValue 
-				+ " <= " + this.upperBound;
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

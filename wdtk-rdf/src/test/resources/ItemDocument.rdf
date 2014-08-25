@@ -12,7 +12,7 @@
 <http://www.wikidata.org/Q10Snone2> a <http://www.wikidata.org/ontology#Statement> ;
 	<http://www.wikidata.org/P569v> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.wikidata.org/P15q> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
-	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/entity/R0a804970328cb6325b5f43c60934df3c> .
+	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> .
 
 <http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> ;
 	<http://www.wikidata.org/P549v> "TestString" .
@@ -61,6 +61,6 @@ _:node18pjmbmptx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 
 <http://www.wikidata.org/P549r> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/entity/R0a804970328cb6325b5f43c60934df3c> a <http://www.wikidata.org/ontology#Reference> ;
+<http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> a <http://www.wikidata.org/ontology#Reference> ;
 	<http://www.wikidata.org/P112r> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> .
 
