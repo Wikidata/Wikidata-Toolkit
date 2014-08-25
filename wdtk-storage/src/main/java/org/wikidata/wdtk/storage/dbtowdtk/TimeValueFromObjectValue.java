@@ -20,6 +20,9 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.LongValue;
@@ -67,11 +70,11 @@ public class TimeValueFromObjectValue implements TimeValue {
 					break;
 				case WdtkSorts.PROP_TIME_PRECISION:
 					this.precision = (byte) ((LongValue) pvp.getValue())
-							.getLong();
+					.getLong();
 					break;
 				case WdtkSorts.PROP_TIME_CALENDAR_MODEL:
 					this.calendarModel = ((StringValue) pvp.getValue())
-					.getString();
+							.getString();
 					break;
 				default:
 					throw new RuntimeException("Unexpected property "
@@ -150,6 +153,21 @@ public class TimeValueFromObjectValue implements TimeValue {
 	public int getAfterTolerance() {
 		// TODO not stored yet
 		return 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsTimeValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

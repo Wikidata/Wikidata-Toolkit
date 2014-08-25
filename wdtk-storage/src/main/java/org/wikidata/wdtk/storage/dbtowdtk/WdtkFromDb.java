@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -45,7 +45,7 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 public class WdtkFromDb {
 
 	public static EntityDocument EntityDocumentFromEdgeContainer(
-			EdgeContainer edgeContainer, DataObjectFactory dataObjectFactory) {
+			EdgeContainer edgeContainer) {
 
 		PropertyTargets labels = null;
 		PropertyTargets descriptions = null;
@@ -92,17 +92,16 @@ public class WdtkFromDb {
 
 		if (WdtkSorts.VALUE_DOCTYPE_ITEM.equals(docType)) {
 			return new ItemDocumentFromEdgeContainer(edgeContainer, labels,
-					descriptions, aliases, siteLinks, statements,
-					dataObjectFactory);
+					descriptions, aliases, siteLinks, statements);
 		} else {
 			return new PropertyDocumentFromEdgeContainer(edgeContainer, labels,
-					descriptions, aliases, datatype, dataObjectFactory);
+					descriptions, aliases, datatype);
 		}
 
 	}
 
 	public static Map<String, MonolingualTextValue> getMtvMapFromPropertyTargets(
-			PropertyTargets propertyTargets, DataObjectFactory dataObjectFactory) {
+			PropertyTargets propertyTargets) {
 		Map<String, MonolingualTextValue> result = new HashMap<>();
 
 		if (propertyTargets != null) {
@@ -118,8 +117,8 @@ public class WdtkFromDb {
 						text = ((StringValue) pvp.getValue()).getString();
 					}
 				}
-				result.put(language, dataObjectFactory.getMonolingualTextValue(
-						text, language));
+				result.put(language,
+						Datamodel.makeMonolingualTextValue(text, language));
 			}
 		}
 
@@ -127,7 +126,7 @@ public class WdtkFromDb {
 	}
 
 	public static Map<String, List<MonolingualTextValue>> getMtvListMapFromPropertyTargets(
-			PropertyTargets propertyTargets, DataObjectFactory dataObjectFactory) {
+			PropertyTargets propertyTargets) {
 		Map<String, List<MonolingualTextValue>> result = new HashMap<>();
 
 		if (propertyTargets != null) {
@@ -148,8 +147,8 @@ public class WdtkFromDb {
 					languageList = new ArrayList<>();
 					result.put(language, languageList);
 				}
-				languageList.add(dataObjectFactory.getMonolingualTextValue(
-						text, language));
+				languageList.add(Datamodel.makeMonolingualTextValue(text,
+						language));
 			}
 		}
 
@@ -157,7 +156,7 @@ public class WdtkFromDb {
 	}
 
 	public static Map<String, SiteLink> getSiteLinkMapFromPropertyTargets(
-			PropertyTargets propertyTargets, DataObjectFactory dataObjectFactory) {
+			PropertyTargets propertyTargets) {
 		Map<String, SiteLink> result = new HashMap<>();
 
 		if (propertyTargets != null) {
@@ -175,7 +174,7 @@ public class WdtkFromDb {
 				}
 				result.put(
 						key,
-						dataObjectFactory.getSiteLink(page, key,
+						Datamodel.makeSiteLink(page, key,
 								Collections.<String> emptyList()));
 			}
 		}

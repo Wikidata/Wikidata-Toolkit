@@ -20,7 +20,9 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
@@ -64,38 +66,19 @@ public class PropertyIdValueFromPropertyName implements PropertyIdValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(773, 241).append(getSiteIri())
-				.append(getId()).append(getEntityType()).toHashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof EntityIdValue)) {
-			return false;
-		}
+		return Equality.equalsEntityIdValue(this, obj);
+	}
 
-		EntityIdValue other = (EntityIdValue) obj;
-		return getId().equals(other.getId())
-				&& getSiteIri().equals(other.getSiteIri())
-				&& getEntityType().equals(other.getEntityType());
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 	private void initStrings() {

@@ -23,44 +23,36 @@ package org.wikidata.wdtk.storage.dbtowdtk;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 
 public abstract class TermedDocumentFromEdgeContainer implements TermedDocument {
 
-	final DataObjectFactory dataObjectFactory;
-
 	final PropertyTargets labels;
 	final PropertyTargets descriptions;
 	final PropertyTargets aliases;
 
 	public TermedDocumentFromEdgeContainer(PropertyTargets labels,
-			PropertyTargets descriptions, PropertyTargets aliases,
-			DataObjectFactory dataObjectFactory) {
+			PropertyTargets descriptions, PropertyTargets aliases) {
 		this.labels = labels;
 		this.descriptions = descriptions;
 		this.aliases = aliases;
-		this.dataObjectFactory = dataObjectFactory;
 	}
 
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
-		return WdtkFromDb.getMtvMapFromPropertyTargets(this.labels,
-				this.dataObjectFactory);
+		return WdtkFromDb.getMtvMapFromPropertyTargets(this.labels);
 	}
 
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
-		return WdtkFromDb.getMtvMapFromPropertyTargets(this.descriptions,
-				this.dataObjectFactory);
+		return WdtkFromDb.getMtvMapFromPropertyTargets(this.descriptions);
 	}
 
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
-		return WdtkFromDb.getMtvListMapFromPropertyTargets(this.aliases,
-				this.dataObjectFactory);
+		return WdtkFromDb.getMtvListMapFromPropertyTargets(this.aliases);
 	}
 
 }

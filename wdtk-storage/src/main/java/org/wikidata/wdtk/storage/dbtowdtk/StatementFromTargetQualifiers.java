@@ -26,8 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -42,12 +45,70 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 import org.wikidata.wdtk.util.NestedIterator;
 
-public class StatementFromTargetQualifiers implements Statement, Claim {
+public class StatementFromTargetQualifiers implements Statement {
+
+	private class ClaimFromTargetQualifiers implements Claim {
+
+		@Override
+		public EntityIdValue getSubject() {
+			return StatementFromTargetQualifiers.this.parentEntityDocument
+					.getEntityId();
+		}
+
+		@Override
+		public Snak getMainSnak() {
+			return new ValueSnakFromValue(
+					StatementFromTargetQualifiers.this.propertyName,
+					StatementFromTargetQualifiers.this.targetQualifiers
+					.getTarget());
+		}
+
+		@Override
+		public List<SnakGroup> getQualifiers() {
+			if (StatementFromTargetQualifiers.this.qualifiers == null) {
+				StatementFromTargetQualifiers.this.qualifiers = new ArrayList<>(
+						StatementFromTargetQualifiers.this.qualifierPropertyValuePairs
+						.size());
+				for (List<PropertyValuePair> pvpList : StatementFromTargetQualifiers.this.qualifierPropertyValuePairs
+						.values()) {
+					List<Snak> snaks = new ArrayList<>(pvpList.size());
+					for (PropertyValuePair pvp : pvpList) {
+						snaks.add(new ValueSnakFromValue(pvp.getProperty(), pvp
+								.getValue()));
+					}
+					StatementFromTargetQualifiers.this.qualifiers.add(Datamodel
+							.makeSnakGroup(snaks));
+				}
+			}
+
+			return StatementFromTargetQualifiers.this.qualifiers;
+		}
+
+		@Override
+		public Iterator<Snak> getAllQualifiers() {
+			return new NestedIterator<>(this.getQualifiers());
+		}
+
+		@Override
+		public int hashCode() {
+			return Hash.hashCode(this);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return Equality.equalsClaim(this, obj);
+		}
+
+		@Override
+		public String toString() {
+			return ToString.toString(this);
+		}
+
+	}
 
 	final EntityDocument parentEntityDocument;
 	final String propertyName;
 	final TargetQualifiers targetQualifiers;
-	final DataObjectFactory dataObjectFactory;
 
 	StringValue rankStringValue = null;
 	List<ObjectValue> referenceObjectValues;
@@ -57,13 +118,11 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 	List<Reference> references = null;
 
 	public StatementFromTargetQualifiers(TargetQualifiers targetQualifiers,
-			String propertyName, EntityDocument parentEntityDocument,
-			DataObjectFactory dataObjectFactory) {
+			String propertyName, EntityDocument parentEntityDocument) {
 
 		this.targetQualifiers = targetQualifiers;
 		this.parentEntityDocument = parentEntityDocument;
 		this.propertyName = propertyName;
-		this.dataObjectFactory = dataObjectFactory;
 
 		this.referenceObjectValues = new ArrayList<>();
 		this.qualifierPropertyValuePairs = new HashMap<>(
@@ -85,7 +144,7 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 				break;
 			default: // normal property
 				List<PropertyValuePair> qualifierList = this.qualifierPropertyValuePairs
-						.get(pvp.getProperty());
+				.get(pvp.getProperty());
 				if (qualifierList == null) {
 					qualifierList = new ArrayList<>(1); // usually a short list
 					this.qualifierPropertyValuePairs.put(pvp.getProperty(),
@@ -98,7 +157,7 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 
 	@Override
 	public Claim getClaim() {
-		return this;
+		return new ClaimFromTargetQualifiers();
 	}
 
 	@Override
@@ -122,8 +181,7 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 		if (this.references == null) {
 			this.references = new ArrayList<>(this.referenceObjectValues.size());
 			for (ObjectValue rov : this.referenceObjectValues) {
-				this.references.add(new ReferenceFromObjectValue(rov,
-						this.dataObjectFactory));
+				this.references.add(new ReferenceFromObjectValue(rov));
 			}
 		}
 
@@ -132,42 +190,22 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 
 	@Override
 	public String getStatementId() {
-		return null; // not stored
+		return null; // TODO not stored
 	}
 
 	@Override
-	public EntityIdValue getSubject() {
-		return this.parentEntityDocument.getEntityId();
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
 	@Override
-	public Snak getMainSnak() {
-		return new ValueSnakFromValue(this.propertyName,
-				this.targetQualifiers.getTarget());
+	public boolean equals(Object obj) {
+		return Equality.equalsStatement(this, obj);
 	}
 
 	@Override
-	public List<SnakGroup> getQualifiers() {
-		if (this.qualifiers == null) {
-			this.qualifiers = new ArrayList<>(
-					this.qualifierPropertyValuePairs.size());
-			for (List<PropertyValuePair> pvpList : this.qualifierPropertyValuePairs
-					.values()) {
-				List<Snak> snaks = new ArrayList<>(pvpList.size());
-				for (PropertyValuePair pvp : pvpList) {
-					snaks.add(new ValueSnakFromValue(pvp.getProperty(), pvp
-							.getValue()));
-				}
-				this.qualifiers.add(this.dataObjectFactory.getSnakGroup(snaks));
-			}
-		}
-
-		return this.qualifiers;
-	}
-
-	@Override
-	public Iterator<Snak> getAllQualifiers() {
-		return new NestedIterator<>(this.getQualifiers());
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

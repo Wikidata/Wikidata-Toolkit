@@ -22,21 +22,17 @@ package org.wikidata.wdtk.storage.dbtowdtk;
 
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 
 public class EntityDocumentFromEdgeContainerIterator implements
-Iterator<EntityDocument> {
+		Iterator<EntityDocument> {
 
 	final Iterator<? extends EdgeContainer> edgeContainers;
-	final DataObjectFactory dataObjectFactory;
 
 	public EntityDocumentFromEdgeContainerIterator(
 			Iterator<? extends EdgeContainer> iterator) {
 		this.edgeContainers = iterator;
-		this.dataObjectFactory = new DataObjectFactoryImpl();
 	}
 
 	@Override
@@ -46,8 +42,8 @@ Iterator<EntityDocument> {
 
 	@Override
 	public EntityDocument next() {
-		return WdtkFromDb.EntityDocumentFromEdgeContainer(
-				this.edgeContainers.next(), this.dataObjectFactory);
+		return WdtkFromDb.EntityDocumentFromEdgeContainer(this.edgeContainers
+				.next());
 	}
 
 	@Override

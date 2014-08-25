@@ -22,6 +22,9 @@ package org.wikidata.wdtk.storage.dbtowdtk;
 
 import java.math.BigDecimal;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.DecimalValue;
@@ -83,6 +86,21 @@ public class QuantityValueFromObjectValue implements QuantityValue {
 	public BigDecimal getUpperBound() {
 		initialize();
 		return this.upperBound.getDecimal();
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsQuantityValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

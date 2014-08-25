@@ -25,7 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -48,9 +50,8 @@ TermedDocumentFromEdgeContainer implements ItemDocument {
 	public ItemDocumentFromEdgeContainer(EdgeContainer edgeContainer,
 			PropertyTargets labels, PropertyTargets descriptions,
 			PropertyTargets aliases, PropertyTargets siteLinks,
-			List<PropertyTargets> statements,
-			DataObjectFactory dataObjectFactory) {
-		super(labels, descriptions, aliases, dataObjectFactory);
+			List<PropertyTargets> statements) {
+		super(labels, descriptions, aliases);
 
 		this.edgeContainer = edgeContainer;
 		this.siteLinks = siteLinks;
@@ -58,7 +59,7 @@ TermedDocumentFromEdgeContainer implements ItemDocument {
 		this.statementGroups = new ArrayList<>(statements.size());
 		for (PropertyTargets pts : statements) {
 			this.statementGroups.add(new StatementGroupFromPropertyTargets(pts,
-					this, dataObjectFactory));
+					this));
 		}
 	}
 
@@ -85,8 +86,22 @@ TermedDocumentFromEdgeContainer implements ItemDocument {
 
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		return WdtkFromDb.getSiteLinkMapFromPropertyTargets(this.siteLinks,
-				this.dataObjectFactory);
+		return WdtkFromDb.getSiteLinkMapFromPropertyTargets(this.siteLinks);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsItemDocument(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

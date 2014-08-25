@@ -22,7 +22,6 @@ package org.wikidata.wdtk.storage.wdtkbindings;
 
 import java.util.Iterator;
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -105,8 +104,7 @@ public class WdtkDatabaseManager extends DatabaseManager {
 		if (edgeContainer == null) {
 			return null;
 		} else {
-			return WdtkFromDb.EntityDocumentFromEdgeContainer(edgeContainer,
-					new DataObjectFactoryImpl());
+			return WdtkFromDb.EntityDocumentFromEdgeContainer(edgeContainer);
 		}
 	}
 

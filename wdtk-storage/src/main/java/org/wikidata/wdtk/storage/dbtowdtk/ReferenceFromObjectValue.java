@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
@@ -36,12 +39,9 @@ import org.wikidata.wdtk.util.NestedIterator;
 public class ReferenceFromObjectValue implements Reference {
 
 	final List<SnakGroup> snakGroups;
-	final DataObjectFactory dataObjectFactory;
 
-	public ReferenceFromObjectValue(ObjectValue rov,
-			DataObjectFactory dataObjectFactory) {
+	public ReferenceFromObjectValue(ObjectValue rov) {
 		this.snakGroups = new ArrayList<>(rov.size());
-		this.dataObjectFactory = dataObjectFactory;
 
 		List<Snak> snaks = null;
 		String property = null;
@@ -53,8 +53,7 @@ public class ReferenceFromObjectValue implements Reference {
 				if (property != null
 						&& !WdtkSorts.PROP_SOMEVALUE.equals(property)
 						&& !WdtkSorts.PROP_NOVALUE.equals(property)) {
-					this.snakGroups.add(this.dataObjectFactory
-							.getSnakGroup(snaks));
+					this.snakGroups.add(Datamodel.makeSnakGroup(snaks));
 				}
 
 				property = curProperty;
@@ -66,7 +65,7 @@ public class ReferenceFromObjectValue implements Reference {
 
 		if (property != null && !WdtkSorts.PROP_SOMEVALUE.equals(property)
 				&& !WdtkSorts.PROP_NOVALUE.equals(property)) {
-			this.snakGroups.add(this.dataObjectFactory.getSnakGroup(snaks));
+			this.snakGroups.add(Datamodel.makeSnakGroup(snaks));
 		}
 
 	}
@@ -79,6 +78,21 @@ public class ReferenceFromObjectValue implements Reference {
 	@Override
 	public Iterator<Snak> getAllSnaks() {
 		return new NestedIterator<>(getSnakGroups());
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsReference(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

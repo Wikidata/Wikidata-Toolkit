@@ -20,12 +20,13 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
 
 public class ItemIdValueFromValue extends EntityIdValueFromValue implements
-ItemIdValue {
+		ItemIdValue {
 
 	public ItemIdValueFromValue(StringValue value) {
 		super(value);
@@ -34,5 +35,10 @@ ItemIdValue {
 	@Override
 	public String getEntityType() {
 		return EntityIdValue.ET_ITEM;
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

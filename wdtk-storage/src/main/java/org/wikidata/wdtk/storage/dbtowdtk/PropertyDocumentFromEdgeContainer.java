@@ -20,7 +20,10 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -37,9 +40,8 @@ public class PropertyDocumentFromEdgeContainer extends
 
 	public PropertyDocumentFromEdgeContainer(EdgeContainer edgeContainer,
 			PropertyTargets labels, PropertyTargets descriptions,
-			PropertyTargets aliases, StringValue datatype,
-			DataObjectFactory dataObjectFactory) {
-		super(labels, descriptions, aliases, dataObjectFactory);
+			PropertyTargets aliases, StringValue datatype) {
+		super(labels, descriptions, aliases);
 
 		this.edgeContainer = edgeContainer;
 		this.datatype = datatype;
@@ -58,8 +60,22 @@ public class PropertyDocumentFromEdgeContainer extends
 
 	@Override
 	public DatatypeIdValue getDatatype() {
-		return this.dataObjectFactory.getDatatypeIdValue(this.datatype
-				.getString());
+		return Datamodel.makeDatatypeIdValue(this.datatype.getString());
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsPropertyDocument(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

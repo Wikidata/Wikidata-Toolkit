@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -37,15 +39,13 @@ public class StatementGroupFromPropertyTargets implements StatementGroup {
 
 	final PropertyTargets propertyTargets;
 	final EntityDocument parentDocument;
-	final DataObjectFactory factory;
 
 	List<Statement> statements = null;
 
 	public StatementGroupFromPropertyTargets(PropertyTargets propertyTargets,
-			EntityDocument parentDocument, DataObjectFactory factory) {
+			EntityDocument parentDocument) {
 		this.propertyTargets = propertyTargets;
 		this.parentDocument = parentDocument;
-		this.factory = factory;
 	}
 
 	@Override
@@ -59,9 +59,10 @@ public class StatementGroupFromPropertyTargets implements StatementGroup {
 			this.statements = new ArrayList<>(
 					this.propertyTargets.getTargetCount());
 			for (TargetQualifiers tqs : this.propertyTargets) {
-				this.statements.add(new StatementFromTargetQualifiers(tqs,
-						this.propertyTargets.getProperty(),
-						this.parentDocument, this.factory));
+				this.statements
+						.add(new StatementFromTargetQualifiers(tqs,
+								this.propertyTargets.getProperty(),
+								this.parentDocument));
 			}
 		}
 		return this.statements;
@@ -76,6 +77,21 @@ public class StatementGroupFromPropertyTargets implements StatementGroup {
 	@Override
 	public EntityIdValue getSubject() {
 		return this.parentDocument.getEntityId();
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStatementGroup(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

@@ -20,11 +20,14 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
 
 public class StringValueFromStringValue implements
-		org.wikidata.wdtk.datamodel.interfaces.StringValue {
+org.wikidata.wdtk.datamodel.interfaces.StringValue {
 
 	final StringValue value;
 
@@ -40,6 +43,21 @@ public class StringValueFromStringValue implements
 	@Override
 	public String getString() {
 		return this.value.getString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStringValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }
