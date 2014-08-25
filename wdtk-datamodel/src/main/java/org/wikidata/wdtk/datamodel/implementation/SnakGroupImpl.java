@@ -48,7 +48,7 @@ public class SnakGroupImpl implements SnakGroup {
 	 * @param snaks
 	 *            a non-empty list of snaks that use the same property
 	 */
-	public SnakGroupImpl(List<? extends Snak> snaks) {
+	SnakGroupImpl(List<? extends Snak> snaks) {
 		Validate.notNull(snaks, "List of statements cannot be null");
 		Validate.notEmpty(snaks, "List of statements cannot be empty");
 
