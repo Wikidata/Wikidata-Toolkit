@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json;
+package org.wikidata.wdtk.datamodel.helpers;
 
 /*
  * #%L
@@ -27,12 +27,12 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
  * This class contains static methods to create string notations for values of
- * several data types and classes
- * 
+ * several datatypes and classes.
+ *
  * @author Michael Günther
- * 
+ *
  */
-public class DatatypeConverters {
+public class DataFormatter {
 
 	final static String FORMAT_YEAR = "00000000000";
 	final static String FORMAT_OTHER = "00";
@@ -40,7 +40,7 @@ public class DatatypeConverters {
 	/**
 	 * Returns a representation of the date from the value attributes as ISO
 	 * 8601 encoding.
-	 * 
+	 *
 	 * @param value
 	 * @return ISO 8601 value (String)
 	 */
@@ -67,8 +67,8 @@ public class DatatypeConverters {
 	}
 
 	/**
-	 * Returns a String Representation of the given number attribute.
-	 * 
+	 * Returns a signed string representation of the given number.
+	 *
 	 * @param number
 	 * @return String for BigDecimal value
 	 */

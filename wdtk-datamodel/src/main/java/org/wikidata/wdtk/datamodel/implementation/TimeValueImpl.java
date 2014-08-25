@@ -21,15 +21,18 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
  * Implementation of {@link TimeValue}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class TimeValueImpl implements TimeValue {
 
@@ -47,7 +50,7 @@ public class TimeValueImpl implements TimeValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
 	 * @param month
@@ -155,58 +158,18 @@ public class TimeValueImpl implements TimeValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + new Long(this.year).hashCode();
-		result = prime * result + this.month;
-		result = prime * result + this.day;
-		result = prime * result + this.hour;
-		result = prime * result + this.minute;
-		result = prime * result + this.second;
-		result = prime * result + this.precision;
-		result = prime * result + this.beforeTolerance;
-		result = prime * result + this.afterTolerance;
-		result = prime * result + this.timezoneOffset;
-		result = prime * result + this.calendarModel.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof TimeValueImpl)) {
-			return false;
-		}
-		TimeValueImpl other = (TimeValueImpl) obj;
-		return this.year == other.year && this.month == other.month
-				&& this.day == other.day && this.hour == other.hour
-				&& this.minute == other.minute && this.second == other.second
-				&& this.precision == other.precision
-				&& this.beforeTolerance == other.beforeTolerance
-				&& this.afterTolerance == other.afterTolerance
-				&& this.timezoneOffset == other.timezoneOffset
-				&& this.calendarModel.equals(other.calendarModel);
+		return Equality.equalsTimeValue(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return "(Time)" + this.year + "-" + this.month + "-" + this.day + ", "
-				+ this.hour + ":" + this.minute + ":" + this.second + "h (-"
-				+ this.beforeTolerance + ", +" + this.afterTolerance + ") timezone = "
-				+ this.timezoneOffset + " (" + this.calendarModel + ")";
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

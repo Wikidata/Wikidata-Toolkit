@@ -20,6 +20,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
@@ -28,41 +31,21 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param propertyId
 	 */
 	SomeValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return this.propertyId.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof SomeValueSnak)) {
-			return false;
-		}
-
-		return this.propertyId.equals(((SomeValueSnak) obj).getPropertyId());
+		return Equality.equalsSomeValueSnak(this, obj);
 	}
 
 	@Override
@@ -71,8 +54,8 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	}
 
 	@Override
-	public String toString(){
-		return "SomeValueSnak {pId = " + this.propertyId + "}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }
