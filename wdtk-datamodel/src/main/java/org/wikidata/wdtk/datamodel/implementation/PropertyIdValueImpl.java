@@ -20,22 +20,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Generic implementation of {@link PropertyIdValue} that works with arbitrary
  * Wikibase instances: it requires a baseIri that identifies the site globally.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class PropertyIdValueImpl extends EntityIdValueImpl implements
-		PropertyIdValue {
+PropertyIdValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
 	 *            a string of the form Pn... where n... is the string
@@ -61,7 +62,7 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 
 	@Override
 	public String toString() {
-		return "(PropertyId)" + this.siteIri + "/" + this.id;
+		return ToString.toString(this);
 	}
 
 }

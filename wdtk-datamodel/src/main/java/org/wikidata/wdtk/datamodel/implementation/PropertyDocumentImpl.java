@@ -23,6 +23,9 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -31,19 +34,19 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Implementation of {@link PropertyDocument}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class PropertyDocumentImpl extends TermedDocumentImpl implements
-		PropertyDocument {
+PropertyDocument {
 
 	final PropertyIdValue propertyId;
 	final DatatypeIdValue datatypeId;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
 	 * @param labels
@@ -83,49 +86,19 @@ public class PropertyDocumentImpl extends TermedDocumentImpl implements
 		return datatypeId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + datatypeId.hashCode();
-		result = prime * result + propertyId.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof PropertyDocumentImpl)) {
-			return false;
-		}
-		PropertyDocumentImpl other = (PropertyDocumentImpl) obj;
-		return datatypeId.equals(other.datatypeId)
-				&& propertyId.equals(other.propertyId);
+		return Equality.equalsPropertyDocument(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "PropertyDocument {pId = " + this.propertyId 
-				+ ", " + this.labels.size() + " labels, "
-				+ this.descriptions.size() + " descriptions, "
-				+ this.aliases.size() + " aliases, "
-				+ "datatype = " + this.datatypeId 
-				+ "}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

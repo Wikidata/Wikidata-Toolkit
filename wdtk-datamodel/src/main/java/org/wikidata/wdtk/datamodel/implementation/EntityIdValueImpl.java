@@ -21,7 +21,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -82,36 +83,14 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(773, 241).append(siteIri).append(id)
-				.toHashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof EntityIdValueImpl)) {
-			return false;
-		}
-
-		EntityIdValueImpl other = (EntityIdValueImpl) obj;
-		return id.equals(other.id) && siteIri.equals(other.siteIri);
+		return Equality.equalsEntityIdValue(this, obj);
 	}
 
 }
