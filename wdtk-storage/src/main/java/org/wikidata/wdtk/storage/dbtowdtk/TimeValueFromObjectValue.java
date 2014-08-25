@@ -36,6 +36,10 @@ public class TimeValueFromObjectValue implements TimeValue {
 	long year;
 	byte month;
 	byte day;
+	byte hour;
+	byte minute;
+	byte second;
+	byte precision;
 
 	public TimeValueFromObjectValue(ObjectValue objectValue) {
 		this.objectValue = objectValue;
@@ -53,6 +57,17 @@ public class TimeValueFromObjectValue implements TimeValue {
 					break;
 				case WdtkSorts.PROP_TIME_DAY:
 					this.day = (byte) ((LongValue) pvp.getValue()).getLong();
+					break;
+				case WdtkSorts.PROP_TIME_SECONDS:
+					long seconds = ((LongValue) pvp.getValue()).getLong();
+					this.hour = (byte) (seconds / 3600);
+					seconds = seconds % 3600;
+					this.minute = (byte) (seconds / 60);
+					this.second = (byte) (seconds % 60);
+					break;
+				case WdtkSorts.PROP_TIME_PRECISION:
+					this.precision = (byte) ((LongValue) pvp.getValue())
+							.getLong();
 					break;
 				case WdtkSorts.PROP_TIME_CALENDAR_MODEL:
 					this.calendarModel = ((StringValue) pvp.getValue())
@@ -91,20 +106,20 @@ public class TimeValueFromObjectValue implements TimeValue {
 
 	@Override
 	public byte getHour() {
-		// TODO not stored yet
-		return 0;
+		initialize();
+		return this.hour;
 	}
 
 	@Override
 	public byte getMinute() {
-		// TODO not stored yet
-		return 0;
+		initialize();
+		return this.minute;
 	}
 
 	@Override
 	public byte getSecond() {
-		// TODO not stored yet
-		return 0;
+		initialize();
+		return this.second;
 	}
 
 	@Override
@@ -115,8 +130,8 @@ public class TimeValueFromObjectValue implements TimeValue {
 
 	@Override
 	public byte getPrecision() {
-		// TODO not stored yet
-		return TimeValue.PREC_DAY;
+		initialize();
+		return this.precision;
 	}
 
 	@Override

@@ -29,7 +29,7 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class GlobeCoordinatesValueFromObjectValue implements
-		GlobeCoordinatesValue {
+GlobeCoordinatesValue {
 
 	final ObjectValue value;
 
@@ -50,16 +50,13 @@ public class GlobeCoordinatesValueFromObjectValue implements
 					this.globe = ((StringValue) pvp.getValue()).getString();
 					break;
 				case WdtkSorts.PROP_COORDINATES_LATITUDE:
-					this.latitude = (byte) ((LongValue) pvp.getValue())
-					.getLong();
+					this.latitude = ((LongValue) pvp.getValue()).getLong();
 					break;
 				case WdtkSorts.PROP_COORDINATES_LONGITUDE:
-					this.longitude = (byte) ((LongValue) pvp.getValue())
-					.getLong();
+					this.longitude = ((LongValue) pvp.getValue()).getLong();
 					break;
 				case WdtkSorts.PROP_COORDINATES_PRECISION:
-					this.precision = (byte) ((LongValue) pvp.getValue())
-					.getLong();
+					this.precision = ((LongValue) pvp.getValue()).getLong();
 					break;
 				default:
 					throw new RuntimeException("Unexpected property "

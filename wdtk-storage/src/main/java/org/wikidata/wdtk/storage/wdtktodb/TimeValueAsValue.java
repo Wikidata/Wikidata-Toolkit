@@ -50,6 +50,15 @@ public class TimeValueAsValue extends BaseValueAsValue {
 			return new PropertyValuePairImpl(WdtkSorts.PROP_TIME_DAY,
 					new LongValueImpl(this.value.getDay(), Sort.SORT_LONG));
 		} else if (this.iteratorPos == 4) {
+			return new PropertyValuePairImpl(WdtkSorts.PROP_TIME_SECONDS,
+					new LongValueImpl(this.value.getHour() * 3600
+							+ this.value.getMinute() * 60
+							+ this.value.getSecond(), Sort.SORT_LONG));
+		} else if (this.iteratorPos == 5) {
+			return new PropertyValuePairImpl(
+					WdtkSorts.PROP_TIME_PRECISION,
+					new LongValueImpl(this.value.getPrecision(), Sort.SORT_LONG));
+		} else if (this.iteratorPos == 6) {
 			return new PropertyValuePairImpl(
 					WdtkSorts.PROP_TIME_CALENDAR_MODEL, new StringValueImpl(
 							this.value.getPreferredCalendarModel(),
@@ -61,6 +70,6 @@ public class TimeValueAsValue extends BaseValueAsValue {
 
 	@Override
 	public int size() {
-		return 4;
+		return 6;
 	}
 }

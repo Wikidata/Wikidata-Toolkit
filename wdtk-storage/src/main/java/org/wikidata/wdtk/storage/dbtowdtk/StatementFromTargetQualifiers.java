@@ -21,13 +21,13 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -47,17 +47,23 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 	final EntityDocument parentEntityDocument;
 	final String propertyName;
 	final TargetQualifiers targetQualifiers;
+	final DataObjectFactory dataObjectFactory;
 
 	StringValue rankStringValue = null;
 	List<ObjectValue> referenceObjectValues;
 	Map<String, List<PropertyValuePair>> qualifierPropertyValuePairs;
 
+	List<SnakGroup> qualifiers = null;
+	List<Reference> references = null;
+
 	public StatementFromTargetQualifiers(TargetQualifiers targetQualifiers,
-			String propertyName, EntityDocument parentEntityDocument) {
+			String propertyName, EntityDocument parentEntityDocument,
+			DataObjectFactory dataObjectFactory) {
 
 		this.targetQualifiers = targetQualifiers;
 		this.parentEntityDocument = parentEntityDocument;
 		this.propertyName = propertyName;
+		this.dataObjectFactory = dataObjectFactory;
 
 		this.referenceObjectValues = new ArrayList<>();
 		this.qualifierPropertyValuePairs = new HashMap<>(
@@ -109,13 +115,19 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 			throw new RuntimeException("I don't know how to interpret rank "
 					+ this.rankStringValue.getString());
 		}
-
 	}
 
 	@Override
 	public List<? extends Reference> getReferences() {
-		// TODO
-		return Collections.emptyList();
+		if (this.references == null) {
+			this.references = new ArrayList<>(this.referenceObjectValues.size());
+			for (ObjectValue rov : this.referenceObjectValues) {
+				this.references.add(new ReferenceFromObjectValue(rov,
+						this.dataObjectFactory));
+			}
+		}
+
+		return this.references;
 	}
 
 	@Override
@@ -136,8 +148,21 @@ public class StatementFromTargetQualifiers implements Statement, Claim {
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		// TODO
-		return Collections.emptyList();
+		if (this.qualifiers == null) {
+			this.qualifiers = new ArrayList<>(
+					this.qualifierPropertyValuePairs.size());
+			for (List<PropertyValuePair> pvpList : this.qualifierPropertyValuePairs
+					.values()) {
+				List<Snak> snaks = new ArrayList<>(pvpList.size());
+				for (PropertyValuePair pvp : pvpList) {
+					snaks.add(new ValueSnakFromValue(pvp.getProperty(), pvp
+							.getValue()));
+				}
+				this.qualifiers.add(this.dataObjectFactory.getSnakGroup(snaks));
+			}
+		}
+
+		return this.qualifiers;
 	}
 
 	@Override

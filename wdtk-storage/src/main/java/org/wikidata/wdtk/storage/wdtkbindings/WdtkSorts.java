@@ -61,6 +61,8 @@ public class WdtkSorts {
 	public static final String PROP_TIME_YEAR = "year";
 	public static final String PROP_TIME_MONTH = "month";
 	public static final String PROP_TIME_DAY = "day";
+	public static final String PROP_TIME_SECONDS = "mins";
+	public static final String PROP_TIME_PRECISION = "prec";
 	public static final String PROP_TIME_CALENDAR_MODEL = "cm";
 	public static final String PROP_COORDINATES_LATITUDE = "lat";
 	public static final String PROP_COORDINATES_LONGITUDE = "lon";
@@ -104,6 +106,10 @@ public class WdtkSorts {
 		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_MONTH,
 				Sort.SORTNAME_LONG));
 		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_DAY,
+				Sort.SORTNAME_LONG));
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_SECONDS,
+				Sort.SORTNAME_LONG));
+		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_PRECISION,
 				Sort.SORTNAME_LONG));
 		PROPLIST_TIME_VALUE.add(new PropertyRange(PROP_TIME_CALENDAR_MODEL,
 				SORTNAME_ENTITY));

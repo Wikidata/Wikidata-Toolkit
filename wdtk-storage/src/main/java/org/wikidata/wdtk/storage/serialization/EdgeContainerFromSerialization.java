@@ -33,10 +33,10 @@ import org.wikidata.wdtk.storage.db.DatabaseManager;
 import org.wikidata.wdtk.storage.db.PropertySignature;
 
 public class EdgeContainerFromSerialization implements EdgeContainer,
-		Iterator<PropertyTargets> {
+Iterator<PropertyTargets> {
 
 	public class PropertyTargetsFromSerialization implements PropertyTargets,
-			Iterator<TargetQualifiers> {
+	Iterator<TargetQualifiers> {
 
 		final int iProperty;
 		PropertySignature propertySignature = null;
@@ -196,8 +196,8 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 	}
 
 	public class ValueTargetQualifiersFromSerialization implements
-			TargetQualifiers, Iterable<PropertyValuePair>,
-			Iterator<PropertyValuePair>, PropertyValuePair {
+	TargetQualifiers, Iterable<PropertyValuePair>,
+	Iterator<PropertyValuePair>, PropertyValuePair {
 
 		final Object[] targetQualifiers;
 		final int sortId;
@@ -277,8 +277,8 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 	}
 
 	public class RefTargetQualifiersFromSerialization implements
-			TargetQualifiers, Iterable<PropertyValuePair>,
-			Iterator<PropertyValuePair>, PropertyValuePair {
+	TargetQualifiers, Iterable<PropertyValuePair>,
+	Iterator<PropertyValuePair>, PropertyValuePair {
 
 		final int[] targetQualifiers;
 		final int sortId;
@@ -453,6 +453,11 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 		if (this.properties == null) {
 			this.properties = this.edgeContainerIndex
 					.getProperties(this.sourceId);
+			if (this.properties == null) {
+				this.properties = new int[2];
+				this.properties[0] = this.sourceId;
+				this.properties[1] = 0;
+			}
 		}
 		return this.properties;
 	}

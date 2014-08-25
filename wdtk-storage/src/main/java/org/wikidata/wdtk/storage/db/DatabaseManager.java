@@ -21,7 +21,9 @@ package org.wikidata.wdtk.storage.db;
  */
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.mapdb.DB;
@@ -30,8 +32,10 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer;
 import org.wikidata.wdtk.storage.datamodel.PropertyRange;
 import org.wikidata.wdtk.storage.datamodel.Sort;
 import org.wikidata.wdtk.storage.datamodel.Value;
+import org.wikidata.wdtk.storage.dbquery.ScanEdgeContainerIterator;
 import org.wikidata.wdtk.storage.serialization.EdgeContainerFromSerialization;
 import org.wikidata.wdtk.storage.serialization.EdgeContainerIndex;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 /**
  * Overall management class for a database instance. Manages schema information
@@ -180,12 +184,60 @@ public class DatabaseManager {
 				propertyName, domainId, rangeId));
 	}
 
+	public int getPropertyId(String propertyName, String domainSort,
+			String rangeSort) {
+		int domainId = this.sortSchema.getSortId(domainSort);
+		int rangeId = this.sortSchema.getSortId(rangeSort);
+
+		return this.propertyDictionary.getId(new PropertySignature(
+				propertyName, domainId, rangeId));
+	}
+
 	public Iterable<Value> values(String sortName) {
 		return getDictionaryBySortName(sortName);
 	}
 
 	public Iterable<PropertySignature> properties() {
 		return this.propertyDictionary;
+	}
+
+	public Iterator<? extends EdgeContainer> findEdgeContainers(
+			String propertyName, Value value) {
+
+		if (propertyName == null) {
+			return edgeContainers(WdtkSorts.SORTNAME_ENTITY).iterator();
+		}
+
+		int valueId;
+		String rangeSort;
+		if (value != null) {
+			valueId = getValueId(value);
+			rangeSort = value.getSort().getName();
+		} else {
+			valueId = -1;
+			int entitySortId = getSortSchema().getSortId(
+					WdtkSorts.SORTNAME_ENTITY);
+			rangeSort = null;
+			for (PropertySignature ps : properties()) {
+				if (entitySortId == ps.getDomainId()
+						&& propertyName.equals(ps.getPropertyName())) {
+					rangeSort = getSortSchema().getSort(ps.getRangeId())
+							.getName();
+					break;
+				}
+			}
+
+		}
+
+		if (rangeSort != null) {
+			int propId = getOrCreatePropertyId(propertyName,
+					WdtkSorts.SORTNAME_ENTITY, rangeSort);
+
+			return new ScanEdgeContainerIterator(WdtkSorts.SORTNAME_ENTITY,
+					propId, valueId, this);
+		} else {
+			return Collections.<EdgeContainer> emptyList().iterator();
+		}
 	}
 
 	Dictionary<Value> getDictionaryBySortName(String sortName) {

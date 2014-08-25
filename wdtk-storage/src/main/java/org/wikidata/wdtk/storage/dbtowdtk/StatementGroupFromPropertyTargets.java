@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -36,13 +37,15 @@ public class StatementGroupFromPropertyTargets implements StatementGroup {
 
 	final PropertyTargets propertyTargets;
 	final EntityDocument parentDocument;
+	final DataObjectFactory factory;
 
 	List<Statement> statements = null;
 
 	public StatementGroupFromPropertyTargets(PropertyTargets propertyTargets,
-			EntityDocument parentDocument) {
+			EntityDocument parentDocument, DataObjectFactory factory) {
 		this.propertyTargets = propertyTargets;
 		this.parentDocument = parentDocument;
+		this.factory = factory;
 	}
 
 	@Override
@@ -56,10 +59,9 @@ public class StatementGroupFromPropertyTargets implements StatementGroup {
 			this.statements = new ArrayList<>(
 					this.propertyTargets.getTargetCount());
 			for (TargetQualifiers tqs : this.propertyTargets) {
-				this.statements
-						.add(new StatementFromTargetQualifiers(tqs,
-								this.propertyTargets.getProperty(),
-								this.parentDocument));
+				this.statements.add(new StatementFromTargetQualifiers(tqs,
+						this.propertyTargets.getProperty(),
+						this.parentDocument, this.factory));
 			}
 		}
 		return this.statements;

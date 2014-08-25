@@ -29,7 +29,6 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -38,14 +37,11 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
 import org.wikidata.wdtk.util.NestedIterator;
 
-public class ItemDocumentFromEdgeContainer implements ItemDocument {
+public class ItemDocumentFromEdgeContainer extends
+TermedDocumentFromEdgeContainer implements ItemDocument {
 
-	final DataObjectFactory dataObjectFactory;
 	final EdgeContainer edgeContainer;
 
-	final PropertyTargets labels;
-	final PropertyTargets descriptions;
-	final PropertyTargets aliases;
 	final PropertyTargets siteLinks;
 	final List<StatementGroup> statementGroups;
 
@@ -54,36 +50,16 @@ public class ItemDocumentFromEdgeContainer implements ItemDocument {
 			PropertyTargets aliases, PropertyTargets siteLinks,
 			List<PropertyTargets> statements,
 			DataObjectFactory dataObjectFactory) {
-		this.dataObjectFactory = dataObjectFactory;
+		super(labels, descriptions, aliases, dataObjectFactory);
+
 		this.edgeContainer = edgeContainer;
-		this.labels = labels;
-		this.descriptions = descriptions;
-		this.aliases = aliases;
 		this.siteLinks = siteLinks;
 
 		this.statementGroups = new ArrayList<>(statements.size());
 		for (PropertyTargets pts : statements) {
 			this.statementGroups.add(new StatementGroupFromPropertyTargets(pts,
-					this));
+					this, dataObjectFactory));
 		}
-	}
-
-	@Override
-	public Map<String, MonolingualTextValue> getLabels() {
-		return WdtkFromDb.getMtvMapFromPropertyTargets(this.labels,
-				this.dataObjectFactory);
-	}
-
-	@Override
-	public Map<String, MonolingualTextValue> getDescriptions() {
-		return WdtkFromDb.getMtvMapFromPropertyTargets(this.descriptions,
-				this.dataObjectFactory);
-	}
-
-	@Override
-	public Map<String, List<MonolingualTextValue>> getAliases() {
-		return WdtkFromDb.getMtvListMapFromPropertyTargets(this.aliases,
-				this.dataObjectFactory);
 	}
 
 	@Override

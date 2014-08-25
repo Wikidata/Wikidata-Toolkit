@@ -20,6 +20,7 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * #L%
  */
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.storage.datamodel.StringValue;
@@ -56,6 +57,40 @@ public abstract class EntityIdValueFromValue implements EntityIdValue {
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(773, 241).append(getSiteIri())
+				.append(getId()).append(getEntityType()).toHashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof EntityIdValue)) {
+			return false;
+		}
+
+		EntityIdValue other = (EntityIdValue) obj;
+		return getId().equals(other.getId())
+				&& getSiteIri().equals(other.getSiteIri())
+				&& getEntityType().equals(other.getEntityType());
 	}
 
 	private void initStrings() {
