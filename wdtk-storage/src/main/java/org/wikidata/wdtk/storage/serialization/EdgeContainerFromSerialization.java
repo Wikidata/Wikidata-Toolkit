@@ -9,9 +9,9 @@ package org.wikidata.wdtk.storage.serialization;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,10 +33,10 @@ import org.wikidata.wdtk.storage.db.DatabaseManager;
 import org.wikidata.wdtk.storage.db.PropertySignature;
 
 public class EdgeContainerFromSerialization implements EdgeContainer,
-Iterator<PropertyTargets> {
+		Iterator<PropertyTargets> {
 
 	public class PropertyTargetsFromSerialization implements PropertyTargets,
-	Iterator<TargetQualifiers> {
+			Iterator<TargetQualifiers> {
 
 		final int iProperty;
 		PropertySignature propertySignature = null;
@@ -195,9 +195,20 @@ Iterator<PropertyTargets> {
 		}
 	}
 
+	/**
+	 * {@link TargeQualifiers} implementation for the target of edges that is
+	 * stored as an inline value. The qualifiers in this case can still use
+	 * properties that store values as references to dictionaries, but they can
+	 * also use inline values too. This is taken into account by keeping
+	 * qualifier data in an array of Object, which can contain value objects as
+	 * well as Integer references.
+	 *
+	 * @author Markus Kroetzsch
+	 *
+	 */
 	public class ValueTargetQualifiersFromSerialization implements
-	TargetQualifiers, Iterable<PropertyValuePair>,
-	Iterator<PropertyValuePair>, PropertyValuePair {
+			TargetQualifiers, Iterable<PropertyValuePair>,
+			Iterator<PropertyValuePair> {
 
 		final Object[] targetQualifiers;
 		final int sortId;
@@ -246,7 +257,7 @@ Iterator<PropertyTargets> {
 		@Override
 		public PropertyValuePair next() {
 			this.iQualifier++;
-			return this;
+			return new ValuePropertyValuePairFromSerialization(this.iQualifier);
 		}
 
 		@Override
@@ -254,38 +265,59 @@ Iterator<PropertyTargets> {
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		public String getProperty() {
-			return getCurrentPropertySignature().getPropertyName();
-		}
+		private class ValuePropertyValuePairFromSerialization implements
+				PropertyValuePair {
 
-		@Override
-		public Value getValue() {
-			Object valueObject = this.targetQualifiers[2 + (2 * this.iQualifier)];
-			if (valueObject instanceof Integer) {
-				return getDatabaseManager().fetchValue((Integer) valueObject,
-						getCurrentPropertySignature().getRangeId());
-			} else {
-				return (Value) valueObject;
+			final int index;
+
+			public ValuePropertyValuePairFromSerialization(int index) {
+				this.index = index;
 			}
 
-		}
+			@Override
+			public String getProperty() {
+				return getCurrentPropertySignature().getPropertyName();
+			}
 
-		PropertySignature getCurrentPropertySignature() {
-			return (PropertySignature) this.targetQualifiers[1 + (2 * this.iQualifier)];
+			@Override
+			public Value getValue() {
+				Object valueObject = ValueTargetQualifiersFromSerialization.this.targetQualifiers[2 + (2 * this.index)];
+				if (valueObject instanceof Integer) {
+					return getDatabaseManager().fetchValue(
+							(Integer) valueObject,
+							getCurrentPropertySignature().getRangeId());
+				} else {
+					return (Value) valueObject;
+				}
+
+			}
+
+			PropertySignature getCurrentPropertySignature() {
+				return (PropertySignature) ValueTargetQualifiersFromSerialization.this.targetQualifiers[1 + (2 * this.index)];
+			}
 		}
 	}
 
+	/**
+	 * {@link TargeQualifiers} implementation for the target of edges that is
+	 * stored as reference to a dictionary. In this case, all qualifier values
+	 * must also be stored as references, for efficiency, even if they are not
+	 * managed in dictionaries. If values for a qualifier are not managed in
+	 * dictionaries, then this reference points to another local byte list where
+	 * the serialized value is found.
+	 *
+	 * @author Markus Kroetzsch
+	 *
+	 */
 	public class RefTargetQualifiersFromSerialization implements
-	TargetQualifiers, Iterable<PropertyValuePair>,
-	Iterator<PropertyValuePair>, PropertyValuePair {
+			TargetQualifiers, Iterable<PropertyValuePair>,
+			Iterator<PropertyValuePair> {
 
 		final int[] targetQualifiers;
 		final int sortId;
 		final int qualifierCount;
 
 		int iQualifier;
-		PropertySignature currentQualifierPropertySignature;
 
 		public RefTargetQualifiersFromSerialization(int[] targetQualifiers,
 				int sortId) {
@@ -317,7 +349,6 @@ Iterator<PropertyTargets> {
 		@Override
 		public Iterator<PropertyValuePair> iterator() {
 			this.iQualifier = -1;
-			this.currentQualifierPropertySignature = null;
 			return this;
 		}
 
@@ -329,8 +360,8 @@ Iterator<PropertyTargets> {
 		@Override
 		public PropertyValuePair next() {
 			this.iQualifier++;
-			this.currentQualifierPropertySignature = null;
-			return this;
+			return new RefPropertyValuePairFromSerialization(
+					getCurrentPropertySignature(), this.iQualifier);
 		}
 
 		@Override
@@ -338,47 +369,58 @@ Iterator<PropertyTargets> {
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		public String getProperty() {
-			return getCurrentPropertySignature().getPropertyName();
-		}
+		private class RefPropertyValuePairFromSerialization implements
+				PropertyValuePair {
 
-		@Override
-		public Value getValue() {
-			int valueObject = this.targetQualifiers[2 + (2 * this.iQualifier)];
+			final PropertySignature propertySignature;
+			final int index;
 
-			Sort currentSort = getDatabaseManager().getSortSchema().getSort(
-					getCurrentPropertySignature().getRangeId());
+			public RefPropertyValuePairFromSerialization(
+					PropertySignature propertySignature, int index) {
+				this.propertySignature = propertySignature;
+				this.index = index;
+			}
 
-			if (getDatabaseManager().getSortSchema().useDictionary(
-					currentSort.getName())) {
-				return getDatabaseManager().fetchValue(valueObject,
-						getCurrentPropertySignature().getRangeId());
-			} else {
-				try {
-					return deserializeValueFromIndex(valueObject, currentSort);
-				} catch (IOException e) {
-					throw new RuntimeException(e.toString(), e);
+			@Override
+			public String getProperty() {
+				return this.propertySignature.getPropertyName();
+			}
+
+			@Override
+			public Value getValue() {
+				int valueObject = RefTargetQualifiersFromSerialization.this.targetQualifiers[2 + (2 * this.index)];
+
+				Sort currentSort = getDatabaseManager().getSortSchema()
+						.getSort(this.propertySignature.getRangeId());
+
+				if (getDatabaseManager().getSortSchema().useDictionary(
+						currentSort.getName())) {
+					return getDatabaseManager().fetchValue(valueObject,
+							this.propertySignature.getRangeId());
+				} else {
+					try {
+						return deserializeValueFromIndex(valueObject,
+								currentSort);
+					} catch (IOException e) {
+						throw new RuntimeException(e.toString(), e);
+					}
 				}
+
+			}
+
+			private Value deserializeValueFromIndex(int valueIndex, Sort sort)
+					throws IOException {
+				DataInput2 in = new DataInput2(getValues());
+				in.pos = valueIndex;
+				return Serialization.deserializeInlineValue(in, sort,
+						getDatabaseManager());
 			}
 
 		}
 
 		private PropertySignature getCurrentPropertySignature() {
-			if (this.currentQualifierPropertySignature == null) {
-				this.currentQualifierPropertySignature = getDatabaseManager()
-						.fetchPropertySignature(
-								this.targetQualifiers[1 + (2 * this.iQualifier)]);
-			}
-			return this.currentQualifierPropertySignature;
-		}
-
-		private Value deserializeValueFromIndex(int valueIndex, Sort sort)
-				throws IOException {
-			DataInput2 in = new DataInput2(getValues());
-			in.pos = valueIndex;
-			return Serialization.deserializeInlineValue(in, sort,
-					getDatabaseManager());
+			return getDatabaseManager().fetchPropertySignature(
+					this.targetQualifiers[1 + (2 * this.iQualifier)]);
 		}
 	}
 
