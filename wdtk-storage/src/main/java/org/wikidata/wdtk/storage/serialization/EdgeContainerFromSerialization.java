@@ -103,7 +103,7 @@ public class EdgeContainerFromSerialization implements EdgeContainer,
 			if (this.propertySignature == null) {
 				this.propertySignature = getDatabaseManager()
 						.fetchPropertySignature(
-								getPropertyIdInternal(iProperty));
+								getPropertyIdInternal(this.iProperty));
 			}
 			return this.propertySignature;
 		}
