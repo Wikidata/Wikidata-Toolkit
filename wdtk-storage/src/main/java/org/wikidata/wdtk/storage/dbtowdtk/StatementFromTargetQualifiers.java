@@ -9,9 +9,9 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,7 @@ public class StatementFromTargetQualifiers implements Statement {
 			return new ValueSnakFromValue(
 					StatementFromTargetQualifiers.this.propertyName,
 					StatementFromTargetQualifiers.this.targetQualifiers
-					.getTarget());
+							.getTarget());
 		}
 
 		@Override
@@ -68,7 +68,7 @@ public class StatementFromTargetQualifiers implements Statement {
 			if (StatementFromTargetQualifiers.this.qualifiers == null) {
 				StatementFromTargetQualifiers.this.qualifiers = new ArrayList<>(
 						StatementFromTargetQualifiers.this.qualifierPropertyValuePairs
-						.size());
+								.size());
 				for (List<PropertyValuePair> pvpList : StatementFromTargetQualifiers.this.qualifierPropertyValuePairs
 						.values()) {
 					List<Snak> snaks = new ArrayList<>(pvpList.size());
@@ -144,7 +144,7 @@ public class StatementFromTargetQualifiers implements Statement {
 				break;
 			default: // normal property
 				List<PropertyValuePair> qualifierList = this.qualifierPropertyValuePairs
-				.get(pvp.getProperty());
+						.get(pvp.getProperty());
 				if (qualifierList == null) {
 					qualifierList = new ArrayList<>(1); // usually a short list
 					this.qualifierPropertyValuePairs.put(pvp.getProperty(),
@@ -165,10 +165,10 @@ public class StatementFromTargetQualifiers implements Statement {
 		if (this.rankStringValue == null) {
 			return StatementRank.NORMAL;
 		} else if (StatementRank.PREFERRED.name().equals(
-				this.rankStringValue.toString())) {
+				this.rankStringValue.getString())) {
 			return StatementRank.PREFERRED;
 		} else if (StatementRank.DEPRECATED.name().equals(
-				this.rankStringValue.toString())) {
+				this.rankStringValue.getString())) {
 			return StatementRank.DEPRECATED;
 		} else {
 			throw new RuntimeException("I don't know how to interpret rank "
