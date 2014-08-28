@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
@@ -41,6 +42,12 @@ public class ClaimImpl implements Claim {
 			resultList.add(snaks);
 		}
 		return resultList;
+	}
+
+	@Override
+	public Iterator<Snak> getAllQualifiers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

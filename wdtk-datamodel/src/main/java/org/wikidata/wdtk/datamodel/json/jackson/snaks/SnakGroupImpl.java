@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -37,6 +38,12 @@ public class SnakGroupImpl implements SnakGroup {
 	@Override
 	public PropertyIdValue getProperty() {
 		return this.property;
+	}
+
+	@Override
+	public Iterator<Snak> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

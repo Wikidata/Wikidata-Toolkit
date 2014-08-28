@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -66,6 +67,12 @@ public class StatementGroupImpl implements StatementGroup {
 	@Override
 	public EntityIdValue getSubject() {
 		return this.propertyId;
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

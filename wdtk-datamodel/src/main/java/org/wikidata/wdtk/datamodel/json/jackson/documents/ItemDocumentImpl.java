@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +30,7 @@ import java.util.Map.Entry;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.jackson.Helper;
 import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
@@ -156,5 +158,11 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 */
 	void buildClaims() {
 		// TODO
+	}
+
+	@Override
+	public Iterator<Statement> getAllStatements() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

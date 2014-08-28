@@ -1,9 +1,11 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
 
@@ -26,5 +28,11 @@ public class ReferenceImpl implements Reference {
 
 	public Map<String, List<SnakImpl>> getSanks(){
 		return this.snaks;
+	}
+
+	@Override
+	public Iterator<Snak> getAllSnaks() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

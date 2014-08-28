@@ -40,5 +40,10 @@ implements ItemIdValue {
 
 		return ((ItemIdImpl) o).getId().equalsIgnoreCase(this.id);
 	}
+	@Override
+	public String getSiteIri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
