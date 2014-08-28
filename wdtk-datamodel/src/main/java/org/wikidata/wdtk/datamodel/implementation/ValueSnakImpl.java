@@ -21,7 +21,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -29,9 +31,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Implementation of {@link ValueSnak}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
@@ -39,7 +41,7 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param propertyId
 	 * @param value
 	 */
@@ -59,41 +61,19 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 		return snakVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(997, 1013).append(value).append(propertyId)
-				.toHashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof ValueSnak)) {
-			return false;
-		}
-
-		return this.propertyId.equals(((ValueSnak) obj).getPropertyId())
-				&& this.value.equals(((ValueSnak) obj).getValue());
+		return Equality.equalsValueSnak(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "ValueSnak {pId = " + this.propertyId + ", value = " + this.value + "}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

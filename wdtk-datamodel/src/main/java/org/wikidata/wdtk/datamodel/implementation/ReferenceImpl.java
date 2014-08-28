@@ -21,17 +21,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link Reference}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ReferenceImpl implements Reference {
 
@@ -39,7 +45,7 @@ public class ReferenceImpl implements Reference {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param snakGroups
 	 *            list of snak groups
 	 */
@@ -53,35 +59,23 @@ public class ReferenceImpl implements Reference {
 		return Collections.unmodifiableList(this.snakGroups);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
+	public Iterator<Snak> getAllSnaks() {
+		return new NestedIterator<>(this.snakGroups);
+	}
+
 	@Override
 	public int hashCode() {
-		return snakGroups.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof ReferenceImpl)) {
-			return false;
-		}
-		ReferenceImpl other = (ReferenceImpl) obj;
-		return other.snakGroups.equals(this.snakGroups);
+		return Equality.equalsReference(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return this.snakGroups.toString();
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

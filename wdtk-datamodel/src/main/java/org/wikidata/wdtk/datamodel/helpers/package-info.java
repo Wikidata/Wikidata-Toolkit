@@ -1,4 +1,10 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+/**
+ * Package for mostly static helper code to work with data objects.
+ *
+ * @author Markus Kroetzsch
+ *
+ */
+package org.wikidata.wdtk.datamodel.helpers;
 
 /*
  * #%L
@@ -19,15 +25,3 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
-
-/**
- * The id of a Wikibase Property. Objects implementing this interface always return
- * {@link EntityIdValue#ET_PROPERTY} for {@link EntityIdValue#getEntityType()
- * getEntityType}.
- * 
- * @author Markus Kroetzsch
- * 
- */
-public interface PropertyIdValue extends EntityIdValue {
-
-}

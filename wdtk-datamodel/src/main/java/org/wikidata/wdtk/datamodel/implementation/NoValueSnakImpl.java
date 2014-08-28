@@ -20,21 +20,24 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
 /**
  * Implementation of {@link NoValueSnak}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param propertyId
 	 */
 	NoValueSnakImpl(PropertyIdValue propertyId) {
@@ -46,39 +49,19 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 		return snakVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return this.propertyId.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof NoValueSnak)) {
-			return false;
-		}
-
-		return this.propertyId.equals(((NoValueSnak) obj).getPropertyId());
+		return Equality.equalsNoValueSnak(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "NoValueSnak {pId = " + this.propertyId + "}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

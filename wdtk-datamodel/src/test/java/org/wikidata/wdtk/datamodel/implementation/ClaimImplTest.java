@@ -25,8 +25,12 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -109,5 +113,43 @@ public class ClaimImplTest {
 		assertThat(c1, not(equalTo(cDiffQualifiers)));
 		assertThat(c1, not(equalTo(null)));
 		assertFalse(c1.equals(this));
+	}
+
+	@Test
+	public void accessSnakGroups() {
+		EntityIdValue value1 = new ItemIdValueImpl("Q1",
+				"http://wikidata.org/entity/");
+		EntityIdValue value2 = new ItemIdValueImpl("Q2",
+				"http://wikidata.org/entity/");
+		PropertyIdValue property1 = new PropertyIdValueImpl("P1",
+				"http://wikidata.org/entity/");
+		PropertyIdValue property2 = new PropertyIdValueImpl("P2",
+				"http://wikidata.org/entity/");
+		Snak snak1 = new ValueSnakImpl(property1, value1);
+		Snak snak2 = new ValueSnakImpl(property1, value2);
+		Snak snak3 = new ValueSnakImpl(property2, value2);
+
+		List<Snak> snakList1 = new ArrayList<>();
+		snakList1.add(snak1);
+		snakList1.add(snak2);
+
+		SnakGroup snakGroup1 = new SnakGroupImpl(snakList1);
+		SnakGroup snakGroup2 = new SnakGroupImpl(
+				Collections.singletonList(snak3));
+		List<SnakGroup> snakGroups = new ArrayList<>();
+		snakGroups.add(snakGroup1);
+		snakGroups.add(snakGroup2);
+
+		Claim claim = new ClaimImpl(subject, mainSnak, snakGroups);
+
+		Iterator<Snak> snaks = claim.getAllQualifiers();
+
+		assertTrue(snaks.hasNext());
+		assertEquals(snak1, snaks.next());
+		assertTrue(snaks.hasNext());
+		assertEquals(snak2, snaks.next());
+		assertTrue(snaks.hasNext());
+		assertEquals(snak3, snaks.next());
+		assertFalse(snaks.hasNext());
 	}
 }

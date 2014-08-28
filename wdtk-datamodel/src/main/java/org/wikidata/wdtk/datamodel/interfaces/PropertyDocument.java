@@ -43,7 +43,7 @@ public interface PropertyDocument extends TermedDocument {
 	/**
 	 * Get the datatype id of the datatype defined for this property.
 	 * 
-	 * @return
+	 * @return {@link DatatypeIdValue}
 	 */
 	DatatypeIdValue getDatatype();
 

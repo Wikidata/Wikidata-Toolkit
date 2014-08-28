@@ -21,18 +21,22 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 /**
  * Implementation of {@link SnakGroup}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class SnakGroupImpl implements SnakGroup {
 
@@ -40,11 +44,11 @@ public class SnakGroupImpl implements SnakGroup {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param snaks
 	 *            a non-empty list of snaks that use the same property
 	 */
-	public SnakGroupImpl(List<? extends Snak> snaks) {
+	SnakGroupImpl(List<? extends Snak> snaks) {
 		Validate.notNull(snaks, "List of statements cannot be null");
 		Validate.notEmpty(snaks, "List of statements cannot be empty");
 
@@ -71,34 +75,24 @@ public class SnakGroupImpl implements SnakGroup {
 		return this.snaks.get(0).getPropertyId();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return this.snaks.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof SnakGroupImpl)) {
-			return false;
-		}
-		SnakGroupImpl other = (SnakGroupImpl) obj;
-		return this.snaks.equals(other.snaks);
+		return Equality.equalsSnakGroup(this, obj);
 	}
+
 	@Override
-	public String toString(){
-		return "SnakGroup {pId = " + this.getProperty() + ", " + this.snaks.size() + " snaks}";
+	public String toString() {
+		return ToString.toString(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<Snak> iterator() {
+		return (Iterator<Snak>) this.snaks.iterator();
 	}
 }

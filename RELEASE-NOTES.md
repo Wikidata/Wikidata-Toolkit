@@ -4,6 +4,23 @@ Wikidata Toolkit Release Notes
 Version 0.3.0
 -------------
 
+New features:
+* Added iterator access to all statements of an itemdocument, all statements in a statement
+  group, all qualifiers in a claim, all snaks in a snak group, and all snaks in a reference
+* Dump files are downloaded to temporary files first to prevent incomplete downloads
+  from causing errors
+* Datamodel objects can now be constructed using the static methods of Datamodel. This makes
+  object creation more convenient.
+
+Minor changes:
+* ItemIdValue and PropertyIdValue objects now have a "site IRI" that can be retrieved.
+  This was called "base IRI" in earlier releases and was only used to construct the full
+  IRI. The new concept is that this IRI is actually the identifier for the site that the
+  entity comes from. It is important to make it retrievable since it is needed (like in
+  previous versions) to construct the object using the factory.
+* A new helper package in the datamodel module contains common hashCode(), equals(), and
+  toString() methods that can be used by any datamodel implementation.
+
 Bug fixes:
 * Fix grouping of Statements when reading data from dumps (Issue #78)
 
