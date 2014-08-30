@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -36,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
-		ItemDocument {
+ItemDocument {
 
 	final ItemIdValue itemId;
 	final List<StatementGroup> statementGroups;
@@ -44,7 +47,7 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
@@ -111,49 +114,18 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 		return Collections.unmodifiableMap(siteLinks);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + itemId.hashCode();
-		result = prime * result + siteLinks.hashCode();
-		result = prime * result + statementGroups.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof ItemDocumentImpl)) {
-			return false;
-		}
-		ItemDocumentImpl other = (ItemDocumentImpl) obj;
-
-		return itemId.equals(other.itemId) && siteLinks.equals(other.siteLinks)
-				&& statementGroups.equals(other.statementGroups);
+		return Equality.equalsItemDocument(this, obj);
 	}
 
 	@Override
 	public String toString() {
-		return "ItemDocument {qId = " + this.itemId + ", " + this.labels.size()
-				+ " labels, " + this.descriptions.size() + " descriptions, "
-				+ this.aliases.size() + " aliases, " + this.siteLinks.size()
-				+ " site links, " + this.statementGroups.size()
-				+ " statement groups" + "}";
+		return ToString.toString(this);
 	}
 }

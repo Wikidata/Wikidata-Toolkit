@@ -27,43 +27,45 @@ import java.util.Map;
 /**
  * Interface for factories that create data objects that implement the
  * interfaces from this package.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface DataObjectFactory {
 
 	/**
 	 * Creates an {@link ItemIdValue}.
-	 * 
+	 *
 	 * @param id
 	 *            a string of the form Qn... where n... is the string
 	 *            representation of a positive integer number
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
 	 * @return an {@link ItemIdValue} corresponding to the input
 	 */
-	ItemIdValue getItemIdValue(String id, String baseIri);
+	ItemIdValue getItemIdValue(String id, String siteIri);
 
 	/**
 	 * Creates a {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param id
 	 *            a string of the form Pn... where n... is the string
 	 *            representation of a positive integer number
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
 	 * @return a {@link PropertyIdValue} corresponding to the input
 	 */
-	PropertyIdValue getPropertyIdValue(String id, String baseIri);
+	PropertyIdValue getPropertyIdValue(String id, String siteIri);
 
 	/**
 	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
 	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
 	 * since there might be extensions that provide additional types.
-	 * 
+	 *
 	 * @param id
 	 *            the IRI string that identifies the datatype
 	 * @return a {@link DatatypeIdValue} corresponding to the input
@@ -72,7 +74,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link TimeValue}.
-	 * 
+	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
 	 * @param month
@@ -109,7 +111,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link GlobeCoordinatesValue}.
-	 * 
+	 *
 	 * @param latitude
 	 *            the latitude of the coordinates in nanodegrees
 	 * @param longitude
@@ -125,7 +127,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link StringValue}.
-	 * 
+	 *
 	 * @param string
 	 * @return a {@link StringValue} corresponding to the input
 	 */
@@ -133,7 +135,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link MonolingualTextValue}.
-	 * 
+	 *
 	 * @param text
 	 *            the text of the value
 	 * @param languageCode
@@ -145,7 +147,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link QuantityValue}.
-	 * 
+	 *
 	 * @param numericValue
 	 *            the numeric value of this quantity
 	 * @param lowerBound
@@ -159,7 +161,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link ValueSnak}.
-	 * 
+	 *
 	 * @param propertyId
 	 * @param value
 	 * @return a {@link ValueSnak} corresponding to the input
@@ -168,7 +170,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link SomeValueSnak}.
-	 * 
+	 *
 	 * @param propertyId
 	 * @return a {@link SomeValueSnak} corresponding to the input
 	 */
@@ -176,7 +178,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link NoValueSnak}.
-	 * 
+	 *
 	 * @param propertyId
 	 * @return a {@link NoValueSnak} corresponding to the input
 	 */
@@ -184,7 +186,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link SnakGroup}.
-	 * 
+	 *
 	 * @param snaks
 	 *            a non-empty list of snaks that use the same property
 	 * @return a {@link SnakGroup} corresponding to the input
@@ -193,7 +195,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link Claim}.
-	 * 
+	 *
 	 * @param subject
 	 *            the subject the Statement refers to
 	 * @param mainSnak
@@ -207,7 +209,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link Reference}.
-	 * 
+	 *
 	 * @param snakGroups
 	 *            list of snak groups
 	 * @return a {@link Reference} corresponding to the input
@@ -220,7 +222,7 @@ public interface DataObjectFactory {
 	 * The string id is used mainly for communication with a Wikibase site, in
 	 * order to refer to statements of that site. When creating new statements
 	 * that are not on any site, the empty string can be used.
-	 * 
+	 *
 	 * @param claim
 	 *            the main claim the Statement refers to
 	 * @param references
@@ -236,7 +238,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link StatementGroup}.
-	 * 
+	 *
 	 * @param statements
 	 *            a non-empty list of statements that use the same subject and
 	 *            main-snak property in their claim
@@ -246,7 +248,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link SiteLink}.
-	 * 
+	 *
 	 * @param title
 	 *            the title string of the linked page, including namespace
 	 *            prefixes if any
@@ -260,7 +262,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates a {@link PropertyDocument}.
-	 * 
+	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
 	 * @param labels
@@ -282,7 +284,7 @@ public interface DataObjectFactory {
 
 	/**
 	 * Creates an {@link ItemDocument}.
-	 * 
+	 *
 	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
