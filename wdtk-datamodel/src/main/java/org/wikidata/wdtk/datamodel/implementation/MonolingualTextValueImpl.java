@@ -21,6 +21,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -32,7 +35,7 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 	/**
 	 * Constructor. The language code can be any string; the class does not make
 	 * any assumptions on how language codes are defined.
-	 * 
+	 *
 	 * @param text
 	 *            the text of the value
 	 * @param languageCode
@@ -60,40 +63,18 @@ public class MonolingualTextValueImpl implements MonolingualTextValue {
 		return valueVisitor.visit(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + languageCode.hashCode();
-		result = prime * result + text.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof MonolingualTextValueImpl)) {
-			return false;
-		}
-		MonolingualTextValueImpl other = (MonolingualTextValueImpl) obj;
-		return this.text.equals(other.text)
-				&& this.languageCode.equals(other.languageCode);
+		return Equality.equalsMonolingualTextValue(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return this.text + " (" + this.languageCode + ")";
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

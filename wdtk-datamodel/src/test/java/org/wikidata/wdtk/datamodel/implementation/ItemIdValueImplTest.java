@@ -56,6 +56,11 @@ public class ItemIdValueImplTest {
 	}
 
 	@Test
+	public void siteIriIsCorrect() {
+		assertEquals(item1.getSiteIri(), "http://www.wikidata.org/entity/");
+	}
+
+	@Test
 	public void idIsCorrect() {
 		assertEquals(item1.getId(), "Q42");
 	}
