@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -32,6 +32,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
@@ -52,9 +55,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * extraction methods used to get the data are highly specific to the format of
  * files on this site. Other sites (if any) would most likely need different
  * methods.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WmfDumpFileManager {
 
@@ -77,7 +80,7 @@ public class WmfDumpFileManager {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param projectName
 	 *            name of the project to obtain dumps for as used in the folder
 	 *            structure of the dump site, e.g., "wikidatawiki"
@@ -124,7 +127,7 @@ public class WmfDumpFileManager {
 	 * of P that are smaller than or equal to Rmax. In other words, the maximal
 	 * revision found in the first file that contains P at all should also be
 	 * the maximal revision overall.
-	 * 
+	 *
 	 * @param preferCurrent
 	 *            should dumps with current revisions be preferred?
 	 * @return an ordered list of all dump files that match the given criteria
@@ -165,7 +168,7 @@ public class WmfDumpFileManager {
 
 	/**
 	 * Finds the most recent dump of the given type that is actually available.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of the dump to look for
 	 * @return most recent main dump or null if no such dump exists
@@ -186,7 +189,7 @@ public class WmfDumpFileManager {
 	 * online or locally. For dumps available both online and locally, the local
 	 * version is included. The list is order with most recent dump date first.
 	 * Online dumps found by this method might not be available yet.
-	 * 
+	 *
 	 * @return a list of dump files of the given type
 	 */
 	public List<MwDumpFile> findAllDumps(DumpContentType dumpContentType) {
@@ -203,7 +206,7 @@ public class WmfDumpFileManager {
 	 * Merges a list of local and online dumps. For dumps available both online
 	 * and locally, only the local version is included. The list is order with
 	 * most recent dump date first.
-	 * 
+	 *
 	 * @return a merged list of dump files
 	 */
 	List<MwDumpFile> mergeDumpLists(List<MwDumpFile> localDumps,
@@ -229,7 +232,7 @@ public class WmfDumpFileManager {
 	 * already. The result is a list of objects that describe the available dump
 	 * files, in descending order by their date. Not all of the dumps included
 	 * might be actually available.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump to consider
 	 * @return list of objects that provide information on available dumps
@@ -279,7 +282,7 @@ public class WmfDumpFileManager {
 	 * The result is a list of objects that describe the available dump files,
 	 * in descending order by their date. Not all of the dumps included might be
 	 * actually available.
-	 * 
+	 *
 	 * @return list of objects that provide information on available full dumps
 	 */
 	List<MwDumpFile> findDumpsOnline(DumpContentType dumpContentType) {
@@ -309,7 +312,7 @@ public class WmfDumpFileManager {
 	 * to oldest. The list is based on the directories found at the target
 	 * location, without considering whether or not each dump is actually
 	 * available.
-	 * 
+	 *
 	 * @param relativeDirectory
 	 *            string of the relative directory to look for dump files, e.g.,
 	 *            "other/incr/" for daily dumps or the empty string for main

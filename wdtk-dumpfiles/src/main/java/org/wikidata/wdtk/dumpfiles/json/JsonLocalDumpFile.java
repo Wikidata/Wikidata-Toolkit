@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 
 public class JsonLocalDumpFile extends WmfDumpFile {
 

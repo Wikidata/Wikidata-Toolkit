@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;

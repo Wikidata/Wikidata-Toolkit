@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -28,24 +28,28 @@ import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
- * Class for representing incremental daily dump files as published by the
- * Wikimedia Foundation. The dump file and additional information about its
- * status is online and web access is needed to fetch this data on demand.
+ * Class for representing dump files published by the Wikimedia Foundation in
+ * the main common location of all dump files. This excludes incremental daily
+ * dumps, which are found in another directory. The dump file and additional
+ * information about its status is online and web access is needed to fetch this
+ * data on demand.
  * 
  * @author Markus Kroetzsch
  * 
  */
-class WmfOnlineDailyDumpFile extends WmfDumpFile {
+public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(WmfOnlineDailyDumpFile.class);
+			.getLogger(WmfOnlineStandardDumpFile.class);
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
+	final DumpContentType dumpContentType;
 
 	/**
 	 * Set to true when all required files have been downloaded successfully.
@@ -64,32 +68,37 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	 * @param dumpfileDirectoryManager
 	 *            the directory manager for the directory where dumps should be
 	 *            downloaded to
+	 * @param dumpContentType
+	 *            the type of dump this represents
 	 */
-	public WmfOnlineDailyDumpFile(String dateStamp, String projectName,
+	public WmfOnlineStandardDumpFile(String dateStamp, String projectName,
 			WebResourceFetcher webResourceFetcher,
-			DirectoryManager dumpfileDirectoryManager) {
+			DirectoryManager dumpfileDirectoryManager,
+			DumpContentType dumpContentType) {
+
 		super(dateStamp, projectName);
 		this.webResourceFetcher = webResourceFetcher;
 		this.dumpfileDirectoryManager = dumpfileDirectoryManager;
+		this.dumpContentType = dumpContentType;
 	}
 
 	@Override
 	public DumpContentType getDumpContentType() {
-		return DumpContentType.DAILY;
+		return this.dumpContentType;
 	}
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
 		prepareDumpFile();
 
-		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
-		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
+		DirectoryManager thisDumpDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
-						DumpContentType.DAILY, this.dateStamp));
+						this.dumpContentType, this.dateStamp));
 
-		return dailyDirectoryManager.getInputStreamForFile(fileName,
-				WmfDumpFile.getDumpFileCompressionType(DumpContentType.DAILY));
+		return thisDumpDirectoryManager.getInputStreamForFile(fileName,
+				WmfDumpFile.getDumpFileCompressionType(this.dumpContentType));
 	}
 
 	@Override
@@ -98,49 +107,59 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 			return;
 		}
 
-		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+		String fileName = WmfDumpFile.getDumpFileName(this.dumpContentType,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
-		logger.info("Downloading daily dump file " + fileName + " from "
-				+ urlString + " ...");
+		logger.info("Downloading "
+				+ this.dumpContentType.toString().toLowerCase() + " dump file "
+				+ fileName + " from " + urlString + " ...");
 
 		if (!isAvailable()) {
 			throw new IOException(
 					"Dump file not available (yet). Aborting dump retrieval.");
 		}
 
-		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
+		DirectoryManager thisDumpDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
-						DumpContentType.DAILY, this.dateStamp));
+						this.dumpContentType, this.dateStamp));
 
 		long size = 0;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
-			size = dailyDirectoryManager
-					.createFileAtomic(fileName, inputStream);
+			size = thisDumpDirectoryManager.createFileAtomic(fileName,
+					inputStream);
 		}
 
 		this.isPrepared = true;
 
-		logger.info("... completed download of daily dump file " + fileName
-				+ " from " + urlString + " (" + size + " bytes)");
+		logger.info("... completed download of "
+				+ this.dumpContentType.toString().toLowerCase() + " dump file "
+				+ fileName + " from " + urlString + " (" + size + " bytes)");
+
 	}
 
 	@Override
 	protected boolean fetchIsDone() {
-		boolean result;
+		boolean found = false;
 		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(getBaseUrl() + "status.txt")) {
+				.getInputStreamForUrl(getBaseUrl() + this.projectName + "-"
+						+ dateStamp + "-md5sums.txt")) {
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(in, StandardCharsets.UTF_8));
-			String inputLine = bufferedReader.readLine();
+			String inputLine;
+			String filePostfix = WmfDumpFile
+					.getDumpFilePostfix(this.dumpContentType);
+			while (!found && (inputLine = bufferedReader.readLine()) != null) {
+				if (inputLine.endsWith(filePostfix)) {
+					found = true;
+				}
+			}
 			bufferedReader.close();
-			result = "done".equals(inputLine);
-		} catch (IOException e) { // file not found or not readable
-			result = false;
+		} catch (IOException e) {
+			// file not found or not readable; just return false
 		}
-		return result;
+		return found;
 	}
 
 	/**
@@ -150,7 +169,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 	 */
 	String getBaseUrl() {
 		return WmfDumpFile.DUMP_SITE_BASE_URL
-				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY)
+				+ WmfDumpFile.getDumpFileWebDirectory(this.dumpContentType)
 				+ this.projectName + "/" + this.dateStamp + "/";
 	}
 

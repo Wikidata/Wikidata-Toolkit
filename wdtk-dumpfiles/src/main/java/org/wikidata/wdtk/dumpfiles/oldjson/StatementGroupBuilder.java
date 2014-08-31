@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.oldjson;
 
 /*
  * #%L

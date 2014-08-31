@@ -51,6 +51,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.dumpfiles.oldjson.JsonConverter;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 /**

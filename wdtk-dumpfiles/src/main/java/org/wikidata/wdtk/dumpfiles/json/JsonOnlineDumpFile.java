@@ -26,7 +26,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 

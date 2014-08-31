@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.util.CompressionType;
 
 /*
