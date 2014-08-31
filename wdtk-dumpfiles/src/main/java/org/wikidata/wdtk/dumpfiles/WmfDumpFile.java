@@ -31,9 +31,9 @@ import org.wikidata.wdtk.util.CompressionType;
 
 /**
  * Abstract base class for dump files provided by the Wikimedia Foundation.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public abstract class WmfDumpFile implements MwDumpFile {
 
@@ -142,7 +142,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 
 	/**
 	 * Finds out if the dump is ready.
-	 * 
+	 *
 	 * @return true if the dump is done
 	 */
 	protected abstract boolean fetchIsDone();
@@ -150,7 +150,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the ending used by the Wikimedia-provided dumpfile names of the
 	 * given type.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return postfix of the dumpfile name
@@ -169,7 +169,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the relative directory on the Web site where dumpfiles of the
 	 * given type can be found.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return relative web directory for the current dumpfiles
@@ -187,7 +187,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 
 	/**
 	 * Returns the compression type of this kind of dump file.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return compression type
@@ -207,7 +207,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the name of the directory where the dumpfile of the given type
 	 * and date should be stored.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param dateStamp
@@ -224,7 +224,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * is created by {@link #getDumpFileDirectoryName(DumpContentType, String)}.
 	 * It is not checked that the given directory name has the right format; if
 	 * it has not, the result will not be a date stamp but some other string.
-	 * 
+	 *
 	 * @param dumpContentType
 	 * @param directoryName
 	 * @return the date stamp
@@ -238,29 +238,31 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the name under which this dump file. This is the name used online
 	 * and also locally when downloading the file.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param projectName
-	 *            the project name, e.g. "wikidatawiki" or "wikidata" (for JSON dumps)
+	 *            the project name, e.g. "wikidatawiki" or "wikidata" (for JSON
+	 *            dumps)
 	 * @param dateStamp
 	 *            the date of the dump in format YYYYMMDD
 	 * @return file name string
 	 */
 	public static String getDumpFileName(DumpContentType dumpContentType,
 			String projectName, String dateStamp) {
-		if(dumpContentType == DumpContentType.JSON){
+		if (dumpContentType == DumpContentType.JSON) {
 			return dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType);
+		} else {
+			return projectName + "-" + dateStamp
+					+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
 		}
-		return projectName + "-" + dateStamp
-				+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
 	}
 
 	/**
 	 * Returns true if the given dump file type contains page revisions and
 	 * false if it does not. Dumps that do not contain pages are for auxiliary
 	 * information such as linked sites.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return true if the dumpfile contains revisions
