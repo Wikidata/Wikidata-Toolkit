@@ -21,10 +21,10 @@ package org.wikidata.wdtk.clt;
  */
 
 /**
- * This class holds a configuration of Parameters for a Conversation.
- * 
+ * This class holds a configuration of parameters for a conversion.
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class ConversionConfiguration {
 	String outputFormat = "none";

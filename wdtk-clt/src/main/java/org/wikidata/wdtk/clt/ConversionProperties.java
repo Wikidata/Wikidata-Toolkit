@@ -39,107 +39,73 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class handles the program arguments from the conversion comandline tool.
- * 
+ * This class handles the program arguments from the conversion command line
+ * tool.
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class ConversionProperties {
-
-	Boolean configFile = false;
-	Ini properties;
-	Options options;
-	String[] args;
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ConversionProperties.class);
 
+	final static Options options = new Options();
+	static {
+		initOptions();
+	}
+
+	// boolean configFile = false;
+	// Ini properties;
+	String[] args;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param args
+	 */
 	public ConversionProperties(String[] args) {
 		initOptions();
 		this.args = args;
 	}
 
-	public Options getOptions() {
-		return options;
-	}
-
 	/**
-	 * Builds up a list of legal options and store them into the options
-	 * objects.
+	 * Returns a list of {@link ConversionConfiguration} objects by parsing the
+	 * arguments given to the constructor. See
+	 * {@link #handleArguments(String[])} for more detailed information.
+	 *
+	 * @return list of {@link ConversionConfiguration}
+	 * @throws ParseException
+	 * @throws IOException
 	 */
-	@SuppressWarnings("static-access")
-	public void initOptions() {
-		this.options = new Options();
-		Option format = OptionBuilder
-				.withArgName("format")
-				.hasArg()
-				.withDescription(
-						"data format of the dump (\"json\" or \"rdf\")")
-				.withLongOpt("format").create("f");
-		Option destination = OptionBuilder
-				.withArgName("path")
-				.hasArg()
-				.withDescription(
-						"place the output into the directory located at <path>")
-				.withLongOpt("destination").create("d");
-		Option dumplocation = OptionBuilder.withArgName("path").hasArg()
-				.withDescription("define the location of the dumpfiles")
-				.withLongOpt("dumplocation").create("l");
-		Option config = OptionBuilder
-				.withArgName("file")
-				.hasArg()
-				.withDescription(
-						"set a config file <file> for complexer conversation tasks")
-				.withLongOpt("config").create("c");
-		Option rdfdump = OptionBuilder.hasArgs()
-				.withDescription("specifies the kind of rdf dump")
-				.withLongOpt("rdfdump").create("r");
-		Option compressionExtention = OptionBuilder
-				.withArgName("compression extention")
-				.hasArg()
-				.withDescription(
-						"define a compression format. Supported fromats: .bz2, .gz")
-				.withLongOpt("compression").create("e");
-
-		options.addOption(config);
-		options.addOption(format);
-		options.addOption(destination);
-		options.addOption(dumplocation);
-		options.addOption(compressionExtention);
-		options.addOption(rdfdump);
-		options.addOption(
-				"n",
-				"offline",
-				false,
-				"execute conversion in offline mode - converter should use only previousely downloaded dumps");
-		options.addOption("h", "help", false, "print this message");
-
-		options.addOption("s", "stdout", false, "write output to stdout");
+	public List<ConversionConfiguration> getProperties() throws ParseException,
+			IOException {
+		return handleArguments(args);
 	}
 
 	/**
 	 * This function interprets the arguments of the main function. By doing
 	 * this it will set flags for the dump generation. See in the help text for
 	 * more specific information about the options.
-	 * 
+	 *
 	 * @param args
 	 *            array of arguments from the main function.
 	 * @return list of {@link ConversionConfiguration}
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public List<ConversionConfiguration> handleArguments(String[] args)
+	static List<ConversionConfiguration> handleArguments(String[] args)
 			throws ParseException, IOException {
 		List<ConversionConfiguration> configuration = new ArrayList<ConversionConfiguration>();
 		ConversionConfiguration firstConfiguration;
 		CommandLineParser parser = new GnuParser();
-		CommandLine cmd = parser.parse(getOptions(), args);
+		CommandLine cmd = parser.parse(options, args);
 
 		// fill configuration list with all properties from a configuration file
 		// (if some configuration file was specified), element 0 specifies
 		// general options
 		if (cmd.hasOption("c")) {
-			List<ConversionConfiguration> configFile = readOutConfigFile(cmd
+			List<ConversionConfiguration> configFile = readConfigFile(cmd
 					.getOptionValue("c"));
 			configuration.addAll(configFile);
 			firstConfiguration = configFile.get(0);
@@ -151,7 +117,7 @@ public class ConversionProperties {
 
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("ConversionClient", getOptions());
+			formatter.printHelp("ConversionClient", options);
 		}
 
 		if (cmd.hasOption("s")) {
@@ -189,27 +155,28 @@ public class ConversionProperties {
 	}
 
 	/**
-	 * Reads out the properties defined in a configuration file. Returns a set
-	 * of configuration property blocks stored in
-	 * {@link ConversionConfiguration} objects. The first element of the list
-	 * contains general information (about all dumps). Take note, that the
-	 * specific information in the other sections have higher priority the the
-	 * general section.
-	 * 
+	 * Reads the properties defined in a configuration file. Returns a set of
+	 * configuration property blocks stored in {@link ConversionConfiguration}
+	 * objects. The first element of the list contains general information
+	 * (about all dumps). Take note, that the specific information in the other
+	 * sections have higher priority the the general section.
+	 *
 	 * @param path
 	 *            filename and path of the configuration file
 	 * @return the list with configurations for all output dumps
 	 * @throws IOException
 	 */
-	public List<ConversionConfiguration> readOutConfigFile(String path)
+	static List<ConversionConfiguration> readConfigFile(String path)
 			throws IOException {
 		List<ConversionConfiguration> result = new ArrayList<ConversionConfiguration>();
+		result.add(0, new ConversionConfiguration()); // general configuration
+
+		boolean general = false;
+
 		FileReader reader = new FileReader(path);
-		Boolean general = false;
-		configFile = true;
-		properties = new Ini(reader);
-		result.add(0, new ConversionConfiguration());
-		for (Section section : properties.values()) {
+		Ini ini = new Ini(reader);
+
+		for (Section section : ini.values()) {
 			ConversionConfiguration configurationSection;
 			if (section.getName().toLowerCase().equals("general")) {
 				configurationSection = result.get(0);
@@ -217,38 +184,44 @@ public class ConversionProperties {
 			} else {
 				configurationSection = new ConversionConfiguration();
 			}
+
 			for (String key : section.keySet()) {
-				if (key.toLowerCase().equals("offline")) {
+				switch (key.toLowerCase()) {
+				case "offline":
 					if (section.get(key).toLowerCase().equals("true")) {
 						configurationSection.setOfflineMode(true);
 					}
-				}
-				if (key.toLowerCase().equals("stdout")) {
+					break;
+				case "stdout":
 					if (section.get(key).toLowerCase().equals("true")) {
 						configurationSection.setStdout(true);
 					}
 					section.get(key);
-				}
-				if (key.toLowerCase().equals("format")) {
+					break;
+				case "format":
 					configurationSection.setOutputFormat(section.get(key));
-				} else {
-					logger.warn("No output format specified in this section!");
-				}
-				if (key.toLowerCase().equals("destination")) {
+					break;
+				case "destination":
 					configurationSection.setOutputDestination(section.get(key));
-				}
-				if (key.toLowerCase().equals("dumplocation")) {
+					break;
+				case "dumplocation":
 					configurationSection.setDumplocation(section.get(key));
-				}
-				if (key.toLowerCase().equals("rdfdump")) {
+					break;
+				case "rdfdump":
 					configurationSection.setRdfdump(section.get(key));
-				}
-				if (key.toLowerCase().equals("compression")) {
+					break;
+				case "compression":
 					configurationSection.setCompressionExtension(section
 							.get(key));
+					break;
+				default:
+					logger.warn("Unrecognized option: " + key);
 				}
-
 			}
+
+			// if (configurationSection.getOutputFormat())
+			// logger.warn("No output format specified in this section!");
+
 			if (general) {
 				general = false;
 			} else {
@@ -259,16 +232,55 @@ public class ConversionProperties {
 	}
 
 	/**
-	 * Returns a list of {@link ConversionConfiguration} objects by parsing the
-	 * arguments given to the constructor. See
-	 * {@link #handleArguments(String[])} for more detailed information.
-	 * 
-	 * @return list of {@link ConversionConfiguration}
-	 * @throws ParseException
-	 * @throws IOException
+	 * Builds up a list of legal options and store them into the options
+	 * objects.
 	 */
-	public List<ConversionConfiguration> getProperties() throws ParseException,
-			IOException {
-		return handleArguments(args);
+	@SuppressWarnings("static-access")
+	private static void initOptions() {
+		Option format = OptionBuilder
+				.withArgName("format")
+				.hasArg()
+				.withDescription(
+						"data format of the dump (\"json\" or \"rdf\")")
+				.withLongOpt("format").create("f");
+		Option destination = OptionBuilder
+				.withArgName("path")
+				.hasArg()
+				.withDescription(
+						"place the output into the directory located at <path>")
+				.withLongOpt("destination").create("d");
+		Option dumplocation = OptionBuilder.withArgName("path").hasArg()
+				.withDescription("define the location of the dumpfiles")
+				.withLongOpt("dumplocation").create("l");
+		Option config = OptionBuilder
+				.withArgName("file")
+				.hasArg()
+				.withDescription(
+						"set a config file <file> for more complex conversion tasks")
+				.withLongOpt("config").create("c");
+		Option rdfdump = OptionBuilder.hasArgs()
+				.withDescription("specifies the kind of RDF dump")
+				.withLongOpt("rdfdump").create("r");
+		Option compressionExtention = OptionBuilder
+				.withArgName("compression extension")
+				.hasArg()
+				.withDescription(
+						"define a compression format. Supported formats: .bz2, .gz")
+				.withLongOpt("compression").create("e");
+
+		options.addOption(config);
+		options.addOption(format);
+		options.addOption(destination);
+		options.addOption(dumplocation);
+		options.addOption(compressionExtention);
+		options.addOption(rdfdump);
+		options.addOption(
+				"n",
+				"offline",
+				false,
+				"execute conversion in offline mode - converter should use only previously downloaded dumps");
+		options.addOption("h", "help", false, "print this message");
+
+		options.addOption("s", "stdout", false, "write output to stdout");
 	}
 }

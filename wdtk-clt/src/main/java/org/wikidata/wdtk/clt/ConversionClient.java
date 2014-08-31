@@ -52,11 +52,11 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  */
 
 /**
- * This class provides a java command line client to generate dumps in various
- * data formats like json and rdf.
- * 
+ * This class provides a Java command line client to generate dumps in various
+ * data formats, such as JSON and RDF.
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class ConversionClient {
 
@@ -69,103 +69,185 @@ public class ConversionClient {
 	private static List<RdfSerializer> serializers = new ArrayList<RdfSerializer>();
 	private static List<String> serializerNames = new ArrayList<String>();
 
-	List<ConversionConfiguration> configuration;
+	final List<ConversionConfiguration> configuration;
 
-	// true if any of the serializers want to put its output to stdout to
-	// prevent logging things to stdout
-	Boolean stdout = false;
-	// true if any conversion format was specified
-	Boolean convertAnything = false;
+	/**
+	 * True if any of the serializers want to put its output to stdout to
+	 * prevent logging things to stdout.
+	 */
+	boolean useStdoutForOutput = false;
+
+	/**
+	 * True if any conversion format was specified.
+	 */
+	boolean convertSomething = false;
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ConversionClient.class);
 
-	public List<ConversionConfiguration> getConfiguration() {
-		return this.configuration;
-	}
+	/**
+	 * Constructor.
+	 *
+	 * @param args
+	 *            command line arguments to configure the conversion
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public ConversionClient(String args[]) throws ParseException, IOException {
+		ConversionProperties conversionProperties = new ConversionProperties(
+				args);
+		this.configuration = conversionProperties.getProperties();
 
-	public Boolean getConvertAnything() {
-		return convertAnything;
-	}
+		// set flags (stdout and convertAnything)
+		for (ConversionConfiguration configuration : this.configuration) {
+			if (configuration.getStdout()) {
+				this.useStdoutForOutput = true;
+			}
+			if (configuration.getOutputFormat() != "none") {
+				this.convertSomething = true;
+			}
+		}
 
-	public Boolean getStdout() {
-		return stdout;
 	}
 
 	/**
-	 * Builds up serializers for the different rdf files.
-	 * 
+	 * Manages the serialization process. Therefore a
+	 * {@link DumpProcessingController} and a serializer for the chosen output
+	 * formats will be set up. After that the serialization process will be
+	 * initiated.
+	 *
+	 * @throws IOException
+	 */
+	public void convert() throws IOException {
+
+		if (!useStdoutForOutput) {
+			// Define where log messages go
+			configureLogging();
+		}
+
+		// Controller object for processing dumps:
+		dumpProcessingController = new DumpProcessingController("wikidatawiki");
+
+		// Initialize sites; needed to link to Wikipedia pages in RDF
+		sites = dumpProcessingController.getSitesInformation();
+
+		if (configuration.get(0).getOfflineMode()) {
+			dumpProcessingController.setOfflineMode(true);
+		}
+
+		for (ConversionConfiguration props : configuration) {
+			switch (props.getOutputFormat()) {
+			case "json":
+				setupForJsonSerialization(props);
+				break;
+			case "rdf":
+				setupForRdfSerialization(props);
+				break;
+			}
+
+		}
+
+		if (!useStdoutForOutput) {
+			// General statistics and time keeping:
+			MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
+					"revision processing statistics", 10000);
+
+			// Subscribe to all current revisions (null = no filter):
+			dumpProcessingController.registerMwRevisionProcessor(
+					rpRevisionStats, null, true);
+		}
+
+		if (configuration.get(0).getDumplocation() != null) {
+			dumpProcessingController.setDownloadDirectory(configuration.get(0)
+					.getDumplocation());
+		}
+
+		startSerializers();
+		dumpProcessingController.processMostRecentMainDump();
+		closeSerializers();
+	}
+
+	public boolean convertSomething() {
+		return this.convertSomething;
+	}
+
+	public boolean useStdoutForOutput() {
+		return this.useStdoutForOutput;
+	}
+
+	/**
+	 * Builds up serializers for the different RDF files.
+	 *
 	 * @param conversionConfiguration
 	 * @throws IOException
 	 */
-	public void setupForRdfSerialization(
+	private void setupForRdfSerialization(
 			ConversionConfiguration conversionConfiguration) throws IOException {
 		String compressionExtension = conversionConfiguration
 				.getCompressionExtension();
 
 		// Create serializers for several data parts and encodings depending on
 		// the Rdfdump property:
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("all_exact_data")) {
+		switch (conversionConfiguration.getRdfdump().toLowerCase()) {
+		case "all_exact_data":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-properties.nt", compressionExtension,
 					RdfSerializer.TASK_PROPERTIES
 							| RdfSerializer.TASK_ALL_EXACT_DATA,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase().equals("terms")) {
+			break;
+		case "terms":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-terms.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("statements")) {
+			break;
+		case "statements":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-statements.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("simple_statements")) {
+			break;
+		case "simple_statements":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-simple-statements.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS
 							| RdfSerializer.TASK_SIMPLE_STATEMENTS,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("taxonomy")) {
+			break;
+		case "taxonomy":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-taxonomy.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("instance_of")) {
+			break;
+		case "instance_of":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-instances.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF,
 					conversionConfiguration.getStdout());
-		}
-		if (conversionConfiguration.getRdfdump().toLowerCase()
-				.equals("sitelinks")) {
+			break;
+		case "sitelinks":
 			createRdfSerializer(conversionConfiguration.getOutputDestination(),
 					"wikidata-sitelinks.nt", compressionExtension,
 					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS,
 					conversionConfiguration.getStdout());
+			break;
+		default:
+			logger.error("Unsupported RDF export option: "
+					+ conversionConfiguration.getRdfdump());
 		}
 
 	}
 
 	/**
-	 * Builds up a serializer for json.
-	 * 
+	 * Builds up a serializer for JSON.
+	 *
 	 * @param conversionConfiguration
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void setupForJsonSerialization(
+	private void setupForJsonSerialization(
 			ConversionConfiguration conversionConfiguration)
 			throws FileNotFoundException, IOException {
 		OutputStream outputStream;
@@ -220,7 +302,7 @@ public class ConversionClient {
 	 * their formatting. See the documentation of Log4J for details on how to do
 	 * this.
 	 */
-	public static void configureLogging() {
+	private static void configureLogging() {
 		// Create the appender that will write log messages to the console.
 		ConsoleAppender consoleAppender = new ConsoleAppender();
 		// Define the pattern of log messages.
@@ -235,75 +317,12 @@ public class ConversionClient {
 	}
 
 	/**
-	 * Manages the serialization process. Therefore a
-	 * {@link DumpProcessingController} and a serializer for the chosen output
-	 * formats will be set up. After that the serialization process will be
-	 * initiated.
-	 * 
-	 * @throws IOException
-	 */
-	public void convert() throws IOException {
-
-		if (!stdout) {
-			// Define where log messages go
-			configureLogging();
-		}
-
-		// Controller object for processing dumps:
-		dumpProcessingController = new DumpProcessingController("wikidatawiki");
-
-		// Initialize sites; needed to link to Wikipedia pages in RDF
-		sites = dumpProcessingController.getSitesInformation();
-
-		if (configuration.get(0).getOfflineMode()) {
-			dumpProcessingController.setOfflineMode(true);
-		}
-
-		for (ConversionConfiguration props : configuration) {
-			switch (props.getOutputFormat()) {
-			case "json":
-				setupForJsonSerialization(props);
-				break;
-			case "rdf":
-				setupForRdfSerialization(props);
-				break;
-			}
-
-		}
-
-		if (!stdout) {
-			// General statistics and time keeping:
-			MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
-					"revision processing statistics", 10000);
-
-			// Subscribe to all current revisions (null = no filter):
-			dumpProcessingController.registerMwRevisionProcessor(
-					rpRevisionStats, null, true);
-		}
-
-		if (configuration.get(0).getDumplocation() != null) {
-			dumpProcessingController.setDownloadDirectory(configuration.get(0)
-					.getDumplocation());
-		}
-
-		// Set up the serializer and write headers
-		startSerializers();
-
-		System.out.println("processMostrecentMainDump");
-		// Start processing (may trigger downloads where needed)
-		dumpProcessingController.processMostRecentMainDump();
-
-		// Finish the serialization
-		closeSerializers();
-	}
-
-	/**
 	 * Creates a new RDF Serializer. Output is written to the file of the given
 	 * name (it will always be a compressed file, so the name should reflect
 	 * that). The tasks define what the serializer will be writing into this
 	 * file. The new serializer is also registered in an internal list, so it
 	 * can be started and closed more conveniently.
-	 * 
+	 *
 	 * @param outputDestination
 	 *            path to output directory
 	 * @param outputFileName
@@ -408,7 +427,7 @@ public class ConversionClient {
 	 * This code is inspired by
 	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
 	 * -that-does-its-compression-in-a-separate-thread
-	 * 
+	 *
 	 * @param outputStream
 	 *            the stream to write to in the thread
 	 * @return a new stream that data should be written to
@@ -442,7 +461,7 @@ public class ConversionClient {
 	/**
 	 * Closes a Closeable and swallows any exceptions that might occur in the
 	 * process.
-	 * 
+	 *
 	 * @param closeable
 	 */
 	static void close(Closeable closeable) {
@@ -455,33 +474,17 @@ public class ConversionClient {
 	}
 
 	/**
-	 * Constructor.
-	 * 
+	 * Launches the client with the specified parameters.
+	 *
 	 * @param args
-	 *            command line arguments to configure the conversion.
+	 *            command line parameters
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public ConversionClient(String args[]) throws ParseException, IOException {
-		ConversionProperties conversionProperties = new ConversionProperties(
-				args);
-		this.configuration = conversionProperties.getProperties();
-
-		// set flags (stdout and convertAnything)
-		for (ConversionConfiguration configuration : this.getConfiguration()) {
-			if (configuration.getStdout() == true) {
-				this.stdout = true;
-			}
-			if (configuration.getOutputFormat() != "none") {
-				this.convertAnything = true;
-			}
-		}
-
-	}
-
 	public static void main(String[] args) throws ParseException, IOException {
 		ConversionClient client = new ConversionClient(args);
-		if (client.getConvertAnything()) {
+
+		if (client.convertSomething()) {
 			client.convert();
 		}
 

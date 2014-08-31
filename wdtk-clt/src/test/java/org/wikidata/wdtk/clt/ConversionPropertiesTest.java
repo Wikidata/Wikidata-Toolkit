@@ -20,13 +20,13 @@ package org.wikidata.wdtk.clt;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
@@ -86,15 +86,15 @@ public class ConversionPropertiesTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintWriter writer = new PrintWriter(out);
 		formatter.printHelp(writer, 1000, "ConversionClient", "",
-				properties.getOptions(), 0, 3, "");
+				ConversionProperties.options, 0, 3, "");
 		writer.close();
 		assertEquals(out.toString(), getResource("help.txt"));
 	}
 
 	@Test
-	public void testReadOutConfigFile() throws IOException {
-		List<ConversionConfiguration> configurations = properties
-				.readOutConfigFile("src/test/resources/testConf.ini");
+	public void testReadConfigFile() throws IOException {
+		List<ConversionConfiguration> configurations = ConversionProperties
+				.readConfigFile("src/test/resources/testConf.ini");
 
 		ConversionConfiguration comparison = new ConversionConfiguration();
 

@@ -41,8 +41,8 @@ public class ConversionClientTest {
 	@Test
 	public void testConstructor() throws ParseException, IOException {
 		ConversionClient client = new ConversionClient(TEST_ARGS);
-		assertTrue(client.getConvertAnything());
-		assertTrue(client.getStdout());
+		assertTrue(client.convertSomething());
+		assertTrue(client.useStdoutForOutput());
 	}
 
 }
