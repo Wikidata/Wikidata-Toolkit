@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -22,7 +22,9 @@ package org.wikidata.wdtk.storage.datastructure.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
+import org.wikidata.wdtk.storage.datastructures.RankedBitVectorImpl;
 
 /**
  * Test class for {@link BitVectorImpl}.

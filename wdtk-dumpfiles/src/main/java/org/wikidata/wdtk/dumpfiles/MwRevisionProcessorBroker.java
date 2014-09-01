@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.storage.datastructure.impl.BitVectorImpl;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
 
 /**
  * This MwRevisionPRocessor distributes revisions to subscribers that register
