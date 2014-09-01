@@ -1,40 +1,20 @@
 package org.wikidata.wdtk.dumpfiles.json;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.WmfLocalDumpFile;
+import org.wikidata.wdtk.util.DirectoryManager;
 
-public class JsonLocalDumpFile extends WmfDumpFile {
+/**
+ * A version of the local dump file especially used for JSON dump files.
+ * @author Fredo Erxleben
+ *
+ */
+public class JsonLocalDumpFile extends WmfLocalDumpFile {
 
-	public JsonLocalDumpFile(String dateStamp, String projectName) {
-		super(dateStamp, projectName);
-		// TODO Auto-generated constructor stub
+	public JsonLocalDumpFile(String dateStamp, String projectName,
+			DirectoryManager dumpfileDirectoryManager) {
+		super(dateStamp, projectName, dumpfileDirectoryManager, DumpContentType.JSON);
 	}
-
-	@Override
-	public DumpContentType getDumpContentType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public InputStream getDumpFileStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void prepareDumpFile() throws IOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected boolean fetchIsDone() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }
