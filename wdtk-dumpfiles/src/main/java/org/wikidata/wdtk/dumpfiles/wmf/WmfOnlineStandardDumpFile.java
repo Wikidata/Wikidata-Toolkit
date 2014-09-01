@@ -38,9 +38,9 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  * dumps, which are found in another directory. The dump file and additional
  * information about its status is online and web access is needed to fetch this
  * data on demand.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
@@ -58,7 +58,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param dateStamp
 	 *            dump date in format YYYYMMDD
 	 * @param projectName
@@ -164,13 +164,12 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 
 	/**
 	 * Returns the base URL under which the files for this dump are found.
-	 * 
+	 *
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL
-				+ WmfDumpFile.getDumpFileWebDirectory(this.dumpContentType)
-				+ this.projectName + "/" + this.dateStamp + "/";
+		return WmfDumpFile.getDumpFileWebDirectory(this.dumpContentType,
+				this.projectName) + this.dateStamp + "/";
 	}
 
 }

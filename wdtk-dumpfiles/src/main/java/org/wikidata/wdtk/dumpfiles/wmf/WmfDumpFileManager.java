@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -187,8 +187,10 @@ public class WmfDumpFileManager {
 	/**
 	 * Returns a list of all dump files of the given type available either
 	 * online or locally. For dumps available both online and locally, the local
-	 * version is included. The list is order with most recent dump date first.
-	 * Online dumps found by this method might not be available yet.
+	 * version is included. The list is ordered with most recent dump date
+	 * first. Online dumps found by this method might not be available yet (if
+	 * their directory has been created online but the file was not uploaded or
+	 * completely written yet).
 	 *
 	 * @return a list of dump files of the given type
 	 */
@@ -286,8 +288,7 @@ public class WmfDumpFileManager {
 	 * @return list of objects that provide information on available full dumps
 	 */
 	List<MwDumpFile> findDumpsOnline(DumpContentType dumpContentType) {
-		List<String> dumpFileDates = findDumpDatesOnline(WmfDumpFile
-				.getDumpFileWebDirectory(dumpContentType));
+		List<String> dumpFileDates = findDumpDatesOnline(dumpContentType);
 
 		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
 
@@ -296,6 +297,9 @@ public class WmfDumpFileManager {
 				result.add(new WmfOnlineDailyDumpFile(dateStamp,
 						this.projectName, this.webResourceFetcher,
 						this.dumpfileDirectoryManager));
+			} else if (dumpContentType == DumpContentType.JSON) {
+				result.add(new JsonOnlineDumpFile(dateStamp, this.projectName,
+						this.webResourceFetcher, this.dumpfileDirectoryManager));
 			} else {
 				result.add(new WmfOnlineStandardDumpFile(dateStamp,
 						this.projectName, this.webResourceFetcher,
@@ -309,21 +313,23 @@ public class WmfDumpFileManager {
 	/**
 	 * Finds out which dump files are available for download in a given
 	 * directory. The result is a list of YYYYMMDD date stamps, ordered newest
-	 * to oldest. The list is based on the directories found at the target
-	 * location, without considering whether or not each dump is actually
+	 * to oldest. The list is based on the directories or files found at the
+	 * target location, without considering whether or not each dump is actually
 	 * available.
+	 * <p>
+	 * The implementation is rather uniform since all cases supported thus far
+	 * use directory/file names that start with a date stamp. If the date would
+	 * occur elsewhere or in another form, then more work would be needed.
 	 *
-	 * @param relativeDirectory
-	 *            string of the relative directory to look for dump files, e.g.,
-	 *            "other/incr/" for daily dumps or the empty string for main
-	 *            dumps
+	 * @param dumpContentType
+	 *            the type of dump to consider
 	 * @return list of date stamps
 	 */
-	List<String> findDumpDatesOnline(String relativeDirectory) {
+	List<String> findDumpDatesOnline(DumpContentType dumpContentType) {
 		List<String> result = new ArrayList<String>();
 		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(WmfDumpFile.DUMP_SITE_BASE_URL
-						+ relativeDirectory + this.projectName + "/")) {
+				.getInputStreamForUrl(WmfDumpFile.getDumpFileWebDirectory(
+						dumpContentType, this.projectName))) {
 
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(in, StandardCharsets.UTF_8));

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,18 +33,21 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.dumpfiles.oldjson.JsonConverter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * A revision processor that processes Wikibase entity content from a dump file.
  * Revisions are parsed to obtain EntityDocument objects.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseRevisionProcessor.class);
 
+	final ObjectMapper mapper = new ObjectMapper();
 	JsonConverter jsonConverter;
 	final DataObjectFactory dataObjectFactory;
 	final EntityDocumentProcessor entityDocumentProcessor;
@@ -75,6 +78,23 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public void processItemRevision(MwRevision mwRevision) {
+		// try {
+		// this.entityDocumentProcessor.processItemDocument(mapper.readValue(
+		// mwRevision.getText(), ItemDocumentImpl.class));
+		// return;
+		// } catch (JsonParseException e1) {
+		// logger.error("Failed to parse JSON for item "
+		// + mwRevision.getPrefixedTitle());
+		// // e1.printStackTrace();
+		// } catch (JsonMappingException e1) {
+		// logger.error("Failed to map JSON for item "
+		// + mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+		// e1.printStackTrace();
+		// System.out.print(mwRevision.getText());
+		// } catch (IOException e1) {
+		// logger.error("Failed to read revision: " + e1.getMessage());
+		// }
+
 		try {
 			JSONObject jsonObject = new JSONObject(mwRevision.getText());
 			ItemDocument itemDocument = this.jsonConverter
@@ -106,7 +126,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	@Override
 	public void finishRevisionProcessing() {
-		this.entityDocumentProcessor.finishProcessingEntityDocuments();
+		// nothing to do
 	}
 
 }

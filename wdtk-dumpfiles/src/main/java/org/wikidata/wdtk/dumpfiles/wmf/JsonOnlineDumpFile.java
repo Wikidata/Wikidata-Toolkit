@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.json;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -26,7 +26,6 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
@@ -39,15 +38,16 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 	final DirectoryManager dumpfileDirectoryManager;
 
 	private boolean isPrepared;
-	
-	
+
 	/**
-	 * Constructor.
-	 * 
+	 * Constructor. Currently only "wikidatawiki" is supported as a project
+	 * name, since the dumps are placed under a non-systematic directory
+	 * structure that must be hard-coded for each project.
+	 *
 	 * @param dateStamp
 	 *            dump date in format YYYYMMDD
 	 * @param projectName
-	 *            project name string (e.g. "wikidata")
+	 *            project name string (e.g. "wikidatawiki")
 	 * @param webResourceFetcher
 	 *            object to use for accessing the web
 	 * @param dumpfileDirectoryManager
@@ -116,19 +116,19 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 
 	@Override
 	protected boolean fetchIsDone() {
-		// TODO Auto-generated method stub
-		return false;
+		// WMF provides no easy way to check this for these files;
+		// so just assume it is done
+		return true;
 	}
 
 	/**
 	 * Returns the base URL under which the files for this dump are found.
-	 * 
+	 *
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL
-				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON)
-				+ this.projectName + "/";
+		return WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON,
+				this.projectName);
 	}
-	
+
 }

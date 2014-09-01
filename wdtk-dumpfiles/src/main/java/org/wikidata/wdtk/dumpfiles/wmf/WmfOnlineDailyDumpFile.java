@@ -36,9 +36,9 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  * Class for representing incremental daily dump files as published by the
  * Wikimedia Foundation. The dump file and additional information about its
  * status is online and web access is needed to fetch this data on demand.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
@@ -55,7 +55,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param dateStamp
 	 *            dump date in format YYYYMMDD
 	 * @param projectName
@@ -146,13 +146,12 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	/**
 	 * Returns the base URL under which the files for this dump are found.
-	 * 
+	 *
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL
-				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY)
-				+ this.projectName + "/" + this.dateStamp + "/";
+		return WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY,
+				this.projectName) + this.dateStamp + "/";
 	}
 
 }

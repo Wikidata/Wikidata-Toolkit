@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles.json;
+package org.wikidata.wdtk.dumpfiles;
 
 /*
  * #%L
@@ -20,15 +20,13 @@ package org.wikidata.wdtk.dumpfiles.json;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.PropertyDocumentImpl;
-import org.wikidata.wdtk.dumpfiles.MwDumpFile;
-import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -41,10 +39,16 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	private static ObjectReader documentReader = mapper
 			.reader(EntityDocumentImpl.class);
 
+	private final EntityDocumentProcessor entityDocumentProcessor;
+
+	public JsonDumpFileProcessor(EntityDocumentProcessor entityDocumentProcessor) {
+		this.entityDocumentProcessor = entityDocumentProcessor;
+	}
+
 	@Override
 	public void processDumpFileContents(InputStream inputStream,
 			MwDumpFile dumpFile) {
-		
+
 		try {
 			MappingIterator<EntityDocumentImpl> documentIter = documentReader
 					.readValues(inputStream);
@@ -69,11 +73,11 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	}
 
 	private void handleItemDocument(ItemDocumentImpl document) {
-		// TODO
+		this.entityDocumentProcessor.processItemDocument(document);
 	}
 
 	private void handlePropertyDocument(PropertyDocumentImpl document) {
-		// TODO
+		this.entityDocumentProcessor.processPropertyDocument(document);
 	}
 
 }

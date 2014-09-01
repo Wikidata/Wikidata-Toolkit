@@ -143,7 +143,12 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Finds out if the dump is ready.
+	 * Finds out if the dump is ready. For online dumps, this should return true
+	 * if the file can be fetched from the Web. For local dumps, this should
+	 * return true if the file is complete and not corrupted. For some types of
+	 * dumps, there are ways of checking this easily (i.e., without reading the
+	 * full file). If this is not possible, then the method should just return
+	 * "true."
 	 *
 	 * @return true if the dump is done
 	 */
@@ -169,7 +174,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Returns the relative directory on the Web site where dumpfiles of the
+	 * Returns the absolute directory on the Web site where dumpfiles of the
 	 * given type can be found.
 	 *
 	 * @param dumpContentType
@@ -178,9 +183,23 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * @throws IllegalArgumentException
 	 *             if the given dump file type is not known
 	 */
-	public static String getDumpFileWebDirectory(DumpContentType dumpContentType) {
-		if (WmfDumpFile.WEB_DIRECTORY.containsKey(dumpContentType)) {
-			return WmfDumpFile.WEB_DIRECTORY.get(dumpContentType);
+	public static String getDumpFileWebDirectory(
+			DumpContentType dumpContentType, String projectName) {
+		if (dumpContentType == DumpContentType.JSON) {
+			if ("wikidatawiki".equals(projectName)) {
+				return WmfDumpFile.DUMP_SITE_BASE_URL
+						+ WmfDumpFile.WEB_DIRECTORY.get(dumpContentType)
+						+ "wikidata" + "/";
+			} else {
+				throw new RuntimeException(
+						"Wikimedia Foundation uses non-systematic directory names for this type of dump file."
+								+ " I don't know where to find dumps of project "
+								+ projectName);
+			}
+		} else if (WmfDumpFile.WEB_DIRECTORY.containsKey(dumpContentType)) {
+			return WmfDumpFile.DUMP_SITE_BASE_URL
+					+ WmfDumpFile.WEB_DIRECTORY.get(dumpContentType)
+					+ projectName + "/";
 		} else {
 			throw new IllegalArgumentException("Unsupported dump type "
 					+ dumpContentType);
@@ -244,8 +263,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param projectName
-	 *            the project name, e.g. "wikidatawiki" or "wikidata" (for JSON
-	 *            dumps)
+	 *            the project name, e.g. "wikidatawiki"
 	 * @param dateStamp
 	 *            the date of the dump in format YYYYMMDD
 	 * @return file name string
