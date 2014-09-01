@@ -1,13 +1,13 @@
-org.wikidata.wdtk.benchmarks.storage.datastructure
+org.wikidata.wdtk.datamodel.helpers
 org.wikidata.wdtk.datamodel.implementation
 org.wikidata.wdtk.datamodel.interfaces
 org.wikidata.wdtk.datamodel.json
 org.wikidata.wdtk.dumpfiles
+org.wikidata.wdtk.dumpfiles.constraint.template
 org.wikidata.wdtk.examples
 org.wikidata.wdtk.rdf
 org.wikidata.wdtk.rdf.extensions
 org.wikidata.wdtk.rdf.values
-org.wikidata.wdtk.storage.datastructure.impl
-org.wikidata.wdtk.storage.datastructure.intf
+org.wikidata.wdtk.storage.datastructures
 org.wikidata.wdtk.testing
 org.wikidata.wdtk.util
