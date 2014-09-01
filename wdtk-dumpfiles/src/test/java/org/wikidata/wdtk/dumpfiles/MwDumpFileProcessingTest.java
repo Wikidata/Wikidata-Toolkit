@@ -35,6 +35,8 @@ import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 

@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.dumpfiles.oldjson.JsonConverter;
 
 /**
  * A revision processor that processes Wikibase entity content from a dump file.
