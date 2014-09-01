@@ -11,12 +11,6 @@
 	<description>A Java-based library for working with Wikidata and Wikibase</description>
 	<url>https://www.mediawiki.org/wiki/Wikidata_Toolkit</url>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-
 	<modules>
 		<module>wdtk-datamodel</module>
 		<module>wdtk-dumpfiles</module>
