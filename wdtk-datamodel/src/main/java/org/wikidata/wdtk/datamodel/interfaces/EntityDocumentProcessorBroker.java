@@ -26,9 +26,9 @@ import java.util.List;
 /**
  * Simple broker implementation of {@link EntityDocumentProcessor} which
  * distributes entity documents to multiple registered listeners.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 
@@ -37,7 +37,7 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 	/**
 	 * Registers a listener which will be called for all entity documents that
 	 * are processed.
-	 * 
+	 *
 	 * @param entityDocumentProcessor
 	 *            the listener to register
 	 */
@@ -57,13 +57,6 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
 			entityDocumentProcessor.processPropertyDocument(propertyDocument);
-		}
-	}
-
-	@Override
-	public void finishProcessingEntityDocuments() {
-		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
-			entityDocumentProcessor.finishProcessingEntityDocuments();
 		}
 	}
 

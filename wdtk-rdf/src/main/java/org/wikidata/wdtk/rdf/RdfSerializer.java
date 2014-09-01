@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,9 +37,9 @@ import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 /**
  * This class implements {@link EntityDocumentsSerializer} to provide a RDF
  * serializer to render RDF graphs of {@link EntityDocument} objects.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class RdfSerializer implements EntityDocumentsSerializer {
 
@@ -70,7 +70,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Creates a new RDF serializer for the specified format and output stream.
-	 * 
+	 *
 	 * @param format
 	 *            RDF format, such as RDFFormat.TURTLE
 	 * @param output
@@ -87,7 +87,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -97,7 +97,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Returns the number of triples that have been written so far.
-	 * 
+	 *
 	 * @return number of triples
 	 */
 	public long getTripleCount() {
@@ -131,11 +131,6 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		} catch (RDFHandlerException e) { // we cannot recover here
 			throw new RuntimeException(e.toString(), e);
 		}
-	}
-
-	@Override
-	public void finishProcessingEntityDocuments() {
-		// do nothing
 	}
 
 	@Override
