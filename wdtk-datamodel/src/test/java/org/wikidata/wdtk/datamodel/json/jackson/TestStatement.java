@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,6 +53,9 @@ public class TestStatement extends JsonConversionTest {
 	public void testEmptyStatementToJava(){
 		try {
 			StatementImpl result = mapper.readValue(emptyStatementJson, StatementImpl.class);
+			// inject claim since this is not provided on statement level in the JSON
+			ClaimImpl claim = new ClaimImpl(result, new PropertyIdImpl(propertyId));
+			result.setClaim(claim);
 			
 			assertNotNull(result);
 			assertEquals(testEmptyStatement, result);
@@ -70,10 +74,14 @@ public class TestStatement extends JsonConversionTest {
 	
 	@Test
 	public void testEquality(){
+		StatementImpl correctStatement = new StatementImpl(statementId, testNoValueSnak);
+		correctStatement.setClaim(testClaim);
+		
 		assertEquals(testEmptyStatement, testEmptyStatement);
-		assertEquals(testEmptyStatement, new StatementImpl(statementId, testNoValueSnak));
+		assertEquals(testEmptyStatement, correctStatement);
 		
 		StatementImpl wrongId = new StatementImpl(" " + statementId, testNoValueSnak);
+		wrongId.setClaim(testClaim);
 		assertFalse(testEmptyStatement.equals(wrongId));
 	}
 }

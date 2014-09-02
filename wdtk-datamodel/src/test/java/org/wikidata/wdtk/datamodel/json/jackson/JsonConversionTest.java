@@ -34,11 +34,12 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.TimeValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.NoValueSnakImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SomeValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.TimeValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.ValueSnakImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,14 +105,17 @@ public abstract class JsonConversionTest {
 	protected static final NoValueSnakImpl testNoValueSnak = new NoValueSnakImpl(propertyId);
 	protected static final SomeValueSnakImpl testSomeValueSnak = new SomeValueSnakImpl(propertyId);
 	protected static final ValueSnakImpl testCommonsValueSnak = new ValueSnakImpl(propertyId, ValueSnakImpl.datatypeCommons, testStringValue);
-	// TODO continue testing using stringValueSnak, timeValueSnak, globeCoordinateValueSnak
-	protected static final StatementImpl testEmptyStatement = new StatementImpl(statementId, testNoValueSnak);
+	// TODO continue testing using stringValueSnak, timeValueSnak, globeCoordinateValueSnak	
+	
+	
 	
 	// puzzle pieces for creation of the test of ItemDocument and PropertyDocument
 	protected Map<String, MonolingualTextValueImpl> testMltvMap;
 	protected Map<String, List<MonolingualTextValueImpl>> testAliases;
 	protected ItemIdImpl testItemId;
 	protected Map<String, SiteLinkImpl> testSiteLinkMap;
+	protected StatementImpl testEmptyStatement;
+	protected ClaimImpl testClaim;
 	
 	@Before
 	public void setupTestMltv(){
@@ -137,6 +141,13 @@ public abstract class JsonConversionTest {
 	public void setupTestSiteLinks(){
 		testSiteLinkMap = new HashMap<>();
 		testSiteLinkMap.put("enwiki", TestSiteLink.testSiteLink);
+	}
+	
+	@Before
+	public void setupTestStatementAndClaim(){
+		testEmptyStatement = new StatementImpl(statementId, testNoValueSnak);
+		testClaim = new ClaimImpl(testEmptyStatement, new PropertyIdImpl(propertyId));
+		testEmptyStatement.setClaim(testClaim);
 	}
 	
 }

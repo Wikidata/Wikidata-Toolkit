@@ -1,5 +1,12 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -29,7 +36,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * @author Fredo Erxleben
  *
  */
-public class StringValueImpl extends ValueImpl {
+public class StringValueImpl extends ValueImpl implements StringValue {
 
 	private String value;
 	
@@ -47,5 +54,26 @@ public class StringValueImpl extends ValueImpl {
 	
 	public void setValue(String value){
 		this.value = value;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStringValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
+	
+	@JsonIgnore
+	@Override
+	public String getString() {
+		return this.value;
 	}
 }

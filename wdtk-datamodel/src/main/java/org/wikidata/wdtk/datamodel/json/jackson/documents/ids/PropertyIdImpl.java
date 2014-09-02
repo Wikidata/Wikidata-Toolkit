@@ -47,7 +47,7 @@ implements PropertyIdValue {
 			return false;
 		}
 
-		return ((ItemIdImpl) o).getId().equalsIgnoreCase(this.id);
+		return ((PropertyIdImpl) o).getId().equalsIgnoreCase(this.id);
 	}
 	@Override
 	public String getSiteIri() {

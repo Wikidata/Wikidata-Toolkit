@@ -20,10 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
@@ -38,21 +42,39 @@ public class ReferenceImpl implements Reference {
 	@JsonIgnore // not in the actual JSON, just to satisfy the interface
 	@Override
 	public List<SnakGroup> getSnakGroups() {
-		Helper.buildSnakGroups(this.snaks);
-		return null;
+		return Helper.buildSnakGroups(this.snaks);
 	}
 	
 	public void setSnaks(Map<String, List<SnakImpl>> snaks){
 		this.snaks = snaks;
 	}
 
-	public Map<String, List<SnakImpl>> getSanks(){
+	public Map<String, List<SnakImpl>> getSnaks(){
 		return this.snaks;
 	}
 
 	@Override
 	public Iterator<Snak> getAllSnaks() {
-		// TODO Auto-generated method stub
-		return null;
+		// have to create a new list to have something to get an iterator from
+		List<Snak> tempSnaks = new ArrayList<>();
+		for( List<SnakImpl> entry : this.snaks.values()){
+			tempSnaks.addAll(entry);
+		}
+		return tempSnaks.iterator();
+	}
+	
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsReference(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

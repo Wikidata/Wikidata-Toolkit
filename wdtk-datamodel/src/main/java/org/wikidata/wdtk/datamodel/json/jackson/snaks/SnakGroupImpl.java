@@ -43,6 +43,11 @@ public class SnakGroupImpl implements SnakGroup {
 	private PropertyIdImpl property;
 	private List<SnakImpl> snaks;
 
+	public SnakGroupImpl(PropertyIdImpl property, List<SnakImpl> snaks){
+		this.property = property;
+		this.snaks = snaks;
+	}
+	
 	@Override
 	public List<Snak> getSnaks() {
 		

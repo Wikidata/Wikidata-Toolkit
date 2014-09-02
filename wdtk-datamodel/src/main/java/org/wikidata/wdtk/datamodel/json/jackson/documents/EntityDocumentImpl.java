@@ -32,28 +32,26 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
-@JsonSubTypes({  
-    @Type(value = ItemDocumentImpl.class, name = "item"),  
-    @Type(value = PropertyDocumentImpl.class, name = "property")
-})
-public abstract class EntityDocumentImpl 
-implements EntityDocument, TermedDocument {
-	
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({ @Type(value = ItemDocumentImpl.class, name = "item"),
+		@Type(value = PropertyDocumentImpl.class, name = "property") })
+public abstract class EntityDocumentImpl implements EntityDocument,
+		TermedDocument {
+
 	public static final String typeItem = "item";
 	public static final String typeProperty = "property";
-	
+
+	//@JsonDeserialize(using = AliasesDeserializer.class)
 	protected Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
 	protected Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
 	protected Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
-	
+
 	// the following is not mapped directly towards JSON
 	// rather split up into two JSON fields:
 	// "type" and "id"
@@ -63,17 +61,19 @@ implements EntityDocument, TermedDocument {
 	@JsonIgnore
 	protected EntityIdImpl id;
 
-	
-	public EntityDocumentImpl(){}
+	public EntityDocumentImpl() {
+	}
+
 	/**
 	 * A constructor for generating ItemDocumentImpl-objects from other
 	 * implementations that satisfy the ItemDocument-interface. This can be used
 	 * for converting other implementations into this one for later export.
 	 * 
-	 * @param source is the implementation to be used as a base.
+	 * @param source
+	 *            is the implementation to be used as a base.
 	 */
 	public EntityDocumentImpl(TermedDocument source) {
-		
+
 		// build id
 		this.id = (EntityIdImpl) source.getEntityId();
 
@@ -100,14 +100,20 @@ implements EntityDocument, TermedDocument {
 					mltvs.getValue()));
 		}
 	}
-	
-	
+
 	@JsonIgnore
 	@Override
-	public EntityIdValue getEntityId(){
+	public EntityIdValue getEntityId() {
 		return this.id;
 	}
-	
+
+	/**
+	 * <b> Warning! </b> This is a hack to cope with empty aliases being
+	 * represented as <code>"aliases":[]</code> despite its declaration as map
+	 * and not as list or array.
+	 * 
+	 * @param aliases
+	 */
 	public void setAliases(Map<String, List<MonolingualTextValueImpl>> aliases) {
 		this.aliases = aliases;
 	}
@@ -127,7 +133,7 @@ implements EntityDocument, TermedDocument {
 		}
 		return returnMap;
 	}
-	
+
 	public void setDescriptions(
 			Map<String, MonolingualTextValueImpl> descriptions) {
 		this.descriptions = descriptions;
@@ -142,7 +148,7 @@ implements EntityDocument, TermedDocument {
 		returnMap.putAll(this.descriptions);
 		return returnMap;
 	}
-	
+
 	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
 		this.labels = labels;
 	}
@@ -156,7 +162,7 @@ implements EntityDocument, TermedDocument {
 		returnMap.putAll(this.labels);
 		return returnMap;
 	}
-	
+
 	@JsonProperty("id")
 	public void setId(String id) {
 		this.id.setId(id);
@@ -166,25 +172,21 @@ implements EntityDocument, TermedDocument {
 	public String getId() {
 		return this.id.getId();
 	}
-	
+
 	/**
 	 * This method is only used for handling the JSON export correctly.
+	 * 
 	 * @return either "item" or "property"
 	 */
 	@JsonProperty("type")
 	public abstract String getType();
-	
+
 	@Override
-	public boolean equals(Object o){
-		if(this == o){ return true; }
-		if(!(o instanceof EntityDocumentImpl)){
-			return false;
-		}
-		EntityDocumentImpl other = (EntityDocumentImpl)o;
-		
-		return this.id.equals(other.id)
-				&& this.aliases.equals(other.aliases)
-				&& this.descriptions.equals(other.descriptions)
-				&& this.labels.equals(other.labels);
-	}
+	public abstract int hashCode();
+
+	@Override
+	public abstract boolean equals(Object obj);
+
+	@Override
+	public abstract String toString();
 }

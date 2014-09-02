@@ -20,15 +20,16 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakGroupImpl;
 
 /**
  * This class only exists to satisfy the interface of the data model.
@@ -40,7 +41,7 @@ public class ClaimImpl implements Claim {
 	private StatementImpl statement;
 	private EntityIdValue subject;
 	
-	ClaimImpl(StatementImpl statement, EntityIdValue subject){
+	public ClaimImpl(StatementImpl statement, EntityIdValue subject){
 		this.statement = statement;
 		this.subject = subject;
 	}
@@ -57,11 +58,7 @@ public class ClaimImpl implements Claim {
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		List<SnakGroup> resultList = new ArrayList<>();
-		for(SnakGroupImpl snaks : Helper.buildSnakGroups(this.statement.getQualifiers())){
-			resultList.add(snaks);
-		}
-		return resultList;
+		return Helper.buildSnakGroups(this.statement.getQualifiers());
 	}
 
 	@Override
@@ -70,4 +67,18 @@ public class ClaimImpl implements Claim {
 		return null;
 	}
 
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsClaim(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
 }

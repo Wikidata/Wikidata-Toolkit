@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakGroupImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
@@ -44,10 +47,16 @@ public class Helper {
 	 * @param snaks
 	 * @return
 	 */
-	public static List<SnakGroupImpl> buildSnakGroups(
+	public static List<SnakGroup> buildSnakGroups(
 			Map<String, List<SnakImpl>> snaks) {
-		// TODO
-		return null;
+
+		List<SnakGroup> result = new ArrayList<>();
+
+		for (Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
+			result.add(new SnakGroupImpl(new PropertyIdImpl(entry.getKey()),
+					entry.getValue()));
+		}
+		return result;
 	}
 
 	/**
@@ -67,5 +76,26 @@ public class Helper {
 		}
 
 		return result;
+	}
+
+	/**
+	 * This is used to construct an EntityId from a given String. The string
+	 * might either denote a property or an item.
+	 * 
+	 * @param source
+	 *            is either of the form "Q..." for an item or "P..." for a
+	 *            property
+	 * @return appropriately either a PropertyIdImpl or an ItemIdImpl
+	 */
+	public static EntityIdImpl constructEntityId(String source) {
+		// TODO maybe match via regex to assure the value is formatted
+		// correctly?
+		if (source.startsWith("Q")) { // is an item
+			return new ItemIdImpl(source);
+		} else if (source.startsWith("P")) { // is a property
+			return new PropertyIdImpl("P");
+		}
+		throw new IllegalArgumentException(source
+				+ "could not be matched to be an item- or property id.");
 	}
 }

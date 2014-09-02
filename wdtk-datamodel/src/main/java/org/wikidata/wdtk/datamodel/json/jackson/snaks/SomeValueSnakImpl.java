@@ -20,6 +20,10 @@ package org.wikidata.wdtk.datamodel.json.jackson.snaks;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
 public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
@@ -34,5 +38,25 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	public SomeValueSnakImpl(String propertyId){
 		super(propertyId);
 		this.setSnakType(somevalue);
+	}
+
+	@Override
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsSomeValueSnak(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

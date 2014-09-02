@@ -27,15 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.ClaimImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.Helper;
 import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.StatementGroupImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.StatementImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,13 +50,18 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true) // TODO better handling
+@JsonIgnoreProperties(ignoreUnknown = true)
+// TODO better handling
 public class ItemDocumentImpl extends EntityDocumentImpl implements
 		ItemDocument {
 
 	// TODO instead of building the statement groups on demand, maybe cache
 	// them?
 
+	/**
+	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
+	 * the statement group in the WDTK model.
+	 */
 	private Map<String, List<StatementImpl>> claim = new HashMap<>();
 	private Map<String, SiteLinkImpl> sitelinks = new HashMap<>();
 
@@ -78,6 +88,8 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 			this.sitelinks.put(mltvs.getKey(),
 					new SiteLinkImpl(mltvs.getValue()));
 		}
+
+		// TODO statements? claims?
 	}
 
 	@Override
@@ -129,40 +141,52 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 */
 	public void setClaim(Map<String, List<StatementImpl>> claim) {
 		this.claim = claim;
+		this.buildClaims();
 	}
 
+	/**
+	 * This is needed by the JSON serialization. It corresponds to statement
+	 * groups in the WDTK model. On using the WDTK, refer to
+	 * {@link ItemDocumentImpl#getStatementGroups()} instead.
+	 * 
+	 * @return
+	 */
 	public Map<String, List<StatementImpl>> getClaim() {
 		return this.claim;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
-		}
-		if (!(o instanceof ItemDocumentImpl)) {
-			return false;
-		}
-		ItemDocumentImpl other = (ItemDocumentImpl) o;
-
-		return this.getItemId().equals(other.getItemId())
-				&& super.equals(other)
-				&& this.claim.equals(other.claim)
-				&& this.sitelinks.equals(other.sitelinks);
-
-	}
-
 	/**
-	 * Recreate the claims from the JSON for the data model. Has to be run after
+	 * Recreate the claims of the statements from the JSON for the data model. Has to be run after
 	 * all statements are set.
 	 */
-	void buildClaims() {
-		// TODO
+	private void buildClaims() {
+		for(Entry<String, List<StatementImpl>> entry : this.claim.entrySet()){
+			for( StatementImpl statement : entry.getValue()){
+				EntityIdImpl wdtkClaimSubject = Helper.constructEntityId(entry.getKey());
+				ClaimImpl wdtkClaim = new ClaimImpl(statement, wdtkClaimSubject);
+				statement.setClaim(wdtkClaim);
+			}
+		}
 	}
 
 	@Override
 	public Iterator<Statement> getAllStatements() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsItemDocument(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

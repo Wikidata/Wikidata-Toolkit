@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -41,22 +44,19 @@ import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 public class StatementGroupImpl implements StatementGroup {
 
 	PropertyIdImpl propertyId;
-	List<StatementImpl> statements;
+	List<Statement> statements = new ArrayList<>();
 
 	public StatementGroupImpl(PropertyIdImpl propertyId, List<StatementImpl> statements) {
 		this.propertyId = propertyId;
-		this.statements = statements;
+		for(StatementImpl statement : statements){
+			this.statements.add(statement);
+		}
 		// TODO sort statements by rank
 	}
 
 	@Override
 	public List<Statement> getStatements() {
-		// TODO rework, once the interface changes
-		List<Statement> returnList = new ArrayList<>();
-		for(StatementImpl statement : this.statements){
-			returnList.add(statement);
-		}
-		return returnList;
+		return this.statements;
 	}
 
 	@Override
@@ -71,8 +71,20 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public Iterator<Statement> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.statements.iterator();
+	}
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStatementGroup(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
 }

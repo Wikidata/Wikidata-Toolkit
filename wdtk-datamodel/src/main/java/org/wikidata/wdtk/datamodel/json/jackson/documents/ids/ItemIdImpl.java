@@ -29,7 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
  * item document. The other one identifies an items id on the level of snak
  * values. They are different due to the resulting JSON being syntactically
  * different for these cases. Since the document ID's are only Strings in the
- * JSON, instances of this calss will never appear in the exported JSON.
+ * JSON, instances of this class will never appear in the exported JSON.
  * 
  * @author Fredo Erxleben
  *

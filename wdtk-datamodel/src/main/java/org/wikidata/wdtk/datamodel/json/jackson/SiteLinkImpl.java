@@ -23,6 +23,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -71,20 +74,19 @@ public class SiteLinkImpl implements SiteLink {
 	public List<String> getBadges() {
 		return this.badges;
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		if(this == o){
-			return true;
-		}
-		
-		if(!(o instanceof SiteLinkImpl)){
-			return false;
-		}
-		SiteLinkImpl other = (SiteLinkImpl)o;
-		return this.badges.equals(other.badges)
-				&& this.site.equals(other.site)
-				&& this.title.equals(other.title);
+	public int hashCode() {
+		return Hash.hashCode(this);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsSiteLink(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
 }

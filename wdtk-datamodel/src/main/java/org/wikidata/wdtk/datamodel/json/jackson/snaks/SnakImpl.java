@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -55,8 +56,7 @@ public abstract class SnakImpl implements Snak {
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PropertyIdImpl(property);
 	}
 
 	public String getSnaktype(){
@@ -68,29 +68,15 @@ public abstract class SnakImpl implements Snak {
 	}
 	
 	@Override
-	public <T> T accept(SnakVisitor<T> snakVisitor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract <T> T accept(SnakVisitor<T> snakVisitor);
 	
 	@Override
-	public boolean equals(Object o){
-		
-		if(this == o){
-			return true;
-		}
-		
-		if(!(o instanceof SnakImpl)){
-			return false;
-		}
-		
-		SnakImpl other = (SnakImpl) o;
-		if(this.getSnaktype().equals(other.getSnaktype())
-				&& this.getProperty().equals(other.getProperty())){
-			return true;
-		}
-		return false;
-		
-	}
+	public abstract boolean equals(Object o);
+	
+	@Override
+	public abstract int hashCode();
+
+	@Override
+	public abstract String toString();
 
 }

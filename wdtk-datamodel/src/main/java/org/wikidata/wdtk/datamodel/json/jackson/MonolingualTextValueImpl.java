@@ -20,6 +20,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -76,16 +79,17 @@ implements MonolingualTextValue {
 	}
 
 	@Override
-	public boolean equals(Object o){
-		if(this == o){
-			return true;
-		}
-		
-		if(!(o instanceof MonolingualTextValue)){
-			return false;
-		}
-		
-		return this.getLanguageCode().equals(((MonolingualTextValue) o).getLanguageCode())
-				&& this.getText().equals(((MonolingualTextValue) o).getText());
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsMonolingualTextValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

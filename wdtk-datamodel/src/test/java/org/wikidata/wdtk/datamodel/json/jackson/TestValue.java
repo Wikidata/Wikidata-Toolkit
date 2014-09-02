@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.TimeValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.TimeValueImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -20,9 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -39,7 +44,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StatementImpl implements Statement {
 
@@ -49,18 +54,17 @@ public class StatementImpl implements Statement {
 	@JsonDeserialize(using = StatementRankDeserializer.class)
 	private StatementRank rank;
 
-	private List<ReferenceImpl> references;
+	private List<ReferenceImpl> references = new ArrayList<>();
 
 	/**
-	 * While this is called "claim" in the wdtk-datamodel, it is called
+	 * While this is called "claim" in the WDTK data model, it is called
 	 * "mainsnak" in the external JSON. There a claim is the entirety of
 	 * statements in their respective groups.
 	 */
 	private SnakImpl mainsnak;
 
-	private Map<String, List<SnakImpl>> qualifiers;
+	private Map<String, List<SnakImpl>> qualifiers = new HashMap<>();
 
-	// TODO set claim externally
 	/**
 	 * This is needed to satisfy the interface. Since from the JSON the subject
 	 * of the claim can not be derived, after the deserialization the claim has
@@ -145,27 +149,17 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
-		}
-		if (!(o instanceof StatementImpl)) {
-			return false;
-		}
-		StatementImpl other = (StatementImpl) o;
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
 
-		if (!(this.id.equals(other.id) && this.rank.equals(other.rank) && this.mainsnak
-				.equals(other.mainsnak))) {
-			return false;
-		}
-		if (this.qualifiers != null
-				&& !(this.qualifiers.equals(other.qualifiers))) {
-			return false;
-		}
-		if (this.references != null
-				&& !(this.references.equals(other.references))) {
-			return false;
-		}
-		return true;
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStatement(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }
