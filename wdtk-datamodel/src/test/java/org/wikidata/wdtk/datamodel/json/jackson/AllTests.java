@@ -36,7 +36,8 @@ import org.junit.runner.RunWith;
 	TestSnakJson.class, 
 	TestValue.class, 
 	TestStatement.class,
-	TestDatatypeId.class})
+	TestDatatypeId.class,
+	TestAliasBug.class})
 public class AllTests {
 	// nothing
 }

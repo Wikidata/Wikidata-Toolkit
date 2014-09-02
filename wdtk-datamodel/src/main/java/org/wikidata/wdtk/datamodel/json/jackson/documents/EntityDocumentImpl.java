@@ -32,11 +32,14 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.serializers.AliasesDeserializer;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({ @Type(value = ItemDocumentImpl.class, name = "item"),
@@ -47,7 +50,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	public static final String typeItem = "item";
 	public static final String typeProperty = "property";
 
-	//@JsonDeserialize(using = AliasesDeserializer.class)
+	@JsonDeserialize(using = AliasesDeserializer.class)
 	protected Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
 	protected Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
 	protected Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();

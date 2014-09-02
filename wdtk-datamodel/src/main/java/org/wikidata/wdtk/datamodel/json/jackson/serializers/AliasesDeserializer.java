@@ -21,22 +21,26 @@ package org.wikidata.wdtk.datamodel.json.jackson.serializers;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.documents.EntityDocumentImpl;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A deserializer implementation for the aliases in an EntityDocument. <b> This
- * is part of a Workaround. </b>
+ * is part of a Workaround. It is neither nice nor fast and should be obsolete
+ * as fast as possible.</b>
  * 
  * @see EntityDocumentImpl setAliases()
  * 
@@ -46,16 +50,39 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 public class AliasesDeserializer extends
 		JsonDeserializer<Map<String, List<MonolingualTextValueImpl>>> {
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, List<MonolingualTextValueImpl>> deserialize(JsonParser jp,
-			DeserializationContext ctxt) throws IOException,
+	public Map<String, List<MonolingualTextValueImpl>> deserialize(
+			JsonParser jp, DeserializationContext ctxt) throws IOException,
 			JsonProcessingException {
 
 		Map<String, List<MonolingualTextValueImpl>> contents = new HashMap<>();
 
-		if (jp.getCurrentToken() != JsonToken.START_ARRAY) {
-			contents = jp.readValueAs(contents.getClass());
+		try {
+			JsonNode node = jp.getCodec().readTree(jp);
+			if (!node.isArray()) {
+				Iterator<Entry<String, JsonNode>> nodeIterator = node.fields();
+				while (nodeIterator.hasNext()) {
+					List<MonolingualTextValueImpl> mltvList = new ArrayList<>();
+					Entry<String, JsonNode> currentNode = nodeIterator.next();
+					// get the list of MLTVs
+					Iterator<JsonNode> mltvListIterator = currentNode
+							.getValue().iterator();
+					while (mltvListIterator.hasNext()) {
+						JsonNode mltvEntry = mltvListIterator.next();
+						String language = mltvEntry.get("language").asText();
+						String value = mltvEntry.get("value").asText();
+						mltvList.add(new MonolingualTextValueImpl(language,
+								value));
+					}
+
+					contents.put(currentNode.getKey(), mltvList);
+				}
+			}
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return contents;
