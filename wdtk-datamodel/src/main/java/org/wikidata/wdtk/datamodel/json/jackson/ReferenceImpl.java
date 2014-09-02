@@ -34,7 +34,10 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferenceImpl implements Reference {
 
 	private Map<String, List<SnakImpl>> snaks;

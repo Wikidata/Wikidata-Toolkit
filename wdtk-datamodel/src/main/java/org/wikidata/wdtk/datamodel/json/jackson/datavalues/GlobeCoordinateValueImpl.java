@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -68,5 +69,10 @@ public class GlobeCoordinateValueImpl extends ValueImpl implements GlobeCoordina
 	@Override
 	public String getGlobe() {
 		return this.value.getGlobe();
+	}
+	
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 }

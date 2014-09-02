@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
     @Type(value = NoValueSnakImpl.class, name = "novalue"),  
     @Type(value = SomeValueSnakImpl.class, name = "somevalue"),  
     @Type(value = ValueSnakImpl.class, name = "value") }) 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class SnakImpl implements Snak {
 	
 	private String property;

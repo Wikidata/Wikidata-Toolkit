@@ -4,6 +4,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -75,5 +76,10 @@ public class StringValueImpl extends ValueImpl implements StringValue {
 	@Override
 	public String getString() {
 		return this.value;
+	}
+	
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 }

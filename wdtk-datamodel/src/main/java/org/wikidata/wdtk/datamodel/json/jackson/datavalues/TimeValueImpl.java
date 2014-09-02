@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -110,5 +111,10 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	@Override
 	public int getAfterTolerance() {
 		return this.value.getAfter();
+	}
+	
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
 }
