@@ -105,8 +105,12 @@ public class DumpProcessingController {
 
 		@Override
 		public int hashCode() {
-			return 2 * this.model.hashCode()
-					+ (this.onlyCurrentRevisions ? 1 : 0);
+			if (this.model == null) {
+				return (this.onlyCurrentRevisions ? 1 : 0);
+			} else {
+				return 2 * this.model.hashCode()
+						+ (this.onlyCurrentRevisions ? 1 : 0);
+			}
 		}
 
 		@Override
@@ -121,8 +125,13 @@ public class DumpProcessingController {
 				return false;
 			}
 			ListenerRegistration other = (ListenerRegistration) obj;
-			return this.model.equals(other.model)
-					&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			if (this.model == null) {
+				return other.model == null
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			} else {
+				return this.model.equals(other.model)
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			}
 		}
 	}
 
