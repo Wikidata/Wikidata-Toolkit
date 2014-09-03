@@ -43,7 +43,7 @@ for this are written into a CSV file in the end.
 
 This program processes items to compute the average life expectancy of people on
 Wikidata. It shows how to get details (here: year numbers) of specific statement values
-for specific properties (here we use Wikidata's P569 "birth date" and P570 "death date).
+for specific properties (here we use Wikidata's P569 "birth date" and P570 "death date").
 The results are stored in a CSV file that shows average life expectancy by year of
 birth. The overall average is also printed to the output.
 
