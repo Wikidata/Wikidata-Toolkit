@@ -61,7 +61,7 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private Map<String, List<StatementImpl>> claim = new HashMap<>();
+	private Map<String, List<StatementImpl>> claims = new HashMap<>();
 	private Map<String, SiteLinkImpl> sitelinks = new HashMap<>();
 
 	public ItemDocumentImpl() {
@@ -109,7 +109,7 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	public List<StatementGroup> getStatementGroups() {
 		List<StatementGroup> resultList = new ArrayList<>();
 		for (StatementGroupImpl statementGroup : Helper
-				.buildStatementGroups(this.claim)) {
+				.buildStatementGroups(this.claims)) {
 			resultList.add(statementGroup);
 		}
 		return resultList;
@@ -138,8 +138,8 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * 
 	 * @param claim
 	 */
-	public void setClaim(Map<String, List<StatementImpl>> claim) {
-		this.claim = claim;
+	public void setClaims(Map<String, List<StatementImpl>> claim) {
+		this.claims = claim;
 		this.buildClaims();
 	}
 
@@ -150,8 +150,8 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * 
 	 * @return
 	 */
-	public Map<String, List<StatementImpl>> getClaim() {
-		return this.claim;
+	public Map<String, List<StatementImpl>> getClaims() {
+		return this.claims;
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * all statements are set.
 	 */
 	private void buildClaims() {
-		for(Entry<String, List<StatementImpl>> entry : this.claim.entrySet()){
+		for(Entry<String, List<StatementImpl>> entry : this.claims.entrySet()){
 			for( StatementImpl statement : entry.getValue()){
 				EntityIdImpl wdtkClaimSubject = Helper.constructEntityId(entry.getKey());
 				ClaimImpl wdtkClaim = new ClaimImpl(statement, wdtkClaimSubject);
@@ -170,8 +170,12 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 
 	@Override
 	public Iterator<Statement> getAllStatements() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Statement> allStatements = new ArrayList<>();
+		
+		for(List<StatementImpl> value : this.claims.values()){
+			allStatements.addAll(value);
+		}
+		return allStatements.iterator();
 	}
 
 	@Override

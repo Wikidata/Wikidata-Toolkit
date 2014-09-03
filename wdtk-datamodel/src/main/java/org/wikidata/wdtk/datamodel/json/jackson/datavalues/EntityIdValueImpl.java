@@ -1,5 +1,12 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -21,7 +28,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 
-public class EntityIdValueImpl extends ValueImpl {
+public class EntityIdValueImpl extends ValueImpl implements EntityIdValue{
 
 	private EntityId value;
 	
@@ -41,6 +48,45 @@ public class EntityIdValueImpl extends ValueImpl {
 	public void setValue(EntityId value){
 		this.value = value;
 	}
-	
+
+	@JsonIgnore
+	@Override
+	public String getIri() {
+		return this.getSiteIri().concat(this.getId());
+	}
+
+	@JsonIgnore
+	@Override
+	public String getId() {
+		return value.toString();
+	}
+
+	@JsonIgnore
+	@Override
+	public String getSiteIri() {
+		// TODO returns fixed site IRI for now
+		return "http://www.wikidata.org/entity/";
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsEntityIdValue(this, obj);
+	}
+
+	@JsonIgnore
+	@Override
+	public String getEntityType() {
+		return this.value.getEntityType();
+	}
 
 }

@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,6 +22,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GlobeCoordinate {
 
 	private long latitude;
