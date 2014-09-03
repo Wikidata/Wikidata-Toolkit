@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -37,7 +39,7 @@ implements EntityIdValue {
 
 	@Override
 	public String getIri() {
-		return baseIRI;
+		return this.getSiteIri() + this.getId();
 	}
 
 	@Override
@@ -52,5 +54,23 @@ implements EntityIdValue {
 	public String getId(){
 		return this.id;
 	}
+	
+	@Override
+	public String getSiteIri() {
+		return baseIRI;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return Equality.equalsEntityIdValue(this, o);
+	}
+	
+	@Override
+	public int hashCode(){
+		return Hash.hashCode(this);
+	}
+	
+	@Override
+	public abstract String toString();
 
 }

@@ -6,6 +6,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /*
  * #%L
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * #L%
  */
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityIdValueImpl extends ValueImpl implements EntityIdValue{
 
 	private EntityId value;

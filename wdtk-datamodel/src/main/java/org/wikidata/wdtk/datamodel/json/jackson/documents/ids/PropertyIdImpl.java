@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
@@ -38,20 +39,7 @@ implements PropertyIdValue {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-
-		if (!(o instanceof PropertyIdImpl)) {
-			return false;
-		}
-
-		return ((PropertyIdImpl) o).getId().equalsIgnoreCase(this.id);
-	}
-	@Override
-	public String getSiteIri() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

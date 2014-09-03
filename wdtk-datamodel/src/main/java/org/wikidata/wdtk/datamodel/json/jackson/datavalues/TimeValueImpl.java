@@ -24,8 +24,10 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // TODO test
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TimeValueImpl extends ValueImpl implements TimeValue {
 	
 	private Time value;

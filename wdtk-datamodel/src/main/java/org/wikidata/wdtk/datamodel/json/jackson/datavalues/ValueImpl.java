@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @Type(value = GlobeCoordinateValueImpl.class, name = "globecoordinate"),
     @Type(value = QuantityValueImpl.class, name = "quantity"),
     @Type(value = MonolingualTextDatavalueImpl.class, name = "monolingualtext")}) 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class ValueImpl 
 implements Value {
 	
