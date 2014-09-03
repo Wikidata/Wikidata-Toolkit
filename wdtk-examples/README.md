@@ -3,3 +3,95 @@ Wikidata Toolkit Examples
 
 This module contains example programs that show some of the features
 of Wikidata Toolkit.
+
+Overview and Settings
+---------------------
+
+A detailed guide to each of the examples is given below. Many examples process data
+dumps exported by Wikidata. In most cases, the example only contains the actual
+processing code that does something interesting. The code for downloading dumps and
+iterating over them is in the ExampleHelpers.java class, which is used in many examples
+for common tasks.
+
+You can edit the static members in ExampleHelpers to select which dumps should be
+used (the data is available in several formats which may be more or less recent
+and more or less comprehensive). You can also switch to offline mode there: then
+only the files downloaded previously will be used. This is convenient for testing
+to avoid downloading new files when you don't really need absolutely current data.
+By default, the code will fetch the most recent JSON dumps from the Web.
+
+Some examples write their output to files. These files are put into the subdirectory
+"results" under the directory from where the application is run. Files in CSV
+format can be loaded in any spreadsheet tool to make diagrams, for example.
+
+Guide to the Available Examples
+-------------------------------
+
+Ordered roughly from basic to advanced/specific.
+
+#### EntityStatisticsProcessor.java ####
+
+This program processes entities (items and properties) to collect some basic
+statistics. It counts how many items and properties there are, the number of labels,
+descriptions, and aliases, and the number of statements. This code might be useful
+to get to know the basic data structures where these things are stored. The example
+also counts the usage of each property in more details: its use in the main part
+of statements, in qualifiers, and in references is counted separately. The results
+for this are written into a CSV file in the end.
+
+#### LifeExpectancyProcessor.java ####
+
+This program processes items to compute the average life expectancy of people on
+Wikidata. It shows how to get details (here: year numbers) of specific statement values
+for specific properties (here we use Wikidata's P569 "birth date" and P570 "death date).
+The results are stored in a CSV file that shows average life expectancy by year of
+birth. The overall average is also printed to the output.
+
+#### SerializationExample.java ####
+
+This program uses a JSON serializer provided with Wikidata Toolkit to create a file
+that contains all data of the dump in the official JSON data format as used in the API
+and dumps. The program serializes all data found in the dump, but one could easily
+restrict this to create JSON files that contain only a selection of the data (e.g.,
+only the humans).
+
+#### SitelinksExample.java ####
+
+This program shows how to get information about the site links that are used in Wikidata
+dumps. The links to Wikimedia projects use keys like "enwiki" for English Wikipedia or
+"hewikivoyage" for Hebrew WikiVoyage. To find out the meaning of these codes, and to
+create URLs for the articles on these projects, Wikidata Toolkit includes some simple
+functions that download and process the site links information for a given project.
+This example shows how to use this functionality.
+
+#### RdfSerializationExample.java ####
+
+This program creates a range of RDF exports. It will be replaced in the future by a
+standalone conversion tool that has all of these features. Then the RDF example can be
+simplified to include only some specific type of RDF export.
+
+
+Other Helper Code
+-----------------
+
+#### ExampleHelpers.java ####
+
+This class provides static helper methods to iterate through dumps, to configure the
+desired logging behaviour, and to write files to the "results" directory. It also allows
+you to change some global settings that will affect most examples. The code is of interest
+if you want to find out how to build a standalone application that includes all aspects
+without relying on the example module.
+
+#### EntityTimerProcessor.java ####
+
+This is a helper class that is used in all examples to print basic timer information and
+to provide support for having a timeout (cleanly abort processing after a fixed time, even
+if the dump would take much longer to complete; useful for testing). It should not be of
+primary interest for learning how to use Wikidata Toolkit, but you can have a look to find
+out how to use our Timer class.
+
+Additional Resources
+--------------------
+
+* [Wikidata Toolkit homepage](https://www.mediawiki.org/wiki/Wikidata_Toolkit)
+* [Wikidata Toolkit Javadocs](http://wikidata.github.io/Wikidata-Toolkit/)
