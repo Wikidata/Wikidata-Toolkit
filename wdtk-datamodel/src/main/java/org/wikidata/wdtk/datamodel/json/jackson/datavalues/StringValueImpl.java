@@ -7,6 +7,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /*
  * #%L
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StringValueImpl extends ValueImpl implements StringValue {
 
 	private String value;
