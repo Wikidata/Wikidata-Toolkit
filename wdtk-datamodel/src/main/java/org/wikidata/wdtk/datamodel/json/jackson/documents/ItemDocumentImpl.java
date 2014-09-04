@@ -95,6 +95,10 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	public String getType() {
 		return typeItem;
 	}
+	
+	public void setId(String id){
+		this.id = new ItemIdImpl(id);
+	}
 
 	@JsonIgnore
 	// here for the interface; JSON field is handled by getId()

@@ -31,7 +31,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.AliasesDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -62,7 +61,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	// for a concrete document the type is clear.
 	// for writing out to external JSON there is a hard-coded solution
 	@JsonIgnore
-	protected EntityIdImpl id;
+	protected EntityIdValue id;
 
 	public EntityDocumentImpl() {
 	}
@@ -78,7 +77,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	public EntityDocumentImpl(TermedDocument source) {
 
 		// build id
-		this.id = (EntityIdImpl) source.getEntityId();
+		this.id = (EntityIdValue) source.getEntityId();
 
 		// build aliases
 		for (Entry<String, List<MonolingualTextValue>> mltvs : source
@@ -167,9 +166,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	}
 
 	@JsonProperty("id")
-	public void setId(String id) {
-		this.id.setId(id);
-	}
+	public abstract void setId(String id);
 
 	@JsonProperty("id")
 	public String getId() {
