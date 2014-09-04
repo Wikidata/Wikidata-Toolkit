@@ -93,6 +93,10 @@ public class PropertyDocumentImpl extends EntityDocumentImpl implements
 		this.datatype = datatype;
 	}
 
+	public void setId(String id){
+		this.id = new PropertyIdImpl(id);
+	}
+	
 	@JsonIgnore
 	// only here to satisfy the interface
 	@Override
