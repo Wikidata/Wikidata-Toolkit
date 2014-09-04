@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -81,6 +83,21 @@ public class EntityId {
 		} else { // even properties do not occur as values yet
 			return "EntityId of unknown type \"" + this.entityType
 					+ "\" with numeric id " + this.numericId;
+		}
+	}
+
+	/**
+	 * Returns the entity type used in the datamodel. For example, the JSON
+	 * entityType "item" corresponds to {@link EntityIdValue#ET_ITEM}.
+	 *
+	 * @return the entity type
+	 */
+	@JsonIgnore
+	public String getDatamodelEntityType() {
+		if ("item".equals(this.entityType)) {
+			return EntityIdValue.ET_ITEM;
+		} else { // even properties do not occur as values yet
+			return "Unknown entity type: " + this.entityType;
 		}
 	}
 
