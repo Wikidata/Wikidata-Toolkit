@@ -47,6 +47,17 @@ for specific properties (here we use Wikidata's P569 "birth date" and P570 "deat
 The results are stored in a CSV file that shows average life expectancy by year of
 birth. The overall average is also printed to the output.
 
+#### GenderRatioProcessor.java ####
+
+This program uses Wikidata to analyse the number of articles that exist on certain
+topics in different Wikimedia projects (esp. in Wikipedias). In particular, it counts
+the number of articles about humans and humans of a specific gender (female, male, etc.).
+Can be used to estimate the gender balance of various Wikipedias. The results are stored
+in a CSV file (all projects x all genders), but for the largest projects they are also
+printed to the output. This example is inspired by Max Klein's work on this topic.
+
+[Related blog post by Max Klein](http://notconfusing.com/sex-ratios-in-wikidata-part-iii/)
+
 #### SerializationExample.java ####
 
 This program uses a JSON serializer provided with Wikidata Toolkit to create a file
