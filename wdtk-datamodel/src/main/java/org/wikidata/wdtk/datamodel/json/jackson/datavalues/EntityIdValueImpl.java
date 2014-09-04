@@ -65,7 +65,7 @@ public class EntityIdValueImpl extends ValueImpl implements EntityIdValue {
 	@JsonIgnore
 	@Override
 	public String getSiteIri() {
-		// TODO returns fixed site IRI for now
+		// FIXME returns fixed site IRI for now
 		return "http://www.wikidata.org/entity/";
 	}
 
@@ -87,7 +87,7 @@ public class EntityIdValueImpl extends ValueImpl implements EntityIdValue {
 	@JsonIgnore
 	@Override
 	public String getEntityType() {
-		return this.value.getEntityType();
+		return this.value.getDatamodelEntityType();
 	}
 
 }
