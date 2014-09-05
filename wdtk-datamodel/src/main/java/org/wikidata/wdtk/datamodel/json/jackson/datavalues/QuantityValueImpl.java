@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import java.math.BigDecimal;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -30,46 +31,51 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QuantityValueImpl extends ValueImpl implements QuantityValue {
+	
+	private Quantity value;
 
+	public QuantityValueImpl(){
+		super(typeQuantity);
+	}
+	
+	public QuantityValueImpl(Quantity value){
+		super(typeQuantity);
+		this.value = value;
+	}
+	
+	public void setValue(Quantity value){
+		this.value = value;
+	}
+	
+	public Quantity getValue(){
+		return this.value;
+	}
+	
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
-	}
-
-	private BigDecimal amount;
-	private BigDecimal upperBound;
-	private BigDecimal lowerBound;
-	
-	public void setAmount(String amount){
-		this.amount = new BigDecimal(amount);
-	}
-	
-	public BigDecimal getAmount(){
-		return this.amount;
-	}
-	
-	public void setUpperBound(String upperBound){
-		this.upperBound = new BigDecimal(upperBound);
-	}
-	
-	public void setLowerBound(String lowerBound){
-		this.lowerBound = new BigDecimal(lowerBound);
 	}
 	
 	@JsonIgnore
 	@Override
 	public BigDecimal getNumericValue() {
-		return this.amount;
+		return this.value.getAmount();
 	}
 
+	@JsonIgnore
 	@Override
 	public BigDecimal getLowerBound() {
-		return this.lowerBound;
+		return this.value.getLowerBound();
+	}
+
+	@JsonIgnore
+	@Override
+	public BigDecimal getUpperBound() {
+		return this.value.getUpperBound();
 	}
 
 	@Override
-	public BigDecimal getUpperBound() {
-		return this.upperBound;
+	public boolean equals(Object o){
+		return Equality.equalsQuantityValue(this, o);
 	}
-
 }
