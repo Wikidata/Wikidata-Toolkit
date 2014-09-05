@@ -30,6 +30,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.TimeValueImpl;
@@ -185,5 +186,39 @@ public class TestValue extends JsonConversionTest {
 		}
 	}
 
+	@Test
+	public void testQuantityValueToJson(){
+		
+		try {
+			String result = mapper.writeValueAsString(testQuantityValue);
+			JsonComparator.compareJsonStrings(quantityValueJson, result);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			fail("Converting POJO to JSON failed");
+		}
+	}
+	
+	@Test
+	public void testQuantityValueToJava(){
+		
+		try {
+			ValueImpl result = mapper.readValue(quantityValueJson, ValueImpl.class);
+			
+			assertNotNull(result);
+			assertTrue(result instanceof QuantityValueImpl);
+			assertEquals(result.getType(), testQuantityValue.getType());
+			assertEquals(((QuantityValueImpl)result).getValue(), testQuantityValue.getValue());
+			
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			fail("Parsing failed");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			fail("Json mapping failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("IO failed");
+		}
+	}
 
 }
