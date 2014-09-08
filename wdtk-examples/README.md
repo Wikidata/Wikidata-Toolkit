@@ -75,6 +75,14 @@ create URLs for the articles on these projects, Wikidata Toolkit includes some s
 functions that download and process the site links information for a given project.
 This example shows how to use this functionality.
 
+#### ClassPropertyUsageExample.java ####
+
+This advanced program analyses the use of properties and classes on Wikidata, and creates
+output that can be used in the [Miga data browser](http://migadv.com/). You can see the
+result online at http://tools.wmflabs.org/wikidata-exports/miga/. The program is slightly
+more complex, involving several processing steps and additional code for formatting output
+for CSV files.
+
 #### RdfSerializationExample.java ####
 
 This program creates a range of RDF exports. It will be replaced in the future by a
