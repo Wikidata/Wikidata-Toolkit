@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -722,9 +723,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		printTerms(out, propertyRecord.propertyDocument, propertyIdValue, null);
 
-		String datatype = "";
+		String datatype = "Unknown";
 		if (propertyRecord.propertyDocument != null) {
-			datatype = propertyRecord.propertyDocument.getDatatype().getIri();
+			datatype = getDatatypeLabel(propertyRecord.propertyDocument
+					.getDatatype());
 		}
 
 		out.print(","
@@ -746,6 +748,39 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		printRelatedProperties(out, propertyRecord);
 
 		out.println("");
+	}
+
+	/**
+	 * Returns an English label for a given datatype.
+	 *
+	 * @param datatype
+	 *            the datatype to label
+	 * @return the label
+	 */
+	private String getDatatypeLabel(DatatypeIdValue datatype) {
+		if (datatype.getIri() == null) { // TODO should be redundant once the
+											// JSON parsing works
+			return "Unknown";
+		}
+
+		switch (datatype.getIri()) {
+		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			return "Commons media";
+		case DatatypeIdValue.DT_GLOBE_COORDINATES:
+			return "Globe coordinates";
+		case DatatypeIdValue.DT_ITEM:
+			return "Item";
+		case DatatypeIdValue.DT_QUANTITY:
+			return "Quantity";
+		case DatatypeIdValue.DT_STRING:
+			return "String";
+		case DatatypeIdValue.DT_TIME:
+			return "Time";
+		case DatatypeIdValue.DT_URL:
+			return "URL";
+		default:
+			throw new RuntimeException("Unknown datatype " + datatype.getIri());
+		}
 	}
 
 	/**
