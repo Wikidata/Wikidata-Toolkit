@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
  * This is an iterator for a bit vector.

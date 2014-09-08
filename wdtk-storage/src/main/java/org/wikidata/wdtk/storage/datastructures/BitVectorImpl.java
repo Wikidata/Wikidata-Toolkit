@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -23,7 +23,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
 
 /**
  * Default implementation of {@link BitVector}. This implementation contains an

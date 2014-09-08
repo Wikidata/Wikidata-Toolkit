@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.intf;
+package org.wikidata.wdtk.storage.datastructures;
 
 import java.util.Iterator;
 
