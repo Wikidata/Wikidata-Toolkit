@@ -59,7 +59,6 @@ implements DatatypeIdValue {
 		case jsonTypeString : this.iri = DT_STRING; break;		
 		default : this.iri = null;
 		logger.error("Encountered an unknown datatype while creating DatatypeIdImpl: {} ", datatype);
-		System.err.println("Encountered an unknown datatype while creating DatatypeIdImpl: " + datatype);
 		}
 	}
 	

@@ -30,7 +30,14 @@ import java.util.Map;
 
 
 
+
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.junit.Before;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
@@ -62,6 +69,7 @@ public abstract class JsonConversionTest {
 	// TODO maybe decompose the time a bit to have less magic strings in it
 	
 	protected ObjectMapper mapper = new ObjectMapper();
+	protected Logger logger = Logger.getLogger(JsonConversionTest.class);
 	
 	protected static final String entityTypeItem = "item";
 	
@@ -162,6 +170,21 @@ public abstract class JsonConversionTest {
 		testEmptyStatement = new StatementImpl(statementId, testNoValueSnak);
 		testClaim = new ClaimImpl(testEmptyStatement, new PropertyIdImpl(propertyId));
 		testEmptyStatement.setClaim(testClaim);
+	}
+	
+	@Before
+	public void configureLogging() {
+		// Create the appender that will write log messages to the console.
+		ConsoleAppender consoleAppender = new ConsoleAppender();
+		// Define the pattern of log messages.
+		// Insert the string "%c{1}:%L" to also show class name and line.
+		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
+		consoleAppender.setLayout(new PatternLayout(pattern));
+		// Change to Level.ERROR for fewer messages:
+		consoleAppender.setThreshold(Level.INFO);
+
+		consoleAppender.activateOptions();
+		Logger.getRootLogger().addAppender(consoleAppender);
 	}
 	
 }
