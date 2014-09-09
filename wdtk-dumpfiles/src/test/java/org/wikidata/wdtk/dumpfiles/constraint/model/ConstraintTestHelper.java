@@ -41,7 +41,7 @@ public class ConstraintTestHelper {
 	 *            property name
 	 * @return the property id value for the specified property name
 	 */
-	static PropertyIdValue getPropertyIdValue(String propertyName) {
+	public static PropertyIdValue getPropertyIdValue(String propertyName) {
 		return (new DataObjectFactoryImpl()).getPropertyIdValue(propertyName,
 				ConstraintMainBuilder.PREFIX_WIKIDATA);
 	}
@@ -53,7 +53,7 @@ public class ConstraintTestHelper {
 	 *            item name
 	 * @return the item id value for the specified property name
 	 */
-	static ItemIdValue getItemIdValue(String itemName) {
+	public static ItemIdValue getItemIdValue(String itemName) {
 		return (new DataObjectFactoryImpl()).getItemIdValue(itemName,
 				ConstraintMainBuilder.PREFIX_WIKIDATA);
 	}
@@ -69,7 +69,7 @@ public class ConstraintTestHelper {
 	 *            the third property, which is different from the first one and
 	 *            the second one
 	 */
-	static void testEquals(Constraint firstTwin, Constraint secondTwin,
+	public static void testEquals(Constraint firstTwin, Constraint secondTwin,
 			Constraint third) {
 
 		Assert.assertEquals(firstTwin, firstTwin);
@@ -88,7 +88,7 @@ public class ConstraintTestHelper {
 		Assert.assertNotEquals(third, secondTwin);
 	}
 
-	static void testVisit(Constraint constraint) {
+	public static void testVisit(Constraint constraint) {
 		ConstraintVisitor<String> visitor = getVisitor();
 		String name = constraint.accept(visitor);
 		Assert.assertEquals(constraint.getClass().getSimpleName(), name);
