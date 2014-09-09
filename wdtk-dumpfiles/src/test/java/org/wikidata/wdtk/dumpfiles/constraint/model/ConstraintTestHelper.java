@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 
 /**
  * This class contains convenience methods used in the constraint test classes.
@@ -33,6 +32,8 @@ import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
  * 
  */
 public class ConstraintTestHelper {
+
+	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
 	/**
 	 * Returns the property id value for the specified property name.
@@ -43,7 +44,7 @@ public class ConstraintTestHelper {
 	 */
 	public static PropertyIdValue getPropertyIdValue(String propertyName) {
 		return (new DataObjectFactoryImpl()).getPropertyIdValue(propertyName,
-				ConstraintMainBuilder.PREFIX_WIKIDATA);
+				PREFIX_WIKIDATA);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public class ConstraintTestHelper {
 	 */
 	public static ItemIdValue getItemIdValue(String itemName) {
 		return (new DataObjectFactoryImpl()).getItemIdValue(itemName,
-				ConstraintMainBuilder.PREFIX_WIKIDATA);
+				PREFIX_WIKIDATA);
 	}
 
 	/**
