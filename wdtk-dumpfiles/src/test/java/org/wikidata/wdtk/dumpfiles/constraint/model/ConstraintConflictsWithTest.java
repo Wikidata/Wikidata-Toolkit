@@ -36,14 +36,18 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintConflictsWithTest {
 
-	List<PropertyValues> getList0() {
+	public static final String templateStrOnePropNoItem = "{{Constraint:Conflicts with|list={{P|225}}}}";
+	public static final String templateStrOnePropOneItem = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
+	public static final String templateStrManyPropManyItem = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
+
+	public static List<PropertyValues> getList0() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
 				.getPropertyIdValue("P225")));
 		return ret;
 	}
 
-	List<PropertyValues> getList1() {
+	public static List<PropertyValues> getList1() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		List<ItemIdValue> list = new ArrayList<ItemIdValue>();
 		list.add(ConstraintTestHelper.getItemIdValue("Q5"));
@@ -52,7 +56,7 @@ public class ConstraintConflictsWithTest {
 		return ret;
 	}
 
-	PropertyValues getAndTestPropertyValues() {
+	static PropertyValues getAndTestPropertyValues() {
 		List<ItemIdValue> list = new ArrayList<ItemIdValue>();
 		list.add(ConstraintTestHelper.getItemIdValue("Q14756018"));
 		list.add(ConstraintTestHelper.getItemIdValue("Q14073567"));
@@ -65,7 +69,7 @@ public class ConstraintConflictsWithTest {
 		return ret;
 	}
 
-	List<PropertyValues> getList2() {
+	public static List<PropertyValues> getList2() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
 				.getPropertyIdValue("P527")));
@@ -125,7 +129,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit0() {
 		String propertyName = "P494";
-		String template = "{{Constraint:Conflicts with|list={{P|225}}}}";
+		String template = templateStrOnePropNoItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -140,7 +144,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit1() {
 		String propertyName = "P969";
-		String template = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
+		String template = templateStrOnePropOneItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -155,7 +159,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit2() {
 		String propertyName = "P569";
-		String template = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
+		String template = templateStrManyPropManyItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);

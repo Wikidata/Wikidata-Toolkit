@@ -36,7 +36,10 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintOneOfTest {
 
-	List<ItemIdValue> getItemValues() {
+	public static final String templateStrItemVal = "{{Constraint:One of|values={{Q|27914}}, {{Q|30903}}, {{Q|31687}}, {{Q|37137}}, {{Q|186506}}, {{Q|27911}}}}";
+	public static final String templateStrQuantityVal = "{{Constraint:One of|values=1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}";
+
+	public static List<ItemIdValue> getItemValues() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		ret.add(ConstraintTestHelper.getItemIdValue("Q27914"));
 		ret.add(ConstraintTestHelper.getItemIdValue("Q30903"));
@@ -47,7 +50,7 @@ public class ConstraintOneOfTest {
 		return ret;
 	}
 
-	List<Integer> getQuantityValues() {
+	public static List<Integer> getQuantityValues() {
 		List<Integer> ret = new ArrayList<Integer>();
 		for (int i = 1; i <= 10; i++) {
 			ret.add(i);
@@ -82,7 +85,7 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisit0() {
 		String propertyName = "P412";
-		String template = "{{Constraint:One of|values={{Q|27914}}, {{Q|30903}}, {{Q|31687}}, {{Q|37137}}, {{Q|186506}}, {{Q|27911}}}}";
+		String template = templateStrItemVal;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -97,7 +100,7 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisit1() {
 		String propertyName = "P1088";
-		String template = "{{Constraint:One of|values=1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}";
+		String template = templateStrQuantityVal;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);

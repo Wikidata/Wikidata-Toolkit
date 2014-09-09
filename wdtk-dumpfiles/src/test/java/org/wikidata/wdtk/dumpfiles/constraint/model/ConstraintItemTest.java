@@ -37,7 +37,14 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintItemTest {
 
-	List<ItemIdValue> getItems() {
+	public static final String templateStrOneProp = "{{Constraint:Item|property=P225}}";
+	public static final String templateStrOnePropManyItem = "{{Constraint:Item|property=P105|items={{Q|7432}}, {{Q|767728}}, {{Q|68947}}}}";
+	public static final String templateStrTwoProp = "{{Constraint:Item|property=P1001|property2=P953}}";
+	public static final String templateStrOnePropOneItem = "{{Constraint:Item|property=P17|item=Q30}}";
+	public static final String templateStrOnePropTwoItem = "{{Constraint:Item|property=P107|item=Q386724|item2=Q215627}}";
+	public static final String templateStrOnePropOneItemExcep = "{{Constraint:Item|property=P17|item=Q30|exceptions={{Q|695}}, {{Q|702}}, {{Q|709}}}}";
+
+	public static List<ItemIdValue> getItems() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		ret.add(ConstraintTestHelper.getItemIdValue("Q7432"));
 		ret.add(ConstraintTestHelper.getItemIdValue("Q767728"));
@@ -45,7 +52,7 @@ public class ConstraintItemTest {
 		return ret;
 	}
 
-	List<ItemIdValue> getExceptions() {
+	public static List<ItemIdValue> getExceptions() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		ret.add(ConstraintTestHelper.getItemIdValue("Q695"));
 		ret.add(ConstraintTestHelper.getItemIdValue("Q702"));
@@ -103,9 +110,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToStringAndVisit0() {
+	public void testToStringAndVisitOneProp() {
 		String propertyName = "P141";
-		String template = "{{Constraint:Item|property=P225}}";
+		String template = templateStrOneProp;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -120,9 +127,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToString1() {
+	public void testToStringOnePropManyItem() {
 		String propertyName = "P141";
-		String template = "{{Constraint:Item|property=P105|items={{Q|7432}}, {{Q|767728}}, {{Q|68947}}}}";
+		String template = templateStrOnePropManyItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -135,9 +142,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToString2() {
+	public void testToStringTwoProp() {
 		String propertyName = "P1031";
-		String template = "{{Constraint:Item|property=P1001|property2=P953}}";
+		String template = templateStrTwoProp;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -152,9 +159,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToString3() {
+	public void testToStringOnePropOneItem() {
 		String propertyName = "P240";
-		String template = "{{Constraint:Item|property=P17|item=Q30}}";
+		String template = templateStrOnePropOneItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -168,9 +175,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToString4() {
+	public void testToStringOnePropTwoItem() {
 		String propertyName = "P345";
-		String template = "{{Constraint:Item|property=P107|item=Q386724|item2=Q215627}}";
+		String template = templateStrOnePropTwoItem;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -185,9 +192,9 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testToString5() {
+	public void testToStringOnePropOneItemExcep() {
 		String propertyName = "P883";
-		String template = "{{Constraint:Item|property=P17|item=Q30|exceptions={{Q|695}}, {{Q|702}}, {{Q|709}}}}";
+		String template = templateStrOnePropOneItemExcep;
 		String string = propertyName + " " + template;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
