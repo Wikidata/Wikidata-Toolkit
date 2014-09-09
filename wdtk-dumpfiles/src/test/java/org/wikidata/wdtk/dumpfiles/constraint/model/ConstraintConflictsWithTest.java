@@ -40,14 +40,14 @@ public class ConstraintConflictsWithTest {
 	public static final String templateStrOnePropOneItem = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
 	public static final String templateStrManyPropManyItem = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
 
-	public static List<PropertyValues> getList0() {
+	public static List<PropertyValues> getListOnePropNoItem() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
 				.getPropertyIdValue("P225")));
 		return ret;
 	}
 
-	public static List<PropertyValues> getList1() {
+	public static List<PropertyValues> getListOnePropOneItem() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		List<ItemIdValue> list = new ArrayList<ItemIdValue>();
 		list.add(ConstraintTestHelper.getItemIdValue("Q5"));
@@ -69,7 +69,7 @@ public class ConstraintConflictsWithTest {
 		return ret;
 	}
 
-	public static List<PropertyValues> getList2() {
+	public static List<PropertyValues> getListManyPropManyItem() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
 				.getPropertyIdValue("P527")));
@@ -91,50 +91,50 @@ public class ConstraintConflictsWithTest {
 	}
 
 	@Test
-	public void testParameters0() {
+	public void testParametersOnePropNoItem() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P494");
 
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList0());
+				constrainedProperty, getListOnePropNoItem());
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
-		Assert.assertEquals(getList0(), constraint.getList());
+		Assert.assertEquals(getListOnePropNoItem(), constraint.getList());
 	}
 
 	@Test
-	public void testParameters1() {
+	public void testParametersOnePropOneItem() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P969");
 
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList1());
+				constrainedProperty, getListOnePropOneItem());
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
-		Assert.assertEquals(getList1(), constraint.getList());
+		Assert.assertEquals(getListOnePropOneItem(), constraint.getList());
 	}
 
 	@Test
-	public void testParameters2() {
+	public void testParametersManyPropManyItem() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P569");
 
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList2());
+				constrainedProperty, getListManyPropManyItem());
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
-		Assert.assertEquals(getList2(), constraint.getList());
+		Assert.assertEquals(getListManyPropManyItem(), constraint.getList());
 	}
 
 	@Test
-	public void testToStringAndVisit0() {
+	public void testToStringAndVisitOnePropNoItem() {
 		String propertyName = "P494";
 		String templateStr = templateStrOnePropNoItem;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList0());
+				constrainedProperty, getListOnePropNoItem());
 		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -142,14 +142,14 @@ public class ConstraintConflictsWithTest {
 	}
 
 	@Test
-	public void testToStringAndVisit1() {
+	public void testToStringAndVisitOnePropOneItem() {
 		String propertyName = "P969";
 		String templateStr = templateStrOnePropOneItem;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList1());
+				constrainedProperty, getListOnePropOneItem());
 		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -157,14 +157,14 @@ public class ConstraintConflictsWithTest {
 	}
 
 	@Test
-	public void testToStringAndVisit2() {
+	public void testToStringAndVisitManyPropManyItem() {
 		String propertyName = "P569";
 		String templateStr = templateStrManyPropManyItem;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
-				constrainedProperty, getList2());
+				constrainedProperty, getListManyPropManyItem());
 		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -179,9 +179,10 @@ public class ConstraintConflictsWithTest {
 				.getPropertyIdValue("P969");
 
 		ConstraintTestHelper.testEquals(new ConstraintConflictsWith(
-				constrainedProperty0, getList0()), new ConstraintConflictsWith(
-				constrainedProperty0, getList0()), new ConstraintConflictsWith(
-				constrainedProperty1, getList1()));
+				constrainedProperty0, getListOnePropNoItem()),
+				new ConstraintConflictsWith(constrainedProperty0,
+						getListOnePropNoItem()), new ConstraintConflictsWith(
+						constrainedProperty1, getListOnePropOneItem()));
 	}
 
 	@Test
@@ -192,9 +193,11 @@ public class ConstraintConflictsWithTest {
 				.getPropertyIdValue("P494");
 
 		ConstraintTestHelper.testEquals(new ConstraintConflictsWith(
-				constrainedProperty0, getList2()), new ConstraintConflictsWith(
-				constrainedProperty0, getList2()), new ConstraintConflictsWith(
-				constrainedProperty1, getList0()));
+				constrainedProperty0, getListManyPropManyItem()),
+				new ConstraintConflictsWith(constrainedProperty0,
+						getListManyPropManyItem()),
+				new ConstraintConflictsWith(constrainedProperty1,
+						getListOnePropNoItem()));
 	}
 
 }

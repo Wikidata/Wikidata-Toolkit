@@ -35,7 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class ConstraintRangeTest {
 
 	@Test
-	public void testParameters0() {
+	public void testParametersDate() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P620");
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
@@ -49,7 +49,7 @@ public class ConstraintRangeTest {
 	}
 
 	@Test
-	public void testParameters1() {
+	public void testParametersQuantity() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P1086");
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
@@ -63,7 +63,7 @@ public class ConstraintRangeTest {
 	}
 
 	@Test
-	public void testToStringAndVisit0() {
+	public void testToStringAndVisitDate() {
 		String propertyName = "P620";
 		String templateStr = "{{Constraint:Range|min=1957-10-04|max=now}}";
 		String string = propertyName + " " + templateStr;
@@ -78,7 +78,7 @@ public class ConstraintRangeTest {
 	}
 
 	@Test
-	public void testToStringAndVisit1() {
+	public void testToStringAndVisitQuantity() {
 		String propertyName = "P1086";
 		String templateStr = "{{Constraint:Range|min=1|max=118}}";
 		String string = propertyName + " " + templateStr;
@@ -93,7 +93,7 @@ public class ConstraintRangeTest {
 	}
 
 	@Test
-	public void testEquals0() {
+	public void testEqualsDate() {
 		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
 				.getPropertyIdValue("P620");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
@@ -107,7 +107,7 @@ public class ConstraintRangeTest {
 	}
 
 	@Test
-	public void testEquals1() {
+	public void testEqualsQuantity() {
 		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
 				.getPropertyIdValue("P1086");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper

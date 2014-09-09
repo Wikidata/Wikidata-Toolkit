@@ -59,7 +59,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testParameters0() {
+	public void testParametersItemVal() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P412");
 		ConstraintOneOf constraint = new ConstraintOneOf(constrainedProperty,
@@ -71,7 +71,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testParameters1() {
+	public void testParametersQuantityVal() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P1088");
 		ConstraintOneOf constraint = new ConstraintOneOf(getQuantityValues(),
@@ -83,7 +83,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testToStringAndVisit0() {
+	public void testToStringAndVisitItemVal() {
 		String propertyName = "P412";
 		String templateStr = templateStrItemVal;
 		String string = propertyName + " " + templateStr;
@@ -98,7 +98,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testToStringAndVisit1() {
+	public void testToStringAndVisitQuantityVal() {
 		String propertyName = "P1088";
 		String templateStr = templateStrQuantityVal;
 		String string = propertyName + " " + templateStr;
@@ -113,7 +113,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testEquals0() {
+	public void testEqualsItemVal() {
 		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
 				.getPropertyIdValue("P412");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
@@ -126,7 +126,7 @@ public class ConstraintOneOfTest {
 	}
 
 	@Test
-	public void testEquals1() {
+	public void testEqualsQuantityVal() {
 		PropertyIdValue constrainedProperty0 = ConstraintTestHelper
 				.getPropertyIdValue("P1088");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper

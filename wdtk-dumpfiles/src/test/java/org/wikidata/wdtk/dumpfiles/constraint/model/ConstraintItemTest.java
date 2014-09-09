@@ -61,7 +61,7 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testParameters0() {
+	public void testParametersOneProp() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P141");
 		PropertyIdValue property = ConstraintTestHelper
@@ -77,7 +77,7 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testParameters1() {
+	public void testParametersOnePropManyItem() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P141");
 		PropertyIdValue property = ConstraintTestHelper
@@ -94,7 +94,7 @@ public class ConstraintItemTest {
 	}
 
 	@Test
-	public void testParameters2() {
+	public void testParametersTwoProp() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P1031");
 		PropertyIdValue property = ConstraintTestHelper
