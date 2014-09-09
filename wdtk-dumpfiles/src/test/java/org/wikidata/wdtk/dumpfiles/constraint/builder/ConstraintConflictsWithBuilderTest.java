@@ -47,7 +47,7 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getList0());
+				constrainedProperty, ConstraintConflictsWithTest.getListOnePropNoItem());
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
@@ -63,7 +63,7 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getList1());
+				constrainedProperty, ConstraintConflictsWithTest.getListOnePropOneItem());
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
@@ -78,7 +78,7 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getList2());
+				constrainedProperty, ConstraintConflictsWithTest.getListManyPropManyItem());
 		ConstraintConflictsWithBuilder builder = new ConstraintConflictsWithBuilder();
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);
