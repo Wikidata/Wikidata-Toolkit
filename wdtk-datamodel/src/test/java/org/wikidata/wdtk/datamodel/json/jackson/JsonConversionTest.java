@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
+
 import org.junit.Before;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
@@ -118,6 +120,7 @@ public abstract class JsonConversionTest {
 	protected Map<String, MonolingualTextValueImpl> testMltvMap;
 	protected Map<String, List<MonolingualTextValueImpl>> testAliases;
 	protected ItemIdImpl testItemId;
+	protected PropertyIdImpl testPropertyId;
 	protected Map<String, SiteLinkImpl> testSiteLinkMap;
 	protected StatementImpl testEmptyStatement;
 	protected ClaimImpl testClaim;
@@ -140,6 +143,12 @@ public abstract class JsonConversionTest {
 	public void setupTestItemId(){
 		testItemId = new ItemIdImpl(itemId);
 		assertEquals(testItemId.getId(), itemId);
+	}
+	
+	@Before
+	public void setupTestPropertyId(){
+		testPropertyId = new PropertyIdImpl(propertyId);
+		assertEquals(testPropertyId.getId(), propertyId);
 	}
 	
 	@Before

@@ -20,6 +20,11 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
  * #L%
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -31,6 +36,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class DatatypeIdImpl 
 implements DatatypeIdValue {
 
+	private static Logger logger = LoggerFactory.getLogger(DatatypeIdImpl.class);
+	
 	public static final String jsonTypeItem = "wikibase-item";
 	public static final String jsonTypeGlobe = "globe-coordinate";
 	public static final String jsonTypeUrl = "url";
@@ -51,6 +58,8 @@ implements DatatypeIdValue {
 		case jsonTypeQuantity : this.iri = DT_QUANTITY; break;
 		case jsonTypeString : this.iri = DT_STRING; break;		
 		default : this.iri = null;
+		logger.error("Encountered an unknown datatype while creating DatatypeIdImpl: {} ", datatype);
+		System.err.println("Encountered an unknown datatype while creating DatatypeIdImpl: " + datatype);
 		}
 	}
 	
@@ -64,4 +73,18 @@ implements DatatypeIdValue {
 		return valueVisitor.visit(this);
 	}
 
+	@Override
+	public String toString(){
+		return ToString.toString(this);
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		return Equality.equalsDatatypeIdValue(this, o);
+	}
+	
+	@Override
+	public int hashCode(){
+		return Hash.hashCode(this);
+	}
 }
