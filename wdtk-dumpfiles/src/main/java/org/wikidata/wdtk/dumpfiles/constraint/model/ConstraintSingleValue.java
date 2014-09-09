@@ -92,3 +92,4 @@ public class ConstraintSingleValue implements Constraint {
 	}
 
 }
+

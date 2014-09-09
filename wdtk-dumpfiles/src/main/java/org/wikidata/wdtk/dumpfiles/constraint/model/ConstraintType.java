@@ -136,3 +136,4 @@ public class ConstraintType implements Constraint {
 	}
 
 }
+

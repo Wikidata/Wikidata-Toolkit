@@ -91,3 +91,4 @@ public class ConstraintSymmetric implements Constraint {
 	}
 
 }
+

@@ -152,3 +152,4 @@ public class ConstraintTargetRequiredClaim implements Constraint {
 	}
 
 }
+

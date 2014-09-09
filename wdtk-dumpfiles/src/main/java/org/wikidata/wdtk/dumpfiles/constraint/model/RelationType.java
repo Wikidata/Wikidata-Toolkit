@@ -31,3 +31,4 @@ public enum RelationType {
 	INSTANCE, SUBCLASS
 
 }
+

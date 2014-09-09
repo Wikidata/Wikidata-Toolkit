@@ -75,3 +75,4 @@ public interface Constraint {
 	String getTemplate();
 
 }
+

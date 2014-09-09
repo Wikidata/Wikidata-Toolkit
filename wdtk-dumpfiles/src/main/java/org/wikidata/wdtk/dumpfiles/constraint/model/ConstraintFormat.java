@@ -114,3 +114,4 @@ public class ConstraintFormat implements Constraint {
 		return this.constrainedProperty.getId() + " " + getTemplate();
 	}
 }
+
