@@ -24,7 +24,12 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
+import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
  * Test class for {@link ConstraintRangeBuilder}
@@ -59,6 +64,64 @@ public class ConstraintRangeBuilderTest {
 
 		Assert.assertEquals(new Date(1390348800000L), date3.getDate());
 		Assert.assertEquals(new Date(1390410872000L), date4.getDate());
+
+		Assert.assertEquals(null, builder.parseDate("this is not a date"));
+	}
+
+	@Test
+	public void testParseDouble() {
+		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();
+		Assert.assertEquals(new Double(0), builder.parseDouble("0"));
+		Assert.assertEquals(new Double(-1.23), builder.parseDouble("-1.23"));
+		Assert.assertEquals(new Double(1.23), builder.parseDouble("1.23"));
+		Assert.assertNotEquals(new Double(-1.23), builder.parseDouble("1.23"));
+		Assert.assertEquals(null, builder.parseDouble("this is not a number"));
+	}
+
+	@Test
+	public void testBuilderDate() {
+		String propertyName = "P620";
+		String templateStr = "{{Constraint:Range|min=1957-10-04|max=now}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ConstraintRange expectedConstraint = new ConstraintRange(
+				constrainedProperty, "1957-10-04", "now", true);
+		ConstraintRange constraint = builder.parse(constrainedProperty,
+				template);
+
+		Assert.assertEquals(expectedConstraint, constraint);
+	}
+
+	@Test
+	public void testBuilderQuantity() {
+		String propertyName = "P1086";
+		String templateStr = "{{Constraint:Range|min=1|max=118}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ConstraintRange expectedConstraint = new ConstraintRange(
+				constrainedProperty, "1", "118", false);
+		ConstraintRange constraint = builder.parse(constrainedProperty,
+				template);
+
+		Assert.assertEquals(expectedConstraint, constraint);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testBuilderWrongPropertyType() {
+		String propertyName = "P31"; // instance of
+		String templateStr = "{{Constraint:Range|min=0|max=1}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		builder.parse(constrainedProperty, template);
 	}
 
 }
