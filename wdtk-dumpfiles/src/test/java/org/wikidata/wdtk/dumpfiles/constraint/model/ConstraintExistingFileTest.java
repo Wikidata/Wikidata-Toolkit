@@ -45,13 +45,13 @@ public class ConstraintExistingFileTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P41";
-		String template = "{{Constraint:Existing file}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Existing file}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintExistingFile constraint = new ConstraintExistingFile(
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

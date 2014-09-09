@@ -45,13 +45,13 @@ public class ConstraintQualifierTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P1011";
-		String template = "{{Constraint:Qualifier}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Qualifier}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintQualifier constraint = new ConstraintQualifier(
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

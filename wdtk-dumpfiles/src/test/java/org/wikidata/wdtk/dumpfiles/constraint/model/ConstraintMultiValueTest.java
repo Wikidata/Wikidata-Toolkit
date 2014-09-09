@@ -45,13 +45,13 @@ public class ConstraintMultiValueTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P971";
-		String template = "{{Constraint:Multi value}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Multi value}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintMultiValue constraint = new ConstraintMultiValue(
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

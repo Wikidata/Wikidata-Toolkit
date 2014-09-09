@@ -45,13 +45,13 @@ public class ConstraintUniqueValueTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P238";
-		String template = "{{Constraint:Unique value}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Unique value}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintUniqueValue constraint = new ConstraintUniqueValue(
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

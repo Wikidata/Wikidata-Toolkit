@@ -48,14 +48,14 @@ public class ConstraintFormatTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P218";
-		String template = "{{Constraint:Format|pattern=<nowiki>[a-z]{2}</nowiki>}}";
+		String templateStr = "{{Constraint:Format|pattern=<nowiki>[a-z]{2}</nowiki>}}";
 		String pattern = "[a-z]{2}";
-		String string = propertyName + " " + template;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintFormat constraint = new ConstraintFormat(constrainedProperty,
 				pattern);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -75,4 +75,5 @@ public class ConstraintFormatTest {
 				constrainedProperty0, pattern0), new ConstraintFormat(
 				constrainedProperty1, pattern1));
 	}
+
 }

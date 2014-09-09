@@ -65,13 +65,13 @@ public class ConstraintRangeTest {
 	@Test
 	public void testToStringAndVisit0() {
 		String propertyName = "P620";
-		String template = "{{Constraint:Range|min=1957-10-04|max=now}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Range|min=1957-10-04|max=now}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
 				"1957-10-04", "now", true);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -80,13 +80,13 @@ public class ConstraintRangeTest {
 	@Test
 	public void testToStringAndVisit1() {
 		String propertyName = "P1086";
-		String template = "{{Constraint:Range|min=1|max=118}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Range|min=1|max=118}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
 				"1", "118", false);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

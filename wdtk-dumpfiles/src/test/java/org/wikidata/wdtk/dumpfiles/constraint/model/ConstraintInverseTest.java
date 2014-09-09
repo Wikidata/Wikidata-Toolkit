@@ -48,15 +48,15 @@ public class ConstraintInverseTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P155";
-		String template = "{{Constraint:Inverse|property=P156}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Inverse|property=P156}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		PropertyIdValue property = ConstraintTestHelper
 				.getPropertyIdValue("P156");
 		ConstraintInverse constraint = new ConstraintInverse(
 				constrainedProperty, property);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

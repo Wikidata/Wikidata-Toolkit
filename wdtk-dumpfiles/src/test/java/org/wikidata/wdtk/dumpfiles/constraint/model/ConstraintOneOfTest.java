@@ -85,13 +85,13 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisit0() {
 		String propertyName = "P412";
-		String template = templateStrItemVal;
-		String string = propertyName + " " + template;
+		String templateStr = templateStrItemVal;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintOneOf constraint = new ConstraintOneOf(constrainedProperty,
 				getItemValues());
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -100,13 +100,13 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisit1() {
 		String propertyName = "P1088";
-		String template = templateStrQuantityVal;
-		String string = propertyName + " " + template;
+		String templateStr = templateStrQuantityVal;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintOneOf constraint = new ConstraintOneOf(getQuantityValues(),
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

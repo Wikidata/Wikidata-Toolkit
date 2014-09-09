@@ -129,13 +129,13 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit0() {
 		String propertyName = "P494";
-		String template = templateStrOnePropNoItem;
-		String string = propertyName + " " + template;
+		String templateStr = templateStrOnePropNoItem;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
 				constrainedProperty, getList0());
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -144,13 +144,13 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit1() {
 		String propertyName = "P969";
-		String template = templateStrOnePropOneItem;
-		String string = propertyName + " " + template;
+		String templateStr = templateStrOnePropOneItem;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
 				constrainedProperty, getList1());
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -159,13 +159,13 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisit2() {
 		String propertyName = "P569";
-		String template = templateStrManyPropManyItem;
-		String string = propertyName + " " + template;
+		String templateStr = templateStrManyPropManyItem;
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith constraint = new ConstraintConflictsWith(
 				constrainedProperty, getList2());
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

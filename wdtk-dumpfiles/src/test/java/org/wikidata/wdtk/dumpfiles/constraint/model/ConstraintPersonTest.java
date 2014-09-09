@@ -44,12 +44,12 @@ public class ConstraintPersonTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P27";
-		String template = "{{Constraint:Person}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Person}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintPerson constraint = new ConstraintPerson(constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

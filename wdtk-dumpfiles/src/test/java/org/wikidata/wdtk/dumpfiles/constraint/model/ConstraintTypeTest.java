@@ -50,14 +50,14 @@ public class ConstraintTypeTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P30";
-		String template = "{{Constraint:Type|class=Q2221906|relation=instance}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Type|class=Q2221906|relation=instance}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q2221906");
 		ConstraintType constraint = new ConstraintType(constrainedProperty,
 				item, RelationType.INSTANCE);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

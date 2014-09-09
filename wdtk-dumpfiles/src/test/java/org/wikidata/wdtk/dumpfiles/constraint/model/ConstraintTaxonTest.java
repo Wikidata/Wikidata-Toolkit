@@ -44,12 +44,12 @@ public class ConstraintTaxonTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P105";
-		String template = "{{Constraint:Taxon}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Taxon}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintTaxon constraint = new ConstraintTaxon(constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

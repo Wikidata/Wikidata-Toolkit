@@ -45,13 +45,13 @@ public class ConstraintSymmetricTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P26";
-		String template = "{{Constraint:Symmetric}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Symmetric}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintSymmetric constraint = new ConstraintSymmetric(
 				constrainedProperty);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);

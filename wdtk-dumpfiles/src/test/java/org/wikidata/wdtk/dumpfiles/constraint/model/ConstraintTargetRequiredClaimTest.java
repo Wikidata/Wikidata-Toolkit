@@ -54,8 +54,8 @@ public class ConstraintTargetRequiredClaimTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P9";
-		String template = "{{Constraint:Target required claim|property=P21|item=Q6581072}}";
-		String string = propertyName + " " + template;
+		String templateStr = "{{Constraint:Target required claim|property=P21|item=Q6581072}}";
+		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		PropertyIdValue property = ConstraintTestHelper
@@ -63,7 +63,7 @@ public class ConstraintTargetRequiredClaimTest {
 		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q6581072");
 		ConstraintTargetRequiredClaim constraint = new ConstraintTargetRequiredClaim(
 				constrainedProperty, property, item);
-		Assert.assertEquals(template, constraint.getTemplate());
+		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
