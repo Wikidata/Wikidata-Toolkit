@@ -70,9 +70,8 @@ public class TestDatatypeId extends JsonConversionTest {
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_URL);
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testIriForUnknownType(){
 		DatatypeIdImpl uut = new DatatypeIdImpl("some wrong type");
-		assertEquals(uut.getIri(), null);
 	}
 }
