@@ -84,4 +84,14 @@ public class TestStatement extends JsonConversionTest {
 		wrongId.setClaim(testClaim);
 		assertFalse(testEmptyStatement.equals(wrongId));
 	}
+	
+	@Test
+	public void testToString(){
+		assertNotNull(testEmptyStatement.toString());
+	}
+	
+	@Test
+	public void testHashCode(){
+		assertNotNull(testEmptyStatement.hashCode());
+	}
 }

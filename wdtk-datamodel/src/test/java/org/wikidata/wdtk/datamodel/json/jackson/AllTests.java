@@ -31,13 +31,15 @@ import org.junit.runner.RunWith;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ 
 	TestItemDocument.class, 
+	TestPropertyDocument.class,
 	TestMonolingualTextValue.class,
 	TestSiteLink.class, 
 	TestSnakJson.class, 
 	TestValue.class, 
 	TestStatement.class,
 	TestDatatypeId.class,
-	TestAliasBug.class})
+	TestAliasBug.class,
+	TestHelper.class})
 public class AllTests {
 	// nothing
 }
