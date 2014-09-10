@@ -41,6 +41,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	public static final String jsonTypeTime = "time";
 	public static final String jsonTypeQuantity = "quantity";
 	public static final String jsonTypeString = "string";
+	public static final String jsonTypeMonolingualText = "monolingualtext ";
 
 	private String iri;
 
@@ -76,6 +77,9 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 			break;
 		case jsonTypeString:
 			this.iri = DT_STRING;
+			break;
+		case jsonTypeMonolingualText:
+			this.iri = DT_MONOLINGUAL_TEXT;
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown datatype \"" + datatype
