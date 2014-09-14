@@ -33,9 +33,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClaim;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintUniqueValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintValueType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintVisitor;
 
 /**
@@ -54,14 +52,14 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintSingleValue constraint) {
 		(new ConstraintSingleValueRenderer(this.rendererFormat))
-		.render(constraint);
+				.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintUniqueValue constraint) {
 		(new ConstraintUniqueValueRenderer(this.rendererFormat))
-		.render(constraint);
+				.render(constraint);
 		return true;
 	}
 
@@ -100,26 +98,13 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintTargetRequiredClaim constraint) {
 		(new ConstraintTargetRequiredClaimRenderer(this.rendererFormat))
-		.render(constraint);
+				.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintItem constraint) {
 		(new ConstraintItemRenderer(this.rendererFormat)).render(constraint);
-		return true;
-	}
-
-	@Override
-	public Boolean visit(ConstraintType constraint) {
-		(new ConstraintTypeRenderer(this.rendererFormat)).render(constraint);
-		return true;
-	}
-
-	@Override
-	public Boolean visit(ConstraintValueType constraint) {
-		(new ConstraintValueTypeRenderer(this.rendererFormat))
-		.render(constraint);
 		return true;
 	}
 
@@ -132,14 +117,14 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintMultiValue constraint) {
 		(new ConstraintMultiValueRenderer(this.rendererFormat))
-		.render(constraint);
+				.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintConflictsWith constraint) {
 		(new ConstraintConflictsWithRenderer(this.rendererFormat))
-		.render(constraint);
+				.render(constraint);
 		return true;
 	}
 
