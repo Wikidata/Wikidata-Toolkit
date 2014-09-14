@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,22 +28,20 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintPerson;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifier;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClaim;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTaxon;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintUniqueValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintValueType;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintVisitor;
 
 /**
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 
@@ -56,14 +54,14 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintSingleValue constraint) {
 		(new ConstraintSingleValueRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintUniqueValue constraint) {
 		(new ConstraintUniqueValueRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
@@ -102,7 +100,7 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintTargetRequiredClaim constraint) {
 		(new ConstraintTargetRequiredClaimRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
@@ -121,7 +119,7 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintValueType constraint) {
 		(new ConstraintValueTypeRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
@@ -134,32 +132,20 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	@Override
 	public Boolean visit(ConstraintMultiValue constraint) {
 		(new ConstraintMultiValueRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintConflictsWith constraint) {
 		(new ConstraintConflictsWithRenderer(this.rendererFormat))
-				.render(constraint);
+		.render(constraint);
 		return true;
 	}
 
 	@Override
 	public Boolean visit(ConstraintQualifier constraint) {
 		(new ConstraintQualifierRenderer()).render(constraint);
-		return true;
-	}
-
-	@Override
-	public Boolean visit(ConstraintPerson constraint) {
-		(new ConstraintPersonRenderer(this.rendererFormat)).render(constraint);
-		return true;
-	}
-
-	@Override
-	public Boolean visit(ConstraintTaxon constraint) {
-		(new ConstraintTaxonRenderer(this.rendererFormat)).render(constraint);
 		return true;
 	}
 

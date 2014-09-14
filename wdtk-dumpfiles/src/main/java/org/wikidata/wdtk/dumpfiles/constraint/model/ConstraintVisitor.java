@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,16 +22,16 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
 
 /**
  * This class models a visitor of {@link Constraint}.
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  * @see Constraint
  */
 public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintSingleValue}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -40,7 +40,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintUniqueValue}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -49,7 +49,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintFormat}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -58,7 +58,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintOneOf}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -67,7 +67,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintSymmetric}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -76,7 +76,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintInverse}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -85,7 +85,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintExistingFile}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -94,7 +94,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintTargetRequiredClaim}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -103,7 +103,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintItem}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -112,7 +112,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintType}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -121,7 +121,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintValueType}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -130,7 +130,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintRange}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -139,7 +139,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintMultiValue}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -148,7 +148,7 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintConflictsWith}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
@@ -157,30 +157,11 @@ public interface ConstraintVisitor<T> {
 
 	/**
 	 * Visits a {@link ConstraintQualifier}.
-	 * 
+	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
 	 */
 	T visit(ConstraintQualifier constraint);
 
-	/**
-	 * Visits a {@link ConstraintPerson}.
-	 * 
-	 * @param constraint
-	 *            constraint
-	 * @return the result of the visit
-	 */
-	T visit(ConstraintPerson constraint);
-
-	/**
-	 * Visits a {@link ConstraintTaxon}.
-	 * 
-	 * @param constraint
-	 *            constraint
-	 * @return the result of the visit
-	 */
-	T visit(ConstraintTaxon constraint);
-
 }
-

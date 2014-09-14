@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.processor;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +23,13 @@ package org.wikidata.wdtk.dumpfiles.constraint.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintBuilderConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
  * This class models an object that simplifies a template.
- * 
+ *
  * @author Julian Mendez
  *
  */
@@ -55,9 +56,11 @@ public class TemplateSimplifier {
 
 	public List<Template> expandTemplates(Template origTemplate) {
 		List<Template> ret = new ArrayList<Template>();
-		if (origTemplate.getName().equalsIgnoreCase("Person")) {
+		if (origTemplate.getName().equalsIgnoreCase(
+				ConstraintBuilderConstant.C_PERSON)) {
 			ret.addAll(this.person);
-		} else if (origTemplate.getName().equalsIgnoreCase("Taxon")) {
+		} else if (origTemplate.getName().equalsIgnoreCase(
+				ConstraintBuilderConstant.C_TAXON)) {
 			ret.addAll(this.taxon);
 		} else {
 			ret.add(origTemplate);

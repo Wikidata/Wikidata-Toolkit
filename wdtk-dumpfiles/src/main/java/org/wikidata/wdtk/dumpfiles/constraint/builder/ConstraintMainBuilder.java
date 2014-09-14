@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,9 +38,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintMainBuilder implements ConstraintBuilder {
 
@@ -106,7 +106,7 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.substring(0, pos).trim()
-								.toUpperCase(),
+						.toUpperCase(),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));
@@ -131,7 +131,7 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 	/**
 	 * Creates a constraint based on a template, or <code>null</code> if the
 	 * template does not correspond to a known constraint
-	 * 
+	 *
 	 * @param template
 	 *            template
 	 * @return a constraint based on a template, or <code>null</code> if the
@@ -208,10 +208,6 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				new ConstraintConflictsWithBuilder());
 		register(ConstraintBuilderConstant.C_QUALIFIER,
 				new ConstraintQualifierBuilder());
-		register(ConstraintBuilderConstant.C_PERSON,
-				new ConstraintPersonBuilder());
-		register(ConstraintBuilderConstant.C_TAXON,
-				new ConstraintTaxonBuilder());
 	}
 
 }
