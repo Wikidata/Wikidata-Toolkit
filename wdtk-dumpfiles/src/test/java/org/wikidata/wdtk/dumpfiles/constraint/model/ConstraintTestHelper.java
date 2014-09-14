@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,9 +27,9 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * This class contains convenience methods used in the constraint test classes.
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintTestHelper {
 
@@ -37,7 +37,7 @@ public class ConstraintTestHelper {
 
 	/**
 	 * Returns the property id value for the specified property name.
-	 * 
+	 *
 	 * @param propertyName
 	 *            property name
 	 * @return the property id value for the specified property name
@@ -49,7 +49,7 @@ public class ConstraintTestHelper {
 
 	/**
 	 * Returns the item id value for the specified property name.
-	 * 
+	 *
 	 * @param itemName
 	 *            item name
 	 * @return the item id value for the specified property name
@@ -61,7 +61,7 @@ public class ConstraintTestHelper {
 
 	/**
 	 * Tests that two constraints are equal and both different from a third one.
-	 * 
+	 *
 	 * @param firstTwin
 	 *            the first property, which is equal to the second one
 	 * @param secondTwin
@@ -173,16 +173,7 @@ public class ConstraintTestHelper {
 				return "ConstraintQualifier";
 			}
 
-			@Override
-			public String visit(ConstraintPerson constraint) {
-				return "ConstraintPerson";
-			}
-
-			@Override
-			public String visit(ConstraintTaxon constraint) {
-				return "ConstraintTaxon";
-			}
 		};
 	}
-}
 
+}
