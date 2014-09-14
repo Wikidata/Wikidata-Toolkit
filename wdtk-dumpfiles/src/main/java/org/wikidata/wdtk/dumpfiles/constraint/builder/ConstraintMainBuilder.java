@@ -45,6 +45,10 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 public class ConstraintMainBuilder implements ConstraintBuilder {
 
 	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
+	public static final PropertyIdValue PROPERTY_INSTANCE_OF = (new DataObjectFactoryImpl())
+			.getPropertyIdValue("P31", ConstraintMainBuilder.PREFIX_WIKIDATA);
+	public static final PropertyIdValue PROPERTY_SUBCLASS_OF = (new DataObjectFactoryImpl())
+			.getPropertyIdValue("P279", ConstraintMainBuilder.PREFIX_WIKIDATA);
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ConstraintMainBuilder.class);
@@ -106,7 +110,7 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
 						propertyValuesStr.substring(0, pos).trim()
-						.toUpperCase(),
+								.toUpperCase(),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));

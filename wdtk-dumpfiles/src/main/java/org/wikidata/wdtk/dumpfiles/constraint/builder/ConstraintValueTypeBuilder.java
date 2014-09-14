@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,15 +23,15 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintValueType;
-import org.wikidata.wdtk.dumpfiles.constraint.model.RelationType;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClaim;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
- * An object of this class is a builder of a 'Value type' constraint.
- * 
+ * An object of this class is a builder of a 'Value type' constraint. This is a
+ * particular case of a 'Target required claim' constraint.
+ *
  * @author Julian Mendez
- * 
+ *
  */
 class ConstraintValueTypeBuilder implements ConstraintBuilder {
 
@@ -42,9 +42,9 @@ class ConstraintValueTypeBuilder implements ConstraintBuilder {
 	}
 
 	@Override
-	public ConstraintValueType parse(PropertyIdValue constrainedProperty,
-			Template template) {
-		ConstraintValueType ret = null;
+	public ConstraintTargetRequiredClaim parse(
+			PropertyIdValue constrainedProperty, Template template) {
+		ConstraintTargetRequiredClaim ret = null;
 		String classStr = template.getValue(ConstraintBuilderConstant.P_CLASS);
 		String relationStr = template
 				.getValue(ConstraintBuilderConstant.P_RELATION);
@@ -55,11 +55,11 @@ class ConstraintValueTypeBuilder implements ConstraintBuilder {
 					classStr.toUpperCase(),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
 			if (relationStr.equals(ConstraintBuilderConstant.V_INSTANCE)) {
-				ret = new ConstraintValueType(constrainedProperty, classId,
-						RelationType.INSTANCE);
+				ret = new ConstraintTargetRequiredClaim(constrainedProperty,
+						ConstraintMainBuilder.PROPERTY_INSTANCE_OF, classId);
 			} else if (relationStr.equals(ConstraintBuilderConstant.V_SUBCLASS)) {
-				ret = new ConstraintValueType(constrainedProperty, classId,
-						RelationType.SUBCLASS);
+				ret = new ConstraintTargetRequiredClaim(constrainedProperty,
+						ConstraintMainBuilder.PROPERTY_SUBCLASS_OF, classId);
 			}
 		}
 		return ret;

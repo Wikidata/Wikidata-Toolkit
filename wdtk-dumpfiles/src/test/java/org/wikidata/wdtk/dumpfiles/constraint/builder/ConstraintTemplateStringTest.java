@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,15 +30,15 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
  * Test class for {@link ConstraintTemplateString}.
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintTemplateStringTest {
 
 	/**
 	 * Returns the property id value for the specified property name.
-	 * 
+	 *
 	 * @param propertyName
 	 *            property name
 	 * @return the property id value for the specified property name
@@ -96,10 +96,11 @@ public class ConstraintTemplateStringTest {
 		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Type|class=Q1048835|relation=instance}}";
+		String expectedText = "{{Constraint:Item|property=P31|item=Q1048835}}";
 		Template template0 = parser.parse(text0);
 		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P6"),
 				template0);
-		Assert.assertEquals(text0, c0.getTemplate());
+		Assert.assertEquals(expectedText, c0.getTemplate());
 	}
 
 	@Test
@@ -108,10 +109,11 @@ public class ConstraintTemplateStringTest {
 		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
 
 		String text0 = "{{Constraint:Value type|class=Q5|relation=instance}}";
+		String expectedText = "{{Constraint:Target required claim|property=P31|item=Q5}}";
 		Template template0 = parser.parse(text0);
 		Constraint c0 = constraintBuilder.parse(getPropertyIdValue("P6"),
 				template0);
-		Assert.assertEquals(text0, c0.getTemplate());
+		Assert.assertEquals(expectedText, c0.getTemplate());
 	}
 
 }
