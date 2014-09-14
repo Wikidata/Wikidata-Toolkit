@@ -144,16 +144,6 @@ public class ConstraintTestHelper {
 			}
 
 			@Override
-			public String visit(ConstraintType constraint) {
-				return "ConstraintType";
-			}
-
-			@Override
-			public String visit(ConstraintValueType constraint) {
-				return "ConstraintValueType";
-			}
-
-			@Override
 			public String visit(ConstraintRange constraint) {
 				return "ConstraintRange";
 			}

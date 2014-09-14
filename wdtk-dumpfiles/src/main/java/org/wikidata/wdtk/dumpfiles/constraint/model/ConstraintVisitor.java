@@ -111,24 +111,6 @@ public interface ConstraintVisitor<T> {
 	T visit(ConstraintItem constraint);
 
 	/**
-	 * Visits a {@link ConstraintType}.
-	 *
-	 * @param constraint
-	 *            constraint
-	 * @return the result of the visit
-	 */
-	T visit(ConstraintType constraint);
-
-	/**
-	 * Visits a {@link ConstraintValueType}.
-	 *
-	 * @param constraint
-	 *            constraint
-	 * @return the result of the visit
-	 */
-	T visit(ConstraintValueType constraint);
-
-	/**
 	 * Visits a {@link ConstraintRange}.
 	 *
 	 * @param constraint
