@@ -34,11 +34,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class EntityId {
+	// TODO replace IllegalArgumentException with a checked one
+	// NOTE make sure to adapt all methods, once more types then only
+	// "item" are supported
 
 	public EntityId() {
 	}
 
-	public EntityId(String entityType, int numericId) {
+	/**
+	 * The only known entity type so far is "item". In the future "property"
+	 * might also be available.
+	 * 
+	 * @param entityType
+	 *            (case-sensitive)
+	 * @param numericId
+	 * @throws IllegalArgumentException
+	 *             if the entityType was unrecognized
+	 */
+	public EntityId(String entityType, int numericId)
+			throws IllegalArgumentException {
+		if (!entityType.equals("item")) {
+			throw new IllegalArgumentException(
+					"Unknown type given for EntityId");
+		}
 		this.entityType = entityType;
 		this.numericId = numericId;
 	}
@@ -55,7 +73,12 @@ public class EntityId {
 	}
 
 	@JsonProperty("entity-type")
-	public void setEntityType(String entityType) {
+	public void setEntityType(String entityType)
+			throws IllegalArgumentException {
+		if (!entityType.equals("item")) {
+			throw new IllegalArgumentException(
+					"Unknown type given for EntityId");
+		}
 		this.entityType = entityType;
 	}
 
@@ -78,12 +101,7 @@ public class EntityId {
 	 */
 	@JsonIgnore
 	public String getStringId() {
-		if ("item".equals(this.entityType)) {
-			return "Q" + this.numericId;
-		} else { // even properties do not occur as values yet
-			return "EntityId of unknown type \"" + this.entityType
-					+ "\" with numeric id " + this.numericId;
-		}
+		return "Q" + this.numericId;
 	}
 
 	/**
@@ -94,11 +112,7 @@ public class EntityId {
 	 */
 	@JsonIgnore
 	public String getDatamodelEntityType() {
-		if ("item".equals(this.entityType)) {
-			return EntityIdValue.ET_ITEM;
-		} else { // even properties do not occur as values yet
-			return "Unknown entity type: " + this.entityType;
-		}
+		return EntityIdValue.ET_ITEM;
 	}
 
 	@Override

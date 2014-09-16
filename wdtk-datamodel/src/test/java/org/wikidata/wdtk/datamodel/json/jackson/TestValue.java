@@ -129,11 +129,26 @@ public class TestValue extends JsonConversionTest {
 		
 		try {
 			ValueImpl result = mapper.readValue(timeValueJson, ValueImpl.class);
+			TimeValueImpl castedResult = (TimeValueImpl)result;
 			
 			assertNotNull(result);
 			assertTrue(result instanceof TimeValueImpl);
 			assertEquals(result.getType(), testTimeValue.getType());
-			assertEquals(((TimeValueImpl)result).getValue(), testTimeValue.getValue());
+			assertEquals((castedResult).getValue(), testTimeValue.getValue());
+			
+			// test if every field contains the correct value
+			assertEquals(castedResult.getSecond(), testTimeValue.getSecond());
+			assertEquals(castedResult.getMinute(), testTimeValue.getMinute());
+			assertEquals(castedResult.getHour(), testTimeValue.getHour());
+			assertEquals(castedResult.getDay(), testTimeValue.getDay());
+			assertEquals(castedResult.getMonth(), testTimeValue.getMonth());
+			assertEquals(castedResult.getYear(), testTimeValue.getYear());
+			
+			assertEquals(castedResult.getAfterTolerance(), testTimeValue.getAfterTolerance());
+			assertEquals(castedResult.getBeforeTolerance(), testTimeValue.getBeforeTolerance());
+			assertEquals(castedResult.getPrecision(), testTimeValue.getPrecision());
+			assertEquals(castedResult.getPreferredCalendarModel(), testTimeValue.getPreferredCalendarModel());
+			assertEquals(castedResult.getTimezoneOffset(), testTimeValue.getTimezoneOffset());
 			
 			// test against the same time, created on a different way
 			Time otherTime = new Time(2013, (byte)10, (byte)28, (byte)0, (byte)0, (byte)0, 0, 0, 0, 11, "http://www.wikidata.org/entity/Q1985727");

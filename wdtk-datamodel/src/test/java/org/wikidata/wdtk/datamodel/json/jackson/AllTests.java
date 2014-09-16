@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 	TestValue.class, 
 	TestStatement.class,
 	TestDatatypeId.class,
+	TestInnerValueObjects.class,
 	TestAliasBug.class,
 	TestHelper.class})
 public class AllTests {
