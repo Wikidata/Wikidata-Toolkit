@@ -50,11 +50,10 @@ class ConstraintFormatBuilder implements ConstraintBuilder {
 				&& (template.getParameters().size() > 0)) {
 			String plainPattern = template.getParameters().get(
 					ConstraintBuilderConstant.P_PATTERN);
-			if (plainPattern == null) {
-				plainPattern = "";
+			if (plainPattern != null) {
+				String pattern = removeNowiki(plainPattern);
+				ret = new ConstraintFormat(constrainedProperty, pattern);
 			}
-			String pattern = removeNowiki(plainPattern);
-			ret = new ConstraintFormat(constrainedProperty, pattern);
 		}
 		return ret;
 	}
