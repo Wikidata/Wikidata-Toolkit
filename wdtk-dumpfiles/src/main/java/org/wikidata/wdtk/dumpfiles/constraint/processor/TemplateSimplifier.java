@@ -26,6 +26,7 @@ import java.util.List;
 import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintBuilderConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateScanner;
 
 /**
  * This class models an object that simplifies a template.
@@ -35,23 +36,28 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class TemplateSimplifier {
 
+	final String PAGE_PERSON = "{{Constraint:Type|class=Q215627|relation=instance}}"
+			+ "\n{{Constraint:Item|property=P21}}"
+			+ "\n{{Constraint:Item|property=P19}}"
+			+ "\n{{Constraint:Item|property=P569}}";
+
+	final String PAGE_TAXON = "{{Constraint:Type|class=Q16521|relation=instance}}"
+			+ "\n{{Constraint:Item|property=P225}}"
+			+ "\n{{Constraint:Item|property=P171}}"
+			+ "\n{{Constraint:Item|property=P105}}";
+
 	final List<Template> person = new ArrayList<Template>();
 	final List<Template> taxon = new ArrayList<Template>();
 
 	public TemplateSimplifier() {
+		TemplateScanner scanner = new TemplateScanner();
 		TemplateParser parser = new TemplateParser();
-
-		this.person.add(parser
-				.parse("{{Constraint:Type|class=Q215627|relation=instance}}"));
-		this.person.add(parser.parse("{{Constraint:Item|property=P21}}"));
-		this.person.add(parser.parse("{{Constraint:Item|property=P19}}"));
-		this.person.add(parser.parse("{{Constraint:Item|property=P569}}"));
-
-		this.taxon.add(parser
-				.parse("{{Constraint:Type|class=Q16521|relation=instance}}"));
-		this.taxon.add(parser.parse("{{Constraint:Item|property=P225}}"));
-		this.taxon.add(parser.parse("{{Constraint:Item|property=P171}}"));
-		this.taxon.add(parser.parse("{{Constraint:Item|property=P105}}"));
+		for (String templateStr : scanner.getTemplates(PAGE_PERSON)) {
+			this.person.add(parser.parse(templateStr));
+		}
+		for (String templateStr : scanner.getTemplates(PAGE_TAXON)) {
+			this.taxon.add(parser.parse(templateStr));
+		}
 	}
 
 	public List<Template> expandTemplates(Template origTemplate) {
