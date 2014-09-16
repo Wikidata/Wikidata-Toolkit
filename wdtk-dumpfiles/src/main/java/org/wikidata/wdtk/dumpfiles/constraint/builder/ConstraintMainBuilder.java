@@ -160,10 +160,27 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	public ConstraintBuilder getConstraintBuilder(String str) {
-		return this.mapOfBuilders.get(str);
+	/**
+	 * Returns a constraint builder for the given identifier.
+	 * 
+	 * @param name
+	 *            identifier
+	 * @return a constraint builder for the given identifier
+	 */
+	public ConstraintBuilder getConstraintBuilder(String name) {
+		return this.mapOfBuilders.get(name);
 	}
 
+	/**
+	 * Normalizes a string to be a lower case string, starting with a capital
+	 * letter, and without underscores. For example, "LISP" &rarr; "Lisp",
+	 * "text" &rarr; "Text", "Big_Data" &rarr; "Big data", "2-Aminoethanol"
+	 * &rarr; "2-aminoethanol"
+	 * 
+	 * @param str
+	 *            string
+	 * @return a normalized string
+	 */
 	public String normalize(String str) {
 		String ret = "";
 		if (str != null) {
