@@ -38,7 +38,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 public class ConstraintValueTypeBuilderTest {
 
 	@Test
-	public void testBuilder() {
+	public void testBuilderInstance() {
 		String propertyName = "P30";
 		String templateStr = "{{Constraint:Value type|class=Q5107|relation=instance}}";
 		Template template = (new TemplateParser()).parse(templateStr);
@@ -49,6 +49,25 @@ public class ConstraintValueTypeBuilderTest {
 		ConstraintTargetRequiredClaim expectedConstraint = new ConstraintTargetRequiredClaim(
 				constrainedProperty,
 				ConstraintMainBuilder.PROPERTY_INSTANCE_OF, item);
+		ConstraintValueTypeBuilder builder = new ConstraintValueTypeBuilder();
+		ConstraintTargetRequiredClaim constraint = builder.parse(
+				constrainedProperty, template);
+
+		Assert.assertEquals(expectedConstraint, constraint);
+	}
+
+	@Test
+	public void testBuilderSubclass() {
+		String propertyName = "P121";
+		String templateStr = "{{Constraint:Value type|class=Q11436|relation=subclass}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q11436");
+		ConstraintTargetRequiredClaim expectedConstraint = new ConstraintTargetRequiredClaim(
+				constrainedProperty,
+				ConstraintMainBuilder.PROPERTY_SUBCLASS_OF, item);
 		ConstraintValueTypeBuilder builder = new ConstraintValueTypeBuilder();
 		ConstraintTargetRequiredClaim constraint = builder.parse(
 				constrainedProperty, template);

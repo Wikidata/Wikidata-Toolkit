@@ -38,7 +38,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 public class ConstraintTypeBuilderTest {
 
 	@Test
-	public void testBuilder() {
+	public void testBuilderInstance() {
 		String propertyName = "P30";
 		String templateStr = "{{Constraint:Type|class=Q2221906|relation=instance}}";
 		Template template = (new TemplateParser()).parse(templateStr);
@@ -49,6 +49,27 @@ public class ConstraintTypeBuilderTest {
 		ConstraintItem expectedConstraint = new ConstraintItem(
 				constrainedProperty,
 				ConstraintMainBuilder.PROPERTY_INSTANCE_OF, item, null, null,
+				null, null);
+
+		ConstraintTypeBuilder builder = new ConstraintTypeBuilder();
+		ConstraintItem constraint = builder
+				.parse(constrainedProperty, template);
+
+		Assert.assertEquals(expectedConstraint, constraint);
+	}
+
+	@Test
+	public void testBuilderSubclass() {
+		String propertyName = "P128";
+		String templateStr = "{{Constraint:Type|class=Q8054|relation=subclass}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ItemIdValue item = ConstraintTestHelper.getItemIdValue("Q8054");
+		ConstraintItem expectedConstraint = new ConstraintItem(
+				constrainedProperty,
+				ConstraintMainBuilder.PROPERTY_SUBCLASS_OF, item, null, null,
 				null, null);
 
 		ConstraintTypeBuilder builder = new ConstraintTypeBuilder();
