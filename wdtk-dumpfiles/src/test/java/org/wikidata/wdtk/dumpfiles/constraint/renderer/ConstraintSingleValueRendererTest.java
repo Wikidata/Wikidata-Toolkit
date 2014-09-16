@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Model;
 import org.openrdf.rio.RDFHandlerException;
@@ -45,9 +46,18 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintSingleValueRendererTest {
 
+	ByteArrayOutputStream output;
+
+	final String fileName = "single-value";
+
 	PropertyIdValue getPropertyIdValue(String propertyName) {
 		return (new DataObjectFactoryImpl()).getPropertyIdValue(propertyName,
 				ConstraintMainBuilder.PREFIX_WIKIDATA);
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		this.output = new ByteArrayOutputStream();
 	}
 
 	public Constraint getConstraint() {
@@ -71,23 +81,37 @@ public class ConstraintSingleValueRendererTest {
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
 			RDFHandlerException, IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		serializeConstraint(new RdfRendererFormat(output));
-		Model expected = RdfTestHelpers
-				.parseRdf(RdfTestHelpers
-						.getResourceFromFile("constraint/rdf/constraint-single-value.rdf"));
-		Model obtained = RdfTestHelpers.parseRdf(output.toString());
+		serializeConstraint(new RdfRendererFormat(this.output));
+		Model expected = RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile(RdfTestHelpers.RDF_PATH + fileName
+						+ RdfTestHelpers.RDF_EXT));
+		Model obtained = RdfTestHelpers.parseRdf(this.output.toString());
 		Assert.assertEquals(expected, obtained);
 	}
 
 	@Test
 	public void testOwl2FunctionalRenderer() throws IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		serializeConstraint(new Owl2FunctionalRendererFormat(output));
+		serializeConstraint(new Owl2FunctionalRendererFormat(this.output));
 		String expected = RdfTestHelpers
-				.getResourceFromFile("constraint/owl/constraint-single-value.owl")
-				+ "\n";
-		String obtained = output.toString();
+				.getResourceFromFile(RdfTestHelpers.OWL_PATH + fileName
+						+ RdfTestHelpers.OWL_EXT);
+		String obtained = this.output.toString();
+		Assert.assertEquals(expected, obtained);
+	}
+
+	@Test
+	public void testRenderConstraint() throws IOException {
+		ConstraintSingleValueRenderer renderer = new ConstraintSingleValueRenderer(
+				new Owl2FunctionalRendererFormat(this.output));
+
+		renderer.render((PropertyIdValue) null);
+		Assert.assertEquals("", output.toString());
+
+		renderer.renderConstraint(getConstraint());
+		String expected = RdfTestHelpers
+				.getResourceFromFile(RdfTestHelpers.OWLPART_PATH + fileName
+						+ RdfTestHelpers.OWLPART_EXT);
+		String obtained = this.output.toString();
 		Assert.assertEquals(expected, obtained);
 	}
 

@@ -34,7 +34,18 @@ import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.StatementCollector;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
+/**
+ * Convenience methods for unit tests.
+ *
+ */
 public class RdfTestHelpers {
+
+	public static final String OWL_EXT = ".owl";
+	public static final String OWL_PATH = "constraint/owl/";
+	public static final String OWLPART_EXT = ".owl";
+	public static final String OWLPART_PATH = "constraint/owlpart/";
+	public static final String RDF_EXT = ".rdf";
+	public static final String RDF_PATH = "constraint/rdf/";
 
 	public static String getResourceFromFile(String fileName)
 			throws IOException {
