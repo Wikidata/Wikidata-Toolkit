@@ -89,6 +89,7 @@ public class ConstraintItemTest {
 		Assert.assertEquals(property, constraint.getProperty());
 		Assert.assertEquals(getItems(), constraint.getItems());
 		Assert.assertEquals(null, constraint.getItem());
+		Assert.assertEquals(null, constraint.getItem2());
 		Assert.assertEquals(Collections.<ItemIdValue> emptyList(),
 				constraint.getExceptions());
 	}
@@ -223,4 +224,3 @@ public class ConstraintItemTest {
 	}
 
 }
-
