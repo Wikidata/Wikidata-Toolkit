@@ -45,7 +45,7 @@ public class PropertyValues {
 	final List<ItemIdValue> items = new ArrayList<ItemIdValue>();
 
 	/**
-	 * Constructs a set of pairs for all the items.
+	 * Constructs a set of pairs for all the items, for a given property.
 	 * 
 	 * @param property
 	 *            property
@@ -55,12 +55,15 @@ public class PropertyValues {
 	}
 
 	/**
-	 * Constructs a set of pairs for some items.
+	 * Constructs a set of pairs for some items. When an empty list of items is
+	 * used, the set of pairs property-value is empty. This is different from
+	 * the case which only the property is used to construct the set of pairs
+	 * property-value.
 	 * 
 	 * @param property
 	 *            property
 	 * @param list
-	 *            of items
+	 *            list of items
 	 */
 	public PropertyValues(PropertyIdValue property, List<ItemIdValue> items) {
 		this(property, items, false);
@@ -82,7 +85,7 @@ public class PropertyValues {
 	 * @param property
 	 *            property
 	 * @param list
-	 *            of items
+	 *            list of items
 	 * @param hasAllValues
 	 *            <code>true</code> if the property spans all values
 	 */
@@ -173,4 +176,3 @@ public class PropertyValues {
 	}
 
 }
-
