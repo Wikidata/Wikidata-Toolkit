@@ -30,6 +30,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.MonolingualTextDatavalueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
@@ -236,4 +237,38 @@ public class TestValue extends JsonConversionTest {
 		}
 	}
 
+	
+	@Test
+	public void testMltDatavalueToJson(){
+		
+		try {
+			String result = mapper.writeValueAsString(testMltDatavalue);
+			JsonComparator.compareJsonStrings(mltDatavalueJson, result);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			fail("Converting POJO to JSON failed");
+		}
+	}
+	
+	@Test
+	public void testMltDatavalueToJava(){
+		
+		try {
+			ValueImpl result = mapper.readValue(mltDatavalueJson, ValueImpl.class);
+			
+			assertNotNull(result);
+			assertTrue(result instanceof MonolingualTextDatavalueImpl);
+			assertEquals(((MonolingualTextDatavalueImpl)result), testMltDatavalue);
+			
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			fail("Parsing failed");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			fail("Json mapping failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("IO failed");
+		}
+	}
 }
