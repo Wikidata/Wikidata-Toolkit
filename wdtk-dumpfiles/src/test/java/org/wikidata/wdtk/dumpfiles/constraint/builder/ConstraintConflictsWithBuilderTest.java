@@ -42,7 +42,7 @@ public class ConstraintConflictsWithBuilderTest {
 		String propertyName = "P494";
 		TemplateParser parser = new TemplateParser();
 		Template template = parser
-				.parse(ConstraintConflictsWithTest.templateStrOnePropNoItem);
+				.parse(ConstraintConflictsWithTest.TEMPLATE_STR_ONE_PROP_NO_ITEM);
 		ConstraintConflictsWithBuilder builder = new ConstraintConflictsWithBuilder();
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -58,7 +58,7 @@ public class ConstraintConflictsWithBuilderTest {
 		String propertyName = "P969";
 		TemplateParser parser = new TemplateParser();
 		Template template = parser
-				.parse(ConstraintConflictsWithTest.templateStrOnePropOneItem);
+				.parse(ConstraintConflictsWithTest.TEMPLATE_STR_ONE_PROP_ONE_ITEM);
 		ConstraintConflictsWithBuilder builder = new ConstraintConflictsWithBuilder();
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -74,7 +74,7 @@ public class ConstraintConflictsWithBuilderTest {
 		String propertyName = "P569";
 		TemplateParser parser = new TemplateParser();
 		Template template = parser
-				.parse(ConstraintConflictsWithTest.templateStrManyPropManyItem);
+				.parse(ConstraintConflictsWithTest.TEMPLATE_STR_MANY_PROP_MANY_ITEM);
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(

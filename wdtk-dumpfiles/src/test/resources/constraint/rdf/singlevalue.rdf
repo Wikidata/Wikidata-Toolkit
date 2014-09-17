@@ -8,7 +8,7 @@
 	xmlns:wo="http://www.wikidata.org/ontology#"
 	xmlns:id="http://www.wikidata.org/entity/">
 
-<rdf:Description rdf:about="http://www.wikidata.org/entity/P30s">
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P36s">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>

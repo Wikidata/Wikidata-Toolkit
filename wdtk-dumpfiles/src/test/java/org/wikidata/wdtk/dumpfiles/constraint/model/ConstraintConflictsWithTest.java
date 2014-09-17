@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,15 +30,15 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Test class for {@link ConstraintConflictsWith}
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintConflictsWithTest {
 
-	public static final String templateStrOnePropNoItem = "{{Constraint:Conflicts with|list={{P|225}}}}";
-	public static final String templateStrOnePropOneItem = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
-	public static final String templateStrManyPropManyItem = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
+	public static final String TEMPLATE_STR_ONE_PROP_NO_ITEM = "{{Constraint:Conflicts with|list={{P|225}}}}";
+	public static final String TEMPLATE_STR_ONE_PROP_ONE_ITEM = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
+	public static final String TEMPLATE_STR_MANY_PROP_MANY_ITEM = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
 
 	public static List<PropertyValues> getListOnePropNoItem() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
@@ -129,7 +129,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisitOnePropNoItem() {
 		String propertyName = "P494";
-		String templateStr = templateStrOnePropNoItem;
+		String templateStr = TEMPLATE_STR_ONE_PROP_NO_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -144,7 +144,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisitOnePropOneItem() {
 		String propertyName = "P969";
-		String templateStr = templateStrOnePropOneItem;
+		String templateStr = TEMPLATE_STR_ONE_PROP_ONE_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -159,7 +159,7 @@ public class ConstraintConflictsWithTest {
 	@Test
 	public void testToStringAndVisitManyPropManyItem() {
 		String propertyName = "P569";
-		String templateStr = templateStrManyPropManyItem;
+		String templateStr = TEMPLATE_STR_MANY_PROP_MANY_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -182,7 +182,7 @@ public class ConstraintConflictsWithTest {
 				constrainedProperty0, getListOnePropNoItem()),
 				new ConstraintConflictsWith(constrainedProperty0,
 						getListOnePropNoItem()), new ConstraintConflictsWith(
-						constrainedProperty1, getListOnePropOneItem()));
+								constrainedProperty1, getListOnePropOneItem()));
 	}
 
 	@Test
@@ -196,9 +196,8 @@ public class ConstraintConflictsWithTest {
 				constrainedProperty0, getListManyPropManyItem()),
 				new ConstraintConflictsWith(constrainedProperty0,
 						getListManyPropManyItem()),
-				new ConstraintConflictsWith(constrainedProperty1,
-						getListOnePropNoItem()));
+						new ConstraintConflictsWith(constrainedProperty1,
+								getListOnePropNoItem()));
 	}
 
 }
-

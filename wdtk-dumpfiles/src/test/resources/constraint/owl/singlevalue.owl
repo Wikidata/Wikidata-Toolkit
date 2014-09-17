@@ -10,9 +10,9 @@ Prefix(id:=<http://www.wikidata.org/entity/>)
 
 Ontology(<http://www.wikidata.org/entity/constraints/ont>
 
-Declaration( ObjectProperty( <http://www.wikidata.org/entity/P30s> ) )
-InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P30s> )
-FunctionalObjectProperty( <http://www.wikidata.org/entity/P30s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P36s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P36s> )
+FunctionalObjectProperty( <http://www.wikidata.org/entity/P36s> )
 
 )
 
