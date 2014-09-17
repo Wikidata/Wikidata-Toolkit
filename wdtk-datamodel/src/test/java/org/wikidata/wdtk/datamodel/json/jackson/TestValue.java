@@ -271,4 +271,11 @@ public class TestValue extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
+	
+	@Test
+	public void testMltDatavalueConstructor(){
+		
+		assertEquals(testMltDatavalue, new MonolingualTextDatavalueImpl(testMltv));
+		
+	}
 }
