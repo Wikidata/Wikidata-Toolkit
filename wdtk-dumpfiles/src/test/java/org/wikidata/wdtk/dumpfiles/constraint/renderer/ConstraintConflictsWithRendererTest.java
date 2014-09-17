@@ -22,13 +22,11 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
 
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValueTest;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWithTest;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
@@ -37,26 +35,24 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  * @author Julian Mendez
  *
  */
-public class ConstraintSingleValueRendererTest extends
-ConstraintRendererTestSuperclass {
+public class ConstraintConflictsWithRendererTest extends
+		ConstraintRendererTestSuperclass {
 
 	@Override
 	public Constraint getConstraint() {
 		TemplateParser parser = new TemplateParser();
 		ConstraintMainBuilder constraintBuilder = new ConstraintMainBuilder();
-		String constraintStr = ConstraintSingleValueTest.TEMPLATE_STR;
+		String constraintStr = ConstraintConflictsWithTest.TEMPLATE_STR_MANY_PROP_MANY_ITEM;
 		Template template = parser.parse(constraintStr);
 		Constraint constraint = constraintBuilder.parse(
-				getPropertyIdValue("P36"), template);
+				getPropertyIdValue("P569"), template);
 		return constraint;
 	}
 
 	@Test
 	public void testRenderConstraint() throws IOException {
-		ConstraintSingleValueRenderer renderer = new ConstraintSingleValueRenderer(
+		ConstraintConflictsWithRenderer renderer = new ConstraintConflictsWithRenderer(
 				new Owl2FunctionalRendererFormat(getOutputStream()));
-		renderer.render((PropertyIdValue) null);
-		Assert.assertEquals("", getOutputStream().toString());
 		testRenderConstraint(renderer);
 	}
 

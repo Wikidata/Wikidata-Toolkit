@@ -53,9 +53,13 @@ public abstract class ConstraintRendererTestSuperclass {
 
 	public abstract Constraint getConstraint();
 
-	PropertyIdValue getPropertyIdValue(String propertyName) {
+	protected PropertyIdValue getPropertyIdValue(String propertyName) {
 		return (new DataObjectFactoryImpl()).getPropertyIdValue(propertyName,
 				ConstraintMainBuilder.PREFIX_WIKIDATA);
+	}
+
+	protected ByteArrayOutputStream getOutputStream() {
+		return this.output;
 	}
 
 	@Before
@@ -73,12 +77,14 @@ public abstract class ConstraintRendererTestSuperclass {
 
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-			RDFHandlerException, IOException {
+	RDFHandlerException, IOException {
 		serializeConstraint(new RdfRendererFormat(this.output));
-		Model expected = RdfTestHelpers.parseRdf(RdfTestHelpers
+		String expectedStr = RdfTestHelpers
 				.getResourceFromFile(RdfTestHelpers.RDF_PATH + this.fileName
-						+ RdfTestHelpers.RDF_EXT));
-		Model obtained = RdfTestHelpers.parseRdf(this.output.toString());
+						+ RdfTestHelpers.RDF_EXT);
+		Model expected = RdfTestHelpers.parseRdf(expectedStr);
+		String obtainedStr = this.output.toString();
+		Model obtained = RdfTestHelpers.parseRdf(obtainedStr);
 		Assert.assertEquals(expected, obtained);
 	}
 
@@ -92,14 +98,8 @@ public abstract class ConstraintRendererTestSuperclass {
 		Assert.assertEquals(expected, obtained);
 	}
 
-	@Test
-	public void testRenderConstraint() throws IOException {
-		ConstraintSingleValueRenderer renderer = new ConstraintSingleValueRenderer(
-				new Owl2FunctionalRendererFormat(this.output));
-
-		renderer.render((PropertyIdValue) null);
-		Assert.assertEquals("", this.output.toString());
-
+	public void testRenderConstraint(ConstraintRenderer renderer)
+			throws IOException {
 		renderer.renderConstraint(getConstraint());
 		String expected = RdfTestHelpers
 				.getResourceFromFile(RdfTestHelpers.OWLPART_PATH
