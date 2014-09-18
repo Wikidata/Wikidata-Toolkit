@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,13 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Test class for {@link ConstraintInverse}
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintInverseTest {
+
+	public static final String TEMPLATE_STR = "{{Constraint:Inverse|property=P156}}";
 
 	@Test
 	public void testParameters() {
@@ -48,15 +50,14 @@ public class ConstraintInverseTest {
 	@Test
 	public void testToStringAndVisit() {
 		String propertyName = "P155";
-		String templateStr = "{{Constraint:Inverse|property=P156}}";
-		String string = propertyName + " " + templateStr;
+		String string = propertyName + " " + TEMPLATE_STR;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		PropertyIdValue property = ConstraintTestHelper
 				.getPropertyIdValue("P156");
 		ConstraintInverse constraint = new ConstraintInverse(
 				constrainedProperty, property);
-		Assert.assertEquals(templateStr, constraint.getTemplate());
+		Assert.assertEquals(TEMPLATE_STR, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -80,4 +81,3 @@ public class ConstraintInverseTest {
 	}
 
 }
-
