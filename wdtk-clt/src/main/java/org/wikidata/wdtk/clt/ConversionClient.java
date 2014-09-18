@@ -1,35 +1,18 @@
 package org.wikidata.wdtk.clt;
 
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
-import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.MwRevision;
 import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
 import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
-import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /*
  * #%L
@@ -66,10 +49,9 @@ public class ConversionClient {
 
 	private static Sites sites;
 	private static DumpProcessingController dumpProcessingController;
-	private static List<RdfSerializer> serializers = new ArrayList<RdfSerializer>();
-	private static List<String> serializerNames = new ArrayList<String>();
 
-	final List<ConversionConfiguration> configuration;
+	final ConversionProperties conversionProperties;
+	final List<OutputConfiguration> configurations;
 
 	/**
 	 * True if any of the serializers want to put its output to stdout to
@@ -94,13 +76,13 @@ public class ConversionClient {
 	 * @throws IOException
 	 */
 	public ConversionClient(String args[]) throws ParseException, IOException {
-		ConversionProperties conversionProperties = new ConversionProperties(
-				args);
-		this.configuration = conversionProperties.getProperties();
+		this.conversionProperties = new ConversionProperties();
+		this.configurations = conversionProperties.handleArguments(args);
 
 		// set flags (stdout and convertAnything)
-		for (ConversionConfiguration configuration : this.configuration) {
-			if (configuration.getStdout()) {
+		//System.out.println(this.configurations.get(0).getUseStdout());
+		for (OutputConfiguration configuration : this.configurations) {
+			if (configuration.getUseStdout()) {
 				this.useStdoutForOutput = true;
 			}
 			if (configuration.getOutputFormat() != "none") {
@@ -131,20 +113,12 @@ public class ConversionClient {
 		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();
 
-		if (configuration.get(0).getOfflineMode()) {
+		if (this.conversionProperties.getOfflineMode()) {
 			dumpProcessingController.setOfflineMode(true);
 		}
 
-		for (ConversionConfiguration props : configuration) {
-			switch (props.getOutputFormat()) {
-			case "json":
-				setupForJsonSerialization(props);
-				break;
-			case "rdf":
-				setupForRdfSerialization(props);
-				break;
-			}
-
+		for (OutputConfiguration props : configurations) {
+			props.setupSerializer(dumpProcessingController, sites);
 		}
 
 		if (!useStdoutForOutput) {
@@ -157,8 +131,8 @@ public class ConversionClient {
 					rpRevisionStats, null, true);
 		}
 
-		if (configuration.get(0).getDumplocation() != null) {
-			dumpProcessingController.setDownloadDirectory(configuration.get(0)
+		if (this.conversionProperties.getDumplocation() != null) {
+			dumpProcessingController.setDownloadDirectory(this.conversionProperties
 					.getDumplocation());
 		}
 
@@ -173,127 +147,6 @@ public class ConversionClient {
 
 	public boolean useStdoutForOutput() {
 		return this.useStdoutForOutput;
-	}
-
-	/**
-	 * Builds up serializers for the different RDF files.
-	 *
-	 * @param conversionConfiguration
-	 * @throws IOException
-	 */
-	private void setupForRdfSerialization(
-			ConversionConfiguration conversionConfiguration) throws IOException {
-		String compressionExtension = conversionConfiguration
-				.getCompressionExtension();
-
-		// Create serializers for several data parts and encodings depending on
-		// the Rdfdump property:
-		switch (conversionConfiguration.getRdfdump().toLowerCase()) {
-		case "all_exact_data":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-properties.nt", compressionExtension,
-					RdfSerializer.TASK_PROPERTIES
-							| RdfSerializer.TASK_ALL_EXACT_DATA,
-					conversionConfiguration.getStdout());
-			break;
-		case "terms":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-terms.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS,
-					conversionConfiguration.getStdout());
-			break;
-		case "statements":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-statements.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS,
-					conversionConfiguration.getStdout());
-			break;
-		case "simple_statements":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-simple-statements.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_SIMPLE_STATEMENTS,
-					conversionConfiguration.getStdout());
-			break;
-		case "taxonomy":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-taxonomy.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TAXONOMY,
-					conversionConfiguration.getStdout());
-			break;
-		case "instance_of":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-instances.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_INSTANCE_OF,
-					conversionConfiguration.getStdout());
-			break;
-		case "sitelinks":
-			createRdfSerializer(conversionConfiguration.getOutputDestination(),
-					"wikidata-sitelinks.nt", compressionExtension,
-					RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS,
-					conversionConfiguration.getStdout());
-			break;
-		default:
-			logger.error("Unsupported RDF export option: "
-					+ conversionConfiguration.getRdfdump());
-		}
-
-	}
-
-	/**
-	 * Builds up a serializer for JSON.
-	 *
-	 * @param conversionConfiguration
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	private void setupForJsonSerialization(
-			ConversionConfiguration conversionConfiguration)
-			throws FileNotFoundException, IOException {
-		OutputStream outputStream;
-		if (conversionConfiguration.getStdout()) {
-			outputStream = System.out;
-		} else {
-			new File(conversionConfiguration.getOutputDestination()).mkdirs();
-			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-					new FileOutputStream(
-							conversionConfiguration.getOutputDestination()
-									+ "WikidataDump.json"
-									+ conversionConfiguration
-											.getCompressionExtension()),
-					1024 * 1024 * 5);
-
-			switch (conversionConfiguration.getCompressionExtension()) {
-			case COMPRESS_BZ2:
-				outputStream = new BZip2CompressorOutputStream(
-						bufferedFileOutputStream);
-				break;
-			case COMPRESS_GZIP:
-				GzipParameters gzipParameters = new GzipParameters();
-				gzipParameters.setCompressionLevel(7);
-				outputStream = new GzipCompressorOutputStream(
-						bufferedFileOutputStream, gzipParameters);
-				break;
-			case COMPRESS_NONE:
-				outputStream = bufferedFileOutputStream;
-				break;
-			default:
-				bufferedFileOutputStream.close();
-				throw new IllegalArgumentException(
-						"Unsupported compression format: "
-								+ conversionConfiguration
-										.getCompressionExtension());
-			}
-		}
-		// Create an object for managing the serialization process
-		JsonSerializer serializer = new JsonSerializer(outputStream);
-
-		// Subscribe to the most recent entity documents of type wikibase item
-		// and property:
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
 	}
 
 	/**
@@ -317,91 +170,12 @@ public class ConversionClient {
 	}
 
 	/**
-	 * Creates a new RDF Serializer. Output is written to the file of the given
-	 * name (it will always be a compressed file, so the name should reflect
-	 * that). The tasks define what the serializer will be writing into this
-	 * file. The new serializer is also registered in an internal list, so it
-	 * can be started and closed more conveniently.
-	 *
-	 * @param outputDestination
-	 *            path to output directory
-	 * @param outputFileName
-	 *            filename to write output to
-	 * @param compressionExtension
-	 *            the extension of the chosen compression format or the empty
-	 *            string for no compression
-	 * @param tasks
-	 *            an integer that is a bitwise OR of flags like
-	 *            {@link RdfSerializer#TASK_LABELS}.
-	 * @param stdout
-	 *            stdout flag
-	 * @return the newly created serializer
-	 * @throws FileNotFoundException
-	 *             if the given file cannot be opened for writing for some
-	 *             reason
-	 * @throws IOException
-	 *             if it was not possible to write the BZ2 header to the file
-	 */
-	@SuppressWarnings("resource")
-	private RdfSerializer createRdfSerializer(String outputDestination,
-			String outputFileName, String compressionExtension, int tasks,
-			Boolean stdout) throws FileNotFoundException, IOException {
-		new File(outputDestination).mkdirs();
-		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(outputDestination + outputFileName
-						+ compressionExtension), 1024 * 1024 * 5);
-
-		OutputStream compressorOutputStream = null;
-		switch (compressionExtension) {
-		case COMPRESS_BZ2:
-			compressorOutputStream = new BZip2CompressorOutputStream(
-					bufferedFileOutputStream);
-			break;
-		case COMPRESS_GZIP:
-			GzipParameters gzipParameters = new GzipParameters();
-			gzipParameters.setCompressionLevel(7);
-			compressorOutputStream = new GzipCompressorOutputStream(
-					bufferedFileOutputStream, gzipParameters);
-			break;
-		case COMPRESS_NONE:
-			compressorOutputStream = bufferedFileOutputStream;
-			break;
-		default:
-			bufferedFileOutputStream.close();
-			throw new IllegalArgumentException(
-					"Unsupported compression format: " + compressionExtension);
-		}
-
-		OutputStream exportOutputStream;
-
-		if (stdout) {
-			exportOutputStream = System.out;
-		} else {
-			exportOutputStream = asynchronousOutputStream(compressorOutputStream);
-		}
-
-		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, sites);
-		serializer.setTasks(tasks);
-
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
-
-		serializers.add(serializer);
-		serializerNames.add(outputFileName);
-
-		return serializer;
-	}
-
-	/**
 	 * Starts the serializers. This includes the writing of headers if any (N3
 	 * has no headers, but other formats have).
 	 */
-	private static void startSerializers() {
-		for (RdfSerializer serializer : serializers) {
-			serializer.start();
+	private void startSerializers() {
+		for (OutputConfiguration configuration : this.configurations){
+			configuration.startSerializer();
 		}
 	}
 
@@ -409,69 +183,12 @@ public class ConversionClient {
 	 * Closes the serializers (and their output streams), and prints a short
 	 * summary of the number of triples serialized by each.
 	 */
-	private static void closeSerializers() {
-		Iterator<String> nameIterator = serializerNames.iterator();
-		for (RdfSerializer serializer : serializers) {
-			serializer.close();
-			System.out.println("*** Finished serialization of "
-					+ serializer.getTripleCount() + " RDF triples in file "
-					+ nameIterator.next());
+	private void closeSerializers() {
+		for (OutputConfiguration configuration : this.configurations){
+			configuration.closeSerializer();
 		}
 	}
 
-	/**
-	 * Creates a separate thread for writing into the given output stream and
-	 * returns a pipe output stream that can be used to pass data to this
-	 * thread.
-	 * <p>
-	 * This code is inspired by
-	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
-	 * -that-does-its-compression-in-a-separate-thread
-	 *
-	 * @param outputStream
-	 *            the stream to write to in the thread
-	 * @return a new stream that data should be written to
-	 * @throws IOException
-	 *             if the pipes could not be created for some reason
-	 */
-	public static OutputStream asynchronousOutputStream(
-			final OutputStream outputStream) throws IOException {
-		final int SIZE = 1024 * 1024 * 10;
-		final PipedOutputStream pos = new PipedOutputStream();
-		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					byte[] bytes = new byte[SIZE];
-					for (int len; (len = pis.read(bytes)) > 0;) {
-						outputStream.write(bytes, 0, len);
-					}
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
-				} finally {
-					close(pis);
-					close(outputStream);
-				}
-			}
-		}, "async-output-stream").start();
-		return pos;
-	}
-
-	/**
-	 * Closes a Closeable and swallows any exceptions that might occur in the
-	 * process.
-	 *
-	 * @param closeable
-	 */
-	static void close(Closeable closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (IOException ignored) {
-			}
-		}
-	}
 
 	/**
 	 * Launches the client with the specified parameters.

@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This class handles the program arguments from the conversion command line
  * tool.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class ConversionProperties {
 
@@ -55,180 +55,14 @@ public class ConversionProperties {
 		initOptions();
 	}
 
-	// boolean configFile = false;
-	// Ini properties;
-	String[] args;
+	// some global configuration parameters
+	Boolean offlineMode = false;
+	String dumplocation = null;
 
 	/**
 	 * Constructor.
-	 *
-	 * @param args
 	 */
-	public ConversionProperties(String[] args) {
-		initOptions();
-		this.args = args;
-	}
-
-	/**
-	 * Returns a list of {@link ConversionConfiguration} objects by parsing the
-	 * arguments given to the constructor. See
-	 * {@link #handleArguments(String[])} for more detailed information.
-	 *
-	 * @return list of {@link ConversionConfiguration}
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	public List<ConversionConfiguration> getProperties() throws ParseException,
-			IOException {
-		return handleArguments(args);
-	}
-
-	/**
-	 * This function interprets the arguments of the main function. By doing
-	 * this it will set flags for the dump generation. See in the help text for
-	 * more specific information about the options.
-	 *
-	 * @param args
-	 *            array of arguments from the main function.
-	 * @return list of {@link ConversionConfiguration}
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	static List<ConversionConfiguration> handleArguments(String[] args)
-			throws ParseException, IOException {
-		List<ConversionConfiguration> configuration = new ArrayList<ConversionConfiguration>();
-		ConversionConfiguration firstConfiguration;
-		CommandLineParser parser = new GnuParser();
-		CommandLine cmd = parser.parse(options, args);
-
-		// fill configuration list with all properties from a configuration file
-		// (if some configuration file was specified), element 0 specifies
-		// general options
-		if (cmd.hasOption("c")) {
-			List<ConversionConfiguration> configFile = readConfigFile(cmd
-					.getOptionValue("c"));
-			configuration.addAll(configFile);
-			firstConfiguration = configFile.get(0);
-		} else {
-			firstConfiguration = new ConversionConfiguration();
-		}
-
-		configuration.add(firstConfiguration);
-
-		if (cmd.hasOption("h")) {
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("ConversionClient", options);
-		}
-
-		if (cmd.hasOption("s")) {
-			firstConfiguration.setStdout(true);
-		}
-
-		if (cmd.hasOption("d")) {
-			firstConfiguration.setOutputDestination(cmd.getOptionValue("d"));
-		}
-
-		if (cmd.hasOption("f")) {
-			firstConfiguration.setOutputFormat(cmd.getOptionValue("f"));
-		} else {
-			logger.warn("No output format specified!");
-		}
-
-		if (cmd.hasOption("l")) {
-			firstConfiguration.setDumplocation(cmd.getOptionValue("l"));
-		}
-
-		if (cmd.hasOption("n")) {
-			firstConfiguration.setOfflineMode(true);
-		}
-
-		if (cmd.hasOption("e")) {
-			firstConfiguration.setCompressionExtension(cmd.getOptionValue("e"));
-		}
-
-		if (cmd.hasOption("r")) {
-			firstConfiguration.setRdfdump(cmd.getOptionValue("r"));
-		}
-
-		return configuration;
-
-	}
-
-	/**
-	 * Reads the properties defined in a configuration file. Returns a set of
-	 * configuration property blocks stored in {@link ConversionConfiguration}
-	 * objects. The first element of the list contains general information
-	 * (about all dumps). Take note, that the specific information in the other
-	 * sections have higher priority the the general section.
-	 *
-	 * @param path
-	 *            filename and path of the configuration file
-	 * @return the list with configurations for all output dumps
-	 * @throws IOException
-	 */
-	static List<ConversionConfiguration> readConfigFile(String path)
-			throws IOException {
-		List<ConversionConfiguration> result = new ArrayList<ConversionConfiguration>();
-		result.add(0, new ConversionConfiguration()); // general configuration
-
-		boolean general = false;
-
-		FileReader reader = new FileReader(path);
-		Ini ini = new Ini(reader);
-
-		for (Section section : ini.values()) {
-			ConversionConfiguration configurationSection;
-			if (section.getName().toLowerCase().equals("general")) {
-				configurationSection = result.get(0);
-				general = true;
-			} else {
-				configurationSection = new ConversionConfiguration();
-			}
-
-			for (String key : section.keySet()) {
-				switch (key.toLowerCase()) {
-				case "offline":
-					if (section.get(key).toLowerCase().equals("true")) {
-						configurationSection.setOfflineMode(true);
-					}
-					break;
-				case "stdout":
-					if (section.get(key).toLowerCase().equals("true")) {
-						configurationSection.setStdout(true);
-					}
-					section.get(key);
-					break;
-				case "format":
-					configurationSection.setOutputFormat(section.get(key));
-					break;
-				case "destination":
-					configurationSection.setOutputDestination(section.get(key));
-					break;
-				case "dumplocation":
-					configurationSection.setDumplocation(section.get(key));
-					break;
-				case "rdfdump":
-					configurationSection.setRdfdump(section.get(key));
-					break;
-				case "compression":
-					configurationSection.setCompressionExtension(section
-							.get(key));
-					break;
-				default:
-					logger.warn("Unrecognized option: " + key);
-				}
-			}
-
-			// if (configurationSection.getOutputFormat())
-			// logger.warn("No output format specified in this section!");
-
-			if (general) {
-				general = false;
-			} else {
-				result.add(configurationSection);
-			}
-		}
-		return result;
+	public ConversionProperties() {
 	}
 
 	/**
@@ -283,4 +117,197 @@ public class ConversionProperties {
 
 		options.addOption("s", "stdout", false, "write output to stdout");
 	}
+
+	/**
+	 * This function interprets the arguments of the main function. By doing
+	 * this it will set flags for the dump generation. See in the help text for
+	 * more specific information about the options.
+	 * 
+	 * @param args
+	 *            array of arguments from the main function.
+	 * @return list of {@link OutputConfiguration}
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public List<OutputConfiguration> handleArguments(String[] args)
+			throws ParseException, IOException {
+		List<OutputConfiguration> configuration = new ArrayList<OutputConfiguration>();
+		CommandLineParser parser = new GnuParser();
+		CommandLine cmd = parser.parse(options, args);
+
+		if (cmd.hasOption("c")) {
+			List<OutputConfiguration> configFile = readConfigFile(cmd
+					.getOptionValue("c"));
+			configuration.addAll(configFile);
+		}
+
+		// print help text
+		if (cmd.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("ConversionClient", options);
+		}
+
+		handleGeneralArguments(cmd);
+
+		// check if there is some kind of output specified
+		if (cmd.hasOption("f")) {
+			configuration.add(handleOutputArguments(cmd));
+		}
+
+		return configuration;
+
+	}
+
+	/**
+	 * 
+	 * Reads the properties defined in a configuration file. Returns a set of
+	 * configuration property blocks stored in {@link OutputConfiguration}
+	 * objects and call
+	 * {@link ConversionProperties#handleGeneralArguments(CommandLine)} to
+	 * interpreted the properties from the general section. The first element of
+	 * the list contains general information (about all dumps).
+	 * 
+	 * @param path
+	 *            filename and path of the configuration file
+	 * @return the list with configurations for all output dumps
+	 * @throws IOException
+	 */
+	public List<OutputConfiguration> readConfigFile(String path)
+			throws IOException {
+		List<OutputConfiguration> result = new ArrayList<OutputConfiguration>();
+
+		FileReader reader = new FileReader(path);
+		Ini ini = new Ini(reader);
+
+		for (Section section : ini.values()) {
+			if (section.getName().toLowerCase().equals("general")) {
+				handleGeneralArguments(section);
+			} else {
+				result.add(handleOutputArguments(section));
+			}
+		}
+		return result;
+	}
+
+	public String getDumplocation() {
+		return dumplocation;
+	}
+
+	public void setDumplocation(String dumplocation) {
+		this.dumplocation = dumplocation;
+	}
+
+	public Boolean getOfflineMode() {
+		return offlineMode;
+	}
+
+	public void setOfflineMode(Boolean offlineMode) {
+		this.offlineMode = offlineMode;
+	}
+
+	private void handleGeneralArguments(Section section) {
+		for (String key : section.keySet()) {
+			switch (key.toLowerCase()) {
+			case "offline":
+				if (section.get(key).toLowerCase().equals("true")) {
+					this.offlineMode = true;
+				}
+				break;
+			case "dumplocation":
+				this.dumplocation = section.get(key);
+				break;
+			default:
+				logger.warn("Unrecognized option: " + key);
+			}
+		}
+	}
+
+	private void handleGeneralArguments(CommandLine cmd) {
+		if (cmd.hasOption("l")) {
+			this.dumplocation = cmd.getOptionValue("l");
+		}
+
+		if (cmd.hasOption("n")) {
+			this.offlineMode = true;
+		}
+	}
+
+	private OutputConfiguration handleOutputArguments(CommandLine cmd) {
+
+		OutputConfiguration result;
+		switch (cmd.getOptionValue("f").toLowerCase()) {
+		case "rdf":
+			RdfConfiguration rdfConfiguration = new RdfConfiguration(this);
+			if (cmd.hasOption("r")) {
+				rdfConfiguration.setRdfdump(cmd.getOptionValue("r")
+						.toLowerCase());
+			} else {
+				logger.warn("No kind of rdf-dump set!");
+			}
+			result = rdfConfiguration;
+			break;
+		case "json":
+			result = new JsonConfiguration(this);
+			break;
+		default:
+			logger.warn("No output format specified!");
+			return null;
+		}
+
+		if (cmd.hasOption("s")) {
+			result.setUseStdout(true);
+		}
+
+		if (cmd.hasOption("d")) {
+			result.outputDestination = cmd.getOptionValue("d");
+		}
+
+		if (cmd.hasOption("e")) {
+			result.compressionExtension = cmd.getOptionValue("e");
+		}
+
+		return result;
+	}
+
+	private OutputConfiguration handleOutputArguments(Section section) {
+		OutputConfiguration result;
+		switch (section.get("format").toLowerCase()) {
+		case "rdf":
+			RdfConfiguration rdfConfiguration = new RdfConfiguration(this);
+			rdfConfiguration.setRdfdump(section.get("rdfdump").toLowerCase());
+			result = rdfConfiguration;
+			break;
+		case "json":
+			result = new JsonConfiguration(this);
+			break;
+		default:
+			logger.warn("Unrecognized format: "
+					+ section.get("format").toLowerCase());
+			return null;
+		}
+
+		for (String key : section.keySet()) {
+			switch (key.toLowerCase()) {
+			case "stdout":
+				if (section.get(key).toLowerCase().equals("true")) {
+					result.setUseStdout(true);
+				}
+				section.get(key);
+				break;
+			case "destination":
+				result.setOutputDestination(section.get(key));
+				break;
+			case "rdfdump":
+				// do nothing (see above)
+				break;
+			case "compression":
+				result.setCompressionExtension(section.get(key));
+				break;
+			default:
+				logger.warn("Unrecognized option: " + key);
+			}
+		}
+		return result;
+	}
+
 }

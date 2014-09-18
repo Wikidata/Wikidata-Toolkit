@@ -40,7 +40,11 @@ public class ConversionPropertiesTest {
 			"-f", "rdf", "-r", "TERMS", "-n", "-e", ".bz2", "-l",
 			"dumps/wikidata/" };
 	final static String FILE_TEST_CONFIG = "testConf.ini";
-	final ConversionProperties properties = new ConversionProperties(TEST_ARGS);
+	final ConversionProperties properties = new ConversionProperties();
+
+	public ConversionPropertiesTest() throws ParseException, IOException {
+		properties.handleArguments(TEST_ARGS);
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,20 +56,14 @@ public class ConversionPropertiesTest {
 						.getResource("/" + fileName));
 	}
 
-	Boolean compareConfigurations(ConversionConfiguration conf1,
-			ConversionConfiguration conf2) {
+	Boolean compareOutputConfigurations(OutputConfiguration conf1,
+			OutputConfiguration conf2) {
 		Boolean result = true;
-		if (conf1.getOfflineMode().equals(conf2.getOfflineMode()) != true) {
-			result = false;
-		}
-		if (conf1.getStdout().equals(conf2.getStdout()) != true) {
+		if (conf1.getUseStdout().equals(conf2.getUseStdout()) != true) {
 			result = false;
 		}
 		if (conf1.getCompressionExtension().equals(
 				conf2.getCompressionExtension()) != true) {
-			result = false;
-		}
-		if (conf1.getDumplocation().equals(conf2.getDumplocation()) != true) {
 			result = false;
 		}
 		if (conf1.getOutputDestination().equals(conf2.getOutputDestination()) != true) {
@@ -74,7 +72,26 @@ public class ConversionPropertiesTest {
 		if (conf1.getOutputFormat().equals(conf2.getOutputFormat()) != true) {
 			result = false;
 		}
-		if (conf1.getRdfdump().equals(conf2.getRdfdump()) != true) {
+		if (conf1 instanceof RdfConfiguration) {
+			if (!(conf2 instanceof RdfConfiguration)) {
+				return false;
+			} else {
+				if (((RdfConfiguration) conf1).getRdfdump().equals(
+						((RdfConfiguration) conf2).getRdfdump()) != true) {
+					result = false;
+				}
+			}
+		}
+		return result;
+	}
+
+	Boolean compareConversionProperties(ConversionProperties props1,
+			ConversionProperties props2) {
+		Boolean result = true;
+		if (props1.getOfflineMode().equals(props2.getOfflineMode()) != true) {
+			result = false;
+		}
+		if (props1.getDumplocation().equals(props2.getDumplocation()) != true) {
 			result = false;
 		}
 		return result;
@@ -93,34 +110,42 @@ public class ConversionPropertiesTest {
 
 	@Test
 	public void testReadConfigFile() throws IOException {
-		List<ConversionConfiguration> configurations = ConversionProperties
+		ConversionProperties conversionProperties = new ConversionProperties();
+		List<OutputConfiguration> configurations = conversionProperties
 				.readConfigFile("src/test/resources/testConf.ini");
+		ConversionProperties propsComparison = new ConversionProperties();
 
-		ConversionConfiguration comparison = new ConversionConfiguration();
+		propsComparison.setDumplocation("dumps/wikidata/");
+		propsComparison.setOfflineMode(false);
 
-		comparison.setStdout(true);
-		comparison.setOfflineMode(false);
-		comparison.setOutputFormat("rdf");
-		comparison.setCompressionExtension(".gz");
-		comparison.setRdfdump("ALL_EXACT_DATA");
-		comparison.setOutputDestination("/tmp/");
-		comparison.setDumplocation("dumps/wikidata/");
+		RdfConfiguration confComparison = new RdfConfiguration(propsComparison);
 
-		assertTrue(compareConfigurations(configurations.get(1), comparison));
+		confComparison.setUseStdout(true);
+		confComparison.setCompressionExtension(".gz");
+		confComparison.setRdfdump("ALL_EXACT_DATA");
+		confComparison.setOutputDestination("/tmp/");
+
+		assertTrue(compareOutputConfigurations(configurations.get(0),
+				confComparison));
+		assertTrue(compareConversionProperties(conversionProperties,
+				propsComparison));
 	}
 
 	@Test
-	public void testGetProperties() throws ParseException, IOException {
-		List<ConversionConfiguration> propertyList = properties.getProperties();
-		ConversionConfiguration comparison = new ConversionConfiguration();
-		comparison.setCompressionExtension(".bz2");
-		comparison.setDumplocation("dumps/wikidata/");
-		comparison.setOfflineMode(true);
-		comparison.setOutputDestination("/somewhere/");
-		comparison.setOutputFormat("rdf");
-		comparison.setRdfdump("TERMS");
-		comparison.setStdout(true);
-		assertTrue(compareConfigurations(propertyList.get(0), comparison));
+	public void testHandleArguments() throws ParseException, IOException {
+		List<OutputConfiguration> configurations = properties
+				.handleArguments(TEST_ARGS);
+		ConversionProperties propsComparison = new ConversionProperties();
+		RdfConfiguration confComparison = new RdfConfiguration(properties);
+		confComparison.setCompressionExtension(".bz2");
+		propsComparison.setDumplocation("dumps/wikidata/");
+		propsComparison.setOfflineMode(true);
+		confComparison.setOutputDestination("/somewhere/");
+		confComparison.setRdfdump("TERMS");
+		confComparison.setUseStdout(true);
+		assertTrue(compareOutputConfigurations(configurations.get(0),
+				confComparison));
+		assertTrue(compareConversionProperties(properties, propsComparison));
 	}
 
 }
