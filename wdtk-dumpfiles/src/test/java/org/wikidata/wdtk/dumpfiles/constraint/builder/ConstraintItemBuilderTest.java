@@ -42,7 +42,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderOneProp() {
 		String propertyName = "P141";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrOneProp);
+				.parse(ConstraintItemTest.TEMPLATE_STR_ONE_PROP);
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		PropertyIdValue property = ConstraintTestHelper
@@ -60,7 +60,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderOnePropManyItem() {
 		String propertyName = "P141";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrOnePropManyItem);
+				.parse(ConstraintItemTest.TEMPLATE_STR_ONE_PROP_MANY_ITEM);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -80,7 +80,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderTwoProp() {
 		String propertyName = "P1031";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrTwoProp);
+				.parse(ConstraintItemTest.TEMPLATE_STR_TWO_PROP);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -102,7 +102,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderOnePropOneItem() {
 		String propertyName = "P240";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrOnePropOneItem);
+				.parse(ConstraintItemTest.TEMPLATE_STR_ONE_PROP_ONE_ITEM);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -122,7 +122,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderOnePropTwoItem() {
 		String propertyName = "P345";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrOnePropTwoItem);
+				.parse(ConstraintItemTest.TEMPLATE_STR_ONE_PROP_TWO_ITEM);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -143,7 +143,7 @@ public class ConstraintItemBuilderTest {
 	public void testBuilderOnePropOneItemExcep() {
 		String propertyName = "P883";
 		Template template = (new TemplateParser())
-				.parse(ConstraintItemTest.templateStrOnePropOneItemExcep);
+				.parse(ConstraintItemTest.TEMPLATE_STR_ONE_PROP_ONE_ITEM_EXCEP);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);

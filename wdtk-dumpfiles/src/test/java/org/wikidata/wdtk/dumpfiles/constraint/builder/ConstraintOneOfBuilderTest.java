@@ -41,7 +41,7 @@ public class ConstraintOneOfBuilderTest {
 	public void testBuilderItemValues() {
 		String propertyName = "P412";
 		Template template = (new TemplateParser())
-				.parse(ConstraintOneOfTest.templateStrItemVal);
+				.parse(ConstraintOneOfTest.TEMPLATE_STR_ITEM_VAL);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -58,7 +58,7 @@ public class ConstraintOneOfBuilderTest {
 	public void testBuilderQuantityValues() {
 		String propertyName = "P1088";
 		Template template = (new TemplateParser())
-				.parse(ConstraintOneOfTest.templateStrQuantityVal);
+				.parse(ConstraintOneOfTest.TEMPLATE_STR_QUANTITY_VAL);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -75,7 +75,7 @@ public class ConstraintOneOfBuilderTest {
 	public void testBuilderWrongPropertyType() {
 		String propertyName = "P10";
 		Template template = (new TemplateParser())
-				.parse(ConstraintOneOfTest.templateStrQuantityVal);
+				.parse(ConstraintOneOfTest.TEMPLATE_STR_QUANTITY_VAL);
 
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
