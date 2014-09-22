@@ -1,0 +1,5 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P238s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P238s> )
+Declaration( DataProperty( <http://www.wikidata.org/entity/P238v> ) )
+HasKey( <http://www.w3.org/2002/07/owl#Thing> (  ) ( <http://www.wikidata.org/entity/P238v> ) )
+

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#dateTime">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx290">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+	<owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+	<owl:withRestrictions rdf:nodeID="node192f2uo9jx291"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx291">
+	<rdf:first rdf:nodeID="node192f2uo9jx292"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx292">
+	<xsd:minInclusive>1957-10-04</xsd:minInclusive>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#dateTime">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx293">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+	<owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+	<owl:withRestrictions rdf:nodeID="node192f2uo9jx294"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx294">
+	<rdf:first rdf:nodeID="node192f2uo9jx295"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx295">
+	<xsd:maxInclusive>now</xsd:maxInclusive>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx296">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx297">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx298">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx290">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx293">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx296">
+	<owl:intersectionOf rdf:nodeID="node192f2uo9jx297"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx297">
+	<rdf:first rdf:nodeID="node192f2uo9jx290"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx298"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx298">
+	<rdf:first rdf:nodeID="node192f2uo9jx293"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx296">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620aux0">
+	<owl:equivalentClass rdf:nodeID="node192f2uo9jx296"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/ontology#TimeValue">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx299">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/ontology#TimeValue"/>
+	<owl:someValuesFrom rdf:resource="http://www.wikidata.org/entity/P620aux0"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P620v">
+	<rdfs:range rdf:nodeID="node192f2uo9jx299"/>
+</rdf:Description>
+
+</rdf:RDF>
+

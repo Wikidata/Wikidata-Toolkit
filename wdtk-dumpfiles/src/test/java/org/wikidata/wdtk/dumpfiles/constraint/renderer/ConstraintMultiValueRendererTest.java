@@ -26,36 +26,38 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOfTest;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValueTest;
 
 /**
  *
  * @author Julian Mendez
  *
  */
-public class ConstraintOneOfRendererTest implements
+public class ConstraintMultiValueRendererTest implements
 ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
-			"oneof");
+			"multivalue");
 
-	public ConstraintOneOfRendererTest() {
+	public ConstraintMultiValueRendererTest() {
 	}
 
 	@Override
 	public Constraint getConstraint() {
-		return this.testHelper.getConstraint("P412",
-				ConstraintOneOfTest.TEMPLATE_STR_ITEM_VAL);
+		return this.testHelper.getConstraint("P971",
+				ConstraintMultiValueTest.TEMPLATE_STR);
 	}
 
 	@Override
 	@Test
 	public void testRenderConstraint() throws IOException {
-		ConstraintOneOfRenderer renderer = new ConstraintOneOfRenderer(
+		ConstraintMultiValueRenderer renderer = new ConstraintMultiValueRenderer(
 				new Owl2FunctionalRendererFormat(
 						this.testHelper.getOutputStream()));
+		renderer.render((PropertyIdValue) null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}

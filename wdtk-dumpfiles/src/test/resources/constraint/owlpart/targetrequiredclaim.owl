@@ -1,0 +1,8 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P9s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P9s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P9v> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P21s> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P21v> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q6581072> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P9v> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P21s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P21v> ObjectOneOf( <http://www.wikidata.org/entity/Q6581072> ) ) ) )
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P9s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P9v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P21s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P21v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q6581072">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx338">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q6581072"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx339">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21v"/>
+	<owl:someValuesFrom rdf:nodeID="node192f2uo9jx338"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx340">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21s"/>
+	<owl:someValuesFrom rdf:nodeID="node192f2uo9jx339"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P9v">
+	<rdfs:range rdf:nodeID="node192f2uo9jx340"/>
+</rdf:Description>
+
+</rdf:RDF>
+

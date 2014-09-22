@@ -1,0 +1,4 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P971s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P971s> )
+SubClassOf( <http://www.w3.org/2002/07/owl#Thing> ObjectComplementOf( ObjectExactCardinality( 1 <http://www.wikidata.org/entity/P971s> ) ) )
+
