@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,11 +28,14 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Test class for {@link ConstraintRange}
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintRangeTest {
+
+	public static final String TEMPLATE_STR_DATE = "{{Constraint:Range|min=1957-10-04|max=now}}";
+	public static final String TEMPLATE_STR_QUANTITY = "{{Constraint:Range|min=1|max=118}}";
 
 	@Test
 	public void testParametersDate() {
@@ -65,13 +68,12 @@ public class ConstraintRangeTest {
 	@Test
 	public void testToStringAndVisitDate() {
 		String propertyName = "P620";
-		String templateStr = "{{Constraint:Range|min=1957-10-04|max=now}}";
-		String string = propertyName + " " + templateStr;
+		String string = propertyName + " " + TEMPLATE_STR_DATE;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
 				"1957-10-04", "now", true);
-		Assert.assertEquals(templateStr, constraint.getTemplate());
+		Assert.assertEquals(TEMPLATE_STR_DATE, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -80,13 +82,12 @@ public class ConstraintRangeTest {
 	@Test
 	public void testToStringAndVisitQuantity() {
 		String propertyName = "P1086";
-		String templateStr = "{{Constraint:Range|min=1|max=118}}";
-		String string = propertyName + " " + templateStr;
+		String string = propertyName + " " + TEMPLATE_STR_QUANTITY;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintRange constraint = new ConstraintRange(constrainedProperty,
 				"1", "118", false);
-		Assert.assertEquals(templateStr, constraint.getTemplate());
+		Assert.assertEquals(TEMPLATE_STR_QUANTITY, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
 		ConstraintTestHelper.testVisit(constraint);
@@ -142,4 +143,3 @@ public class ConstraintRangeTest {
 	}
 
 }
-

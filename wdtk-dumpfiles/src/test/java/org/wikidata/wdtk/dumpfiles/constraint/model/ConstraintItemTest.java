@@ -37,12 +37,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintItemTest {
 
-	public static final String templateStrOneProp = "{{Constraint:Item|property=P225}}";
-	public static final String templateStrOnePropManyItem = "{{Constraint:Item|property=P105|items={{Q|7432}}, {{Q|767728}}, {{Q|68947}}}}";
-	public static final String templateStrTwoProp = "{{Constraint:Item|property=P1001|property2=P953}}";
-	public static final String templateStrOnePropOneItem = "{{Constraint:Item|property=P17|item=Q30}}";
-	public static final String templateStrOnePropTwoItem = "{{Constraint:Item|property=P107|item=Q386724|item2=Q215627}}";
-	public static final String templateStrOnePropOneItemExcep = "{{Constraint:Item|property=P17|item=Q30|exceptions={{Q|695}}, {{Q|702}}, {{Q|709}}}}";
+	public static final String TEMPLATE_STR_ONE_PROP = "{{Constraint:Item|property=P225}}";
+	public static final String TEMPLATE_STR_ONE_PROP_MANY_ITEM = "{{Constraint:Item|property=P105|items={{Q|7432}}, {{Q|767728}}, {{Q|68947}}}}";
+	public static final String TEMPLATE_STR_TWO_PROP = "{{Constraint:Item|property=P1001|property2=P953}}";
+	public static final String TEMPLATE_STR_ONE_PROP_ONE_ITEM = "{{Constraint:Item|property=P17|item=Q30}}";
+	public static final String TEMPLATE_STR_ONE_PROP_TWO_ITEM = "{{Constraint:Item|property=P107|item=Q386724|item2=Q215627}}";
+	public static final String TEMPLATE_STR_ONE_PROP_ONE_ITEM_EXCEP = "{{Constraint:Item|property=P17|item=Q30|exceptions={{Q|695}}, {{Q|702}}, {{Q|709}}}}";
 
 	public static List<ItemIdValue> getItems() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
@@ -113,7 +113,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringAndVisitOneProp() {
 		String propertyName = "P141";
-		String templateStr = templateStrOneProp;
+		String templateStr = TEMPLATE_STR_ONE_PROP;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -130,7 +130,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringOnePropManyItem() {
 		String propertyName = "P141";
-		String templateStr = templateStrOnePropManyItem;
+		String templateStr = TEMPLATE_STR_ONE_PROP_MANY_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -145,7 +145,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringTwoProp() {
 		String propertyName = "P1031";
-		String templateStr = templateStrTwoProp;
+		String templateStr = TEMPLATE_STR_TWO_PROP;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -162,7 +162,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringOnePropOneItem() {
 		String propertyName = "P240";
-		String templateStr = templateStrOnePropOneItem;
+		String templateStr = TEMPLATE_STR_ONE_PROP_ONE_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -178,7 +178,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringOnePropTwoItem() {
 		String propertyName = "P345";
-		String templateStr = templateStrOnePropTwoItem;
+		String templateStr = TEMPLATE_STR_ONE_PROP_TWO_ITEM;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -195,7 +195,7 @@ public class ConstraintItemTest {
 	@Test
 	public void testToStringOnePropOneItemExcep() {
 		String propertyName = "P883";
-		String templateStr = templateStrOnePropOneItemExcep;
+		String templateStr = TEMPLATE_STR_ONE_PROP_ONE_ITEM_EXCEP;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,14 +30,14 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * Test class for {@link ConstraintOneOf}
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class ConstraintOneOfTest {
 
-	public static final String templateStrItemVal = "{{Constraint:One of|values={{Q|27914}}, {{Q|30903}}, {{Q|31687}}, {{Q|37137}}, {{Q|186506}}, {{Q|27911}}}}";
-	public static final String templateStrQuantityVal = "{{Constraint:One of|values=1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}";
+	public static final String TEMPLATE_STR_ITEM_VAL = "{{Constraint:One of|values={{Q|27914}}, {{Q|30903}}, {{Q|31687}}, {{Q|37137}}, {{Q|186506}}, {{Q|27911}}}}";
+	public static final String TEMPLATE_STR_QUANTITY_VAL = "{{Constraint:One of|values=1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}";
 
 	public static List<ItemIdValue> getItemValues() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
@@ -85,7 +85,7 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisitItemVal() {
 		String propertyName = "P412";
-		String templateStr = templateStrItemVal;
+		String templateStr = TEMPLATE_STR_ITEM_VAL;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -100,7 +100,7 @@ public class ConstraintOneOfTest {
 	@Test
 	public void testToStringAndVisitQuantityVal() {
 		String propertyName = "P1088";
-		String templateStr = templateStrQuantityVal;
+		String templateStr = TEMPLATE_STR_QUANTITY_VAL;
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
@@ -121,8 +121,8 @@ public class ConstraintOneOfTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintOneOf(
 				constrainedProperty0, getItemValues()), new ConstraintOneOf(
-				constrainedProperty0, getItemValues()), new ConstraintOneOf(
-				constrainedProperty1, getItemValues()));
+						constrainedProperty0, getItemValues()), new ConstraintOneOf(
+								constrainedProperty1, getItemValues()));
 	}
 
 	@Test
@@ -139,4 +139,3 @@ public class ConstraintOneOfTest {
 	}
 
 }
-
