@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -21,9 +21,6 @@ package org.wikidata.wdtk.storage.datastructure.impl;
  */
 
 import java.util.Iterator;
-
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
-import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
  * Default implementation of {@link RankedBitVector}. This implementation uses

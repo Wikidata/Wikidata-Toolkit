@@ -1,9 +1,9 @@
 /**
- * Provides interfaces of basic data structures.
+ * Provides classes of basic data structures.
  *
  * @author Julian Mendez
  */
-package org.wikidata.wdtk.storage.datastructure.intf;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L

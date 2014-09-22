@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -26,6 +26,8 @@ import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
+import org.wikidata.wdtk.storage.datastructures.BitVectorIterator;
 
 /**
  * Test class for {@link BitVectorIterator}.

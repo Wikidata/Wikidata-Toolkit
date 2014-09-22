@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L

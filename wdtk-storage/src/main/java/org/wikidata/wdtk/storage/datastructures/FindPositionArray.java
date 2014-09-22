@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.storage.datastructure.impl;
+package org.wikidata.wdtk.storage.datastructures;
 
 /*
  * #%L
@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
-import org.wikidata.wdtk.storage.datastructure.intf.RankedBitVector;
 
 /**
  * This class keeps the positions where the <i>n</i>-th <i>bit</i> value can be
