@@ -1,0 +1,22 @@
+Prefix(:=<http://www.wikidata.org/entity/constraints/>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Prefix(wo:=<http://www.wikidata.org/ontology#>)
+Prefix(id:=<http://www.wikidata.org/entity/>)
+
+
+Ontology(<http://www.wikidata.org/entity/constraints/ont>
+
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1086s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P1086s> )
+Declaration( Datatype( <http://www.wikidata.org/entity/P1086aux0> ) )
+DatatypeDefinition( <http://www.wikidata.org/entity/P1086aux0> DataIntersectionOf( DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#decimal> <http://www.w3.org/2001/XMLSchema#minInclusive> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> ) DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#decimal> <http://www.w3.org/2001/XMLSchema#maxInclusive> "118"^^<http://www.w3.org/2001/XMLSchema#decimal> ) ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1086v> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P1086v> DataSomeValuesFrom( <http://www.wikidata.org/ontology#QuantityValue> <http://www.wikidata.org/entity/P1086aux0> ) )
+
+)
+
+

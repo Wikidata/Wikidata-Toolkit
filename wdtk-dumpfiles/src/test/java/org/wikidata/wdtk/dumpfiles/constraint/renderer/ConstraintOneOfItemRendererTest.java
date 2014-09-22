@@ -28,32 +28,35 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWithTest;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOfTest;
 
 /**
  *
  * @author Julian Mendez
  *
  */
-public class ConstraintConflictsWithRendererTest implements
+public class ConstraintOneOfItemRendererTest implements
 ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
-			"conflictswith");
+			"oneofitem");
+
+	public ConstraintOneOfItemRendererTest() {
+	}
 
 	@Override
 	public Constraint getConstraint() {
-		return this.testHelper.getConstraint("P569",
-				ConstraintConflictsWithTest.TEMPLATE_STR_MANY_PROP_MANY_ITEM);
+		return this.testHelper.getConstraint("P412",
+				ConstraintOneOfTest.TEMPLATE_STR_ITEM_VAL);
 	}
 
 	@Override
 	@Test
 	public void testRenderConstraint() throws IOException {
-		ConstraintConflictsWithRenderer renderer = new ConstraintConflictsWithRenderer(
+		ConstraintOneOfRenderer renderer = new ConstraintOneOfRenderer(
 				new Owl2FunctionalRendererFormat(
 						this.testHelper.getOutputStream()));
-		renderer.render(null, null);
+		renderer.renderItems(null, null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}

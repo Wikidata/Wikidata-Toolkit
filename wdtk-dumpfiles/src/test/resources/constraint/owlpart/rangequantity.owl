@@ -1,0 +1,7 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1086s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P1086s> )
+Declaration( Datatype( <http://www.wikidata.org/entity/P1086aux0> ) )
+DatatypeDefinition( <http://www.wikidata.org/entity/P1086aux0> DataIntersectionOf( DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#decimal> <http://www.w3.org/2001/XMLSchema#minInclusive> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> ) DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#decimal> <http://www.w3.org/2001/XMLSchema#maxInclusive> "118"^^<http://www.w3.org/2001/XMLSchema#decimal> ) ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1086v> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P1086v> DataSomeValuesFrom( <http://www.wikidata.org/ontology#QuantityValue> <http://www.wikidata.org/entity/P1086aux0> ) )
+

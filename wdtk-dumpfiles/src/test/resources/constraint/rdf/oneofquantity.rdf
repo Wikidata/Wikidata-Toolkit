@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx416">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:nodeID="node192f87bdnx417"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx417">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx418"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx418">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx419"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx419">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx420"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx420">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx421"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx421">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx422"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx422">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx423"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx423">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx424"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx424">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx425"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx425">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">9</rdf:first>
+	<rdf:rest rdf:nodeID="node192f87bdnx426"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx426">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</rdf:first>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f87bdnx416">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
+	<rdfs:range rdf:nodeID="node192f87bdnx416"/>
+</rdf:Description>
+
+</rdf:RDF>
+

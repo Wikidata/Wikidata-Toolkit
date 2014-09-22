@@ -28,34 +28,35 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRangeTest;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOfTest;
 
 /**
  *
  * @author Julian Mendez
  *
  */
-public class ConstraintRangeRendererTest implements
+public class ConstraintOneOfQuantityRendererTest implements
 ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
-			"range");
+			"oneofquantity");
 
-	public ConstraintRangeRendererTest() {
+	public ConstraintOneOfQuantityRendererTest() {
 	}
 
 	@Override
 	public Constraint getConstraint() {
-		return this.testHelper.getConstraint("P620",
-				ConstraintRangeTest.TEMPLATE_STR_DATE);
+		return this.testHelper.getConstraint("P1088",
+				ConstraintOneOfTest.TEMPLATE_STR_QUANTITY_VAL);
 	}
 
 	@Override
 	@Test
 	public void testRenderConstraint() throws IOException {
-		ConstraintRangeRenderer renderer = new ConstraintRangeRenderer(
+		ConstraintOneOfRenderer renderer = new ConstraintOneOfRenderer(
 				new Owl2FunctionalRendererFormat(
 						this.testHelper.getOutputStream()));
+		renderer.renderQuantities(null, null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}

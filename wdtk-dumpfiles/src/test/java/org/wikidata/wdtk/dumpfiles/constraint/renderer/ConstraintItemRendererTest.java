@@ -56,6 +56,7 @@ ConstraintRendererTestInterface {
 		ConstraintItemRenderer renderer = new ConstraintItemRenderer(
 				new Owl2FunctionalRendererFormat(
 						this.testHelper.getOutputStream()));
+		renderer.renderPart(null, null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}
