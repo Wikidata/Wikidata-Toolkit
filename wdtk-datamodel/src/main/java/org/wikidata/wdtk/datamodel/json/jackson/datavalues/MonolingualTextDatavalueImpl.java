@@ -21,13 +21,11 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A one-on-one representation of the external Json's monolingual text values.
@@ -44,27 +42,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MonolingualTextDatavalueImpl 
-extends ValueImpl
-implements MonolingualTextValue {
+public class MonolingualTextDatavalueImpl extends ValueImpl implements
+		MonolingualTextValue {
 
 	public MonolingualTextDatavalueImpl() {
+		super(typeMonolingualText);
 	}
 
 	public MonolingualTextDatavalueImpl(String language, String value) {
-		this.language = language;
-		this.text = value;
+		super(typeMonolingualText);
+		this.value = new MonolingualText(language, value);
 	}
 
 	public MonolingualTextDatavalueImpl(MonolingualTextValue mltv) {
 		this(mltv.getLanguageCode(), mltv.getText());
 	}
 
-	String language;
-	String text;
+	MonolingualText value;
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public MonolingualText getValue() {
+		return this.value;
+	}
+
+	public void setValue(MonolingualText value) {
+		this.value = value;
 	}
 
 	@Override
@@ -72,33 +73,20 @@ implements MonolingualTextValue {
 		return valueVisitor.visit(this);
 	}
 
+	@JsonIgnore
 	@Override
 	public String getText() {
-		return this.text;
-	}
-	
-	public void setText(String text) {
-		this.text = text;
+		return this.value.getText();
 	}
 
-	@JsonProperty("language")
+	@JsonIgnore
 	@Override
 	public String getLanguageCode() {
-		return this.language;
+		return this.value.getLanguageCode();
 	}
 
 	@Override
-	public int hashCode() {
-		return Hash.hashCode(this);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return Equality.equalsMonolingualTextValue(this, obj);
-	}
-
-	@Override
-	public String toString() {
-		return ToString.toString(this);
+	public boolean equals(Object o) {
+		return Equality.equalsMonolingualTextValue(this, o);
 	}
 }

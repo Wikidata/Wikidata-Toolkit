@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.MonolingualTextDatavalueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Quantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
@@ -59,7 +62,8 @@ public abstract class JsonConversionTest {
 	
 	// TODO maybe decompose the time a bit to have less magic strings in it
 	
-	protected ObjectMapper mapper = new ObjectMapper();
+	protected static ObjectMapper mapper = new ObjectMapper();
+	protected static Logger logger = LoggerFactory.getLogger(JsonConversionTest.class);
 	
 	protected static final String entityTypeItem = "item";
 	
@@ -78,6 +82,7 @@ public abstract class JsonConversionTest {
 	protected static final String timeValueJson = "{\"type\":\"" + ValueImpl.typeTime + "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
 	protected static final String globeCoordinateValueJson = "{\"type\":\"" + ValueImpl.typeCoordinate + "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
 	protected static final String quantityValueJson = "{\"type\":\"" + ValueImpl.typeQuantity + "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	protected static final String mltDatavalueJson = "{\"type\":\"" + ValueImpl.typeMonolingualText + "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
 	
 	// stand-alone descriptions of ItemDocument-parts
 	protected static final String itemTypeJson = "\"type\":\"item\"";
@@ -106,6 +111,7 @@ public abstract class JsonConversionTest {
 	protected static final TimeValueImpl testTimeValue = new TimeValueImpl(new Time("+00000002013-10-28T00:00:00Z",0,0,0,11, "http://www.wikidata.org/entity/Q1985727"));
 	protected static final GlobeCoordinateValueImpl testGlobeCoordinateValue = new GlobeCoordinateValueImpl(new GlobeCoordinate(-90, 0, 10, "http://www.wikidata.org/entity/Q2"));
 	protected static final QuantityValueImpl testQuantityValue = new QuantityValueImpl(new Quantity(new BigDecimal(1), new BigDecimal(1.5), new BigDecimal(-0.5)));
+	protected static final  MonolingualTextDatavalueImpl testMltDatavalue = new MonolingualTextDatavalueImpl("en", "foobar");
 
 	protected static final NoValueSnakImpl testNoValueSnak = new NoValueSnakImpl(propertyId);
 	protected static final SomeValueSnakImpl testSomeValueSnak = new SomeValueSnakImpl(propertyId);
@@ -118,6 +124,7 @@ public abstract class JsonConversionTest {
 	protected Map<String, MonolingualTextValueImpl> testMltvMap;
 	protected Map<String, List<MonolingualTextValueImpl>> testAliases;
 	protected ItemIdImpl testItemId;
+	protected PropertyIdImpl testPropertyId;
 	protected Map<String, SiteLinkImpl> testSiteLinkMap;
 	protected StatementImpl testEmptyStatement;
 	protected ClaimImpl testClaim;
@@ -140,6 +147,12 @@ public abstract class JsonConversionTest {
 	public void setupTestItemId(){
 		testItemId = new ItemIdImpl(itemId);
 		assertEquals(testItemId.getId(), itemId);
+	}
+	
+	@Before
+	public void setupTestPropertyId(){
+		testPropertyId = new PropertyIdImpl(propertyId);
+		assertEquals(testPropertyId.getId(), propertyId);
 	}
 	
 	@Before

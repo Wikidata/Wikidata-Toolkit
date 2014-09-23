@@ -42,6 +42,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
  *
  */
 public class StatementGroupImpl implements StatementGroup {
+	// TODO do not forget to set the claim of the statements
 
 	PropertyIdImpl propertyId;
 	List<Statement> statements = new ArrayList<>();
@@ -49,6 +50,8 @@ public class StatementGroupImpl implements StatementGroup {
 	public StatementGroupImpl(PropertyIdImpl propertyId, List<StatementImpl> statements) {
 		this.propertyId = propertyId;
 		for(StatementImpl statement : statements){
+			ClaimImpl claim = new ClaimImpl(statement, propertyId);
+			statement.setClaim(claim);
 			this.statements.add(statement);
 		}
 		// TODO sort statements by rank
@@ -67,6 +70,7 @@ public class StatementGroupImpl implements StatementGroup {
 	@Override
 	public EntityIdValue getSubject() {
 		return this.propertyId;
+		// TODO check if this really is how it is meant
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -70,9 +71,11 @@ public class TestDatatypeId extends JsonConversionTest {
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_URL);
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testIriForUnknownType(){
+		@SuppressWarnings("unused")
 		DatatypeIdImpl uut = new DatatypeIdImpl("some wrong type");
-		assertEquals(uut.getIri(), null);
+		// if we reach this point, the exception did not occur
+		fail("Expected test to be aborted with an IllegalArgumentException.");
 	}
 }

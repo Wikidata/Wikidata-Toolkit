@@ -45,7 +45,7 @@ implements Value {
 	public static final String typeCoordinate = "globecoordinate";
 	public static final String typeEntity = "wikibase-entityid";
 	public static final String typeQuantity = "quantity";
-	public static final String typeMonolingualText = "monolingualtextvalue";
+	public static final String typeMonolingualText = "monolingualtext";
 	
 	private String type;
 	

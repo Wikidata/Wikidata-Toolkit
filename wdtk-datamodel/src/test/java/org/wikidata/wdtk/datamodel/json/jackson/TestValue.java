@@ -30,6 +30,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.MonolingualTextDatavalueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
@@ -129,11 +130,26 @@ public class TestValue extends JsonConversionTest {
 		
 		try {
 			ValueImpl result = mapper.readValue(timeValueJson, ValueImpl.class);
+			TimeValueImpl castedResult = (TimeValueImpl)result;
 			
 			assertNotNull(result);
 			assertTrue(result instanceof TimeValueImpl);
 			assertEquals(result.getType(), testTimeValue.getType());
-			assertEquals(((TimeValueImpl)result).getValue(), testTimeValue.getValue());
+			assertEquals((castedResult).getValue(), testTimeValue.getValue());
+			
+			// test if every field contains the correct value
+			assertEquals(castedResult.getSecond(), testTimeValue.getSecond());
+			assertEquals(castedResult.getMinute(), testTimeValue.getMinute());
+			assertEquals(castedResult.getHour(), testTimeValue.getHour());
+			assertEquals(castedResult.getDay(), testTimeValue.getDay());
+			assertEquals(castedResult.getMonth(), testTimeValue.getMonth());
+			assertEquals(castedResult.getYear(), testTimeValue.getYear());
+			
+			assertEquals(castedResult.getAfterTolerance(), testTimeValue.getAfterTolerance());
+			assertEquals(castedResult.getBeforeTolerance(), testTimeValue.getBeforeTolerance());
+			assertEquals(castedResult.getPrecision(), testTimeValue.getPrecision());
+			assertEquals(castedResult.getPreferredCalendarModel(), testTimeValue.getPreferredCalendarModel());
+			assertEquals(castedResult.getTimezoneOffset(), testTimeValue.getTimezoneOffset());
 			
 			// test against the same time, created on a different way
 			Time otherTime = new Time(2013, (byte)10, (byte)28, (byte)0, (byte)0, (byte)0, 0, 0, 0, 11, "http://www.wikidata.org/entity/Q1985727");
@@ -221,4 +237,45 @@ public class TestValue extends JsonConversionTest {
 		}
 	}
 
+	
+	@Test
+	public void testMltDatavalueToJson(){
+		
+		try {
+			String result = mapper.writeValueAsString(testMltDatavalue);
+			JsonComparator.compareJsonStrings(mltDatavalueJson, result);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			fail("Converting POJO to JSON failed");
+		}
+	}
+	
+	@Test
+	public void testMltDatavalueToJava(){
+		
+		try {
+			ValueImpl result = mapper.readValue(mltDatavalueJson, ValueImpl.class);
+			
+			assertNotNull(result);
+			assertTrue(result instanceof MonolingualTextDatavalueImpl);
+			assertEquals(((MonolingualTextDatavalueImpl)result), testMltDatavalue);
+			
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+			fail("Parsing failed");
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+			fail("Json mapping failed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("IO failed");
+		}
+	}
+	
+	@Test
+	public void testMltDatavalueConstructor(){
+		
+		assertEquals(testMltDatavalue, new MonolingualTextDatavalueImpl(testMltv));
+		
+	}
 }

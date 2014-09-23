@@ -65,10 +65,10 @@ public class StatementImpl implements Statement {
 
 	private Map<String, List<SnakImpl>> qualifiers = new HashMap<>();
 
+	// TODO check if this is the correct approach
 	/**
-	 * This is needed to satisfy the interface. Since from the JSON the subject
-	 * of the claim can not be derived, after the deserialization the claim has
-	 * to be derived by the statement group.
+	 * This is needed to satisfy the interface. The claim will be derived from
+	 * the Statement itself and the propertyId of its mainsnak.
 	 */
 	@JsonIgnore
 	private ClaimImpl claim;
@@ -80,6 +80,7 @@ public class StatementImpl implements Statement {
 		this.id = id;
 		this.rank = StatementRank.NORMAL;
 		this.mainsnak = mainsnak;
+		claim = new ClaimImpl(this, mainsnak.getPropertyId());
 	}
 
 	/**
@@ -97,9 +98,9 @@ public class StatementImpl implements Statement {
 	public Claim getClaim() {
 		return this.claim;
 	}
-	
+
 	@JsonIgnore
-	public void setClaim(ClaimImpl claim){
+	public void setClaim(ClaimImpl claim) {
 		this.claim = claim;
 	}
 
