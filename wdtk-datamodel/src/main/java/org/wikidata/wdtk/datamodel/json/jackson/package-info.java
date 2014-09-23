@@ -1,3 +1,11 @@
+/**
+ * Main package for Jackson-compatible implementations of the WDTK datamodel
+ * interfaces. The JSON serializations for snak values are different from the
+ * serializations used elsewhere (even when represented by the same WDTK
+ * interfaces), hence snak values have a seperate package.
+ *
+ * @author Fredo Erxleben
+ */
 package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
@@ -19,24 +27,3 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * limitations under the License.
  * #L%
  */
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-
-public class TestPropertyId extends JsonConversionTest {
-
-	@Test
-	public void testEquality(){
-		JacksonPropertyId reference = new JacksonPropertyId(propertyId);
-		JacksonPropertyId same = new JacksonPropertyId(propertyId);
-		JacksonPropertyId different = new JacksonPropertyId("P2");
-		
-		assertEquals(reference, same);
-		assertEquals(reference, (PropertyIdValue)same);
-		assertEquals((PropertyIdValue)reference, (PropertyIdValue)same);
-		assertFalse(reference.equals(different));
-	}
-}

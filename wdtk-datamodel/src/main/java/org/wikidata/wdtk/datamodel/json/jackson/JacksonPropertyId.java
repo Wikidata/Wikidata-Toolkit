@@ -20,23 +20,26 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
-public class TestPropertyId extends JsonConversionTest {
+public class JacksonPropertyId extends JacksonEntityId implements PropertyIdValue {
 
-	@Test
-	public void testEquality(){
-		JacksonPropertyId reference = new JacksonPropertyId(propertyId);
-		JacksonPropertyId same = new JacksonPropertyId(propertyId);
-		JacksonPropertyId different = new JacksonPropertyId("P2");
-		
-		assertEquals(reference, same);
-		assertEquals(reference, (PropertyIdValue)same);
-		assertEquals((PropertyIdValue)reference, (PropertyIdValue)same);
-		assertFalse(reference.equals(different));
+	public JacksonPropertyId() {
+	}
+
+	public JacksonPropertyId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getEntityType() {
+		return EntityIdValue.ET_PROPERTY;
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

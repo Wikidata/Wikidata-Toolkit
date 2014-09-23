@@ -29,21 +29,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinate;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Quantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.TimeValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.NoValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SomeValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.ValueSnakImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinate;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,7 +57,8 @@ public abstract class JsonConversionTest {
 	
 	// TODO maybe decompose the time a bit to have less magic strings in it
 	
-	protected ObjectMapper mapper = new ObjectMapper();
+	protected static ObjectMapper mapper = new ObjectMapper();
+	protected static Logger logger = LoggerFactory.getLogger(JsonConversionTest.class);
 	
 	protected static final String entityTypeItem = "item";
 	
@@ -73,11 +72,12 @@ public abstract class JsonConversionTest {
 	protected static final String rankPreferred = "preferred";
 	
 	// stand-alone descriptions of Value-parts
-	protected static final String stringValueJson = "{\"type\":\"" + ValueImpl.typeString + "\",\"value\":\"foobar\"}";
-	protected static final String entityIdValueJson = "{\"type\":\"" + ValueImpl.typeEntity + "\",\"value\":{\"entity-type\":\"" + entityTypeItem + "\",\"numeric-id\":" + numericId + "}}";
-	protected static final String timeValueJson = "{\"type\":\"" + ValueImpl.typeTime + "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
-	protected static final String globeCoordinateValueJson = "{\"type\":\"" + ValueImpl.typeCoordinate + "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
-	protected static final String quantityValueJson = "{\"type\":\"" + ValueImpl.typeQuantity + "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	protected static final String stringValueJson = "{\"type\":\"" + JacksonValue.typeString + "\",\"value\":\"foobar\"}";
+	protected static final String entityIdValueJson = "{\"type\":\"" + JacksonValue.typeEntity + "\",\"value\":{\"entity-type\":\"" + entityTypeItem + "\",\"numeric-id\":" + numericId + "}}";
+	protected static final String timeValueJson = "{\"type\":\"" + JacksonValue.typeTime + "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
+	protected static final String globeCoordinateValueJson = "{\"type\":\"" + JacksonValue.typeCoordinate + "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
+	protected static final String quantityValueJson = "{\"type\":\"" + JacksonValue.typeQuantity + "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	protected static final String mltDatavalueJson = "{\"type\":\"" + JacksonValue.typeMonolingualText + "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
 	
 	// stand-alone descriptions of ItemDocument-parts
 	protected static final String itemTypeJson = "\"type\":\"item\"";
@@ -85,7 +85,7 @@ public abstract class JsonConversionTest {
 	protected static final String siteLinkJson = "{\"site\":\"enwiki\", \"title\":\"foobar\", \"badges\":[]}";
 	protected static final String noValueSnakJson = "{\"snaktype\":\"novalue\",\"property\":\"" + propertyId + "\"}";
 	protected static final String someValueSnakJson = "{\"snaktype\":\"somevalue\",\"property\":\"" + propertyId + "\"}";
-	protected static final String commonsValueSnakJson = "{\"snaktype\":\"value\",\"property\":\"" + propertyId + "\",\"datatype\":\"" + ValueSnakImpl.datatypeCommons + "\",\"datavalue\":" + stringValueJson +"}";
+	protected static final String commonsValueSnakJson = "{\"snaktype\":\"value\",\"property\":\"" + propertyId + "\",\"datatype\":\"" + JacksonValueSnak.datatypeCommons + "\",\"datavalue\":" + stringValueJson +"}";
 
 	// wrapping into item document structure for dedicated tests
 	protected static final String wrappedLabelJson = "{\"labels\":{\"en\":" + mltvJson + "}," + itemTypeJson + "}";
@@ -98,29 +98,31 @@ public abstract class JsonConversionTest {
 	
 	// objects to test against
 	// should (of course) correspond to the JSON strings counterpart
-	protected static final MonolingualTextValueImpl testMltv = new MonolingualTextValueImpl("en", "foobar");
-	protected static final SiteLinkImpl testSiteLink = new SiteLinkImpl("enwiki", "foobar");
+	protected static final JacksonMonolingualTextValue testMltv = new JacksonMonolingualTextValue("en", "foobar");
+	protected static final JacksonSiteLink testSiteLink = new JacksonSiteLink("enwiki", "foobar");
 
-	protected static final StringValueImpl testStringValue = new StringValueImpl("foobar");
-	protected static final EntityIdValueImpl testEntityIdValue = new EntityIdValueImpl(new EntityId(entityTypeItem, numericId));
-	protected static final TimeValueImpl testTimeValue = new TimeValueImpl(new Time("+00000002013-10-28T00:00:00Z",0,0,0,11, "http://www.wikidata.org/entity/Q1985727"));
-	protected static final GlobeCoordinateValueImpl testGlobeCoordinateValue = new GlobeCoordinateValueImpl(new GlobeCoordinate(-90, 0, 10, "http://www.wikidata.org/entity/Q2"));
-	protected static final QuantityValueImpl testQuantityValue = new QuantityValueImpl(new Quantity(new BigDecimal(1), new BigDecimal(1.5), new BigDecimal(-0.5)));
+	protected static final JacksonValueString testStringValue = new JacksonValueString("foobar");
+	protected static final JacksonValueEntityId testEntityIdValue = new JacksonValueEntityId(new JacksonInnerEntityId(entityTypeItem, numericId));
+	protected static final JacksonValueTime testTimeValue = new JacksonValueTime(new JacksonInnerTime("+00000002013-10-28T00:00:00Z",0,0,0,11, "http://www.wikidata.org/entity/Q1985727"));
+	protected static final JacksonValueGlobeCoordinates testGlobeCoordinateValue = new JacksonValueGlobeCoordinates(new JacksonInnerGlobeCoordinate(-90, 0, 10, "http://www.wikidata.org/entity/Q2"));
+	protected static final JacksonValueQuantity testQuantityValue = new JacksonValueQuantity(new JacksonInnerQuantity(new BigDecimal(1), new BigDecimal(1.5), new BigDecimal(-0.5)));
+	protected static final  JacksonValueMonolingualText testMltDatavalue = new JacksonValueMonolingualText("en", "foobar");
 
-	protected static final NoValueSnakImpl testNoValueSnak = new NoValueSnakImpl(propertyId);
-	protected static final SomeValueSnakImpl testSomeValueSnak = new SomeValueSnakImpl(propertyId);
-	protected static final ValueSnakImpl testCommonsValueSnak = new ValueSnakImpl(propertyId, ValueSnakImpl.datatypeCommons, testStringValue);
+	protected static final JacksonNoValueSnak testNoValueSnak = new JacksonNoValueSnak(propertyId);
+	protected static final JacksonSomeValueSnak testSomeValueSnak = new JacksonSomeValueSnak(propertyId);
+	protected static final JacksonValueSnak testCommonsValueSnak = new JacksonValueSnak(propertyId, JacksonValueSnak.datatypeCommons, testStringValue);
 	// TODO continue testing using stringValueSnak, timeValueSnak, globeCoordinateValueSnak	
 	
 	
 	
 	// puzzle pieces for creation of the test of ItemDocument and PropertyDocument
-	protected Map<String, MonolingualTextValueImpl> testMltvMap;
-	protected Map<String, List<MonolingualTextValueImpl>> testAliases;
-	protected ItemIdImpl testItemId;
-	protected Map<String, SiteLinkImpl> testSiteLinkMap;
-	protected StatementImpl testEmptyStatement;
-	protected ClaimImpl testClaim;
+	protected Map<String, JacksonMonolingualTextValue> testMltvMap;
+	protected Map<String, List<JacksonMonolingualTextValue>> testAliases;
+	protected JacksonItemId testItemId;
+	protected JacksonPropertyId testPropertyId;
+	protected Map<String, JacksonSiteLink> testSiteLinkMap;
+	protected JacksonStatement testEmptyStatement;
+	protected JacksonClaim testClaim;
 	
 	@Before
 	public void setupTestMltv(){
@@ -131,15 +133,21 @@ public abstract class JsonConversionTest {
 	@Before
 	public void setupTestAliases(){
 		testAliases = new HashMap<>();
-		List<MonolingualTextValueImpl> aliases = new LinkedList<>();
+		List<JacksonMonolingualTextValue> aliases = new LinkedList<>();
 		aliases.add(TestMonolingualTextValue.testMltv);
 		testAliases.put("en", aliases);
 	}
 	
 	@Before
 	public void setupTestItemId(){
-		testItemId = new ItemIdImpl(itemId);
+		testItemId = new JacksonItemId(itemId);
 		assertEquals(testItemId.getId(), itemId);
+	}
+	
+	@Before
+	public void setupTestPropertyId(){
+		testPropertyId = new JacksonPropertyId(propertyId);
+		assertEquals(testPropertyId.getId(), propertyId);
 	}
 	
 	@Before
@@ -150,8 +158,8 @@ public abstract class JsonConversionTest {
 	
 	@Before
 	public void setupTestStatementAndClaim(){
-		testEmptyStatement = new StatementImpl(statementId, testNoValueSnak);
-		testClaim = new ClaimImpl(testEmptyStatement, new PropertyIdImpl(propertyId));
+		testEmptyStatement = new JacksonStatement(statementId, testNoValueSnak);
+		testClaim = new JacksonClaim(testEmptyStatement, new JacksonPropertyId(propertyId));
 		testEmptyStatement.setClaim(testClaim);
 	}
 	

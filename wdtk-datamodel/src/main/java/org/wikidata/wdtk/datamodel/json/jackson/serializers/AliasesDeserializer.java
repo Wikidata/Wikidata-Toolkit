@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.EntityDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,31 +38,35 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * A deserializer implementation for the aliases in an EntityDocument. <b> This
- * is part of a Workaround. It is neither nice nor fast and should be obsolete
- * as fast as possible.</b>
- * 
- * @see EntityDocumentImpl setAliases()
- * 
+ * A deserializer implementation for the aliases in an
+ * {@link JacksonTermedDocument}.
+ * <p>
+ * It implements a workaround to cope with empty aliases being represented as
+ * <code>"aliases":[]</code> despite its declaration as map and not as list or
+ * array. This is neither nice nor fast, and should be obsolete as soon as
+ * possible.
+ *
+ * @see JacksonTermedDocument#setAliases(Map)
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 public class AliasesDeserializer extends
-		JsonDeserializer<Map<String, List<MonolingualTextValueImpl>>> {
+		JsonDeserializer<Map<String, List<JacksonMonolingualTextValue>>> {
 
 	@Override
-	public Map<String, List<MonolingualTextValueImpl>> deserialize(
+	public Map<String, List<JacksonMonolingualTextValue>> deserialize(
 			JsonParser jp, DeserializationContext ctxt) throws IOException,
 			JsonProcessingException {
 
-		Map<String, List<MonolingualTextValueImpl>> contents = new HashMap<>();
+		Map<String, List<JacksonMonolingualTextValue>> contents = new HashMap<>();
 
 		try {
 			JsonNode node = jp.getCodec().readTree(jp);
 			if (!node.isArray()) {
 				Iterator<Entry<String, JsonNode>> nodeIterator = node.fields();
 				while (nodeIterator.hasNext()) {
-					List<MonolingualTextValueImpl> mltvList = new ArrayList<>();
+					List<JacksonMonolingualTextValue> mltvList = new ArrayList<>();
 					Entry<String, JsonNode> currentNode = nodeIterator.next();
 					// get the list of MLTVs
 					Iterator<JsonNode> mltvListIterator = currentNode
@@ -71,7 +75,7 @@ public class AliasesDeserializer extends
 						JsonNode mltvEntry = mltvListIterator.next();
 						String language = mltvEntry.get("language").asText();
 						String value = mltvEntry.get("value").asText();
-						mltvList.add(new MonolingualTextValueImpl(language,
+						mltvList.add(new JacksonMonolingualTextValue(language,
 								value));
 					}
 

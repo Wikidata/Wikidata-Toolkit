@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 
 /**
  * This class is dedicated to converting different implementations of this data
@@ -57,7 +57,7 @@ public class ImplementationConverter {
 
 		switch (toImplementation) {
 		case IMPL_JACKSON:
-			return new ItemDocumentImpl(source);
+			return new JacksonItemDocument(source);
 		case IMPL_STORAGE: 
 			return toStorageItemDocument(source);
 		}

@@ -41,7 +41,7 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 	public void testMonolingualTextValueToJava(){
 		
 		try {
-			MonolingualTextValueImpl result = mapper.readValue(mltvJson, MonolingualTextValueImpl.class);
+			JacksonMonolingualTextValue result = mapper.readValue(mltvJson, JacksonMonolingualTextValue.class);
 			
 			assertEquals("en", result.getLanguageCode());
 			assertEquals("foobar", result.getText());
@@ -75,9 +75,9 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 	
 	@Test
 	public void testEquals(){
-		MonolingualTextValueImpl match = new MonolingualTextValueImpl("en", "foobar");
-		MonolingualTextValueImpl wrongLanguage = new MonolingualTextValueImpl("de", "foobar");
-		MonolingualTextValueImpl wrongValue = new MonolingualTextValueImpl("en", "barfoo");
+		JacksonMonolingualTextValue match = new JacksonMonolingualTextValue("en", "foobar");
+		JacksonMonolingualTextValue wrongLanguage = new JacksonMonolingualTextValue("de", "foobar");
+		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue("en", "barfoo");
 		
 		assertEquals(testMltv, testMltv);
 		assertEquals(testMltv, match);

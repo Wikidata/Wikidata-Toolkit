@@ -1,4 +1,12 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+/**
+ * Jackson-compatible implementation of all WDTK
+ * {@link org.wikidata.wdtk.datamodel.interfaces.Value} interfaces for use as
+ * snak values. The JSON serializations typically differ even for values that
+ * occur in other places too, hence separate implementations are required.
+ *
+ * @author Fredo Erxleben
+ */
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 /*
  * #%L
@@ -19,19 +27,3 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * limitations under the License.
  * #L%
  */
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-/**
- * A test suite that runs all the JSON conversion tests.
- *
- * @author Fredo Erxleben
- */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ TestItemDocument.class, TestMonolingualTextValue.class,
-		TestSiteLink.class, TestSnakJson.class, TestValue.class,
-		TestStatement.class, TestDatatypeId.class, TestAliasBug.class })
-public class AllTests {
-	// nothing
-}

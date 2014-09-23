@@ -55,8 +55,8 @@ public class TestSiteLink extends JsonConversionTest {
 
 	public void testSiteLinkToJava() {
 		try {
-			SiteLinkImpl result = mapper.readValue(siteLinkJson,
-					SiteLinkImpl.class);
+			JacksonSiteLink result = mapper.readValue(siteLinkJson,
+					JacksonSiteLink.class);
 
 			assertEquals("enwiki", result.getSiteKey());
 			assertEquals("foobar", result.getPageTitle());
@@ -76,9 +76,9 @@ public class TestSiteLink extends JsonConversionTest {
 
 	@Test
 	public void testEquals() {
-		SiteLinkImpl match = new SiteLinkImpl("enwiki", "foobar");
-		SiteLinkImpl wrongLanguage = new SiteLinkImpl("dewiki", "foobar");
-		SiteLinkImpl wrongValue = new SiteLinkImpl("enwiki", "barfoo");
+		JacksonSiteLink match = new JacksonSiteLink("enwiki", "foobar");
+		JacksonSiteLink wrongLanguage = new JacksonSiteLink("dewiki", "foobar");
+		JacksonSiteLink wrongValue = new JacksonSiteLink("enwiki", "barfoo");
 
 		assertEquals(testSiteLink, testSiteLink);
 		assertEquals(testSiteLink, match);

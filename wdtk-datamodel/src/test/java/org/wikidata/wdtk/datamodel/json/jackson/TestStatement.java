@@ -28,7 +28,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +37,7 @@ public class TestStatement extends JsonConversionTest {
 	
 	@Test
 	public void testEmptyStatementToJson(){
-		StatementImpl statement = testEmptyStatement;
+		JacksonStatement statement = testEmptyStatement;
 		
 		try {
 			String result = mapper.writeValueAsString(statement);
@@ -52,9 +51,9 @@ public class TestStatement extends JsonConversionTest {
 	@Test
 	public void testEmptyStatementToJava(){
 		try {
-			StatementImpl result = mapper.readValue(emptyStatementJson, StatementImpl.class);
+			JacksonStatement result = mapper.readValue(emptyStatementJson, JacksonStatement.class);
 			// inject claim since this is not provided on statement level in the JSON
-			ClaimImpl claim = new ClaimImpl(result, new PropertyIdImpl(propertyId));
+			JacksonClaim claim = new JacksonClaim(result, new JacksonPropertyId(propertyId));
 			result.setClaim(claim);
 			
 			assertNotNull(result);
@@ -74,14 +73,24 @@ public class TestStatement extends JsonConversionTest {
 	
 	@Test
 	public void testEquality(){
-		StatementImpl correctStatement = new StatementImpl(statementId, testNoValueSnak);
+		JacksonStatement correctStatement = new JacksonStatement(statementId, testNoValueSnak);
 		correctStatement.setClaim(testClaim);
 		
 		assertEquals(testEmptyStatement, testEmptyStatement);
 		assertEquals(testEmptyStatement, correctStatement);
 		
-		StatementImpl wrongId = new StatementImpl(" " + statementId, testNoValueSnak);
+		JacksonStatement wrongId = new JacksonStatement(" " + statementId, testNoValueSnak);
 		wrongId.setClaim(testClaim);
 		assertFalse(testEmptyStatement.equals(wrongId));
+	}
+	
+	@Test
+	public void testToString(){
+		assertNotNull(testEmptyStatement.toString());
+	}
+	
+	@Test
+	public void testHashCode(){
+		assertNotNull(testEmptyStatement.hashCode());
 	}
 }

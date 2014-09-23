@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson;
+package org.wikidata.wdtk.datamodel.implementation;
 
 /*
  * #%L
@@ -21,22 +21,21 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 
-public class TestPropertyId extends JsonConversionTest {
+public class WikimediaLanguageCodesTest {
 
 	@Test
-	public void testEquality(){
-		JacksonPropertyId reference = new JacksonPropertyId(propertyId);
-		JacksonPropertyId same = new JacksonPropertyId(propertyId);
-		JacksonPropertyId different = new JacksonPropertyId("P2");
-		
-		assertEquals(reference, same);
-		assertEquals(reference, (PropertyIdValue)same);
-		assertEquals((PropertyIdValue)reference, (PropertyIdValue)same);
-		assertFalse(reference.equals(different));
+	public void getSomeLanguageCodes() {
+		assertEquals("gsw", WikimediaLanguageCodes.getLanguageCode("als"));
+		assertEquals("en", WikimediaLanguageCodes.getLanguageCode("en"));
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getUnknownLanguageCode() {
+		WikimediaLanguageCodes.getLanguageCode("unknown");
+	}
+
 }

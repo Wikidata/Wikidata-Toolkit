@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -37,15 +38,15 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.util.Timer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Speedtest {
 
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
-	private String baseIri = "Speedtest";
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
+	private final String baseIri = "Speedtest";
 
 	private class NullOutputStream extends OutputStream {
 
@@ -56,9 +57,10 @@ public class Speedtest {
 	}
 
 	@Test
+	@Ignore("Performance test. Not relevant for CI. Takes over 20sec to run.")
 	public void runSerializationTest() throws IOException {
 		ItemDocument document = this.createItemDocument();
-		
+
 		int runs = 1000;
 
 		// traditional
@@ -69,65 +71,65 @@ public class Speedtest {
 			traditional.processItemDocument(document);
 			t.stop();
 		}
-		
+
 		System.err.println("Traditional");
 		System.err.println("Avg. CPU: \t" + t.getAvgCpuTime());
 		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
 		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
 		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
-		
+
 		// jackson (incl. converting)
-		
+
 		t = new Timer(baseIri, Timer.RECORD_ALL);
 		ObjectMapper mapper = new ObjectMapper();
 		for (int i = 0; i < runs; i++) {
 			t.start();
-			ItemDocumentImpl altDocument = new ItemDocumentImpl(document);
+			JacksonItemDocument altDocument = new JacksonItemDocument(document);
 			mapper.writeValueAsString(altDocument);
 			t.stop();
 		}
-		
+
 		System.err.println("Jackson (incl. conv.)");
 		System.err.println("Avg. CPU: \t" + t.getAvgCpuTime());
 		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
 		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
 		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
-		
+
 		// jackson (excl converting)
-		
+
 		t = new Timer(baseIri, Timer.RECORD_ALL);
 		mapper = new ObjectMapper();
-		ItemDocumentImpl altDocument = new ItemDocumentImpl(document);
+		JacksonItemDocument altDocument = new JacksonItemDocument(document);
 		for (int i = 0; i < runs; i++) {
 			t.start();
 			mapper.writeValueAsString(altDocument);
 			t.stop();
 		}
-		
+
 		System.err.println("Jackson (excl. conv.)");
 		System.err.println("Avg. CPU: \t" + t.getAvgCpuTime());
 		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
 		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
 		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
-		
+
 		// jackson (deserialization)
-		
+
 		String token = mapper.writeValueAsString(altDocument);
-		
+
 		t = new Timer(baseIri, Timer.RECORD_ALL);
 		mapper = new ObjectMapper();
 		for (int i = 0; i < runs; i++) {
 			t.start();
-			mapper.readValue(token, ItemDocumentImpl.class);
+			mapper.readValue(token, JacksonItemDocument.class);
 			t.stop();
 		}
-		
+
 		System.err.println("Jackson (deserialization)");
 		System.err.println("Avg. CPU: \t" + t.getAvgCpuTime());
 		System.err.println("Avg. Wall: \t" + t.getAvgWallTime());
 		System.err.println("Tot. CPU: \t" + t.getTotalCpuTime());
 		System.err.println("Tot. Wall: \t" + t.getTotalWallTime());
-		
+
 	}
 
 	private ItemDocument createItemDocument() {
@@ -145,15 +147,15 @@ public class Speedtest {
 
 	/**
 	 * Creates a Map with 1000 entries
-	 * 
+	 *
 	 * @return
 	 */
 	private Map<String, SiteLink> createSiteLinks() {
 		Map<String, SiteLink> returnMap = new HashMap<>();
 
 		for (int i = 0; i < 1000; i++) {
-			returnMap.put("key" + i,
-					factory.getSiteLink("title" + i, "site" + i, new LinkedList<String>()));
+			returnMap.put("key" + i, factory.getSiteLink("title" + i, "site"
+					+ i, new LinkedList<String>()));
 		}
 
 		return returnMap;
@@ -166,7 +168,7 @@ public class Speedtest {
 
 	/**
 	 * Create a List with 1000 Mltvs
-	 * 
+	 *
 	 * @return
 	 */
 	private List<MonolingualTextValue> createMltvList() {

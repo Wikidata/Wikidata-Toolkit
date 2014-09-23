@@ -30,9 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A helper class for comparing JSON objects to each other.
- * 
- * @author fredo
  *
+ * @author Fredo Erxleben
  */
 public class JsonComparator {
 
@@ -42,7 +41,7 @@ public class JsonComparator {
 	 * Compares two JSON objects represented by Strings to each other. Both
 	 * Strings are supposed to be valid JSON. From the given Strings the JSON
 	 * tree is build and both trees are compared.
-	 * 
+	 *
 	 * @param string1
 	 * @param string2
 	 */

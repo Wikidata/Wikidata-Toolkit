@@ -33,19 +33,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-public class TestItemDocument extends JsonConversionTest {
+public class TestPropertyDocument extends JsonConversionTest {
 	
-	// TODO test statements (JSON claim)
-	
-	JacksonItemDocument fullDocument;
+	JacksonPropertyDocument fullDocument;
 	
 	@Before
 	public void setupTestFullDocument(){
-		fullDocument = new JacksonItemDocument();
-		fullDocument.setJsonId(testItemId.getId());
+		fullDocument = new JacksonPropertyDocument();
+		fullDocument.setJsonId(testPropertyId.getId());
 		fullDocument.setAliases(testAliases);
 		fullDocument.setDescriptions(testMltvMap);
 		fullDocument.setLabels(testMltvMap);
+		fullDocument.setJsonDatatype("quantity");
 	}
 	
 	@Test
@@ -54,10 +53,11 @@ public class TestItemDocument extends JsonConversionTest {
 		assertNotNull(fullDocument.getDescriptions());
 		assertNotNull(fullDocument.getLabels());
 		assertNotNull(fullDocument.getJsonId());
-		assertNotNull(fullDocument.getItemId());
+		assertNotNull(fullDocument.getPropertyId());
 		assertNotNull(fullDocument.getEntityId());
+		assertNotNull(fullDocument.getJsonType());
 		
-		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
+		assertEquals(fullDocument.getPropertyId().getId(), fullDocument.getJsonId());
 	}
 	
 	/**
@@ -248,8 +248,8 @@ public class TestItemDocument extends JsonConversionTest {
 	}
 	
 	@Test
-	public void testGenerationFromOtherItemDocument(){
-		JacksonItemDocument copy = new JacksonItemDocument(fullDocument);
+	public void testGenerationFromOtherPropertyDocument(){
+		JacksonPropertyDocument copy = new JacksonPropertyDocument(fullDocument);
 		assertEquals(fullDocument, copy);
 	}
 }
