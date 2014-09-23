@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -22,34 +22,24 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
 
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
-/**
- * Note that you have to differentiate between <b>ItemIdImpl</b> (this) and
- * <b>ItemIdValueImpl</b>. This class identifies an items id on the level of an
- * item document. The other one identifies an items id on the level of snak
- * values. They are different due to the resulting JSON being syntactically
- * different for these cases. Since the document ID's are only Strings in the
- * JSON, instances of this class will never appear in the exported JSON.
- * 
- * @author Fredo Erxleben
- *
- */
-public class JacksonItemId extends JacksonEntityId  implements ItemIdValue {
+public class JacksonPropertyId extends JacksonEntityId implements PropertyIdValue {
 
-	public JacksonItemId() {}
-	public JacksonItemId(String id) {
+	public JacksonPropertyId() {
+	}
+
+	public JacksonPropertyId(String id) {
 		this.id = id;
 	}
 
 	@Override
 	public String getEntityType() {
-		return EntityIdValue.ET_ITEM;
+		return EntityIdValue.ET_PROPERTY;
 	}
 
 	@Override
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

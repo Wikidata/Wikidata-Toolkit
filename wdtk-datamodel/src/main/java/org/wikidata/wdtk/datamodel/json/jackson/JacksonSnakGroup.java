@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.snaks;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -27,7 +27,6 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 /**
  * This class is not actually used in the JSON model, but needed to satisfy the

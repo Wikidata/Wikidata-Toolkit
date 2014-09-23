@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.snaks;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;

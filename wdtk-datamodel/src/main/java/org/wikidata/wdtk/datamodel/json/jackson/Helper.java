@@ -26,11 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 /**
  * A class that provides several helper methods.

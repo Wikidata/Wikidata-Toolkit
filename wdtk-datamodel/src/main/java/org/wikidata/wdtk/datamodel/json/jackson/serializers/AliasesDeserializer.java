@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonEntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonEntityDocument;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

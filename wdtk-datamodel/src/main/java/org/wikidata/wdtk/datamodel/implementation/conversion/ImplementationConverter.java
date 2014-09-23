@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 
 /**
  * This class is dedicated to converting different implementations of this data

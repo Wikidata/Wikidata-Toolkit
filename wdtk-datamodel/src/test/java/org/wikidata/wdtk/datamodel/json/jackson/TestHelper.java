@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonNoValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 public class TestHelper extends JsonConversionTest {
 

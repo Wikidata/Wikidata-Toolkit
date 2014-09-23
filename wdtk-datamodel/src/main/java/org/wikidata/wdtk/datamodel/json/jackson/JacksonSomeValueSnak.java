@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.snaks;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -23,21 +23,21 @@ package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
-public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
+public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 	
-	static final String novalue = "novalue";
+	static final String somevalue = "somevalue";
 	
-	public JacksonNoValueSnak(){
+	public JacksonSomeValueSnak(){
 		super();
-		this.setSnakType(novalue);
+		this.setSnakType(somevalue);
 	}
 	
-	public JacksonNoValueSnak(String propertyId){
+	public JacksonSomeValueSnak(String propertyId){
 		super(propertyId);
-		this.setSnakType(novalue);
+		this.setSnakType(somevalue);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsNoValueSnak(this, obj);
+		return Equality.equalsSomeValueSnak(this, obj);
 	}
 
 	@Override

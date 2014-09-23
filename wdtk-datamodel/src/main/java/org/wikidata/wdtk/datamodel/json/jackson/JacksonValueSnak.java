@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.snaks;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L

@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.util.Timer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

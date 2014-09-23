@@ -28,10 +28,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonNoValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSomeValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonValueSnak;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;

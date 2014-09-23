@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L

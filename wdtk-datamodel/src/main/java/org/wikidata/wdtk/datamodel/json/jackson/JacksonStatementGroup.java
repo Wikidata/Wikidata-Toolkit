@@ -31,7 +31,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 /**
  * This class is merely there to be compatible with the WDTK-data model

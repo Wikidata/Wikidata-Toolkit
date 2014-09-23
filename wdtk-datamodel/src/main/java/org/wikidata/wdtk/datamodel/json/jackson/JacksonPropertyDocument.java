@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.documents;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -26,8 +26,6 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonDatatypeId;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

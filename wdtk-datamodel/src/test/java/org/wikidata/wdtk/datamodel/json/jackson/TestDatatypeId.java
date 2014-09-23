@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonDatatypeId;
 
 public class TestDatatypeId extends JsonConversionTest {
 

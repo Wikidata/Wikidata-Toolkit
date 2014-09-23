@@ -42,11 +42,6 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonNoValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSomeValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonValueSnak;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

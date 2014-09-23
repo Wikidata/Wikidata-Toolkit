@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.documents;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -30,7 +30,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.AliasesDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

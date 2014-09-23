@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -20,22 +20,39 @@ package org.wikidata.wdtk.datamodel.json.jackson.documents.ids;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
-public class JacksonPropertyId extends JacksonEntityId implements PropertyIdValue {
-
-	public JacksonPropertyId() {
+public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
+	
+	static final String novalue = "novalue";
+	
+	public JacksonNoValueSnak(){
+		super();
+		this.setSnakType(novalue);
 	}
-
-	public JacksonPropertyId(String id) {
-		this.id = id;
+	
+	public JacksonNoValueSnak(String propertyId){
+		super(propertyId);
+		this.setSnakType(novalue);
 	}
 
 	@Override
-	public String getEntityType() {
-		return EntityIdValue.ET_PROPERTY;
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsNoValueSnak(this, obj);
 	}
 
 	@Override
