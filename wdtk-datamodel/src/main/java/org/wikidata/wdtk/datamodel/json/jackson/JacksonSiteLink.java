@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,46 +30,93 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Jackson implementation of {@link SiteLink}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 public class JacksonSiteLink implements SiteLink {
 
 	String title;
 	String site;
 	List<String> badges = new LinkedList<>();
-	
-	JacksonSiteLink(){}
-	JacksonSiteLink(String site, String title){
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	JacksonSiteLink() {
+	}
+
+	/**
+	 * TODO Review the utility of this constructor.
+	 *
+	 * @param site
+	 * @param title
+	 */
+	JacksonSiteLink(String site, String title) {
 		this.site = site;
 		this.title = title;
 	}
-	
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param value
+	 *            the value to copy from
+	 */
 	public JacksonSiteLink(SiteLink value) {
 		this(value.getSiteKey(), value.getPageTitle());
 	}
-	
-	public void setTitle(String title){
+
+	/**
+	 * Sets the page title to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param title
+	 *            new value
+	 */
+	@JsonProperty("title")
+	public void setPageTitle(String title) {
 		this.title = title;
 	}
-	
+
 	@JsonProperty("title")
 	@Override
 	public String getPageTitle() {
 		return this.title;
 	}
 
-	public void setSite(String site){
-		this.site = site;
+	/**
+	 * Sets the site key to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param siteKey
+	 *            new value
+	 */
+	@JsonProperty("site")
+	public void setSiteKey(String siteKey) {
+		this.site = siteKey;
 	}
-	
+
 	@JsonProperty("site")
 	@Override
 	public String getSiteKey() {
 		return this.site;
 	}
 
-	public void setBadges(List<String> badges){
+	/**
+	 * Sets the badges to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param badges
+	 *            new value
+	 */
+	public void setBadges(List<String> badges) {
 		this.badges = badges;
 	}
-	
+
 	@Override
 	public List<String> getBadges() {
 		return this.badges;
