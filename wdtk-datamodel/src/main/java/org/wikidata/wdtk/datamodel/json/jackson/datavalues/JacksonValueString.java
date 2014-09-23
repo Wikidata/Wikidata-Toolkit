@@ -39,14 +39,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StringValueImpl extends ValueImpl implements StringValue {
+public class JacksonValueString extends JacksonValue implements StringValue {
 
 	private String value;
 	
-	public StringValueImpl(){
+	public JacksonValueString(){
 		super(typeString);
 	}
-	public StringValueImpl(String value){
+	public JacksonValueString(String value){
 		super(typeString);
 		this.value = value;
 	}

@@ -31,16 +31,16 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReferenceImpl implements Reference {
+public class JacksonReference implements Reference {
 
-	private Map<String, List<SnakImpl>> snaks;
+	private Map<String, List<JacksonSnak>> snaks;
 	
 	@JsonIgnore // not in the actual JSON, just to satisfy the interface
 	@Override
@@ -48,11 +48,11 @@ public class ReferenceImpl implements Reference {
 		return Helper.buildSnakGroups(this.snaks);
 	}
 	
-	public void setSnaks(Map<String, List<SnakImpl>> snaks){
+	public void setSnaks(Map<String, List<JacksonSnak>> snaks){
 		this.snaks = snaks;
 	}
 
-	public Map<String, List<SnakImpl>> getSnaks(){
+	public Map<String, List<JacksonSnak>> getSnaks(){
 		return this.snaks;
 	}
 
@@ -60,7 +60,7 @@ public class ReferenceImpl implements Reference {
 	public Iterator<Snak> getAllSnaks() {
 		// have to create a new list to have something to get an iterator from
 		List<Snak> tempSnaks = new ArrayList<>();
-		for( List<SnakImpl> entry : this.snaks.values()){
+		for( List<JacksonSnak> entry : this.snaks.values()){
 			tempSnaks.addAll(entry);
 		}
 		return tempSnaks.iterator();

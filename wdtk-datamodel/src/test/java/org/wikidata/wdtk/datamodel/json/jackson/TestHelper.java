@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.NoValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonNoValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 public class TestHelper extends JsonConversionTest {
 
@@ -38,16 +38,16 @@ public class TestHelper extends JsonConversionTest {
 	public void testBuildStatementGroups() {
 
 		// set up
-		Map<String, List<StatementImpl>> input = new HashMap<>();
-		List<StatementGroupImpl> output;
+		Map<String, List<JacksonStatement>> input = new HashMap<>();
+		List<JacksonStatementGroup> output;
 
 		// build the input map
 		for (int snakId = 1; snakId < 6; snakId++) {
-			SnakImpl testSnak = new NoValueSnakImpl("P" + snakId);
+			JacksonSnak testSnak = new JacksonNoValueSnak("P" + snakId);
 
-			List<StatementImpl> statements = new ArrayList<>();
+			List<JacksonStatement> statements = new ArrayList<>();
 			for (int groupId = 0; groupId < 5; groupId++) {
-				StatementImpl statement = new StatementImpl("Id" + snakId
+				JacksonStatement statement = new JacksonStatement("Id" + snakId
 						+ groupId, testSnak);
 				statements.add(statement);
 			}
@@ -61,9 +61,9 @@ public class TestHelper extends JsonConversionTest {
 		// check output
 		assertNotNull(output);
 
-		for (StatementGroupImpl group : output) {
+		for (JacksonStatementGroup group : output) {
 			assert (input.containsKey(group.getProperty().getId().toString()));
-			List<StatementImpl> valueList = input.get(group.getProperty().getId());
+			List<JacksonStatement> valueList = input.get(group.getProperty().getId());
 			for (Statement statement : group.getStatements()) {
 				// one of the lists in input contains the statement
 				assert(valueList.contains(statement));

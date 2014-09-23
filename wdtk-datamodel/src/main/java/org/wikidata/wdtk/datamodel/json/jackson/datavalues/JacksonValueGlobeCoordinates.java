@@ -20,99 +20,57 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
 // TODO test
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TimeValueImpl extends ValueImpl implements TimeValue {
+public class JacksonValueGlobeCoordinates extends JacksonValue implements GlobeCoordinatesValue {
+
+	private JacksonInnerGlobeCoordinate value;
 	
-	private Time value;
-	
-	public TimeValueImpl(){
-		super(typeTime);
+	public JacksonValueGlobeCoordinates(){
+		super(typeCoordinate);
 	}
-	public TimeValueImpl(Time value){
-		super(typeTime);
+	public JacksonValueGlobeCoordinates(JacksonInnerGlobeCoordinate value){
+		super(typeCoordinate);
 		this.value = value;
 	}
 	
-	
-	public Time getValue() {
+	public JacksonInnerGlobeCoordinate getValue() {
 		return value;
 	}
 
-	public void setValue(Time value) {
+	public void GlobeCoordinate(JacksonInnerGlobeCoordinate value) {
 		this.value = value;
 	}
 	
 	@JsonIgnore
 	@Override
-	public long getYear() {
-		return this.value.getYear();
+	public long getLatitude() {
+		return this.value.getLatitude();
 	}
 	
 	@JsonIgnore
 	@Override
-	public byte getMonth() {
-		return this.value.getMonth();
+	public long getLongitude() {
+		return this.value.getLongitude();
 	}
 	
 	@JsonIgnore
 	@Override
-	public byte getDay() {
-		return this.value.getDay();
+	public long getPrecision() {
+		return this.value.getPrecision();
 	}
 	
 	@JsonIgnore
 	@Override
-	public byte getHour() {
-		return this.value.getHour();
-	}
-	
-	@JsonIgnore
-	@Override
-	public byte getMinute() {
-		return this.value.getMinute();
-	}
-	
-	@JsonIgnore
-	@Override
-	public byte getSecond() {
-		return this.value.getSecond();
-	}
-	
-	@JsonIgnore
-	@Override
-	public String getPreferredCalendarModel() {
-		return this.value.getCalendarmodel();
-	}
-	
-	@JsonIgnore
-	@Override
-	public byte getPrecision() {
-		return (byte)this.value.getPrecision();
-	}
-	
-	@JsonIgnore
-	@Override
-	public int getTimezoneOffset() {
-		return this.value.getTimezone();
-	}
-	
-	@JsonIgnore
-	@Override
-	public int getBeforeTolerance() {
-		return this.value.getBefore();
-	}
-	
-	@JsonIgnore
-	@Override
-	public int getAfterTolerance() {
-		return this.value.getAfter();
+	public String getGlobe() {
+		return this.value.getGlobe();
 	}
 	
 	@Override

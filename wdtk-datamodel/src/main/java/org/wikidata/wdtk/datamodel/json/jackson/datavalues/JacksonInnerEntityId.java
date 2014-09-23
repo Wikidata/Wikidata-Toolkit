@@ -33,39 +33,37 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Fredo Erxleben
  *
  */
-public class EntityId {
+public class JacksonInnerEntityId {
 	// TODO replace IllegalArgumentException with a checked one
-	// NOTE make sure to adapt all methods, once more types then only
+	// NOTE make sure to adapt all methods, once more types than only
 	// "item" are supported
-
-	public EntityId() {
-	}
-
-	/**
-	 * The only known entity type so far is "item". In the future "property"
-	 * might also be available.
-	 * 
-	 * @param entityType
-	 *            (case-sensitive)
-	 * @param numericId
-	 * @throws IllegalArgumentException
-	 *             if the entityType was unrecognized
-	 */
-	public EntityId(String entityType, int numericId)
-			throws IllegalArgumentException {
-		if (!entityType.equals("item")) {
-			throw new IllegalArgumentException(
-					"Unknown type given for EntityId");
-		}
-		this.entityType = entityType;
-		this.numericId = numericId;
-	}
 
 	@JsonProperty("entity-type")
 	private String entityType;
 
 	@JsonProperty("numeric-id")
-	private int numericId; // TODO maybe better use a long?
+	private int numericId;
+
+	// TODO document (why do we need this?)
+	public JacksonInnerEntityId() {
+	}
+
+	/**
+	 * Constructor. The only known entity type so far is "item". In the future
+	 * "property" might also be available.
+	 *
+	 * @param entityType
+	 *            (case-sensitive)
+	 * @param numericId
+	 * @throws IllegalArgumentException
+	 *             if the entity type was unrecognized
+	 */
+	public JacksonInnerEntityId(String entityType, int numericId)
+			throws IllegalArgumentException {
+
+		setEntityType(entityType);
+		this.numericId = numericId;
+	}
 
 	@JsonProperty("entity-type")
 	public String getEntityType() {
@@ -75,10 +73,12 @@ public class EntityId {
 	@JsonProperty("entity-type")
 	public void setEntityType(String entityType)
 			throws IllegalArgumentException {
-		if (!entityType.equals("item")) {
-			throw new IllegalArgumentException(
-					"Unknown type given for EntityId");
+
+		if (!"item".equals(entityType)) {
+			throw new IllegalArgumentException("Entities of type " + entityType
+					+ " are not supported in property values.");
 		}
+
 		this.entityType = entityType;
 	}
 
@@ -120,12 +120,12 @@ public class EntityId {
 		if (this == o) {
 			return true;
 		}
-
-		if (!(o instanceof EntityId)) {
+		if (!(o instanceof JacksonInnerEntityId)) {
 			return false;
 		}
 
-		return this.numericId == ((EntityId) o).numericId;
+		return (this.numericId == ((JacksonInnerEntityId) o).numericId)
+				&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
 	@Override

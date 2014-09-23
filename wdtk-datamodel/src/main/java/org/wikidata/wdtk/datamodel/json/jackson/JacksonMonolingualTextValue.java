@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -21,50 +21,45 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A one-on-one representation of the external Json's monolingual text values.
  * Java attributes are named equally to the JSON fields. Deviations are due to
  * different naming in the implemented interfaces.
  * 
- * <b>This is a variation of the MonolingualTextValue.</b> The difference is
- * that this class extends {@link ValueImpl} which adds a type association done
- * by the JSON.
- * 
- * Also the "value" in this JSON context is called "text".
- * 
  * @author Fredo Erxleben
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MonolingualTextDatavalueImpl extends ValueImpl implements
-		MonolingualTextValue {
+public class JacksonMonolingualTextValue implements MonolingualTextValue {
 
-	public MonolingualTextDatavalueImpl() {
-		super(typeMonolingualText);
+	public JacksonMonolingualTextValue() {
 	}
 
-	public MonolingualTextDatavalueImpl(String language, String value) {
-		super(typeMonolingualText);
-		this.value = new MonolingualText(language, value);
+	public JacksonMonolingualTextValue(String language, String value) {
+		this.language = language;
+		this.value = value;
 	}
 
-	public MonolingualTextDatavalueImpl(MonolingualTextValue mltv) {
+	public JacksonMonolingualTextValue(MonolingualTextValue mltv) {
 		this(mltv.getLanguageCode(), mltv.getText());
 	}
 
-	MonolingualText value;
+	String language;
+	String value;
 
-	public MonolingualText getValue() {
-		return this.value;
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
-	public void setValue(MonolingualText value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 
@@ -73,20 +68,30 @@ public class MonolingualTextDatavalueImpl extends ValueImpl implements
 		return valueVisitor.visit(this);
 	}
 
-	@JsonIgnore
+	@JsonProperty("value")
 	@Override
 	public String getText() {
-		return this.value.getText();
+		return this.value;
 	}
 
-	@JsonIgnore
+	@JsonProperty("language")
 	@Override
 	public String getLanguageCode() {
-		return this.value.getLanguageCode();
+		return this.language;
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		return Equality.equalsMonolingualTextValue(this, o);
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsMonolingualTextValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

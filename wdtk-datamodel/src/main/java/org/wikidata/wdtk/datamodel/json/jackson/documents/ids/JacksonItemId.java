@@ -35,12 +35,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
  * @author Fredo Erxleben
  *
  */
-public class ItemIdImpl 
-extends EntityIdImpl 
-implements ItemIdValue {
+public class JacksonItemId extends JacksonEntityId  implements ItemIdValue {
 
-	public ItemIdImpl() {}
-	public ItemIdImpl(String id) {
+	public JacksonItemId() {}
+	public JacksonItemId(String id) {
 		this.id = id;
 	}
 

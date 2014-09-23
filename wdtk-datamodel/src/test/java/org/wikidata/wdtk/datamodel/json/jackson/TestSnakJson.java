@@ -28,10 +28,10 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.NoValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SomeValueSnakImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.ValueSnakImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonNoValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSomeValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonValueSnak;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,10 +43,10 @@ public class TestSnakJson extends JsonConversionTest{
 	@Test
 	public void testNoValueSnakToJava(){
 		try {
-			SnakImpl result = mapper.readValue(noValueSnakJson, SnakImpl.class);
+			JacksonSnak result = mapper.readValue(noValueSnakJson, JacksonSnak.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof NoValueSnakImpl);
+			assertTrue(result instanceof JacksonNoValueSnak);
 			assertEquals(result, testNoValueSnak);
 			
 		} catch (JsonParseException e) {
@@ -76,10 +76,10 @@ public class TestSnakJson extends JsonConversionTest{
 	@Test
 	public void testSomeValueSnakToJava(){
 		try {
-			SnakImpl result = mapper.readValue(someValueSnakJson, SnakImpl.class);
+			JacksonSnak result = mapper.readValue(someValueSnakJson, JacksonSnak.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof SomeValueSnakImpl);
+			assertTrue(result instanceof JacksonSomeValueSnak);
 			assertEquals(result, testSomeValueSnak);
 			
 		} catch (JsonParseException e) {
@@ -109,10 +109,10 @@ public class TestSnakJson extends JsonConversionTest{
 	@Test
 	public void testCommonsValueSnakToJava(){
 		try {
-			SnakImpl result = mapper.readValue(commonsValueSnakJson, SnakImpl.class);
+			JacksonSnak result = mapper.readValue(commonsValueSnakJson, JacksonSnak.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof ValueSnakImpl);
+			assertTrue(result instanceof JacksonValueSnak);
 			assertEquals(result, testCommonsValueSnak);
 			
 		} catch (JsonParseException e) {

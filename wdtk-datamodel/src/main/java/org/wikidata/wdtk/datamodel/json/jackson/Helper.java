@@ -26,15 +26,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakGroupImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonItemId;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnakGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 /**
  * A class that provides several helper methods.
- * 
+ *
  * @author Fredo Erxleben
  *
  */
@@ -43,17 +43,17 @@ public class Helper {
 	/**
 	 * The given parameter holds a mapping from the propertyId as String to the
 	 * snak for this propertyId.
-	 * 
+	 *
 	 * @param snaks
 	 * @return
 	 */
 	public static List<SnakGroup> buildSnakGroups(
-			Map<String, List<SnakImpl>> snaks) {
+			Map<String, List<JacksonSnak>> snaks) {
 
 		List<SnakGroup> result = new ArrayList<>();
 
-		for (Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
-			result.add(new SnakGroupImpl(new PropertyIdImpl(entry.getKey()),
+		for (Entry<String, List<JacksonSnak>> entry : snaks.entrySet()) {
+			result.add(new JacksonSnakGroup(new JacksonPropertyId(entry.getKey()),
 					entry.getValue()));
 		}
 		return result;
@@ -62,17 +62,17 @@ public class Helper {
 	/**
 	 * The given parameter holds a mapping from the propertyId as String to the
 	 * statement for this propertyId.
-	 * 
+	 *
 	 * @param statements
 	 * @return
 	 */
-	public static List<StatementGroupImpl> buildStatementGroups(
-			Map<String, List<StatementImpl>> statements) {
-		List<StatementGroupImpl> result = new ArrayList<>();
+	public static List<JacksonStatementGroup> buildStatementGroups(
+			Map<String, List<JacksonStatement>> statements) {
+		List<JacksonStatementGroup> result = new ArrayList<>();
 
-		for (Entry<String, List<StatementImpl>> entry : statements.entrySet()) {
-			result.add(new StatementGroupImpl(
-					new PropertyIdImpl(entry.getKey()), entry.getValue()));
+		for (Entry<String, List<JacksonStatement>> entry : statements.entrySet()) {
+			result.add(new JacksonStatementGroup(
+					new JacksonPropertyId(entry.getKey()), entry.getValue()));
 		}
 
 		return result;
@@ -81,21 +81,21 @@ public class Helper {
 	/**
 	 * This is used to construct an EntityId from a given String. The string
 	 * might either denote a property or an item.
-	 * 
+	 *
 	 * @param source
 	 *            is either of the form "Q..." for an item or "P..." for a
 	 *            property
 	 * @return appropriately either a PropertyIdImpl or an ItemIdImpl
 	 */
-	public static EntityIdImpl constructEntityId(String source) {
+	public static JacksonEntityId constructEntityId(String source) {
 		// TODO maybe match via regex to assure the value is formatted
 		// correctly?
 		if (source.startsWith("Q")) { // is an item
-			return new ItemIdImpl(source);
+			return new JacksonItemId(source);
 		} else if (source.startsWith("P")) { // is a property
-			return new PropertyIdImpl("P");
+			return new JacksonPropertyId("P");
 		}
 		throw new IllegalArgumentException(source
-				+ "could not be matched to be an item- or property id.");
+				+ " could not be matched to be an item- or property id.");
 	}
 }

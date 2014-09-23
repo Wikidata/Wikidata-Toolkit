@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Time {
+public class JacksonInnerTime {
 	private String time;
 	private int timezone;
 	private int before;
@@ -43,9 +43,9 @@ public class Time {
 	@JsonIgnore
 	private byte second;
 	
-	public Time() {}
+	public JacksonInnerTime() {}
 
-	public Time(String time, int timezone, int before, int after,
+	public JacksonInnerTime(String time, int timezone, int before, int after,
 			int precision, String calendarmodel) {
 		this.time = time;
 		this.timezone = timezone;
@@ -57,7 +57,7 @@ public class Time {
 		this.decomposeTimeString();
 	}
 	
-	public Time(long year, byte month, byte day, byte hour, byte minute, byte second,
+	public JacksonInnerTime(long year, byte month, byte day, byte hour, byte minute, byte second,
 			int timezone, int before, int after, int precision, String calendarmodel){
 		this.year = year;
 		this.month = month;
@@ -184,11 +184,11 @@ public class Time {
 			return true;
 		}
 		
-		if(!(o instanceof Time)){
+		if(!(o instanceof JacksonInnerTime)){
 			return false;
 		}
 		
-		Time other = (Time)o;
+		JacksonInnerTime other = (JacksonInnerTime)o;
 		
 		return (this.calendarmodel.equals(other.calendarmodel)
 				&& this.year == other.year

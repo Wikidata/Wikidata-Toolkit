@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.StatementRankDeserializer;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.StatementRankSerializer;
-import org.wikidata.wdtk.datamodel.json.jackson.snaks.SnakImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.snaks.JacksonSnak;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -46,7 +46,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StatementImpl implements Statement {
+public class JacksonStatement implements Statement {
 
 	private String id;
 
@@ -54,16 +54,16 @@ public class StatementImpl implements Statement {
 	@JsonDeserialize(using = StatementRankDeserializer.class)
 	private StatementRank rank;
 
-	private List<ReferenceImpl> references = new ArrayList<>();
+	private List<JacksonReference> references = new ArrayList<>();
 
 	/**
 	 * While this is called "claim" in the WDTK data model, it is called
 	 * "mainsnak" in the external JSON. There a claim is the entirety of
 	 * statements in their respective groups.
 	 */
-	private SnakImpl mainsnak;
+	private JacksonSnak mainsnak;
 
-	private Map<String, List<SnakImpl>> qualifiers = new HashMap<>();
+	private Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
 
 	// TODO check if this is the correct approach
 	/**
@@ -71,16 +71,16 @@ public class StatementImpl implements Statement {
 	 * the Statement itself and the propertyId of its mainsnak.
 	 */
 	@JsonIgnore
-	private ClaimImpl claim;
+	private JacksonClaim claim;
 
-	public StatementImpl() {
+	public JacksonStatement() {
 	}
 
-	public StatementImpl(String id, SnakImpl mainsnak) {
+	public JacksonStatement(String id, JacksonSnak mainsnak) {
 		this.id = id;
 		this.rank = StatementRank.NORMAL;
 		this.mainsnak = mainsnak;
-		claim = new ClaimImpl(this, mainsnak.getPropertyId());
+		claim = new JacksonClaim(this, mainsnak.getPropertyId());
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@JsonIgnore
-	public void setClaim(ClaimImpl claim) {
+	public void setClaim(JacksonClaim claim) {
 		this.claim = claim;
 	}
 
@@ -118,7 +118,7 @@ public class StatementImpl implements Statement {
 		return this.references;
 	}
 
-	public void setReferences(List<ReferenceImpl> references) {
+	public void setReferences(List<JacksonReference> references) {
 		this.references = references;
 	}
 
@@ -133,19 +133,19 @@ public class StatementImpl implements Statement {
 		this.id = id;
 	}
 
-	public SnakImpl getMainsnak() {
+	public JacksonSnak getMainsnak() {
 		return this.mainsnak;
 	}
 
-	public void setMainsnak(SnakImpl mainsnak) {
+	public void setMainsnak(JacksonSnak mainsnak) {
 		this.mainsnak = mainsnak;
 	}
 
-	public void setQualifiers(Map<String, List<SnakImpl>> qualifiers) {
+	public void setQualifiers(Map<String, List<JacksonSnak>> qualifiers) {
 		this.qualifiers = qualifiers;
 	}
 
-	public Map<String, List<SnakImpl>> getQualifiers() {
+	public Map<String, List<JacksonSnak>> getQualifiers() {
 		return this.qualifiers;
 	}
 

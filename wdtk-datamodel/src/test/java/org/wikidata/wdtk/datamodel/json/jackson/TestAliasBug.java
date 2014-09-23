@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -48,8 +48,8 @@ public class TestAliasBug extends JsonConversionTest {
 	public void testAliasesToJava() {
 
 		try {
-			ItemDocumentImpl result = mapper.readValue(buggedItemJson,
-					ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(buggedItemJson,
+					JacksonItemDocument.class);
 
 			assertNotNull(result);
 			assert (result.getAliases().isEmpty());

@@ -25,9 +25,9 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import org.wikidata.wdtk.datamodel.json.jackson.documents.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.PropertyDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonEntityDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonPropertyDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -47,7 +47,7 @@ public class DumpProcessingTest {
 	public static void main(String[] args){
 		
 		ObjectMapper mapper = new ObjectMapper();
-		ObjectReader reader = mapper.reader(EntityDocumentImpl.class);
+		ObjectReader reader = mapper.reader(JacksonEntityDocument.class);
 		//ObjectReader propReader = mapper.reader(PropertyDocumentImpl.class);
 		
 		File dumpFile;
@@ -67,15 +67,15 @@ public class DumpProcessingTest {
 		int props = 0;
 		int lastReport = 0;
 		 try {
-			MappingIterator<EntityDocumentImpl> documentIter = reader.readValues(dumpFile);
+			MappingIterator<JacksonEntityDocument> documentIter = reader.readValues(dumpFile);
 			
 			while(documentIter.hasNextValue()){
-				EntityDocumentImpl document = documentIter.nextValue();
+				JacksonEntityDocument document = documentIter.nextValue();
 				if(document != null){ // TODO do more useful and thorough check here
 					processed++;
-					if(document instanceof ItemDocumentImpl){
+					if(document instanceof JacksonItemDocument){
 						docs++;
-					} else if (document instanceof PropertyDocumentImpl){
+					} else if (document instanceof JacksonPropertyDocument){
 						props++;
 					}
 				}

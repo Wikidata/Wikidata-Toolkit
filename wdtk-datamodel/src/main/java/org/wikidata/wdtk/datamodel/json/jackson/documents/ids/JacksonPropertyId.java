@@ -24,12 +24,12 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
-public class PropertyIdImpl
-extends EntityIdImpl
-implements PropertyIdValue {
-	
-	public PropertyIdImpl(){}
-	public PropertyIdImpl(String id){
+public class JacksonPropertyId extends JacksonEntityId implements PropertyIdValue {
+
+	public JacksonPropertyId() {
+	}
+
+	public JacksonPropertyId(String id) {
 		this.id = id;
 	}
 
@@ -37,7 +37,7 @@ implements PropertyIdValue {
 	public String getEntityType() {
 		return EntityIdValue.ET_PROPERTY;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToString.toString(this);

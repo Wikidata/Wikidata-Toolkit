@@ -25,56 +25,56 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.DatatypeIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonDatatypeId;
 
 public class TestDatatypeId extends JsonConversionTest {
 
 	@Test
 	public void testIriForItem(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeItem);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeItem);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_ITEM);
 	}
 	
 	@Test
 	public void testIriForCoordinate(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeGlobe);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeGlobe);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_GLOBE_COORDINATES);
 	}
 	
 	@Test
 	public void testIriForTime(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeTime);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeTime);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_TIME);
 	}
 	
 	@Test
 	public void testIriForString(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeString);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeString);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_STRING);
 	}
 	
 	@Test
 	public void testIriForQuantity(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeQuantity);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeQuantity);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_QUANTITY);
 	}
 	
 	@Test
 	public void testIriForCommons(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeCommonsMedia);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeCommonsMedia);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_COMMONS_MEDIA);
 	}
 	
 	@Test
 	public void testIriForUrl(){
-		DatatypeIdImpl uut = new DatatypeIdImpl(DatatypeIdImpl.jsonTypeUrl);
+		JacksonDatatypeId uut = new JacksonDatatypeId(JacksonDatatypeId.jsonTypeUrl);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_URL);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testIriForUnknownType(){
 		@SuppressWarnings("unused")
-		DatatypeIdImpl uut = new DatatypeIdImpl("some wrong type");
+		JacksonDatatypeId uut = new JacksonDatatypeId("some wrong type");
 		// if we reach this point, the exception did not occur
 		fail("Expected test to be aborted with an IllegalArgumentException.");
 	}

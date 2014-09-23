@@ -26,12 +26,12 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
-public class ValueSnakImpl extends SnakImpl implements ValueSnak {
+public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 
 	static final String value = "value";
 	
@@ -42,15 +42,15 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	public static final String datatypeEntity = "wikibase-item";
 	public static final String datatypeCommons = "commonsMedia";
 	
-	private ValueImpl datavalue;
+	private JacksonValue datavalue;
 	private String datatype; // should correspond to "type" in datavalue
 	
-	public ValueSnakImpl(){
+	public JacksonValueSnak(){
 		super();
 		this.setSnakType(value);
 	}
 	
-	public ValueSnakImpl(String propertyId, String datatype, ValueImpl datavalue){
+	public JacksonValueSnak(String propertyId, String datatype, JacksonValue datavalue){
 		super(propertyId);
 		this.setSnakType(value);
 		this.setDatatype(datatype);
@@ -72,11 +72,11 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	}
 	
 	
-	public void setDatavalue(ValueImpl datavalue){
+	public void setDatavalue(JacksonValue datavalue){
 		this.datavalue = datavalue;
 	}
 	
-	public ValueImpl getDatavalue(){
+	public JacksonValue getDatavalue(){
 		return this.datavalue;
 	}
 

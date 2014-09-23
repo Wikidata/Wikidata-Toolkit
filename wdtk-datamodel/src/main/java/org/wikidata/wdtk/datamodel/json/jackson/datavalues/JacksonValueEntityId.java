@@ -29,24 +29,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EntityIdValueImpl extends ValueImpl implements EntityIdValue {
+public class JacksonValueEntityId extends JacksonValue implements EntityIdValue {
 
-	private EntityId value;
+	private JacksonInnerEntityId value;
 
-	public EntityIdValueImpl() {
+	public JacksonValueEntityId() {
 		super(typeEntity);
 	}
 
-	public EntityIdValueImpl(EntityId value) {
+	public JacksonValueEntityId(JacksonInnerEntityId value) {
 		super(typeEntity);
 		this.value = value;
 	}
 
-	public EntityId getValue() {
+	public JacksonInnerEntityId getValue() {
 		return value;
 	}
 
-	public void setValue(EntityId value) {
+	public void setValue(JacksonInnerEntityId value) {
 		this.value = value;
 	}
 

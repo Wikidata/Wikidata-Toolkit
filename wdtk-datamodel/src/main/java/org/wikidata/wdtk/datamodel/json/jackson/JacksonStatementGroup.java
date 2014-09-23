@@ -31,26 +31,27 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 /**
- * This class is merely there to be compatible with the WDTK-data model interface
- * There is no concept of dedicated statement group objects in the JSON rather
- * then a list of statements relating to a property.
- * 
+ * This class is merely there to be compatible with the WDTK-data model
+ * interface There is no concept of dedicated statement group objects in the
+ * JSON rather then a list of statements relating to a property.
+ *
  * @author Fredo Erxleben
  *
  */
-public class StatementGroupImpl implements StatementGroup {
+public class JacksonStatementGroup implements StatementGroup {
 	// TODO do not forget to set the claim of the statements
 
-	PropertyIdImpl propertyId;
+	JacksonPropertyId propertyId;
 	List<Statement> statements = new ArrayList<>();
 
-	public StatementGroupImpl(PropertyIdImpl propertyId, List<StatementImpl> statements) {
+	public JacksonStatementGroup(JacksonPropertyId propertyId,
+			List<JacksonStatement> statements) {
 		this.propertyId = propertyId;
-		for(StatementImpl statement : statements){
-			ClaimImpl claim = new ClaimImpl(statement, propertyId);
+		for (JacksonStatement statement : statements) {
+			JacksonClaim claim = new JacksonClaim(statement, propertyId);
 			statement.setClaim(claim);
 			this.statements.add(statement);
 		}
@@ -77,6 +78,7 @@ public class StatementGroupImpl implements StatementGroup {
 	public Iterator<Statement> iterator() {
 		return this.statements.iterator();
 	}
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

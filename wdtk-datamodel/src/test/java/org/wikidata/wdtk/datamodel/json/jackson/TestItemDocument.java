@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,11 +38,11 @@ public class TestItemDocument extends JsonConversionTest {
 	
 	// TODO test statements (JSON claim)
 	
-	ItemDocumentImpl fullDocument;
+	JacksonItemDocument fullDocument;
 	
 	@Before
 	public void setupTestFullDocument(){
-		fullDocument = new ItemDocumentImpl();
+		fullDocument = new JacksonItemDocument();
 		fullDocument.setId(testItemId.getId());
 		fullDocument.setAliases(testAliases);
 		fullDocument.setDescriptions(testMltvMap);
@@ -66,7 +66,7 @@ public class TestItemDocument extends JsonConversionTest {
 	 */
 	@Test
 	public void testLabelsToJson(){
-		ItemDocumentImpl document = new ItemDocumentImpl();
+		JacksonItemDocument document = new JacksonItemDocument();
 		document.setLabels(testMltvMap);
 		
 		try {
@@ -85,7 +85,7 @@ public class TestItemDocument extends JsonConversionTest {
 	public void testLabelToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(wrappedLabelJson, ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(wrappedLabelJson, JacksonItemDocument.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getLabels());
@@ -107,7 +107,7 @@ public class TestItemDocument extends JsonConversionTest {
 	 */
 	@Test
 	public void testDescriptionsToJson(){
-		ItemDocumentImpl document = new ItemDocumentImpl();
+		JacksonItemDocument document = new JacksonItemDocument();
 		document.setDescriptions(testMltvMap);
 		
 		try {
@@ -126,7 +126,7 @@ public class TestItemDocument extends JsonConversionTest {
 	public void testDescriptionsToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(wrappedDescriptionJson, ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(wrappedDescriptionJson, JacksonItemDocument.class);
 			
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getDescriptions());
@@ -145,7 +145,7 @@ public class TestItemDocument extends JsonConversionTest {
 
 	@Test
 	public void testAliasesToJson(){
-		ItemDocumentImpl document = new ItemDocumentImpl();
+		JacksonItemDocument document = new JacksonItemDocument();
 		document.setAliases(testAliases);
 		
 		try {
@@ -161,7 +161,7 @@ public class TestItemDocument extends JsonConversionTest {
 	public void testAliasesToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(wrappedAliasJson, ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(wrappedAliasJson, JacksonItemDocument.class);
 			
 			assertNotNull(result);
 			assertEquals(testAliases, result.getAliases());
@@ -180,7 +180,7 @@ public class TestItemDocument extends JsonConversionTest {
 	
 	@Test
 	public void testItemIdToJson(){
-		ItemDocumentImpl document = new ItemDocumentImpl();
+		JacksonItemDocument document = new JacksonItemDocument();
 		document.setId(testItemId.getId());
 		
 		try {
@@ -196,7 +196,7 @@ public class TestItemDocument extends JsonConversionTest {
 	public void testItemIdToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(wrappedItemIdJson, ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(wrappedItemIdJson, JacksonItemDocument.class);
 			
 			assertNotNull(result);
 			assertEquals(testItemId, result.getEntityId());
@@ -215,7 +215,7 @@ public class TestItemDocument extends JsonConversionTest {
 	
 	@Test
 	public void testSiteLinksToJson(){
-		ItemDocumentImpl document = new ItemDocumentImpl();
+		JacksonItemDocument document = new JacksonItemDocument();
 		document.setSitelinks(testSiteLinkMap);
 		
 		try {
@@ -231,7 +231,7 @@ public class TestItemDocument extends JsonConversionTest {
 	public void testSiteLinksToJava(){
 		
 		try {
-			ItemDocumentImpl result = mapper.readValue(wrappedSiteLinkJson, ItemDocumentImpl.class);
+			JacksonItemDocument result = mapper.readValue(wrappedSiteLinkJson, JacksonItemDocument.class);
 			
 			assertNotNull(result);
 			assertEquals(testSiteLinkMap, result.getSiteLinks());
@@ -250,7 +250,7 @@ public class TestItemDocument extends JsonConversionTest {
 	
 	@Test
 	public void testGenerationFromOtherItemDocument(){
-		ItemDocumentImpl copy = new ItemDocumentImpl(fullDocument);
+		JacksonItemDocument copy = new JacksonItemDocument(fullDocument);
 		assertEquals(fullDocument, copy);
 	}
 }

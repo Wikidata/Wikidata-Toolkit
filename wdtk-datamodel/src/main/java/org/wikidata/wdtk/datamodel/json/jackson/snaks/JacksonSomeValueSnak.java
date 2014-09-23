@@ -26,16 +26,16 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
-public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
+public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 	
 	static final String somevalue = "somevalue";
 	
-	public SomeValueSnakImpl(){
+	public JacksonSomeValueSnak(){
 		super();
 		this.setSnakType(somevalue);
 	}
 	
-	public SomeValueSnakImpl(String propertyId){
+	public JacksonSomeValueSnak(String propertyId){
 		super(propertyId);
 		this.setSnakType(somevalue);
 	}

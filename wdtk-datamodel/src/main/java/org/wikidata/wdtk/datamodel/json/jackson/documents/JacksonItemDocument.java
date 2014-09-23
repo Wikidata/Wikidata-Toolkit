@@ -35,13 +35,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.ClaimImpl;
 import org.wikidata.wdtk.datamodel.json.jackson.Helper;
-import org.wikidata.wdtk.datamodel.json.jackson.SiteLinkImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.StatementGroupImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.StatementImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.EntityIdImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.ItemIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonClaim;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonSiteLink;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonStatement;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonStatementGroup;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonItemId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -51,7 +51,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemDocumentImpl extends EntityDocumentImpl implements
+public class JacksonItemDocument extends JacksonEntityDocument implements
 		ItemDocument {
 
 	// TODO instead of building the statement groups on demand, maybe cache
@@ -61,31 +61,31 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private Map<String, List<StatementImpl>> claims = new HashMap<>();
-	private Map<String, SiteLinkImpl> sitelinks = new HashMap<>();
+	private Map<String, List<JacksonStatement>> claims = new HashMap<>();
+	private Map<String, JacksonSiteLink> sitelinks = new HashMap<>();
 
-	public ItemDocumentImpl() {
-		this.id = new ItemIdImpl();
+	public JacksonItemDocument() {
+		this.id = new JacksonItemId();
 	}
 
 	/**
 	 * A constructor for generating ItemDocumentImpl-objects from other
 	 * implementations that satisfy the ItemDocument-interface. This can be used
 	 * for converting other implementations into this one for later export.
-	 * 
+	 *
 	 * @param source
 	 *            is the implementation to be used as a base.
 	 */
-	public ItemDocumentImpl(ItemDocument source) {
+	public JacksonItemDocument(ItemDocument source) {
 		super(source);
 
 		// set id
-		this.id = new ItemIdImpl(source.getItemId().getId());
+		this.id = new JacksonItemId(source.getItemId().getId());
 
 		// build siteLinks
 		for (Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()) {
 			this.sitelinks.put(mltvs.getKey(),
-					new SiteLinkImpl(mltvs.getValue()));
+					new JacksonSiteLink(mltvs.getValue()));
 		}
 
 		// TODO statements? claims?
@@ -95,16 +95,17 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	public String getType() {
 		return typeItem;
 	}
-	
-	public void setId(String id){
-		this.id = new ItemIdImpl(id);
+
+	@Override
+	public void setId(String id) {
+		this.id = new JacksonItemId(id);
 	}
 
 	@JsonIgnore
 	// here for the interface; JSON field is handled by getId()
 	@Override
 	public ItemIdValue getItemId() {
-		return (ItemIdImpl) this.id;
+		return (JacksonItemId) this.id;
 	}
 
 	@JsonIgnore
@@ -112,14 +113,14 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	@Override
 	public List<StatementGroup> getStatementGroups() {
 		List<StatementGroup> resultList = new ArrayList<>();
-		for (StatementGroupImpl statementGroup : Helper
+		for (JacksonStatementGroup statementGroup : Helper
 				.buildStatementGroups(this.claims)) {
 			resultList.add(statementGroup);
 		}
 		return resultList;
 	}
 
-	public void setSitelinks(Map<String, SiteLinkImpl> sitelinks) {
+	public void setSitelinks(Map<String, JacksonSiteLink> sitelinks) {
 		this.sitelinks = sitelinks;
 	}
 
@@ -139,10 +140,10 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	 * This is needed for the JSON model, where claims are similar to statement
 	 * groups. <b>Do not confuse this with claims as stated in the WDTK data
 	 * model.</b> This will probably only be used by the Jacksons' ObjectMapper.
-	 * 
+	 *
 	 * @param claim
 	 */
-	public void setClaims(Map<String, List<StatementImpl>> claim) {
+	public void setClaims(Map<String, List<JacksonStatement>> claim) {
 		this.claims = claim;
 		this.buildClaims();
 	}
@@ -150,23 +151,26 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	/**
 	 * This is needed by the JSON serialization. It corresponds to statement
 	 * groups in the WDTK model. On using the WDTK, refer to
-	 * {@link ItemDocumentImpl#getStatementGroups()} instead.
-	 * 
+	 * {@link JacksonItemDocument#getStatementGroups()} instead.
+	 *
 	 * @return
 	 */
-	public Map<String, List<StatementImpl>> getClaims() {
+	public Map<String, List<JacksonStatement>> getClaims() {
 		return this.claims;
 	}
 
 	/**
-	 * Recreate the claims of the statements from the JSON for the data model. Has to be run after
-	 * all statements are set.
+	 * Recreate the claims of the statements from the JSON for the data model.
+	 * Has to be run after all statements are set.
 	 */
 	private void buildClaims() {
-		for(Entry<String, List<StatementImpl>> entry : this.claims.entrySet()){
-			for( StatementImpl statement : entry.getValue()){
-				EntityIdImpl wdtkClaimSubject = Helper.constructEntityId(entry.getKey());
-				ClaimImpl wdtkClaim = new ClaimImpl(statement, wdtkClaimSubject);
+		for (Entry<String, List<JacksonStatement>> entry : this.claims
+				.entrySet()) {
+			for (JacksonStatement statement : entry.getValue()) {
+				JacksonEntityId wdtkClaimSubject = Helper.constructEntityId(entry
+						.getKey());
+				JacksonClaim wdtkClaim = new JacksonClaim(statement,
+						wdtkClaimSubject);
 				statement.setClaim(wdtkClaim);
 			}
 		}
@@ -175,8 +179,8 @@ public class ItemDocumentImpl extends EntityDocumentImpl implements
 	@Override
 	public Iterator<Statement> getAllStatements() {
 		List<Statement> allStatements = new ArrayList<>();
-		
-		for(List<StatementImpl> value : this.claims.values()){
+
+		for (List<JacksonStatement> value : this.claims.values()) {
 			allStatements.addAll(value);
 		}
 		return allStatements.iterator();

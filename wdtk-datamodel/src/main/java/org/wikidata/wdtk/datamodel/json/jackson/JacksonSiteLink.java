@@ -20,51 +20,59 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
-/**
- * This class only exists to satisfy the interface of the data model.
- * @author Fredo Erxleben
- *
- */
-public class ClaimImpl implements Claim {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private StatementImpl statement;
-	private EntityIdValue subject;
+public class JacksonSiteLink implements SiteLink {
+
+	String title;
+	String site;
+	List<String> badges = new LinkedList<>();
 	
-	public ClaimImpl(StatementImpl statement, EntityIdValue subject){
-		this.statement = statement;
-		this.subject = subject;
+	JacksonSiteLink(){}
+	JacksonSiteLink(String site, String title){
+		this.site = site;
+		this.title = title;
 	}
 	
+	public JacksonSiteLink(SiteLink value) {
+		this(value.getSiteKey(), value.getPageTitle());
+	}
+	
+	public void setTitle(String title){
+		this.title = title;
+	}
+	
+	@JsonProperty("title")
 	@Override
-	public EntityIdValue getSubject() {
-		return this.subject;
+	public String getPageTitle() {
+		return this.title;
 	}
 
+	public void setSite(String site){
+		this.site = site;
+	}
+	
+	@JsonProperty("site")
 	@Override
-	public Snak getMainSnak() {
-		return this.statement.getMainsnak();
+	public String getSiteKey() {
+		return this.site;
 	}
 
-	@Override
-	public List<SnakGroup> getQualifiers() {
-		return Helper.buildSnakGroups(this.statement.getQualifiers());
+	public void setBadges(List<String> badges){
+		this.badges = badges;
 	}
-
+	
 	@Override
-	public Iterator<Snak> getAllQualifiers() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getBadges() {
+		return this.badges;
 	}
 
 	@Override
@@ -74,7 +82,7 @@ public class ClaimImpl implements Claim {
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsClaim(this, obj);
+		return Equality.equalsSiteLink(this, obj);
 	}
 
 	@Override

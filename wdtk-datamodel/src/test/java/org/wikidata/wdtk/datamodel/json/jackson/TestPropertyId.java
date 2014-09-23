@@ -25,15 +25,15 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 public class TestPropertyId extends JsonConversionTest {
 
 	@Test
 	public void testEquality(){
-		PropertyIdImpl reference = new PropertyIdImpl(propertyId);
-		PropertyIdImpl same = new PropertyIdImpl(propertyId);
-		PropertyIdImpl different = new PropertyIdImpl("P2");
+		JacksonPropertyId reference = new JacksonPropertyId(propertyId);
+		JacksonPropertyId same = new JacksonPropertyId(propertyId);
+		JacksonPropertyId different = new JacksonPropertyId("P2");
 		
 		assertEquals(reference, same);
 		assertEquals(reference, (PropertyIdValue)same);

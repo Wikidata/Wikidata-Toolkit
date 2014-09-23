@@ -26,16 +26,16 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
-public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
+public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 	
 	static final String novalue = "novalue";
 	
-	public NoValueSnakImpl(){
+	public JacksonNoValueSnak(){
 		super();
 		this.setSnakType(novalue);
 	}
 	
-	public NoValueSnakImpl(String propertyId){
+	public JacksonNoValueSnak(String propertyId){
 		super(propertyId);
 		this.setSnakType(novalue);
 	}

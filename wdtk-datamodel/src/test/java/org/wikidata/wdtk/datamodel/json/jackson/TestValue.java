@@ -28,14 +28,14 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.EntityIdValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.GlobeCoordinateValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.MonolingualTextDatavalueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.QuantityValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.StringValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.Time;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.TimeValueImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.ValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -59,12 +59,12 @@ public class TestValue extends JsonConversionTest {
 	public void testStringValueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(stringValueJson, ValueImpl.class);
+			JacksonValue result = mapper.readValue(stringValueJson, JacksonValue.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof StringValueImpl);
+			assertTrue(result instanceof JacksonValueString);
 			assertEquals(result.getType(), testStringValue.getType());
-			assertEquals(((StringValueImpl)result).getValue(), testStringValue.getValue());
+			assertEquals(((JacksonValueString)result).getValue(), testStringValue.getValue());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -94,12 +94,12 @@ public class TestValue extends JsonConversionTest {
 	public void testEntityIdValueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(entityIdValueJson, ValueImpl.class);
+			JacksonValue result = mapper.readValue(entityIdValueJson, JacksonValue.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof EntityIdValueImpl);
+			assertTrue(result instanceof JacksonValueEntityId);
 			assertEquals(result.getType(), testEntityIdValue.getType());
-			assertEquals(((EntityIdValueImpl)result).getValue(), testEntityIdValue.getValue());
+			assertEquals(((JacksonValueEntityId)result).getValue(), testEntityIdValue.getValue());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -129,11 +129,11 @@ public class TestValue extends JsonConversionTest {
 	public void testTimeValueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(timeValueJson, ValueImpl.class);
-			TimeValueImpl castedResult = (TimeValueImpl)result;
+			JacksonValue result = mapper.readValue(timeValueJson, JacksonValue.class);
+			JacksonValueTime castedResult = (JacksonValueTime)result;
 			
 			assertNotNull(result);
-			assertTrue(result instanceof TimeValueImpl);
+			assertTrue(result instanceof JacksonValueTime);
 			assertEquals(result.getType(), testTimeValue.getType());
 			assertEquals((castedResult).getValue(), testTimeValue.getValue());
 			
@@ -152,8 +152,8 @@ public class TestValue extends JsonConversionTest {
 			assertEquals(castedResult.getTimezoneOffset(), testTimeValue.getTimezoneOffset());
 			
 			// test against the same time, created on a different way
-			Time otherTime = new Time(2013, (byte)10, (byte)28, (byte)0, (byte)0, (byte)0, 0, 0, 0, 11, "http://www.wikidata.org/entity/Q1985727");
-			assertEquals(((TimeValueImpl)result).getValue(), otherTime);
+			JacksonInnerTime otherTime = new JacksonInnerTime(2013, (byte)10, (byte)28, (byte)0, (byte)0, (byte)0, 0, 0, 0, 11, "http://www.wikidata.org/entity/Q1985727");
+			assertEquals(((JacksonValueTime)result).getValue(), otherTime);
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -183,12 +183,12 @@ public class TestValue extends JsonConversionTest {
 	public void testGlobeCoordinateValueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(globeCoordinateValueJson, ValueImpl.class);
+			JacksonValue result = mapper.readValue(globeCoordinateValueJson, JacksonValue.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof GlobeCoordinateValueImpl);
+			assertTrue(result instanceof JacksonValueGlobeCoordinates);
 			assertEquals(result.getType(), testGlobeCoordinateValue.getType());
-			assertEquals(((GlobeCoordinateValueImpl)result).getValue(), testGlobeCoordinateValue.getValue());
+			assertEquals(((JacksonValueGlobeCoordinates)result).getValue(), testGlobeCoordinateValue.getValue());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -218,12 +218,12 @@ public class TestValue extends JsonConversionTest {
 	public void testQuantityValueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(quantityValueJson, ValueImpl.class);
+			JacksonValue result = mapper.readValue(quantityValueJson, JacksonValue.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof QuantityValueImpl);
+			assertTrue(result instanceof JacksonValueQuantity);
 			assertEquals(result.getType(), testQuantityValue.getType());
-			assertEquals(((QuantityValueImpl)result).getValue(), testQuantityValue.getValue());
+			assertEquals(((JacksonValueQuantity)result).getValue(), testQuantityValue.getValue());
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -254,11 +254,11 @@ public class TestValue extends JsonConversionTest {
 	public void testMltDatavalueToJava(){
 		
 		try {
-			ValueImpl result = mapper.readValue(mltDatavalueJson, ValueImpl.class);
+			JacksonValue result = mapper.readValue(mltDatavalueJson, JacksonValue.class);
 			
 			assertNotNull(result);
-			assertTrue(result instanceof MonolingualTextDatavalueImpl);
-			assertEquals(((MonolingualTextDatavalueImpl)result), testMltDatavalue);
+			assertTrue(result instanceof JacksonValueMonolingualText);
+			assertEquals(((JacksonValueMonolingualText)result), testMltDatavalue);
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -275,7 +275,7 @@ public class TestValue extends JsonConversionTest {
 	@Test
 	public void testMltDatavalueConstructor(){
 		
-		assertEquals(testMltDatavalue, new MonolingualTextDatavalueImpl(testMltv));
+		assertEquals(testMltDatavalue, new JacksonValueMonolingualText(testMltv));
 		
 	}
 }

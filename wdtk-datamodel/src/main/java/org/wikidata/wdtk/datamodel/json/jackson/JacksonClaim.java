@@ -20,59 +20,51 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+/**
+ * This class only exists to satisfy the interface of the data model.
+ *
+ * @author Fredo Erxleben
+ */
+public class JacksonClaim implements Claim {
 
-public class SiteLinkImpl implements SiteLink {
+	private final JacksonStatement statement;
+	private final EntityIdValue subject;
 
-	String title;
-	String site;
-	List<String> badges = new LinkedList<>();
-	
-	SiteLinkImpl(){}
-	SiteLinkImpl(String site, String title){
-		this.site = site;
-		this.title = title;
+	public JacksonClaim(JacksonStatement statement, EntityIdValue subject) {
+		this.statement = statement;
+		this.subject = subject;
 	}
-	
-	public SiteLinkImpl(SiteLink value) {
-		this(value.getSiteKey(), value.getPageTitle());
-	}
-	
-	public void setTitle(String title){
-		this.title = title;
-	}
-	
-	@JsonProperty("title")
+
 	@Override
-	public String getPageTitle() {
-		return this.title;
+	public EntityIdValue getSubject() {
+		return this.subject;
 	}
 
-	public void setSite(String site){
-		this.site = site;
-	}
-	
-	@JsonProperty("site")
 	@Override
-	public String getSiteKey() {
-		return this.site;
+	public Snak getMainSnak() {
+		return this.statement.getMainsnak();
 	}
 
-	public void setBadges(List<String> badges){
-		this.badges = badges;
-	}
-	
 	@Override
-	public List<String> getBadges() {
-		return this.badges;
+	public List<SnakGroup> getQualifiers() {
+		return Helper.buildSnakGroups(this.statement.getQualifiers());
+	}
+
+	@Override
+	public Iterator<Snak> getAllQualifiers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -82,7 +74,7 @@ public class SiteLinkImpl implements SiteLink {
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsSiteLink(this, obj);
+		return Equality.equalsClaim(this, obj);
 	}
 
 	@Override

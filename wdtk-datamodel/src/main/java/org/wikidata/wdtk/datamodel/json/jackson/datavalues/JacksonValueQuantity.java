@@ -20,61 +20,62 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import java.math.BigDecimal;
+
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
-// TODO test
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GlobeCoordinateValueImpl extends ValueImpl implements GlobeCoordinatesValue {
-
-	private GlobeCoordinate value;
+public class JacksonValueQuantity extends JacksonValue implements QuantityValue {
 	
-	public GlobeCoordinateValueImpl(){
-		super(typeCoordinate);
+	private JacksonInnerQuantity value;
+
+	public JacksonValueQuantity(){
+		super(typeQuantity);
 	}
-	public GlobeCoordinateValueImpl(GlobeCoordinate value){
-		super(typeCoordinate);
+	
+	public JacksonValueQuantity(JacksonInnerQuantity value){
+		super(typeQuantity);
 		this.value = value;
 	}
 	
-	public GlobeCoordinate getValue() {
-		return value;
-	}
-
-	public void GlobeCoordinate(GlobeCoordinate value) {
+	public void setValue(JacksonInnerQuantity value){
 		this.value = value;
 	}
 	
-	@JsonIgnore
-	@Override
-	public long getLatitude() {
-		return this.value.getLatitude();
-	}
-	
-	@JsonIgnore
-	@Override
-	public long getLongitude() {
-		return this.value.getLongitude();
-	}
-	
-	@JsonIgnore
-	@Override
-	public long getPrecision() {
-		return this.value.getPrecision();
-	}
-	
-	@JsonIgnore
-	@Override
-	public String getGlobe() {
-		return this.value.getGlobe();
+	public JacksonInnerQuantity getValue(){
+		return this.value;
 	}
 	
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
+	}
+	
+	@JsonIgnore
+	@Override
+	public BigDecimal getNumericValue() {
+		return this.value.getAmount();
+	}
+
+	@JsonIgnore
+	@Override
+	public BigDecimal getLowerBound() {
+		return this.value.getLowerBound();
+	}
+
+	@JsonIgnore
+	@Override
+	public BigDecimal getUpperBound() {
+		return this.value.getUpperBound();
+	}
+
+	@Override
+	public boolean equals(Object o){
+		return Equality.equalsQuantityValue(this, o);
 	}
 }

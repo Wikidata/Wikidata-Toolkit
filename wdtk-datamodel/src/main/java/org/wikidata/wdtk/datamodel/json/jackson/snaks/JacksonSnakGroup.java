@@ -27,7 +27,7 @@ import java.util.List;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 /**
  * This class is not actually used in the JSON model, but needed to satisfy the
@@ -38,12 +38,12 @@ import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
  * @author Fredo Erxleben
  *
  */
-public class SnakGroupImpl implements SnakGroup {
+public class JacksonSnakGroup implements SnakGroup {
 
-	private PropertyIdImpl property;
-	private List<SnakImpl> snaks;
+	private JacksonPropertyId property;
+	private List<JacksonSnak> snaks;
 
-	public SnakGroupImpl(PropertyIdImpl property, List<SnakImpl> snaks){
+	public JacksonSnakGroup(JacksonPropertyId property, List<JacksonSnak> snaks){
 		this.property = property;
 		this.snaks = snaks;
 	}
@@ -54,7 +54,7 @@ public class SnakGroupImpl implements SnakGroup {
 		// because of the typing provided by the interface one has to
 		// re-create the list anew, simple casting is not possible
 		List<Snak> returnList = new ArrayList<>(this.snaks.size());
-		for(SnakImpl snak : this.snaks){
+		for(JacksonSnak snak : this.snaks){
 			returnList.add(snak);
 		}
 		return returnList;

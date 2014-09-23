@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Fredo Erxleben
  *
  */
-public class DatatypeIdImpl implements DatatypeIdValue {
+public class JacksonDatatypeId implements DatatypeIdValue {
 
 	public static final String jsonTypeItem = "wikibase-item";
 	public static final String jsonTypeGlobe = "globe-coordinate";
@@ -55,7 +55,7 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	 *             if the given datatype string could not be matched to a known
 	 *             datatype or was null
 	 */
-	public DatatypeIdImpl(String datatype) throws IllegalArgumentException {
+	public JacksonDatatypeId(String datatype) throws IllegalArgumentException {
 		switch (datatype) {
 		case jsonTypeItem:
 			this.iri = DT_ITEM;

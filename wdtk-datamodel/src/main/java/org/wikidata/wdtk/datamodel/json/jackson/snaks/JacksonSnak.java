@@ -23,7 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.snaks;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.PropertyIdImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.ids.JacksonPropertyId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -33,17 +33,17 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="snaktype")
 @JsonSubTypes({  
-    @Type(value = NoValueSnakImpl.class, name = "novalue"),  
-    @Type(value = SomeValueSnakImpl.class, name = "somevalue"),  
-    @Type(value = ValueSnakImpl.class, name = "value") }) 
+    @Type(value = JacksonNoValueSnak.class, name = "novalue"),  
+    @Type(value = JacksonSomeValueSnak.class, name = "somevalue"),  
+    @Type(value = JacksonValueSnak.class, name = "value") }) 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class SnakImpl implements Snak {
+public abstract class JacksonSnak implements Snak {
 	
 	private String property;
 	private String snaktype;
 	
-	protected SnakImpl(){}
-	protected SnakImpl(String propertyId){
+	protected JacksonSnak(){}
+	protected JacksonSnak(String propertyId){
 		this.property = propertyId;
 	}
 
@@ -58,7 +58,7 @@ public abstract class SnakImpl implements Snak {
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return new PropertyIdImpl(property);
+		return new JacksonPropertyId(property);
 	}
 
 	public String getSnaktype(){

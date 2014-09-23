@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.json.jackson.documents.PropertyDocumentImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonEntityDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.documents.JacksonPropertyDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -37,7 +37,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static ObjectReader documentReader = mapper
-			.reader(EntityDocumentImpl.class);
+			.reader(JacksonEntityDocument.class);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
 
@@ -50,16 +50,16 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			MwDumpFile dumpFile) {
 
 		try {
-			MappingIterator<EntityDocumentImpl> documentIter = documentReader
+			MappingIterator<JacksonEntityDocument> documentIter = documentReader
 					.readValues(inputStream);
 
 			while (documentIter.hasNextValue()) {
-				EntityDocumentImpl document = documentIter.nextValue();
+				JacksonEntityDocument document = documentIter.nextValue();
 				if (document != null) {
-					if (document instanceof ItemDocumentImpl) {
-						this.handleItemDocument((ItemDocumentImpl) document);
-					} else if (document instanceof PropertyDocumentImpl) {
-						this.handlePropertyDocument((PropertyDocumentImpl) document);
+					if (document instanceof JacksonItemDocument) {
+						this.handleItemDocument((JacksonItemDocument) document);
+					} else if (document instanceof JacksonPropertyDocument) {
+						this.handlePropertyDocument((JacksonPropertyDocument) document);
 					}
 				}
 			}
@@ -72,11 +72,11 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 	}
 
-	private void handleItemDocument(ItemDocumentImpl document) {
+	private void handleItemDocument(JacksonItemDocument document) {
 		this.entityDocumentProcessor.processItemDocument(document);
 	}
 
-	private void handlePropertyDocument(PropertyDocumentImpl document) {
+	private void handlePropertyDocument(JacksonPropertyDocument document) {
 		this.entityDocumentProcessor.processPropertyDocument(document);
 	}
 

@@ -26,16 +26,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Quantity {
+public class JacksonInnerQuantity {
 
 	private BigDecimal amount;
 	private BigDecimal upperBound;
 	private BigDecimal lowerBound;
 
-	public Quantity() {
+	public JacksonInnerQuantity() {
 	}
 
-	public Quantity(BigDecimal amount, BigDecimal upperBound,
+	public JacksonInnerQuantity(BigDecimal amount, BigDecimal upperBound,
 			BigDecimal lowerBound) {
 		this.amount = amount;
 		this.upperBound = upperBound;
@@ -111,10 +111,10 @@ public class Quantity {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof Quantity)) {
+		if (!(o instanceof JacksonInnerQuantity)) {
 			return false;
 		}
-		Quantity other = (Quantity) o;
+		JacksonInnerQuantity other = (JacksonInnerQuantity) o;
 
 		return this.amount.equals(other.amount)
 				&& this.lowerBound.equals(other.lowerBound)

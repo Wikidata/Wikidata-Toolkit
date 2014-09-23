@@ -24,15 +24,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GlobeCoordinate {
+public class JacksonInnerGlobeCoordinate {
 
 	private long latitude;
 	private long longitude;
 	private long precision;
 	private String globe;
 	
-	public GlobeCoordinate(){}
-	public GlobeCoordinate(long latitude, long longitude, long precision, String globe){
+	public JacksonInnerGlobeCoordinate(){}
+	public JacksonInnerGlobeCoordinate(long latitude, long longitude, long precision, String globe){
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.precision = precision;
@@ -77,11 +77,11 @@ public class GlobeCoordinate {
 			return true;
 		}
 		
-		if(!(o instanceof GlobeCoordinate)){
+		if(!(o instanceof JacksonInnerGlobeCoordinate)){
 			return false;
 		}
 		
-		GlobeCoordinate other = (GlobeCoordinate)o;
+		JacksonInnerGlobeCoordinate other = (JacksonInnerGlobeCoordinate)o;
 		
 		return (this.globe.equals(other.globe)
 				&& this.latitude == other.latitude

@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.MonolingualTextValueImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
 import org.wikidata.wdtk.datamodel.json.jackson.serializers.AliasesDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,18 +41,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @Type(value = ItemDocumentImpl.class, name = "item"),
-		@Type(value = PropertyDocumentImpl.class, name = "property") })
-public abstract class EntityDocumentImpl implements EntityDocument,
+@JsonSubTypes({ @Type(value = JacksonItemDocument.class, name = "item"),
+		@Type(value = JacksonPropertyDocument.class, name = "property") })
+public abstract class JacksonEntityDocument implements EntityDocument,
 		TermedDocument {
 
 	public static final String typeItem = "item";
 	public static final String typeProperty = "property";
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
-	protected Map<String, List<MonolingualTextValueImpl>> aliases = new HashMap<>();
-	protected Map<String, MonolingualTextValueImpl> labels = new HashMap<>();
-	protected Map<String, MonolingualTextValueImpl> descriptions = new HashMap<>();
+	protected Map<String, List<JacksonMonolingualTextValue>> aliases = new HashMap<>();
+	protected Map<String, JacksonMonolingualTextValue> labels = new HashMap<>();
+	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
 
 	// the following is not mapped directly towards JSON
 	// rather split up into two JSON fields:
@@ -63,7 +63,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	@JsonIgnore
 	protected EntityIdValue id;
 
-	public EntityDocumentImpl() {
+	public JacksonEntityDocument() {
 	}
 
 	/**
@@ -74,7 +74,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	 * @param source
 	 *            is the implementation to be used as a base.
 	 */
-	public EntityDocumentImpl(TermedDocument source) {
+	public JacksonEntityDocument(TermedDocument source) {
 
 		// build id
 		this.id = (EntityIdValue) source.getEntityId();
@@ -82,9 +82,9 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 		// build aliases
 		for (Entry<String, List<MonolingualTextValue>> mltvs : source
 				.getAliases().entrySet()) {
-			List<MonolingualTextValueImpl> value = new LinkedList<>();
+			List<JacksonMonolingualTextValue> value = new LinkedList<>();
 			for (MonolingualTextValue mltv : mltvs.getValue()) {
-				value.add(new MonolingualTextValueImpl(mltv));
+				value.add(new JacksonMonolingualTextValue(mltv));
 			}
 			this.aliases.put(mltvs.getKey(), value);
 		}
@@ -93,12 +93,12 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 		for (Entry<String, MonolingualTextValue> mltvs : source.getLabels()
 				.entrySet()) {
 			this.labels.put(mltvs.getKey(),
-					new MonolingualTextValueImpl(mltvs.getValue()));
+					new JacksonMonolingualTextValue(mltvs.getValue()));
 		}
 		// build descriptions
 		for (Entry<String, MonolingualTextValue> mltvs : source
 				.getDescriptions().entrySet()) {
-			this.descriptions.put(mltvs.getKey(), new MonolingualTextValueImpl(
+			this.descriptions.put(mltvs.getKey(), new JacksonMonolingualTextValue(
 					mltvs.getValue()));
 		}
 	}
@@ -116,7 +116,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	 * 
 	 * @param aliases
 	 */
-	public void setAliases(Map<String, List<MonolingualTextValueImpl>> aliases) {
+	public void setAliases(Map<String, List<JacksonMonolingualTextValue>> aliases) {
 		this.aliases = aliases;
 	}
 
@@ -127,7 +127,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 		// re-create the map anew, simple casting is not possible
 		Map<String, List<MonolingualTextValue>> returnMap = new HashMap<>();
 
-		for (Entry<String, List<MonolingualTextValueImpl>> entry : this.aliases
+		for (Entry<String, List<JacksonMonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
 			List<MonolingualTextValue> mltvList = new LinkedList<>();
 			mltvList.addAll(entry.getValue());
@@ -137,7 +137,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 	}
 
 	public void setDescriptions(
-			Map<String, MonolingualTextValueImpl> descriptions) {
+			Map<String, JacksonMonolingualTextValue> descriptions) {
 		this.descriptions = descriptions;
 	}
 
@@ -151,7 +151,7 @@ public abstract class EntityDocumentImpl implements EntityDocument,
 		return returnMap;
 	}
 
-	public void setLabels(Map<String, MonolingualTextValueImpl> labels) {
+	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
 		this.labels = labels;
 	}
 
