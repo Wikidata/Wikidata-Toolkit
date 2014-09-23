@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonEntityDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
 
@@ -37,7 +37,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static ObjectReader documentReader = mapper
-			.reader(JacksonEntityDocument.class);
+			.reader(JacksonTermedDocument.class);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
 
@@ -50,11 +50,11 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			MwDumpFile dumpFile) {
 
 		try {
-			MappingIterator<JacksonEntityDocument> documentIter = documentReader
+			MappingIterator<JacksonTermedDocument> documentIter = documentReader
 					.readValues(inputStream);
 
 			while (documentIter.hasNextValue()) {
-				JacksonEntityDocument document = documentIter.nextValue();
+				JacksonTermedDocument document = documentIter.nextValue();
 				if (document != null) {
 					if (document instanceof JacksonItemDocument) {
 						this.handleItemDocument((JacksonItemDocument) document);

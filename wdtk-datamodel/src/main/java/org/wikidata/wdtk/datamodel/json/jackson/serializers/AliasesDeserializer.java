@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson.serializers;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonEntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,14 +38,18 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * A deserializer implementation for the aliases in an EntityDocument. <b> This
- * is part of a Workaround. It is neither nice nor fast and should be obsolete
- * as fast as possible.</b>
- * 
- * @see JacksonEntityDocument setAliases()
- * 
+ * A deserializer implementation for the aliases in an
+ * {@link JacksonTermedDocument}.
+ * <p>
+ * It implements a workaround to cope with empty aliases being represented as
+ * <code>"aliases":[]</code> despite its declaration as map and not as list or
+ * array. This is neither nice nor fast, and should be obsolete as soon as
+ * possible.
+ *
+ * @see JacksonTermedDocument#setAliases(Map)
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 public class AliasesDeserializer extends
 		JsonDeserializer<Map<String, List<JacksonMonolingualTextValue>>> {

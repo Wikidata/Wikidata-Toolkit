@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
@@ -39,44 +38,61 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+/**
+ * Abstract Jackson implementation of {@link TermedDocument}. Like all Jackson
+ * objects, it is not technically immutable, but it is strongly recommended to
+ * treat it as such in all contexts: the setters are for Jackson; never call
+ * them in your code.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({ @Type(value = JacksonItemDocument.class, name = "item"),
 		@Type(value = JacksonPropertyDocument.class, name = "property") })
-public abstract class JacksonEntityDocument implements EntityDocument,
-		TermedDocument {
+public abstract class JacksonTermedDocument implements TermedDocument {
 
-	public static final String typeItem = "item";
-	public static final String typeProperty = "property";
+	/**
+	 * String used to refer to items in JSON.
+	 */
+	public static final String JSON_TYPE_ITEM = "item";
+	/**
+	 * String used to refer to properties in JSON.
+	 */
+	public static final String JSON_TYPE_PROPERTY = "property";
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
 	protected Map<String, List<JacksonMonolingualTextValue>> aliases = new HashMap<>();
 	protected Map<String, JacksonMonolingualTextValue> labels = new HashMap<>();
 	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
 
-	// the following is not mapped directly towards JSON
-	// rather split up into two JSON fields:
-	// "type" and "id"
-	// the type field in the JSON will be ignored.
-	// for a concrete document the type is clear.
-	// for writing out to external JSON there is a hard-coded solution
+	/**
+	 * The entity that the document refers to. This is not mapped to JSON
+	 * directly by Jackson but split into two fields, "type" and "id". The type
+	 * field is ignored during deserialization since the type is clear for a
+	 * concrete document. For serialization, the type is hard-coded.
+	 */
 	@JsonIgnore
-	protected EntityIdValue id;
+	protected EntityIdValue entityIdValue;
 
-	public JacksonEntityDocument() {
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonTermedDocument() {
 	}
 
 	/**
-	 * A constructor for generating ItemDocumentImpl-objects from other
-	 * implementations that satisfy the ItemDocument-interface. This can be used
-	 * for converting other implementations into this one for later export.
-	 * 
+	 * Copy constructor. Can be used for converting other implementations of
+	 * {@link TermedDocument} into objects of this class for conversion to JSON.
+	 *
 	 * @param source
-	 *            is the implementation to be used as a base.
+	 *            the object to copy
 	 */
-	public JacksonEntityDocument(TermedDocument source) {
+	public JacksonTermedDocument(TermedDocument source) {
 
 		// build id
-		this.id = (EntityIdValue) source.getEntityId();
+		this.entityIdValue = source.getEntityId();
 
 		// build aliases
 		for (Entry<String, List<MonolingualTextValue>> mltvs : source
@@ -91,31 +107,33 @@ public abstract class JacksonEntityDocument implements EntityDocument,
 		// build labels
 		for (Entry<String, MonolingualTextValue> mltvs : source.getLabels()
 				.entrySet()) {
-			this.labels.put(mltvs.getKey(),
-					new JacksonMonolingualTextValue(mltvs.getValue()));
+			this.labels.put(mltvs.getKey(), new JacksonMonolingualTextValue(
+					mltvs.getValue()));
 		}
+
 		// build descriptions
 		for (Entry<String, MonolingualTextValue> mltvs : source
 				.getDescriptions().entrySet()) {
-			this.descriptions.put(mltvs.getKey(), new JacksonMonolingualTextValue(
-					mltvs.getValue()));
+			this.descriptions.put(mltvs.getKey(),
+					new JacksonMonolingualTextValue(mltvs.getValue()));
 		}
 	}
 
 	@JsonIgnore
 	@Override
 	public EntityIdValue getEntityId() {
-		return this.id;
+		return this.entityIdValue;
 	}
 
 	/**
-	 * <b> Warning! </b> This is a hack to cope with empty aliases being
-	 * represented as <code>"aliases":[]</code> despite its declaration as map
-	 * and not as list or array.
-	 * 
+	 * Sets the aliases to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
 	 * @param aliases
+	 *            new value
 	 */
-	public void setAliases(Map<String, List<JacksonMonolingualTextValue>> aliases) {
+	public void setAliases(
+			Map<String, List<JacksonMonolingualTextValue>> aliases) {
 		this.aliases = aliases;
 	}
 
@@ -132,9 +150,17 @@ public abstract class JacksonEntityDocument implements EntityDocument,
 			mltvList.addAll(entry.getValue());
 			returnMap.put(entry.getKey(), mltvList);
 		}
+
 		return returnMap;
 	}
 
+	/**
+	 * Sets the descriptions to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param descriptions
+	 *            new value
+	 */
 	public void setDescriptions(
 			Map<String, JacksonMonolingualTextValue> descriptions) {
 		this.descriptions = descriptions;
@@ -150,6 +176,13 @@ public abstract class JacksonEntityDocument implements EntityDocument,
 		return returnMap;
 	}
 
+	/**
+	 * Sets the labels to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param labels
+	 *            new value
+	 */
 	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
 		this.labels = labels;
 	}
@@ -164,28 +197,35 @@ public abstract class JacksonEntityDocument implements EntityDocument,
 		return returnMap;
 	}
 
+	/**
+	 * Sets the string id of the entity that this document refers to. Only for
+	 * use by Jackson during deserialization.
+	 *
+	 * @param id
+	 *            new value
+	 */
 	@JsonProperty("id")
-	public abstract void setId(String id);
+	public abstract void setJsonId(String id);
 
+	/**
+	 * Returns the string id of the entity that this document refers to. Only
+	 * for use by Jackson during serialization.
+	 *
+	 * @return string id
+	 */
 	@JsonProperty("id")
-	public String getId() {
-		return this.id.getId();
+	public String getJsonId() {
+		return this.entityIdValue.getId();
 	}
 
 	/**
-	 * This method is only used for handling the JSON export correctly.
-	 * 
-	 * @return either "item" or "property"
+	 * Returns the JSON type string of the entity that this document refers to.
+	 * Only used by Jackson.
+	 *
+	 * @return either {@link JacksonTermedDocument#JSON_TYPE_ITEM} or
+	 *         {@link JacksonTermedDocument#JSON_TYPE_PROPERTY}
 	 */
 	@JsonProperty("type")
-	public abstract String getType();
+	public abstract String getJsonType();
 
-	@Override
-	public abstract int hashCode();
-
-	@Override
-	public abstract boolean equals(Object obj);
-
-	@Override
-	public abstract String toString();
 }

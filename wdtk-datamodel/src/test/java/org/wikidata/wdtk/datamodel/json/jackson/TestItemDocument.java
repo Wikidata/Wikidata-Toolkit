@@ -42,7 +42,7 @@ public class TestItemDocument extends JsonConversionTest {
 	@Before
 	public void setupTestFullDocument(){
 		fullDocument = new JacksonItemDocument();
-		fullDocument.setId(testItemId.getId());
+		fullDocument.setJsonId(testItemId.getId());
 		fullDocument.setAliases(testAliases);
 		fullDocument.setDescriptions(testMltvMap);
 		fullDocument.setLabels(testMltvMap);
@@ -53,11 +53,11 @@ public class TestItemDocument extends JsonConversionTest {
 		assertNotNull(fullDocument.getAliases());
 		assertNotNull(fullDocument.getDescriptions());
 		assertNotNull(fullDocument.getLabels());
-		assertNotNull(fullDocument.getId());
+		assertNotNull(fullDocument.getJsonId());
 		assertNotNull(fullDocument.getItemId());
 		assertNotNull(fullDocument.getEntityId());
 		
-		assertEquals(fullDocument.getItemId().getId(), fullDocument.getId());
+		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
 	}
 	
 	/**
@@ -180,7 +180,7 @@ public class TestItemDocument extends JsonConversionTest {
 	@Test
 	public void testItemIdToJson(){
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setId(testItemId.getId());
+		document.setJsonId(testItemId.getId());
 		
 		try {
 			String result = mapper.writeValueAsString(document);
@@ -215,7 +215,7 @@ public class TestItemDocument extends JsonConversionTest {
 	@Test
 	public void testSiteLinksToJson(){
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setSitelinks(testSiteLinkMap);
+		document.setSiteLinks(testSiteLinkMap);
 		
 		try {
 			String result = mapper.writeValueAsString(document);

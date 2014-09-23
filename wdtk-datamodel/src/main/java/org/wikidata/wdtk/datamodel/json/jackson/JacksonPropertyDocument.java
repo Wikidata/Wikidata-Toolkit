@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,13 +33,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Jackson implementation of {@link PropertyDocument}. Like all Jackson objects,
  * it is not technically immutable, but it is strongly recommended to treat it
- * as such in all contexts: the setters are for Jackson, never call them in your
+ * as such in all contexts: the setters are for Jackson; never call them in your
  * code.
  *
  * @author Fredo Erxleben
  *
  */
-public class JacksonPropertyDocument extends JacksonEntityDocument implements
+public class JacksonPropertyDocument extends JacksonTermedDocument implements
 		PropertyDocument {
 
 	/**
@@ -49,11 +49,11 @@ public class JacksonPropertyDocument extends JacksonEntityDocument implements
 	private String datatype;
 
 	/**
-	 * Constructor. Creates an empty object of this kind that can be populated
-	 * during JSON deserialization.
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonPropertyDocument() {
-		this.id = new JacksonPropertyId();
+		this.entityIdValue = new JacksonPropertyId();
 	}
 
 	/**
@@ -67,7 +67,8 @@ public class JacksonPropertyDocument extends JacksonEntityDocument implements
 	public JacksonPropertyDocument(PropertyDocument source) {
 		super(source);
 
-		this.id = new JacksonPropertyId(source.getPropertyId().getId());
+		this.entityIdValue = new JacksonPropertyId(source.getPropertyId()
+				.getId());
 
 		switch (source.getDatatype().getIri()) {
 		case DatatypeIdValue.DT_ITEM:
@@ -111,8 +112,8 @@ public class JacksonPropertyDocument extends JacksonEntityDocument implements
 	}
 
 	/**
-	 * Sets the datatype to the given JSON datatype string. Required by Jackson
-	 * to read this data.
+	 * Sets the datatype to the given JSON datatype string. Only for use by
+	 * Jackson during deserialization.
 	 *
 	 * @see #getJsonDatatype()
 	 * @param datatype
@@ -123,14 +124,14 @@ public class JacksonPropertyDocument extends JacksonEntityDocument implements
 	}
 
 	@Override
-	public void setId(String id) {
-		this.id = new JacksonPropertyId(id);
+	public void setJsonId(String id) {
+		this.entityIdValue = new JacksonPropertyId(id);
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return (JacksonPropertyId) this.id;
+		return (JacksonPropertyId) this.entityIdValue;
 	}
 
 	@JsonIgnore
@@ -140,8 +141,8 @@ public class JacksonPropertyDocument extends JacksonEntityDocument implements
 	}
 
 	@Override
-	public String getType() {
-		return typeProperty;
+	public String getJsonType() {
+		return JacksonTermedDocument.JSON_TYPE_PROPERTY;
 	}
 
 	@Override

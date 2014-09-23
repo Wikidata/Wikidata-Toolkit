@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,9 +42,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Jackson implementation of {@link ItemDocument}. Like all Jackson objects, it
+ * is not technically immutable, but it is strongly recommended to treat it as
+ * such in all contexts: the setters are for Jackson; never call them in your
+ * code.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonItemDocument extends JacksonEntityDocument implements
+public class JacksonItemDocument extends JacksonTermedDocument implements
 		ItemDocument {
 
 	// TODO instead of building the statement groups on demand, maybe cache
@@ -55,25 +64,31 @@ public class JacksonItemDocument extends JacksonEntityDocument implements
 	 * the statement group in the WDTK model.
 	 */
 	private Map<String, List<JacksonStatement>> claims = new HashMap<>();
+	/**
+	 * Map to store site links.
+	 */
 	private Map<String, JacksonSiteLink> sitelinks = new HashMap<>();
 
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonItemDocument() {
-		this.id = new JacksonItemId();
+		this.entityIdValue = new JacksonItemId();
 	}
 
 	/**
-	 * A constructor for generating ItemDocumentImpl-objects from other
-	 * implementations that satisfy the ItemDocument-interface. This can be used
-	 * for converting other implementations into this one for later export.
+	 * Copy constructor. Can be used for converting other implementations of
+	 * {@link ItemDocument} into objects of this class for conversion to JSON.
 	 *
 	 * @param source
-	 *            is the implementation to be used as a base.
+	 *            the object to copy
 	 */
 	public JacksonItemDocument(ItemDocument source) {
 		super(source);
 
 		// set id
-		this.id = new JacksonItemId(source.getItemId().getId());
+		this.entityIdValue = new JacksonItemId(source.getItemId().getId());
 
 		// build siteLinks
 		for (Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()) {
@@ -81,28 +96,26 @@ public class JacksonItemDocument extends JacksonEntityDocument implements
 					new JacksonSiteLink(mltvs.getValue()));
 		}
 
-		// TODO statements? claims?
+		// FIXME statements? claims?
 	}
 
 	@Override
-	public String getType() {
-		return typeItem;
+	public String getJsonType() {
+		return JacksonTermedDocument.JSON_TYPE_ITEM;
 	}
 
 	@Override
-	public void setId(String id) {
-		this.id = new JacksonItemId(id);
+	public void setJsonId(String id) {
+		this.entityIdValue = new JacksonItemId(id);
 	}
 
 	@JsonIgnore
-	// here for the interface; JSON field is handled by getId()
 	@Override
 	public ItemIdValue getItemId() {
-		return (JacksonItemId) this.id;
+		return (JacksonItemId) this.entityIdValue;
 	}
 
 	@JsonIgnore
-	// only needed to satisfy the interface
 	@Override
 	public List<StatementGroup> getStatementGroups() {
 		List<StatementGroup> resultList = new ArrayList<>();
@@ -113,12 +126,19 @@ public class JacksonItemDocument extends JacksonEntityDocument implements
 		return resultList;
 	}
 
-	public void setSitelinks(Map<String, JacksonSiteLink> sitelinks) {
+	/**
+	 * Sets the site links to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param sitelinks
+	 *            new value
+	 */
+	@JsonProperty("sitelinks")
+	public void setSiteLinks(Map<String, JacksonSiteLink> sitelinks) {
 		this.sitelinks = sitelinks;
 	}
 
 	@JsonProperty("sitelinks")
-	// camel case to be compatible with interface
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
 
@@ -130,38 +150,45 @@ public class JacksonItemDocument extends JacksonEntityDocument implements
 	}
 
 	/**
-	 * This is needed for the JSON model, where claims are similar to statement
-	 * groups. <b>Do not confuse this with claims as stated in the WDTK data
-	 * model.</b> This will probably only be used by the Jacksons' ObjectMapper.
+	 * Sets the "claims" to the given value. Only for use by Jackson during
+	 * deserialization.
+	 * <p>
+	 * The name refers to the JSON model, where claims are similar to statement
+	 * groups. This should not be confused with claims as used in the WDTK data
+	 * model. This will probably only be used by the Jacksons' ObjectMapper.
 	 *
 	 * @param claim
 	 */
-	public void setClaims(Map<String, List<JacksonStatement>> claim) {
+	@JsonProperty("claims")
+	public void setJsonClaims(Map<String, List<JacksonStatement>> claim) {
 		this.claims = claim;
 		this.buildClaims();
 	}
 
 	/**
-	 * This is needed by the JSON serialization. It corresponds to statement
-	 * groups in the WDTK model. On using the WDTK, refer to
-	 * {@link JacksonItemDocument#getStatementGroups()} instead.
+	 * Returns the "claims". Only used by Jackson.
+	 * <p>
+	 * JSON "claims" correspond to statement groups in the WDTK model. You
+	 * should use {@link JacksonItemDocument#getStatementGroups()} to obtain
+	 * this data.
 	 *
-	 * @return
+	 * @return map of statement groups
 	 */
-	public Map<String, List<JacksonStatement>> getClaims() {
+	@JsonProperty("claims")
+	public Map<String, List<JacksonStatement>> getJsonClaims() {
 		return this.claims;
 	}
 
 	/**
-	 * Recreate the claims of the statements from the JSON for the data model.
+	 * Recreates the claims of the statements from the JSON for the data model.
 	 * Has to be run after all statements are set.
 	 */
 	private void buildClaims() {
 		for (Entry<String, List<JacksonStatement>> entry : this.claims
 				.entrySet()) {
 			for (JacksonStatement statement : entry.getValue()) {
-				JacksonEntityId wdtkClaimSubject = Helper.constructEntityId(entry
-						.getKey());
+				JacksonEntityId wdtkClaimSubject = Helper
+						.constructEntityId(entry.getKey());
 				JacksonClaim wdtkClaim = new JacksonClaim(statement,
 						wdtkClaimSubject);
 				statement.setClaim(wdtkClaim);
@@ -171,6 +198,7 @@ public class JacksonItemDocument extends JacksonEntityDocument implements
 
 	@Override
 	public Iterator<Statement> getAllStatements() {
+		// FIXME inefficient; use nested iterators instead
 		List<Statement> allStatements = new ArrayList<>();
 
 		for (List<JacksonStatement> value : this.claims.values()) {
