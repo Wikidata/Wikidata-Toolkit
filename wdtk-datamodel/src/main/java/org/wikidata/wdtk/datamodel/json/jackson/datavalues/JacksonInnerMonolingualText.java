@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,36 +22,77 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * Helper object that represents the JSON object structure that is used to
+ * represent values of type
+ * {@link JacksonValue#JSON_VALUE_TYPE_MONOLINGUAL_TEXT}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 public class JacksonInnerMonolingualText {
 
 	String language;
 	String text;
 
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonInnerMonolingualText() {
 	}
 
+	/**
+	 * TODO Review the utility of this constructor.
+	 *
+	 * @param language
+	 * @param text
+	 */
 	public JacksonInnerMonolingualText(String language, String text) {
 		this.language = language;
 		this.text = text;
 	}
 
+	/**
+	 * Returns the language code.
+	 *
+	 * @see MonolingualTextValue#getLanguageCode()
+	 * @return language code
+	 */
+	public String getLanguage() {
+		return this.language;
+	}
+
+	/**
+	 * Sets the language code to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param language
+	 *            new value
+	 */
 	public void setLanguage(String language) {
 		this.language = language;
 	}
 
+	/**
+	 * Returns the text.
+	 *
+	 * @see MonolingualTextValue#getText()
+	 * @return text
+	 */
 	public String getText() {
 		return this.text;
 	}
 
+	/**
+	 * Sets the text to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param text
+	 *            new value
+	 */
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	@JsonProperty("language")
-	public String getLanguageCode() {
-		return this.language;
 	}
 
 	@Override
@@ -60,6 +103,7 @@ public class JacksonInnerMonolingualText {
 		if (!(o instanceof JacksonInnerMonolingualText)) {
 			return false;
 		}
+
 		JacksonInnerMonolingualText other = (JacksonInnerMonolingualText) o;
 		return this.text.equals(other.text)
 				&& this.language.equals(other.language);

@@ -84,7 +84,7 @@ public class TestInnerValueObjects {
 
 	@Test
 	public void testMonolingualTextMethods() {
-		assertEquals(this.testMonolingualText.getLanguageCode(), "en");
+		assertEquals(this.testMonolingualText.getLanguage(), "en");
 		assertEquals(this.testMonolingualText.getText(), "foobar");
 
 		// test equals

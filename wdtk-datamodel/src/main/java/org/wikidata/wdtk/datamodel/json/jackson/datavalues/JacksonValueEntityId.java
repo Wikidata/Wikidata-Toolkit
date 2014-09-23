@@ -2,7 +2,9 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,24 +30,66 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * #L%
  */
 
+/**
+ * Jackson implementation of {@link EntityIdValue}.
+ * <p>
+ * TODO The deserialization should create instances of {@link ItemIdValue} (an
+ * maybe others if ever supported). Maybe everything should use only this type
+ * of object for now.
+ * <p>
+ * TODO Implementation of toString() is missing ({@link ToString} method not
+ * supported for entity id values).
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueEntityId extends JacksonValue implements EntityIdValue {
 
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
 	private JacksonInnerEntityId value;
 
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonValueEntityId() {
-		super(typeEntity);
+		super(JSON_VALUE_TYPE_ENTITY_ID);
 	}
 
+	/**
+	 * Creates a new object from the given data.
+	 *
+	 * TODO Review the utility of this constructor. A copy constructor would
+	 * seem more useful.
+	 *
+	 * @param value
+	 */
 	public JacksonValueEntityId(JacksonInnerEntityId value) {
-		super(typeEntity);
+		super(JSON_VALUE_TYPE_ENTITY_ID);
 		this.value = value;
 	}
 
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner entity id value
+	 */
 	public JacksonInnerEntityId getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the inner value helper object to the given value. Only for use by
+	 * Jackson during deserialization.
+	 *
+	 * @param value
+	 *            new value
+	 */
 	public void setValue(JacksonInnerEntityId value) {
 		this.value = value;
 	}
@@ -69,6 +113,12 @@ public class JacksonValueEntityId extends JacksonValue implements EntityIdValue 
 		return "http://www.wikidata.org/entity/";
 	}
 
+	@JsonIgnore
+	@Override
+	public String getEntityType() {
+		return this.value.getDatamodelEntityType();
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
@@ -82,12 +132,6 @@ public class JacksonValueEntityId extends JacksonValue implements EntityIdValue 
 	@Override
 	public boolean equals(Object obj) {
 		return Equality.equalsEntityIdValue(this, obj);
-	}
-
-	@JsonIgnore
-	@Override
-	public String getEntityType() {
-		return this.value.getDatamodelEntityType();
 	}
 
 }

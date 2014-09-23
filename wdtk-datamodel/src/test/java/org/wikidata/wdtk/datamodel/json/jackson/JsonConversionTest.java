@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinate;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
@@ -72,12 +72,12 @@ public abstract class JsonConversionTest {
 	protected static final String rankPreferred = "preferred";
 	
 	// stand-alone descriptions of Value-parts
-	protected static final String stringValueJson = "{\"type\":\"" + JacksonValue.typeString + "\",\"value\":\"foobar\"}";
-	protected static final String entityIdValueJson = "{\"type\":\"" + JacksonValue.typeEntity + "\",\"value\":{\"entity-type\":\"" + entityTypeItem + "\",\"numeric-id\":" + numericId + "}}";
-	protected static final String timeValueJson = "{\"type\":\"" + JacksonValue.typeTime + "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
-	protected static final String globeCoordinateValueJson = "{\"type\":\"" + JacksonValue.typeCoordinate + "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
-	protected static final String quantityValueJson = "{\"type\":\"" + JacksonValue.typeQuantity + "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
-	protected static final String mltDatavalueJson = "{\"type\":\"" + JacksonValue.typeMonolingualText + "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
+	protected static final String stringValueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_STRING + "\",\"value\":\"foobar\"}";
+	protected static final String entityIdValueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_ENTITY_ID + "\",\"value\":{\"entity-type\":\"" + entityTypeItem + "\",\"numeric-id\":" + numericId + "}}";
+	protected static final String timeValueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_TIME + "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
+	protected static final String globeCoordinateValueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_GLOBE_COORDINATES + "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
+	protected static final String quantityValueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_QUANTITY + "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	protected static final String mltDatavalueJson = "{\"type\":\"" + JacksonValue.JSON_VALUE_TYPE_MONOLINGUAL_TEXT + "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
 	
 	// stand-alone descriptions of ItemDocument-parts
 	protected static final String itemTypeJson = "\"type\":\"item\"";
@@ -104,7 +104,7 @@ public abstract class JsonConversionTest {
 	protected static final JacksonValueString testStringValue = new JacksonValueString("foobar");
 	protected static final JacksonValueEntityId testEntityIdValue = new JacksonValueEntityId(new JacksonInnerEntityId(entityTypeItem, numericId));
 	protected static final JacksonValueTime testTimeValue = new JacksonValueTime(new JacksonInnerTime("+00000002013-10-28T00:00:00Z",0,0,0,11, "http://www.wikidata.org/entity/Q1985727"));
-	protected static final JacksonValueGlobeCoordinates testGlobeCoordinateValue = new JacksonValueGlobeCoordinates(new JacksonInnerGlobeCoordinate(-90, 0, 10, "http://www.wikidata.org/entity/Q2"));
+	protected static final JacksonValueGlobeCoordinates testGlobeCoordinateValue = new JacksonValueGlobeCoordinates(new JacksonInnerGlobeCoordinates(-90, 0, 10, "http://www.wikidata.org/entity/Q2"));
 	protected static final JacksonValueQuantity testQuantityValue = new JacksonValueQuantity(new JacksonInnerQuantity(new BigDecimal(1), new BigDecimal(1.5), new BigDecimal(-0.5)));
 	protected static final  JacksonValueMonolingualText testMltDatavalue = new JacksonValueMonolingualText("en", "foobar");
 

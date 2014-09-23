@@ -44,7 +44,10 @@ public class JacksonInnerEntityId {
 	@JsonProperty("numeric-id")
 	private int numericId;
 
-	// TODO document (why do we need this?)
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonInnerEntityId() {
 	}
 
@@ -65,11 +68,24 @@ public class JacksonInnerEntityId {
 		this.numericId = numericId;
 	}
 
+	/**
+	 * Returns the entity type string as used in JSON. Only for use by Jackson
+	 * during serialization.
+	 *
+	 * @return the entity type string
+	 */
 	@JsonProperty("entity-type")
 	public String getEntityType() {
 		return entityType;
 	}
 
+	/**
+	 * Sets the entity type string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param entityType
+	 *            new value
+	 */
 	@JsonProperty("entity-type")
 	public void setEntityType(String entityType)
 			throws IllegalArgumentException {
@@ -82,11 +98,24 @@ public class JacksonInnerEntityId {
 		this.entityType = entityType;
 	}
 
+	/**
+	 * Returns the numeric item id as used in JSON. Only for use by Jackson
+	 * during serialization.
+	 *
+	 * @return the numeric entity id
+	 */
 	@JsonProperty("numeric-id")
 	public int getNumericId() {
 		return numericId;
 	}
 
+	/**
+	 * Sets thenumeric item id to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param numericId
+	 *            new value
+	 */
 	@JsonProperty("numeric-id")
 	public void setNumericId(int numericId) {
 		this.numericId = numericId;
@@ -125,7 +154,8 @@ public class JacksonInnerEntityId {
 		}
 
 		return (this.numericId == ((JacksonInnerEntityId) o).numericId)
-				&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
+				&& (this.entityType
+						.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
 	@Override
