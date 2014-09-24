@@ -33,18 +33,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-public class TestSnakJson extends JsonConversionTest{
-	
+public class TestSnakJson extends JsonConversionTest {
 
 	@Test
-	public void testNoValueSnakToJava(){
+	public void testNoValueSnakToJava() {
 		try {
-			JacksonSnak result = mapper.readValue(noValueSnakJson, JacksonSnak.class);
-			
+			JacksonSnak result = mapper.readValue(noValueSnakJson,
+					JacksonSnak.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonNoValueSnak);
 			assertEquals(result, testNoValueSnak);
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -56,10 +56,10 @@ public class TestSnakJson extends JsonConversionTest{
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testNoValueSnakToJson(){
-		
+	public void testNoValueSnakToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testNoValueSnak);
 			JsonComparator.compareJsonStrings(noValueSnakJson, result);
@@ -68,16 +68,17 @@ public class TestSnakJson extends JsonConversionTest{
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testSomeValueSnakToJava(){
+	public void testSomeValueSnakToJava() {
 		try {
-			JacksonSnak result = mapper.readValue(someValueSnakJson, JacksonSnak.class);
-			
+			JacksonSnak result = mapper.readValue(someValueSnakJson,
+					JacksonSnak.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonSomeValueSnak);
 			assertEquals(result, testSomeValueSnak);
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -89,10 +90,10 @@ public class TestSnakJson extends JsonConversionTest{
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testSomeValueSnakToJson(){
-		
+	public void testSomeValueSnakToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testSomeValueSnak);
 			JsonComparator.compareJsonStrings(someValueSnakJson, result);
@@ -101,16 +102,17 @@ public class TestSnakJson extends JsonConversionTest{
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testCommonsValueSnakToJava(){
+	public void testCommonsValueSnakToJava() {
 		try {
-			JacksonSnak result = mapper.readValue(commonsValueSnakJson, JacksonSnak.class);
-			
+			JacksonSnak result = mapper.readValue(commonsValueSnakJson,
+					JacksonSnak.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueSnak);
 			assertEquals(result, testCommonsValueSnak);
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -122,10 +124,10 @@ public class TestSnakJson extends JsonConversionTest{
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testCommonsValueSnakToJson(){
-		
+	public void testCommonsValueSnakToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testCommonsValueSnak);
 			JsonComparator.compareJsonStrings(commonsValueSnakJson, result);

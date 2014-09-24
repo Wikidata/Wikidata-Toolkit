@@ -34,11 +34,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class TestStatement extends JsonConversionTest {
-	
+
 	@Test
-	public void testEmptyStatementToJson(){
+	public void testEmptyStatementToJson() {
 		JacksonStatement statement = testEmptyStatement;
-		
+
 		try {
 			String result = mapper.writeValueAsString(statement);
 			JsonComparator.compareJsonStrings(emptyStatementJson, result);
@@ -47,50 +47,41 @@ public class TestStatement extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	@Test
-	public void testEmptyStatementToJava(){
-		try {
-			JacksonStatement result = mapper.readValue(emptyStatementJson, JacksonStatement.class);
-			// inject claim since this is not provided on statement level in the JSON
-			JacksonClaim claim = new JacksonClaim(result, new JacksonPropertyId(propertyId));
-			result.setClaim(claim);
-			
-			assertNotNull(result);
-			assertEquals(testEmptyStatement, result);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testEmptyStatementToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonStatement result = mapper.readValue(emptyStatementJson,
+				JacksonStatement.class);
+		result.setSubject(testItemId);
+
+		assertNotNull(result);
+		assertEquals(testEmptyStatement, result);
+
 	}
-	
+
 	@Test
-	public void testEquality(){
-		JacksonStatement correctStatement = new JacksonStatement(statementId, testNoValueSnak);
-		correctStatement.setClaim(testClaim);
-		
+	public void testEquality() {
+		JacksonStatement correctStatement = new JacksonStatement(statementId,
+				testNoValueSnak);
+		correctStatement.setSubject(testItemId);
+
 		assertEquals(testEmptyStatement, testEmptyStatement);
 		assertEquals(testEmptyStatement, correctStatement);
-		
-		JacksonStatement wrongId = new JacksonStatement(" " + statementId, testNoValueSnak);
-		wrongId.setClaim(testClaim);
+
+		JacksonStatement wrongId = new JacksonStatement(" " + statementId,
+				testNoValueSnak);
+		wrongId.setSubject(testItemId);
 		assertFalse(testEmptyStatement.equals(wrongId));
 	}
-	
+
 	@Test
-	public void testToString(){
+	public void testToString() {
 		assertNotNull(testEmptyStatement.toString());
 	}
-	
+
 	@Test
-	public void testHashCode(){
+	public void testHashCode() {
 		assertNotNull(testEmptyStatement.hashCode());
 	}
 }

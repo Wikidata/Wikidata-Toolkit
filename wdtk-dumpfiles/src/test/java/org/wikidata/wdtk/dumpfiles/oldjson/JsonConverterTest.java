@@ -51,15 +51,14 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.dumpfiles.oldjson.JsonConverter;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
 /**
  * The test setup uses several files containing JSON. These files are read by
  * the org.json-parser into sample objects to be converted.
- * 
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 public class JsonConverterTest {
 
@@ -224,7 +223,7 @@ public class JsonConverterTest {
 	/**
 	 * Applies the JSON converter to the JSON stored in the given resource to
 	 * return an ItemDocument.
-	 * 
+	 *
 	 * @param fileName
 	 *            the file name only, no path information
 	 * @param itemId
@@ -242,7 +241,7 @@ public class JsonConverterTest {
 	/**
 	 * Applies the JSON converter to the JSON stored in the given resource to
 	 * return a PropertyDocument.
-	 * 
+	 *
 	 * @param fileName
 	 *            the file name only, no path information. The file is supposed
 	 *            to be in the "resources/testSamples/"-directory.
@@ -261,7 +260,7 @@ public class JsonConverterTest {
 
 	/**
 	 * Returns a JSON object for the JSON stored in the given resource.
-	 * 
+	 *
 	 * @param resourceName
 	 *            a file name without any path information
 	 * @return the JSONObject

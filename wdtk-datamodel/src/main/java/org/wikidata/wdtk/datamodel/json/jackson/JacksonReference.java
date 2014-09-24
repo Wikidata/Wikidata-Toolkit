@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,40 +30,64 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
+/**
+ * Jackson implementation of {@link Reference}.
+ *
+ * @author Fredo Erxleben
+ * @author Markus Kroetzsch
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonReference implements Reference {
 
+	private List<SnakGroup> snakGroups = null;
+
+	/**
+	 * Map of property id strings to snaks, as used to encode snaks in JSON.
+	 */
 	private Map<String, List<JacksonSnak>> snaks;
-	
-	@JsonIgnore // not in the actual JSON, just to satisfy the interface
+
+	@JsonIgnore
 	@Override
 	public List<SnakGroup> getSnakGroups() {
-		return Helper.buildSnakGroups(this.snaks);
-	}
-	
-	public void setSnaks(Map<String, List<JacksonSnak>> snaks){
-		this.snaks = snaks;
+		if (this.snakGroups == null) {
+			this.snakGroups = SnakGroupFromJson.makeSnakGroups(this.snaks);
+		}
+		return this.snakGroups;
 	}
 
-	public Map<String, List<JacksonSnak>> getSnaks(){
+	/**
+	 * Sets the map of snaks to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param snaks
+	 *            new value
+	 */
+	public void setSnaks(Map<String, List<JacksonSnak>> snaks) {
+		this.snaks = snaks;
+		this.snakGroups = null; // clear cache
+	}
+
+	/**
+	 * Returns the map of snaks as found in JSON. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the map of snaks
+	 */
+	public Map<String, List<JacksonSnak>> getSnaks() {
 		return this.snaks;
 	}
 
 	@Override
 	public Iterator<Snak> getAllSnaks() {
-		// have to create a new list to have something to get an iterator from
-		List<Snak> tempSnaks = new ArrayList<>();
-		for( List<JacksonSnak> entry : this.snaks.values()){
-			tempSnaks.addAll(entry);
-		}
-		return tempSnaks.iterator();
+		return new NestedIterator<>(getSnakGroups());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +49,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  *
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @Type(value = JacksonItemDocument.class, name = "item"),
-		@Type(value = JacksonPropertyDocument.class, name = "property") })
+@JsonSubTypes({
+		@Type(value = JacksonItemDocument.class, name = JacksonTermedDocument.JSON_TYPE_ITEM),
+		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedDocument.JSON_TYPE_PROPERTY) })
 public abstract class JacksonTermedDocument implements TermedDocument {
 
 	/**
@@ -139,19 +141,17 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
-
 		// because of the typing provided by the interface one has to
 		// re-create the map anew, simple casting is not possible
 		Map<String, List<MonolingualTextValue>> returnMap = new HashMap<>();
 
 		for (Entry<String, List<JacksonMonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
-			List<MonolingualTextValue> mltvList = new LinkedList<>();
-			mltvList.addAll(entry.getValue());
-			returnMap.put(entry.getKey(), mltvList);
+			returnMap.put(entry.getKey(), Collections
+					.<MonolingualTextValue> unmodifiableList(entry.getValue()));
 		}
 
-		return returnMap;
+		return Collections.unmodifiableMap(returnMap);
 	}
 
 	/**
@@ -168,12 +168,8 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
-
-		// because of the typing provided by the interface one has to
-		// re-create the map anew, simple casting is not possible
-		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
-		returnMap.putAll(this.descriptions);
-		return returnMap;
+		return Collections
+				.<String, MonolingualTextValue> unmodifiableMap(this.descriptions);
 	}
 
 	/**
@@ -189,12 +185,8 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
-
-		// because of the typing provided by the interface one has to
-		// re-create the map anew, simple casting is not possible
-		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
-		returnMap.putAll(this.labels);
-		return returnMap;
+		return Collections
+				.<String, MonolingualTextValue> unmodifiableMap(this.labels);
 	}
 
 	/**
@@ -215,7 +207,12 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 */
 	@JsonProperty("id")
 	public String getJsonId() {
-		return this.entityIdValue.getId();
+		if (this.entityIdValue != null) {
+			return this.entityIdValue.getId();
+		} else { // avoid null pointer exceptions for empty object
+			return "";
+		}
+
 	}
 
 	/**

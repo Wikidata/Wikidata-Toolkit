@@ -34,40 +34,40 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class TestItemDocument extends JsonConversionTest {
-	
+
 	// TODO test statements (JSON claim)
-	
+
 	JacksonItemDocument fullDocument;
-	
+
 	@Before
-	public void setupTestFullDocument(){
+	public void setupTestFullDocument() {
 		fullDocument = new JacksonItemDocument();
 		fullDocument.setJsonId(testItemId.getId());
 		fullDocument.setAliases(testAliases);
 		fullDocument.setDescriptions(testMltvMap);
 		fullDocument.setLabels(testMltvMap);
 	}
-	
+
 	@Test
-	public void testFullDocumentSetup(){
+	public void testFullDocumentSetup() {
 		assertNotNull(fullDocument.getAliases());
 		assertNotNull(fullDocument.getDescriptions());
 		assertNotNull(fullDocument.getLabels());
 		assertNotNull(fullDocument.getJsonId());
 		assertNotNull(fullDocument.getItemId());
 		assertNotNull(fullDocument.getEntityId());
-		
+
 		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
 	}
-	
+
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Pojo to Json
 	 */
 	@Test
-	public void testLabelsToJson(){
+	public void testLabelsToJson() {
 		JacksonItemDocument document = new JacksonItemDocument();
 		document.setLabels(testMltvMap);
-		
+
 		try {
 			String result = mapper.writeValueAsString(document);
 			JsonComparator.compareJsonStrings(wrappedLabelJson, result);
@@ -76,19 +76,20 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Json to Pojo
 	 */
 	@Test
-	public void testLabelToJava(){
-		
+	public void testLabelToJava() {
+
 		try {
-			JacksonItemDocument result = mapper.readValue(wrappedLabelJson, JacksonItemDocument.class);
-			
+			JacksonItemDocument result = mapper.readValue(wrappedLabelJson,
+					JacksonItemDocument.class);
+
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getLabels());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -100,15 +101,16 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	/**
-	 * Tests the conversion of ItemDocuments containing descriptions from Pojo to Json
+	 * Tests the conversion of ItemDocuments containing descriptions from Pojo
+	 * to Json
 	 */
 	@Test
-	public void testDescriptionsToJson(){
+	public void testDescriptionsToJson() {
 		JacksonItemDocument document = new JacksonItemDocument();
 		document.setDescriptions(testMltvMap);
-		
+
 		try {
 			String result = mapper.writeValueAsString(document);
 			JsonComparator.compareJsonStrings(wrappedDescriptionJson, result);
@@ -119,17 +121,19 @@ public class TestItemDocument extends JsonConversionTest {
 	}
 
 	/**
-	 * Tests the conversion of ItemDocuments containing descriptions from Json to Pojo
+	 * Tests the conversion of ItemDocuments containing descriptions from Json
+	 * to Pojo
 	 */
 	@Test
-	public void testDescriptionsToJava(){
-		
+	public void testDescriptionsToJava() {
+
 		try {
-			JacksonItemDocument result = mapper.readValue(wrappedDescriptionJson, JacksonItemDocument.class);
-			
+			JacksonItemDocument result = mapper.readValue(
+					wrappedDescriptionJson, JacksonItemDocument.class);
+
 			assertNotNull(result);
 			assertEquals(testMltvMap, result.getDescriptions());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -143,10 +147,10 @@ public class TestItemDocument extends JsonConversionTest {
 	}
 
 	@Test
-	public void testAliasesToJson(){
+	public void testAliasesToJson() {
 		JacksonItemDocument document = new JacksonItemDocument();
 		document.setAliases(testAliases);
-		
+
 		try {
 			String result = mapper.writeValueAsString(document);
 			JsonComparator.compareJsonStrings(wrappedAliasJson, result);
@@ -155,16 +159,17 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	@Test
-	public void testAliasesToJava(){
-		
+	public void testAliasesToJava() {
+
 		try {
-			JacksonItemDocument result = mapper.readValue(wrappedAliasJson, JacksonItemDocument.class);
-			
+			JacksonItemDocument result = mapper.readValue(wrappedAliasJson,
+					JacksonItemDocument.class);
+
 			assertNotNull(result);
 			assertEquals(testAliases, result.getAliases());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -176,12 +181,12 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testItemIdToJson(){
+	public void testItemIdToJson() {
 		JacksonItemDocument document = new JacksonItemDocument();
 		document.setJsonId(testItemId.getId());
-		
+
 		try {
 			String result = mapper.writeValueAsString(document);
 			JsonComparator.compareJsonStrings(wrappedItemIdJson, result);
@@ -190,16 +195,17 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	@Test
-	public void testItemIdToJava(){
-		
+	public void testItemIdToJava() {
+
 		try {
-			JacksonItemDocument result = mapper.readValue(wrappedItemIdJson, JacksonItemDocument.class);
-			
+			JacksonItemDocument result = mapper.readValue(wrappedItemIdJson,
+					JacksonItemDocument.class);
+
 			assertNotNull(result);
 			assertEquals(testItemId, result.getEntityId());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -211,12 +217,12 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testSiteLinksToJson(){
+	public void testSiteLinksToJson() {
 		JacksonItemDocument document = new JacksonItemDocument();
 		document.setSiteLinks(testSiteLinkMap);
-		
+
 		try {
 			String result = mapper.writeValueAsString(document);
 			JsonComparator.compareJsonStrings(wrappedSiteLinkJson, result);
@@ -225,16 +231,17 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	@Test
-	public void testSiteLinksToJava(){
-		
+	public void testSiteLinksToJava() {
+
 		try {
-			JacksonItemDocument result = mapper.readValue(wrappedSiteLinkJson, JacksonItemDocument.class);
-			
+			JacksonItemDocument result = mapper.readValue(wrappedSiteLinkJson,
+					JacksonItemDocument.class);
+
 			assertNotNull(result);
 			assertEquals(testSiteLinkMap, result.getSiteLinks());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -246,9 +253,9 @@ public class TestItemDocument extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testGenerationFromOtherItemDocument(){
+	public void testGenerationFromOtherItemDocument() {
 		JacksonItemDocument copy = new JacksonItemDocument(fullDocument);
 		assertEquals(fullDocument, copy);
 	}

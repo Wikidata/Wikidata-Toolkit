@@ -38,16 +38,16 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
  * This class is dedicated to converting different implementations of this data
  * model between another. All implementations have in common that they must obey
  * the data model, but nothing more is guaranteed.
- * 
+ *
  * @author Fredo Erxleben
  *
  */
 public class ImplementationConverter {
 
 	private static DataObjectFactory factory = new DataObjectFactoryImpl();
-	
+
 	/**
-	 * 
+	 *
 	 * @param source
 	 * @param toImplementation
 	 * @return an instance of the requested implementation or null
@@ -58,7 +58,7 @@ public class ImplementationConverter {
 		switch (toImplementation) {
 		case IMPL_JACKSON:
 			return new JacksonItemDocument(source);
-		case IMPL_STORAGE: 
+		case IMPL_STORAGE:
 			return toStorageItemDocument(source);
 		}
 		return null;
@@ -73,32 +73,33 @@ public class ImplementationConverter {
 	/**
 	 * Uses the DataObjectFactory to create an ItemDocument implementation for
 	 * the storage data model.
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 */
 	private static ItemDocument toStorageItemDocument(ItemDocument source) {
 
 		// TODO double check this to avoid unpleasant surprises with typing
-		
+
 		ItemIdValue sourceItemId = source.getItemId();
-		ItemIdValue itemIdValue = factory.getItemIdValue(sourceItemId.getId(), sourceItemId.getIri());
-		
+		ItemIdValue itemIdValue = factory.getItemIdValue(sourceItemId.getId(),
+				sourceItemId.getIri());
+
 		List<MonolingualTextValue> labels = new ArrayList<>();
 		labels.addAll(source.getLabels().values());
-		
+
 		List<MonolingualTextValue> descriptions = new ArrayList<>();
 		descriptions.addAll(source.getDescriptions().values());
-		
+
 		List<MonolingualTextValue> aliases = new ArrayList<>();
-		for(List<MonolingualTextValue> values : source.getAliases().values()){
+		for (List<MonolingualTextValue> values : source.getAliases().values()) {
 			aliases.addAll(values);
 		}
-		
+
 		List<StatementGroup> statementGroups = source.getStatementGroups();
-		
-		
+
 		Map<String, SiteLink> siteLinks = source.getSiteLinks();
-		return factory.getItemDocument(itemIdValue, labels, descriptions, aliases, statementGroups, siteLinks);
+		return factory.getItemDocument(itemIdValue, labels, descriptions,
+				aliases, statementGroups, siteLinks);
 	}
 }

@@ -33,19 +33,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class TestMonolingualTextValue extends JsonConversionTest {
-	
+
 	/**
 	 * Tests the conversion of MonolingualTextValues from JSON to POJO
 	 */
 	@Test
-	public void testMonolingualTextValueToJava(){
-		
+	public void testMonolingualTextValueToJava() {
+
 		try {
-			JacksonMonolingualTextValue result = mapper.readValue(mltvJson, JacksonMonolingualTextValue.class);
-			
+			JacksonMonolingualTextValue result = mapper.readValue(mltvJson,
+					JacksonMonolingualTextValue.class);
+
 			assertEquals("en", result.getLanguageCode());
 			assertEquals("foobar", result.getText());
-			
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -55,15 +56,15 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("IO failed");
-		}	
+		}
 	}
-	
+
 	/**
 	 * Tests the conversion of MonolingualTextValues from POJO to JSON
 	 */
 	@Test
-	public void testMonolingualTextValueToJson(){
-		
+	public void testMonolingualTextValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testMltv);
 			JsonComparator.compareJsonStrings(mltvJson, result);
@@ -72,13 +73,16 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 			fail("Converting Pojo to Json failed");
 		}
 	}
-	
+
 	@Test
-	public void testEquals(){
-		JacksonMonolingualTextValue match = new JacksonMonolingualTextValue("en", "foobar");
-		JacksonMonolingualTextValue wrongLanguage = new JacksonMonolingualTextValue("de", "foobar");
-		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue("en", "barfoo");
-		
+	public void testEquals() {
+		JacksonMonolingualTextValue match = new JacksonMonolingualTextValue(
+				"en", "foobar");
+		JacksonMonolingualTextValue wrongLanguage = new JacksonMonolingualTextValue(
+				"de", "foobar");
+		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue(
+				"en", "barfoo");
+
 		assertEquals(testMltv, testMltv);
 		assertEquals(testMltv, match);
 		assertFalse(testMltv.equals(wrongLanguage));

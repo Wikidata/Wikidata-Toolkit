@@ -30,25 +30,28 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
- * This class only exists to satisfy the interface of the data model.
+ * Helper class to represent a {@link Claim} deserialized from JSON. The actual
+ * data is part of {@link JacksonStatement}. This is merely a facade that
+ * provides a suitable view.
  *
  * @author Fredo Erxleben
  */
-public class JacksonClaim implements Claim {
+public class ClaimFromJson implements Claim {
 
 	private final JacksonStatement statement;
-	private final EntityIdValue subject;
 
-	public JacksonClaim(JacksonStatement statement, EntityIdValue subject) {
+	private List<SnakGroup> qualifiers = null;
+
+	public ClaimFromJson(JacksonStatement statement) {
 		this.statement = statement;
-		this.subject = subject;
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.subject;
+		return this.statement.getSubject();
 	}
 
 	@Override
@@ -58,13 +61,19 @@ public class JacksonClaim implements Claim {
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		return Helper.buildSnakGroups(this.statement.getQualifiers());
+		// Note: caching this is not 100% safe since the data is not immutable
+		// and we won't know of changes. But when this is called, no further
+		// changes should happen.
+		if (this.qualifiers == null) {
+			this.qualifiers = SnakGroupFromJson.makeSnakGroups(this.statement
+					.getQualifiers());
+		}
+		return this.qualifiers;
 	}
 
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
-		// TODO Auto-generated method stub
-		return null;
+		return new NestedIterator<>(getQualifiers());
 	}
 
 	@Override

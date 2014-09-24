@@ -26,25 +26,38 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
+/**
+ * Jackson implementation of {@link NoValueSnak}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
-	
-	static final String novalue = "novalue";
-	
-	public JacksonNoValueSnak(){
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonNoValueSnak() {
 		super();
-		this.setSnakType(novalue);
+		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_NOVALUE);
 	}
-	
-	public JacksonNoValueSnak(String propertyId){
+
+	/**
+	 * TODO Review the utility of this constructor.
+	 * 
+	 * @param propertyId
+	 */
+	public JacksonNoValueSnak(String propertyId) {
 		super(propertyId);
-		this.setSnakType(novalue);
+		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_NOVALUE);
 	}
 
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

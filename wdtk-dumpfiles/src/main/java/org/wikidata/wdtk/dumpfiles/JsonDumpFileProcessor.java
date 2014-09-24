@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;

@@ -28,14 +28,14 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,8 +44,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class TestValue extends JsonConversionTest {
 
 	@Test
-	public void testStringValueToJson(){
-		
+	public void testStringValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testStringValue);
 			JsonComparator.compareJsonStrings(stringValueJson, result);
@@ -54,18 +54,20 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testStringValueToJava(){
-		
+	public void testStringValueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(stringValueJson, JacksonValue.class);
-			
+			JacksonValue result = mapper.readValue(stringValueJson,
+					JacksonValue.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueString);
 			assertEquals(result.getType(), testStringValue.getType());
-			assertEquals(((JacksonValueString)result).getValue(), testStringValue.getValue());
-			
+			assertEquals(((JacksonValueString) result).getValue(),
+					testStringValue.getValue());
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -77,10 +79,10 @@ public class TestValue extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testEntityIdValueToJson(){
-		
+	public void testEntityIdValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testEntityIdValue);
 			JsonComparator.compareJsonStrings(entityIdValueJson, result);
@@ -89,18 +91,20 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testEntityIdValueToJava(){
-		
+	public void testEntityIdValueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(entityIdValueJson, JacksonValue.class);
-			
+			JacksonValue result = mapper.readValue(entityIdValueJson,
+					JacksonValue.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueEntityId);
 			assertEquals(result.getType(), testEntityIdValue.getType());
-			assertEquals(((JacksonValueEntityId)result).getValue(), testEntityIdValue.getValue());
-			
+			assertEquals(((JacksonValueEntityId) result).getValue(),
+					testEntityIdValue.getValue());
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -112,10 +116,10 @@ public class TestValue extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testTimeValueToJson(){
-		
+	public void testTimeValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testTimeValue);
 			JsonComparator.compareJsonStrings(timeValueJson, result);
@@ -124,19 +128,20 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testTimeValueToJava(){
-		
+	public void testTimeValueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(timeValueJson, JacksonValue.class);
-			JacksonValueTime castedResult = (JacksonValueTime)result;
-			
+			JacksonValue result = mapper.readValue(timeValueJson,
+					JacksonValue.class);
+			JacksonValueTime castedResult = (JacksonValueTime) result;
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueTime);
 			assertEquals(result.getType(), testTimeValue.getType());
 			assertEquals((castedResult).getValue(), testTimeValue.getValue());
-			
+
 			// test if every field contains the correct value
 			assertEquals(castedResult.getSecond(), testTimeValue.getSecond());
 			assertEquals(castedResult.getMinute(), testTimeValue.getMinute());
@@ -144,17 +149,24 @@ public class TestValue extends JsonConversionTest {
 			assertEquals(castedResult.getDay(), testTimeValue.getDay());
 			assertEquals(castedResult.getMonth(), testTimeValue.getMonth());
 			assertEquals(castedResult.getYear(), testTimeValue.getYear());
-			
-			assertEquals(castedResult.getAfterTolerance(), testTimeValue.getAfterTolerance());
-			assertEquals(castedResult.getBeforeTolerance(), testTimeValue.getBeforeTolerance());
-			assertEquals(castedResult.getPrecision(), testTimeValue.getPrecision());
-			assertEquals(castedResult.getPreferredCalendarModel(), testTimeValue.getPreferredCalendarModel());
-			assertEquals(castedResult.getTimezoneOffset(), testTimeValue.getTimezoneOffset());
-			
+
+			assertEquals(castedResult.getAfterTolerance(),
+					testTimeValue.getAfterTolerance());
+			assertEquals(castedResult.getBeforeTolerance(),
+					testTimeValue.getBeforeTolerance());
+			assertEquals(castedResult.getPrecision(),
+					testTimeValue.getPrecision());
+			assertEquals(castedResult.getPreferredCalendarModel(),
+					testTimeValue.getPreferredCalendarModel());
+			assertEquals(castedResult.getTimezoneOffset(),
+					testTimeValue.getTimezoneOffset());
+
 			// test against the same time, created on a different way
-			JacksonInnerTime otherTime = new JacksonInnerTime(2013, (byte)10, (byte)28, (byte)0, (byte)0, (byte)0, 0, 0, 0, 11, "http://www.wikidata.org/entity/Q1985727");
-			assertEquals(((JacksonValueTime)result).getValue(), otherTime);
-			
+			JacksonInnerTime otherTime = new JacksonInnerTime(2013, (byte) 10,
+					(byte) 28, (byte) 0, (byte) 0, (byte) 0, 0, 0, 0, 11,
+					"http://www.wikidata.org/entity/Q1985727");
+			assertEquals(((JacksonValueTime) result).getValue(), otherTime);
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -166,10 +178,10 @@ public class TestValue extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testGlobeCoordinateValueToJson(){
-		
+	public void testGlobeCoordinateValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testGlobeCoordinateValue);
 			JsonComparator.compareJsonStrings(globeCoordinateValueJson, result);
@@ -178,18 +190,20 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testGlobeCoordinateValueToJava(){
-		
+	public void testGlobeCoordinateValueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(globeCoordinateValueJson, JacksonValue.class);
-			
+			JacksonValue result = mapper.readValue(globeCoordinateValueJson,
+					JacksonValue.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueGlobeCoordinates);
 			assertEquals(result.getType(), testGlobeCoordinateValue.getType());
-			assertEquals(((JacksonValueGlobeCoordinates)result).getValue(), testGlobeCoordinateValue.getValue());
-			
+			assertEquals(((JacksonValueGlobeCoordinates) result).getValue(),
+					testGlobeCoordinateValue.getValue());
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -203,8 +217,8 @@ public class TestValue extends JsonConversionTest {
 	}
 
 	@Test
-	public void testQuantityValueToJson(){
-		
+	public void testQuantityValueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testQuantityValue);
 			JsonComparator.compareJsonStrings(quantityValueJson, result);
@@ -213,18 +227,20 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testQuantityValueToJava(){
-		
+	public void testQuantityValueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(quantityValueJson, JacksonValue.class);
-			
+			JacksonValue result = mapper.readValue(quantityValueJson,
+					JacksonValue.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueQuantity);
 			assertEquals(result.getType(), testQuantityValue.getType());
-			assertEquals(((JacksonValueQuantity)result).getValue(), testQuantityValue.getValue());
-			
+			assertEquals(((JacksonValueQuantity) result).getValue(),
+					testQuantityValue.getValue());
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -237,10 +253,9 @@ public class TestValue extends JsonConversionTest {
 		}
 	}
 
-	
 	@Test
-	public void testMltDatavalueToJson(){
-		
+	public void testMltDatavalueToJson() {
+
 		try {
 			String result = mapper.writeValueAsString(testMltDatavalue);
 			JsonComparator.compareJsonStrings(mltDatavalueJson, result);
@@ -249,17 +264,18 @@ public class TestValue extends JsonConversionTest {
 			fail("Converting POJO to JSON failed");
 		}
 	}
-	
+
 	@Test
-	public void testMltDatavalueToJava(){
-		
+	public void testMltDatavalueToJava() {
+
 		try {
-			JacksonValue result = mapper.readValue(mltDatavalueJson, JacksonValue.class);
-			
+			JacksonValue result = mapper.readValue(mltDatavalueJson,
+					JacksonValue.class);
+
 			assertNotNull(result);
 			assertTrue(result instanceof JacksonValueMonolingualText);
-			assertEquals(((JacksonValueMonolingualText)result), testMltDatavalue);
-			
+			assertEquals((result), testMltDatavalue);
+
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 			fail("Parsing failed");
@@ -271,11 +287,12 @@ public class TestValue extends JsonConversionTest {
 			fail("IO failed");
 		}
 	}
-	
+
 	@Test
-	public void testMltDatavalueConstructor(){
-		
-		assertEquals(testMltDatavalue, new JacksonValueMonolingualText(testMltv));
-		
+	public void testMltDatavalueConstructor() {
+
+		assertEquals(testMltDatavalue,
+				new JacksonValueMonolingualText(testMltv));
+
 	}
 }

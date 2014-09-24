@@ -21,53 +21,64 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 /**
- * This class is not actually used in the JSON model, but needed to satisfy the
- * WDTK-datamodel interface. Since this is used only for conversion purposes
- * between different implementations of the WDTK-interface the class does not
- * provide setters apart from the constructor.
- * 
- * @author Fredo Erxleben
+ * Helper class to represent a {@link SnakGroup} deserialized from JSON. The
+ * actual data is part of a map of lists of {@link JacksonSnak} objects in JSON,
+ * so there is no corresponding JSON object.
+ *
+ * @author Markus Kroetzsch
  *
  */
-public class JacksonSnakGroup implements SnakGroup {
+public class SnakGroupFromJson implements SnakGroup {
 
-	private JacksonPropertyId property;
-	private List<JacksonSnak> snaks;
+	private final List<Snak> snaks;
 
-	public JacksonSnakGroup(JacksonPropertyId property, List<JacksonSnak> snaks){
-		this.property = property;
-		this.snaks = snaks;
+	public SnakGroupFromJson(List<JacksonSnak> snaks) {
+		this.snaks = Collections.<Snak> unmodifiableList(snaks);
 	}
-	
+
 	@Override
 	public List<Snak> getSnaks() {
-		
-		// because of the typing provided by the interface one has to
-		// re-create the list anew, simple casting is not possible
-		List<Snak> returnList = new ArrayList<>(this.snaks.size());
-		for(JacksonSnak snak : this.snaks){
-			returnList.add(snak);
-		}
-		return returnList;
+		return this.snaks;
 	}
 
 	@Override
 	public PropertyIdValue getProperty() {
-		return this.property;
+		return this.snaks.get(0).getPropertyId();
 	}
 
 	@Override
 	public Iterator<Snak> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.snaks.iterator();
+	}
+
+	/**
+	 * Construct a list of {@link SnakGroup} objects from a map from property
+	 * ids to snak lists as found in JSON.
+	 *
+	 * @param snaks
+	 *            the map with the data
+	 * @return the result list
+	 */
+	public static List<SnakGroup> makeSnakGroups(
+			Map<String, List<JacksonSnak>> snaks) {
+
+		List<SnakGroup> result = new ArrayList<>(snaks.size());
+
+		for (List<JacksonSnak> snakList : snaks.values()) {
+			result.add(new SnakGroupFromJson(snakList));
+		}
+
+		return result;
 	}
 
 }

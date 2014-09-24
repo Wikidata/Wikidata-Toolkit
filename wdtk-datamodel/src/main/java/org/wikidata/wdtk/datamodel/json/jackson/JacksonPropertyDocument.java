@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -53,7 +54,6 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonPropertyDocument() {
-		this.entityIdValue = new JacksonPropertyId();
 	}
 
 	/**
@@ -67,30 +67,29 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 	public JacksonPropertyDocument(PropertyDocument source) {
 		super(source);
 
-		this.entityIdValue = new JacksonPropertyId(source.getPropertyId()
-				.getId());
+		this.entityIdValue = source.getPropertyId();
 
 		switch (source.getDatatype().getIri()) {
 		case DatatypeIdValue.DT_ITEM:
-			this.datatype = JacksonDatatypeId.jsonTypeItem;
+			this.datatype = JacksonDatatypeId.JSON_DT_ITEM;
 			break;
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			this.datatype = JacksonDatatypeId.jsonTypeGlobe;
+			this.datatype = JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
 			break;
 		case DatatypeIdValue.DT_URL:
-			this.datatype = JacksonDatatypeId.jsonTypeUrl;
+			this.datatype = JacksonDatatypeId.JSON_DT_URL;
 			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			this.datatype = JacksonDatatypeId.jsonTypeCommonsMedia;
+			this.datatype = JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
 			break;
 		case DatatypeIdValue.DT_TIME:
-			this.datatype = JacksonDatatypeId.jsonTypeTime;
+			this.datatype = JacksonDatatypeId.JSON_DT_TIME;
 			break;
 		case DatatypeIdValue.DT_QUANTITY:
-			this.datatype = JacksonDatatypeId.jsonTypeQuantity;
+			this.datatype = JacksonDatatypeId.JSON_DT_QUANTITY;
 			break;
 		case DatatypeIdValue.DT_STRING:
-			this.datatype = JacksonDatatypeId.jsonTypeString;
+			this.datatype = JacksonDatatypeId.JSON_DT_STRING;
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown datatype: "
@@ -125,13 +124,14 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 
 	@Override
 	public void setJsonId(String id) {
-		this.entityIdValue = new JacksonPropertyId(id);
+		// FIXME do not assume Wikidata
+		this.entityIdValue = Datamodel.makeWikidataPropertyIdValue(id);
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return (JacksonPropertyId) this.entityIdValue;
+		return (PropertyIdValue) this.entityIdValue;
 	}
 
 	@JsonIgnore

@@ -64,9 +64,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * representations according to the WDTK data model. Since the converted JSON
  * normally belongs to the same domain, the base IRI is represented as an
  * attribute.
- * 
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 public class JsonConverter {
 
@@ -91,7 +91,7 @@ public class JsonConverter {
 	/**
 	 * Creates a new instance of the JsonConverter. For the <i>baseIri</i> see
 	 * also {@link org.wikidata.wdtk.datamodel.interfaces.ItemIdValue}.
-	 * 
+	 *
 	 * @param baseIri
 	 *            the base IRI to be used for entities
 	 * @param factory
@@ -115,7 +115,7 @@ public class JsonConverter {
 	 * property id as well; this information is ignored. Relevant keys in the
 	 * given JSON object are "label", "description", "aliases" and "datatype",
 	 * where "datatype" must be present and the others are optional.
-	 * 
+	 *
 	 * @param jsonObject
 	 *            a JSON object representing a PropertyDocument
 	 * @param propertyIdString
@@ -124,7 +124,7 @@ public class JsonConverter {
 	 * @return the corresponding PropertyDocument
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
-	 * 
+	 *
 	 */
 	public PropertyDocument convertToPropertyDocument(JSONObject jsonObject,
 			String propertyIdString) throws JSONException {
@@ -152,7 +152,7 @@ public class JsonConverter {
 	 * well; this information is ignored. Relevant keys in the given JSON object
 	 * are "label", "description", "aliases", "claims" and "links", all of which
 	 * are optional.
-	 * 
+	 *
 	 * @param jsonObject
 	 *            a JSON object representing an ItemDocument
 	 * @param itemIdString
@@ -160,7 +160,7 @@ public class JsonConverter {
 	 * @return the corresponding ItemDocument
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
-	 * 
+	 *
 	 */
 	public ItemDocument convertToItemDocument(JSONObject jsonObject,
 			String itemIdString) throws JSONException {
@@ -207,7 +207,7 @@ public class JsonConverter {
 	 * Creates an ItemIdValue from a string id given in JSON, which may have the
 	 * form Q12345 or q12345. The lower case version is not a valid id but may
 	 * occur in the JSON dump for historic reasons.
-	 * 
+	 *
 	 * @param id
 	 *            JSON string id of the item
 	 * @return the corresponding ItemIdValue
@@ -225,7 +225,7 @@ public class JsonConverter {
 	 * Creates a PropertyIdValue from a string id given in JSON, which may have
 	 * the form P12345 or p12345. The lower case version is not a valid id but
 	 * may occur in the JSON dump for historic reasons.
-	 * 
+	 *
 	 * @param id
 	 *            JSON string id of the property
 	 * @return the corresponding PropertyIdValue
@@ -246,7 +246,7 @@ public class JsonConverter {
 	 * the top level object. So if there is a JSONObject <i>topLevel</i> and the
 	 * key "label" are given, only the JSONObject found in the <i>topLevel</i>
 	 * under the key "label" will be converted, not the whole <i>topLevel</i>.
-	 * 
+	 *
 	 * @param key
 	 *            the key of the object to be converted in the topLevel
 	 * @param jsonObject
@@ -270,7 +270,7 @@ public class JsonConverter {
 	 * Creates a list of Reference objects from the given JSON array. A
 	 * reference is an array of reference statements which in turn are value
 	 * snaks. Invalid references will be skipped and an error is reported.
-	 * 
+	 *
 	 * @param jsonReferences
 	 *            a JSON array of JSON arrays of value snaks
 	 * @return the corresponding list of References
@@ -297,7 +297,7 @@ public class JsonConverter {
 	 * list of snaks. The snaks will be grouped by property, with the order of
 	 * groups corresponding to the first occurrence of a snak of the group's
 	 * property in the input list.
-	 * 
+	 *
 	 * @param jsonArray
 	 *            a JSON array describing a list of snaks
 	 * @return the corresponding list of SnakGroups
@@ -332,14 +332,14 @@ public class JsonConverter {
 	/**
 	 * Creates a map from string keys to SiteLink objects from the given JSON
 	 * object. The structure of a sitelink in JSON is as follows:
-	 * 
+	 *
 	 * <pre>
 	 * {"name":string,"badges":[string] }
 	 * </pre>
-	 * 
+	 *
 	 * However, there is also an old format that did not have the badges and
 	 * only gave the string directly.
-	 * 
+	 *
 	 * @param jsonObject
 	 *            a JSON object representing a list of site links
 	 * @return a mapping from site keys, such as "enwiki", to SiteLink objects
@@ -386,12 +386,12 @@ public class JsonConverter {
 	/**
 	 * Creates a list of StatementGroup objects from the given JSON array, which
 	 * represents a list of statements (without any groups).
-	 * 
+	 *
 	 * @param jsonStatements
 	 *            a JSON list of JSON representations for Statements
 	 * @param entityIdValue
 	 *            the subject to which this statement refers
-	 * 
+	 *
 	 * @return the corresponding list of StatementGroups
 	 * @throws JSONException
 	 *             if the given JSON did not have the expected form
@@ -434,7 +434,7 @@ public class JsonConverter {
 	/**
 	 * Creates a Statement object for the given entity id from the given JSON
 	 * object. The JSON needs to have the following structure:
-	 * 
+	 *
 	 * <pre>
 	 * {"m":object,
 	 *  "q":[],
@@ -442,10 +442,10 @@ public class JsonConverter {
 	 *  "rank":int,
 	 *  "refs":[...]}
 	 * </pre>
-	 * 
+	 *
 	 * Here, "m" denotes the main snak, "q" the qualifiers, and "g" the
 	 * statement id.
-	 * 
+	 *
 	 * @param jsonObject
 	 *            a JSON object representing a statement
 	 * @param entityIdValue
@@ -480,7 +480,7 @@ public class JsonConverter {
 	 * consists of the EntityIdValue of the subject (given explicitly), the
 	 * claim's main snak (given by a key "m" in JSON) and the claim's qualifiers
 	 * (given by a key "q" in JSON).
-	 * 
+	 *
 	 * @param jsonObject
 	 *            a JSON object representing a whole statement from which the
 	 *            claim is to be extracted
@@ -510,7 +510,7 @@ public class JsonConverter {
 	 * The number 1 maps to NORMAL. <br/>
 	 * The number 2 maps to PREFERRED. <br/>
 	 * Other ranks are regarded as an error.
-	 * 
+	 *
 	 * @param intRank
 	 *            the rank as integer
 	 * @return the corresponding StatementRank
@@ -533,7 +533,7 @@ public class JsonConverter {
 	/**
 	 * Creates a Snak from the given JSON array. This might either be a
 	 * ValueSnak, NoValueSnak or SomeValueSnak.
-	 * 
+	 *
 	 * @param jsonSnak
 	 *            is a JSON array representing a Snak
 	 * @return the corresponding Snak
@@ -557,13 +557,13 @@ public class JsonConverter {
 	/**
 	 * Creates a NoValueSnak from the given JSON array. The JSON should have the
 	 * form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * ["novalue",40]
 	 * </pre>
-	 * 
+	 *
 	 * In this example, 40 is the id of the property the snak refers to.
-	 * 
+	 *
 	 * @param jsonNoValueSnak
 	 *            is a JSON array representing a NoValueSnak
 	 * @return the corresponding NoValueSnak
@@ -583,13 +583,13 @@ public class JsonConverter {
 	/**
 	 * Creates a SomeValueSnak from the given JSON array. The JSON should have
 	 * the form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * ["somevalue",22]
 	 * </pre>
-	 * 
+	 *
 	 * In this example, 22 is the id of the property the snak refers to.
-	 * 
+	 *
 	 * @param jsonSomeValueSnak
 	 *            is a JSON array representing a SomeValueSnak
 	 * @return the corresponding SomeValueSnak
@@ -609,15 +609,15 @@ public class JsonConverter {
 	/**
 	 * Creates a ValueSnak from the given JSON array. The JSON should have the
 	 * form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * ["value", 22, "wikibase-entityid", jsonForValue]
 	 * </pre>
-	 * 
+	 *
 	 * In this example, 22 is the id of the property the snak refers to, and
 	 * jsonForValue should be replaced by the JSON encoding of a value of the
 	 * given type "wikibase-entityid".
-	 * 
+	 *
 	 * @param jsonValueSnak
 	 *            is a JSON array representing a ValueSnak
 	 * @return the corresponding ValueSnak
@@ -663,7 +663,7 @@ public class JsonConverter {
 
 	/**
 	 * Creates a DatatypeIdValue for the given datatype id.
-	 * 
+	 *
 	 * @param jsonDataTypeId
 	 *            the id of the datatype
 	 * @return the corresponding DatatypeIdValue
@@ -677,7 +677,7 @@ public class JsonConverter {
 
 	/**
 	 * Returns the IRI of a Wikibase datatype for a given JSON datatype string.
-	 * 
+	 *
 	 * @param jsonDataTypeId
 	 *            the id of the datatype
 	 * @return the corresponding datatype IRI
@@ -709,7 +709,7 @@ public class JsonConverter {
 	/**
 	 * Create a QuantityValue from a given JSON object. The JSON should have the
 	 * form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * {"amount":"+34196",
 	 *  "unit":"1",
@@ -717,10 +717,10 @@ public class JsonConverter {
 	 *  "lowerBound":"+34195"
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * The unit is currently ignored since it is not clear yet how exactly it
 	 * will work when supported by Wikibase.
-	 * 
+	 *
 	 * @param jsonQuantityValue
 	 *            a JSON object representing a QuantityValue
 	 * @return the corresponding QuantityValue
@@ -747,7 +747,7 @@ public class JsonConverter {
 	/**
 	 * Creates a GlobeCordinatesValue from a given JSON object. The JSON should
 	 * have the form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * {"latitude":51.835,
 	 *  "longitude":10.785277777778,
@@ -756,7 +756,7 @@ public class JsonConverter {
 	 *  "globe":"http:\/\/www.wikidata.org\/entity\/Q2"
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Altitude is present for historical reasons. It has never been supported
 	 * by Wikibase and will vanish altogether in the future. Only specific
 	 * numbers are allowed as precisions; all others will be rounded to the next
@@ -764,7 +764,7 @@ public class JsonConverter {
 	 * precision is not given, this implementation defaults to the maximal
 	 * precision (milli-arcsecond). If the globe is not given, this
 	 * implementation defaults to Earth.
-	 * 
+	 *
 	 * @param jsonGlobeCoordinate
 	 *            a JSON object representing a GlobeCoordinatesValue
 	 * @return an appropriate GlobeCoordinatesValue
@@ -837,7 +837,7 @@ public class JsonConverter {
 	 * Currently this just calls the corresponding factory method, but it could
 	 * change in the future if the JSON encoding diverges from the data model in
 	 * any way.
-	 * 
+	 *
 	 * @param string
 	 * @return corresponding StringValue
 	 */
@@ -848,12 +848,12 @@ public class JsonConverter {
 	/**
 	 * Creates an EntityIdValue from a given JSON object. The JSON should have
 	 * the form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * {"entity-type":"item",
 	 *  "numeric-id":842256}
 	 * </pre>
-	 * 
+	 *
 	 * @param jsonObject
 	 *            an JSON object denoting an entity id
 	 * @return the corresponding EntityIdValue
@@ -883,7 +883,7 @@ public class JsonConverter {
 	/**
 	 * Creates a TimeValue from a given JSON object. The JSON should have the
 	 * form as in the following example:
-	 * 
+	 *
 	 * <pre>
 	 * {"time":"+00000002012-06-30T00:00:00Z",
 	 * "timezone":0,
@@ -892,7 +892,7 @@ public class JsonConverter {
 	 * "precision":11,
 	 * "calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"}
 	 * </pre>
-	 * 
+	 *
 	 * @param jsonTimeValue
 	 *            an JSON object denoting a time value
 	 * @return the corresponding TimeValue

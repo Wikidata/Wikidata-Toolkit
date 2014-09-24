@@ -20,64 +20,118 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="snaktype")
-@JsonSubTypes({  
-    @Type(value = JacksonNoValueSnak.class, name = "novalue"),  
-    @Type(value = JacksonSomeValueSnak.class, name = "somevalue"),  
-    @Type(value = JacksonValueSnak.class, name = "value") }) 
+/**
+ * Abstract Jackson implementation of {@link Snak}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "snaktype")
+@JsonSubTypes({
+		@Type(value = JacksonNoValueSnak.class, name = JacksonSnak.JSON_SNAK_TYPE_NOVALUE),
+		@Type(value = JacksonSomeValueSnak.class, name = JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE),
+		@Type(value = JacksonValueSnak.class, name = JacksonSnak.JSON_SNAK_TYPE_VALUE) })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonSnak implements Snak {
-	
+
+	/**
+	 * Type string used to denote value snaks in JSON.
+	 */
+	public static final String JSON_SNAK_TYPE_VALUE = "value";
+	/**
+	 * Type string used to denote somevalue snaks in JSON.
+	 */
+	public static final String JSON_SNAK_TYPE_SOMEVALUE = "somevalue";
+	/**
+	 * Type string used to denote novalue snaks in JSON.
+	 */
+	public static final String JSON_SNAK_TYPE_NOVALUE = "novalue";
+
+	/**
+	 * Value of the "property" field in JSON, e.g., "P31".
+	 */
 	private String property;
+	/**
+	 * Value of the "snaktype" field in JSON, e.g., "value".
+	 * <p>
+	 * TODO Does it make sense to store this when each concrete subclass of this
+	 * class has its own fixed snaktype anyway?
+	 */
 	private String snaktype;
-	
-	protected JacksonSnak(){}
-	protected JacksonSnak(String propertyId){
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	protected JacksonSnak() {
+	}
+
+	/**
+	 * TODO Review the utility of this constructor.
+	 *
+	 * @param propertyId
+	 */
+	protected JacksonSnak(String propertyId) {
 		this.property = propertyId;
 	}
 
-	public String getProperty(){
+	/**
+	 * Returns the property id string. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the property id string
+	 */
+	public String getProperty() {
 		return this.property;
 	}
-	
-	public void setProperty(String property){
+
+	/**
+	 * Sets the property id string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param property
+	 *            new value
+	 */
+	public void setProperty(String property) {
 		this.property = property;
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return new JacksonPropertyId(property);
+		// FIXME do not presume data to be from Wikidata
+		return Datamodel.makeWikidataPropertyIdValue(property);
 	}
 
-	public String getSnaktype(){
+	/**
+	 * Returns the snak type string. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the snak type string
+	 */
+	public String getSnaktype() {
 		return this.snaktype;
 	}
-	
-	public void setSnakType(String snacktype){
+
+	/**
+	 * Sets the snak type string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param snaktype
+	 *            new value
+	 */
+	public void setSnakType(String snacktype) {
 		this.snaktype = snacktype;
 	}
-	
-	@Override
-	public abstract <T> T accept(SnakVisitor<T> snakVisitor);
-	
-	@Override
-	public abstract boolean equals(Object o);
-	
-	@Override
-	public abstract int hashCode();
-
-	@Override
-	public abstract String toString();
 
 }

@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 /**
  * This class tests the correct working of the SiteLinkImpl per se (i.e. not
  * being used in a context like items).
- * 
+ *
  * @author Fredo Erxleben
  *
  */
