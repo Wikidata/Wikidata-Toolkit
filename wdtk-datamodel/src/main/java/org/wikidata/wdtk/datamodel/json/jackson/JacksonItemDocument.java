@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,11 +32,13 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -108,17 +110,20 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 		return JacksonTermedDocument.JSON_TYPE_ITEM;
 	}
 
+	@JsonIgnore
 	@Override
-	public void setJsonId(String id) {
-		// FIXME do not presume that data comes from Wikidata
-		this.entityIdValue = Datamodel.makeWikidataItemIdValue(id);
-		updateClaims();
+	public ItemIdValue getItemId() {
+		if (this.siteIri == null) {
+			return Datamodel.makeWikidataItemIdValue(this.entityId);
+		} else {
+			return Datamodel.makeItemIdValue(this.entityId, this.siteIri);
+		}
 	}
 
 	@JsonIgnore
 	@Override
-	public ItemIdValue getItemId() {
-		return (ItemIdValue) this.entityIdValue;
+	public EntityIdValue getEntityId() {
+		return getItemId();
 	}
 
 	@JsonIgnore
@@ -178,10 +183,14 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 	 */
 	private void updateClaims() {
 		this.statementGroups = null; // clear cache
+
+		// TODO inject this instead of the entity id value, so we don't need to
+		// update on changes
+		ItemIdValue subjectEntity = getItemId();
 		for (Entry<String, List<JacksonStatement>> entry : this.claims
 				.entrySet()) {
 			for (JacksonStatement statement : entry.getValue()) {
-				statement.setSubject(this.entityIdValue);
+				statement.setSubject(subjectEntity);
 			}
 		}
 	}
@@ -202,13 +211,7 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 
 	@Override
 	public Iterator<Statement> getAllStatements() {
-		// FIXME inefficient; use nested iterators instead
-		List<Statement> allStatements = new ArrayList<>();
-
-		for (List<JacksonStatement> value : this.claims.values()) {
-			allStatements.addAll(value);
-		}
-		return allStatements.iterator();
+		return new NestedIterator<>(this.getStatementGroups());
 	}
 
 	@Override

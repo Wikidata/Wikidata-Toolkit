@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
@@ -66,8 +67,6 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 	 */
 	public JacksonPropertyDocument(PropertyDocument source) {
 		super(source);
-
-		this.entityIdValue = source.getPropertyId();
 
 		switch (source.getDatatype().getIri()) {
 		case DatatypeIdValue.DT_ITEM:
@@ -122,16 +121,20 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 		this.datatype = datatype;
 	}
 
+	@JsonIgnore
 	@Override
-	public void setJsonId(String id) {
-		// FIXME do not assume Wikidata
-		this.entityIdValue = Datamodel.makeWikidataPropertyIdValue(id);
+	public PropertyIdValue getPropertyId() {
+		if (this.siteIri == null) {
+			return Datamodel.makeWikidataPropertyIdValue(this.entityId);
+		} else {
+			return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
+		}
 	}
 
 	@JsonIgnore
 	@Override
-	public PropertyIdValue getPropertyId() {
-		return (PropertyIdValue) this.entityIdValue;
+	public EntityIdValue getEntityId() {
+		return getPropertyId();
 	}
 
 	@JsonIgnore

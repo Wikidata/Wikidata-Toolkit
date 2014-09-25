@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,13 +68,25 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
 
 	/**
-	 * The entity that the document refers to. This is not mapped to JSON
-	 * directly by Jackson but split into two fields, "type" and "id". The type
-	 * field is ignored during deserialization since the type is clear for a
-	 * concrete document. For serialization, the type is hard-coded.
+	 * The id of the entity that the document refers to. This is not mapped to
+	 * JSON directly by Jackson but split into two fields, "type" and "id". The
+	 * type field is ignored during deserialization since the type is clear for
+	 * a concrete document. For serialization, the type is hard-coded.
+	 * <p>
+	 * The site IRI, which would also be required to create a complete
+	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
+	 * from the outside (if not, we default to Wikidata).
+	 */
+	protected String entityId = "";
+
+	/**
+	 * The site IRI that this document refers to, or null if not specified. In
+	 * the latter case, we assume Wikidata as the default.
+	 *
+	 * @see EntityIdValue#getSiteIri()
 	 */
 	@JsonIgnore
-	protected EntityIdValue entityIdValue;
+	protected String siteIri = null;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -93,7 +105,8 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	public JacksonTermedDocument(TermedDocument source) {
 
 		// build id
-		this.entityIdValue = source.getEntityId();
+		this.entityId = source.getEntityId().getId();
+		this.siteIri = source.getEntityId().getSiteIri();
 
 		// build aliases
 		for (Entry<String, List<MonolingualTextValue>> mltvs : source
@@ -118,12 +131,6 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 			this.descriptions.put(mltvs.getKey(),
 					new JacksonMonolingualTextValue(mltvs.getValue()));
 		}
-	}
-
-	@JsonIgnore
-	@Override
-	public EntityIdValue getEntityId() {
-		return this.entityIdValue;
 	}
 
 	/**
@@ -196,7 +203,9 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 *            new value
 	 */
 	@JsonProperty("id")
-	public abstract void setJsonId(String id);
+	public void setJsonId(String id) {
+		this.entityId = id;
+	}
 
 	/**
 	 * Returns the string id of the entity that this document refers to. Only
@@ -206,12 +215,21 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 */
 	@JsonProperty("id")
 	public String getJsonId() {
-		if (this.entityIdValue != null) {
-			return this.entityIdValue.getId();
-		} else { // avoid null pointer exceptions for empty object
-			return "";
-		}
+		return this.entityId;
+	}
 
+	/**
+	 * Sets the site iri to the given value. This can be used to inject
+	 * information about the site the object belongs to after the object is
+	 * constructed. This is needed since this information is not part of the
+	 * JSON serialization.
+	 *
+	 * @see EntityIdValue#getSiteIri()
+	 * @param siteIri
+	 *            the site IRI
+	 */
+	public void setSiteIri(String siteIri) {
+		this.siteIri = siteIri;
 	}
 
 	/**
