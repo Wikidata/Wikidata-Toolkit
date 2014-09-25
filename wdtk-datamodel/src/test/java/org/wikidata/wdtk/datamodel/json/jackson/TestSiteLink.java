@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -42,36 +41,19 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class TestSiteLink extends JsonConversionTest {
 
 	@Test
-	public void testSiteLinkToJson() {
-
-		try {
-			String result = mapper.writeValueAsString(testSiteLink);
-			JsonComparator.compareJsonStrings(siteLinkJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+	public void testSiteLinkToJson() throws JsonProcessingException {
+		String result = mapper.writeValueAsString(testSiteLink);
+		JsonComparator.compareJsonStrings(siteLinkJson, result);
 	}
 
-	public void testSiteLinkToJava() {
-		try {
-			JacksonSiteLink result = mapper.readValue(siteLinkJson,
-					JacksonSiteLink.class);
+	public void testSiteLinkToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonSiteLink result = mapper.readValue(siteLinkJson,
+				JacksonSiteLink.class);
 
-			assertEquals("enwiki", result.getSiteKey());
-			assertEquals("foobar", result.getPageTitle());
-			assert (result.badges.isEmpty());
-
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+		assertEquals("enwiki", result.getSiteKey());
+		assertEquals("foobar", result.getPageTitle());
+		assert (result.badges.isEmpty());
 	}
 
 	@Test

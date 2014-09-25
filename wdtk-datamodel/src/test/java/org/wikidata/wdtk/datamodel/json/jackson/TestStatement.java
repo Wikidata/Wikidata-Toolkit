@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -36,16 +35,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class TestStatement extends JsonConversionTest {
 
 	@Test
-	public void testEmptyStatementToJson() {
+	public void testEmptyStatementToJson() throws JsonProcessingException {
 		JacksonStatement statement = testEmptyStatement;
 
-		try {
-			String result = mapper.writeValueAsString(statement);
-			JsonComparator.compareJsonStrings(emptyStatementJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+		String result = mapper.writeValueAsString(statement);
+		JsonComparator.compareJsonStrings(emptyStatementJson, result);
 	}
 
 	@Test
@@ -65,13 +59,12 @@ public class TestStatement extends JsonConversionTest {
 		JacksonStatement correctStatement = new JacksonStatement(statementId,
 				testNoValueSnak);
 		correctStatement.setSubject(testItemId);
-
-		assertEquals(testEmptyStatement, testEmptyStatement);
-		assertEquals(testEmptyStatement, correctStatement);
-
 		JacksonStatement wrongId = new JacksonStatement(" " + statementId,
 				testNoValueSnak);
 		wrongId.setSubject(testItemId);
+
+		assertEquals(testEmptyStatement, testEmptyStatement);
+		assertEquals(testEmptyStatement, correctStatement);
 		assertFalse(testEmptyStatement.equals(wrongId));
 	}
 

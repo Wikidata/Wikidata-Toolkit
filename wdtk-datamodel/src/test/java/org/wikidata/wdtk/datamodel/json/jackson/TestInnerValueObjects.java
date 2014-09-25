@@ -50,13 +50,13 @@ public class TestInnerValueObjects {
 
 	@Before
 	public void setupTestMonolingualText() {
-		this.testMonolingualText = new JacksonInnerMonolingualText("en", "foobar");
+		this.testMonolingualText = new JacksonInnerMonolingualText("en",
+				"foobar");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEntityIdConstructor() {
-		@SuppressWarnings("unused")
-		JacksonInnerEntityId unknownType = new JacksonInnerEntityId(wrongType, 1);
+		new JacksonInnerEntityId(wrongType, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -78,7 +78,8 @@ public class TestInnerValueObjects {
 		assertEquals(this.testEntityId, new JacksonInnerEntityId("item", 1));
 		assertEquals(this.testEntityId, this.testEntityId);
 		assertFalse(this.testEntityId.equals(new Object()));
-		assertFalse(this.testEntityId.equals(new JacksonInnerEntityId("item", 2)));
+		assertFalse(this.testEntityId
+				.equals(new JacksonInnerEntityId("item", 2)));
 
 	}
 
@@ -88,14 +89,14 @@ public class TestInnerValueObjects {
 		assertEquals(this.testMonolingualText.getText(), "foobar");
 
 		// test equals
-		assertEquals(this.testMonolingualText, new JacksonInnerMonolingualText("en",
-				"foobar"));
+		assertEquals(this.testMonolingualText, new JacksonInnerMonolingualText(
+				"en", "foobar"));
 		assertEquals(this.testMonolingualText, this.testMonolingualText);
 		assertFalse(this.testMonolingualText.equals(new Object()));
-		assertFalse(this.testMonolingualText.equals(new JacksonInnerMonolingualText("en",
-				"barfoo")));
-		assertFalse(this.testMonolingualText.equals(new JacksonInnerMonolingualText("de",
-				"foobar")));
+		assertFalse(this.testMonolingualText
+				.equals(new JacksonInnerMonolingualText("en", "barfoo")));
+		assertFalse(this.testMonolingualText
+				.equals(new JacksonInnerMonolingualText("de", "foobar")));
 
 	}
 }
