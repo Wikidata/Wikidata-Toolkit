@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This is a test for a bug in the JSON. Empty aliases are wrongly serialized as
@@ -37,10 +38,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  * @author Fredo Erxleben
  *
  */
-public class TestAliasBug extends JsonConversionTest {
+public class TestAliasBug {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	String buggedAliasesJson = "\"aliases\":[]";
-	String buggedItemJson = "{" + itemTypeJson + "," + buggedAliasesJson + "}";
+	String buggedItemJson = "{" + JsonTestData.JSON_ITEM_TYPE + ","
+			+ buggedAliasesJson + "}";
 
 	@Test
 	public void testAliasesToJava() throws JsonParseException,

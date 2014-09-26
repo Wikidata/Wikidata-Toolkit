@@ -29,7 +29,6 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -65,13 +64,15 @@ public class JacksonStatement implements Statement {
 	private String id;
 
 	/**
-	 * The subject that this statement refers to. This is not part of the JSON
-	 * serialization of statements, but it is needed in WDTK as part of
+	 * The parent document that this statement is part of. This is needed since
+	 * the subject that this statement refers to is not part of the JSON
+	 * serialization of statements, but is needed in WDTK as part of
 	 * {@link Claim}. Thus, it is necessary to set this information after each
-	 * deserialization using {@link JacksonStatement#setSubject(EntityIdValue)}.
+	 * deserialization using
+	 * {@link JacksonStatement#setParentDocument(JacksonItemDocument)}.
 	 */
 	@JsonIgnore
-	EntityIdValue subject;
+	JacksonItemDocument parentDocument;
 
 	/**
 	 * Rank of this statement.
@@ -123,32 +124,31 @@ public class JacksonStatement implements Statement {
 	}
 
 	/**
-	 * Returns the subject that this statement refers to. This information is
-	 * not part of the JSON serialization of statements ("claims" in JSON) and
-	 * needs to be set after deserialization. This method is only used by
-	 * {@link ClaimFromJson}. To access this data from elsewhere, use
+	 * Returns the parent document that this statement is part of. This method
+	 * is only used by {@link ClaimFromJson} to retrieve data about the subject
+	 * of this statement. To access this data from elsewhere, use
 	 * {@link #getClaim()}.
 	 *
 	 * @see Claim#getSubject()
-	 * @return the subject of this statement
+	 * @return the parent document of this statement
 	 */
 	@JsonIgnore
-	EntityIdValue getSubject() {
-		return this.subject;
+	JacksonItemDocument getParentDocument() {
+		return this.parentDocument;
 	}
 
 	/**
-	 * Sets the subject of this statement to the given value. The subject is not
-	 * part of the JSON serialization of statements ("claims" in JSON) and needs
-	 * to be set after deserialization. This method should only be used during
-	 * deserialization.
+	 * Sets the parent document of this statement to the given value. This
+	 * document provides the statement with information about its subject, which
+	 * is not part of the JSON serialization of statements ("claims" in JSON).
+	 * This method should only be used during deserialization.
 	 *
-	 * @param subject
+	 * @param parentDocument
 	 *            new value
 	 */
 	@JsonIgnore
-	void setSubject(EntityIdValue subject) {
-		this.subject = subject;
+	void setParentDocument(JacksonItemDocument parentDocument) {
+		this.parentDocument = parentDocument;
 	}
 
 	@JsonIgnore

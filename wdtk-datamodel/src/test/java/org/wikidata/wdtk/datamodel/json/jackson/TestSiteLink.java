@@ -30,6 +30,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class tests the correct working of the SiteLinkImpl per se (i.e. not
@@ -38,18 +39,22 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  * @author Fredo Erxleben
  *
  */
-public class TestSiteLink extends JsonConversionTest {
+public class TestSiteLink {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
 	public void testSiteLinkToJson() throws JsonProcessingException {
-		String result = mapper.writeValueAsString(testSiteLink);
-		JsonComparator.compareJsonStrings(siteLinkJson, result);
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_SITE_LINK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK,
+				result);
 	}
 
 	public void testSiteLinkToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonSiteLink result = mapper.readValue(siteLinkJson,
-				JacksonSiteLink.class);
+		JacksonSiteLink result = mapper.readValue(
+				JsonTestData.JSON_SITE_LINK, JacksonSiteLink.class);
 
 		assertEquals("enwiki", result.getSiteKey());
 		assertEquals("foobar", result.getPageTitle());
@@ -62,9 +67,10 @@ public class TestSiteLink extends JsonConversionTest {
 		JacksonSiteLink wrongLanguage = new JacksonSiteLink("dewiki", "foobar");
 		JacksonSiteLink wrongValue = new JacksonSiteLink("enwiki", "barfoo");
 
-		assertEquals(testSiteLink, testSiteLink);
-		assertEquals(testSiteLink, match);
-		assertFalse(testSiteLink.equals(wrongLanguage));
-		assertFalse(testSiteLink.equals(wrongValue));
+		assertEquals(JsonTestData.TEST_SITE_LINK,
+				JsonTestData.TEST_SITE_LINK);
+		assertEquals(JsonTestData.TEST_SITE_LINK, match);
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongValue));
 	}
 }

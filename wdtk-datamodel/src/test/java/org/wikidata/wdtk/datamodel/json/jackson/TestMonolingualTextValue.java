@@ -30,12 +30,15 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestMonolingualTextValue extends JsonConversionTest {
+public class TestMonolingualTextValue {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Tests the conversion of MonolingualTextValues from JSON to POJO
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
@@ -43,7 +46,8 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 	@Test
 	public void testMonolingualTextValueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonMonolingualTextValue result = mapper.readValue(mltvJson,
+		JacksonMonolingualTextValue result = mapper.readValue(
+				JsonTestData.JSON_TERM_MLTV,
 				JacksonMonolingualTextValue.class);
 
 		assertEquals("en", result.getLanguageCode());
@@ -52,13 +56,15 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 
 	/**
 	 * Tests the conversion of MonolingualTextValues from POJO to JSON
-	 * 
+	 *
 	 * @throws JsonProcessingException
 	 */
 	@Test
 	public void testMonolingualTextValueToJson() throws JsonProcessingException {
-		String result = mapper.writeValueAsString(testMltv);
-		JsonComparator.compareJsonStrings(mltvJson, result);
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_MLTV_TERM_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_TERM_MLTV,
+				result);
 	}
 
 	@Test
@@ -70,9 +76,11 @@ public class TestMonolingualTextValue extends JsonConversionTest {
 		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue(
 				"en", "barfoo");
 
-		assertEquals(testMltv, testMltv);
-		assertEquals(testMltv, match);
-		assertFalse(testMltv.equals(wrongLanguage));
-		assertFalse(testMltv.equals(wrongValue));
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE,
+				JsonTestData.TEST_MLTV_TERM_VALUE);
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE, match);
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE
+				.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE.equals(wrongValue));
 	}
 }

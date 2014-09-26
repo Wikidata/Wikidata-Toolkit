@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -184,13 +184,10 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 	private void updateClaims() {
 		this.statementGroups = null; // clear cache
 
-		// TODO inject this instead of the entity id value, so we don't need to
-		// update on changes
-		ItemIdValue subjectEntity = getItemId();
 		for (Entry<String, List<JacksonStatement>> entry : this.claims
 				.entrySet()) {
 			for (JacksonStatement statement : entry.getValue()) {
-				statement.setSubject(subjectEntity);
+				statement.setParentDocument(this);
 			}
 		}
 	}

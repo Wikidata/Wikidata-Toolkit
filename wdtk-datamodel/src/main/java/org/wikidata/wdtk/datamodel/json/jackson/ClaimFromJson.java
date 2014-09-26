@@ -51,7 +51,12 @@ public class ClaimFromJson implements Claim {
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.statement.getSubject();
+		JacksonItemDocument parentDocument = this.statement.getParentDocument();
+		if (parentDocument != null) {
+			return parentDocument.getEntityId();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

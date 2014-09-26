@@ -31,18 +31,20 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestPropertyDocument extends JsonConversionTest {
+public class TestPropertyDocument {
 
 	JacksonPropertyDocument fullDocument;
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Before
 	public void setupTestFullDocument() {
 		fullDocument = new JacksonPropertyDocument();
-		fullDocument.setJsonId(testPropertyId.getId());
-		fullDocument.setAliases(testAliases);
-		fullDocument.setDescriptions(testMltvMap);
-		fullDocument.setLabels(testMltvMap);
+		fullDocument.setJsonId(JsonTestData.getTestPropertyId().getId());
+		fullDocument.setAliases(JsonTestData.getTestAliases());
+		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
+		fullDocument.setLabels(JsonTestData.getTestMltvMap());
 		fullDocument.setJsonDatatype("quantity");
 	}
 
@@ -68,10 +70,11 @@ public class TestPropertyDocument extends JsonConversionTest {
 	@Test
 	public void testLabelsToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setLabels(testMltvMap);
+		document.setLabels(JsonTestData.getTestMltvMap());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(wrappedLabelJson, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_LABEL,
+				result);
 	}
 
 	/**
@@ -84,11 +87,11 @@ public class TestPropertyDocument extends JsonConversionTest {
 	@Test
 	public void testLabelToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonItemDocument result = mapper.readValue(wrappedLabelJson,
-				JacksonItemDocument.class);
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_LABEL, JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(testMltvMap, result.getLabels());
+		assertEquals(JsonTestData.getTestMltvMap(), result.getLabels());
 	}
 
 	/**
@@ -100,10 +103,11 @@ public class TestPropertyDocument extends JsonConversionTest {
 	@Test
 	public void testDescriptionsToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setDescriptions(testMltvMap);
+		document.setDescriptions(JsonTestData.getTestMltvMap());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(wrappedDescriptionJson, result);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_WRAPPED_DESCRIPTIONS, result);
 	}
 
 	/**
@@ -117,68 +121,76 @@ public class TestPropertyDocument extends JsonConversionTest {
 	@Test
 	public void testDescriptionsToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonItemDocument result = mapper.readValue(wrappedDescriptionJson,
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_DESCRIPTIONS,
 				JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(testMltvMap, result.getDescriptions());
+		assertEquals(JsonTestData.getTestMltvMap(),
+				result.getDescriptions());
 	}
 
 	@Test
 	public void testAliasesToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setAliases(testAliases);
+		document.setAliases(JsonTestData.getTestAliases());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(wrappedAliasJson, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ALIASES,
+				result);
 	}
 
 	@Test
 	public void testAliasesToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonItemDocument result = mapper.readValue(wrappedAliasJson,
-				JacksonItemDocument.class);
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_ALIASES, JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(testAliases, result.getAliases());
+		assertEquals(JsonTestData.getTestAliases(), result.getAliases());
 	}
 
 	@Test
 	public void testItemIdToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setJsonId(testItemId.getId());
+		document.setJsonId(JsonTestData.getTestItemId().getId());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(wrappedItemIdJson, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
+				result);
 	}
 
 	@Test
 	public void testItemIdToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonItemDocument result = mapper.readValue(wrappedItemIdJson,
-				JacksonItemDocument.class);
+		JacksonItemDocument result = mapper
+				.readValue(JsonTestData.JSON_WRAPPED_ITEMID,
+						JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(testItemId, result.getEntityId());
+		assertEquals(JsonTestData.getTestItemId(), result.getEntityId());
 	}
 
 	@Test
 	public void testSiteLinksToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setSiteLinks(testSiteLinkMap);
+		document.setSiteLinks(JsonTestData.getTestSiteLinkMap());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(wrappedSiteLinkJson, result);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_WRAPPED_SITE_LINK, result);
 	}
 
 	@Test
 	public void testSiteLinksToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonItemDocument result = mapper.readValue(wrappedSiteLinkJson,
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_SITE_LINK,
 				JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(testSiteLinkMap, result.getSiteLinks());
+		assertEquals(JsonTestData.getTestSiteLinkMap(),
+				result.getSiteLinks());
 	}
 
 	@Test

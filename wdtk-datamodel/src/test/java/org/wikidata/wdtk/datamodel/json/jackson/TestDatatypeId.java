@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
-public class TestDatatypeId extends JsonConversionTest {
+public class TestDatatypeId extends JsonTestData {
 
 	@Test
 	public void testIriForItem() {

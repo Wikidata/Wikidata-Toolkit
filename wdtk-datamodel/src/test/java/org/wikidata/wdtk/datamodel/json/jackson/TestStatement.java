@@ -31,50 +31,55 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestStatement extends JsonConversionTest {
+public class TestStatement {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
 	public void testEmptyStatementToJson() throws JsonProcessingException {
-		JacksonStatement statement = testEmptyStatement;
+		JacksonStatement statement = JsonTestData.getTestNoValueStatement();
 
 		String result = mapper.writeValueAsString(statement);
-		JsonComparator.compareJsonStrings(emptyStatementJson, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
+				result);
 	}
 
 	@Test
 	public void testEmptyStatementToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonStatement result = mapper.readValue(emptyStatementJson,
-				JacksonStatement.class);
-		result.setSubject(testItemId);
+		JacksonStatement result = mapper.readValue(
+				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonStatement.class);
+		result.setParentDocument(JsonTestData.getTestItemDocument());
 
 		assertNotNull(result);
-		assertEquals(testEmptyStatement, result);
+		assertEquals(JsonTestData.getTestNoValueStatement(), result);
 
 	}
 
 	@Test
 	public void testEquality() {
-		JacksonStatement correctStatement = new JacksonStatement(statementId,
-				testNoValueSnak);
-		correctStatement.setSubject(testItemId);
-		JacksonStatement wrongId = new JacksonStatement(" " + statementId,
-				testNoValueSnak);
-		wrongId.setSubject(testItemId);
+		JacksonStatement correctStatement = new JacksonStatement(
+				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK);
+		correctStatement.setParentDocument(JsonTestData.getTestItemDocument());
+		JacksonStatement wrongId = new JacksonStatement("another id",
+				JsonTestData.TEST_NOVALUE_SNAK);
+		wrongId.setParentDocument(JsonTestData.getTestItemDocument());
 
-		assertEquals(testEmptyStatement, testEmptyStatement);
-		assertEquals(testEmptyStatement, correctStatement);
-		assertFalse(testEmptyStatement.equals(wrongId));
+		assertEquals(JsonTestData.getTestNoValueStatement(),
+				JsonTestData.getTestNoValueStatement());
+		assertEquals(JsonTestData.getTestNoValueStatement(), correctStatement);
+		assertFalse(JsonTestData.getTestNoValueStatement().equals(wrongId));
 	}
 
 	@Test
 	public void testToString() {
-		assertNotNull(testEmptyStatement.toString());
+		assertNotNull(JsonTestData.getTestNoValueStatement().toString());
 	}
 
 	@Test
 	public void testHashCode() {
-		assertNotNull(testEmptyStatement.hashCode());
+		assertNotNull(JsonTestData.getTestNoValueStatement().hashCode());
 	}
 }
