@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,14 +41,17 @@ import com.fasterxml.jackson.databind.ObjectReader;
  */
 public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
-	private static ObjectMapper mapper = new ObjectMapper();
-	private static ObjectReader documentReader = mapper
+	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectReader documentReader = mapper
 			.reader(JacksonTermedDocument.class);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
+	private final String siteIri;
 
-	public JsonDumpFileProcessor(EntityDocumentProcessor entityDocumentProcessor) {
+	public JsonDumpFileProcessor(
+			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
+		this.siteIri = siteIri;
 	}
 
 	@Override
@@ -56,11 +59,12 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			MwDumpFile dumpFile) {
 
 		try {
-			MappingIterator<JacksonTermedDocument> documentIter = documentReader
+			MappingIterator<JacksonTermedDocument> documentIterator = documentReader
 					.readValues(inputStream);
 
-			while (documentIter.hasNextValue()) {
-				JacksonTermedDocument document = documentIter.nextValue();
+			while (documentIterator.hasNextValue()) {
+				JacksonTermedDocument document = documentIterator.nextValue();
+				document.setSiteIri(siteIri);
 				if (document != null) {
 					if (document instanceof JacksonItemDocument) {
 						this.handleItemDocument((JacksonItemDocument) document);
