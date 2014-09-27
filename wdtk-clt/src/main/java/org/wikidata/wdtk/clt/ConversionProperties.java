@@ -59,6 +59,8 @@ public class ConversionProperties {
 	Boolean offlineMode = false;
 	String dumplocation = null;
 
+	Boolean useStdOut = false;
+
 	/**
 	 * Constructor.
 	 */
@@ -135,14 +137,8 @@ public class ConversionProperties {
 		CommandLineParser parser = new GnuParser();
 		CommandLine cmd = parser.parse(options, args);
 
-		if (cmd.hasOption("c")) {
-			List<OutputConfiguration> configFile = readConfigFile(cmd
-					.getOptionValue("c"));
-			configuration.addAll(configFile);
-		}
-
 		// print help text
-		if (cmd.hasOption("h")) {
+		if ((cmd.hasOption("h")) || (args.length == 0)) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("ConversionClient", options);
 		}
@@ -152,6 +148,12 @@ public class ConversionProperties {
 		// check if there is some kind of output specified
 		if (cmd.hasOption("f")) {
 			configuration.add(handleOutputArguments(cmd));
+		}
+
+		if (cmd.hasOption("c")) {
+			List<OutputConfiguration> configFile = readConfigFile(cmd
+					.getOptionValue("c"));
+			configuration.addAll(configFile);
 		}
 
 		return configuration;
@@ -205,6 +207,13 @@ public class ConversionProperties {
 		this.offlineMode = offlineMode;
 	}
 
+	/**
+	 * Analyses the content of the general section of an ini configuration file
+	 * and fills out the class arguments with this data.
+	 * 
+	 * @param section
+	 *            {@link Section} with name "general"
+	 */
 	private void handleGeneralArguments(Section section) {
 		for (String key : section.keySet()) {
 			switch (key.toLowerCase()) {
@@ -222,6 +231,15 @@ public class ConversionProperties {
 		}
 	}
 
+	/**
+	 * Analyses the comandline arguments which are relevant for the
+	 * serialization process in general. It fills out the class arguments with
+	 * this data.
+	 * 
+	 * @param cmd
+	 *            {@link CommandLine} objects; contains the command line
+	 *            arguments parsed by a {@link CommandLineParser}
+	 */
 	private void handleGeneralArguments(CommandLine cmd) {
 		if (cmd.hasOption("l")) {
 			this.dumplocation = cmd.getOptionValue("l");
@@ -232,6 +250,16 @@ public class ConversionProperties {
 		}
 	}
 
+	/**
+	 * Analyses the arguments content of the general section of an ini
+	 * configuration file and fills out the class arguments of an new
+	 * {@link OutputConfiguration} with this data.
+	 * 
+	 * @param cmd
+	 *            {@link CommandLine} objects; contains the command line
+	 *            arguments parsed by a {@link CommandLineParser}
+	 * @return {@link OutputConfiguration} containing the output parameters
+	 */
 	private OutputConfiguration handleOutputArguments(CommandLine cmd) {
 
 		OutputConfiguration result;
@@ -255,7 +283,11 @@ public class ConversionProperties {
 		}
 
 		if (cmd.hasOption("s")) {
+			if (useStdOut == true) {
+				logger.warn("Multiple serializer using stdout as output destination!");
+			}
 			result.setUseStdout(true);
+			useStdOut = true;
 		}
 
 		if (cmd.hasOption("d")) {
@@ -269,6 +301,15 @@ public class ConversionProperties {
 		return result;
 	}
 
+	/**
+	 * Analyses the content of a section of an ini configuration file (not the
+	 * "general" section) and fills out the class arguments of an new
+	 * {@link OutputConfiguration} with this data.
+	 * 
+	 * @param section
+	 *            {@link Section} with name "general"
+	 * @return {@link OutputConfiguration} containing the output parameters
+	 */
 	private OutputConfiguration handleOutputArguments(Section section) {
 		OutputConfiguration result;
 		switch (section.get("format").toLowerCase()) {
@@ -290,7 +331,11 @@ public class ConversionProperties {
 			switch (key.toLowerCase()) {
 			case "stdout":
 				if (section.get(key).toLowerCase().equals("true")) {
+					if (useStdOut == true) {
+						logger.warn("Multiple serializer using stdout as output destination!");
+					}
 					result.setUseStdout(true);
+					this.useStdOut = true;
 				}
 				section.get(key);
 				break;

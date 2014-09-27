@@ -37,9 +37,9 @@ import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 /**
  * This class provides a Java command line client to generate dumps in various
  * data formats, such as JSON and RDF.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class ConversionClient {
 
@@ -69,7 +69,7 @@ public class ConversionClient {
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param args
 	 *            command line arguments to configure the conversion
 	 * @throws ParseException
@@ -80,7 +80,7 @@ public class ConversionClient {
 		this.configurations = conversionProperties.handleArguments(args);
 
 		// set flags (stdout and convertAnything)
-		//System.out.println(this.configurations.get(0).getUseStdout());
+		// System.out.println(this.configurations.get(0).getUseStdout());
 		for (OutputConfiguration configuration : this.configurations) {
 			if (configuration.getUseStdout()) {
 				this.useStdoutForOutput = true;
@@ -97,10 +97,10 @@ public class ConversionClient {
 	 * {@link DumpProcessingController} and a serializer for the chosen output
 	 * formats will be set up. After that the serialization process will be
 	 * initiated.
-	 *
+	 * 
 	 * @throws IOException
 	 */
-	public void convert() throws IOException {
+	public void convert() {
 
 		if (!useStdoutForOutput) {
 			// Define where log messages go
@@ -111,14 +111,24 @@ public class ConversionClient {
 		dumpProcessingController = new DumpProcessingController("wikidatawiki");
 
 		// Initialize sites; needed to link to Wikipedia pages in RDF
-		sites = dumpProcessingController.getSitesInformation();
+		try {
+			sites = dumpProcessingController.getSitesInformation();
+		} catch (IOException e) {
+			logger.error("Failed to get sites Information");
+			return;
+		}
 
 		if (this.conversionProperties.getOfflineMode()) {
 			dumpProcessingController.setOfflineMode(true);
 		}
 
 		for (OutputConfiguration props : configurations) {
-			props.setupSerializer(dumpProcessingController, sites);
+			try {
+				props.setupSerializer(dumpProcessingController, sites);
+			} catch (IOException e) {
+				logger.error("Could not setup " + props.getOutputFormat()
+						+ " serializer");
+			}
 		}
 
 		if (!useStdoutForOutput) {
@@ -132,8 +142,15 @@ public class ConversionClient {
 		}
 
 		if (this.conversionProperties.getDumplocation() != null) {
-			dumpProcessingController.setDownloadDirectory(this.conversionProperties
-					.getDumplocation());
+			try {
+				dumpProcessingController
+						.setDownloadDirectory(this.conversionProperties
+								.getDumplocation());
+			} catch (IOException e) {
+				logger.error("Could not set download directory to "
+						+ this.conversionProperties.getDumplocation());
+				return;
+			}
 		}
 
 		startSerializers();
@@ -174,7 +191,7 @@ public class ConversionClient {
 	 * has no headers, but other formats have).
 	 */
 	private void startSerializers() {
-		for (OutputConfiguration configuration : this.configurations){
+		for (OutputConfiguration configuration : this.configurations) {
 			configuration.startSerializer();
 		}
 	}
@@ -184,15 +201,14 @@ public class ConversionClient {
 	 * summary of the number of triples serialized by each.
 	 */
 	private void closeSerializers() {
-		for (OutputConfiguration configuration : this.configurations){
+		for (OutputConfiguration configuration : this.configurations) {
 			configuration.closeSerializer();
 		}
 	}
 
-
 	/**
 	 * Launches the client with the specified parameters.
-	 *
+	 * 
 	 * @param args
 	 *            command line parameters
 	 * @throws ParseException
