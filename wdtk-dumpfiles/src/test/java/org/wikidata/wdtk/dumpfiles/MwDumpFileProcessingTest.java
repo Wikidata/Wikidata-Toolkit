@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -112,7 +112,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_ITEM;
 		result.comment = "Test comment " + number;
-		result.text = "{\"label\":{\"en\":\"Revision " + number + "\"}}";
+		result.text = "{\"id\":\"Q1\",\"type\":\"item\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ number + "\"}}}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;
@@ -133,8 +134,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_PROPERTY;
 		result.comment = "Test comment " + (number + 10000);
-		result.text = "{\"label\":{\"en\":\"Revision " + (number + 10000)
-				+ "\"},\"datatype\":\"wikibase-item\"}";
+		result.text = "{\"id\":\"P1\",\"type\":\"property\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ (number + 10000) + "\"}},\"datatype\":\"wikibase-item\"}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;
