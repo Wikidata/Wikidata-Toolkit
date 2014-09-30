@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
 
@@ -46,15 +46,30 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseRevisionProcessor.class);
 
+	/**
+	 * The IRI of the site that this data comes from. This cannot be extracted
+	 * from individual revisions.
+	 */
+	final String siteIri;
 	final ObjectMapper mapper = new ObjectMapper();
 	// JsonConverter jsonConverter;
 	// final DataObjectFactory dataObjectFactory;
 	final EntityDocumentProcessor entityDocumentProcessor;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param entityDocumentProcessor
+	 *            the object that entity documents will be forwarded to
+	 * @param siteIri
+	 *            the IRI of the site that the data comes from, as used in
+	 *            {@link ItemIdValue#getSiteIri()}
+	 */
 	public WikibaseRevisionProcessor(
-			EntityDocumentProcessor entityDocumentProcessor) {
+			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		// this.dataObjectFactory = new DataObjectFactoryImpl();
 		this.entityDocumentProcessor = entityDocumentProcessor;
+		this.siteIri = siteIri;
 	}
 
 	@Override
@@ -80,7 +95,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		try {
 			JacksonItemDocument document = mapper.readValue(
 					mwRevision.getText(), JacksonItemDocument.class);
-			document.setSiteIri(Datamodel.SITE_WIKIDATA);
+			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processItemDocument(document);
 			return;
 		} catch (JsonParseException e1) {
@@ -112,7 +127,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		try {
 			JacksonPropertyDocument document = mapper.readValue(
 					mwRevision.getText(), JacksonPropertyDocument.class);
-			document.setSiteIri(Datamodel.SITE_WIKIDATA);
+			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processPropertyDocument(document);
 			return;
 		} catch (JsonParseException e1) {

@@ -528,13 +528,13 @@ public class DumpProcessingController {
 			// Register entity document processors with revision processors:
 			if (entry.getValue().size() == 1) {
 				registerMwRevisionProcessor(new WikibaseRevisionProcessor(entry
-						.getValue().get(0)), entry.getKey().model,
+						.getValue().get(0), Datamodel.SITE_WIKIDATA),
+						entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 			} else {
 				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
-				registerMwRevisionProcessor(
-						new WikibaseRevisionProcessor(edpb),
-						entry.getKey().model,
+				registerMwRevisionProcessor(new WikibaseRevisionProcessor(edpb,
+						Datamodel.SITE_WIKIDATA), entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 				for (EntityDocumentProcessor edp : entry.getValue()) {
 					edpb.registerEntityDocumentProcessor(edp);
