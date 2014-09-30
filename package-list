@@ -2,8 +2,12 @@ org.wikidata.wdtk.datamodel.helpers
 org.wikidata.wdtk.datamodel.implementation
 org.wikidata.wdtk.datamodel.interfaces
 org.wikidata.wdtk.datamodel.json
+org.wikidata.wdtk.datamodel.json.jackson
+org.wikidata.wdtk.datamodel.json.jackson.datavalues
 org.wikidata.wdtk.dumpfiles
 org.wikidata.wdtk.dumpfiles.constraint.template
+org.wikidata.wdtk.dumpfiles.oldjson
+org.wikidata.wdtk.dumpfiles.wmf
 org.wikidata.wdtk.examples
 org.wikidata.wdtk.rdf
 org.wikidata.wdtk.rdf.extensions
