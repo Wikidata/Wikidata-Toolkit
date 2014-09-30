@@ -75,7 +75,7 @@ public class RdfSerializationExample {
 
 		// Controller object for processing dumps:
 		dumpProcessingController = new DumpProcessingController("wikidatawiki");
-		// dumpProcessingController.setOfflineMode(true);
+		dumpProcessingController.setOfflineMode(ExampleHelpers.OFFLINE_MODE);
 
 		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();

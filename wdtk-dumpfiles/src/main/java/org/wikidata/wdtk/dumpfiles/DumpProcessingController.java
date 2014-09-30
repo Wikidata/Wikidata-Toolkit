@@ -106,8 +106,12 @@ public class DumpProcessingController {
 
 		@Override
 		public int hashCode() {
-			return 2 * this.model.hashCode()
-					+ (this.onlyCurrentRevisions ? 1 : 0);
+			if (this.model == null) {
+				return (this.onlyCurrentRevisions ? 1 : 0);
+			} else {
+				return 2 * this.model.hashCode()
+						+ (this.onlyCurrentRevisions ? 1 : 0);
+			}
 		}
 
 		@Override
@@ -122,8 +126,13 @@ public class DumpProcessingController {
 				return false;
 			}
 			ListenerRegistration other = (ListenerRegistration) obj;
-			return this.model.equals(other.model)
-					&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			if (this.model == null) {
+				return other.model == null
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			} else {
+				return this.model.equals(other.model)
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			}
 		}
 	}
 
@@ -519,13 +528,13 @@ public class DumpProcessingController {
 			// Register entity document processors with revision processors:
 			if (entry.getValue().size() == 1) {
 				registerMwRevisionProcessor(new WikibaseRevisionProcessor(entry
-						.getValue().get(0)), entry.getKey().model,
+						.getValue().get(0), Datamodel.SITE_WIKIDATA),
+						entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 			} else {
 				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
-				registerMwRevisionProcessor(
-						new WikibaseRevisionProcessor(edpb),
-						entry.getKey().model,
+				registerMwRevisionProcessor(new WikibaseRevisionProcessor(edpb,
+						Datamodel.SITE_WIKIDATA), entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 				for (EntityDocumentProcessor edp : entry.getValue()) {
 					edpb.registerEntityDocumentProcessor(edp);

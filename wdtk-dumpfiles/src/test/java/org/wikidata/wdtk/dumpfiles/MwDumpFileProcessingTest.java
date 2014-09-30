@@ -112,7 +112,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_ITEM;
 		result.comment = "Test comment " + number;
-		result.text = "{\"label\":{\"en\":\"Revision " + number + "\"}}";
+		result.text = "{\"id\":\"Q1\",\"type\":\"item\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ number + "\"}}}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;
@@ -133,8 +134,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_PROPERTY;
 		result.comment = "Test comment " + (number + 10000);
-		result.text = "{\"label\":{\"en\":\"Revision " + (number + 10000)
-				+ "\"},\"datatype\":\"wikibase-item\"}";
+		result.text = "{\"id\":\"P1\",\"type\":\"property\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ (number + 10000) + "\"}},\"datatype\":\"wikibase-item\"}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;

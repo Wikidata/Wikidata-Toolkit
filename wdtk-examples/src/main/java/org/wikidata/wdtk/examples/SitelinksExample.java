@@ -55,6 +55,7 @@ public class SitelinksExample {
 		// Controller object for processing dumps:
 		DumpProcessingController dumpProcessingController = new DumpProcessingController(
 				"wikidatawiki");
+		dumpProcessingController.setOfflineMode(ExampleHelpers.OFFLINE_MODE);
 
 		// Download the sites table dump and extract information
 		Sites sites = dumpProcessingController.getSitesInformation();

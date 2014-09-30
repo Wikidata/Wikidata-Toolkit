@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,18 +20,64 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
+import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.examples.EntityTimerProcessor.TimeoutException;
 
 /**
- * Class for sharing code that is used in many examples.
- * 
+ * Class for sharing code that is used in many examples. It contains several
+ * static final members that can be modified to change the behaviour of example
+ * programs, such as whether to use {@link ExampleHelpers#OFFLINE_MODE} or not.
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ExampleHelpers {
+
+	/**
+	 * If set to true, all example programs will run in offline mode. Only data
+	 * dumps that have been downloaded in previous runs will be used.
+	 */
+	public static final boolean OFFLINE_MODE = false;
+
+	/**
+	 * Enum to say which dumps should be downloaded and processed. Used as
+	 * possible values of {@link ExampleHelpers#DUMP_FILE_MODE}.
+	 */
+	public static enum DumpProcessingMode {
+		JSON, CURRENT_REVS, ALL_REVS, CURRENT_REVS_WITH_DAILIES, ALL_REVS_WITH_DAILIES, JUST_ONE_DAILY_FOR_TEST
+	}
+
+	/**
+	 * Defines which dumps will be downloaded and processed in all examples.
+	 */
+	public static final DumpProcessingMode DUMP_FILE_MODE = DumpProcessingMode.JSON;
+
+	/**
+	 * The directory where to place files created by the example applications.
+	 */
+	public static final String EXAMPLE_OUTPUT_DIRECTORY = "results";
+
+	/**
+	 * Timeout to abort processing after a short while or 0 to disable timeout.
+	 * If set, then the processing will cleanly exit after about this many
+	 * seconds, as if the dump file would have ended there. This is useful for
+	 * testing (and in particular better than just aborting the program) since
+	 * it allows for final processing and proper closing to happen without
+	 * having to wait for a whole dump file to process.
+	 */
+	public static final int TIMEOUT_SEC = 0;
 
 	/**
 	 * Defines how messages should be logged. This method can be modified to
@@ -51,5 +97,119 @@ public class ExampleHelpers {
 
 		consoleAppender.activateOptions();
 		Logger.getRootLogger().addAppender(consoleAppender);
+	}
+
+	/**
+	 * Processes all entities in a Wikidata dump using the given entity
+	 * processor. By default, the most recent JSON dump will be used. In offline
+	 * mode, only the most recent previously downloaded file is considered.
+	 *
+	 * @param entityDocumentProcessor
+	 *            the object to use for processing entities in this dump
+	 */
+	public static void processEntitiesFromWikidataDump(
+			EntityDocumentProcessor entityDocumentProcessor) {
+
+		// Controller object for processing dumps:
+		DumpProcessingController dumpProcessingController = new DumpProcessingController(
+				"wikidatawiki");
+		dumpProcessingController.setOfflineMode(OFFLINE_MODE);
+
+		// // Optional: Use another download directory:
+		// dumpProcessingController.setDownloadDirectory(System.getProperty("user.dir"));
+
+		// Should we process historic revisions or only current ones?
+		boolean onlyCurrentRevisions;
+		switch (DUMP_FILE_MODE) {
+		case ALL_REVS:
+		case ALL_REVS_WITH_DAILIES:
+			onlyCurrentRevisions = false;
+			break;
+		case CURRENT_REVS:
+		case CURRENT_REVS_WITH_DAILIES:
+		case JSON:
+		case JUST_ONE_DAILY_FOR_TEST:
+		default:
+			onlyCurrentRevisions = true;
+		}
+
+		// Subscribe to the most recent entity documents of type wikibase item:
+		dumpProcessingController.registerEntityDocumentProcessor(
+				entityDocumentProcessor, null, onlyCurrentRevisions);
+
+		// Also add a timer that reports some basic progress information:
+		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
+				TIMEOUT_SEC);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				entityTimerProcessor, null, onlyCurrentRevisions);
+
+		try {
+			// Start processing (may trigger downloads where needed):
+			switch (DUMP_FILE_MODE) {
+			case ALL_REVS:
+			case CURRENT_REVS:
+				dumpProcessingController.processMostRecentMainDump();
+				break;
+			case ALL_REVS_WITH_DAILIES:
+			case CURRENT_REVS_WITH_DAILIES:
+				dumpProcessingController.processAllRecentRevisionDumps();
+				break;
+			case JSON:
+				dumpProcessingController.processMostRecentJsonDump();
+				break;
+			case JUST_ONE_DAILY_FOR_TEST:
+				dumpProcessingController.processMostRecentDailyDump();
+				break;
+			default:
+				throw new RuntimeException("Unsupported dump processing type "
+						+ DUMP_FILE_MODE);
+			}
+		} catch (TimeoutException e) {
+			// The timer caused a time out. Continue and finish normally.
+		}
+
+		// Print final timer results:
+		entityTimerProcessor.stop();
+	}
+
+	/**
+	 * Opens a new FileOutputStream for a file of the given name in the example
+	 * output directory ({@link ExampleHelpers#EXAMPLE_OUTPUT_DIRECTORY}). Any
+	 * file of this name that exists already will be replaced. The called has is
+	 * responsible for eventually closing the stream.
+	 *
+	 * @param filename
+	 *            the name of the file to write to
+	 * @return FileOutputStream for the file
+	 * @throws IOException
+	 *             if the file or example output directory could not be created
+	 */
+	public static FileOutputStream openExampleFileOuputStream(String filename)
+			throws IOException {
+		Path directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+		createDirectory(directoryPath);
+		Path filePath = directoryPath.resolve(filename);
+		return new FileOutputStream(filePath.toFile());
+	}
+
+	/**
+	 * Create a directory at the given path if it does not exist yet.
+	 *
+	 * @param path
+	 *            the path to the directory
+	 * @throws IOException
+	 *             if it was not possible to create a directory at the given
+	 *             path
+	 */
+	private static void createDirectory(Path path) throws IOException {
+		try {
+			Files.createDirectory(path);
+		} catch (FileAlreadyExistsException e) {
+			if (Files.isDirectory(path)) {
+				// fine, then we don't need to create it
+			} else {
+				throw e;
+			}
+		}
 	}
 }
