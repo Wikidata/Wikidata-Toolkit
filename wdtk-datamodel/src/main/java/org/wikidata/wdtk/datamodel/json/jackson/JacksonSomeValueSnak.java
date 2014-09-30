@@ -26,25 +26,28 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
+/**
+ * Jackson implementation of {@link SomeValueSnak}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
-	
-	static final String somevalue = "somevalue";
-	
-	public JacksonSomeValueSnak(){
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonSomeValueSnak() {
 		super();
-		this.setSnakType(somevalue);
-	}
-	
-	public JacksonSomeValueSnak(String propertyId){
-		super(propertyId);
-		this.setSnakType(somevalue);
+		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE);
 	}
 
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

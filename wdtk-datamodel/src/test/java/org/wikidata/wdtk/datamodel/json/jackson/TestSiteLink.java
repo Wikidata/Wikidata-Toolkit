@@ -22,67 +22,58 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class tests the correct working of the SiteLinkImpl per se (i.e. not
  * being used in a context like items).
- * 
+ *
  * @author Fredo Erxleben
  *
  */
-public class TestSiteLink extends JsonConversionTest {
+public class TestSiteLink {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	public void testSiteLinkToJson() {
-
-		try {
-			String result = mapper.writeValueAsString(testSiteLink);
-			JsonComparator.compareJsonStrings(siteLinkJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+	public void testSiteLinkToJson() throws JsonProcessingException {
+		String result = mapper.writeValueAsString(JsonTestData.TEST_SITE_LINK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
 	}
 
-	public void testSiteLinkToJava() {
-		try {
-			JacksonSiteLink result = mapper.readValue(siteLinkJson,
-					JacksonSiteLink.class);
+	public void testSiteLinkToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonSiteLink result = mapper.readValue(JsonTestData.JSON_SITE_LINK,
+				JacksonSiteLink.class);
 
-			assertEquals("enwiki", result.getSiteKey());
-			assertEquals("foobar", result.getPageTitle());
-			assert (result.badges.isEmpty());
-
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+		assertEquals("enwiki", result.getSiteKey());
+		assertEquals("foobar", result.getPageTitle());
+		assert (result.badges.isEmpty());
 	}
 
 	@Test
 	public void testEquals() {
-		JacksonSiteLink match = new JacksonSiteLink("enwiki", "foobar");
-		JacksonSiteLink wrongLanguage = new JacksonSiteLink("dewiki", "foobar");
-		JacksonSiteLink wrongValue = new JacksonSiteLink("enwiki", "barfoo");
+		SiteLink match = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"foobar", "enwiki", Collections.<String> emptyList());
+		SiteLink wrongLanguage = JsonTestData.JACKSON_OBJECT_FACTORY
+				.getSiteLink("foobar", "dewiki",
+						Collections.<String> emptyList());
+		SiteLink wrongValue = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"barfoo", "enwiki", Collections.<String> emptyList());
 
-		assertEquals(testSiteLink, testSiteLink);
-		assertEquals(testSiteLink, match);
-		assertFalse(testSiteLink.equals(wrongLanguage));
-		assertFalse(testSiteLink.equals(wrongValue));
+		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
+		assertEquals(JsonTestData.TEST_SITE_LINK, match);
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongValue));
 	}
 }

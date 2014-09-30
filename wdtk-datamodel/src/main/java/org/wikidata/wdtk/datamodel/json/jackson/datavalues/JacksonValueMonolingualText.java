@@ -21,6 +21,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -28,15 +30,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * A one-on-one representation of the external Json's monolingual text values.
- * Java attributes are named equally to the JSON fields. Deviations are due to
- * different naming in the implemented interfaces.
- *
- * <b>This is a variation of the MonolingualTextValue.</b> The difference is
- * that this class extends {@link JacksonValue} which adds a type association
- * done by the JSON.
- *
- * Also the "value" in this JSON context is called "text".
+ * Jackson implementation of {@link MonolingualTextValue}. Java attributes are
+ * named equally to the JSON fields. Deviations are due to different naming in
+ * the implemented interfaces. The "value" in this JSON context is called
+ * "text".
+ * <p>
+ * The class extends {@link JacksonValue} which adds a type association done by
+ * the JSON.
  *
  * @author Fredo Erxleben
  *
@@ -45,32 +45,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class JacksonValueMonolingualText extends JacksonValue implements
 		MonolingualTextValue {
 
-	public JacksonValueMonolingualText() {
-		super(typeMonolingualText);
-	}
-
-	public JacksonValueMonolingualText(String language, String value) {
-		super(typeMonolingualText);
-		this.value = new JacksonInnerMonolingualText(language, value);
-	}
-
-	public JacksonValueMonolingualText(MonolingualTextValue mltv) {
-		this(mltv.getLanguageCode(), mltv.getText());
-	}
-
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
 	JacksonInnerMonolingualText value;
 
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonValueMonolingualText() {
+		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
+	}
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner monolingual text value
+	 */
 	public JacksonInnerMonolingualText getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Sets the inner value helper object to the given value. Only for use by
+	 * Jackson during deserialization.
+	 *
+	 * @param value
+	 *            new value
+	 */
 	public void setValue(JacksonInnerMonolingualText value) {
 		this.value = value;
-	}
-
-	@Override
-	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		return valueVisitor.visit(this);
 	}
 
 	@JsonIgnore
@@ -82,11 +89,27 @@ public class JacksonValueMonolingualText extends JacksonValue implements
 	@JsonIgnore
 	@Override
 	public String getLanguageCode() {
-		return this.value.getLanguageCode();
+		return this.value.getLanguage();
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		return Equality.equalsMonolingualTextValue(this, o);
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
 	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsMonolingualTextValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
+
 }

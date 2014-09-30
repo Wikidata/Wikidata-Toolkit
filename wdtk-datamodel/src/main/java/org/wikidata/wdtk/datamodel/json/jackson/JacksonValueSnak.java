@@ -27,42 +27,37 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
+/**
+ * Jackson implementation of {@link ValueSnak}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 
-	static final String value = "value";
-	
-	// the names used in the JSON
-	public static final String datatypeString = "string";
-	public static final String datatypeTime = "time";
-	public static final String datatypeCoordinate = "globe-coordinate";
-	public static final String datatypeEntity = "wikibase-item";
-	public static final String datatypeCommons = "commonsMedia";
-	
+	/**
+	 * The {@link Value} assigned to this snak.
+	 */
 	private JacksonValue datavalue;
-	private String datatype; // should correspond to "type" in datavalue
-	
-	public JacksonValueSnak(){
+
+	/**
+	 * The property datatype of the property used for this value snak. This is
+	 * redundant information provided in the JSON but not represented in the
+	 * datamodel.
+	 */
+	private String datatype;
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonValueSnak() {
 		super();
-		this.setSnakType(value);
-	}
-	
-	public JacksonValueSnak(String propertyId, String datatype, JacksonValue datavalue){
-		super(propertyId);
-		this.setSnakType(value);
-		this.setDatatype(datatype);
-		this.setDatavalue(datavalue);
-	}
-	
-	public String getDatatype(){
-		return this.datatype;
-	}
-	
-	public void setDatatype(String datatype) {
-		this.datatype = datatype;
+		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_VALUE);
 	}
 
 	@JsonIgnore
@@ -70,21 +65,62 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	public Value getValue() {
 		return this.datavalue;
 	}
-	
-	
-	public void setDatavalue(JacksonValue datavalue){
+
+	/**
+	 * Returns the JSON datatype string. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the JSON datatype string
+	 */
+	public String getDatatype() {
+		return this.datatype;
+	}
+
+	/**
+	 * Sets the JSON datatype string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param datatype
+	 *            new value
+	 */
+	public void setDatatype(String datatype) {
+		this.datatype = datatype;
+	}
+
+	/**
+	 * Sets the snak value to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param datavalue
+	 *            new value
+	 */
+	public void setDatavalue(JacksonValue datavalue) {
 		this.datavalue = datavalue;
 	}
-	
-	public JacksonValue getDatavalue(){
+
+	/**
+	 * Returns the snak value. Only for use by Jackson during serialization.
+	 *
+	 * @return the snak value
+	 */
+	public JacksonValue getDatavalue() {
 		return this.datavalue;
+	}
+
+	@Override
+	void setParentDocument(JacksonTermedDocument parentDocument) {
+		super.setParentDocument(parentDocument);
+		if (this.datavalue instanceof JacksonValueItemId) {
+			((JacksonValueItemId) this.datavalue)
+					.setParentDocument(parentDocument);
+		}
 	}
 
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

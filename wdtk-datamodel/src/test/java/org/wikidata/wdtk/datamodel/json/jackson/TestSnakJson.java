@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -32,107 +31,70 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestSnakJson extends JsonConversionTest{
-	
+public class TestSnakJson {
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	public void testNoValueSnakToJava(){
-		try {
-			JacksonSnak result = mapper.readValue(noValueSnakJson, JacksonSnak.class);
-			
-			assertNotNull(result);
-			assertTrue(result instanceof JacksonNoValueSnak);
-			assertEquals(result, testNoValueSnak);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testNoValueSnakToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
+				JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+
+		assertNotNull(result);
+		assertTrue(result instanceof JacksonNoValueSnak);
+		assertEquals(result, JsonTestData.TEST_NOVALUE_SNAK);
 	}
-	
+
 	@Test
-	public void testNoValueSnakToJson(){
-		
-		try {
-			String result = mapper.writeValueAsString(testNoValueSnak);
-			JsonComparator.compareJsonStrings(noValueSnakJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting POJO to JSON failed");
-		}
+	public void testNoValueSnakToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_NOVALUE_SNAK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_SNAK,
+				result);
 	}
-	
+
 	@Test
-	public void testSomeValueSnakToJava(){
-		try {
-			JacksonSnak result = mapper.readValue(someValueSnakJson, JacksonSnak.class);
-			
-			assertNotNull(result);
-			assertTrue(result instanceof JacksonSomeValueSnak);
-			assertEquals(result, testSomeValueSnak);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testSomeValueSnakToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
+				JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+
+		assertNotNull(result);
+		assertTrue(result instanceof JacksonSomeValueSnak);
+		assertEquals(result, JsonTestData.TEST_SOMEVALUE_SNAK);
 	}
-	
+
 	@Test
-	public void testSomeValueSnakToJson(){
-		
-		try {
-			String result = mapper.writeValueAsString(testSomeValueSnak);
-			JsonComparator.compareJsonStrings(someValueSnakJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting POJO to JSON failed");
-		}
+	public void testSomeValueSnakToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_SOMEVALUE_SNAK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SOMEVALUE_SNAK,
+				result);
 	}
-	
+
 	@Test
-	public void testCommonsValueSnakToJava(){
-		try {
-			JacksonSnak result = mapper.readValue(commonsValueSnakJson, JacksonSnak.class);
-			
-			assertNotNull(result);
-			assertTrue(result instanceof JacksonValueSnak);
-			assertEquals(result, testCommonsValueSnak);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testCommonsValueSnakToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonSnak result = mapper.readValue(
+				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+
+		assertNotNull(result);
+		assertTrue(result instanceof JacksonValueSnak);
+		assertEquals(result, JsonTestData.TEST_STRING_VALUE_SNAK);
 	}
-	
+
 	@Test
-	public void testCommonsValueSnakToJson(){
-		
-		try {
-			String result = mapper.writeValueAsString(testCommonsValueSnak);
-			JsonComparator.compareJsonStrings(commonsValueSnakJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting POJO to JSON failed");
-		}
+	public void testCommonsValueSnakToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_STRING_VALUE_SNAK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_VALUE_SNAK_STRING,
+				result);
 	}
 
 }

@@ -21,47 +21,93 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+/**
+ * Abstract Jackson implementation of {@link Value}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
 		@Type(value = JacksonValueString.class, name = "string"),
 		@Type(value = JacksonValueTime.class, name = "time"),
-		@Type(value = JacksonValueEntityId.class, name = "wikibase-entityid"),
+		@Type(value = JacksonValueItemId.class, name = "wikibase-entityid"),
 		@Type(value = JacksonValueGlobeCoordinates.class, name = "globecoordinate"),
 		@Type(value = JacksonValueQuantity.class, name = "quantity"),
 		@Type(value = JacksonValueMonolingualText.class, name = "monolingualtext") })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonValue implements Value {
 
-	public static final String typeString = "string";
-	public static final String typeTime = "time";
-	public static final String typeCoordinate = "globecoordinate";
-	public static final String typeEntity = "wikibase-entityid";
-	public static final String typeQuantity = "quantity";
-	public static final String typeMonolingualText = "monolingualtext";
+	/**
+	 * String used to denote the string value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_STRING = "string";
+	/**
+	 * String used to denote the time value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_TIME = "time";
+	/**
+	 * String used to denote the globe coordinates value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_GLOBE_COORDINATES = "globecoordinate";
+	/**
+	 * String used to denote the entity id value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_ENTITY_ID = "wikibase-entityid";
+	/**
+	 * String used to denote the quantity value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_QUANTITY = "quantity";
+	/**
+	 * String used to denote the monolingual text value type in JSON.
+	 */
+	public static final String JSON_VALUE_TYPE_MONOLINGUAL_TEXT = "monolingualtext";
 
+	/**
+	 * JSON type id of this value.
+	 */
 	private String type;
 
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonValue() {
 	}
 
+	/**
+	 * Constructor. Creates a value object with the given JSON type.
+	 *
+	 * @param type
+	 *            JSON type constant
+	 */
 	public JacksonValue(String type) {
 		this.type = type;
 	}
 
-	@Override
-	abstract public <T> T accept(ValueVisitor<T> valueVisitor);
-
+	/**
+	 * Sets the JSON type string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param type
+	 *            new value
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	/**
+	 * Returns the JSON type string of this value. Only for use by Jackson
+	 * during serialization.
+	 *
+	 * @return the JSON type string
+	 */
 	public String getType() {
 		return this.type;
 	}

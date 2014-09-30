@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -39,13 +40,17 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 import org.wikidata.wdtk.util.Timer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Speedtest {
 
-	private final DataObjectFactory factory = new DataObjectFactoryImpl();
+	private final DataObjectFactory stdFactory = new DataObjectFactoryImpl();
+	private final DataObjectFactory jacksonFactory = new JacksonObjectFactory();
+	private final DataModelConverter jacksonConverter = new DataModelConverter(
+			jacksonFactory);
 	private final String baseIri = "Speedtest";
 
 	private class NullOutputStream extends OutputStream {
@@ -84,7 +89,7 @@ public class Speedtest {
 		ObjectMapper mapper = new ObjectMapper();
 		for (int i = 0; i < runs; i++) {
 			t.start();
-			JacksonItemDocument altDocument = new JacksonItemDocument(document);
+			ItemDocument altDocument = jacksonConverter.convert(document);
 			mapper.writeValueAsString(altDocument);
 			t.stop();
 		}
@@ -99,7 +104,7 @@ public class Speedtest {
 
 		t = new Timer(baseIri, Timer.RECORD_ALL);
 		mapper = new ObjectMapper();
-		JacksonItemDocument altDocument = new JacksonItemDocument(document);
+		ItemDocument altDocument = jacksonConverter.convert(document);
 		for (int i = 0; i < runs; i++) {
 			t.start();
 			mapper.writeValueAsString(altDocument);
@@ -134,13 +139,13 @@ public class Speedtest {
 
 	private ItemDocument createItemDocument() {
 
-		ItemIdValue itemIdValue = factory.getItemIdValue("Q1", baseIri);
+		ItemIdValue itemIdValue = stdFactory.getItemIdValue("Q1", baseIri);
 		List<MonolingualTextValue> labels = this.createMltvList();
 		List<MonolingualTextValue> descriptions = this.createMltvList();
 		List<MonolingualTextValue> aliases = this.createMltvList();
 		List<StatementGroup> statementGroups = this.createStatementGroups();
 		Map<String, SiteLink> siteLinks = this.createSiteLinks();
-		return factory.getItemDocument(itemIdValue, labels, descriptions,
+		return stdFactory.getItemDocument(itemIdValue, labels, descriptions,
 				aliases, statementGroups, siteLinks);
 
 	}
@@ -154,7 +159,7 @@ public class Speedtest {
 		Map<String, SiteLink> returnMap = new HashMap<>();
 
 		for (int i = 0; i < 1000; i++) {
-			returnMap.put("key" + i, factory.getSiteLink("title" + i, "site"
+			returnMap.put("key" + i, stdFactory.getSiteLink("title" + i, "site"
 					+ i, new LinkedList<String>()));
 		}
 
@@ -176,8 +181,8 @@ public class Speedtest {
 		List<MonolingualTextValue> returnList = new ArrayList<>(1000);
 
 		for (int i = 0; i < 1000; i++) {
-			returnList.add(factory.getMonolingualTextValue("text" + i, "lang"
-					+ i));
+			returnList.add(stdFactory.getMonolingualTextValue("text" + i,
+					"lang" + i));
 		}
 
 		return returnList;

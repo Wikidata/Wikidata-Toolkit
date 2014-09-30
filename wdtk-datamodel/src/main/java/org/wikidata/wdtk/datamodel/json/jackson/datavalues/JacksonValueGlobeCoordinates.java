@@ -20,61 +20,101 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
-// TODO test
+/**
+ * Jackson implementation of {@link GlobeCoordinatesValue}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonValueGlobeCoordinates extends JacksonValue implements GlobeCoordinatesValue {
+public class JacksonValueGlobeCoordinates extends JacksonValue implements
+		GlobeCoordinatesValue {
 
-	private JacksonInnerGlobeCoordinate value;
-	
-	public JacksonValueGlobeCoordinates(){
-		super(typeCoordinate);
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
+	private JacksonInnerGlobeCoordinates value;
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonValueGlobeCoordinates() {
+		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
 	}
-	public JacksonValueGlobeCoordinates(JacksonInnerGlobeCoordinate value){
-		super(typeCoordinate);
-		this.value = value;
-	}
-	
-	public JacksonInnerGlobeCoordinate getValue() {
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner globe coordinates value
+	 */
+	public JacksonInnerGlobeCoordinates getValue() {
 		return value;
 	}
 
-	public void GlobeCoordinate(JacksonInnerGlobeCoordinate value) {
+	/**
+	 * Sets the inner value helper object to the given value. Only for use by
+	 * Jackson during deserialization.
+	 *
+	 * @param value
+	 *            new value
+	 */
+	public void setValue(JacksonInnerGlobeCoordinates value) {
 		this.value = value;
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public long getLatitude() {
 		return this.value.getLatitude();
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public long getLongitude() {
 		return this.value.getLongitude();
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public long getPrecision() {
 		return this.value.getPrecision();
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public String getGlobe() {
 		return this.value.getGlobe();
 	}
-	
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsGlobeCoordinatesValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

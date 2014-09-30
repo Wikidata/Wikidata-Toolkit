@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json.jackson.serializers;
+package org.wikidata.wdtk.datamodel.json.jackson;
 
 /*
  * #%L
@@ -27,9 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

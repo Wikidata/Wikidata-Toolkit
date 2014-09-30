@@ -23,39 +23,58 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import java.math.BigDecimal;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Jackson implementation of {@link QuantityValue}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueQuantity extends JacksonValue implements QuantityValue {
-	
+
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
 	private JacksonInnerQuantity value;
 
-	public JacksonValueQuantity(){
-		super(typeQuantity);
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonValueQuantity() {
+		super(JSON_VALUE_TYPE_QUANTITY);
 	}
-	
-	public JacksonValueQuantity(JacksonInnerQuantity value){
-		super(typeQuantity);
+
+	/**
+	 * Sets the inner value helper object to the given value. Only for use by
+	 * Jackson during deserialization.
+	 *
+	 * @param value
+	 *            new value
+	 */
+	public void setValue(JacksonInnerQuantity value) {
 		this.value = value;
 	}
-	
-	public void setValue(JacksonInnerQuantity value){
-		this.value = value;
-	}
-	
-	public JacksonInnerQuantity getValue(){
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner quantity value
+	 */
+	public JacksonInnerQuantity getValue() {
 		return this.value;
 	}
-	
-	@Override
-	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		return valueVisitor.visit(this);
-	}
-	
+
 	@JsonIgnore
 	@Override
 	public BigDecimal getNumericValue() {
@@ -75,7 +94,22 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	}
 
 	@Override
-	public boolean equals(Object o){
-		return Equality.equalsQuantityValue(this, o);
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsQuantityValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

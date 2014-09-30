@@ -20,23 +20,16 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+public class JacksonObjectFactoryTest extends DataObjectFactoryImplTest {
 
-public class TestPropertyId extends JsonConversionTest {
-
-	@Test
-	public void testEquality(){
-		JacksonPropertyId reference = new JacksonPropertyId(propertyId);
-		JacksonPropertyId same = new JacksonPropertyId(propertyId);
-		JacksonPropertyId different = new JacksonPropertyId("P2");
-		
-		assertEquals(reference, same);
-		assertEquals(reference, (PropertyIdValue)same);
-		assertEquals((PropertyIdValue)reference, (PropertyIdValue)same);
-		assertFalse(reference.equals(different));
+	public JacksonObjectFactoryTest() {
+		factory = new JacksonObjectFactory();
+		converter = new DataModelConverter(factory);
 	}
+
+	// All tests inherited from superclass
+
 }

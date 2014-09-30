@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -38,13 +36,22 @@ public class JacksonInnerEntityId {
 	// NOTE make sure to adapt all methods, once more types than only
 	// "item" are supported
 
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * items.
+	 */
+	public final static String JSON_ENTITY_TYPE_ITEM = "item";
+
 	@JsonProperty("entity-type")
 	private String entityType;
 
 	@JsonProperty("numeric-id")
 	private int numericId;
 
-	// TODO document (why do we need this?)
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
 	public JacksonInnerEntityId() {
 	}
 
@@ -65,16 +72,29 @@ public class JacksonInnerEntityId {
 		this.numericId = numericId;
 	}
 
+	/**
+	 * Returns the entity type string as used in JSON. Only for use by Jackson
+	 * during serialization.
+	 *
+	 * @return the entity type string
+	 */
 	@JsonProperty("entity-type")
 	public String getEntityType() {
 		return entityType;
 	}
 
+	/**
+	 * Sets the entity type string to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param entityType
+	 *            new value
+	 */
 	@JsonProperty("entity-type")
 	public void setEntityType(String entityType)
 			throws IllegalArgumentException {
 
-		if (!"item".equals(entityType)) {
+		if (!JSON_ENTITY_TYPE_ITEM.equals(entityType)) {
 			throw new IllegalArgumentException("Entities of type " + entityType
 					+ " are not supported in property values.");
 		}
@@ -82,11 +102,24 @@ public class JacksonInnerEntityId {
 		this.entityType = entityType;
 	}
 
+	/**
+	 * Returns the numeric item id as used in JSON. Only for use by Jackson
+	 * during serialization.
+	 *
+	 * @return the numeric entity id
+	 */
 	@JsonProperty("numeric-id")
 	public int getNumericId() {
 		return numericId;
 	}
 
+	/**
+	 * Sets thenumeric item id to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param numericId
+	 *            new value
+	 */
 	@JsonProperty("numeric-id")
 	public void setNumericId(int numericId) {
 		this.numericId = numericId;
@@ -104,17 +137,6 @@ public class JacksonInnerEntityId {
 		return "Q" + this.numericId;
 	}
 
-	/**
-	 * Returns the entity type used in the datamodel. For example, the JSON
-	 * entityType "item" corresponds to {@link EntityIdValue#ET_ITEM}.
-	 *
-	 * @return the entity type
-	 */
-	@JsonIgnore
-	public String getDatamodelEntityType() {
-		return EntityIdValue.ET_ITEM;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -125,11 +147,8 @@ public class JacksonInnerEntityId {
 		}
 
 		return (this.numericId == ((JacksonInnerEntityId) o).numericId)
-				&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
+				&& (this.entityType
+						.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
-	@Override
-	public String toString() {
-		return this.getStringId();
-	}
 }

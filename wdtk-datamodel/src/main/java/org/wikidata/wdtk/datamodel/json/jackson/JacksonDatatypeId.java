@@ -27,64 +27,108 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 /**
- * This is not actually in the JSON but needed to satisfy the interface.
- * 
+ * Jackson implementation of {@link DatatypeIdValue}. This is not actually
+ * present in JSON but needed to satisfy the interface.
+ *
  * @author Fredo Erxleben
  *
  */
 public class JacksonDatatypeId implements DatatypeIdValue {
 
-	public static final String jsonTypeItem = "wikibase-item";
-	public static final String jsonTypeGlobe = "globe-coordinate";
-	public static final String jsonTypeUrl = "url";
-	public static final String jsonTypeCommonsMedia = "commonsMedia";
-	public static final String jsonTypeTime = "time";
-	public static final String jsonTypeQuantity = "quantity";
-	public static final String jsonTypeString = "string";
-	public static final String jsonTypeMonolingualText = "monolingualtext ";
-
-	private String iri;
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_ITEM} in JSON.
+	 */
+	public static final String JSON_DT_ITEM = "wikibase-item";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_GLOBE_COORDINATES} in JSON.
+	 */
+	public static final String JSON_DT_GLOBE_COORDINATES = "globe-coordinate";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_ITEM} in JSON.
+	 */
+	public static final String JSON_DT_URL = "url";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_COMMONS_MEDIA} in JSON.
+	 */
+	public static final String JSON_DT_COMMONS_MEDIA = "commonsMedia";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_TIME} in JSON.
+	 */
+	public static final String JSON_DT_TIME = "time";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_QUANTITY} in JSON.
+	 */
+	public static final String JSON_DT_QUANTITY = "quantity";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_STRING} in JSON.
+	 */
+	public static final String JSON_DT_STRING = "string";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_MONOLINGUAL_TEXT} in JSON.
+	 */
+	public static final String JSON_DT_MONOLINGUAL_TEXT = "monolingualtext ";
 
 	/**
-	 * This constructs an object representing the datatype id from a string
-	 * denoting the datatype. It also sets the correct IRI for the datatype.
-	 * 
-	 * @param datatype
+	 * Datatype IRI as used in Wikidata Toolkit.
+	 */
+	private final String iri;
+
+	/**
+	 * Returns the WDTK datatype IRI for the property datatype as represented by
+	 * the given JSON datatype string.
+	 *
+	 * @param jsonDatatype
+	 *            the JSON datatype string; case-sensitive
+	 * @throws IllegalArgumentException
+	 *             if the given datatype string is not known
+	 */
+	public static String getDatatypeIriFromJsonDatatype(String jsonDatatype) {
+		switch (jsonDatatype) {
+		case JSON_DT_ITEM:
+			return DT_ITEM;
+		case JSON_DT_GLOBE_COORDINATES:
+			return DT_GLOBE_COORDINATES;
+		case JSON_DT_URL:
+			return DT_URL;
+		case JSON_DT_COMMONS_MEDIA:
+			return DT_COMMONS_MEDIA;
+		case JSON_DT_TIME:
+			return DT_TIME;
+		case JSON_DT_QUANTITY:
+			return DT_QUANTITY;
+		case JSON_DT_STRING:
+			return DT_STRING;
+		case JSON_DT_MONOLINGUAL_TEXT:
+			return DT_MONOLINGUAL_TEXT;
+		default:
+			throw new IllegalArgumentException("Unknown JSON datatype \""
+					+ jsonDatatype + "\"");
+		}
+	}
+
+	/**
+	 * Constructs an object representing the datatype id from a string denoting
+	 * the datatype. It also sets the correct IRI for the datatype.
+	 * <p>
+	 * TODO Review the utility of this constructor.
+	 *
+	 * @param jsonDatatype
 	 *            denotes the datatype which to represent; case-sensitive
 	 * @throws IllegalArgumentException
 	 *             if the given datatype string could not be matched to a known
 	 *             datatype or was null
 	 */
-	public JacksonDatatypeId(String datatype) throws IllegalArgumentException {
-		switch (datatype) {
-		case jsonTypeItem:
-			this.iri = DT_ITEM;
-			break;
-		case jsonTypeGlobe:
-			this.iri = DT_GLOBE_COORDINATES;
-			break;
-		case jsonTypeUrl:
-			this.iri = DT_URL;
-			break;
-		case jsonTypeCommonsMedia:
-			this.iri = DT_COMMONS_MEDIA;
-			break;
-		case jsonTypeTime:
-			this.iri = DT_TIME;
-			break;
-		case jsonTypeQuantity:
-			this.iri = DT_QUANTITY;
-			break;
-		case jsonTypeString:
-			this.iri = DT_STRING;
-			break;
-		case jsonTypeMonolingualText:
-			this.iri = DT_MONOLINGUAL_TEXT;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown datatype \"" + datatype
-					+ "\" when constructing DatatypeId - instance.");
-		}
+	public JacksonDatatypeId(String jsonDatatype)
+			throws IllegalArgumentException {
+		this.iri = getDatatypeIriFromJsonDatatype(jsonDatatype);
 	}
 
 	@Override

@@ -20,8 +20,8 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.serializers.AliasesDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,8 +47,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  *
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @Type(value = JacksonItemDocument.class, name = "item"),
-		@Type(value = JacksonPropertyDocument.class, name = "property") })
+@JsonSubTypes({
+		@Type(value = JacksonItemDocument.class, name = JacksonTermedDocument.JSON_TYPE_ITEM),
+		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedDocument.JSON_TYPE_PROPERTY) })
 public abstract class JacksonTermedDocument implements TermedDocument {
 
 	/**
@@ -67,62 +67,31 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
 
 	/**
-	 * The entity that the document refers to. This is not mapped to JSON
-	 * directly by Jackson but split into two fields, "type" and "id". The type
-	 * field is ignored during deserialization since the type is clear for a
-	 * concrete document. For serialization, the type is hard-coded.
+	 * The id of the entity that the document refers to. This is not mapped to
+	 * JSON directly by Jackson but split into two fields, "type" and "id". The
+	 * type field is ignored during deserialization since the type is clear for
+	 * a concrete document. For serialization, the type is hard-coded.
+	 * <p>
+	 * The site IRI, which would also be required to create a complete
+	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
+	 * from the outside (if not, we default to Wikidata).
+	 */
+	protected String entityId = "";
+
+	/**
+	 * The site IRI that this document refers to, or null if not specified. In
+	 * the latter case, we assume Wikidata as the default.
+	 *
+	 * @see EntityIdValue#getSiteIri()
 	 */
 	@JsonIgnore
-	protected EntityIdValue entityIdValue;
+	protected String siteIri = null;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonTermedDocument() {
-	}
-
-	/**
-	 * Copy constructor. Can be used for converting other implementations of
-	 * {@link TermedDocument} into objects of this class for conversion to JSON.
-	 *
-	 * @param source
-	 *            the object to copy
-	 */
-	public JacksonTermedDocument(TermedDocument source) {
-
-		// build id
-		this.entityIdValue = source.getEntityId();
-
-		// build aliases
-		for (Entry<String, List<MonolingualTextValue>> mltvs : source
-				.getAliases().entrySet()) {
-			List<JacksonMonolingualTextValue> value = new LinkedList<>();
-			for (MonolingualTextValue mltv : mltvs.getValue()) {
-				value.add(new JacksonMonolingualTextValue(mltv));
-			}
-			this.aliases.put(mltvs.getKey(), value);
-		}
-
-		// build labels
-		for (Entry<String, MonolingualTextValue> mltvs : source.getLabels()
-				.entrySet()) {
-			this.labels.put(mltvs.getKey(), new JacksonMonolingualTextValue(
-					mltvs.getValue()));
-		}
-
-		// build descriptions
-		for (Entry<String, MonolingualTextValue> mltvs : source
-				.getDescriptions().entrySet()) {
-			this.descriptions.put(mltvs.getKey(),
-					new JacksonMonolingualTextValue(mltvs.getValue()));
-		}
-	}
-
-	@JsonIgnore
-	@Override
-	public EntityIdValue getEntityId() {
-		return this.entityIdValue;
 	}
 
 	/**
@@ -139,19 +108,17 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
-
 		// because of the typing provided by the interface one has to
 		// re-create the map anew, simple casting is not possible
 		Map<String, List<MonolingualTextValue>> returnMap = new HashMap<>();
 
 		for (Entry<String, List<JacksonMonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
-			List<MonolingualTextValue> mltvList = new LinkedList<>();
-			mltvList.addAll(entry.getValue());
-			returnMap.put(entry.getKey(), mltvList);
+			returnMap.put(entry.getKey(), Collections
+					.<MonolingualTextValue> unmodifiableList(entry.getValue()));
 		}
 
-		return returnMap;
+		return Collections.unmodifiableMap(returnMap);
 	}
 
 	/**
@@ -168,12 +135,8 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
-
-		// because of the typing provided by the interface one has to
-		// re-create the map anew, simple casting is not possible
-		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
-		returnMap.putAll(this.descriptions);
-		return returnMap;
+		return Collections
+				.<String, MonolingualTextValue> unmodifiableMap(this.descriptions);
 	}
 
 	/**
@@ -189,12 +152,8 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
-
-		// because of the typing provided by the interface one has to
-		// re-create the map anew, simple casting is not possible
-		Map<String, MonolingualTextValue> returnMap = new HashMap<>();
-		returnMap.putAll(this.labels);
-		return returnMap;
+		return Collections
+				.<String, MonolingualTextValue> unmodifiableMap(this.labels);
 	}
 
 	/**
@@ -205,7 +164,9 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 *            new value
 	 */
 	@JsonProperty("id")
-	public abstract void setJsonId(String id);
+	public void setJsonId(String id) {
+		this.entityId = id;
+	}
 
 	/**
 	 * Returns the string id of the entity that this document refers to. Only
@@ -215,7 +176,27 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 */
 	@JsonProperty("id")
 	public String getJsonId() {
-		return this.entityIdValue.getId();
+		return this.entityId;
+	}
+
+	/**
+	 * Sets the site iri to the given value. This can be used to inject
+	 * information about the site the object belongs to after the object is
+	 * constructed. This is needed since this information is not part of the
+	 * JSON serialization.
+	 *
+	 * @see EntityIdValue#getSiteIri()
+	 * @param siteIri
+	 *            the site IRI
+	 */
+	@JsonIgnore
+	public void setSiteIri(String siteIri) {
+		this.siteIri = siteIri;
+	}
+
+	@JsonIgnore
+	public String getSiteIri() {
+		return this.siteIri;
 	}
 
 	/**

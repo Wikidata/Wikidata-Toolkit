@@ -21,7 +21,8 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -373,16 +374,19 @@ public class ToString {
 		for (StatementGroup sg : o.getStatementGroups()) {
 			sb.append(toString(sg));
 		}
+		sb.append("\n===End of statements===\n");
 
 		sb.append("* Site links: ");
 		first = true;
-		for (SiteLink sl : o.getSiteLinks().values()) {
+		SortedSet<String> siteKeys = new TreeSet<String>(o.getSiteLinks()
+				.keySet());
+		for (String key : siteKeys) {
 			if (first) {
 				first = false;
 			} else {
 				sb.append("; ");
 			}
-			sb.append(toString(sl));
+			sb.append(toString(o.getSiteLinks().get(key)));
 		}
 
 		return sb.toString();
@@ -403,30 +407,36 @@ public class ToString {
 
 		sb.append("\n* Labels: ");
 		first = true;
-		for (MonolingualTextValue mtv : o.getLabels().values()) {
+		SortedSet<String> labelKeys = new TreeSet<String>(o.getLabels()
+				.keySet());
+		for (String key : labelKeys) {
 			if (first) {
 				first = false;
 			} else {
 				sb.append("; ");
 			}
-			sb.append(toString(mtv));
+			sb.append(toString(o.getLabels().get(key)));
 		}
 
 		sb.append("\n* Descriptions: ");
 		first = true;
-		for (MonolingualTextValue mtv : o.getDescriptions().values()) {
+		SortedSet<String> descriptionKeys = new TreeSet<String>(o
+				.getDescriptions().keySet());
+		for (String key : descriptionKeys) {
 			if (first) {
 				first = false;
 			} else {
 				sb.append("; ");
 			}
-			sb.append(toString(mtv));
+			sb.append(toString(o.getDescriptions().get(key)));
 		}
 
 		sb.append("\n* Aliases: ");
 		first = true;
-		for (List<MonolingualTextValue> mtvl : o.getAliases().values()) {
-			for (MonolingualTextValue mtv : mtvl) {
+		SortedSet<String> aliasKeys = new TreeSet<String>(o.getAliases()
+				.keySet());
+		for (String key : aliasKeys) {
+			for (MonolingualTextValue mtv : o.getAliases().get(key)) {
 				if (first) {
 					first = false;
 				} else {

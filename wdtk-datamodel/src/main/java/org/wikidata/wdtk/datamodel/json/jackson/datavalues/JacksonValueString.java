@@ -29,12 +29,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * #L%
  */
 
-
 /**
- * This represents a string value.
- * The <i>type</i> is <i>"string"</i>.
- * 
- * This is used in string data values as well as commoms media data values.
+ * Jackson implementation of {@link StringValue}.
+ *
  * @author Fredo Erxleben
  *
  */
@@ -42,23 +39,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class JacksonValueString extends JacksonValue implements StringValue {
 
 	private String value;
-	
-	public JacksonValueString(){
-		super(typeString);
+
+	/**
+	 * Constructor. Creates an empty object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	public JacksonValueString() {
+		super(JacksonValue.JSON_VALUE_TYPE_STRING);
 	}
-	public JacksonValueString(String value){
-		super(typeString);
-		this.value = value;
-	}
-	
-	public String getValue(){
+
+	/**
+	 * Returns the string. Only for use by Jackson during serialization.
+	 *
+	 * @return the string value
+	 */
+	public String getValue() {
 		return this.value;
 	}
-	
-	public void setValue(String value){
+
+	/**
+	 * Sets the string to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param value
+	 *            new value
+	 */
+	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);
@@ -69,19 +78,19 @@ public class JacksonValueString extends JacksonValue implements StringValue {
 		return Equality.equalsStringValue(this, obj);
 	}
 
-	@Override
-	public String toString() {
-		return ToString.toString(this);
-	}
-	
 	@JsonIgnore
 	@Override
 	public String getString() {
 		return this.value;
 	}
-	
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

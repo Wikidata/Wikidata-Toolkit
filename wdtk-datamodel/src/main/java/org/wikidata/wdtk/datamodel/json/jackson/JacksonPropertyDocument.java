@@ -20,10 +20,12 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
@@ -53,49 +55,6 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonPropertyDocument() {
-		this.entityIdValue = new JacksonPropertyId();
-	}
-
-	/**
-	 * Copy constructor. Can be used for converting other implementations of
-	 * {@link PropertyDocument} into objects of this class for conversion to
-	 * JSON.
-	 *
-	 * @param source
-	 *            the object to copy
-	 */
-	public JacksonPropertyDocument(PropertyDocument source) {
-		super(source);
-
-		this.entityIdValue = new JacksonPropertyId(source.getPropertyId()
-				.getId());
-
-		switch (source.getDatatype().getIri()) {
-		case DatatypeIdValue.DT_ITEM:
-			this.datatype = JacksonDatatypeId.jsonTypeItem;
-			break;
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			this.datatype = JacksonDatatypeId.jsonTypeGlobe;
-			break;
-		case DatatypeIdValue.DT_URL:
-			this.datatype = JacksonDatatypeId.jsonTypeUrl;
-			break;
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			this.datatype = JacksonDatatypeId.jsonTypeCommonsMedia;
-			break;
-		case DatatypeIdValue.DT_TIME:
-			this.datatype = JacksonDatatypeId.jsonTypeTime;
-			break;
-		case DatatypeIdValue.DT_QUANTITY:
-			this.datatype = JacksonDatatypeId.jsonTypeQuantity;
-			break;
-		case DatatypeIdValue.DT_STRING:
-			this.datatype = JacksonDatatypeId.jsonTypeString;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown datatype: "
-					+ source.getDatatype().getIri());
-		}
 	}
 
 	/**
@@ -123,15 +82,20 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 		this.datatype = datatype;
 	}
 
+	@JsonIgnore
 	@Override
-	public void setJsonId(String id) {
-		this.entityIdValue = new JacksonPropertyId(id);
+	public PropertyIdValue getPropertyId() {
+		if (this.siteIri == null) {
+			return Datamodel.makeWikidataPropertyIdValue(this.entityId);
+		} else {
+			return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
+		}
 	}
 
 	@JsonIgnore
 	@Override
-	public PropertyIdValue getPropertyId() {
-		return (JacksonPropertyId) this.entityIdValue;
+	public EntityIdValue getEntityId() {
+		return getPropertyId();
 	}
 
 	@JsonIgnore

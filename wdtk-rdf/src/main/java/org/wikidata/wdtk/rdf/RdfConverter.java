@@ -50,9 +50,9 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class RdfConverter {
 
@@ -90,7 +90,7 @@ public class RdfConverter {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -101,7 +101,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -439,7 +439,7 @@ public class RdfConverter {
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 * 
+	 *
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task

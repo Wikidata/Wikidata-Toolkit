@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -31,57 +30,57 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestMonolingualTextValue extends JsonConversionTest {
-	
+public class TestMonolingualTextValue {
+
+	ObjectMapper mapper = new ObjectMapper();
+
 	/**
 	 * Tests the conversion of MonolingualTextValues from JSON to POJO
+	 *
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	@Test
-	public void testMonolingualTextValueToJava(){
-		
-		try {
-			JacksonMonolingualTextValue result = mapper.readValue(mltvJson, JacksonMonolingualTextValue.class);
-			
-			assertEquals("en", result.getLanguageCode());
-			assertEquals("foobar", result.getText());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}	
+	public void testMonolingualTextValueToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonMonolingualTextValue result = mapper.readValue(
+				JsonTestData.JSON_TERM_MLTV,
+				JacksonMonolingualTextValue.class);
+
+		assertEquals("en", result.getLanguageCode());
+		assertEquals("foobar", result.getText());
 	}
-	
+
 	/**
 	 * Tests the conversion of MonolingualTextValues from POJO to JSON
+	 *
+	 * @throws JsonProcessingException
 	 */
 	@Test
-	public void testMonolingualTextValueToJson(){
-		
-		try {
-			String result = mapper.writeValueAsString(testMltv);
-			JsonComparator.compareJsonStrings(mltvJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+	public void testMonolingualTextValueToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_MLTV_TERM_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_TERM_MLTV,
+				result);
 	}
-	
+
 	@Test
-	public void testEquals(){
-		JacksonMonolingualTextValue match = new JacksonMonolingualTextValue("en", "foobar");
-		JacksonMonolingualTextValue wrongLanguage = new JacksonMonolingualTextValue("de", "foobar");
-		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue("en", "barfoo");
-		
-		assertEquals(testMltv, testMltv);
-		assertEquals(testMltv, match);
-		assertFalse(testMltv.equals(wrongLanguage));
-		assertFalse(testMltv.equals(wrongValue));
+	public void testEquals() {
+		JacksonMonolingualTextValue match = new JacksonMonolingualTextValue(
+				"en", "foobar");
+		JacksonMonolingualTextValue wrongLanguage = new JacksonMonolingualTextValue(
+				"de", "foobar");
+		JacksonMonolingualTextValue wrongValue = new JacksonMonolingualTextValue(
+				"en", "barfoo");
+
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE,
+				JsonTestData.TEST_MLTV_TERM_VALUE);
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE, match);
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE
+				.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE.equals(wrongValue));
 	}
 }

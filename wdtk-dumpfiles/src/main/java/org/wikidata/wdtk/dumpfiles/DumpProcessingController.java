@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
@@ -507,7 +508,8 @@ public class DumpProcessingController {
 	 * @return the main MwDumpFileProcessor for JSON
 	 */
 	MwDumpFileProcessor getJsonDumpFileProcessor() {
-		return new JsonDumpFileProcessor(this.entityDocumentProcessorBroker);
+		return new JsonDumpFileProcessor(this.entityDocumentProcessorBroker,
+				Datamodel.SITE_WIKIDATA);
 	}
 
 	/**

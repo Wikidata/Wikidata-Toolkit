@@ -22,234 +22,182 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TestItemDocument extends JsonConversionTest {
-	
+public class TestItemDocument {
+
 	// TODO test statements (JSON claim)
-	
+
+	ObjectMapper mapper = new ObjectMapper();
 	JacksonItemDocument fullDocument;
-	
+
 	@Before
-	public void setupTestFullDocument(){
+	public void setupTestFullDocument() {
 		fullDocument = new JacksonItemDocument();
-		fullDocument.setJsonId(testItemId.getId());
-		fullDocument.setAliases(testAliases);
-		fullDocument.setDescriptions(testMltvMap);
-		fullDocument.setLabels(testMltvMap);
+		fullDocument.setJsonId(JsonTestData.getTestItemId().getId());
+		fullDocument.setAliases(JsonTestData.getTestAliases());
+		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
+		fullDocument.setLabels(JsonTestData.getTestMltvMap());
 	}
-	
+
 	@Test
-	public void testFullDocumentSetup(){
+	public void testFullDocumentSetup() {
 		assertNotNull(fullDocument.getAliases());
 		assertNotNull(fullDocument.getDescriptions());
 		assertNotNull(fullDocument.getLabels());
 		assertNotNull(fullDocument.getJsonId());
 		assertNotNull(fullDocument.getItemId());
 		assertNotNull(fullDocument.getEntityId());
-		
+
 		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
 	}
-	
+
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Pojo to Json
+	 *
+	 * @throws JsonProcessingException
 	 */
 	@Test
-	public void testLabelsToJson(){
+	public void testLabelsToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setLabels(testMltvMap);
-		
-		try {
-			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(wrappedLabelJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+		document.setLabels(JsonTestData.getTestMltvMap());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_LABEL,
+				result);
 	}
-	
+
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Json to Pojo
+	 *
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	@Test
-	public void testLabelToJava(){
-		
-		try {
-			JacksonItemDocument result = mapper.readValue(wrappedLabelJson, JacksonItemDocument.class);
-			
-			assertNotNull(result);
-			assertEquals(testMltvMap, result.getLabels());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
-	}
-	
-	/**
-	 * Tests the conversion of ItemDocuments containing descriptions from Pojo to Json
-	 */
-	@Test
-	public void testDescriptionsToJson(){
-		JacksonItemDocument document = new JacksonItemDocument();
-		document.setDescriptions(testMltvMap);
-		
-		try {
-			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(wrappedDescriptionJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+	public void testLabelToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_LABEL, JacksonItemDocument.class);
+
+		assertNotNull(result);
+		assertEquals(JsonTestData.getTestMltvMap(), result.getLabels());
 	}
 
 	/**
-	 * Tests the conversion of ItemDocuments containing descriptions from Json to Pojo
+	 * Tests the conversion of ItemDocuments containing descriptions from Pojo
+	 * to Json
+	 *
+	 * @throws JsonProcessingException
 	 */
 	@Test
-	public void testDescriptionsToJava(){
-		
-		try {
-			JacksonItemDocument result = mapper.readValue(wrappedDescriptionJson, JacksonItemDocument.class);
-			
-			assertNotNull(result);
-			assertEquals(testMltvMap, result.getDescriptions());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testDescriptionsToJson() throws JsonProcessingException {
+		JacksonItemDocument document = new JacksonItemDocument();
+		document.setDescriptions(JsonTestData.getTestMltvMap());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_WRAPPED_DESCRIPTIONS, result);
+	}
+
+	/**
+	 * Tests the conversion of ItemDocuments containing descriptions from Json
+	 * to Pojo
+	 *
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@Test
+	public void testDescriptionsToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_DESCRIPTIONS,
+				JacksonItemDocument.class);
+
+		assertNotNull(result);
+		assertEquals(JsonTestData.getTestMltvMap(), result.getDescriptions());
 	}
 
 	@Test
-	public void testAliasesToJson(){
+	public void testAliasesToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setAliases(testAliases);
-		
-		try {
-			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(wrappedAliasJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+		document.setAliases(JsonTestData.getTestAliases());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ALIASES,
+				result);
 	}
-	
+
 	@Test
-	public void testAliasesToJava(){
-		
-		try {
-			JacksonItemDocument result = mapper.readValue(wrappedAliasJson, JacksonItemDocument.class);
-			
-			assertNotNull(result);
-			assertEquals(testAliases, result.getAliases());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testAliasesToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_ALIASES, JacksonItemDocument.class);
+
+		assertNotNull(result);
+		assertEquals(JsonTestData.getTestAliases(), result.getAliases());
 	}
-	
+
 	@Test
-	public void testItemIdToJson(){
+	public void testItemIdToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setJsonId(testItemId.getId());
-		
-		try {
-			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(wrappedItemIdJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+		document.setJsonId(JsonTestData.getTestItemId().getId());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
+				result);
 	}
-	
+
 	@Test
-	public void testItemIdToJava(){
-		
-		try {
-			JacksonItemDocument result = mapper.readValue(wrappedItemIdJson, JacksonItemDocument.class);
-			
-			assertNotNull(result);
-			assertEquals(testItemId, result.getEntityId());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testItemIdToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_ITEMID, JacksonItemDocument.class);
+
+		assertNotNull(result);
+		assertEquals(JsonTestData.getTestItemId(), result.getEntityId());
 	}
-	
+
 	@Test
-	public void testSiteLinksToJson(){
+	public void testSiteLinksToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument();
-		document.setSiteLinks(testSiteLinkMap);
-		
-		try {
-			String result = mapper.writeValueAsString(document);
-			JsonComparator.compareJsonStrings(wrappedSiteLinkJson, result);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			fail("Converting Pojo to Json failed");
-		}
+		document.setSiteLinks(JsonTestData.getTestSiteLinkMap());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_SITE_LINK,
+				result);
 	}
-	
+
 	@Test
-	public void testSiteLinksToJava(){
-		
-		try {
-			JacksonItemDocument result = mapper.readValue(wrappedSiteLinkJson, JacksonItemDocument.class);
-			
-			assertNotNull(result);
-			assertEquals(testSiteLinkMap, result.getSiteLinks());
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-			fail("Parsing failed");
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-			fail("Json mapping failed");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("IO failed");
-		}
+	public void testSiteLinksToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_SITE_LINK, JacksonItemDocument.class);
+
+		assertNotNull(result);
+		assertEquals(JsonTestData.getTestSiteLinkMap(), result.getSiteLinks());
 	}
-	
+
 	@Test
-	public void testGenerationFromOtherItemDocument(){
-		JacksonItemDocument copy = new JacksonItemDocument(fullDocument);
+	public void testGenerationFromOtherItemDocument() {
+		DataModelConverter converter = new DataModelConverter(
+				new JacksonObjectFactory());
+		ItemDocument copy = converter.convert(fullDocument);
+
 		assertEquals(fullDocument, copy);
 	}
 }

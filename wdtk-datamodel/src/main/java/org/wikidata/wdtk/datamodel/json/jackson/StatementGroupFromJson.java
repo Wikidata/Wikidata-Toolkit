@@ -20,51 +20,52 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
- * This class only exists to satisfy the interface of the data model.
+ * Helper class to represent a {@link StatementGroup} deserialized from JSON.
+ * The actual data is part of a map of lists of {@link JacksonStatement} objects
+ * in JSON, so there is no corresponding JSON object.
  *
- * @author Fredo Erxleben
+ * @author Markus Kroetzsch
  */
-public class JacksonClaim implements Claim {
+public class StatementGroupFromJson implements StatementGroup {
 
-	private final JacksonStatement statement;
-	private final EntityIdValue subject;
+	final List<Statement> statements;
 
-	public JacksonClaim(JacksonStatement statement, EntityIdValue subject) {
-		this.statement = statement;
-		this.subject = subject;
+	public StatementGroupFromJson(List<JacksonStatement> jacksonStatements) {
+		this.statements = Collections
+				.<Statement> unmodifiableList(jacksonStatements);
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return this.statements.iterator();
+	}
+
+	@Override
+	public List<Statement> getStatements() {
+		return this.statements;
+	}
+
+	@Override
+	public PropertyIdValue getProperty() {
+		return this.statements.get(0).getClaim().getMainSnak().getPropertyId();
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.subject;
-	}
-
-	@Override
-	public Snak getMainSnak() {
-		return this.statement.getMainsnak();
-	}
-
-	@Override
-	public List<SnakGroup> getQualifiers() {
-		return Helper.buildSnakGroups(this.statement.getQualifiers());
-	}
-
-	@Override
-	public Iterator<Snak> getAllQualifiers() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.statements.get(0).getClaim().getSubject();
 	}
 
 	@Override
@@ -74,11 +75,12 @@ public class JacksonClaim implements Claim {
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsClaim(this, obj);
+		return Equality.equalsStatementGroup(this, obj);
 	}
 
 	@Override
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

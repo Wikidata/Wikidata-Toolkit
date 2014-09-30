@@ -24,25 +24,34 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
+/**
+ * Processor for JSON dumpfiles.
+ *
+ * @author Markus Kroetzsch
+ *
+ */
 public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
-	private static ObjectMapper mapper = new ObjectMapper();
-	private static ObjectReader documentReader = mapper
+	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectReader documentReader = mapper
 			.reader(JacksonTermedDocument.class);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
+	private final String siteIri;
 
-	public JsonDumpFileProcessor(EntityDocumentProcessor entityDocumentProcessor) {
+	public JsonDumpFileProcessor(
+			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
+		this.siteIri = siteIri;
 	}
 
 	@Override
@@ -50,11 +59,12 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			MwDumpFile dumpFile) {
 
 		try {
-			MappingIterator<JacksonTermedDocument> documentIter = documentReader
+			MappingIterator<JacksonTermedDocument> documentIterator = documentReader
 					.readValues(inputStream);
 
-			while (documentIter.hasNextValue()) {
-				JacksonTermedDocument document = documentIter.nextValue();
+			while (documentIterator.hasNextValue()) {
+				JacksonTermedDocument document = documentIterator.nextValue();
+				document.setSiteIri(siteIri);
 				if (document != null) {
 					if (document instanceof JacksonItemDocument) {
 						this.handleItemDocument((JacksonItemDocument) document);
