@@ -39,6 +39,15 @@ also counts the usage of each property in more details: its use in the main part
 of statements, in qualifiers, and in references is counted separately. The results
 for this are written into a CSV file in the end.
 
+#### GreatestNumberProcessor.java ####
+
+This simple program looks at all values of a number property to find the item with the
+greatest value. It will print the result to the console. In most cases, the item with
+the greatest number is fairly early in the data export, so watching the program work is
+not too exciting, but it shows how to read a single property value to do something with
+it. The property that is used is defined by a constant in the code and can be changed to
+see some other greatest values.
+
 #### LifeExpectancyProcessor.java ####
 
 This program processes items to compute the average life expectancy of people on
