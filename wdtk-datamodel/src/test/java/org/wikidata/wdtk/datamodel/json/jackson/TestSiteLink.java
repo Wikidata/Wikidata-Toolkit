@@ -24,8 +24,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,16 +47,14 @@ public class TestSiteLink {
 
 	@Test
 	public void testSiteLinkToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_SITE_LINK);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK,
-				result);
+		String result = mapper.writeValueAsString(JsonTestData.TEST_SITE_LINK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
 	}
 
 	public void testSiteLinkToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonSiteLink result = mapper.readValue(
-				JsonTestData.JSON_SITE_LINK, JacksonSiteLink.class);
+		JacksonSiteLink result = mapper.readValue(JsonTestData.JSON_SITE_LINK,
+				JacksonSiteLink.class);
 
 		assertEquals("enwiki", result.getSiteKey());
 		assertEquals("foobar", result.getPageTitle());
@@ -63,12 +63,15 @@ public class TestSiteLink {
 
 	@Test
 	public void testEquals() {
-		JacksonSiteLink match = new JacksonSiteLink("enwiki", "foobar");
-		JacksonSiteLink wrongLanguage = new JacksonSiteLink("dewiki", "foobar");
-		JacksonSiteLink wrongValue = new JacksonSiteLink("enwiki", "barfoo");
+		SiteLink match = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"foobar", "enwiki", Collections.<String> emptyList());
+		SiteLink wrongLanguage = JsonTestData.JACKSON_OBJECT_FACTORY
+				.getSiteLink("foobar", "dewiki",
+						Collections.<String> emptyList());
+		SiteLink wrongValue = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"barfoo", "enwiki", Collections.<String> emptyList());
 
-		assertEquals(JsonTestData.TEST_SITE_LINK,
-				JsonTestData.TEST_SITE_LINK);
+		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
 		assertEquals(JsonTestData.TEST_SITE_LINK, match);
 		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongLanguage));
 		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongValue));

@@ -55,17 +55,6 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	}
 
 	/**
-	 * TODO Review the utility of this constructor. A copy constructor would
-	 * seem more useful.
-	 *
-	 * @param value
-	 */
-	public JacksonValueQuantity(JacksonInnerQuantity value) {
-		super(JSON_VALUE_TYPE_QUANTITY);
-		this.value = value;
-	}
-
-	/**
 	 * Sets the inner value helper object to the given value. Only for use by
 	 * Jackson during deserialization.
 	 *

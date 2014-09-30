@@ -60,23 +60,24 @@ public class JacksonInnerTime {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor.
+	 * Constructs a new object for the given data.
 	 *
 	 * @param time
-	 * @param timezone
-	 * @param before
-	 * @param after
+	 * @param timezoneOffset
+	 * @param beforeTolerance
+	 * @param afterTolerance
 	 * @param precision
-	 * @param calendarmodel
+	 * @param calendarModel
 	 */
-	public JacksonInnerTime(String time, int timezone, int before, int after,
-			int precision, String calendarmodel) {
+	public JacksonInnerTime(String time, int timezoneOffset,
+			int beforeTolerance, int afterTolerance, int precision,
+			String calendarModel) {
 		this.time = time;
-		this.timezone = timezone;
-		this.before = before;
-		this.after = after;
+		this.timezone = timezoneOffset;
+		this.before = beforeTolerance;
+		this.after = afterTolerance;
 		this.precision = precision;
-		this.calendarmodel = calendarmodel;
+		this.calendarmodel = calendarModel;
 
 		this.decomposeTimeString();
 	}
@@ -134,8 +135,9 @@ public class JacksonInnerTime {
 	 * Helper method to compose the time string from its components.
 	 */
 	private void composeTimeString() {
-		this.time = String.format("%+-11d-%02d-%02dT%02d:%02d:%02d", this.year,
-				this.month, this.day, this.hour, this.minute, this.second);
+		this.time = String.format("%+012d-%02d-%02dT%02d:%02d:%02dZ",
+				this.year, this.month, this.day, this.hour, this.minute,
+				this.second);
 	}
 
 	/**

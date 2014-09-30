@@ -53,19 +53,6 @@ public class JacksonValueTime extends JacksonValue implements TimeValue {
 	}
 
 	/**
-	 * Creates a new object from the given data.
-	 *
-	 * TODO Review the utility of this constructor. A copy constructor would
-	 * seem more useful.
-	 *
-	 * @param value
-	 */
-	public JacksonValueTime(JacksonInnerTime value) {
-		super(JSON_VALUE_TYPE_TIME);
-		this.value = value;
-	}
-
-	/**
 	 * Returns the inner value helper object. Only for use by Jackson during
 	 * serialization.
 	 *

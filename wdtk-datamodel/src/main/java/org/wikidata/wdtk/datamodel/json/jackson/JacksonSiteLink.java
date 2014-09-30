@@ -50,27 +50,6 @@ public class JacksonSiteLink implements SiteLink {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor. Badges are missing.
-	 *
-	 * @param site
-	 * @param title
-	 */
-	JacksonSiteLink(String site, String title) {
-		this.site = site;
-		this.title = title;
-	}
-
-	/**
-	 * Copy constructor.
-	 *
-	 * @param value
-	 *            the value to copy from
-	 */
-	public JacksonSiteLink(SiteLink value) {
-		this(value.getSiteKey(), value.getPageTitle());
-	}
-
-	/**
 	 * Sets the page title to the given value. Only for use by Jackson during
 	 * deserialization.
 	 *

@@ -58,45 +58,6 @@ public class JacksonPropertyDocument extends JacksonTermedDocument implements
 	}
 
 	/**
-	 * Copy constructor. Can be used for converting other implementations of
-	 * {@link PropertyDocument} into objects of this class for conversion to
-	 * JSON.
-	 *
-	 * @param source
-	 *            the object to copy
-	 */
-	public JacksonPropertyDocument(PropertyDocument source) {
-		super(source);
-
-		switch (source.getDatatype().getIri()) {
-		case DatatypeIdValue.DT_ITEM:
-			this.datatype = JacksonDatatypeId.JSON_DT_ITEM;
-			break;
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			this.datatype = JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
-			break;
-		case DatatypeIdValue.DT_URL:
-			this.datatype = JacksonDatatypeId.JSON_DT_URL;
-			break;
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			this.datatype = JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
-			break;
-		case DatatypeIdValue.DT_TIME:
-			this.datatype = JacksonDatatypeId.JSON_DT_TIME;
-			break;
-		case DatatypeIdValue.DT_QUANTITY:
-			this.datatype = JacksonDatatypeId.JSON_DT_QUANTITY;
-			break;
-		case DatatypeIdValue.DT_STRING:
-			this.datatype = JacksonDatatypeId.JSON_DT_STRING;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown datatype: "
-					+ source.getDatatype().getIri());
-		}
-	}
-
-	/**
 	 * Returns the JSON string version of the property's datatype. Note that
 	 * {@link #getDatatype()} is already used for another function of the
 	 * interface.

@@ -86,25 +86,6 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 	public JacksonItemDocument() {
 	}
 
-	/**
-	 * Copy constructor. Can be used for converting other implementations of
-	 * {@link ItemDocument} into objects of this class for conversion to JSON.
-	 *
-	 * @param source
-	 *            the object to copy
-	 */
-	public JacksonItemDocument(ItemDocument source) {
-		super(source);
-
-		// build siteLinks
-		for (Entry<String, SiteLink> mltvs : source.getSiteLinks().entrySet()) {
-			this.sitelinks.put(mltvs.getKey(),
-					new JacksonSiteLink(mltvs.getValue()));
-		}
-
-		// FIXME statements? claims?
-	}
-
 	@Override
 	public String getJsonType() {
 		return JacksonTermedDocument.JSON_TYPE_ITEM;

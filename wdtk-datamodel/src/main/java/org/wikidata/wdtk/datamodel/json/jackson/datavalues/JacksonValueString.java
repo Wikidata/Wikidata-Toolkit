@@ -49,17 +49,6 @@ public class JacksonValueString extends JacksonValue implements StringValue {
 	}
 
 	/**
-	 * Creates a JacksonValueString from a string.
-	 *
-	 * @param value
-	 *            the string to use as a value
-	 */
-	public JacksonValueString(String value) {
-		super(JacksonValue.JSON_VALUE_TYPE_STRING);
-		this.value = value;
-	}
-
-	/**
 	 * Returns the string. Only for use by Jackson during serialization.
 	 *
 	 * @return the string value

@@ -59,19 +59,6 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_VALUE);
 	}
 
-	/**
-	 * TODO Review the utility of this constructor.
-	 *
-	 * @param propertyId
-	 */
-	public JacksonValueSnak(String propertyId, String datatype,
-			JacksonValue datavalue) {
-		super(propertyId);
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_VALUE);
-		this.setDatatype(datatype);
-		this.setDatavalue(datavalue);
-	}
-
 	@JsonIgnore
 	@Override
 	public Value getValue() {

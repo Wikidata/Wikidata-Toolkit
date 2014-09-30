@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -93,44 +92,6 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonTermedDocument() {
-	}
-
-	/**
-	 * Copy constructor. Can be used for converting other implementations of
-	 * {@link TermedDocument} into objects of this class for conversion to JSON.
-	 *
-	 * @param source
-	 *            the object to copy
-	 */
-	public JacksonTermedDocument(TermedDocument source) {
-
-		// build id
-		this.entityId = source.getEntityId().getId();
-		this.siteIri = source.getEntityId().getSiteIri();
-
-		// build aliases
-		for (Entry<String, List<MonolingualTextValue>> mltvs : source
-				.getAliases().entrySet()) {
-			List<JacksonMonolingualTextValue> value = new LinkedList<>();
-			for (MonolingualTextValue mltv : mltvs.getValue()) {
-				value.add(new JacksonMonolingualTextValue(mltv));
-			}
-			this.aliases.put(mltvs.getKey(), value);
-		}
-
-		// build labels
-		for (Entry<String, MonolingualTextValue> mltvs : source.getLabels()
-				.entrySet()) {
-			this.labels.put(mltvs.getKey(), new JacksonMonolingualTextValue(
-					mltvs.getValue()));
-		}
-
-		// build descriptions
-		for (Entry<String, MonolingualTextValue> mltvs : source
-				.getDescriptions().entrySet()) {
-			this.descriptions.put(mltvs.getKey(),
-					new JacksonMonolingualTextValue(mltvs.getValue()));
-		}
 	}
 
 	/**

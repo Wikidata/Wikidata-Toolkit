@@ -43,16 +43,6 @@ public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE);
 	}
 
-	/**
-	 * TODO Review the utility of this constructor.
-	 *
-	 * @param propertyId
-	 */
-	public JacksonSomeValueSnak(String propertyId) {
-		super(propertyId);
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE);
-	}
-
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);

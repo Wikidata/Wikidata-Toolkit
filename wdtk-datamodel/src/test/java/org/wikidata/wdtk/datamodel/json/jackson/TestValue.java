@@ -56,13 +56,12 @@ public class TestValue {
 	@Test
 	public void testStringValueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonValue result = mapper.readValue(
-				JsonTestData.JSON_STRING_VALUE, JacksonValue.class);
+		JacksonValue result = mapper.readValue(JsonTestData.JSON_STRING_VALUE,
+				JacksonValue.class);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueString);
-		assertEquals(result.getType(),
-				JsonTestData.TEST_STRING_VALUE.getType());
+		assertEquals(result.getType(), JsonTestData.TEST_STRING_VALUE.getType());
 		assertEquals(((JacksonValueString) result).getValue(),
 				JsonTestData.TEST_STRING_VALUE.getValue());
 	}
@@ -71,8 +70,8 @@ public class TestValue {
 	public void testEntityIdValueToJson() throws JsonProcessingException {
 		String result = mapper
 				.writeValueAsString(JsonTestData.TEST_ENTITY_ID_VALUE);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_ENTITY_ID_VALUE, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_ENTITY_ID_VALUE,
+				result);
 	}
 
 	@Test
@@ -91,24 +90,22 @@ public class TestValue {
 
 	@Test
 	public void testTimeValueToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_TIME_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_TIME_VALUE,
-				result);
+		String result = mapper.writeValueAsString(JsonTestData.TEST_TIME_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_TIME_VALUE, result);
 	}
 
 	@Test
 	public void testTimeValueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonValue result = mapper.readValue(
-				JsonTestData.JSON_TIME_VALUE, JacksonValue.class);
+		JacksonValue result = mapper.readValue(JsonTestData.JSON_TIME_VALUE,
+				JacksonValue.class);
 		JacksonValueTime castedResult = (JacksonValueTime) result;
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueTime);
-		assertEquals(result.getType(),
-				JsonTestData.TEST_TIME_VALUE.getType());
-		assertEquals((castedResult).getValue(),
+		assertEquals(result.getType(), JsonTestData.TEST_TIME_VALUE.getType());
+
+		assertEquals(castedResult.getValue(),
 				JsonTestData.TEST_TIME_VALUE.getValue());
 
 		// test if every field contains the correct value
@@ -155,8 +152,7 @@ public class TestValue {
 	public void testGlobeCoordinateValueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonValue result = mapper.readValue(
-				JsonTestData.JSON_GLOBE_COORDINATES_VALUE,
-				JacksonValue.class);
+				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, JacksonValue.class);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueGlobeCoordinates);
@@ -170,8 +166,8 @@ public class TestValue {
 	public void testQuantityValueToJson() throws JsonProcessingException {
 		String result = mapper
 				.writeValueAsString(JsonTestData.TEST_QUANTITY_VALUE);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_QUANTITY_VALUE, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_QUANTITY_VALUE,
+				result);
 	}
 
 	@Test
@@ -200,19 +196,11 @@ public class TestValue {
 	public void testMltDatavalueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonValue result = mapper.readValue(
-				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE,
-				JacksonValue.class);
+				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE, JacksonValue.class);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueMonolingualText);
 		assertEquals((result), JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE);
 	}
 
-	@Test
-	public void testMltDatavalueConstructor() {
-		assertEquals(JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE,
-				new JacksonValueMonolingualText(
-						JsonTestData.TEST_MLTV_TERM_VALUE));
-
-	}
 }

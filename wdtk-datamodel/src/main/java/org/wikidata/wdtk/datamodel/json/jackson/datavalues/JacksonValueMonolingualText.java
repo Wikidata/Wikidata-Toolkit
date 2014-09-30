@@ -60,27 +60,6 @@ public class JacksonValueMonolingualText extends JacksonValue implements
 	}
 
 	/**
-	 * TODO Review utility of this constructor.
-	 *
-	 * @param language
-	 * @param value
-	 */
-	public JacksonValueMonolingualText(String language, String value) {
-		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
-		this.value = new JacksonInnerMonolingualText(language, value);
-	}
-
-	/**
-	 * Copy constructor.
-	 *
-	 * @param mltv
-	 *            the value to copy from
-	 */
-	public JacksonValueMonolingualText(MonolingualTextValue mltv) {
-		this(mltv.getLanguageCode(), mltv.getText());
-	}
-
-	/**
 	 * Returns the inner value helper object. Only for use by Jackson during
 	 * serialization.
 	 *

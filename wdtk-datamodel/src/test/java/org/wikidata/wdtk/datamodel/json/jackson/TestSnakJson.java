@@ -79,20 +79,20 @@ public class TestSnakJson {
 	public void testCommonsValueSnakToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonSnak result = mapper.readValue(
-				JsonTestData.JSON_VALUE_SNAK_COMMONS_MEDIA,
+				JsonTestData.JSON_VALUE_SNAK_STRING,
 				JacksonSnak.class);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueSnak);
-		assertEquals(result, JsonTestData.TEST_COMMON_VALUE_SNAK);
+		assertEquals(result, JsonTestData.TEST_STRING_VALUE_SNAK);
 	}
 
 	@Test
 	public void testCommonsValueSnakToJson() throws JsonProcessingException {
 		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_COMMON_VALUE_SNAK);
+				.writeValueAsString(JsonTestData.TEST_STRING_VALUE_SNAK);
 		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_VALUE_SNAK_COMMONS_MEDIA, result);
+				JsonTestData.JSON_VALUE_SNAK_STRING, result);
 	}
 
 }

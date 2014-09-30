@@ -77,15 +77,6 @@ public abstract class JacksonSnak implements Snak {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor.
-	 *
-	 * @param propertyId
-	 */
-	protected JacksonSnak(String propertyId) {
-		this.property = propertyId;
-	}
-
-	/**
 	 * Returns the property id string. Only for use by Jackson during
 	 * serialization.
 	 *

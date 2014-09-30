@@ -43,16 +43,6 @@ public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_NOVALUE);
 	}
 
-	/**
-	 * TODO Review the utility of this constructor.
-	 * 
-	 * @param propertyId
-	 */
-	public JacksonNoValueSnak(String propertyId) {
-		super(propertyId);
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_NOVALUE);
-	}
-
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);

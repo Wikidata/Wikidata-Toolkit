@@ -27,6 +27,8 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -125,8 +127,7 @@ public class TestItemDocument {
 				JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(JsonTestData.getTestMltvMap(),
-				result.getDescriptions());
+		assertEquals(JsonTestData.getTestMltvMap(), result.getDescriptions());
 	}
 
 	@Test
@@ -164,9 +165,8 @@ public class TestItemDocument {
 	public void testItemIdToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 
-		JacksonItemDocument result = mapper
-				.readValue(JsonTestData.JSON_WRAPPED_ITEMID,
-						JacksonItemDocument.class);
+		JacksonItemDocument result = mapper.readValue(
+				JsonTestData.JSON_WRAPPED_ITEMID, JacksonItemDocument.class);
 
 		assertNotNull(result);
 		assertEquals(JsonTestData.getTestItemId(), result.getEntityId());
@@ -178,25 +178,26 @@ public class TestItemDocument {
 		document.setSiteLinks(JsonTestData.getTestSiteLinkMap());
 
 		String result = mapper.writeValueAsString(document);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_WRAPPED_SITE_LINK, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_SITE_LINK,
+				result);
 	}
 
 	@Test
 	public void testSiteLinksToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonItemDocument result = mapper.readValue(
-				JsonTestData.JSON_WRAPPED_SITE_LINK,
-				JacksonItemDocument.class);
+				JsonTestData.JSON_WRAPPED_SITE_LINK, JacksonItemDocument.class);
 
 		assertNotNull(result);
-		assertEquals(JsonTestData.getTestSiteLinkMap(),
-				result.getSiteLinks());
+		assertEquals(JsonTestData.getTestSiteLinkMap(), result.getSiteLinks());
 	}
 
 	@Test
 	public void testGenerationFromOtherItemDocument() {
-		JacksonItemDocument copy = new JacksonItemDocument(fullDocument);
+		DataModelConverter converter = new DataModelConverter(
+				new JacksonObjectFactory());
+		ItemDocument copy = converter.convert(fullDocument);
+
 		assertEquals(fullDocument, copy);
 	}
 }

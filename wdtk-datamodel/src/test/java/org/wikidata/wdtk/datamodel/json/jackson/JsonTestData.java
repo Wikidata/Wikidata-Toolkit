@@ -22,17 +22,18 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
@@ -50,12 +51,16 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
  */
 public class JsonTestData {
 
+	public static final DataObjectFactory JACKSON_OBJECT_FACTORY = new JacksonObjectFactory();
+
 	// TODO maybe decompose the time a bit to have less magic strings in it
 
 	public static final String JSON_ENTITY_TYPE_ITEM = "item";
 
 	// the id's used in the tests
 	public static final String TEST_PROPERTY_ID = "P1";
+	public static final PropertyIdValue TEST_PROPERTY_ID_VALUE = Datamodel
+			.makeWikidataPropertyIdValue(TEST_PROPERTY_ID);
 	public static final String TEST_ITEM_ID = "Q1";
 	public static final int TEST_NUMERIC_ID = 1;
 	public static final String TEST_STATEMENT_ID = "statement_foobar";
@@ -92,10 +97,10 @@ public class JsonTestData {
 			+ TEST_PROPERTY_ID + "\"}";
 	public static final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\""
 			+ TEST_PROPERTY_ID + "\"}";
-	public static final String JSON_VALUE_SNAK_COMMONS_MEDIA = "{\"snaktype\":\"value\",\"property\":\""
+	public static final String JSON_VALUE_SNAK_STRING = "{\"snaktype\":\"value\",\"property\":\""
 			+ TEST_PROPERTY_ID
 			+ "\",\"datatype\":\""
-			+ JacksonDatatypeId.JSON_DT_COMMONS_MEDIA
+			+ JacksonDatatypeId.JSON_DT_STRING
 			+ "\",\"datavalue\":"
 			+ JSON_STRING_VALUE + "}";
 
@@ -121,32 +126,31 @@ public class JsonTestData {
 	// should (of course) correspond to the JSON strings counterpart
 	public static final JacksonMonolingualTextValue TEST_MLTV_TERM_VALUE = new JacksonMonolingualTextValue(
 			"en", "foobar");
-	public static final JacksonSiteLink TEST_SITE_LINK = new JacksonSiteLink(
-			"enwiki", "foobar");
+	public static final JacksonSiteLink TEST_SITE_LINK = (JacksonSiteLink) JACKSON_OBJECT_FACTORY
+			.getSiteLink("foobar", "enwiki", Collections.<String> emptyList());
 
-	public static final JacksonValueString TEST_STRING_VALUE = new JacksonValueString(
-			"foobar");
+	public static final JacksonValueString TEST_STRING_VALUE = (JacksonValueString) JACKSON_OBJECT_FACTORY
+			.getStringValue("foobar");
 	public static final JacksonValueEntityId TEST_ENTITY_ID_VALUE = new JacksonValueEntityId(
 			new JacksonInnerEntityId(JSON_ENTITY_TYPE_ITEM, TEST_NUMERIC_ID));
-	public static final JacksonValueTime TEST_TIME_VALUE = new JacksonValueTime(
-			new JacksonInnerTime("+00000002013-10-28T00:00:00Z", 0, 0, 0, 11,
-					"http://www.wikidata.org/entity/Q1985727"));
-	public static final JacksonValueGlobeCoordinates TEST_GLOBE_COORDINATES_VALUE = new JacksonValueGlobeCoordinates(
-			new JacksonInnerGlobeCoordinates(-90, 0, 10,
-					"http://www.wikidata.org/entity/Q2"));
-	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = new JacksonValueQuantity(
-			new JacksonInnerQuantity(new BigDecimal(1), new BigDecimal(1.5),
-					new BigDecimal(-0.5)));
-	public static final JacksonValueMonolingualText TEST_MONOLINGUAL_TEXT_VALUE = new JacksonValueMonolingualText(
-			"en", "foobar");
+	public static final JacksonValueTime TEST_TIME_VALUE = (JacksonValueTime) JACKSON_OBJECT_FACTORY
+			.getTimeValue(2013, (byte) 10, (byte) 28, (byte) 0, (byte) 0,
+					(byte) 0, (byte) 11, 0, 0, 0, TimeValue.CM_GREGORIAN_PRO);
+	public static final JacksonValueGlobeCoordinates TEST_GLOBE_COORDINATES_VALUE = (JacksonValueGlobeCoordinates) JACKSON_OBJECT_FACTORY
+			.getGlobeCoordinatesValue(-90, 0, 10,
+					GlobeCoordinatesValue.GLOBE_EARTH);
+	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
+			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),
+					new BigDecimal(1.5));
+	public static final JacksonValueMonolingualText TEST_MONOLINGUAL_TEXT_VALUE = (JacksonValueMonolingualText) JACKSON_OBJECT_FACTORY
+			.getMonolingualTextValue("foobar", "en");
 
-	public static final JacksonNoValueSnak TEST_NOVALUE_SNAK = new JacksonNoValueSnak(
-			TEST_PROPERTY_ID);
-	public static final JacksonSomeValueSnak TEST_SOMEVALUE_SNAK = new JacksonSomeValueSnak(
-			TEST_PROPERTY_ID);
-	public static final JacksonValueSnak TEST_COMMON_VALUE_SNAK = new JacksonValueSnak(
-			TEST_PROPERTY_ID, JacksonDatatypeId.JSON_DT_COMMONS_MEDIA,
-			TEST_STRING_VALUE);
+	public static final JacksonNoValueSnak TEST_NOVALUE_SNAK = (JacksonNoValueSnak) JACKSON_OBJECT_FACTORY
+			.getNoValueSnak(TEST_PROPERTY_ID_VALUE);
+	public static final JacksonSomeValueSnak TEST_SOMEVALUE_SNAK = (JacksonSomeValueSnak) JACKSON_OBJECT_FACTORY
+			.getSomeValueSnak(TEST_PROPERTY_ID_VALUE);
+	public static final JacksonValueSnak TEST_STRING_VALUE_SNAK = (JacksonValueSnak) JACKSON_OBJECT_FACTORY
+			.getValueSnak(TEST_PROPERTY_ID_VALUE, TEST_STRING_VALUE);
 
 	// TODO continue testing using stringValueSnak, timeValueSnak,
 	// globeCoordinateValueSnak
