@@ -43,9 +43,9 @@ import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 /**
  * This class demonstrates how to write an application that downloads and
  * processes dumpfiles from Wikidata.org.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DumpProcessingExample {
 
@@ -67,7 +67,7 @@ public class DumpProcessingExample {
 
 		// Our local example class ItemStatisticsProcessor counts the number of
 		// labels etc. in Wikibase item documents to print out some statistics:
-		EntityDocumentProcessor edpItemStats = new ItemStatisticsProcessor();
+		ItemStatisticsProcessor edpItemStats = new ItemStatisticsProcessor();
 		// Subscribe to the most recent entity documents of type wikibase item:
 		dumpProcessingController.registerEntityDocumentProcessor(edpItemStats,
 				MwRevision.MODEL_WIKIBASE_ITEM, true);
@@ -82,11 +82,13 @@ public class DumpProcessingExample {
 		// Start processing (may trigger downloads where needed):
 
 		// Process all recent dumps (including daily dumps as far as avaiable)
-		dumpProcessingController.processAllRecentRevisionDumps();
+		// dumpProcessingController.processAllRecentRevisionDumps();
 		// // Alternatively: Process just a recent daily dump (for testing):
 		// dumpProcessingController.processMostRecentDailyDump();
 		// // Alternatively: Process just the most recent main dump:
-		// dumpProcessingController.processMostRecentMainDump();
+		dumpProcessingController.processMostRecentJsonDump();
+
+		edpItemStats.finishProcessingEntityDocuments();
 	}
 
 	/**
@@ -121,9 +123,9 @@ public class DumpProcessingExample {
 	 * <p>
 	 * This could be replaced with any other class that processes entity
 	 * documents in some way.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	static class ItemStatisticsProcessor implements EntityDocumentProcessor {
 
@@ -178,7 +180,6 @@ public class DumpProcessingExample {
 			// receiving properties)
 		}
 
-		@Override
 		public void finishProcessingEntityDocuments() {
 			printReport(); // print a final report
 
@@ -216,7 +217,7 @@ public class DumpProcessingExample {
 		/**
 		 * Counts additional occurrences of a property as the main property of
 		 * statements.
-		 * 
+		 *
 		 * @param property
 		 *            the property to count
 		 * @param count
@@ -231,7 +232,7 @@ public class DumpProcessingExample {
 		/**
 		 * Counts additional occurrences of a property as qualifier property of
 		 * statements.
-		 * 
+		 *
 		 * @param property
 		 *            the property to count
 		 * @param count
@@ -246,7 +247,7 @@ public class DumpProcessingExample {
 		/**
 		 * Counts additional occurrences of a property as property in
 		 * references.
-		 * 
+		 *
 		 * @param property
 		 *            the property to count
 		 * @param count
@@ -260,7 +261,7 @@ public class DumpProcessingExample {
 
 		/**
 		 * Initializes the counters for a property to zero if not done yet.
-		 * 
+		 *
 		 * @param property
 		 *            the property to count
 		 */

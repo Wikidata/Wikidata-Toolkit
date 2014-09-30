@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -29,6 +29,8 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 
 public class WmfLocalDumpFileTest {

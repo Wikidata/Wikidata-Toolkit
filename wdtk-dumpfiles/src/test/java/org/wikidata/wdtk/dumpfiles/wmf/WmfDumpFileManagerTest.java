@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -32,6 +32,14 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineDailyDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineStandardDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;

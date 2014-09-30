@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.oldjson;
 
 /*
  * #%L
@@ -31,13 +31,13 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 /**
  * This class is a handler for mono-lingual text values.
- * 
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 public class MonolingualTextValueHandler {
 
-	private DataObjectFactory factory;
+	private final DataObjectFactory factory;
 
 	public MonolingualTextValueHandler(DataObjectFactory factory) {
 		this.factory = factory;
@@ -73,7 +73,7 @@ public class MonolingualTextValueHandler {
 				values = this.extractValues(arrayEntries);
 			} else if (objEntries != null) { // it is an object
 				values = this.extractValues(objEntries);
-			} else if(stringEntry != null){ // it is a string
+			} else if (stringEntry != null) { // it is a string
 				values.add(stringEntry);
 			}
 			// else do nothing…
@@ -118,7 +118,7 @@ public class MonolingualTextValueHandler {
 
 	/**
 	 * Extract the entries of an JSONArray as a list of strings.
-	 * 
+	 *
 	 * @param arrayEntries
 	 *            is a JSONArray containing the desired Strings straight ahead.
 	 *            In case of other formats the entries which are not strings

@@ -36,9 +36,9 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
  * references to avoid duplicates and to allow reference triples to be
  * serialized separately (for more efficient encodings in syntaxes like Turtle
  * or RDF/XML).
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ReferenceRdfConverter {
 
@@ -51,7 +51,7 @@ public class ReferenceRdfConverter {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param rdfWriter
 	 *            object to use for constructing URI objects
 	 * @param snakRdfConverter
@@ -70,7 +70,7 @@ public class ReferenceRdfConverter {
 	/**
 	 * Adds the given reference to the list of references that should still be
 	 * serialized, and returns the RDF resource that will be used as a subject.
-	 * 
+	 *
 	 * @param reference
 	 *            the reference to be serialized
 	 * @return RDF resource that represents this reference
@@ -90,7 +90,7 @@ public class ReferenceRdfConverter {
 	 * are generated for serializing snaks in references will be written right
 	 * afterwards. This will also trigger any other auxiliary triples to be
 	 * written that the snak converter object may have buffered.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 *             if there was a problem writing the restrictions
 	 */

@@ -37,9 +37,9 @@ import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 /**
  * This class implements {@link EntityDocumentsSerializer} to provide a RDF
  * serializer to render RDF graphs of {@link EntityDocument} objects.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class RdfSerializer implements EntityDocumentsSerializer {
 
@@ -70,7 +70,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Creates a new RDF serializer for the specified format and output stream.
-	 * 
+	 *
 	 * @param format
 	 *            RDF format, such as RDFFormat.TURTLE
 	 * @param output
@@ -87,7 +87,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -97,7 +97,7 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Returns the number of triples that have been written so far.
-	 * 
+	 *
 	 * @return number of triples
 	 */
 	public long getTripleCount() {
@@ -131,11 +131,6 @@ public class RdfSerializer implements EntityDocumentsSerializer {
 		} catch (RDFHandlerException e) { // we cannot recover here
 			throw new RuntimeException(e.toString(), e);
 		}
-	}
-
-	@Override
-	public void finishProcessingEntityDocuments() {
-		// do nothing
 	}
 
 	@Override

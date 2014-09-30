@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -20,52 +20,41 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
-/**
- * Class for representing incremental daily dump files as published by the
- * Wikimedia Foundation. The dump file and additional information about its
- * status is online and web access is needed to fetch this data on demand.
- * 
- * @author Markus Kroetzsch
- * 
- */
-class WmfOnlineDailyDumpFile extends WmfDumpFile {
+public class JsonOnlineDumpFile extends WmfDumpFile {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(WmfOnlineDailyDumpFile.class);
+			.getLogger(JsonOnlineDumpFile.class);
 
 	final WebResourceFetcher webResourceFetcher;
 	final DirectoryManager dumpfileDirectoryManager;
 
-	/**
-	 * Set to true when all required files have been downloaded successfully.
-	 */
-	boolean isPrepared = false;
+	private boolean isPrepared;
 
 	/**
-	 * Constructor.
-	 * 
+	 * Constructor. Currently only "wikidatawiki" is supported as a project
+	 * name, since the dumps are placed under a non-systematic directory
+	 * structure that must be hard-coded for each project.
+	 *
 	 * @param dateStamp
 	 *            dump date in format YYYYMMDD
 	 * @param projectName
-	 *            project name string
+	 *            project name string (e.g. "wikidatawiki")
 	 * @param webResourceFetcher
 	 *            object to use for accessing the web
 	 * @param dumpfileDirectoryManager
 	 *            the directory manager for the directory where dumps should be
 	 *            downloaded to
 	 */
-	public WmfOnlineDailyDumpFile(String dateStamp, String projectName,
+	public JsonOnlineDumpFile(String dateStamp, String projectName,
 			WebResourceFetcher webResourceFetcher,
 			DirectoryManager dumpfileDirectoryManager) {
 		super(dateStamp, projectName);
@@ -75,21 +64,21 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 	@Override
 	public DumpContentType getDumpContentType() {
-		return DumpContentType.DAILY;
+		return DumpContentType.JSON;
 	}
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
 		prepareDumpFile();
 
-		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
 				this.projectName, this.dateStamp);
 		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
-						DumpContentType.DAILY, this.dateStamp));
+						DumpContentType.JSON, this.dateStamp));
 
 		return dailyDirectoryManager.getInputStreamForFile(fileName,
-				WmfDumpFile.getDumpFileCompressionType(DumpContentType.DAILY));
+				WmfDumpFile.getDumpFileCompressionType(DumpContentType.JSON));
 	}
 
 	@Override
@@ -98,11 +87,11 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 			return;
 		}
 
-		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.DAILY,
+		String fileName = WmfDumpFile.getDumpFileName(DumpContentType.JSON,
 				this.projectName, this.dateStamp);
 		String urlString = getBaseUrl() + fileName;
 
-		logger.info("Downloading daily dump file " + fileName + " from "
+		logger.info("Downloading JSON dump file " + fileName + " from "
 				+ urlString + " ...");
 
 		if (!isAvailable()) {
@@ -112,46 +101,34 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 
 		DirectoryManager dailyDirectoryManager = this.dumpfileDirectoryManager
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
-						DumpContentType.DAILY, this.dateStamp));
+						DumpContentType.JSON, this.dateStamp));
 
-		long size = 0;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
-			size = dailyDirectoryManager
-					.createFileAtomic(fileName, inputStream);
+			dailyDirectoryManager.createFile(fileName, inputStream);
 		}
 
 		this.isPrepared = true;
 
-		logger.info("... completed download of daily dump file " + fileName
-				+ " from " + urlString + " (" + size + " bytes)");
+		logger.info("... completed download of JSON dump file " + fileName
+				+ " from " + urlString);
 	}
 
 	@Override
 	protected boolean fetchIsDone() {
-		boolean result;
-		try (InputStream in = this.webResourceFetcher
-				.getInputStreamForUrl(getBaseUrl() + "status.txt")) {
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(in, StandardCharsets.UTF_8));
-			String inputLine = bufferedReader.readLine();
-			bufferedReader.close();
-			result = "done".equals(inputLine);
-		} catch (IOException e) { // file not found or not readable
-			result = false;
-		}
-		return result;
+		// WMF provides no easy way to check this for these files;
+		// so just assume it is done
+		return true;
 	}
 
 	/**
 	 * Returns the base URL under which the files for this dump are found.
-	 * 
+	 *
 	 * @return base URL
 	 */
 	String getBaseUrl() {
-		return WmfDumpFile.DUMP_SITE_BASE_URL
-				+ WmfDumpFile.getDumpFileWebDirectory(DumpContentType.DAILY)
-				+ this.projectName + "/" + this.dateStamp + "/";
+		return WmfDumpFile.getDumpFileWebDirectory(DumpContentType.JSON,
+				this.projectName);
 	}
 
 }

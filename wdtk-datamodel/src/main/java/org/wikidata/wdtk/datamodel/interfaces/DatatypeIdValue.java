@@ -57,5 +57,9 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	 * IRI of the quantity datatype in Wikibase.
 	 */
 	static final String DT_QUANTITY = "http://www.wikidata.org/ontology#propertyTypeQuantity";
+	/**
+	 * IRI of the monolingual text datatype in Wikibase.
+	 */
+	static final String DT_MONOLINGUAL_TEXT = "http://www.wikidata.org/ontology#propertyTypeMonolingualText";
 
 }

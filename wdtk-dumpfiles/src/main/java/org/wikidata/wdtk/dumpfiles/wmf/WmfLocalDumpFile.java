@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 /*
  * #%L
@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
 /**

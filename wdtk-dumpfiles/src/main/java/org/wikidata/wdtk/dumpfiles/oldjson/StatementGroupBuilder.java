@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.oldjson;
 
 /*
  * #%L
@@ -36,9 +36,9 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 /**
  * A helper class to construct StatementGroups from lists of ungrouped
  * statements.
- * 
+ *
  * @author Fredo Erxleben
- * 
+ *
  */
 class StatementGroupBuilder {
 
@@ -46,7 +46,7 @@ class StatementGroupBuilder {
 
 	/**
 	 * Creates a new StatementGroupBuilder.
-	 * 
+	 *
 	 * @param factory
 	 *            the DataObjectFactory to be used for generating
 	 *            StatementGroups.
@@ -57,7 +57,7 @@ class StatementGroupBuilder {
 
 	/**
 	 * Creates a list of StatementGroups from a list of ungrouped Statements.
-	 * 
+	 *
 	 * @param statements
 	 *            a list of Statements
 	 * @return
@@ -93,16 +93,16 @@ class StatementGroupBuilder {
 	/**
 	 * A comparator for StatementRank objects. The natural order of ranks
 	 * (greatest to least) is PREFERRED, NORMAL, DEPRECATED.
-	 * 
+	 *
 	 * @author Fredo Erxleben
-	 * 
+	 *
 	 */
 	private class RankComparator implements Comparator<Statement> {
 
 		/**
 		 * Maps a StatementRank to an integer as follows: PREFERRED to 1, NORMAL
 		 * to 0, and DEPRECATED to -1.
-		 * 
+		 *
 		 * @param rank
 		 *            the rank to convert
 		 * @return integer value for the rank

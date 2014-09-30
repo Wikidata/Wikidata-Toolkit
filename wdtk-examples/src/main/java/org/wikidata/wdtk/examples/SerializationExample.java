@@ -35,9 +35,9 @@ import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
  * used in the Wikibase API. The compressed output will be written into a file
  * named WikidataDump.json.bz2. You can find it in the example directory after
  * you ran the example code.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class SerializationExample {
 

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.dumpfiles;
+package org.wikidata.wdtk.dumpfiles.wmf;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.util.CompressionType;
 
 /*
@@ -31,16 +33,16 @@ import org.wikidata.wdtk.util.CompressionType;
 
 /**
  * Abstract base class for dump files provided by the Wikimedia Foundation.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public abstract class WmfDumpFile implements MwDumpFile {
 
 	/**
 	 * The default URL of the website to obtain the dump files from.
 	 */
-	static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
+	protected static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
 
 	/**
 	 * Hash map defining the relative Web directory of each type of dump.
@@ -51,6 +53,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.CURRENT, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.FULL, "");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.SITES, "");
+		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.JSON, "other/");
 	}
 
 	/**
@@ -65,6 +68,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.POSTFIXES.put(DumpContentType.FULL,
 				"-pages-meta-history.xml.bz2");
 		WmfDumpFile.POSTFIXES.put(DumpContentType.SITES, "-sites.sql.gz");
+		WmfDumpFile.POSTFIXES.put(DumpContentType.JSON, ".json.gz");
 	}
 
 	/**
@@ -80,6 +84,8 @@ public abstract class WmfDumpFile implements MwDumpFile {
 				CompressionType.BZ2);
 		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.SITES,
 				CompressionType.GZIP);
+		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.JSON,
+				CompressionType.GZIP);
 	}
 
 	/**
@@ -93,10 +99,11 @@ public abstract class WmfDumpFile implements MwDumpFile {
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.CURRENT, true);
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.FULL, true);
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.SITES, false);
+		WmfDumpFile.REVISION_DUMP.put(DumpContentType.JSON, false);
 	}
 
-	final String dateStamp;
-	final String projectName;
+	protected final String dateStamp;
+	protected final String projectName;
 	Boolean isDone;
 
 	public WmfDumpFile(String dateStamp, String projectName) {
@@ -136,8 +143,13 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Finds out if the dump is ready.
-	 * 
+	 * Finds out if the dump is ready. For online dumps, this should return true
+	 * if the file can be fetched from the Web. For local dumps, this should
+	 * return true if the file is complete and not corrupted. For some types of
+	 * dumps, there are ways of checking this easily (i.e., without reading the
+	 * full file). If this is not possible, then the method should just return
+	 * "true."
+	 *
 	 * @return true if the dump is done
 	 */
 	protected abstract boolean fetchIsDone();
@@ -145,7 +157,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the ending used by the Wikimedia-provided dumpfile names of the
 	 * given type.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return postfix of the dumpfile name
@@ -162,18 +174,32 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Returns the relative directory on the Web site where dumpfiles of the
+	 * Returns the absolute directory on the Web site where dumpfiles of the
 	 * given type can be found.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return relative web directory for the current dumpfiles
 	 * @throws IllegalArgumentException
 	 *             if the given dump file type is not known
 	 */
-	public static String getDumpFileWebDirectory(DumpContentType dumpContentType) {
-		if (WmfDumpFile.WEB_DIRECTORY.containsKey(dumpContentType)) {
-			return WmfDumpFile.WEB_DIRECTORY.get(dumpContentType);
+	public static String getDumpFileWebDirectory(
+			DumpContentType dumpContentType, String projectName) {
+		if (dumpContentType == DumpContentType.JSON) {
+			if ("wikidatawiki".equals(projectName)) {
+				return WmfDumpFile.DUMP_SITE_BASE_URL
+						+ WmfDumpFile.WEB_DIRECTORY.get(dumpContentType)
+						+ "wikidata" + "/";
+			} else {
+				throw new RuntimeException(
+						"Wikimedia Foundation uses non-systematic directory names for this type of dump file."
+								+ " I don't know where to find dumps of project "
+								+ projectName);
+			}
+		} else if (WmfDumpFile.WEB_DIRECTORY.containsKey(dumpContentType)) {
+			return WmfDumpFile.DUMP_SITE_BASE_URL
+					+ WmfDumpFile.WEB_DIRECTORY.get(dumpContentType)
+					+ projectName + "/";
 		} else {
 			throw new IllegalArgumentException("Unsupported dump type "
 					+ dumpContentType);
@@ -182,7 +208,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 
 	/**
 	 * Returns the compression type of this kind of dump file.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return compression type
@@ -202,7 +228,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the name of the directory where the dumpfile of the given type
 	 * and date should be stored.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param dateStamp
@@ -219,7 +245,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * is created by {@link #getDumpFileDirectoryName(DumpContentType, String)}.
 	 * It is not checked that the given directory name has the right format; if
 	 * it has not, the result will not be a date stamp but some other string.
-	 * 
+	 *
 	 * @param dumpContentType
 	 * @param directoryName
 	 * @return the date stamp
@@ -233,26 +259,30 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Returns the name under which this dump file. This is the name used online
 	 * and also locally when downloading the file.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of the dump
 	 * @param projectName
-	 *            the project name, e.g., wikidatawiki
+	 *            the project name, e.g. "wikidatawiki"
 	 * @param dateStamp
 	 *            the date of the dump in format YYYYMMDD
 	 * @return file name string
 	 */
 	public static String getDumpFileName(DumpContentType dumpContentType,
 			String projectName, String dateStamp) {
-		return projectName + "-" + dateStamp
-				+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
+		if (dumpContentType == DumpContentType.JSON) {
+			return dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType);
+		} else {
+			return projectName + "-" + dateStamp
+					+ WmfDumpFile.getDumpFilePostfix(dumpContentType);
+		}
 	}
 
 	/**
 	 * Returns true if the given dump file type contains page revisions and
 	 * false if it does not. Dumps that do not contain pages are for auxiliary
 	 * information such as linked sites.
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump
 	 * @return true if the dumpfile contains revisions

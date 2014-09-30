@@ -35,6 +35,8 @@ import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
@@ -42,9 +44,9 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Helper class that stores all information passed to it for later testing.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class TestMwRevisionProcessor implements MwRevisionProcessor {
 
@@ -74,9 +76,9 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Helper class that counts how many items it gets.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class TestEntityDocumentProcessor implements EntityDocumentProcessor {
 
@@ -93,16 +95,11 @@ public class MwDumpFileProcessingTest {
 			this.propCount++;
 		}
 
-		@Override
-		public void finishProcessingEntityDocuments() {
-			// nothing to do
-		}
-
 	}
 
 	/**
 	 * Generates a simple item revision for testing purposes.
-	 * 
+	 *
 	 * @param number
 	 */
 	private MwRevision getItemRevision(int number) {
@@ -123,7 +120,7 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Generates a simple property revision for testing purposes.
-	 * 
+	 *
 	 * @param number
 	 */
 	private MwRevision getPropertyRevision(int number) {
@@ -145,7 +142,7 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Generates a simple page revision for testing purposes.
-	 * 
+	 *
 	 * @param number
 	 */
 	private MwRevision getPageRevision(int number) {
@@ -167,7 +164,7 @@ public class MwDumpFileProcessingTest {
 	/**
 	 * Assert that two revisions are equal. Better than using equals() since it
 	 * generates more useful error reports.
-	 * 
+	 *
 	 * @param rev1
 	 * @param rev2
 	 */
@@ -199,7 +196,7 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Assert that two lists contain the same revisions in the same order.
-	 * 
+	 *
 	 * @param list1
 	 * @param list2
 	 */
@@ -277,7 +274,7 @@ public class MwDumpFileProcessingTest {
 	/**
 	 * Creates a mocked local dump file with three pages, each with three
 	 * revisions starting from the given baseId (plus some offset per page).
-	 * 
+	 *
 	 * @param dateStamp
 	 * @param baseId
 	 * @param dumpContentType
