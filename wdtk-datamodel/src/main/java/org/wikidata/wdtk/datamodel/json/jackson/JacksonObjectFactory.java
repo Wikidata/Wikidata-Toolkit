@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -75,7 +75,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
  */
 public class JacksonObjectFactory implements DataObjectFactory {
 
-	private final DataModelConverter dataModelConverter = new DataModelConverter(
+	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
 			this);
 
 	@Override
@@ -172,7 +172,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 					getDefaultJsonPropertyTypeForValueType(value));
 		} else {
 			return getJacksonValueSnak(propertyId,
-					(JacksonValue) this.dataModelConverter.convertValue(value),
+					(JacksonValue) this.dataModelConverter.copyValue(value),
 					getDefaultJsonPropertyTypeForValueType(value));
 		}
 	}
@@ -236,7 +236,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			result.setMainsnak((JacksonSnak) claim.getMainSnak());
 		} else {
 			result.setMainsnak((JacksonSnak) dataModelConverter
-					.convertSnak(claim.getMainSnak()));
+					.copySnak(claim.getMainSnak()));
 		}
 
 		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
@@ -257,7 +257,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				jacksonReferences.add((JacksonReference) reference);
 			} else {
 				jacksonReferences.add((JacksonReference) dataModelConverter
-						.convert(reference));
+						.copy(reference));
 			}
 		}
 		result.setReferences(jacksonReferences);
@@ -289,7 +289,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			if (statement instanceof JacksonStatement) {
 				newStatements.add(statement);
 			} else {
-				newStatements.add(this.dataModelConverter.convert(statement));
+				newStatements.add(this.dataModelConverter.copy(statement));
 			}
 		}
 		return Datamodel.makeStatementGroup(statements);
@@ -368,7 +368,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				} else {
 					propertyStatements
 							.add((JacksonStatement) this.dataModelConverter
-									.convert(s));
+									.copy(s));
 				}
 			}
 		}
@@ -383,7 +383,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			} else {
 				jacksonSiteLinks.put(siteLink.getSiteKey(),
 						(JacksonSiteLink) this.dataModelConverter
-								.convert(siteLink));
+								.copy(siteLink));
 			}
 		}
 		result.setSiteLinks(jacksonSiteLinks);
@@ -469,7 +469,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			if (snak instanceof JacksonSnak) {
 				result.add((JacksonSnak) snak);
 			} else {
-				result.add((JacksonSnak) dataModelConverter.convertSnak(snak));
+				result.add((JacksonSnak) dataModelConverter.copySnak(snak));
 			}
 		}
 		return result;

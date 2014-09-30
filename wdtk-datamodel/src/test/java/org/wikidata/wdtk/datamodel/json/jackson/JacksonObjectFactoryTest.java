@@ -20,14 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 
 public class JacksonObjectFactoryTest extends DataObjectFactoryImplTest {
 
 	public JacksonObjectFactoryTest() {
 		factory = new JacksonObjectFactory();
-		converter = new DataModelConverter(factory);
+		converter = new DatamodelConverter(factory);
 	}
 
 	// All tests inherited from superclass

@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -49,7 +49,7 @@ public class Speedtest {
 
 	private final DataObjectFactory stdFactory = new DataObjectFactoryImpl();
 	private final DataObjectFactory jacksonFactory = new JacksonObjectFactory();
-	private final DataModelConverter jacksonConverter = new DataModelConverter(
+	private final DatamodelConverter jacksonConverter = new DatamodelConverter(
 			jacksonFactory);
 	private final String baseIri = "Speedtest";
 
@@ -89,7 +89,7 @@ public class Speedtest {
 		ObjectMapper mapper = new ObjectMapper();
 		for (int i = 0; i < runs; i++) {
 			t.start();
-			ItemDocument altDocument = jacksonConverter.convert(document);
+			ItemDocument altDocument = jacksonConverter.copy(document);
 			mapper.writeValueAsString(altDocument);
 			t.stop();
 		}
@@ -104,7 +104,7 @@ public class Speedtest {
 
 		t = new Timer(baseIri, Timer.RECORD_ALL);
 		mapper = new ObjectMapper();
-		ItemDocument altDocument = jacksonConverter.convert(document);
+		ItemDocument altDocument = jacksonConverter.copy(document);
 		for (int i = 0; i < runs; i++) {
 			t.start();
 			mapper.writeValueAsString(altDocument);

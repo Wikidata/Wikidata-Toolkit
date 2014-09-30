@@ -27,7 +27,7 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -194,9 +194,9 @@ public class TestItemDocument {
 
 	@Test
 	public void testGenerationFromOtherItemDocument() {
-		DataModelConverter converter = new DataModelConverter(
+		DatamodelConverter converter = new DatamodelConverter(
 				new JacksonObjectFactory());
-		ItemDocument copy = converter.convert(fullDocument);
+		ItemDocument copy = converter.copy(fullDocument);
 
 		assertEquals(fullDocument, copy);
 	}

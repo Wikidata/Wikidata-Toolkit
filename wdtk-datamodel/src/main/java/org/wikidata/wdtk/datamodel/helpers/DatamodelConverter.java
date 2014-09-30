@@ -61,7 +61,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class DataModelConverter implements SnakVisitor<Snak>,
+public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
 
 	private final DataObjectFactory dataObjectFactory;
@@ -72,25 +72,25 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 	 * @param dataObjectFactory
 	 *            the factory to use for creating new objects
 	 */
-	public DataModelConverter(DataObjectFactory dataObjectFactory) {
+	public DatamodelConverter(DataObjectFactory dataObjectFactory) {
 		this.dataObjectFactory = dataObjectFactory;
 	}
 
-	public ItemIdValue convert(ItemIdValue object) {
+	public ItemIdValue copy(ItemIdValue object) {
 		return this.dataObjectFactory.getItemIdValue(object.getId(),
 				object.getSiteIri());
 	}
 
-	public PropertyIdValue convert(PropertyIdValue object) {
+	public PropertyIdValue copy(PropertyIdValue object) {
 		return this.dataObjectFactory.getPropertyIdValue(object.getId(),
 				object.getSiteIri());
 	}
 
-	public DatatypeIdValue convert(DatatypeIdValue object) {
+	public DatatypeIdValue copy(DatatypeIdValue object) {
 		return this.dataObjectFactory.getDatatypeIdValue(object.getIri());
 	}
 
-	public TimeValue convert(TimeValue object) {
+	public TimeValue copy(TimeValue object) {
 		return this.dataObjectFactory.getTimeValue(object.getYear(),
 				object.getMonth(), object.getDay(), object.getHour(),
 				object.getMinute(), object.getSecond(), object.getPrecision(),
@@ -98,76 +98,76 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 				object.getTimezoneOffset(), object.getPreferredCalendarModel());
 	}
 
-	public GlobeCoordinatesValue convert(GlobeCoordinatesValue object) {
+	public GlobeCoordinatesValue copy(GlobeCoordinatesValue object) {
 		return this.dataObjectFactory.getGlobeCoordinatesValue(
 				object.getLatitude(), object.getLongitude(),
 				object.getPrecision(), object.getGlobe());
 	}
 
-	public StringValue convert(StringValue object) {
+	public StringValue copy(StringValue object) {
 		return this.dataObjectFactory.getStringValue(object.getString());
 	}
 
-	public MonolingualTextValue convert(MonolingualTextValue object) {
+	public MonolingualTextValue copy(MonolingualTextValue object) {
 		return this.dataObjectFactory.getMonolingualTextValue(object.getText(),
 				object.getLanguageCode());
 	}
 
-	public QuantityValue convert(QuantityValue object) {
+	public QuantityValue copy(QuantityValue object) {
 		return this.dataObjectFactory.getQuantityValue(
 				object.getNumericValue(), object.getLowerBound(),
 				object.getUpperBound());
 	}
 
-	public ValueSnak convert(ValueSnak object) {
+	public ValueSnak copy(ValueSnak object) {
 		return this.dataObjectFactory.getValueSnak(object.getPropertyId(),
 				object.getValue());
 	}
 
-	public SomeValueSnak convert(SomeValueSnak object) {
+	public SomeValueSnak copy(SomeValueSnak object) {
 		return this.dataObjectFactory.getSomeValueSnak(object.getPropertyId());
 	}
 
-	public NoValueSnak convert(NoValueSnak object) {
+	public NoValueSnak copy(NoValueSnak object) {
 		return this.dataObjectFactory.getNoValueSnak(object.getPropertyId());
 	}
 
-	public SnakGroup convert(SnakGroup object) {
+	public SnakGroup copy(SnakGroup object) {
 		return this.dataObjectFactory.getSnakGroup(object.getSnaks());
 	}
 
-	public Claim convert(Claim object) {
+	public Claim copy(Claim object) {
 		return this.dataObjectFactory.getClaim(object.getSubject(),
 				object.getMainSnak(), object.getQualifiers());
 	}
 
-	public Reference convert(Reference object) {
+	public Reference copy(Reference object) {
 		return this.dataObjectFactory.getReference(object.getSnakGroups());
 	}
 
-	public Statement convert(Statement object) {
+	public Statement copy(Statement object) {
 		return this.dataObjectFactory.getStatement(object.getClaim(),
 				object.getReferences(), object.getRank(),
 				object.getStatementId());
 	}
 
-	public StatementGroup convert(StatementGroup object) {
+	public StatementGroup copy(StatementGroup object) {
 		return this.dataObjectFactory.getStatementGroup(object.getStatements());
 	}
 
-	public SiteLink convert(SiteLink object) {
+	public SiteLink copy(SiteLink object) {
 		return this.dataObjectFactory.getSiteLink(object.getPageTitle(),
 				object.getSiteKey(), object.getBadges());
 	}
 
-	public PropertyDocument convert(PropertyDocument object) {
+	public PropertyDocument copy(PropertyDocument object) {
 		return this.dataObjectFactory.getPropertyDocument(object
 				.getPropertyId(), new ArrayList<>(object.getLabels().values()),
 				new ArrayList<>(object.getDescriptions().values()),
 				convertAliasList(object.getAliases()), object.getDatatype());
 	}
 
-	public ItemDocument convert(ItemDocument object) {
+	public ItemDocument copy(ItemDocument object) {
 		return this.dataObjectFactory.getItemDocument(object.getItemId(),
 				new ArrayList<>(object.getLabels().values()), new ArrayList<>(
 						object.getDescriptions().values()),
@@ -185,40 +185,40 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 
 	}
 
-	public Snak convertSnak(Snak snak) {
+	public Snak copySnak(Snak snak) {
 		return snak.accept(this);
 	}
 
 	@Override
 	public Snak visit(ValueSnak snak) {
-		return convert(snak);
+		return copy(snak);
 	}
 
 	@Override
 	public Snak visit(SomeValueSnak snak) {
-		return convert(snak);
+		return copy(snak);
 	}
 
 	@Override
 	public Snak visit(NoValueSnak snak) {
-		return convert(snak);
+		return copy(snak);
 	}
 
-	public Value convertValue(Value value) {
+	public Value copyValue(Value value) {
 		return value.accept(this);
 	}
 
 	@Override
 	public Value visit(DatatypeIdValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 	@Override
 	public Value visit(EntityIdValue value) {
 		if (value instanceof ItemIdValue) {
-			return convert((ItemIdValue) value);
+			return copy((ItemIdValue) value);
 		} else if (value instanceof PropertyIdValue) {
-			return convert((PropertyIdValue) value);
+			return copy((PropertyIdValue) value);
 		} else {
 			throw new UnsupportedOperationException(
 					"Cannot convert entity id value: " + value.getClass());
@@ -227,27 +227,27 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 
 	@Override
 	public Value visit(GlobeCoordinatesValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 	@Override
 	public Value visit(QuantityValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 	@Override
 	public Value visit(StringValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 	@Override
 	public Value visit(TimeValue value) {
-		return convert(value);
+		return copy(value);
 	}
 
 }

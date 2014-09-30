@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DataModelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -80,17 +80,17 @@ public class DataObjectFactoryImplTest {
 	}
 
 	protected DataObjectFactory factory;
-	protected DataModelConverter converter;
+	protected DatamodelConverter converter;
 
 	public DataObjectFactoryImplTest() {
 		factory = new DataObjectFactoryImpl();
-		converter = new DataModelConverter(factory);
+		converter = new DatamodelConverter(factory);
 	}
 
 	@Test
 	public final void testGetItemId() {
 		ItemIdValue o1 = getTestItemIdValue(2);
-		ItemIdValue o2 = converter.convert(o1);
+		ItemIdValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -103,7 +103,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetPropertyId() {
 		PropertyIdValue o1 = getTestPropertyIdValue(2);
-		PropertyIdValue o2 = converter.convert(o1);
+		PropertyIdValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -116,7 +116,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
-		DatatypeIdValue o2 = converter.convert(o1);
+		DatatypeIdValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -125,7 +125,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetTimeValue() {
 		TimeValue o1 = getTestTimeValue(0);
-		TimeValue o2 = converter.convert(o1);
+		TimeValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -140,7 +140,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetGlobeCoordinatesValue() {
 		GlobeCoordinatesValue o1 = getTestGlobeCoordinatesValue(0);
-		GlobeCoordinatesValue o2 = converter.convert(o1);
+		GlobeCoordinatesValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -157,7 +157,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetStringValue() {
 		StringValue o1 = getTestStringValue(0);
-		StringValue o2 = converter.convert(o1);
+		StringValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -170,7 +170,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetMonolingualTextValue() {
 		MonolingualTextValue o1 = getTestMonolingualTextValue(0, "en");
-		MonolingualTextValue o2 = converter.convert(o1);
+		MonolingualTextValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -184,7 +184,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetQuantityValue() {
 		QuantityValue o1 = getTestQuantityValue(0);
-		QuantityValue o2 = converter.convert(o1);
+		QuantityValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -222,7 +222,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetValueSnak() {
 		ValueSnak o1 = getTestValueSnak(ValueType.STRING, 0, 0);
-		ValueSnak o2 = converter.convert(o1);
+		ValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -237,7 +237,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetSomeValueSnak() {
 		SomeValueSnak o1 = new SomeValueSnakImpl(getTestPropertyIdValue(0));
-		SomeValueSnak o2 = converter.convert(o1);
+		SomeValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -246,7 +246,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetNoValueSnak() {
 		NoValueSnak o1 = new NoValueSnakImpl(getTestPropertyIdValue(0));
-		NoValueSnak o2 = converter.convert(o1);
+		NoValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -255,7 +255,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetSnakGroup() {
 		SnakGroup o1 = getTestValueSnakGroup(ValueType.STRING, 0, 2);
-		SnakGroup o2 = converter.convert(o1);
+		SnakGroup o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -282,7 +282,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetClaim() {
 		Claim o1 = getTestClaim(0, 0, 2);
-		Claim o2 = converter.convert(o1);
+		Claim o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -297,7 +297,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetReference() {
 		Reference o1 = new ReferenceImpl(getTestValueSnakGroups(10, 3));
-		Reference o2 = converter.convert(o1);
+		Reference o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -315,7 +315,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetStatement() {
 		Statement o1 = getTestStatement(0, 42, 3);
-		Statement o2 = converter.convert(o1);
+		Statement o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
@@ -330,7 +330,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetStatementGroup() {
 		StatementGroup o1 = getTestStatementGroup(0, 17, 10);
-		StatementGroup o2 = converter.convert(o1);
+		StatementGroup o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -360,7 +360,7 @@ public class DataObjectFactoryImplTest {
 	public final void testGetSiteLink() {
 		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
 				Collections.<String> emptyList());
-		SiteLink o2 = converter.convert(o1);
+		SiteLink o2 = converter.copy(o1);
 		assertEquals(o2, o1);
 	}
 
@@ -371,7 +371,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
 				new DatatypeIdImpl(DatatypeIdValue.DT_TIME));
-		PropertyDocument o2 = converter.convert(o1);
+		PropertyDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -385,7 +385,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(0, 0), // descriptions
 				getTestMtvList(15, 12), // aliases
 				getTestStatementGroups(2, 17, 1), getTestSiteLinks(20));
-		ItemDocument o2 = converter.convert(o1);
+		ItemDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
