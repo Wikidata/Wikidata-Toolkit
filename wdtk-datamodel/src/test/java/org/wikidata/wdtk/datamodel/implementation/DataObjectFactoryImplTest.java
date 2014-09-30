@@ -93,7 +93,7 @@ public class DataObjectFactoryImplTest {
 		ItemIdValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static ItemIdValue getTestItemIdValue(int seed) {
@@ -106,7 +106,7 @@ public class DataObjectFactoryImplTest {
 		PropertyIdValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static PropertyIdValue getTestPropertyIdValue(int seed) {
@@ -119,7 +119,7 @@ public class DataObjectFactoryImplTest {
 		DatatypeIdValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	@Test
@@ -128,7 +128,7 @@ public class DataObjectFactoryImplTest {
 		TimeValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static TimeValue getTestTimeValue(int seed) {
@@ -143,7 +143,7 @@ public class DataObjectFactoryImplTest {
 		GlobeCoordinatesValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
@@ -160,7 +160,7 @@ public class DataObjectFactoryImplTest {
 		StringValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static StringValue getTestStringValue(int seed) {
@@ -173,7 +173,7 @@ public class DataObjectFactoryImplTest {
 		MonolingualTextValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static MonolingualTextValue getTestMonolingualTextValue(int seed,
@@ -187,7 +187,7 @@ public class DataObjectFactoryImplTest {
 		QuantityValue o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static QuantityValue getTestQuantityValue(int seed) {
@@ -225,7 +225,7 @@ public class DataObjectFactoryImplTest {
 		ValueSnak o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static ValueSnak getTestValueSnak(ValueType valueType, int pseed,
@@ -240,7 +240,7 @@ public class DataObjectFactoryImplTest {
 		SomeValueSnak o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	@Test
@@ -249,7 +249,7 @@ public class DataObjectFactoryImplTest {
 		NoValueSnak o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	@Test
@@ -258,7 +258,7 @@ public class DataObjectFactoryImplTest {
 		SnakGroup o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static SnakGroup getTestValueSnakGroup(ValueType valueType,
@@ -285,7 +285,7 @@ public class DataObjectFactoryImplTest {
 		Claim o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static Claim getTestClaim(int subjectSeed, int seed, int size) {
@@ -300,7 +300,7 @@ public class DataObjectFactoryImplTest {
 		Reference o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static List<Reference> getReferenceList(int seed, int size) {
@@ -318,7 +318,7 @@ public class DataObjectFactoryImplTest {
 		Statement o2 = converter.convert(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static Statement getTestStatement(int subjectSeed, int seed, int size) {
@@ -334,7 +334,7 @@ public class DataObjectFactoryImplTest {
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	public static StatementGroup getTestStatementGroup(int subjectSeed,
@@ -361,7 +361,7 @@ public class DataObjectFactoryImplTest {
 		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
 				Collections.<String> emptyList());
 		SiteLink o2 = converter.convert(o1);
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	@Test
@@ -375,7 +375,7 @@ public class DataObjectFactoryImplTest {
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	@Test
@@ -389,7 +389,7 @@ public class DataObjectFactoryImplTest {
 
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o1, o2);
+		assertEquals(o2, o1);
 	}
 
 	/**
