@@ -29,7 +29,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
@@ -81,10 +81,10 @@ public class TestValue {
 				JsonTestData.JSON_ENTITY_ID_VALUE, JacksonValue.class);
 
 		assertNotNull(result);
-		assertTrue(result instanceof JacksonValueEntityId);
+		assertTrue(result instanceof JacksonValueItemId);
 		assertEquals(result.getType(),
 				JsonTestData.TEST_ENTITY_ID_VALUE.getType());
-		assertEquals(((JacksonValueEntityId) result).getValue(),
+		assertEquals(((JacksonValueItemId) result).getValue(),
 				JsonTestData.TEST_ENTITY_ID_VALUE.getValue());
 	}
 

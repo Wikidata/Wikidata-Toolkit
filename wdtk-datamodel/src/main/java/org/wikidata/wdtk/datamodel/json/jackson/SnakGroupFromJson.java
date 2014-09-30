@@ -26,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
@@ -70,15 +73,30 @@ public class SnakGroupFromJson implements SnakGroup {
 	 * @return the result list
 	 */
 	public static List<SnakGroup> makeSnakGroups(
-			Map<String, List<JacksonSnak>> snaks) {
+			Map<String, List<JacksonSnak>> snaks, List<String> propertyOrder) {
 
 		List<SnakGroup> result = new ArrayList<>(snaks.size());
 
-		for (List<JacksonSnak> snakList : snaks.values()) {
-			result.add(new SnakGroupFromJson(snakList));
+		for (String propertyName : propertyOrder) {
+			result.add(new SnakGroupFromJson(snaks.get(propertyName)));
 		}
 
 		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsSnakGroup(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

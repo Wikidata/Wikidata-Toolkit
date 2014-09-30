@@ -25,7 +25,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
 
@@ -70,8 +69,6 @@ public class TestInnerValueObjects {
 	@Test
 	public void testEntityIdMethods() {
 		assertEquals("Q1", this.testEntityId.getStringId());
-		assertEquals(EntityIdValue.ET_ITEM,
-				this.testEntityId.getDatamodelEntityType());
 		assertEquals(this.testEntityId.getNumericId(), 1);
 
 		// test equals

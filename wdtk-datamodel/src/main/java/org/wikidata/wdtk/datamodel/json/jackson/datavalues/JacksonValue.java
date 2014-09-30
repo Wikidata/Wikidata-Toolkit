@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
 		@Type(value = JacksonValueString.class, name = "string"),
 		@Type(value = JacksonValueTime.class, name = "time"),
-		@Type(value = JacksonValueEntityId.class, name = "wikibase-entityid"),
+		@Type(value = JacksonValueItemId.class, name = "wikibase-entityid"),
 		@Type(value = JacksonValueGlobeCoordinates.class, name = "globecoordinate"),
 		@Type(value = JacksonValueQuantity.class, name = "quantity"),
 		@Type(value = JacksonValueMonolingualText.class, name = "monolingualtext") })

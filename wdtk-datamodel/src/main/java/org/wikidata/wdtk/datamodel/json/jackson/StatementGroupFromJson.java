@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -63,6 +66,21 @@ public class StatementGroupFromJson implements StatementGroup {
 	@Override
 	public EntityIdValue getSubject() {
 		return this.statements.get(0).getClaim().getSubject();
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsStatementGroup(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

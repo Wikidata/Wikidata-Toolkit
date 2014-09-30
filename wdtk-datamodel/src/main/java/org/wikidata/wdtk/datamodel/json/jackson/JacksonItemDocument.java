@@ -60,9 +60,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class JacksonItemDocument extends JacksonTermedDocument implements
 		ItemDocument {
 
-	// TODO instead of building the statement groups on demand, maybe cache
-	// them?
-
 	/**
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
@@ -159,8 +156,8 @@ public class JacksonItemDocument extends JacksonTermedDocument implements
 	 * Sets the subject of each of the current statements ("claims" in JSON) to
 	 * the current entity id. This is required since the JSON serialization of
 	 * statements does not contain a subject id, but subject ids are part of the
-	 * statement data in WDTK. The update is needed whenever the statements or
-	 * the entity id have changed.
+	 * statement data in WDTK. The update is needed whenever the statements have
+	 * changed.
 	 */
 	private void updateClaims() {
 		this.statementGroups = null; // clear cache

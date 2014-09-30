@@ -70,8 +70,9 @@ public class ClaimFromJson implements Claim {
 		// and we won't know of changes. But when this is called, no further
 		// changes should happen.
 		if (this.qualifiers == null) {
-			this.qualifiers = SnakGroupFromJson.makeSnakGroups(this.statement
-					.getQualifiers());
+			this.qualifiers = SnakGroupFromJson.makeSnakGroups(
+					this.statement.getQualifiers(),
+					this.statement.getPropertyOrder());
 		}
 		return this.qualifiers;
 	}

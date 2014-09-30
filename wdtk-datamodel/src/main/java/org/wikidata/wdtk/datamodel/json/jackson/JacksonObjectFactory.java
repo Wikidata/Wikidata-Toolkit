@@ -53,12 +53,14 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
@@ -78,14 +80,24 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		// TODO Auto-generated method stub
-		return null;
+		if (id.length() > 0 && id.charAt(0) == 'Q') {
+			Integer numericId = Integer.valueOf(id.substring(1));
+			JacksonInnerEntityId innerEntity = new JacksonInnerEntityId(
+					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
+
+			JacksonValueItemId result = new JacksonValueItemId();
+			result.setValue(innerEntity);
+			result.setParentDocument(getParentItemDocument("Qunknown", siteIri));
+			return result;
+		} else {
+			throw new IllegalArgumentException("Illegal item id: " + id);
+		}
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		// TODO Auto-generated method stub
-		return null;
+		// Jackson has no dedicated property id values:
+		return Datamodel.makePropertyIdValue(id, siteIri);
 	}
 
 	@Override
@@ -156,11 +168,10 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		JacksonValueSnak result = new JacksonValueSnak();
 		result.setProperty(propertyId.getId());
 		if (value instanceof JacksonValue) {
-			return getJacksonValueSnak(propertyId.getId(),
-					(JacksonValue) value,
+			return getJacksonValueSnak(propertyId, (JacksonValue) value,
 					getDefaultJsonPropertyTypeForValueType(value));
 		} else {
-			return getJacksonValueSnak(propertyId.getId(),
+			return getJacksonValueSnak(propertyId,
 					(JacksonValue) this.dataModelConverter.convertValue(value),
 					getDefaultJsonPropertyTypeForValueType(value));
 		}
@@ -170,6 +181,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		JacksonSomeValueSnak result = new JacksonSomeValueSnak();
 		result.setProperty(propertyId.getId());
+		result.setParentDocument(getParentItemDocument("Qundefined",
+				propertyId.getSiteIri()));
 		return result;
 	}
 
@@ -177,6 +190,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		JacksonNoValueSnak result = new JacksonNoValueSnak();
 		result.setProperty(propertyId.getId());
+		result.setParentDocument(getParentItemDocument("Qundefined",
+				propertyId.getSiteIri()));
 		return result;
 	}
 
@@ -200,11 +215,14 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public Reference getReference(List<SnakGroup> snakGroups) {
 		JacksonReference result = new JacksonReference();
 		Map<String, List<JacksonSnak>> snakMap = new HashMap<>();
+		List<String> propertyOrder = new ArrayList<>(snakGroups.size());
 		for (SnakGroup snakGroup : snakGroups) {
 			snakMap.put(snakGroup.getProperty().getId(),
 					convertSnakList(snakGroup.getSnaks()));
+			propertyOrder.add(snakGroup.getProperty().getId());
 		}
 		result.setSnaks(snakMap);
+		result.setPropertyOrder(propertyOrder);
 		return result;
 	}
 
@@ -213,15 +231,24 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<? extends Reference> references, StatementRank rank,
 			String statementId) {
 		JacksonStatement result = new JacksonStatement();
-		result.setMainsnak((JacksonSnak) dataModelConverter.convertSnak(claim
-				.getMainSnak()));
+
+		if (claim.getMainSnak() instanceof JacksonSnak) {
+			result.setMainsnak((JacksonSnak) claim.getMainSnak());
+		} else {
+			result.setMainsnak((JacksonSnak) dataModelConverter
+					.convertSnak(claim.getMainSnak()));
+		}
 
 		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
+		List<String> propertyOrder = new ArrayList<>(claim.getQualifiers()
+				.size());
 		for (SnakGroup sg : claim.getQualifiers()) {
 			qualifiers.put(sg.getProperty().getId(),
 					convertSnakList(sg.getSnaks()));
+			propertyOrder.add(sg.getProperty().getId());
 		}
 		result.setQualifiers(qualifiers);
+		result.setPropertyOrder(propertyOrder);
 
 		List<JacksonReference> jacksonReferences = new ArrayList<>(
 				references.size());
@@ -238,12 +265,21 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setRank(rank);
 		result.setStatementId(statementId);
 
-		JacksonItemDocument helperParentDocument = new JacksonItemDocument();
-		helperParentDocument.setJsonId(claim.getSubject().getId());
-		helperParentDocument.setSiteIri(claim.getSubject().getIri());
-		result.setParentDocument(helperParentDocument);
+		result.setParentDocument(getParentItemDocument(claim.getSubject()));
 
 		return result;
+	}
+
+	private JacksonItemDocument getParentItemDocument(EntityIdValue subject) {
+		return getParentItemDocument(subject.getId(), subject.getSiteIri());
+	}
+
+	private JacksonItemDocument getParentItemDocument(String subjectId,
+			String subjectSiteIri) {
+		JacksonItemDocument helperParentDocument = new JacksonItemDocument();
+		helperParentDocument.setJsonId(subjectId);
+		helperParentDocument.setSiteIri(subjectSiteIri);
+		return helperParentDocument;
 	}
 
 	@Override
@@ -305,7 +341,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 					+ datatypeId.getIri());
 		}
 
-		return null;
+		return result;
 	}
 
 	@Override
@@ -397,12 +433,14 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		}
 	}
 
-	private ValueSnak getJacksonValueSnak(String propertyId,
+	private ValueSnak getJacksonValueSnak(PropertyIdValue propertyId,
 			JacksonValue value, String propertyDatatype) {
 		JacksonValueSnak result = new JacksonValueSnak();
-		result.setProperty(propertyId);
+		result.setProperty(propertyId.getId());
 		result.setDatavalue(value);
 		result.setDatatype(propertyDatatype);
+		result.setParentDocument(getParentItemDocument("Qundefined",
+				propertyId.getSiteIri()));
 		return result;
 	}
 
@@ -415,6 +453,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			return JacksonDatatypeId.JSON_DT_STRING;
 		} else if (value instanceof GlobeCoordinatesValue) {
 			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+		} else if (value instanceof QuantityValue) {
+			return JacksonDatatypeId.JSON_DT_QUANTITY;
 		} else if (value instanceof MonolingualTextValue) {
 			return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
 		} else {

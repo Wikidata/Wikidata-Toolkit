@@ -70,6 +70,17 @@ public abstract class JacksonSnak implements Snak {
 	private String snaktype;
 
 	/**
+	 * The parent document that this snak is part of. This is needed since the
+	 * site that this snak refers to is not part of the JSON serialization of
+	 * snaks, but is needed in WDTK to build {@link PropertyIdValue} objects
+	 * etc. Thus, it is necessary to set this information after each
+	 * deserialization using
+	 * {@link JacksonSnak#setParentDocument(JacksonItemDocument)}.
+	 */
+	@JsonIgnore
+	JacksonTermedDocument parentDocument;
+
+	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
@@ -100,8 +111,15 @@ public abstract class JacksonSnak implements Snak {
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		// FIXME do not presume data to be from Wikidata
-		return Datamodel.makeWikidataPropertyIdValue(property);
+		if (this.parentDocument != null
+				&& this.parentDocument.getSiteIri() != null) {
+			return Datamodel.makePropertyIdValue(property,
+					this.parentDocument.getSiteIri());
+		} else {
+			throw new RuntimeException(
+					"Cannot access the property id of an insufficiently initialised Jackson snak.");
+			// return Datamodel.makeWikidataPropertyIdValue(property);
+		}
 	}
 
 	/**
@@ -123,6 +141,20 @@ public abstract class JacksonSnak implements Snak {
 	 */
 	public void setSnakType(String snacktype) {
 		this.snaktype = snacktype;
+	}
+
+	/**
+	 * Sets the parent document of this snak to the given value. This document
+	 * provides the snak with information about the site IRI of its components,
+	 * which is not part of the JSON serialization of snaks. This method should
+	 * only be used during deserialization.
+	 *
+	 * @param parentDocument
+	 *            new value
+	 */
+	@JsonIgnore
+	void setParentDocument(JacksonTermedDocument parentDocument) {
+		this.parentDocument = parentDocument;
 	}
 
 }

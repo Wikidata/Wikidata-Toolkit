@@ -6,6 +6,8 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -31,20 +33,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 
 /**
- * Jackson implementation of {@link EntityIdValue}.
- * <p>
- * TODO The deserialization should create instances of {@link ItemIdValue} (an
- * maybe others if ever supported). Maybe everything should use only this type
- * of object for now.
- * <p>
- * TODO Implementation of toString() is missing ({@link ToString} method not
- * supported for entity id values).
+ * Jackson implementation of {@link ItemIdValue}. So far this is the only kind
+ * of {@link EntityIdValue} that can occur as a value of properties.
  *
  * @author Fredo Erxleben
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonValueEntityId extends JacksonValue implements EntityIdValue {
+public class JacksonValueItemId extends JacksonValue implements ItemIdValue {
+
+	/**
+	 * The parent document that this value is part of. This is needed since the
+	 * site that this value refers to is not part of the JSON serialization of
+	 * value, but is needed in WDTK to build {@link ItemIdValue} objects. Thus,
+	 * it is necessary to set this information after each deserialization using
+	 * {@link JacksonValueItemId#setParentDocument(JacksonItemDocument)}.
+	 */
+	@JsonIgnore
+	JacksonTermedDocument parentDocument;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
@@ -56,21 +62,8 @@ public class JacksonValueEntityId extends JacksonValue implements EntityIdValue 
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonValueEntityId() {
+	public JacksonValueItemId() {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
-	}
-
-	/**
-	 * Creates a new object from the given data.
-	 *
-	 * TODO Review the utility of this constructor. A copy constructor would
-	 * seem more useful.
-	 *
-	 * @param value
-	 */
-	public JacksonValueEntityId(JacksonInnerEntityId value) {
-		super(JSON_VALUE_TYPE_ENTITY_ID);
-		this.value = value;
 	}
 
 	/**
@@ -109,14 +102,33 @@ public class JacksonValueEntityId extends JacksonValue implements EntityIdValue 
 	@JsonIgnore
 	@Override
 	public String getSiteIri() {
-		// FIXME returns fixed site IRI for now
-		return "http://www.wikidata.org/entity/";
+		if (this.parentDocument != null
+				&& this.parentDocument.getSiteIri() != null) {
+			return this.parentDocument.getSiteIri();
+		} else {
+			throw new RuntimeException(
+					"Cannot access the site IRI id of an insufficiently initialised Jackson value.");
+		}
 	}
 
 	@JsonIgnore
 	@Override
 	public String getEntityType() {
-		return this.value.getDatamodelEntityType();
+		return EntityIdValue.ET_ITEM;
+	}
+
+	/**
+	 * Sets the parent document of this value to the given value. This document
+	 * provides the value with information about its site IRI, which is not part
+	 * of the JSON serialization of values. This method should only be used
+	 * during deserialization.
+	 *
+	 * @param parentDocument
+	 *            new value
+	 */
+	@JsonIgnore
+	public void setParentDocument(JacksonTermedDocument parentDocument) {
+		this.parentDocument = parentDocument;
 	}
 
 	@Override
@@ -134,4 +146,8 @@ public class JacksonValueEntityId extends JacksonValue implements EntityIdValue 
 		return Equality.equalsEntityIdValue(this, obj);
 	}
 
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
 }

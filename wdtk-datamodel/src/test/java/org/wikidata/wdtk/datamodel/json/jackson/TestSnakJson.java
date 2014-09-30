@@ -40,8 +40,9 @@ public class TestSnakJson {
 	@Test
 	public void testNoValueSnakToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonSnak result = mapper.readValue(
-				JsonTestData.JSON_NOVALUE_SNAK, JacksonSnak.class);
+		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
+				JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonNoValueSnak);
@@ -59,8 +60,9 @@ public class TestSnakJson {
 	@Test
 	public void testSomeValueSnakToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonSnak result = mapper.readValue(
-				JsonTestData.JSON_SOMEVALUE_SNAK, JacksonSnak.class);
+		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
+				JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonSomeValueSnak);
@@ -71,16 +73,16 @@ public class TestSnakJson {
 	public void testSomeValueSnakToJson() throws JsonProcessingException {
 		String result = mapper
 				.writeValueAsString(JsonTestData.TEST_SOMEVALUE_SNAK);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_SOMEVALUE_SNAK, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SOMEVALUE_SNAK,
+				result);
 	}
 
 	@Test
 	public void testCommonsValueSnakToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonSnak result = mapper.readValue(
-				JsonTestData.JSON_VALUE_SNAK_STRING,
-				JacksonSnak.class);
+				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
+		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueSnak);
@@ -91,8 +93,8 @@ public class TestSnakJson {
 	public void testCommonsValueSnakToJson() throws JsonProcessingException {
 		String result = mapper
 				.writeValueAsString(JsonTestData.TEST_STRING_VALUE_SNAK);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_VALUE_SNAK_STRING, result);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_VALUE_SNAK_STRING,
+				result);
 	}
 
 }

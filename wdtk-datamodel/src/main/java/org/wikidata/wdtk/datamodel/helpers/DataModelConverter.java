@@ -78,12 +78,12 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 
 	public ItemIdValue convert(ItemIdValue object) {
 		return this.dataObjectFactory.getItemIdValue(object.getId(),
-				object.getIri());
+				object.getSiteIri());
 	}
 
 	public PropertyIdValue convert(PropertyIdValue object) {
 		return this.dataObjectFactory.getPropertyIdValue(object.getId(),
-				object.getIri());
+				object.getSiteIri());
 	}
 
 	public DatatypeIdValue convert(DatatypeIdValue object) {
@@ -218,7 +218,7 @@ public class DataModelConverter implements SnakVisitor<Snak>,
 		if (value instanceof ItemIdValue) {
 			return convert((ItemIdValue) value);
 		} else if (value instanceof PropertyIdValue) {
-			return convert((ItemIdValue) value);
+			return convert((PropertyIdValue) value);
 		} else {
 			throw new UnsupportedOperationException(
 					"Cannot convert entity id value: " + value.getClass());

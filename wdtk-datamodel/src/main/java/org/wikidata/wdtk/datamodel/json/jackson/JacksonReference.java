@@ -34,6 +34,7 @@ import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link Reference}.
@@ -50,13 +51,20 @@ public class JacksonReference implements Reference {
 	/**
 	 * Map of property id strings to snaks, as used to encode snaks in JSON.
 	 */
-	private Map<String, List<JacksonSnak>> snaks;
+	Map<String, List<JacksonSnak>> snaks;
+
+	/**
+	 * List of property string ids that encodes the desired order of snaks,
+	 * which is not specified by the map.
+	 */
+	List<String> propertyOrder;
 
 	@JsonIgnore
 	@Override
 	public List<SnakGroup> getSnakGroups() {
 		if (this.snakGroups == null) {
-			this.snakGroups = SnakGroupFromJson.makeSnakGroups(this.snaks);
+			this.snakGroups = SnakGroupFromJson.makeSnakGroups(this.snaks,
+					this.propertyOrder);
 		}
 		return this.snakGroups;
 	}
@@ -81,6 +89,30 @@ public class JacksonReference implements Reference {
 	 */
 	public Map<String, List<JacksonSnak>> getSnaks() {
 		return this.snaks;
+	}
+
+	/**
+	 * Sets the list of property ids to the given value. Only for use by Jackson
+	 * during deserialization.
+	 *
+	 * @param propertyOrder
+	 *            new value
+	 */
+	@JsonProperty("snaks-order")
+	public void setPropertyOrder(List<String> propertyOrder) {
+		this.propertyOrder = propertyOrder;
+		this.snakGroups = null; // clear cache
+	}
+
+	/**
+	 * Returns the list of property ids used to order snaks as found in JSON.
+	 * Only for use by Jackson during serialization.
+	 *
+	 * @return the list of property ids
+	 */
+	@JsonProperty("snaks-order")
+	public List<String> getPropertyOrder() {
+		return this.propertyOrder;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,11 @@ public class JacksonStatement implements Statement {
 	 * A map from property id strings to snaks that encodes the qualifiers.
 	 */
 	private Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
+	/**
+	 * List of property string ids that encodes the desired order of qualifiers,
+	 * which is not specified by the map.
+	 */
+	private List<String> propertyOrder = Collections.<String> emptyList();
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -149,6 +155,22 @@ public class JacksonStatement implements Statement {
 	@JsonIgnore
 	void setParentDocument(JacksonItemDocument parentDocument) {
 		this.parentDocument = parentDocument;
+
+		this.mainsnak.setParentDocument(parentDocument);
+
+		for (List<JacksonSnak> snaks : this.qualifiers.values()) {
+			for (JacksonSnak snak : snaks) {
+				snak.setParentDocument(parentDocument);
+			}
+		}
+
+		for (JacksonReference reference : this.references) {
+			for (List<JacksonSnak> snaks : reference.snaks.values()) {
+				for (JacksonSnak snak : snaks) {
+					snak.setParentDocument(parentDocument);
+				}
+			}
+		}
 	}
 
 	@JsonIgnore
@@ -230,6 +252,17 @@ public class JacksonStatement implements Statement {
 	}
 
 	/**
+	 * Returns the qualifiers of the claim of this statement. Only for use by
+	 * Jackson during serialization. To access this data, use
+	 * {@link #getClaim()}.
+	 *
+	 * @return qualifiers
+	 */
+	public Map<String, List<JacksonSnak>> getQualifiers() {
+		return this.qualifiers;
+	}
+
+	/**
 	 * Sets the qualifiers to the given value. Only for use by Jackson during
 	 * deserialization.
 	 *
@@ -241,14 +274,26 @@ public class JacksonStatement implements Statement {
 	}
 
 	/**
-	 * Returns the qualifiers of the claim of this statement. Only for use by
-	 * Jackson during serialization. To access this data, use
-	 * {@link #getClaim()}.
+	 * Sets the list of property ids to the given value. Only for use by Jackson
+	 * during deserialization.
 	 *
-	 * @return qualifiers
+	 * @param propertyOrder
+	 *            new value
 	 */
-	public Map<String, List<JacksonSnak>> getQualifiers() {
-		return this.qualifiers;
+	@JsonProperty("qualifiers-order")
+	public void setPropertyOrder(List<String> propertyOrder) {
+		this.propertyOrder = propertyOrder;
+	}
+
+	/**
+	 * Returns the list of property ids used to order qualifiers as found in
+	 * JSON. Only for use by Jackson during serialization.
+	 *
+	 * @return the list of property ids
+	 */
+	@JsonProperty("qualifiers-order")
+	public List<String> getPropertyOrder() {
+		return this.propertyOrder;
 	}
 
 	@Override

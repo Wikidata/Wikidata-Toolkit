@@ -189,8 +189,14 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 * @param siteIri
 	 *            the site IRI
 	 */
+	@JsonIgnore
 	public void setSiteIri(String siteIri) {
 		this.siteIri = siteIri;
+	}
+
+	@JsonIgnore
+	public String getSiteIri() {
+		return this.siteIri;
 	}
 
 	/**

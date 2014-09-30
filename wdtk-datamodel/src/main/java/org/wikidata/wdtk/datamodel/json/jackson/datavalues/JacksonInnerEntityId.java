@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -37,6 +35,12 @@ public class JacksonInnerEntityId {
 	// TODO replace IllegalArgumentException with a checked one
 	// NOTE make sure to adapt all methods, once more types than only
 	// "item" are supported
+
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * items.
+	 */
+	public final static String JSON_ENTITY_TYPE_ITEM = "item";
 
 	@JsonProperty("entity-type")
 	private String entityType;
@@ -90,7 +94,7 @@ public class JacksonInnerEntityId {
 	public void setEntityType(String entityType)
 			throws IllegalArgumentException {
 
-		if (!"item".equals(entityType)) {
+		if (!JSON_ENTITY_TYPE_ITEM.equals(entityType)) {
 			throw new IllegalArgumentException("Entities of type " + entityType
 					+ " are not supported in property values.");
 		}
@@ -133,17 +137,6 @@ public class JacksonInnerEntityId {
 		return "Q" + this.numericId;
 	}
 
-	/**
-	 * Returns the entity type used in the datamodel. For example, the JSON
-	 * entityType "item" corresponds to {@link EntityIdValue#ET_ITEM}.
-	 *
-	 * @return the entity type
-	 */
-	@JsonIgnore
-	public String getDatamodelEntityType() {
-		return EntityIdValue.ET_ITEM;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -158,8 +151,4 @@ public class JacksonInnerEntityId {
 						.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
-	@Override
-	public String toString() {
-		return this.getStringId();
-	}
 }

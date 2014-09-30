@@ -33,10 +33,9 @@ import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
@@ -131,8 +130,8 @@ public class JsonTestData {
 
 	public static final JacksonValueString TEST_STRING_VALUE = (JacksonValueString) JACKSON_OBJECT_FACTORY
 			.getStringValue("foobar");
-	public static final JacksonValueEntityId TEST_ENTITY_ID_VALUE = new JacksonValueEntityId(
-			new JacksonInnerEntityId(JSON_ENTITY_TYPE_ITEM, TEST_NUMERIC_ID));
+	public static final JacksonValueItemId TEST_ENTITY_ID_VALUE = (JacksonValueItemId) JACKSON_OBJECT_FACTORY
+			.getItemIdValue("Q1", Datamodel.SITE_WIKIDATA);
 	public static final JacksonValueTime TEST_TIME_VALUE = (JacksonValueTime) JACKSON_OBJECT_FACTORY
 			.getTimeValue(2013, (byte) 10, (byte) 28, (byte) 0, (byte) 0,
 					(byte) 0, (byte) 11, 0, 0, 0, TimeValue.CM_GREGORIAN_PRO);
@@ -195,12 +194,14 @@ public class JsonTestData {
 	public static JacksonItemDocument getEmtpyTestItemDocument() {
 		JacksonItemDocument testItemDocument = new JacksonItemDocument();
 		testItemDocument.setJsonId(getTestItemId().getId());
+		testItemDocument.setSiteIri(Datamodel.SITE_WIKIDATA);
 		return testItemDocument;
 	}
 
 	public static JacksonItemDocument getTestItemDocument() {
 		JacksonItemDocument testItemDocument = new JacksonItemDocument();
 		testItemDocument.setJsonId(getTestItemId().getId());
+		testItemDocument.setSiteIri(Datamodel.SITE_WIKIDATA);
 		testItemDocument.setAliases(getTestAliases());
 		testItemDocument.setDescriptions(getTestMltvMap());
 		testItemDocument.setLabels(getTestMltvMap());
