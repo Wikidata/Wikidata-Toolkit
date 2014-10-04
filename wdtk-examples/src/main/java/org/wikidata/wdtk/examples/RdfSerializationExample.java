@@ -50,7 +50,7 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * <p>
  * In the future, this will probably become a stand-alone tool that can be
  * called directly.
- * 
+ *
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -75,7 +75,7 @@ public class RdfSerializationExample {
 
 		// Controller object for processing dumps:
 		dumpProcessingController = new DumpProcessingController("wikidatawiki");
-		// dumpProcessingController.setOfflineMode(true);
+		dumpProcessingController.setOfflineMode(ExampleHelpers.OFFLINE_MODE);
 
 		// Initialize sites; needed to link to Wikipedia pages in RDF
 		sites = dumpProcessingController.getSitesInformation();
@@ -120,7 +120,7 @@ public class RdfSerializationExample {
 	 * that). The tasks define what the serializer will be writing into this
 	 * file. The new serializer is also registered in an internal list, so it
 	 * can be started and closed more conveniently.
-	 * 
+	 *
 	 * @param outputFileName
 	 *            filename to write output to
 	 * @param compressionExtension
@@ -242,7 +242,7 @@ public class RdfSerializationExample {
 	 * This code is inspired by
 	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
 	 * -that-does-its-compression-in-a-separate-thread
-	 * 
+	 *
 	 * @param outputStream
 	 *            the stream to write to in the thread
 	 * @return a new stream that data should be written to
@@ -276,7 +276,7 @@ public class RdfSerializationExample {
 	/**
 	 * Closes a Closeable and swallows any exceptions that might occur in the
 	 * process.
-	 * 
+	 *
 	 * @param closeable
 	 */
 	static void close(Closeable closeable) {

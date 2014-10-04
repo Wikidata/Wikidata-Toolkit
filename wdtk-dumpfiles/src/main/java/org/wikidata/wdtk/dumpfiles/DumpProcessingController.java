@@ -30,9 +30,11 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
 import org.wikidata.wdtk.util.WebResourceFetcher;
@@ -49,8 +51,23 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * and
  * {@link #registerEntityDocumentProcessor(EntityDocumentProcessor, String, boolean)}.
  * <p>
- * The methods for processing selected dump files (and downloading them first,
- * finding out which ones are relevant) are
+ * For processing the content of wiki pages, there are two modes of operation:
+ * revision-based and entity-document-based. The former is used when processing
+ * dump files that contain revisions. These hold detailed information about each
+ * revision (revision number, author, time, etc.) that could be used by revision
+ * processors.
+ * <p>
+ * The entity-document-based operation is used when processing simplified dumps
+ * that contain only the content of the current (entity) pages of a wiki. In
+ * this case, no additional information is available and only the entity
+ * document processors are called (since we have no revisions). Both modes use
+ * the same entity document processors. In revision-based runs, it is possible
+ * to restrict some entity document processors to certain content models only
+ * (e.g., to process only properties). In entity-document-based runs, this is
+ * ignored and all entity document processors get to see all the data.
+ * <p>
+ * The methods for revision-based processing of selected dump files (and
+ * downloading them first, finding out which ones are relevant) are
  * {@link #processAllRecentRevisionDumps()},
  * {@link #processMostRecentMainDump()}, and
  * {@link #processMostRecentMainDump()}.
@@ -63,9 +80,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * <p>
  * The controller will also catch exceptions that may occur when trying to
  * download and read dump files. They will be turned into logged errors.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DumpProcessingController {
 
@@ -74,9 +91,9 @@ public class DumpProcessingController {
 
 	/**
 	 * Helper value class to store the registration settings of one listener.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class ListenerRegistration {
 		final String model;
@@ -89,8 +106,12 @@ public class DumpProcessingController {
 
 		@Override
 		public int hashCode() {
-			return 2 * this.model.hashCode()
-					+ (this.onlyCurrentRevisions ? 1 : 0);
+			if (this.model == null) {
+				return (this.onlyCurrentRevisions ? 1 : 0);
+			} else {
+				return 2 * this.model.hashCode()
+						+ (this.onlyCurrentRevisions ? 1 : 0);
+			}
 		}
 
 		@Override
@@ -105,8 +126,13 @@ public class DumpProcessingController {
 				return false;
 			}
 			ListenerRegistration other = (ListenerRegistration) obj;
-			return this.model.equals(other.model)
-					&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			if (this.model == null) {
+				return other.model == null
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			} else {
+				return this.model.equals(other.model)
+						&& this.onlyCurrentRevisions == other.onlyCurrentRevisions;
+			}
 		}
 	}
 
@@ -118,9 +144,18 @@ public class DumpProcessingController {
 	final String projectName;
 
 	/**
-	 * Broker object to distribute revisions to several listeners.
+	 * Broker object to distribute revisions to several listeners. This will be
+	 * the main object that distributes revisions on any revision-based
+	 * processing run.
 	 */
 	final MwRevisionProcessorBroker mwRevisionProcessorBroker = new MwRevisionProcessorBroker();
+
+	/**
+	 * Broker object to distribute entity documents to several listeners. This
+	 * will be the main object that distributes revisions on any document-based
+	 * processing run.
+	 */
+	EntityDocumentProcessorBroker entityDocumentProcessorBroker = new EntityDocumentProcessorBroker();
 
 	/**
 	 * Should only current dumps be considered? This is changed automatically if
@@ -149,7 +184,7 @@ public class DumpProcessingController {
 	 * name. By default, the dump file directory will be assumed to be in the
 	 * current directory and the object will access the Web to fetch the most
 	 * recent files.
-	 * 
+	 *
 	 * @param projectName
 	 *            Wikimedia projectname, e.g., "wikidatawiki" or "enwiki"
 	 */
@@ -171,7 +206,7 @@ public class DumpProcessingController {
 	 * Sets the directory where dumpfiles are stored locally. If it does not
 	 * exist yet, this directory will be created. Dumpfiles will later be stored
 	 * in a subdirectory "dumpfiles", but this will only be created when needed.
-	 * 
+	 *
 	 * @param downloadDirectory
 	 *            the download base directory
 	 * @throws IOException
@@ -186,7 +221,7 @@ public class DumpProcessingController {
 
 	/**
 	 * Disables or enables Web access.
-	 * 
+	 *
 	 * @param offlineModeEnabled
 	 *            if true, all Web access is disabled and only local files will
 	 *            be processed
@@ -205,10 +240,10 @@ public class DumpProcessingController {
 	 * <p>
 	 * Importantly, the {@link MwRevision} that the registered processors will
 	 * receive is is valid only during the execution of
-	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it
-	 * will not be permanent. If the data is to be retained permanently, the
-	 * revision processor needs to make its own copy.
-	 * 
+	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it will not
+	 * be permanent. If the data is to be retained permanently, the revision
+	 * processor needs to make its own copy.
+	 *
 	 * @param mwRevisionProcessor
 	 *            the revision processor to register
 	 * @param model
@@ -231,7 +266,7 @@ public class DumpProcessingController {
 	/**
 	 * Registers an EntityDocumentProcessor, which will henceforth be notified
 	 * of all entity documents that are encountered in the dump.
-	 * 
+	 *
 	 * @param entityDocumentProcessor
 	 *            the entity document processor to register
 	 * @param model
@@ -246,6 +281,8 @@ public class DumpProcessingController {
 	public void registerEntityDocumentProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String model,
 			boolean onlyCurrentRevisions) {
+		this.preferCurrent = this.preferCurrent && onlyCurrentRevisions;
+
 		ListenerRegistration listenerRegistration = new ListenerRegistration(
 				model, onlyCurrentRevisions);
 		if (!this.entityDocumentProcessors.containsKey(listenerRegistration)) {
@@ -260,7 +297,7 @@ public class DumpProcessingController {
 	/**
 	 * Processes the most recent dump of the sites table to extract information
 	 * about registered sites.
-	 * 
+	 *
 	 * @return a Sites objects that contains the extracted information
 	 * @throws IOException
 	 *             if there was a problem accessing the sites table dump or the
@@ -286,7 +323,7 @@ public class DumpProcessingController {
 	 * Processes all relevant page revision dumps in order. The registered
 	 * listeners (MwRevisionProcessor or EntityDocumentProcessor objects) will
 	 * be notified of all data they registered for.
-	 * 
+	 *
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processMostRecentMainDump()
 	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
@@ -355,7 +392,7 @@ public class DumpProcessingController {
 	 * than the main dumps. The registered listeners (MwRevisionProcessor or
 	 * EntityDocumentProcessor objects) will be notified of all data they
 	 * registered for.
-	 * 
+	 *
 	 * @see DumpProcessingController#processMostRecentMainDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
@@ -368,8 +405,9 @@ public class DumpProcessingController {
 
 	/**
 	 * Processes the most recent main (complete) dump that is available. The
-	 * registered listeners (MwRevisionProcessor or EntityDocumentProcessor
-	 * objects) will be notified of all data they registered for.
+	 * registered listeners ({@link: MwRevisionProcessor} or {@link:
+	 * EntityDocumentProcessor} objects) will be notified of all data they
+	 * registered for.
 	 * <p>
 	 * This method is useful to obtain reliable results given that single
 	 * incremental dump files are sometimes missing, even if earlier and later
@@ -377,7 +415,7 @@ public class DumpProcessingController {
 	 * dumps will miss some (random) revisions, thus reflecting a state that the
 	 * wiki has never really been in. If this is considered a problem, then it
 	 * is better to use this method instead.
-	 * 
+	 *
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
@@ -395,13 +433,37 @@ public class DumpProcessingController {
 	}
 
 	/**
+	 * Processes the most recent main (complete) dump in JSON form that is
+	 * available. The registered {@link: EntityDocumentProcessor} objects will
+	 * be notified of all data. Revision information is not available from this
+	 * kind of dump, hence registered {@link: MwRevisionProcessor} objects will
+	 * not be notified. Also, this dump only contains current revisions, so any
+	 * preference for non-current revisions will just be ignored.
+	 * <p>
+	 * This method is useful to obtain reliable results given that single
+	 * incremental dump files are sometimes missing, even if earlier and later
+	 * incremental dumps are available. In such a case, processing all recent
+	 * dumps will miss some (random) revisions, thus reflecting a state that the
+	 * wiki has never really been in. If this is considered a problem, then it
+	 * is better to use this method instead.
+	 *
+	 * @see DumpProcessingController#processMostRecentDailyDump()
+	 * @see DumpProcessingController#processAllRecentRevisionDumps()
+	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
+	 *      MwDumpFileProcessor)
+	 */
+	public void processMostRecentJsonDump() {
+		processMostRecentDump(DumpContentType.JSON, getJsonDumpFileProcessor());
+	}
+
+	/**
 	 * Processes the most recent dump of the given type using the given dump
 	 * processor.
-	 * 
+	 *
 	 * @see DumpProcessingController#processMostRecentMainDump()
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 * 
+	 *
 	 * @param dumpContentType
 	 *            the type of dump to process
 	 * @param dumpFileProcessor
@@ -410,6 +472,7 @@ public class DumpProcessingController {
 	public void processMostRecentDump(DumpContentType dumpContentType,
 			MwDumpFileProcessor dumpFileProcessor) {
 		setupEntityDocumentProcessors();
+
 		WmfDumpFileManager wmfDumpFileManager;
 		try {
 			wmfDumpFileManager = getWmfDumpFileManager();
@@ -426,7 +489,7 @@ public class DumpProcessingController {
 	/**
 	 * Processes one dump file with the given dump file processor, handling
 	 * exceptions appropriately.
-	 * 
+	 *
 	 * @param dumpFile
 	 *            the dump file to process
 	 * @param dumpFileProcessor
@@ -456,7 +519,7 @@ public class DumpProcessingController {
 	 * preferable.
 	 * <p>
 	 * This dump file manager will not be updated if the settings change later.
-	 * 
+	 *
 	 * @return a WmfDumpFileManager for the current settings
 	 * @throws IOException
 	 *             if there was a problem, usually owing to some problem when
@@ -470,7 +533,7 @@ public class DumpProcessingController {
 	/**
 	 * Return the main dump file processor that should be used to process
 	 * revisions.
-	 * 
+	 *
 	 * @return the main MwDumpFileProcessor for revisions
 	 */
 	MwDumpFileProcessor getRevisionDumpFileProcessor() {
@@ -478,27 +541,49 @@ public class DumpProcessingController {
 	}
 
 	/**
+	 * Return the main dump file processor that should be used to process the
+	 * content of JSON dumps.
+	 *
+	 * @return the main MwDumpFileProcessor for JSON
+	 */
+	MwDumpFileProcessor getJsonDumpFileProcessor() {
+		return new JsonDumpFileProcessor(this.entityDocumentProcessorBroker,
+				Datamodel.SITE_WIKIDATA);
+	}
+
+	/**
 	 * Creates a suitable processing pipeline for the entity document processors
 	 * currently registered. If multiple processors are registered for the same
 	 * entity documents, an additional {@link EntityDocumentProcessorBroker}
-	 * will be used.
+	 * will be used. The main reason for having a separate method for this
+	 * (instead of doing this directly on registration) is that it allows us to
+	 * share the same revision processor for multiple entity processors in some
+	 * cases, avoiding the need for parsing the same JSON content several times
+	 * just to pass it to different processors.
 	 */
 	void setupEntityDocumentProcessors() {
 		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> entry : this.entityDocumentProcessors
 				.entrySet()) {
+			// Register entity document processors with revision processors:
 			if (entry.getValue().size() == 1) {
 				registerMwRevisionProcessor(new WikibaseRevisionProcessor(entry
-						.getValue().get(0)), entry.getKey().model,
+						.getValue().get(0), Datamodel.SITE_WIKIDATA),
+						entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 			} else {
 				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
-				registerMwRevisionProcessor(
-						new WikibaseRevisionProcessor(edpb),
-						entry.getKey().model,
+				registerMwRevisionProcessor(new WikibaseRevisionProcessor(edpb,
+						Datamodel.SITE_WIKIDATA), entry.getKey().model,
 						entry.getKey().onlyCurrentRevisions);
 				for (EntityDocumentProcessor edp : entry.getValue()) {
 					edpb.registerEntityDocumentProcessor(edp);
 				}
+			}
+
+			// Register the entity document processors globally:
+			for (EntityDocumentProcessor edp : entry.getValue()) {
+				this.entityDocumentProcessorBroker
+						.registerEntityDocumentProcessor(edp);
 			}
 		}
 		this.entityDocumentProcessors.clear();

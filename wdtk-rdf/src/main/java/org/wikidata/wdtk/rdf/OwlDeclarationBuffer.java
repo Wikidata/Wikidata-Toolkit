@@ -35,9 +35,9 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * are ordered by subject, (2) to avoid some duplicate triples for things that
  * are needed in many places. Due to memory constraints, this class does not
  * provide perfect duplicate elimination.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class OwlDeclarationBuffer {
 
@@ -64,7 +64,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Adds the given property id value to the list of properties that should be
 	 * declared as OWL object properties.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property to declare
 	 */
@@ -77,7 +77,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Adds the given property URI string to the list of property URIs that
 	 * should be declared as OWL object properties.
-	 * 
+	 *
 	 * @param propertyUri
 	 *            the property to declare
 	 */
@@ -90,7 +90,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Adds the given property id value to the list of properties that should be
 	 * declared as OWL datatype properties.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property to declare
 	 */
@@ -103,7 +103,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Adds the given property URI string to the list of property URIs that
 	 * should be declared as OWL datatype properties.
-	 * 
+	 *
 	 * @param propertyUri
 	 *            the property to declare
 	 */
@@ -116,7 +116,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Adds the given entity id value to the list of entities that should be
 	 * declared as OWL classes.
-	 * 
+	 *
 	 * @param entityIdValue
 	 *            the property to declare
 	 */
@@ -130,7 +130,7 @@ public class OwlDeclarationBuffer {
 	 * Writes OWL declarations for properties that have been added recently.
 	 * Declared properties are stored so that duplicate declarations are
 	 * avoided.
-	 * 
+	 *
 	 * @param rdfWriter
 	 *            the writer to write the declarations to
 	 * @param fullStatements
@@ -220,7 +220,7 @@ public class OwlDeclarationBuffer {
 	/**
 	 * Writes OWL declarations for classes that have been added recently.
 	 * Declared classes are stored so that duplicate declarations are avoided.
-	 * 
+	 *
 	 * @param rdfWriter
 	 *            the writer to write the declarations to
 	 * @throws RDFHandlerException

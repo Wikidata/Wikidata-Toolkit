@@ -32,15 +32,15 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
  * Interface for retrieving the primitive types of Wikibase properties.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public interface PropertyTypes {
 
 	/**
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 */
 	public String getPropertyType(PropertyIdValue propertyIdValue);
@@ -48,7 +48,7 @@ public interface PropertyTypes {
 	/**
 	 * Sets datatypeIri an IRI of the primitive type of an Property for
 	 * {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param datatypeIri
 	 */
@@ -58,7 +58,7 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link EntityIdValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -68,7 +68,7 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link GlobeCoordinatesValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -78,7 +78,7 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link QuantityValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -88,7 +88,7 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link StringValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -98,7 +98,7 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link TimeValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -108,7 +108,7 @@ public interface PropertyTypes {
 	/**
 	 * Gives out a list of all known Properties as a static java map to the
 	 * {@link OutputStream} out.
-	 * 
+	 *
 	 * @param out
 	 * @throws IOException
 	 */
