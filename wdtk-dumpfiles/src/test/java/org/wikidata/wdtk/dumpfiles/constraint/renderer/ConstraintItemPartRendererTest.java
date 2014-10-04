@@ -28,35 +28,35 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormatTest;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItemTest;
 
 /**
  *
  * @author Julian Mendez
  *
  */
-public class ConstraintFormatRendererTest implements
+public class ConstraintItemPartRendererTest implements
 ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
-			"format");
+			"itempart");
 
-	public ConstraintFormatRendererTest() {
+	public ConstraintItemPartRendererTest() {
 	}
 
 	@Override
 	public Constraint getConstraint() {
-		return this.testHelper.getConstraint("P218",
-				ConstraintFormatTest.TEMPLATE_STR);
+		return this.testHelper.getConstraint("P141",
+				ConstraintItemTest.TEMPLATE_STR_ONE_PROP);
 	}
 
 	@Override
 	@Test
 	public void testRenderConstraint() throws IOException {
-		ConstraintFormatRenderer renderer = new ConstraintFormatRenderer(
+		ConstraintItemRenderer renderer = new ConstraintItemRenderer(
 				new Owl2FunctionalRendererFormat(
 						this.testHelper.getOutputStream()));
-		renderer.render(null, null);
+		renderer.renderPart(null, null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}
