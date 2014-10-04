@@ -36,10 +36,10 @@ import org.wikidata.wdtk.examples.ExampleHelpers;
 /**
  * This class demonstrates how to write an application that downloads and
  * processes dumpfiles from Wikidata.org, that also measures the used memory.
- * 
+ *
  * @author Markus Kroetzsch
  * @author Julian Mendez
- * 
+ *
  */
 public class DumpProcessingMemoryMeasurer {
 
@@ -95,10 +95,10 @@ public class DumpProcessingMemoryMeasurer {
 	 * statistics that are printed to the standard output. This could be
 	 * replaced with any other class that processes entity documents in some
 	 * way.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
 	 * @author Julian Mendez
-	 * 
+	 *
 	 */
 	static class EntityStatisticsProcessor implements EntityDocumentProcessor {
 
@@ -137,7 +137,7 @@ public class DumpProcessingMemoryMeasurer {
 			this.countItems++;
 			this.countEntities++;
 
-			if (this.countEntities % REPORT_FREQUENCY == 0) {
+			if ((this.countEntities % REPORT_FREQUENCY) == 0) {
 				System.out.println("(counting item)" + getReport());
 			}
 		}
@@ -158,14 +158,9 @@ public class DumpProcessingMemoryMeasurer {
 			this.countProperties++;
 			this.countEntities++;
 
-			if (this.countEntities % REPORT_FREQUENCY == 0) {
+			if ((this.countEntities % REPORT_FREQUENCY) == 0) {
 				System.out.println("(counting property)" + getReport());
 			}
-		}
-
-		@Override
-		public void finishProcessingEntityDocuments() {
-			System.out.println("(finishing entity document)" + getReport());
 		}
 
 		/**
@@ -201,7 +196,7 @@ public class DumpProcessingMemoryMeasurer {
 			sb.append("\n    - by properties: ");
 			sb.append(this.sizeOfUsedMemoryByProperties.toString());
 			sb.append("\n * Elapsed time: ");
-			sb.append(((new Date()).getTime() - start.getTime()));
+			sb.append(((new Date()).getTime() - this.start.getTime()));
 			sb.append(" ms\n\n");
 			return sb.toString();
 		}
