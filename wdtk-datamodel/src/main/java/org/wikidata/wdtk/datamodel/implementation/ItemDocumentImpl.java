@@ -39,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
-ItemDocument {
+		ItemDocument {
 
 	final ItemIdValue itemId;
 	final List<StatementGroup> statementGroups;
@@ -79,7 +79,9 @@ ItemDocument {
 			for (StatementGroup sg : statementGroups) {
 				if (!itemIdValue.equals(sg.getSubject())) {
 					throw new IllegalArgumentException(
-							"All statement groups in a document must have the same subject");
+							"All statement groups in a document must have the same subject: found "
+									+ sg.getSubject() + " but expected "
+									+ itemIdValue);
 				}
 			}
 		}

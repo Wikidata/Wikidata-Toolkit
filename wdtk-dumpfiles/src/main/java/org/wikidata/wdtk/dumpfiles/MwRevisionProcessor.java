@@ -24,9 +24,9 @@ import java.util.Map;
 
 /**
  * General interface for classes that process revisions of MediaWiki pages.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface MwRevisionProcessor {
 
@@ -34,7 +34,7 @@ public interface MwRevisionProcessor {
 	 * Initialises the revision processor for processing revisions. General
 	 * information about the configuration of the site for which revisions are
 	 * being processed is provided.
-	 * 
+	 *
 	 * @param siteName
 	 *            the name of the site
 	 * @param baseUrl
@@ -51,7 +51,7 @@ public interface MwRevisionProcessor {
 
 	/**
 	 * Process the given MediaWiki revision.
-	 * 
+	 *
 	 * @param mwRevision
 	 *            the revision to process
 	 */
@@ -61,6 +61,14 @@ public interface MwRevisionProcessor {
 	 * Performs final actions that should be done after all revisions in a batch
 	 * of revisions have been processed. This is usually called after a whole
 	 * dumpfile is completely processed.
+	 * <p>
+	 * It is important to understand that this method might be called many times
+	 * during one processing run. Its main purpose is to signal the completion
+	 * of one file, not of the whole processing. This is used only to manage the
+	 * control flow of revision processing (e.g., to be sure that the most
+	 * recent revision of a page has certainly been found). This method must not
+	 * be used to do things that should happen at the very end of a run, such as
+	 * writing a file with results.
 	 */
 	void finishRevisionProcessing();
 

@@ -47,17 +47,17 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
  * might be used with {@link ValueSnak}. In such cases, the class stores the
  * values to a buffer. Methods for writing additional triples for these buffered
  * values can be called later.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	/**
 	 * Local value class for storing information about property restrictions.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	private class PropertyRestriction {
 
@@ -112,7 +112,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * might be buffered instead of being written immediately. The method
 	 * {@link #writeAuxiliaryTriples()} needs to be called to serialize this
 	 * additional data later on.
-	 * 
+	 *
 	 * @param snak
 	 *            the snake to write
 	 * @param subject
@@ -131,7 +131,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * Sets the context in which snaks should be used. This is useful when
 	 * converting many snaks that have the same context. In this case, one can
 	 * set the context manually and use the converter as a {@link SnakVisitor}.
-	 * 
+	 *
 	 * @param subject
 	 *            the resource that should be used as a subject of the serialied
 	 *            triples
@@ -223,7 +223,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * Writes all auxiliary triples that have been buffered recently. This
 	 * includes OWL property restrictions but it also includes any auxiliary
 	 * triples required by complex values that were used in snaks.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 *             if there was a problem writing the RDF triples
 	 */
@@ -243,7 +243,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	/**
 	 * Writes a buffered some-value restriction.
-	 * 
+	 *
 	 * @param propertyUri
 	 *            URI of the property to which the restriction applies
 	 * @param rangeUri
@@ -265,7 +265,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	/**
 	 * Writes a buffered no-value restriction.
-	 * 
+	 *
 	 * @param propertyUri
 	 *            URI of the property to which the restriction applies
 	 * @param rangeUri
@@ -294,7 +294,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	/**
 	 * Returns the class of datatype URI that best characterizes the range of
 	 * the given property based on its datatype.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property for which to get a range
 	 * @return the range URI
@@ -322,7 +322,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	/**
 	 * Adds the given some-value restriction to the list of restrictions that
 	 * should still be serialized. The given resource will be used as a subject.
-	 * 
+	 *
 	 * @param subject
 	 * @param propertyUri
 	 * @param rangeUri
@@ -336,7 +336,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	/**
 	 * Adds the given no-value restriction to the list of restrictions that
 	 * should still be serialized. The given resource will be used as a subject.
-	 * 
+	 *
 	 * @param subject
 	 * @param propertyUri
 	 * @param rangeUri
