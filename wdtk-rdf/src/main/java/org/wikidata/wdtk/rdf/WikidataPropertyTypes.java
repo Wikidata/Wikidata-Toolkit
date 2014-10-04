@@ -49,14 +49,15 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * This class helps to manage the exact datatype of properties used in an RDF
  * dump. It caches known types and fetches type information from the Web if
  * needed.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WikidataPropertyTypes implements PropertyTypes {
 
-	static final Logger logger = LoggerFactory.getLogger(WikidataPropertyTypes.class);
-	
+	static final Logger logger = LoggerFactory
+			.getLogger(WikidataPropertyTypes.class);
+
 	final String WEB_API_URL = "http://www.wikidata.org/w/api.php";
 
 	final Map<String, String> propertyTypes;
@@ -131,9 +132,9 @@ public class WikidataPropertyTypes implements PropertyTypes {
 
 	/**
 	 * Find the datatype of a property online.
-	 * 
+	 *
 	 * @param propertyIdValue
-	 * @return
+	 * @return IRI of the datatype
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 *             , IOException
@@ -221,7 +222,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 	}
 
 	@Override
-	public void getPropertyList(OutputStream out) throws IOException{
+	public void getPropertyList(OutputStream out) throws IOException {
 		out.write("	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();\n	static {\n"
 				.getBytes(StandardCharsets.UTF_8));
 		List<String> keyList = sortByPropertyKey(new ArrayList<String>(

@@ -32,24 +32,23 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 /**
  * Interface for retrieving the primitive types of Wikibase properties.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public interface PropertyTypes {
 
 	/**
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
-	 * @return
 	 */
 	public String getPropertyType(PropertyIdValue propertyIdValue);
 
 	/**
 	 * Sets datatypeIri an IRI of the primitive type of an Property for
 	 * {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param datatypeIri
 	 */
@@ -58,11 +57,10 @@ public interface PropertyTypes {
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
-	 * {@link EnitityIdValue} objects.
-	 * 
+	 * {@link EntityIdValue} objects.
+	 *
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromEntityIdValue(
 			PropertyIdValue propertyIdValue, EntityIdValue value);
@@ -70,10 +68,9 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link GlobeCoordinatesValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromGlobeCoordinatesValue(
 			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value);
@@ -81,10 +78,9 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link QuantityValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromQuantityValue(
 			PropertyIdValue propertyIdValue, QuantityValue value);
@@ -92,10 +88,9 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link StringValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromStringValue(
 			PropertyIdValue propertyIdValue, StringValue value);
@@ -103,10 +98,9 @@ public interface PropertyTypes {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link TimeValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
-	 * @return
 	 */
 	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
 			TimeValue value);
@@ -114,7 +108,7 @@ public interface PropertyTypes {
 	/**
 	 * Gives out a list of all known Properties as a static java map to the
 	 * {@link OutputStream} out.
-	 * 
+	 *
 	 * @param out
 	 * @throws IOException
 	 */

@@ -38,9 +38,9 @@ import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
  * groups are used to define which sites can be used for entering site links in
  * Wikibase, but the sites table does not tell us which groups are currently
  * enabled for site links.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class SitelinksExample {
 
@@ -55,6 +55,7 @@ public class SitelinksExample {
 		// Controller object for processing dumps:
 		DumpProcessingController dumpProcessingController = new DumpProcessingController(
 				"wikidatawiki");
+		dumpProcessingController.setOfflineMode(ExampleHelpers.OFFLINE_MODE);
 
 		// Download the sites table dump and extract information
 		Sites sites = dumpProcessingController.getSitesInformation();

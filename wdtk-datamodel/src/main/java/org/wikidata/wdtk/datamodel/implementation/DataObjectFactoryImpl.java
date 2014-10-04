@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -52,20 +53,23 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 /**
  * Implementation of {@link DataObjectFactory} that uses the data object
  * implementations from this package.
- * 
+ * <p>
+ * <b>Note:</b> If you are using this factory in your code, you might want to
+ * consider the simpler static methods of {@link Datamodel} instead.
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
-	public ItemIdValue getItemIdValue(String id, String baseIri) {
-		return new ItemIdValueImpl(id, baseIri);
+	public ItemIdValue getItemIdValue(String id, String siteIri) {
+		return new ItemIdValueImpl(id, siteIri);
 	}
 
 	@Override
-	public PropertyIdValue getPropertyIdValue(String id, String baseIri) {
-		return new PropertyIdValueImpl(id, baseIri);
+	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
+		return new PropertyIdValueImpl(id, siteIri);
 	}
 
 	@Override

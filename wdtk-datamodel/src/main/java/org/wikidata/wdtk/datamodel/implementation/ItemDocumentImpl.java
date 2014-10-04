@@ -21,16 +21,22 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
 		ItemDocument {
@@ -41,7 +47,7 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param itemIdValue
 	 *            the id of the item that data is about
 	 * @param labels
@@ -73,7 +79,9 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 			for (StatementGroup sg : statementGroups) {
 				if (!itemIdValue.equals(sg.getSubject())) {
 					throw new IllegalArgumentException(
-							"All statement groups in a document must have the same subject");
+							"All statement groups in a document must have the same subject: found "
+									+ sg.getSubject() + " but expected "
+									+ itemIdValue);
 				}
 			}
 		}
@@ -99,55 +107,27 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	}
 
 	@Override
+	public Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(statementGroups);
+	}
+
+	@Override
 	public Map<String, SiteLink> getSiteLinks() {
 		return Collections.unmodifiableMap(siteLinks);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + itemId.hashCode();
-		result = prime * result + siteLinks.hashCode();
-		result = prime * result + statementGroups.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof ItemDocumentImpl)) {
-			return false;
-		}
-		ItemDocumentImpl other = (ItemDocumentImpl) obj;
-
-		return itemId.equals(other.itemId) && siteLinks.equals(other.siteLinks)
-				&& statementGroups.equals(other.statementGroups);
+		return Equality.equalsItemDocument(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return "ItemDocument {qId = " + this.itemId 
-				+ ", " + this.labels.size() + " labels, "
-				+ this.descriptions.size() + " descriptions, "
-				+ this.aliases.size() + " aliases, "
-				+ this.siteLinks.size() + " site links, "
-				+ this.statementGroups.size() + " statement groups"
-				+ "}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

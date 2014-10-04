@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.storage.datastructure.impl.BitVectorImpl;
-import org.wikidata.wdtk.storage.datastructure.intf.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVector;
+import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
 
 /**
  * This MwRevisionPRocessor distributes revisions to subscribers that register
@@ -98,7 +98,7 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 * Importantly, the {@link MwRevision} that the registered processors will
 	 * receive is owned by this {@link MwRevisionProcessorBroker}. Its data is
 	 * valid only during the execution of
-	 * {@link MwRevisionProcessor#processRevision(MwRevision, boolean)}, but it
+	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it
 	 * will not be permanent. If the data is to be retained permanently, the
 	 * revision processor needs to make its own copy.
 	 * 

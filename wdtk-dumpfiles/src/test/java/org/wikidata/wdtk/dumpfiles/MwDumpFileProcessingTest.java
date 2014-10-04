@@ -35,6 +35,8 @@ import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 
@@ -42,9 +44,9 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Helper class that stores all information passed to it for later testing.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class TestMwRevisionProcessor implements MwRevisionProcessor {
 
@@ -74,9 +76,9 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Helper class that counts how many items it gets.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class TestEntityDocumentProcessor implements EntityDocumentProcessor {
 
@@ -93,18 +95,12 @@ public class MwDumpFileProcessingTest {
 			this.propCount++;
 		}
 
-		@Override
-		public void finishProcessingEntityDocuments() {
-			// nothing to do
-		}
-
 	}
 
 	/**
 	 * Generates a simple item revision for testing purposes.
-	 * 
+	 *
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getItemRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
@@ -116,7 +112,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_ITEM;
 		result.comment = "Test comment " + number;
-		result.text = "{\"label\":{\"en\":\"Revision " + number + "\"}}";
+		result.text = "{\"id\":\"Q1\",\"type\":\"item\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ number + "\"}}}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;
@@ -124,9 +121,8 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Generates a simple property revision for testing purposes.
-	 * 
+	 *
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getPropertyRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
@@ -138,8 +134,8 @@ public class MwDumpFileProcessingTest {
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_PROPERTY;
 		result.comment = "Test comment " + (number + 10000);
-		result.text = "{\"label\":{\"en\":\"Revision " + (number + 10000)
-				+ "\"},\"datatype\":\"wikibase-item\"}";
+		result.text = "{\"id\":\"P1\",\"type\":\"property\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"Revision "
+				+ (number + 10000) + "\"}},\"datatype\":\"wikibase-item\"}";
 		result.contributor = "127.0.0." + (number % 256);
 		result.contributorId = -1;
 		return result;
@@ -147,9 +143,8 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Generates a simple page revision for testing purposes.
-	 * 
+	 *
 	 * @param number
-	 * @return
 	 */
 	private MwRevision getPageRevision(int number) {
 		MwRevisionImpl result = new MwRevisionImpl();
@@ -170,7 +165,7 @@ public class MwDumpFileProcessingTest {
 	/**
 	 * Assert that two revisions are equal. Better than using equals() since it
 	 * generates more useful error reports.
-	 * 
+	 *
 	 * @param rev1
 	 * @param rev2
 	 */
@@ -202,7 +197,7 @@ public class MwDumpFileProcessingTest {
 
 	/**
 	 * Assert that two lists contain the same revisions in the same order.
-	 * 
+	 *
 	 * @param list1
 	 * @param list2
 	 */
@@ -280,7 +275,7 @@ public class MwDumpFileProcessingTest {
 	/**
 	 * Creates a mocked local dump file with three pages, each with three
 	 * revisions starting from the given baseId (plus some offset per page).
-	 * 
+	 *
 	 * @param dateStamp
 	 * @param baseId
 	 * @param dumpContentType

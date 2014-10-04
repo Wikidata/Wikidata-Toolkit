@@ -20,21 +20,22 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 /**
  * Generic implementation of {@link ItemIdValue} that works with arbitrary
  * Wikibase instances: it requires a baseIri that identifies the site globally.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
 	 *            a string of the form Qn... where n... is the string
@@ -60,6 +61,6 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
 	@Override
 	public String toString() {
-		return "(ItemId)" + this.baseIri + "/" + this.id;
+		return ToString.toString(this);
 	}
 }

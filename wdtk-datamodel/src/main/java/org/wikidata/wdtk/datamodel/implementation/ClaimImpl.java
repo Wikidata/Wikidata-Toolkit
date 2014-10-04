@@ -21,20 +21,24 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link Claim}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ClaimImpl implements Claim {
 
@@ -44,7 +48,7 @@ public class ClaimImpl implements Claim {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param subject
 	 *            the subject the Claim refers to
 	 * @param mainSnak
@@ -75,45 +79,27 @@ public class ClaimImpl implements Claim {
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		return Collections.unmodifiableList(qualifiers);
+		return Collections.unmodifiableList(this.qualifiers);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
+	public Iterator<Snak> getAllQualifiers() {
+		return new NestedIterator<>(this.qualifiers);
+	}
+
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(31, 569).append(this.subject)
-				.append(this.mainSnak).append(this.qualifiers).toHashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof ClaimImpl)) {
-			return false;
-		}
-
-		ClaimImpl other = (ClaimImpl) obj;
-		return this.subject.equals(other.subject)
-				&& this.mainSnak.equals(other.mainSnak)
-				&& this.qualifiers.equals(other.qualifiers);
+		return Equality.equalsClaim(this, obj);
 	}
-	
+
 	@Override
-	public String toString(){
-		return "Claim { main snak = " + this.mainSnak
-				+ ", subject = " + this.subject + ", " 
-				+ this.qualifiers.size() + " qualifiers}";
+	public String toString() {
+		return ToString.toString(this);
 	}
 
 }

@@ -24,17 +24,20 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 /**
  * Most basic implementation of {@link SiteLink}.
- * 
+ *
  * WARNING: Site key and site base IRI are currently specified independently. It
  * is expected that this will change to use a mapping from site keys to IRIs
  * instead.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class SiteLinkImpl implements SiteLink {
 
@@ -44,7 +47,7 @@ public class SiteLinkImpl implements SiteLink {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param title
 	 *            the title string of the linked page, including namespace
 	 *            prefixes if any
@@ -78,45 +81,18 @@ public class SiteLinkImpl implements SiteLink {
 		return Collections.unmodifiableList(badges);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + badges.hashCode();
-		result = prime * result + siteKey.hashCode();
-		result = prime * result + title.hashCode();
-		return result;
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof SiteLinkImpl)) {
-			return false;
-		}
-		SiteLinkImpl other = (SiteLinkImpl) obj;
-		return badges.equals(other.badges) && siteKey.equals(other.siteKey)
-				&& title.equals(other.title);
+		return Equality.equalsSiteLink(this, obj);
 	}
 
 	@Override
 	public String toString() {
-		return "SiteLink {title = " + this.title + ", siteKey = " + siteKey
-				+ ", badges = " + this.badges + "}";
+		return ToString.toString(this);
 	}
 }

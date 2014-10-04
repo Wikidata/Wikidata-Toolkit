@@ -21,9 +21,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -31,9 +35,9 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * Implementation of {@link StatementGroup}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class StatementGroupImpl implements StatementGroup {
 
@@ -41,7 +45,7 @@ public class StatementGroupImpl implements StatementGroup {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param statements
 	 *            a non-empty list of statements that use the same subject and
 	 *            main-snak property in their claim
@@ -84,37 +88,23 @@ public class StatementGroupImpl implements StatementGroup {
 		return this.statements.get(0).getClaim().getSubject();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		return this.statements.hashCode();
+		return Hash.hashCode(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof StatementGroupImpl)) {
-			return false;
-		}
-		StatementGroupImpl other = (StatementGroupImpl) obj;
-		return this.statements.equals(other.statements);
+		return Equality.equalsStatementGroup(this, obj);
 	}
 
 	@Override
-	public String toString(){
-		return "[" + "subject: " + this.getSubject() 
-				+ ", pId: " + this.getProperty() + ", " 
-				+ this.statements.size() + " items]";
+	public String toString() {
+		return ToString.toString(this);
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return this.statements.iterator();
 	}
 }
