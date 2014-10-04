@@ -20,38 +20,56 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
+import java.io.IOException;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A revision processor that processes Wikibase entity content from a dump file.
  * Revisions are parsed to obtain EntityDocument objects.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseRevisionProcessor.class);
 
-	JsonConverter jsonConverter;
-	final DataObjectFactory dataObjectFactory;
+	/**
+	 * The IRI of the site that this data comes from. This cannot be extracted
+	 * from individual revisions.
+	 */
+	final String siteIri;
+	final ObjectMapper mapper = new ObjectMapper();
+	// JsonConverter jsonConverter;
+	// final DataObjectFactory dataObjectFactory;
 	final EntityDocumentProcessor entityDocumentProcessor;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param entityDocumentProcessor
+	 *            the object that entity documents will be forwarded to
+	 * @param siteIri
+	 *            the IRI of the site that the data comes from, as used in
+	 *            {@link ItemIdValue#getSiteIri()}
+	 */
 	public WikibaseRevisionProcessor(
-			EntityDocumentProcessor entityDocumentProcessor) {
-		this.dataObjectFactory = new DataObjectFactoryImpl();
+			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
+		// this.dataObjectFactory = new DataObjectFactoryImpl();
 		this.entityDocumentProcessor = entityDocumentProcessor;
+		this.siteIri = siteIri;
 	}
 
 	@Override
@@ -59,8 +77,8 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 			Map<Integer, String> namespaces) {
 		// FIXME the baseUrl from the dump is not the baseIri we need here
 		// Compute this properly.
-		this.jsonConverter = new JsonConverter(
-				"http://www.wikidata.org/entity/", this.dataObjectFactory);
+		// this.jsonConverter = new JsonConverter(
+		// "http://www.wikidata.org/entity/", this.dataObjectFactory);
 	}
 
 	@Override
@@ -75,37 +93,73 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	public void processItemRevision(MwRevision mwRevision) {
 		try {
-			JSONObject jsonObject = new JSONObject(mwRevision.getText());
-			ItemDocument itemDocument = this.jsonConverter
-					.convertToItemDocument(jsonObject, mwRevision.getTitle());
-			this.entityDocumentProcessor.processItemDocument(itemDocument);
-		} catch (JSONException e) {
-			WikibaseRevisionProcessor.logger
-					.error("Failed to process JSON for item "
-							+ mwRevision.toString() + " (" + e.toString() + ")");
+			JacksonItemDocument document = mapper.readValue(
+					mwRevision.getText(), JacksonItemDocument.class);
+			document.setSiteIri(this.siteIri);
+			this.entityDocumentProcessor.processItemDocument(document);
+			return;
+		} catch (JsonParseException e1) {
+			logger.error("Failed to parse JSON for item "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+		} catch (JsonMappingException e1) {
+			logger.error("Failed to map JSON for item "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+			e1.printStackTrace();
+			System.out.print(mwRevision.getText());
+		} catch (IOException e1) {
+			logger.error("Failed to read revision: " + e1.getMessage());
 		}
+
+		// try {
+		// JSONObject jsonObject = new JSONObject(mwRevision.getText());
+		// ItemDocument itemDocument = this.jsonConverter
+		// .convertToItemDocument(jsonObject, mwRevision.getTitle());
+		// this.entityDocumentProcessor.processItemDocument(itemDocument);
+		// } catch (JSONException e) {
+		// WikibaseRevisionProcessor.logger
+		// .error("Failed to process JSON for item "
+		// + mwRevision.toString() + " (" + e.toString() + ")");
+		// }
 
 	}
 
 	public void processPropertyRevision(MwRevision mwRevision) {
 		try {
-			JSONObject jsonObject = new JSONObject(mwRevision.getText());
-			PropertyDocument propertyDocument = this.jsonConverter
-					.convertToPropertyDocument(jsonObject,
-							mwRevision.getTitle());
-			this.entityDocumentProcessor
-					.processPropertyDocument(propertyDocument);
-		} catch (JSONException e) {
-			WikibaseRevisionProcessor.logger
-					.error("Failed to process JSON for property "
-							+ mwRevision.toString() + " (" + e.toString() + ")");
+			JacksonPropertyDocument document = mapper.readValue(
+					mwRevision.getText(), JacksonPropertyDocument.class);
+			document.setSiteIri(this.siteIri);
+			this.entityDocumentProcessor.processPropertyDocument(document);
+			return;
+		} catch (JsonParseException e1) {
+			logger.error("Failed to parse JSON for property "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+		} catch (JsonMappingException e1) {
+			logger.error("Failed to map JSON for property "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+			e1.printStackTrace();
+			System.out.print(mwRevision.getText());
+		} catch (IOException e1) {
+			logger.error("Failed to read revision: " + e1.getMessage());
 		}
+
+		// try {
+		// JSONObject jsonObject = new JSONObject(mwRevision.getText());
+		// PropertyDocument propertyDocument = this.jsonConverter
+		// .convertToPropertyDocument(jsonObject,
+		// mwRevision.getTitle());
+		// this.entityDocumentProcessor
+		// .processPropertyDocument(propertyDocument);
+		// } catch (JSONException e) {
+		// WikibaseRevisionProcessor.logger
+		// .error("Failed to process JSON for property "
+		// + mwRevision.toString() + " (" + e.toString() + ")");
+		// }
 
 	}
 
 	@Override
 	public void finishRevisionProcessing() {
-		this.entityDocumentProcessor.finishProcessingEntityDocuments();
+		// nothing to do
 	}
 
 }

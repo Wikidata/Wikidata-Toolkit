@@ -20,24 +20,19 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.wikidata.wdtk.datamodel.json.JsonSerializer;
-import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.MwRevision;
-import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
-import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 
 /**
  * This class shows how convert data from wikidata.org to the JSON format as
  * used in the Wikibase API. The compressed output will be written into a file
  * named WikidataDump.json.bz2. You can find it in the example directory after
  * you ran the example code.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class SerializationExample {
 
@@ -49,40 +44,22 @@ public class SerializationExample {
 		// Print information about this program
 		printDocumentation();
 
-		// Controller object for processing dumps:
-		DumpProcessingController dumpProcessingController = new DumpProcessingController(
-				"wikidatawiki");
-
 		// Write the output to a BZip2-compressed file
-		BZip2CompressorOutputStream outputStream = new BZip2CompressorOutputStream(
-				new FileOutputStream("WikidataDump.json.bz2"));
-		// Create an object for managing the serialization process
-		JsonSerializer serializer = new JsonSerializer(outputStream);
+		try (BZip2CompressorOutputStream out = new BZip2CompressorOutputStream(
+				ExampleHelpers
+						.openExampleFileOuputStream("WikidataDump.json.bz2"))) {
+			// Create an object for managing the serialization process
+			JsonSerializer jsonSerializer = new JsonSerializer(out);
+			// Set up the serializer and write headers
+			jsonSerializer.start();
+			ExampleHelpers.processEntitiesFromWikidataDump(jsonSerializer);
+			// Finish the serialization
+			jsonSerializer.close();
 
-		// Subscribe to the most recent entity documents of type wikibase item
-		// and property:
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_ITEM, true);
-		dumpProcessingController.registerEntityDocumentProcessor(serializer,
-				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
-
-		// General statistics and time keeping:
-		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
-				"revision processing statistics", 10000);
-		// Subscribe to all current revisions (null = no filter):
-		dumpProcessingController.registerMwRevisionProcessor(rpRevisionStats,
-				null, true);
-
-		// Set up the serializer and write headers
-		serializer.start();
-
-		// Start processing (may trigger downloads where needed)
-		dumpProcessingController.processAllRecentRevisionDumps();
-		// // Process just a recent daily dump for testing:
-		// dumpProcessingController.processMostRecentDailyDump();
-
-		// Finish the serialization
-		serializer.close();
+			System.out.println("Finished serialization.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -91,20 +68,14 @@ public class SerializationExample {
 	private static void printDocumentation() {
 		System.out
 				.println("********************************************************************");
-		System.out.println("*** Wikidata Toolkit: Serialization Example");
+		System.out.println("*** Wikidata Toolkit: JSON Serialization Example");
 		System.out.println("*** ");
 		System.out
-				.println("*** This program will download dumps from Wikidata and serialize the data in a json format.");
+				.println("*** This program will download dumps from Wikidata and serialize");
 		System.out
-				.println("*** Downloading may take some time initially. After that, files");
+				.println("*** the data in Wikidata's JSON format. The output is stored in a");
 		System.out
-				.println("*** are stored on disk and are used until newer dumps are available.");
-		System.out
-				.println("*** You can delete files manually when no longer needed (see ");
-		System.out
-				.println("*** message below for the directory where dump files are found).");
-		System.out
-				.println("*** The output will be stored in the directory of the example.");
+				.println("*** compressed file. See source code for further details.");
 		System.out
 				.println("********************************************************************");
 	}

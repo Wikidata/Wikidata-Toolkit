@@ -27,7 +27,7 @@
         <ip>127.0.0.4</ip>
       </contributor>
       <comment>Test comment 4</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 4&quot;}}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;Q1&quot;,&quot;type&quot;:&quot;item&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 4&quot;}}}</text>
       <sha1>ignored</sha1>
       <model>wikibase-item</model>
       <format>application/json</format>
@@ -40,7 +40,7 @@
         <ip>127.0.0.5</ip>
       </contributor>
       <comment>Test comment 5</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 5&quot;}}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;Q1&quot;,&quot;type&quot;:&quot;item&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 5&quot;}}}</text>
       <sha1>ignored</sha1>
       <model>wikibase-item</model>
       <format>application/json</format>
@@ -54,7 +54,7 @@
       </contributor>
       <minor />
       <comment>Test comment 3</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 3&quot;}}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;Q1&quot;,&quot;type&quot;:&quot;item&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 3&quot;}}}</text>
       <sha1>ignored</sha1>
       <model>wikibase-item</model>
       <format>application/json</format>
@@ -68,7 +68,7 @@
       </contributor>
       <minor />
       <comment>Test comment 2</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 2&quot;}}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;Q1&quot;,&quot;type&quot;:&quot;item&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 2&quot;}}}</text>
       <sha1>ignored</sha1>
       <model>wikibase-item</model>
       <format>application/json</format>
@@ -124,7 +124,7 @@ Line 3</text>
         <ip>127.0.0.4</ip>
       </contributor>
       <comment>Test comment 10004</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 10004&quot;},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;P1&quot;,&quot;type&quot;:&quot;property&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 10004&quot;}},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
       <sha1>ignored</sha1>
       <model>wikibase-property</model>
       <format>application/json</format>
@@ -137,7 +137,7 @@ Line 3</text>
         <ip>127.0.0.5</ip>
       </contributor>
       <comment>Test comment 10005</comment>
-      <text xml:space="preserve">{&quot;label&quot;:{&quot;en&quot;:&quot;Revision 10005&quot;},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
+      <text xml:space="preserve">{&quot;id&quot;:&quot;P1&quot;,&quot;type&quot;:&quot;property&quot;,&quot;labels&quot;:{&quot;en&quot;:{&quot;language&quot;:&quot;en&quot;,&quot;value&quot;:&quot;Revision 10005&quot;}},&quot;datatype&quot;:&quot;wikibase-item&quot;}</text>
       <sha1>ignored</sha1>
       <model>wikibase-property</model>
       <format>application/json</format>

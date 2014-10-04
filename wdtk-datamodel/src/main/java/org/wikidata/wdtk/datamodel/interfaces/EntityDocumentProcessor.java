@@ -24,15 +24,15 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * Interface for classes that are able to process {@link EntityDocument} objects
  * in some way. Classes that implement this can subscribe to receive entity
  * documents as obtained, e.g., from parsing dump files.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface EntityDocumentProcessor {
 
 	/**
 	 * Processes the given ItemDocument.
-	 * 
+	 *
 	 * @param itemDocument
 	 *            the ItemDocument
 	 */
@@ -40,17 +40,10 @@ public interface EntityDocumentProcessor {
 
 	/**
 	 * Processes the given PropertyDocument.
-	 * 
+	 *
 	 * @param propertyDocument
 	 *            the PropertyDocument
 	 */
 	void processPropertyDocument(PropertyDocument propertyDocument);
-
-	/**
-	 * Performs final actions that should be done after all entity documents in
-	 * a batch of entity documents have been processed. For example, this might
-	 * be called after a whole dumpfile was completely processed.
-	 */
-	void finishProcessingEntityDocuments();
 
 }

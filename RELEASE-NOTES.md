@@ -5,7 +5,11 @@ Version 0.3.0
 -------------
 
 New features:
-* Added iterator access to all statements of an itemdocument, all statements in a statement
+* Added full support for reading data from the API JSON format (now used in all dumps);
+  reading JSON dumps also became much faster with this change
+* Improved examples (more, faster, easier-to-read programs); documentation on each
+  example is now found in the Readme.md file in the example package
+* Added iterator access to all statements of an item document, all statements in a statement
   group, all qualifiers in a claim, all snaks in a snak group, and all snaks in a reference
 * Dump files are downloaded to temporary files first to prevent incomplete downloads
   from causing errors

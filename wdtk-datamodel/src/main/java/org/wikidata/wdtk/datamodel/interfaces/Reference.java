@@ -26,17 +26,17 @@ import java.util.List;
 /**
  * An interface for references in Wikidata. A reference is currently defined by
  * a list of ValueSnaks, encoding property-value pairs.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface Reference {
 
 	/**
-	 * Get the list snak groups pairs associated with this reference. Objects of
+	 * Get the list of snak groups associated with this reference. Objects of
 	 * this class are immutable, and the list should therefore not be
 	 * modifiable.
-	 * 
+	 *
 	 * @return list of SnakGroups
 	 */
 	List<SnakGroup> getSnakGroups();
@@ -44,7 +44,7 @@ public interface Reference {
 	/**
 	 * Returns an interator over all snaks, without considering snak groups. The
 	 * relative order of snaks is preserved.
-	 * 
+	 *
 	 * @return iterator of snaks
 	 */
 	Iterator<Snak> getAllSnaks();

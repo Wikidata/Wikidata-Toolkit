@@ -44,9 +44,9 @@ import org.wikidata.wdtk.rdf.RdfWriter;
  * a Linked Open Data version of this data set. This is the main use case for
  * this class, though in principle, arbitrary RDF triples could be added under
  * specific conditions.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class ExportExtensions implements ValueVisitor<Void> {
 
@@ -70,7 +70,7 @@ public class ExportExtensions implements ValueVisitor<Void> {
 	 * registering another one will overwrite the previous extension. It is
 	 * possible to register null for disabling previously registered extensions
 	 * for a certain property.
-	 * 
+	 *
 	 * @param valueExportExtension
 	 *            the export extension to register
 	 * @param propertyIri
@@ -84,7 +84,7 @@ public class ExportExtensions implements ValueVisitor<Void> {
 
 	/**
 	 * Writes any additional triples for the given value snak.
-	 * 
+	 *
 	 * @param snak
 	 *            the extended snak
 	 * @param resource
@@ -146,7 +146,7 @@ public class ExportExtensions implements ValueVisitor<Void> {
 	/**
 	 * Registers a predefined set of known export extensions for certain
 	 * Wikidata properties.
-	 * 
+	 *
 	 * @param exportExtensions
 	 *            the object for which to register the export extensions
 	 */
