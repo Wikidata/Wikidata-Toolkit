@@ -55,6 +55,8 @@ ConstraintRendererTestInterface {
 						this.testHelper.getOutputStream()));
 		renderer.render(null, null);
 		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
+		renderer.renderPart(null, null, null);
+		Assert.assertEquals("", this.testHelper.getOutputStream().toString());
 		this.testHelper.testRenderConstraint(renderer, getConstraint());
 	}
 
