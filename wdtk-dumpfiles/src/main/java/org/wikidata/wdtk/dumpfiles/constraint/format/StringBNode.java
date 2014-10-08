@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.format;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +25,9 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 
 /**
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class StringBNode implements BNode {
 
@@ -41,6 +41,11 @@ public class StringBNode implements BNode {
 	public StringBNode(String str) {
 		this.str = str;
 		this.bnode = this.factory.createBNode();
+	}
+
+	public StringBNode(StringBNode other) {
+		this.str = other.str;
+		this.bnode = other.bnode;
 	}
 
 	@Override
