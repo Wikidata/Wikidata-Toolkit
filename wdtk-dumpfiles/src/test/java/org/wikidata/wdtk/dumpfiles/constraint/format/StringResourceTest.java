@@ -44,6 +44,7 @@ public class StringResourceTest {
 		StringResource node1 = new StringResource("Resource");
 		Assert.assertEquals(node0, node0);
 		Assert.assertEquals(node0, node1);
+		Assert.assertEquals(node0.hashCode(), node1.hashCode());
 		Assert.assertNotEquals(node0, null);
 		Assert.assertNotEquals(node0, new Object());
 	}

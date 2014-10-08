@@ -48,6 +48,7 @@ public class StringBNodeTest {
 		Assert.assertNotEquals(node0, new Object());
 		StringBNode node1 = new StringBNode(node0);
 		Assert.assertEquals(node0, node1);
+		Assert.assertEquals(node0.hashCode(), node1.hashCode());
 		StringBNode node2 = new StringBNode("BNode");
 		Assert.assertNotEquals(node0, node2);
 	}
