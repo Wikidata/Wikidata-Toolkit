@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
@@ -49,9 +50,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * This class helps to manage the exact datatype of properties used in an RDF
  * dump. It caches known types and fetches type information from the Web if
  * needed.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class WikidataPropertyTypes implements PropertyTypes {
 
@@ -130,9 +131,15 @@ public class WikidataPropertyTypes implements PropertyTypes {
 		return DatatypeIdValue.DT_TIME;
 	}
 
+	@Override
+	public String setPropertyTypeFromMonolingualTextValue(
+			PropertyIdValue propertyIdValue, MonolingualTextValue value) {
+		return DatatypeIdValue.DT_MONOLINGUAL_TEXT;
+	}
+
 	/**
 	 * Find the datatype of a property online.
-	 *
+	 * 
 	 * @param propertyIdValue
 	 * @return IRI of the datatype
 	 * @throws IOException
@@ -170,6 +177,8 @@ public class WikidataPropertyTypes implements PropertyTypes {
 			return DatatypeIdValue.DT_TIME;
 		case "commonsMedia":
 			return DatatypeIdValue.DT_COMMONS_MEDIA;
+		case "monolingualtext":
+			return DatatypeIdValue.DT_MONOLINGUAL_TEXT;
 		default:
 			logger.error("Got unkown datatype " + datatype);
 			return null;
@@ -252,6 +261,8 @@ public class WikidataPropertyTypes implements PropertyTypes {
 			case DatatypeIdValue.DT_URL:
 				datatypeNotation = "DT_URL";
 				break;
+			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+				datatypeNotation = "DT_MONOLINGUAL_TEXT";
 			default:
 				logger.warn("unknown IRI " + typeIri);
 				datatypeNotation = null;
