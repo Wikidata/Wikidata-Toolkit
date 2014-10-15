@@ -39,6 +39,7 @@ import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
@@ -88,6 +89,22 @@ public class ValueRdfConverterTest {
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("QuantityValue.rdf")));
+	}
+
+	@Test
+	public void testWriteMonolingualTextValue() throws RDFHandlerException {
+		MonolingualTextValueConverter valueConverter = new MonolingualTextValueConverter(
+				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+
+		MonolingualTextValue value = this.objectFactory
+				.getMonolingualTextValue("中华人民共和国", "zh-hans");
+		PropertyIdValue propertyIdValue = this.objectFactory
+				.getPropertyIdValue("P1448", "http://www.wikidata.org/entity/");
+		Value valueURI = valueConverter.getRdfValue(value, propertyIdValue,
+				false);
+		this.rdfWriter.finish();
+
+		assertEquals(valueURI.toString(), "\"中华人民共和国\"@zh-hans");
 	}
 
 	@Test
