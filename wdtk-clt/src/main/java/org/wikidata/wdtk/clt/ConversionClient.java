@@ -154,7 +154,7 @@ public class ConversionClient {
 		}
 
 		startSerializers();
-		dumpProcessingController.processMostRecentMainDump();
+		dumpProcessingController.processMostRecentJsonDump();
 		closeSerializers();
 	}
 
