@@ -47,8 +47,9 @@ public class MonolingualTextValueConverter extends
 		switch (datatype) {
 		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
-			return this.rdfWriter.getLiteral(value.getText(),
-					WikimediaLanguageCodes.getLanguageCode(value.getLanguageCode()));
+			String languageCode = WikimediaLanguageCodes.getLanguageCode(value
+					.getLanguageCode());
+			return this.rdfWriter.getLiteral(value.getText(), languageCode);
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "entity");
 			return null;
