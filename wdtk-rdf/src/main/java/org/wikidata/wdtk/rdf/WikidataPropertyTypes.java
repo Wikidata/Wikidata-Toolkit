@@ -50,9 +50,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * This class helps to manage the exact datatype of properties used in an RDF
  * dump. It caches known types and fetches type information from the Web if
  * needed.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WikidataPropertyTypes implements PropertyTypes {
 
@@ -139,7 +139,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 
 	/**
 	 * Find the datatype of a property online.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @return IRI of the datatype
 	 * @throws IOException
@@ -263,6 +263,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 				break;
 			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
 				datatypeNotation = "DT_MONOLINGUAL_TEXT";
+				break;
 			default:
 				logger.warn("unknown IRI " + typeIri);
 				datatypeNotation = null;
