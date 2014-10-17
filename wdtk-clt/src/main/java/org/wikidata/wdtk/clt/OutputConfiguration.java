@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -124,23 +126,22 @@ public abstract class OutputConfiguration {
 	 * output-file will be ignored if useStdout equals true. The compression
 	 * format can be specified by the class attribute compressionExtension.
 	 * 
-	 * @param outputFileName
-	 *            name of the file which will be created by the function for the
-	 *            output stream
 	 * @return compressing {@link OutputStream}
 	 * @throws IOException
 	 */
 	@SuppressWarnings("resource")
-	protected OutputStream getCompressorOutputStream(String outputFileName)
-			throws IOException {
+	protected OutputStream getCompressorOutputStream() throws IOException {
 		if (this.useStdout) {
 			return System.out;
 		} else {
-			new File(outputDestination).mkdirs();
+			Path outputDirectory = Paths.get(this.outputDestination)
+					.getParent();
+			if (outputDirectory != null) {
+				new File(outputDirectory.toString()).mkdirs();
+			}
 			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 					new FileOutputStream(this.outputDestination
-							+ outputFileName + this.compressionExtension),
-					1024 * 1024 * 5);
+							+ this.compressionExtension), 1024 * 1024 * 5);
 
 			OutputStream compressorOutputStream = null;
 			switch (this.compressionExtension) {

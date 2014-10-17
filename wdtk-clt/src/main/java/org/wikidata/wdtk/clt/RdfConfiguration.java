@@ -45,7 +45,6 @@ public class RdfConfiguration extends OutputConfiguration {
 	final static String COMPRESS_NONE = "";
 
 	RdfSerializer serializer;
-	String serializerName;
 
 	String rdfdump = "";
 
@@ -67,53 +66,45 @@ public class RdfConfiguration extends OutputConfiguration {
 			DumpProcessingController dumpProcessingController, Sites sites)
 			throws IOException {
 
+		if (this.outputDestination.equals("")) {
+			setDefaultDestination();
+		}
+
 		// Create serializers for several data parts and encodings depending on
 		// the Rdfdump property:
 		if (this.rdfdump.equals("all_exact_data")) {
-			this.serializerName = "wikidata-properties.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_PROPERTIES
-							| RdfSerializer.TASK_ALL_EXACT_DATA,
-					this.serializerName);
+							| RdfSerializer.TASK_ALL_EXACT_DATA);
 		}
 		if (this.rdfdump.equals("terms")) {
-			this.serializerName = "wikidata-terms.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
-					sites, RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS,
-					this.serializerName);
+					sites, RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_TERMS);
 		}
 		if (this.rdfdump.equals("statements")) {
-			this.serializerName = "wikidata-statements.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_STATEMENTS,
-					this.serializerName);
+							| RdfSerializer.TASK_STATEMENTS);
 		}
 		if (this.rdfdump.equals("simple_statements")) {
-			this.serializerName = "wikidata-simple-statements.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_SIMPLE_STATEMENTS,
-					this.serializerName);
+							| RdfSerializer.TASK_SIMPLE_STATEMENTS);
 		}
 		if (this.rdfdump.equals("taxonomy")) {
-			this.serializerName = "wikidata-taxonomy.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_TAXONOMY, this.serializerName);
+							| RdfSerializer.TASK_TAXONOMY);
 		}
 		if (this.rdfdump.equals("instance_of")) {
-			this.serializerName = "wikidata-instances.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_INSTANCE_OF,
-					this.serializerName);
+							| RdfSerializer.TASK_INSTANCE_OF);
 		}
 		if (this.rdfdump.equals("sitelinks")) {
-			this.serializerName = "wikidata-sitelinks.nt";
 			this.serializer = createRdfSerializer(dumpProcessingController,
 					sites, RdfSerializer.TASK_ITEMS
-							| RdfSerializer.TASK_SITELINKS, this.serializerName);
+							| RdfSerializer.TASK_SITELINKS);
 		}
 
 	}
@@ -132,16 +123,14 @@ public class RdfConfiguration extends OutputConfiguration {
 	 * @param tasks
 	 *            an integer that is a bitwise OR of flags like
 	 *            {@link RdfSerializer#TASK_LABELS}.
-	 * @param outputFileName
-	 *            filename to write output to
 	 * @return the newly created rdf serializer
 	 * @throws IOException
 	 */
-	private RdfSerializer createRdfSerializer(
+	RdfSerializer createRdfSerializer(
 			DumpProcessingController dumpProcessingController, Sites sites,
-			int tasks, String outputFileName) throws IOException {
+			int tasks) throws IOException {
 
-		OutputStream exportOutputStream = getCompressorOutputStream(outputFileName);
+		OutputStream exportOutputStream = getCompressorOutputStream();
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
 				exportOutputStream, sites);
@@ -155,6 +144,15 @@ public class RdfConfiguration extends OutputConfiguration {
 		return serializer;
 	}
 
+	/**
+	 * Sets a default value to output destination depending on the other
+	 * attributes.
+	 */
+	void setDefaultDestination() {
+		if (!rdfdump.equals(""))
+			this.outputDestination = rdfdump + ".nt";
+	}
+
 	@Override
 	public void startSerializer() {
 		serializer.start();
@@ -165,7 +163,7 @@ public class RdfConfiguration extends OutputConfiguration {
 		serializer.close();
 		System.out.println("*** Finished serialization of "
 				+ serializer.getTripleCount() + " RDF triples in file "
-				+ serializerName);
+				+ this.outputDestination);
 	}
 
 }

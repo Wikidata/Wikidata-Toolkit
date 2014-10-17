@@ -56,7 +56,10 @@ public class JsonConfiguration extends OutputConfiguration {
 	public void setupSerializer(
 			DumpProcessingController dumpProcessingController, Sites sites)
 			throws FileNotFoundException, IOException {
-		OutputStream outputStream = getCompressorOutputStream("WikidataDump.json");
+		if (this.outputDestination.equals("")) {
+			setDefaultDestination();
+		}
+		OutputStream outputStream = getCompressorOutputStream();
 
 		// Create an object for managing the serialization process
 		JsonSerializer serializer = new JsonSerializer(outputStream);
@@ -67,6 +70,13 @@ public class JsonConfiguration extends OutputConfiguration {
 				MwRevision.MODEL_WIKIBASE_ITEM, true);
 		dumpProcessingController.registerEntityDocumentProcessor(serializer,
 				MwRevision.MODEL_WIKIBASE_PROPERTY, true);
+	}
+
+	/**
+	 * Sets a default value to output destination.
+	 */
+	void setDefaultDestination() {
+		this.outputDestination = "WikidataDump.json";
 	}
 
 	@Override
