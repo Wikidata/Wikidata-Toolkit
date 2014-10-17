@@ -74,7 +74,7 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	 * String used to refer to the property datatype
 	 * {@link DatatypeIdValue#DT_MONOLINGUAL_TEXT} in JSON.
 	 */
-	public static final String JSON_DT_MONOLINGUAL_TEXT = "monolingualtext ";
+	public static final String JSON_DT_MONOLINGUAL_TEXT = "monolingualtext";
 
 	/**
 	 * Datatype IRI as used in Wikidata Toolkit.

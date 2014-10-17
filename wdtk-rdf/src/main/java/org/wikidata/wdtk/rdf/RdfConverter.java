@@ -339,7 +339,8 @@ public class RdfConverter {
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
 			this.rdfWriter.writeTripleValueObject(subject, predicate,
-					getMonolingualTextValueLiteral(mtv));
+					RdfConverter.getMonolingualTextValueLiteral(mtv,
+							this.rdfWriter));
 		}
 	}
 
@@ -423,7 +424,13 @@ public class RdfConverter {
 		}
 	}
 
-	Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
+	/**
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static Value getMonolingualTextValueLiteral(
+			MonolingualTextValue value, RdfWriter rdfWriter) {
 		String languageCode;
 		try {
 			languageCode = WikimediaLanguageCodes.getLanguageCode(value
@@ -434,7 +441,7 @@ public class RdfConverter {
 					+ languageCode
 					+ "\". Using this code in RDF now, but this might be wrong.");
 		}
-		return this.rdfWriter.getLiteral(value.getText(), languageCode);
+		return rdfWriter.getLiteral(value.getText(), languageCode);
 	}
 
 	/**
