@@ -273,11 +273,11 @@ public class RdfConverter {
 
 	void writeSubclassOfStatements(Resource subject, ItemDocument itemDocument) {
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			boolean isSubPropertyOf = "P279".equals(statementGroup
+			boolean isSubClassOf = "P279".equals(statementGroup
 					.getProperty().getId());
 			boolean isInstanceOf = "P31".equals(statementGroup.getProperty()
 					.getId());
-			if (!isInstanceOf && !isSubPropertyOf) {
+			if (!isInstanceOf && !isSubClassOf) {
 				continue;
 			}
 			for (Statement statement : statementGroup.getStatements()) {
@@ -285,7 +285,7 @@ public class RdfConverter {
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
 							.getMainSnak();
 
-					if (isSubPropertyOf) {
+					if (isSubClassOf) {
 						this.owlDeclarationBuffer.addClass(itemDocument
 								.getEntityId());
 					}
@@ -295,7 +295,7 @@ public class RdfConverter {
 					}
 
 					if (statement.getClaim().getQualifiers().size() == 0
-							&& isSubPropertyOf) {
+							&& isSubClassOf) {
 						Value value = this.valueRdfConverter.getRdfValue(
 								mainSnak.getValue(), mainSnak.getPropertyId(),
 								true);
