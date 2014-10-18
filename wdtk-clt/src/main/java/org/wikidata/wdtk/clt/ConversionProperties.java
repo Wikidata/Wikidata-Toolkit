@@ -267,8 +267,7 @@ public class ConversionProperties {
 		case "rdf":
 			RdfConfiguration rdfConfiguration = new RdfConfiguration(this);
 			if (cmd.hasOption("r")) {
-				rdfConfiguration.setRdfdump(cmd.getOptionValue("r")
-						.toLowerCase());
+				rdfConfiguration.setRdfdump(cmd.getOptionValue("r"));
 			} else {
 				logger.warn("No kind of rdf-dump set!");
 			}

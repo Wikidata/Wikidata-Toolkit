@@ -138,7 +138,7 @@ public class ConversionClient {
 
 			// Subscribe to all current revisions (null = no filter):
 			dumpProcessingController.registerMwRevisionProcessor(
-					rpRevisionStats, null, true);
+					rpRevisionStats, null, false);
 		}
 
 		if (this.conversionProperties.getDumplocation() != null) {
