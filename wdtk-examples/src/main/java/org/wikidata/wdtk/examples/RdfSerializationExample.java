@@ -23,7 +23,6 @@ package org.wikidata.wdtk.examples;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -39,8 +38,6 @@ import org.openrdf.rio.RDFFormat;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
-import org.wikidata.wdtk.dumpfiles.MwRevisionProcessor;
-import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
@@ -97,12 +94,9 @@ public class RdfSerializationExample {
 		createRdfSerializer("wikidata-sitelinks.nt", COMPRESS_GZIP,
 				RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_SITELINKS);
 
-		// General statistics and time keeping:
-		MwRevisionProcessor rpRevisionStats = new StatisticsMwRevisionProcessor(
-				"revision processing statistics", 10000);
-		// Subscribe to all current revisions (null = no filter):
-		dumpProcessingController.registerMwRevisionProcessor(rpRevisionStats,
-				null, true);
+		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				entityTimerProcessor, null, true);
 
 		// Set up the serializer and write headers
 		startSerializers();
@@ -142,8 +136,8 @@ public class RdfSerializationExample {
 			throws FileNotFoundException, IOException {
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(outputFileName + compressionExtension),
-				1024 * 1024 * 5);
+				ExampleHelpers.openExampleFileOuputStream(outputFileName
+						+ compressionExtension), 1024 * 1024 * 5);
 
 		OutputStream compressorOutputStream = null;
 		switch (compressionExtension) {
