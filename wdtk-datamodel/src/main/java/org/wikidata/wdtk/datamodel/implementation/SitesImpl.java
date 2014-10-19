@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,17 +32,17 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * Implementation of the {@link Sites} interface that allows sites to be
  * registered. Objects of this type are not immutable, since they are not data
  * objects, but the {@link Sites} interface only supports read access.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class SitesImpl implements Sites {
 
 	/**
 	 * Simple record for holding information about a site.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class SiteInformation {
 		final String siteKey;
@@ -83,7 +83,7 @@ public class SitesImpl implements Sites {
 
 		/**
 		 * Returns the file URL.
-		 * 
+		 *
 		 * @see Sites#getFileUrl(String, String)
 		 * @param fileName
 		 *            the file name
@@ -98,7 +98,7 @@ public class SitesImpl implements Sites {
 		 * page titles on MediaWiki sites, since this is how MediaWiki page URLs
 		 * are constructed. For other sites, this might not be the case and
 		 * spaces will just be escaped in the standard way using "+".
-		 * 
+		 *
 		 * @see Sites#getPageUrl(String, String)
 		 * @param pageTitle
 		 *            the page title, not escaped
@@ -126,23 +126,7 @@ public class SitesImpl implements Sites {
 
 	final HashMap<String, SiteInformation> sites = new HashMap<String, SiteInformation>();
 
-	/**
-	 * Sets the stored information for the site of the given key to the given
-	 * values.
-	 * 
-	 * @param siteKey
-	 *            the global site key
-	 * @param group
-	 *            the site group
-	 * @param languageCode
-	 *            the site MediaWiki language code
-	 * @param siteType
-	 *            the site type
-	 * @param filePath
-	 *            the file path with $1 as a placeholder for the file name
-	 * @param pagePath
-	 *            the page path with $1 as a placeholder for the page title
-	 */
+	@Override
 	public void setSiteInformation(String siteKey, String group,
 			String languageCode, String siteType, String filePath,
 			String pagePath) {

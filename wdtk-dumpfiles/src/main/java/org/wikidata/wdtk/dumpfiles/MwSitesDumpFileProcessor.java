@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,10 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 /**
  * This class processes dump files that contain the SQL dump of the MediaWiki <a
  * href="https://www.mediawiki.org/wiki/Manual:Sites_table">sites table</a>.
+ * <p>
+ * The class expects all URLs in the dump to be protocol-relative (i.e.,
+ * starting with "//" rather than with "http://" or "https://") and it will
+ * prepend "http:".
  *
  * @author Markus Kroetzsch
  *
