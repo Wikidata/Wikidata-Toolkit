@@ -55,6 +55,7 @@ public class AnyValueConverter implements
 	final TimeValueConverter timeValueConverter;
 	final GlobeCoordinatesValueConverter globeCoordinatesValueConverter;
 	final QuantityValueConverter quantityValueConverter;
+	final MonolingualTextValueConverter monolingualTextValueConverter;
 
 	PropertyIdValue currentPropertyIdValue;
 	boolean simple;
@@ -76,6 +77,8 @@ public class AnyValueConverter implements
 				rdfWriter, propertyTypes, rdfConversionBuffer);
 		this.quantityValueConverter = new QuantityValueConverter(rdfWriter,
 				propertyTypes, rdfConversionBuffer);
+		this.monolingualTextValueConverter = new MonolingualTextValueConverter(
+				rdfWriter, propertyTypes, rdfConversionBuffer);
 	}
 
 	@Override
@@ -108,9 +111,8 @@ public class AnyValueConverter implements
 
 	@Override
 	public Value visit(MonolingualTextValue value) {
-		throw new RuntimeException(
-				"MonolingualTextValue cannot be processed like a value of a user-defined property. "
-						+ "Use getMonolingualTextValueLiteral() to get a Literal for such values.");
+		return this.monolingualTextValueConverter.getRdfValue(value,
+				this.currentPropertyIdValue, this.simple);
 	}
 
 	@Override
