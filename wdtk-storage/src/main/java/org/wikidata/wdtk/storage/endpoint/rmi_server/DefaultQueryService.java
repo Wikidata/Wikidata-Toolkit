@@ -34,7 +34,8 @@ public class DefaultQueryService implements WdtkQueryService {
 	 */
 	private int highestId = 0;
 	private Queue<Integer> reusableIdentifiers = new LinkedBlockingQueue<>();
-	
+	private QueryServiceWorkerThread serviceThread;
+
 	private ExecutorService executor;
 	private Registry registry;
 
@@ -47,11 +48,15 @@ public class DefaultQueryService implements WdtkQueryService {
 	private Map<Integer, QueryInformation> currentQueries = new HashMap<>();
 
 	// TODO forwarding requests to the database
-	// TODO server setup
-	// TODO server monitor thread
+	// TODO enable graceful service shutdown
+	// TODO logging
+	// TODO configurability
 
 	public DefaultQueryService() {
 		this.executor = Executors.newCachedThreadPool();
+		this.serviceThread = new QueryServiceWorkerThread(this);
+		this.executor.execute(this.serviceThread);
+		// no future is collected, since there is no useful return value so far
 	}
 
 	/**
@@ -155,7 +160,10 @@ public class DefaultQueryService implements WdtkQueryService {
 				.exportObject(this, 0);
 
 		registry.rebind(WdtkQueryServiceName.WDTK_QUERY, stub);
+	}
 
+	Map<Integer, QueryInformation> getCurrentQueries() {
+		return this.currentQueries;
 	}
 
 }
