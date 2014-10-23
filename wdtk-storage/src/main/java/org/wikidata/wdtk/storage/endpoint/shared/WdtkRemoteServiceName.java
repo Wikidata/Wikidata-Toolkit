@@ -7,7 +7,7 @@ package org.wikidata.wdtk.storage.endpoint.shared;
  * @author fredo
  *
  */
-public class WdtkQueryServiceName {
+public class WdtkRemoteServiceName {
 
 	public static final String WDTK_QUERY = "wdtk-query";
 }

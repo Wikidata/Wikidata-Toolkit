@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.storage.endpoint.shared;
 
-public interface WdtkQueryResult {
+import java.io.Serializable;
+
+public interface WdtkQueryResult extends Serializable {
 
 }

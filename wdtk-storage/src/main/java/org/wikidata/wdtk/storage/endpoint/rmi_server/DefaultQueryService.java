@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.storage.endpoint.rmi_server;
 
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -17,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQuery;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryResult;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryService;
-import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryServiceName;
+import org.wikidata.wdtk.storage.endpoint.shared.WdtkRemoteServiceName;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryState;
 
 /**
@@ -27,12 +29,16 @@ import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryState;
  */
 public class DefaultQueryService implements WdtkQueryService {
 
+	private static final long serialVersionUID = 6392029667589506215L;
+
+	private static final int INITIAL_ID = 0;
+
 	/**
 	 * The highest identifier that has been handed out so far. Any newly handed
 	 * out identifier must be greater then that. (Except for re-used
 	 * identifiers.)
 	 */
-	private int highestId = 0;
+	private int highestId = INITIAL_ID;
 	private Queue<Integer> reusableIdentifiers = new LinkedBlockingQueue<>();
 	private QueryServiceWorkerThread serviceThread;
 
@@ -54,9 +60,6 @@ public class DefaultQueryService implements WdtkQueryService {
 
 	public DefaultQueryService() {
 		this.executor = Executors.newCachedThreadPool();
-		this.serviceThread = new QueryServiceWorkerThread(this);
-		this.executor.execute(this.serviceThread);
-		// no future is collected, since there is no useful return value so far
 	}
 
 	/**
@@ -144,22 +147,77 @@ public class DefaultQueryService implements WdtkQueryService {
 	 *             if neither a RMI registry server is present nor one could be
 	 *             created
 	 */
-	public void registerRmiService() throws RemoteException {
+	void registerRmiService() throws RemoteException {
 		// preparations
+		if (System.getSecurityManager() == null) {
+			SecurityManager securityMan = new SecurityManager();
+			System.setSecurityManager(securityMan);
+		}
 		// set up registry
 		try {
 			registry = LocateRegistry.getRegistry();
 		} catch (RemoteException initialException) {
 			// none already running, create one
-			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-			registry = LocateRegistry.getRegistry();
+			try {
+				LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+				registry = LocateRegistry.getRegistry();
+			} catch (RemoteException launchException) {
+				launchException.printStackTrace();
+			}
 
 		}
 		// set up query service
 		WdtkQueryService stub = (WdtkQueryService) UnicastRemoteObject
 				.exportObject(this, 0);
 
-		registry.rebind(WdtkQueryServiceName.WDTK_QUERY, stub);
+		registry.rebind(WdtkRemoteServiceName.WDTK_QUERY, stub);
+	}
+
+	/**
+	 * Attempts to launch a {@link DefaultQueryService}.
+	 * <p>
+	 * This requires, that the security policy and the codebase is set correctly
+	 * and <i>rmiregistry</i> is running.
+	 * </p>
+	 * <p>
+	 * <b>Troubleshooting</b><br/>
+	 * When dealing with a {@link java.net.SocketException} make sure the
+	 * security policy is set correctly or, if you use a local security policy,
+	 * that it is added to the JVM parameters. For
+	 * {@link java.rmi.RemoteExceptions} check if <i>rmiregistry</i> is running
+	 * with the correct parameters indicating the codebase. Also make sure that
+	 * the JVM executing this class has the same codebase added to its
+	 * configuration. Usually this is done via<br/>
+	 * <b>-Djava.rmi.server.codebase="url/to/codebase"</b>
+	 * </p>
+	 * 
+	 * @throws RemoteException
+	 */
+	public void launch() throws RemoteException {
+		this.registerRmiService();
+
+		this.serviceThread = new QueryServiceWorkerThread(this);
+		this.executor.execute(this.serviceThread);
+	}
+
+	public void terminate() {
+		// cancel the service thread
+		this.serviceThread.terminate();
+
+		// unregister service
+		try {
+			this.registry.unbind(WdtkRemoteServiceName.WDTK_QUERY);
+		} catch (AccessException e) {
+		} catch (RemoteException e) {
+		} catch (NotBoundException e) {
+		}
+
+		// clear current queries
+		this.currentQueries.clear();
+
+		// reset identifiers
+		this.reusableIdentifiers.clear();
+		this.highestId = INITIAL_ID;
 	}
 
 	Map<Integer, QueryInformation> getCurrentQueries() {

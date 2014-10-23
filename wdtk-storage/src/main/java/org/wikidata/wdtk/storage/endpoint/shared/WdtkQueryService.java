@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.storage.endpoint.shared;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Fredo Erxleben
  *
  */
-public interface WdtkQueryService extends Remote {
+public interface WdtkQueryService extends Remote, Serializable {
 
 	/**
 	 * Submits a given {@link WdtkQuery} to the server, which the server then
