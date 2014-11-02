@@ -4,18 +4,12 @@
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
 	<description>A Java-based library for working with Wikidata and Wikibase</description>
 	<url>https://www.mediawiki.org/wiki/Wikidata_Toolkit</url>
-
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
 
 	<modules>
 		<module>wdtk-datamodel</module>

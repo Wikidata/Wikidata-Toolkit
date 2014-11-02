@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,9 +40,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 /**
  * This class contains static methods and constants that define the various OWL
  * and RDF vocabularies that are used in the export.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class Vocabulary {
 
@@ -314,7 +314,7 @@ public class Vocabulary {
 
 	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
-	 * 
+	 *
 	 * @return a map from vocabulary URIs to OWL type URIs
 	 */
 	public static Map<String, String> getKnownVocabularyTypes() {
@@ -323,7 +323,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given statement.
-	 * 
+	 *
 	 * @param statement
 	 *            the statement for which to create a URI
 	 * @return the URI
@@ -336,7 +336,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given property in the given context.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property id for which to create a URI
 	 * @param propertyContext
@@ -427,6 +427,9 @@ public class Vocabulary {
 	}
 
 	static void updateMessageDigestWithString(MessageDigest md, String s) {
+		if (s == null) {
+			return;
+		}
 		md.update(s.getBytes(StandardCharsets.UTF_8));
 	}
 

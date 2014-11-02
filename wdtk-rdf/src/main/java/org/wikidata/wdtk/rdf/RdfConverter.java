@@ -50,9 +50,9 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class RdfConverter {
 
@@ -90,7 +90,7 @@ public class RdfConverter {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -101,7 +101,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -273,11 +273,11 @@ public class RdfConverter {
 
 	void writeSubclassOfStatements(Resource subject, ItemDocument itemDocument) {
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			boolean isSubPropertyOf = "P279".equals(statementGroup
+			boolean isSubClassOf = "P279".equals(statementGroup
 					.getProperty().getId());
 			boolean isInstanceOf = "P31".equals(statementGroup.getProperty()
 					.getId());
-			if (!isInstanceOf && !isSubPropertyOf) {
+			if (!isInstanceOf && !isSubClassOf) {
 				continue;
 			}
 			for (Statement statement : statementGroup.getStatements()) {
@@ -285,7 +285,7 @@ public class RdfConverter {
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
 							.getMainSnak();
 
-					if (isSubPropertyOf) {
+					if (isSubClassOf) {
 						this.owlDeclarationBuffer.addClass(itemDocument
 								.getEntityId());
 					}
@@ -295,7 +295,7 @@ public class RdfConverter {
 					}
 
 					if (statement.getClaim().getQualifiers().size() == 0
-							&& isSubPropertyOf) {
+							&& isSubClassOf) {
 						Value value = this.valueRdfConverter.getRdfValue(
 								mainSnak.getValue(), mainSnak.getPropertyId(),
 								true);
@@ -339,7 +339,8 @@ public class RdfConverter {
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
 			this.rdfWriter.writeTripleValueObject(subject, predicate,
-					getMonolingualTextValueLiteral(mtv));
+					RdfConverter.getMonolingualTextValueLiteral(mtv,
+							this.rdfWriter));
 		}
 	}
 
@@ -423,7 +424,13 @@ public class RdfConverter {
 		}
 	}
 
-	Value getMonolingualTextValueLiteral(MonolingualTextValue value) {
+	/**
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static Value getMonolingualTextValueLiteral(
+			MonolingualTextValue value, RdfWriter rdfWriter) {
 		String languageCode;
 		try {
 			languageCode = WikimediaLanguageCodes.getLanguageCode(value
@@ -434,12 +441,12 @@ public class RdfConverter {
 					+ languageCode
 					+ "\". Using this code in RDF now, but this might be wrong.");
 		}
-		return this.rdfWriter.getLiteral(value.getText(), languageCode);
+		return rdfWriter.getLiteral(value.getText(), languageCode);
 	}
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 * 
+	 *
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task

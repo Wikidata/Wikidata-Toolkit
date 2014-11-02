@@ -25,6 +25,7 @@ import java.io.OutputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
@@ -104,6 +105,16 @@ public interface PropertyTypes {
 	 */
 	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
 			TimeValue value);
+
+	/**
+	 * Returns the IRI of the primitive Type of an Property for
+	 * {@link MonolingualTextValue} objects.
+	 * 
+	 * @param propertyIdValue
+	 * @param value
+	 */
+	public String setPropertyTypeFromMonolingualTextValue(
+			PropertyIdValue propertyIdValue, MonolingualTextValue value);
 
 	/**
 	 * Gives out a list of all known Properties as a static java map to the

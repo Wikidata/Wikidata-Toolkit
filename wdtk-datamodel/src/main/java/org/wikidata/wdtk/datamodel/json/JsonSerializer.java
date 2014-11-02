@@ -34,9 +34,9 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 /**
  * This class implements {@link EntityDocumentsSerializer} to provide a
  * JsonSerializer for {@link EntityDocument} objects.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class JsonSerializer implements EntityDocumentsSerializer {
 
@@ -49,7 +49,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Creates a new JSON serializer that writes its output to the given stream.
-	 * 
+	 *
 	 * @param out
 	 *            the output stream to write to
 	 */
@@ -68,7 +68,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 
 	/**
 	 * Sends the JSON encoding to an OutputStream.
-	 * 
+	 *
 	 * @param jsonDocument
 	 *            JSON serialization for the entity document
 	 * @param id
@@ -105,11 +105,6 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 		writeEntityDocument(
 				this.converter.getJsonForPropertyDocument(propertyDocument)
 						.toString(), propertyDocument.getEntityId().getId());
-	}
-
-	@Override
-	public void finishProcessingEntityDocuments() {
-		// do nothing
 	}
 
 	@Override

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,9 +35,13 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 /**
  * This class processes dump files that contain the SQL dump of the MediaWiki <a
  * href="https://www.mediawiki.org/wiki/Manual:Sites_table">sites table</a>.
- * 
+ * <p>
+ * The class expects all URLs in the dump to be protocol-relative (i.e.,
+ * starting with "//" rather than with "http://" or "https://") and it will
+ * prepend "http:".
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 
@@ -49,7 +53,7 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 	/**
 	 * Returns the information about sites that has been extracted from the dump
 	 * file(s) processed earlier.
-	 * 
+	 *
 	 * @return the sites information
 	 */
 	public Sites getSites() {
@@ -87,7 +91,7 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 	/**
 	 * Processes a row of the sites table and stores the site information found
 	 * therein.
-	 * 
+	 *
 	 * @param siteRow
 	 *            string serialisation of a sites table row as found in the SQL
 	 *            dump
@@ -159,7 +163,7 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 	 * site_language, 6: site_protocol, 7: site_domain, 8: site_data, 9:
 	 * site_forward, 10: site_config. The method assumes that this is the layout
 	 * of the table, which is the case in MediaWiki 1.21 and above.
-	 * 
+	 *
 	 * @param siteRow
 	 *            the string representation of a row in the sites table, with
 	 *            the surrounding parentheses
