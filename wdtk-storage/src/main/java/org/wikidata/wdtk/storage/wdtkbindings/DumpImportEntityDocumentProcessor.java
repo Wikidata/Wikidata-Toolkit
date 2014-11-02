@@ -105,17 +105,13 @@ public class DumpImportEntityDocumentProcessor implements
 		this.wdtkDatabaseManager.updateEdges(edgeContainer);
 	}
 
-	@Override
-	public void finishProcessingEntityDocuments() {
-		printReport(); // print a final report
-	}
-
 	/**
 	 * Closes the database connection. This must be called eventually to ensure
 	 * a healthy database file. You could also commit and close the database
 	 * yourself, of course.
 	 */
 	public void close() {
+		printReport(); // print a final report
 		wdtkDatabaseManager.commit();
 		wdtkDatabaseManager.close();
 	}

@@ -166,9 +166,4 @@ public class TutorialDocumentProcessor implements EntityDocumentProcessor {
 
 	}
 
-	@Override
-	public void finishProcessingEntityDocuments() {
-		// nothing should be done here
-	}
-
 }
