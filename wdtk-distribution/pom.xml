@@ -57,7 +57,7 @@
 						<configuration>
 							<archive>
 							<manifest>
-								<mainClass>org.wikidata.wdtk.cli.ConversionClient</mainClass>
+								<mainClass>org.wikidata.wdtk.clt.ConversionClient</mainClass>
 							</manifest>
 							</archive>
 							<appendAssemblyId>false</appendAssemblyId>
