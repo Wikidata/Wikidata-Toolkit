@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -13,9 +14,10 @@
 
 	<name>Wikidata Toolkit Distribution</name>
 	<description>Module to package Wikidata Toolkit for releases</description>
-	
+
 	<dependencies>
-		<!-- For binary dependencies, we only need the main functional packages; others are included transitively-->
+		<!-- For binary dependencies, we only need the main functional packages; 
+			others are included transitively -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-dumpfiles</artifactId>
@@ -26,6 +28,11 @@
 			<artifactId>wdtk-rdf</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-clt</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -34,14 +41,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
 				<executions>
 					<execution>
-						<id>create-binary-jar</id>
+						<id>make-assembly</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
+							<archive>
+							<manifest>
+								<mainClass>org.wikidata.wdtk.cli.ConversionClient</mainClass>
+							</manifest>
+							</archive>
 							<appendAssemblyId>false</appendAssemblyId>
 							<finalName>wikidata-toolkit-${project.version}</finalName>
 							<descriptors>
@@ -51,15 +69,15 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>sign</id>
 			<dependencies>
-				<!-- For source dependencies, all sources need to be listed (no transitive depencency) -->
+				<!-- For source dependencies, all sources need to be listed (no transitive 
+					depencency) -->
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>wdtk-datamodel</artifactId>
@@ -87,6 +105,12 @@
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>wdtk-util</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-clt</artifactId>
 					<version>${project.version}</version>
 					<classifier>sources</classifier>
 				</dependency>
