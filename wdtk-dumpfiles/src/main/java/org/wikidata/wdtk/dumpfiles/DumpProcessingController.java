@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -153,7 +153,7 @@ public class DumpProcessingController {
 	/**
 	 * Broker object to distribute entity documents to several listeners. This
 	 * will be the main object that distributes revisions on any document-based
-	 * processing run.
+	 * processing run (in particular for JSON dumps).
 	 */
 	EntityDocumentProcessorBroker entityDocumentProcessorBroker = new EntityDocumentProcessorBroker();
 
@@ -238,8 +238,11 @@ public class DumpProcessingController {
 	 * Registers an MwRevisionProcessor, which will henceforth be notified of
 	 * all revisions that are encountered in the dump.
 	 * <p>
+	 * This only is used when processing dumps that contain revisions. In
+	 * particular, plain JSON dumps contain no revision information.
+	 * <p>
 	 * Importantly, the {@link MwRevision} that the registered processors will
-	 * receive is is valid only during the execution of
+	 * receive is valid only during the execution of
 	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it will not
 	 * be permanent. If the data is to be retained permanently, the revision
 	 * processor needs to make its own copy.
@@ -266,6 +269,12 @@ public class DumpProcessingController {
 	/**
 	 * Registers an EntityDocumentProcessor, which will henceforth be notified
 	 * of all entity documents that are encountered in the dump.
+	 * <p>
+	 * It is possible to register processors for specific content types and to
+	 * use either all revisions or only the most current ones. This
+	 * functionality is only available when processing dumps that contain this
+	 * information. In particular, plain JSON dumps do not specify content
+	 * models at all and have only one (current) revision of each entity.
 	 *
 	 * @param entityDocumentProcessor
 	 *            the entity document processor to register
