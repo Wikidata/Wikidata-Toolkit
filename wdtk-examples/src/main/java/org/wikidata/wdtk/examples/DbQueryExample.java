@@ -10,8 +10,12 @@ public class DbQueryExample {
 			dbName);
 
 	public static void main(String[] args) {
+		// Print data for Q42:
 		System.out.println(wdtkDatabaseManager.getEntityDocument(Datamodel
 				.makeWikidataItemIdValue("Q42")));
+
+		// always close DB, even if nothing was written
+		wdtkDatabaseManager.close();
 	}
 
 }
