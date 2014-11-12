@@ -9,9 +9,9 @@ package org.wikidata.wdtk.storage.dbtowdtk;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,6 +202,9 @@ public class WdtkFromDb {
 				return new TimeValueFromObjectValue((ObjectValue) value);
 			case WdtkSorts.SORTNAME_GLOBE_COORDINATES_VALUE:
 				return new GlobeCoordinatesValueFromObjectValue(
+						(ObjectValue) value);
+			case WdtkSorts.SORTNAME_MTV:
+				return new MonolingualTextValueFromObjectValue(
 						(ObjectValue) value);
 			default:
 				throw new RuntimeException("Unsupported record sort "
