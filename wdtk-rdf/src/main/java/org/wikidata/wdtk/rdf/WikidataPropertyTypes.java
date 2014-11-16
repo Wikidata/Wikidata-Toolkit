@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +51,9 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
  * This class helps to manage the exact datatype of properties used in an RDF
  * dump. It caches known types and fetches type information from the Web if
  * needed.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WikidataPropertyTypes implements PropertyTypes {
 
@@ -139,7 +140,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 
 	/**
 	 * Find the datatype of a property online.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @return IRI of the datatype
 	 * @throws IOException
@@ -159,9 +160,19 @@ public class WikidataPropertyTypes implements PropertyTypes {
 		uriBuilder.setParameter("props", "datatype");
 		InputStream inStream = this.webResourceFetcher
 				.getInputStreamForUrl(uriBuilder.toString());
+
 		JSONObject jsonResult = new JSONObject(IOUtils.toString(inStream));
-		String datatype = jsonResult.getJSONObject("entities")
-				.getJSONObject(propertyIdValue.getId()).getString("datatype");
+		String datatype;
+		try {
+			datatype = jsonResult.getJSONObject("entities")
+					.getJSONObject(propertyIdValue.getId())
+					.getString("datatype");
+		} catch (JSONException e) {
+			logger.error("Could not find datatype of property "
+					+ propertyIdValue.getId() + " online.");
+			return null;
+		}
+
 		switch (datatype) {
 		case "wikibase-item":
 			return DatatypeIdValue.DT_ITEM;
@@ -263,6 +274,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 				break;
 			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
 				datatypeNotation = "DT_MONOLINGUAL_TEXT";
+				break;
 			default:
 				logger.warn("unknown IRI " + typeIri);
 				datatypeNotation = null;

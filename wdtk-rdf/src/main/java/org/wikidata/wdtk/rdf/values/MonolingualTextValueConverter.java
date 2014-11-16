@@ -24,9 +24,9 @@ import org.openrdf.model.Value;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.RdfConverter;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public class MonolingualTextValueConverter extends
@@ -47,9 +47,8 @@ public class MonolingualTextValueConverter extends
 		switch (datatype) {
 		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
-			String languageCode = WikimediaLanguageCodes.getLanguageCode(value
-					.getLanguageCode());
-			return this.rdfWriter.getLiteral(value.getText(), languageCode);
+			return RdfConverter.getMonolingualTextValueLiteral(value,
+					this.rdfWriter);
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "entity");
 			return null;

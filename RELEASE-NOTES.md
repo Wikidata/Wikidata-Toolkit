@@ -1,6 +1,14 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.4.0
+-------------
+
+Bug fixes:
+* Support RDF export of Monolingual Text Value data in statements.
+* Significant performance improvements in RDF export of taxonomy data.   
+
+
 Version 0.3.0
 -------------
 
