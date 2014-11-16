@@ -636,32 +636,4 @@ public class RdfRendererFormat implements RendererFormat {
 		}
 	}
 
-	public boolean addClassAssertion(Resource classExpression,
-			Resource individual) {
-		try {
-			this.rdfWriter.writeTripleValueObject(individual,
-					RdfUriConstant.RDF_TYPE, classExpression);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	public boolean addClassNegativeAssertion(Resource classExpression,
-			Resource individual) {
-		try {
-			BNode bnode = this.rdfWriter.getFreshBNode();
-
-			this.rdfWriter.writeTripleValueObject(bnode,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
-			this.rdfWriter.writeTripleValueObject(bnode,
-					RdfUriConstant.OWL_COMPLEMENT_OF, classExpression);
-			this.rdfWriter.writeTripleValueObject(individual,
-					RdfUriConstant.RDF_TYPE, bnode);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
 }

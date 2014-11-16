@@ -57,7 +57,7 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	int auxiliaryEntityCounter = 0;
 
 	public Owl2FunctionalRendererFormat(OutputStream output) {
-		this.writer = new BufferedWriter(new OutputStreamWriter(output));
+		this(new OutputStreamWriter(output));
 	}
 
 	public Owl2FunctionalRendererFormat(Writer writer) {
