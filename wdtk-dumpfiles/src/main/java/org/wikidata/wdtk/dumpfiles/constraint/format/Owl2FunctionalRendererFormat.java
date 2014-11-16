@@ -214,11 +214,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public URI rdfsComment() {
-		return createURI(Owl2FunctionalConstant.RDFS_COMMENT);
-	}
-
-	@Override
 	public URI wbTimeValue() {
 		return createURI(Owl2FunctionalConstant.WB_TIME_VALUE);
 	}
@@ -349,19 +344,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertion(URI annotationProperty,
-			URI annotationSubject, String annotationValue) {
-		BNode bnode = makeFunction(
-				Owl2FunctionalConstant.ANNOTATION_ASSERTION,
-				makePair(
-						annotationProperty,
-						makePair(annotationSubject,
-								addQuotationMarks(annotationValue))));
-		add(bnode);
-		return true;
-	}
-
-	@Override
 	public boolean addDataPropertyRange(URI dataPropertyExpression,
 			Resource dataRange) {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATA_PROPERTY_RANGE,
@@ -376,32 +358,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		BNode bnode = makeFunction(Owl2FunctionalConstant.DATATYPE_DEFINITION,
 				makePair(dataPropertyExpression, dataRange));
 		add(bnode);
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationAnnotationProperty(URI datatype) {
-		if (this.declaredEntities.contains(datatype)) {
-			return false;
-		}
-		BNode bnode = makeFunction(
-				Owl2FunctionalConstant.DECLARATION,
-				makeFunction(Owl2FunctionalConstant.ANNOTATION_PROPERTY,
-						datatype));
-		add(bnode);
-		this.declaredEntities.add(datatype);
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationClass(URI clss) {
-		if (this.declaredEntities.contains(clss)) {
-			return false;
-		}
-		BNode bnode = makeFunction(Owl2FunctionalConstant.DECLARATION,
-				makeFunction(Owl2FunctionalConstant.CLASS, clss));
-		add(bnode);
-		this.declaredEntities.add(clss);
 		return true;
 	}
 

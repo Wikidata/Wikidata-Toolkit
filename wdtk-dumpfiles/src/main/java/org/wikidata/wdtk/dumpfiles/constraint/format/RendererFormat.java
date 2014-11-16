@@ -40,8 +40,6 @@ public interface RendererFormat {
 
 	URI getPv(PropertyIdValue property);
 
-	URI rdfsComment();
-
 	URI owlThing();
 
 	URI wbTimeValue();
@@ -85,16 +83,9 @@ public interface RendererFormat {
 	BNode getObjectSomeValuesFrom(Resource objectPropertyExpression,
 			Resource classExpression);
 
-	boolean addAnnotationAssertion(URI annotationProperty,
-			URI annotationSubject, String annotationValue);
-
 	boolean addDataPropertyRange(URI dataPropertyExpression, Resource dataRange);
 
 	boolean addDatatypeDefinition(URI datatype, Resource dataRange);
-
-	boolean addDeclarationAnnotationProperty(URI annotationProperty);
-
-	boolean addDeclarationClass(URI clss);
 
 	boolean addDeclarationDatatype(URI datatype);
 

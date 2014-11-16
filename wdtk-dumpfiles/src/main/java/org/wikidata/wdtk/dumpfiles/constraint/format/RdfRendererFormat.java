@@ -82,11 +82,6 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public URI rdfsComment() {
-		return RdfUriConstant.RDFS_COMMENT;
-	}
-
-	@Override
 	public URI wbTimeValue() {
 		return RdfUriConstant.WB_TIME_VALUE;
 	}
@@ -375,18 +370,6 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public boolean addAnnotationAssertion(URI annotationProperty,
-			URI annotationSubject, String annotationValue) {
-		try {
-			this.rdfWriter.writeTripleStringObject(annotationSubject,
-					annotationProperty, annotationValue);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
 	public boolean addDataPropertyRange(URI dataPropertyExpression,
 			Resource dataRange) {
 		try {
@@ -414,37 +397,6 @@ public class RdfRendererFormat implements RendererFormat {
 
 			this.rdfWriter.writeTripleValueObject(datatype,
 					RdfUriConstant.OWL_EQUIVALENT_CLASS, dataRange);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationAnnotationProperty(URI annotationProperty) {
-		if (this.declaredEntities.contains(annotationProperty)) {
-			return false;
-		}
-		try {
-			this.rdfWriter.writeTripleValueObject(annotationProperty,
-					RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_ANNOTATION_PROPERTY);
-			this.declaredEntities.add(annotationProperty);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addDeclarationClass(URI clss) {
-		if (this.declaredEntities.contains(clss)) {
-			return false;
-		}
-		try {
-			this.rdfWriter.writeTripleValueObject(clss,
-					RdfUriConstant.RDF_TYPE, RdfUriConstant.OWL_CLASS);
-			this.declaredEntities.add(clss);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
