@@ -375,33 +375,6 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getObjectUnionOf(Resource classExpression0,
-			Resource classExpression1) {
-		BNode ret = this.rdfWriter.getFreshBNode();
-
-		try {
-			BNode bnode1 = this.rdfWriter.getFreshBNode();
-			BNode bnode2 = this.rdfWriter.getFreshBNode();
-
-			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
-					RdfUriConstant.OWL_CLASS);
-			this.rdfWriter.writeTripleValueObject(ret,
-					RdfUriConstant.OWL_UNION_OF, bnode1);
-			this.rdfWriter.writeTripleValueObject(bnode1,
-					RdfUriConstant.RDF_FIRST, classExpression0);
-			this.rdfWriter.writeTripleValueObject(bnode1,
-					RdfUriConstant.RDF_REST, bnode2);
-			this.rdfWriter.writeTripleValueObject(bnode2,
-					RdfUriConstant.RDF_FIRST, classExpression1);
-			this.rdfWriter.writeTripleValueObject(bnode2,
-					RdfUriConstant.RDF_REST, RdfUriConstant.RDF_NIL);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e);
-		}
-		return ret;
-	}
-
-	@Override
 	public boolean addAnnotationAssertion(URI annotationProperty,
 			URI annotationSubject, String annotationValue) {
 		try {

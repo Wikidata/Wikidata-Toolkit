@@ -85,8 +85,6 @@ public interface RendererFormat {
 	BNode getObjectSomeValuesFrom(Resource objectPropertyExpression,
 			Resource classExpression);
 
-	BNode getObjectUnionOf(Resource classExpression0, Resource classExpression1);
-
 	boolean addAnnotationAssertion(URI annotationProperty,
 			URI annotationSubject, String annotationValue);
 

@@ -349,13 +349,6 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getObjectUnionOf(Resource classExpression0,
-			Resource classExpression1) {
-		return makeFunction(Owl2FunctionalConstant.OBJECT_UNION_OF,
-				makePair(classExpression0, classExpression1));
-	}
-
-	@Override
 	public boolean addAnnotationAssertion(URI annotationProperty,
 			URI annotationSubject, String annotationValue) {
 		BNode bnode = makeFunction(
