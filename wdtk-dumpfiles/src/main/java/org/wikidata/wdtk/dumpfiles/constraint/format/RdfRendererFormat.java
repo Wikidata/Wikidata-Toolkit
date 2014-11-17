@@ -51,6 +51,10 @@ public class RdfRendererFormat implements RendererFormat {
 		this.rdfWriter = new RdfWriter(RDFFormat.RDFXML, outputStream);
 	}
 
+	public RdfRendererFormat(RdfWriter rdfWriter) {
+		this.rdfWriter = rdfWriter;
+	}
+
 	@Override
 	public URI getItem(ItemIdValue item) {
 		return this.rdfWriter.getUri(item.getIri());
