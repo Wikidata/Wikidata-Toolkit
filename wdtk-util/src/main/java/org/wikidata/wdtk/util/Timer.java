@@ -195,7 +195,17 @@ public class Timer {
 	}
 
 	/**
-	 * Start the timer.
+	 * Returns the number of completed (started and stopped) measurements that
+	 * have been recorded with this timer so far.
+	 * 
+	 * @return number of measurements
+	 */
+	public int getMeasurements() {
+		return this.measurements;
+	}
+
+	/**
+	 * Starts the timer.
 	 */
 	public synchronized void start() {
 		if ((todoFlags & RECORD_CPUTIME) != 0) {
@@ -212,7 +222,7 @@ public class Timer {
 	}
 
 	/**
-	 * Stop the timer (if running) and reset all recorded values.
+	 * Stops the timer (if running) and reset all recorded values.
 	 */
 	public synchronized void reset() {
 		currentStartCpuTime = -1;
@@ -225,8 +235,8 @@ public class Timer {
 	}
 
 	/**
-	 * Stop the timer and record the times that have passed since its start. The
-	 * times that have passed are added to the internal state and can be
+	 * Stops the timer and record the times that have passed since its start.
+	 * The times that have passed are added to the internal state and can be
 	 * retrieved with {@link #getTotalCpuTime()} etc.
 	 * 
 	 * If CPU times are recorded, then the method returns the CPU time that has
