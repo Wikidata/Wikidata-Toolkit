@@ -101,4 +101,8 @@ class QueryInformation {
 	Future<List<WdtkQueryResult>> getFuture() {
 		return this.future;
 	}
+	
+	void addResult(WdtkQueryResult result){
+		this.results.add(result);
+	}
 }

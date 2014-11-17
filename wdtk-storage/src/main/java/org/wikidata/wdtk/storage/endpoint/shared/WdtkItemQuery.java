@@ -9,7 +9,7 @@ package org.wikidata.wdtk.storage.endpoint.shared;
  */
 public class WdtkItemQuery implements WdtkQuery {
 
-	private static final long serialVersionUID = -7886391169411598176L;
+	private static final long serialVersionUID = 2629825991482113215L;
 	
 	private long numericId;
 
@@ -32,5 +32,10 @@ public class WdtkItemQuery implements WdtkQuery {
 
 	public String getId() {
 		return "Q" + this.numericId;
+	}
+	
+	@Override
+	public String toString(){
+		return "WdtkItemQuery (" + this.getId() + ")";
 	}
 }

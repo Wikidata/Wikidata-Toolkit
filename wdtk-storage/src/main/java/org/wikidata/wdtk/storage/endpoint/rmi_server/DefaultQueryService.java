@@ -16,11 +16,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQuery;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryResult;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryService;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkRemoteServiceName;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryState;
+import org.wikidata.wdtk.storage.wdtkbindings.WdtkDatabaseManager;
 
 /**
  * 
@@ -31,7 +34,16 @@ public class DefaultQueryService implements WdtkQueryService {
 
 	private static final long serialVersionUID = 6392029667589506215L;
 
+	static Logger logger = LoggerFactory.getLogger(DefaultQueryService.class);
 	private static final int INITIAL_ID = 0;
+
+	private static final String dbName = "wdtkDatabaseFull-20141013";
+	private static final WdtkDatabaseManager WDTK_DB_MANAGER = new WdtkDatabaseManager(
+			dbName);
+
+	static WdtkDatabaseManager getDatabaseManger() {
+		return WDTK_DB_MANAGER;
+	}
 
 	/**
 	 * The highest identifier that has been handed out so far. Any newly handed
@@ -40,6 +52,10 @@ public class DefaultQueryService implements WdtkQueryService {
 	 */
 	private int highestId = INITIAL_ID;
 	private Queue<Integer> reusableIdentifiers = new LinkedBlockingQueue<>();
+
+	/**
+	 * A watchdog thread. It is separated from the thread pool intentionally.
+	 */
 	private QueryServiceWorkerThread serviceThread;
 
 	private ExecutorService executor;
@@ -53,13 +69,13 @@ public class DefaultQueryService implements WdtkQueryService {
 	 */
 	private Map<Integer, QueryInformation> currentQueries = new HashMap<>();
 
-	// TODO forwarding requests to the database
-	// TODO enable graceful service shutdown
-	// TODO logging
+	// TODO more logging
 	// TODO configurability
 
 	public DefaultQueryService() {
-		this.executor = Executors.newCachedThreadPool();
+		// Thread pool limited to one for testing purposes and to avoid race
+		// conditions during db queries
+		this.executor = Executors.newFixedThreadPool(1);
 	}
 
 	/**
@@ -90,6 +106,9 @@ public class DefaultQueryService implements WdtkQueryService {
 	@Override
 	public int submitQuery(WdtkQuery query) throws RemoteException {
 		int identifier = this.getNextFreeIdentifier();
+
+		logger.debug("Accepted query #{}: {}", identifier, query);
+
 		QueryInformation qInformation = new QueryInformation(query);
 		Future<List<WdtkQueryResult>> future = this.executor
 				.submit(new QueryWorkerThread(qInformation));

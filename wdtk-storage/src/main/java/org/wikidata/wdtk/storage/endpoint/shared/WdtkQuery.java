@@ -4,5 +4,5 @@ import java.io.Serializable;
 
 public interface WdtkQuery extends Serializable {
 
-	// TODO getQueryContent()
+	// TODO getQueryContent()?
 }
