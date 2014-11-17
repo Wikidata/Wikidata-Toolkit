@@ -36,6 +36,8 @@ public class DefaultQueryService implements WdtkQueryService {
 
 	static Logger logger = LoggerFactory.getLogger(DefaultQueryService.class);
 	private static final int INITIAL_ID = 0;
+	
+	private int servicePort = 1098;
 
 	private static final String dbName = "wdtkDatabaseFull-20141013";
 	private static final WdtkDatabaseManager WDTK_DB_MANAGER = new WdtkDatabaseManager(
@@ -187,7 +189,7 @@ public class DefaultQueryService implements WdtkQueryService {
 		}
 		// set up query service
 		WdtkQueryService stub = (WdtkQueryService) UnicastRemoteObject
-				.exportObject(this, 0);
+				.exportObject(this, this.servicePort);
 
 		registry.rebind(WdtkRemoteServiceName.WDTK_QUERY, stub);
 	}

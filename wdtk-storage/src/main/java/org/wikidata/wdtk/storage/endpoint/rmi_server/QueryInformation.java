@@ -9,6 +9,7 @@ import org.wikidata.wdtk.storage.endpoint.shared.WdtkQuery;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryResult;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryState;
 
+// TODO thread safety
 /**
  * This class bundles all information related with a {@link WdtkQuery} that is
  * currently known to a {@link DefaultQueryServer}.

@@ -36,6 +36,7 @@ public class QueryWorkerThread implements Callable<List<WdtkQueryResult>> {
 	@Override
 	public List<WdtkQueryResult> call() throws Exception {
 		// this is where the database will be queried
+		qInformation.setState(WdtkQueryState.PROCESSING);
 
 		// the overloading will handle the type switching
 		this.handleQuery(this.qInformation.getQuery());
