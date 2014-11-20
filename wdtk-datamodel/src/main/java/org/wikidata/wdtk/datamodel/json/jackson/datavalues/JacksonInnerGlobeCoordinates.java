@@ -88,7 +88,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * Returns the longitude.
 	 *
 	 * @see GlobeCoordinatesValue#getLongitude()
-	 * @return lngitude
+	 * @return longitude
 	 */
 	public long getLongitude() {
 		return longitude;
