@@ -80,7 +80,7 @@ public class JsonTestData {
 			+ "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
 	public static final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_GLOBE_COORDINATES
-			+ "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
+			+ "\", \"value\":{\"latitude\":-90.0,\"longitude\":0.0,\"precision\":10.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
 	public static final String JSON_QUANTITY_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
 			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";

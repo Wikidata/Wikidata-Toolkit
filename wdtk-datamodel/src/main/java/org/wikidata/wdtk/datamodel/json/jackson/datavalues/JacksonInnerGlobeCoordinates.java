@@ -35,9 +35,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerGlobeCoordinates {
 
-	private long latitude = 0;
-	private long longitude = 0;
-	private long precision = 0;
+	private double latitude = 0;
+	private double longitude = 0;
+	private double precision = 0;
 	private String globe = GlobeCoordinatesValue.GLOBE_EARTH;
 
 	/**
@@ -55,8 +55,8 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param precision
 	 * @param globe
 	 */
-	public JacksonInnerGlobeCoordinates(long latitude, long longitude,
-			long precision, String globe) {
+	public JacksonInnerGlobeCoordinates(double latitude, double longitude,
+			double precision, String globe) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.precision = precision;
@@ -69,8 +69,8 @@ public class JacksonInnerGlobeCoordinates {
 	 * @see GlobeCoordinatesValue#getLatitude()
 	 * @return latitude
 	 */
-	public long getLatitude() {
-		return latitude;
+	public double getLatitude() {
+		return this.latitude;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param latitude
 	 *            new value
 	 */
-	public void setLatitude(long latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -88,10 +88,10 @@ public class JacksonInnerGlobeCoordinates {
 	 * Returns the longitude.
 	 *
 	 * @see GlobeCoordinatesValue#getLongitude()
-	 * @return lngitude
+	 * @return longitude
 	 */
-	public long getLongitude() {
-		return longitude;
+	public double getLongitude() {
+		return this.longitude;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param longitude
 	 *            new value
 	 */
-	public void setLongitude(long longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -111,8 +111,8 @@ public class JacksonInnerGlobeCoordinates {
 	 * @see GlobeCoordinatesValue#getPrecision()
 	 * @return precision
 	 */
-	public long getPrecision() {
-		return precision;
+	public double getPrecision() {
+		return this.precision;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param precision
 	 *            new value
 	 */
-	public void setPrecision(long precision) {
+	public void setPrecision(double precision) {
 		this.precision = precision;
 	}
 

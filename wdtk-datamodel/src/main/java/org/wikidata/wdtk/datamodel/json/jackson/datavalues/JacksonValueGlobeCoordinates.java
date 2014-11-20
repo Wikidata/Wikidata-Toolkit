@@ -77,19 +77,19 @@ public class JacksonValueGlobeCoordinates extends JacksonValue implements
 	@JsonIgnore
 	@Override
 	public long getLatitude() {
-		return this.value.getLatitude();
+		return (long)(this.value.getLatitude() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore
 	@Override
 	public long getLongitude() {
-		return this.value.getLongitude();
+		return (long)(this.value.getLongitude() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore
 	@Override
 	public long getPrecision() {
-		return this.value.getPrecision();
+		return (long)(this.value.getPrecision() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore
