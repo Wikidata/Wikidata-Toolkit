@@ -136,7 +136,7 @@ public class JsonTestData {
 			.getTimeValue(2013, (byte) 10, (byte) 28, (byte) 0, (byte) 0,
 					(byte) 0, (byte) 11, 0, 0, 0, TimeValue.CM_GREGORIAN_PRO);
 	public static final JacksonValueGlobeCoordinates TEST_GLOBE_COORDINATES_VALUE = (JacksonValueGlobeCoordinates) JACKSON_OBJECT_FACTORY
-			.getGlobeCoordinatesValue(-90, 0, 10,
+			.getGlobeCoordinatesValue(-90000000000L, 0L, 10000000000L,
 					GlobeCoordinatesValue.GLOBE_EARTH);
 	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
 			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),
