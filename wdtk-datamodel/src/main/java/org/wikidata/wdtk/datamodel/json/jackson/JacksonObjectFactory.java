@@ -121,7 +121,9 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
 			long longitude, long precision, String globeIri) {
 		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
-				latitude, longitude, precision, globeIri);
+				((double)latitude / GlobeCoordinatesValue.PREC_DEGREE), 
+				((double)longitude / GlobeCoordinatesValue.PREC_DEGREE), 
+				((double)precision / GlobeCoordinatesValue.PREC_DEGREE), globeIri);
 		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
 		result.setValue(innerCoordinates);
 		return result;
