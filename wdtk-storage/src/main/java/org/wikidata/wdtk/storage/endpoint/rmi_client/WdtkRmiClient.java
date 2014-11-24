@@ -16,21 +16,22 @@ import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryService;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkQueryState;
 import org.wikidata.wdtk.storage.endpoint.shared.WdtkRemoteServiceName;
 
-public abstract class WdtkRmiClient {
+public class WdtkRmiClient {
 
 	private Registry registry;
 	private WdtkQueryService queryService;
 	private static Logger logger = LoggerFactory.getLogger(WdtkRmiClient.class);
-	
+
 	// only one query supported at the moment
 	private WdtkQuery currentQuery;
 	private List<WdtkQueryResult> currentResult;
 	private int currentId;
 	private WdtkQueryState state;
+	private boolean connected = false;
 
 	public void connect(String uri) {
 		logger.debug("Attempt to contact registry at {}", uri);
-		
+
 		try {
 			this.registry = LocateRegistry.getRegistry(uri);
 
@@ -42,7 +43,9 @@ public abstract class WdtkRmiClient {
 			this.queryService = (WdtkQueryService) registry
 					.lookup(WdtkRemoteServiceName.WDTK_QUERY);
 			logger.debug("Got service: {}", this.queryService);
-			
+
+			this.connected = true;
+
 		} catch (AccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,9 +57,9 @@ public abstract class WdtkRmiClient {
 			e.printStackTrace();
 		}
 	}
-	
-	public void queryForItem(int numericId){
-		if(queryService != null){
+
+	public void queryForItem(int numericId) {
+		if (queryService != null) {
 			this.currentResult = null; // reset result
 			this.currentQuery = new WdtkItemQuery(numericId);
 			try {
@@ -68,22 +71,32 @@ public abstract class WdtkRmiClient {
 			}
 		}
 	}
-	
-	public void getQueryUpdate(){
-		if(queryService == null
-				|| currentQuery == null 
-				|| currentResult != null){
-			return; // nothing to expect
-		}
-		
-		try {
-			this. state = queryService.getQueryState(this.currentId);
-			if(this.state ==  WdtkQueryState.COMPLETE){
-				this.currentResult = queryService.getNextQueryResults(this.currentId);
+
+	public WdtkQueryState getQueryUpdate() {
+		if (queryService == null || currentQuery == null
+				|| currentResult != null) {
+			// nothing to expect
+		} else {
+
+			try {
+				this.state = queryService.getQueryState(this.currentId);
+				if (this.state == WdtkQueryState.COMPLETE) {
+					this.currentResult = queryService
+							.getNextQueryResults(this.currentId);
+				}
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		return this.state;
+	}
+
+	public boolean isConnected() {
+		return this.connected;
+	}
+
+	public List<WdtkQueryResult> getCurrentResult(){
+		return this.currentResult;
 	}
 }
