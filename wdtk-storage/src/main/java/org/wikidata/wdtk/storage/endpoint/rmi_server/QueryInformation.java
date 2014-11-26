@@ -47,40 +47,50 @@ class QueryInformation {
 	 * will be polled to see if it is done.
 	 */
 	void update() {
-		if (this.state == WdtkQueryState.ABORTED
-				|| this.state == WdtkQueryState.INVALID
-				|| this.state == WdtkQueryState.NO_SUCH_QUERY) {
-			// nothing to do in these cases
-			return;
-		}
+		synchronized (this) {
+			if (this.state == WdtkQueryState.ABORTED
+					|| this.state == WdtkQueryState.INVALID
+					|| this.state == WdtkQueryState.NO_SUCH_QUERY
+					|| this.state == WdtkQueryState.COMPLETE) {
+				// nothing to do in these cases
+				return;
+			}
 
-		if (this.future == null) {
-			// Not sure if this can really happen
-			return;
-		}
+			if (this.future == null) { // Not sure if this can really happen
+				return;
+			}
 
-		if (this.future.isDone()) {
-			this.state = WdtkQueryState.COMPLETE;
-			try {
-				this.results = this.future.get();
-			} catch (InterruptedException | ExecutionException e) {
-				// roll back the state to try again later
-				this.state = WdtkQueryState.PROCESSING;
-				e.printStackTrace();
+			if (this.future.isCancelled()) {
+				this.state = WdtkQueryState.ABORTED;
+				return;
+			}
+
+			if (this.future.isDone()) {
+				try {
+					this.results = this.future.get();
+					this.state = WdtkQueryState.COMPLETE;
+				} catch (InterruptedException | ExecutionException e) {
+					this.state = WdtkQueryState.ABORTED;
+					e.printStackTrace();
+				}
 			}
 		}
 	}
-	
-	WdtkQuery getQuery(){
+
+	WdtkQuery getQuery() {
 		return this.query;
 	}
 
 	WdtkQueryState getState() {
-		return this.state;
+		synchronized (this.state) {
+			return this.state;
+		}
 	}
-	
-	void setState(WdtkQueryState state){
-		this.state = state;
+
+	void setState(WdtkQueryState state) {
+		synchronized (this.state) {
+			this.state = state;
+		}
 	}
 
 	/**
@@ -89,21 +99,35 @@ class QueryInformation {
 	 * 
 	 * @return
 	 */
+	List<WdtkQueryResult> collectResults() {
+		synchronized (this.results) {
+			List<WdtkQueryResult> temp = this.results;
+			this.results = new ArrayList<>();
+			return temp;
+		}
+	}
+
 	List<WdtkQueryResult> getResults() {
-		List<WdtkQueryResult> temp = this.results;
-		this.results = new ArrayList<>();
-		return temp;
+		synchronized (this.results) {
+			return this.results;
+		}
+	}
+	
+	void addResult(WdtkQueryResult result) {
+		synchronized (this.results) {
+			this.results.add(result);
+		}
 	}
 
 	void setFuture(Future<List<WdtkQueryResult>> future) {
-		this.future = future;
+		synchronized (this) {
+			this.future = future;
+		}
 	}
 
 	Future<List<WdtkQueryResult>> getFuture() {
-		return this.future;
-	}
-	
-	void addResult(WdtkQueryResult result){
-		this.results.add(result);
+		synchronized (this.future) {
+			return this.future;
+		}
 	}
 }

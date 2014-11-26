@@ -32,16 +32,18 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkDatabaseManager;
  */
 public class DefaultQueryService implements WdtkQueryService {
 
+	// TODO configurability
+	
 	private static final long serialVersionUID = 6392029667589506215L;
 
-	static Logger logger = LoggerFactory.getLogger(DefaultQueryService.class);
+	private static Logger logger = LoggerFactory.getLogger(DefaultQueryService.class);
 	private static final int INITIAL_ID = 0;
 	
 	private int servicePort = 1098;
 
-	private static final String dbName = "wdtkDatabaseFull-20141013";
+	private static final String DB_NAME = "wdtkDatabaseFull-20141013";
 	private static final WdtkDatabaseManager WDTK_DB_MANAGER = new WdtkDatabaseManager(
-			dbName);
+			DB_NAME);
 
 	static WdtkDatabaseManager getDatabaseManger() {
 		return WDTK_DB_MANAGER;
@@ -71,13 +73,10 @@ public class DefaultQueryService implements WdtkQueryService {
 	 */
 	private Map<Integer, QueryInformation> currentQueries = new HashMap<>();
 
-	// TODO more logging
-	// TODO configurability
-
 	public DefaultQueryService() {
-		// Thread pool limited to one for testing purposes and to avoid race
+		// Thread pool limited to one (+1 for watchdog) for testing purposes and to avoid race
 		// conditions during db queries
-		this.executor = Executors.newFixedThreadPool(1);
+		this.executor = Executors.newFixedThreadPool(2);
 	}
 
 	/**
@@ -107,9 +106,11 @@ public class DefaultQueryService implements WdtkQueryService {
 
 	@Override
 	public int submitQuery(WdtkQuery query) throws RemoteException {
+		
 		int identifier = this.getNextFreeIdentifier();
 
 		logger.debug("Accepted query #{}: {}", identifier, query);
+		
 
 		QueryInformation qInformation = new QueryInformation(query);
 		Future<List<WdtkQueryResult>> future = this.executor
@@ -118,6 +119,7 @@ public class DefaultQueryService implements WdtkQueryService {
 		qInformation.setFuture(future);
 
 		this.currentQueries.put(identifier, qInformation);
+		logger.debug("Executor state: {}", executor.toString());
 		return identifier;
 	}
 
@@ -126,9 +128,13 @@ public class DefaultQueryService implements WdtkQueryService {
 		QueryInformation qInformation = this.currentQueries.get(identifier);
 
 		if (qInformation == null) {
+			logger.info("(REQ) Requested state for invalid id {}", identifier);
 			return WdtkQueryState.NO_SUCH_QUERY;
 		}
-		return qInformation.getState();
+		WdtkQueryState state = qInformation.getState();
+		logger.debug("(REQ) State of query #{}: {}", identifier, state);
+		logger.debug("Results: {}", qInformation.getResults());
+		return state;
 	}
 
 	@Override
@@ -139,7 +145,7 @@ public class DefaultQueryService implements WdtkQueryService {
 		if (qInformation == null) {
 			return Collections.emptyList();
 		}
-		return qInformation.getResults();
+		return qInformation.collectResults();
 	}
 
 	@Override
@@ -174,24 +180,36 @@ public class DefaultQueryService implements WdtkQueryService {
 			SecurityManager securityMan = new SecurityManager();
 			System.setSecurityManager(securityMan);
 		}
+		
 		// set up registry
 		try {
 			registry = LocateRegistry.getRegistry();
+			logger.debug("Registry lookup delivered {}", registry);
 		} catch (RemoteException initialException) {
 			// none already running, create one
+			logger.error("No registry running, trying to start one myself");
 			try {
 				LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 				registry = LocateRegistry.getRegistry();
+				logger.debug("Started registry: {}", registry);
 			} catch (RemoteException launchException) {
+				logger.error("Could not create a registry myself");
 				launchException.printStackTrace();
 			}
 
 		}
+		logger.debug("Alredy registered services: "
+				+ "{}", (Object[])registry.list());
+		
 		// set up query service
+		logger.debug("Attempt to export service stub");
 		WdtkQueryService stub = (WdtkQueryService) UnicastRemoteObject
 				.exportObject(this, this.servicePort);
 
 		registry.rebind(WdtkRemoteServiceName.WDTK_QUERY, stub);
+		
+		logger.debug("Registered services (updated): "
+				+ "{}", (Object[])registry.list());
 	}
 
 	/**
@@ -215,30 +233,43 @@ public class DefaultQueryService implements WdtkQueryService {
 	 * @throws RemoteException
 	 */
 	public void launch() throws RemoteException {
+		logger.info("Attempt to register service");
 		this.registerRmiService();
+		logger.info("Service registered - running query service");
 
 		this.serviceThread = new QueryServiceWorkerThread(this);
 		this.executor.execute(this.serviceThread);
 	}
 
 	public void terminate() {
+		logger.info("Terminating query service…");
+		
 		// cancel the service thread
+		logger.debug("Cancel service thread");
 		this.serviceThread.terminate();
 
 		// unregister service
+		logger.debug("Unregister service");
 		try {
 			this.registry.unbind(WdtkRemoteServiceName.WDTK_QUERY);
 		} catch (AccessException e) {
+			logger.error("Unregistering service failed {}", e.getMessage());
 		} catch (RemoteException e) {
+			logger.error("Unregistering service failed {}", e.getMessage());
 		} catch (NotBoundException e) {
+			logger.error("Unregistering service failed {}", e.getMessage());
 		}
 
 		// clear current queries
 		this.currentQueries.clear();
-
+		
+		logger.debug("Closing Database");
+		DefaultQueryService.WDTK_DB_MANAGER.close();
+		
 		// reset identifiers
 		this.reusableIdentifiers.clear();
 		this.highestId = INITIAL_ID;
+		logger.info("Service terminated");
 	}
 
 	Map<Integer, QueryInformation> getCurrentQueries() {

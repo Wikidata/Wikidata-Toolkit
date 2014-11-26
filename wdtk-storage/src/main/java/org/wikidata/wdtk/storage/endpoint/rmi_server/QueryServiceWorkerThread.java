@@ -26,6 +26,8 @@ class QueryServiceWorkerThread implements Runnable {
 	@Override
 	public void run() {
 
+		Thread.currentThread().setName("QueryServiceWorker");
+		
 		while (this.running) {
 			// update all query information
 			for (QueryInformation qInformation : monitoredService
@@ -36,9 +38,10 @@ class QueryServiceWorkerThread implements Runnable {
 			// TODO clear unused queries
 
 			try {
-				this.wait(this.waitTimeout);
+				synchronized (this) {
+					this.wait(this.waitTimeout);
+				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
