@@ -34,6 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class PropertyIdValueImpl extends EntityIdValueImpl implements
 PropertyIdValue {
 
+	private static final long serialVersionUID = 687813062720943950L;
+
 	/**
 	 * Constructor.
 	 *

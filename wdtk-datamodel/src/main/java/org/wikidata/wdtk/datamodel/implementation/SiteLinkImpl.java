@@ -41,6 +41,8 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
  */
 public class SiteLinkImpl implements SiteLink {
 
+	private static final long serialVersionUID = 8921712582883517425L;
+	
 	final String title;
 	final String siteKey;
 	final List<String> badges;

@@ -45,6 +45,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class JacksonValueMonolingualText extends JacksonValue implements
 		MonolingualTextValue {
 
+	private static final long serialVersionUID = -8460874619066756902L;
+	
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.

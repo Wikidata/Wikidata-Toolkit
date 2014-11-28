@@ -40,6 +40,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  */
 public class StatementImpl implements Statement {
 
+	private static final long serialVersionUID = -9151463996806807715L;
+	
 	final Claim claim;
 	final List<? extends Reference> references;
 	final StatementRank rank;

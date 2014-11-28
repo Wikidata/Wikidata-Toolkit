@@ -27,6 +27,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class EntityValueAsValue implements StringValue {
 
+	private static final long serialVersionUID = 5826173527854625143L;
+	
 	final EntityIdValue entityIdValue;
 
 	public EntityValueAsValue(EntityIdValue entityValue) {

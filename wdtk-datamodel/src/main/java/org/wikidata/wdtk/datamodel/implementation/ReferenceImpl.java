@@ -41,6 +41,8 @@ import org.wikidata.wdtk.util.NestedIterator;
  */
 public class ReferenceImpl implements Reference {
 
+	private static final long serialVersionUID = 3871345253196551888L;
+	
 	List<? extends SnakGroup> snakGroups;
 
 	/**

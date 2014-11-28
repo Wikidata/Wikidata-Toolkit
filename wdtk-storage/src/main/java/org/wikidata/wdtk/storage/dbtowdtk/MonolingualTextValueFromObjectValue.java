@@ -13,6 +13,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 public class MonolingualTextValueFromObjectValue implements
 		MonolingualTextValue {
 
+	private static final long serialVersionUID = -8463232655246627949L;
+
 	final ObjectValue value;
 
 	StringValue text = null;

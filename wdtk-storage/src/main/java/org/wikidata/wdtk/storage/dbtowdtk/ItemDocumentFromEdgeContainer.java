@@ -42,6 +42,8 @@ import org.wikidata.wdtk.util.NestedIterator;
 public class ItemDocumentFromEdgeContainer extends
 TermedDocumentFromEdgeContainer implements ItemDocument {
 
+	private static final long serialVersionUID = 1874000809170367808L;
+
 	final EdgeContainer edgeContainer;
 
 	final PropertyTargets siteLinks;

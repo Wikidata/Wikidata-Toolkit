@@ -29,6 +29,8 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer.PropertyTargets;
 
 public abstract class TermedDocumentFromEdgeContainer implements TermedDocument {
 
+	private static final long serialVersionUID = 5920872098201037266L;
+	
 	final PropertyTargets labels;
 	final PropertyTargets descriptions;
 	final PropertyTargets aliases;

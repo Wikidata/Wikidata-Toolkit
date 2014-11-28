@@ -33,6 +33,8 @@ import org.wikidata.wdtk.storage.db.PropertySignature;
 public class LazyObjectValue implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
+	private static final long serialVersionUID = -1436185493116578187L;
+	
 	final ObjectValueForSerialization ovfs;
 	final Sort sort;
 	final DatabaseManager databaseManager;

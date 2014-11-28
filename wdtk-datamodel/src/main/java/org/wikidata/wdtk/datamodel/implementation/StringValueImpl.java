@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class StringValueImpl implements StringValue {
 
+	private static final long serialVersionUID = -3372698418036275469L;
+	
 	final String string;
 
 	/**

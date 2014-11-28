@@ -29,6 +29,8 @@ import org.wikidata.wdtk.storage.datamodel.Sort;
 public abstract class BaseValueAsValue implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
+	private static final long serialVersionUID = 4345553820733944151L;
+	
 	final Sort sort;
 	int iteratorPos;
 

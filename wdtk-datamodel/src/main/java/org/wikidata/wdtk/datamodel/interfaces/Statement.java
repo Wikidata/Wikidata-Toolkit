@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface Statement {
+public interface Statement extends Serializable {
 
 	/**
 	 * Get the Claim object that this statement refers to.

@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class DatatypeIdImpl implements DatatypeIdValue {
 
+	private static final long serialVersionUID = 8021986102992714526L;
+	
 	final String iri;
 
 	/**

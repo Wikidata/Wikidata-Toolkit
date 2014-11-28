@@ -29,6 +29,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 public class MonolingualTextValueImpl implements MonolingualTextValue {
 
+	private static final long serialVersionUID = -6165541960096088292L;
+	
 	final String text;
 	final String languageCode;
 

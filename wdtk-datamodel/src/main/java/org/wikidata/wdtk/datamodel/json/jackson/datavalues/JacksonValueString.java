@@ -38,6 +38,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueString extends JacksonValue implements StringValue {
 
+	private static final long serialVersionUID = 6987867684585554695L;
+	
 	private String value;
 
 	/**

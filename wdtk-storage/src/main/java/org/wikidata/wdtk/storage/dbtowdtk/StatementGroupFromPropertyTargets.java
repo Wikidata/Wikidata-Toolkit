@@ -37,6 +37,8 @@ import org.wikidata.wdtk.storage.datamodel.EdgeContainer.TargetQualifiers;
 
 public class StatementGroupFromPropertyTargets implements StatementGroup {
 
+	private static final long serialVersionUID = 8829383912678449231L;
+	
 	final PropertyTargets propertyTargets;
 	final EntityDocument parentDocument;
 

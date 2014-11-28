@@ -34,6 +34,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class QuantityValueFromObjectValue implements QuantityValue {
 
+	private static final long serialVersionUID = 5627538545559492832L;
+
 	final ObjectValue value;
 
 	DecimalValue numericValue = null;

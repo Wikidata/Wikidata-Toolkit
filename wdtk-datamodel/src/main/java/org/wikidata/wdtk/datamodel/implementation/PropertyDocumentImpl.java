@@ -41,6 +41,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class PropertyDocumentImpl extends TermedDocumentImpl implements
 PropertyDocument {
 
+	private static final long serialVersionUID = 3202706015471781558L;
+	
 	final PropertyIdValue propertyId;
 	final DatatypeIdValue datatypeId;
 

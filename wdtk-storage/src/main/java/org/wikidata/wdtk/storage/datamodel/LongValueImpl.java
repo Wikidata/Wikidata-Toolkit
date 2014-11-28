@@ -22,6 +22,8 @@ package org.wikidata.wdtk.storage.datamodel;
 
 public class LongValueImpl implements LongValue {
 
+	private static final long serialVersionUID = -1611557956653404866L;
+	
 	final long value;
 	final Sort sort;
 

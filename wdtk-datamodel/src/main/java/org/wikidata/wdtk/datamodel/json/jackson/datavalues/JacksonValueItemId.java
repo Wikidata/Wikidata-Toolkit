@@ -42,6 +42,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueItemId extends JacksonValue implements ItemIdValue {
 
+	private static final long serialVersionUID = -4674663435583567634L;
+
 	/**
 	 * The parent document that this value is part of. This is needed since the
 	 * site that this value refers to is not part of the JSON serialization of

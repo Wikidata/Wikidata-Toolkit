@@ -42,6 +42,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public abstract class EntityIdValueImpl implements EntityIdValue {
 
+	private static final long serialVersionUID = -4151826012979199651L;
+	
 	final String id;
 	final String siteIri;
 

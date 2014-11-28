@@ -32,6 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
  */
 public abstract class SnakImpl implements Snak {
 
+	private static final long serialVersionUID = 7513457794344946061L;
+	
 	final PropertyIdValue propertyId;
 
 	SnakImpl(PropertyIdValue propertyId) {

@@ -28,6 +28,8 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 
 public abstract class EntityIdValueFromValue implements EntityIdValue {
 
+	private static final long serialVersionUID = -724929150188193787L;
+
 	final StringValue value;
 
 	String id = null;

@@ -29,6 +29,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 public class PropertyIdValueFromPropertyName implements PropertyIdValue {
 
+	private static final long serialVersionUID = 4266402210556394750L;
+
 	final String propertyName;
 
 	String id = null;

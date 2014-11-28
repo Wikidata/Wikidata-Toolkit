@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
  */
 public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 
+	private static final long serialVersionUID = -8040774434722723542L;
+
 	/**
 	 * Constructor.
 	 *

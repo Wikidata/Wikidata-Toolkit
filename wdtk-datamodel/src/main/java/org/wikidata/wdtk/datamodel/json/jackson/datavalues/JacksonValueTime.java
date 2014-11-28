@@ -38,6 +38,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueTime extends JacksonValue implements TimeValue {
 
+	private static final long serialVersionUID = 8798772468286094614L;
+	
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.

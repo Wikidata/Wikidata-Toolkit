@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -32,7 +34,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * @author Markus Kroetzsch
  * 
  */
-public interface Snak {
+public interface Snak extends Serializable {
 
 	/**
 	 * Get the id of the property that this snak refers to.

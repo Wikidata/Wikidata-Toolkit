@@ -31,6 +31,8 @@ import org.wikidata.wdtk.storage.datamodel.Value;
 public class LazyStringRecordValue implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
+	private static final long serialVersionUID = -9044711997743139121L;
+	
 	final String[] strings;
 	final Sort sort;
 

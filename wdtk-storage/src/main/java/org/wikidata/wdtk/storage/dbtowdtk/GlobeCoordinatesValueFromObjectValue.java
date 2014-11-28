@@ -34,6 +34,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 public class GlobeCoordinatesValueFromObjectValue implements
 GlobeCoordinatesValue {
 
+	private static final long serialVersionUID = -7982463379083763692L;
+
 	final ObjectValue value;
 
 	String globe = null;

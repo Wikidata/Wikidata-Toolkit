@@ -33,6 +33,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 public class SiteLinkAsObjectValue implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
+	private static final long serialVersionUID = 9049360010023175112L;
+
 	final SiteLink siteLink;
 
 	int iteratorPos;

@@ -42,6 +42,8 @@ import org.wikidata.wdtk.util.NestedIterator;
  */
 public class ClaimImpl implements Claim {
 
+	private static final long serialVersionUID = -2991778567647082844L;
+	
 	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<SnakGroup> qualifiers;

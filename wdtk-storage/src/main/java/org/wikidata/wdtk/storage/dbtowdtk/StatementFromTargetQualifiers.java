@@ -47,7 +47,11 @@ import org.wikidata.wdtk.util.NestedIterator;
 
 public class StatementFromTargetQualifiers implements Statement {
 
+	private static final long serialVersionUID = 353485272132781898L;
+
 	private class ClaimFromTargetQualifiers implements Claim {
+
+		private static final long serialVersionUID = -635761917521027400L;
 
 		@Override
 		public EntityIdValue getSubject() {

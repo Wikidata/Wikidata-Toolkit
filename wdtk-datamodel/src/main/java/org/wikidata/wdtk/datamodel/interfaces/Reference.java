@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  *
  */
-public interface Reference {
+public interface Reference extends Serializable {
 
 	/**
 	 * Get the list of snak groups associated with this reference. Objects of

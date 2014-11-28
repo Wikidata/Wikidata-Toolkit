@@ -38,6 +38,8 @@ import org.wikidata.wdtk.util.NestedIterator;
 
 public class ReferenceFromObjectValue implements Reference {
 
+	private static final long serialVersionUID = -8375204469707493611L;
+	
 	final List<SnakGroup> snakGroups;
 
 	public ReferenceFromObjectValue(ObjectValue rov) {

@@ -33,6 +33,8 @@ import org.wikidata.wdtk.storage.db.DatabaseManager;
 public class LazyRecordValue implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
+	private static final long serialVersionUID = 6872784024582504600L;
+	
 	final RecordValueForSerialization rvfs;
 	final Sort sort;
 	final DatabaseManager databaseManager;

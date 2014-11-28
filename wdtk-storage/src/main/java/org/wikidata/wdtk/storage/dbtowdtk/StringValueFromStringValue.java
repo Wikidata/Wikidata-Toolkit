@@ -29,6 +29,8 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 public class StringValueFromStringValue implements
 org.wikidata.wdtk.datamodel.interfaces.StringValue {
 
+	private static final long serialVersionUID = -7421509413018498913L;
+	
 	final StringValue value;
 
 	public StringValueFromStringValue(StringValue value) {

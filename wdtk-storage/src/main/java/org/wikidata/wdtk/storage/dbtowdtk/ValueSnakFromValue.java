@@ -30,6 +30,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ValueSnakFromValue implements ValueSnak {
 
+	private static final long serialVersionUID = -7218493773879748998L;
+	
 	final String propertyName;
 	final org.wikidata.wdtk.storage.datamodel.Value value;
 

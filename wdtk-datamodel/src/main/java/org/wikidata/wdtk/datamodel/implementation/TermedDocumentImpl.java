@@ -39,6 +39,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  */
 public abstract class TermedDocumentImpl implements TermedDocument {
 
+	private static final long serialVersionUID = 1342465935425817366L;
+	
 	final Map<String, MonolingualTextValue> labels;
 	final Map<String, MonolingualTextValue> descriptions;
 	final Map<String, List<MonolingualTextValue>> aliases;

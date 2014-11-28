@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 
 public class DecimalValueImpl implements DecimalValue {
 
+	private static final long serialVersionUID = 5444974848166457053L;
+	
 	final BigDecimal value;
 	final Sort sort;
 

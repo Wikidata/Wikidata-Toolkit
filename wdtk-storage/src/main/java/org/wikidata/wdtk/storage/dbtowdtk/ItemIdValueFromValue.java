@@ -28,6 +28,8 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 public class ItemIdValueFromValue extends EntityIdValueFromValue implements
 		ItemIdValue {
 
+	private static final long serialVersionUID = 9008059183576692018L;
+
 	public ItemIdValueFromValue(StringValue value) {
 		super(value);
 	}

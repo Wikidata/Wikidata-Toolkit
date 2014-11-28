@@ -44,6 +44,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonValue implements Value {
 
+	private static final long serialVersionUID = 7469100662196591822L;
+	
 	/**
 	 * String used to denote the string value type in JSON.
 	 */

@@ -28,6 +28,8 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 public class PropertyIdValueFromValue extends EntityIdValueFromValue implements
 		PropertyIdValue {
 
+	private static final long serialVersionUID = -4653370549817095032L;
+
 	public PropertyIdValueFromValue(StringValue value) {
 		super(value);
 	}

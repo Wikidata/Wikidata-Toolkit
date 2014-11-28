@@ -33,6 +33,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class TimeValueFromObjectValue implements TimeValue {
 
+	private static final long serialVersionUID = -1198121363719250366L;
+
 	final ObjectValue objectValue;
 
 	String calendarModel = null;

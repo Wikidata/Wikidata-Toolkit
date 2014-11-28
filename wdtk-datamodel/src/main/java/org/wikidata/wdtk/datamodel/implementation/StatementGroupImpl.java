@@ -41,6 +41,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 public class StatementGroupImpl implements StatementGroup {
 
+	private static final long serialVersionUID = -7455251135036540828L;
+	
 	final List<Statement> statements;
 
 	/**

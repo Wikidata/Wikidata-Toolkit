@@ -32,6 +32,8 @@ import org.wikidata.wdtk.storage.db.PropertySignature;
 public class ObjectValueFromSerialization implements ObjectValue,
 		Iterator<PropertyValuePair>, PropertyValuePair {
 
+	private static final long serialVersionUID = 459036893509226969L;
+	
 	final Sort sort;
 	final DatabaseManager databaseManager;
 	final int[] properties;

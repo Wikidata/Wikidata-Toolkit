@@ -46,6 +46,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonReference implements Reference {
 
+	private static final long serialVersionUID = 8253671844819648066L;
+
 	private List<SnakGroup> snakGroups = null;
 
 	/**

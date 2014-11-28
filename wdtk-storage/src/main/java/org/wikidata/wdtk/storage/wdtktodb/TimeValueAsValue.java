@@ -30,6 +30,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class TimeValueAsValue extends BaseValueAsValue {
 
+	private static final long serialVersionUID = -229963680734337848L;
+	
 	final TimeValue value;
 
 	public TimeValueAsValue(TimeValue timeValue, Sort sort) {

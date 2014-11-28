@@ -44,6 +44,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonSnak implements Snak {
 
+	private static final long serialVersionUID = -4029488752507277978L;
+	
 	/**
 	 * Type string used to denote value snaks in JSON.
 	 */

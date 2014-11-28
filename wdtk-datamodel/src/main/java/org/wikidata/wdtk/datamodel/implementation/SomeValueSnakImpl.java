@@ -29,6 +29,8 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
 public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 
+	private static final long serialVersionUID = -3117177303461177521L;
+
 	/**
 	 * Constructor.
 	 *

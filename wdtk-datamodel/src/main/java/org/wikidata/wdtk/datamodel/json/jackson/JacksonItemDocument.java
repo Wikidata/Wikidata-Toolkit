@@ -60,6 +60,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class JacksonItemDocument extends JacksonTermedDocument implements
 		ItemDocument {
 
+	private static final long serialVersionUID = 2624402523339441653L;
+	
 	/**
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.

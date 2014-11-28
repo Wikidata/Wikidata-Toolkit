@@ -43,6 +43,8 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
  */
 public class SnakGroupFromJson implements SnakGroup {
 
+	private static final long serialVersionUID = -7457164981238448532L;
+	
 	private final List<Snak> snaks;
 
 	public SnakGroupFromJson(List<JacksonSnak> snaks) {

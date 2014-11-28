@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
 
+	private static final long serialVersionUID = 5232034046447738117L;
+	
 	final long latitude;
 	final long longitude;
 	final long precision;

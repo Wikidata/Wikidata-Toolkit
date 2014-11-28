@@ -29,6 +29,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class MonolingualTextValueAsValue extends BaseValueAsValue {
 
+	private static final long serialVersionUID = 4360865847121572226L;
+	
 	final MonolingualTextValue monolingualTextValue;
 
 	public MonolingualTextValueAsValue(

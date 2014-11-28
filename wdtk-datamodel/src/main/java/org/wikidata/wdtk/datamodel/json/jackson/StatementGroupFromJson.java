@@ -41,6 +41,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 public class StatementGroupFromJson implements StatementGroup {
 
+	private static final long serialVersionUID = 5062715457037976940L;
+	
 	final List<Statement> statements;
 
 	public StatementGroupFromJson(List<JacksonStatement> jacksonStatements) {

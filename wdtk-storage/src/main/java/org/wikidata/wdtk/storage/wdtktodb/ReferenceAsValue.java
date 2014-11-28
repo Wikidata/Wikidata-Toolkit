@@ -33,6 +33,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 public class ReferenceAsValue implements ObjectValue,
 		Iterator<PropertyValuePair> {
 
+	private static final long serialVersionUID = 333252604995384279L;
+	
 	final Reference reference;
 	final WdtkAdaptorHelper helpers;
 	Iterator<Snak> snakIterator;

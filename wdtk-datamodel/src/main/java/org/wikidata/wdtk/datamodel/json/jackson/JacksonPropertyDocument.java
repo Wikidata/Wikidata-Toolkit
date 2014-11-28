@@ -44,6 +44,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class JacksonPropertyDocument extends JacksonTermedDocument implements
 		PropertyDocument {
 
+	private static final long serialVersionUID = 1358801311056894717L;
+	
 	/**
 	 * Datatype string as used in JSON. See {@link JacksonDatatypeId} for a
 	 * mapping to WDTK datatype IRIs.

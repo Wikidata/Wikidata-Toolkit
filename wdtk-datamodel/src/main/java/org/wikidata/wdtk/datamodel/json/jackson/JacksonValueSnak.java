@@ -39,6 +39,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 
+	private static final long serialVersionUID = 6899692857487538061L;
+
 	/**
 	 * The {@link Value} assigned to this snak.
 	 */

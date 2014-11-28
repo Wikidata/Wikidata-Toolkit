@@ -35,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class JacksonDatatypeId implements DatatypeIdValue {
 
+	private static final long serialVersionUID = 7492485774495458908L;
+	
 	/**
 	 * String used to refer to the property datatype
 	 * {@link DatatypeIdValue#DT_ITEM} in JSON.

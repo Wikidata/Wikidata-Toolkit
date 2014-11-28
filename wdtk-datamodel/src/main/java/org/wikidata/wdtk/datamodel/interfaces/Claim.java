@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface Claim {
+public interface Claim extends Serializable {
 
 	/**
 	 * The subject that the claim refers to, e.g., the id of "Berlin".

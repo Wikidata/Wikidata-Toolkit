@@ -30,6 +30,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class GlobeCoordinatesValueAsValue extends BaseValueAsValue {
 
+	private static final long serialVersionUID = -4278981647511490334L;
+	
 	GlobeCoordinatesValue value;
 
 	public GlobeCoordinatesValueAsValue(GlobeCoordinatesValue value, Sort sort) {

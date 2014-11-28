@@ -35,6 +35,8 @@ import org.wikidata.wdtk.storage.datamodel.StringValue;
 public class PropertyDocumentFromEdgeContainer extends
 		TermedDocumentFromEdgeContainer implements PropertyDocument {
 
+	private static final long serialVersionUID = 2814397871438538803L;
+	
 	final EdgeContainer edgeContainer;
 	final StringValue datatype;
 

@@ -29,6 +29,8 @@ import org.wikidata.wdtk.storage.wdtkbindings.WdtkSorts;
 
 public class QuantityValueAsValue extends BaseValueAsValue {
 
+	private static final long serialVersionUID = 2348792241323670414L;
+	
 	QuantityValue value;
 
 	public QuantityValueAsValue(QuantityValue value, Sort sort) {

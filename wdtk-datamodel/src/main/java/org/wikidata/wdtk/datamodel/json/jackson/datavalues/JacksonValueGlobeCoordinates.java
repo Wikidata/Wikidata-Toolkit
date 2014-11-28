@@ -39,6 +39,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class JacksonValueGlobeCoordinates extends JacksonValue implements
 		GlobeCoordinatesValue {
 
+	private static final long serialVersionUID = -8908856820283056620L;
+	
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.

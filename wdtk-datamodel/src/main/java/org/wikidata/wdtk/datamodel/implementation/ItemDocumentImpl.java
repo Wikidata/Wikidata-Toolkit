@@ -41,6 +41,8 @@ import org.wikidata.wdtk.util.NestedIterator;
 public class ItemDocumentImpl extends TermedDocumentImpl implements
 		ItemDocument {
 
+	private static final long serialVersionUID = -2189045553879194935L;
+	
 	final ItemIdValue itemId;
 	final List<StatementGroup> statementGroups;
 	final Map<String, SiteLink> siteLinks;

@@ -28,6 +28,8 @@ package org.wikidata.wdtk.storage.datamodel;
  */
 public class StringValueImpl implements StringValue {
 
+	private static final long serialVersionUID = 5647550853966268392L;
+	
 	final String string;
 	final Sort sort;
 

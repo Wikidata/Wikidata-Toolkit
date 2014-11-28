@@ -37,6 +37,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class QuantityValueImpl implements QuantityValue {
 
+	private static final long serialVersionUID = 3245696048836886990L;
+	
 	final BigDecimal numericValue;
 	final BigDecimal lowerBound;
 	final BigDecimal upperBound;

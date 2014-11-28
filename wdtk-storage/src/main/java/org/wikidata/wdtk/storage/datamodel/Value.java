@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.storage.datamodel;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * Wikidata Toolkit Storage
@@ -26,7 +28,7 @@ package org.wikidata.wdtk.storage.datamodel;
  * @author Markus Kroetzsch
  * 
  */
-public interface Value {
+public interface Value extends Serializable {
 
 	/**
 	 * Returns the sort of this value.
