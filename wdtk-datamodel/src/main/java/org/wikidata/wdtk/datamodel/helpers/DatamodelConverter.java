@@ -44,6 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -168,11 +169,181 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	public ItemDocument copy(ItemDocument object) {
+
 		return this.dataObjectFactory.getItemDocument(object.getItemId(),
 				new ArrayList<>(object.getLabels().values()), new ArrayList<>(
 						object.getDescriptions().values()),
 				convertAliasList(object.getAliases()), object
 						.getStatementGroups(), object.getSiteLinks());
+	}
+
+	public ItemDocument deepCopy(ItemDocument object) {
+
+		ItemIdValue convertedItemId = this.copy(object.getItemId());
+		ArrayList<MonolingualTextValue> convertedLabels = new ArrayList<>(
+				object.getLabels().values());
+		ArrayList<MonolingualTextValue> convertedDescriptions = new ArrayList<>(
+				object.getDescriptions().values());
+		List<MonolingualTextValue> convertedAliases = convertAliasList(object
+				.getAliases());
+		List<StatementGroup> convertedStatementGroups = new ArrayList<>();
+		for (StatementGroup statementGroup : object.getStatementGroups()) {
+			convertedStatementGroups.add(this
+					.deepCopyStatementGroup(statementGroup));
+		}
+		Map<String, SiteLink> convertedSiteLinks = object.getSiteLinks();
+
+		return this.dataObjectFactory.getItemDocument(convertedItemId,
+				convertedLabels, convertedDescriptions, convertedAliases,
+				convertedStatementGroups, convertedSiteLinks);
+	}
+
+	private StatementGroup deepCopyStatementGroup(StatementGroup statementGroup) {
+
+		List<Statement> statements = new ArrayList<>();
+		for (Statement statement : statementGroup.getStatements()) {
+			statements.add(this.deepCopyStatement(statement));
+		}
+		return this.dataObjectFactory.getStatementGroup(statements);
+	}
+
+	private Statement deepCopyStatement(Statement statement) {
+
+		Claim claim = this.deepCopyClaim(statement.getClaim());
+		List<? extends Reference> references = this
+				.deepCopyReferences(statement.getReferences());
+		StatementRank rank = statement.getRank();
+		String statementId = statement.getStatementId();
+
+		// FIXME this is a hack
+		if (statementId == null) {
+			statementId = "NoStatementId";
+		}
+
+		return this.dataObjectFactory.getStatement(claim, references, rank,
+				statementId);
+	}
+
+	private Claim deepCopyClaim(Claim claim) {
+		List<SnakGroup> qualifiers = new ArrayList<>();
+		for (SnakGroup snakGroup : claim.getQualifiers()) {
+			qualifiers.add(this.deepCopySnakGroup(snakGroup));
+		}
+		EntityIdValue subject = deepCopyEntityIdValue(claim.getSubject());
+		return this.dataObjectFactory.getClaim(subject,
+				deepCopySnak(claim.getMainSnak()), qualifiers);
+	}
+
+	private EntityIdValue deepCopyEntityIdValue(EntityIdValue subject) {
+		if (subject instanceof ItemIdValue) {
+			return (EntityIdValue) this.deepCopyItemIdValue(subject);
+		} else if (subject instanceof PropertyIdValue) {
+			// TODO
+		}
+		return subject;
+	}
+
+	private List<Reference> deepCopyReferences(
+			List<? extends Reference> references) {
+
+		List<Reference> result = new ArrayList<>();
+		for (Reference reference : references) {
+			List<SnakGroup> snakGroups = new ArrayList<>();
+			for (SnakGroup snakGroup : reference.getSnakGroups()) {
+				snakGroups.add(this.deepCopySnakGroup(snakGroup));
+			}
+			result.add(this.dataObjectFactory.getReference(snakGroups));
+		}
+		return result;
+	}
+
+	private SnakGroup deepCopySnakGroup(SnakGroup snakGroup) {
+
+		List<Snak> snaks = new ArrayList<>();
+		for (Snak snak : snakGroup.getSnaks()) {
+
+			Snak intermediate = deepCopySnak(snak);
+			if (intermediate != null) {
+				snaks.add(intermediate);
+			}
+		}
+
+		return this.dataObjectFactory.getSnakGroup(snaks);
+	}
+
+	private Snak deepCopySnak(Snak snak) {
+		if (snak instanceof NoValueSnak) {
+			return this.dataObjectFactory.getNoValueSnak(snak.getPropertyId());
+		} else if (snak instanceof SomeValueSnak) {
+			return this.dataObjectFactory
+					.getSomeValueSnak(snak.getPropertyId());
+		} else {
+			Value convertedValue = this.deepCopyValue(((ValueSnak) snak)
+					.getValue());
+			if (convertedValue != null) {
+				return this.dataObjectFactory.getValueSnak(
+						snak.getPropertyId(), convertedValue);
+			}
+		}
+		return null;
+	}
+
+	private Value deepCopyValue(Value value) {
+		// TODO more?
+		if (value instanceof StringValue) {
+			return deepCopyStringValue(value);
+		} else if (value instanceof GlobeCoordinatesValue) {
+			return deepCopyGlobeCoordinatesValue(value);
+		} else if (value instanceof QuantityValue) {
+			return deepCopyQuantityValue(value);
+		} else if (value instanceof TimeValue) {
+			return deepCopyTimeValue(value);
+		} else if (value instanceof MonolingualTextValue) {
+			return deepCopyMonolingualText(value);
+		} else if (value instanceof ItemIdValue) {
+			return deepCopyItemIdValue(value);
+		}
+		return null;
+	}
+
+	private Value deepCopyItemIdValue(Value value) {
+		ItemIdValue iValue = (ItemIdValue) value;
+		return this.dataObjectFactory.getItemIdValue(iValue.getId(),
+				iValue.getSiteIri());
+	}
+
+	private Value deepCopyMonolingualText(Value value) {
+		MonolingualTextValue mltValue = (MonolingualTextValue) value;
+		return this.dataObjectFactory.getMonolingualTextValue(
+				mltValue.getText(), mltValue.getLanguageCode());
+	}
+
+	private Value deepCopyTimeValue(Value value) {
+		TimeValue tValue = (TimeValue) value;
+		return this.dataObjectFactory.getTimeValue(tValue.getYear(),
+				tValue.getMonth(), tValue.getDay(), tValue.getHour(),
+				tValue.getMinute(), tValue.getSecond(), tValue.getPrecision(),
+				tValue.getBeforeTolerance(), tValue.getAfterTolerance(),
+				tValue.getTimezoneOffset(), tValue.getPreferredCalendarModel());
+	}
+
+	private Value deepCopyQuantityValue(Value value) {
+		QuantityValue qValue = (QuantityValue) value;
+		return this.dataObjectFactory.getQuantityValue(
+				qValue.getNumericValue(), qValue.getLowerBound(),
+				qValue.getUpperBound());
+	}
+
+	private Value deepCopyGlobeCoordinatesValue(Value value) {
+		GlobeCoordinatesValue gValue = (GlobeCoordinatesValue) value;
+		return this.dataObjectFactory.getGlobeCoordinatesValue(
+				gValue.getLatitude(), gValue.getLongitude(),
+				gValue.getPrecision(), gValue.getGlobe());
+	}
+
+	private Value deepCopyStringValue(Value value) {
+		return this.dataObjectFactory.getStringValue(((StringValue) value)
+				.getString());
 	}
 
 	private List<MonolingualTextValue> convertAliasList(
