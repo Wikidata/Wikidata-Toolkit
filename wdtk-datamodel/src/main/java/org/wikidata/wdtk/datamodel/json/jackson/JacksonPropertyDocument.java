@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonPropertyDocument extends JacksonTermedDocument implements
 		PropertyDocument {
 
