@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.wikidata.wdtk</groupId>
+		<groupId>org.wikibrainapi</groupId>
 		<artifactId>wdtk-parent</artifactId>
 		<version>0.1.0</version>
 	</parent>
