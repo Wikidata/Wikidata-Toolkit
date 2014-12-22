@@ -20,31 +20,30 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Interface for datasets that describe items. It extends {@link EntityDocument}
- * with information about site links and statements.
+ * Interface for EntityDocuments that can have statements.
  *
  * @author Markus Kroetzsch
- *
  */
-public interface ItemDocument extends TermedDocument, StatementDocument {
+public interface StatementDocument extends EntityDocument {
 
 	/**
-	 * Return the ID of the item that the data refers to. The result is the same
-	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
-	 * specific result type.
+	 * Return the list of all StatementGroups stored for this item. The order of
+	 * StatementGroups is significant.
 	 *
-	 * @return item id
+	 * @return list of StatementGroups
 	 */
-	ItemIdValue getItemId();
+	List<StatementGroup> getStatementGroups();
 
 	/**
-	 * Get a Map of site keys to {@link SiteLink} objects.
+	 * Returns an iterator that provides access to all statements, without
+	 * considering the statement groups. The order of statements is preserved.
 	 *
-	 * @return map of SiteLinks
+	 * @return iterator over all statements
 	 */
-	Map<String, SiteLink> getSiteLinks();
+	Iterator<Statement> getAllStatements();
 
 }
