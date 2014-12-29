@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.io.Serializable;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -32,7 +30,7 @@ import java.io.Serializable;
  * @author Markus Kroetzsch
  * 
  */
-public interface Value extends Serializable{
+public interface Value {
 
 	/**
 	 * Accept a ValueVisitor and return its output.

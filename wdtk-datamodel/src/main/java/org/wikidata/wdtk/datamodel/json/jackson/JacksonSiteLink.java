@@ -38,8 +38,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class JacksonSiteLink implements SiteLink {
 
-	private static final long serialVersionUID = -1643622368531114861L;
-	
 	String title;
 	String site;
 	List<String> badges = new LinkedList<>();

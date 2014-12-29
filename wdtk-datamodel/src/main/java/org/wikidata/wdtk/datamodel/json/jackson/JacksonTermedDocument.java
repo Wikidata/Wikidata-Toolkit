@@ -52,8 +52,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedDocument.JSON_TYPE_PROPERTY) })
 public abstract class JacksonTermedDocument implements TermedDocument {
 
-	private static final long serialVersionUID = 9163959702972017331L;
-	
 	/**
 	 * String used to refer to items in JSON.
 	 */

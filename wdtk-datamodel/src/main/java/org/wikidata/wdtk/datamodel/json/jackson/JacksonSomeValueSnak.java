@@ -34,8 +34,6 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
  */
 public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 
-	private static final long serialVersionUID = -918272069548657185L;
-
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.

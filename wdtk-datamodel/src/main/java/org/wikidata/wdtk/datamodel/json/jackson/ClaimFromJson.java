@@ -41,8 +41,6 @@ import org.wikidata.wdtk.util.NestedIterator;
  */
 public class ClaimFromJson implements Claim {
 
-	private static final long serialVersionUID = -1886581217134076392L;
-
 	private final JacksonStatement statement;
 
 	private List<SnakGroup> qualifiers = null;

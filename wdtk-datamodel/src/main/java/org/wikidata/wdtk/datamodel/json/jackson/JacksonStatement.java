@@ -57,8 +57,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonStatement implements Statement {
 
-	private static final long serialVersionUID = 2655589206256433511L;
-
 	/**
 	 * Id of this statement.
 	 *

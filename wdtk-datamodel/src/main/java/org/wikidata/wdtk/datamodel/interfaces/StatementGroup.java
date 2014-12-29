@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface StatementGroup extends Iterable<Statement>, Serializable {
+public interface StatementGroup extends Iterable<Statement> {
 
 	/**
 	 * Get the list of Statements of this group.

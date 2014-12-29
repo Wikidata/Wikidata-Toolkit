@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface SiteLink extends Serializable  {
+public interface SiteLink {
 
 	/**
 	 * Get the string title of the linked page.

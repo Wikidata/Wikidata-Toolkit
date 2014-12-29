@@ -42,8 +42,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonMonolingualTextValue implements MonolingualTextValue {
 
-	private static final long serialVersionUID = 5328794832571121648L;
-	
 	/**
 	 * The language code.
 	 */

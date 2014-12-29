@@ -40,8 +40,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueQuantity extends JacksonValue implements QuantityValue {
 
-	private static final long serialVersionUID = 2849375365383288133L;
-	
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.

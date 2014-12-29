@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.io.Serializable;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -28,7 +26,7 @@ import java.io.Serializable;
  * @author Markus Kroetzsch
  * 
  */
-public interface EntityDocument extends Serializable {
+public interface EntityDocument {
 
 	/**
 	 * Return the ID of the entity that the data refers to
