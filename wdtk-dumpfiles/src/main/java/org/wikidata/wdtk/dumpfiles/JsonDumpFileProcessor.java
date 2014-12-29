@@ -173,10 +173,12 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 				handleDocument(document);
 			} catch (JsonProcessingException e) {
 				logJsonProcessingException(e);
+				JsonDumpFileProcessor.logger.error("Problematic line was: "
+						+ line.substring(0, Math.min(50, line.length()))
+						+ "...");
 			}
 
 			line = br.readLine();
 		}
 	}
-
 }
