@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  *
  */
 public class PropertyDocumentImpl extends TermedDocumentImpl implements
-PropertyDocument {
+PropertyDocument, Serializable {
 
 	private static final long serialVersionUID = 3202706015471781558L;
 	

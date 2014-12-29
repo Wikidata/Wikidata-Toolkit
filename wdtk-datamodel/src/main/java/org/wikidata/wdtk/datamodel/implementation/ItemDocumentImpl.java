@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
 public class ItemDocumentImpl extends TermedDocumentImpl implements
-		ItemDocument {
+		ItemDocument, Serializable {
 
 	private static final long serialVersionUID = -2189045553879194935L;
 	

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
  * @author Markus Kroetzsch
  *
  */
-public class StatementImpl implements Statement {
+public class StatementImpl implements Statement, Serializable {
 
 	private static final long serialVersionUID = -9151463996806807715L;
 	

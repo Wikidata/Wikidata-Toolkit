@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -40,7 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public abstract class EntityIdValueImpl implements EntityIdValue {
+public abstract class EntityIdValueImpl implements EntityIdValue, Serializable {
 
 	private static final long serialVersionUID = -4151826012979199651L;
 	

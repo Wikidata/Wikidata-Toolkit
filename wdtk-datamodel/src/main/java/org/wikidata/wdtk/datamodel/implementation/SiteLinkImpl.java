@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
  * @author Markus Kroetzsch
  *
  */
-public class SiteLinkImpl implements SiteLink {
+public class SiteLinkImpl implements SiteLink, Serializable {
 
 	private static final long serialVersionUID = 8921712582883517425L;
 	

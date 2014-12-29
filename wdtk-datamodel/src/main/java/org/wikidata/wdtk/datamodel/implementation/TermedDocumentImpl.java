@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  * @author Markus Kroetzsch
  *
  */
-public abstract class TermedDocumentImpl implements TermedDocument {
+public abstract class TermedDocumentImpl implements TermedDocument, Serializable {
 
 	private static final long serialVersionUID = 1342465935425817366L;
 	

@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -33,7 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue {
+public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue, Serializable {
 
 	private static final long serialVersionUID = 5232034046447738117L;
 	
