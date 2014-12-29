@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -161,10 +161,15 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 				+ line);
 
 		line = br.readLine();
-		while (line.length() > 1 && line != null) {
+		while (line != null && line.length() > 1) {
 			try {
-				JacksonTermedStatementDocument document = documentReader
-						.readValue(line.substring(0, line.length() - 1));
+				JacksonTermedStatementDocument document;
+				if (line.charAt(line.length() - 1) == ',') {
+					document = documentReader.readValue(line.substring(0,
+							line.length() - 1));
+				} else {
+					document = documentReader.readValue(line);
+				}
 				handleDocument(document);
 			} catch (JsonProcessingException e) {
 				logJsonProcessingException(e);
