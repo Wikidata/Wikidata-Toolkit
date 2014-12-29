@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,6 +40,11 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	 * {@link DatatypeIdValue#DT_ITEM} in JSON.
 	 */
 	public static final String JSON_DT_ITEM = "wikibase-item";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_PROPERTY} in JSON.
+	 */
+	public static final String JSON_DT_PROPERTY = "wikibase-property";
 	/**
 	 * String used to refer to the property datatype
 	 * {@link DatatypeIdValue#DT_GLOBE_COORDINATES} in JSON.
@@ -94,6 +99,8 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 		switch (jsonDatatype) {
 		case JSON_DT_ITEM:
 			return DT_ITEM;
+		case JSON_DT_PROPERTY:
+			return DT_PROPERTY;
 		case JSON_DT_GLOBE_COORDINATES:
 			return DT_GLOBE_COORDINATES;
 		case JSON_DT_URL:
