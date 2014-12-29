@@ -308,6 +308,7 @@ public class Hash {
 	public static int hashCode(PropertyDocument o) {
 		int result;
 		result = hashCodeForTermedDocument(o);
+		result = prime * result + o.getStatementGroups().hashCode();
 		result = prime * result + o.getDatatype().hashCode();
 		return result;
 	}

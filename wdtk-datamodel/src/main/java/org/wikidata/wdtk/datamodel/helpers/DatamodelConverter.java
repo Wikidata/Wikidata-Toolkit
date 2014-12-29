@@ -164,7 +164,8 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		return this.dataObjectFactory.getPropertyDocument(object
 				.getPropertyId(), new ArrayList<>(object.getLabels().values()),
 				new ArrayList<>(object.getDescriptions().values()),
-				convertAliasList(object.getAliases()), object.getDatatype());
+				convertAliasList(object.getAliases()), object
+						.getStatementGroups(), object.getDatatype());
 	}
 
 	public ItemDocument copy(ItemDocument object) {

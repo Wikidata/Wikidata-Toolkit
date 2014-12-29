@@ -7,7 +7,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -50,7 +50,7 @@ public class JacksonValueItemId extends JacksonValue implements ItemIdValue {
 	 * {@link JacksonValueItemId#setParentDocument(JacksonItemDocument)}.
 	 */
 	@JsonIgnore
-	JacksonTermedDocument parentDocument;
+	JacksonTermedStatementDocument parentDocument;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
@@ -96,7 +96,7 @@ public class JacksonValueItemId extends JacksonValue implements ItemIdValue {
 	@JsonIgnore
 	@Override
 	public String getId() {
-		return value.getStringId();
+		return this.value.getStringId();
 	}
 
 	@JsonIgnore
@@ -127,7 +127,7 @@ public class JacksonValueItemId extends JacksonValue implements ItemIdValue {
 	 *            new value
 	 */
 	@JsonIgnore
-	public void setParentDocument(JacksonTermedDocument parentDocument) {
+	public void setParentDocument(JacksonTermedStatementDocument parentDocument) {
 		this.parentDocument = parentDocument;
 	}
 

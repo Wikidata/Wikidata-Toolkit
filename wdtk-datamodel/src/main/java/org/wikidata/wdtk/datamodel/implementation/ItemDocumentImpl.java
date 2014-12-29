@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,15 +33,12 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.util.NestedIterator;
 
-public class ItemDocumentImpl extends TermedDocumentImpl implements
+public class ItemDocumentImpl extends TermedStatementDocumentImpl implements
 		ItemDocument {
 
 	final ItemIdValue itemId;
-	final List<StatementGroup> statementGroups;
 	final Map<String, SiteLink> siteLinks;
 
 	/**
@@ -70,24 +66,11 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
-		super(labels, descriptions, aliases);
+		super(itemIdValue, labels, descriptions, aliases, statementGroups);
 		Validate.notNull(itemIdValue, "item ID cannot be null");
-		Validate.notNull(statementGroups, "statement list cannot be null");
 		Validate.notNull(siteLinks, "site links cannot be null");
 
-		if (!statementGroups.isEmpty()) {
-			for (StatementGroup sg : statementGroups) {
-				if (!itemIdValue.equals(sg.getSubject())) {
-					throw new IllegalArgumentException(
-							"All statement groups in a document must have the same subject: found "
-									+ sg.getSubject() + " but expected "
-									+ itemIdValue);
-				}
-			}
-		}
-
 		this.itemId = itemIdValue;
-		this.statementGroups = statementGroups;
 		this.siteLinks = siteLinks;
 	}
 
@@ -99,16 +82,6 @@ public class ItemDocumentImpl extends TermedDocumentImpl implements
 	@Override
 	public ItemIdValue getItemId() {
 		return itemId;
-	}
-
-	@Override
-	public List<StatementGroup> getStatementGroups() {
-		return Collections.unmodifiableList(statementGroups);
-	}
-
-	@Override
-	public Iterator<Statement> getAllStatements() {
-		return new NestedIterator<>(statementGroups);
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class ExampleHelpers {
 	 * If set to true, all example programs will run in offline mode. Only data
 	 * dumps that have been downloaded in previous runs will be used.
 	 */
-	public static final boolean OFFLINE_MODE = false;
+	public static final boolean OFFLINE_MODE = !false;
 
 	/**
 	 * Enum to say which dumps should be downloaded and processed. Used as

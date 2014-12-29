@@ -108,7 +108,7 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	}
 
 	@Override
-	void setParentDocument(JacksonTermedDocument parentDocument) {
+	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
 		super.setParentDocument(parentDocument);
 		if (this.datavalue instanceof JacksonValueItemId) {
 			((JacksonValueItemId) this.datavalue)

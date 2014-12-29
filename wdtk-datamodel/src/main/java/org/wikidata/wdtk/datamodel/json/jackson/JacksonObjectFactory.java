@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -66,6 +66,8 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
  * where available.
@@ -82,8 +84,14 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
 		if (id.length() > 0 && id.charAt(0) == 'Q') {
 			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity = new JacksonInnerEntityId(
-					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
+			JacksonInnerEntityId innerEntity;
+			try {
+				innerEntity = new JacksonInnerEntityId(
+						JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
+			} catch (JsonMappingException e) {
+				throw new RuntimeException(
+						"Entities of type item not supported?", e);
+			}
 
 			JacksonValueItemId result = new JacksonValueItemId();
 			result.setValue(innerEntity);
@@ -121,9 +129,10 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
 			long longitude, long precision, String globeIri) {
 		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
-				((double)latitude / GlobeCoordinatesValue.PREC_DEGREE), 
-				((double)longitude / GlobeCoordinatesValue.PREC_DEGREE), 
-				((double)precision / GlobeCoordinatesValue.PREC_DEGREE), globeIri);
+				((double) latitude / GlobeCoordinatesValue.PREC_DEGREE),
+				((double) longitude / GlobeCoordinatesValue.PREC_DEGREE),
+				((double) precision / GlobeCoordinatesValue.PREC_DEGREE),
+				globeIri);
 		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
 		result.setValue(innerCoordinates);
 		return result;
@@ -237,8 +246,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		if (claim.getMainSnak() instanceof JacksonSnak) {
 			result.setMainsnak((JacksonSnak) claim.getMainSnak());
 		} else {
-			result.setMainsnak((JacksonSnak) dataModelConverter
-					.copySnak(claim.getMainSnak()));
+			result.setMainsnak((JacksonSnak) dataModelConverter.copySnak(claim
+					.getMainSnak()));
 		}
 
 		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
@@ -312,9 +321,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
+		return getPropertyDocument(propertyId, labels, descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), datatypeId);
+	}
+
+	@Override
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
 		JacksonPropertyDocument result = new JacksonPropertyDocument();
-		initializeTermedDocument(result, propertyId, labels, descriptions,
-				aliases);
+		initializeTermedStatementDocument(result, propertyId, labels,
+				descriptions, aliases, statementGroups);
 
 		switch (datatypeId.getIri()) {
 		case DatatypeIdValue.DT_ITEM:
@@ -354,27 +373,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
 		JacksonItemDocument result = new JacksonItemDocument();
-		initializeTermedDocument(result, itemIdValue, labels, descriptions,
-				aliases);
-
-		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
-		for (StatementGroup sg : statementGroups) {
-			String propertyId = sg.getProperty().getId();
-			List<JacksonStatement> propertyStatements = new ArrayList<>(sg
-					.getStatements().size());
-			jacksonStatements.put(propertyId, propertyStatements);
-
-			for (Statement s : sg) {
-				if (s instanceof JacksonStatement) {
-					propertyStatements.add((JacksonStatement) s);
-				} else {
-					propertyStatements
-							.add((JacksonStatement) this.dataModelConverter
-									.copy(s));
-				}
-			}
-		}
-		result.setJsonClaims(jacksonStatements);
+		initializeTermedStatementDocument(result, itemIdValue, labels,
+				descriptions, aliases, statementGroups);
 
 		Map<String, JacksonSiteLink> jacksonSiteLinks = new HashMap<>(
 				siteLinks.size());
@@ -393,10 +393,12 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		return result;
 	}
 
-	private void initializeTermedDocument(JacksonTermedDocument document,
+	private void initializeTermedStatementDocument(
+			JacksonTermedStatementDocument document,
 			EntityIdValue entityIdValue, List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases) {
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups) {
 
 		document.setJsonId(entityIdValue.getId());
 		document.setSiteIri(entityIdValue.getSiteIri());
@@ -415,6 +417,25 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 		document.setLabels(buildTermMapFromTermList(labels));
 		document.setDescriptions(buildTermMapFromTermList(descriptions));
+
+		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
+		for (StatementGroup sg : statementGroups) {
+			String propertyId = sg.getProperty().getId();
+			List<JacksonStatement> propertyStatements = new ArrayList<>(sg
+					.getStatements().size());
+			jacksonStatements.put(propertyId, propertyStatements);
+
+			for (Statement s : sg) {
+				if (s instanceof JacksonStatement) {
+					propertyStatements.add((JacksonStatement) s);
+				} else {
+					propertyStatements
+							.add((JacksonStatement) this.dataModelConverter
+									.copy(s));
+				}
+			}
+		}
+		document.setJsonClaims(jacksonStatements);
 	}
 
 	private Map<String, JacksonMonolingualTextValue> buildTermMapFromTermList(
