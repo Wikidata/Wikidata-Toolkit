@@ -20,11 +20,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * This class represents the inner anonymous object in the JSON type of
@@ -68,11 +65,8 @@ public class JacksonInnerEntityId {
 	 * @param entityType
 	 *            (case-sensitive)
 	 * @param numericId
-	 * @throws JsonMappingException
-	 *             if an unsupported entity type is used
 	 */
-	public JacksonInnerEntityId(String entityType, int numericId)
-			throws JsonMappingException {
+	public JacksonInnerEntityId(String entityType, int numericId) {
 		setJsonEntityType(entityType);
 		this.numericId = numericId;
 	}
@@ -94,16 +88,9 @@ public class JacksonInnerEntityId {
 	 *
 	 * @param entityType
 	 *            new value
-	 * @throws JsonMappingException
-	 *             when using an entity type that is not supported yet
 	 */
 	@JsonProperty("entity-type")
-	public void setJsonEntityType(String entityType)
-			throws JsonMappingException {
-		if (!JSON_ENTITY_TYPE_ITEM.equals(entityType)) {
-			throw new JsonMappingException("Entities of type \"" + entityType
-					+ "\" are not supported as property values yet.");
-		}
+	public void setJsonEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -147,29 +134,6 @@ public class JacksonInnerEntityId {
 			return "Q" + this.numericId;
 		case JSON_ENTITY_TYPE_PROPERTY:
 			return "P" + this.numericId;
-		default:
-			throw new IllegalArgumentException("Entities of type \""
-					+ entityType + "\" are not supported in property values.");
-		}
-	}
-
-	/**
-	 * Returns the Wikidata Toolkit entity type string of the entity id encoded
-	 * in this value. For example, an id with entityType "item" is of type
-	 * {@link EntityIdValue#ET_ITEM}.
-	 *
-	 * @return the string id
-	 * @throws IllegalArgumentException
-	 *             if the entity type of this value is unknown and can thus not
-	 *             be mapped to a string id
-	 */
-	@JsonIgnore
-	public String getEntityType() throws IllegalArgumentException {
-		switch (entityType) {
-		case JSON_ENTITY_TYPE_ITEM:
-			return EntityIdValue.ET_ITEM;
-		case JSON_ENTITY_TYPE_PROPERTY:
-			return EntityIdValue.ET_PROPERTY;
 		default:
 			throw new IllegalArgumentException("Entities of type \""
 					+ entityType + "\" are not supported in property values.");

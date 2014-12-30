@@ -28,6 +28,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Jackson implementation of {@link GlobeCoordinatesValue}.
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
 public class JacksonValueGlobeCoordinates extends JacksonValue implements
 		GlobeCoordinatesValue {
 
@@ -77,19 +80,19 @@ public class JacksonValueGlobeCoordinates extends JacksonValue implements
 	@JsonIgnore
 	@Override
 	public long getLatitude() {
-		return (long)(this.value.getLatitude() * GlobeCoordinatesValue.PREC_DEGREE);
+		return (long) (this.value.getLatitude() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore
 	@Override
 	public long getLongitude() {
-		return (long)(this.value.getLongitude() * GlobeCoordinatesValue.PREC_DEGREE);
+		return (long) (this.value.getLongitude() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore
 	@Override
 	public long getPrecision() {
-		return (long)(this.value.getPrecision() * GlobeCoordinatesValue.PREC_DEGREE);
+		return (long) (this.value.getPrecision() * GlobeCoordinatesValue.PREC_DEGREE);
 	}
 
 	@JsonIgnore

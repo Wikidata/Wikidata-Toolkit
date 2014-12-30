@@ -62,11 +62,10 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
-
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -85,13 +84,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		if (id.length() > 0 && id.charAt(0) == 'Q') {
 			Integer numericId = Integer.valueOf(id.substring(1));
 			JacksonInnerEntityId innerEntity;
-			try {
-				innerEntity = new JacksonInnerEntityId(
-						JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
-			} catch (JsonMappingException e) {
-				throw new RuntimeException(
-						"Entities of type item not supported?", e);
-			}
+			innerEntity = new JacksonInnerEntityId(
+					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
 
 			JacksonValueItemId result = new JacksonValueItemId();
 			result.setValue(innerEntity);
@@ -104,8 +98,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		// Jackson has no dedicated property id values:
-		return Datamodel.makePropertyIdValue(id, siteIri);
+		if (id.length() > 0 && id.charAt(0) == 'P') {
+			Integer numericId = Integer.valueOf(id.substring(1));
+			JacksonInnerEntityId innerEntity;
+			innerEntity = new JacksonInnerEntityId(
+					JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY, numericId);
+
+			JacksonValuePropertyId result = new JacksonValuePropertyId();
+			result.setValue(innerEntity);
+			result.setParentDocument(getParentItemDocument("Qunknown", siteIri));
+			return result;
+		} else {
+			throw new IllegalArgumentException("Illegal property id: " + id);
+		}
 	}
 
 	@Override

@@ -55,13 +55,13 @@ public class TestInnerValueObjects {
 				"foobar");
 	}
 
-	@Test(expected = JsonMappingException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testEntityIdConstructor() throws JsonMappingException {
 		JacksonInnerEntityId testId = new JacksonInnerEntityId(wrongType, 1);
 		testId.getStringId(); // should fail
 	}
 
-	@Test(expected = JsonMappingException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testEntityIdSetter() throws JsonMappingException {
 		JacksonInnerEntityId testId = new JacksonInnerEntityId();
 		testId.setNumericId(1);
