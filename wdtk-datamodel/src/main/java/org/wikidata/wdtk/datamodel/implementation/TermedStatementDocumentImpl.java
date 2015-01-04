@@ -23,12 +23,18 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link TermedDocument}. This abstract class defines the
@@ -37,15 +43,20 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  * @author Markus Kroetzsch
  *
  */
-public abstract class TermedDocumentImpl implements TermedDocument {
+public abstract class TermedStatementDocumentImpl implements TermedDocument,
+		StatementDocument {
 
 	final Map<String, MonolingualTextValue> labels;
 	final Map<String, MonolingualTextValue> descriptions;
 	final Map<String, List<MonolingualTextValue>> aliases;
+	final List<StatementGroup> statementGroups;
 
 	/**
 	 * Constructor.
 	 *
+	 * @param entityIdValue
+	 *            the entity that this document refers to; used to validate
+	 *            statements
 	 * @param labels
 	 *            the list of labels of this entity, with at most one label for
 	 *            each language code
@@ -54,13 +65,19 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 	 *            description for each language code
 	 * @param aliases
 	 *            the list of aliases of this entity
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 */
-	TermedDocumentImpl(List<MonolingualTextValue> labels,
+	TermedStatementDocumentImpl(EntityIdValue entityIdValue,
+			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases) {
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups) {
 		Validate.notNull(labels, "list of labels cannot be null");
 		Validate.notNull(descriptions, "list of descriptions cannot be null");
 		Validate.notNull(aliases, "list of aliases cannot be null");
+		Validate.notNull(statementGroups, "statement list cannot be null");
 
 		this.labels = new HashMap<String, MonolingualTextValue>();
 		for (MonolingualTextValue label : labels) {
@@ -93,6 +110,19 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 				this.aliases.put(alias.getLanguageCode(), aliasesForLanguage);
 			}
 		}
+
+		if (!statementGroups.isEmpty()) {
+			for (StatementGroup sg : statementGroups) {
+				if (!entityIdValue.equals(sg.getSubject())) {
+					throw new IllegalArgumentException(
+							"All statement groups in a document must have the same subject: found "
+									+ sg.getSubject() + " but expected "
+									+ entityIdValue);
+				}
+			}
+		}
+
+		this.statementGroups = statementGroups;
 	}
 
 	@Override
@@ -110,6 +140,16 @@ public abstract class TermedDocumentImpl implements TermedDocument {
 		// TODO This still allows inner lists of aliases to be modified. Do
 		// we have to protect against this?
 		return Collections.unmodifiableMap(aliases);
+	}
+
+	@Override
+	public List<StatementGroup> getStatementGroups() {
+		return Collections.unmodifiableList(statementGroups);
+	}
+
+	@Override
+	public Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(statementGroups);
 	}
 
 }

@@ -40,6 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
@@ -353,7 +354,8 @@ public class ToString {
 	public static String toString(PropertyDocument o) {
 		return "==PropertyDocument " + o.getPropertyId().getIri() + "==\n"
 				+ "* Datatype: " + o.getDatatype()
-				+ toStringForTermedDocument(o);
+				+ toStringForTermedDocument(o)
+				+ toStringForStatementDocument(o);
 	}
 
 	/**
@@ -368,16 +370,10 @@ public class ToString {
 		StringBuilder sb = new StringBuilder();
 		sb.append("==ItemDocument ").append(o.getItemId().getIri());
 		sb.append("==").append(toStringForTermedDocument(o));
-		boolean first;
-
-		sb.append("\n===Statements===\n");
-		for (StatementGroup sg : o.getStatementGroups()) {
-			sb.append(toString(sg));
-		}
-		sb.append("\n===End of statements===\n");
+		sb.append(toStringForStatementDocument(o));
 
 		sb.append("* Site links: ");
-		first = true;
+		boolean first = true;
 		SortedSet<String> siteKeys = new TreeSet<String>(o.getSiteLinks()
 				.keySet());
 		for (String key : siteKeys) {
@@ -388,6 +384,18 @@ public class ToString {
 			}
 			sb.append(toString(o.getSiteLinks().get(key)));
 		}
+
+		return sb.toString();
+	}
+
+	protected static String toStringForStatementDocument(StatementDocument o) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("\n===Statements===\n");
+		for (StatementGroup sg : o.getStatementGroups()) {
+			sb.append(toString(sg));
+		}
+		sb.append("\n===End of statements===\n");
 
 		return sb.toString();
 	}

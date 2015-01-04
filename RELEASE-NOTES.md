@@ -4,6 +4,10 @@ Wikidata Toolkit Release Notes
 Version 0.4.0
 -------------
 
+New features:
+* Support statements on property documents
+* More robust JSON parsing: recover after errors to process remaining file 
+
 Bug fixes:
 * Support RDF export of Monolingual Text Value data in statements.
 * Significant performance improvements in RDF export of taxonomy data.   

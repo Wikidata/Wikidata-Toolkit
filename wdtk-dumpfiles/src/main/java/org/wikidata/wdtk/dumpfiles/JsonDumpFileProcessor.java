@@ -20,14 +20,19 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,9 +46,12 @@ import com.fasterxml.jackson.databind.ObjectReader;
  */
 public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
+	static final Logger logger = LoggerFactory
+			.getLogger(JsonDumpFileProcessor.class);
+
 	private final ObjectMapper mapper = new ObjectMapper();
-	private final ObjectReader documentReader = mapper
-			.reader(JacksonTermedDocument.class);
+	private final ObjectReader documentReader = this.mapper
+			.reader(JacksonTermedStatementDocument.class);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
 	private final String siteIri;
@@ -54,40 +62,123 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		this.siteIri = siteIri;
 	}
 
+	/**
+	 * Process dump file data from the given input stream. This method uses the
+	 * efficient Jackson {@link MappingIterator}. However, this class cannot
+	 * recover from processing errors. If an error occurs in one entity, the
+	 * (presumably) less efficient processing method
+	 * {@link #processDumpFileContentsRecovery(InputStream)} is used instead.
+	 *
+	 * @see MwDumpFileProcessor#processDumpFileContents(InputStream, MwDumpFile)
+	 */
 	@Override
 	public void processDumpFileContents(InputStream inputStream,
 			MwDumpFile dumpFile) {
 
 		try {
-			MappingIterator<JacksonTermedDocument> documentIterator = documentReader
-					.readValues(inputStream);
+			try {
+				MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+						.readValues(inputStream);
+				documentIterator.getParser().disable(Feature.AUTO_CLOSE_SOURCE);
 
-			while (documentIterator.hasNextValue()) {
-				JacksonTermedDocument document = documentIterator.nextValue();
-				document.setSiteIri(siteIri);
-				if (document != null) {
-					if (document instanceof JacksonItemDocument) {
-						this.handleItemDocument((JacksonItemDocument) document);
-					} else if (document instanceof JacksonPropertyDocument) {
-						this.handlePropertyDocument((JacksonPropertyDocument) document);
-					}
+				while (documentIterator.hasNextValue()) {
+					JacksonTermedStatementDocument document = documentIterator
+							.nextValue();
+					handleDocument(document);
 				}
+				documentIterator.close();
+			} catch (JsonProcessingException e) {
+				logJsonProcessingException(e);
+				processDumpFileContentsRecovery(inputStream);
 			}
-
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Cannot read JSON input: "
+					+ e.getMessage(), e);
 		}
 
 	}
 
-	private void handleItemDocument(JacksonItemDocument document) {
-		this.entityDocumentProcessor.processItemDocument(document);
+	/**
+	 * Reports the error of a JSON processing exception that was caught when
+	 * trying to read an entity.
+	 *
+	 * @param exception
+	 *            the exception to log
+	 */
+	private void logJsonProcessingException(JsonProcessingException exception) {
+		JsonDumpFileProcessor.logger
+				.error("Error when reading JSON for entity: "
+						+ exception.getMessage());
 	}
 
-	private void handlePropertyDocument(JacksonPropertyDocument document) {
-		this.entityDocumentProcessor.processPropertyDocument(document);
+	/**
+	 * Handles a {@link JacksonTermedStatementDocument} that was retrieved by
+	 * parsing the JSON input. It will call appropriate processing methods
+	 * depending on the type of document.
+	 *
+	 * @param document
+	 *            the document to process
+	 */
+	private void handleDocument(JacksonTermedStatementDocument document) {
+		document.setSiteIri(siteIri);
+		if (document != null) {
+			if (document instanceof JacksonItemDocument) {
+				this.entityDocumentProcessor
+						.processItemDocument((JacksonItemDocument) document);
+			} else if (document instanceof JacksonPropertyDocument) {
+				this.entityDocumentProcessor
+						.processPropertyDocument((JacksonPropertyDocument) document);
+			}
+		}
 	}
 
+	/**
+	 * Process dump file data from the given input stream. The method can
+	 * recover from an errors that occurred while processing an input stream,
+	 * which is assumed to contain the JSON serialization of a list of JSON
+	 * entities, with each entity serialization in one line. To recover from the
+	 * previous error, the first line is skipped.
+	 *
+	 * @param inputStream
+	 *            the stream to read from
+	 * @throws IOException
+	 *             if there is a problem reading the stream
+	 */
+	private void processDumpFileContentsRecovery(InputStream inputStream)
+			throws IOException {
+		JsonDumpFileProcessor.logger
+				.warn("Entering recovery mode to parse rest of file. This might be slightly slower.");
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				inputStream));
+
+		String line = br.readLine();
+		if (line.length() >= 100) {
+			line = line.substring(0, 100) + "[...]"
+					+ line.substring(line.length() - 50);
+		}
+		JsonDumpFileProcessor.logger.warn("Skipping rest of current line: "
+				+ line);
+
+		line = br.readLine();
+		while (line != null && line.length() > 1) {
+			try {
+				JacksonTermedStatementDocument document;
+				if (line.charAt(line.length() - 1) == ',') {
+					document = documentReader.readValue(line.substring(0,
+							line.length() - 1));
+				} else {
+					document = documentReader.readValue(line);
+				}
+				handleDocument(document);
+			} catch (JsonProcessingException e) {
+				logJsonProcessingException(e);
+				JsonDumpFileProcessor.logger.error("Problematic line was: "
+						+ line.substring(0, Math.min(50, line.length()))
+						+ "...");
+			}
+
+			line = br.readLine();
+		}
+	}
 }

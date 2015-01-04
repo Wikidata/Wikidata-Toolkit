@@ -28,6 +28,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Jackson implementation of {@link TimeValue}.
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
 public class JacksonValueTime extends JacksonValue implements TimeValue {
 
 	/**

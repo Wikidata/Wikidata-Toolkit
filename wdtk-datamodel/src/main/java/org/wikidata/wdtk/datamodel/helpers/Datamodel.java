@@ -428,7 +428,7 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link PropertyDocument}.
+	 * Creates a {@link PropertyDocument} without statements.
 	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -450,6 +450,35 @@ public class Datamodel {
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return factory.getPropertyDocument(propertyId, labels, descriptions,
 				aliases, datatypeId);
+	}
+
+	/**
+	 * Creates a {@link PropertyDocument}.
+	 *
+	 * @param propertyId
+	 *            the id of the property that data is about
+	 * @param labels
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
+	 * @param descriptions
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
+	 * @param aliases
+	 *            the list of aliases of this property
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
+	 * @param datatypeId
+	 *            the datatype of that property
+	 * @return a {@link PropertyDocument} corresponding to the input
+	 */
+	public static PropertyDocument makePropertyDocument(
+			PropertyIdValue propertyId, List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
+		return factory.getPropertyDocument(propertyId, labels, descriptions,
+				aliases, statementGroups, datatypeId);
 	}
 
 	/**
