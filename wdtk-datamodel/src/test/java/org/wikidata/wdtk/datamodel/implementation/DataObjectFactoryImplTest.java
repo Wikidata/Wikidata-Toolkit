@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -86,6 +87,11 @@ public class DataObjectFactoryImplTest {
 	public DataObjectFactoryImplTest() {
 		factory = new DataObjectFactoryImpl();
 		converter = new DatamodelConverter(factory);
+	}
+
+	@Test
+	public void deepCopyOptionValue() {
+		assertTrue(this.converter.hasOptionDeepCopy());
 	}
 
 	@Test
