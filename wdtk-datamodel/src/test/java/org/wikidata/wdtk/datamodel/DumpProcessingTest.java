@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
 
@@ -47,7 +47,7 @@ public class DumpProcessingTest {
 	public static void main(String[] args){
 		
 		ObjectMapper mapper = new ObjectMapper();
-		ObjectReader reader = mapper.reader(JacksonTermedDocument.class);
+		ObjectReader reader = mapper.reader(JacksonTermedStatementDocument.class);
 		//ObjectReader propReader = mapper.reader(PropertyDocumentImpl.class);
 		
 		File dumpFile;
@@ -67,10 +67,10 @@ public class DumpProcessingTest {
 		int props = 0;
 		int lastReport = 0;
 		 try {
-			MappingIterator<JacksonTermedDocument> documentIter = reader.readValues(dumpFile);
+			MappingIterator<JacksonTermedStatementDocument> documentIter = reader.readValues(dumpFile);
 			
 			while(documentIter.hasNextValue()){
-				JacksonTermedDocument document = documentIter.nextValue();
+				JacksonTermedStatementDocument document = documentIter.nextValue();
 				if(document != null){ // TODO do more useful and thorough check here
 					processed++;
 					if(document instanceof JacksonItemDocument){

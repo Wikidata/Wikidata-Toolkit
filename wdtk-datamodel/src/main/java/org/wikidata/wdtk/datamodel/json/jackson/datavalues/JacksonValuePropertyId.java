@@ -20,12 +20,11 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import java.math.BigDecimal;
-
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,28 +33,15 @@ import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * Jackson implementation of {@link QuantityValue}.
+ * Jackson implementation of {@link PropertyIdValue}.
  *
- * @author Fredo Erxleben
+ * @author Markus Kroetzsch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = None.class)
-public class JacksonValueQuantity extends JacksonValue implements QuantityValue {
-
-	/**
-	 * Inner helper object to store the actual data. Used to get the nested JSON
-	 * structure that is required here.
-	 */
-	private JacksonInnerQuantity value;
-
-	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonValueQuantity() {
-		super(JSON_VALUE_TYPE_QUANTITY);
-	}
+public class JacksonValuePropertyId extends JacksonValueEntityId implements
+		PropertyIdValue {
 
 	/**
 	 * Sets the inner value helper object to the given value. Only for use by
@@ -64,36 +50,20 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	 * @param value
 	 *            new value
 	 */
-	public void setValue(JacksonInnerQuantity value) {
+	@Override
+	public void setValue(JacksonInnerEntityId value) {
+		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY.equals(value
+				.getJsonEntityType())) {
+			throw new RuntimeException("Unexpected inner value type: "
+					+ value.getJsonEntityType());
+		}
 		this.value = value;
 	}
 
-	/**
-	 * Returns the inner value helper object. Only for use by Jackson during
-	 * serialization.
-	 *
-	 * @return the inner quantity value
-	 */
-	public JacksonInnerQuantity getValue() {
-		return this.value;
-	}
-
 	@JsonIgnore
 	@Override
-	public BigDecimal getNumericValue() {
-		return this.value.getAmount();
-	}
-
-	@JsonIgnore
-	@Override
-	public BigDecimal getLowerBound() {
-		return this.value.getLowerBound();
-	}
-
-	@JsonIgnore
-	@Override
-	public BigDecimal getUpperBound() {
-		return this.value.getUpperBound();
+	public String getEntityType() {
+		return EntityIdValue.ET_PROPERTY;
 	}
 
 	@Override
@@ -108,7 +78,7 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsQuantityValue(this, obj);
+		return Equality.equalsEntityIdValue(this, obj);
 	}
 
 	@Override

@@ -20,31 +20,30 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
- * Interface for datasets that describe properties. It extends
- * {@link EntityDocument} with information about the datatype of a property.
- * <p>
- * Claims or Statements on properties might be supported in the future.
+ * Interface for EntityDocuments that can have statements.
  *
  * @author Markus Kroetzsch
- *
  */
-public interface PropertyDocument extends TermedDocument, StatementDocument {
+public interface StatementDocument extends EntityDocument {
 
 	/**
-	 * Return the ID of the property that the data refers to. The result is the
-	 * same as that of {@link EntityDocument#getEntityId()}, but declared with a
-	 * more specific result type.
+	 * Return the list of all StatementGroups stored for this item. The order of
+	 * StatementGroups is significant.
 	 *
-	 * @return property id
+	 * @return list of StatementGroups
 	 */
-	PropertyIdValue getPropertyId();
+	List<StatementGroup> getStatementGroups();
 
 	/**
-	 * Get the datatype id of the datatype defined for this property.
+	 * Returns an iterator that provides access to all statements, without
+	 * considering the statement groups. The order of statements is preserved.
 	 *
-	 * @return {@link DatatypeIdValue}
+	 * @return iterator over all statements
 	 */
-	DatatypeIdValue getDatatype();
+	Iterator<Statement> getAllStatements();
 
 }

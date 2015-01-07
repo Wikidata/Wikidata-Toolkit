@@ -34,6 +34,7 @@ import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -111,6 +112,18 @@ public class DataObjectFactoryImplTest {
 
 	public static PropertyIdValue getTestPropertyIdValue(int seed) {
 		return new PropertyIdValueImpl("P4" + seed, "foo:");
+	}
+
+	public static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
+		switch (entityType) {
+		case EntityIdValue.ET_ITEM:
+			return getTestItemIdValue(seed);
+		case EntityIdValue.ET_PROPERTY:
+			return getTestPropertyIdValue(seed);
+		default:
+			throw new IllegalArgumentException("Unsupported entity type "
+					+ entityType);
+		}
 	}
 
 	@Test
@@ -281,17 +294,18 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetClaim() {
-		Claim o1 = getTestClaim(0, 0, 2);
+		Claim o1 = getTestClaim(0, 0, 2, EntityIdValue.ET_ITEM);
 		Claim o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
 	}
 
-	public static Claim getTestClaim(int subjectSeed, int seed, int size) {
-		return new ClaimImpl(getTestItemIdValue(subjectSeed), getTestValueSnak(
-				ValueType.fromInt(seed), seed, seed), getTestValueSnakGroups(
-				seed * 100, size));
+	public static Claim getTestClaim(int subjectSeed, int seed, int size,
+			String entityType) {
+		return new ClaimImpl(getTestEntityIdValue(subjectSeed, entityType),
+				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
+				getTestValueSnakGroups(seed * 100, size));
 	}
 
 	@Test
@@ -314,22 +328,24 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetStatement() {
-		Statement o1 = getTestStatement(0, 42, 3);
+		Statement o1 = getTestStatement(0, 42, 3, EntityIdValue.ET_ITEM);
 		Statement o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
 	}
 
-	public static Statement getTestStatement(int subjectSeed, int seed, int size) {
-		return new StatementImpl(getTestClaim(subjectSeed, seed, size),
-				getReferenceList(seed, size), StatementRank.NORMAL, "MyId"
-						+ seed);
+	public static Statement getTestStatement(int subjectSeed, int seed,
+			int size, String entityType) {
+		return new StatementImpl(getTestClaim(subjectSeed, seed, size,
+				entityType), getReferenceList(seed, size),
+				StatementRank.NORMAL, "MyId" + seed);
 	}
 
 	@Test
 	public final void testGetStatementGroup() {
-		StatementGroup o1 = getTestStatementGroup(0, 17, 10);
+		StatementGroup o1 = getTestStatementGroup(0, 17, 10,
+				EntityIdValue.ET_ITEM);
 		StatementGroup o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
@@ -338,20 +354,20 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static StatementGroup getTestStatementGroup(int subjectSeed,
-			int seed, int size) {
+			int seed, int size, String entityType) {
 		List<Statement> statements = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			statements.add(getTestStatement(subjectSeed, seed, i));
+			statements.add(getTestStatement(subjectSeed, seed, i, entityType));
 		}
 		return new StatementGroupImpl(statements);
 	}
 
 	public static List<StatementGroup> getTestStatementGroups(int subjectSeed,
-			int seed, int size) {
+			int seed, int size, String entityType) {
 		List<StatementGroup> statementGroups = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			statementGroups.add(getTestStatementGroup(subjectSeed, i + seed,
-					i * 2 + 1));
+					i * 2 + 1, entityType));
 		}
 		return statementGroups;
 	}
@@ -367,9 +383,11 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = new PropertyDocumentImpl(
-				getTestPropertyIdValue(2), getTestMtvList(1, 0), // labels
+				getTestPropertyIdValue(2),
+				getTestMtvList(1, 0), // labels
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
+				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
 				new DatatypeIdImpl(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = converter.copy(o1);
 
@@ -380,11 +398,13 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemDocument() {
-		ItemDocument o1 = new ItemDocumentImpl(getTestItemIdValue(2),
+		ItemDocument o1 = new ItemDocumentImpl(
+				getTestItemIdValue(2),
 				getTestMtvList(5, 0), // labels
 				getTestMtvList(0, 0), // descriptions
 				getTestMtvList(15, 12), // aliases
-				getTestStatementGroups(2, 17, 1), getTestSiteLinks(20));
+				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_ITEM),
+				getTestSiteLinks(20));
 		ItemDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());

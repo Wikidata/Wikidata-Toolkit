@@ -42,6 +42,11 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	public static final String JSON_DT_ITEM = "wikibase-item";
 	/**
 	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_PROPERTY} in JSON.
+	 */
+	public static final String JSON_DT_PROPERTY = "wikibase-property";
+	/**
+	 * String used to refer to the property datatype
 	 * {@link DatatypeIdValue#DT_GLOBE_COORDINATES} in JSON.
 	 */
 	public static final String JSON_DT_GLOBE_COORDINATES = "globe-coordinate";
@@ -94,6 +99,8 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 		switch (jsonDatatype) {
 		case JSON_DT_ITEM:
 			return DT_ITEM;
+		case JSON_DT_PROPERTY:
+			return DT_PROPERTY;
 		case JSON_DT_GLOBE_COORDINATES:
 			return DT_GLOBE_COORDINATES;
 		case JSON_DT_URL:
