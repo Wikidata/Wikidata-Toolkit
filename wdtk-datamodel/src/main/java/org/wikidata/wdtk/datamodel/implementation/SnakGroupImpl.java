@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -38,8 +39,10 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
  * @author Markus Kroetzsch
  *
  */
-public class SnakGroupImpl implements SnakGroup {
+public class SnakGroupImpl implements SnakGroup, Serializable {
 
+	private static final long serialVersionUID = -6497504020405854760L;
+	
 	final List<? extends Snak> snaks;
 
 	/**

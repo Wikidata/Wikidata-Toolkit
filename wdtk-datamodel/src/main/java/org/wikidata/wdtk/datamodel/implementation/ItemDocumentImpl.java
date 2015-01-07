@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,9 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class ItemDocumentImpl extends TermedStatementDocumentImpl implements
-		ItemDocument {
+		ItemDocument, Serializable {
+
+	private static final long serialVersionUID = -2189045553879194935L;
 
 	final ItemIdValue itemId;
 	final Map<String, SiteLink> siteLinks;

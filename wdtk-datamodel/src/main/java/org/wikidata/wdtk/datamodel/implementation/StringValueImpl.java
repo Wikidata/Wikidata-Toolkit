@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -33,8 +35,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class StringValueImpl implements StringValue {
+public class StringValueImpl implements StringValue, Serializable {
 
+	private static final long serialVersionUID = -3372698418036275469L;
+	
 	final String string;
 
 	/**

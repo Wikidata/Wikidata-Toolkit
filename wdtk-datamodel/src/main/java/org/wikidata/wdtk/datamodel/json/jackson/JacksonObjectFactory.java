@@ -89,7 +89,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 			JacksonValueItemId result = new JacksonValueItemId();
 			result.setValue(innerEntity);
-			result.setParentDocument(getParentItemDocument("Qunknown", siteIri));
+			result.setParentDocument(getParentEntityDocument("Qunknown",
+					siteIri, EntityIdValue.ET_ITEM));
 			return result;
 		} else {
 			throw new IllegalArgumentException("Illegal item id: " + id);
@@ -106,7 +107,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 			JacksonValuePropertyId result = new JacksonValuePropertyId();
 			result.setValue(innerEntity);
-			result.setParentDocument(getParentItemDocument("Qunknown", siteIri));
+			result.setParentDocument(getParentEntityDocument("Qunknown",
+					siteIri, EntityIdValue.ET_ITEM));
 			return result;
 		} else {
 			throw new IllegalArgumentException("Illegal property id: " + id);
@@ -197,8 +199,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		JacksonSomeValueSnak result = new JacksonSomeValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setParentDocument(getParentEntityDocument("Qundefined",
+				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
 		return result;
 	}
 
@@ -206,8 +208,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		JacksonNoValueSnak result = new JacksonNoValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setParentDocument(getParentEntityDocument("Qundefined",
+				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
 		return result;
 	}
 
@@ -281,18 +283,33 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setRank(rank);
 		result.setStatementId(statementId);
 
-		result.setParentDocument(getParentItemDocument(claim.getSubject()));
+		result.setParentDocument(getParentEntityDocument(claim.getSubject()));
 
 		return result;
 	}
 
-	private JacksonItemDocument getParentItemDocument(EntityIdValue subject) {
-		return getParentItemDocument(subject.getId(), subject.getSiteIri());
+	private JacksonTermedStatementDocument getParentEntityDocument(
+			EntityIdValue subject) {
+		return getParentEntityDocument(subject.getId(), subject.getSiteIri(),
+				subject.getEntityType());
 	}
 
-	private JacksonItemDocument getParentItemDocument(String subjectId,
-			String subjectSiteIri) {
-		JacksonItemDocument helperParentDocument = new JacksonItemDocument();
+	private JacksonTermedStatementDocument getParentEntityDocument(
+			String subjectId, String subjectSiteIri, String entityType) {
+
+		JacksonTermedStatementDocument helperParentDocument;
+		switch (entityType) {
+		case EntityIdValue.ET_ITEM:
+			helperParentDocument = new JacksonItemDocument();
+			break;
+		case EntityIdValue.ET_PROPERTY:
+			helperParentDocument = new JacksonPropertyDocument();
+			break;
+		default:
+			throw new IllegalArgumentException("Entity type " + entityType
+					+ " is not supported by this method.");
+		}
+
 		helperParentDocument.setJsonId(subjectId);
 		helperParentDocument.setSiteIri(subjectSiteIri);
 		return helperParentDocument;
@@ -467,8 +484,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		result.setDatavalue(value);
 		result.setDatatype(propertyDatatype);
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setParentDocument(getParentEntityDocument("Qundefined",
+				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
 		return result;
 	}
 

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +45,9 @@ import org.wikidata.wdtk.util.NestedIterator;
  *
  */
 public abstract class TermedStatementDocumentImpl implements TermedDocument,
-		StatementDocument {
+		StatementDocument, Serializable {
+
+	private static final long serialVersionUID = 821881839755909320L;
 
 	final Map<String, MonolingualTextValue> labels;
 	final Map<String, MonolingualTextValue> descriptions;
