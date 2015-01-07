@@ -6,7 +6,9 @@ Version 0.4.0
 
 New features:
 * Support statements on property documents
-* More robust JSON parsing: recover after errors to process remaining file 
+* More robust JSON parsing: recover after errors to process remaining file
+* Standard (POJO) datamodel implementation now is Serializable
+* Deep copy functionality for changing between datamodel implementations (DatamodelConverter) 
 
 Bug fixes:
 * Support RDF export of Monolingual Text Value data in statements.
