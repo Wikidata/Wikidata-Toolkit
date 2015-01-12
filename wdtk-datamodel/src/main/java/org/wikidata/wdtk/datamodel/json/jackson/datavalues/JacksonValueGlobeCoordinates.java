@@ -92,7 +92,7 @@ public class JacksonValueGlobeCoordinates extends JacksonValue implements
 	@JsonIgnore
 	@Override
 	public double getPrecision() {
-		return this.value.getJsonPrecision();
+		return this.value.getPrecision();
 	}
 
 	@JsonIgnore

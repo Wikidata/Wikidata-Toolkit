@@ -143,7 +143,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates();
 		innerCoordinates.setLatitude(latitude);
 		innerCoordinates.setLongitude(longitude);
-		innerCoordinates.setJsonPrecision(precision);
+		innerCoordinates.setPrecision(precision);
 		innerCoordinates.setGlobe(globeIri);
 		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
 		result.setValue(innerCoordinates);
