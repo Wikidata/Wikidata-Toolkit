@@ -113,17 +113,17 @@ public interface DataObjectFactory {
 	 * Creates a {@link GlobeCoordinatesValue}.
 	 *
 	 * @param latitude
-	 *            the latitude of the coordinates in nanodegrees
+	 *            the latitude of the coordinates in degrees
 	 * @param longitude
-	 *            the longitude of the coordinates in nanodegrees
+	 *            the longitude of the coordinates in degrees
 	 * @param precision
-	 *            the precision of the coordinates in nanodegrees
+	 *            the precision of the coordinates in degrees
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 * @return a {@link GlobeCoordinatesValue} corresponding to the input
 	 */
-	GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
-			long longitude, long precision, String globeIri);
+	GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+			double longitude, double precision, String globeIri);
 
 	/**
 	 * Creates a {@link StringValue}.

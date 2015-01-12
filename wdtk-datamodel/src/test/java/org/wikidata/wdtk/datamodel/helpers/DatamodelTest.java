@@ -132,15 +132,11 @@ public class DatamodelTest {
 
 	@Test
 	public final void testGetGlobeCoordinatesValue() {
-		GlobeCoordinatesValue o1 = Datamodel.makeGlobeCoordinatesValue(
-				90 * GlobeCoordinatesValue.PREC_DEGREE,
-				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+		GlobeCoordinatesValue o1 = Datamodel.makeGlobeCoordinatesValue(90.0,
+				190.5, GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(
-				90 * GlobeCoordinatesValue.PREC_DEGREE,
-				1905 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(90.0,
+				190.5, GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 		assertEquals(o1, o2);
 	}
@@ -230,7 +226,7 @@ public class DatamodelTest {
 				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-								.<SnakGroup> emptyList());
+						.<SnakGroup> emptyList());
 		Claim o2 = factory
 				.getClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
@@ -270,7 +266,7 @@ public class DatamodelTest {
 				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-								.<SnakGroup> emptyList());
+						.<SnakGroup> emptyList());
 		Statement s = Datamodel.makeStatement(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");

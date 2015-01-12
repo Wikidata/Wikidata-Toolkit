@@ -133,13 +133,18 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	}
 
 	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
-			long longitude, long precision, String globeIri) {
-		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
-				((double) latitude / GlobeCoordinatesValue.PREC_DEGREE),
-				((double) longitude / GlobeCoordinatesValue.PREC_DEGREE),
-				((double) precision / GlobeCoordinatesValue.PREC_DEGREE),
-				globeIri);
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+			double longitude, double precision, String globeIri) {
+		if (precision <= 0) {
+			throw new IllegalArgumentException(
+					"Coordinates precision must be non-zero positive. Given value: "
+							+ precision);
+		}
+		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates();
+		innerCoordinates.setLatitude(latitude);
+		innerCoordinates.setLongitude(longitude);
+		innerCoordinates.setPrecision(precision);
+		innerCoordinates.setGlobe(globeIri);
 		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
 		result.setValue(innerCoordinates);
 		return result;

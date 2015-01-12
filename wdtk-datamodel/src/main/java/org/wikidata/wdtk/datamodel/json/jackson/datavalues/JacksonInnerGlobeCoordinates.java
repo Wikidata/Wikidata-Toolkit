@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,9 +15,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,9 +37,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerGlobeCoordinates {
 
+	static final Logger logger = LoggerFactory
+			.getLogger(JacksonInnerGlobeCoordinates.class);
+
 	private double latitude = 0;
 	private double longitude = 0;
-	private double precision = 0;
+	private double precision = GlobeCoordinatesValue.PREC_ARCSECOND;
 	private String globe = GlobeCoordinatesValue.GLOBE_EARTH;
 
 	/**
@@ -45,22 +50,6 @@ public class JacksonInnerGlobeCoordinates {
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonInnerGlobeCoordinates() {
-	}
-
-	/**
-	 * TODO Review the utility of this constructor.
-	 *
-	 * @param latitude
-	 * @param longitude
-	 * @param precision
-	 * @param globe
-	 */
-	public JacksonInnerGlobeCoordinates(double latitude, double longitude,
-			double precision, String globe) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.precision = precision;
-		this.globe = globe;
 	}
 
 	/**
@@ -123,7 +112,15 @@ public class JacksonInnerGlobeCoordinates {
 	 *            new value
 	 */
 	public void setPrecision(double precision) {
-		this.precision = precision;
+		if (precision <= 0.0) {
+			// We just do this silently because it is so common in the data.
+			// Precision "0" does not make sense for a physical quantity.
+			// Automatic precision does not make sense for floating point
+			// values. "0" also is commonly produced from "null" in JSON.
+			this.precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+		} else {
+			this.precision = precision;
+		}
 	}
 
 	/**
