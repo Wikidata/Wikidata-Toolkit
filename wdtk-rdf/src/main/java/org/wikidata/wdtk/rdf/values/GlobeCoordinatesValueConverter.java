@@ -72,17 +72,14 @@ public class GlobeCoordinatesValueConverter extends
 				RdfWriter.WB_GLOBE_COORDINATES_VALUE);
 
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_LATITUDE,
-				getDecimalStringForCoordinate(value.getLatitude()),
-				RdfWriter.XSD_DECIMAL);
+				RdfWriter.WB_LATITUDE, Double.valueOf(value.getLatitude())
+						.toString(), RdfWriter.XSD_DOUBLE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_LONGITUDE,
-				getDecimalStringForCoordinate(value.getLongitude()),
-				RdfWriter.XSD_DECIMAL);
+				RdfWriter.WB_LONGITUDE, Double.valueOf(value.getLongitude())
+						.toString(), RdfWriter.XSD_DOUBLE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_GC_PRECISION,
-				getDecimalStringForCoordinate(value.getPrecision()),
-				RdfWriter.XSD_DECIMAL);
+				RdfWriter.WB_GC_PRECISION, Double.valueOf(value.getPrecision())
+						.toString(), RdfWriter.XSD_DOUBLE);
 
 		URI globeUri;
 		try {
@@ -96,17 +93,6 @@ public class GlobeCoordinatesValueConverter extends
 
 		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.WB_GLOBE,
 				globeUri);
-	}
-
-	String getDecimalStringForCoordinate(long value) {
-		String valueString;
-		if (value >= 0) {
-			valueString = String.format("%010d", value);
-		} else {
-			valueString = String.format("%011d", value);
-		}
-		return valueString.substring(0, valueString.length() - 9) + "."
-				+ valueString.substring(valueString.length() - 9);
 	}
 
 }

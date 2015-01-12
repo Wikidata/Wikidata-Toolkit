@@ -88,8 +88,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
-			long longitude, long precision, String globeIri) {
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+			double longitude, double precision, String globeIri) {
 		return new GlobeCoordinatesValueImpl(latitude, longitude, precision,
 				globeIri);
 	}

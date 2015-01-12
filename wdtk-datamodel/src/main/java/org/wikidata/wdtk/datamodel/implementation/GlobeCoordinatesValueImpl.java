@@ -35,29 +35,30 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue, Serializable {
+public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue,
+		Serializable {
 
 	private static final long serialVersionUID = 5232034046447738117L;
-	
-	final long latitude;
-	final long longitude;
-	final long precision;
+
+	final double latitude;
+	final double longitude;
+	final double precision;
 	final String globeIri;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param latitude
-	 *            the latitude of the coordinates in nanodegrees
+	 *            the latitude of the coordinates in degrees
 	 * @param longitude
-	 *            the longitude of the coordinates in nanodegrees
+	 *            the longitude of the coordinates in degrees
 	 * @param precision
-	 *            the precision of the coordinates in nanodegrees
+	 *            the precision of the coordinates in degrees
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
-	GlobeCoordinatesValueImpl(long latitude, long longitude, long precision,
-			String globeIri) {
+	GlobeCoordinatesValueImpl(double latitude, double longitude,
+			double precision, String globeIri) {
 		Validate.notNull(globeIri, "globe IRI must not be null");
 		if ((latitude > 90 * GlobeCoordinatesValue.PREC_DEGREE)
 				|| (latitude < -90 * GlobeCoordinatesValue.PREC_DEGREE)) {
@@ -69,21 +70,10 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue, Seriali
 			throw new IllegalArgumentException(
 					"Longitude must be between -360 degrees and +360 degrees.");
 		}
-		if ((precision != GlobeCoordinatesValue.PREC_TEN_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_DECI_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_ARCMINUTE)
-				&& (precision != GlobeCoordinatesValue.PREC_CENTI_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_MILLI_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_ARCSECOND)
-				&& (precision != GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_DECI_ARCSECOND)
-				&& (precision != GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_CENTI_ARCSECOND)
-				&& (precision != GlobeCoordinatesValue.PREC_MICRO_DEGREE)
-				&& (precision != GlobeCoordinatesValue.PREC_MILLI_ARCSECOND)) {
+		if (precision <= 0) {
 			throw new IllegalArgumentException(
-					"Precision must be one of the predefined values.");
+					"Precision must be positive. Given value was " + precision
+							+ ".");
 		}
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -92,17 +82,17 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue, Seriali
 	}
 
 	@Override
-	public long getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
 	@Override
-	public long getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
 	@Override
-	public long getPrecision() {
+	public double getPrecision() {
 		return precision;
 	}
 

@@ -85,6 +85,7 @@ public class Vocabulary {
 			+ "someValuesFrom";
 	public static final String OWL_ON_PROPERTY = PREFIX_OWL + "onProperty";
 	public static final String OWL_COMPLEMENT_OF = PREFIX_OWL + "complementOf";
+	public static final String XSD_DOUBLE = PREFIX_XSD + "double";
 	public static final String XSD_DECIMAL = PREFIX_XSD + "decimal";
 	public static final String XSD_INT = PREFIX_XSD + "int";
 	public static final String XSD_DATE = PREFIX_XSD + "date";
@@ -392,9 +393,12 @@ public class Vocabulary {
 	public static String getGlobeCoordinatesValueUri(GlobeCoordinatesValue value) {
 		md.reset();
 		updateMessageDigestWithString(md, value.getGlobe());
-		updateMessageDigestWithLong(md, value.getLatitude());
-		updateMessageDigestWithLong(md, value.getLongitude());
-		updateMessageDigestWithLong(md, value.getPrecision());
+		updateMessageDigestWithLong(md, Double.valueOf(value.getLatitude())
+				.hashCode());
+		updateMessageDigestWithLong(md, Double.valueOf(value.getLongitude())
+				.hashCode());
+		updateMessageDigestWithLong(md, Double.valueOf(value.getPrecision())
+				.hashCode());
 
 		return PREFIX_WIKIDATA + VALUE_PREFIX_GLOBECOORDS
 				+ bytesToHex(md.digest());

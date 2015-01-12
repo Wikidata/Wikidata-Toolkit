@@ -121,11 +121,11 @@ public class Hash {
 		int result;
 		result = o.getGlobe().hashCode();
 		long value;
-		value = o.getLatitude();
+		value = Double.valueOf(o.getLatitude()).hashCode();
 		result = prime * result + (int) (value ^ (value >>> 32));
-		value = o.getLongitude();
+		value = Double.valueOf(o.getLongitude()).hashCode();
 		result = prime * result + (int) (value ^ (value >>> 32));
-		value = o.getPrecision();
+		value = Double.valueOf(o.getPrecision()).hashCode();
 		result = prime * result + (int) (value ^ (value >>> 32));
 		return result;
 	}

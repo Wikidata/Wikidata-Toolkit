@@ -773,51 +773,17 @@ public class JsonConverter {
 	 */
 	private GlobeCoordinatesValue getGlobeCoordinatesValue(
 			JSONObject jsonGlobeCoordinate) throws JSONException {
-
-		// convert latitude and longitude from double (degrees) to long
-		// (nanodegrees)
-		double doubleLatitude = jsonGlobeCoordinate.getDouble("latitude");
-		long latitude = (long) (doubleLatitude * GlobeCoordinatesValue.PREC_DEGREE);
-
-		double doubleLongitude = jsonGlobeCoordinate.getDouble("longitude");
-		long longitude = (long) (doubleLongitude * GlobeCoordinatesValue.PREC_DEGREE);
+		double latitude = jsonGlobeCoordinate.getDouble("latitude");
+		double longitude = jsonGlobeCoordinate.getDouble("longitude");
 
 		// get the precision
-		long precision;
-
+		double precision;
 		if (jsonGlobeCoordinate.isNull("precision")) {
-			precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
+			precision = GlobeCoordinatesValue.PREC_ARCSECOND;
 		} else {
-			Double doublePrecision = jsonGlobeCoordinate.getDouble("precision");
-
-			// determine precision by comparing intervals, since exact
-			// comparisons of long and double do not work reliably
-			if (doublePrecision > 1.0) {
-				precision = GlobeCoordinatesValue.PREC_TEN_DEGREE;
-			} else if (doublePrecision > 0.1) {
-				precision = GlobeCoordinatesValue.PREC_DEGREE;
-			} else if (doublePrecision > 0.016666666666667) {
-				precision = GlobeCoordinatesValue.PREC_DECI_DEGREE;
-			} else if (doublePrecision > 0.01) {
-				precision = GlobeCoordinatesValue.PREC_ARCMINUTE;
-			} else if (doublePrecision > 0.001) {
-				precision = GlobeCoordinatesValue.PREC_CENTI_DEGREE;
-			} else if (doublePrecision > 0.00027777777777778) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-			} else if (doublePrecision > 0.0001) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-			} else if (doublePrecision > 0.00002777777777778) {
-				precision = GlobeCoordinatesValue.PREC_HUNDRED_MICRO_DEGREE;
-			} else if (doublePrecision > 0.00001) {
+			precision = jsonGlobeCoordinate.getDouble("precision");
+			if (precision <= 0) {
 				precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-			} else if (doublePrecision > 0.00000277777777778) {
-				precision = GlobeCoordinatesValue.PREC_TEN_MICRO_DEGREE;
-			} else if (doublePrecision > 0.000001) {
-				precision = GlobeCoordinatesValue.PREC_CENTI_ARCSECOND;
-			} else if (doublePrecision > 0.00000027777777778) {
-				precision = GlobeCoordinatesValue.PREC_MILLI_DEGREE;
-			} else {
-				precision = GlobeCoordinatesValue.PREC_MILLI_ARCSECOND;
 			}
 		}
 

@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -70,6 +73,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  *
  */
 public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
+
+	DataObjectFactory factory = new DataObjectFactoryImpl();
+	DatamodelConverter converter = new DatamodelConverter(factory);
 
 	/**
 	 * Set of top-level classes (without a superclass) that should be considered
@@ -339,7 +345,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		if (classRecord != null) {
 			this.countClasses++;
-			classRecord.itemDocument = itemDocument;
+			classRecord.itemDocument = converter.copy(itemDocument);
 		}
 
 		// print a report once in a while:
