@@ -101,7 +101,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @return precision
 	 */
 	public double getPrecision() {
-		return this.precision / GlobeCoordinatesValue.PREC_DEGREE;
+		return this.precision;
 	}
 
 	/**
