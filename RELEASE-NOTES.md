@@ -14,6 +14,7 @@ New features:
 Bug fixes:
 * Support RDF export of Monolingual Text Value data in statements.
 * Significant performance improvements in RDF export of taxonomy data.
+* Support new Wikimedia Foundation dump file index HTML format (Issue #114)
 
 Incompatible changes:
 * The datatype of all values in GlobeCoordinateValue (latitude, longitude, precision) has
