@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -70,10 +71,10 @@ public class JacksonStatement implements Statement {
 	 * serialization of statements, but is needed in WDTK as part of
 	 * {@link Claim}. Thus, it is necessary to set this information after each
 	 * deserialization using
-	 * {@link JacksonStatement#setParentDocument(JacksonItemDocument)}.
+	 * {@link JacksonStatement#setParentDocument(JacksonTermedStatementDocument)}.
 	 */
 	@JsonIgnore
-	JacksonItemDocument parentDocument;
+	JacksonTermedStatementDocument parentDocument;
 
 	/**
 	 * Rank of this statement.
@@ -139,7 +140,7 @@ public class JacksonStatement implements Statement {
 	 * @return the parent document of this statement
 	 */
 	@JsonIgnore
-	JacksonItemDocument getParentDocument() {
+	EntityDocument getParentDocument() {
 		return this.parentDocument;
 	}
 
@@ -153,7 +154,7 @@ public class JacksonStatement implements Statement {
 	 *            new value
 	 */
 	@JsonIgnore
-	void setParentDocument(JacksonItemDocument parentDocument) {
+	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
 		this.parentDocument = parentDocument;
 
 		this.mainsnak.setParentDocument(parentDocument);

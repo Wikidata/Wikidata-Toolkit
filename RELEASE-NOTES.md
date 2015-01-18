@@ -4,9 +4,22 @@ Wikidata Toolkit Release Notes
 Version 0.4.0
 -------------
 
+New features:
+* Support statements on property documents
+* More robust JSON parsing: recover after errors to process remaining file
+* Standard (POJO) datamodel implementation now is Serializable
+* Deep copy functionality for changing between datamodel implementations (DatamodelConverter)
+* Support arbitrary precision values in globe coordinates 
+
 Bug fixes:
 * Support RDF export of Monolingual Text Value data in statements.
-* Significant performance improvements in RDF export of taxonomy data.   
+* Significant performance improvements in RDF export of taxonomy data.
+* Support new Wikimedia Foundation dump file index HTML format (Issue #114)
+
+Incompatible changes:
+* The datatype of all values in GlobeCoordinateValue (latitude, longitude, precision) has
+  changed from long (fixed precision number) to double (floating point number) to match the JSON.
+   
 
 
 Version 0.3.0

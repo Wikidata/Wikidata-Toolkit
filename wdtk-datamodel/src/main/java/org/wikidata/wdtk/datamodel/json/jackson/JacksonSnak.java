@@ -75,10 +75,10 @@ public abstract class JacksonSnak implements Snak {
 	 * snaks, but is needed in WDTK to build {@link PropertyIdValue} objects
 	 * etc. Thus, it is necessary to set this information after each
 	 * deserialization using
-	 * {@link JacksonSnak#setParentDocument(JacksonItemDocument)}.
+	 * {@link JacksonSnak#setParentDocument(JacksonTermedStatementDocument)}.
 	 */
 	@JsonIgnore
-	JacksonTermedDocument parentDocument;
+	JacksonTermedStatementDocument parentDocument;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -153,7 +153,7 @@ public abstract class JacksonSnak implements Snak {
 	 *            new value
 	 */
 	@JsonIgnore
-	void setParentDocument(JacksonTermedDocument parentDocument) {
+	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
 		this.parentDocument = parentDocument;
 	}
 

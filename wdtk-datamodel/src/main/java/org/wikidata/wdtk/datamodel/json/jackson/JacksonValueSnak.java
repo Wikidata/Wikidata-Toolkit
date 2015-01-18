@@ -27,7 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -108,10 +108,10 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	}
 
 	@Override
-	void setParentDocument(JacksonTermedDocument parentDocument) {
+	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
 		super.setParentDocument(parentDocument);
-		if (this.datavalue instanceof JacksonValueItemId) {
-			((JacksonValueItemId) this.datavalue)
+		if (this.datavalue instanceof JacksonValueEntityId) {
+			((JacksonValueEntityId) this.datavalue)
 					.setParentDocument(parentDocument);
 		}
 	}

@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.interfaces;
 
 /*
  * #%L
@@ -20,32 +20,30 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Implementation of {@link Snak}.
- * 
+ * Interface for EntityDocuments that can have statements.
+ *
  * @author Markus Kroetzsch
- * 
  */
-public abstract class SnakImpl implements Snak, Serializable {
+public interface StatementDocument extends EntityDocument {
 
-	private static final long serialVersionUID = 7513457794344946061L;
-	
-	final PropertyIdValue propertyId;
+	/**
+	 * Return the list of all StatementGroups stored for this item. The order of
+	 * StatementGroups is significant.
+	 *
+	 * @return list of StatementGroups
+	 */
+	List<StatementGroup> getStatementGroups();
 
-	SnakImpl(PropertyIdValue propertyId) {
-		Validate.notNull(propertyId, "Snak property ids cannot be null");
-		this.propertyId = propertyId;
-	}
-
-	@Override
-	public PropertyIdValue getPropertyId() {
-		return propertyId;
-	}
+	/**
+	 * Returns an iterator that provides access to all statements, without
+	 * considering the statement groups. The order of statements is preserved.
+	 *
+	 * @return iterator over all statements
+	 */
+	Iterator<Statement> getAllStatements();
 
 }

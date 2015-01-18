@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -31,6 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * Implementation of {@link PropertyDocument}.
@@ -38,8 +40,10 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * @author Markus Kroetzsch
  *
  */
-public class PropertyDocumentImpl extends TermedDocumentImpl implements
-PropertyDocument {
+public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
+		PropertyDocument, Serializable {
+
+	private static final long serialVersionUID = 3202706015471781558L;
 
 	final PropertyIdValue propertyId;
 	final DatatypeIdValue datatypeId;
@@ -57,14 +61,18 @@ PropertyDocument {
 	 *            description for each language code
 	 * @param aliases
 	 *            the list of aliases of this property
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param datatypeId
 	 *            the datatype of that property
 	 */
 	PropertyDocumentImpl(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		super(labels, descriptions, aliases);
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
+		super(propertyId, labels, descriptions, aliases, statementGroups);
 		Validate.notNull(propertyId, "property ID cannot be null");
 		Validate.notNull(datatypeId, "datatype ID cannot be null");
 		this.propertyId = propertyId;

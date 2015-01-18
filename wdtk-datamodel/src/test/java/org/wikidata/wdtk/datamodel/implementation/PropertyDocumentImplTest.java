@@ -35,6 +35,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -54,11 +55,12 @@ public class PropertyDocumentImplTest {
 	List<MonolingualTextValue> labels;
 	List<MonolingualTextValue> descriptions;
 	List<MonolingualTextValue> aliases;
+	List<StatementGroup> statementGroups;
 	DatatypeIdValue datatypeId;
 
 	@Before
 	public void setUp() throws Exception {
-		pid = new PropertyIdValueImpl("P42", "http://wikibase.org/entity/");
+		pid = DataObjectFactoryImplTest.getTestPropertyIdValue(2);
 
 		labelMap = new HashMap<String, MonolingualTextValue>();
 		labelMap.put("en", new MonolingualTextValueImpl("Property 42", "en"));
@@ -90,12 +92,15 @@ public class PropertyDocumentImplTest {
 		aliases.add(alias2);
 		aliases.add(alias3);
 
+		statementGroups = DataObjectFactoryImplTest.getTestStatementGroups(2,
+				10, 3, EntityIdValue.ET_PROPERTY);
+
 		datatypeId = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 
 		pd1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
-				datatypeId);
+				statementGroups, datatypeId);
 		pd2 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
-				datatypeId);
+				statementGroups, datatypeId);
 	}
 
 	@Test
@@ -111,19 +116,24 @@ public class PropertyDocumentImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		PropertyDocument pdDiffSubject = new PropertyDocumentImpl(
-				new PropertyIdValueImpl("P43", "http://wikibase.org/entity/"),
-				labels, descriptions, aliases, datatypeId);
+				DataObjectFactoryImplTest.getTestPropertyIdValue(3), labels,
+				descriptions, aliases,
+				DataObjectFactoryImplTest.getTestStatementGroups(3, 10, 3,
+						EntityIdValue.ET_PROPERTY), datatypeId);
 		PropertyDocument pdDiffLabels = new PropertyDocumentImpl(pid,
 				Collections.<MonolingualTextValue> emptyList(), descriptions,
-				aliases, datatypeId);
+				aliases, statementGroups, datatypeId);
 		PropertyDocument pdDiffDescriptions = new PropertyDocumentImpl(pid,
 				labels, Collections.<MonolingualTextValue> emptyList(),
-				aliases, datatypeId);
+				aliases, statementGroups, datatypeId);
 		PropertyDocument pdDiffAliases = new PropertyDocumentImpl(pid, labels,
 				descriptions, Collections.<MonolingualTextValue> emptyList(),
-				datatypeId);
+				statementGroups, datatypeId);
+		PropertyDocument pdDiffStatements = new PropertyDocumentImpl(pid,
+				labels, descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), datatypeId);
 		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid, labels,
-				descriptions, aliases, new DatatypeIdImpl(
+				descriptions, aliases, statementGroups, new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING));
 
 		ItemDocument id = new ItemDocumentImpl(
@@ -137,6 +147,7 @@ public class PropertyDocumentImplTest {
 		assertThat(pd1, not(equalTo(pdDiffLabels)));
 		assertThat(pd1, not(equalTo(pdDiffDescriptions)));
 		assertThat(pd1, not(equalTo(pdDiffAliases)));
+		assertThat(pd1, not(equalTo(pdDiffStatements)));
 		assertThat(pd1, not(equalTo(pdDiffDatatype)));
 		assertFalse(pd1.equals(id));
 		assertThat(pd1, not(equalTo(null)));
@@ -151,27 +162,37 @@ public class PropertyDocumentImplTest {
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
 		new PropertyDocumentImpl(null, labels, descriptions, aliases,
-				datatypeId);
+				statementGroups, datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void labelsNotNull() {
-		new PropertyDocumentImpl(pid, null, descriptions, aliases, datatypeId);
+		new PropertyDocumentImpl(pid, null, descriptions, aliases,
+				statementGroups, datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
-		new PropertyDocumentImpl(pid, labels, null, aliases, datatypeId);
+		new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
+				datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void aliasesNotNull() {
-		new PropertyDocumentImpl(pid, labels, descriptions, null, datatypeId);
+		new PropertyDocumentImpl(pid, labels, descriptions, null,
+				statementGroups, datatypeId);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void statementGroupsNotNull() {
+		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
+				datatypeId);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void datatypeNotNull() {
-		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null);
+		new PropertyDocumentImpl(pid, labels, descriptions, aliases,
+				statementGroups, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -181,7 +202,8 @@ public class PropertyDocumentImplTest {
 		labels2.add(new MonolingualTextValueImpl("Property 42 label duplicate",
 				"en"));
 
-		new PropertyDocumentImpl(pid, labels2, descriptions, aliases, null);
+		new PropertyDocumentImpl(pid, labels2, descriptions, aliases,
+				statementGroups, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -191,7 +213,8 @@ public class PropertyDocumentImplTest {
 		descriptions2.add(new MonolingualTextValueImpl(
 				"Noch eine Beschreibung fuer P42", "de"));
 
-		new PropertyDocumentImpl(pid, labels, descriptions2, aliases, null);
+		new PropertyDocumentImpl(pid, labels, descriptions2, aliases,
+				statementGroups, null);
 	}
 
 }

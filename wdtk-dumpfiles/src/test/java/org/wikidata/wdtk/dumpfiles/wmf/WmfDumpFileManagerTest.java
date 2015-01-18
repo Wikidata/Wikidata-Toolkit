@@ -35,11 +35,6 @@ import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineDailyDumpFile;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineStandardDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
@@ -52,9 +47,9 @@ public class WmfDumpFileManagerTest {
 
 	/**
 	 * Helper class to test dump file processing capabilities.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class TestDumpfileProcessor implements MwDumpFileProcessor {
 
@@ -84,7 +79,7 @@ public class WmfDumpFileManagerTest {
 
 	/**
 	 * Helper method to create mocked local dump files.
-	 * 
+	 *
 	 * @param dateStamp
 	 * @param dumpContentType
 	 * @param isDone
@@ -99,8 +94,8 @@ public class WmfDumpFileManagerTest {
 		dm.setDirectory(thisDumpPath);
 		if (isDone) {
 			dm.setFileContents(
-					thisDumpPath.resolve("wikidatawiki-" + dateStamp
-							+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
+					thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
+							dumpContentType, "wikidatawiki", dateStamp)),
 					"Contents of " + dumpContentType.toString().toLowerCase()
 							+ " " + dateStamp);
 		}
@@ -149,10 +144,50 @@ public class WmfDumpFileManagerTest {
 	}
 
 	@Test
+	public void getAllJsonDumps() throws IOException {
+		wrf.setWebResourceContentsFromResource(
+				"http://dumps.wikimedia.org/other/wikidata/",
+				"/other-wikidata-index.html", this.getClass());
+
+		setLocalDump("20141110", DumpContentType.JSON, true);
+		setLocalDump("20150105", DumpContentType.CURRENT, true);
+		setLocalDump("20141201", DumpContentType.JSON, true);
+		setLocalDump("nodate", DumpContentType.JSON, true);
+
+		WmfDumpFileManager dumpFileManager = new WmfDumpFileManager(
+				"wikidatawiki", dm, wrf);
+
+		List<? extends MwDumpFile> dumpFiles = dumpFileManager
+				.findAllDumps(DumpContentType.JSON);
+
+		String[] dumpDates = { "20150112", "20150105", "20141229", "20141222",
+				"20141215", "20141210", "20141201", "20141124", "20141117",
+				"20141110" };
+		boolean[] dumpIsLocal = { false, false, false, false, false, false,
+				true, false, false, true };
+
+		assertEquals(dumpFiles.size(), dumpDates.length);
+		for (int i = 0; i < dumpFiles.size(); i++) {
+			assertEquals(dumpFiles.get(i).getDumpContentType(),
+					DumpContentType.JSON);
+			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
+			if (dumpIsLocal[i]) {
+				assertTrue(
+						"Dumpfile " + dumpFiles.get(i) + " should be local.",
+						dumpFiles.get(i) instanceof WmfLocalDumpFile);
+			} else {
+				assertTrue("Dumpfile " + dumpFiles.get(i)
+						+ " should be online.",
+						dumpFiles.get(i) instanceof JsonOnlineDumpFile);
+			}
+		}
+	}
+
+	@Test
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", this.getClass());
+				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
 		setLocalDump("20140123", DumpContentType.CURRENT, true);
@@ -187,7 +222,7 @@ public class WmfDumpFileManagerTest {
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", this.getClass());
+				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
 		setLocalDump("20140123", DumpContentType.FULL, true);
@@ -291,7 +326,7 @@ public class WmfDumpFileManagerTest {
 				"/other-incr-wikidatawiki-index.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/",
-				"/wikidatawiki-index.html", this.getClass());
+				"/wikidatawiki-index-old.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());

@@ -29,9 +29,10 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
@@ -67,25 +68,47 @@ public class TestValue {
 	}
 
 	@Test
-	public void testEntityIdValueToJson() throws JsonProcessingException {
+	public void testItemIdValueToJson() throws JsonProcessingException {
 		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_ENTITY_ID_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_ENTITY_ID_VALUE,
+				.writeValueAsString(JsonTestData.TEST_ITEM_ID_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_ITEM_ID_VALUE,
 				result);
 	}
 
 	@Test
-	public void testEntityIdValueToJava() throws JsonParseException,
+	public void testItemIdValueToJava() throws JsonParseException,
 			JsonMappingException, IOException {
-		JacksonValue result = mapper.readValue(
-				JsonTestData.JSON_ENTITY_ID_VALUE, JacksonValue.class);
+		JacksonValue result = mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
+				JacksonValue.class);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueItemId);
 		assertEquals(result.getType(),
-				JsonTestData.TEST_ENTITY_ID_VALUE.getType());
+				JsonTestData.TEST_ITEM_ID_VALUE.getType());
 		assertEquals(((JacksonValueItemId) result).getValue(),
-				JsonTestData.TEST_ENTITY_ID_VALUE.getValue());
+				JsonTestData.TEST_ITEM_ID_VALUE.getValue());
+	}
+
+	@Test
+	public void testPropertyIdValueToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_PROPERTY_ID_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_PROPERTY_ID_VALUE,
+				result);
+	}
+
+	@Test
+	public void testPropertyIdValueToJava() throws JsonParseException,
+			JsonMappingException, IOException {
+		JacksonValue result = mapper.readValue(
+				JsonTestData.JSON_PROPERTY_ID_VALUE, JacksonValue.class);
+
+		assertNotNull(result);
+		assertTrue(result instanceof JacksonValuePropertyId);
+		assertEquals(result.getType(),
+				JsonTestData.TEST_PROPERTY_ID_VALUE.getType());
+		assertEquals(((JacksonValuePropertyId) result).getValue(),
+				JsonTestData.TEST_PROPERTY_ID_VALUE.getValue());
 	}
 
 	@Test

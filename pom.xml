@@ -61,20 +61,27 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4jVersion>1.7.5</slf4jVersion>
+		<apacheCommonsCompressVersion>1.9</apacheCommonsCompressVersion>
+		<apacheCommonsLangVersion>3.3.2</apacheCommonsLangVersion>
+		<apacheHttpVersion>4.3.3</apacheHttpVersion>
+		<jacksonVersion>2.5.0</jacksonVersion>
+		<junitVersion>4.12</junitVersion>
+		<mockitoVersion>1.10.19</mockitoVersion>
+		<sesameVersion>2.7.11</sesameVersion>
+		<slf4jVersion>1.7.10</slf4jVersion>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>${junitVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.9.5</version>
+			<version>${mockitoVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -86,7 +93,7 @@
 			<!-- Useful helpers for cleaner coding -->
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.2.1</version>
+			<version>${apacheCommonsLangVersion}</version>
 		</dependency>
 	</dependencies>
 
