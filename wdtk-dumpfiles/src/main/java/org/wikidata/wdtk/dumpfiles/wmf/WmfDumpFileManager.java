@@ -276,6 +276,9 @@ public class WmfDumpFileManager {
 		Collections.sort(result,
 				Collections.reverseOrder(new MwDumpFile.DateComparator()));
 
+		logger.info("Found " + result.size() + " local dumps of type "
+				+ dumpContentType + ": " + result);
+
 		return result;
 	}
 
@@ -307,6 +310,9 @@ public class WmfDumpFileManager {
 			}
 		}
 
+		logger.info("Found " + result.size() + " online dumps of type "
+				+ dumpContentType + ": " + result);
+
 		return result;
 	}
 
@@ -335,12 +341,16 @@ public class WmfDumpFileManager {
 					new InputStreamReader(in, StandardCharsets.UTF_8));
 			String inputLine;
 			while ((inputLine = bufferedReader.readLine()) != null) {
+				String dateStamp = "";
 				if (inputLine.startsWith("<tr><td class=\"n\">")) {
-					String dateStamp = inputLine.substring(27, 35);
-					if (dateStamp
-							.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
-						result.add(dateStamp);
-					}
+					// old format of HTML file lists
+					dateStamp = inputLine.substring(27, 35);
+				} else if (inputLine.startsWith("<a href=")) {
+					// new Jan 2015 of HTML file lists
+					dateStamp = inputLine.substring(9, 17);
+				}
+				if (dateStamp.matches(WmfDumpFileManager.DATE_STAMP_PATTERN)) {
+					result.add(dateStamp);
 				}
 			}
 			bufferedReader.close();

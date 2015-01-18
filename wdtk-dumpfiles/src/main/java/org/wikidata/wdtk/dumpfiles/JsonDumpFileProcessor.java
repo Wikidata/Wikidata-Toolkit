@@ -75,6 +75,8 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	public void processDumpFileContents(InputStream inputStream,
 			MwDumpFile dumpFile) {
 
+		logger.info("Processing JSON dump file " + dumpFile.toString());
+
 		try {
 			try {
 				MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
