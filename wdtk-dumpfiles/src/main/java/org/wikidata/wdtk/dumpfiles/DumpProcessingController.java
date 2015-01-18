@@ -453,7 +453,12 @@ public class DumpProcessingController {
 
 		MwDumpFile dumpFile = wmfDumpFileManager
 				.findMostRecentDump(dumpContentType);
-		processDumpFile(dumpFile, dumpFileProcessor);
+		if (dumpFile != null) {
+			processDumpFile(dumpFile, dumpFileProcessor);
+		} else {
+			logger.error("Could not find any dump of type "
+					+ dumpContentType.toString() + " to process.");
+		}
 	}
 
 	/**
