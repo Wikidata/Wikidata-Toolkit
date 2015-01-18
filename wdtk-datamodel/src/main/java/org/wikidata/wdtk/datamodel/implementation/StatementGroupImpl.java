@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -39,8 +40,10 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  * @author Markus Kroetzsch
  *
  */
-public class StatementGroupImpl implements StatementGroup {
+public class StatementGroupImpl implements StatementGroup, Serializable {
 
+	private static final long serialVersionUID = -7455251135036540828L;
+	
 	final List<Statement> statements;
 
 	/**

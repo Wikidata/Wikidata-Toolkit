@@ -23,9 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Abstract Jackson implementation of {@link Value}.
@@ -33,14 +31,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Fredo Erxleben
  *
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
-		@Type(value = JacksonValueString.class, name = "string"),
-		@Type(value = JacksonValueTime.class, name = "time"),
-		@Type(value = JacksonValueItemId.class, name = "wikibase-entityid"),
-		@Type(value = JacksonValueGlobeCoordinates.class, name = "globecoordinate"),
-		@Type(value = JacksonValueQuantity.class, name = "quantity"),
-		@Type(value = JacksonValueMonolingualText.class, name = "monolingualtext") })
+@JsonDeserialize(using = JacksonValueDeserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonValue implements Value {
 

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -39,8 +40,10 @@ import org.wikidata.wdtk.util.NestedIterator;
  * @author Markus Kroetzsch
  *
  */
-public class ReferenceImpl implements Reference {
+public class ReferenceImpl implements Reference, Serializable {
 
+	private static final long serialVersionUID = 3871345253196551888L;
+	
 	List<? extends SnakGroup> snakGroups;
 
 	/**

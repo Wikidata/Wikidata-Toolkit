@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -34,8 +36,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class TimeValueImpl implements TimeValue {
+public class TimeValueImpl implements TimeValue, Serializable {
 
+	private static final long serialVersionUID = 3969248626709737997L;
+	
 	final long year;
 	final byte month;
 	final byte day;

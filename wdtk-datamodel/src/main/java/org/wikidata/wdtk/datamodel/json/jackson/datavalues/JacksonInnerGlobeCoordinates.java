@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,9 +37,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerGlobeCoordinates {
 
-	private long latitude = 0;
-	private long longitude = 0;
-	private long precision = 0;
+	static final Logger logger = LoggerFactory
+			.getLogger(JacksonInnerGlobeCoordinates.class);
+
+	private double latitude = 0;
+	private double longitude = 0;
+	private double precision = GlobeCoordinatesValue.PREC_ARCSECOND;
 	private String globe = GlobeCoordinatesValue.GLOBE_EARTH;
 
 	/**
@@ -48,29 +53,13 @@ public class JacksonInnerGlobeCoordinates {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor.
-	 *
-	 * @param latitude
-	 * @param longitude
-	 * @param precision
-	 * @param globe
-	 */
-	public JacksonInnerGlobeCoordinates(long latitude, long longitude,
-			long precision, String globe) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.precision = precision;
-		this.globe = globe;
-	}
-
-	/**
 	 * Returns the latitude.
 	 *
 	 * @see GlobeCoordinatesValue#getLatitude()
 	 * @return latitude
 	 */
-	public long getLatitude() {
-		return latitude;
+	public double getLatitude() {
+		return this.latitude;
 	}
 
 	/**
@@ -80,7 +69,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param latitude
 	 *            new value
 	 */
-	public void setLatitude(long latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -88,10 +77,10 @@ public class JacksonInnerGlobeCoordinates {
 	 * Returns the longitude.
 	 *
 	 * @see GlobeCoordinatesValue#getLongitude()
-	 * @return lngitude
+	 * @return longitude
 	 */
-	public long getLongitude() {
-		return longitude;
+	public double getLongitude() {
+		return this.longitude;
 	}
 
 	/**
@@ -101,7 +90,7 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param longitude
 	 *            new value
 	 */
-	public void setLongitude(long longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -111,8 +100,8 @@ public class JacksonInnerGlobeCoordinates {
 	 * @see GlobeCoordinatesValue#getPrecision()
 	 * @return precision
 	 */
-	public long getPrecision() {
-		return precision;
+	public double getPrecision() {
+		return this.precision;
 	}
 
 	/**
@@ -122,8 +111,16 @@ public class JacksonInnerGlobeCoordinates {
 	 * @param precision
 	 *            new value
 	 */
-	public void setPrecision(long precision) {
-		this.precision = precision;
+	public void setPrecision(double precision) {
+		if (precision <= 0.0) {
+			// We just do this silently because it is so common in the data.
+			// Precision "0" does not make sense for a physical quantity.
+			// Automatic precision does not make sense for floating point
+			// values. "0" also is commonly produced from "null" in JSON.
+			this.precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+		} else {
+			this.precision = precision;
+		}
 	}
 
 	/**

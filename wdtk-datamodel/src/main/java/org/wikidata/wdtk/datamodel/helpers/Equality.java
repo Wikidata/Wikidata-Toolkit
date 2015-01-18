@@ -505,7 +505,8 @@ public class Equality {
 		}
 		PropertyDocument other = (PropertyDocument) o2;
 		// Note: property id already compared by equalsTermedDocument()
-		return o1.getDatatype().equals(other.getDatatype());
+		return o1.getDatatype().equals(other.getDatatype())
+				&& o1.getStatementGroups().equals(other.getStatementGroups());
 	}
 
 	/**
