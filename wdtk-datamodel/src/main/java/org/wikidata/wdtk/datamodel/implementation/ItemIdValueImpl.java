@@ -33,6 +33,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
  */
 public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 
+	private static final long serialVersionUID = -2430982177464510496L;
+
 	/**
 	 * Constructor.
 	 *

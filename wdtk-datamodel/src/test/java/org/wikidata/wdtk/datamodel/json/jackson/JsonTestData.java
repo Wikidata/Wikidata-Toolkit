@@ -37,6 +37,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
@@ -52,14 +53,13 @@ public class JsonTestData {
 
 	public static final DataObjectFactory JACKSON_OBJECT_FACTORY = new JacksonObjectFactory();
 
-	// TODO maybe decompose the time a bit to have less magic strings in it
+	// TODO maybe decompose the time a bit to have fewer magic strings in it
 
 	public static final String JSON_ENTITY_TYPE_ITEM = "item";
+	public static final String JSON_ENTITY_TYPE_PROPERTY = "property";
 
 	// the id's used in the tests
 	public static final String TEST_PROPERTY_ID = "P1";
-	public static final PropertyIdValue TEST_PROPERTY_ID_VALUE = Datamodel
-			.makeWikidataPropertyIdValue(TEST_PROPERTY_ID);
 	public static final String TEST_ITEM_ID = "Q1";
 	public static final int TEST_NUMERIC_ID = 1;
 	public static final String TEST_STATEMENT_ID = "statement_foobar";
@@ -71,16 +71,20 @@ public class JsonTestData {
 	// stand-alone descriptions of Value-parts
 	public static final String JSON_STRING_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_STRING + "\",\"value\":\"foobar\"}";
-	public static final String JSON_ENTITY_ID_VALUE = "{\"type\":\""
+	public static final String JSON_ITEM_ID_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
 			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_ITEM
+			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + "}}";
+	public static final String JSON_PROPERTY_ID_VALUE = "{\"type\":\""
+			+ JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
+			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_PROPERTY
 			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + "}}";
 	public static final String JSON_TIME_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_TIME
 			+ "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
 	public static final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_GLOBE_COORDINATES
-			+ "\", \"value\":{\"latitude\":-90,\"longitude\":0,\"precision\":10,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
+			+ "\", \"value\":{\"latitude\":-90.0,\"longitude\":0.0,\"precision\":10.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
 	public static final String JSON_QUANTITY_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
 			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
@@ -130,13 +134,15 @@ public class JsonTestData {
 
 	public static final JacksonValueString TEST_STRING_VALUE = (JacksonValueString) JACKSON_OBJECT_FACTORY
 			.getStringValue("foobar");
-	public static final JacksonValueItemId TEST_ENTITY_ID_VALUE = (JacksonValueItemId) JACKSON_OBJECT_FACTORY
+	public static final JacksonValueItemId TEST_ITEM_ID_VALUE = (JacksonValueItemId) JACKSON_OBJECT_FACTORY
 			.getItemIdValue("Q1", Datamodel.SITE_WIKIDATA);
+	public static final JacksonValuePropertyId TEST_PROPERTY_ID_VALUE = (JacksonValuePropertyId) JACKSON_OBJECT_FACTORY
+			.getPropertyIdValue("P1", Datamodel.SITE_WIKIDATA);
 	public static final JacksonValueTime TEST_TIME_VALUE = (JacksonValueTime) JACKSON_OBJECT_FACTORY
 			.getTimeValue(2013, (byte) 10, (byte) 28, (byte) 0, (byte) 0,
 					(byte) 0, (byte) 11, 0, 0, 0, TimeValue.CM_GREGORIAN_PRO);
 	public static final JacksonValueGlobeCoordinates TEST_GLOBE_COORDINATES_VALUE = (JacksonValueGlobeCoordinates) JACKSON_OBJECT_FACTORY
-			.getGlobeCoordinatesValue(-90, 0, 10,
+			.getGlobeCoordinatesValue(-90.0, 0.0, 10.0,
 					GlobeCoordinatesValue.GLOBE_EARTH);
 	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
 			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),

@@ -1,6 +1,6 @@
 
-<http://www.wikidata.org/entity/VCdccdcf8936fcfa64d3a0cb951bfcde85> a <http://www.wikidata.org/ontology#GlobeCoordinatesValue> ;
-	<http://www.wikidata.org/ontology#latitude> "51.033333333"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
-	<http://www.wikidata.org/ontology#longitude> "13.733333333"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
-	<http://www.wikidata.org/ontology#gcPrecision> "0.016666667"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+<http://www.wikidata.org/entity/VC29def5bc38867d9750430b4f14949f22> a <http://www.wikidata.org/ontology#GlobeCoordinatesValue> ;
+	<http://www.wikidata.org/ontology#latitude> "51.033333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
+	<http://www.wikidata.org/ontology#longitude> "13.733333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
+	<http://www.wikidata.org/ontology#gcPrecision> "0.1"^^<http://www.w3.org/2001/XMLSchema#double> ;
 	<http://www.wikidata.org/ontology#globe> <http://www.wikidata.org/entity/Q2> .

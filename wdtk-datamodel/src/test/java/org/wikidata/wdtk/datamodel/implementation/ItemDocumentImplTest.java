@@ -112,7 +112,8 @@ public class ItemDocumentImplTest {
 				"P42", "foo"), Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				new DatatypeIdImpl(DatatypeIdValue.DT_STRING));
+				Collections.<StatementGroup> emptyList(), new DatatypeIdImpl(
+						DatatypeIdValue.DT_STRING));
 
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal

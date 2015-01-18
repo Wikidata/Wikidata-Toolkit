@@ -24,15 +24,19 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * A value that represents one of the available Wikibase datatypes. The method
  * {@link IriIdentifiedValue#getIri() getIri()} will always return one of the
  * datatype IRIs defined in this interface.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface DatatypeIdValue extends IriIdentifiedValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */
 	static final String DT_ITEM = "http://www.wikidata.org/ontology#propertyTypeItem";
+	/**
+	 * IRI of the property datatype in Wikibase.
+	 */
+	static final String DT_PROPERTY = "http://www.wikidata.org/ontology#propertyTypeProperty";
 	/**
 	 * IRI of the string datatype in Wikibase.
 	 */
