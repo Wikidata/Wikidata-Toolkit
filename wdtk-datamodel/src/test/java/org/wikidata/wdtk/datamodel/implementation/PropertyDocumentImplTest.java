@@ -137,8 +137,9 @@ public class PropertyDocumentImplTest {
 						DatatypeIdValue.DT_STRING));
 
 		ItemDocument id = new ItemDocumentImpl(
-				new ItemIdValueImpl("Q42", "foo"), labels, descriptions,
-				aliases, Collections.<StatementGroup> emptyList(),
+				ItemIdValueImpl.create("Q42", "foo"), labels,
+				descriptions, aliases,
+				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap());
 
 		assertEquals(pd1, pd1);

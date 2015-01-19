@@ -22,7 +22,9 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +48,10 @@ public class SnakImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropertyIdValue p1 = new PropertyIdValueImpl("P42", "http://example.com/entity/");
-		PropertyIdValue p2 = new PropertyIdValueImpl("P43", "http://example.com/entity/");
+		PropertyIdValue p1 = PropertyIdValueImpl.create("P42",
+				"http://example.com/entity/");
+		PropertyIdValue p2 = PropertyIdValueImpl.create("P43",
+				"http://example.com/entity/");
 
 		vs1 = new ValueSnakImpl(p1, p1);
 		vs2 = new ValueSnakImpl(p1, p1);
@@ -103,18 +107,13 @@ public class SnakImplTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void idNotNull() {
-		new ItemIdValueImpl(null, "http://www.wikidata.org/entity/");
-	}
-
-	@Test(expected = NullPointerException.class)
 	public void snakPropertyNotNull() {
 		new SomeValueSnakImpl(null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void snakValueNotNull() {
-		new ValueSnakImpl(new PropertyIdValueImpl("P42",
+		new ValueSnakImpl(PropertyIdValueImpl.create("P42",
 				"http://example.com/entity/"), null);
 	}
 }
