@@ -7,8 +7,10 @@ Version 0.4.0
 New features:
 * Support statements on property documents
 * More robust JSON parsing: recover after errors to process remaining file
+* Improved JSON serialization + an example program showing how to do it
 * Standard (POJO) datamodel implementation now is Serializable
 * Deep copy functionality for changing between datamodel implementations (DatamodelConverter)
+* Support for filtering data during copying (e.g., to keep only some languages/properties/sites).
 * Support arbitrary precision values in globe coordinates 
 
 Bug fixes:
