@@ -211,6 +211,15 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	@JsonIgnore
 	public void setSiteIri(String siteIri) {
 		this.siteIri = siteIri;
+
+		EntityIdValue subject = this.getEntityId();
+
+		for (Entry<String, List<JacksonStatement>> entry : this.claims
+				.entrySet()) {
+			for (JacksonStatement statement : entry.getValue()) {
+				statement.setSubject(subject);
+			}
+		}
 	}
 
 	@JsonIgnore
@@ -245,25 +254,6 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
 		this.claims = claims;
 		this.statementGroups = null; // clear cache
-		updateClaims();
-	}
-
-	/**
-	 * Sets the subject of each of the current statements ("claims" in JSON) to
-	 * the current entity id. This is required since the JSON serialization of
-	 * statements does not contain a subject id, but subject ids are part of the
-	 * statement data in WDTK. The update is needed whenever the statements have
-	 * changed.
-	 */
-	private void updateClaims() {
-		this.statementGroups = null; // clear cache
-
-		for (Entry<String, List<JacksonStatement>> entry : this.claims
-				.entrySet()) {
-			for (JacksonStatement statement : entry.getValue()) {
-				statement.setParentDocument(this);
-			}
-		}
 	}
 
 	/**

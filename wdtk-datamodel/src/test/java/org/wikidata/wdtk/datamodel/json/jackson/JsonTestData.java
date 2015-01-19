@@ -193,7 +193,7 @@ public class JsonTestData {
 	public static JacksonStatement getTestNoValueStatement() {
 		JacksonStatement result = new JacksonStatement(TEST_STATEMENT_ID,
 				TEST_NOVALUE_SNAK);
-		result.setParentDocument(getEmtpyTestItemDocument());
+		result.setSubject(getEmtpyTestItemDocument().getEntityId());
 		return result;
 	}
 

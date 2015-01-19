@@ -108,11 +108,11 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	}
 
 	@Override
-	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
-		super.setParentDocument(parentDocument);
+	void setSiteIri(String siteIri) {
+		super.setSiteIri(siteIri);
 		if (this.datavalue instanceof JacksonValueEntityId) {
-			((JacksonValueEntityId) this.datavalue)
-					.setParentDocument(parentDocument);
+			((JacksonValueEntityId) this.datavalue).setSiteIri(siteIri);
+			;
 		}
 	}
 
