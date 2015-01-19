@@ -50,8 +50,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonItemDocument extends JacksonTermedStatementDocument implements
-		ItemDocument {
+public class JacksonItemDocument extends JacksonTermedStatementDocument
+		implements ItemDocument {
 
 	/**
 	 * Map to store site links.
@@ -63,11 +63,6 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument implemen
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonItemDocument() {
-	}
-
-	@Override
-	public String getJsonType() {
-		return JacksonTermedStatementDocument.JSON_TYPE_ITEM;
 	}
 
 	@JsonIgnore

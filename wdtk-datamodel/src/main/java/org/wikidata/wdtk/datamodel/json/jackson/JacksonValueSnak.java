@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Jackson implementation of {@link ValueSnak}.
@@ -47,9 +48,11 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	/**
 	 * The property datatype of the property used for this value snak. This is
 	 * redundant information provided in the JSON but not represented in the
-	 * datamodel.
+	 * datamodel. We keep it and serialize it if given, but if we do not have
+	 * it, we set it to null and it will be omitted in the serialization.
 	 */
-	private String datatype;
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
+	private String datatype = null;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -57,7 +60,6 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	 */
 	public JacksonValueSnak() {
 		super();
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_VALUE);
 	}
 
 	@JsonIgnore
@@ -108,11 +110,11 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	}
 
 	@Override
-	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
-		super.setParentDocument(parentDocument);
+	void setSiteIri(String siteIri) {
+		super.setSiteIri(siteIri);
 		if (this.datavalue instanceof JacksonValueEntityId) {
-			((JacksonValueEntityId) this.datavalue)
-					.setParentDocument(parentDocument);
+			((JacksonValueEntityId) this.datavalue).setSiteIri(siteIri);
+			;
 		}
 	}
 

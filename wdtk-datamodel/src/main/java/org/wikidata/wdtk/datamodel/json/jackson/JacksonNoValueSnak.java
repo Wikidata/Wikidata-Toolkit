@@ -40,7 +40,6 @@ public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 	 */
 	public JacksonNoValueSnak() {
 		super();
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_NOVALUE);
 	}
 
 	@Override

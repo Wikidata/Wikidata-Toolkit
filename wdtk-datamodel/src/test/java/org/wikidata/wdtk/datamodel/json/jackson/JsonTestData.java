@@ -101,11 +101,7 @@ public class JsonTestData {
 	public static final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\""
 			+ TEST_PROPERTY_ID + "\"}";
 	public static final String JSON_VALUE_SNAK_STRING = "{\"snaktype\":\"value\",\"property\":\""
-			+ TEST_PROPERTY_ID
-			+ "\",\"datatype\":\""
-			+ JacksonDatatypeId.JSON_DT_STRING
-			+ "\",\"datavalue\":"
-			+ JSON_STRING_VALUE + "}";
+			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + "}";
 
 	// wrapping into item document structure for dedicated tests
 	public static final String JSON_WRAPPED_LABEL = "{\"labels\":{\"en\":"
@@ -193,7 +189,7 @@ public class JsonTestData {
 	public static JacksonStatement getTestNoValueStatement() {
 		JacksonStatement result = new JacksonStatement(TEST_STATEMENT_ID,
 				TEST_NOVALUE_SNAK);
-		result.setParentDocument(getEmtpyTestItemDocument());
+		result.setSubject(getEmtpyTestItemDocument().getEntityId());
 		return result;
 	}
 

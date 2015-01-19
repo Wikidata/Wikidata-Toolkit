@@ -61,10 +61,12 @@ public class ItemDocumentImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
+		iid = ItemIdValueImpl.create("Q42",
+				"http://wikibase.org/entity/");
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
-				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
+				PropertyIdValueImpl.create("P42",
+						"http://wikibase.org/entity/")),
 				Collections.<SnakGroup> emptyList());
 		s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
@@ -108,8 +110,9 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, Collections.<String, SiteLink> emptyMap());
 
-		PropertyDocument pr = new PropertyDocumentImpl(new PropertyIdValueImpl(
-				"P42", "foo"), Collections.<MonolingualTextValue> emptyList(),
+		PropertyDocument pr = new PropertyDocumentImpl(
+				PropertyIdValueImpl.create("P42", "foo"),
+				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(), new DatatypeIdImpl(
@@ -118,7 +121,8 @@ public class ItemDocumentImplTest {
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal
 		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
-				new ItemIdValueImpl("Q23", "http://example.org/"),
+				ItemIdValueImpl.create("Q23",
+						"http://example.org/"),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
@@ -182,9 +186,11 @@ public class ItemDocumentImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
-		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
+		ItemIdValue iid2 = ItemIdValueImpl.create("Q23",
+				"http://example.org/");
 		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
-				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
+				PropertyIdValueImpl.create("P42",
+						"http://wikibase.org/entity/")),
 				Collections.<SnakGroup> emptyList());
 		Statement s2 = new StatementImpl(c2,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,

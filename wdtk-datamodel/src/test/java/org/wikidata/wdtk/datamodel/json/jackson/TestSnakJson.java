@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,7 +43,7 @@ public class TestSnakJson {
 			JsonMappingException, IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
 				JacksonSnak.class);
-		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonNoValueSnak);
@@ -62,7 +63,7 @@ public class TestSnakJson {
 			JsonMappingException, IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
 				JacksonSnak.class);
-		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonSomeValueSnak);
@@ -82,7 +83,7 @@ public class TestSnakJson {
 			JsonMappingException, IOException {
 		JacksonSnak result = mapper.readValue(
 				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
-		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueSnak);

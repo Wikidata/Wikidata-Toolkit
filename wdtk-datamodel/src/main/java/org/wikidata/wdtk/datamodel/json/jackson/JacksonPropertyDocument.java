@@ -107,11 +107,6 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	}
 
 	@Override
-	public String getJsonType() {
-		return JacksonTermedStatementDocument.JSON_TYPE_PROPERTY;
-	}
-
-	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);
 	}
