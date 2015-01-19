@@ -190,11 +190,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		if (value instanceof JacksonValue) {
 			return getJacksonValueSnak(propertyId, (JacksonValue) value,
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		} else {
 			return getJacksonValueSnak(propertyId,
 					(JacksonValue) this.dataModelConverter.copyValue(value),
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		}
 	}
 
@@ -462,13 +462,15 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		return result;
 	}
 
-	private String getDefaultJsonPropertyTypeForValueType(Value value) {
+	private String getJsonPropertyTypeForValueType(Value value) {
 		if (value instanceof TimeValue) {
 			return JacksonDatatypeId.JSON_DT_TIME;
 		} else if (value instanceof ItemIdValue) {
 			return JacksonDatatypeId.JSON_DT_ITEM;
+		} else if (value instanceof PropertyIdValue) {
+			return JacksonDatatypeId.JSON_DT_PROPERTY;
 		} else if (value instanceof StringValue) {
-			return JacksonDatatypeId.JSON_DT_STRING;
+			return null;
 		} else if (value instanceof GlobeCoordinatesValue) {
 			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
 		} else if (value instanceof QuantityValue) {

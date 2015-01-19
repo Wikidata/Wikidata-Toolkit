@@ -271,18 +271,9 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	}
 
 	@Override
+	@JsonIgnore
 	public Iterator<Statement> getAllStatements() {
 		return new NestedIterator<>(this.getStatementGroups());
 	}
-
-	/**
-	 * Returns the JSON type string of the entity that this document refers to.
-	 * Only used by Jackson.
-	 *
-	 * @return either {@link JacksonTermedStatementDocument#JSON_TYPE_ITEM} or
-	 *         {@link JacksonTermedStatementDocument#JSON_TYPE_PROPERTY}
-	 */
-	@JsonProperty("type")
-	public abstract String getJsonType();
 
 }

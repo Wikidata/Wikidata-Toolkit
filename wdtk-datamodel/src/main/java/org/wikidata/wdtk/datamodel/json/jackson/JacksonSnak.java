@@ -61,13 +61,6 @@ public abstract class JacksonSnak implements Snak {
 	 * Value of the "property" field in JSON, e.g., "P31".
 	 */
 	private String property;
-	/**
-	 * Value of the "snaktype" field in JSON, e.g., "value".
-	 * <p>
-	 * TODO Does it make sense to store this when each concrete subclass of this
-	 * class has its own fixed snaktype anyway?
-	 */
-	private String snaktype;
 
 	/**
 	 * The site IRI of this snak. This is needed since the site that this snak
@@ -116,27 +109,6 @@ public abstract class JacksonSnak implements Snak {
 					"Cannot access the property id of an insufficiently initialised Jackson snak.");
 			// return Datamodel.makeWikidataPropertyIdValue(property);
 		}
-	}
-
-	/**
-	 * Returns the snak type string. Only for use by Jackson during
-	 * serialization.
-	 *
-	 * @return the snak type string
-	 */
-	public String getSnaktype() {
-		return this.snaktype;
-	}
-
-	/**
-	 * Sets the snak type string to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param snaktype
-	 *            new value
-	 */
-	public void setSnakType(String snacktype) {
-		this.snaktype = snacktype;
 	}
 
 	/**
