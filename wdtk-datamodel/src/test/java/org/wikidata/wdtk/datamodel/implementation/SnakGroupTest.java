@@ -48,8 +48,10 @@ public class SnakGroupTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
-		property = new PropertyIdValueImpl("P42", "http://wikidata.org/entity/");
+		subject = ItemIdValueImpl.create("Q42",
+				"http://wikidata.org/entity/");
+		property = PropertyIdValueImpl.create("P42",
+				"http://wikidata.org/entity/");
 
 		snak1 = new ValueSnakImpl(property, subject);
 		snak2 = new SomeValueSnakImpl(property);
@@ -103,8 +105,8 @@ public class SnakGroupTest {
 
 		snaks.add(snak1);
 
-		PropertyIdValue property2 = new PropertyIdValueImpl("P23",
-				"http://wikidata.org/entity/");
+		PropertyIdValue property2 = PropertyIdValueImpl
+				.create("P23", "http://wikidata.org/entity/");
 		Snak snak3 = new NoValueSnakImpl(property2);
 		snaks.add(snak3);
 

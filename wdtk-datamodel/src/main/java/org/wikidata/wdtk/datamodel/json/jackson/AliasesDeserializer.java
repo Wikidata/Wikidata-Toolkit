@@ -36,14 +36,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A deserializer implementation for the aliases in an
- * {@link JacksonTermedDocument}.
+ * {@link JacksonTermedStatementDocument}.
  * <p>
  * It implements a workaround to cope with empty aliases being represented as
  * <code>"aliases":[]</code> despite its declaration as map and not as list or
  * array. This is neither nice nor fast, and should be obsolete as soon as
  * possible.
  *
- * @see JacksonTermedDocument#setAliases(Map)
+ * @see JacksonTermedStatementDocument#setAliases(Map)
  *
  * @author Fredo Erxleben
  *

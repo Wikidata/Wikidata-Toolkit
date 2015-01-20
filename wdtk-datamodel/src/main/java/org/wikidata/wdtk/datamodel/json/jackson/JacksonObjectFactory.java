@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -62,6 +62,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
@@ -82,12 +83,13 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
 		if (id.length() > 0 && id.charAt(0) == 'Q') {
 			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity = new JacksonInnerEntityId(
+			JacksonInnerEntityId innerEntity;
+			innerEntity = new JacksonInnerEntityId(
 					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
 
 			JacksonValueItemId result = new JacksonValueItemId();
 			result.setValue(innerEntity);
-			result.setParentDocument(getParentItemDocument("Qunknown", siteIri));
+			result.setSiteIri(siteIri);
 			return result;
 		} else {
 			throw new IllegalArgumentException("Illegal item id: " + id);
@@ -96,8 +98,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		// Jackson has no dedicated property id values:
-		return Datamodel.makePropertyIdValue(id, siteIri);
+		if (id.length() > 0 && id.charAt(0) == 'P') {
+			Integer numericId = Integer.valueOf(id.substring(1));
+			JacksonInnerEntityId innerEntity;
+			innerEntity = new JacksonInnerEntityId(
+					JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY, numericId);
+
+			JacksonValuePropertyId result = new JacksonValuePropertyId();
+			result.setValue(innerEntity);
+			result.setSiteIri(siteIri);
+			return result;
+		} else {
+			throw new IllegalArgumentException("Illegal property id: " + id);
+		}
 	}
 
 	@Override
@@ -118,10 +131,18 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	}
 
 	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
-			long longitude, long precision, String globeIri) {
-		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
-				latitude, longitude, precision, globeIri);
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+			double longitude, double precision, String globeIri) {
+		if (precision <= 0) {
+			throw new IllegalArgumentException(
+					"Coordinates precision must be non-zero positive. Given value: "
+							+ precision);
+		}
+		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates();
+		innerCoordinates.setLatitude(latitude);
+		innerCoordinates.setLongitude(longitude);
+		innerCoordinates.setPrecision(precision);
+		innerCoordinates.setGlobe(globeIri);
 		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
 		result.setValue(innerCoordinates);
 		return result;
@@ -169,11 +190,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		if (value instanceof JacksonValue) {
 			return getJacksonValueSnak(propertyId, (JacksonValue) value,
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		} else {
 			return getJacksonValueSnak(propertyId,
 					(JacksonValue) this.dataModelConverter.copyValue(value),
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		}
 	}
 
@@ -181,8 +202,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		JacksonSomeValueSnak result = new JacksonSomeValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
@@ -190,8 +210,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		JacksonNoValueSnak result = new JacksonNoValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
@@ -235,8 +254,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		if (claim.getMainSnak() instanceof JacksonSnak) {
 			result.setMainsnak((JacksonSnak) claim.getMainSnak());
 		} else {
-			result.setMainsnak((JacksonSnak) dataModelConverter
-					.copySnak(claim.getMainSnak()));
+			result.setMainsnak((JacksonSnak) dataModelConverter.copySnak(claim
+					.getMainSnak()));
 		}
 
 		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
@@ -265,21 +284,9 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setRank(rank);
 		result.setStatementId(statementId);
 
-		result.setParentDocument(getParentItemDocument(claim.getSubject()));
+		result.setSubject(claim.getSubject());
 
 		return result;
-	}
-
-	private JacksonItemDocument getParentItemDocument(EntityIdValue subject) {
-		return getParentItemDocument(subject.getId(), subject.getSiteIri());
-	}
-
-	private JacksonItemDocument getParentItemDocument(String subjectId,
-			String subjectSiteIri) {
-		JacksonItemDocument helperParentDocument = new JacksonItemDocument();
-		helperParentDocument.setJsonId(subjectId);
-		helperParentDocument.setSiteIri(subjectSiteIri);
-		return helperParentDocument;
 	}
 
 	@Override
@@ -310,9 +317,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
+		return getPropertyDocument(propertyId, labels, descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), datatypeId);
+	}
+
+	@Override
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
 		JacksonPropertyDocument result = new JacksonPropertyDocument();
-		initializeTermedDocument(result, propertyId, labels, descriptions,
-				aliases);
+		initializeTermedStatementDocument(result, propertyId, labels,
+				descriptions, aliases, statementGroups);
 
 		switch (datatypeId.getIri()) {
 		case DatatypeIdValue.DT_ITEM:
@@ -352,27 +369,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
 		JacksonItemDocument result = new JacksonItemDocument();
-		initializeTermedDocument(result, itemIdValue, labels, descriptions,
-				aliases);
-
-		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
-		for (StatementGroup sg : statementGroups) {
-			String propertyId = sg.getProperty().getId();
-			List<JacksonStatement> propertyStatements = new ArrayList<>(sg
-					.getStatements().size());
-			jacksonStatements.put(propertyId, propertyStatements);
-
-			for (Statement s : sg) {
-				if (s instanceof JacksonStatement) {
-					propertyStatements.add((JacksonStatement) s);
-				} else {
-					propertyStatements
-							.add((JacksonStatement) this.dataModelConverter
-									.copy(s));
-				}
-			}
-		}
-		result.setJsonClaims(jacksonStatements);
+		initializeTermedStatementDocument(result, itemIdValue, labels,
+				descriptions, aliases, statementGroups);
 
 		Map<String, JacksonSiteLink> jacksonSiteLinks = new HashMap<>(
 				siteLinks.size());
@@ -391,10 +389,12 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		return result;
 	}
 
-	private void initializeTermedDocument(JacksonTermedDocument document,
+	private void initializeTermedStatementDocument(
+			JacksonTermedStatementDocument document,
 			EntityIdValue entityIdValue, List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases) {
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups) {
 
 		document.setJsonId(entityIdValue.getId());
 		document.setSiteIri(entityIdValue.getSiteIri());
@@ -413,6 +413,25 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 		document.setLabels(buildTermMapFromTermList(labels));
 		document.setDescriptions(buildTermMapFromTermList(descriptions));
+
+		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
+		for (StatementGroup sg : statementGroups) {
+			String propertyId = sg.getProperty().getId();
+			List<JacksonStatement> propertyStatements = new ArrayList<>(sg
+					.getStatements().size());
+			jacksonStatements.put(propertyId, propertyStatements);
+
+			for (Statement s : sg) {
+				if (s instanceof JacksonStatement) {
+					propertyStatements.add((JacksonStatement) s);
+				} else {
+					propertyStatements
+							.add((JacksonStatement) this.dataModelConverter
+									.copy(s));
+				}
+			}
+		}
+		document.setJsonClaims(jacksonStatements);
 	}
 
 	private Map<String, JacksonMonolingualTextValue> buildTermMapFromTermList(
@@ -439,18 +458,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		result.setDatavalue(value);
 		result.setDatatype(propertyDatatype);
-		result.setParentDocument(getParentItemDocument("Qundefined",
-				propertyId.getSiteIri()));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
-	private String getDefaultJsonPropertyTypeForValueType(Value value) {
+	private String getJsonPropertyTypeForValueType(Value value) {
 		if (value instanceof TimeValue) {
 			return JacksonDatatypeId.JSON_DT_TIME;
 		} else if (value instanceof ItemIdValue) {
 			return JacksonDatatypeId.JSON_DT_ITEM;
+		} else if (value instanceof PropertyIdValue) {
+			return JacksonDatatypeId.JSON_DT_PROPERTY;
 		} else if (value instanceof StringValue) {
-			return JacksonDatatypeId.JSON_DT_STRING;
+			return null;
 		} else if (value instanceof GlobeCoordinatesValue) {
 			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
 		} else if (value instanceof QuantityValue) {

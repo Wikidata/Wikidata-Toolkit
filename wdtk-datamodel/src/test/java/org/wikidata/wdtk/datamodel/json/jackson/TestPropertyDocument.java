@@ -56,7 +56,6 @@ public class TestPropertyDocument {
 		assertNotNull(fullDocument.getJsonId());
 		assertNotNull(fullDocument.getPropertyId());
 		assertNotNull(fullDocument.getEntityId());
-		assertNotNull(fullDocument.getJsonType());
 
 		assertEquals(fullDocument.getPropertyId().getId(),
 				fullDocument.getJsonId());

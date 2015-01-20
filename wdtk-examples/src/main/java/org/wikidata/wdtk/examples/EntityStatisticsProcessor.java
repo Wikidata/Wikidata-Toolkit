@@ -32,7 +32,9 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 /**
  * A simple example class that processes EntityDocuments to compute basic
@@ -45,19 +47,30 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 class EntityStatisticsProcessor implements EntityDocumentProcessor {
 
-	// Counters to keep track of overall numbers:
-	long countItems = 0;
-	long countProperties = 0;
-	long countLabels = 0;
-	long countDescriptions = 0;
-	long countAliases = 0;
-	long countStatements = 0;
-	long countSiteLinks = 0;
+	/**
+	 * Simple record class to keep track of some usage numbers for one type of
+	 * entity.
+	 *
+	 * @author Markus Kroetzsch
+	 *
+	 */
+	class UsageStatistics {
+		long count = 0;
+		long countLabels = 0;
+		long countDescriptions = 0;
+		long countAliases = 0;
+		long countStatements = 0;
 
-	// Maps to store property usage data for each property:
-	final HashMap<PropertyIdValue, Integer> propertyCountsMain = new HashMap<PropertyIdValue, Integer>();
-	final HashMap<PropertyIdValue, Integer> propertyCountsQualifier = new HashMap<PropertyIdValue, Integer>();
-	final HashMap<PropertyIdValue, Integer> propertyCountsReferences = new HashMap<PropertyIdValue, Integer>();
+		// Maps to store property usage data for each property:
+		final HashMap<PropertyIdValue, Integer> propertyCountsMain = new HashMap<PropertyIdValue, Integer>();
+		final HashMap<PropertyIdValue, Integer> propertyCountsQualifier = new HashMap<PropertyIdValue, Integer>();
+		final HashMap<PropertyIdValue, Integer> propertyCountsReferences = new HashMap<PropertyIdValue, Integer>();
+
+	}
+
+	UsageStatistics itemStatistics = new UsageStatistics();
+	UsageStatistics propertyStatistics = new UsageStatistics();
+	long countSiteLinks = 0;
 
 	/**
 	 * Main method. Processes the whole dump using this processor and writes the
@@ -80,41 +93,16 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		// Count items:
-		this.countItems++;
+		this.itemStatistics.count++;
 
-		// Count several kinds of terms:
-		this.countLabels += itemDocument.getLabels().size();
-		this.countDescriptions += itemDocument.getDescriptions().size();
-		for (String languageKey : itemDocument.getAliases().keySet()) {
-			this.countAliases += itemDocument.getAliases().get(languageKey)
-					.size();
-		}
-
-		// Count Statement data:
-		for (StatementGroup sg : itemDocument.getStatementGroups()) {
-			// Count Statements:
-			this.countStatements += sg.getStatements().size();
-
-			// Count uses of properties in Statements:
-			countPropertyMain(sg.getProperty(), sg.getStatements().size());
-			for (Statement s : sg.getStatements()) {
-				for (SnakGroup q : s.getClaim().getQualifiers()) {
-					countPropertyQualifier(q.getProperty(), q.getSnaks().size());
-				}
-				for (Reference r : s.getReferences()) {
-					for (SnakGroup snakGroup : r.getSnakGroups()) {
-						countPropertyReference(snakGroup.getProperty(),
-								snakGroup.getSnaks().size());
-					}
-				}
-			}
-		}
+		countTerms(this.itemStatistics, itemDocument);
+		countStatements(this.itemStatistics, itemDocument);
 
 		// Count site links:
 		this.countSiteLinks += itemDocument.getSiteLinks().size();
 
 		// Print a report every 10000 items:
-		if (this.countItems % 10000 == 0) {
+		if (this.itemStatistics.count % 10000 == 0) {
 			printStatus();
 		}
 	}
@@ -122,7 +110,65 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		// Count properties:
-		this.countProperties++;
+		this.propertyStatistics.count++;
+
+		countTerms(this.propertyStatistics, propertyDocument);
+		countStatements(this.propertyStatistics, propertyDocument);
+	}
+
+	/**
+	 * Count the terms (labels, descriptions, aliases) of an item or property
+	 * document.
+	 *
+	 * @param usageStatistics
+	 *            statistics object to store counters in
+	 * @param termedDocument
+	 *            document to count the terms of
+	 */
+	protected void countTerms(UsageStatistics usageStatistics,
+			TermedDocument termedDocument) {
+		// Count several kinds of terms:
+		usageStatistics.countLabels += termedDocument.getLabels().size();
+		usageStatistics.countDescriptions += termedDocument.getDescriptions()
+				.size();
+		for (String languageKey : termedDocument.getAliases().keySet()) {
+			usageStatistics.countAliases += termedDocument.getAliases()
+					.get(languageKey).size();
+		}
+	}
+
+	/**
+	 * Count the statements and property uses of an item or property document.
+	 *
+	 * @param usageStatistics
+	 *            statistics object to store counters in
+	 * @param statementDocument
+	 *            document to count the statements of
+	 */
+	protected void countStatements(UsageStatistics usageStatistics,
+			StatementDocument statementDocument) {
+		// Count Statement data:
+		for (StatementGroup sg : statementDocument.getStatementGroups()) {
+			// Count Statements:
+			usageStatistics.countStatements += sg.getStatements().size();
+
+			// Count uses of properties in Statements:
+			countPropertyMain(usageStatistics, sg.getProperty(), sg
+					.getStatements().size());
+			for (Statement s : sg.getStatements()) {
+				for (SnakGroup q : s.getClaim().getQualifiers()) {
+					countPropertyQualifier(usageStatistics, q.getProperty(), q
+							.getSnaks().size());
+				}
+				for (Reference r : s.getReferences()) {
+					for (SnakGroup snakGroup : r.getSnakGroups()) {
+						countPropertyReference(usageStatistics,
+								snakGroup.getProperty(), snakGroup.getSnaks()
+										.size());
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -142,10 +188,12 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 
 			out.println("Property id,in statements,in qualifiers,in references,total");
 
-			for (Entry<PropertyIdValue, Integer> entry : this.propertyCountsMain
+			for (Entry<PropertyIdValue, Integer> entry : this.propertyStatistics.propertyCountsMain
 					.entrySet()) {
-				int qCount = this.propertyCountsQualifier.get(entry.getKey());
-				int rCount = this.propertyCountsReferences.get(entry.getKey());
+				int qCount = this.propertyStatistics.propertyCountsQualifier
+						.get(entry.getKey());
+				int rCount = this.propertyStatistics.propertyCountsReferences
+						.get(entry.getKey());
 				int total = entry.getValue() + qCount + rCount;
 				out.println(entry.getKey().getId() + "," + entry.getValue()
 						+ "," + qCount + "," + rCount + "," + total);
@@ -160,14 +208,29 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	 * Prints a report about the statistics gathered so far.
 	 */
 	private void printStatus() {
-		System.out.println("Processed " + this.countItems + " items:");
-		System.out.println(" * Labels: " + this.countLabels);
-		System.out.println(" * Descriptions: " + this.countDescriptions);
-		System.out.println(" * Aliases: " + this.countAliases);
-		System.out.println(" * Statements: " + this.countStatements);
+		printStatistics(this.itemStatistics, "items");
 		System.out.println(" * Site links: " + this.countSiteLinks);
-		System.out
-				.println("Processed " + this.countProperties + " properties.");
+
+		printStatistics(this.propertyStatistics, "properties");
+	}
+
+	/**
+	 * Prints a report about the statistics stored in the given data object.
+	 *
+	 * @param usageStatistics
+	 *            the statistics object to print
+	 * @param entityLabel
+	 *            the label to use to refer to this kind of entities ("items" or
+	 *            "properties")
+	 */
+	private void printStatistics(UsageStatistics usageStatistics,
+			String entityLabel) {
+		System.out.println("Processed " + usageStatistics.count + " "
+				+ entityLabel + ":");
+		System.out.println(" * Labels: " + usageStatistics.countLabels
+				+ ", descriptions: " + usageStatistics.countDescriptions
+				+ ", aliases: " + usageStatistics.countAliases);
+		System.out.println(" * Statements: " + usageStatistics.countStatements);
 	}
 
 	/**
@@ -193,57 +256,69 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	 * Counts additional occurrences of a property as the main property of
 	 * statements.
 	 *
+	 * @param usageStatistics
+	 *            statistics object where count is stored
 	 * @param property
 	 *            the property to count
 	 * @param count
 	 *            the number of times to count the property
 	 */
-	private void countPropertyMain(PropertyIdValue property, int count) {
-		addPropertyCounters(property);
-		this.propertyCountsMain.put(property,
-				this.propertyCountsMain.get(property) + count);
+	private void countPropertyMain(UsageStatistics usageStatistics,
+			PropertyIdValue property, int count) {
+		addPropertyCounters(usageStatistics, property);
+		usageStatistics.propertyCountsMain.put(property,
+				usageStatistics.propertyCountsMain.get(property) + count);
 	}
 
 	/**
 	 * Counts additional occurrences of a property as qualifier property of
 	 * statements.
 	 *
+	 * @param usageStatistics
+	 *            statistics object where count is stored
 	 * @param property
 	 *            the property to count
 	 * @param count
 	 *            the number of times to count the property
 	 */
-	private void countPropertyQualifier(PropertyIdValue property, int count) {
-		addPropertyCounters(property);
-		this.propertyCountsQualifier.put(property,
-				this.propertyCountsQualifier.get(property) + count);
+	private void countPropertyQualifier(UsageStatistics usageStatistics,
+			PropertyIdValue property, int count) {
+		addPropertyCounters(usageStatistics, property);
+		usageStatistics.propertyCountsQualifier.put(property,
+				usageStatistics.propertyCountsQualifier.get(property) + count);
 	}
 
 	/**
 	 * Counts additional occurrences of a property as property in references.
 	 *
+	 * @param usageStatistics
+	 *            statistics object where count is stored
 	 * @param property
 	 *            the property to count
 	 * @param count
 	 *            the number of times to count the property
 	 */
-	private void countPropertyReference(PropertyIdValue property, int count) {
-		addPropertyCounters(property);
-		this.propertyCountsReferences.put(property,
-				this.propertyCountsReferences.get(property) + count);
+	private void countPropertyReference(UsageStatistics usageStatistics,
+			PropertyIdValue property, int count) {
+		addPropertyCounters(usageStatistics, property);
+		usageStatistics.propertyCountsReferences.put(property,
+				usageStatistics.propertyCountsReferences.get(property) + count);
 	}
 
 	/**
 	 * Initializes the counters for a property to zero if not done yet.
 	 *
+	 * @param usageStatistics
+	 *            statistics object to initialize
 	 * @param property
 	 *            the property to count
 	 */
-	private void addPropertyCounters(PropertyIdValue property) {
-		if (!this.propertyCountsMain.containsKey(property)) {
-			this.propertyCountsMain.put(property, 0);
-			this.propertyCountsQualifier.put(property, 0);
-			this.propertyCountsReferences.put(property, 0);
+	private void addPropertyCounters(UsageStatistics usageStatistics,
+			PropertyIdValue property) {
+		if (!usageStatistics.propertyCountsMain.containsKey(property)) {
+			usageStatistics.propertyCountsMain.put(property, 0);
+			usageStatistics.propertyCountsQualifier.put(property, 0);
+			usageStatistics.propertyCountsReferences.put(property, 0);
 		}
 	}
 }

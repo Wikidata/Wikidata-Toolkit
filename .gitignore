@@ -31,6 +31,8 @@ target/
 
 # WDTK dumpfile download directory
 dumpfiles/
+# WDTK example result directory
+results/ 
 
 # Don't apply the above to src/ where Java requires
 # subdirectories named according to package names.

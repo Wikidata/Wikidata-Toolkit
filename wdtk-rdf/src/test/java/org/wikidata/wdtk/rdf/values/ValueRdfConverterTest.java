@@ -48,9 +48,6 @@ import org.wikidata.wdtk.rdf.PropertyTypes;
 import org.wikidata.wdtk.rdf.RdfTestHelpers;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
-import org.wikidata.wdtk.rdf.values.GlobeCoordinatesValueConverter;
-import org.wikidata.wdtk.rdf.values.QuantityValueConverter;
-import org.wikidata.wdtk.rdf.values.TimeValueConverter;
 
 public class ValueRdfConverterTest {
 
@@ -114,10 +111,8 @@ public class ValueRdfConverterTest {
 				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
 
 		GlobeCoordinatesValue value = this.objectFactory
-				.getGlobeCoordinatesValue(
-						(long) (51.033333333333 * GlobeCoordinatesValue.PREC_DEGREE),
-						(long) (13.733333333333 * GlobeCoordinatesValue.PREC_DEGREE),
-						(GlobeCoordinatesValue.PREC_ARCMINUTE),
+				.getGlobeCoordinatesValue(51.033333333333, 13.733333333333,
+						(GlobeCoordinatesValue.PREC_DECI_DEGREE),
 						"http://www.wikidata.org/entity/Q2");
 		PropertyIdValue propertyIdValue = objectFactory.getPropertyIdValue(
 				"P625", "http://www.wikidata.org/entity/");

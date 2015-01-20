@@ -32,15 +32,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class JacksonInnerEntityId {
-	// TODO replace IllegalArgumentException with a checked one
-	// NOTE make sure to adapt all methods, once more types than only
-	// "item" are supported
+	// TODO maybe replace IllegalArgumentException with a checked one; maybe do
+	// the check when the type is set
 
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
 	 * items.
 	 */
 	public final static String JSON_ENTITY_TYPE_ITEM = "item";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * properties.
+	 */
+	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
 
 	@JsonProperty("entity-type")
 	private String entityType;
@@ -56,19 +60,14 @@ public class JacksonInnerEntityId {
 	}
 
 	/**
-	 * Constructor. The only known entity type so far is "item". In the future
-	 * "property" might also be available.
+	 * Constructor. Supported entity types so far are "item" and "property".
 	 *
 	 * @param entityType
 	 *            (case-sensitive)
 	 * @param numericId
-	 * @throws IllegalArgumentException
-	 *             if the entity type was unrecognized
 	 */
-	public JacksonInnerEntityId(String entityType, int numericId)
-			throws IllegalArgumentException {
-
-		setEntityType(entityType);
+	public JacksonInnerEntityId(String entityType, int numericId) {
+		setJsonEntityType(entityType);
 		this.numericId = numericId;
 	}
 
@@ -79,7 +78,7 @@ public class JacksonInnerEntityId {
 	 * @return the entity type string
 	 */
 	@JsonProperty("entity-type")
-	public String getEntityType() {
+	public String getJsonEntityType() {
 		return entityType;
 	}
 
@@ -91,14 +90,7 @@ public class JacksonInnerEntityId {
 	 *            new value
 	 */
 	@JsonProperty("entity-type")
-	public void setEntityType(String entityType)
-			throws IllegalArgumentException {
-
-		if (!JSON_ENTITY_TYPE_ITEM.equals(entityType)) {
-			throw new IllegalArgumentException("Entities of type " + entityType
-					+ " are not supported in property values.");
-		}
-
+	public void setJsonEntityType(String entityType) {
 		this.entityType = entityType;
 	}
 
@@ -114,7 +106,7 @@ public class JacksonInnerEntityId {
 	}
 
 	/**
-	 * Sets thenumeric item id to the given value. Only for use by Jackson
+	 * Sets the numeric item id to the given value. Only for use by Jackson
 	 * during deserialization.
 	 *
 	 * @param numericId
@@ -131,10 +123,21 @@ public class JacksonInnerEntityId {
 	 * normally identified as "Q42".
 	 *
 	 * @return the string id
+	 * @throws IllegalArgumentException
+	 *             if the entity type of this value is unknown and can thus not
+	 *             be mapped to a string id
 	 */
 	@JsonIgnore
-	public String getStringId() {
-		return "Q" + this.numericId;
+	public String getStringId() throws IllegalArgumentException {
+		switch (entityType) {
+		case JSON_ENTITY_TYPE_ITEM:
+			return "Q" + this.numericId;
+		case JSON_ENTITY_TYPE_PROPERTY:
+			return "P" + this.numericId;
+		default:
+			throw new IllegalArgumentException("Entities of type \""
+					+ entityType + "\" are not supported in property values.");
+		}
 	}
 
 	@Override

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -40,8 +41,10 @@ import org.wikidata.wdtk.util.NestedIterator;
  * @author Markus Kroetzsch
  *
  */
-public class ClaimImpl implements Claim {
+public class ClaimImpl implements Claim, Serializable {
 
+	private static final long serialVersionUID = -2991778567647082844L;
+	
 	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<SnakGroup> qualifiers;

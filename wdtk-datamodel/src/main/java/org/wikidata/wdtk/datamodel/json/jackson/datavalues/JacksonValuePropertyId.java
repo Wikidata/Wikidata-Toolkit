@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation;
+package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 /*
  * #%L
@@ -20,40 +20,50 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
- * Implementation of {@link StringValue}.
+ * Jackson implementation of {@link PropertyIdValue}.
  *
  * @author Markus Kroetzsch
  *
  */
-public class StringValueImpl implements StringValue, Serializable {
-
-	private static final long serialVersionUID = -3372698418036275469L;
-	
-	final String string;
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class JacksonValuePropertyId extends JacksonValueEntityId implements
+		PropertyIdValue {
 
 	/**
-	 * Constructor.
+	 * Sets the inner value helper object to the given value. Only for use by
+	 * Jackson during deserialization.
 	 *
-	 * @param string
+	 * @param value
+	 *            new value
 	 */
-	StringValueImpl(String string) {
-		Validate.notNull(string, "URL cannot be null");
-		this.string = string;
+	@Override
+	public void setValue(JacksonInnerEntityId value) {
+		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY.equals(value
+				.getJsonEntityType())) {
+			throw new RuntimeException("Unexpected inner value type: "
+					+ value.getJsonEntityType());
+		}
+		this.value = value;
 	}
 
+	@JsonIgnore
 	@Override
-	public String getString() {
-		return string;
+	public String getEntityType() {
+		return EntityIdValue.ET_PROPERTY;
 	}
 
 	@Override
@@ -68,12 +78,11 @@ public class StringValueImpl implements StringValue, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		return Equality.equalsStringValue(this, obj);
+		return Equality.equalsEntityIdValue(this, obj);
 	}
 
 	@Override
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang3.Validate;
@@ -35,8 +36,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class QuantityValueImpl implements QuantityValue {
+public class QuantityValueImpl implements QuantityValue, Serializable {
 
+	private static final long serialVersionUID = 3245696048836886990L;
+	
 	final BigDecimal numericValue;
 	final BigDecimal lowerBound;
 	final BigDecimal upperBound;

@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 /**
  * This class tests the inner objects lying behind the …ValueImpl-classes.
  *
@@ -43,7 +45,7 @@ public class TestInnerValueObjects {
 	private JacksonInnerMonolingualText testMonolingualText;
 
 	@Before
-	public void setupTestEntityIds() {
+	public void setupTestEntityIds() throws JsonMappingException {
 		this.testEntityId = new JacksonInnerEntityId(itemType, 1);
 	}
 
@@ -54,20 +56,21 @@ public class TestInnerValueObjects {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testEntityIdConstructor() {
-		new JacksonInnerEntityId(wrongType, 1);
+	public void testEntityIdConstructor() throws JsonMappingException {
+		JacksonInnerEntityId testId = new JacksonInnerEntityId(wrongType, 1);
+		testId.getStringId(); // should fail
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testEntityIdSetter() {
-		JacksonInnerEntityId emptyId = new JacksonInnerEntityId();
-		emptyId.setNumericId(1);
-		emptyId.setEntityType(itemType); // should work
-		emptyId.setEntityType(wrongType); // should fail
+	public void testEntityIdSetter() throws JsonMappingException {
+		JacksonInnerEntityId testId = new JacksonInnerEntityId();
+		testId.setNumericId(1);
+		testId.setJsonEntityType(wrongType);
+		testId.getStringId(); // should fail
 	}
 
 	@Test
-	public void testEntityIdMethods() {
+	public void testEntityIdMethods() throws JsonMappingException {
 		assertEquals("Q1", this.testEntityId.getStringId());
 		assertEquals(this.testEntityId.getNumericId(), 1);
 

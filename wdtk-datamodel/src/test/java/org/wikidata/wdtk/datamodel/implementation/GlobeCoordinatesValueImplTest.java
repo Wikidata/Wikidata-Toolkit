@@ -37,22 +37,18 @@ public class GlobeCoordinatesValueImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		c1 = new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+		c1 = new GlobeCoordinatesValueImpl(12.3, 14.1,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
-		c2 = new GlobeCoordinatesValueImpl(12300000000L, 14100000000L,
+		c2 = new GlobeCoordinatesValueImpl(12.3, 14.1,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test
 	public void dataIsCorrect() {
-		assertEquals(c1.getLatitude(),
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 0);
-		assertEquals(c1.getLongitude(),
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 0);
+		assertEquals(c1.getLatitude(), 12.3, 0);
+		assertEquals(c1.getLongitude(), 14.1, 0);
 		assertEquals(c1.getPrecision(), GlobeCoordinatesValue.PREC_DEGREE, 0);
 		assertEquals(c1.getGlobe(), GlobeCoordinatesValue.GLOBE_EARTH);
 	}
@@ -60,24 +56,16 @@ public class GlobeCoordinatesValueImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		GlobeCoordinatesValue gcDiffLatitude = new GlobeCoordinatesValueImpl(
-				121 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DEGREE,
+				12.1, 14.1, GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 		GlobeCoordinatesValue gcDiffLongitude = new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				142 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DEGREE,
+				12.3, 14.2, GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 		GlobeCoordinatesValue gcDiffPrecision = new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_MILLI_ARCSECOND,
+				12.3, 14.1, GlobeCoordinatesValue.PREC_MILLI_ARCSECOND,
 				GlobeCoordinatesValue.GLOBE_EARTH);
-		GlobeCoordinatesValue gcDiffGlobe = new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DEGREE,
+		GlobeCoordinatesValue gcDiffGlobe = new GlobeCoordinatesValueImpl(12.3,
+				14.1, GlobeCoordinatesValue.PREC_DEGREE,
 				"http://wikidata.org/entity/Q367221");
 
 		assertEquals(c1, c1);
@@ -97,48 +85,40 @@ public class GlobeCoordinatesValueImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void globeNotNull() {
-		new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
+		new GlobeCoordinatesValueImpl(12.3, 14.1,
 				GlobeCoordinatesValue.PREC_DEGREE, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void onlyAllowedPrecisions() {
-		new GlobeCoordinatesValueImpl(
-				123 * GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				141 * GlobeCoordinatesValue.PREC_DECI_DEGREE, 123456789,
+		new GlobeCoordinatesValueImpl(12.3, 14.1, 0.0,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void latitudeWithinUpperRange() {
-		new GlobeCoordinatesValueImpl(91 * GlobeCoordinatesValue.PREC_DEGREE,
-				270 * GlobeCoordinatesValue.PREC_DEGREE,
+		new GlobeCoordinatesValueImpl(91.0, 270.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void latitudeWithinLowerRange() {
-		new GlobeCoordinatesValueImpl(-91 * GlobeCoordinatesValue.PREC_DEGREE,
-				270 * GlobeCoordinatesValue.PREC_DEGREE,
+		new GlobeCoordinatesValueImpl(-91.0, 270.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void longitudeWithinUpperRange() {
-		new GlobeCoordinatesValueImpl(45 * GlobeCoordinatesValue.PREC_DEGREE,
-				500 * GlobeCoordinatesValue.PREC_DEGREE,
+		new GlobeCoordinatesValueImpl(45.0, 500.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void longitudeWithinLowerRange() {
-		new GlobeCoordinatesValueImpl(45 * GlobeCoordinatesValue.PREC_DEGREE,
-				-500 * GlobeCoordinatesValue.PREC_DEGREE,
+		new GlobeCoordinatesValueImpl(45.0, -500.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
 	}

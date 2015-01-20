@@ -20,15 +20,21 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,9 +54,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-		@Type(value = JacksonItemDocument.class, name = JacksonTermedDocument.JSON_TYPE_ITEM),
-		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedDocument.JSON_TYPE_PROPERTY) })
-public abstract class JacksonTermedDocument implements TermedDocument {
+		@Type(value = JacksonItemDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_ITEM),
+		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_PROPERTY) })
+public abstract class JacksonTermedStatementDocument implements TermedDocument,
+		StatementDocument {
 
 	/**
 	 * String used to refer to items in JSON.
@@ -65,6 +72,18 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	protected Map<String, List<JacksonMonolingualTextValue>> aliases = new HashMap<>();
 	protected Map<String, JacksonMonolingualTextValue> labels = new HashMap<>();
 	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
+
+	/**
+	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
+	 * the statement group in the WDTK model.
+	 */
+	private Map<String, List<JacksonStatement>> claims = new HashMap<>();
+
+	/**
+	 * Statement groups. This member is initialized when statements are
+	 * accessed.
+	 */
+	private List<StatementGroup> statementGroups = null;
 
 	/**
 	 * The id of the entity that the document refers to. This is not mapped to
@@ -91,7 +110,7 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonTermedDocument() {
+	public JacksonTermedStatementDocument() {
 	}
 
 	/**
@@ -192,6 +211,15 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 	@JsonIgnore
 	public void setSiteIri(String siteIri) {
 		this.siteIri = siteIri;
+
+		EntityIdValue subject = this.getEntityId();
+
+		for (Entry<String, List<JacksonStatement>> entry : this.claims
+				.entrySet()) {
+			for (JacksonStatement statement : entry.getValue()) {
+				statement.setSubject(subject);
+			}
+		}
 	}
 
 	@JsonIgnore
@@ -199,14 +227,53 @@ public abstract class JacksonTermedDocument implements TermedDocument {
 		return this.siteIri;
 	}
 
+	@JsonIgnore
+	@Override
+	public List<StatementGroup> getStatementGroups() {
+		if (this.statementGroups == null) {
+			this.statementGroups = new ArrayList<>(this.claims.size());
+			for (List<JacksonStatement> statements : this.claims.values()) {
+				this.statementGroups
+						.add(new StatementGroupFromJson(statements));
+			}
+		}
+		return this.statementGroups;
+	}
+
 	/**
-	 * Returns the JSON type string of the entity that this document refers to.
-	 * Only used by Jackson.
+	 * Sets the "claims" to the given value. Only for use by Jackson during
+	 * deserialization.
+	 * <p>
+	 * The name refers to the JSON model, where claims are similar to statement
+	 * groups. This should not be confused with claims as used in the WDTK data
+	 * model. This will probably only be used by the Jacksons' ObjectMapper.
 	 *
-	 * @return either {@link JacksonTermedDocument#JSON_TYPE_ITEM} or
-	 *         {@link JacksonTermedDocument#JSON_TYPE_PROPERTY}
+	 * @param claims
 	 */
-	@JsonProperty("type")
-	public abstract String getJsonType();
+	@JsonProperty("claims")
+	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
+		this.claims = claims;
+		this.statementGroups = null; // clear cache
+	}
+
+	/**
+	 * Returns the "claims". Only used by Jackson.
+	 * <p>
+	 * JSON "claims" correspond to statement groups in the WDTK model. You
+	 * should use {@link JacksonItemDocument#getStatementGroups()} to obtain
+	 * this data.
+	 *
+	 * @return map of statement groups
+	 */
+	@JsonProperty("claims")
+	public Map<String, List<JacksonStatement>> getJsonClaims() {
+		return this.claims;
+	}
+
+	@Override
+	@JsonIgnore
+	public Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(this.getStatementGroups());
+	}
 
 }

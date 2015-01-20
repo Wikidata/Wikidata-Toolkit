@@ -25,24 +25,24 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * {@link EntityDocument} with information about the datatype of a property.
  * <p>
  * Claims or Statements on properties might be supported in the future.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
-public interface PropertyDocument extends TermedDocument {
+public interface PropertyDocument extends TermedDocument, StatementDocument {
 
 	/**
 	 * Return the ID of the property that the data refers to. The result is the
 	 * same as that of {@link EntityDocument#getEntityId()}, but declared with a
 	 * more specific result type.
-	 * 
+	 *
 	 * @return property id
 	 */
 	PropertyIdValue getPropertyId();
 
 	/**
 	 * Get the datatype id of the datatype defined for this property.
-	 * 
+	 *
 	 * @return {@link DatatypeIdValue}
 	 */
 	DatatypeIdValue getDatatype();

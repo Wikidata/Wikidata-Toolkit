@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -201,17 +202,21 @@ public class RdfConverter {
 					this.rdfWriter.getUri(document.getDatatype().getIri()));
 		}
 
-		// Not needed for properties -- might change in future:
-		// this.snakRdfConverter.writeAuxiliaryTriples();
-		// this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
-		// hasTask(RdfSerializer.TASK_STATEMENTS),
-		// hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
-		// this.referenceRdfConverter.writeReferences();
+		if (hasTask(RdfSerializer.TASK_STATEMENTS)) {
+			writeStatements(subject, document);
+		}
+
+		this.snakRdfConverter.writeAuxiliaryTriples();
+		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
+				hasTask(RdfSerializer.TASK_STATEMENTS),
+				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
+		this.referenceRdfConverter.writeReferences();
 	}
 
-	void writeStatements(Resource subject, ItemDocument itemDocument)
+	void writeStatements(Resource subject, StatementDocument statementDocument)
 			throws RDFHandlerException {
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
+		for (StatementGroup statementGroup : statementDocument
+				.getStatementGroups()) {
 			URI property = this.rdfWriter.getUri(Vocabulary.getPropertyUri(
 					statementGroup.getProperty(), PropertyContext.STATEMENT));
 			for (Statement statement : statementGroup.getStatements()) {
@@ -220,15 +225,18 @@ public class RdfConverter {
 			}
 		}
 
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
+		for (StatementGroup statementGroup : statementDocument
+				.getStatementGroups()) {
 			for (Statement statement : statementGroup.getStatements()) {
 				writeStatement(statement);
 			}
 		}
 	}
 
-	void writeSimpleStatements(Resource subject, ItemDocument itemDocument) {
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
+	void writeSimpleStatements(Resource subject,
+			StatementDocument statementDocument) {
+		for (StatementGroup statementGroup : statementDocument
+				.getStatementGroups()) {
 			for (Statement statement : statementGroup.getStatements()) {
 				if (statement.getClaim().getQualifiers().size() == 0) {
 					this.snakRdfConverter.setSnakContext(subject,
@@ -273,8 +281,8 @@ public class RdfConverter {
 
 	void writeSubclassOfStatements(Resource subject, ItemDocument itemDocument) {
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			boolean isSubClassOf = "P279".equals(statementGroup
-					.getProperty().getId());
+			boolean isSubClassOf = "P279".equals(statementGroup.getProperty()
+					.getId());
 			boolean isInstanceOf = "P31".equals(statementGroup.getProperty()
 					.getId());
 			if (!isInstanceOf && !isSubClassOf) {

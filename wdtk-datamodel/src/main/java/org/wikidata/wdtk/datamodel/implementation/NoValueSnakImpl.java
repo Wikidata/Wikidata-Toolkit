@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -33,7 +35,9 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
  * @author Markus Kroetzsch
  *
  */
-public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
+public class NoValueSnakImpl extends SnakImpl implements NoValueSnak, Serializable {
+
+	private static final long serialVersionUID = -8040774434722723542L;
 
 	/**
 	 * Constructor.

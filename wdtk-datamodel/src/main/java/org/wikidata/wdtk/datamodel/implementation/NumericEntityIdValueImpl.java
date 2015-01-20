@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -29,10 +31,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 /**
  * Generic implementation of {@link EntityIdValue} that works with arbitrary
  * Wikibase instances: it requires a baseIri that identifies the site globally.
- *
+ * <p>
  * TODO It would be cleaner to have an object that manages the site context
  * instead of passing a base IRI string that is simply concatenated.
- *
+ * <p>
  * TODO For our common use case that Wikidata entities are processed, it might
  * be useful to have a more lightweight object that does not store this known
  * base IRI.
@@ -40,24 +42,27 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  * @author Markus Kroetzsch
  *
  */
-public abstract class EntityIdValueImpl implements EntityIdValue {
+public abstract class NumericEntityIdValueImpl implements EntityIdValue,
+		Serializable {
 
-	final String id;
+	private static final long serialVersionUID = -4151826012979199651L;
+
+	final int id;
 	final String siteIri;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param id
-	 *            the ID string, e.g., "Q1234". The required format depends on
-	 *            the specific type of entity
+	 *            the ID represented by a number, e.g., "1234". It will be
+	 *            interpreted to form an ID string depending on the specific
+	 *            type of entity.
 	 * @param siteIri
 	 *            IRI to identify the site, usually the first part of the entity
 	 *            IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	EntityIdValueImpl(String id, String siteIri) {
-		Validate.notNull(id, "Entity ids cannot be null");
+	NumericEntityIdValueImpl(int id, String siteIri) {
 		Validate.notNull(siteIri, "Entity site IRIs cannot be null");
 		this.id = id;
 		this.siteIri = siteIri;
@@ -65,12 +70,7 @@ public abstract class EntityIdValueImpl implements EntityIdValue {
 
 	@Override
 	public String getIri() {
-		return siteIri.concat(id);
-	}
-
-	@Override
-	public String getId() {
-		return id;
+		return siteIri.concat(getId());
 	}
 
 	@Override

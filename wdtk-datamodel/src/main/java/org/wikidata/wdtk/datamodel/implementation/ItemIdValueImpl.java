@@ -31,12 +31,14 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
  * @author Markus Kroetzsch
  *
  */
-public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
+public class ItemIdValueImpl extends NumericEntityIdValueImpl implements
+		ItemIdValue {
+
+	private static final long serialVersionUID = -2430982177464510496L;
 
 	/**
-	 * Constructor.
+	 * Creates a new object of this type.
 	 *
-	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
 	 *            a string of the form Qn... where n... is the string
 	 *            representation of a positive integer number
@@ -44,14 +46,36 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 	 *            the first part of the entity IRI of the site this belongs to,
 	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
-	ItemIdValueImpl(String id, String baseIri) {
-		super(id, baseIri);
-
-		if (!id.matches("^Q[1-9][0-9]*$")) {
+	public static ItemIdValueImpl create(String id, String baseIri) {
+		if (id == null || id.length() <= 1 || id.charAt(0) != 'Q') {
 			throw new IllegalArgumentException(
 					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
 							+ id + "\"");
 		}
+
+		try {
+			int numId = new Integer(id.substring(1));
+			return new ItemIdValueImpl(numId, baseIri);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(
+					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
+							+ id + "\"");
+		}
+	}
+
+	/**
+	 * Constructor. Use {@link #create(String, String)} to create objects of
+	 * this type.
+	 *
+	 * @see NumericEntityIdValueImpl#EntityIdImpl(int, String)
+	 * @param id
+	 *            the numeric id of this property (the number after "Q")
+	 * @param baseIri
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
+	 */
+	private ItemIdValueImpl(int id, String baseIri) {
+		super(id, baseIri);
 	}
 
 	@Override
@@ -62,5 +86,10 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements ItemIdValue {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public String getId() {
+		return "Q" + this.id;
 	}
 }

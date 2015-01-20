@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -27,8 +29,10 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-public class MonolingualTextValueImpl implements MonolingualTextValue {
+public class MonolingualTextValueImpl implements MonolingualTextValue, Serializable {
 
+	private static final long serialVersionUID = -6165541960096088292L;
+	
 	final String text;
 	final String languageCode;
 

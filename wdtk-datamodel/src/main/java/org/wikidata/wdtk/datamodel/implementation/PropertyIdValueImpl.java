@@ -31,13 +31,14 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  * @author Markus Kroetzsch
  *
  */
-public class PropertyIdValueImpl extends EntityIdValueImpl implements
-PropertyIdValue {
+public class PropertyIdValueImpl extends NumericEntityIdValueImpl implements
+		PropertyIdValue {
+
+	private static final long serialVersionUID = 3427673190538556373L;
 
 	/**
-	 * Constructor.
+	 * Creates a new object of this type.
 	 *
-	 * @see EntityIdValueImpl#EntityIdImpl(String, String)
 	 * @param id
 	 *            a string of the form Pn... where n... is the string
 	 *            representation of a positive integer number
@@ -45,14 +46,37 @@ PropertyIdValue {
 	 *            the first part of the entity IRI of the site this belongs to,
 	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
-	PropertyIdValueImpl(String id, String baseIri) {
-		super(id, baseIri);
-
-		if (!id.matches("^P[1-9][0-9]*$")) {
+	public static PropertyIdValueImpl create(String id,
+			String baseIri) {
+		if (id == null || id.length() <= 1 || id.charAt(0) != 'P') {
 			throw new IllegalArgumentException(
 					"Wikibase property ids must have the form \"P<positive integer>\". Given id was \""
 							+ id + "\"");
 		}
+
+		try {
+			int numId = new Integer(id.substring(1));
+			return new PropertyIdValueImpl(numId, baseIri);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(
+					"Wikibase property ids must have the form \"P<positive integer>\". Given id was \""
+							+ id + "\"");
+		}
+	}
+
+	/**
+	 * Constructor. Use {@link #create(String, String)} to
+	 * create objects of this type.
+	 *
+	 * @see NumericEntityIdValueImpl#EntityIdImpl(int, String)
+	 * @param id
+	 *            the numeric id of this property (the number after "P")
+	 * @param baseIri
+	 *            the first part of the entity IRI of the site this belongs to,
+	 *            e.g., "http://www.wikidata.org/entity/"
+	 */
+	private PropertyIdValueImpl(int id, String baseIri) {
+		super(id, baseIri);
 	}
 
 	@Override
@@ -63,6 +87,11 @@ PropertyIdValue {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public String getId() {
+		return "P" + this.id;
 	}
 
 }

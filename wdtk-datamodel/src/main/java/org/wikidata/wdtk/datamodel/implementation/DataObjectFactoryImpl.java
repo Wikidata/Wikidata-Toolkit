@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -64,12 +65,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		return new ItemIdValueImpl(id, siteIri);
+		return ItemIdValueImpl.create(id, siteIri);
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return new PropertyIdValueImpl(id, siteIri);
+		return PropertyIdValueImpl.create(id, siteIri);
 	}
 
 	@Override
@@ -87,8 +88,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
-	public GlobeCoordinatesValue getGlobeCoordinatesValue(long latitude,
-			long longitude, long precision, String globeIri) {
+	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
+			double longitude, double precision, String globeIri) {
 		return new GlobeCoordinatesValueImpl(latitude, longitude, precision,
 				globeIri);
 	}
@@ -165,7 +166,17 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
-				aliases, datatypeId);
+				aliases, Collections.<StatementGroup> emptyList(), datatypeId);
+	}
+
+	@Override
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
+		return new PropertyDocumentImpl(propertyId, labels, descriptions,
+				aliases, statementGroups, datatypeId);
 	}
 
 	@Override
