@@ -104,15 +104,25 @@ public class JsonTestData {
 			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + "}";
 
 	// wrapping into item document structure for dedicated tests
-	public static final String JSON_WRAPPED_LABEL = "{\"labels\":{\"en\":"
+	public static final String JSON_WRAPPED_LABEL = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},\"labels\":{\"en\":"
 			+ JSON_TERM_MLTV + "}," + JSON_ITEM_TYPE + "}";
-	public static final String JSON_WRAPPED_DESCRIPTIONS = "{\"descriptions\":{\"en\":"
+	public static final String JSON_WRAPPED_DESCRIPTIONS = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":{},\"labels\":{},\"claims\":{},\"sitelinks\":{},\"descriptions\":{\"en\":"
 			+ JSON_TERM_MLTV + "}," + JSON_ITEM_TYPE + "}";
-	public static final String JSON_WRAPPED_ALIASES = "{ \"aliases\":{\"en\":["
+	public static final String JSON_WRAPPED_ALIASES = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},\"aliases\":{\"en\":["
 			+ JSON_TERM_MLTV + "]}," + JSON_ITEM_TYPE + "}";
 	public static final String JSON_WRAPPED_ITEMID = "{\"id\":\""
-			+ TEST_ITEM_ID + "\"," + JSON_ITEM_TYPE + "}";
-	public static final String JSON_WRAPPED_SITE_LINK = "{\"sitelinks\":{\"enwiki\":"
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},"
+			+ JSON_ITEM_TYPE + "}";
+	public static final String JSON_WRAPPED_SITE_LINK = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":"
 			+ JSON_SITE_LINK + "}," + JSON_ITEM_TYPE + "}";
 
 	public static final String JSON_NOVALUE_STATEMENT = "{\"type\":\"statement\",\"id\":\""

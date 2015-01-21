@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -40,28 +39,6 @@ public class TestItemDocument {
 	// TODO test statements (JSON claim)
 
 	ObjectMapper mapper = new ObjectMapper();
-	JacksonItemDocument fullDocument;
-
-	@Before
-	public void setupTestFullDocument() {
-		fullDocument = new JacksonItemDocument();
-		fullDocument.setJsonId(JsonTestData.getTestItemId().getId());
-		fullDocument.setAliases(JsonTestData.getTestAliases());
-		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
-		fullDocument.setLabels(JsonTestData.getTestMltvMap());
-	}
-
-	@Test
-	public void testFullDocumentSetup() {
-		assertNotNull(fullDocument.getAliases());
-		assertNotNull(fullDocument.getDescriptions());
-		assertNotNull(fullDocument.getLabels());
-		assertNotNull(fullDocument.getJsonId());
-		assertNotNull(fullDocument.getItemId());
-		assertNotNull(fullDocument.getEntityId());
-
-		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
-	}
 
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Pojo to Json
@@ -70,7 +47,7 @@ public class TestItemDocument {
 	 */
 	@Test
 	public void testLabelsToJson() throws JsonProcessingException {
-		JacksonItemDocument document = new JacksonItemDocument();
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
 		document.setLabels(JsonTestData.getTestMltvMap());
 
 		String result = mapper.writeValueAsString(document);
@@ -103,7 +80,7 @@ public class TestItemDocument {
 	 */
 	@Test
 	public void testDescriptionsToJson() throws JsonProcessingException {
-		JacksonItemDocument document = new JacksonItemDocument();
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
 		document.setDescriptions(JsonTestData.getTestMltvMap());
 
 		String result = mapper.writeValueAsString(document);
@@ -132,7 +109,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testAliasesToJson() throws JsonProcessingException {
-		JacksonItemDocument document = new JacksonItemDocument();
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
 		document.setAliases(JsonTestData.getTestAliases());
 
 		String result = mapper.writeValueAsString(document);
@@ -153,7 +130,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testItemIdToJson() throws JsonProcessingException {
-		JacksonItemDocument document = new JacksonItemDocument();
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
 		document.setJsonId(JsonTestData.getTestItemId().getId());
 
 		String result = mapper.writeValueAsString(document);
@@ -174,7 +151,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testSiteLinksToJson() throws JsonProcessingException {
-		JacksonItemDocument document = new JacksonItemDocument();
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
 		document.setSiteLinks(JsonTestData.getTestSiteLinkMap());
 
 		String result = mapper.writeValueAsString(document);
@@ -194,6 +171,20 @@ public class TestItemDocument {
 
 	@Test
 	public void testGenerationFromOtherItemDocument() {
+		JacksonItemDocument fullDocument = new JacksonItemDocument();
+		fullDocument.setJsonId(JsonTestData.getTestItemId().getId());
+		fullDocument.setAliases(JsonTestData.getTestAliases());
+		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
+		fullDocument.setLabels(JsonTestData.getTestMltvMap());
+
+		assertEquals(fullDocument.getAliases(), JsonTestData.getTestAliases());
+		assertEquals(fullDocument.getDescriptions(),
+				JsonTestData.getTestMltvMap());
+		assertEquals(fullDocument.getLabels(), JsonTestData.getTestMltvMap());
+		assertEquals(fullDocument.getItemId(), JsonTestData.getTestItemId());
+		assertEquals(fullDocument.getEntityId(), JsonTestData.getTestItemId());
+		assertEquals(fullDocument.getItemId().getId(), fullDocument.getJsonId());
+
 		DatamodelConverter converter = new DatamodelConverter(
 				new JacksonObjectFactory());
 		ItemDocument copy = converter.copy(fullDocument);
