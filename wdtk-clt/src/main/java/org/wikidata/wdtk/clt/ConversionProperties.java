@@ -86,7 +86,7 @@ public class ConversionProperties {
 						"place the output into the directory located at <path>")
 				.withLongOpt("destination").create("d");
 		Option dumplocation = OptionBuilder.withArgName("path").hasArg()
-				.withDescription("define the location of the dumpfiles")
+				.withDescription("define the location of the dump files")
 				.withLongOpt("dumplocation").create("l");
 		Option config = OptionBuilder
 				.withArgName("file")
