@@ -11,7 +11,8 @@ New features:
 * Standard (POJO) datamodel implementation now is Serializable
 * Deep copy functionality for changing between datamodel implementations (DatamodelConverter)
 * Support for filtering data during copying (e.g., to keep only some languages/properties/sites).
-* Support arbitrary precision values in globe coordinates 
+* Support arbitrary precision values in globe coordinates
+* Dependency on JSON.org has been removed to use the faster Jackson library everywhere 
 
 Bug fixes:
 * Support RDF export of Monolingual Text Value data in statements.
@@ -21,7 +22,8 @@ Bug fixes:
 Incompatible changes:
 * The datatype of all values in GlobeCoordinateValue (latitude, longitude, precision) has
   changed from long (fixed precision number) to double (floating point number) to match the JSON.
-   
+* The JSON serializer class org.wikidata.wdtk.datamodel.json.JsonSerializer has vanished. It is
+  replaced by the org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer (almost same interface).
 
 
 Version 0.3.0

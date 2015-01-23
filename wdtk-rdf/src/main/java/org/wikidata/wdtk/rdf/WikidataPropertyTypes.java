@@ -30,10 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -46,6 +43,9 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class helps to manage the exact datatype of properties used in an RDF
@@ -63,6 +63,8 @@ public class WikidataPropertyTypes implements PropertyTypes {
 	final String WEB_API_URL = "http://www.wikidata.org/w/api.php";
 
 	final Map<String, String> propertyTypes;
+
+	final ObjectMapper objectMapper = new ObjectMapper();
 
 	PropertyIdValue propertyRegister = null;
 	String webAPIUrl;
@@ -161,13 +163,10 @@ public class WikidataPropertyTypes implements PropertyTypes {
 		InputStream inStream = this.webResourceFetcher
 				.getInputStreamForUrl(uriBuilder.toString());
 
-		JSONObject jsonResult = new JSONObject(IOUtils.toString(inStream));
-		String datatype;
-		try {
-			datatype = jsonResult.getJSONObject("entities")
-					.getJSONObject(propertyIdValue.getId())
-					.getString("datatype");
-		} catch (JSONException e) {
+		JsonNode jsonNode = this.objectMapper.readTree(inStream);
+		String datatype = jsonNode.path("entities")
+				.path(propertyIdValue.getId()).path("datatype").asText();
+		if (datatype == null || "".equals(datatype)) {
 			logger.error("Could not find datatype of property "
 					+ propertyIdValue.getId() + " online.");
 			return null;
@@ -176,6 +175,8 @@ public class WikidataPropertyTypes implements PropertyTypes {
 		switch (datatype) {
 		case "wikibase-item":
 			return DatatypeIdValue.DT_ITEM;
+		case "wikibase-property":
+			return DatatypeIdValue.DT_PROPERTY;
 		case "string":
 			return DatatypeIdValue.DT_STRING;
 		case "quantity":

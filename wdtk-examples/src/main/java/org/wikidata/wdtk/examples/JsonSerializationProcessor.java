@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,8 +23,6 @@ package org.wikidata.wdtk.examples;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,9 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 
 /**
  * This example illustrates how to create a JSON serialization of some of the
@@ -62,30 +58,13 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 
 	static final String OUTPUT_FILE_NAME = "json-serialization-example.json.gz";
 
+	final JsonSerializer jsonSerializer;
+
 	/**
 	 * Object used to make simplified copies of Wikidata documents for
 	 * re-serialization in JSON.
 	 */
 	final DatamodelConverter datamodelConverter;
-
-	/**
-	 * The stream that the resulting JSON is written to.
-	 */
-	final OutputStream outputStream;
-	/**
-	 * A writer to add some characters to the output file in between the actual
-	 * JSON serializations.
-	 */
-	final Writer outputStreamWriter;
-	/**
-	 * Object mapper that is used to serialize JSON.
-	 */
-	private final ObjectMapper mapper;
-
-	/**
-	 * Counter to keep track how many item documents have been exported.
-	 */
-	int itemCount = 0;
 
 	/**
 	 * Runs the example program.
@@ -136,38 +115,21 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 		this.datamodelConverter.setOptionSiteLinkFilter(Collections
 				.<String> emptySet());
 
-		// The mapper is an object from the Jackson library that handles the
-		// serialization in JSON.
-		this.mapper = new ObjectMapper();
-		// Make sure it does not close our file after the first object:
-		this.mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-
 		// The (compressed) file we write to.
-		this.outputStream = new GzipCompressorOutputStream(
+		OutputStream outputStream = new GzipCompressorOutputStream(
 				new BufferedOutputStream(
 						ExampleHelpers
 								.openExampleFileOuputStream(OUTPUT_FILE_NAME)));
+		this.jsonSerializer = new JsonSerializer(outputStream);
 
-		// We use this OutputStreamWriter to inject extra characters in between
-		// JSON output. This is maybe not the cleanest way of doing it (calling
-		// flush() is essential).
-		this.outputStreamWriter = new OutputStreamWriter(this.outputStream);
-		this.outputStreamWriter.write("[\n");
-		this.outputStreamWriter.flush();
+		this.jsonSerializer.start();
 	}
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		if (includeDocument(itemDocument)) {
-			this.itemCount++;
-			try {
-				this.mapper.writeValue(this.outputStream,
-						this.datamodelConverter.copy(itemDocument));
-				this.outputStreamWriter.write(",\n");
-				this.outputStreamWriter.flush();
-			} catch (IOException e) {
-				throw new RuntimeException(e.toString(), e);
-			}
+			this.jsonSerializer.processItemDocument(this.datamodelConverter
+					.copy(itemDocument));
 		}
 	}
 
@@ -201,11 +163,10 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 	 *             if there was a problem closing the output
 	 */
 	public void close() throws IOException {
-		System.out.println("Serialized " + this.itemCount
+		System.out.println("Serialized "
+				+ this.jsonSerializer.getEntityDocumentCount()
 				+ " item documents to JSON file " + OUTPUT_FILE_NAME + ".");
-		this.outputStreamWriter.write("]");
-		this.outputStreamWriter.flush();
-		this.outputStreamWriter.close();
+		this.jsonSerializer.close();
 	}
 
 	/**
