@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.datamodel.json.JsonSerializer;
+import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
 
@@ -33,7 +33,7 @@ public class JsonConfiguration extends OutputConfiguration {
 
 	/**
 	 * Constructor. See {@link OutputConfiguration} for more details.
-	 * 
+	 *
 	 * @param conversionProperties
 	 */
 	public JsonConfiguration(ConversionProperties conversionProperties) {
@@ -47,7 +47,7 @@ public class JsonConfiguration extends OutputConfiguration {
 
 	/**
 	 * Builds up a serializer for JSON.
-	 * 
+	 *
 	 * @param conversionConfiguration
 	 * @throws FileNotFoundException
 	 * @throws IOException

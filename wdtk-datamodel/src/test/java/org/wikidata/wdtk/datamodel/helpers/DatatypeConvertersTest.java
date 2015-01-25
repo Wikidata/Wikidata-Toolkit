@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.json;
+package org.wikidata.wdtk.datamodel.helpers;
 
 /*
  * #%L
@@ -20,25 +20,20 @@ package org.wikidata.wdtk.datamodel.json;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DataFormatter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 public class DatatypeConvertersTest {
 
-	final DataObjectFactory factory = new DataObjectFactoryImpl();
-	final TestObjectFactory testObjectFactory = new TestObjectFactory();
-
 	@Test
 	public void testFormatTimeISO8601() {
-		TimeValue time = (TimeValue) testObjectFactory
-				.createValueSnakTimeValue("P17").getValue();
+		TimeValue time = Datamodel.makeTimeValue(306, (byte) 11, (byte) 3,
+				(byte) 13, (byte) 07, (byte) 06, TimeValue.PREC_SECOND, 0, 0,
+				0, TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(DataFormatter.formatTimeISO8601(time),
 				"+00000000306-11-03T13:07:06Z");
 

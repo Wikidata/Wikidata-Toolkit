@@ -32,7 +32,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.datamodel.json.JsonSerializer;
 
 /**
  * This class implements {@link EntityDocumentsSerializer} to provide a RDF
@@ -43,7 +42,7 @@ import org.wikidata.wdtk.datamodel.json.JsonSerializer;
  */
 public class RdfSerializer implements EntityDocumentsSerializer {
 
-	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
+	static final Logger logger = LoggerFactory.getLogger(RdfSerializer.class);
 
 	public static final int TASK_STATEMENTS = 0x00000001;
 	public static final int TASK_SITELINKS = 0x00000002;
