@@ -122,7 +122,7 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 								.openExampleFileOuputStream(OUTPUT_FILE_NAME)));
 		this.jsonSerializer = new JsonSerializer(outputStream);
 
-		this.jsonSerializer.start();
+		this.jsonSerializer.open();
 	}
 
 	@Override

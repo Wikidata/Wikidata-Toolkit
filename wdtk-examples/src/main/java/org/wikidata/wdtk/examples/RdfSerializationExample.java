@@ -186,7 +186,7 @@ public class RdfSerializationExample {
 	 */
 	private static void startSerializers() {
 		for (RdfSerializer serializer : serializers) {
-			serializer.start();
+			serializer.open();
 		}
 	}
 

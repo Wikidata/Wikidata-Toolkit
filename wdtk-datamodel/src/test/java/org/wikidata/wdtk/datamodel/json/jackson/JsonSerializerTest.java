@@ -78,7 +78,7 @@ public class JsonSerializerTest {
 				Collections.<StatementGroup> emptyList(), Datamodel
 						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA));
 
-		serializer.start();
+		serializer.open();
 		serializer.processItemDocument(id1);
 		serializer.processItemDocument(id2);
 		serializer.processPropertyDocument(pd1);
