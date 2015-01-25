@@ -33,7 +33,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.examples.EntityTimerProcessor.TimeoutException;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor.TimeoutException;
 
 /**
  * Class for sharing code that is used in many examples. It contains several
@@ -169,7 +170,7 @@ public class ExampleHelpers {
 		}
 
 		// Print final timer results:
-		entityTimerProcessor.stop();
+		entityTimerProcessor.close();
 	}
 
 	/**

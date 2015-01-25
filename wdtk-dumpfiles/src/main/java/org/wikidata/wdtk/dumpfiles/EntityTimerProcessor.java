@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.examples;
+package org.wikidata.wdtk.dumpfiles;
 
 /*
  * #%L
@@ -22,6 +22,7 @@ package org.wikidata.wdtk.examples;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.util.Timer;
  * @author Markus Kroetzsch
  *
  */
-public class EntityTimerProcessor implements EntityDocumentProcessor {
+public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(EntityTimerProcessor.class);
@@ -69,10 +70,17 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 		countEntity();
 	}
 
+	@Override
+	public void open() {
+		// Nothing to do. We only start the timer when the first entity is
+		// really processed.
+	}
+
 	/**
 	 * Stops the processing and prints the final time.
 	 */
-	public void stop() {
+	@Override
+	public void close() {
 		logger.info("Finished processing.");
 		this.timer.stop();
 		this.lastSeconds = (int) (timer.getTotalWallTime() / 1000000000);
@@ -108,9 +116,14 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 	 * Prints the current status, time and entity count.
 	 */
 	private void printStatus() {
-		logger.info("Processed " + this.entityCount + " entities in "
-				+ this.lastSeconds + " sec ("
-				+ (this.entityCount / this.lastSeconds) + " per second)");
+		logger.info("Processed "
+				+ this.entityCount
+				+ " entities in "
+				+ this.lastSeconds
+				+ " sec"
+				+ (this.lastSeconds > 0 ? " ("
+						+ (this.entityCount / this.lastSeconds)
+						+ " per second)" : ""));
 	}
 
 	private void startTimer() {
