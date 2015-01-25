@@ -23,7 +23,7 @@
 		<module>wdtk-distribution</module>
 		<module>wdtk-rdf</module>
 		<module>wdtk-clt</module>
-  </modules>
+	</modules>
 
 	<licenses>
 		<license>
@@ -106,7 +106,7 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
 					<version>1.6</version>
-					<configuration/>
+					<configuration />
 					<executions>
 						<execution>
 							<id>first</id>
@@ -145,7 +145,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore/>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
