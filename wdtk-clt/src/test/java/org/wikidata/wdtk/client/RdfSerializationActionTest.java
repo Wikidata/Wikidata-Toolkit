@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.clt;
+package org.wikidata.wdtk.client;
 
 /*
  * #%L
@@ -20,27 +20,20 @@ package org.wikidata.wdtk.clt;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
-import org.junit.Before;
 import org.junit.Test;
 
-public class JsonConfigurationTest {
-
-	@Before
-	public void setUp() throws Exception {
-	}
+public class RdfSerializationActionTest {
 
 	@Test
-	public void testSetDefaultDestination() throws IOException {
-		JsonConfiguration jsonConfiguration = new JsonConfiguration(
-				new ConversionProperties());
+	public void testCompressionOutputArgumentsLong() {
+		String[] args = new String[] { "-a", "rdf" };
+		DumpProcessingOutputAction action = DumpProcessingOutputActionTest
+				.getActionFromArgs(args);
 
-		jsonConfiguration.setDefaultDestination();
-		assertEquals(jsonConfiguration.getOutputDestination(),
-				"WikidataDump.json");
-
+		assertTrue(action instanceof RdfSerializationAction);
+		assertTrue(action.needsSites());
 	}
+
 }

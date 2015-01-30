@@ -62,5 +62,6 @@
 			<version>${ini4JVersion}</version>
 		</dependency>
 	</dependencies>
+
 </project>
 

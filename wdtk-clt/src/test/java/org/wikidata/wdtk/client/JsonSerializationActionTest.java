@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.clt;
+package org.wikidata.wdtk.client;
 
 /*
  * #%L
@@ -20,29 +20,20 @@ package org.wikidata.wdtk.clt;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
-import org.apache.commons.cli.ParseException;
-import org.junit.Before;
 import org.junit.Test;
 
-public class ConversionClientTest {
-
-	final static String[] TEST_ARGS = new String[] { "-s", "-d", "/somewhere/",
-			"-f", "rdf", "-r", "TERMS", "-n", "-e", ".bz2", "-l",
-			"dumps/wikidata/" };
-
-	@Before
-	public void setUp() throws Exception {
-	}
+public class JsonSerializationActionTest {
 
 	@Test
-	public void testConstructor() throws ParseException, IOException {
-		ConversionClient client = new ConversionClient(TEST_ARGS);
-		assertTrue(client.convertSomething());
-		assertTrue(client.useStdoutForOutput());
-	}
+	public void testCompressionOutputArgumentsLong() {
+		String[] args = new String[] { "-a", "json" };
+		DumpProcessingOutputAction action = DumpProcessingOutputActionTest
+				.getActionFromArgs(args);
 
+		assertTrue(action instanceof JsonSerializationAction);
+		assertFalse(action.needsSites());
+	}
 }

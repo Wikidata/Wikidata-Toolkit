@@ -3,7 +3,7 @@
  * 
  * @author Michael Günther
  */
-package org.wikidata.wdtk.clt;
+package org.wikidata.wdtk.client;
 
 /*
  * #%L
