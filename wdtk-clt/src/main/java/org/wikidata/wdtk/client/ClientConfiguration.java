@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -374,12 +374,7 @@ public class ClientConfiguration {
 			result.setOption(option.getLongOpt(), option.getValue());
 		}
 
-		if (result.useStdOut()) {
-			if (this.useStdOut) {
-				logger.warn("Multiple serializer using stdout as output destination!");
-			}
-			this.useStdOut = true;
-		}
+		checkDuplicateStdOutOutput(result);
 
 		return result;
 	}
@@ -407,14 +402,25 @@ public class ClientConfiguration {
 			}
 		}
 
-		if (result.useStdOut()) {
+		checkDuplicateStdOutOutput(result);
+
+		return result;
+	}
+
+	/**
+	 * Checks if a newly created action wants to write output to stdout, and
+	 * logs a warning if other actions are doing the same.
+	 * 
+	 * @param newAction
+	 *            the new action to be checked
+	 */
+	private void checkDuplicateStdOutOutput(DumpProcessingAction newAction) {
+		if (newAction.useStdOut()) {
 			if (this.useStdOut) {
-				logger.warn("Multiple serializer using stdout as output destination!");
+				logger.warn("Multiple actions are using stdout as output destination.");
 			}
 			this.useStdOut = true;
 		}
-
-		return result;
 	}
 
 	/**

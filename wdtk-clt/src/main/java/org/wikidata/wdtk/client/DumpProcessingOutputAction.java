@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 
 /*
@@ -25,9 +27,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,6 +50,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  */
 public abstract class DumpProcessingOutputAction implements
 		DumpProcessingAction {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(DumpProcessingAction.class);
 
 	/**
 	 * Name of the option used to define that output be compressed in a
@@ -156,7 +161,6 @@ public abstract class DumpProcessingOutputAction implements
 	 * @throws IOException
 	 *             if there were problems opening the required streams
 	 */
-	@SuppressWarnings("resource")
 	protected static OutputStream getOutputStream(boolean useStdOut,
 			String filePath, String compressionType) throws IOException {
 		if (useStdOut) {
@@ -174,28 +178,22 @@ public abstract class DumpProcessingOutputAction implements
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
 				new FileOutputStream(filePath), 1024 * 1024 * 5);
 
-		OutputStream compressorOutputStream;
 		switch (compressionType) {
 		case COMPRESS_BZ2:
-			compressorOutputStream = new BZip2CompressorOutputStream(
-					bufferedFileOutputStream);
-			break;
+			return getAsynchronousOutputStream(new BZip2CompressorOutputStream(
+					bufferedFileOutputStream));
 		case COMPRESS_GZIP:
 			GzipParameters gzipParameters = new GzipParameters();
 			gzipParameters.setCompressionLevel(7);
-			compressorOutputStream = new GzipCompressorOutputStream(
-					bufferedFileOutputStream, gzipParameters);
-			break;
+			return getAsynchronousOutputStream(new GzipCompressorOutputStream(
+					bufferedFileOutputStream, gzipParameters));
 		case COMPRESS_NONE:
-			compressorOutputStream = bufferedFileOutputStream;
-			break;
+			return bufferedFileOutputStream;
 		default:
 			bufferedFileOutputStream.close();
 			throw new IllegalArgumentException(
 					"Unsupported compression format: " + compressionType);
 		}
-
-		return getAsynchronousOutputStream(compressorOutputStream);
 	}
 
 	/**
@@ -249,6 +247,8 @@ public abstract class DumpProcessingOutputAction implements
 			try {
 				closeable.close();
 			} catch (IOException ignored) {
+				logger.error("Failed to close output stream: "
+						+ ignored.getMessage());
 			}
 		}
 	}
