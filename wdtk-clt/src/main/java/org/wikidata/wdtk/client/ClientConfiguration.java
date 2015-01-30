@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,6 +68,10 @@ public class ClientConfiguration {
 	 */
 	public static final String CMD_OPTION_DUMP_LOCATION = "d";
 	/**
+	 * Short command-line alternative to {@link #OPTION_QUIET}.
+	 */
+	public static final String CMD_OPTION_QUIET = "q";
+	/**
 	 * Short command-line alternative to {@link #OPTION_OFFLINE_MODE}.
 	 */
 	public static final String CMD_OPTION_OFFLINE_MODE = "n";
@@ -107,6 +111,11 @@ public class ClientConfiguration {
 	 * switching to offline mode.
 	 */
 	public static final String OPTION_OFFLINE_MODE = "offline";
+	/**
+	 * Name of the long command line option and configuration file field for
+	 * requesting that no messages are logged to stdout.
+	 */
+	public static final String OPTION_QUIET = "quiet";
 	/**
 	 * Name of the long command line option for selecting an action that should
 	 * be performed. Available actions are registered in the field
@@ -167,9 +176,9 @@ public class ClientConfiguration {
 	String dumpLocation = null;
 
 	/**
-	 * True if one of the configured operations writes its results to stdout.
+	 * True if no status messages should be written to stdout.
 	 */
-	Boolean useStdOut = false;
+	boolean quiet = false;
 
 	/**
 	 * Constructs a new object for the given arguments.
@@ -205,13 +214,14 @@ public class ClientConfiguration {
 	}
 
 	/**
-	 * Returns true if one of the operations writes its output to stdout. Logs
-	 * should not be written to stdout in this case.
+	 * Returns true if the application should not write anything to stdout. This
+	 * can be set explicitly or indirectly if one of the actions wants to write
+	 * to stdout.
 	 *
-	 * @return true if some operations uses stdout
+	 * @return true if the application should not log messages to stdout
 	 */
-	public boolean hasStdOutOutput() {
-		return this.useStdOut;
+	public boolean isQuiet() {
+		return this.quiet;
 	}
 
 	/**
@@ -326,6 +336,10 @@ public class ClientConfiguration {
 		if (cmd.hasOption(CMD_OPTION_OFFLINE_MODE)) {
 			this.offlineMode = true;
 		}
+
+		if (cmd.hasOption(CMD_OPTION_QUIET)) {
+			this.quiet = true;
+		}
 	}
 
 	/**
@@ -341,6 +355,11 @@ public class ClientConfiguration {
 			case OPTION_OFFLINE_MODE:
 				if (section.get(key).toLowerCase().equals("true")) {
 					this.offlineMode = true;
+				}
+				break;
+			case OPTION_QUIET:
+				if (section.get(key).toLowerCase().equals("true")) {
+					this.quiet = true;
 				}
 				break;
 			case OPTION_DUMP_LOCATION:
@@ -410,16 +429,16 @@ public class ClientConfiguration {
 	/**
 	 * Checks if a newly created action wants to write output to stdout, and
 	 * logs a warning if other actions are doing the same.
-	 * 
+	 *
 	 * @param newAction
 	 *            the new action to be checked
 	 */
 	private void checkDuplicateStdOutOutput(DumpProcessingAction newAction) {
 		if (newAction.useStdOut()) {
-			if (this.useStdOut) {
+			if (this.quiet) {
 				logger.warn("Multiple actions are using stdout as output destination.");
 			}
-			this.useStdOut = true;
+			this.quiet = true;
 		}
 	}
 
@@ -512,6 +531,11 @@ public class ClientConfiguration {
 
 		options.addOption(config);
 		options.addOption(action);
+		options.addOption(
+				CMD_OPTION_QUIET,
+				OPTION_QUIET,
+				false,
+				"perform all actions quietly, without printing status messages to the console; errors/warnings are still printed to stderr");
 		options.addOption(destination);
 		options.addOption(dumplocation);
 		options.addOption(compressionExtention);

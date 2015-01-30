@@ -68,9 +68,10 @@ public class Client {
 		initializeLogging();
 		this.clientConfiguration = new ClientConfiguration(args);
 
-		if (this.clientConfiguration.hasStdOutOutput()) {
-			org.apache.log4j.Logger.getRootLogger().removeAppender(
-					consoleAppender);
+		if (this.clientConfiguration.isQuiet()) {
+			consoleAppender.setThreshold(Level.OFF);
+		} else {
+			consoleAppender.setThreshold(Level.INFO);
 		}
 	}
 
@@ -96,7 +97,7 @@ public class Client {
 					props, null, true);
 		}
 
-		if (!this.clientConfiguration.hasStdOutOutput()) {
+		if (!this.clientConfiguration.isQuiet()) {
 			EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
 					0);
 			this.dumpProcessingController.registerEntityDocumentProcessor(

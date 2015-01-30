@@ -38,7 +38,7 @@ public class ClientConfigurationTest {
 		ClientConfiguration config = new ClientConfiguration(args);
 
 		assertTrue(config.getOfflineMode());
-		assertTrue(config.hasStdOutOutput());
+		assertTrue(config.isQuiet());
 		assertEquals(config.getDumpLocation(), "dumps/wikidata/");
 
 		assertEquals(config.getActions().size(), 2);
@@ -70,7 +70,7 @@ public class ClientConfigurationTest {
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
 		assertEquals(config.getDumpLocation(), null);
-		assertFalse(config.hasStdOutOutput());
+		assertFalse(config.isQuiet());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class ClientConfigurationTest {
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
 		assertEquals(config.getDumpLocation(), null);
-		assertFalse(config.hasStdOutOutput());
+		assertFalse(config.isQuiet());
 	}
 
 	@Test
@@ -121,14 +121,28 @@ public class ClientConfigurationTest {
 	public void testStdOutOutputArgumentsShort() {
 		String[] args = new String[] { "-a", "json", "-s" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertTrue(config.hasStdOutOutput());
+		assertTrue(config.isQuiet());
 	}
 
 	@Test
 	public void testStdOutOutputArgumentsLong() {
 		String[] args = new String[] { "--action", "json", "--stdout" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertTrue(config.hasStdOutOutput());
+		assertTrue(config.isQuiet());
+	}
+
+	@Test
+	public void testQuietArgumentsShort() {
+		String[] args = new String[] { "-q" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertTrue(config.isQuiet());
+	}
+
+	@Test
+	public void testQuietArgumentsLong() {
+		String[] args = new String[] { "--quiet" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertTrue(config.isQuiet());
 	}
 
 }

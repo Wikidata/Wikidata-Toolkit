@@ -32,8 +32,8 @@ public class ClientTest {
 
 	@Test
 	public void testDefaultLoggingConfig() throws ParseException, IOException {
-		String[] TEST_ARGS = new String[] {};
-		Client client = new Client(TEST_ARGS);
+		String[] args = new String[] {};
+		Client client = new Client(args);
 		client.performActions(); // print help
 
 		assertEquals(Client.consoleAppender.getThreshold(), Level.INFO);
@@ -41,14 +41,22 @@ public class ClientTest {
 	}
 
 	@Test
+	public void testQuietStdOutLoggingConfig() throws ParseException,
+			IOException {
+		String[] args = new String[] { "-a", "json", "-s" };
+		new Client(args);
+
+		assertEquals(Client.consoleAppender.getThreshold(), Level.OFF);
+		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
+	}
+
+	@Test
 	public void testQuietLoggingConfig() throws ParseException, IOException {
-		String[] TEST_ARGS = new String[] { "-a", "json", "-s" };
+		String[] TEST_ARGS = new String[] { "-a", "json", "-q" };
 		new Client(TEST_ARGS);
 
-		assertEquals(Client.consoleAppender.getThreshold(), Level.INFO);
+		assertEquals(Client.consoleAppender.getThreshold(), Level.OFF);
 		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
-		// TODO how can we actually test that the console appender has been
-		// unregistered?
 	}
 
 }
