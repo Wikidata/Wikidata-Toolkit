@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,16 @@ package org.wikidata.wdtk.client;
  * #L%
  */
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.wikidata.wdtk.rdf.RdfSerializer;
 
 public class RdfSerializationActionTest {
 
 	@Test
-	public void testCompressionOutputArgumentsLong() {
+	public void testDefaults() {
 		String[] args = new String[] { "-a", "rdf" };
 		DumpProcessingOutputAction action = DumpProcessingOutputActionTest
 				.getActionFromArgs(args);
@@ -36,4 +38,19 @@ public class RdfSerializationActionTest {
 		assertTrue(action.needsSites());
 	}
 
+	@Test
+	public void testSerializerSetup() {
+		String[] args = new String[] { "-a", "rdf", "--stdout", "--rdftasks",
+				"properties,labels" };
+		RdfSerializationAction action = (RdfSerializationAction) DumpProcessingOutputActionTest
+				.getActionFromArgs(args);
+		action.open(); // creates and initializes serializer (prints to stdout)
+		action.close(); // just to test that this causes no exceptions
+
+		assertTrue(action instanceof RdfSerializationAction);
+		assertTrue(action.needsSites());
+		assertEquals(action.serializer.getTasks(),
+				RdfSerializer.TASK_PROPERTIES | RdfSerializer.TASK_LABELS);
+
+	}
 }
