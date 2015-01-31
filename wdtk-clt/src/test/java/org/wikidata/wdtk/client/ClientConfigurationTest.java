@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,6 @@ public class ClientConfigurationTest {
 		assertEquals(rdfAction.compressionType,
 				DumpProcessingOutputAction.COMPRESS_GZIP);
 		assertEquals(rdfAction.outputDestination, "/tmp/wikidata-items.nt");
-		assertEquals(rdfAction.conversionProperties, config);
 		assertEquals(rdfAction.tasks, RdfSerializer.TASK_ITEMS
 				| RdfSerializer.TASK_STATEMENTS | RdfSerializer.TASK_TERMS);
 
@@ -61,7 +60,6 @@ public class ClientConfigurationTest {
 		assertEquals(jsonAction.compressionType,
 				DumpProcessingOutputAction.COMPRESS_BZ2);
 		assertEquals(jsonAction.outputDestination, "/tmp/wikidata-dump.json");
-		assertEquals(jsonAction.conversionProperties, config);
 	}
 
 	@Test

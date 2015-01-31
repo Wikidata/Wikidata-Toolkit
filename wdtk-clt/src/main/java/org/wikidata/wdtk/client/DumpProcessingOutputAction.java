@@ -27,9 +27,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -85,11 +85,6 @@ public abstract class DumpProcessingOutputAction implements
 	protected Sites sites;
 
 	/**
-	 * Object to access the global options to be used by this operation.
-	 */
-	protected ClientConfiguration conversionProperties;
-
-	/**
 	 * For operations that generate output, this is the name of the output file,
 	 * or null to use the default file name for the given options.
 	 */
@@ -105,16 +100,6 @@ public abstract class DumpProcessingOutputAction implements
 	 * String to indicate the output compression to be used, if any.
 	 */
 	protected String compressionType = COMPRESS_NONE;
-
-	/**
-	 * Constructor. It takes an instance of {@link ClientConfiguration} to get
-	 * access to additional general arguments.
-	 *
-	 * @param conversionProperties
-	 */
-	public DumpProcessingOutputAction(ClientConfiguration conversionProperties) {
-		this.conversionProperties = conversionProperties;
-	}
 
 	@Override
 	public void setSites(Sites sites) {
