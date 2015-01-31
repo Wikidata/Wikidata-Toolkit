@@ -307,18 +307,18 @@ public class DumpProcessingController {
 	 * Processes the most recent dump of the sites table to extract information
 	 * about registered sites.
 	 *
-	 * @return a Sites objects that contains the extracted information
+	 * @return a Sites objects that contains the extracted information, or null
+	 *         if no sites dump was available (typically in offline mode without
+	 *         having any previously downloaded sites dumps)
 	 * @throws IOException
 	 *             if there was a problem accessing the sites table dump or the
 	 *             dump download directory
 	 */
 	public Sites getSitesInformation() throws IOException {
-
-		WmfDumpFileManager wmfDumpFileManager = getWmfDumpFileManager();
-
-		// Get a handle for the most recent dump file of the sites table:
-		MwDumpFile sitesTableDump = wmfDumpFileManager
-				.findMostRecentDump(DumpContentType.SITES);
+		MwDumpFile sitesTableDump = getMostRecentDump(DumpContentType.SITES);
+		if (sitesTableDump == null) {
+			return null;
+		}
 
 		// Create a suitable processor for such dumps and process the file:
 		MwSitesDumpFileProcessor sitesDumpFileProcessor = new MwSitesDumpFileProcessor();
@@ -332,19 +332,23 @@ public class DumpProcessingController {
 	 * Processes all relevant page revision dumps in order. The registered
 	 * listeners (MwRevisionProcessor or EntityDocumentProcessor objects) will
 	 * be notified of all data they registered for.
+	 * <p>
+	 * Note that this method may not always provide reliable results since
+	 * single incremental dump files are sometimes missing, even if earlier and
+	 * later incremental dumps are available. In such a case, processing all
+	 * recent dumps will miss some (random) revisions, thus reflecting a state
+	 * that the wiki has never really been in. It might thus be preferable to
+	 * process only a single (main) dump file without any incremental dumps.
 	 *
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processMostRecentMainDump()
-	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
-	 *      MwDumpFileProcessor)
+	 * @see DumpProcessingController#processDump(MwDumpFile)
+	 * @see DumpProcessingController#getMostRecentDump(DumpContentType)
 	 */
 	public void processAllRecentRevisionDumps() {
 		setupEntityDocumentProcessors();
-		WmfDumpFileManager wmfDumpFileManager;
-		try {
-			wmfDumpFileManager = getWmfDumpFileManager();
-		} catch (IOException e) {
-			logger.error("Could not create dump file manager: " + e.toString());
+		WmfDumpFileManager wmfDumpFileManager = getWmfDumpFileManager();
+		if (wmfDumpFileManager == null) {
 			return;
 		}
 
@@ -365,31 +369,26 @@ public class DumpProcessingController {
 	 *
 	 * @see DumpProcessingController#processMostRecentMainDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
-	 *      MwDumpFileProcessor)
+	 * @deprecated Use {@link #getMostRecentDump(DumpContentType)} with
+	 *             {@link DumpContentType#DAILY} and
+	 *             {@link #processDump(MwDumpFile)} instead; method will vanish
+	 *             in WDTK 0.5
 	 */
+	@Deprecated
 	public void processMostRecentDailyDump() {
-		processMostRecentDump(DumpContentType.DAILY,
-				getRevisionDumpFileProcessor());
+		processDump(getMostRecentDump(DumpContentType.JSON));
 	}
 
 	/**
-	 * Processes the most recent main (complete) dump that is available. The
-	 * registered listeners ({@link: MwRevisionProcessor} or {@link:
-	 * EntityDocumentProcessor} objects) will be notified of all data they
-	 * registered for.
-	 * <p>
-	 * This method is useful to obtain reliable results given that single
-	 * incremental dump files are sometimes missing, even if earlier and later
-	 * incremental dumps are available. In such a case, processing all recent
-	 * dumps will miss some (random) revisions, thus reflecting a state that the
-	 * wiki has never really been in. If this is considered a problem, then it
-	 * is better to use this method instead.
+	 * Processes the most recent main (complete) dump that is available.
+	 * Convenience method: same as retrieving a dump with
+	 * {@link #getMostRecentDump(DumpContentType)} with
+	 * {@link DumpContentType#CURRENT} or {@link DumpContentType#FULL}, and
+	 * processing it with {@link #processDump(MwDumpFile)}. The individual
+	 * methods should be used for better control and error handling.
 	 *
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
-	 *      MwDumpFileProcessor)
 	 */
 	public void processMostRecentMainDump() {
 		DumpContentType dumpContentType;
@@ -399,31 +398,59 @@ public class DumpProcessingController {
 			dumpContentType = DumpContentType.FULL;
 		}
 
-		processMostRecentDump(dumpContentType, getRevisionDumpFileProcessor());
+		processDump(getMostRecentDump(dumpContentType));
 	}
 
 	/**
 	 * Processes the most recent main (complete) dump in JSON form that is
-	 * available. The registered {@link: EntityDocumentProcessor} objects will
-	 * be notified of all data. Revision information is not available from this
-	 * kind of dump, hence registered {@link: MwRevisionProcessor} objects will
-	 * not be notified. Also, this dump only contains current revisions, so any
-	 * preference for non-current revisions will just be ignored.
-	 * <p>
-	 * This method is useful to obtain reliable results given that single
-	 * incremental dump files are sometimes missing, even if earlier and later
-	 * incremental dumps are available. In such a case, processing all recent
-	 * dumps will miss some (random) revisions, thus reflecting a state that the
-	 * wiki has never really been in. If this is considered a problem, then it
-	 * is better to use this method instead.
+	 * available. Convenience method: same as retrieving a dump with
+	 * {@link #getMostRecentDump(DumpContentType)} with
+	 * {@link DumpContentType#JSON}, and processing it with
+	 * {@link #processDump(MwDumpFile)}. The individual methods should be used
+	 * for better control and error handling.
 	 *
 	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 * @see DumpProcessingController#processMostRecentDump(DumpContentType,
-	 *      MwDumpFileProcessor)
 	 */
 	public void processMostRecentJsonDump() {
-		processMostRecentDump(DumpContentType.JSON, getJsonDumpFileProcessor());
+		processDump(getMostRecentDump(DumpContentType.JSON));
+	}
+
+	/**
+	 * Processes the contents of the given dump file. All registered processor
+	 * objects will be notified of all data. Note that JSON dumps do not
+	 * contains any revision information, so that registered
+	 * {@link MwRevisionProcessor} objects will not be notified in this case.
+	 * Dumps of type {@link DumpContentType#SITES} cannot be processed with this
+	 * method; use {@link #getSitesInformation()} to process these dumps.
+	 *
+	 * @param dumpFile
+	 *            the dump to process
+	 */
+	public void processDump(MwDumpFile dumpFile) {
+		if (dumpFile == null) {
+			return;
+		}
+
+		setupEntityDocumentProcessors();
+		MwDumpFileProcessor dumpFileProcessor;
+		switch (dumpFile.getDumpContentType()) {
+		case CURRENT:
+		case DAILY:
+		case FULL:
+			dumpFileProcessor = getRevisionDumpFileProcessor();
+			break;
+		case JSON:
+			dumpFileProcessor = getJsonDumpFileProcessor();
+			break;
+		case SITES:
+		default:
+			logger.error("Dumps of type " + dumpFile.getDumpContentType()
+					+ " cannot be processed as entity-document dumps.");
+			return;
+		}
+
+		processDumpFile(dumpFile, dumpFileProcessor);
 	}
 
 	/**
@@ -438,26 +465,40 @@ public class DumpProcessingController {
 	 *            the type of dump to process
 	 * @param dumpFileProcessor
 	 *            the processor to use
+	 * @deprecated Use {@link #getMostRecentDump(DumpContentType)} and
+	 *             {@link #processDump(MwDumpFile)} instead; method will vanish
+	 *             in WDTK 0.5
 	 */
+	@Deprecated
 	public void processMostRecentDump(DumpContentType dumpContentType,
 			MwDumpFileProcessor dumpFileProcessor) {
-		setupEntityDocumentProcessors();
-
-		WmfDumpFileManager wmfDumpFileManager;
-		try {
-			wmfDumpFileManager = getWmfDumpFileManager();
-		} catch (IOException e) {
-			logger.error("Could not create dump file manager: " + e.toString());
-			return;
-		}
-
-		MwDumpFile dumpFile = wmfDumpFileManager
-				.findMostRecentDump(dumpContentType);
+		MwDumpFile dumpFile = getMostRecentDump(dumpContentType);
 		if (dumpFile != null) {
 			processDumpFile(dumpFile, dumpFileProcessor);
+		}
+	}
+
+	/**
+	 * Returns a handler for the most recent dump file of the given type that is
+	 * available (under the current settings), or null if no dump file of this
+	 * type could be retrieved.
+	 *
+	 * @param dumpContentType
+	 *            the type of the dump, e.g., {@link DumpContentType#JSON}
+	 * @return the most recent dump, or null if none was found
+	 */
+	public MwDumpFile getMostRecentDump(DumpContentType dumpContentType) {
+		WmfDumpFileManager wmfDumpFileManager = getWmfDumpFileManager();
+		if (wmfDumpFileManager == null) {
+			return null;
 		} else {
-			logger.error("Could not find any dump of type "
-					+ dumpContentType.toString() + " to process.");
+			MwDumpFile result = wmfDumpFileManager
+					.findMostRecentDump(dumpContentType);
+			if (result == null) {
+				logger.warn("Could not find any dump of type "
+						+ dumpContentType.toString() + ".");
+			}
+			return result;
 		}
 	}
 
@@ -495,14 +536,18 @@ public class DumpProcessingController {
 	 * <p>
 	 * This dump file manager will not be updated if the settings change later.
 	 *
-	 * @return a WmfDumpFileManager for the current settings
-	 * @throws IOException
-	 *             if there was a problem, usually owing to some problem when
-	 *             accessing the dumpfile directory
+	 * @return a WmfDumpFileManager for the current settings or null if there
+	 *         was a problem (e.g., since the current dump file directory could
+	 *         not be accessed)
 	 */
-	public WmfDumpFileManager getWmfDumpFileManager() throws IOException {
-		return new WmfDumpFileManager(this.projectName,
-				this.downloadDirectoryManager, this.webResourceFetcher);
+	public WmfDumpFileManager getWmfDumpFileManager() {
+		try {
+			return new WmfDumpFileManager(this.projectName,
+					this.downloadDirectoryManager, this.webResourceFetcher);
+		} catch (IOException e) {
+			logger.error("Could not create dump file manager: " + e.toString());
+			return null;
+		}
 	}
 
 	/**

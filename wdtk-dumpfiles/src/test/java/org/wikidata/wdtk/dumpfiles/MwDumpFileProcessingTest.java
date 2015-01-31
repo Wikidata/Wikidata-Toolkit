@@ -366,7 +366,7 @@ public class MwDumpFileProcessingTest {
 		dpc.registerMwRevisionProcessor(tmrpAllProperties,
 				MwRevision.MODEL_WIKIBASE_PROPERTY, false);
 
-		dpc.processMostRecentDailyDump();
+		dpc.processDump(dpc.getMostRecentDump(DumpContentType.DAILY));
 
 		List<MwRevision> revisionsAllItems = new ArrayList<MwRevision>();
 		revisionsAllItems.add(getItemRevision(4));
