@@ -27,9 +27,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -101,6 +101,15 @@ public abstract class DumpProcessingOutputAction implements
 	 */
 	protected String compressionType = COMPRESS_NONE;
 
+	/**
+	 * Date stamp of the dump to be processed.
+	 */
+	protected String dateStamp = "UNKNOWN";
+	/**
+	 * String name of the site that the processed dump file comes from.
+	 */
+	protected String project = "UNKNOWN";
+
 	@Override
 	public void setSites(Sites sites) {
 		this.sites = sites;
@@ -126,6 +135,17 @@ public abstract class DumpProcessingOutputAction implements
 	@Override
 	public boolean useStdOut() {
 		return this.useStdOut;
+	}
+
+	@Override
+	public void setDumpInformation(String project, String dateStamp) {
+		this.project = project;
+		this.dateStamp = dateStamp;
+	}
+
+	public String insertDumpInformation(String pattern) {
+		return pattern.replace("{DATE}", this.dateStamp).replace("{PROJECT}",
+				this.project);
 	}
 
 	/**

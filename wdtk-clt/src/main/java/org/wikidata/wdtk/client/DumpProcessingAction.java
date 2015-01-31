@@ -76,4 +76,16 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	 */
 	boolean useStdOut();
 
+	/**
+	 * Provides the action with general information about the dump that is to be
+	 * processed. This may be used, e.g., to define file names to use for the
+	 * output.
+	 * 
+	 * @param project
+	 *            the name of the project that the dump is from
+	 * @param dateStamp
+	 *            the datestamp (YYYYMMDD) for the dump
+	 */
+	void setDumpInformation(String project, String dateStamp);
+
 }

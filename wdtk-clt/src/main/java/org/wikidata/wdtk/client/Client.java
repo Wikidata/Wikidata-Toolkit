@@ -10,8 +10,10 @@ import org.apache.log4j.varia.LevelRangeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 
 /*
  * #%L
@@ -89,21 +91,6 @@ public class Client {
 		this.dumpProcessingController.setOfflineMode(this.clientConfiguration
 				.getOfflineMode());
 
-		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
-			if (props.needsSites()) {
-				props.setSites(getSites());
-			}
-			this.dumpProcessingController.registerEntityDocumentProcessor(
-					props, null, true);
-		}
-
-		if (!this.clientConfiguration.isQuiet()) {
-			EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
-					0);
-			this.dumpProcessingController.registerEntityDocumentProcessor(
-					entityTimerProcessor, null, true);
-		}
-
 		if (this.clientConfiguration.getDumpLocation() != null) {
 			try {
 				this.dumpProcessingController
@@ -118,8 +105,28 @@ public class Client {
 			}
 		}
 
+		MwDumpFile dumpFile = dumpProcessingController
+				.getMostRecentDump(DumpContentType.JSON);
+
+		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
+			if (props.needsSites()) {
+				props.setSites(getSites());
+			}
+			props.setDumpInformation(dumpFile.getProjectName(),
+					dumpFile.getDateStamp());
+			this.dumpProcessingController.registerEntityDocumentProcessor(
+					props, null, true);
+		}
+
+		if (!this.clientConfiguration.isQuiet()) {
+			EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
+					0);
+			this.dumpProcessingController.registerEntityDocumentProcessor(
+					entityTimerProcessor, null, true);
+		}
+
 		openActions();
-		this.dumpProcessingController.processMostRecentJsonDump();
+		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
 	}
 

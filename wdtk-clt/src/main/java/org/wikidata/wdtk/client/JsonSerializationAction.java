@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	 * The base file name that will be used by default. File endings for
 	 * indicating compression will be appended where required.
 	 */
-	public final static String DEFAULT_FILE_NAME = "result.json";
+	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.json";
 
 	/**
 	 * The actual serializer used internally.
@@ -66,7 +66,8 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 		OutputStream outputStream;
 		try {
 			outputStream = getOutputStream(this.useStdOut,
-					this.outputDestination, this.compressionType);
+					insertDumpInformation(this.outputDestination),
+					this.compressionType);
 			this.serializer = new JsonSerializer(outputStream);
 		} catch (IOException e) {
 			// TODO rather print error and set a nonce processor here
