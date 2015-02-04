@@ -71,7 +71,7 @@
 		<jacksonVersion>2.5.0</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
-		<sesameVersion>2.7.11</sesameVersion>
+		<sesameVersion>2.7.10</sesameVersion>
 		<slf4jVersion>1.7.10</slf4jVersion>
 	</properties>
 
