@@ -27,12 +27,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorFilter;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
 import org.wikidata.wdtk.util.DirectoryManager;
@@ -136,26 +141,22 @@ public class DumpProcessingController {
 		}
 	}
 
+	/**
+	 * Map of all {@link EntityDocumentProcessor} object registered so far,
+	 * based on the model and revision (current or not) they are registered for.
+	 */
 	final HashMap<ListenerRegistration, List<EntityDocumentProcessor>> entityDocumentProcessors;
+
+	/**
+	 * Map of all {@link MwRevisionProcessor} object registered so far, based on
+	 * the model and revision (current or not) they are registered for.
+	 */
+	final HashMap<ListenerRegistration, List<MwRevisionProcessor>> mwRevisionProcessors;
 
 	/**
 	 * The name of the project whose dumps are processed here.
 	 */
 	final String projectName;
-
-	/**
-	 * Broker object to distribute revisions to several listeners. This will be
-	 * the main object that distributes revisions on any revision-based
-	 * processing run.
-	 */
-	final MwRevisionProcessorBroker mwRevisionProcessorBroker = new MwRevisionProcessorBroker();
-
-	/**
-	 * Broker object to distribute entity documents to several listeners. This
-	 * will be the main object that distributes revisions on any document-based
-	 * processing run (in particular for JSON dumps).
-	 */
-	EntityDocumentProcessorBroker entityDocumentProcessorBroker = new EntityDocumentProcessorBroker();
 
 	/**
 	 * Should only current dumps be considered? This is changed automatically if
@@ -180,6 +181,22 @@ public class DumpProcessingController {
 	DirectoryManager downloadDirectoryManager;
 
 	/**
+	 * Optional set of language codes to filter data with. Can also be null
+	 * (disabled) or the empty set (filtering everything).
+	 */
+	Set<String> languageFilter = null;
+	/**
+	 * Optional set of site identifiers to filter data with. Can also be null
+	 * (disabled) or the empty set (filtering everything).
+	 */
+	Set<String> siteLinkFilter = null;
+	/**
+	 * Optional set of property ids to filter data with. Can also be null
+	 * (disabled) or the emtpy set (filtering everything).
+	 */
+	Set<PropertyIdValue> propertyFilter = null;
+
+	/**
 	 * Creates a new DumpFileProcessingController for the project of the given
 	 * name. By default, the dump file directory will be assumed to be in the
 	 * current directory and the object will access the Web to fetch the most
@@ -191,6 +208,7 @@ public class DumpProcessingController {
 	public DumpProcessingController(String projectName) {
 		this.projectName = projectName;
 		this.entityDocumentProcessors = new HashMap<ListenerRegistration, List<EntityDocumentProcessor>>();
+		this.mwRevisionProcessors = new HashMap<ListenerRegistration, List<MwRevisionProcessor>>();
 
 		try {
 			setDownloadDirectory(System.getProperty("user.dir"));
@@ -235,6 +253,42 @@ public class DumpProcessingController {
 	}
 
 	/**
+	 * Sets a property filter. If given, all data will be preprocessed to
+	 * contain only statements for the given (main) properties.
+	 *
+	 * @see DatamodelConverter#setOptionPropertyFilter(Set)
+	 * @param propertyFilter
+	 *            set of language codes that should be retained (can be empty)
+	 */
+	public void setPropertyFilter(Set<PropertyIdValue> propertyFilter) {
+		this.propertyFilter = propertyFilter;
+	}
+
+	/**
+	 * Sets a site link filter. If given, all data will be preprocessed to
+	 * contain only data for the given site keys.
+	 *
+	 * @see DatamodelConverter#setOptionSiteLinkFilter(Set)
+	 * @param siteLinkFilter
+	 *            set of language codes that should be retained (can be empty)
+	 */
+	public void setSiteLinkFilter(Set<String> siteLinkFilter) {
+		this.siteLinkFilter = siteLinkFilter;
+	}
+
+	/**
+	 * Sets a language filter. If given, all data will be preprocessed to
+	 * contain only data for the given languages.
+	 *
+	 * @see DatamodelConverter#setOptionLanguageFilter(Set)
+	 * @param languageFilter
+	 *            set of language codes that should be retained (can be empty)
+	 */
+	public void setLanguageFilter(Set<String> languageFilter) {
+		this.languageFilter = languageFilter;
+	}
+
+	/**
 	 * Registers an MwRevisionProcessor, which will henceforth be notified of
 	 * all revisions that are encountered in the dump.
 	 * <p>
@@ -261,9 +315,8 @@ public class DumpProcessingController {
 	public void registerMwRevisionProcessor(
 			MwRevisionProcessor mwRevisionProcessor, String model,
 			boolean onlyCurrentRevisions) {
-		this.preferCurrent = this.preferCurrent && onlyCurrentRevisions;
-		this.mwRevisionProcessorBroker.registerMwRevisionProcessor(
-				mwRevisionProcessor, model, onlyCurrentRevisions);
+		registerProcessor(mwRevisionProcessor, model, onlyCurrentRevisions,
+				this.mwRevisionProcessors);
 	}
 
 	/**
@@ -290,17 +343,8 @@ public class DumpProcessingController {
 	public void registerEntityDocumentProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String model,
 			boolean onlyCurrentRevisions) {
-		this.preferCurrent = this.preferCurrent && onlyCurrentRevisions;
-
-		ListenerRegistration listenerRegistration = new ListenerRegistration(
-				model, onlyCurrentRevisions);
-		if (!this.entityDocumentProcessors.containsKey(listenerRegistration)) {
-			this.entityDocumentProcessors.put(listenerRegistration,
-					new ArrayList<EntityDocumentProcessor>());
-		}
-
-		this.entityDocumentProcessors.get(listenerRegistration).add(
-				entityDocumentProcessor);
+		registerProcessor(entityDocumentProcessor, model, onlyCurrentRevisions,
+				this.entityDocumentProcessors);
 	}
 
 	/**
@@ -346,7 +390,6 @@ public class DumpProcessingController {
 	 * @see DumpProcessingController#getMostRecentDump(DumpContentType)
 	 */
 	public void processAllRecentRevisionDumps() {
-		setupEntityDocumentProcessors();
 		WmfDumpFileManager wmfDumpFileManager = getWmfDumpFileManager();
 		if (wmfDumpFileManager == null) {
 			return;
@@ -432,7 +475,6 @@ public class DumpProcessingController {
 			return;
 		}
 
-		setupEntityDocumentProcessors();
 		MwDumpFileProcessor dumpFileProcessor;
 		switch (dumpFile.getDumpContentType()) {
 		case CURRENT:
@@ -557,7 +599,7 @@ public class DumpProcessingController {
 	 * @return the main MwDumpFileProcessor for revisions
 	 */
 	MwDumpFileProcessor getRevisionDumpFileProcessor() {
-		return new MwRevisionDumpFileProcessor(this.mwRevisionProcessorBroker);
+		return new MwRevisionDumpFileProcessor(getMasterMwRevisionProcessor());
 	}
 
 	/**
@@ -567,46 +609,132 @@ public class DumpProcessingController {
 	 * @return the main MwDumpFileProcessor for JSON
 	 */
 	MwDumpFileProcessor getJsonDumpFileProcessor() {
-		return new JsonDumpFileProcessor(this.entityDocumentProcessorBroker,
+		return new JsonDumpFileProcessor(getMasterEntityDocumentProcessor(),
 				Datamodel.SITE_WIKIDATA);
 	}
 
 	/**
-	 * Creates a suitable processing pipeline for the entity document processors
-	 * currently registered. If multiple processors are registered for the same
-	 * entity documents, an additional {@link EntityDocumentProcessorBroker}
-	 * will be used. The main reason for having a separate method for this
-	 * (instead of doing this directly on registration) is that it allows us to
-	 * share the same revision processor for multiple entity processors in some
-	 * cases, avoiding the need for parsing the same JSON content several times
-	 * just to pass it to different processors.
+	 * Stores a registered processor object in a map of processors. Used
+	 * internally to keep {@link EntityDocumentProcessor} and
+	 * {@link MwRevisionProcessor} objects.
+	 *
+	 * @param processor
+	 *            the processor object to register
+	 * @param model
+	 *            the content model that the processor is registered for; it
+	 *            will only be notified of revisions in that model; if null is
+	 *            given, all revisions will be processed whatever their model
+	 * @param onlyCurrentRevisions
+	 *            if true, then the subscriber is only notified of the most
+	 *            current revisions; if false, then it will receive all
+	 *            revisions, current or not
+	 * @param processors
+	 *            the map of lists of processors to store the processor in
 	 */
-	void setupEntityDocumentProcessors() {
+	private <T> void registerProcessor(T processor, String model,
+			boolean onlyCurrentRevisions,
+			Map<ListenerRegistration, List<T>> processors) {
+		this.preferCurrent = this.preferCurrent && onlyCurrentRevisions;
+
+		ListenerRegistration listenerRegistration = new ListenerRegistration(
+				model, onlyCurrentRevisions);
+		if (!processors.containsKey(listenerRegistration)) {
+			processors.put(listenerRegistration, new ArrayList<T>());
+		}
+
+		processors.get(listenerRegistration).add(processor);
+	}
+
+	/**
+	 * Returns an {@link EntityDocumentProcessor} object that calls all
+	 * registered processors and that takes filters into account if needed.
+	 *
+	 * @return the master processor
+	 */
+	private EntityDocumentProcessor getMasterEntityDocumentProcessor() {
+		EntityDocumentProcessor result = null;
+		EntityDocumentProcessorBroker broker = null;
+
 		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> entry : this.entityDocumentProcessors
 				.entrySet()) {
-			// Register entity document processors with revision processors:
-			if (entry.getValue().size() == 1) {
-				registerMwRevisionProcessor(new WikibaseRevisionProcessor(entry
-						.getValue().get(0), Datamodel.SITE_WIKIDATA),
-						entry.getKey().model,
-						entry.getKey().onlyCurrentRevisions);
-			} else {
-				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
-				registerMwRevisionProcessor(new WikibaseRevisionProcessor(edpb,
-						Datamodel.SITE_WIKIDATA), entry.getKey().model,
-						entry.getKey().onlyCurrentRevisions);
-				for (EntityDocumentProcessor edp : entry.getValue()) {
-					edpb.registerEntityDocumentProcessor(edp);
+			for (EntityDocumentProcessor edp : entry.getValue()) {
+				if (result == null) {
+					result = edp;
+				} else {
+					if (broker == null) {
+						broker = new EntityDocumentProcessorBroker();
+						broker.registerEntityDocumentProcessor(result);
+						result = broker;
+					}
+					broker.registerEntityDocumentProcessor(edp);
 				}
 			}
+		}
 
-			// Register the entity document processors globally:
-			for (EntityDocumentProcessor edp : entry.getValue()) {
-				this.entityDocumentProcessorBroker
-						.registerEntityDocumentProcessor(edp);
+		return filterEntityDocumentProcessor(result);
+	}
+
+	/**
+	 * Wraps the given processor into a {@link EntityDocumentProcessorFilter} if
+	 * global filters are configured; otherwise just returns the processor
+	 * unchanged.
+	 *
+	 * @param processor
+	 *            the processor to wrap
+	 * @return
+	 */
+	private EntityDocumentProcessor filterEntityDocumentProcessor(
+			EntityDocumentProcessor processor) {
+		if (this.propertyFilter == null || this.siteLinkFilter == null
+				|| this.languageFilter == null) {
+			return processor;
+		} else {
+			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
+					processor);
+			filter.setLanguageFilter(this.languageFilter);
+			filter.setSiteLinkFilter(this.siteLinkFilter);
+			filter.setPropertyFilter(this.propertyFilter);
+			return filter;
+		}
+	}
+
+	/**
+	 * Returns an {@link MwRevisionProcessor} object that calls all registered
+	 * processors and that takes filters into account if needed.
+	 *
+	 * @return the master processor
+	 */
+	private MwRevisionProcessor getMasterMwRevisionProcessor() {
+		MwRevisionProcessorBroker result = new MwRevisionProcessorBroker();
+
+		for (Entry<ListenerRegistration, List<MwRevisionProcessor>> entry : this.mwRevisionProcessors
+				.entrySet()) {
+			for (MwRevisionProcessor mrp : entry.getValue()) {
+				result.registerMwRevisionProcessor(mrp, entry.getKey().model,
+						entry.getKey().onlyCurrentRevisions);
 			}
 		}
-		this.entityDocumentProcessors.clear();
+
+		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> edpEntry : this.entityDocumentProcessors
+				.entrySet()) {
+			EntityDocumentProcessor resultEdp = null;
+			if (edpEntry.getValue().size() == 1) {
+				resultEdp = edpEntry.getValue().get(0);
+			} else {
+				EntityDocumentProcessorBroker edpb = new EntityDocumentProcessorBroker();
+				for (EntityDocumentProcessor edp : edpEntry.getValue()) {
+					edpb.registerEntityDocumentProcessor(edp);
+				}
+				resultEdp = edpb;
+			}
+
+			result.registerMwRevisionProcessor(new WikibaseRevisionProcessor(
+					filterEntityDocumentProcessor(resultEdp),
+					Datamodel.SITE_WIKIDATA), edpEntry.getKey().model, edpEntry
+					.getKey().onlyCurrentRevisions);
+		}
+
+		return result;
 	}
 
 }
