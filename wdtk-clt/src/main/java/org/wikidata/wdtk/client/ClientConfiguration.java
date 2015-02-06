@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -135,7 +135,7 @@ public class ClientConfiguration {
 	 * Name of the long command line option and configuration file field for
 	 * specifying the site link filters.
 	 */
-	public static final String OPTION_FILTER_SITES = "fSites";
+	public static final String OPTION_FILTER_SITES = "fSite";
 	/**
 	 * Name of the long command line option and configuration file field for
 	 * specifying the property filters.
@@ -431,7 +431,7 @@ public class ClientConfiguration {
 	 */
 	private void handleGlobalArguments(Section section) {
 		for (String key : section.keySet()) {
-			switch (key.toLowerCase()) {
+			switch (key) {
 			case OPTION_OFFLINE_MODE:
 				if (section.get(key).toLowerCase().equals("true")) {
 					this.offlineMode = true;
@@ -672,7 +672,7 @@ public class ClientConfiguration {
 
 		Option filterProperties = OptionBuilder
 				.hasArgs()
-				.withArgName("sites")
+				.withArgName("ids")
 				.withDescription(
 						"specifies a list of property ids; if given, statements for all other properties will be filtered during processing; the value \"-\" should be used to filter all statements")
 				.withLongOpt(OPTION_FILTER_PROPERTIES).create();
