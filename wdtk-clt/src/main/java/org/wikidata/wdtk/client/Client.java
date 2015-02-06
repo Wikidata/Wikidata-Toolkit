@@ -105,6 +105,13 @@ public class Client {
 			}
 		}
 
+		dumpProcessingController.setLanguageFilter(this.clientConfiguration
+				.getFilterLanguages());
+		dumpProcessingController.setSiteLinkFilter(this.clientConfiguration
+				.getFilterSiteKeys());
+		dumpProcessingController.setPropertyFilter(this.clientConfiguration
+				.getFilterProperties());
+
 		MwDumpFile dumpFile = dumpProcessingController
 				.getMostRecentDump(DumpContentType.JSON);
 

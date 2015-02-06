@@ -27,8 +27,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -42,6 +44,8 @@ import org.ini4j.Ini;
 import org.ini4j.Profile.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
  * This class handles the program arguments from the conversion command line
@@ -129,6 +133,16 @@ public class ClientConfiguration {
 	public static final String OPTION_FILTER_LANGUAGES = "fLang";
 	/**
 	 * Name of the long command line option and configuration file field for
+	 * specifying the site link filters.
+	 */
+	public static final String OPTION_FILTER_SITES = "fSites";
+	/**
+	 * Name of the long command line option and configuration file field for
+	 * specifying the property filters.
+	 */
+	public static final String OPTION_FILTER_PROPERTIES = "fProp";
+	/**
+	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
 	 * produce output.
 	 */
@@ -186,10 +200,20 @@ public class ClientConfiguration {
 	boolean quiet = false;
 
 	/**
-	 * Comma-separated list of language codes to use as a filter, or null if no
-	 * filter should be used.
+	 * Set language codes to use as a filter, or null if no filter should be
+	 * used.
 	 */
-	String filterLanguages = null;
+	Set<String> filterLanguages = null;
+
+	/**
+	 * Set site keys to use as a filter, or null if no filter should be used.
+	 */
+	Set<String> filterSites = null;
+
+	/**
+	 * Set property ids to use as a filter, or null if no filter should be used.
+	 */
+	Set<PropertyIdValue> filterProperties = null;
 
 	/**
 	 * Constructs a new object for the given arguments.
@@ -236,14 +260,36 @@ public class ClientConfiguration {
 	}
 
 	/**
-	 * Returns a comma-separated list of language codes that should be used as a
-	 * filter, or null if no filter is set. An empty string means that all
-	 * languages should be filtered.
+	 * Returns a set of language codes that should be used as a filter, or null
+	 * if no filter is set. An empty set means that all languages should be
+	 * filtered.
 	 *
 	 * @return language filter
 	 */
-	public String getFilterLanguages() {
+	public Set<String> getFilterLanguages() {
 		return this.filterLanguages;
+	}
+
+	/**
+	 * Returns a set of site keys that should be used as a filter for site
+	 * links, or null if no filter is set. An empty set means that all site
+	 * links should be filtered.
+	 *
+	 * @return site key filter
+	 */
+	public Set<String> getFilterSiteKeys() {
+		return this.filterSites;
+	}
+
+	/**
+	 * Returns a set of property ids that should be used as a filter for
+	 * statements, or null if no filter is set. An empty set means that all
+	 * statements should be filtered.
+	 *
+	 * @return property filter
+	 */
+	public Set<PropertyIdValue> getFilterProperties() {
+		return this.filterProperties;
 	}
 
 	/**
@@ -364,7 +410,15 @@ public class ClientConfiguration {
 		}
 
 		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
-			this.filterLanguages = cmd.getOptionValue(OPTION_FILTER_LANGUAGES);
+			setLanguageFilters(cmd.getOptionValue(OPTION_FILTER_LANGUAGES));
+		}
+
+		if (cmd.hasOption(OPTION_FILTER_SITES)) {
+			setSiteFilters(cmd.getOptionValue(OPTION_FILTER_SITES));
+		}
+
+		if (cmd.hasOption(OPTION_FILTER_PROPERTIES)) {
+			setPropertyFilters(cmd.getOptionValue(OPTION_FILTER_PROPERTIES));
 		}
 	}
 
@@ -390,6 +444,15 @@ public class ClientConfiguration {
 				break;
 			case OPTION_DUMP_LOCATION:
 				this.dumpLocation = section.get(key);
+				break;
+			case OPTION_FILTER_LANGUAGES:
+				setLanguageFilters(section.get(key));
+				break;
+			case OPTION_FILTER_SITES:
+				setSiteFilters(section.get(key));
+				break;
+			case OPTION_FILTER_PROPERTIES:
+				setPropertyFilters(section.get(key));
 				break;
 			default:
 				logger.warn("Unrecognized option: " + key);
@@ -502,6 +565,55 @@ public class ClientConfiguration {
 	}
 
 	/**
+	 * Sets the set of language filters based on the given string.
+	 *
+	 * @param filters
+	 *            comma-separates list of language codes, or "-" to filter all
+	 *            languages
+	 */
+	private void setLanguageFilters(String filters) {
+		this.filterLanguages = new HashSet<>();
+		if (!"-".equals(filters)) {
+			for (String lang : filters.split(",")) {
+				this.filterLanguages.add(lang);
+			}
+		}
+	}
+
+	/**
+	 * Sets the set of site filters based on the given string.
+	 *
+	 * @param filters
+	 *            comma-separates list of site keys, or "-" to filter all site
+	 *            links
+	 */
+	private void setSiteFilters(String filters) {
+		this.filterSites = new HashSet<>();
+		if (!"-".equals(filters)) {
+			for (String siteKey : filters.split(",")) {
+				this.filterSites.add(siteKey);
+			}
+		}
+	}
+
+	/**
+	 * Sets the set of property filters based on the given string.
+	 *
+	 * @param filters
+	 *            comma-separates list of property ids, or "-" to filter all
+	 *            statements
+	 */
+	private void setPropertyFilters(String filters) {
+		this.filterProperties = new HashSet<>();
+		if (!"-".equals(filters)) {
+			for (String pid : filters.split(",")) {
+				this.filterProperties.add(Datamodel
+						.makeWikidataPropertyIdValue(pid));
+			}
+		}
+	}
+
+	/**
 	 * Builds a list of legal options and store them into the options objects.
 	 */
 	@SuppressWarnings("static-access")
@@ -548,8 +660,22 @@ public class ClientConfiguration {
 				.hasArgs()
 				.withArgName("languages")
 				.withDescription(
-						"specifies a list of language codes; if given, all other language data will be filtered during processing")
+						"specifies a list of language codes; if given, all other language data will be filtered during processing; the value \"-\" should be used to filter all languages")
 				.withLongOpt(OPTION_FILTER_LANGUAGES).create();
+
+		Option filterSites = OptionBuilder
+				.hasArgs()
+				.withArgName("sites")
+				.withDescription(
+						"specifies a list of site keys; if given, site links from all other sites will be filtered during processing; the value \"-\" should be used to filter all sites")
+				.withLongOpt(OPTION_FILTER_SITES).create();
+
+		Option filterProperties = OptionBuilder
+				.hasArgs()
+				.withArgName("sites")
+				.withDescription(
+						"specifies a list of property ids; if given, statements for all other properties will be filtered during processing; the value \"-\" should be used to filter all statements")
+				.withLongOpt(OPTION_FILTER_PROPERTIES).create();
 
 		Option compressionExtention = OptionBuilder
 				.hasArg()
@@ -572,6 +698,8 @@ public class ClientConfiguration {
 		options.addOption(destination);
 		options.addOption(dumplocation);
 		options.addOption(filterLanguages);
+		options.addOption(filterSites);
+		options.addOption(filterProperties);
 		options.addOption(compressionExtention);
 		options.addOption(rdfdump);
 		options.addOption(
