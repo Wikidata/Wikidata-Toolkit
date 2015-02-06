@@ -124,6 +124,11 @@ public class ClientConfiguration {
 	public static final String OPTION_ACTION = "action";
 	/**
 	 * Name of the long command line option and configuration file field for
+	 * specifying the language filters.
+	 */
+	public static final String OPTION_FILTER_LANGUAGES = "fLang";
+	/**
+	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
 	 * produce output.
 	 */
@@ -181,6 +186,12 @@ public class ClientConfiguration {
 	boolean quiet = false;
 
 	/**
+	 * Comma-separated list of language codes to use as a filter, or null if no
+	 * filter should be used.
+	 */
+	String filterLanguages = null;
+
+	/**
 	 * Constructs a new object for the given arguments.
 	 *
 	 * @param args
@@ -200,7 +211,7 @@ public class ClientConfiguration {
 	}
 
 	public String getDumpLocation() {
-		return dumpLocation;
+		return this.dumpLocation;
 	}
 
 	/**
@@ -210,7 +221,7 @@ public class ClientConfiguration {
 	 * @return true if in offline mode
 	 */
 	public boolean getOfflineMode() {
-		return offlineMode;
+		return this.offlineMode;
 	}
 
 	/**
@@ -222,6 +233,17 @@ public class ClientConfiguration {
 	 */
 	public boolean isQuiet() {
 		return this.quiet;
+	}
+
+	/**
+	 * Returns a comma-separated list of language codes that should be used as a
+	 * filter, or null if no filter is set. An empty string means that all
+	 * languages should be filtered.
+	 *
+	 * @return language filter
+	 */
+	public String getFilterLanguages() {
+		return this.filterLanguages;
 	}
 
 	/**
@@ -339,6 +361,10 @@ public class ClientConfiguration {
 
 		if (cmd.hasOption(CMD_OPTION_QUIET)) {
 			this.quiet = true;
+		}
+
+		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
+			this.filterLanguages = cmd.getOptionValue(OPTION_FILTER_LANGUAGES);
 		}
 	}
 
@@ -518,6 +544,13 @@ public class ClientConfiguration {
 						"specify which type of data to include in the RDF dump")
 				.withLongOpt(OPTION_OUTPUT_RDF_TYPE).create();
 
+		Option filterLanguages = OptionBuilder
+				.hasArgs()
+				.withArgName("languages")
+				.withDescription(
+						"specifies a list of language codes; if given, all other language data will be filtered during processing")
+				.withLongOpt(OPTION_FILTER_LANGUAGES).create();
+
 		Option compressionExtention = OptionBuilder
 				.hasArg()
 				.withArgName("type")
@@ -538,6 +571,7 @@ public class ClientConfiguration {
 				"perform all actions quietly, without printing status messages to the console; errors/warnings are still printed to stderr");
 		options.addOption(destination);
 		options.addOption(dumplocation);
+		options.addOption(filterLanguages);
 		options.addOption(compressionExtention);
 		options.addOption(rdfdump);
 		options.addOption(
