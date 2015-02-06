@@ -685,8 +685,8 @@ public class DumpProcessingController {
 	 */
 	private EntityDocumentProcessor filterEntityDocumentProcessor(
 			EntityDocumentProcessor processor) {
-		if (this.propertyFilter == null || this.siteLinkFilter == null
-				|| this.languageFilter == null) {
+		if (this.propertyFilter == null && this.siteLinkFilter == null
+				&& this.languageFilter == null) {
 			return processor;
 		} else {
 			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
