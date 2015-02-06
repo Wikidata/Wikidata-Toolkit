@@ -10,7 +10,8 @@
 	</parent>
 
 	<artifactId>wdtk-distribution</artifactId>
-	<packaging>pom</packaging>
+	<!-- "pom" would be correct, but "jar" seems to be needed for shade which otherwise creates jar files with a pom extension -->
+	<packaging>jar</packaging>
 
 	<name>Wikidata Toolkit Distribution</name>
 	<description>Module to package Wikidata Toolkit for releases</description>
@@ -35,35 +36,45 @@
 			<id>library</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.4</version>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-shade-plugin</artifactId>
+			        <version>2.3</version>
+			        <executions>
+			          <execution>
+			          	<id>wdtk-library</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
 						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<appendAssemblyId>false</appendAssemblyId>
+							<packaging>jar</packaging>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<shadedGroupFilter>org.wikidata.wdtk</shadedGroupFilter>
+							<finalName>wikidata-toolkit-${project.version}</finalName>
+							<minimizeJar>false</minimizeJar>
 						</configuration>
-						<executions>
-							<execution>
-								<id>make-library</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<configuration>
-									<appendAssemblyId>false</appendAssemblyId>
-									<finalName>wikidata-toolkit-${project.version}</finalName>
-									<descriptors>
-										<descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
-									</descriptors>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
+			          </execution>
+			          <execution>
+			          	<id>wdtk-library-deps</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<finalName>wikidata-toolkit-with-dependencies-${project.version}</finalName>
+							<!-- Minimization just does not work; removes many relevant classes -->
+							<minimizeJar>false</minimizeJar>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+			            	</transformers>
+						</configuration>
+			          </execution>
+			        </executions>
+			      </plugin>
+			    </plugins>
+			  </build>
 		</profile>
 		<profile>
 			<id>client</id>
@@ -75,42 +86,35 @@
 				</dependency>
 			</dependencies>
 			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.4</version>
+			    <plugins>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-shade-plugin</artifactId>
+			        <version>2.3</version>
+			        <executions>
+			          <execution>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
 						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>wdtk-client-${project.version}</finalName>
+							<!-- Minimization just does not work; removes many relevant classes -->
+							<minimizeJar>false</minimizeJar>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+			            	<transformers>
+			            		<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.wikidata.wdtk.client.Client</mainClass>
+			            		</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+			            	</transformers>
 						</configuration>
-						<executions>
-							<execution>
-								<id>make-client</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<configuration>
-									<archive>
-										<manifest>
-											<mainClass>org.wikidata.wdtk.client.Client</mainClass>
-										</manifest>
-									</archive>
-									<appendAssemblyId>false</appendAssemblyId>
-									<finalName>wdtk-client-${project.version}</finalName>
-									<descriptors>
-										<descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
-									</descriptors>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+			          </execution>
+			        </executions>
+			      </plugin>
+			    </plugins>
+			  </build>
+		</profile>			
 		<profile>
 			<id>sign</id>
 			<dependencies>
