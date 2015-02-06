@@ -25,8 +25,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 public class ClientConfigurationTest {
@@ -40,6 +45,15 @@ public class ClientConfigurationTest {
 		assertTrue(config.getOfflineMode());
 		assertTrue(config.isQuiet());
 		assertEquals(config.getDumpLocation(), "dumps/wikidata/");
+		assertEquals(Collections.<String> emptySet(),
+				config.getFilterSiteKeys());
+		assertEquals(Collections.<PropertyIdValue> singleton(Datamodel
+				.makeWikidataPropertyIdValue("P31")),
+				config.getFilterProperties());
+		Set<String> langFilters = new HashSet<>();
+		langFilters.add("fr");
+		langFilters.add("zh");
+		assertEquals(langFilters, config.getFilterLanguages());
 
 		assertEquals(config.getActions().size(), 2);
 		assertTrue(config.getActions().get(0) instanceof RdfSerializationAction);
@@ -68,6 +82,9 @@ public class ClientConfigurationTest {
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
 		assertEquals(config.getDumpLocation(), null);
+		assertEquals(config.getFilterLanguages(), null);
+		assertEquals(config.getFilterSiteKeys(), null);
+		assertEquals(config.getFilterProperties(), null);
 		assertFalse(config.isQuiet());
 	}
 
@@ -141,6 +158,72 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "--quiet" };
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertTrue(config.isQuiet());
+	}
+
+	@Test
+	public void testLanguageFilterArguments() {
+		String[] args = new String[] { "--fLang", "en,de" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<String> langFilters = new HashSet<>();
+		langFilters.add("en");
+		langFilters.add("de");
+
+		assertEquals(langFilters, config.getFilterLanguages());
+	}
+
+	@Test
+	public void testLanguageFilterArgumentsEmpty() {
+		String[] args = new String[] { "--fLang", "-" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<String> langFilters = new HashSet<>();
+
+		assertEquals(langFilters, config.getFilterLanguages());
+	}
+
+	@Test
+	public void testSiteLinkFilterArguments() {
+		String[] args = new String[] { "--fSite", "fawiki,dewiki" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<String> siteFilters = new HashSet<>();
+		siteFilters.add("fawiki");
+		siteFilters.add("dewiki");
+
+		assertEquals(siteFilters, config.getFilterSiteKeys());
+	}
+
+	@Test
+	public void testSiteLinkFilterArgumentsEmpty() {
+		String[] args = new String[] { "--fSite", "-" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<String> siteFilters = new HashSet<>();
+
+		assertEquals(siteFilters, config.getFilterSiteKeys());
+	}
+
+	@Test
+	public void testPropertyFilterArguments() {
+		String[] args = new String[] { "--fProp", "P100,P31" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<PropertyIdValue> propFilters = new HashSet<>();
+		propFilters.add(Datamodel.makeWikidataPropertyIdValue("P31"));
+		propFilters.add(Datamodel.makeWikidataPropertyIdValue("P100"));
+
+		assertEquals(propFilters, config.getFilterProperties());
+	}
+
+	@Test
+	public void testPropertyFilterArgumentsEmpty() {
+		String[] args = new String[] { "--fProp", "-" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		Set<PropertyIdValue> propFilters = new HashSet<>();
+
+		assertEquals(propFilters, config.getFilterProperties());
 	}
 
 }
