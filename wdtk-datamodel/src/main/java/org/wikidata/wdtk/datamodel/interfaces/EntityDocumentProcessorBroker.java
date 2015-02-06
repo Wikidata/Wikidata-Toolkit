@@ -23,10 +23,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 
 /**
  * Simple broker implementation of {@link EntityDocumentProcessor} which
@@ -39,8 +35,6 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 
 	final List<EntityDocumentProcessor> entityDocumentProcessors = new ArrayList<EntityDocumentProcessor>();
 	final HashSet<EntityDocumentProcessor> entityDocumentProcessorRegistry = new HashSet<>();
-
-	DatamodelConverter converter = null;
 
 	/**
 	 * Registers a listener which will be called for all entity documents that
@@ -59,50 +53,8 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 		}
 	}
 
-	/**
-	 * Sets a language filter. If given, all data will be preprocessed to
-	 * contain only data for the given languages.
-	 *
-	 * @see DatamodelConverter#setOptionLanguageFilter(Set)
-	 * @param languageFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setLanguageFilter(Set<String> languageFilter) {
-		initDatamodelConverter();
-		this.converter.setOptionLanguageFilter(languageFilter);
-	}
-
-	/**
-	 * Sets a property filter. If given, all data will be preprocessed to
-	 * contain only statements for the given (main) properties.
-	 *
-	 * @see DatamodelConverter#setOptionPropertyFilter(Set)
-	 * @param propertyFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		initDatamodelConverter();
-		this.converter.setOptionPropertyFilter(propertyFilter);
-	}
-
-	/**
-	 * Sets a site link filter. If given, all data will be preprocessed to
-	 * contain only data for the given site keys.
-	 *
-	 * @see DatamodelConverter#setOptionSiteLinkFilter(Set)
-	 * @param siteLinkFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setSiteLinkFilter(Set<String> siteLinkFilter) {
-		initDatamodelConverter();
-		this.converter.setOptionSiteLinkFilter(siteLinkFilter);
-	}
-
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		if (this.converter != null) {
-			itemDocument = this.converter.copy(itemDocument);
-		}
 		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
 			entityDocumentProcessor.processItemDocument(itemDocument);
 		}
@@ -110,19 +62,9 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		if (this.converter != null) {
-			propertyDocument = this.converter.copy(propertyDocument);
-		}
 		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
 			entityDocumentProcessor.processPropertyDocument(propertyDocument);
 		}
-	}
-
-	/**
-	 * Initializes the internal datamodel converter.
-	 */
-	private void initDatamodelConverter() {
-		this.converter = new DatamodelConverter(new DataObjectFactoryImpl());
 	}
 
 }
