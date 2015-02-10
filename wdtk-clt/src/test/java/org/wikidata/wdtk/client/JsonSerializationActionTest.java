@@ -35,5 +35,6 @@ public class JsonSerializationActionTest {
 
 		assertTrue(action instanceof JsonSerializationAction);
 		assertFalse(action.needsSites());
+		assertTrue(action.isReady());
 	}
 }

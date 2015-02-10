@@ -22,9 +22,13 @@ package org.wikidata.wdtk.client;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +81,35 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
 	}
 
+	public static final Map<String, String> TASK_HELP = new HashMap<>();
+	static {
+		TASK_HELP.put("items", "consider items when exporting data");
+		TASK_HELP.put("properties", "consider properties when exporting data");
+		TASK_HELP.put("entities", "consider all entities when exporting data");
+		TASK_HELP.put("alldata",
+				"export all data available for the considered entities");
+		TASK_HELP.put("statements",
+				"export statements for the considered entities");
+		TASK_HELP.put("sitelinks",
+				"export site links for the considered entities");
+		TASK_HELP.put("datatypes",
+				"export datatypes for the considered entities");
+		TASK_HELP.put("labels", "export labels for the considered entities");
+		TASK_HELP.put("descriptions",
+				"export descriptions for the considered entities");
+		TASK_HELP.put("aliases", "export labels for the considered entities");
+		TASK_HELP.put("terms", "shortcut for labels,descriptions,aliases");
+		TASK_HELP
+				.put("taxonomy",
+						"export unqualified subclass information for the considered entities");
+		TASK_HELP
+				.put("instanceof",
+						"export unqualified instanceof information for the considered entities");
+		TASK_HELP
+				.put("simplestatements",
+						"export unqualified statements without references as single triples");
+	}
+
 	/**
 	 * Internal serializer object that will actually write the RDF output.
 	 */
@@ -110,7 +143,17 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	@Override
 	public boolean needsSites() {
-		return true;
+		return this.tasks != 0; // no need for sites when just printing help
+	}
+
+	@Override
+	public boolean isReady() {
+		if (this.tasks == 0) {
+			printHelp();
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	@Override
@@ -168,12 +211,6 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				exportOutputStream, this.sites);
 		serializer.setTasks(this.tasks);
 
-		if (this.tasks == 0) {
-			logger.warn("No tasks configured for RDF export. Use option \""
-					+ OPTION_RDF_TASKS
-					+ "\" to define which RDF exports to generate.");
-		}
-
 		return serializer;
 	}
 
@@ -190,9 +227,27 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				this.taskName += (this.taskName.isEmpty() ? "" : "-") + task;
 			} else {
 				logger.warn("Unsupported RDF serialization task \"" + task
-						+ "\". Supported tasks are: " + KNOWN_TASKS.keySet());
+						+ "\". Run without specifying any tasks for help.");
 			}
 		}
 	}
 
+	private void printHelp() {
+		List<String> rdfTasks = new ArrayList<>(KNOWN_TASKS.keySet());
+		Collections.sort(rdfTasks);
+		System.out.println("---");
+		System.out
+				.println(WordUtils
+						.wrap("Use option --"
+								+ OPTION_RDF_TASKS
+								+ " to select the supported tasks for RDF export. "
+								+ "Tasks may select which entities to consider, and which data to include.",
+								75)
+						+ "\nExample: \"items,labels,aliases\" exports labels and aliases of items."
+						+ "\n\nAvailable tasks:");
+		for (String supportedTask : rdfTasks) {
+			System.out.println(WordUtils.wrap("* \"" + supportedTask + "\": "
+					+ TASK_HELP.get(supportedTask), 75, "\n   ", true));
+		}
+	}
 }

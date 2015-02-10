@@ -62,6 +62,11 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	}
 
 	@Override
+	public boolean isReady() {
+		return true; // can always run
+	}
+
+	@Override
 	public void open() {
 		OutputStream outputStream;
 		try {

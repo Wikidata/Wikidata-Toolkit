@@ -21,6 +21,7 @@ package org.wikidata.wdtk.client;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -30,12 +31,26 @@ public class RdfSerializationActionTest {
 
 	@Test
 	public void testDefaults() {
-		String[] args = new String[] { "-a", "rdf" };
+		String[] args = new String[] { "-a", "rdf", "--rdftasks", "entities" };
 		DumpProcessingOutputAction action = DumpProcessingOutputActionTest
 				.getActionFromArgs(args);
 
 		assertTrue(action instanceof RdfSerializationAction);
 		assertTrue(action.needsSites());
+		assertTrue(action.isReady());
+	}
+
+	@Test
+	public void testDefaultsNoTasks() {
+		String[] args = new String[] { "-a", "rdf", "--stdout" };
+		DumpProcessingOutputAction action = DumpProcessingOutputActionTest
+				.getActionFromArgs(args);
+		action.open();
+		action.close();
+
+		assertTrue(action instanceof RdfSerializationAction);
+		assertFalse(action.needsSites());
+		assertFalse(action.isReady());
 	}
 
 	@Test

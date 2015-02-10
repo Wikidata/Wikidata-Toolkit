@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -653,7 +653,7 @@ public class ClientConfiguration {
 				.hasArgs()
 				.withArgName("task")
 				.withDescription(
-						"specify which type of data to include in the RDF dump")
+						"specify which data to include in RDF dump (use with action \"rdf\"); run with options \"-a rdf -n\" for help")
 				.withLongOpt(OPTION_OUTPUT_RDF_TYPE).create();
 
 		Option filterLanguages = OptionBuilder

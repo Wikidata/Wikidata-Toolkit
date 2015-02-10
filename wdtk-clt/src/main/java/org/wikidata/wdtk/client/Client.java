@@ -115,7 +115,12 @@ public class Client {
 		MwDumpFile dumpFile = dumpProcessingController
 				.getMostRecentDump(DumpContentType.JSON);
 
+		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
+			if (!props.isReady()) {
+				continue;
+			}
+
 			if (props.needsSites()) {
 				props.setSites(getSites());
 			}
@@ -123,6 +128,12 @@ public class Client {
 					dumpFile.getDateStamp());
 			this.dumpProcessingController.registerEntityDocumentProcessor(
 					props, null, true);
+			hasReadyProcessor = true;
+		}
+
+		if (!hasReadyProcessor) {
+			return; // silent; non-ready action should report its problem
+					// directly
 		}
 
 		if (!this.clientConfiguration.isQuiet()) {

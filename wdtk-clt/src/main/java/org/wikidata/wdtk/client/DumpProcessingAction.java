@@ -44,6 +44,19 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	boolean needsSites();
 
 	/**
+	 * Returns true if the action is ready to process a dump. An action that is
+	 * insufficiently or wrongly configured can return false here to avoid being
+	 * run.
+	 * <p>
+	 * If this method is called on an action that is not ready, the action
+	 * should print helpful information on the missing configuration to stdout
+	 * as a side effect.
+	 *
+	 * @return true if ready to run
+	 */
+	boolean isReady();
+
+	/**
 	 * Sets the sites information to the given value. The method
 	 * {@link #needsSites()} is used to find out if this is actually needed.
 	 *
@@ -80,7 +93,7 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	 * Provides the action with general information about the dump that is to be
 	 * processed. This may be used, e.g., to define file names to use for the
 	 * output.
-	 * 
+	 *
 	 * @param project
 	 *            the name of the project that the dump is from
 	 * @param dateStamp
