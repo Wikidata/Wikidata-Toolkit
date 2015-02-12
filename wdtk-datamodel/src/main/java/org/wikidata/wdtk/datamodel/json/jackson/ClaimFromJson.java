@@ -27,7 +27,6 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
@@ -52,12 +51,7 @@ public class ClaimFromJson implements Claim {
 
 	@Override
 	public EntityIdValue getSubject() {
-		EntityDocument parentDocument = this.statement.getParentDocument();
-		if (parentDocument != null) {
-			return parentDocument.getEntityId();
-		} else {
-			return null;
-		}
+		return this.statement.getSubject();
 	}
 
 	@Override

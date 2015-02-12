@@ -65,12 +65,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		return new ItemIdValueImpl(id, siteIri);
+		return ItemIdValueImpl.create(id, siteIri);
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return new PropertyIdValueImpl(id, siteIri);
+		return PropertyIdValueImpl.create(id, siteIri);
 	}
 
 	@Override
