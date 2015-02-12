@@ -40,7 +40,6 @@ public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 	 */
 	public JacksonSomeValueSnak() {
 		super();
-		this.setSnakType(JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE);
 	}
 
 	@Override

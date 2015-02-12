@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -66,15 +66,15 @@ public class JacksonStatement implements Statement {
 	private String id;
 
 	/**
-	 * The parent document that this statement is part of. This is needed since
-	 * the subject that this statement refers to is not part of the JSON
-	 * serialization of statements, but is needed in WDTK as part of
-	 * {@link Claim}. Thus, it is necessary to set this information after each
-	 * deserialization using
-	 * {@link JacksonStatement#setParentDocument(JacksonTermedStatementDocument)}.
+	 * The subject entity that this statement refers to. This is needed since it
+	 * is not part of the JSON serialization of statements, but is needed in
+	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
+	 * information after each deserialization using
+	 * {@link JacksonStatement#setParentDocument(JacksonTermedStatementDocument)}
+	 * .
 	 */
 	@JsonIgnore
-	JacksonTermedStatementDocument parentDocument;
+	EntityIdValue subject = null;
 
 	/**
 	 * Rank of this statement.
@@ -131,44 +131,48 @@ public class JacksonStatement implements Statement {
 	}
 
 	/**
-	 * Returns the parent document that this statement is part of. This method
-	 * is only used by {@link ClaimFromJson} to retrieve data about the subject
-	 * of this statement. To access this data from elsewhere, use
-	 * {@link #getClaim()}.
+	 * Returns the subject that this statement refers to. This method is only
+	 * used by {@link ClaimFromJson} to retrieve data about the subject of this
+	 * statement. To access this data from elsewhere, use {@link #getClaim()}.
 	 *
 	 * @see Claim#getSubject()
-	 * @return the parent document of this statement
+	 * @return the subject of this statement
 	 */
 	@JsonIgnore
-	EntityDocument getParentDocument() {
-		return this.parentDocument;
+	EntityIdValue getSubject() {
+		if (this.subject == null) {
+			throw new RuntimeException(
+					"Cannot retrieve subject for insufficiently initialised statement/claim.");
+		} else {
+			return this.subject;
+		}
 	}
 
 	/**
-	 * Sets the parent document of this statement to the given value. This
-	 * document provides the statement with information about its subject, which
-	 * is not part of the JSON serialization of statements ("claims" in JSON).
-	 * This method should only be used during deserialization.
+	 * Sets the subject entity of this statement. This information is needed in
+	 * WDTK but is not part of the JSON serialization. The subject is also used
+	 * to obtain the IRI of the site this statement belongs to. This method
+	 * should only be used during deserialization.
 	 *
-	 * @param parentDocument
+	 * @param subject
 	 *            new value
 	 */
 	@JsonIgnore
-	void setParentDocument(JacksonTermedStatementDocument parentDocument) {
-		this.parentDocument = parentDocument;
+	void setSubject(EntityIdValue subject) {
+		this.subject = subject;
 
-		this.mainsnak.setParentDocument(parentDocument);
+		this.mainsnak.setSiteIri(subject.getSiteIri());
 
 		for (List<JacksonSnak> snaks : this.qualifiers.values()) {
 			for (JacksonSnak snak : snaks) {
-				snak.setParentDocument(parentDocument);
+				snak.setSiteIri(subject.getSiteIri());
 			}
 		}
 
 		for (JacksonReference reference : this.references) {
 			for (List<JacksonSnak> snaks : reference.snaks.values()) {
 				for (JacksonSnak snak : snaks) {
-					snak.setParentDocument(parentDocument);
+					snak.setSiteIri(subject.getSiteIri());
 				}
 			}
 		}

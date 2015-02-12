@@ -35,8 +35,6 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -48,10 +46,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Fredo Erxleben
  *
  */
-@JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonItemDocument extends JacksonTermedStatementDocument implements
-		ItemDocument {
+public class JacksonItemDocument extends JacksonTermedStatementDocument
+		implements ItemDocument {
 
 	/**
 	 * Map to store site links.
@@ -63,11 +60,6 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument implemen
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
 	public JacksonItemDocument() {
-	}
-
-	@Override
-	public String getJsonType() {
-		return JacksonTermedStatementDocument.JSON_TYPE_ITEM;
 	}
 
 	@JsonIgnore
