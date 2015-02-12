@@ -48,10 +48,10 @@ public class ReferenceImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		EntityIdValue subject = new ItemIdValueImpl("Q42",
+		EntityIdValue subject = ItemIdValueImpl.create("Q42",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = new PropertyIdValueImpl("P42",
-				"http://wikidata.org/entity/");
+		PropertyIdValue property = PropertyIdValueImpl.create(
+				"P42", "http://wikidata.org/entity/");
 		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
 				Collections.<Snak> singletonList(valueSnak));

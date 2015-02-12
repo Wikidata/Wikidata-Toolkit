@@ -89,8 +89,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 			JacksonValueItemId result = new JacksonValueItemId();
 			result.setValue(innerEntity);
-			result.setParentDocument(getParentEntityDocument("Qunknown",
-					siteIri, EntityIdValue.ET_ITEM));
+			result.setSiteIri(siteIri);
 			return result;
 		} else {
 			throw new IllegalArgumentException("Illegal item id: " + id);
@@ -107,8 +106,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 			JacksonValuePropertyId result = new JacksonValuePropertyId();
 			result.setValue(innerEntity);
-			result.setParentDocument(getParentEntityDocument("Qunknown",
-					siteIri, EntityIdValue.ET_ITEM));
+			result.setSiteIri(siteIri);
 			return result;
 		} else {
 			throw new IllegalArgumentException("Illegal property id: " + id);
@@ -192,11 +190,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		if (value instanceof JacksonValue) {
 			return getJacksonValueSnak(propertyId, (JacksonValue) value,
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		} else {
 			return getJacksonValueSnak(propertyId,
 					(JacksonValue) this.dataModelConverter.copyValue(value),
-					getDefaultJsonPropertyTypeForValueType(value));
+					getJsonPropertyTypeForValueType(value));
 		}
 	}
 
@@ -204,8 +202,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
 		JacksonSomeValueSnak result = new JacksonSomeValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentEntityDocument("Qundefined",
-				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
@@ -213,8 +210,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
 		JacksonNoValueSnak result = new JacksonNoValueSnak();
 		result.setProperty(propertyId.getId());
-		result.setParentDocument(getParentEntityDocument("Qundefined",
-				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
@@ -288,36 +284,9 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setRank(rank);
 		result.setStatementId(statementId);
 
-		result.setParentDocument(getParentEntityDocument(claim.getSubject()));
+		result.setSubject(claim.getSubject());
 
 		return result;
-	}
-
-	private JacksonTermedStatementDocument getParentEntityDocument(
-			EntityIdValue subject) {
-		return getParentEntityDocument(subject.getId(), subject.getSiteIri(),
-				subject.getEntityType());
-	}
-
-	private JacksonTermedStatementDocument getParentEntityDocument(
-			String subjectId, String subjectSiteIri, String entityType) {
-
-		JacksonTermedStatementDocument helperParentDocument;
-		switch (entityType) {
-		case EntityIdValue.ET_ITEM:
-			helperParentDocument = new JacksonItemDocument();
-			break;
-		case EntityIdValue.ET_PROPERTY:
-			helperParentDocument = new JacksonPropertyDocument();
-			break;
-		default:
-			throw new IllegalArgumentException("Entity type " + entityType
-					+ " is not supported by this method.");
-		}
-
-		helperParentDocument.setJsonId(subjectId);
-		helperParentDocument.setSiteIri(subjectSiteIri);
-		return helperParentDocument;
 	}
 
 	@Override
@@ -489,18 +458,19 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		result.setProperty(propertyId.getId());
 		result.setDatavalue(value);
 		result.setDatatype(propertyDatatype);
-		result.setParentDocument(getParentEntityDocument("Qundefined",
-				propertyId.getSiteIri(), EntityIdValue.ET_ITEM));
+		result.setSiteIri(propertyId.getSiteIri());
 		return result;
 	}
 
-	private String getDefaultJsonPropertyTypeForValueType(Value value) {
+	private String getJsonPropertyTypeForValueType(Value value) {
 		if (value instanceof TimeValue) {
 			return JacksonDatatypeId.JSON_DT_TIME;
 		} else if (value instanceof ItemIdValue) {
 			return JacksonDatatypeId.JSON_DT_ITEM;
+		} else if (value instanceof PropertyIdValue) {
+			return JacksonDatatypeId.JSON_DT_PROPERTY;
 		} else if (value instanceof StringValue) {
-			return JacksonDatatypeId.JSON_DT_STRING;
+			return null;
 		} else if (value instanceof GlobeCoordinatesValue) {
 			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
 		} else if (value instanceof QuantityValue) {

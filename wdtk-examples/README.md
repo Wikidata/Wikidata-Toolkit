@@ -67,13 +67,13 @@ printed to the output. This example is inspired by Max Klein's work on this topi
 
 [Related blog post by Max Klein](http://notconfusing.com/sex-ratios-in-wikidata-part-iii/)
 
-#### SerializationExample.java ####
+#### JsonSerializationProcessor.java ####
 
-This program uses a JSON serializer provided with Wikidata Toolkit to create a file
-that contains all data of the dump in the official JSON data format as used in the API
-and dumps. The program serializes all data found in the dump, but one could easily
-restrict this to create JSON files that contain only a selection of the data (e.g.,
-only the humans).
+This program creates a JSON file that contains English language terms, birthdate, occupation,
+and image for all people on Wikidata who were born in Dresden (the code can easily be
+modified to make a different selection). The example shows how to serialize Wikidata Toolkit
+objects in JSON, how to select item documents by a property, and how to filter documents to
+ignore some of the data. The resulting file is small (less than 1M).
 
 #### SitelinksExample.java ####
 

@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,16 +34,14 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 		EntityIdValue {
 
 	/**
-	 * The parent document that this value is part of. This is needed since the
-	 * site that this value refers to is not part of the JSON serialization of
-	 * value, but is needed in WDTK to build all current types of
-	 * {@link EntityIdValue} objects. Thus, it is necessary to set this
+	 * The site IRI that this value refers to. This data not part of the JSON
+	 * serialization of value, but is needed in WDTK to build all current types
+	 * of {@link EntityIdValue} objects. Thus, it is necessary to set this
 	 * information after each deserialization using
-	 * {@link JacksonValueEntityId#setParentDocument(JacksonTermedStatementDocument)}
-	 * .
+	 * {@link JacksonValueEntityId#setSiteIri(String)} .
 	 */
 	@JsonIgnore
-	JacksonTermedStatementDocument parentDocument;
+	String siteIri = null;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
@@ -96,9 +93,8 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	@JsonIgnore
 	@Override
 	public String getSiteIri() {
-		if (this.parentDocument != null
-				&& this.parentDocument.getSiteIri() != null) {
-			return this.parentDocument.getSiteIri();
+		if (this.siteIri != null) {
+			return this.siteIri;
 		} else {
 			throw new RuntimeException(
 					"Cannot access the site IRI id of an insufficiently initialised Jackson value.");
@@ -115,7 +111,7 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 *            new value
 	 */
 	@JsonIgnore
-	public void setParentDocument(JacksonTermedStatementDocument parentDocument) {
-		this.parentDocument = parentDocument;
+	public void setSiteIri(String siteIri) {
+		this.siteIri = siteIri;
 	}
 }

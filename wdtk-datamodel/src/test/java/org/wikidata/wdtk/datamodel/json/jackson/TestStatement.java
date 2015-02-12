@@ -51,7 +51,7 @@ public class TestStatement {
 			JsonMappingException, IOException {
 		JacksonStatement result = mapper.readValue(
 				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonStatement.class);
-		result.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+		result.setSubject(JsonTestData.getEmtpyTestItemDocument().getEntityId());
 
 		assertNotNull(result);
 		assertEquals(JsonTestData.getTestNoValueStatement(), result);
@@ -62,11 +62,12 @@ public class TestStatement {
 	public void testEquality() {
 		JacksonStatement correctStatement = new JacksonStatement(
 				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK);
-		correctStatement.setParentDocument(JsonTestData
-				.getEmtpyTestItemDocument());
+		correctStatement.setSubject(JsonTestData.getEmtpyTestItemDocument()
+				.getEntityId());
 		JacksonStatement wrongId = new JacksonStatement("another id",
 				JsonTestData.TEST_NOVALUE_SNAK);
-		wrongId.setParentDocument(JsonTestData.getEmtpyTestItemDocument());
+		wrongId.setSubject(JsonTestData.getEmtpyTestItemDocument()
+				.getEntityId());
 
 		assertEquals(JsonTestData.getTestNoValueStatement(),
 				JsonTestData.getTestNoValueStatement());
