@@ -32,8 +32,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.examples.EntityTimerProcessor.TimeoutException;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor.TimeoutException;
 
 /**
  * Class for sharing code that is used in many examples. It contains several
@@ -158,7 +160,8 @@ public class ExampleHelpers {
 				dumpProcessingController.processMostRecentJsonDump();
 				break;
 			case JUST_ONE_DAILY_FOR_TEST:
-				dumpProcessingController.processMostRecentDailyDump();
+				dumpProcessingController.processDump(dumpProcessingController
+						.getMostRecentDump(DumpContentType.DAILY));
 				break;
 			default:
 				throw new RuntimeException("Unsupported dump processing type "
@@ -169,7 +172,7 @@ public class ExampleHelpers {
 		}
 
 		// Print final timer results:
-		entityTimerProcessor.stop();
+		entityTimerProcessor.close();
 	}
 
 	/**

@@ -37,6 +37,7 @@ import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.openrdf.rio.RDFFormat;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
@@ -186,7 +187,7 @@ public class RdfSerializationExample {
 	 */
 	private static void startSerializers() {
 		for (RdfSerializer serializer : serializers) {
-			serializer.start();
+			serializer.open();
 		}
 	}
 

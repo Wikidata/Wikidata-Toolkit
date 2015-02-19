@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentsSerializer;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
@@ -36,10 +36,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This class implements {@link EntityDocumentsSerializer} to provide a
+ * This class implements {@link EntityDocumentDumpProcessor} to provide a
  * serializer for {@link EntityDocument} objects in JSON.
  * <p>
- * The implementation does not check if {@link #start()} has been called before
+ * The implementation does not check if {@link #open()} has been called before
  * the first document is serialized. It is the responsibility of the caller to
  * do this.
  * <p>
@@ -55,7 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Markus Kroetzsch
  *
  */
-public class JsonSerializer implements EntityDocumentsSerializer {
+public class JsonSerializer implements EntityDocumentDumpProcessor {
 
 	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
@@ -103,7 +103,7 @@ public class JsonSerializer implements EntityDocumentsSerializer {
 	}
 
 	@Override
-	public void start() {
+	public void open() {
 		this.entityDocumentCount = 0;
 
 		try {
