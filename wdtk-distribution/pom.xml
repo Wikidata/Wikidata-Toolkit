@@ -81,7 +81,7 @@
 			<dependencies>
 		  		<dependency>
 					<groupId>${project.groupId}</groupId>
-					<artifactId>wdtk-clt</artifactId>
+					<artifactId>wdtk-client</artifactId>
 					<version>${project.version}</version>
 				</dependency>
 			</dependencies>
@@ -152,7 +152,7 @@
 				</dependency>
 				<dependency>
 					<groupId>${project.groupId}</groupId>
-					<artifactId>wdtk-clt</artifactId>
+					<artifactId>wdtk-client</artifactId>
 					<version>${project.version}</version>
 					<classifier>sources</classifier>
 				</dependency>

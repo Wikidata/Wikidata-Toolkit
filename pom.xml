@@ -22,7 +22,7 @@
 		<module>wdtk-examples</module>
 		<module>wdtk-distribution</module>
 		<module>wdtk-rdf</module>
-		<module>wdtk-clt</module>
+		<module>wdtk-client</module>
 	</modules>
 
 	<licenses>

@@ -8,7 +8,7 @@
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>wdtk-clt</artifactId>
+	<artifactId>wdtk-client</artifactId>
 	<packaging>jar</packaging>
 
 	<name>Wikidata Toolkit Command-line Tool</name>
