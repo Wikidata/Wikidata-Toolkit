@@ -629,11 +629,8 @@ public class ClientConfiguration {
 								+ actions).withLongOpt(OPTION_ACTION)
 				.create(CMD_OPTION_ACTION);
 
-		Option destination = OptionBuilder
-				.withArgName("path")
-				.hasArg()
-				.withDescription(
-						"place the output into the directory located at <path>")
+		Option destination = OptionBuilder.withArgName("path").hasArg()
+				.withDescription("place the output into the file at <path>")
 				.withLongOpt(OPTION_OUTPUT_DESTINATION)
 				.create(CMD_OPTION_OUTPUT_DESTINATION);
 
@@ -660,21 +657,21 @@ public class ClientConfiguration {
 				.hasArgs()
 				.withArgName("languages")
 				.withDescription(
-						"specifies a list of language codes; if given, all other language data will be filtered during processing; the value \"-\" should be used to filter all languages")
+						"specifies a list of language codes; if given, only terms in languages in this list will be processed; the value \"-\" denotes the empty list (no terms are processed)")
 				.withLongOpt(OPTION_FILTER_LANGUAGES).create();
 
 		Option filterSites = OptionBuilder
 				.hasArgs()
 				.withArgName("sites")
 				.withDescription(
-						"specifies a list of site keys; if given, site links from all other sites will be filtered during processing; the value \"-\" should be used to filter all sites")
+						"specifies a list of site keys; if given, only site links to sites in this list will be processed; the value \"-\" denotes the empty list (no site links are processed)")
 				.withLongOpt(OPTION_FILTER_SITES).create();
 
 		Option filterProperties = OptionBuilder
 				.hasArgs()
 				.withArgName("ids")
 				.withDescription(
-						"specifies a list of property ids; if given, statements for all other properties will be filtered during processing; the value \"-\" should be used to filter all statements")
+						"specifies a list of property ids; if given, only statements for properties in this list will be processed; the value \"-\" denotes the empty list (no statements are processed)")
 				.withLongOpt(OPTION_FILTER_PROPERTIES).create();
 
 		Option compressionExtention = OptionBuilder
