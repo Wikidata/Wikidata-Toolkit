@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -68,6 +70,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
  */
 public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(DatamodelConverter.class);
 
 	/**
 	 * The factory to use for copying.
@@ -784,18 +789,42 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 
 	/**
 	 * Copies a {@link StatementGroup}, creating deep copies of all subobjects.
+	 * <p>
+	 * As opposed to most other copy methods, this method will catch exceptions
+	 * that occur when copying statements, and drop statements in this case.
+	 * Such exceptions can happen if the input data is based on another
+	 * implementation than the data that should be created in the copy. Then the
+	 * factory may refuse to create the copied object and throw an exception.
+	 * The level of statements is the most appropriate place to recover by
+	 * giving up a single statement rather than a whole statement group.
+	 * <p>
+	 * If all statements are dropped, then a statement group cannot be created
+	 * and null will be returned instead. Callers need to be prepared for this.
 	 *
 	 * @param statementGroup
 	 *            object to copy
-	 * @return the copied object
+	 * @return the copied object, or null if all statements had to be dropped
+	 *         due to errors
 	 */
 	private StatementGroup deepCopyStatementGroup(StatementGroup statementGroup) {
 		List<Statement> statements = new ArrayList<>(statementGroup
 				.getStatements().size());
 		for (Statement statement : statementGroup.getStatements()) {
-			statements.add(this.deepCopyStatement(statement));
+			try {
+				statements.add(deepCopyStatement(statement));
+			} catch (IllegalArgumentException e) {
+				logger.error("A statement could not be copied and was dropped.\nError: "
+						+ e.getMessage()
+						+ "\nStatement:\n"
+						+ statement.toString());
+			}
 		}
-		return this.dataObjectFactory.getStatementGroup(statements);
+
+		if (statements.isEmpty()) {
+			return null;
+		} else {
+			return this.dataObjectFactory.getStatementGroup(statements);
+		}
 	}
 
 	/**
@@ -817,7 +846,10 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 			if (this.propertyFilter == null
 					|| this.propertyFilter.contains(statementGroup
 							.getProperty())) {
-				result.add(this.deepCopyStatementGroup(statementGroup));
+				StatementGroup copiedStatementGroup = deepCopyStatementGroup(statementGroup);
+				if (copiedStatementGroup != null) {
+					result.add(copiedStatementGroup);
+				}
 			}
 		}
 		return result;
