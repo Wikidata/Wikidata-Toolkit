@@ -116,6 +116,18 @@ public class WikibaseDataFetcher {
 	}
 
 	/**
+	 * Fetches the documents for the entity of the given string IDs. The result
+	 * is an {@link EntityDocument} or null if the data could not be fetched.
+	 *
+	 * @param entityId
+	 *            string IDs (e.g., "P31" or "Q42") of requested entity
+	 * @return retrieved entity document or null
+	 */
+	public EntityDocument getEntityDocument(String entityId) {
+		return getEntityDocuments(entityId).get(entityId);
+	}
+
+	/**
 	 * Fetches the documents for the entities of the given string IDs. The
 	 * result is a map from entity IDs to {@link EntityDocument} objects. It is
 	 * possible that a requested ID could not be found: then this key is not set

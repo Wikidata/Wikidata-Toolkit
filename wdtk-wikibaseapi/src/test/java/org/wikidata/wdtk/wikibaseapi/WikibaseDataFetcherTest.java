@@ -61,6 +61,44 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
+	public void testGetEntityDocument() throws IOException {
+		List<String> entityIds = Arrays.asList("Q42");
+
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		// We use the mock answer as for a multi request; no problem
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(entityIds),
+				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf.getEntityDocument("Q42");
+
+		assertTrue(result != null);
+	}
+
+	@Test
+	public void testGetMissingEntityDocument() throws IOException {
+		List<String> entityIds = Arrays.asList("Q6");
+
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		// We use the mock answer as for a multi request; no problem
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(entityIds),
+				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf.getEntityDocument("Q6");
+
+		assertTrue(result == null);
+	}
+
+	@Test
 	public void testWbGetEntitiesError() throws IOException {
 		List<String> entityIds = Arrays.asList("bogus");
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
