@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -92,24 +93,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private boolean deepCopyReferences = true;
 
-	/**
-	 * Set of language codes to restrict the copying of terms (labels,
-	 * descriptions, aliases). If set to null, copying of terms will not be
-	 * restricted.
-	 */
-	private Set<String> languageFilter = null;
-
-	/**
-	 * Set of property id values to restrict the copying of statements. If set
-	 * to null, copying of statements will not be restricted.
-	 */
-	private Set<PropertyIdValue> propertyFilter = null;
-
-	/**
-	 * Set of site keys to restrict the copying of site keys. If set to null,
-	 * copying of site links will not be restricted.
-	 */
-	private Set<String> siteLinkFilter = null;
+	private DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
 	 * Constructor.
@@ -165,6 +149,17 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	/**
+	 * Replaces the current filter settings with the given ones. Future changes
+	 * to the settings will take effect (a reference is used, not a full copy).
+	 *
+	 * @param filter
+	 *            the filter to use
+	 */
+	public void setOptionFilter(DocumentDataFilter filter) {
+		this.filter = filter;
+	}
+
+	/**
 	 * Returns the (possibly empty) set of language codes that are used to
 	 * filter data while copying it, or null if no such filter is configured
 	 * (default). If not equal to null, only terms in the given language will be
@@ -173,7 +168,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return set of language codes to use for filtering
 	 */
 	public Set<String> getOptionLanguageFilter() {
-		return this.languageFilter;
+		return this.filter.getLanguageFilter();
 	}
 
 	/**
@@ -189,7 +184,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *            set of language codes to restrict copying to
 	 */
 	public void setOptionLanguageFilter(Set<String> languageFilter) {
-		this.languageFilter = languageFilter;
+		this.filter.setLanguageFilter(languageFilter);
 	}
 
 	/**
@@ -201,7 +196,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return set of properties to use for filtering
 	 */
 	public Set<PropertyIdValue> getOptionPropertyFilter() {
-		return this.propertyFilter;
+		return this.filter.getPropertyFilter();
 	}
 
 	/**
@@ -217,7 +212,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *            set of properties to use for filtering
 	 */
 	public void setOptionPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		this.propertyFilter = propertyFilter;
+		this.filter.setPropertyFilter(propertyFilter);
 	}
 
 	/**
@@ -229,7 +224,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return set of site keys to use for filtering
 	 */
 	public Set<String> getOptionSiteLinkFilter() {
-		return this.siteLinkFilter;
+		return this.filter.getSiteLinkFilter();
 	}
 
 	/**
@@ -242,7 +237,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *            set of site keys to use for filtering
 	 */
 	public void setOptionSiteLinkFilter(Set<String> siteLinkFilter) {
-		this.siteLinkFilter = siteLinkFilter;
+		this.filter.setSiteLinkFilter(siteLinkFilter);
 	}
 
 	/**
@@ -634,8 +629,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		List<MonolingualTextValue> aliases = new ArrayList<>();
 		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap
 				.entrySet()) {
-			if (this.languageFilter == null
-					|| this.languageFilter.contains(langAliases.getKey())) {
+			if (this.filter.includeLanguage(langAliases.getKey())) {
 				aliases.addAll(langAliases.getValue());
 			}
 		}
@@ -657,8 +651,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		List<MonolingualTextValue> aliases = new ArrayList<>();
 		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap
 				.entrySet()) {
-			if (this.languageFilter == null
-					|| this.languageFilter.contains(langAliases.getKey())) {
+			if (this.filter.includeLanguage(langAliases.getKey())) {
 				for (MonolingualTextValue mtv : langAliases.getValue()) {
 					aliases.add(copy(mtv));
 				}
@@ -837,15 +830,13 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<StatementGroup> deepCopyStatementGroups(
 			List<StatementGroup> statementGroups) {
-		if (this.propertyFilter != null && this.propertyFilter.isEmpty()) {
+		if (this.filter.excludeAllProperties()) {
 			return Collections.<StatementGroup> emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
 		for (StatementGroup statementGroup : statementGroups) {
-			if (this.propertyFilter == null
-					|| this.propertyFilter.contains(statementGroup
-							.getProperty())) {
+			if (this.filter.includePropertyId(statementGroup.getProperty())) {
 				StatementGroup copiedStatementGroup = deepCopyStatementGroup(statementGroup);
 				if (copiedStatementGroup != null) {
 					result.add(copiedStatementGroup);
@@ -865,15 +856,16 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<StatementGroup> copyStatementGroups(
 			List<StatementGroup> statementGroups) {
-		if (this.propertyFilter == null) {
+		if (this.filter.getPropertyFilter() == null) {
 			return statementGroups;
-		} else if (this.propertyFilter.isEmpty()) {
+		} else if (this.filter.getPropertyFilter().isEmpty()) {
 			return Collections.<StatementGroup> emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
 		for (StatementGroup statementGroup : statementGroups) {
-			if (this.propertyFilter.contains(statementGroup.getProperty())) {
+			if (this.filter.getPropertyFilter().contains(
+					statementGroup.getProperty())) {
 				result.add(statementGroup);
 			}
 		}
@@ -890,15 +882,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<MonolingualTextValue> deepCopyMonoLingualTextValues(
 			Collection<MonolingualTextValue> monoLingualTextValues) {
-		if (this.languageFilter != null && this.languageFilter.isEmpty()) {
+		if (this.filter.excludeAllLanguages()) {
 			return Collections.<MonolingualTextValue> emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
 				monoLingualTextValues.size());
 		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			if (this.languageFilter == null
-					|| this.languageFilter.contains(mtv.getLanguageCode())) {
+			if (this.filter.includeLanguage(mtv.getLanguageCode())) {
 				result.add(copy(mtv));
 			}
 		}
@@ -914,16 +905,16 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<MonolingualTextValue> copyMonoLingualTextValues(
 			Collection<MonolingualTextValue> monoLingualTextValues) {
-		if (this.languageFilter == null) {
+		if (this.filter.getLanguageFilter() == null) {
 			return new ArrayList<>(monoLingualTextValues);
-		} else if (this.languageFilter.isEmpty()) {
+		} else if (this.filter.getLanguageFilter().isEmpty()) {
 			return Collections.<MonolingualTextValue> emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
 				monoLingualTextValues.size());
 		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			if (this.languageFilter.contains(mtv.getLanguageCode())) {
+			if (this.filter.getLanguageFilter().contains(mtv.getLanguageCode())) {
 				result.add(mtv);
 			}
 		}
@@ -940,14 +931,13 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private Map<String, SiteLink> deepCopySiteLinks(
 			Map<String, SiteLink> siteLinks) {
-		if (this.siteLinkFilter != null && this.siteLinkFilter.isEmpty()) {
+		if (this.filter.excludeAllSiteLinks()) {
 			return Collections.<String, SiteLink> emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
 		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
-			if (this.siteLinkFilter == null
-					|| this.siteLinkFilter.contains(entry.getKey())) {
+			if (this.filter.includeSiteLink(entry.getKey())) {
 				result.put(entry.getKey(), copy(entry.getValue()));
 			}
 		}
@@ -962,15 +952,15 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private Map<String, SiteLink> copySiteLinks(Map<String, SiteLink> siteLinks) {
-		if (this.siteLinkFilter == null) {
+		if (this.filter.getSiteLinkFilter() == null) {
 			return siteLinks;
-		} else if (this.siteLinkFilter.isEmpty()) {
+		} else if (this.filter.getSiteLinkFilter().isEmpty()) {
 			return Collections.<String, SiteLink> emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
 		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
-			if (this.siteLinkFilter.contains(entry.getKey())) {
+			if (this.filter.getSiteLinkFilter().contains(entry.getKey())) {
 				result.put(entry.getKey(), entry.getValue());
 			}
 		}
