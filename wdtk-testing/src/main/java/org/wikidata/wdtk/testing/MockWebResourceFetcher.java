@@ -29,9 +29,9 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
  * Mock implementation of {@link WebResourceFetcher}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class MockWebResourceFetcher implements WebResourceFetcher {
 
@@ -40,7 +40,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 */
 	public MockWebResourceFetcher() {
 		this.webResources = new HashMap<String, String>();
@@ -51,7 +51,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 * to access some resource will return objects that fail with exceptions
 	 * when trying to read data. This can be used to simulate problems like
 	 * failing network connections after opening an online resource.
-	 * 
+	 *
 	 * @param returnFailingReaders
 	 *            whether read operations should fail
 	 */
@@ -61,7 +61,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 
 	/**
 	 * Defines the contents of a new web resource.
-	 * 
+	 *
 	 * @param url
 	 *            the URL string
 	 * @param contents
@@ -74,7 +74,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	/**
 	 * Defines the contents of a new web resource by taking the string from a
 	 * given (Java) resource.
-	 * 
+	 *
 	 * @param url
 	 *            the URL string
 	 * @param resource
@@ -103,7 +103,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	/**
 	 * Returns an input stream for the content mocked for given URL. It is
 	 * checked that the URL is valid.
-	 * 
+	 *
 	 * @param urlString
 	 * @return input stream for resource
 	 * @throws IOException
@@ -111,7 +111,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	InputStream getInputStreamForMockWebResource(String urlString)
 			throws IOException {
 		if (!this.webResources.containsKey(urlString)) {
-			throw new IOException("Inaccessible URL (not mocked)");
+			throw new IOException("Inaccessible URL (not mocked): " + urlString);
 		}
 
 		if (this.returnFailingReaders) {
