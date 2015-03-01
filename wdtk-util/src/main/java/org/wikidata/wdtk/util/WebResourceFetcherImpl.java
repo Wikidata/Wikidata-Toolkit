@@ -22,7 +22,6 @@ package org.wikidata.wdtk.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 /**
  * Standard implementation of {@link WebResourceFetcher}.
@@ -34,8 +33,6 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
-		URL url = new URL(urlString);
-		return url.openStream();
+		return WebInputStream.create(urlString);
 	}
-
 }
