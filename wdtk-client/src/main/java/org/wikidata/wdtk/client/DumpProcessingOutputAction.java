@@ -44,7 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * {@link #OPTION_DESTINATION}, {@link #OPTION_COMPRESSION}, and
  * {@link #OPTION_USE_STDOUT}. Moreover, it provides some static helper
  * functions for opening files for writing.
- *
+ * 
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -72,6 +72,11 @@ public abstract class DumpProcessingOutputAction implements
 	 * setting the value to the string "true". Other values are ignored.
 	 */
 	public static final String OPTION_USE_STDOUT = "stdout";
+	/**
+	 * Name of the option to print a report when the DumpProcessingOutputAction
+	 * gets closed.
+	 */
+	public static final String OPTION_PRINT_REPORT = "report";
 
 	public static final String COMPRESS_BZ2 = "bz2";
 	public static final String COMPRESS_GZIP = "gz";
@@ -79,7 +84,7 @@ public abstract class DumpProcessingOutputAction implements
 
 	/**
 	 * The {@link Sites} object if provided.
-	 *
+	 * 
 	 * @see #needsSites()
 	 */
 	protected Sites sites;
@@ -109,6 +114,14 @@ public abstract class DumpProcessingOutputAction implements
 	 * String name of the site that the processed dump file comes from.
 	 */
 	protected String project = "UNKNOWN";
+	/**
+	 * Report object to share information about produced outputs.
+	 */
+	protected Report report = null;
+	/**
+	 * Specifies if the action should report information, when it stops.
+	 */
+	protected boolean printReport = false;
 
 	@Override
 	public void setSites(Sites sites) {
@@ -143,6 +156,10 @@ public abstract class DumpProcessingOutputAction implements
 		this.dateStamp = dateStamp;
 	}
 
+	public void setReport(Report report) {
+		this.report = report;
+	}
+
 	public String insertDumpInformation(String pattern) {
 		return pattern.replace("{DATE}", this.dateStamp).replace("{PROJECT}",
 				this.project);
@@ -150,7 +167,7 @@ public abstract class DumpProcessingOutputAction implements
 
 	/**
 	 * Creates an compressing {@link OutputStream}.
-	 *
+	 * 
 	 * @param useStdOut
 	 *            if true, {@link System#out} is returned and the other
 	 *            parameters are ignored
@@ -161,7 +178,7 @@ public abstract class DumpProcessingOutputAction implements
 	 *            a string that refers to a type of output compression or the
 	 *            empty string (no compression); a suitable file extension will
 	 *            be added to the output file
-	 *
+	 * 
 	 * @return compressing {@link OutputStream}
 	 * @throws IOException
 	 *             if there were problems opening the required streams
@@ -209,7 +226,7 @@ public abstract class DumpProcessingOutputAction implements
 	 * This code is inspired by
 	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
 	 * -that-does-its-compression-in-a-separate-thread
-	 *
+	 * 
 	 * @param outputStream
 	 *            the stream to write to in the thread
 	 * @return a new stream that data should be written to
@@ -244,7 +261,7 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Closes a Closeable and swallows any exceptions that might occur in the
 	 * process.
-	 *
+	 * 
 	 * @param closeable
 	 */
 	private static void close(Closeable closeable) {

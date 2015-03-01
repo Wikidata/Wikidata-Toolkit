@@ -37,7 +37,7 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 
 /**
  * This class provides a Java command line client to process dump files.
- *
+ * 
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -55,12 +55,13 @@ public class Client {
 
 	private Sites sites = null;
 	private DumpProcessingController dumpProcessingController;
+	private Report report = new Report();
 
 	protected final ClientConfiguration clientConfiguration;
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param args
 	 *            command line arguments to configure the conversion
 	 * @throws ParseException
@@ -105,6 +106,10 @@ public class Client {
 			}
 		}
 
+		if (this.clientConfiguration.reportFilename != null) {
+			report.setReportFile(this.clientConfiguration.reportFilename);
+		}
+
 		dumpProcessingController.setLanguageFilter(this.clientConfiguration
 				.getFilterLanguages());
 		dumpProcessingController.setSiteLinkFilter(this.clientConfiguration
@@ -117,6 +122,10 @@ public class Client {
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
+			if (this.clientConfiguration.reportFilename != null) {
+				props.setReport(report);
+			}
+
 			if (!props.isReady()) {
 				continue;
 			}
@@ -208,11 +217,12 @@ public class Client {
 				.getActions()) {
 			action.close();
 		}
+
 	}
 
 	/**
 	 * Launches the client with the specified parameters.
-	 *
+	 * 
 	 * @param args
 	 *            command line parameters
 	 * @throws ParseException

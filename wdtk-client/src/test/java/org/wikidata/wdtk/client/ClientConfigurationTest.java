@@ -85,6 +85,7 @@ public class ClientConfigurationTest {
 		assertEquals(config.getFilterLanguages(), null);
 		assertEquals(config.getFilterSiteKeys(), null);
 		assertEquals(config.getFilterProperties(), null);
+		assertEquals(config.getReportFilename(), null);
 		assertFalse(config.isQuiet());
 	}
 
@@ -158,6 +159,20 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "--quiet" };
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertTrue(config.isQuiet());
+	}
+
+	@Test
+	public void testReportArgumentsShort() {
+		String[] args = new String[] { "-r", "output/report.txt" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertEquals(config.getReportFilename(), "output/report.txt");
+	}
+
+	@Test
+	public void testReportArgumentsLong() {
+		String[] args = new String[] { "--report", "output/report.txt" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertEquals(config.getReportFilename(), "output/report.txt");
 	}
 
 	@Test
