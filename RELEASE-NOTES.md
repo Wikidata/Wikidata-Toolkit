@@ -1,6 +1,13 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.5.0
+-------------
+
+Bug fixes:
+* JSON conversion action of the command-line client was forgetting start of entity list.
+  
+
 Version 0.4.0
 -------------
 

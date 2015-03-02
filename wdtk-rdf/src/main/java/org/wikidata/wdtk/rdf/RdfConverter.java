@@ -100,6 +100,17 @@ public class RdfConverter {
 	}
 
 	/**
+	 * Returns the tasks that should be performed during export. The value
+	 * should be a combination of flags such as
+	 * {@link RdfSerializer#TASK_STATEMENTS}.
+	 * 
+	 * @return tasks to be performed
+	 */
+	public int getTasks() {
+		return this.tasks;
+	}
+
+	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
 	 *

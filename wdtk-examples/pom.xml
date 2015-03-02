@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
+		<version>0.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>wdtk-examples</artifactId>
@@ -43,12 +43,12 @@
 		<dependency> 
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.6</version>
+			<version>${slf4jVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.7</version>
+			<version>${apacheCommonsCompressVersion}</version>
 		</dependency>
 	</dependencies>
 

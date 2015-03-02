@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
-public class MonoloingualTextValueImplTest {
+public class MonolingualTextValueImplTest {
 
 	MonolingualTextValue mt1;
 	MonolingualTextValue mt2;

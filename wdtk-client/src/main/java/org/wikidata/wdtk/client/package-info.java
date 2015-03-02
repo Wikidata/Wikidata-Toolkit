@@ -1,8 +1,13 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+/**
+ * Command-line client to download dumps and serialize its data in several formats.
+ * 
+ * @author Michael Günther
+ */
+package org.wikidata.wdtk.client;
 
 /*
  * #%L
- * Wikidata Toolkit Data Model
+ * Wikidata Toolkit Command-line Tool
  * %%
  * Copyright (C) 2014 Wikidata Toolkit Developers
  * %%
@@ -19,23 +24,3 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
-
-/**
- * Interface for classes which serialize {@link EntityDocument} objects.
- * 
- * @author Michael Günther
- * 
- */
-public interface EntityDocumentsSerializer extends EntityDocumentProcessor {
-
-	/**
-	 * Initializes the serializer and writes the header (if any) to the output.
-	 */
-	void start();
-
-	/**
-	 * Writes the footer (if any) on the output and closes the output stream.
-	 */
-	void close();
-
-}

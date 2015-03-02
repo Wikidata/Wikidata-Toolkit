@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>0.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
@@ -21,6 +22,7 @@
 		<module>wdtk-examples</module>
 		<module>wdtk-distribution</module>
 		<module>wdtk-rdf</module>
+		<module>wdtk-client</module>
 	</modules>
 
 	<licenses>
@@ -64,10 +66,12 @@
 		<apacheCommonsCompressVersion>1.9</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.3.2</apacheCommonsLangVersion>
 		<apacheHttpVersion>4.3.3</apacheHttpVersion>
+		<commonsCliVersion>1.2</commonsCliVersion>
+		<ini4JVersion>0.5.2</ini4JVersion>
 		<jacksonVersion>2.5.0</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
-		<sesameVersion>2.7.11</sesameVersion>
+		<sesameVersion>2.7.14</sesameVersion>
 		<slf4jVersion>1.7.10</slf4jVersion>
 	</properties>
 

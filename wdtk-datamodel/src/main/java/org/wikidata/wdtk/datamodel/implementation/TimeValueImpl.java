@@ -39,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class TimeValueImpl implements TimeValue, Serializable {
 
 	private static final long serialVersionUID = 3969248626709737997L;
-	
+
 	final long year;
 	final byte month;
 	final byte day;
