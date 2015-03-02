@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.util.Set;
-
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 
@@ -46,47 +44,15 @@ public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 	 *
 	 * @param entityDocumentProcessor
 	 *            the processor to use on the filtered data
+	 * @param filter
+	 *            the filter settings to be used
 	 */
 	public EntityDocumentProcessorFilter(
-			EntityDocumentProcessor entityDocumentProcessor) {
+			EntityDocumentProcessor entityDocumentProcessor,
+			DocumentDataFilter filter) {
 		this.converter = new DatamodelConverter(new DataObjectFactoryImpl());
+		this.converter.setOptionFilter(filter);
 		this.entityDocumentProcessor = entityDocumentProcessor;
-	}
-
-	/**
-	 * Sets a property filter. If given, all data will be preprocessed to
-	 * contain only statements for the given (main) properties.
-	 *
-	 * @see DatamodelConverter#setOptionPropertyFilter(Set)
-	 * @param propertyFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		this.converter.setOptionPropertyFilter(propertyFilter);
-	}
-
-	/**
-	 * Sets a site link filter. If given, all data will be preprocessed to
-	 * contain only data for the given site keys.
-	 *
-	 * @see DatamodelConverter#setOptionSiteLinkFilter(Set)
-	 * @param siteLinkFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setSiteLinkFilter(Set<String> siteLinkFilter) {
-		this.converter.setOptionSiteLinkFilter(siteLinkFilter);
-	}
-
-	/**
-	 * Sets a language filter. If given, all data will be preprocessed to
-	 * contain only data for the given languages.
-	 *
-	 * @see DatamodelConverter#setOptionLanguageFilter(Set)
-	 * @param languageFilter
-	 *            set of language codes that should be retained (can be empty)
-	 */
-	public void setLanguageFilter(Set<String> languageFilter) {
-		this.converter.setOptionLanguageFilter(languageFilter);
 	}
 
 	@Override
