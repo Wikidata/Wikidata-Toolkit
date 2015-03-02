@@ -55,8 +55,15 @@ public class WikibaseDataFetcher {
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseDataFetcher.class);
 
+	/**
+	 * URL of the Web API of wikidata.org.
+	 */
 	final static String WIKIDATA_API_URL = "http://www.wikidata.org/w/api.php";
 
+	/**
+	 * Object used to make web requests. Package-private so that it can be
+	 * overwritten with a mock object in tests.
+	 */
 	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
 
 	/**
@@ -238,6 +245,9 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "props" parameter based on the current
 	 * settings.
+	 *
+	 * @param uriBuilder
+	 *            the URI builder to set the parameter in
 	 */
 	private void setRequestProps(URIBuilder uriBuilder) {
 		StringBuilder builder = new StringBuilder();
@@ -258,6 +268,9 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "languages" parameter based on the current
 	 * settings.
+	 *
+	 * @param uriBuilder
+	 *            the URI builder to set the parameter in
 	 */
 	private void setRequestLanguages(URIBuilder uriBuilder) {
 		if (this.filter.excludeAllLanguages()
@@ -271,6 +284,9 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "sitefilter" parameter based on the current
 	 * settings.
+	 *
+	 * @param uriBuilder
+	 *            the URI builder to set the parameter in
 	 */
 	private void setRequestSitefilter(URIBuilder uriBuilder) {
 		if (this.filter.excludeAllSiteLinks()
