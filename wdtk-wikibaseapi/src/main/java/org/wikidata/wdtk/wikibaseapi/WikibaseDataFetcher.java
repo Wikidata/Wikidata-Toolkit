@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Simple class to fetch data from Wikibase via the online API. Only anoymous,
+ * Simple class to fetch data from Wikibase via the online API. Only anonymous,
  * read-only access is supported here.
  *
  * @author Markus Kroetzsch
