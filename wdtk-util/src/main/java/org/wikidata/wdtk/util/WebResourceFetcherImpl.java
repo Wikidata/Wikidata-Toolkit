@@ -23,19 +23,49 @@ package org.wikidata.wdtk.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Standard implementation of {@link WebResourceFetcher}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class WebResourceFetcherImpl implements WebResourceFetcher {
+
+	protected static String userAgent = "Wikidata Toolkit; Java "
+			+ System.getProperty("java.version");
+
+	/**
+	 * Returns the string that will be used to ideintify the user agent on all
+	 * requests made by Wikidata Toolkit.
+	 *
+	 * @return the user agent string
+	 */
+	public static String getUserAgent() {
+		return userAgent;
+	}
+
+	/**
+	 * Sets the string that will be used to ideintify the user agent on all
+	 * requests made by Wikidata Toolkit. This should be set in own tools based
+	 * on Wikidata Toolkit esp. when making large amounts of requests.
+	 *
+	 * @param userAgent
+	 *            the user agent string
+	 */
+	public static void setUserAgent(String userAgent) {
+		WebResourceFetcherImpl.userAgent = userAgent;
+	}
+
 	@Override
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
-		return url.openStream();
+		URLConnection urlConnection = url.openConnection();
+		urlConnection.setRequestProperty("User-Agent", userAgent);
+
+		return urlConnection.getInputStream();
 	}
 
 }
