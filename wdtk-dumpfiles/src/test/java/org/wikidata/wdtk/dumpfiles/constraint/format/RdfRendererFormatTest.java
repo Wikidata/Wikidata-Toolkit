@@ -20,6 +20,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.format;
  * #L%
  */
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -186,16 +187,50 @@ public class RdfRendererFormatTest {
 		Assert.fail();
 	}
 
+	@Test
+	public void testAddDeclarationDatatype2() {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		Assert.assertTrue(format.addDeclarationDatatype(format.owlThing()));
+		Assert.assertFalse(format.addDeclarationDatatype(format.owlThing()));
+		format.finish();
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void testAddDeclarationDatatypeProperty() {
 		formatWithExceptions.addDeclarationDatatypeProperty(uri);
 		Assert.fail();
 	}
 
+	@Test
+	public void testAddDeclarationDatatypeProperty2() {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		Assert.assertTrue(format.addDeclarationDatatypeProperty(format
+				.owlThing()));
+		Assert.assertFalse(format.addDeclarationDatatypeProperty(format
+				.owlThing()));
+		format.finish();
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void testAddDeclarationNamedIndividual() {
 		formatWithExceptions.addDeclarationNamedIndividual(uri);
 		Assert.fail();
+	}
+
+	@Test
+	public void testAddDeclarationNamedIndividual2() {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		Assert.assertTrue(format.addDeclarationNamedIndividual(format
+				.owlThing()));
+		Assert.assertFalse(format.addDeclarationNamedIndividual(format
+				.owlThing()));
+		format.finish();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -222,10 +257,29 @@ public class RdfRendererFormatTest {
 		Assert.fail();
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddHasKey2() {
+		RdfRendererFormat format = new RdfRendererFormat(System.out);
+		format.addHasKey(resource, null, null);
+		Assert.fail();
+	}
+
 	@Test(expected = RuntimeException.class)
 	public void testAddInverseFunctionalObjectProperty() {
 		formatWithExceptions.addInverseFunctionalObjectProperty(resource);
 		Assert.fail();
+	}
+
+	@Test
+	public void testAddInverseFunctionalObjectProperty2() {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		Assert.assertTrue(format.addInverseFunctionalObjectProperty(format
+				.owlThing()));
+		Assert.assertFalse(format.addInverseFunctionalObjectProperty(format
+				.owlThing()));
+		format.finish();
 	}
 
 	@Test(expected = RuntimeException.class)
