@@ -4,9 +4,16 @@ Wikidata Toolkit Release Notes
 Version 0.5.0
 -------------
 
+New features:
+* Support for getting live entity data from wikidata.org (or any other Wikibase site)
+
 Bug fixes:
 * JSON conversion action of the command-line client was forgetting start of entity list.
-  
+
+Incompatible changes:
+* EntityDocumentProcessorFilter has a modified constructor that requires a filter object
+  to be given. The direct set methods to define the filter are no longer available.
+
 
 Version 0.4.0
 -------------

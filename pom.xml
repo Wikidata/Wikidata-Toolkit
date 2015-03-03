@@ -16,7 +16,7 @@
 		<module>wdtk-datamodel</module>
 		<module>wdtk-dumpfiles</module>
 		<module>wdtk-storage</module>
-		<!-- <module>wdtk-wikibaseapi</module> -->
+		<module>wdtk-wikibaseapi</module>
 		<module>wdtk-util</module>
 		<module>wdtk-testing</module>
 		<module>wdtk-examples</module>

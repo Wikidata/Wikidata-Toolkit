@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorFilter;
@@ -180,21 +181,7 @@ public class DumpProcessingController {
 	 */
 	DirectoryManager downloadDirectoryManager;
 
-	/**
-	 * Optional set of language codes to filter data with. Can also be null
-	 * (disabled) or the empty set (filtering everything).
-	 */
-	Set<String> languageFilter = null;
-	/**
-	 * Optional set of site identifiers to filter data with. Can also be null
-	 * (disabled) or the empty set (filtering everything).
-	 */
-	Set<String> siteLinkFilter = null;
-	/**
-	 * Optional set of property ids to filter data with. Can also be null
-	 * (disabled) or the emtpy set (filtering everything).
-	 */
-	Set<PropertyIdValue> propertyFilter = null;
+	DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
 	 * Creates a new DumpFileProcessingController for the project of the given
@@ -261,7 +248,7 @@ public class DumpProcessingController {
 	 *            set of language codes that should be retained (can be empty)
 	 */
 	public void setPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		this.propertyFilter = propertyFilter;
+		this.filter.setPropertyFilter(propertyFilter);
 	}
 
 	/**
@@ -273,7 +260,7 @@ public class DumpProcessingController {
 	 *            set of language codes that should be retained (can be empty)
 	 */
 	public void setSiteLinkFilter(Set<String> siteLinkFilter) {
-		this.siteLinkFilter = siteLinkFilter;
+		this.filter.setSiteLinkFilter(siteLinkFilter);
 	}
 
 	/**
@@ -285,7 +272,7 @@ public class DumpProcessingController {
 	 *            set of language codes that should be retained (can be empty)
 	 */
 	public void setLanguageFilter(Set<String> languageFilter) {
-		this.languageFilter = languageFilter;
+		this.filter.setLanguageFilter(languageFilter);
 	}
 
 	/**
@@ -718,15 +705,13 @@ public class DumpProcessingController {
 	 */
 	private EntityDocumentProcessor filterEntityDocumentProcessor(
 			EntityDocumentProcessor processor) {
-		if (this.propertyFilter == null && this.siteLinkFilter == null
-				&& this.languageFilter == null) {
+		if (this.filter.getPropertyFilter() == null
+				&& this.filter.getSiteLinkFilter() == null
+				&& this.filter.getLanguageFilter() == null) {
 			return processor;
 		} else {
 			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
-					processor);
-			filter.setLanguageFilter(this.languageFilter);
-			filter.setSiteLinkFilter(this.siteLinkFilter);
-			filter.setPropertyFilter(this.propertyFilter);
+					processor, this.filter);
 			return filter;
 		}
 	}

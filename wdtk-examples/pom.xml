@@ -37,6 +37,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-wikibaseapi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -55,7 +60,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Disabe code coverage computation for this module: -->
+				<!-- Disable code coverage computation for this module: -->
 				<!-- example/benchmark code needs no testing. -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>

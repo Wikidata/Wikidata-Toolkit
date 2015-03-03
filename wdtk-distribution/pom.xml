@@ -29,6 +29,11 @@
 			<artifactId>wdtk-rdf</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-wikibaseapi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -153,6 +158,12 @@
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>wdtk-client</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-wikibaseapi</artifactId>
 					<version>${project.version}</version>
 					<classifier>sources</classifier>
 				</dependency>
