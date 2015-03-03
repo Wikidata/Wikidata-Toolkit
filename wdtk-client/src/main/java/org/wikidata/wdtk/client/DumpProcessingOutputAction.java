@@ -2,12 +2,11 @@ package org.wikidata.wdtk.client;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -17,6 +16,8 @@ import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerImpl;
 
 /*
  * #%L
@@ -76,6 +77,12 @@ public abstract class DumpProcessingOutputAction implements
 	public static final String COMPRESS_BZ2 = "bz2";
 	public static final String COMPRESS_GZIP = "gz";
 	public static final String COMPRESS_NONE = "";
+
+	/**
+	 * The class that will be used for accessing directories. Package-private so
+	 * that it can be overwritten in tests in order to mock file access.
+	 */
+	static Class<? extends DirectoryManager> dmClass = DirectoryManagerImpl.class;
 
 	/**
 	 * The {@link Sites} object if provided.
@@ -177,11 +184,24 @@ public abstract class DumpProcessingOutputAction implements
 		}
 
 		Path outputDirectory = Paths.get(filePath).getParent();
-		if (outputDirectory != null) {
-			new File(outputDirectory.toString()).mkdirs();
+		if (outputDirectory == null) {
+			outputDirectory = Paths.get(".");
 		}
-		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(filePath), 1024 * 1024 * 5);
+
+		OutputStream out;
+		try {
+			DirectoryManager dm = dmClass.getConstructor(Path.class)
+					.newInstance(outputDirectory);
+			out = dm.getOutputStreamForFile(Paths.get(filePath).getFileName()
+					.toString());
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+
+		OutputStream bufferedFileOutputStream = new BufferedOutputStream(out,
+				1024 * 1024 * 5);
 
 		switch (compressionType) {
 		case COMPRESS_BZ2:
