@@ -418,14 +418,8 @@ public class DumpProcessingController {
 	 */
 	public void processAllDumps(DumpContentType dumpContentType,
 			String minDate, String maxDate) {
-		setupEntityDocumentProcessors();
 		WmfDumpFileManager wmfDumpFileManager;
-		try {
-			wmfDumpFileManager = getWmfDumpFileManager();
-		} catch (IOException e) {
-			logger.error("Could not create dump file manager: " + e.toString());
-			return;
-		}
+		wmfDumpFileManager = getWmfDumpFileManager();
 
 		MwDumpFileProcessor dumpFileProcessor = getRevisionDumpFileProcessor();
 
