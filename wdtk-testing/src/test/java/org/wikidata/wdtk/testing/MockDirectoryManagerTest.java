@@ -24,9 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,7 +93,7 @@ public class MockDirectoryManagerTest {
 		HashSet<String> expectedDirs = new HashSet<String>();
 		expectedDirs.add("dir1");
 		expectedDirs.add("dir2");
-		assertEquals(mdmDirs, expectedDirs);
+		assertEquals(expectedDirs, mdmDirs);
 	}
 
 	@Test
@@ -99,7 +102,7 @@ public class MockDirectoryManagerTest {
 		String content = MockStringContentFactory
 				.getStringFromInputStream(submdm.getInputStreamForFile(
 						"test.txt", CompressionType.NONE));
-		assertEquals(content, "Test contents");
+		assertEquals("Test contents", content);
 	}
 
 	@Test
@@ -108,7 +111,7 @@ public class MockDirectoryManagerTest {
 		String content = MockStringContentFactory
 				.getStringFromInputStream(submdm.getInputStreamForFile(
 						"test.txt.bz2", CompressionType.BZ2));
-		assertEquals(content, "Test BZ2 contents\nMore contents");
+		assertEquals("Test BZ2 contents\nMore contents", content);
 	}
 
 	@Test
@@ -117,7 +120,7 @@ public class MockDirectoryManagerTest {
 		String content = MockStringContentFactory
 				.getStringFromInputStream(submdm.getInputStreamForFile(
 						"test.txt.gz", CompressionType.GZIP));
-		assertEquals(content, "Test GZIP contents");
+		assertEquals("Test GZIP contents", content);
 	}
 
 	@Test
@@ -127,7 +130,17 @@ public class MockDirectoryManagerTest {
 		mdm.createFile("newfile.txt", inputStream);
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
 				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
-		assertEquals(content, "New stream contents\nMultiple lines");
+		assertEquals("New stream contents\nMultiple lines", content);
+	}
+
+	@Test
+	public void createAtomicFileFromInputStream() throws IOException {
+		InputStream inputStream = MockStringContentFactory
+				.newMockInputStream("New stream contents\nMultiple lines");
+		mdm.createFileAtomic("newfile.txt", inputStream);
+		String content = MockStringContentFactory.getStringFromInputStream(mdm
+				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
+		assertEquals("New stream contents\nMultiple lines", content);
 	}
 
 	@Test
@@ -135,7 +148,22 @@ public class MockDirectoryManagerTest {
 		mdm.createFile("newfile.txt", "New contents");
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
 				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
-		assertEquals(content, "New contents");
+		assertEquals(MockDirectoryManager.getMockedFileContents(mdm.directory
+				.resolve("newfile.txt")), content);
+		assertEquals("New contents", content);
+	}
+
+	@Test
+	public void createFileUsingOutputstream() throws IOException {
+		OutputStream out = mdm.getOutputStreamForFile("newfile.txt");
+
+		BufferedWriter ow = new BufferedWriter(new OutputStreamWriter(out));
+		ow.write("New contents");
+		ow.close();
+
+		String content = MockStringContentFactory.getStringFromInputStream(mdm
+				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
+		assertEquals("New contents", content);
 	}
 
 	@Test

@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
@@ -40,9 +41,9 @@ import org.wikidata.wdtk.util.DirectoryManager;
 /**
  * Mock implementation of {@link DirectoryManager} that simulates file access
  * without touching the file system.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class MockDirectoryManager implements DirectoryManager {
 
@@ -51,20 +52,46 @@ public class MockDirectoryManager implements DirectoryManager {
 	 */
 	static final String DIRECTORY_MARKER = "DIRECTORY";
 
+	/**
+	 * The mocked file system. This is static so that it can be accessed after a
+	 * test even if the directory manager that was used is created internally.
+	 */
+	static HashMap<Path, String> files = new HashMap<Path, String>();
+
 	final Path directory;
-	final HashMap<Path, String> files;
 	boolean returnFailingReaders;
 
+	/**
+	 * Creates a new object and clears all previously stored files.
+	 *
+	 * @param directory
+	 *            initial directory that is managed
+	 * @throws IOException
+	 */
 	public MockDirectoryManager(Path directory) throws IOException {
-		this(directory, new HashMap<Path, String>());
+
+		this(directory, true);
 	}
 
-	public MockDirectoryManager(Path directory, HashMap<Path, String> files)
+	/**
+	 * Creates a new object and clears all previously stored if requested.
+	 *
+	 * @param directory
+	 *            initial directory that is managed
+	 * @param resetFileSystem
+	 *            if true, the previously mocked files will be cleared
+	 * @throws IOException
+	 */
+	public MockDirectoryManager(Path directory, boolean resetFileSystem)
 			throws IOException {
 		this.directory = directory;
-		this.files = files;
-		if (this.files.containsKey(directory)
-				&& !this.files.get(directory).equals(
+
+		if (resetFileSystem) {
+			files = new HashMap<Path, String>();
+		}
+
+		if (files.containsKey(directory)
+				&& !files.get(directory).equals(
 						MockDirectoryManager.DIRECTORY_MARKER)) {
 			throw new IOException("Could not create mock working directory.");
 		}
@@ -79,7 +106,7 @@ public class MockDirectoryManager implements DirectoryManager {
 	 * <p>
 	 * The property is inherited by any submanagers that are created by this
 	 * object.
-	 * 
+	 *
 	 * @param returnFailingReaders
 	 *            whether read operations should fail
 	 */
@@ -95,12 +122,12 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Set the contents of the file at the given path and create all parent
 	 * directories in our mocked view of the file system.
-	 * 
+	 *
 	 * @param path
 	 * @param contents
 	 */
 	public void setFileContents(Path path, String contents) {
-		this.files.put(path, contents);
+		files.put(path, contents);
 		Path parent = path.getParent();
 		if (parent != null) {
 			setFileContents(parent, MockDirectoryManager.DIRECTORY_MARKER);
@@ -110,7 +137,7 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Create the given directory and all parent directories in our mocked view
 	 * of the file system.
-	 * 
+	 *
 	 * @param path
 	 */
 	public void setDirectory(Path path) {
@@ -121,7 +148,7 @@ public class MockDirectoryManager implements DirectoryManager {
 	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException {
 		MockDirectoryManager result = new MockDirectoryManager(
-				directory.resolve(subdirectoryName), files);
+				directory.resolve(subdirectoryName), false);
 		result.setReturnFailingReaders(this.returnFailingReaders);
 		return result;
 	}
@@ -129,15 +156,15 @@ public class MockDirectoryManager implements DirectoryManager {
 	@Override
 	public boolean hasSubdirectory(String subdirectoryName) {
 		Path directoryPath = this.directory.resolve(subdirectoryName);
-		return MockDirectoryManager.DIRECTORY_MARKER.equals(this.files
+		return MockDirectoryManager.DIRECTORY_MARKER.equals(files
 				.get(directoryPath));
 	}
 
 	@Override
 	public boolean hasFile(String fileName) {
 		Path filePath = this.directory.resolve(fileName);
-		return this.files.containsKey(filePath)
-				&& !this.files.get(filePath).equals(
+		return files.containsKey(filePath)
+				&& !files.get(filePath).equals(
 						MockDirectoryManager.DIRECTORY_MARKER);
 	}
 
@@ -169,7 +196,14 @@ public class MockDirectoryManager implements DirectoryManager {
 			throw new FileAlreadyExistsException("File exists");
 		}
 		Path filePath = this.directory.resolve(fileName);
-		this.files.put(filePath, fileContents);
+		files.put(filePath, fileContents);
+	}
+
+	@Override
+	public OutputStream getOutputStreamForFile(String fileName)
+			throws IOException {
+		Path filePath = this.directory.resolve(fileName);
+		return new MockOutputStream(filePath);
 	}
 
 	@Override
@@ -195,7 +229,7 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Get an input stream for the mocked contents of the given file, or throw
 	 * an exception if the file does not exist.
-	 * 
+	 *
 	 * @param fileName
 	 * @return input stream for file
 	 * @throws FileNotFoundException
@@ -210,7 +244,7 @@ public class MockDirectoryManager implements DirectoryManager {
 			return MockStringContentFactory.getFailingInputStream();
 		} else {
 			Path filePath = this.directory.resolve(fileName);
-			return MockStringContentFactory.newMockInputStream(this.files
+			return MockStringContentFactory.newMockInputStream(files
 					.get(filePath));
 		}
 	}
@@ -229,5 +263,18 @@ public class MockDirectoryManager implements DirectoryManager {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Returns the string contents of the mocked file for the given path. If the
+	 * file is not mocked, null is returned. If the file is a mocked directory,
+	 * {@link MockDirectoryManager#DIRECTORY_MARKER} is returned.
+	 *
+	 * @param filePath
+	 *            the path of the mocked file
+	 * @return string contents of mocked file
+	 */
+	public static String getMockedFileContents(Path filePath) {
+		return files.get(filePath);
 	}
 }

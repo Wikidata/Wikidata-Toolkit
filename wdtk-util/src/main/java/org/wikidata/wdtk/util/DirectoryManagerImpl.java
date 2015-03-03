@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -43,9 +44,9 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 /**
  * Class to read and write files from one directory. It is guaranteed that the
  * directory always exists (it is created if needed).
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DirectoryManagerImpl implements DirectoryManager {
 
@@ -56,7 +57,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param baseDirectory
 	 *            the directory where the file manager should point initially;
 	 *            will be created if not existing
@@ -69,7 +70,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param baseDirectory
 	 *            the directory where the file manager should point initially;
 	 *            will be created if not existing
@@ -152,6 +153,14 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	}
 
 	@Override
+	public OutputStream getOutputStreamForFile(String fileName)
+			throws IOException {
+		Path filePath = this.directory.resolve(fileName);
+	
+		return Files.newOutputStream(filePath);
+	}
+
+	@Override
 	public InputStream getInputStreamForFile(String fileName,
 			CompressionType compressionType) throws IOException {
 		Path filePath = this.directory.resolve(fileName);
@@ -188,7 +197,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 
 	/**
 	 * Create a directory at the given path if it does not exist yet.
-	 * 
+	 *
 	 * @param path
 	 * @throws IOException
 	 *             if it was not possible to create a directory at the given
