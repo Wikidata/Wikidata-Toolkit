@@ -39,6 +39,13 @@ also counts the usage of each property in more details: its use in the main part
 of statements, in qualifiers, and in references is counted separately. The results
 for this are written into a CSV file in the end.
 
+#### FetchOnlineDataExample.java ####
+
+This program shows how to fetch live data from wikidata.org via the Web API. This can
+be used with any other Wikibase site as well. It is not practical to fetch all data
+in this way, but it can be very convenient to get some data directly even when processing
+a dump (since the dump can only be read in sequence).
+
 #### GreatestNumberProcessor.java ####
 
 This simple program looks at all values of a number property to find the item with the

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,6 +37,7 @@ import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.openrdf.rio.RDFFormat;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
@@ -45,8 +46,9 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * compressed output will be written into several files that will be placed in
  * the example directory.
  * <p>
- * In the future, this will probably become a stand-alone tool that can be
- * called directly.
+ * The Wikidata Toolkit command line client provides a stand-alone tool for
+ * generating RDF exports and it supports a range of parameters. This example is
+ * merely used to illustrate how to achieve this from your own code if needed.
  *
  * @author Michael Günther
  * @author Markus Kroetzsch
@@ -186,7 +188,7 @@ public class RdfSerializationExample {
 	 */
 	private static void startSerializers() {
 		for (RdfSerializer serializer : serializers) {
-			serializer.start();
+			serializer.open();
 		}
 	}
 

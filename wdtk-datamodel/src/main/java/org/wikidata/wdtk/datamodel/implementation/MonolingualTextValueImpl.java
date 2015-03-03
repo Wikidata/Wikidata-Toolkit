@@ -29,10 +29,11 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-public class MonolingualTextValueImpl implements MonolingualTextValue, Serializable {
+public class MonolingualTextValueImpl implements MonolingualTextValue,
+		Serializable {
 
 	private static final long serialVersionUID = -6165541960096088292L;
-	
+
 	final String text;
 	final String languageCode;
 

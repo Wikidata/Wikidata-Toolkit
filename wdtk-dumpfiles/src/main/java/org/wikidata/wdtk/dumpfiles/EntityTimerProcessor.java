@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.examples;
+package org.wikidata.wdtk.dumpfiles;
 
 /*
  * #%L
@@ -22,6 +22,7 @@ package org.wikidata.wdtk.examples;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.util.Timer;
  * @author Markus Kroetzsch
  *
  */
-public class EntityTimerProcessor implements EntityDocumentProcessor {
+public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(EntityTimerProcessor.class);
@@ -50,6 +51,12 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 	int lastSeconds = 0;
 
 	/**
+	 * Number of seconds after which a progress report is printed. If a timeout
+	 * is configured, it will only be checked at a report.
+	 */
+	int reportInterval = 10;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param timeout
@@ -57,6 +64,26 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 	 */
 	public EntityTimerProcessor(int timeout) {
 		this.timeout = timeout;
+	}
+
+	/**
+	 * Sets the interval after which the timer should report progress. By
+	 * default, this is ten seconds. When using a timeout, the timeout condition
+	 * will only be checked at this interval, too, so using a very large value
+	 * would lead to increasing imprecision with the timeout. The timer does not
+	 * use a separate thread, and reports will only be generated after an entity
+	 * was fully processed. Thus, very long processing times would also affect
+	 * the accuracy of the interval.
+	 *
+	 * @param seconds
+	 *            time after which progress should be reported.
+	 */
+	public void setReportInterval(int seconds) {
+		if (seconds <= 0) {
+			throw new IllegalArgumentException(
+					"The report interval must be a non-zero, positive number of seconds.");
+		}
+		this.reportInterval = seconds;
 	}
 
 	@Override
@@ -69,10 +96,17 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 		countEntity();
 	}
 
+	@Override
+	public void open() {
+		// Nothing to do. We only start the timer when the first entity is
+		// really processed.
+	}
+
 	/**
 	 * Stops the processing and prints the final time.
 	 */
-	public void stop() {
+	@Override
+	public void close() {
 		logger.info("Finished processing.");
 		this.timer.stop();
 		this.lastSeconds = (int) (timer.getTotalWallTime() / 1000000000);
@@ -92,7 +126,7 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 		if (this.entityCount % 100 == 0) {
 			timer.stop();
 			int seconds = (int) (timer.getTotalWallTime() / 1000000000);
-			if (seconds >= this.lastSeconds + 10) {
+			if (seconds >= this.lastSeconds + this.reportInterval) {
 				this.lastSeconds = seconds;
 				printStatus();
 				if (this.timeout > 0 && seconds > this.timeout) {
@@ -108,9 +142,14 @@ public class EntityTimerProcessor implements EntityDocumentProcessor {
 	 * Prints the current status, time and entity count.
 	 */
 	private void printStatus() {
-		logger.info("Processed " + this.entityCount + " entities in "
-				+ this.lastSeconds + " sec ("
-				+ (this.entityCount / this.lastSeconds) + " per second)");
+		logger.info("Processed "
+				+ this.entityCount
+				+ " entities in "
+				+ this.lastSeconds
+				+ " sec"
+				+ (this.lastSeconds > 0 ? " ("
+						+ (this.entityCount / this.lastSeconds)
+						+ " per second)" : ""));
 	}
 
 	private void startTimer() {
