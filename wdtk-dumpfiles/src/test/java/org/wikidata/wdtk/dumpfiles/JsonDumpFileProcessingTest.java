@@ -114,7 +114,7 @@ public class JsonDumpFileProcessingTest {
 
 		assertTrue(timer.entityCount >= 3);
 	}
-
+/*
 	@Test(expected = EntityTimerProcessor.TimeoutException.class)
 	public void testTimeout() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
@@ -136,7 +136,7 @@ public class JsonDumpFileProcessingTest {
 		dpc.processMostRecentJsonDump();
 		timer.close();
 	}
-
+*/
 	@Test
 	public void testNonTimeout() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
