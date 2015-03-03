@@ -20,11 +20,10 @@ package org.wikidata.wdtk.testing;
  * #L%
  */
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
@@ -32,9 +31,12 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 
@@ -50,13 +52,19 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Mock files with this content are interpreted as directories.
 	 */
-	static final String DIRECTORY_MARKER = "DIRECTORY";
+	static final String DIRECTORY_MARKER_STRING = "DIRECTORY";
+
+	/**
+	 * Mock files with this content are interpreted as directories.
+	 */
+	static final byte[] DIRECTORY_MARKER = DIRECTORY_MARKER_STRING
+			.getBytes(StandardCharsets.UTF_8);
 
 	/**
 	 * The mocked file system. This is static so that it can be accessed after a
 	 * test even if the directory manager that was used is created internally.
 	 */
-	static HashMap<Path, String> files = new HashMap<Path, String>();
+	public static HashMap<Path, byte[]> files = new HashMap<>();
 
 	final Path directory;
 	boolean returnFailingReaders;
@@ -87,12 +95,11 @@ public class MockDirectoryManager implements DirectoryManager {
 		this.directory = directory;
 
 		if (resetFileSystem) {
-			files = new HashMap<Path, String>();
+			files = new HashMap<>();
 		}
 
 		if (files.containsKey(directory)
-				&& !files.get(directory).equals(
-						MockDirectoryManager.DIRECTORY_MARKER)) {
+				&& !Arrays.equals(files.get(directory), DIRECTORY_MARKER)) {
 			throw new IOException("Could not create mock working directory.");
 		}
 		setDirectory(directory);
@@ -120,17 +127,35 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	/**
-	 * Set the contents of the file at the given path and create all parent
+	 * Sets the contents of the file at the given path and creates all parent
 	 * directories in our mocked view of the file system.
 	 *
 	 * @param path
 	 * @param contents
+	 * @throws IOException
 	 */
-	public void setFileContents(Path path, String contents) {
-		files.put(path, contents);
+	public void setFileContents(Path path, String contents) throws IOException {
+		setFileContents(path, contents, CompressionType.NONE);
+	}
+
+	/**
+	 * Sets the contents of the file at the given path and creates all parent
+	 * directories in our mocked view of the file system. If a compression is
+	 * chosen, the file contents is the compressed version of the given
+	 * contents. Strings are encoded as UTF8.
+	 *
+	 * @param path
+	 * @param contents
+	 * @param compressionType
+	 * @throws IOException
+	 */
+	public void setFileContents(Path path, String contents,
+			CompressionType compressionType) throws IOException {
+		files.put(path, MockStringContentFactory.getBytesFromString(contents,
+				compressionType));
 		Path parent = path.getParent();
 		if (parent != null) {
-			setFileContents(parent, MockDirectoryManager.DIRECTORY_MARKER);
+			setFileContents(parent, DIRECTORY_MARKER_STRING);
 		}
 	}
 
@@ -139,9 +164,10 @@ public class MockDirectoryManager implements DirectoryManager {
 	 * of the file system.
 	 *
 	 * @param path
+	 * @throws IOException
 	 */
-	public void setDirectory(Path path) {
-		setFileContents(path, MockDirectoryManager.DIRECTORY_MARKER);
+	public void setDirectory(Path path) throws IOException {
+		setFileContents(path, DIRECTORY_MARKER_STRING);
 	}
 
 	@Override
@@ -156,31 +182,43 @@ public class MockDirectoryManager implements DirectoryManager {
 	@Override
 	public boolean hasSubdirectory(String subdirectoryName) {
 		Path directoryPath = this.directory.resolve(subdirectoryName);
-		return MockDirectoryManager.DIRECTORY_MARKER.equals(files
-				.get(directoryPath));
+		return Arrays.equals(DIRECTORY_MARKER, files.get(directoryPath));
 	}
 
 	@Override
 	public boolean hasFile(String fileName) {
 		Path filePath = this.directory.resolve(fileName);
 		return files.containsKey(filePath)
-				&& !files.get(filePath).equals(
-						MockDirectoryManager.DIRECTORY_MARKER);
+				&& !Arrays.equals(files.get(filePath), DIRECTORY_MARKER);
 	}
 
 	@Override
 	public long createFile(String fileName, InputStream inputStream)
 			throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				inputStream));
-		StringBuilder contentsBuilder = new StringBuilder();
-		String line;
-		while ((line = br.readLine()) != null) {
-			contentsBuilder.append(line).append("\n");
-		}
-		createFile(fileName, contentsBuilder.toString());
 
-		return contentsBuilder.toString().getBytes(StandardCharsets.UTF_8).length;
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int nextByte = 0;
+		while ((nextByte = inputStream.read()) >= 0) {
+			out.write(nextByte);
+		}
+		out.close();
+
+		Path filePath = this.directory.resolve(fileName);
+		files.put(filePath, out.toByteArray());
+
+		return out.size();
+
+		// BufferedReader br = new BufferedReader(new InputStreamReader(
+		// inputStream));
+		// StringBuilder contentsBuilder = new StringBuilder();
+		// String line;
+		// while ((line = br.readLine()) != null) {
+		// contentsBuilder.append(line).append("\n");
+		// }
+		// createFile(fileName, contentsBuilder.toString());
+		//
+		// return
+		// contentsBuilder.toString().getBytes(StandardCharsets.UTF_8).length;
 	}
 
 	@Override
@@ -196,7 +234,7 @@ public class MockDirectoryManager implements DirectoryManager {
 			throw new FileAlreadyExistsException("File exists");
 		}
 		Path filePath = this.directory.resolve(fileName);
-		files.put(filePath, fileContents);
+		files.put(filePath, fileContents.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Override
@@ -209,21 +247,14 @@ public class MockDirectoryManager implements DirectoryManager {
 	@Override
 	public InputStream getInputStreamForFile(String fileName,
 			CompressionType compressionType) throws IOException {
-		if (compressionType == CompressionType.GZIP
-				&& !fileName.endsWith(".gz")) {
-			throw new IllegalArgumentException(
-					"Can only read gz files with this compression type");
-		} else if (compressionType == CompressionType.BZ2
-				&& !fileName.endsWith(".bz2")) {
-			throw new IllegalArgumentException(
-					"Can only read bz2 files with this compression type");
-		} else if (compressionType == CompressionType.NONE
-				&& (fileName.endsWith(".bz2") || fileName.endsWith(".gz"))) {
-			throw new IllegalArgumentException(
-					"Cannot read compressed files with this compression type");
+		if (compressionType == CompressionType.GZIP) {
+			return new GZIPInputStream(getInputStreamForMockFile(fileName));
+		} else if (compressionType == CompressionType.BZ2) {
+			return new BZip2CompressorInputStream(
+					getInputStreamForMockFile(fileName));
+		} else {
+			return getInputStreamForMockFile(fileName);
 		}
-
-		return getInputStreamForMockFile(fileName);
 	}
 
 	/**
@@ -237,7 +268,9 @@ public class MockDirectoryManager implements DirectoryManager {
 	InputStream getInputStreamForMockFile(String fileName)
 			throws FileNotFoundException {
 		if (!hasFile(fileName)) {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("Could not find file \"" + fileName
+					+ "\" in current directory \"" + this.directory.toString()
+					+ "\"");
 		}
 
 		if (this.returnFailingReaders) {
@@ -266,15 +299,15 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	/**
-	 * Returns the string contents of the mocked file for the given path. If the
+	 * Returns the byte contents of the mocked file for the given path. If the
 	 * file is not mocked, null is returned. If the file is a mocked directory,
-	 * {@link MockDirectoryManager#DIRECTORY_MARKER} is returned.
+	 * the bytes of {@link MockDirectoryManager#DIRECTORY_MARKER} are returned.
 	 *
 	 * @param filePath
 	 *            the path of the mocked file
-	 * @return string contents of mocked file
+	 * @return byte contents of mocked file
 	 */
-	public static String getMockedFileContents(Path filePath) {
+	public static byte[] getMockedFileContents(Path filePath) {
 		return files.get(filePath);
 	}
 }

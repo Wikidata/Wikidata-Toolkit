@@ -9,6 +9,8 @@ import java.io.PipedOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -85,6 +87,13 @@ public abstract class DumpProcessingOutputAction implements
 	static Class<? extends DirectoryManager> dmClass = DirectoryManagerImpl.class;
 
 	/**
+	 * Output streams that were created by this class. If close is called, it
+	 * will close all of them properly.
+	 *
+	 */
+	protected Set<Closeable> outputStreams = new HashSet<>();
+
+	/**
 	 * The {@link Sites} object if provided.
 	 *
 	 * @see #needsSites()
@@ -155,8 +164,18 @@ public abstract class DumpProcessingOutputAction implements
 				this.project);
 	}
 
+	@Override
+	public void close() {
+		for (Closeable closeable : this.outputStreams) {
+			DumpProcessingOutputAction.close(closeable);
+		}
+	}
+
 	/**
-	 * Creates an compressing {@link OutputStream}.
+	 * Creates an compressing {@link OutputStream}. The result is owned by the
+	 * caller and should be closed later. Neverhteless, the {@link #close()}
+	 * method of this class must also be called, since it may free additional
+	 * resources created.
 	 *
 	 * @param useStdOut
 	 *            if true, {@link System#out} is returned and the other
@@ -173,8 +192,8 @@ public abstract class DumpProcessingOutputAction implements
 	 * @throws IOException
 	 *             if there were problems opening the required streams
 	 */
-	protected static OutputStream getOutputStream(boolean useStdOut,
-			String filePath, String compressionType) throws IOException {
+	protected OutputStream getOutputStream(boolean useStdOut, String filePath,
+			String compressionType) throws IOException {
 		if (useStdOut) {
 			return System.out;
 		}
@@ -222,6 +241,22 @@ public abstract class DumpProcessingOutputAction implements
 	}
 
 	/**
+	 * Simple interface for a Runnable that can be stopped gracefully by calling
+	 * a method {@link FinishableRunnable#finish()}.
+	 *
+	 * @author Markus Kroetzsch
+	 *
+	 */
+	protected interface FinishableRunnable extends Runnable {
+
+		/**
+		 * Finishes the current operation gracefully. The method will wait until
+		 * the thread has really finished.
+		 */
+		void finish();
+	};
+
+	/**
 	 * Creates a separate thread for writing into the given output stream and
 	 * returns a pipe output stream that can be used to pass data to this
 	 * thread.
@@ -236,28 +271,57 @@ public abstract class DumpProcessingOutputAction implements
 	 * @throws IOException
 	 *             if the pipes could not be created for some reason
 	 */
-	protected static OutputStream getAsynchronousOutputStream(
+	protected OutputStream getAsynchronousOutputStream(
 			final OutputStream outputStream) throws IOException {
 		final int SIZE = 1024 * 1024 * 10;
 		final PipedOutputStream pos = new PipedOutputStream();
 		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
 
-		new Thread(new Runnable() {
+		final FinishableRunnable run = new FinishableRunnable() {
+
+			volatile boolean finish = false;
+			volatile boolean hasFinished = false;
+
+			@Override
+			public void finish() {
+				this.finish = true;
+				while (!this.hasFinished) {
+					// loop until thread is really finished
+				}
+			}
+
 			@Override
 			public void run() {
 				try {
 					byte[] bytes = new byte[SIZE];
-					for (int len; (len = pis.read(bytes)) > 0;) {
+					// Note that we finish really gently here, writing all data
+					// that is still in the input first (in theory, new data
+					// could arrive asynchronously, so that the thread never
+					// finishes, but this is not the intended mode of
+					// operation).
+					for (int len; (!this.finish || pis.available() > 0)
+							&& (len = pis.read(bytes)) > 0;) {
 						outputStream.write(bytes, 0, len);
 					}
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				} finally {
 					close(pis);
 					close(outputStream);
+					this.hasFinished = true;
 				}
 			}
-		}, "async-output-stream").start();
+		};
+
+		new Thread(run, "async-output-stream").start();
+
+		this.outputStreams.add(new Closeable() {
+			@Override
+			public void close() throws IOException {
+				run.finish();
+			}
+		});
+
 		return pos;
 	}
 

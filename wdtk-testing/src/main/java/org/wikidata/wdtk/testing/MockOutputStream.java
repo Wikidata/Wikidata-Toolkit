@@ -35,6 +35,6 @@ public class MockOutputStream extends ByteArrayOutputStream {
 	@Override
 	public void close() throws IOException {
 		super.close();
-		MockDirectoryManager.files.put(this.tartgetPath, this.toString());
+		MockDirectoryManager.files.put(this.tartgetPath, this.toByteArray());
 	}
 }

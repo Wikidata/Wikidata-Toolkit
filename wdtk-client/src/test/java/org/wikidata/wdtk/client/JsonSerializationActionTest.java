@@ -45,7 +45,6 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.util.CompressionType;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -118,7 +117,6 @@ public class JsonSerializationActionTest {
 		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json",
 						CompressionType.NONE));
-		documentIterator.getParser().disable(Feature.AUTO_CLOSE_SOURCE);
 
 		List<EntityDocument> results = new ArrayList<>();
 		while (documentIterator.hasNextValue()) {
@@ -134,5 +132,105 @@ public class JsonSerializationActionTest {
 		assertEquals(pd1, results.get(1));
 		assertEquals(id2, results.get(2));
 
+	}
+
+	@Test
+	public void testJsonGzipOutput() throws IOException {
+		String[] args = new String[] { "-a", "json", "-o",
+				"/path/to/output.json", "-z", "gz" };
+
+		DumpProcessingOutputAction.dmClass = MockDirectoryManager.class;
+
+		ClientConfiguration config = new ClientConfiguration(args);
+		JsonSerializationAction jsa = (JsonSerializationAction) config
+				.getActions().get(0);
+
+		ItemIdValue subject1 = Datamodel.makeWikidataItemIdValue("Q42");
+		MonolingualTextValue mtv1 = Datamodel.makeMonolingualTextValue("Test1",
+				"en");
+		MonolingualTextValue mtv2 = Datamodel.makeMonolingualTextValue("Test2",
+				"fr");
+
+		ItemDocument id1 = Datamodel.makeItemDocument(subject1,
+				Arrays.asList(mtv1, mtv2), Arrays.asList(mtv1),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				Collections.<String, SiteLink> emptyMap());
+
+		jsa.open();
+		jsa.processItemDocument(id1);
+		jsa.close();
+
+		MockDirectoryManager mdm = new MockDirectoryManager(
+				Paths.get("/path/to/"), false);
+
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectReader documentReader = mapper
+				.reader(JacksonTermedStatementDocument.class);
+		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				.readValues(mdm.getInputStreamForFile("output.json.gz",
+						CompressionType.GZIP));
+
+		List<EntityDocument> results = new ArrayList<>();
+		while (documentIterator.hasNextValue()) {
+			JacksonTermedStatementDocument document = documentIterator
+					.nextValue();
+			document.setSiteIri(Datamodel.SITE_WIKIDATA);
+			results.add(document);
+		}
+		documentIterator.close();
+
+		assertEquals(1, results.size());
+		assertEquals(id1, results.get(0));
+	}
+
+	@Test
+	public void testJsonBz2Output() throws IOException {
+		String[] args = new String[] { "-a", "json", "-o", "output.json", "-z",
+				"bz2" };
+
+		DumpProcessingOutputAction.dmClass = MockDirectoryManager.class;
+
+		ClientConfiguration config = new ClientConfiguration(args);
+		JsonSerializationAction jsa = (JsonSerializationAction) config
+				.getActions().get(0);
+
+		ItemIdValue subject1 = Datamodel.makeWikidataItemIdValue("Q42");
+		MonolingualTextValue mtv1 = Datamodel.makeMonolingualTextValue("Test1",
+				"en");
+		MonolingualTextValue mtv2 = Datamodel.makeMonolingualTextValue("Test2",
+				"fr");
+
+		ItemDocument id1 = Datamodel.makeItemDocument(subject1,
+				Arrays.asList(mtv1, mtv2), Arrays.asList(mtv1),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				Collections.<String, SiteLink> emptyMap());
+
+		jsa.open();
+		jsa.processItemDocument(id1);
+		jsa.close();
+
+		MockDirectoryManager mdm = new MockDirectoryManager(Paths.get("."),
+				false);
+
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectReader documentReader = mapper
+				.reader(JacksonTermedStatementDocument.class);
+		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				.readValues(mdm.getInputStreamForFile("output.json.bz2",
+						CompressionType.BZ2));
+
+		List<EntityDocument> results = new ArrayList<>();
+		while (documentIterator.hasNextValue()) {
+			JacksonTermedStatementDocument document = documentIterator
+					.nextValue();
+			document.setSiteIri(Datamodel.SITE_WIKIDATA);
+			results.add(document);
+		}
+		documentIterator.close();
+
+		assertEquals(1, results.size());
+		assertEquals(id1, results.get(0));
 	}
 }
