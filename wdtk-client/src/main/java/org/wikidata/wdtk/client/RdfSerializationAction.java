@@ -180,6 +180,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
+		super.close();
 		logger.info("Finished serialization of "
 				+ this.serializer.getTripleCount() + " RDF triples in file "
 				+ this.outputDestination);

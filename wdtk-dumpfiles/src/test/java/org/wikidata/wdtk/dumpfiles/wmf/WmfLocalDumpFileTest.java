@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 
 public class WmfLocalDumpFileTest {
@@ -63,7 +62,7 @@ public class WmfLocalDumpFileTest {
 	}
 
 	@Test
-	public void missingDumpFile() {
+	public void missingDumpFile() throws IOException {
 		Path thisDumpPath = this.dmPath.resolve("daily-20140220");
 		dm.setDirectory(thisDumpPath);
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",

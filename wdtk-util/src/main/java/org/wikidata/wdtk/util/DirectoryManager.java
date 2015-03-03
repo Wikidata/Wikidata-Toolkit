@@ -22,15 +22,16 @@ package org.wikidata.wdtk.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
  * Interface for classes that read and write files from one directory. Allows
  * for mock implementations to test functionality without actually writing
  * files.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface DirectoryManager {
 
@@ -40,7 +41,7 @@ public interface DirectoryManager {
 	 * not desired, its existence can be checked with
 	 * {@link #hasSubdirectory(String)} first (ignoring the fact that there
 	 * might be race conditions when accessing the file system).
-	 * 
+	 *
 	 * @param subdirectoryName
 	 *            the string name of the subdirectory
 	 * @throws IOException
@@ -51,7 +52,7 @@ public interface DirectoryManager {
 
 	/**
 	 * Checks if there is a subdirectory of the given name.
-	 * 
+	 *
 	 * @param subdirectoryName
 	 *            the name of the subdirectory
 	 * @return true if the subdirectory exists
@@ -60,7 +61,7 @@ public interface DirectoryManager {
 
 	/**
 	 * Checks if there is a file of the given name.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the file
 	 * @return true if the file exists and is not a directory
@@ -71,7 +72,7 @@ public interface DirectoryManager {
 	 * Creates a new file in the current directory, and fill it with the data
 	 * from the given input stream. If the stream encodes a string, then it
 	 * should generally be encoded in UTF-8, since access methods assume this.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the file
 	 * @param inputStream
@@ -95,7 +96,7 @@ public interface DirectoryManager {
 	 * <p>
 	 * If the stream encodes a string, then it should generally be encoded in
 	 * UTF-8, since access methods assume this.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the file
 	 * @param inputStream
@@ -109,7 +110,7 @@ public interface DirectoryManager {
 	/**
 	 * Creates a new file in the current directory, and fill it with the given
 	 * data, encoded in UTF-8. Should only be used for short pieces of data.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the file
 	 * @param fileContents
@@ -119,11 +120,24 @@ public interface DirectoryManager {
 	void createFile(String fileName, String fileContents) throws IOException;
 
 	/**
+	 * Opens and returns an output stream that can be used to write to the file
+	 * of the given name within the current directory. The stream is owned by
+	 * the caller and must be closed after use. If the file already exists, it
+	 * will be truncated at this operation.
+	 *
+	 * @param fileName
+	 *            the name of the file
+	 * @return the stream to write to
+	 * @throws IOException
+	 */
+	OutputStream getOutputStreamForFile(String fileName) throws IOException;
+
+	/**
 	 * Returns an input stream to access file of the given name within the
 	 * current directory, possibly uncompressing it if required.
 	 * <p>
 	 * It is important to close the stream after using it to free memory.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the file
 	 * @param compressionType
@@ -140,7 +154,7 @@ public interface DirectoryManager {
 	 * Returns a list of the names of all subdirectories of the base directory.
 	 * The glob pattern can be used to filter the names; "*" should be used if
 	 * no filtering is desired.
-	 * 
+	 *
 	 * @param glob
 	 *            pattern to filter directoy names
 	 * @return list of subdirectory names

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
@@ -35,7 +36,7 @@ import org.wikidata.wdtk.util.WebResourceFetcher;
  */
 public class MockWebResourceFetcher implements WebResourceFetcher {
 
-	final HashMap<String, String> webResources;
+	public final HashMap<String, byte[]> webResources;
 	boolean returnFailingReaders;
 
 	/**
@@ -43,7 +44,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *
 	 */
 	public MockWebResourceFetcher() {
-		this.webResources = new HashMap<String, String>();
+		this.webResources = new HashMap<String, byte[]>();
 	}
 
 	/**
@@ -66,9 +67,28 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 *            the URL string
 	 * @param contents
 	 *            the string contents
+	 * @throws IOException
 	 */
-	public void setWebResourceContents(String url, String contents) {
-		this.webResources.put(url, contents);
+	public void setWebResourceContents(String url, String contents)
+			throws IOException {
+		setWebResourceContents(url, contents, CompressionType.NONE);
+	}
+
+	/**
+	 * Defines the contents of a new web resource.
+	 *
+	 * @param url
+	 *            the URL string
+	 * @param contents
+	 *            the string contents
+	 * @param compressionType
+	 *            the compression to use on the mocked contents
+	 * @throws IOException
+	 */
+	public void setWebResourceContents(String url, String contents,
+			CompressionType compressionType) throws IOException {
+		this.webResources.put(url, MockStringContentFactory.getBytesFromString(
+				contents, compressionType));
 	}
 
 	/**
@@ -88,10 +108,34 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 */
 	public void setWebResourceContentsFromResource(String url, String resource,
 			Class<?> resourceClass) throws IOException {
+		setWebResourceContentsFromResource(url, resource, resourceClass,
+				CompressionType.NONE);
+	}
+
+	/**
+	 * Defines the contents of a new web resource by taking the string from a
+	 * given (Java) resource, possibly using additional compression.
+	 *
+	 * @param url
+	 *            the URL string
+	 * @param resource
+	 *            the Java resource name
+	 * @param resourceClass
+	 *            the Class relative to which the resource should be resolved
+	 *            (since resources are stored relative to a classpath); can
+	 *            usually be obtained with getClass() from the calling object
+	 * @param compressionType
+	 *            the compression to use on the mocked contents
+	 * @throws IOException
+	 *             if the Java resource could not be loaded
+	 */
+	public void setWebResourceContentsFromResource(String url, String resource,
+			Class<?> resourceClass, CompressionType compressionType)
+			throws IOException {
 		URL resourceUrl = resourceClass.getResource(resource);
 		String contents = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
-		setWebResourceContents(url, contents);
+		setWebResourceContents(url, contents, compressionType);
 	}
 
 	@Override
