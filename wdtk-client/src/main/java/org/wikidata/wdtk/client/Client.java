@@ -54,7 +54,8 @@ public class Client {
 	static ConsoleAppender consoleAppender = null;
 
 	private Sites sites = null;
-	private DumpProcessingController dumpProcessingController;
+
+	final DumpProcessingController dumpProcessingController;
 
 	protected final ClientConfiguration clientConfiguration;
 
@@ -66,8 +67,10 @@ public class Client {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public Client(String args[]) {
+	public Client(DumpProcessingController dumpProcessingController,
+			String args[]) {
 		initializeLogging();
+		this.dumpProcessingController = dumpProcessingController;
 		this.clientConfiguration = new ClientConfiguration(args);
 
 		if (this.clientConfiguration.isQuiet()) {
@@ -86,8 +89,6 @@ public class Client {
 			return;
 		}
 
-		this.dumpProcessingController = new DumpProcessingController(
-				"wikidatawiki");
 		this.dumpProcessingController.setOfflineMode(this.clientConfiguration
 				.getOfflineMode());
 
@@ -122,7 +123,11 @@ public class Client {
 			}
 
 			if (props.needsSites()) {
-				props.setSites(getSites());
+				prepareSites();
+				if (this.sites == null) { // sites unavailable
+					continue;
+				}
+				props.setSites(this.sites);
 			}
 			props.setDumpInformation(dumpFile.getProjectName(),
 					dumpFile.getDateStamp());
@@ -148,7 +153,7 @@ public class Client {
 		closeActions();
 	}
 
-	private Sites getSites() {
+	private void prepareSites() {
 		if (this.sites == null) {
 			try {
 				sites = this.dumpProcessingController.getSitesInformation();
@@ -156,7 +161,6 @@ public class Client {
 				logger.error("Failed to get sites information.");
 			}
 		}
-		return sites;
 	}
 
 	/**
@@ -219,7 +223,8 @@ public class Client {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws ParseException, IOException {
-		Client client = new Client(args);
+		Client client = new Client(
+				new DumpProcessingController("wikidatawiki"), args);
 		client.performActions();
 	}
 }
