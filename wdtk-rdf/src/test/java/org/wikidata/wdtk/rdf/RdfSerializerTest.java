@@ -54,7 +54,7 @@ public class RdfSerializerTest {
 	@Test
 	public void testSerialization() throws RDFParseException,
 			RDFHandlerException, IOException {
-		this.rdfSerializer.start();
+		this.rdfSerializer.open();
 		this.rdfSerializer.processItemDocument(this.objectFactory
 				.createItemDocument());
 		this.rdfSerializer.close();

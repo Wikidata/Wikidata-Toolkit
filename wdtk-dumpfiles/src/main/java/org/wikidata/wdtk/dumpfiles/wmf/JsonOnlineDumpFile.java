@@ -105,7 +105,7 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
-			dailyDirectoryManager.createFile(fileName, inputStream);
+			dailyDirectoryManager.createFileAtomic(fileName, inputStream);
 		}
 
 		this.isPrepared = true;

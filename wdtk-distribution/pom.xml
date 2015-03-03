@@ -1,21 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
+		<version>0.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>wdtk-distribution</artifactId>
-	<packaging>pom</packaging>
+	<!-- "pom" would be correct, but "jar" seems to be needed for shade which otherwise creates jar files with a pom extension -->
+	<packaging>jar</packaging>
 
 	<name>Wikidata Toolkit Distribution</name>
 	<description>Module to package Wikidata Toolkit for releases</description>
-	
+
 	<dependencies>
-		<!-- For binary dependencies, we only need the main functional packages; others are included transitively-->
+		<!-- For binary dependencies, we only need the main functional packages; 
+			others are included transitively -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>wdtk-dumpfiles</artifactId>
@@ -26,40 +29,102 @@
 			<artifactId>wdtk-rdf</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>wdtk-wikibaseapi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>create-binary-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>wikidata-toolkit-${project.version}</finalName>
-							<descriptors>
-								<descriptor>${basedir}/src/main/assembly/release.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-		</plugins>
-	</build>
-	
 	<profiles>
+		<profile>
+			<id>library</id>
+			<build>
+				<plugins>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-shade-plugin</artifactId>
+			        <version>2.3</version>
+			        <executions>
+			          <execution>
+			          	<id>wdtk-library</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
+						<configuration>
+							<packaging>jar</packaging>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<shadedGroupFilter>org.wikidata.wdtk</shadedGroupFilter>
+							<finalName>wikidata-toolkit-${project.version}</finalName>
+							<minimizeJar>false</minimizeJar>
+						</configuration>
+			          </execution>
+			          <execution>
+			          	<id>wdtk-library-deps</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<finalName>wikidata-toolkit-with-dependencies-${project.version}</finalName>
+							<!-- Minimization just does not work; removes many relevant classes -->
+							<minimizeJar>false</minimizeJar>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+			            	</transformers>
+						</configuration>
+			          </execution>
+			        </executions>
+			      </plugin>
+			    </plugins>
+			  </build>
+		</profile>
+		<profile>
+			<id>client</id>
+			<dependencies>
+		  		<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-client</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+			<build>
+			    <plugins>
+			      <plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-shade-plugin</artifactId>
+			        <version>2.3</version>
+			        <executions>
+			          <execution>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>shade</goal>
+			            </goals>
+						<configuration>
+							<finalName>wdtk-client-${project.version}</finalName>
+							<!-- Minimization just does not work; removes many relevant classes -->
+							<minimizeJar>false</minimizeJar>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+			            	<transformers>
+			            		<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.wikidata.wdtk.client.Client</mainClass>
+			            		</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+			            	</transformers>
+						</configuration>
+			          </execution>
+			        </executions>
+			      </plugin>
+			    </plugins>
+			  </build>
+		</profile>			
 		<profile>
 			<id>sign</id>
 			<dependencies>
-				<!-- For source dependencies, all sources need to be listed (no transitive depencency) -->
+				<!-- For source dependencies, all sources need to be listed (no transitive 
+					depencency) -->
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>wdtk-datamodel</artifactId>
@@ -87,6 +152,18 @@
 				<dependency>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>wdtk-util</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-client</artifactId>
+					<version>${project.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>wdtk-wikibaseapi</artifactId>
 					<version>${project.version}</version>
 					<classifier>sources</classifier>
 				</dependency>

@@ -1,10 +1,10 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+package org.wikidata.wdtk.util;
 
 /*
  * #%L
- * Wikidata Toolkit Data Model
+ * Wikidata Toolkit Utilities
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,16 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-/**
- * Interface for classes which serialize {@link EntityDocument} objects.
- * 
- * @author Michael Günther
- * 
- */
-public interface EntityDocumentsSerializer extends EntityDocumentProcessor {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Initializes the serializer and writes the header (if any) to the output.
-	 */
-	void start();
+import org.junit.Test;
 
-	/**
-	 * Writes the footer (if any) on the output and closes the output stream.
-	 */
-	void close();
+public class WebResourceFetcherTest {
+
+	@Test
+	public void testSetUserAgent() {
+		WebResourceFetcherImpl.setUserAgent("My user agent");
+		assertEquals("My user agent", WebResourceFetcherImpl.getUserAgent());
+	}
 
 }

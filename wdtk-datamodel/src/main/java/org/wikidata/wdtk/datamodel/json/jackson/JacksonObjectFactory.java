@@ -353,6 +353,12 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		case DatatypeIdValue.DT_STRING:
 			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_STRING);
 			break;
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT);
+			break;
+		case DatatypeIdValue.DT_PROPERTY:
+			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_PROPERTY);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown datatype: "
 					+ datatypeId.getIri());

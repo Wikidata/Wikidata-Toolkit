@@ -155,6 +155,10 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 				inputStream));
 
 		String line = br.readLine();
+		if (line == null) { // can happen if iterator already has consumed all
+							// the stream
+			return;
+		}
 		if (line.length() >= 100) {
 			line = line.substring(0, 100) + "[...]"
 					+ line.substring(line.length() - 50);

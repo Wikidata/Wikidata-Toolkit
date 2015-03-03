@@ -149,7 +149,7 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 			curString = "";
 		}
 
-		MwSitesDumpFileProcessor.logger.info("Found site data \"" + row[1]
+		MwSitesDumpFileProcessor.logger.debug("Found site data \"" + row[1]
 				+ "\" (group \"" + row[3] + "\", language \"" + row[5]
 				+ "\", type \"" + row[2] + "\")");
 		this.sites.setSiteInformation(row[1], row[3], row[5], row[2], "http:"
