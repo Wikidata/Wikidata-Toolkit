@@ -21,14 +21,20 @@ package org.wikidata.wdtk.dumpfiles.constraint.format;
  */
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
+import org.openrdf.model.impl.URIImpl;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintRendererTestHelper;
 
 /**
  * 
@@ -37,13 +43,58 @@ import org.openrdf.model.URI;
  */
 public class RdfRendererFormatTest {
 
+	static final String PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+			+ "<rdf:RDF" + "  xmlns:owl=\"http://www.w3.org/2002/07/owl#\""
+			+ "  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""
+			+ "  xmlns:xml=\"http://www.w3.org/XML/1998/namespace\""
+			+ "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\""
+			+ "  xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\""
+			+ "  xmlns:wo=\"http://www.wikidata.org/ontology#\""
+			+ "  xmlns:id=\"http://www.wikidata.org/entity/\">";
+
+	static final String SUFFIX = "</rdf:RDF>";
+
+	static final String EXPECTED_ADD_HAS_KEY_1 = PREFIX
+			+ "<rdf:Description rdf:about=\"http://www.w3.org/2002/07/owl#Thing\">"
+			+ "  <owl:hasKey rdf:nodeID=\"node19flfl1t9x15\"/>"
+			+ "</rdf:Description>"
+			+ "<rdf:Description rdf:nodeID=\"node19flfl1t9x15\">"
+			+ "  <rdf:first rdf:resource=\"http://example.org/#testObjectProperty\"/>"
+			+ "  <rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/>"
+			+ "</rdf:Description>" + SUFFIX;
+
+	static final String EXPECTED_ADD_HAS_KEY_2 = PREFIX
+			+ "<rdf:Description rdf:about=\"http://www.w3.org/2002/07/owl#Thing\">"
+			+ "  <owl:hasKey rdf:nodeID=\"node19flfvkg3x16\"/>"
+			+ "</rdf:Description>"
+			+ "<rdf:Description rdf:nodeID=\"node19flfvkg3x16\">"
+			+ "  <rdf:first rdf:resource=\"http://example.org/#testDataProperty\"/>"
+			+ "  <rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/>"
+			+ "</rdf:Description>" + SUFFIX;
+
+	static final String EXPECTED_ADD_HAS_KEY_3 = PREFIX
+			+ "<rdf:Description rdf:about=\"http://www.w3.org/2002/07/owl#Thing\">"
+			+ "  <owl:hasKey rdf:nodeID=\"node19flg3r4sx17\"/>"
+			+ "</rdf:Description>"
+			+ "<rdf:Description rdf:nodeID=\"node19flg3r4sx17\">"
+			+ "  <rdf:first rdf:resource=\"http://example.org/#testObjectProperty\"/>"
+			+ "  <rdf:rest rdf:nodeID=\"node19flg3r4sx18\"/>"
+			+ "</rdf:Description>"
+			+ "<rdf:Description rdf:nodeID=\"node19flg3r4sx18\">"
+			+ "  <rdf:first rdf:resource=\"http://example.org/#testDataProperty\"/>"
+			+ "  <rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/>"
+			+ "</rdf:Description>" + SUFFIX;
+
 	final Set<Resource> declaredEntities = new HashSet<Resource>();
 	final Set<Resource> inverseFunctionalObjectProperties = new HashSet<Resource>();
 	final RdfWriterWithExceptions rdfWriter = new RdfWriterWithExceptions();
 	final RdfRendererFormat formatWithExceptions = new RdfRendererFormat(
 			new RdfWriterWithExceptions());
 	final StringResource resource = new StringResource("");
-	final URI uri = null;
+	final URI uri = new URIImpl("http://example.org/#testURI");
+	final URI objectProperty = new URIImpl(
+			"http://example.org/#testObjectProperty");
+	final URI dataProperty = new URIImpl("http://example.org/#testDataProperty");
 	final int literal = 0;
 
 	public RdfRendererFormatTest() {
@@ -258,10 +309,55 @@ public class RdfRendererFormatTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddHasKey2() {
+	public void testAddHasKey0() {
 		RdfRendererFormat format = new RdfRendererFormat(System.out);
 		format.addHasKey(resource, null, null);
 		Assert.fail();
+	}
+
+	@Test
+	public void testAddHasKey1() throws RDFParseException, RDFHandlerException,
+			IOException {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		format.addHasKey(format.owlThing(), objectProperty, null);
+		format.finish();
+		Model expected = ConstraintRendererTestHelper
+				.parseRdf(EXPECTED_ADD_HAS_KEY_1);
+		String obtainedStr = new String(byteArray.toByteArray());
+		Model obtained = ConstraintRendererTestHelper.parseRdf(obtainedStr);
+		Assert.assertEquals(expected, obtained);
+	}
+
+	@Test
+	public void testAddHasKey2() throws RDFParseException, RDFHandlerException,
+			IOException {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		format.addHasKey(format.owlThing(), null, dataProperty);
+		format.finish();
+		Model expected = ConstraintRendererTestHelper
+				.parseRdf(EXPECTED_ADD_HAS_KEY_2);
+		String obtainedStr = new String(byteArray.toByteArray());
+		Model obtained = ConstraintRendererTestHelper.parseRdf(obtainedStr);
+		Assert.assertEquals(expected, obtained);
+	}
+
+	@Test
+	public void testAddHasKey3() throws RDFParseException, RDFHandlerException,
+			IOException {
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		RdfRendererFormat format = new RdfRendererFormat(byteArray);
+		format.start();
+		format.addHasKey(format.owlThing(), objectProperty, dataProperty);
+		format.finish();
+		Model expected = ConstraintRendererTestHelper
+				.parseRdf(EXPECTED_ADD_HAS_KEY_3);
+		String obtainedStr = new String(byteArray.toByteArray());
+		Model obtained = ConstraintRendererTestHelper.parseRdf(obtainedStr);
+		Assert.assertEquals(expected, obtained);
 	}
 
 	@Test(expected = RuntimeException.class)
