@@ -170,9 +170,7 @@ public class PropertyConstraintDumpProcessor {
 			List<Template> originalTemplates = templateMap
 					.get(constrainedProperty);
 
-			List<Template> simplifiedTemplates = simplify(originalTemplates);
-
-			for (Template template : simplifiedTemplates) {
+			for (Template template : originalTemplates) {
 
 				Constraint constraint = null;
 				constraint = parser.parse(constrainedProperty, template);
@@ -186,15 +184,6 @@ public class PropertyConstraintDumpProcessor {
 				}
 			}
 		}
-	}
-
-	public List<Template> simplify(List<Template> templates) {
-		List<Template> ret = new ArrayList<Template>();
-		TemplateSimplifier simplifier = new TemplateSimplifier();
-		for (Template template : templates) {
-			ret.addAll(simplifier.expandTemplates(template));
-		}
-		return ret;
 	}
 
 	public void finish(List<RendererFormat> rendererFormats) {
