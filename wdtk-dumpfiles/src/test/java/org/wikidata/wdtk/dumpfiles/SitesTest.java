@@ -64,7 +64,8 @@ public class SitesTest {
 				"/wikidatawiki-20140420-sites.sql");
 		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-" + "20140420"
 				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.SITES)),
-				MockStringContentFactory.getStringFromUrl(resourceUrl));
+				MockStringContentFactory.getStringFromUrl(resourceUrl),
+				WmfDumpFile.getDumpFileCompressionType(DumpContentType.SITES));
 
 		this.dpc.setOfflineMode(true);
 

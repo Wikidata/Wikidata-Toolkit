@@ -30,9 +30,9 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineDailyDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
+import org.wikidata.wdtk.util.CompressionType;
 
 public class WmfOnlineDailyDumpFileTest {
 
@@ -55,7 +55,8 @@ public class WmfOnlineDailyDumpFileTest {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
-						+ "-pages-meta-hist-incr.xml.bz2", "Line1");
+						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
+				CompressionType.BZ2);
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
@@ -82,7 +83,7 @@ public class WmfOnlineDailyDumpFileTest {
 	}
 
 	@Test
-	public void emptyDumpProperties() {
+	public void emptyDumpProperties() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
@@ -95,7 +96,7 @@ public class WmfOnlineDailyDumpFileTest {
 	}
 
 	@Test
-	public void inaccessibleStatus() {
+	public void inaccessibleStatus() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
@@ -113,7 +114,8 @@ public class WmfOnlineDailyDumpFileTest {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
-						+ "-pages-meta-hist-incr.xml.bz2", "Line1");
+						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
+				CompressionType.BZ2);
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 		dump.getDumpFileReader();

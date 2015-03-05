@@ -173,7 +173,8 @@ public class JsonDumpFileProcessingTest {
 		dm.setFileContents(
 				thisDumpPath.resolve(dateStamp
 						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
-				MockStringContentFactory.getStringFromUrl(resourceUrl));
+				MockStringContentFactory.getStringFromUrl(resourceUrl),
+				WmfDumpFile.getDumpFileCompressionType(dumpContentType));
 	}
 
 }
