@@ -184,9 +184,6 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				+ this.serializer.getTripleCount() + " RDF triples in file "
 				+ this.outputDestination;
 		logger.info(message);
-		if (this.report != null) {
-			this.report.addEntry(message);
-		}
 	}
 
 	/**
@@ -253,5 +250,13 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 			System.out.println(WordUtils.wrap("* \"" + supportedTask + "\": "
 					+ TASK_HELP.get(supportedTask), 75, "\n   ", true));
 		}
+	}
+
+	@Override
+	public String getReport() {
+		String message = "Finished serialization of "
+				+ this.serializer.getTripleCount() + " RDF triples in file "
+				+ this.outputDestination;
+		return message;
 	}
 }

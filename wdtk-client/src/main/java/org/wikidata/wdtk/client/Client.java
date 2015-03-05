@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.client;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.cli.ParseException;
@@ -55,7 +58,6 @@ public class Client {
 
 	private Sites sites = null;
 	private DumpProcessingController dumpProcessingController;
-	private Report report = new Report();
 
 	protected final ClientConfiguration clientConfiguration;
 
@@ -106,10 +108,6 @@ public class Client {
 			}
 		}
 
-		if (this.clientConfiguration.reportFilename != null) {
-			report.setReportFile(this.clientConfiguration.reportFilename);
-		}
-
 		dumpProcessingController.setLanguageFilter(this.clientConfiguration
 				.getFilterLanguages());
 		dumpProcessingController.setSiteLinkFilter(this.clientConfiguration
@@ -122,9 +120,6 @@ public class Client {
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
-			if (this.clientConfiguration.reportFilename != null) {
-				props.setReport(report);
-			}
 
 			if (!props.isReady()) {
 				continue;
@@ -142,7 +137,7 @@ public class Client {
 
 		if (!hasReadyProcessor) {
 			return; // silent; non-ready action should report its problem
-					// directly
+					// directly	
 		}
 
 		if (!this.clientConfiguration.isQuiet()) {
@@ -155,6 +150,12 @@ public class Client {
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
+		try {
+			createReport();
+		} catch (IOException e) {
+			logger.error("Could not print report file!");
+		}
+
 	}
 
 	private Sites getSites() {
@@ -205,6 +206,31 @@ public class Client {
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
 			action.open();
+		}
+	}
+
+	/**
+	 * Creates a report file including the results which came from the
+	 * {@link DumpProcessingAction#getReport()} methods or printing it to
+	 * stdout.
+	 * 
+	 * @throws IOException
+	 */
+	void createReport() throws IOException {
+		StringBuilder builder = new StringBuilder();
+		for (DumpProcessingAction action : this.clientConfiguration
+				.getActions()) {
+			builder.append(action.getReport());
+			builder.append(System.getProperty("line.separator"));
+		}
+		if (this.clientConfiguration.reportFilename != null) {
+			File reportFile = new File(this.clientConfiguration.reportFilename);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(
+					reportFile));
+			writer.write(builder.toString());
+			writer.close();
+		}else{
+			logger.info((builder.toString()));
 		}
 	}
 

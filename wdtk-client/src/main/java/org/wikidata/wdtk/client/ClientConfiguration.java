@@ -98,7 +98,7 @@ public class ClientConfiguration {
 	/**
 	 * Short command-line alternative to {@link #OPTION_OUTPUT_REPORT}.
 	 */
-	public static final String CMD_OPTION_OUTPUT_REPORT = "r";
+	public static final String CMD_OPTION_PRINT_REPORT = "r";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -146,6 +146,11 @@ public class ClientConfiguration {
 	 */
 	public static final String OPTION_FILTER_PROPERTIES = "fProp";
 	/**
+	 * Name of the option to print a report about the files produced by
+	 * DumpProcessingOutputActions
+	 */
+	public static final String OPTION_PRINT_REPORT = "report";
+	/**
 	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
 	 * produce output.
@@ -161,11 +166,6 @@ public class ClientConfiguration {
 	 * directing output to stdout.
 	 */
 	public static final String OPTION_OUTPUT_STDOUT = DumpProcessingOutputAction.OPTION_USE_STDOUT;
-	/**
-	 * Name of the option to print a report when the DumpProcessingOutputAction
-	 * gets closed.
-	 */
-	public static final String OPTION_OUTPUT_REPORT = DumpProcessingOutputAction.OPTION_PRINT_REPORT;
 	/**
 	 * Name of the long command line option and configuration file field for
 	 * specifying the tasks for RDF serialization.
@@ -428,8 +428,8 @@ public class ClientConfiguration {
 			this.quiet = true;
 		}
 
-		if (cmd.hasOption(CMD_OPTION_OUTPUT_REPORT)) {
-			this.reportFilename = cmd.getOptionValue(CMD_OPTION_OUTPUT_REPORT);
+		if (cmd.hasOption(CMD_OPTION_PRINT_REPORT)) {
+			this.reportFilename = cmd.getOptionValue(CMD_OPTION_PRINT_REPORT);
 		}
 
 		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
@@ -465,7 +465,7 @@ public class ClientConfiguration {
 					this.quiet = true;
 				}
 				break;
-			case OPTION_OUTPUT_REPORT:
+			case OPTION_PRINT_REPORT:
 				this.reportFilename = section.get(key);
 			case OPTION_DUMP_LOCATION:
 				this.dumpLocation = section.get(key);
@@ -715,8 +715,8 @@ public class ClientConfiguration {
 				.withArgName("path")
 				.withDescription(
 						"specifies a path to print a final report after dump generations.")
-				.withLongOpt(OPTION_OUTPUT_REPORT)
-				.create(CMD_OPTION_OUTPUT_REPORT);
+				.withLongOpt(OPTION_PRINT_REPORT)
+				.create(CMD_OPTION_PRINT_REPORT);
 
 		options.addOption(config);
 		options.addOption(action);

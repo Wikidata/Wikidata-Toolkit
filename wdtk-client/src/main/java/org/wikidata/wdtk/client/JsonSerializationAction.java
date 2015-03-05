@@ -97,9 +97,16 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 				+ this.serializer.getEntityDocumentCount()
 				+ " EntityDocuments in file " + this.outputDestination;
 		logger.info(message);
-		if (this.report != null) {
-			this.report.addEntry(message);
-		}
 	}
+
+	@Override
+	public String getReport() {
+		String message = "Finished serialization of "
+				+ this.serializer.getEntityDocumentCount()
+				+ " EntityDocuments in file " + this.outputDestination;
+		return message;
+	}
+	
+	
 
 }

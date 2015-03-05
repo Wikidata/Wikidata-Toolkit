@@ -66,14 +66,6 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	void setSites(Sites sites);
 
 	/**
-	 * Sets a {@link Report} object where the action can add entries to report
-	 * which output was generated after it closes.
-	 * 
-	 * @param report
-	 */
-	void setReport(Report report);
-
-	/**
 	 * Sets the options of the specified name to the given value. Returns true
 	 * if the option was known, and false otherwise. Implementation should
 	 * overwrite this function to support additional options.
@@ -108,5 +100,13 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	 *            the datestamp (YYYYMMDD) for the dump
 	 */
 	void setDumpInformation(String project, String dateStamp);
+
+	/**
+	 * Returns a report message containing information about the files which
+	 * were generated.
+	 * 
+	 * @return report message
+	 */
+	String getReport();
 
 }

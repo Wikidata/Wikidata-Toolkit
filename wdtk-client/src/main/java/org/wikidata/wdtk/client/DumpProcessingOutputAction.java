@@ -72,11 +72,6 @@ public abstract class DumpProcessingOutputAction implements
 	 * setting the value to the string "true". Other values are ignored.
 	 */
 	public static final String OPTION_USE_STDOUT = "stdout";
-	/**
-	 * Name of the option to print a report when the DumpProcessingOutputAction
-	 * gets closed.
-	 */
-	public static final String OPTION_PRINT_REPORT = "report";
 
 	public static final String COMPRESS_BZ2 = "bz2";
 	public static final String COMPRESS_GZIP = "gz";
@@ -114,14 +109,6 @@ public abstract class DumpProcessingOutputAction implements
 	 * String name of the site that the processed dump file comes from.
 	 */
 	protected String project = "UNKNOWN";
-	/**
-	 * Report object to share information about produced outputs.
-	 */
-	protected Report report = null;
-	/**
-	 * Specifies if the action should report information, when it stops.
-	 */
-	protected boolean printReport = false;
 
 	@Override
 	public void setSites(Sites sites) {
@@ -154,10 +141,6 @@ public abstract class DumpProcessingOutputAction implements
 	public void setDumpInformation(String project, String dateStamp) {
 		this.project = project;
 		this.dateStamp = dateStamp;
-	}
-
-	public void setReport(Report report) {
-		this.report = report;
 	}
 
 	public String insertDumpInformation(String pattern) {
