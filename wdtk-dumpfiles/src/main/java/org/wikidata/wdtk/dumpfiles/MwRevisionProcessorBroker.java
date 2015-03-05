@@ -82,13 +82,15 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	BitVector encounteredPages;
 	BitVector encounteredRevisions;
 
+	static final long BIT_VECTOR_SIZE = 200000000L;
+
 	public MwRevisionProcessorBroker() {
 		this.revisionSubscriptions = new ArrayList<MwRevisionProcessorBroker.RevisionSubscription>();
 		this.mostCurrentRevision = null;
 		this.currentPageId = -1;
-		// TODO these initial sizes need to be configurable
-		encounteredPages = new BitVectorImpl(20000000);
-		encounteredRevisions = new BitVectorImpl(200000000);
+		// FIXME these initial sizes need to be configurable
+		encounteredPages = new BitVectorImpl(BIT_VECTOR_SIZE);
+		encounteredRevisions = new BitVectorImpl(BIT_VECTOR_SIZE);
 	}
 
 	/**
@@ -98,9 +100,9 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 * Importantly, the {@link MwRevision} that the registered processors will
 	 * receive is owned by this {@link MwRevisionProcessorBroker}. Its data is
 	 * valid only during the execution of
-	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it
-	 * will not be permanent. If the data is to be retained permanently, the
-	 * revision processor needs to make its own copy.
+	 * {@link MwRevisionProcessor#processRevision(MwRevision)}, but it will not
+	 * be permanent. If the data is to be retained permanently, the revision
+	 * processor needs to make its own copy.
 	 * 
 	 * @param mwRevisionProcessor
 	 *            the revision processor to register
