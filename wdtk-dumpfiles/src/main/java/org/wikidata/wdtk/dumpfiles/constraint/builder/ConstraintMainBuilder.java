@@ -154,7 +154,16 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 					.length()));
 			ConstraintBuilder constraintBuilder = getConstraintBuilder(constraintId);
 			if (constraintBuilder != null) {
-				ret = constraintBuilder.parse(constrainedProperty, template);
+				try {
+					ret = constraintBuilder
+							.parse(constrainedProperty, template);
+				} catch (IllegalArgumentException e) {
+					logger.warn("WARNING: Ignoring invalid template for constraint: property='"
+							+ constrainedProperty
+							+ "', template='"
+							+ template.toString() + "'.");
+					logger.warn(e.toString());
+				}
 			}
 		}
 		return ret;
