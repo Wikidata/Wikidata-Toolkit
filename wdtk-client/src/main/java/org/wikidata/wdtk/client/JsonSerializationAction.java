@@ -94,6 +94,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
+		super.close();
 	}
 
 }

@@ -31,9 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
-import org.wikidata.wdtk.dumpfiles.wmf.WmfOnlineStandardDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
+import org.wikidata.wdtk.util.CompressionType;
 
 public class WmfOnlineStandardDumpFileTest {
 
@@ -54,7 +54,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-index.html", this.getClass());
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
-				"Line1");
+				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
@@ -77,7 +77,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140508-index.html", this.getClass());
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
-				"Line1");
+				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
