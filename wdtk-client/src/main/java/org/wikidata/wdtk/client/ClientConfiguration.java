@@ -467,6 +467,7 @@ public class ClientConfiguration {
 				break;
 			case OPTION_PRINT_REPORT:
 				this.reportFilename = section.get(key);
+				break;
 			case OPTION_DUMP_LOCATION:
 				this.dumpLocation = section.get(key);
 				break;

@@ -23,10 +23,6 @@ package org.wikidata.wdtk.client;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.junit.Test;
@@ -61,21 +57,23 @@ public class ClientTest {
 		assertEquals(Client.consoleAppender.getThreshold(), Level.OFF);
 		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
 	}
-	
+
 	@Test
 	public void testJsonOutput() {
 		DumpProcessingAction action = new JsonSerializationAction();
 		action.open();
 		action.close();
-		assertEquals(action.getReport(), "Finished serialization of 0 EntityDocuments in file {PROJECT}-{DATE}.json");
+		assertEquals(action.getReport(),
+				"Finished serialization of 0 EntityDocuments in file {PROJECT}-{DATE}.json");
 	}
-	
+
 	@Test
 	public void testRdfOutput() {
 		DumpProcessingAction action = new RdfSerializationAction();
 		action.open();
 		action.close();
-		assertEquals(action.getReport(), "Finished serialization of 24 RDF triples in file null");
+		assertEquals(action.getReport(),
+				"Finished serialization of 24 RDF triples in file null");
 	}
 
 }

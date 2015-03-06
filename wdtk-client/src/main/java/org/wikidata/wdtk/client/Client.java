@@ -137,7 +137,7 @@ public class Client {
 
 		if (!hasReadyProcessor) {
 			return; // silent; non-ready action should report its problem
-					// directly	
+					// directly
 		}
 
 		if (!this.clientConfiguration.isQuiet()) {
@@ -229,7 +229,7 @@ public class Client {
 					reportFile));
 			writer.write(builder.toString());
 			writer.close();
-		}else{
+		} else {
 			logger.info((builder.toString()));
 		}
 	}
