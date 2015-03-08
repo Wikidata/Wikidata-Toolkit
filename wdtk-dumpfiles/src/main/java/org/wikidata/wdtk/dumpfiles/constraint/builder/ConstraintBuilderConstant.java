@@ -61,6 +61,8 @@ public interface ConstraintBuilderConstant {
 	String P_MIN = "min";
 	String P_VALUES = "values";
 	String P_PATTERN = "pattern";
+	String P_NAMESPACE = "namespace";
+	String P_BASE_PROPERTY = "base_property";
 
 	String V_INSTANCE = "instance";
 	String V_SUBCLASS = "subclass";

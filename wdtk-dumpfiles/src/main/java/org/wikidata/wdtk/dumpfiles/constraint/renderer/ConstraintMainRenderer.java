@@ -21,14 +21,16 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
  */
 
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintDiffWithinRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifier;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifiers;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
@@ -112,6 +114,11 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	}
 
 	@Override
+	public Boolean visit(ConstraintDiffWithinRange constraint) {
+		return true;
+	}
+
+	@Override
 	public Boolean visit(ConstraintMultiValue constraint) {
 		(new ConstraintMultiValueRenderer(this.rendererFormat))
 				.render(constraint);
@@ -122,6 +129,11 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	public Boolean visit(ConstraintConflictsWith constraint) {
 		(new ConstraintConflictsWithRenderer(this.rendererFormat))
 				.render(constraint);
+		return true;
+	}
+
+	@Override
+	public Boolean visit(ConstraintQualifiers constraint) {
 		return true;
 	}
 

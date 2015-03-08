@@ -41,11 +41,13 @@ public class ConstraintCommonsLinkBuilderTest {
 
 		ConstraintCommonsLinkBuilder builder = new ConstraintCommonsLinkBuilder();
 		TemplateParser parser = new TemplateParser();
-		Template template = parser.parse("{{Constraint:Commons link}}");
+		Template template = parser
+				.parse("{{Constraint:Commons link|namespace=File}}");
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P41");
+		String namespace = "File";
 		ConstraintCommonsLink expectedConstraint = new ConstraintCommonsLink(
-				constrainedProperty);
+				constrainedProperty, namespace);
 		ConstraintCommonsLink constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);

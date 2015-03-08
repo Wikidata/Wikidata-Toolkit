@@ -20,39 +20,41 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
- * This models a property constraint that says that a property should contain a
- * well-formed filename of a file available on Wikimedia Commons.
- * <p>
- * For example, <i>flag image (P41)</i> is a picture to connect to the picture
- * of an item's in namespace 'File'.
+ * This models a property constraint that says that a property can have only the
+ * qualifiers listed. If the list is empty, the property cannot have qualifiers.
  * 
  * @author Julian Mendez
  * 
  */
-public class ConstraintCommonsLink implements Constraint {
+public class ConstraintQualifiers implements Constraint {
 
 	final PropertyIdValue constrainedProperty;
-	final String namespace;
+	final List<PropertyValues> list = new ArrayList<PropertyValues>();
 
 	/**
-	 * Constructs a new {@link ConstraintCommonsLink}.
+	 * Constructs a new {@link ConstraintQualifiers}.
 	 * 
 	 * @param constrainedProperty
 	 *            constrained property
-	 * @param namespace
-	 *            namespace
+	 * @param list
+	 *            list of property values
 	 */
-	public ConstraintCommonsLink(PropertyIdValue constrainedProperty,
-			String namespace) {
+	public ConstraintQualifiers(PropertyIdValue constrainedProperty,
+			List<PropertyValues> list) {
+		Validate.notNull(list, "List cannot be null.");
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;
-		this.namespace = namespace;
-
+		this.list.addAll(list);
 	}
 
 	@Override
@@ -61,12 +63,12 @@ public class ConstraintCommonsLink implements Constraint {
 	}
 
 	/**
-	 * Returns the namespace.
+	 * Returns a list of property values
 	 * 
-	 * @return the namespace
+	 * @return a list of property values
 	 */
-	public String getNamespace() {
-		return this.namespace;
+	public List<PropertyValues> getList() {
+		return Collections.unmodifiableList(this.list);
 	}
 
 	@Override
@@ -80,29 +82,36 @@ public class ConstraintCommonsLink implements Constraint {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof ConstraintCommonsLink)) {
+		if (!(obj instanceof ConstraintQualifiers)) {
 			return false;
 		}
-		ConstraintCommonsLink other = (ConstraintCommonsLink) obj;
-		return this.constrainedProperty.equals(other.constrainedProperty)
-				&& this.namespace.equals(other.namespace);
+		ConstraintQualifiers other = (ConstraintQualifiers) obj;
+		return (this.constrainedProperty.equals(other.constrainedProperty) && this.list
+				.equals(other.list));
 	}
 
 	@Override
 	public int hashCode() {
-		return this.constrainedProperty.hashCode()
-				+ (0x1F * this.namespace.hashCode());
+		return (this.constrainedProperty.hashCode() + (0x1F * this.list
+				.hashCode()));
 	}
 
 	@Override
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(TemplateConstant.OPENING_BRACES);
-		sb.append("Constraint:Commons link");
+		sb.append("Constraint:Qualifiers");
 		sb.append(TemplateConstant.VERTICAL_BAR);
-		sb.append("namespace");
+		sb.append("list");
 		sb.append(TemplateConstant.EQUALS_SIGN);
-		sb.append(this.namespace);
+		Iterator<PropertyValues> it = this.list.iterator();
+		while (it.hasNext()) {
+			sb.append(it.next());
+			if (it.hasNext()) {
+				sb.append(TemplateConstant.SEMICOLON);
+				sb.append(TemplateConstant.SPACE);
+			}
+		}
 		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}

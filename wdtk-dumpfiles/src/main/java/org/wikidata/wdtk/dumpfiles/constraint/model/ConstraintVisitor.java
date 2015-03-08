@@ -120,6 +120,15 @@ public interface ConstraintVisitor<T> {
 	T visit(ConstraintRange constraint);
 
 	/**
+	 * Visits a {@link ConstraintDiffWithinRange}.
+	 *
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
+	T visit(ConstraintDiffWithinRange constraint);
+
+	/**
 	 * Visits a {@link ConstraintMultiValue}.
 	 *
 	 * @param constraint
@@ -136,6 +145,15 @@ public interface ConstraintVisitor<T> {
 	 * @return the result of the visit
 	 */
 	T visit(ConstraintConflictsWith constraint);
+
+	/**
+	 * Visits a {@link ConstraintQualifiers}.
+	 *
+	 * @param constraint
+	 *            constraint
+	 * @return the result of the visit
+	 */
+	T visit(ConstraintQualifiers constraint);
 
 	/**
 	 * Visits a {@link ConstraintQualifier}.

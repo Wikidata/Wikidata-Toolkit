@@ -32,14 +32,15 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class ConstraintCommonsLinkTest {
 
-	public static final String TEMPLATE_STR = "{{Constraint:Commons link}}";
+	public static final String TEMPLATE_STR = "{{Constraint:Commons link|namespace=File}}";
 
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P41");
+		String namespace = "File";
 		ConstraintCommonsLink constraint = new ConstraintCommonsLink(
-				constrainedProperty);
+				constrainedProperty, namespace);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
 	}
@@ -50,8 +51,9 @@ public class ConstraintCommonsLinkTest {
 		String string = propertyName + " " + TEMPLATE_STR;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
+		String namespace = "File";
 		ConstraintCommonsLink constraint = new ConstraintCommonsLink(
-				constrainedProperty);
+				constrainedProperty, namespace);
 		Assert.assertEquals(TEMPLATE_STR, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -64,11 +66,12 @@ public class ConstraintCommonsLinkTest {
 				.getPropertyIdValue("P41");
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
 				.getPropertyIdValue("P94");
+		String namespace = "File";
 
 		ConstraintTestHelper.testEquals(new ConstraintCommonsLink(
-				constrainedProperty0), new ConstraintCommonsLink(
-				constrainedProperty0), new ConstraintCommonsLink(
-				constrainedProperty1));
+				constrainedProperty0, namespace), new ConstraintCommonsLink(
+				constrainedProperty0, namespace), new ConstraintCommonsLink(
+				constrainedProperty1, namespace));
 	}
 
 }

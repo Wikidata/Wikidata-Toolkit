@@ -149,6 +149,11 @@ public class ConstraintTestHelper {
 			}
 
 			@Override
+			public String visit(ConstraintDiffWithinRange constraint) {
+				return "ConstraintDiffWithinRange";
+			}
+
+			@Override
 			public String visit(ConstraintMultiValue constraint) {
 				return "ConstraintMultiValue";
 			}
@@ -156,6 +161,11 @@ public class ConstraintTestHelper {
 			@Override
 			public String visit(ConstraintConflictsWith constraint) {
 				return "ConstraintConflictsWith";
+			}
+
+			@Override
+			public String visit(ConstraintQualifiers constraint) {
+				return "ConstraintQualifiers";
 			}
 
 			@Override

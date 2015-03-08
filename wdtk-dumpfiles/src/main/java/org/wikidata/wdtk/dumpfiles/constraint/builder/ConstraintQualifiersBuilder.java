@@ -21,31 +21,32 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifiers;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
- * An object of this class is a builder of an 'Existing file' constraint.
+ * 
+ * An object of this class is a builder of a 'Qualifiers' constraint.
  * 
  * @author Julian Mendez
  * 
  */
-class ConstraintCommonsLinkBuilder implements ConstraintBuilder {
+class ConstraintQualifiersBuilder implements ConstraintBuilder {
 
 	/**
 	 * Constructs a new builder.
 	 */
-	public ConstraintCommonsLinkBuilder() {
+	public ConstraintQualifiersBuilder() {
 	}
 
 	@Override
-	public ConstraintCommonsLink parse(PropertyIdValue constrainedProperty,
+	public ConstraintQualifiers parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintCommonsLink ret = null;
-		String namespace = template.getParameters().get(
-				ConstraintBuilderConstant.P_NAMESPACE);
-		if ((constrainedProperty != null) && (namespace != null)) {
-			ret = new ConstraintCommonsLink(constrainedProperty, namespace);
+		ConstraintQualifiers ret = null;
+		String listStr = template.getValue(ConstraintBuilderConstant.P_LIST);
+		if ((constrainedProperty != null) && (listStr != null)) {
+			ret = new ConstraintQualifiers(constrainedProperty,
+					ConstraintMainBuilder.parseListOfPropertyValues(listStr));
 		}
 		return ret;
 	}
