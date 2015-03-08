@@ -81,7 +81,7 @@ public class ConstraintCommonsLink implements Constraint {
 	public String getTemplate() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(TemplateConstant.OPENING_BRACES);
-		sb.append("Constraint:Existing file");
+		sb.append("Constraint:Commons link");
 		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();
 	}
@@ -92,4 +92,3 @@ public class ConstraintCommonsLink implements Constraint {
 	}
 
 }
-
