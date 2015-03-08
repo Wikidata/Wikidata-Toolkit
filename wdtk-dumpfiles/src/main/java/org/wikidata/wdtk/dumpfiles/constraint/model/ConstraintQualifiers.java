@@ -31,7 +31,11 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
  * This models a property constraint that says that a property can have only the
- * qualifiers listed. If the list is empty, the property cannot have qualifiers.
+ * listed qualifiers. If the list is empty, the property cannot have qualifiers.
+ * <p>
+ * For example, <i>head of government (P6)</i> and <i>flag image (P41)</i>
+ * should be used only with qualifiers <i>start time (P580)</i> and <i>end time
+ * (P582)</i>. Instead, <i>child (P40)</i> should be used without any qualifier.
  * 
  * @author Julian Mendez
  * 
@@ -39,7 +43,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 public class ConstraintQualifiers implements Constraint {
 
 	final PropertyIdValue constrainedProperty;
-	final List<PropertyValues> list = new ArrayList<PropertyValues>();
+	final List<PropertyIdValue> list = new ArrayList<PropertyIdValue>();
 
 	/**
 	 * Constructs a new {@link ConstraintQualifiers}.
@@ -47,10 +51,10 @@ public class ConstraintQualifiers implements Constraint {
 	 * @param constrainedProperty
 	 *            constrained property
 	 * @param list
-	 *            list of property values
+	 *            list of properties
 	 */
 	public ConstraintQualifiers(PropertyIdValue constrainedProperty,
-			List<PropertyValues> list) {
+			List<PropertyIdValue> list) {
 		Validate.notNull(list, "List cannot be null.");
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;
@@ -63,11 +67,11 @@ public class ConstraintQualifiers implements Constraint {
 	}
 
 	/**
-	 * Returns a list of property values
+	 * Returns a list of properties.
 	 * 
-	 * @return a list of property values
+	 * @return a list of properties
 	 */
-	public List<PropertyValues> getList() {
+	public List<PropertyIdValue> getList() {
 		return Collections.unmodifiableList(this.list);
 	}
 
@@ -104,11 +108,17 @@ public class ConstraintQualifiers implements Constraint {
 		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("list");
 		sb.append(TemplateConstant.EQUALS_SIGN);
-		Iterator<PropertyValues> it = this.list.iterator();
+		Iterator<PropertyIdValue> it = this.list.iterator();
 		while (it.hasNext()) {
-			sb.append(it.next());
+			PropertyIdValue property = it.next();
+			sb.append(TemplateConstant.OPENING_BRACES);
+			sb.append("P");
+			sb.append(TemplateConstant.VERTICAL_BAR);
+			String pNumber = property.getId().substring(1);
+			sb.append(pNumber);
+			sb.append(TemplateConstant.CLOSING_BRACES);
 			if (it.hasNext()) {
-				sb.append(TemplateConstant.SEMICOLON);
+				sb.append(TemplateConstant.COMMA);
 				sb.append(TemplateConstant.SPACE);
 			}
 		}
