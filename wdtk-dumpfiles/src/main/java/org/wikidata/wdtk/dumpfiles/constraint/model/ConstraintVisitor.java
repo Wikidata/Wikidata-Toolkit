@@ -84,13 +84,13 @@ public interface ConstraintVisitor<T> {
 	T visit(ConstraintInverse constraint);
 
 	/**
-	 * Visits a {@link ConstraintExistingFile}.
+	 * Visits a {@link ConstraintCommonsLink}.
 	 *
 	 * @param constraint
 	 *            constraint
 	 * @return the result of the visit
 	 */
-	T visit(ConstraintExistingFile constraint);
+	T visit(ConstraintCommonsLink constraint);
 
 	/**
 	 * Visits a {@link ConstraintTargetRequiredClaim}.

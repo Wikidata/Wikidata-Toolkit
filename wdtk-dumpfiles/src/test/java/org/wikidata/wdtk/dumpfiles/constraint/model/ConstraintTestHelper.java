@@ -129,7 +129,7 @@ public class ConstraintTestHelper {
 			}
 
 			@Override
-			public String visit(ConstraintExistingFile constraint) {
+			public String visit(ConstraintCommonsLink constraint) {
 				return "ConstraintExistingFile";
 			}
 

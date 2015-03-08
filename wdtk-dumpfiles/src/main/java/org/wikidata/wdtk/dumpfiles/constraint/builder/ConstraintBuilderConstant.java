@@ -36,17 +36,17 @@ public interface ConstraintBuilderConstant {
 	String C_ONE_OF = "One of";
 	String C_SYMMETRIC = "Symmetric";
 	String C_INVERSE = "Inverse";
-	String C_EXISTING_FILE = "Existing file";
+	String C_COMMONS_LINK = "Commons link";
 	String C_TARGET_REQUIRED_CLAIM = "Target required claim";
 	String C_ITEM = "Item";
 	String C_TYPE = "Type";
 	String C_VALUE_TYPE = "Value type";
 	String C_RANGE = "Range";
+	String C_DIFF_WITHIN_RANGE = "Diff within range";
 	String C_MULTI_VALUE = "Multi value";
 	String C_CONFLICTS_WITH = "Conflicts with";
+	String C_QUALIFIERS = "Qualifiers";
 	String C_QUALIFIER = "Qualifier";
-	String C_PERSON = "Person";
-	String C_TAXON = "Taxon";
 
 	String P_CLASS = "class";
 	String P_RELATION = "relation";

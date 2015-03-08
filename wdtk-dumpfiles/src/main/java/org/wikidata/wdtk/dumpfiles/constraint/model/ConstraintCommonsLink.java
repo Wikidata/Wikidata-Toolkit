@@ -34,17 +34,17 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
  * @author Julian Mendez
  * 
  */
-public class ConstraintExistingFile implements Constraint {
+public class ConstraintCommonsLink implements Constraint {
 
 	final PropertyIdValue constrainedProperty;
 
 	/**
-	 * Constructs a new {@link ConstraintExistingFile}.
+	 * Constructs a new {@link ConstraintCommonsLink}.
 	 * 
 	 * @param constrainedProperty
 	 *            constrained property
 	 */
-	public ConstraintExistingFile(PropertyIdValue constrainedProperty) {
+	public ConstraintCommonsLink(PropertyIdValue constrainedProperty) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		this.constrainedProperty = constrainedProperty;
 	}
@@ -65,10 +65,10 @@ public class ConstraintExistingFile implements Constraint {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof ConstraintExistingFile)) {
+		if (!(obj instanceof ConstraintCommonsLink)) {
 			return false;
 		}
-		ConstraintExistingFile other = (ConstraintExistingFile) obj;
+		ConstraintCommonsLink other = (ConstraintCommonsLink) obj;
 		return this.constrainedProperty.equals(other.constrainedProperty);
 	}
 

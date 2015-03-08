@@ -21,7 +21,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
@@ -30,20 +30,20 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
  * @author Julian Mendez
  * 
  */
-class ConstraintExistingFileBuilder implements ConstraintBuilder {
+class ConstraintCommonsLinkBuilder implements ConstraintBuilder {
 
 	/**
 	 * Constructs a new builder.
 	 */
-	public ConstraintExistingFileBuilder() {
+	public ConstraintCommonsLinkBuilder() {
 	}
 
 	@Override
-	public ConstraintExistingFile parse(PropertyIdValue constrainedProperty,
+	public ConstraintCommonsLink parse(PropertyIdValue constrainedProperty,
 			Template template) {
-		ConstraintExistingFile ret = null;
+		ConstraintCommonsLink ret = null;
 		if (constrainedProperty != null) {
-			ret = new ConstraintExistingFile(constrainedProperty);
+			ret = new ConstraintCommonsLink(constrainedProperty);
 		}
 		return ret;
 	}

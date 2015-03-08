@@ -2,7 +2,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifier;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
@@ -47,7 +47,7 @@ public class ConstraintMainRendererTest {
 		ConstraintMainRenderer mainRenderer = new ConstraintMainRenderer(null);
 		Assert.assertTrue(mainRenderer.visit((ConstraintSymmetric) null));
 		Assert.assertTrue(mainRenderer.visit((ConstraintInverse) null));
-		Assert.assertTrue(mainRenderer.visit((ConstraintExistingFile) null));
+		Assert.assertTrue(mainRenderer.visit((ConstraintCommonsLink) null));
 		Assert.assertTrue(mainRenderer.visit((ConstraintQualifier) null));
 	}
 

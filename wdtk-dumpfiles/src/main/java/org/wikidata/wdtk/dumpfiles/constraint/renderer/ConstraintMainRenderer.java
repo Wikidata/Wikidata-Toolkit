@@ -22,7 +22,7 @@ package org.wikidata.wdtk.dumpfiles.constraint.renderer;
 
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWith;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItem;
@@ -88,7 +88,7 @@ public class ConstraintMainRenderer implements ConstraintVisitor<Boolean> {
 	}
 
 	@Override
-	public Boolean visit(ConstraintExistingFile constraint) {
+	public Boolean visit(ConstraintCommonsLink constraint) {
 		return true;
 	}
 

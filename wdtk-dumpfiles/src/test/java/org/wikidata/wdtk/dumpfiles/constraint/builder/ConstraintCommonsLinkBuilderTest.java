@@ -23,30 +23,30 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintExistingFile;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
- * Test class for {@link ConstraintExistingFileBuilder}
+ * Test class for {@link ConstraintCommonsLinkBuilder}
  * 
  * @author Julian Mendez
  * 
  */
-public class ConstraintExistingFileBuilderTest {
+public class ConstraintCommonsLinkBuilderTest {
 
 	@Test
 	public void testBuilder() {
 
-		ConstraintExistingFileBuilder builder = new ConstraintExistingFileBuilder();
+		ConstraintCommonsLinkBuilder builder = new ConstraintCommonsLinkBuilder();
 		TemplateParser parser = new TemplateParser();
-		Template template = parser.parse("{{Constraint:Existing file}}");
+		Template template = parser.parse("{{Constraint:Commons link}}");
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P41");
-		ConstraintExistingFile expectedConstraint = new ConstraintExistingFile(
+		ConstraintCommonsLink expectedConstraint = new ConstraintCommonsLink(
 				constrainedProperty);
-		ConstraintExistingFile constraint = builder.parse(constrainedProperty,
+		ConstraintCommonsLink constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
 

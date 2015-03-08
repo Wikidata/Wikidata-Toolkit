@@ -222,8 +222,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				new ConstraintSymmetricBuilder());
 		register(ConstraintBuilderConstant.C_INVERSE,
 				new ConstraintInverseBuilder());
-		register(ConstraintBuilderConstant.C_EXISTING_FILE,
-				new ConstraintExistingFileBuilder());
+		register(ConstraintBuilderConstant.C_COMMONS_LINK,
+				new ConstraintCommonsLinkBuilder());
 		register(ConstraintBuilderConstant.C_TARGET_REQUIRED_CLAIM,
 				new ConstraintTargetRequiredClaimBuilder());
 		register(ConstraintBuilderConstant.C_ITEM, new ConstraintItemBuilder());

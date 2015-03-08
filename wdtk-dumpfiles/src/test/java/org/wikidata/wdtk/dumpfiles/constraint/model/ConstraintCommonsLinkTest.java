@@ -25,20 +25,20 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintExistingFile}
+ * Test class for {@link ConstraintCommonsLink}
  *
  * @author Julian Mendez
  *
  */
-public class ConstraintExistingFileTest {
+public class ConstraintCommonsLinkTest {
 
-	public static final String TEMPLATE_STR = "{{Constraint:Existing file}}";
+	public static final String TEMPLATE_STR = "{{Constraint:Commons link}}";
 
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P41");
-		ConstraintExistingFile constraint = new ConstraintExistingFile(
+		ConstraintCommonsLink constraint = new ConstraintCommonsLink(
 				constrainedProperty);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
@@ -50,7 +50,7 @@ public class ConstraintExistingFileTest {
 		String string = propertyName + " " + TEMPLATE_STR;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
-		ConstraintExistingFile constraint = new ConstraintExistingFile(
+		ConstraintCommonsLink constraint = new ConstraintCommonsLink(
 				constrainedProperty);
 		Assert.assertEquals(TEMPLATE_STR, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
@@ -65,9 +65,9 @@ public class ConstraintExistingFileTest {
 		PropertyIdValue constrainedProperty1 = ConstraintTestHelper
 				.getPropertyIdValue("P94");
 
-		ConstraintTestHelper.testEquals(new ConstraintExistingFile(
-				constrainedProperty0), new ConstraintExistingFile(
-				constrainedProperty0), new ConstraintExistingFile(
+		ConstraintTestHelper.testEquals(new ConstraintCommonsLink(
+				constrainedProperty0), new ConstraintCommonsLink(
+				constrainedProperty0), new ConstraintCommonsLink(
 				constrainedProperty1));
 	}
 
