@@ -68,21 +68,23 @@ class ConstraintItemBuilder implements ConstraintBuilder {
 			List<ItemIdValue> exceptions = new ArrayList<ItemIdValue>();
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			if (propertyStr != null) {
-				property = factory.getPropertyIdValue(
-						propertyStr.toUpperCase(),
+				property = factory.getPropertyIdValue(ConstraintMainBuilder
+						.firstLetterToUpperCase(propertyStr),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (itemStr != null) {
-				item = factory.getItemIdValue(itemStr.toUpperCase(),
+				item = factory.getItemIdValue(
+						ConstraintMainBuilder.firstLetterToUpperCase(itemStr),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (property2Str != null) {
-				property2 = factory.getPropertyIdValue(
-						property2Str.toUpperCase(),
+				property2 = factory.getPropertyIdValue(ConstraintMainBuilder
+						.firstLetterToUpperCase(property2Str),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (item2Str != null) {
-				item2 = factory.getItemIdValue(item2Str.toUpperCase(),
+				item2 = factory.getItemIdValue(
+						ConstraintMainBuilder.firstLetterToUpperCase(item2Str),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 			}
 			if (itemsStr != null) {

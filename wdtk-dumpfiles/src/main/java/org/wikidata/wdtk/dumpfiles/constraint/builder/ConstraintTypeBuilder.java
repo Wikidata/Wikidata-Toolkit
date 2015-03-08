@@ -52,7 +52,7 @@ class ConstraintTypeBuilder implements ConstraintBuilder {
 				&& (relationStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			ItemIdValue classId = factory.getItemIdValue(
-					classStr.toUpperCase(),
+					ConstraintMainBuilder.firstLetterToUpperCase(classStr),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
 			if (relationStr.equals(ConstraintBuilderConstant.V_INSTANCE)) {
 				ret = new ConstraintItem(constrainedProperty,

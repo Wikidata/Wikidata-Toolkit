@@ -108,7 +108,8 @@ class ConstraintDiffWithinRangeBuilder implements ConstraintBuilder {
 
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue baseProperty = factory.getPropertyIdValue(
-					basePropertyStr.toUpperCase(),
+					ConstraintMainBuilder
+							.firstLetterToUpperCase(basePropertyStr),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
 
 			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();

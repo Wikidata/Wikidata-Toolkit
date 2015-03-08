@@ -49,7 +49,7 @@ class ConstraintInverseBuilder implements ConstraintBuilder {
 		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue property = factory.getPropertyIdValue(
-					propertyStr.toUpperCase(),
+					ConstraintMainBuilder.firstLetterToUpperCase(propertyStr),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
 			ret = new ConstraintInverse(constrainedProperty, property);
 		}

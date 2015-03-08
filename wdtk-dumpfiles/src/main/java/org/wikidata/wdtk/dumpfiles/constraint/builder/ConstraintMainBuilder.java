@@ -61,6 +61,16 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		registerIds();
 	}
 
+	static String firstLetterToUpperCase(String str) {
+		if (str == null) {
+			return null;
+		} else if (str.isEmpty()) {
+			return str;
+		} else {
+			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		}
+	}
+
 	static String removeBrackets(String str) {
 		Validate.notNull(str);
 		return str.replace(TemplateConstant.OPENING_BRACKETS, "")
@@ -68,6 +78,23 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				.replace(TemplateConstant.OPENING_BRACES, "")
 				.replace(TemplateConstant.CLOSING_BRACES, "")
 				.replace(TemplateConstant.VERTICAL_BAR, "");
+	}
+
+	static List<PropertyIdValue> parseListOfProperties(String listOfItems) {
+		Validate.notNull(listOfItems);
+		List<PropertyIdValue> ret = new ArrayList<PropertyIdValue>();
+		String str = removeBrackets(listOfItems);
+		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+		StringTokenizer stok = new StringTokenizer(str, TemplateConstant.COMMA);
+		while (stok.hasMoreTokens()) {
+			String propertyIdValueStr = stok.nextToken().trim();
+			PropertyIdValue property = factory.getPropertyIdValue(
+					ConstraintMainBuilder
+							.firstLetterToUpperCase(propertyIdValueStr),
+					ConstraintMainBuilder.PREFIX_WIKIDATA);
+			ret.add(property);
+		}
+		return ret;
 	}
 
 	static List<ItemIdValue> parseListOfItems(String listOfItems) {
@@ -80,7 +107,7 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 			String itemStr = stok.nextToken().trim();
 			try {
 				ItemIdValue item = factory.getItemIdValue(
-						itemStr.toUpperCase(),
+						ConstraintMainBuilder.firstLetterToUpperCase(itemStr),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				ret.add(item);
 			} catch (IllegalArgumentException e) {
@@ -104,13 +131,15 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 			int pos = propertyValuesStr.indexOf(TemplateConstant.COLON);
 			if (pos == -1) {
 				PropertyIdValue property = factory.getPropertyIdValue(
-						propertyValuesStr.toUpperCase(),
+						ConstraintMainBuilder
+								.firstLetterToUpperCase(propertyValuesStr),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				ret.add(new PropertyValues(property));
 			} else {
 				PropertyIdValue property = factory.getPropertyIdValue(
-						propertyValuesStr.substring(0, pos).trim()
-								.toUpperCase(),
+						ConstraintMainBuilder
+								.firstLetterToUpperCase(propertyValuesStr
+										.substring(0, pos).trim()),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				List<ItemIdValue> values = parseListOfItems(propertyValuesStr
 						.substring(pos + 1));
@@ -232,10 +261,14 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				new ConstraintValueTypeBuilder());
 		register(ConstraintBuilderConstant.C_RANGE,
 				new ConstraintRangeBuilder());
+		register(ConstraintBuilderConstant.C_DIFF_WITHIN_RANGE,
+				new ConstraintDiffWithinRangeBuilder());
 		register(ConstraintBuilderConstant.C_MULTI_VALUE,
 				new ConstraintMultiValueBuilder());
 		register(ConstraintBuilderConstant.C_CONFLICTS_WITH,
 				new ConstraintConflictsWithBuilder());
+		register(ConstraintBuilderConstant.C_QUALIFIERS,
+				new ConstraintQualifiersBuilder());
 		register(ConstraintBuilderConstant.C_QUALIFIER,
 				new ConstraintQualifierBuilder());
 	}

@@ -46,7 +46,7 @@ class ConstraintQualifiersBuilder implements ConstraintBuilder {
 		String listStr = template.getValue(ConstraintBuilderConstant.P_LIST);
 		if ((constrainedProperty != null) && (listStr != null)) {
 			ret = new ConstraintQualifiers(constrainedProperty,
-					ConstraintMainBuilder.parseListOfPropertyValues(listStr));
+					ConstraintMainBuilder.parseListOfProperties(listStr));
 		}
 		return ret;
 	}

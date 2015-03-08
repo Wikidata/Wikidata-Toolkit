@@ -49,13 +49,13 @@ class ConstraintTargetRequiredClaimBuilder implements ConstraintBuilder {
 		if ((constrainedProperty != null) && (propertyStr != null)) {
 			DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 			PropertyIdValue property = factory.getPropertyIdValue(
-					propertyStr.toUpperCase(),
+					ConstraintMainBuilder.firstLetterToUpperCase(propertyStr),
 					ConstraintMainBuilder.PREFIX_WIKIDATA);
 			String itemStr = template
 					.getValue(ConstraintBuilderConstant.P_ITEM);
 			if (itemStr != null) {
 				ItemIdValue item = factory.getItemIdValue(
-						itemStr.toUpperCase(),
+						ConstraintMainBuilder.firstLetterToUpperCase(itemStr),
 						ConstraintMainBuilder.PREFIX_WIKIDATA);
 				ret = new ConstraintTargetRequiredClaim(constrainedProperty,
 						property, item);
