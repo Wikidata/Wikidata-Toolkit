@@ -30,7 +30,7 @@ import java.io.Writer;
  * @author Julian Mendez
  * 
  */
-public class WriterWithExceptions extends Writer {
+class WriterWithExceptions extends Writer {
 
 	public WriterWithExceptions() {
 	}

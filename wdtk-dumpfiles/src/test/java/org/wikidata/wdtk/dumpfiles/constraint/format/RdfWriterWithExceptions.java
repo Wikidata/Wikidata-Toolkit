@@ -34,7 +34,7 @@ import org.wikidata.wdtk.rdf.RdfWriter;
  * @author Julian Mendez
  * 
  */
-public class RdfWriterWithExceptions extends RdfWriter {
+class RdfWriterWithExceptions extends RdfWriter {
 
 	public RdfWriterWithExceptions() {
 		super(RDFFormat.RDFJSON, System.out);
