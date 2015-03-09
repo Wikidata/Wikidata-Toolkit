@@ -135,6 +135,8 @@ public class PropertyConstraintDumpProcessor {
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
 
+		controller.processMostRecentMainDump();
+
 		start(rendererFormats);
 
 		logger.info(getConstraintTemplatesString(
@@ -212,7 +214,7 @@ public class PropertyConstraintDumpProcessor {
 
 		DumpProcessingController controller = new DumpProcessingController(
 				WIKIDATAWIKI);
-		controller.processMostRecentMainDump();
+
 		// set offline mode true to read only offline dumps
 		// controller.setOfflineMode(true);
 
