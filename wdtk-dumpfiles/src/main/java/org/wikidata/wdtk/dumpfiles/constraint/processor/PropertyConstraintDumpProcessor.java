@@ -36,7 +36,6 @@ import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintBuilderConstant;
 import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
@@ -57,7 +56,6 @@ public class PropertyConstraintDumpProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyConstraintDumpProcessor.class);
 
-	public static final String DEFAULT_DUMP_DATE = "20150207";
 	public static final String DEFAULT_FILE_NAME = "constraints";
 	public static final String OWL_FILE_EXTENSION = ".owl";
 	public static final String RDF_FILE_EXTENSION = ".rdf";
@@ -130,10 +128,8 @@ public class PropertyConstraintDumpProcessor {
 		return list;
 	}
 
-	public void processDumps(List<RendererFormat> rendererFormats)
-			throws IOException {
-		DumpProcessingController controller = new DumpProcessingController(
-				WIKIDATAWIKI);
+	public void processDump(DumpProcessingController controller,
+			List<RendererFormat> rendererFormats) throws IOException {
 
 		// set offline mode true to read only offline dumps
 		// controller.setOfflineMode(true);
@@ -142,8 +138,7 @@ public class PropertyConstraintDumpProcessor {
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
 
-		controller.processAllDumps(DumpContentType.CURRENT, DEFAULT_DUMP_DATE,
-				DEFAULT_DUMP_DATE);
+		controller.processMostRecentMainDump();
 
 		start(rendererFormats);
 
@@ -219,7 +214,7 @@ public class PropertyConstraintDumpProcessor {
 		rendererFormats.add(new Owl2FunctionalRendererFormat(
 				owl2FunctionalOutput));
 		rendererFormats.add(new RdfRendererFormat(rdfOutput));
-		processDumps(rendererFormats);
+		processDump(new DumpProcessingController(WIKIDATAWIKI), rendererFormats);
 
 		owl2FunctionalOutput.flush();
 		rdfOutput.flush();
