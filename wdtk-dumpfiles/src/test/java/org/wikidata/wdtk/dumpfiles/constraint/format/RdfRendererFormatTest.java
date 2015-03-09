@@ -23,8 +23,6 @@ package org.wikidata.wdtk.dumpfiles.constraint.format;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,6 +35,8 @@ import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintRendererTestHelper;
 
 /**
+ * 
+ * Test class for {@link RdfRendererFormat}
  * 
  * @author Julian Mendez
  *
@@ -85,9 +85,6 @@ public class RdfRendererFormatTest {
 			+ "  <rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\"/>"
 			+ "</rdf:Description>" + SUFFIX;
 
-	final Set<Resource> declaredEntities = new HashSet<Resource>();
-	final Set<Resource> inverseFunctionalObjectProperties = new HashSet<Resource>();
-	final RdfWriterWithExceptions rdfWriter = new RdfWriterWithExceptions();
 	final RdfRendererFormat formatWithExceptions = new RdfRendererFormat(
 			new RdfWriterWithExceptions());
 	final StringResource resource = new StringResource("");
