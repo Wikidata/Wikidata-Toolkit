@@ -39,6 +39,9 @@ public class ConstraintOneOfTest {
 	public static final String TEMPLATE_STR_ITEM_VAL = "{{Constraint:One of|values={{Q|27914}}, {{Q|30903}}, {{Q|31687}}, {{Q|37137}}, {{Q|186506}}, {{Q|27911}}}}";
 	public static final String TEMPLATE_STR_QUANTITY_VAL = "{{Constraint:One of|values=1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}";
 
+	public ConstraintOneOfTest() {
+	}
+
 	public static List<ItemIdValue> getItemValues() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		ret.add(ConstraintTestHelper.getItemIdValue("Q27914"));
@@ -121,8 +124,8 @@ public class ConstraintOneOfTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintOneOf(
 				constrainedProperty0, getItemValues()), new ConstraintOneOf(
-						constrainedProperty0, getItemValues()), new ConstraintOneOf(
-								constrainedProperty1, getItemValues()));
+				constrainedProperty0, getItemValues()), new ConstraintOneOf(
+				constrainedProperty1, getItemValues()));
 	}
 
 	@Test

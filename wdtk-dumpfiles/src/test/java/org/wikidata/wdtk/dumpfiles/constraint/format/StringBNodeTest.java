@@ -30,6 +30,9 @@ import org.junit.Test;
  */
 public class StringBNodeTest {
 
+	public StringBNodeTest() {
+	}
+
 	@Test
 	public void testStringValueAndGetID() {
 		StringBNode node0 = new StringBNode("");

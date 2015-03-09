@@ -34,6 +34,9 @@ public class ConstraintCommonsLinkTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Commons link|namespace=File}}";
 
+	public ConstraintCommonsLinkTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper

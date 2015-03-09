@@ -44,6 +44,9 @@ public class ConstraintItemTest {
 	public static final String TEMPLATE_STR_ONE_PROP_TWO_ITEM = "{{Constraint:Item|property=P107|item=Q386724|item2=Q215627}}";
 	public static final String TEMPLATE_STR_ONE_PROP_ONE_ITEM_EXCEP = "{{Constraint:Item|property=P17|item=Q30|exceptions={{Q|695}}, {{Q|702}}, {{Q|709}}}}";
 
+	public ConstraintItemTest() {
+	}
+
 	public static List<ItemIdValue> getItems() {
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
 		ret.add(ConstraintTestHelper.getItemIdValue("Q7432"));

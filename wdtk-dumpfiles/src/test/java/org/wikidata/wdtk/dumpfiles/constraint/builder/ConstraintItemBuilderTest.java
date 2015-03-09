@@ -38,6 +38,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintItemBuilderTest {
 
+	public ConstraintItemBuilderTest() {
+	}
+
 	@Test
 	public void testBuilderOneProp() {
 		String propertyName = "P141";

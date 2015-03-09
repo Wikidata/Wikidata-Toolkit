@@ -37,6 +37,9 @@ public class ConstraintRangeTest {
 	public static final String TEMPLATE_STR_DATE = "{{Constraint:Range|min=1957-10-04|max=now}}";
 	public static final String TEMPLATE_STR_QUANTITY = "{{Constraint:Range|min=1|max=118}}";
 
+	public ConstraintRangeTest() {
+	}
+
 	@Test
 	public void testParametersDate() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper

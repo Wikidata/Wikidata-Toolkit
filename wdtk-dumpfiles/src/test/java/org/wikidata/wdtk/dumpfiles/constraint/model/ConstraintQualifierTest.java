@@ -34,6 +34,9 @@ public class ConstraintQualifierTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Qualifier}}";
 
+	public ConstraintQualifierTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -67,8 +70,8 @@ public class ConstraintQualifierTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintQualifier(
 				constrainedProperty0), new ConstraintQualifier(
-						constrainedProperty0), new ConstraintQualifier(
-								constrainedProperty1));
+				constrainedProperty0), new ConstraintQualifier(
+				constrainedProperty1));
 	}
 
 }

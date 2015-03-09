@@ -34,6 +34,9 @@ public class ConstraintInverseTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Inverse|property=P156}}";
 
+	public ConstraintInverseTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper

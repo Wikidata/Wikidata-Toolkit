@@ -38,6 +38,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.PropertyValues;
  */
 public class ConstraintMainBuilderTest {
 
+	public ConstraintMainBuilderTest() {
+	}
+
 	@Test
 	public void testRemoveBrackets() {
 		String input0 = "{{Q|16}}";

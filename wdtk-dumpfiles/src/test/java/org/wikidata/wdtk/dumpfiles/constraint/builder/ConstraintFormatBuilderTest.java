@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintFormatBuilderTest {
 
+	public ConstraintFormatBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 		String propertyName = "P218";

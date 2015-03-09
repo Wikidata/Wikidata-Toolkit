@@ -46,6 +46,9 @@ public class TemplateScannerTest {
 	static final String text3 = "== Constraint item ==\n"
 			+ "<code>&lt;nowiki>{{Constraint:Item|property=P107|item=Q386724|item2=Q215627|item3=Q43229}}</nowiki></code> (yes, organization is already there) ";
 
+	public TemplateScannerTest() {
+	}
+
 	@Test
 	public void testScannerMultipleTemplates() {
 		List<String> expected = new ArrayList<String>();

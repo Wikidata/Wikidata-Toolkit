@@ -30,6 +30,9 @@ import org.junit.Test;
  */
 public class StringResourceTest {
 
+	public StringResourceTest() {
+	}
+
 	@Test
 	public void testStringValueAndGetID() {
 		StringResource node0 = new StringResource("");

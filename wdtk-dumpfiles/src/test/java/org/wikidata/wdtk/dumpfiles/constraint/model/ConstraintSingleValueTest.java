@@ -34,6 +34,9 @@ public class ConstraintSingleValueTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Single value}}";
 
+	public ConstraintSingleValueTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper

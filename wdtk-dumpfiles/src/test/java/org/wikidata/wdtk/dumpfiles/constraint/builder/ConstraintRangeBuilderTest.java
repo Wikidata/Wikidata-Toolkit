@@ -39,6 +39,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintRangeBuilderTest {
 
+	public ConstraintRangeBuilderTest() {
+	}
+
 	@Test
 	public void testParseDate() {
 		ConstraintRangeBuilder builder = new ConstraintRangeBuilder();

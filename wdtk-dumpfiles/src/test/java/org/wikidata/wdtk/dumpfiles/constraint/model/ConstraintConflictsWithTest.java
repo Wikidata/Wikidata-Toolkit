@@ -40,6 +40,9 @@ public class ConstraintConflictsWithTest {
 	public static final String TEMPLATE_STR_ONE_PROP_ONE_ITEM = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|5}}}}";
 	public static final String TEMPLATE_STR_MANY_PROP_MANY_ITEM = "{{Constraint:Conflicts with|list={{P|527}}; {{P|31}}: {{Q|14756018}}, {{Q|14073567}}, {{Q|4167410}}; {{P|625}}}}";
 
+	public ConstraintConflictsWithTest() {
+	}
+
 	public static List<PropertyValues> getListOnePropNoItem() {
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
 		ret.add(new PropertyValues(ConstraintTestHelper
@@ -182,7 +185,7 @@ public class ConstraintConflictsWithTest {
 				constrainedProperty0, getListOnePropNoItem()),
 				new ConstraintConflictsWith(constrainedProperty0,
 						getListOnePropNoItem()), new ConstraintConflictsWith(
-								constrainedProperty1, getListOnePropOneItem()));
+						constrainedProperty1, getListOnePropOneItem()));
 	}
 
 	@Test
@@ -196,8 +199,8 @@ public class ConstraintConflictsWithTest {
 				constrainedProperty0, getListManyPropManyItem()),
 				new ConstraintConflictsWith(constrainedProperty0,
 						getListManyPropManyItem()),
-						new ConstraintConflictsWith(constrainedProperty1,
-								getListOnePropNoItem()));
+				new ConstraintConflictsWith(constrainedProperty1,
+						getListOnePropNoItem()));
 	}
 
 }

@@ -36,10 +36,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWithTest;
  *
  */
 public class ConstraintConflictsWithRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"conflictswith");
+
+	public ConstraintConflictsWithRendererTest() {
+	}
 
 	@Override
 	public Constraint getConstraint() {
@@ -63,7 +66,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

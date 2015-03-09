@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintTemplateStringTest {
 
+	public ConstraintTemplateStringTest() {
+	}
+
 	/**
 	 * Returns the property id value for the specified property name.
 	 *

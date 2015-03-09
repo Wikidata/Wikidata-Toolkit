@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintDiffWithinRangeBuilderTest {
 
+	public ConstraintDiffWithinRangeBuilderTest() {
+	}
+
 	@Test
 	public void testParseDouble() {
 		ConstraintDiffWithinRangeBuilder builder = new ConstraintDiffWithinRangeBuilder();

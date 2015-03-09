@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintMultiValueBuilderTest {
 
+	public ConstraintMultiValueBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 

@@ -35,6 +35,9 @@ public class ConstraintTargetRequiredClaimTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Target required claim|property=P21|item=Q6581072}}";
 
+	public ConstraintTargetRequiredClaimTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -85,7 +88,7 @@ public class ConstraintTargetRequiredClaimTest {
 				constrainedProperty0, property, item0),
 				new ConstraintTargetRequiredClaim(constrainedProperty0,
 						property, item0), new ConstraintTargetRequiredClaim(
-								constrainedProperty1, property, item1));
+						constrainedProperty1, property, item1));
 
 	}
 

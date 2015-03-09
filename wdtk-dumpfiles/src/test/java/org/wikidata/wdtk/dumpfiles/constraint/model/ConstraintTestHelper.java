@@ -35,6 +35,9 @@ public class ConstraintTestHelper {
 
 	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 
+	public ConstraintTestHelper() {
+	}
+
 	/**
 	 * Returns the property id value for the specified property name.
 	 *

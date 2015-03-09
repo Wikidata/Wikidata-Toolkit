@@ -34,6 +34,9 @@ public class ConstraintSymmetricTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Symmetric}}";
 
+	public ConstraintSymmetricTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -67,8 +70,8 @@ public class ConstraintSymmetricTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintSymmetric(
 				constrainedProperty0), new ConstraintSymmetric(
-						constrainedProperty0), new ConstraintSymmetric(
-								constrainedProperty1));
+				constrainedProperty0), new ConstraintSymmetric(
+				constrainedProperty1));
 	}
 
 }

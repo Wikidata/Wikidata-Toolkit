@@ -34,6 +34,9 @@ public class ConstraintFormatTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Format|pattern=<nowiki>[a-z]{2}</nowiki>}}";
 
+	public ConstraintFormatTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -73,8 +76,8 @@ public class ConstraintFormatTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintFormat(
 				constrainedProperty0, pattern0), new ConstraintFormat(
-						constrainedProperty0, pattern0), new ConstraintFormat(
-								constrainedProperty1, pattern1));
+				constrainedProperty0, pattern0), new ConstraintFormat(
+				constrainedProperty1, pattern1));
 	}
 
 }

@@ -34,6 +34,9 @@ public class ConstraintUniqueValueTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Unique value}}";
 
+	public ConstraintUniqueValueTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -67,8 +70,8 @@ public class ConstraintUniqueValueTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintUniqueValue(
 				constrainedProperty0), new ConstraintUniqueValue(
-						constrainedProperty0), new ConstraintUniqueValue(
-								constrainedProperty1));
+				constrainedProperty0), new ConstraintUniqueValue(
+				constrainedProperty1));
 	}
 
 }

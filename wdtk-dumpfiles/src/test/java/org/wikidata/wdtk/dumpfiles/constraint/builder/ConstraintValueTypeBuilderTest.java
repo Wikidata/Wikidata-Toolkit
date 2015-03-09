@@ -37,6 +37,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintValueTypeBuilderTest {
 
+	public ConstraintValueTypeBuilderTest() {
+	}
+
 	@Test
 	public void testBuilderInstance() {
 		String propertyName = "P30";

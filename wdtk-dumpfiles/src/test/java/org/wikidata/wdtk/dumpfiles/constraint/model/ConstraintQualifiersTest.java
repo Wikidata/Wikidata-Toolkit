@@ -39,6 +39,9 @@ public class ConstraintQualifiersTest {
 	public static final String TEMPLATE_STR_ONE_PROP = "{{Constraint:Qualifiers|list={{P|407}}}}";
 	public static final String TEMPLATE_STR_TWO_PROP = "{{Constraint:Qualifiers|list={{P|580}}, {{P|582}}}}";
 
+	public ConstraintQualifiersTest() {
+	}
+
 	public static List<PropertyIdValue> getListNoProp() {
 		return new ArrayList<PropertyIdValue>();
 	}

@@ -35,6 +35,9 @@ public class ConstraintDiffWithinRangeTest {
 	public static final String TEMPLATE_STR_TIME_0 = "{{Constraint:Diff within range|base_property=P569|min=0|max=150}}";
 	public static final String TEMPLATE_STR_TIME_1 = "{{Constraint:Diff within range|base_property=P571|min=0|max=2000}}";
 
+	public ConstraintDiffWithinRangeTest() {
+	}
+
 	@Test
 	public void testParametersTime0() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper

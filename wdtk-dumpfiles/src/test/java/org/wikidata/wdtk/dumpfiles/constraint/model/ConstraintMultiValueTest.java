@@ -34,6 +34,9 @@ public class ConstraintMultiValueTest {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Multi value}}";
 
+	public ConstraintMultiValueTest() {
+	}
+
 	@Test
 	public void testParameters() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
@@ -67,8 +70,8 @@ public class ConstraintMultiValueTest {
 
 		ConstraintTestHelper.testEquals(new ConstraintMultiValue(
 				constrainedProperty0), new ConstraintMultiValue(
-						constrainedProperty0), new ConstraintMultiValue(
-								constrainedProperty1));
+				constrainedProperty0), new ConstraintMultiValue(
+				constrainedProperty1));
 	}
 
 }

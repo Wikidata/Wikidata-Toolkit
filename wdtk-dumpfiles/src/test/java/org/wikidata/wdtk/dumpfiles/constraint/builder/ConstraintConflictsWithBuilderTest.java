@@ -37,6 +37,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintConflictsWithBuilderTest {
 
+	public ConstraintConflictsWithBuilderTest() {
+	}
+
 	@Test
 	public void testBuilderOnePropNoItem() {
 		String propertyName = "P494";
@@ -47,7 +50,8 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getListOnePropNoItem());
+				constrainedProperty,
+				ConstraintConflictsWithTest.getListOnePropNoItem());
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
@@ -63,7 +67,8 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getListOnePropOneItem());
+				constrainedProperty,
+				ConstraintConflictsWithTest.getListOnePropOneItem());
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
@@ -78,7 +83,8 @@ public class ConstraintConflictsWithBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintConflictsWith expectedConstraint = new ConstraintConflictsWith(
-				constrainedProperty, ConstraintConflictsWithTest.getListManyPropManyItem());
+				constrainedProperty,
+				ConstraintConflictsWithTest.getListManyPropManyItem());
 		ConstraintConflictsWithBuilder builder = new ConstraintConflictsWithBuilder();
 		ConstraintConflictsWith constraint = builder.parse(constrainedProperty,
 				template);

@@ -35,6 +35,9 @@ import org.junit.Test;
  */
 public class TemplateParserTest {
 
+	public TemplateParserTest() {
+	}
+
 	@Test
 	public void testParserConstraintType() {
 		TemplateParser parser = new TemplateParser();

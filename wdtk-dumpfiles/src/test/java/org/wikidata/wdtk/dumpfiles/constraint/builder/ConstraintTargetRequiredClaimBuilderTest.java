@@ -37,6 +37,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintTargetRequiredClaimBuilderTest {
 
+	public ConstraintTargetRequiredClaimBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 		String propertyName = "P9";

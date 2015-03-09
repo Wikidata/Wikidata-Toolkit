@@ -37,6 +37,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintInverseBuilderTest {
 
+	public ConstraintInverseBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 		ConstraintInverseBuilder builder = new ConstraintInverseBuilder();

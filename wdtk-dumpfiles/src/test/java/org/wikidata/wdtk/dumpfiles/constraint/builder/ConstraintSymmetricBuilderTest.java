@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintSymmetricBuilderTest {
 
+	public ConstraintSymmetricBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 

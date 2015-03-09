@@ -36,6 +36,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  */
 public class ConstraintCommonsLinkBuilderTest {
 
+	public ConstraintCommonsLinkBuilderTest() {
+	}
+
 	@Test
 	public void testBuilder() {
 
