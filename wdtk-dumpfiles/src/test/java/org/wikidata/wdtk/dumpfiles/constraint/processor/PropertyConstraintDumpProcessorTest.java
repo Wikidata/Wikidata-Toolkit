@@ -1,7 +1,17 @@
 package org.wikidata.wdtk.dumpfiles.constraint.processor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 
 /*
  * #%L
@@ -31,6 +41,8 @@ import org.junit.Test;
  */
 public class PropertyConstraintDumpProcessorTest {
 
+	final String RESOURCES_PATH = "src/test/resources";
+
 	public PropertyConstraintDumpProcessorTest() {
 	}
 
@@ -43,6 +55,31 @@ public class PropertyConstraintDumpProcessorTest {
 		Assert.assertEquals("&quot;test&quot;",
 				processor.escapeChars("\"test\""));
 		Assert.assertEquals("unit  test", processor.escapeChars("unit\ntest"));
+	}
+
+	@Test
+	public void testProcessDump() throws IOException {
+		StringWriter owl2FunctionalOutput = new StringWriter();
+		ByteArrayOutputStream rdfOutput = new ByteArrayOutputStream();
+
+		List<RendererFormat> rendererFormats = new ArrayList<RendererFormat>();
+		rendererFormats.add(new Owl2FunctionalRendererFormat(
+				owl2FunctionalOutput));
+		rendererFormats.add(new RdfRendererFormat(rdfOutput));
+
+		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
+
+		DumpProcessingController controller = new DumpProcessingController(
+				PropertyConstraintDumpProcessor.WIKIDATAWIKI);
+		controller.setOfflineMode(true);
+		controller.setDownloadDirectory(RESOURCES_PATH);
+		// PropertyConstraintDumpProcessor.configureLogging();
+		processor.processDump(controller, rendererFormats);
+
+		owl2FunctionalOutput.flush();
+		rdfOutput.flush();
+		owl2FunctionalOutput.close();
+		rdfOutput.close();
 	}
 
 }
