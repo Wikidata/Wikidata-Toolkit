@@ -30,6 +30,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -192,8 +195,17 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
+	public static void configureLogging() {
+		ConsoleAppender consoleAppender = new ConsoleAppender();
+		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
+		consoleAppender.setLayout(new PatternLayout(pattern));
+		consoleAppender.setThreshold(Level.INFO);
+		consoleAppender.activateOptions();
+		org.apache.log4j.Logger.getRootLogger().addAppender(consoleAppender);
+	}
+
 	public void run(String[] args) throws IOException {
-		ExampleHelpers.configureLogging();
+		configureLogging();
 		String fileName = DEFAULT_FILE_NAME;
 		if (args.length > 0) {
 			fileName = args[0];
