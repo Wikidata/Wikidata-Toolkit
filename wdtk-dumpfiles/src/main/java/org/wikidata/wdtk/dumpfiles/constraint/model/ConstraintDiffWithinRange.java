@@ -133,14 +133,14 @@ public class ConstraintDiffWithinRange implements Constraint {
 		ConstraintDiffWithinRange other = (ConstraintDiffWithinRange) obj;
 		return this.constrainedProperty.equals(other.constrainedProperty)
 				&& this.baseProperty.equals(other.baseProperty)
-				&& (this.isTime == other.isTime)
-				&& (this.min.equals(other.min)) && (this.max.equals(other.max));
+				&& (this.isTime == other.isTime) && this.min.equals(other.min)
+				&& this.max.equals(other.max);
 	}
 
 	@Override
 	public int hashCode() {
 		return this.constrainedProperty.hashCode()
-				+ (0x1F * (this.baseProperty.hashCode() + +(0x1F * (this.min
+				+ (0x1F * (this.baseProperty.hashCode() + (0x1F * (this.min
 						.hashCode() + (0x1F * this.max.hashCode())))));
 	}
 
@@ -152,7 +152,7 @@ public class ConstraintDiffWithinRange implements Constraint {
 		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("base_property");
 		sb.append(TemplateConstant.EQUALS_SIGN);
-		sb.append(this.baseProperty);
+		sb.append(this.baseProperty.getId());
 		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("min");
 		sb.append(TemplateConstant.EQUALS_SIGN);

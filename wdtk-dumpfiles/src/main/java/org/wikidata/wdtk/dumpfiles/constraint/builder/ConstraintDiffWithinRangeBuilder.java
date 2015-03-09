@@ -20,17 +20,11 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  * #L%
  */
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintDiffWithinRange;
-import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
@@ -41,41 +35,6 @@ import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
  * 
  */
 class ConstraintDiffWithinRangeBuilder implements ConstraintBuilder {
-
-	private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
-
-		@Override
-		protected SimpleDateFormat initialValue() {
-			SimpleDateFormat ret = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			ret.setTimeZone(TimeZone.getTimeZone("UTC"));
-			return ret;
-		}
-
-	};
-
-	public DateAndNow parseDate(String dateOrNow) {
-		Validate.notNull(dateOrNow);
-		if (dateOrNow.equals("now")) {
-			return new DateAndNow();
-		} else {
-			String str = dateOrNow;
-			if (str.length() == 4) {
-				str += "-01";
-			}
-			if (str.length() == 7) {
-				str += "-01";
-			}
-			if (str.length() == 10) {
-				str += " 00:00:00";
-			}
-			try {
-				Date date = dateFormat.get().parse(str);
-				return new DateAndNow(date);
-			} catch (ParseException e) {
-			}
-			return null;
-		}
-	}
 
 	public Double parseDouble(String str) {
 		Validate.notNull(str);
@@ -116,20 +75,14 @@ class ConstraintDiffWithinRangeBuilder implements ConstraintBuilder {
 			String propertyType = wdPropertyTypes
 					.getPropertyType(constrainedProperty);
 
-			if (propertyType.equals(DatatypeIdValue.DT_TIME)) {
-				DateAndNow minDate = parseDate(minStr);
-				DateAndNow maxDate = parseDate(maxStr);
-				if ((minDate != null) && (maxDate != null)) {
-					ret = new ConstraintDiffWithinRange(constrainedProperty,
-							baseProperty, minStr, maxStr, true);
-				}
-
-			} else if (propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
+			if (propertyType.equals(DatatypeIdValue.DT_TIME)
+					|| propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
 				Double minNum = parseDouble(minStr);
 				Double maxNum = parseDouble(maxStr);
 				if ((minNum != null) && (maxNum != null)) {
 					ret = new ConstraintDiffWithinRange(constrainedProperty,
-							baseProperty, minStr, maxStr, false);
+							baseProperty, minStr, maxStr,
+							propertyType.equals(DatatypeIdValue.DT_TIME));
 				}
 
 			} else {
