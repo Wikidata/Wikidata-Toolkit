@@ -28,7 +28,11 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.model.PropertyValues;
+import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
  * Test class for {@link ConstraintMainBuilder}
@@ -51,6 +55,10 @@ public class ConstraintMainBuilderTest {
 		String expected1 = "Q16";
 		Assert.assertEquals(expected1,
 				ConstraintMainBuilder.removeBrackets(input1));
+		String input2 = "{{P|31}}";
+		String expected2 = "P31";
+		Assert.assertEquals(expected2,
+				ConstraintMainBuilder.removeBrackets(input2));
 	}
 
 	private PropertyIdValue getPropertyIdValue(int itemId) {
@@ -61,6 +69,18 @@ public class ConstraintMainBuilderTest {
 	private ItemIdValue getItemIdValue(int itemId) {
 		return (new DataObjectFactoryImpl()).getItemIdValue("Q" + itemId,
 				ConstraintMainBuilder.PREFIX_WIKIDATA);
+	}
+
+	@Test
+	public void testParseListOfProperties() {
+		String input = "{{P|580}}, {{P|582}}, {{P|805}}, {{P|1480}}";
+		List<PropertyIdValue> expected = new ArrayList<PropertyIdValue>();
+		expected.add(getPropertyIdValue(580));
+		expected.add(getPropertyIdValue(582));
+		expected.add(getPropertyIdValue(805));
+		expected.add(getPropertyIdValue(1480));
+		Assert.assertEquals(expected,
+				ConstraintMainBuilder.parseListOfProperties(input));
 	}
 
 	@Test
@@ -144,6 +164,24 @@ public class ConstraintMainBuilderTest {
 	}
 
 	@Test
+	public void testFirstLetterToUpperCase() {
+		Assert.assertEquals("LISP",
+				ConstraintMainBuilder.firstLetterToUpperCase("LISP"));
+		Assert.assertEquals("Text",
+				ConstraintMainBuilder.firstLetterToUpperCase("text"));
+		Assert.assertEquals("Big_Data",
+				ConstraintMainBuilder.firstLetterToUpperCase("Big_Data"));
+		Assert.assertEquals("2-Aminoethanol",
+				ConstraintMainBuilder.firstLetterToUpperCase("2-Aminoethanol"));
+		Assert.assertEquals("P31",
+				ConstraintMainBuilder.firstLetterToUpperCase("p31"));
+		Assert.assertEquals(null,
+				ConstraintMainBuilder.firstLetterToUpperCase(null));
+		Assert.assertEquals("",
+				ConstraintMainBuilder.firstLetterToUpperCase(""));
+	}
+
+	@Test
 	public void testParseListOfQuantities() {
 		String input = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10";
 		List<Integer> expected = new ArrayList<Integer>();
@@ -152,6 +190,19 @@ public class ConstraintMainBuilderTest {
 		}
 		Assert.assertEquals(expected,
 				ConstraintMainBuilder.parseListOfQuantities(input));
+	}
+
+	@Test
+	public void testInvalidConstraintException() {
+		String propertyName = "P31"; // instance of
+		String templateStr = "{{Constraint:Range|min=0|max=1}}";
+		Template template = (new TemplateParser()).parse(templateStr);
+
+		ConstraintMainBuilder builder = new ConstraintMainBuilder();
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		Constraint constraint = builder.parse(constrainedProperty, template);
+		Assert.assertEquals(null, constraint);
 	}
 
 }
