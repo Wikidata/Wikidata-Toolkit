@@ -25,7 +25,18 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
- *
+ * This models a property constraint that says that a property value ​​should be
+ * different from the value of some other property for not more than a
+ * predetermined amount. This template can be applied to properties of type
+ * <i>Time</i> and <i>Number</i>. For the case of properties of type
+ * <i>Time</i>, the values are given in years.
+ * <p>
+ * For example, the value of property <i>date of death (P570)</i> should be not
+ * more than 150 years greater than the value of <i>date of birth (P569)</i>. In
+ * this case, the constraint in property <i>date of death (P570)</i> should say
+ * that, considering the base property <i>date of birth (P569)</i>, the
+ * difference is at least 0 years and at most 150 years.
+ * 
  * @author Julian Mendez
  * 
  */
