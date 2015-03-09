@@ -54,7 +54,9 @@ public class ConstraintCommonsLinkBuilderTest {
 		ConstraintCommonsLink constraint = builder.parse(constrainedProperty,
 				template);
 		Assert.assertEquals(expectedConstraint, constraint);
-
+		Assert.assertEquals(constrainedProperty,
+				constraint.getConstrainedProperty());
+		Assert.assertEquals(namespace, constraint.getNamespace());
 	}
 
 }

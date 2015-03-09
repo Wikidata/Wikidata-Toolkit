@@ -48,6 +48,7 @@ public class ConstraintDiffWithinRangeTest {
 				constrainedProperty, baseProperty, "0", "150", true);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals(baseProperty, constraint.getBaseProperty());
 		Assert.assertEquals("0", constraint.getMin());
 		Assert.assertEquals("150", constraint.getMax());
 		Assert.assertTrue(constraint.isTime());
@@ -64,6 +65,7 @@ public class ConstraintDiffWithinRangeTest {
 				constrainedProperty, baseProperty, "0", "2000", true);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
+		Assert.assertEquals(baseProperty, constraint.getBaseProperty());
 		Assert.assertEquals("0", constraint.getMin());
 		Assert.assertEquals("2000", constraint.getMax());
 		Assert.assertTrue(constraint.isTime());
