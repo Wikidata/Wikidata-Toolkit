@@ -131,14 +131,9 @@ public class PropertyConstraintDumpProcessor {
 	public void processDump(DumpProcessingController controller,
 			List<RendererFormat> rendererFormats) throws IOException {
 
-		// set offline mode true to read only offline dumps
-		// controller.setOfflineMode(true);
-
 		PropertyTalkTemplateMwRevisionProcessor propertyTalkTemplateProcessor = new PropertyTalkTemplateMwRevisionProcessor();
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
-
-		controller.processMostRecentMainDump();
 
 		start(rendererFormats);
 
@@ -214,7 +209,14 @@ public class PropertyConstraintDumpProcessor {
 		rendererFormats.add(new Owl2FunctionalRendererFormat(
 				owl2FunctionalOutput));
 		rendererFormats.add(new RdfRendererFormat(rdfOutput));
-		processDump(new DumpProcessingController(WIKIDATAWIKI), rendererFormats);
+
+		DumpProcessingController controller = new DumpProcessingController(
+				WIKIDATAWIKI);
+		controller.processMostRecentMainDump();
+		// set offline mode true to read only offline dumps
+		// controller.setOfflineMode(true);
+
+		processDump(controller, rendererFormats);
 
 		owl2FunctionalOutput.flush();
 		rdfOutput.flush();
