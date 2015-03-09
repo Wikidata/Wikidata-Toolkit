@@ -47,6 +47,8 @@ import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 
 /**
+ * An object of this class is the entry point to process a dump file a returns
+ * the representation of constraints.
  * 
  * @author Julian Mendez
  * 
@@ -61,20 +63,46 @@ public class PropertyConstraintDumpProcessor {
 	public static final String RDF_FILE_EXTENSION = ".rdf";
 	public static final String WIKIDATAWIKI = "wikidatawiki";
 
+	/**
+	 * This is the entry point for this class.
+	 * 
+	 * @param args
+	 *            arguments
+	 * @throws IOException
+	 *             when something went wrong during input/output
+	 */
 	public static void main(String[] args) throws IOException {
 		(new PropertyConstraintDumpProcessor()).run(args);
 	}
 
+	/**
+	 * Constructs a new property constraint dump processor.
+	 */
 	public PropertyConstraintDumpProcessor() {
 	}
 
+	/**
+	 * Replaces some characters by their XML-escaped version. For example,
+	 * <tt>&amp;</tt> is replaced by <tt>&amp;amp;</tt>.
+	 * 
+	 * @param str
+	 *            original string
+	 * @return string after the replacements
+	 */
 	public String escapeChars(String str) {
 		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
 				.replaceAll("<", "&lt;").replaceAll("'", "&apos;")
 				.replaceAll("\n", "  ");
 	}
 
-	private List<Template> getConstraintTemplates(List<Template> list) {
+	/**
+	 * Returns a possibly empty sublist of templates that are also constraints.
+	 * 
+	 * @param list
+	 *            list of templates
+	 * @return a possibly empty sublist of templates that are also constraints
+	 */
+	List<Template> getConstraintTemplates(List<Template> list) {
 		ConstraintMainBuilder mainParser = new ConstraintMainBuilder();
 		List<Template> ret = new ArrayList<Template>();
 		for (Template template : list) {
@@ -88,9 +116,17 @@ public class PropertyConstraintDumpProcessor {
 		return ret;
 	}
 
-	private String getConstraintTemplatesString(
-			Map<PropertyIdValue, List<Template>> templateMap,
-			List<RendererFormat> rendererFormats) throws IOException {
+	/**
+	 * Returns a string representation of a map from property to list of
+	 * templates.
+	 * 
+	 * @param templateMap
+	 *            map
+	 * @return a string representation of a map from property to list of
+	 *         templates
+	 */
+	String getConstraintTemplatesString(
+			Map<PropertyIdValue, List<Template>> templateMap) {
 
 		List<PropertyIdValue> listOfProperties = getListOfProperties(templateMap
 				.keySet());
@@ -106,6 +142,13 @@ public class PropertyConstraintDumpProcessor {
 		return strb.toString();
 	}
 
+	/**
+	 * Returns a sorted list of property identifiers.
+	 * 
+	 * @param collectionOfProperties
+	 *            a collection of property identifiers
+	 * @return a sorted list of property identifiers
+	 */
 	List<PropertyIdValue> getListOfProperties(
 			Collection<PropertyIdValue> collectionOfProperties) {
 		List<PropertyIdValue> list = new ArrayList<PropertyIdValue>();
@@ -128,6 +171,16 @@ public class PropertyConstraintDumpProcessor {
 		return list;
 	}
 
+	/**
+	 * Processes the dump.
+	 * 
+	 * @param controller
+	 *            dump processing controller
+	 * @param rendererFormats
+	 *            list of formats
+	 * @throws IOException
+	 *             when something went wrong during input/output
+	 */
 	public void processDump(DumpProcessingController controller,
 			List<RendererFormat> rendererFormats) throws IOException {
 
@@ -139,8 +192,8 @@ public class PropertyConstraintDumpProcessor {
 
 		start(rendererFormats);
 
-		logger.info(getConstraintTemplatesString(
-				propertyTalkTemplateProcessor.getMap(), rendererFormats));
+		logger.info(getConstraintTemplatesString(propertyTalkTemplateProcessor
+				.getMap()));
 
 		processTemplates(propertyTalkTemplateProcessor.getMap(),
 				rendererFormats);
@@ -148,12 +201,25 @@ public class PropertyConstraintDumpProcessor {
 		finish(rendererFormats);
 	}
 
+	/**
+	 * Starts the output.
+	 * 
+	 * @param rendererFormats
+	 *            formats
+	 */
 	public void start(List<RendererFormat> rendererFormats) {
 		for (RendererFormat rendererFormat : rendererFormats) {
 			rendererFormat.start();
 		}
 	}
 
+	/**
+	 * Processes the templates.
+	 * 
+	 * @param templateMap
+	 * @param rendererFormats
+	 * @throws IOException
+	 */
 	public void processTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,
 			List<RendererFormat> rendererFormats) throws IOException {
@@ -181,12 +247,21 @@ public class PropertyConstraintDumpProcessor {
 		}
 	}
 
+	/**
+	 * Finishes the output.
+	 * 
+	 * @param rendererFormats
+	 *            formats
+	 */
 	public void finish(List<RendererFormat> rendererFormats) {
 		for (RendererFormat rendererFormat : rendererFormats) {
 			rendererFormat.finish();
 		}
 	}
 
+	/**
+	 * Configures logging.
+	 */
 	public static void configureLogging() {
 		ConsoleAppender consoleAppender = new ConsoleAppender();
 		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
@@ -196,6 +271,15 @@ public class PropertyConstraintDumpProcessor {
 		org.apache.log4j.Logger.getRootLogger().addAppender(consoleAppender);
 	}
 
+	/**
+	 * This method is the main entry point for the execution to create the
+	 * output files.
+	 * 
+	 * @param args
+	 *            arguments sent from the console
+	 * @throws IOException
+	 *             when something went wrong during input/output
+	 */
 	public void run(String[] args) throws IOException {
 		configureLogging();
 		String fileName = DEFAULT_FILE_NAME;
