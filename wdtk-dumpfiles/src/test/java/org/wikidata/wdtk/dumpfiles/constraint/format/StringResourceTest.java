@@ -25,6 +25,8 @@ import org.junit.Test;
 
 /**
  *
+ * Test class for {@link StringResource}.
+ * 
  * @author Julian Mendez
  *
  */

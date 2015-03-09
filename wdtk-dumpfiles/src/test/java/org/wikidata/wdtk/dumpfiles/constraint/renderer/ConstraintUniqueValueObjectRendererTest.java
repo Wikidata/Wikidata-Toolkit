@@ -36,7 +36,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
  *
  */
 public class ConstraintUniqueValueObjectRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Unique value}}";
 
@@ -48,8 +48,7 @@ ConstraintRendererTestInterface {
 
 	@Override
 	public Constraint getConstraint() {
-		return this.testHelper.getConstraint("P78",
-				TEMPLATE_STR);
+		return this.testHelper.getConstraint("P78", TEMPLATE_STR);
 	}
 
 	@Override
@@ -66,7 +65,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

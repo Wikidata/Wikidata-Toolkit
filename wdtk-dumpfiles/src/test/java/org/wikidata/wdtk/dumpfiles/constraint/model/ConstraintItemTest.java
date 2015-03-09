@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintItem}
+ * Test class for {@link ConstraintItem}.
  * 
  * @author Julian Mendez
  * 

@@ -35,7 +35,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
- * Test class for {@link ConstraintMainBuilder}
+ * Test class for {@link ConstraintMainBuilder}.
  * 
  * @author Julian Mendez
  * 

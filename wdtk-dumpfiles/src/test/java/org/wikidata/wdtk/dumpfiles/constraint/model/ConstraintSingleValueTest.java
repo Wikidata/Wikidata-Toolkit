@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintSingleValue}
+ * Test class for {@link ConstraintSingleValue}.
  *
  * @author Julian Mendez
  *

@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintCommonsLink}
+ * Test class for {@link ConstraintCommonsLink}.
  *
  * @author Julian Mendez
  *

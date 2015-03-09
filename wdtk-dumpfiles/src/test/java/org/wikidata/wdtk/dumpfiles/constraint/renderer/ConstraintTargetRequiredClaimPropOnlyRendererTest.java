@@ -35,7 +35,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
  *
  */
 public class ConstraintTargetRequiredClaimPropOnlyRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	public static final String TEMPLATE_STR = "{{Constraint:Target required claim|property=P17}}";
 
@@ -64,7 +64,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

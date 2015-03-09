@@ -32,6 +32,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSingleValueTest;
 
 /**
+ * Test class for {@link ConstraintSingleValueRenderer}.
  *
  * @author Julian Mendez
  *

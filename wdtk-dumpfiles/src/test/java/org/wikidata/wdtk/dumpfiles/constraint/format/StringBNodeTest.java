@@ -25,6 +25,8 @@ import org.junit.Test;
 
 /**
  *
+ * Test class for {@link StringBNode}.
+ * 
  * @author Julian Mendez
  *
  */

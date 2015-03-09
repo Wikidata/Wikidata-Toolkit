@@ -31,12 +31,12 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintItemTest;
 
 /**
- *
+ * 
  * @author Julian Mendez
  *
  */
 public class ConstraintItemExceptionRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"itemexception");
@@ -64,7 +64,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

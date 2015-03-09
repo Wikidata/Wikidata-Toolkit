@@ -28,14 +28,16 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
 
 /**
+ * Test class for {@link ConstraintOneOf} of a single item.
  *
  * @author Julian Mendez
  *
  */
 public class ConstraintOneOfItemSingleRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	public static final String TEMPLATE_STR_ITEM_SINGLE_VAL = "{{Constraint:One of|values={{Q|27914}}}}";
 
@@ -65,7 +67,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

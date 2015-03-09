@@ -28,7 +28,8 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
  */
 
 /**
- *
+ * Test class for {@link ConstraintMainRenderer}.
+ * 
  * @author Julian Mendez
  *
  */

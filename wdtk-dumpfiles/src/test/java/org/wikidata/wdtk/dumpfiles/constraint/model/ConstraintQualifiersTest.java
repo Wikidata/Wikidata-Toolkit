@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintQualifiers}
+ * Test class for {@link ConstraintQualifiers}.
  *
  * @author Julian Mendez
  *

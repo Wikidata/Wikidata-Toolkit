@@ -31,6 +31,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintConflictsWithTest;
 
 /**
+ * Test class for {@link ConstraintConflictsWithRenderer}.
  *
  * @author Julian Mendez
  *

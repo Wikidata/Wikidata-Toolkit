@@ -32,12 +32,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintMultiValueTest;
 
 /**
+ * Test class for {@link ConstraintMultiValueRenderer}.
  *
  * @author Julian Mendez
  *
  */
 public class ConstraintMultiValueRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"multivalue");
@@ -65,7 +66,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

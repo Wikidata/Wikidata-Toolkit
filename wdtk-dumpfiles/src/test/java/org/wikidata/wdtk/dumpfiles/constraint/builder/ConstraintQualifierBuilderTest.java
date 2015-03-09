@@ -29,7 +29,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
- * Test class for {@link ConstraintQualifierBuilder}
+ * Test class for {@link ConstraintQualifierBuilder}.
  * 
  * @author Julian Mendez
  * 

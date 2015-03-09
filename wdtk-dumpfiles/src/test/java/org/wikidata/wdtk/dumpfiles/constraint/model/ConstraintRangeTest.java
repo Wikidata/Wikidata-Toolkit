@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintRange}
+ * Test class for {@link ConstraintRange}.
  *
  * @author Julian Mendez
  *

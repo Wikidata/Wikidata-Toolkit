@@ -26,7 +26,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintTargetRequiredClaim}
+ * Test class for {@link ConstraintTargetRequiredClaim}.
  *
  * @author Julian Mendez
  *

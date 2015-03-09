@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**
- * Test class for {@link ConstraintInverse}
+ * Test class for {@link ConstraintInverse}.
  *
  * @author Julian Mendez
  *

@@ -31,12 +31,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTargetRequiredClaimTest;
 
 /**
+ * Test class for {@link ConstraintTargetRequiredClaimRenderer}.
  *
  * @author Julian Mendez
  *
  */
 public class ConstraintTargetRequiredClaimRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"targetrequiredclaim");
@@ -64,7 +65,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

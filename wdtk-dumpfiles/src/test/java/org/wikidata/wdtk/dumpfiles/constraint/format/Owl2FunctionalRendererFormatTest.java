@@ -29,7 +29,7 @@ import org.openrdf.model.impl.URIImpl;
 
 /**
  * 
- * Test class for {@link Owl2FunctionalRendererFormat}
+ * Test class for {@link Owl2FunctionalRendererFormat}.
  *
  * @author Julian Mendez
  *

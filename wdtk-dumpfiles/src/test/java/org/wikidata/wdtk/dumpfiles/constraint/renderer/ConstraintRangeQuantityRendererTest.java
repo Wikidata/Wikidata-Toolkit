@@ -28,15 +28,17 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRangeTest;
 
 /**
+ * Test class for {@link ConstraintRange} of quantities.
  *
  * @author Julian Mendez
  *
  */
 public class ConstraintRangeQuantityRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"rangequantity");
@@ -64,7 +66,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 

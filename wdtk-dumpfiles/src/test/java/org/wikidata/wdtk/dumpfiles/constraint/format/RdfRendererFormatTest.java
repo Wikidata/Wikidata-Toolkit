@@ -36,7 +36,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintRendererTestHel
 
 /**
  * 
- * Test class for {@link RdfRendererFormat}
+ * Test class for {@link RdfRendererFormat}.
  * 
  * @author Julian Mendez
  *

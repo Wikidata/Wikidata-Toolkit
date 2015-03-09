@@ -32,11 +32,13 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintFormatTest;
 
 /**
  *
+ * Test class for {@link ConstraintFormatRenderer}.
+ *
  * @author Julian Mendez
  *
  */
 public class ConstraintFormatRendererTest implements
-ConstraintRendererTestInterface {
+		ConstraintRendererTestInterface {
 
 	ConstraintRendererTestHelper testHelper = new ConstraintRendererTestHelper(
 			"format");
@@ -64,7 +66,7 @@ ConstraintRendererTestInterface {
 	@Override
 	@Test
 	public void testRdfRenderer() throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		this.testHelper.testRdfRenderer(getConstraint());
 	}
 
