@@ -12,6 +12,8 @@ import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
+import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /*
  * #%L
@@ -55,6 +57,36 @@ public class PropertyConstraintDumpProcessorTest {
 		Assert.assertEquals("&quot;test&quot;",
 				processor.escapeChars("\"test\""));
 		Assert.assertEquals("unit  test", processor.escapeChars("unit\ntest"));
+	}
+
+	@Test
+	public void testGetConstraintTemplates() {
+		List<Template> expected = new ArrayList<Template>();
+		TemplateParser parser = new TemplateParser();
+		expected.add(parser
+				.parse("{{Constraint:Type|class=Q1048835\n|relation=instance}}"));
+		expected.add(parser
+				.parse("{{Constraint:Value type|class=Q5|relation=instance}}"));
+		expected.add(parser
+				.parse("{{Constraint:Target required claim|property=P21}}"));
+		expected.add(parser
+				.parse("{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}"));
+		List<Template> input = new ArrayList<Template>();
+		input.add(parser.parse("{{Property documentation\n }}"));
+		input.addAll(expected);
+		List<Template> obtained = (new PropertyConstraintDumpProcessor())
+				.getConstraintTemplates(input);
+		Assert.assertEquals(expected, obtained);
+	}
+
+	@Test
+	public void testGetConstraintTemplatesString() {
+
+	}
+
+	@Test
+	public void testGetListOfProperties() {
+
 	}
 
 	@Test
