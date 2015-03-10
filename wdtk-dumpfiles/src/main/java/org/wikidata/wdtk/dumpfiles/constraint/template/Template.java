@@ -121,6 +121,24 @@ public class Template {
 	}
 
 	@Override
+	public int hashCode() {
+		return this.name.hashCode() + 0x1F * this.parameters.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Template)) {
+			return false;
+		}
+		Template other = (Template) obj;
+		return this.name.equals(other.name)
+				&& this.parameters.equals(other.parameters);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(TemplateConstant.OPENING_BRACES);
