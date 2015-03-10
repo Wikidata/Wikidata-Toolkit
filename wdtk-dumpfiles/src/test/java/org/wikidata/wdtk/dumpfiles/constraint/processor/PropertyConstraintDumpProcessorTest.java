@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,6 +52,22 @@ public class PropertyConstraintDumpProcessorTest {
 
 	final String RESOURCES_PATH = "src/test/resources";
 
+	final String TEMPLATE_31_0 = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
+	final String TEMPLATE_31_1 = "{{Constraint:Conflicts with|list={{P|31}}: {{Q|8441}}, {{Q|467}}, {{Q|6581097}}, {{Q|6581072}}|mandatory=true}}";
+	final String TEMPLATE_279_0 = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
+	final String TEMPLATE_40_0 = "{{Constraint:Conflicts with|group property=P31|list={{P|31}}: {{Q|4167410}}, {{Q|101352}}, {{Q|12308941}},"
+			+ " {{Q|11879590}}, {{Q|3409032}}, {{Q|202444}}, {{Q|577}}|mandatory=true}}";
+	final String TEMPLATE_40_1 = "{{Constraint:Value type|class=Q215627|relation=instance}}";
+	final String TEMPLATE_40_2 = "{{Constraint:Type|class=Q215627|relation=instance}}";
+	final String TEMPLATE_40_3 = "{{Constraint:Target required claim|property=P21}}";
+	final String TEMPLATE_40_4 = "{{Constraint:Item|property=P21}}";
+	final String TEMPLATE_6_0 = "{{Constraint:Type|class=Q1048835|relation=instance}}";
+	final String TEMPLATE_6_1 = "{{Constraint:Value type|class=Q5|exceptions={{Q|39}}|relation=instance}}";
+	final String TEMPLATE_6_2 = "{{Constraint:Target required claim|property=P21}}";
+	final String TEMPLATE_30_1 = "{{Constraint:One of|mandatory=true|values={{Q|46}}, {{Q|48}}, {{Q|15}}, {{Q|49}}, {{Q|18}}, {{Q|51}}, "
+			+ "{{Q|3960}}, {{Q|5401}}, {{Q|538}}, {{Q|27611}}, {{Q|828}}, {{Q|664609}}}}";
+	final String TEMPLATE_NO_CONSTRAINT = "{{Property documentation\n }}";
+
 	public PropertyConstraintDumpProcessorTest() {
 	}
 
@@ -68,25 +86,54 @@ public class PropertyConstraintDumpProcessorTest {
 	public void testGetConstraintTemplates() {
 		List<Template> expected = new ArrayList<Template>();
 		TemplateParser parser = new TemplateParser();
-		expected.add(parser
-				.parse("{{Constraint:Type|class=Q1048835\n|relation=instance}}"));
-		expected.add(parser
-				.parse("{{Constraint:Value type|class=Q5|relation=instance}}"));
-		expected.add(parser
-				.parse("{{Constraint:Target required claim|property=P21}}"));
-		expected.add(parser
-				.parse("{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}"));
+		expected.add(parser.parse(TEMPLATE_6_0));
+		expected.add(parser.parse(TEMPLATE_6_1));
+		expected.add(parser.parse(TEMPLATE_6_2));
+		expected.add(parser.parse(TEMPLATE_30_1));
+
 		List<Template> input = new ArrayList<Template>();
-		input.add(parser.parse("{{Property documentation\n }}"));
+		input.add(parser.parse(TEMPLATE_NO_CONSTRAINT));
 		input.addAll(expected);
 		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
 		List<Template> obtained = processor.getConstraintTemplates(input);
 		Assert.assertEquals(expected, obtained);
 	}
 
+	private Map<PropertyIdValue, List<Template>> getMapOfProperties() {
+		TemplateParser parser = new TemplateParser();
+
+		Map<PropertyIdValue, List<Template>> ret = new HashMap<PropertyIdValue, List<Template>>();
+
+		List<Template> templates0 = new ArrayList<Template>();
+		templates0.add(parser.parse(TEMPLATE_31_0));
+		templates0.add(parser.parse(TEMPLATE_31_1));
+		ret.put(ConstraintTestHelper.getPropertyIdValue("P31"), templates0);
+
+		List<Template> templates1 = new ArrayList<Template>();
+		templates1.add(parser.parse(TEMPLATE_279_0));
+		ret.put(ConstraintTestHelper.getPropertyIdValue("P279"), templates1);
+
+		List<Template> templates2 = new ArrayList<Template>();
+		templates2.add(parser.parse(TEMPLATE_40_0));
+		templates2.add(parser.parse(TEMPLATE_40_1));
+		templates2.add(parser.parse(TEMPLATE_40_2));
+		templates2.add(parser.parse(TEMPLATE_40_3));
+		templates2.add(parser.parse(TEMPLATE_40_4));
+		ret.put(ConstraintTestHelper.getPropertyIdValue("P40"), templates2);
+
+		return ret;
+	}
+
 	@Test
 	public void testGetConstraintTemplatesString() {
-
+		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
+		String expected = "P31=[" + TEMPLATE_31_0 + ", " + TEMPLATE_31_1
+				+ "]\n" + "P40=[" + TEMPLATE_40_0 + ", " + TEMPLATE_40_1 + ", "
+				+ TEMPLATE_40_2 + ", " + TEMPLATE_40_3 + ", " + TEMPLATE_40_4
+				+ "]\n" + "P279=[" + TEMPLATE_279_0 + "]\n";
+		String actual = processor
+				.getConstraintTemplatesString(getMapOfProperties());
+		Assert.assertEquals(expected, actual);
 	}
 
 	private List<PropertyIdValue> getListOfProperties(
