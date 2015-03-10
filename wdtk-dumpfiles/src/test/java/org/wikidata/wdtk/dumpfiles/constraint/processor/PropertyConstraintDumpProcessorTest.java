@@ -157,6 +157,16 @@ public class PropertyConstraintDumpProcessorTest {
 		Assert.assertEquals(expected, actual);
 	}
 
+	/**
+	 * This method tests the processing of a dump file.
+	 * <p>
+	 * This method does not test the correctness of the translation, but it
+	 * tests that it is possible to do an offline processing of a given dump
+	 * file.
+	 * 
+	 * @throws IOException
+	 *             when something went wrong with the input/output
+	 */
 	@Test
 	public void testProcessDump() throws IOException {
 		StringWriter owl2FunctionalOutput = new StringWriter();
