@@ -4,14 +4,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
@@ -74,8 +79,8 @@ public class PropertyConstraintDumpProcessorTest {
 		List<Template> input = new ArrayList<Template>();
 		input.add(parser.parse("{{Property documentation\n }}"));
 		input.addAll(expected);
-		List<Template> obtained = (new PropertyConstraintDumpProcessor())
-				.getConstraintTemplates(input);
+		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
+		List<Template> obtained = processor.getConstraintTemplates(input);
 		Assert.assertEquals(expected, obtained);
 	}
 
@@ -84,9 +89,25 @@ public class PropertyConstraintDumpProcessorTest {
 
 	}
 
+	private List<PropertyIdValue> getListOfProperties(
+			Collection<Integer> propertyIds) {
+		List<PropertyIdValue> ret = new ArrayList<PropertyIdValue>();
+		for (Integer propertyId : propertyIds) {
+			ret.add(ConstraintTestHelper.getPropertyIdValue("P" + propertyId));
+		}
+		return ret;
+	}
+
 	@Test
 	public void testGetListOfProperties() {
-
+		List<Integer> list = Arrays.asList(36, 38, 412, 1088, 413, 1123, 141,
+				105, 1031, 240);
+		List<PropertyIdValue> input = getListOfProperties(list);
+		Collections.sort(list);
+		List<PropertyIdValue> expected = getListOfProperties(list);
+		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
+		List<PropertyIdValue> actual = processor.getListOfProperties(input);
+		Assert.assertEquals(expected, actual);
 	}
 
 	@Test
