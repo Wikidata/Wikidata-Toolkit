@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P31s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P31v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q1048835">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx29">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q1048835"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx30">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx29"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx31">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx30"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx31"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q5">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx43">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q5"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx44">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx43"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx45">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx44"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx45"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P21s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx52">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx52"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P39s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx59">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P39s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P6v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx59"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#string">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx75">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+	<owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+	<owl:withRestrictions rdf:nodeID="node19g2dje2dx76"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx76">
+	<rdf:first rdf:nodeID="node19g2dje2dx77"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx77">
+	<xsd:pattern>.+\.(webm|ogv|ogg|WebM|OGG)</xsd:pattern>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx75">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10aux0">
+	<owl:equivalentClass rdf:nodeID="node19g2dje2dx75"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10aux0">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P10v">
+	<rdfs:range rdf:resource="http://www.wikidata.org/entity/P10aux0"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q7275">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx92">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q7275"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx93">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx92"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx94">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx93"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx94"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q215627">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx104">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q215627"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx105">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx104"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx106">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx105"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx106"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx111">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx111"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P19s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx118">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P19s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx118"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P569s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx125">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P569s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P27s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx125"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P31s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P279s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx133">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P279s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P31v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx133"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx151">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q8441">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q467">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q6581097">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q6581072">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx152">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:nodeID="node19g2dje2dx153"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx153">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q8441"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx154"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx154">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q467"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx155"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx155">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q6581097"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx156"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx156">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q6581072"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx157">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx152"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx158">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx157"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx151">
+	<owl:disjointWith rdf:nodeID="node19g2dje2dx158"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx187">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P40v"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q4167410">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q101352">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q12308941">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q11879590">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q3409032">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q202444">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q577">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx188">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:nodeID="node19g2dje2dx189"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx189">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q4167410"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx190"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx190">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q101352"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx191"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx191">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q12308941"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx192"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx192">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q11879590"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx193"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx193">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q3409032"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx194"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx194">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q202444"/>
+	<rdf:rest rdf:nodeID="node19g2dje2dx195"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx195">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q577"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx196">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx188"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx197">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx196"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx187">
+	<owl:disjointWith rdf:nodeID="node19g2dje2dx197"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx205">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q215627"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx206">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx205"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx207">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx206"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx207"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx215">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:resource="http://www.wikidata.org/entity/Q215627"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx216">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31v"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx215"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx217">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P31s"/>
+	<owl:someValuesFrom rdf:nodeID="node19g2dje2dx216"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx217"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx222">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40v">
+	<rdfs:range rdf:nodeID="node19g2dje2dx222"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g2dje2dx227">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+	<owl:onProperty rdf:resource="http://www.wikidata.org/entity/P21s"/>
+	<owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P40s">
+	<rdfs:domain rdf:nodeID="node19g2dje2dx227"/>
+</rdf:Description>
+
+</rdf:RDF>

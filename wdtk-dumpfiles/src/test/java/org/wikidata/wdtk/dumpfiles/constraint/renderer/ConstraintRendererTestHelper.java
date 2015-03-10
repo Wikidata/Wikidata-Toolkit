@@ -67,8 +67,15 @@ public class ConstraintRendererTestHelper {
 						.getResource("/" + fileName));
 	}
 
+	public static void assertEqualsRdf(String expectedStr, String actualStr)
+			throws RDFParseException, RDFHandlerException, IOException {
+		Model expected = parseRdf(expectedStr);
+		Model actual = parseRdf(actualStr);
+		Assert.assertEquals(expected, actual);
+	}
+
 	public static Model parseRdf(String rdfResource) throws RDFParseException,
-	RDFHandlerException, IOException {
+			RDFHandlerException, IOException {
 		InputStream inStream = new ByteArrayInputStream(rdfResource.getBytes());
 		RDFParser parser = Rio.createParser(RDFFormat.RDFXML);
 		Model graph = new LinkedHashModel();
@@ -132,10 +139,8 @@ public class ConstraintRendererTestHelper {
 		serializeConstraint(new RdfRendererFormat(this.output), constraint);
 		String expectedStr = getResourceFromFile(RDF_PATH + this.fileName
 				+ RDF_EXT);
-		Model expected = parseRdf(expectedStr);
 		String obtainedStr = this.output.toString();
-		Model obtained = parseRdf(obtainedStr);
-		Assert.assertEquals(expected, obtained);
+		assertEqualsRdf(expectedStr, obtainedStr);
 	}
 
 	public void testOwl2FunctionalRenderer(Constraint constraint)

@@ -13,12 +13,15 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
+import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintRendererTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
@@ -49,6 +52,9 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
  *
  */
 public class PropertyConstraintDumpProcessorTest {
+
+	final String CONSTRAINTS_OWL = "translation/owl/constraints.owl";
+	final String CONSTRAINTS_RDF = "translation/rdf/constraints.rdf";
 
 	final String RESOURCES_PATH = "src/test/resources";
 
@@ -157,18 +163,34 @@ public class PropertyConstraintDumpProcessorTest {
 		Assert.assertEquals(expected, actual);
 	}
 
+	private void processDump(List<RendererFormat> rendererFormats)
+			throws IOException {
+		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
+		DumpProcessingController controller = new DumpProcessingController(
+				PropertyConstraintDumpProcessor.WIKIDATAWIKI);
+		controller.setOfflineMode(true);
+		controller.setDownloadDirectory(RESOURCES_PATH);
+		// PropertyConstraintDumpProcessor.configureLogging();
+		processor.processDump(controller, rendererFormats);
+	}
+
 	/**
 	 * This method tests the processing of a dump file.
 	 * <p>
-	 * This method does not test the correctness of the translation, but it
-	 * tests that it is possible to do an offline processing of a given dump
-	 * file.
+	 * This main purpose of this method is not to test the correctness of all
+	 * translations but to test that it is possible to do an offline processing
+	 * of a given dump file.
 	 * 
 	 * @throws IOException
 	 *             when something went wrong with the input/output
+	 * @throws RDFHandlerException
+	 *             when something went wrong constructing an RDF model
+	 * @throws RDFParseException
+	 *             when something went wrong constructing an RDF model
 	 */
 	@Test
-	public void testProcessDump() throws IOException {
+	public void testProcessDump() throws IOException, RDFParseException,
+			RDFHandlerException {
 		StringWriter owl2FunctionalOutput = new StringWriter();
 		ByteArrayOutputStream rdfOutput = new ByteArrayOutputStream();
 
@@ -177,17 +199,23 @@ public class PropertyConstraintDumpProcessorTest {
 				owl2FunctionalOutput));
 		rendererFormats.add(new RdfRendererFormat(rdfOutput));
 
-		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
-
-		DumpProcessingController controller = new DumpProcessingController(
-				PropertyConstraintDumpProcessor.WIKIDATAWIKI);
-		controller.setOfflineMode(true);
-		controller.setDownloadDirectory(RESOURCES_PATH);
-		// PropertyConstraintDumpProcessor.configureLogging();
-		processor.processDump(controller, rendererFormats);
+		processDump(rendererFormats);
 
 		owl2FunctionalOutput.flush();
 		rdfOutput.flush();
+
+		String expectedOwl2Functional = ConstraintRendererTestHelper
+				.getResourceFromFile(CONSTRAINTS_OWL);
+		String actualOwl2Functional = owl2FunctionalOutput.getBuffer()
+				.toString();
+		Assert.assertEquals(expectedOwl2Functional, actualOwl2Functional);
+
+		String expectedRdfStr = ConstraintRendererTestHelper
+				.getResourceFromFile(CONSTRAINTS_RDF);
+		String actualRdfStr = new String(rdfOutput.toByteArray());
+		ConstraintRendererTestHelper.assertEqualsRdf(expectedRdfStr,
+				actualRdfStr);
+
 		owl2FunctionalOutput.close();
 		rdfOutput.close();
 	}
