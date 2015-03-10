@@ -38,10 +38,20 @@ public class TemplateParserTest {
 	public TemplateParserTest() {
 	}
 
+	private void testEquality(String str, String strNorm) {
+		TemplateParser parser = new TemplateParser();
+		Template template = parser.parse(str);
+		Template templateNorm = parser.parse(strNorm);
+		Assert.assertTrue(template.equals(templateNorm));
+		Assert.assertTrue(templateNorm.equals(template));
+	}
+
 	@Test
 	public void testParserConstraintType() {
 		TemplateParser parser = new TemplateParser();
-		String str = "{{Constraint:Type|class=Q1048835|relation=instance}}";
+		String str = "{{Constraint:Type|relation=instance|class=Q1048835}}";
+		String strNorm = "{{Constraint:Type|class=Q1048835|relation=instance}}";
+		testEquality(str, strNorm);
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("class");
 		parameterNames.add("relation");
@@ -51,13 +61,15 @@ public class TemplateParserTest {
 		Assert.assertEquals("instance", template.getValue("relation"));
 		Assert.assertEquals(2, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
-		Assert.assertEquals(str, template.toString());
+		Assert.assertEquals(strNorm, template.toString());
 	}
 
 	@Test
 	public void testParserConstraintValueType() {
 		TemplateParser parser = new TemplateParser();
-		String str = "{{Constraint:Value type|class=Q5|relation=instance}}";
+		String str = "{{Constraint:Value type|relation=instance|class=Q5}}";
+		String strNorm = "{{Constraint:Value type|class=Q5|relation=instance}}";
+		testEquality(str, strNorm);
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("class");
 		parameterNames.add("relation");
@@ -68,7 +80,7 @@ public class TemplateParserTest {
 				.get("relation"));
 		Assert.assertEquals(2, template.getParameters().size());
 		Assert.assertEquals(parameterNames, template.getParameterNames());
-		Assert.assertEquals(str, template.toString());
+		Assert.assertEquals(strNorm, template.toString());
 	}
 
 	@Test
@@ -107,9 +119,11 @@ public class TemplateParserTest {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, <!-- more values -->{{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
 		String strNorm = "{{Constraint:One of|values={{Q|6581097}}, {{Q|6581072}}, {{Q|1097630}}, {{Q|44148}}, {{Q|43445}}, {{Q|1052281}}, {{Q|2449503}}, {{Q|48270}}, {{Q|1399232}}, {{Q|3277905}}, {{Q|746411}}, {{Q|350374}}, {{Q|660882}}}}";
+
 		TemplateScanner scanner = new TemplateScanner();
 		List<String> list = scanner.getTemplates(str);
 		Assert.assertEquals(1, list.size());
+		testEquality(list.get(0), strNorm);
 
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("values");
@@ -128,6 +142,7 @@ public class TemplateParserTest {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Item|property=P17||exceptions={{Q|3593529}}}}";
 		String strNorm = "{{Constraint:Item|exceptions={{Q|3593529}}|property=P17}}";
+		testEquality(str, strNorm);
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("property");
 		parameterNames.add("exceptions");
@@ -145,6 +160,7 @@ public class TemplateParserTest {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Target required claim|property=P279|exceptions ={{Q|35120}}}}";
 		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}|property=P279}}";
+		testEquality(str, strNorm);
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("property");
 		parameterNames.add("exceptions");
@@ -163,6 +179,7 @@ public class TemplateParserTest {
 		TemplateParser parser = new TemplateParser();
 		String str = "{{Constraint:Target required claim|property=P279|exceptions={{Q|35120}}, {{Q|14897293}}}}";
 		String strNorm = "{{Constraint:Target required claim|exceptions={{Q|35120}}, {{Q|14897293}}|property=P279}}";
+		testEquality(str, strNorm);
 		Set<String> parameterNames = new TreeSet<String>();
 		parameterNames.add("property");
 		parameterNames.add("exceptions");
