@@ -80,6 +80,8 @@ public class PropertyTalkTemplateMwRevisionProcessorTest {
 		processor.startRevisionProcessing(SITE_NAME, BASE_URL, NAMESPACES);
 		MockMwRevision mwRevision = new MockMwRevision();
 		processor.processRevision(mwRevision);
+		processor.finishRevisionProcessing();
+
 		Map<PropertyIdValue, List<Template>> map = processor.getMap();
 		Assert.assertEquals(1, map.keySet().size());
 
