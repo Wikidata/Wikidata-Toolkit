@@ -220,6 +220,7 @@ public class Client {
 		StringBuilder builder = new StringBuilder();
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
+			builder.append(action.getActionName() + ": ");
 			builder.append(action.getReport());
 			builder.append(System.getProperty("line.separator"));
 		}

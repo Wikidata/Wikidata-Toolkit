@@ -399,6 +399,7 @@ public class ClientConfiguration {
 			} else {
 				DumpProcessingAction action = handleActionArguments(section);
 				if (action != null) {
+					action.setActionName(section.getName());
 					result.add(action);
 				}
 			}

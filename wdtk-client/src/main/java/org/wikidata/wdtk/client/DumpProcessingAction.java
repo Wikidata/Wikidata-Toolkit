@@ -109,4 +109,18 @@ public interface DumpProcessingAction extends EntityDocumentDumpProcessor {
 	 */
 	String getReport();
 
+	/**
+	 * Sets the actions name.
+	 * 
+	 * @param name
+	 */
+	void setActionName(String name);
+
+	/**
+	 * Returns a name which terms the action.
+	 * 
+	 * @return name
+	 */
+	String getActionName();
+
 }

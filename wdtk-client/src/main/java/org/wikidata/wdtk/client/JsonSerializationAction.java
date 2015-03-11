@@ -43,6 +43,12 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.json";
 
 	/**
+	 * default action name is used to separate different
+	 * DumpProcessingOutputActions from each other.
+	 */
+	public final static String DEFAULT_ACTION_NAME = "JsonSerializationAction";
+
+	/**
 	 * The actual serializer used internally.
 	 */
 	JsonSerializer serializer;
@@ -93,10 +99,6 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
-		String message = "Finished serialization of "
-				+ this.serializer.getEntityDocumentCount()
-				+ " EntityDocuments in file " + this.outputDestination;
-		logger.info(message);
 	}
 
 	@Override
@@ -106,7 +108,14 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 				+ " EntityDocuments in file " + this.outputDestination;
 		return message;
 	}
-	
-	
+
+	@Override
+	public String getActionName() {
+		if (this.name != null) {
+			return name;
+		} else {
+			return JsonSerializationAction.DEFAULT_ACTION_NAME;
+		}
+	}
 
 }

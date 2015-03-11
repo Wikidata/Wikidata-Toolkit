@@ -111,6 +111,12 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	}
 
 	/**
+	 * default action name is used to separate different
+	 * DumpProcessingOutputActions from each other.
+	 */
+	public final static String DEFAULT_ACTION_NAME = "RdfSerializationAction";
+
+	/**
 	 * Internal serializer object that will actually write the RDF output.
 	 */
 	RdfSerializer serializer;
@@ -180,10 +186,6 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
-		String message = "Finished serialization of "
-				+ this.serializer.getTripleCount() + " RDF triples in file "
-				+ this.outputDestination;
-		logger.info(message);
 	}
 
 	/**
@@ -258,5 +260,14 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				+ this.serializer.getTripleCount() + " RDF triples in file "
 				+ this.outputDestination;
 		return message;
+	}
+
+	@Override
+	public String getActionName() {
+		if (this.name != null) {
+			return name;
+		} else {
+			return RdfSerializationAction.DEFAULT_ACTION_NAME;
+		}
 	}
 }

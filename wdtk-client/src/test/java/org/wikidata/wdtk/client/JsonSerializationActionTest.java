@@ -20,6 +20,7 @@ package org.wikidata.wdtk.client;
  * #L%
  */
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -36,5 +37,6 @@ public class JsonSerializationActionTest {
 		assertTrue(action instanceof JsonSerializationAction);
 		assertFalse(action.needsSites());
 		assertTrue(action.isReady());
+		assertEquals(action.getActionName(), "JsonSerializationAction");
 	}
 }

@@ -23,6 +23,7 @@ package org.wikidata.wdtk.client;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.junit.Test;

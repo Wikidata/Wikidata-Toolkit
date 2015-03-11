@@ -77,6 +77,8 @@ public abstract class DumpProcessingOutputAction implements
 	public static final String COMPRESS_GZIP = "gz";
 	public static final String COMPRESS_NONE = "";
 
+	protected String name;
+
 	/**
 	 * The {@link Sites} object if provided.
 	 * 
@@ -141,6 +143,11 @@ public abstract class DumpProcessingOutputAction implements
 	public void setDumpInformation(String project, String dateStamp) {
 		this.project = project;
 		this.dateStamp = dateStamp;
+	}
+
+	@Override
+	public void setActionName(String name) {
+		this.name = name;
 	}
 
 	public String insertDumpInformation(String pattern) {
@@ -257,4 +264,5 @@ public abstract class DumpProcessingOutputAction implements
 			}
 		}
 	}
+
 }
