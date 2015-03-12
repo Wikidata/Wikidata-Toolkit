@@ -658,4 +658,9 @@ public class RdfRendererFormat implements RendererFormat {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
 }

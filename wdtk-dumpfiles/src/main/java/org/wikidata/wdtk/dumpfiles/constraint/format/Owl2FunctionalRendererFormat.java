@@ -526,4 +526,9 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
 }

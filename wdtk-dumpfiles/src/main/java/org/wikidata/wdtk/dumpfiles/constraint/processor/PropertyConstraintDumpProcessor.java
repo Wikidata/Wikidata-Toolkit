@@ -161,7 +161,7 @@ public class PropertyConstraintDumpProcessor {
 	/**
 	 * Logs information about known constraints.
 	 */
-	void logInfoAboutConstraints() {
+	void logInformationAboutConstraints() {
 		logger.info("Known constraints="
 				+ (new ConstraintMainBuilder()).getConstraintIds());
 		logger.info("Accepted constraints="
@@ -189,7 +189,9 @@ public class PropertyConstraintDumpProcessor {
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
 
-		logInfoAboutConstraints();
+		logInformationAboutConstraints();
+
+		logger.info("Known formats=" + rendererFormats);
 
 		controller.processMostRecentMainDump();
 
