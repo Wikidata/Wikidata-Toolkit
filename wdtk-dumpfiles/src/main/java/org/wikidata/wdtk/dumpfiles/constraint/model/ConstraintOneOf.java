@@ -59,7 +59,7 @@ public class ConstraintOneOf implements Constraint {
 	 * @param constrainedProperty
 	 *            constrained property
 	 * @param values
-	 *            possible values that the property can have
+	 *            possible values that the constrained property can have
 	 */
 	public ConstraintOneOf(PropertyIdValue constrainedProperty,
 			List<ItemIdValue> values) {
@@ -76,7 +76,7 @@ public class ConstraintOneOf implements Constraint {
 	 * @param constrainedProperty
 	 *            constrained property
 	 * @param values
-	 *            possible values that the property can have
+	 *            possible values that the constrained property can have
 	 * @param x
 	 *            dummy integer value to use this constructor (this value is
 	 *            ignored)
@@ -96,7 +96,7 @@ public class ConstraintOneOf implements Constraint {
 	 * @param constrainedProperty
 	 *            constrained property
 	 * @param values
-	 *            possible values that the property can have
+	 *            possible values that the constrained property can have
 	 * @param x
 	 *            dummy String value to use this constructor (this value is
 	 *            ignored)
@@ -116,27 +116,27 @@ public class ConstraintOneOf implements Constraint {
 	}
 
 	/**
-	 * Returns the item values that a property can have.
+	 * Returns the item values that the constrained property can have.
 	 * 
-	 * @return the item values that a property can have
+	 * @return the item values that the constrained property can have
 	 */
 	public List<ItemIdValue> getItemValues() {
 		return Collections.unmodifiableList(this.itemValues);
 	}
 
 	/**
-	 * Returns the quantity values that a property can have.
+	 * Returns the quantity values that the constrained property can have.
 	 * 
-	 * @return the quantity values that a property can have
+	 * @return the quantity values that the constrained property can have
 	 */
 	public List<Integer> getQuantityValues() {
 		return Collections.unmodifiableList(this.quantityValues);
 	}
 
 	/**
-	 * Returns the string values that a property can have.
+	 * Returns the string values that the constrained property can have.
 	 * 
-	 * @return the string values that a property can have
+	 * @return the string values that the constrained property can have
 	 */
 	public List<String> getStringValues() {
 		return Collections.unmodifiableList(this.stringValues);
