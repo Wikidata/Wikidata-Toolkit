@@ -55,9 +55,8 @@ class ConstraintOneOfBuilder implements ConstraintBuilder {
 						ConstraintMainBuilder.parseListOfItems(values));
 
 			} else if (propertyType.equals(DatatypeIdValue.DT_QUANTITY)) {
-				ret = new ConstraintOneOf(
-						ConstraintMainBuilder.parseListOfQuantities(values),
-						constrainedProperty);
+				ret = new ConstraintOneOf(constrainedProperty,
+						ConstraintMainBuilder.parseListOfQuantities(values), 0);
 
 			} else {
 				throw new IllegalArgumentException(

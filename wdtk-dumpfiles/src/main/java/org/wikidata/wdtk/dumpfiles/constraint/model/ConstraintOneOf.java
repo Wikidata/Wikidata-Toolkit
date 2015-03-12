@@ -65,8 +65,8 @@ public class ConstraintOneOf implements Constraint {
 		this.hasItems = true;
 	}
 
-	public ConstraintOneOf(List<Integer> values,
-			PropertyIdValue constrainedProperty) {
+	public ConstraintOneOf(PropertyIdValue constrainedProperty,
+			List<Integer> values, int x) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		Validate.notNull(values, "List of values cannot be null.");
 		this.constrainedProperty = constrainedProperty;
@@ -168,4 +168,3 @@ public class ConstraintOneOf implements Constraint {
 	}
 
 }
-

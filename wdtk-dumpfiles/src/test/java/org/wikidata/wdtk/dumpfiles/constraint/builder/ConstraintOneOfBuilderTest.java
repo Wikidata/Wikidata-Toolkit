@@ -66,7 +66,7 @@ public class ConstraintOneOfBuilderTest {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
 		ConstraintOneOf expectedConstraint = new ConstraintOneOf(
-				ConstraintOneOfTest.getQuantityValues(), constrainedProperty);
+				constrainedProperty, ConstraintOneOfTest.getQuantityValues(), 0);
 		ConstraintOneOfBuilder builder = new ConstraintOneOfBuilder();
 		ConstraintOneOf constraint = builder.parse(constrainedProperty,
 				template);

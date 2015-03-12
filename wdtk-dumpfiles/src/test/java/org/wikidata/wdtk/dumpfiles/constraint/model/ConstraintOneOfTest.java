@@ -77,8 +77,8 @@ public class ConstraintOneOfTest {
 	public void testParametersQuantityVal() {
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue("P1088");
-		ConstraintOneOf constraint = new ConstraintOneOf(getQuantityValues(),
-				constrainedProperty);
+		ConstraintOneOf constraint = new ConstraintOneOf(constrainedProperty,
+				getQuantityValues(), 0);
 		Assert.assertEquals(constrainedProperty,
 				constraint.getConstrainedProperty());
 		Assert.assertEquals(getQuantityValues(), constraint.getQuantityValues());
@@ -107,8 +107,8 @@ public class ConstraintOneOfTest {
 		String string = propertyName + " " + templateStr;
 		PropertyIdValue constrainedProperty = ConstraintTestHelper
 				.getPropertyIdValue(propertyName);
-		ConstraintOneOf constraint = new ConstraintOneOf(getQuantityValues(),
-				constrainedProperty);
+		ConstraintOneOf constraint = new ConstraintOneOf(constrainedProperty,
+				getQuantityValues(), 0);
 		Assert.assertEquals(templateStr, constraint.getTemplate());
 		Assert.assertEquals(string, constraint.toString());
 
@@ -136,9 +136,10 @@ public class ConstraintOneOfTest {
 				.getPropertyIdValue("P1123");
 
 		ConstraintTestHelper.testEquals(new ConstraintOneOf(
-				getQuantityValues(), constrainedProperty0),
-				new ConstraintOneOf(getQuantityValues(), constrainedProperty0),
-				new ConstraintOneOf(getQuantityValues(), constrainedProperty1));
+				constrainedProperty0, getQuantityValues(), 0),
+				new ConstraintOneOf(constrainedProperty0, getQuantityValues(),
+						0), new ConstraintOneOf(constrainedProperty1,
+						getQuantityValues(), 0));
 	}
 
 }
