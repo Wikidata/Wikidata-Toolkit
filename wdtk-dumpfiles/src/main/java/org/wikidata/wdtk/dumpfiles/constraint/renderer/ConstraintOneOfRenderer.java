@@ -50,10 +50,15 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 	}
 
 	public void render(ConstraintOneOf c) {
-		if (c.hasItems()) {
+		if (c.getTypeOfConstraint().equals(
+				ConstraintOneOf.TypeOfConstraint.ITEM)) {
 			renderItems(c.getConstrainedProperty(), c.getItemValues());
-		} else {
+		} else if (c.getTypeOfConstraint().equals(
+				ConstraintOneOf.TypeOfConstraint.QUANTITY)) {
 			renderQuantities(c.getConstrainedProperty(), c.getQuantityValues());
+		} else if (c.getTypeOfConstraint().equals(
+				ConstraintOneOf.TypeOfConstraint.QUANTITY)) {
+			renderStrings(c.getConstrainedProperty(), c.getStringValues());
 		}
 	}
 
@@ -86,7 +91,23 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 
 		Resource resource = (values.size() == 1) ? //
 		this.f.getDataOneOf(values.iterator().next()) //
-				: this.f.getDataOneOf(values);
+				: this.f.getDataOneOfInt(values);
+
+		this.f.addDataPropertyRange(this.f.getPv(p), resource);
+	}
+
+	public void renderStrings(PropertyIdValue p, List<String> values) {
+		if ((p == null) || (values == null)) {
+			return;
+		}
+		this.f.addDeclarationObjectProperty(this.f.getPs(p));
+		this.f.addInverseFunctionalObjectProperty(this.f.getPs(p));
+
+		this.f.addDeclarationDatatypeProperty(this.f.getPv(p));
+
+		Resource resource = (values.size() == 1) ? //
+		this.f.getDataOneOf(values.iterator().next()) //
+				: this.f.getDataOneOfStr(values);
 
 		this.f.addDataPropertyRange(this.f.getPv(p), resource);
 	}

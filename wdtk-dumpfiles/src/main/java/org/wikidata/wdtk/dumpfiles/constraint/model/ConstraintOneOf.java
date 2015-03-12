@@ -43,10 +43,15 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
  */
 public class ConstraintOneOf implements Constraint {
 
+	public enum TypeOfConstraint {
+		UNDEFINED, ITEM, QUANTITY, STRING
+	}
+
 	final PropertyIdValue constrainedProperty;
 	final List<ItemIdValue> itemValues = new ArrayList<ItemIdValue>();
 	final List<Integer> quantityValues = new ArrayList<Integer>();
-	final boolean hasItems;
+	final List<String> stringValues = new ArrayList<String>();
+	final TypeOfConstraint typeOfConstraint;
 
 	/**
 	 * Constructs a new {@link ConstraintOneOf}.
@@ -54,7 +59,7 @@ public class ConstraintOneOf implements Constraint {
 	 * @param constrainedProperty
 	 *            constrained property
 	 * @param values
-	 *            possible values that a property can have
+	 *            possible values that the property can have
 	 */
 	public ConstraintOneOf(PropertyIdValue constrainedProperty,
 			List<ItemIdValue> values) {
@@ -62,16 +67,47 @@ public class ConstraintOneOf implements Constraint {
 		Validate.notNull(values, "List of values cannot be null.");
 		this.constrainedProperty = constrainedProperty;
 		this.itemValues.addAll(values);
-		this.hasItems = true;
+		this.typeOfConstraint = TypeOfConstraint.ITEM;
 	}
 
+	/**
+	 * Constructs a new {@link ConstraintOneOf}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param values
+	 *            possible values that the property can have
+	 * @param x
+	 *            dummy integer value to use this constructor (this value is
+	 *            ignored)
+	 */
 	public ConstraintOneOf(PropertyIdValue constrainedProperty,
 			List<Integer> values, int x) {
 		Validate.notNull(constrainedProperty, "Property cannot be null.");
 		Validate.notNull(values, "List of values cannot be null.");
 		this.constrainedProperty = constrainedProperty;
 		this.quantityValues.addAll(values);
-		this.hasItems = false;
+		this.typeOfConstraint = TypeOfConstraint.QUANTITY;
+	}
+
+	/**
+	 * Constructs a new {@link ConstraintOneOf}.
+	 * 
+	 * @param constrainedProperty
+	 *            constrained property
+	 * @param values
+	 *            possible values that the property can have
+	 * @param x
+	 *            dummy String value to use this constructor (this value is
+	 *            ignored)
+	 */
+	public ConstraintOneOf(PropertyIdValue constrainedProperty,
+			List<String> values, String x) {
+		Validate.notNull(constrainedProperty, "Property cannot be null.");
+		Validate.notNull(values, "List of values cannot be null.");
+		this.constrainedProperty = constrainedProperty;
+		this.stringValues.addAll(values);
+		this.typeOfConstraint = TypeOfConstraint.STRING;
 	}
 
 	@Override
@@ -98,12 +134,21 @@ public class ConstraintOneOf implements Constraint {
 	}
 
 	/**
-	 * Tells whether the values are only items.
+	 * Returns the string values that a property can have.
 	 * 
-	 * @return <code>true</code> if and only if the values are only items
+	 * @return the string values that a property can have
 	 */
-	public boolean hasItems() {
-		return this.hasItems;
+	public List<String> getStringValues() {
+		return Collections.unmodifiableList(this.stringValues);
+	}
+
+	/**
+	 * Return the type of constraint.
+	 * 
+	 * @return the type of constraint
+	 */
+	public TypeOfConstraint getTypeOfConstraint() {
+		return this.typeOfConstraint;
 	}
 
 	@Override
@@ -121,23 +166,26 @@ public class ConstraintOneOf implements Constraint {
 			return false;
 		}
 		ConstraintOneOf other = (ConstraintOneOf) obj;
-		return (this.constrainedProperty.equals(other.constrainedProperty)
-				&& (this.hasItems == other.hasItems)
-				&& this.itemValues.equals(other.itemValues) && this.quantityValues
-					.equals(other.quantityValues));
+		return this.constrainedProperty.equals(other.constrainedProperty)
+				&& this.typeOfConstraint.equals(other.typeOfConstraint)
+				&& this.itemValues.equals(other.itemValues)
+				&& this.quantityValues.equals(other.quantityValues)
+				&& this.stringValues.equals(other.stringValues);
 	}
 
 	@Override
 	public int hashCode() {
-		return (this.constrainedProperty.hashCode() + (0x1F * (this.itemValues
-				.hashCode() + (0x1F * this.quantityValues.hashCode()))));
+		return (this.constrainedProperty.hashCode() + (0x1F * this.typeOfConstraint
+				.hashCode() + (0x1F * (this.itemValues.hashCode() + (0x1F * this.quantityValues
+				.hashCode() + (0x1F * this.stringValues.hashCode()))))));
 	}
 
-	static String toString(List<Integer> values) {
+	static String toString(List<?> values) {
 		StringBuilder sb = new StringBuilder();
-		Iterator<Integer> it = values.iterator();
+		Iterator<?> it = values.iterator();
 		while (it.hasNext()) {
-			sb.append(it.next());
+			String str = it.next().toString();
+			sb.append(str);
 			if (it.hasNext()) {
 				sb.append(", ");
 			}
@@ -153,10 +201,12 @@ public class ConstraintOneOf implements Constraint {
 		sb.append(TemplateConstant.VERTICAL_BAR);
 		sb.append("values");
 		sb.append(TemplateConstant.EQUALS_SIGN);
-		if (this.hasItems) {
+		if (this.typeOfConstraint.equals(TypeOfConstraint.ITEM)) {
 			sb.append(ConstraintItem.toString(this.itemValues));
-		} else {
+		} else if (this.typeOfConstraint.equals(TypeOfConstraint.QUANTITY)) {
 			sb.append(toString(this.quantityValues));
+		} else if (this.typeOfConstraint.equals(TypeOfConstraint.STRING)) {
+			sb.append(toString(this.stringValues));
 		}
 		sb.append(TemplateConstant.CLOSING_BRACES);
 		return sb.toString();

@@ -60,4 +60,15 @@ public class StringResourceTest {
 		Assert.assertEquals("Resource", node0.toString());
 	}
 
+	@Test
+	public void testEscapeChars() {
+		Assert.assertEquals("", StringResource.escapeChars(""));
+		Assert.assertEquals("&lt;test>", StringResource.escapeChars("<test>"));
+		Assert.assertEquals("&amp;lt;", StringResource.escapeChars("&lt;"));
+		Assert.assertEquals("&quot;test&quot;",
+				StringResource.escapeChars("\"test\""));
+		Assert.assertEquals("unit  test",
+				StringResource.escapeChars("unit\ntest"));
+	}
+
 }

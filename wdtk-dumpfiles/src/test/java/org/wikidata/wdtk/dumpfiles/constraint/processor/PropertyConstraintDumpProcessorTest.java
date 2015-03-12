@@ -78,17 +78,6 @@ public class PropertyConstraintDumpProcessorTest {
 	}
 
 	@Test
-	public void testEscapeChars() {
-		PropertyConstraintDumpProcessor processor = new PropertyConstraintDumpProcessor();
-		Assert.assertEquals("", processor.escapeChars(""));
-		Assert.assertEquals("&lt;test>", processor.escapeChars("<test>"));
-		Assert.assertEquals("&amp;lt;", processor.escapeChars("&lt;"));
-		Assert.assertEquals("&quot;test&quot;",
-				processor.escapeChars("\"test\""));
-		Assert.assertEquals("unit  test", processor.escapeChars("unit\ntest"));
-	}
-
-	@Test
 	public void testGetConstraintTemplates() {
 		List<Template> expected = new ArrayList<Template>();
 		TemplateParser parser = new TemplateParser();

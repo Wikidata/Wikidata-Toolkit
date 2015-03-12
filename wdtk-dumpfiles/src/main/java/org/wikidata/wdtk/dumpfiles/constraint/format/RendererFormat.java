@@ -64,7 +64,11 @@ public interface RendererFormat {
 
 	BNode getDataOneOf(Integer literal);
 
-	BNode getDataOneOf(List<Integer> listOfLiterals);
+	BNode getDataOneOf(String literal);
+
+	BNode getDataOneOfInt(List<Integer> listOfLiterals);
+
+	BNode getDataOneOfStr(List<String> listOfLiterals);
 
 	BNode getDataSomeValuesFrom(URI dataPropertyExpression, Resource dataRange);
 

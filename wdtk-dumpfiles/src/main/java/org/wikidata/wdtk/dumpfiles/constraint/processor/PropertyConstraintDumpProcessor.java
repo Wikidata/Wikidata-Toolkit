@@ -42,6 +42,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.format.Owl2FunctionalRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RdfRendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
+import org.wikidata.wdtk.dumpfiles.constraint.format.StringResource;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintMainRenderer;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
@@ -79,20 +80,6 @@ public class PropertyConstraintDumpProcessor {
 	 * Constructs a new property constraint dump processor.
 	 */
 	public PropertyConstraintDumpProcessor() {
-	}
-
-	/**
-	 * Replaces some characters by their XML-escaped version. For example,
-	 * <tt>&amp;</tt> is replaced by <tt>&amp;amp;</tt>.
-	 * 
-	 * @param str
-	 *            original string
-	 * @return string after the replacements
-	 */
-	public String escapeChars(String str) {
-		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
-				.replaceAll("<", "&lt;").replaceAll("'", "&apos;")
-				.replaceAll("\n", "  ");
 	}
 
 	/**
@@ -136,7 +123,7 @@ public class PropertyConstraintDumpProcessor {
 					.get(constrainedProperty));
 			strb.append(constrainedProperty.getId());
 			strb.append("=");
-			strb.append(escapeChars(templates.toString()));
+			strb.append(StringResource.escapeChars(templates.toString()));
 			strb.append("\n");
 		}
 		return strb.toString();

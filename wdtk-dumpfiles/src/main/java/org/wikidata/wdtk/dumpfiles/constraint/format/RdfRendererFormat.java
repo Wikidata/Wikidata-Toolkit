@@ -170,16 +170,15 @@ public class RdfRendererFormat implements RendererFormat {
 		return ret;
 	}
 
-	@Override
-	public BNode getDataOneOf(Integer literal) {
+	BNode getDataOneOf(String literal, URI dataType) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
 			this.rdfWriter.writeTripleValueObject(ret, RdfUriConstant.RDF_TYPE,
 					RdfUriConstant.OWL_CLASS);
 			this.rdfWriter.writeTripleLiteralObject(ret,
-					RdfUriConstant.OWL_ONE_OF, "" + literal,
-					RdfUriConstant.XSD_INTEGER);
+					RdfUriConstant.OWL_ONE_OF,
+					StringResource.escapeChars(literal), dataType);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e);
 		}
@@ -187,7 +186,16 @@ public class RdfRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDataOneOf(List<Integer> listOfLiterals) {
+	public BNode getDataOneOf(Integer literal) {
+		return getDataOneOf("" + literal, RdfUriConstant.XSD_INTEGER);
+	}
+
+	@Override
+	public BNode getDataOneOf(String literal) {
+		return getDataOneOf(literal, RdfUriConstant.XSD_STRING);
+	}
+
+	BNode getDataOneOf(List<?> listOfLiterals, URI dataType) {
 		BNode ret = this.rdfWriter.getFreshBNode();
 
 		try {
@@ -198,12 +206,12 @@ public class RdfRendererFormat implements RendererFormat {
 			this.rdfWriter.writeTripleValueObject(ret,
 					RdfUriConstant.OWL_ONE_OF, currentBnode);
 
-			Iterator<Integer> it = listOfLiterals.iterator();
+			Iterator<?> it = listOfLiterals.iterator();
 			while (it.hasNext()) {
-				String currentLiteral = "" + it.next();
+				String currentLiteral = StringResource.escapeChars(it.next()
+						.toString());
 				this.rdfWriter.writeTripleLiteralObject(currentBnode,
-						RdfUriConstant.RDF_FIRST, currentLiteral,
-						RdfUriConstant.XSD_INTEGER);
+						RdfUriConstant.RDF_FIRST, currentLiteral, dataType);
 				if (it.hasNext()) {
 					BNode nextBnode = this.rdfWriter.getFreshBNode();
 					this.rdfWriter.writeTripleValueObject(currentBnode,
@@ -218,6 +226,16 @@ public class RdfRendererFormat implements RendererFormat {
 			throw new RuntimeException(e);
 		}
 		return ret;
+	}
+
+	@Override
+	public BNode getDataOneOfInt(List<Integer> listOfLiterals) {
+		return getDataOneOf(listOfLiterals, RdfUriConstant.XSD_INTEGER);
+	}
+
+	@Override
+	public BNode getDataOneOfStr(List<String> listOfLiterals) {
+		return getDataOneOf(listOfLiterals, RdfUriConstant.XSD_STRING);
 	}
 
 	@Override

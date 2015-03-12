@@ -33,6 +33,20 @@ public class StringResource implements Resource {
 
 	final String str;
 
+	/**
+	 * Replaces some characters by their XML-escaped version. For example,
+	 * <tt>&amp;</tt> is replaced by <tt>&amp;amp;</tt>.
+	 * 
+	 * @param str
+	 *            original string
+	 * @return string after the replacements
+	 */
+	public static String escapeChars(String str) {
+		return str.replaceAll("&", "&amp;").replaceAll("\"", "&quot;")
+				.replaceAll("<", "&lt;").replaceAll("'", "&apos;")
+				.replaceAll("\n", "  ");
+	}
+
 	public StringResource(String str) {
 		this.str = str;
 	}

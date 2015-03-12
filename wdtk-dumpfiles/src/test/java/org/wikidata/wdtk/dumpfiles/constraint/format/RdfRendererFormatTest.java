@@ -171,7 +171,7 @@ public class RdfRendererFormatTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testGetDataOneOfList() {
-		formatWithExceptions.getDataOneOf(new ArrayList<Integer>());
+		formatWithExceptions.getDataOneOfInt(new ArrayList<Integer>());
 		Assert.fail();
 	}
 

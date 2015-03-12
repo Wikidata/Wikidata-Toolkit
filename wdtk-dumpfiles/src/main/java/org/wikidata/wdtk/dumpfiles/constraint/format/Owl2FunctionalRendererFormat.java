@@ -135,6 +135,16 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 		return ret.toString();
 	}
 
+	private String makeListStr(List<String> list) {
+		StringBuilder ret = new StringBuilder();
+		for (String str : list) {
+			BNode literal = getLiteral(str);
+			ret.append(literal.stringValue());
+			ret.append(Owl2FunctionalConstant.C_SPACE);
+		}
+		return ret.toString();
+	}
+
 	boolean addPrefix(String prefixName, URI value) {
 		BNode bnode = new StringBNode(Owl2FunctionalConstant.PREFIX
 				+ Owl2FunctionalConstant.C_PAR_A + prefixName
@@ -276,9 +286,21 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 	}
 
 	@Override
-	public BNode getDataOneOf(List<Integer> listOfLiterals) {
+	public BNode getDataOneOf(String literal) {
+		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
+				getLiteral(literal));
+	}
+
+	@Override
+	public BNode getDataOneOfInt(List<Integer> listOfLiterals) {
 		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
 				makeListInt(listOfLiterals));
+	}
+
+	@Override
+	public BNode getDataOneOfStr(List<String> listOfLiterals) {
+		return makeFunction(Owl2FunctionalConstant.DATA_ONE_OF,
+				makeListStr(listOfLiterals));
 	}
 
 	@Override
@@ -301,6 +323,12 @@ public class Owl2FunctionalRendererFormat implements RendererFormat {
 
 	BNode getLiteral(Integer literal) {
 		return getLiteral(new StringResource("" + literal), xsdInteger());
+	}
+
+	BNode getLiteral(String literal) {
+		return getLiteral(
+				new StringResource(StringResource.escapeChars(literal)),
+				xsdString());
 	}
 
 	BNode getLiteral(Resource value, Resource type) {
