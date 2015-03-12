@@ -1,10 +1,17 @@
 package org.wikidata.wdtk.dumpfiles.constraint.renderer;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.wikidata.wdtk.dumpfiles.constraint.builder.ConstraintMainBuilder;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintCommonsLink;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintDiffWithinRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintInverse;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifier;
+import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintQualifiers;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintSymmetric;
 
 /*
@@ -39,7 +46,7 @@ public class ConstraintMainRendererTest {
 	}
 
 	/**
-	 * This test has the single of purpose of testing that, even if
+	 * This test has the single purpose of testing that, even if
 	 * <code>null</code> objects are used, the constraints that cannot be
 	 * rendered are plainly ignored.
 	 */
@@ -49,7 +56,30 @@ public class ConstraintMainRendererTest {
 		Assert.assertTrue(mainRenderer.visit((ConstraintSymmetric) null));
 		Assert.assertTrue(mainRenderer.visit((ConstraintInverse) null));
 		Assert.assertTrue(mainRenderer.visit((ConstraintCommonsLink) null));
+		Assert.assertTrue(mainRenderer.visit((ConstraintDiffWithinRange) null));
+		Assert.assertTrue(mainRenderer.visit((ConstraintQualifiers) null));
 		Assert.assertTrue(mainRenderer.visit((ConstraintQualifier) null));
+	}
+
+	private Set<String> getNoRepetition(List<String> list) {
+		Set<String> set = new TreeSet<String>();
+		set.addAll(list);
+		Assert.assertEquals(list.size(), set.size());
+		return set;
+	}
+
+	@Test
+	public void testKnownConstraints() {
+		Set<String> knownConstraintsSet = getNoRepetition((new ConstraintMainBuilder())
+				.getConstraintIds());
+		Set<String> allConstraintsSet = new TreeSet<String>();
+		allConstraintsSet.addAll(getNoRepetition(ConstraintMainRenderer
+				.getAcceptedConstraints()));
+		allConstraintsSet.addAll((getNoRepetition(ConstraintMainRenderer
+				.getRewrittenConstraints())));
+		allConstraintsSet.addAll((getNoRepetition(ConstraintMainRenderer
+				.getIgnoredConstraints())));
+		Assert.assertEquals(knownConstraintsSet, allConstraintsSet);
 	}
 
 }

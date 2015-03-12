@@ -218,4 +218,11 @@ public class ConstraintMainBuilderTest {
 		Assert.assertEquals(null, constraint);
 	}
 
+	@Test
+	public void testGetConstraintIds() {
+		ConstraintMainBuilder builder = new ConstraintMainBuilder();
+		Assert.assertTrue(builder.getConstraintIds().contains(
+				ConstraintBuilderConstant.C_SINGLE_VALUE));
+	}
+
 }

@@ -159,6 +159,20 @@ public class PropertyConstraintDumpProcessor {
 	}
 
 	/**
+	 * Logs information about known constraints.
+	 */
+	void logInfoAboutConstraints() {
+		logger.info("Known constraints="
+				+ (new ConstraintMainBuilder()).getConstraintIds());
+		logger.info("Accepted constraints="
+				+ ConstraintMainRenderer.getAcceptedConstraints());
+		logger.info("Rewritten constraints="
+				+ ConstraintMainRenderer.getRewrittenConstraints());
+		logger.info("Ignored constraints="
+				+ ConstraintMainRenderer.getIgnoredConstraints());
+	}
+
+	/**
 	 * Processes the dump.
 	 * 
 	 * @param controller
@@ -175,12 +189,15 @@ public class PropertyConstraintDumpProcessor {
 		controller.registerMwRevisionProcessor(propertyTalkTemplateProcessor,
 				null, true);
 
+		logInfoAboutConstraints();
+
 		controller.processMostRecentMainDump();
 
 		start(rendererFormats);
 
-		logger.info(getConstraintTemplatesString(propertyTalkTemplateProcessor
-				.getMap()));
+		logger.info("\n"
+				+ getConstraintTemplatesString(propertyTalkTemplateProcessor
+						.getMap()));
 
 		processTemplates(propertyTalkTemplateProcessor.getMap(),
 				rendererFormats);

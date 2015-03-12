@@ -21,10 +21,10 @@ package org.wikidata.wdtk.dumpfiles.constraint.builder;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -53,7 +53,8 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(ConstraintMainBuilder.class);
-	final Map<String, ConstraintBuilder> mapOfBuilders = new HashMap<String, ConstraintBuilder>();
+	final List<String> constraintIdentifiers = new ArrayList<String>();
+	final Map<String, ConstraintBuilder> mapOfBuilders = new TreeMap<String, ConstraintBuilder>();
 
 	/**
 	 * Constructs a new main builder.
@@ -292,6 +293,15 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 	}
 
 	/**
+	 * Returns the constraints identifiers that are registered.
+	 * 
+	 * @return the constraints identifiers that are registered
+	 */
+	public List<String> getConstraintIds() {
+		return this.constraintIdentifiers;
+	}
+
+	/**
 	 * Normalizes a string to be a lower case string, starting with a capital
 	 * letter, and without underscores. For example, "LISP" &rarr; "Lisp",
 	 * "text" &rarr; "Text", "Big_Data" &rarr; "Big data", "2-Aminoethanol"
@@ -325,6 +335,7 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 	 *            constraint builder
 	 */
 	private void register(String str, ConstraintBuilder builder) {
+		this.constraintIdentifiers.add(str);
 		this.mapOfBuilders.put(normalize(str), builder);
 	}
 
