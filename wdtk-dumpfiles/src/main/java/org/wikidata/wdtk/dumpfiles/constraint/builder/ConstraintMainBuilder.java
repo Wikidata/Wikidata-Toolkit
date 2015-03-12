@@ -38,7 +38,8 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateConstant;
 
 /**
- *
+ * An object of this class builds a {@link Constraint} using a {@link Template}.
+ * 
  * @author Julian Mendez
  *
  */
@@ -61,6 +62,15 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		registerIds();
 	}
 
+	/**
+	 * Returns a given string with the first letter in upper case. For example,
+	 * 'kindergarten' is transformed to 'Kindergarten', but '24 hours' is
+	 * returned unchanged.
+	 * 
+	 * @param str
+	 *            string
+	 * @return a given string with the first letter in upper case
+	 */
 	static String firstLetterToUpperCase(String str) {
 		if (str == null) {
 			return null;
@@ -71,6 +81,15 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		}
 	}
 
+	/**
+	 * Returns a given string without square brackets, braces, nor vertical
+	 * bars. For example, '{{Q|42}}' and '[[Q|42]]' are both transformed to
+	 * 'Q42'.
+	 * 
+	 * @param str
+	 *            string
+	 * @return a given string without square brackets, braces, nor vertical bars
+	 */
 	static String removeBrackets(String str) {
 		Validate.notNull(str);
 		return str.replace(TemplateConstant.OPENING_BRACKETS, "")
@@ -80,10 +99,20 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 				.replace(TemplateConstant.VERTICAL_BAR, "");
 	}
 
-	static List<PropertyIdValue> parseListOfProperties(String listOfItems) {
-		Validate.notNull(listOfItems);
+	/**
+	 * Returns a list of properties parsed from a string. For example,
+	 * "{{P|580}}, {{P|582}}, {{P|805}}, {{P|1480}}" is parsed as a list
+	 * containing P580, P582, P805, and P1480.
+	 * 
+	 * @param listOfPropertiesStr
+	 *            string containing a list of properties
+	 * @return a list of properties parsed from a string
+	 */
+	static List<PropertyIdValue> parseListOfProperties(
+			String listOfPropertiesStr) {
+		Validate.notNull(listOfPropertiesStr);
 		List<PropertyIdValue> ret = new ArrayList<PropertyIdValue>();
-		String str = removeBrackets(listOfItems);
+		String str = removeBrackets(listOfPropertiesStr);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		StringTokenizer stok = new StringTokenizer(str, TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
@@ -97,10 +126,19 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	static List<ItemIdValue> parseListOfItems(String listOfItems) {
-		Validate.notNull(listOfItems);
+	/**
+	 * Returns a list of items parsed from a string. For example,
+	 * "{{Q|46}}, {{Q|48}}, {{Q|15}}" is parsed as a list containing Q46, Q48,
+	 * and Q15.
+	 * 
+	 * @param listOfItemsStr
+	 *            string containing a list of items
+	 * @return a list of items parsed from a string
+	 */
+	static List<ItemIdValue> parseListOfItems(String listOfItemsStr) {
+		Validate.notNull(listOfItemsStr);
 		List<ItemIdValue> ret = new ArrayList<ItemIdValue>();
-		String str = removeBrackets(listOfItems);
+		String str = removeBrackets(listOfItemsStr);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		StringTokenizer stok = new StringTokenizer(str, TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
@@ -119,10 +157,25 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	static List<PropertyValues> parseListOfPropertyValues(String listOfItems) {
-		Validate.notNull(listOfItems);
+	/**
+	 * Returns a list of property-values ({@link PropertyValues}) parsed from a
+	 * string. Property-values are sets of pairs property-value, for a fixed
+	 * property, and can be constructed to span all possible values, or to have
+	 * only some specific values. For example,
+	 * "{{P|31}}: {{Q|4167410}}; {{P|625}}" would be interpreted as two
+	 * property-values: the first one includes only pair (P31, Q4167410), the
+	 * second one includes all pairs (P625, <i>q</i>), where <i>q</i> is some
+	 * item.
+	 * 
+	 * @param listOfPropertyValuesStr
+	 *            string containing a list of property-values
+	 * @return a list of property-values parsed from a string
+	 */
+	static List<PropertyValues> parseListOfPropertyValues(
+			String listOfPropertyValuesStr) {
+		Validate.notNull(listOfPropertyValuesStr);
 		List<PropertyValues> ret = new ArrayList<PropertyValues>();
-		String str = removeBrackets(listOfItems);
+		String str = removeBrackets(listOfPropertyValuesStr);
 		DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
 		StringTokenizer stok = new StringTokenizer(str,
 				TemplateConstant.SEMICOLON);
@@ -149,10 +202,20 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	static List<String> parseListOfStrings(String listOfStrings) {
-		Validate.notNull(listOfStrings);
+	/**
+	 * Returns a list of strings parsed from a given string. For example,
+	 * "a, b, c" is parsed as a list containing three strings: "a", "b", and
+	 * "c". Whitespaces are removed from the beginning and the end of the
+	 * resulting strings.
+	 * 
+	 * @param listOfStringsStr
+	 *            string containing a list of strings
+	 * @return a list of strings parsed from a given string
+	 */
+	static List<String> parseListOfStrings(String listOfStringsStr) {
+		Validate.notNull(listOfStringsStr);
 		List<String> ret = new ArrayList<String>();
-		StringTokenizer stok = new StringTokenizer(listOfStrings,
+		StringTokenizer stok = new StringTokenizer(listOfStringsStr,
 				TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			String str = stok.nextToken().trim();
@@ -161,10 +224,19 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	static List<Integer> parseListOfQuantities(String listOfQuantities) {
-		Validate.notNull(listOfQuantities);
+	/**
+	 * Returns a list of integers parsed from a given string. For example,
+	 * "1, 2, 3, 4, 5, 6, 7, 8, 9, 10" is parsed as a list containing the first
+	 * 10 positive integers.
+	 * 
+	 * @param listOfQuantitiesStr
+	 *            string containing a list of quantities
+	 * @return a list of quantities parsed from a given string
+	 */
+	static List<Integer> parseListOfQuantities(String listOfQuantitiesStr) {
+		Validate.notNull(listOfQuantitiesStr);
 		List<Integer> ret = new ArrayList<Integer>();
-		List<String> list = parseListOfStrings(listOfQuantities);
+		List<String> list = parseListOfStrings(listOfQuantitiesStr);
 		for (String str : list) {
 			ret.add(Integer.parseInt(str));
 		}
@@ -244,10 +316,21 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
+	/**
+	 * Registers a constraint builder.
+	 * 
+	 * @param str
+	 *            constraint identifier
+	 * @param builder
+	 *            constraint builder
+	 */
 	private void register(String str, ConstraintBuilder builder) {
 		this.mapOfBuilders.put(normalize(str), builder);
 	}
 
+	/**
+	 * This method registers all the available constraint builders.
+	 */
 	private void registerIds() {
 		register(ConstraintBuilderConstant.C_SINGLE_VALUE,
 				new ConstraintSingleValueBuilder());
