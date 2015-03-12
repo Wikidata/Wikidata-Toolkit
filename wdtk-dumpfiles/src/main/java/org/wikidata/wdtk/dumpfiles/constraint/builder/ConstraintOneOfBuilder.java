@@ -58,6 +58,10 @@ class ConstraintOneOfBuilder implements ConstraintBuilder {
 				ret = new ConstraintOneOf(constrainedProperty,
 						ConstraintMainBuilder.parseListOfQuantities(values), 0);
 
+			} else if (propertyType.equals(DatatypeIdValue.DT_STRING)) {
+				ret = new ConstraintOneOf(constrainedProperty,
+						ConstraintMainBuilder.parseListOfStrings(values), "");
+
 			} else {
 				throw new IllegalArgumentException(
 						"'Constraint:One of' cannot be used for property '"

@@ -57,7 +57,7 @@ class ConstraintOneOfRenderer implements ConstraintRenderer {
 				ConstraintOneOf.TypeOfConstraint.QUANTITY)) {
 			renderQuantities(c.getConstrainedProperty(), c.getQuantityValues());
 		} else if (c.getTypeOfConstraint().equals(
-				ConstraintOneOf.TypeOfConstraint.QUANTITY)) {
+				ConstraintOneOf.TypeOfConstraint.STRING)) {
 			renderStrings(c.getConstrainedProperty(), c.getStringValues());
 		}
 	}

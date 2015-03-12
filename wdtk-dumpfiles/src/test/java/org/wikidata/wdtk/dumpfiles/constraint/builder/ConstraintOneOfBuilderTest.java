@@ -74,6 +74,23 @@ public class ConstraintOneOfBuilderTest {
 		Assert.assertEquals(expectedConstraint, constraint);
 	}
 
+	@Test
+	public void testBuilderStringValues() {
+		String propertyName = "P1632";
+		Template template = (new TemplateParser())
+				.parse(ConstraintOneOfTest.TEMPLATE_STR_STRING_VAL);
+
+		PropertyIdValue constrainedProperty = ConstraintTestHelper
+				.getPropertyIdValue(propertyName);
+		ConstraintOneOf expectedConstraint = new ConstraintOneOf(
+				constrainedProperty, ConstraintOneOfTest.getStringValues(), "");
+		ConstraintOneOfBuilder builder = new ConstraintOneOfBuilder();
+		ConstraintOneOf constraint = builder.parse(constrainedProperty,
+				template);
+
+		Assert.assertEquals(expectedConstraint, constraint);
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWrongPropertyType() {
 		String propertyName = "P10";

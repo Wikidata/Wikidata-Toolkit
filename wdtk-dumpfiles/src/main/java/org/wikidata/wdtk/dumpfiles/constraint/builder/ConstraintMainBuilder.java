@@ -149,13 +149,23 @@ public class ConstraintMainBuilder implements ConstraintBuilder {
 		return ret;
 	}
 
-	static List<Integer> parseListOfQuantities(String listOfQuantities) {
-		Validate.notNull(listOfQuantities);
-		List<Integer> ret = new ArrayList<Integer>();
-		StringTokenizer stok = new StringTokenizer(listOfQuantities,
+	static List<String> parseListOfStrings(String listOfStrings) {
+		Validate.notNull(listOfStrings);
+		List<String> ret = new ArrayList<String>();
+		StringTokenizer stok = new StringTokenizer(listOfStrings,
 				TemplateConstant.COMMA);
 		while (stok.hasMoreTokens()) {
 			String str = stok.nextToken().trim();
+			ret.add(str);
+		}
+		return ret;
+	}
+
+	static List<Integer> parseListOfQuantities(String listOfQuantities) {
+		Validate.notNull(listOfQuantities);
+		List<Integer> ret = new ArrayList<Integer>();
+		List<String> list = parseListOfStrings(listOfQuantities);
+		for (String str : list) {
 			ret.add(Integer.parseInt(str));
 		}
 		return ret;

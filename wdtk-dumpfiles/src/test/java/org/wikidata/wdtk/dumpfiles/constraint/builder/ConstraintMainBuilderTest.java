@@ -193,6 +193,19 @@ public class ConstraintMainBuilderTest {
 	}
 
 	@Test
+	public void testParseListOfStrings() {
+		String input = " this,is, just  ,     a,   test. ";
+		List<String> expected = new ArrayList<String>();
+		expected.add("this");
+		expected.add("is");
+		expected.add("just");
+		expected.add("a");
+		expected.add("test.");
+		Assert.assertEquals(expected,
+				ConstraintMainBuilder.parseListOfStrings(input));
+	}
+
+	@Test
 	public void testInvalidConstraintException() {
 		String propertyName = "P31"; // instance of
 		String templateStr = "{{Constraint:Range|min=0|max=1}}";
