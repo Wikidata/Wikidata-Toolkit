@@ -8,30 +8,30 @@
 	xmlns:wo="http://www.wikidata.org/ontology#"
 	xmlns:id="http://www.wikidata.org/entity/">
 
-<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088s">
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632s">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
 </rdf:Description>
 
-<rdf:Description rdf:nodeID="node193j2bqdex334">
+<rdf:Description rdf:nodeID="node19g7loo7fx1">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-	<owl:oneOf rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:oneOf>
+	<owl:oneOf rdf:datatype="http://www.w3.org/2001/XMLSchema#string">m</owl:oneOf>
 </rdf:Description>
 
-<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
 	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
 </rdf:Description>
 
-<rdf:Description rdf:nodeID="node193j2bqdex334">
+<rdf:Description rdf:nodeID="node19g7loo7fx1">
 	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
 </rdf:Description>
 
-<rdf:Description rdf:about="http://www.wikidata.org/entity/P1088v">
-	<rdfs:range rdf:nodeID="node193j2bqdex334"/>
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
+	<rdfs:range rdf:nodeID="node19g7loo7fx1"/>
 </rdf:Description>
 
 </rdf:RDF>

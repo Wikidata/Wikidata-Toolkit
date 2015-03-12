@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x1">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:nodeID="node19g7lrhf2x2"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x2">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x3"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x3">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|1}}</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x4"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x4">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x5"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x5">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x6"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x6">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2/m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x7"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x7">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">222</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x8"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x8">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mm2</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x9"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x9">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mmm</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x10"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x10">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x11"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x11">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|4}}</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x12"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x12">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4/m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x13"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x13">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">422</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x14"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x14">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4mm</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x15"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x15">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">42m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x16"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x16">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4/mmm</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x17"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x17">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x18"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x18">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|3}}</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x19"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x19">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">32</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x20"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x20">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x21"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x21">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|3}}m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x22"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x22">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x23"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x23">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|6}}</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x24"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x24">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6/m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x25"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x25">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">622</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x26"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x26">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6mm</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x27"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x27">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6m2</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x28"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x28">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6/mmm</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x29"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x29">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">23</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x30"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x30">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">m3</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x31"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x31">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">432</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x32"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x32">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">{{overline|4}}3m</rdf:first>
+	<rdf:rest rdf:nodeID="node19g7lrhf2x33"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x33">
+	<rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string">m{{overline|3}}m}}</rdf:first>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node19g7lrhf2x1">
+	<rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Datatype"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P1632v">
+	<rdfs:range rdf:nodeID="node19g7lrhf2x1"/>
+</rdf:Description>
+
+</rdf:RDF>
+
