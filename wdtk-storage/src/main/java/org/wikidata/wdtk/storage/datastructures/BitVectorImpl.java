@@ -27,9 +27,17 @@ import org.apache.commons.lang3.Validate;
 /**
  * Default implementation of {@link BitVector}. This implementation contains an
  * array of <b>long</b>, and each <b>long</b> stores 64 bits. When more space is
- * needed, the internal array grows exponentially.
+ * needed, the internal array grows exponentially. This bit vector is
+ * <i>flexible</i>, which means that:
+ * <ol>
+ * <li>it is always possible to store a bit in any non-negative position without
+ * explicitly resizing the vector,</li>
+ * <li>any non-negative position outside the bit vector can be retrieved and
+ * contains a <code>false</code>.</li>
+ * </ol>
  * 
  * @author Julian Mendez
+ * 
  */
 public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
@@ -162,12 +170,28 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @param position
 	 *            position
 	 * @throws IndexOutOfBoundsException
-	 *             if the position is out of bounds
+	 *             if the position is a negative number
 	 */
-	void assertRange(long position) throws IndexOutOfBoundsException {
-		if ((position < 0) || (position >= this.size)) {
+	void assertNonNegativePosition(long position)
+			throws IndexOutOfBoundsException {
+		if ((position < 0)) {
 			throw new IndexOutOfBoundsException("Position " + position
 					+ " is out of bounds.");
+		}
+	}
+
+	/**
+	 * Ensures that the bit vector is large enough to contain an element at the
+	 * given position. If the bit vector needs to be enlarged, new
+	 * <code>false</code> elements are added.
+	 * 
+	 * @param position
+	 *            position
+	 */
+	void ensureSize(long position) {
+		assertNonNegativePosition(position);
+		while (position >= this.size) {
+			addBit(false);
 		}
 	}
 
@@ -238,7 +262,10 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public boolean getBit(long position) {
-		assertRange(position);
+		assertNonNegativePosition(position);
+		if (position >= this.size) {
+			return false;
+		}
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
 		byte wordPos = (byte) (position & WORD_MASK);
 		return getBitInWord(wordPos, this.arrayOfBits[arrayPos]);
@@ -273,7 +300,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public void setBit(long position, boolean bit) {
-		assertRange(position);
+		ensureSize(position);
 		this.validHashCode = false;
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
 		byte wordPos = (byte) (position & WORD_MASK);
