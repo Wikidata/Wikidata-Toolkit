@@ -82,15 +82,12 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	BitVector encounteredPages;
 	BitVector encounteredRevisions;
 
-	static final long BIT_VECTOR_SIZE = 200000000L;
-
 	public MwRevisionProcessorBroker() {
 		this.revisionSubscriptions = new ArrayList<MwRevisionProcessorBroker.RevisionSubscription>();
 		this.mostCurrentRevision = null;
 		this.currentPageId = -1;
-		// FIXME these initial sizes need to be configurable
-		encounteredPages = new BitVectorImpl(BIT_VECTOR_SIZE);
-		encounteredRevisions = new BitVectorImpl(BIT_VECTOR_SIZE);
+		encounteredPages = new BitVectorImpl();
+		encounteredRevisions = new BitVectorImpl();
 	}
 
 	/**
