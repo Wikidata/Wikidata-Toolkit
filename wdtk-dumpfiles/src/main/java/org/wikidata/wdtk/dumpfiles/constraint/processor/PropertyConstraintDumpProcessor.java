@@ -193,6 +193,9 @@ public class PropertyConstraintDumpProcessor {
 
 		logger.info("Known formats=" + rendererFormats);
 
+		logger.info("Translation prototypes=\n"
+				+ (new TranslationPrototypeList()).toString());
+
 		controller.processMostRecentMainDump();
 
 		start(rendererFormats);
