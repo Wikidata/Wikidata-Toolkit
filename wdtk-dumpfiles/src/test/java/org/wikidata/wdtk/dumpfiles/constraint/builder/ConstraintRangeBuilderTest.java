@@ -75,6 +75,8 @@ public class ConstraintRangeBuilderTest {
 		Assert.assertEquals(new Date(1390410872000L), date6.getDate());
 
 		Assert.assertEquals(null, builder.parseDate("this is not a date"));
+
+		Assert.assertEquals(null, builder.parseDate("-1")); // date not supported
 	}
 
 	@Test
