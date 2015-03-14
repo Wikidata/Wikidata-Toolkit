@@ -53,11 +53,11 @@ public class TranslationPrototypeList {
 	 */
 	public TranslationPrototypeList() {
 		add("P1", "{{Constraint:Single value}}");
-		add("P111", "{{Constraint:Unique value}}");
+		add("P30", "{{Constraint:Unique value}}");
 		add("P1", "{{Constraint:Format | pattern=str}}");
-		add("P111", "{{Constraint:One of | values=q1,      q1000}}");
-		add("P1088", "{{Constraint:One of | values=1,      1000}}");
-		add("P1632", "{{Constraint:One of | values=a,      z}}");
+		add("P30", "{{Constraint:One of | values=q1,      q1000}}");
+		add("P1110", "{{Constraint:One of | values=1,      1000}}");
+		add("P220", "{{Constraint:One of | values=a,      z}}");
 		add("P1", "{{Constraint:Target required claim | property=p2}}");
 		add("P1",
 				"{{Constraint:Target required claim | property=p2 | item=q1}}");
@@ -68,8 +68,8 @@ public class TranslationPrototypeList {
 		add("P1", "{{Constraint:Type | class=q1 | relation=subclass}}");
 		add("P1", "{{Constraint:Value type | class=q1 | relation=instance}}");
 		add("P1", "{{Constraint:Value type | class=q1 | relation=subclass}}");
-		add("P1111", "{{Constraint:Range | min=1 | max=1000}}");
-		add("P1191", "{{Constraint:Range | min=1500 | max=now}}");
+		add("P1110", "{{Constraint:Range | min=1 | max=1000}}");
+		add("P580", "{{Constraint:Range | min=1500 | max=now}}");
 		add("P1", "{{Constraint:Multi value}}");
 		add("P1", "{{Constraint:Conflicts with | list=p2}}");
 		add("P1", "{{Constraint:Conflicts with | list=p2 : q1}}");
