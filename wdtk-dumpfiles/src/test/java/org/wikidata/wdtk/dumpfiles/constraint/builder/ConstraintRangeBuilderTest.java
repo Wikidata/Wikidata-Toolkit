@@ -54,19 +54,25 @@ public class ConstraintRangeBuilderTest {
 		// 'now' comes always after any other previously created current date
 		Assert.assertTrue(datePreNow1.getTime() <= dateNow.getDate().getTime());
 
-		DateAndNow date0 = builder.parseDate("2014");
-		DateAndNow date1 = builder.parseDate("2014");
-		DateAndNow date2 = builder.parseDate("2014-01");
-		DateAndNow date3 = builder.parseDate("2014-01-22");
-		DateAndNow date4 = builder.parseDate("2014-01-22 17:14:32");
+		DateAndNow date0 = builder.parseDate("1");
+		DateAndNow date1 = builder.parseDate("100");
+		DateAndNow date2 = builder.parseDate("2014");
+		DateAndNow date3 = builder.parseDate("2014");
+		DateAndNow date4 = builder.parseDate("2014-01");
+		DateAndNow date5 = builder.parseDate("2014-01-22");
+		DateAndNow date6 = builder.parseDate("2014-01-22 17:14:32");
 
-		Assert.assertEquals(new Date(1388534400000L), date0.getDate());
-		Assert.assertEquals(date0, date1);
-		Assert.assertEquals(date0, date2);
-		Assert.assertEquals(date2, date1);
+		Assert.assertEquals(new Date(-62135769600000L), date0.getDate());
 
-		Assert.assertEquals(new Date(1390348800000L), date3.getDate());
-		Assert.assertEquals(new Date(1390410872000L), date4.getDate());
+		Assert.assertEquals(new Date(-59011632000000L), date1.getDate());
+
+		Assert.assertEquals(new Date(1388534400000L), date2.getDate());
+		Assert.assertEquals(date2, date3);
+		Assert.assertEquals(date2, date4);
+		Assert.assertEquals(date4, date3);
+
+		Assert.assertEquals(new Date(1390348800000L), date5.getDate());
+		Assert.assertEquals(new Date(1390410872000L), date6.getDate());
 
 		Assert.assertEquals(null, builder.parseDate("this is not a date"));
 	}

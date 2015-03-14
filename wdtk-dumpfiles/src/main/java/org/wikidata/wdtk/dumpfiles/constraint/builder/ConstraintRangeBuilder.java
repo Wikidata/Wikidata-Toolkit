@@ -52,12 +52,26 @@ class ConstraintRangeBuilder implements ConstraintBuilder {
 
 	};
 
-	public DateAndNow parseDate(String dateOrNow) {
-		Validate.notNull(dateOrNow);
-		if (dateOrNow.equals("now")) {
+	/**
+	 * Returns the date contained in the given string. Only years in the range
+	 * 0000 to 9999 are supported.
+	 * 
+	 * @param dateOrNowStr
+	 *            string
+	 * @return the date contained in the given string
+	 */
+	public DateAndNow parseDate(String dateOrNowStr) {
+		Validate.notNull(dateOrNowStr);
+		if (dateOrNowStr.equals("now")) {
 			return new DateAndNow();
+		} else if (dateOrNowStr.startsWith("-")) {
+			// not supported
+			return null;
 		} else {
-			String str = dateOrNow;
+			String str = dateOrNowStr;
+			while (str.length() < 4) {
+				str = "0" + str;
+			}
 			if (str.length() == 4) {
 				str += "-01";
 			}
@@ -76,6 +90,13 @@ class ConstraintRangeBuilder implements ConstraintBuilder {
 		}
 	}
 
+	/**
+	 * Returns the double contained in the given string.
+	 * 
+	 * @param str
+	 *            string
+	 * @return the double contained in the given string
+	 */
 	public Double parseDouble(String str) {
 		Validate.notNull(str);
 		Double ret = null;
