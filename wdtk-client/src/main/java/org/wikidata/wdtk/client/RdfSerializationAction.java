@@ -48,7 +48,7 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
 public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(DumpProcessingOutputAction.class);
+			.getLogger(RdfSerializationAction.class);
 
 	/**
 	 * Name of the option that defines the tasks of the RDF serializer. The
@@ -200,7 +200,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		if (this.outputDestination != null) {
 			outputDestinationFinal = this.outputDestination;
 		} else {
-			outputDestinationFinal = "{PROJECT}" + this.taskName + "{DATE}"
+			outputDestinationFinal = "{PROJECT}-" + this.taskName + "-{DATE}"
 					+ ".nt";
 		}
 

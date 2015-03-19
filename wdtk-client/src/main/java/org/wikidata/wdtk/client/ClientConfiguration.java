@@ -167,6 +167,7 @@ public class ClientConfiguration {
 	static {
 		KNOWN_ACTIONS.put("rdf", RdfSerializationAction.class);
 		KNOWN_ACTIONS.put("json", JsonSerializationAction.class);
+		KNOWN_ACTIONS.put("csv", CsvExportAction.class);
 	}
 
 	/**
