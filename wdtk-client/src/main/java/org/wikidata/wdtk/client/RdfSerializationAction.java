@@ -186,6 +186,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
+		super.close();
 	}
 
 	/**

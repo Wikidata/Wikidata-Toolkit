@@ -83,9 +83,10 @@ public class WmfDumpFileManagerTest {
 	 * @param dateStamp
 	 * @param dumpContentType
 	 * @param isDone
+	 * @throws IOException
 	 */
 	void setLocalDump(String dateStamp, DumpContentType dumpContentType,
-			boolean isDone) {
+			boolean isDone) throws IOException {
 
 		Path dumpFilePath = this.dmPath.resolve("dumpfiles").resolve(
 				"wikidatawiki");
@@ -97,7 +98,8 @@ public class WmfDumpFileManagerTest {
 					thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
 							dumpContentType, "wikidatawiki", dateStamp)),
 					"Contents of " + dumpContentType.toString().toLowerCase()
-							+ " " + dateStamp);
+							+ " " + dateStamp, WmfDumpFile
+							.getDumpFileCompressionType(dumpContentType));
 		}
 	}
 

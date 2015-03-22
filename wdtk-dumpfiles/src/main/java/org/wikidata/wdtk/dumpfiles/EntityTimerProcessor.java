@@ -51,6 +51,12 @@ public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 	int lastSeconds = 0;
 
 	/**
+	 * Number of seconds after which a progress report is printed. If a timeout
+	 * is configured, it will only be checked at a report.
+	 */
+	int reportInterval = 10;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param timeout
@@ -58,6 +64,26 @@ public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 	 */
 	public EntityTimerProcessor(int timeout) {
 		this.timeout = timeout;
+	}
+
+	/**
+	 * Sets the interval after which the timer should report progress. By
+	 * default, this is ten seconds. When using a timeout, the timeout condition
+	 * will only be checked at this interval, too, so using a very large value
+	 * would lead to increasing imprecision with the timeout. The timer does not
+	 * use a separate thread, and reports will only be generated after an entity
+	 * was fully processed. Thus, very long processing times would also affect
+	 * the accuracy of the interval.
+	 *
+	 * @param seconds
+	 *            time after which progress should be reported.
+	 */
+	public void setReportInterval(int seconds) {
+		if (seconds <= 0) {
+			throw new IllegalArgumentException(
+					"The report interval must be a non-zero, positive number of seconds.");
+		}
+		this.reportInterval = seconds;
 	}
 
 	@Override
@@ -100,7 +126,7 @@ public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 		if (this.entityCount % 100 == 0) {
 			timer.stop();
 			int seconds = (int) (timer.getTotalWallTime() / 1000000000);
-			if (seconds >= this.lastSeconds + 10) {
+			if (seconds >= this.lastSeconds + this.reportInterval) {
 				this.lastSeconds = seconds;
 				printStatus();
 				if (this.timeout > 0 && seconds > this.timeout) {

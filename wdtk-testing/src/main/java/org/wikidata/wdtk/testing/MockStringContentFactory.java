@@ -22,27 +22,32 @@ package org.wikidata.wdtk.testing;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.mockito.Mockito;
+import org.wikidata.wdtk.util.CompressionType;
 
 /**
  * Helper class to create BufferedReaders and InputStreams with predefined
  * contents.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class MockStringContentFactory {
 
 	/**
 	 * Returns a new InputStream that gives access to the contents as given in
 	 * the input string, encoded in UTF-8.
-	 * 
+	 *
 	 * @param contents
 	 * @return an input stream for the given string
 	 */
@@ -52,10 +57,21 @@ public class MockStringContentFactory {
 	}
 
 	/**
+	 * Returns a new InputStream that gives access to the contents as given in
+	 * the input bytes.
+	 *
+	 * @param contents
+	 * @return an input stream for the given bytes
+	 */
+	public static InputStream newMockInputStream(byte[] contents) {
+		return new ByteArrayInputStream(contents);
+	}
+
+	/**
 	 * Loads a string from the file at the given URL. This should only be used
 	 * for relatively small files, obviously. The file contents is interpreted
 	 * as UTF-8.
-	 * 
+	 *
 	 * @param url
 	 * @return string contents of the file at the given URL
 	 * @throws IOException
@@ -71,7 +87,7 @@ public class MockStringContentFactory {
 	/**
 	 * Loads a string from the given buffered reader. Newline will be appended
 	 * after each line but the last.
-	 * 
+	 *
 	 * @param bufferedReader
 	 * @return string contents of the buffered reader
 	 * @throws IOException
@@ -96,7 +112,7 @@ public class MockStringContentFactory {
 	/**
 	 * Loads a string from the given input stream. UTF-8 encoding will be
 	 * assumed. Newline will be appended after each line but the last.
-	 * 
+	 *
 	 * @param inputStream
 	 * @return string contents of the input stream
 	 * @throws IOException
@@ -115,7 +131,7 @@ public class MockStringContentFactory {
 	/**
 	 * Returns an input stream that will throw IOExceptions on common reading
 	 * operations.
-	 * 
+	 *
 	 * @return input stream that fails on reading
 	 */
 	public static InputStream getFailingInputStream() {
@@ -133,5 +149,43 @@ public class MockStringContentFactory {
 					"Mockito should not throw anything here. Strange.", e);
 		}
 		return is;
+	}
+
+	/**
+	 * Turns a string into a sequence of bytes, possibly compressed. In any
+	 * case, the character encoding used for converting the string into bytes is
+	 * UTF8.
+	 *
+	 * @param string
+	 * @param compressionType
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] getBytesFromString(String string,
+			CompressionType compressionType) throws IOException {
+		switch (compressionType) {
+		case NONE:
+			return string.getBytes(StandardCharsets.UTF_8);
+		case BZ2:
+		case GZIP:
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			OutputStreamWriter ow;
+			if (compressionType == CompressionType.GZIP) {
+				ow = new OutputStreamWriter(
+						new GzipCompressorOutputStream(out),
+						StandardCharsets.UTF_8);
+			} else {
+				ow = new OutputStreamWriter(
+						new BZip2CompressorOutputStream(out),
+						StandardCharsets.UTF_8);
+			}
+
+			ow.write(string);
+			ow.close();
+			return out.toByteArray();
+		default:
+			throw new RuntimeException("Unknown compression type "
+					+ compressionType);
+		}
 	}
 }

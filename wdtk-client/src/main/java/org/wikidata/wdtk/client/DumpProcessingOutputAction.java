@@ -2,14 +2,15 @@ package org.wikidata.wdtk.client;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -17,6 +18,8 @@ import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerImpl;
 
 /*
  * #%L
@@ -76,6 +79,19 @@ public abstract class DumpProcessingOutputAction implements
 	public static final String COMPRESS_BZ2 = "bz2";
 	public static final String COMPRESS_GZIP = "gz";
 	public static final String COMPRESS_NONE = "";
+
+	/**
+	 * The class that will be used for accessing directories. Package-private so
+	 * that it can be overwritten in tests in order to mock file access.
+	 */
+	static Class<? extends DirectoryManager> dmClass = DirectoryManagerImpl.class;
+
+	/**
+	 * Output streams that were created by this class. If close is called, it
+	 * will close all of them properly.
+	 *
+	 */
+	protected Set<Closeable> outputStreams = new HashSet<>();
 
 	protected String name;
 
@@ -155,9 +171,19 @@ public abstract class DumpProcessingOutputAction implements
 				this.project);
 	}
 
+	@Override
+	public void close() {
+		for (Closeable closeable : this.outputStreams) {
+			DumpProcessingOutputAction.close(closeable);
+		}
+	}
+
 	/**
-	 * Creates an compressing {@link OutputStream}.
-	 * 
+	 * Creates an compressing {@link OutputStream}. The result is owned by the
+	 * caller and should be closed later. Neverhteless, the {@link #close()}
+	 * method of this class must also be called, since it may free additional
+	 * resources created.
+	 *
 	 * @param useStdOut
 	 *            if true, {@link System#out} is returned and the other
 	 *            parameters are ignored
@@ -173,8 +199,8 @@ public abstract class DumpProcessingOutputAction implements
 	 * @throws IOException
 	 *             if there were problems opening the required streams
 	 */
-	protected static OutputStream getOutputStream(boolean useStdOut,
-			String filePath, String compressionType) throws IOException {
+	protected OutputStream getOutputStream(boolean useStdOut, String filePath,
+			String compressionType) throws IOException {
 		if (useStdOut) {
 			return System.out;
 		}
@@ -184,11 +210,24 @@ public abstract class DumpProcessingOutputAction implements
 		}
 
 		Path outputDirectory = Paths.get(filePath).getParent();
-		if (outputDirectory != null) {
-			new File(outputDirectory.toString()).mkdirs();
+		if (outputDirectory == null) {
+			outputDirectory = Paths.get(".");
 		}
-		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				new FileOutputStream(filePath), 1024 * 1024 * 5);
+
+		OutputStream out;
+		try {
+			DirectoryManager dm = dmClass.getConstructor(Path.class)
+					.newInstance(outputDirectory);
+			out = dm.getOutputStreamForFile(Paths.get(filePath).getFileName()
+					.toString());
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+
+		OutputStream bufferedFileOutputStream = new BufferedOutputStream(out,
+				1024 * 1024 * 5);
 
 		switch (compressionType) {
 		case COMPRESS_BZ2:
@@ -209,6 +248,22 @@ public abstract class DumpProcessingOutputAction implements
 	}
 
 	/**
+	 * Simple interface for a Runnable that can be stopped gracefully by calling
+	 * a method {@link FinishableRunnable#finish()}.
+	 *
+	 * @author Markus Kroetzsch
+	 *
+	 */
+	protected interface FinishableRunnable extends Runnable {
+
+		/**
+		 * Finishes the current operation gracefully. The method will wait until
+		 * the thread has really finished.
+		 */
+		void finish();
+	};
+
+	/**
 	 * Creates a separate thread for writing into the given output stream and
 	 * returns a pipe output stream that can be used to pass data to this
 	 * thread.
@@ -223,28 +278,57 @@ public abstract class DumpProcessingOutputAction implements
 	 * @throws IOException
 	 *             if the pipes could not be created for some reason
 	 */
-	protected static OutputStream getAsynchronousOutputStream(
+	protected OutputStream getAsynchronousOutputStream(
 			final OutputStream outputStream) throws IOException {
 		final int SIZE = 1024 * 1024 * 10;
 		final PipedOutputStream pos = new PipedOutputStream();
 		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
 
-		new Thread(new Runnable() {
+		final FinishableRunnable run = new FinishableRunnable() {
+
+			volatile boolean finish = false;
+			volatile boolean hasFinished = false;
+
+			@Override
+			public void finish() {
+				this.finish = true;
+				while (!this.hasFinished) {
+					// loop until thread is really finished
+				}
+			}
+
 			@Override
 			public void run() {
 				try {
 					byte[] bytes = new byte[SIZE];
-					for (int len; (len = pis.read(bytes)) > 0;) {
+					// Note that we finish really gently here, writing all data
+					// that is still in the input first (in theory, new data
+					// could arrive asynchronously, so that the thread never
+					// finishes, but this is not the intended mode of
+					// operation).
+					for (int len; (!this.finish || pis.available() > 0)
+							&& (len = pis.read(bytes)) > 0;) {
 						outputStream.write(bytes, 0, len);
 					}
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				} finally {
 					close(pis);
 					close(outputStream);
+					this.hasFinished = true;
 				}
 			}
-		}, "async-output-stream").start();
+		};
+
+		new Thread(run, "async-output-stream").start();
+
+		this.outputStreams.add(new Closeable() {
+			@Override
+			public void close() throws IOException {
+				run.finish();
+			}
+		});
+
 		return pos;
 	}
 

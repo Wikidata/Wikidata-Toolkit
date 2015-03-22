@@ -25,25 +25,26 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 
 /**
  * Mock implementation of {@link WebResourceFetcher}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class MockWebResourceFetcher implements WebResourceFetcher {
 
-	final HashMap<String, String> webResources;
+	public final HashMap<String, byte[]> webResources;
 	boolean returnFailingReaders;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 */
 	public MockWebResourceFetcher() {
-		this.webResources = new HashMap<String, String>();
+		this.webResources = new HashMap<String, byte[]>();
 	}
 
 	/**
@@ -51,7 +52,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 * to access some resource will return objects that fail with exceptions
 	 * when trying to read data. This can be used to simulate problems like
 	 * failing network connections after opening an online resource.
-	 * 
+	 *
 	 * @param returnFailingReaders
 	 *            whether read operations should fail
 	 */
@@ -61,20 +62,39 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 
 	/**
 	 * Defines the contents of a new web resource.
-	 * 
+	 *
 	 * @param url
 	 *            the URL string
 	 * @param contents
 	 *            the string contents
+	 * @throws IOException
 	 */
-	public void setWebResourceContents(String url, String contents) {
-		this.webResources.put(url, contents);
+	public void setWebResourceContents(String url, String contents)
+			throws IOException {
+		setWebResourceContents(url, contents, CompressionType.NONE);
+	}
+
+	/**
+	 * Defines the contents of a new web resource.
+	 *
+	 * @param url
+	 *            the URL string
+	 * @param contents
+	 *            the string contents
+	 * @param compressionType
+	 *            the compression to use on the mocked contents
+	 * @throws IOException
+	 */
+	public void setWebResourceContents(String url, String contents,
+			CompressionType compressionType) throws IOException {
+		this.webResources.put(url, MockStringContentFactory.getBytesFromString(
+				contents, compressionType));
 	}
 
 	/**
 	 * Defines the contents of a new web resource by taking the string from a
 	 * given (Java) resource.
-	 * 
+	 *
 	 * @param url
 	 *            the URL string
 	 * @param resource
@@ -88,10 +108,34 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	 */
 	public void setWebResourceContentsFromResource(String url, String resource,
 			Class<?> resourceClass) throws IOException {
+		setWebResourceContentsFromResource(url, resource, resourceClass,
+				CompressionType.NONE);
+	}
+
+	/**
+	 * Defines the contents of a new web resource by taking the string from a
+	 * given (Java) resource, possibly using additional compression.
+	 *
+	 * @param url
+	 *            the URL string
+	 * @param resource
+	 *            the Java resource name
+	 * @param resourceClass
+	 *            the Class relative to which the resource should be resolved
+	 *            (since resources are stored relative to a classpath); can
+	 *            usually be obtained with getClass() from the calling object
+	 * @param compressionType
+	 *            the compression to use on the mocked contents
+	 * @throws IOException
+	 *             if the Java resource could not be loaded
+	 */
+	public void setWebResourceContentsFromResource(String url, String resource,
+			Class<?> resourceClass, CompressionType compressionType)
+			throws IOException {
 		URL resourceUrl = resourceClass.getResource(resource);
 		String contents = MockStringContentFactory
 				.getStringFromUrl(resourceUrl);
-		setWebResourceContents(url, contents);
+		setWebResourceContents(url, contents, compressionType);
 	}
 
 	@Override
@@ -103,7 +147,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	/**
 	 * Returns an input stream for the content mocked for given URL. It is
 	 * checked that the URL is valid.
-	 * 
+	 *
 	 * @param urlString
 	 * @return input stream for resource
 	 * @throws IOException
@@ -111,7 +155,7 @@ public class MockWebResourceFetcher implements WebResourceFetcher {
 	InputStream getInputStreamForMockWebResource(String urlString)
 			throws IOException {
 		if (!this.webResources.containsKey(urlString)) {
-			throw new IOException("Inaccessible URL (not mocked)");
+			throw new IOException("Inaccessible URL (not mocked): " + urlString);
 		}
 
 		if (this.returnFailingReaders) {

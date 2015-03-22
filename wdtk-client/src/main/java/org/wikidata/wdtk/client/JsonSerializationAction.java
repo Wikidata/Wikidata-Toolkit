@@ -80,6 +80,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 					insertDumpInformation(this.outputDestination),
 					this.compressionType);
 			this.serializer = new JsonSerializer(outputStream);
+			this.serializer.open();
 		} catch (IOException e) {
 			// TODO rather print error and set a nonce processor here
 			e.printStackTrace();
@@ -99,6 +100,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void close() {
 		this.serializer.close();
+		super.close();
 	}
 
 	@Override
