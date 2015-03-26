@@ -43,6 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
@@ -51,9 +52,9 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class RdfConverter {
 
@@ -91,7 +92,7 @@ public class RdfConverter {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 *
+	 * 
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -113,7 +114,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 *
+	 * 
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -363,6 +364,16 @@ public class RdfConverter {
 		}
 	}
 
+	void writeStatementRankTriple(Resource subject, StatementRank rank) {
+		try {
+			this.rdfWriter.writeTripleStringObject(subject, RdfWriter.WB_RANK,
+					rank.toString());
+		} catch (RDFHandlerException e) {
+			logger.warn("Could not write rank " + rank.toString()
+					+ " of statement " + subject.toString());
+		}
+	}
+
 	void writeStatement(Statement statement) throws RDFHandlerException {
 		String statementUri = Vocabulary.getStatementUri(statement);
 		Resource statementResource = this.rdfWriter.getUri(statementUri);
@@ -372,7 +383,8 @@ public class RdfConverter {
 		writeClaim(statementResource, statement.getClaim());
 
 		writeReferences(statementResource, statement.getReferences());
-		// TODO What about the RANK?
+
+		writeStatementRankTriple(statementResource, statement.getRank());
 
 	}
 
@@ -444,7 +456,7 @@ public class RdfConverter {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -465,7 +477,7 @@ public class RdfConverter {
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 *
+	 * 
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task

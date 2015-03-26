@@ -40,9 +40,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 /**
  * This class contains static methods and constants that define the various OWL
  * and RDF vocabularies that are used in the export.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class Vocabulary {
 
@@ -196,6 +196,11 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Class for Wikibase rank.
+	 */
+	public static final String WB_RANK = PREFIX_WBONTO + "Rank";
+
+	/**
 	 * Class for Wikibase quantity values.
 	 */
 	public static final String WB_QUANTITY_VALUE = PREFIX_WBONTO
@@ -315,7 +320,7 @@ public class Vocabulary {
 
 	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
-	 *
+	 * 
 	 * @return a map from vocabulary URIs to OWL type URIs
 	 */
 	public static Map<String, String> getKnownVocabularyTypes() {
@@ -324,7 +329,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given statement.
-	 *
+	 * 
 	 * @param statement
 	 *            the statement for which to create a URI
 	 * @return the URI
@@ -337,7 +342,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given property in the given context.
-	 *
+	 * 
 	 * @param propertyIdValue
 	 *            the property id for which to create a URI
 	 * @param propertyContext
