@@ -158,7 +158,7 @@ public class Client {
 		try {
 			createReport();
 		} catch (IOException e) {
-			logger.error("Could not print report file!");
+			logger.error("Could not print report file: " + e.getMessage());
 		}
 
 	}
@@ -214,9 +214,9 @@ public class Client {
 	}
 
 	/**
-	 * Creates a report file including the results which came from the
-	 * {@link DumpProcessingAction#getReport()} methods or printing it to
-	 * stdout.
+	 * Creates a report file including the results of the
+	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
+	 * filename specified the reports will be logged.
 	 * 
 	 * @throws IOException
 	 */
@@ -224,18 +224,21 @@ public class Client {
 		StringBuilder builder = new StringBuilder();
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
-			builder.append(action.getActionName() + ": ");
-			builder.append(action.getReport());
-			builder.append(System.getProperty("line.separator"));
+			if (this.clientConfiguration.getReportFilename() != null) {
+				builder.append(action.getActionName() + ": ");
+				builder.append(action.getReport());
+				builder.append(System.getProperty("line.separator"));
+			} else {
+				logger.info(action.getActionName() + ": " + action.getReport());
+			}
 		}
-		if (this.clientConfiguration.reportFilename != null) {
-			File reportFile = new File(this.clientConfiguration.reportFilename);
+		if (this.clientConfiguration.getReportFilename() != null) {
+			File reportFile = new File(
+					this.clientConfiguration.getReportFilename());
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					reportFile));
 			writer.write(builder.toString());
 			writer.close();
-		} else {
-			logger.info((builder.toString()));
 		}
 	}
 

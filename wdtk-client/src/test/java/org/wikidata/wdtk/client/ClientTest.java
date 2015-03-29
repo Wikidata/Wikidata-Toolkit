@@ -21,6 +21,7 @@ package org.wikidata.wdtk.client;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -59,8 +60,8 @@ public class ClientTest {
 		Client client = new Client(mockDpc, args);
 		client.performActions(); // print help
 
-		assertEquals(Client.consoleAppender.getThreshold(), Level.INFO);
-		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
+		assertEquals(Level.INFO, Client.consoleAppender.getThreshold());
+		assertEquals(Level.WARN, Client.errorAppender.getThreshold());
 	}
 
 	@Test
@@ -69,8 +70,8 @@ public class ClientTest {
 		String[] args = new String[] { "-a", "json", "-s" };
 		new Client(mockDpc, args);
 
-		assertEquals(Client.consoleAppender.getThreshold(), Level.OFF);
-		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
+		assertEquals(Level.OFF, Client.consoleAppender.getThreshold());
+		assertEquals(Level.WARN, Client.errorAppender.getThreshold());
 	}
 
 	@Test
@@ -78,28 +79,36 @@ public class ClientTest {
 		String[] TEST_ARGS = new String[] { "-a", "json", "-q" };
 		new Client(mockDpc, TEST_ARGS);
 
-		assertEquals(Client.consoleAppender.getThreshold(), Level.OFF);
-		assertEquals(Client.errorAppender.getThreshold(), Level.WARN);
+		assertEquals(Level.OFF, Client.consoleAppender.getThreshold());
+		assertEquals(Level.WARN, Client.errorAppender.getThreshold());
 	}
 
 	@Test
 	public void testJsonOutput() {
-		DumpProcessingAction action = new JsonSerializationAction();
+		String[] args = { "-a", "json", "-o", "output/wikidata.json" };
+		ClientConfiguration configuration = new ClientConfiguration(args);
+		DumpProcessingAction action = configuration.actions.get(0);
 		action.open();
 		action.close();
-		assertEquals(action.getReport(),
-				"Finished serialization of 0 EntityDocuments in file {PROJECT}-{DATE}.json");
+		assertTrue(action
+				.getReport()
+				.matches(
+						"Finished serialization of \\d+ EntityDocuments in file output/wikidata.json"));
 	}
 
 	@Test
 	public void testRdfOutput() {
-		DumpProcessingAction action = new RdfSerializationAction();
+		String[] args = { "-a", "rdf", "-o", "output/wikidata.rdf" };
+		ClientConfiguration configuration = new ClientConfiguration(args);
+		DumpProcessingAction action = configuration.actions.get(0);
 		action.open();
 		action.close();
-		assertEquals(action.getReport(),
-				"Finished serialization of 24 RDF triples in file null");
+		assertTrue(action
+				.getReport()
+				.matches(
+						"Finished serialization of \\d+ RDF triples in file output/wikidata.rdf"));
 	}
-	
+
 	public void testNonReadyActionWithDumps() throws ParseException,
 			IOException {
 		String[] args = new String[] { "-a", "rdf", "--dumps", "/tmp" };

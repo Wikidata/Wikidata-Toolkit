@@ -76,8 +76,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public void open() {
 		OutputStream outputStream;
 		try {
-			outputStream = getOutputStream(this.useStdOut,
-					insertDumpInformation(this.outputDestination),
+			outputStream = getOutputStream(this.useStdOut, getOutputFilename(),
 					this.compressionType);
 			this.serializer = new JsonSerializer(outputStream);
 			this.serializer.open();
@@ -107,17 +106,13 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public String getReport() {
 		String message = "Finished serialization of "
 				+ this.serializer.getEntityDocumentCount()
-				+ " EntityDocuments in file " + this.outputDestination;
+				+ " EntityDocuments in file " + getOutputFilename();
 		return message;
 	}
 
 	@Override
-	public String getActionName() {
-		if (this.name != null) {
-			return name;
-		} else {
-			return JsonSerializationAction.DEFAULT_ACTION_NAME;
-		}
+	public String getDefaultActionName() {
+		return DEFAULT_ACTION_NAME;
 	}
 
 }

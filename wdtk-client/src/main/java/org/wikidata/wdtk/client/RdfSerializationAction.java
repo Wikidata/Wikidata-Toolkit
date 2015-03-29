@@ -111,6 +111,12 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	}
 
 	/**
+	 * The base file name that will be used by default. File endings for
+	 * indicating compression will be appended where required.
+	 */
+	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.rdf";
+
+	/**
 	 * default action name is used to separate different
 	 * DumpProcessingOutputActions from each other.
 	 */
@@ -131,6 +137,10 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	 * Integer that holds the serialization task flags.
 	 */
 	int tasks = 0;
+
+	public RdfSerializationAction() {
+		this.outputDestination = DEFAULT_FILE_NAME;
+	}
 
 	@Override
 	public boolean setOption(String option, String value) {
@@ -259,16 +269,12 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	public String getReport() {
 		String message = "Finished serialization of "
 				+ this.serializer.getTripleCount() + " RDF triples in file "
-				+ this.outputDestination;
+				+ this.insertDumpInformation(this.outputDestination);
 		return message;
 	}
 
 	@Override
-	public String getActionName() {
-		if (this.name != null) {
-			return name;
-		} else {
-			return RdfSerializationAction.DEFAULT_ACTION_NAME;
-		}
+	public String getDefaultActionName() {
+		return DEFAULT_ACTION_NAME;
 	}
 }

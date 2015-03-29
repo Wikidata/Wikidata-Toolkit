@@ -96,9 +96,9 @@ public class ClientConfiguration {
 	 */
 	public static final String CMD_OPTION_OUTPUT_STDOUT = "s";
 	/**
-	 * Short command-line alternative to {@link #OPTION_OUTPUT_REPORT}.
+	 * Short command-line alternative to {@link #OPTION_CREATE_REPORT}.
 	 */
-	public static final String CMD_OPTION_PRINT_REPORT = "r";
+	public static final String CMD_OPTION_CREATE_REPORT = "r";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -146,10 +146,10 @@ public class ClientConfiguration {
 	 */
 	public static final String OPTION_FILTER_PROPERTIES = "fProp";
 	/**
-	 * Name of the option to print a report about the files produced by
-	 * DumpProcessingOutputActions
+	 * Name of the long command line option to create a report file about the
+	 * files produced by DumpProcessingOutputActions.
 	 */
-	public static final String OPTION_PRINT_REPORT = "report";
+	public static final String OPTION_CREATE_REPORT = "report";
 	/**
 	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
@@ -274,6 +274,12 @@ public class ClientConfiguration {
 		return this.quiet;
 	}
 
+	/**
+	 * Returns the output destination where a report file should be created. If
+	 * the client should not create such a file the function will return null.
+	 * 
+	 * @return report filename
+	 */
 	public String getReportFilename() {
 		return this.reportFilename;
 	}
@@ -429,8 +435,8 @@ public class ClientConfiguration {
 			this.quiet = true;
 		}
 
-		if (cmd.hasOption(CMD_OPTION_PRINT_REPORT)) {
-			this.reportFilename = cmd.getOptionValue(CMD_OPTION_PRINT_REPORT);
+		if (cmd.hasOption(CMD_OPTION_CREATE_REPORT)) {
+			this.reportFilename = cmd.getOptionValue(CMD_OPTION_CREATE_REPORT);
 		}
 
 		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
@@ -466,7 +472,7 @@ public class ClientConfiguration {
 					this.quiet = true;
 				}
 				break;
-			case OPTION_PRINT_REPORT:
+			case OPTION_CREATE_REPORT:
 				this.reportFilename = section.get(key);
 				break;
 			case OPTION_DUMP_LOCATION:
@@ -717,8 +723,8 @@ public class ClientConfiguration {
 				.withArgName("path")
 				.withDescription(
 						"specifies a path to print a final report after dump generations.")
-				.withLongOpt(OPTION_PRINT_REPORT)
-				.create(CMD_OPTION_PRINT_REPORT);
+				.withLongOpt(OPTION_CREATE_REPORT)
+				.create(CMD_OPTION_CREATE_REPORT);
 
 		options.addOption(config);
 		options.addOption(action);

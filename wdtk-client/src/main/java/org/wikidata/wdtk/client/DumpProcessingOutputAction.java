@@ -89,10 +89,13 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Output streams that were created by this class. If close is called, it
 	 * will close all of them properly.
-	 *
+	 * 
 	 */
 	protected Set<Closeable> outputStreams = new HashSet<>();
 
+	/**
+	 * The name of the action.
+	 */
 	protected String name;
 
 	/**
@@ -166,6 +169,23 @@ public abstract class DumpProcessingOutputAction implements
 		this.name = name;
 	}
 
+	@Override
+	public String getActionName() {
+		if (this.name != null) {
+			return this.name;
+		} else {
+			return getDefaultActionName();
+		}
+	}
+
+	public String getOutputFilename() {
+		if (this.outputDestination == null) {
+			return "unnamed.out";
+		} else {
+			return insertDumpInformation(this.outputDestination);
+		}
+	}
+
 	public String insertDumpInformation(String pattern) {
 		return pattern.replace("{DATE}", this.dateStamp).replace("{PROJECT}",
 				this.project);
@@ -183,7 +203,7 @@ public abstract class DumpProcessingOutputAction implements
 	 * caller and should be closed later. Neverhteless, the {@link #close()}
 	 * method of this class must also be called, since it may free additional
 	 * resources created.
-	 *
+	 * 
 	 * @param useStdOut
 	 *            if true, {@link System#out} is returned and the other
 	 *            parameters are ignored
@@ -250,9 +270,9 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Simple interface for a Runnable that can be stopped gracefully by calling
 	 * a method {@link FinishableRunnable#finish()}.
-	 *
+	 * 
 	 * @author Markus Kroetzsch
-	 *
+	 * 
 	 */
 	protected interface FinishableRunnable extends Runnable {
 
