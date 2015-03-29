@@ -155,11 +155,21 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 		return (new StringBuilder(binaryDigits)).reverse().toString();
 	}
 
+	/**
+	 * @param newSize
+	 *            new size
+	 * @return <code>true</code> if and only if the new size would require to
+	 *         resize the array of bits
+	 */
+	boolean isResizeNeeded(long newSize) {
+		return (((newSize >> LG_WORD_SIZE) + 1) > this.arrayOfBits.length);
+	}
+
 	@Override
 	public boolean addBit(boolean bit) {
 		this.validHashCode = false;
 		this.size++;
-		if (((this.size >> LG_WORD_SIZE) + 1) > this.arrayOfBits.length) {
+		if (isResizeNeeded(this.size)) {
 			resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
 		}
 		setBit(this.size - 1, bit);
@@ -190,8 +200,13 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 */
 	void ensureSize(long position) {
 		assertNonNegativePosition(position);
-		while (position >= this.size) {
-			addBit(false);
+		if (position >= this.size) {
+			this.validHashCode = false;
+			long newSize = position + 1;
+			while (isResizeNeeded(newSize)) {
+				resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
+			}
+			this.size = newSize;
 		}
 	}
 
