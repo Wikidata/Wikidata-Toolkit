@@ -35,9 +35,9 @@ import org.apache.commons.lang3.Validate;
  * <li>any non-negative position outside the bit vector can be retrieved and
  * contains a <code>false</code>.</li>
  * </ol>
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
@@ -54,7 +54,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Constructor of a bit vector of size 0.
-	 * 
+	 *
 	 */
 	public BitVectorImpl() {
 		this.arrayOfBits = new long[MINIMUM_ARRAY_SIZE];
@@ -62,7 +62,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Copy constructor of a bit vector.
-	 * 
+	 *
 	 * @param bitVector
 	 *            bit vector
 	 */
@@ -86,10 +86,10 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	/**
 	 * Constructor of a bit vector of size <i>initialSize</i>. The bit vector
 	 * contains <code>false</code> at all indexes.
-	 * 
+	 *
 	 * @param initialSize
 	 *            initial size of this bit vector
-	 * 
+	 *
 	 */
 	public BitVectorImpl(long initialSize) {
 		if (initialSize < 0) {
@@ -158,18 +158,20 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	/**
 	 * @param newSize
 	 *            new size
+	 * @param arrayOfBitsLength
+	 *            length of the array of bits
 	 * @return <code>true</code> if and only if the new size would require to
 	 *         resize the array of bits
 	 */
-	boolean isResizeNeeded(long newSize) {
-		return (((newSize >> LG_WORD_SIZE) + 1) > this.arrayOfBits.length);
+	boolean isResizeNeeded(long newSize, int arrayOfBitsLength) {
+		return (((newSize >> LG_WORD_SIZE) + 1) > arrayOfBitsLength);
 	}
 
 	@Override
 	public boolean addBit(boolean bit) {
 		this.validHashCode = false;
 		this.size++;
-		if (isResizeNeeded(this.size)) {
+		if (isResizeNeeded(this.size, this.arrayOfBits.length)) {
 			resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
 		}
 		setBit(this.size - 1, bit);
@@ -194,7 +196,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * Ensures that the bit vector is large enough to contain an element at the
 	 * given position. If the bit vector needs to be enlarged, new
 	 * <code>false</code> elements are added.
-	 * 
+	 *
 	 * @param position
 	 *            position
 	 */
@@ -203,9 +205,11 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 		if (position >= this.size) {
 			this.validHashCode = false;
 			long newSize = position + 1;
-			while (isResizeNeeded(newSize)) {
-				resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
+			int arrayOfBitsLength = this.arrayOfBits.length;
+			while (isResizeNeeded(newSize, arrayOfBitsLength)) {
+				arrayOfBitsLength = GROWTH_FACTOR * arrayOfBitsLength;
 			}
+			resizeArray(arrayOfBitsLength);
 			this.size = newSize;
 		}
 	}
@@ -302,7 +306,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Resizes the array that represents this bit vector.
-	 * 
+	 *
 	 * @param newArraySize
 	 *            new array size
 	 */
