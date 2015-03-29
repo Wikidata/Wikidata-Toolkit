@@ -121,8 +121,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @return the minimum array size for a bit vector of <i>bitVectorSize</i>
 	 */
 	static int getMinimumArraySize(long bitVectorSize) {
-		return Math.max(MINIMUM_ARRAY_SIZE,
-				(int) (bitVectorSize >> LG_WORD_SIZE) + 1);
+		return Math.max(MINIMUM_ARRAY_SIZE, getSizeInWords(bitVectorSize));
 	}
 
 	/**
@@ -156,22 +155,19 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	}
 
 	/**
-	 * @param newSize
-	 *            new size
-	 * @param arrayOfBitsLength
-	 *            length of the array of bits
-	 * @return <code>true</code> if and only if the new size would require to
-	 *         resize the array of bits
+	 * @param sizeInBits
+	 *            size in bits
+	 * @return the size in words
 	 */
-	boolean isResizeNeeded(long newSize, int arrayOfBitsLength) {
-		return (((newSize >> LG_WORD_SIZE) + 1) > arrayOfBitsLength);
+	static int getSizeInWords(long sizeInBits) {
+		return (int) ((sizeInBits >> LG_WORD_SIZE) + 1);
 	}
 
 	@Override
 	public boolean addBit(boolean bit) {
 		this.validHashCode = false;
 		this.size++;
-		if (isResizeNeeded(this.size, this.arrayOfBits.length)) {
+		if (getSizeInWords(this.size) > this.arrayOfBits.length) {
 			resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
 		}
 		setBit(this.size - 1, bit);
@@ -206,7 +202,8 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 			this.validHashCode = false;
 			long newSize = position + 1;
 			int arrayOfBitsLength = this.arrayOfBits.length;
-			while (isResizeNeeded(newSize, arrayOfBitsLength)) {
+			int sizeInWords = getSizeInWords(newSize);
+			while (sizeInWords > arrayOfBitsLength) {
 				arrayOfBitsLength = GROWTH_FACTOR * arrayOfBitsLength;
 			}
 			resizeArray(arrayOfBitsLength);
