@@ -365,12 +365,17 @@ public class RdfConverter {
 	}
 
 	void writeStatementRankTriple(Resource subject, StatementRank rank) {
-		try {
-			this.rdfWriter.writeTripleStringObject(subject, RdfWriter.WB_RANK,
-					rank.toString());
-		} catch (RDFHandlerException e) {
-			logger.warn("Could not write rank " + rank.toString()
-					+ " of statement " + subject.toString());
+		String rankRepresentation = rankToRdfRepresentation(rank);
+		if (rankRepresentation != null){
+			try {
+				this.rdfWriter.writeTripleStringObject(subject, RdfWriter.WB_RANK,
+						rankRepresentation);
+			} catch (RDFHandlerException e) {
+				logger.warn("Could not write rank " + rank.toString()
+						+ " of statement " + subject.toString());
+			}
+		}else{
+			logger.warn("Unkown rank " + rank.toString());
 		}
 	}
 
@@ -402,7 +407,6 @@ public class RdfConverter {
 		this.snakRdfConverter.setSnakContext(claimResource,
 				PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
-
 		this.snakRdfConverter.setSnakContext(claimResource,
 				PropertyContext.QUALIFIER);
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
@@ -484,6 +488,19 @@ public class RdfConverter {
 	 */
 	boolean hasTask(int task) {
 		return ((this.tasks & task) == task);
+	}
+
+	String rankToRdfRepresentation(StatementRank rank) {
+		switch (rank) {
+		case NORMAL:
+			return "Normal";
+		case PREFERRED:
+			return "Preferred";
+		case DEPRECATED:
+			return "Deprecated";
+		default:
+			return null;
+		}
 	}
 
 }

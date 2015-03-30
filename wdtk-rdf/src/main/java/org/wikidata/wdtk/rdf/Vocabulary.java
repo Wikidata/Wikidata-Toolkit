@@ -198,7 +198,10 @@ public class Vocabulary {
 	/**
 	 * Class for Wikibase rank.
 	 */
-	public static final String WB_RANK = PREFIX_WBONTO + "Rank";
+	public static final String WB_RANK = PREFIX_WBONTO + "rank";
+	static {
+		VOCABULARY_TYPES.put(WB_RANK, OWL_OBJECT_PROPERTY);
+	}
 
 	/**
 	 * Class for Wikibase quantity values.

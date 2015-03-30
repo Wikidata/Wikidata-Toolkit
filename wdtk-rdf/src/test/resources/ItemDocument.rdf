@@ -7,23 +7,23 @@
 	<http://www.wikidata.org/P569s> <http://www.wikidata.org/Q10Snone2> ;
 	<http://www.wikidata.org/P549s> <http://www.wikidata.org/Q10Snone> .
 
-<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> , _:node19h1u1hg1x3 ;
-	<http://www.wikidata.org/ontology#Rank> "NORMAL" .
+<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> , _:node19hjjc8dkx1 ;
+	<http://www.wikidata.org/ontology#rank> "Normal" .
 
 <http://www.wikidata.org/Q10Snone2> a <http://www.wikidata.org/ontology#Statement> ;
 	<http://www.wikidata.org/P569v> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.wikidata.org/P15q> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> ;
-	<http://www.wikidata.org/ontology#Rank> "NORMAL" .
+	<http://www.wikidata.org/ontology#rank> "Normal" .
 
 <http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> ;
 	<http://www.wikidata.org/P549v> "TestString" ;
-	<http://www.wikidata.org/ontology#Rank> "NORMAL" .
+	<http://www.wikidata.org/ontology#rank> "Normal" .
 
-_:node19h1u1hg1x3 a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node19h1u1hg1x4 .
+_:node19hjjc8dkx1 a <http://www.w3.org/2002/07/owl#Class> ;
+	<http://www.w3.org/2002/07/owl#complementOf> _:node19hjjc8dkx2 .
 
-_:node19h1u1hg1x4 a <http://www.w3.org/2002/07/owl#Restriction> ;
+_:node19hjjc8dkx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P10v> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
