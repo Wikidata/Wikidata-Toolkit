@@ -168,7 +168,8 @@ public class Client {
 			try {
 				sites = this.dumpProcessingController.getSitesInformation();
 			} catch (IOException e) {
-				logger.error("Failed to get sites information.");
+				logger.error("Failed to get sites information: "
+						+ e.getMessage());
 			}
 		}
 	}
