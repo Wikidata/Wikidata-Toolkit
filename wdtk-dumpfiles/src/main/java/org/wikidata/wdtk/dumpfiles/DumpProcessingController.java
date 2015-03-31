@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
 import org.wikidata.wdtk.util.DirectoryManager;
-import org.wikidata.wdtk.util.DirectoryManagerImpl;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
@@ -220,8 +220,8 @@ public class DumpProcessingController {
 	 */
 	public void setDownloadDirectory(String downloadDirectory)
 			throws IOException {
-		this.downloadDirectoryManager = new DirectoryManagerImpl(
-				downloadDirectory);
+		this.downloadDirectoryManager = DirectoryManagerFactory
+				.createDirectoryManager(downloadDirectory);
 	}
 
 	/**
