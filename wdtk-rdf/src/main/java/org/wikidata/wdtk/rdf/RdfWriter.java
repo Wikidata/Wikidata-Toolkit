@@ -40,9 +40,9 @@ import org.openrdf.rio.UnsupportedRDFormatException;
  * encapsulates many details of the RDF library we use. It also provides a
  * unique point at which statistics about the number of triples etc. can be
  * gathered.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class RdfWriter {
 
@@ -55,6 +55,8 @@ public class RdfWriter {
 			.createURI(Vocabulary.RDFS_LITERAL);
 	public static final URI RDFS_SUBCLASS_OF = factory
 			.createURI(Vocabulary.RDFS_SUBCLASS_OF);
+	public static final URI RDFS_SUBPROPERTY_OF = factory
+			.createURI(Vocabulary.RDFS_SUBPROPERTY_OF);
 	public static final URI OWL_THING = factory.createURI(Vocabulary.OWL_THING);
 	public static final URI OWL_CLASS = factory.createURI(Vocabulary.OWL_CLASS);
 	public static final URI OWL_OBJECT_PROPERTY = factory
@@ -158,7 +160,7 @@ public class RdfWriter {
 	/**
 	 * Creates a URI object for the given URI string. Callers who use this with
 	 * user-provided data should check for exceptions.
-	 *
+	 * 
 	 * @param uri
 	 *            the URI string
 	 * @return the URI object

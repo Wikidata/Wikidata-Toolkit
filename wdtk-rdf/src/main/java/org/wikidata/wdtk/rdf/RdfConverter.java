@@ -31,6 +31,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -47,13 +49,14 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
+import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class RdfConverter {
 
@@ -70,6 +73,7 @@ public class RdfConverter {
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
 	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
+	static WikibaseDataFetcher dataFetcher = new WikibaseDataFetcher();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
@@ -91,7 +95,7 @@ public class RdfConverter {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 *
+	 * 
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -113,7 +117,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 *
+	 * 
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -215,6 +219,10 @@ public class RdfConverter {
 
 		if (hasTask(RdfSerializer.TASK_STATEMENTS)) {
 			writeStatements(subject, document);
+		}
+
+		if (hasTask(RdfSerializer.TASK_SUBPROPERTIES)) {
+			writeSubpropertyOfStatements(subject, document);
 		}
 
 		this.snakRdfConverter.writeAuxiliaryTriples();
@@ -336,6 +344,68 @@ public class RdfConverter {
 		}
 	}
 
+	void writeSubpropertyOfStatements(Resource subject,
+			PropertyDocument propertyDocument) {
+		for (StatementGroup statementGroup : propertyDocument
+				.getStatementGroups()) {
+			boolean isSubPropertyOf = "P1647".equals(statementGroup
+					.getProperty().getId());
+			if (!isSubPropertyOf) {
+				continue;
+			}
+			for (Statement statement : statementGroup.getStatements()) {
+				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
+					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
+							.getMainSnak();
+					if (statement.getClaim().getQualifiers().size() == 0) {
+						Value value = this.valueRdfConverter.getRdfValue(
+								mainSnak.getValue(), mainSnak.getPropertyId(),
+								true);
+						if (value == null) {
+							logger.error("Clould not serialize subclass of snak: missing value (Snak: "
+									+ mainSnak.toString() + ")");
+							continue;
+						}
+
+						if (mainSnak.getValue() instanceof EntityIdValue) {
+							EntityDocument entityDocument = RdfConverter.dataFetcher
+									.getEntityDocument(((EntityIdValue) mainSnak
+											.getValue()).getId());
+							if (entityDocument instanceof PropertyDocument) {
+								DatatypeIdValue datatype = ((PropertyDocument) entityDocument)
+										.getDatatype();
+								if (!datatype.equals(propertyDocument
+										.getDatatype())) {
+									logger.warn("Datatype of subproperty "
+											+ propertyDocument.getDatatype()
+													.toString()
+											+ " is different from superproperty "
+											+ datatype.toString());
+									continue;
+								}
+							} else {
+								logger.warn(value.toString()
+										+ " is not a Property");
+							}
+						} else {
+							logger.warn("Not a valid EntityIdValue: "
+									+ value.toString());
+							continue;
+						}
+
+						try {
+							this.rdfWriter.writeTripleValueObject(subject,
+									RdfWriter.RDFS_SUBPROPERTY_OF, value);
+						} catch (RDFHandlerException e) {
+							throw new RuntimeException(e.toString(), e);
+						}
+					}
+
+				}
+			}
+		}
+	}
+
 	void writeDocumentTerms(Resource subject, TermedDocument document)
 			throws RDFHandlerException {
 		if (hasTask(RdfSerializer.TASK_LABELS)) {
@@ -444,7 +514,7 @@ public class RdfConverter {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -465,7 +535,7 @@ public class RdfConverter {
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 *
+	 * 
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task
