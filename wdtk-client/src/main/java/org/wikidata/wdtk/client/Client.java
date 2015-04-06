@@ -1,9 +1,11 @@
 package org.wikidata.wdtk.client;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.ConsoleAppender;
@@ -17,6 +19,8 @@ import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /*
  * #%L
@@ -81,6 +85,7 @@ public class Client {
 		} else {
 			consoleAppender.setThreshold(Level.INFO);
 		}
+
 	}
 
 	/**
@@ -156,7 +161,7 @@ public class Client {
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
 		try {
-			createReport();
+			writeReport();
 		} catch (IOException e) {
 			logger.error("Could not print report file: " + e.getMessage());
 		}
@@ -215,13 +220,13 @@ public class Client {
 	}
 
 	/**
-	 * Creates a report file including the results of the
+	 * Writes a report file including the results of the
 	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
 	 * filename specified the reports will be logged.
 	 * 
 	 * @throws IOException
 	 */
-	void createReport() throws IOException {
+	void writeReport() throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
@@ -234,12 +239,22 @@ public class Client {
 			}
 		}
 		if (this.clientConfiguration.getReportFilename() != null) {
-			File reportFile = new File(
-					this.clientConfiguration.getReportFilename());
-			BufferedWriter writer = new BufferedWriter(new FileWriter(
-					reportFile));
-			writer.write(builder.toString());
-			writer.close();
+			Path outputDirectory = Paths.get(
+					this.clientConfiguration.getReportFilename()).getParent();
+			if (outputDirectory == null) {
+				outputDirectory = Paths.get(".");
+			}
+			DirectoryManager dm = DirectoryManagerFactory
+					.createDirectoryManager(outputDirectory);
+			OutputStream out = dm.getOutputStreamForFile(Paths
+					.get(this.clientConfiguration.getReportFilename())
+					.getFileName().toString());
+
+			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
+					out, 1024 * 1024 * 5);
+			bufferedFileOutputStream.write(builder.toString().getBytes(
+					StandardCharsets.UTF_8));
+			bufferedFileOutputStream.close();
 		}
 	}
 

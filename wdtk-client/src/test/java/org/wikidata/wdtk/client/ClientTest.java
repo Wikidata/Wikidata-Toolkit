@@ -24,8 +24,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 public class ClientTest {
 
@@ -170,5 +175,27 @@ public class ClientTest {
 
 		Mockito.verify(mockDpc).processDump(Mockito.<MwDumpFile> any());
 		Mockito.verify(mockDpc, Mockito.never()).getSitesInformation();
+	}
+
+	@Test
+	public void testWriteReport() throws IOException {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
+
+		MockDirectoryManager mdm = new MockDirectoryManager(
+				Paths.get("/output/"), false);
+
+		String[] args = { "-a", "rdf", "-o", "/output/wikidata.rdf", "-r",
+				"/output/report.txt" };
+		Client client = new Client(mockDpc, args);
+		DumpProcessingAction action = client.clientConfiguration.actions.get(0);
+		action.open();
+		action.close();
+		client.writeReport();
+		assertEquals(
+				"RdfSerializationAction: Finished serialization of 24 RDF triples in file /output/wikidata.rdf\n",
+				IOUtils.toString(mdm.getInputStreamForFile("report.txt",
+						CompressionType.NONE)));
+
 	}
 }
