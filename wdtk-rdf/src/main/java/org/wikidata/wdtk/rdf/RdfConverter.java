@@ -364,18 +364,21 @@ public class RdfConverter {
 		}
 	}
 
+	/**
+	 * Writes a triple for the {@link StatementRank} of a {@link Statement} to
+	 * the dump.
+	 * 
+	 * @param subject
+	 * @param rank
+	 */
 	void writeStatementRankTriple(Resource subject, StatementRank rank) {
 		String rankRepresentation = rankToRdfRepresentation(rank);
-		if (rankRepresentation != null){
-			try {
-				this.rdfWriter.writeTripleStringObject(subject, RdfWriter.WB_RANK,
-						rankRepresentation);
-			} catch (RDFHandlerException e) {
-				logger.warn("Could not write rank " + rank.toString()
-						+ " of statement " + subject.toString());
-			}
-		}else{
-			logger.warn("Unkown rank " + rank.toString());
+		try {
+			this.rdfWriter.writeTripleUriObject(subject, RdfWriter.WB_RANK,
+					rankRepresentation);
+		} catch (RDFHandlerException e) {
+			logger.warn("Could not write rank " + rank.toString()
+					+ " of statement " + subject.toString());
 		}
 	}
 
@@ -490,16 +493,22 @@ public class RdfConverter {
 		return ((this.tasks & task) == task);
 	}
 
+	/**
+	 * Creates an URI which represents the statement rank in a triple.
+	 * 
+	 * @param rank
+	 * @return
+	 */
 	String rankToRdfRepresentation(StatementRank rank) {
 		switch (rank) {
 		case NORMAL:
-			return "Normal";
+			return Vocabulary.WB_NORMAL_RANK;
 		case PREFERRED:
-			return "Preferred";
+			return Vocabulary.WB_PREFERRED_RANK;
 		case DEPRECATED:
-			return "Deprecated";
+			return Vocabulary.WB_DEPRECATED_RANK;
 		default:
-			return null;
+			throw new IllegalArgumentException();
 		}
 	}
 

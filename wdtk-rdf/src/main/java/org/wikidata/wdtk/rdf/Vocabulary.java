@@ -196,14 +196,6 @@ public class Vocabulary {
 	}
 
 	/**
-	 * Class for Wikibase rank.
-	 */
-	public static final String WB_RANK = PREFIX_WBONTO + "rank";
-	static {
-		VOCABULARY_TYPES.put(WB_RANK, OWL_OBJECT_PROPERTY);
-	}
-
-	/**
 	 * Class for Wikibase quantity values.
 	 */
 	public static final String WB_QUANTITY_VALUE = PREFIX_WBONTO
@@ -236,6 +228,14 @@ public class Vocabulary {
 			+ "propertyType";
 	static {
 		VOCABULARY_TYPES.put(WB_PROPERTY_TYPE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for Wikibase rank.
+	 */
+	public static final String WB_RANK = PREFIX_WBONTO + "rank";
+	static {
+		VOCABULARY_TYPES.put(WB_RANK, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
@@ -320,6 +320,14 @@ public class Vocabulary {
 	static {
 		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
+
+	public static final String WB_NORMAL_RANK = PREFIX_WBONTO + "NormalRank";
+
+	public static final String WB_PREFERRED_RANK = PREFIX_WBONTO
+			+ "PreferredRank";
+
+	public static final String WB_DEPRECATED_RANK = PREFIX_WBONTO
+			+ "DeprecatedRank";
 
 	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
