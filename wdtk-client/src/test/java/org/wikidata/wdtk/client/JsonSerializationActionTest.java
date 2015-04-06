@@ -44,6 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +69,8 @@ public class JsonSerializationActionTest {
 		String[] args = new String[] { "-a", "json", "-o",
 				"/path/to/output.json" };
 
-		DumpProcessingOutputAction.dmClass = MockDirectoryManager.class;
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
 
 		ClientConfiguration config = new ClientConfiguration(args);
 		JsonSerializationAction jsa = (JsonSerializationAction) config
@@ -140,7 +142,8 @@ public class JsonSerializationActionTest {
 		String[] args = new String[] { "-a", "json", "-o",
 				"/path/to/output.json", "-z", "gz" };
 
-		DumpProcessingOutputAction.dmClass = MockDirectoryManager.class;
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
 
 		ClientConfiguration config = new ClientConfiguration(args);
 		JsonSerializationAction jsa = (JsonSerializationAction) config
@@ -190,7 +193,8 @@ public class JsonSerializationActionTest {
 		String[] args = new String[] { "-a", "json", "-o", "output.json", "-z",
 				"bz2" };
 
-		DumpProcessingOutputAction.dmClass = MockDirectoryManager.class;
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
 
 		ClientConfiguration config = new ClientConfiguration(args);
 		JsonSerializationAction jsa = (JsonSerializationAction) config
