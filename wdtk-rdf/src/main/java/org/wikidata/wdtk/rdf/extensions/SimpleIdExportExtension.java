@@ -88,6 +88,16 @@ public class SimpleIdExportExtension extends StringIdExportExtension {
 				"http://rdf.ncbi.nlm.nih.gov/pubchem/compound/CID", "");
 	}
 
+	public static SimpleIdExportExtension newChEMBLExportExtension() {
+		return new SimpleIdExportExtension("chembl",
+				"http://rdf.ebi.ac.uk/resource/chembl/molecule/", "");
+	}
+
+	public static SimpleIdExportExtension newKEGGExportExtension() {
+		return new SimpleIdExportExtension("kegg",
+				"http://www.kegg.jp/entry/", "");
+	}
+
 	public static SimpleIdExportExtension newMusicBrainzArtistExportExtension() {
 		return new SimpleIdExportExtension("mbartist", MUSIC_BRAINZ_URL,
 				"/artist");

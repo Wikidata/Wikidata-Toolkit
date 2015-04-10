@@ -174,6 +174,9 @@ public class ExportExtensions implements ValueVisitor<Void> {
 				SimpleIdExportExtension.newNdlExportExtension(),
 				"http://www.wikidata.org/entity/P349");
 		exportExtensions.registerStringValueExportExtension(
+				SimpleIdExportExtension.newChEMBLExportExtension(),
+				"http://www.wikidata.org/entity/P592");
+		exportExtensions.registerStringValueExportExtension(
 				new FreebaseExportExtension(),
 				"http://www.wikidata.org/entity/P646");
 		exportExtensions.registerStringValueExportExtension(
@@ -182,6 +185,9 @@ public class ExportExtensions implements ValueVisitor<Void> {
 		exportExtensions.registerStringValueExportExtension(
 				SimpleIdExportExtension.newPubChemCidExportExtension(),
 				"http://www.wikidata.org/entity/P662");
+		exportExtensions.registerStringValueExportExtension(
+				SimpleIdExportExtension.newKEGGExportExtension(),
+				"http://www.wikidata.org/entity/P665");
 		exportExtensions.registerStringValueExportExtension(
 				SimpleIdExportExtension.newGeneOntologyExportExtension(),
 				"http://www.wikidata.org/entity/P686");
