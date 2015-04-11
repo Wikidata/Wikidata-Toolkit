@@ -41,9 +41,9 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * provides the additional option
  * {@link RdfSerializationAction#OPTION_RDF_TASKS}, which is required for
  * generating any output.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class RdfSerializationAction extends DumpProcessingOutputAction {
 
@@ -79,6 +79,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		KNOWN_TASKS.put("instanceof", RdfSerializer.TASK_INSTANCE_OF);
 		KNOWN_TASKS.put("simplestatements",
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		KNOWN_TASKS.put("subproperties", RdfSerializer.TASK_SUBPROPERTIES);
 	}
 
 	public static final Map<String, String> TASK_HELP = new HashMap<>();
@@ -108,6 +109,9 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		TASK_HELP
 				.put("simplestatements",
 						"export unqualified statements without references as single triples");
+		TASK_HELP
+				.put("subproperties",
+						"export unqualified subpropertyof information in the considered entities");
 	}
 
 	/**
@@ -189,7 +193,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	/**
 	 * Creates a new RDF serializer based on the current configuration of this
 	 * object.
-	 *
+	 * 
 	 * @return the newly created RDF serializer
 	 * @throws IOException
 	 *             if there were problems opening the output files
@@ -217,7 +221,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	/**
 	 * Sets the RDF serialization tasks based on the given string value.
-	 *
+	 * 
 	 * @param tasks
 	 *            a space-free, comma-separated list of task names
 	 */
