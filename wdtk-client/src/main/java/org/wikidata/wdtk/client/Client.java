@@ -1,6 +1,5 @@
 package org.wikidata.wdtk.client;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
