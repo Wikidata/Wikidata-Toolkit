@@ -249,12 +249,8 @@ public class Client {
 			OutputStream out = dm.getOutputStreamForFile(Paths
 					.get(this.clientConfiguration.getReportFilename())
 					.getFileName().toString());
-
-			OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-					out, 1024 * 1024 * 5);
-			bufferedFileOutputStream.write(builder.toString().getBytes(
-					StandardCharsets.UTF_8));
-			bufferedFileOutputStream.close();
+			out.write(builder.toString().getBytes(StandardCharsets.UTF_8));
+			out.close();
 		}
 	}
 
