@@ -372,13 +372,11 @@ public class RdfConverter {
 	 * @param rank
 	 */
 	void writeStatementRankTriple(Resource subject, StatementRank rank) {
-		String rankRepresentation = rankToRdfRepresentation(rank);
 		try {
 			this.rdfWriter.writeTripleUriObject(subject, RdfWriter.WB_RANK,
-					rankRepresentation);
+					getUriStringForRank(rank));
 		} catch (RDFHandlerException e) {
-			logger.warn("Could not write rank " + rank.toString()
-					+ " of statement " + subject.toString());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -494,12 +492,12 @@ public class RdfConverter {
 	}
 
 	/**
-	 * Creates an URI which represents the statement rank in a triple.
+	 * Returns an URI which represents the statement rank in a triple.
 	 * 
 	 * @param rank
 	 * @return
 	 */
-	String rankToRdfRepresentation(StatementRank rank) {
+	String getUriStringForRank(StatementRank rank) {
 		switch (rank) {
 		case NORMAL:
 			return Vocabulary.WB_NORMAL_RANK;
