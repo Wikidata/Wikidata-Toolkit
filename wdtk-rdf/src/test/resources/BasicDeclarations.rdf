@@ -47,3 +47,5 @@
 
 <http://www.wikidata.org/ontology#Property> a <http://www.w3.org/2002/07/owl#Class> .
 
+<http://www.wikidata.org/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+

@@ -8,27 +8,19 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-wo:propertyType a owl:ObjectProperty .
-
 prov:wasDerivedFrom a owl:ObjectProperty .
 
-wo:longitude a owl:DatatypeProperty .
+wo:propertyType a owl:ObjectProperty .
 
 wo:timePrecision a owl:DatatypeProperty .
 
-schema:description a owl:DatatypeProperty .
-
-wo:QuantityValue a owl:Class .
-
 wo:upperBound a owl:DatatypeProperty .
-
-wo:time a owl:DatatypeProperty .
 
 wo:gcPrecision a owl:DatatypeProperty .
 
-skos:altLabel a owl:DatatypeProperty .
+wo:time a owl:DatatypeProperty .
 
-wo:globe a owl:ObjectProperty .
+wo:rank a owl:ObjectProperty .
 
 wo:preferredCalendar a owl:ObjectProperty .
 
@@ -36,21 +28,31 @@ schema:inLanguage a owl:DatatypeProperty .
 
 wo:lowerBound a owl:DatatypeProperty .
 
-wo:Reference a owl:Class .
-
 wo:GlobeCoordinatesValue a owl:Class .
 
 wo:TimeValue a owl:Class .
 
-wo:Statement a owl:Class .
-
 wo:latitude a owl:DatatypeProperty .
+
+schema:about a owl:ObjectProperty .
+
+wo:longitude a owl:DatatypeProperty .
+
+wo:QuantityValue a owl:Class .
+
+schema:description a owl:DatatypeProperty .
+
+skos:altLabel a owl:DatatypeProperty .
+
+wo:globe a owl:ObjectProperty .
+
+wo:Reference a owl:Class .
+
+wo:Statement a owl:Class .
 
 wo:Article a owl:Class .
 
 wo:numericValue a owl:DatatypeProperty .
-
-schema:about a owl:ObjectProperty .
 
 wo:Item a owl:Class .
 
@@ -64,20 +66,23 @@ wo:Property a owl:Class .
 	<http://www.wikidata.org/P569s> <http://www.wikidata.org/Q10Snone2> ;
 	<http://www.wikidata.org/P549s> <http://www.wikidata.org/Q10Snone> .
 
-<http://www.wikidata.org/Q10Snone> a wo:Statement , _:node18pjmhdbgx1 .
+<http://www.wikidata.org/Q10Snone> a wo:Statement , _:node19hjjss79x1 ;
+	wo:rank wo:NormalRank .
 
 <http://www.wikidata.org/Q10Snone2> a wo:Statement ;
 	<http://www.wikidata.org/P569v> id:VTec11d94e4f5bb7b00a79196734f49066 ;
 	<http://www.wikidata.org/P15q> id:VTec11d94e4f5bb7b00a79196734f49066 ;
-	prov:wasDerivedFrom id:R29b7008efe33a96335e456305edfb481 .
+	prov:wasDerivedFrom id:R29b7008efe33a96335e456305edfb481 ;
+	wo:rank wo:NormalRank .
 
 <http://www.wikidata.org/Q10Snone> a wo:Statement ;
-	<http://www.wikidata.org/P549v> "TestString" .
+	<http://www.wikidata.org/P549v> "TestString" ;
+	wo:rank wo:NormalRank .
 
-_:node18pjmhdbgx1 a owl:Class ;
-	owl:complementOf _:node18pjmhdbgx2 .
+_:node19hjjss79x1 a owl:Class ;
+	owl:complementOf _:node19hjjss79x2 .
 
-_:node18pjmhdbgx2 a owl:Restriction ;
+_:node19hjjss79x2 a owl:Restriction ;
 	owl:onProperty <http://www.wikidata.org/P10v> ;
 	owl:someValuesFrom owl:Thing .
 
@@ -120,4 +125,3 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 id:R29b7008efe33a96335e456305edfb481 a wo:Reference ;
 	<http://www.wikidata.org/P112r> id:VTec11d94e4f5bb7b00a79196734f49066 .
-
