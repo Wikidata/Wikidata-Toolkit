@@ -1,6 +1,10 @@
 package org.wikidata.wdtk.client;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.ConsoleAppender;
@@ -14,6 +18,8 @@ import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /*
  * #%L
@@ -37,7 +43,7 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 
 /**
  * This class provides a Java command line client to process dump files.
- *
+ * 
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -61,7 +67,7 @@ public class Client {
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param args
 	 *            command line arguments to configure the conversion
 	 * @throws ParseException
@@ -78,6 +84,7 @@ public class Client {
 		} else {
 			consoleAppender.setThreshold(Level.INFO);
 		}
+
 	}
 
 	/**
@@ -118,6 +125,7 @@ public class Client {
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
+
 			if (!props.isReady()) {
 				continue;
 			}
@@ -151,6 +159,12 @@ public class Client {
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
+		try {
+			writeReport();
+		} catch (IOException e) {
+			logger.error("Could not print report file: " + e.getMessage());
+		}
+
 	}
 
 	private void prepareSites() {
@@ -158,7 +172,8 @@ public class Client {
 			try {
 				sites = this.dumpProcessingController.getSitesInformation();
 			} catch (IOException e) {
-				logger.error("Failed to get sites information.");
+				logger.error("Failed to get sites information: "
+						+ e.getMessage());
 			}
 		}
 	}
@@ -204,6 +219,41 @@ public class Client {
 	}
 
 	/**
+	 * Writes a report file including the results of the
+	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
+	 * filename specified the reports will be logged.
+	 * 
+	 * @throws IOException
+	 */
+	void writeReport() throws IOException {
+		StringBuilder builder = new StringBuilder();
+		for (DumpProcessingAction action : this.clientConfiguration
+				.getActions()) {
+			if (this.clientConfiguration.getReportFilename() != null) {
+				builder.append(action.getActionName() + ": ");
+				builder.append(action.getReport());
+				builder.append(System.getProperty("line.separator"));
+			} else {
+				logger.info(action.getActionName() + ": " + action.getReport());
+			}
+		}
+		if (this.clientConfiguration.getReportFilename() != null) {
+			Path outputDirectory = Paths.get(
+					this.clientConfiguration.getReportFilename()).getParent();
+			if (outputDirectory == null) {
+				outputDirectory = Paths.get(".");
+			}
+			DirectoryManager dm = DirectoryManagerFactory
+					.createDirectoryManager(outputDirectory);
+			OutputStream out = dm.getOutputStreamForFile(Paths
+					.get(this.clientConfiguration.getReportFilename())
+					.getFileName().toString());
+			out.write(builder.toString().getBytes(StandardCharsets.UTF_8));
+			out.close();
+		}
+	}
+
+	/**
 	 * Finishes the work of each configured action by calling its
 	 * {@link DumpProcessingOutputAction#close()} method.
 	 */
@@ -212,11 +262,12 @@ public class Client {
 				.getActions()) {
 			action.close();
 		}
+
 	}
 
 	/**
 	 * Launches the client with the specified parameters.
-	 *
+	 * 
 	 * @param args
 	 *            command line parameters
 	 * @throws ParseException

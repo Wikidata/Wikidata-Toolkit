@@ -38,6 +38,7 @@ public class RdfSerializationActionTest {
 		assertTrue(action instanceof RdfSerializationAction);
 		assertTrue(action.needsSites());
 		assertTrue(action.isReady());
+		assertEquals(action.getActionName(), "RdfSerializationAction");
 	}
 
 	@Test

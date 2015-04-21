@@ -41,9 +41,9 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * provides the additional option
  * {@link RdfSerializationAction#OPTION_RDF_TASKS}, which is required for
  * generating any output.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class RdfSerializationAction extends DumpProcessingOutputAction {
 
@@ -111,6 +111,18 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	}
 
 	/**
+	 * The base file name that will be used by default. File endings for
+	 * indicating compression will be appended where required.
+	 */
+	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.rdf";
+
+	/**
+	 * default action name is used to separate different
+	 * DumpProcessingOutputActions from each other.
+	 */
+	public final static String DEFAULT_ACTION_NAME = "RdfSerializationAction";
+
+	/**
 	 * Internal serializer object that will actually write the RDF output.
 	 */
 	RdfSerializer serializer;
@@ -125,6 +137,10 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	 * Integer that holds the serialization task flags.
 	 */
 	int tasks = 0;
+
+	public RdfSerializationAction() {
+		this.outputDestination = DEFAULT_FILE_NAME;
+	}
 
 	@Override
 	public boolean setOption(String option, String value) {
@@ -181,15 +197,12 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	public void close() {
 		this.serializer.close();
 		super.close();
-		logger.info("Finished serialization of "
-				+ this.serializer.getTripleCount() + " RDF triples in file "
-				+ this.outputDestination);
 	}
 
 	/**
 	 * Creates a new RDF serializer based on the current configuration of this
 	 * object.
-	 *
+	 * 
 	 * @return the newly created RDF serializer
 	 * @throws IOException
 	 *             if there were problems opening the output files
@@ -217,7 +230,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	/**
 	 * Sets the RDF serialization tasks based on the given string value.
-	 *
+	 * 
 	 * @param tasks
 	 *            a space-free, comma-separated list of task names
 	 */
@@ -250,5 +263,18 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 			System.out.println(WordUtils.wrap("* \"" + supportedTask + "\": "
 					+ TASK_HELP.get(supportedTask), 75, "\n   ", true));
 		}
+	}
+
+	@Override
+	public String getReport() {
+		String message = "Finished serialization of "
+				+ this.serializer.getTripleCount() + " RDF triples in file "
+				+ this.insertDumpInformation(this.outputDestination);
+		return message;
+	}
+
+	@Override
+	public String getDefaultActionName() {
+		return DEFAULT_ACTION_NAME;
 	}
 }
