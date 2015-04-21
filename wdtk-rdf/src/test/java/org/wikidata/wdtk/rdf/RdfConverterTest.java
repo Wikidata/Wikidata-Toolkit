@@ -43,6 +43,7 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -228,6 +229,26 @@ public class RdfConverterTest {
 		assertEquals(
 				out.toString(),
 				"\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n");
+	}
+
+	@Test
+	public void testWriteInterPropertyLinks() throws RDFHandlerException,
+			RDFParseException, IOException {
+		PropertyDocument document = this.dataObjectFactory.getPropertyDocument(
+				this.dataObjectFactory.getPropertyIdValue("P17",
+						"http://www.wikidata.org/"), Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(),
+				this.dataObjectFactory
+						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+		this.rdfConverter.writeInterPropertyLinks(document);
+		this.rdfWriter.finish();
+
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("InterPropertyLinks.rdf")), model);
 	}
 
 	@After

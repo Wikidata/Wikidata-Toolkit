@@ -40,9 +40,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 /**
  * This class contains static methods and constants that define the various OWL
  * and RDF vocabularies that are used in the export.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class Vocabulary {
 
@@ -314,8 +314,61 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to statement.
+	 */
+	public static final String WB_PROPERTY_STATEMENT_LINKAGE = PREFIX_WBONTO
+			+ "propertyStatementLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_STATEMENT_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its values.
+	 */
+	public static final String WB_PROPERTY_VALUE_LINKAGE = PREFIX_WBONTO
+			+ "propertyValueLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_VALUE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its qualifiers.
+	 */
+	public static final String WB_PROPERTY_QUALTIFIER_LINKAGE = PREFIX_WBONTO
+			+ "propertyQualifierLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_QUALTIFIER_LINKAGE,
+				OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect references to its attributes.
+	 */
+	public static final String WB_PROPERTY_REFERENCE_LINKAGE = PREFIX_WBONTO
+			+ "propertyReferenceLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_REFERENCE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to values in simple statements.
+	 */
+	public static final String WB_PROPERTY_SIMPLE_CLAIM = PREFIX_WBONTO
+			+ "propertySimpleClaim";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_SIMPLE_CLAIM, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
-	 *
+	 * 
 	 * @return a map from vocabulary URIs to OWL type URIs
 	 */
 	public static Map<String, String> getKnownVocabularyTypes() {
@@ -324,7 +377,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given statement.
-	 *
+	 * 
 	 * @param statement
 	 *            the statement for which to create a URI
 	 * @return the URI
@@ -337,7 +390,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given property in the given context.
-	 *
+	 * 
 	 * @param propertyIdValue
 	 *            the property id for which to create a URI
 	 * @param propertyContext

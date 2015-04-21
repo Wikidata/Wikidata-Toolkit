@@ -51,9 +51,9 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class RdfConverter {
 
@@ -91,7 +91,7 @@ public class RdfConverter {
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 *
+	 * 
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -113,7 +113,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 *
+	 * 
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -217,11 +217,51 @@ public class RdfConverter {
 			writeStatements(subject, document);
 		}
 
+		if (hasTask(RdfSerializer.TASK_PROPERTY_LINKS)) {
+			writeInterPropertyLinks(document);
+		}
+
 		this.snakRdfConverter.writeAuxiliaryTriples();
 		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
 				hasTask(RdfSerializer.TASK_STATEMENTS),
 				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
 		this.referenceRdfConverter.writeReferences();
+	}
+
+	/**
+	 * Writes triples which conect properties with there corresponding rdf
+	 * properties for statements, simple statements, qualifiers, reference
+	 * attributes and values.
+	 * 
+	 * @param document
+	 * @throws RDFHandlerException
+	 */
+	void writeInterPropertyLinks(PropertyDocument document)
+			throws RDFHandlerException {
+		Resource subject = this.rdfWriter.getUri(document.getEntityId()
+				.getIri());
+		this.rdfWriter
+				.writeTripleUriObject(subject, this.rdfWriter
+						.getUri(Vocabulary.WB_PROPERTY_STATEMENT_LINKAGE),
+						Vocabulary.getPropertyUri(document.getPropertyId(),
+								PropertyContext.STATEMENT));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_QUALTIFIER_LINKAGE), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.QUALIFIER));
+		this.rdfWriter
+				.writeTripleUriObject(subject, this.rdfWriter
+						.getUri(Vocabulary.WB_PROPERTY_REFERENCE_LINKAGE),
+						Vocabulary.getPropertyUri(document.getPropertyId(),
+								PropertyContext.REFERENCE));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_SIMPLE_CLAIM), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.SIMPLE_CLAIM));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_VALUE_LINKAGE),
+				Vocabulary.getPropertyUri(document.getPropertyId(),
+						PropertyContext.VALUE));
 	}
 
 	void writeStatements(Resource subject, StatementDocument statementDocument)
@@ -444,7 +484,7 @@ public class RdfConverter {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -465,7 +505,7 @@ public class RdfConverter {
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 *
+	 * 
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task
