@@ -166,12 +166,41 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		String url = getWbGetEntitiesUrl(entityIds);
+		return getStringEntityDocumentMap(entityIds.size(), url);
+	}
 
-		if (entityIds.isEmpty() || url == null) {
+	/**
+	 * Fetches the documents with the titles given in the title list from the wiki
+	 * site given in siteKey, e.g. "enwiki".
+	 * @param siteKey
+	 * 						wiki site id, e.g. "enwiki"
+	 * @param titles
+	 * 						list of string titles (e.g. "Douglas Adams") of requested entities.
+	 * @return	map from titles for which data could be found to the documents that
+	 * 					were retrieved
+	 */
+	public Map<String, EntityDocument> getEntityDocument(String siteKey, List<String> titles){
+		final String titleString = implodeObjects(titles);
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("sites", siteKey);
+		parameters.put("titles", titleString);
+		String url = getWbGetEntitiesUrl(parameters);
+		return getStringEntityDocumentMap(titles.size(), url);
+	}
+
+	/**
+	 * Creates a map of identifiers to documents retrieved via the api url.
+	 * @param numOfEntities
+	 * 					number of entities that should be retrieved.
+	 * @param url
+	 * 					the api url
+	 * @return map of document identifiers to documents retrieved via the api url.
+	 */
+	Map<String, EntityDocument> getStringEntityDocumentMap(int numOfEntities, String url) {
+		if (numOfEntities == 0 || url == null) {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
-
-		Map<String, EntityDocument> result = new HashMap<>(entityIds.size());
+		Map<String, EntityDocument> result = new HashMap<>(numOfEntities);
 
 		try (InputStream inStream = this.webResourceFetcher
 				.getInputStreamForUrl(url)) {
@@ -210,12 +239,43 @@ public class WikibaseDataFetcher {
 		}
 
 		return result;
-
 	}
 
-	public Map<String, EntityDocument> getEntityDocuments(String siteKey, List<String> titles){
-		getWbGetEntitiesUrl(siteKey, titles);
-		return null;
+	/**
+	 * Returns the URL string for a wbgetentities request to the Wikibase API,
+	 * or null if it was not possible to build such a string with the current
+	 * settings.
+	 *
+	 * @param parameters
+	 * 				map of possible parameters (e.g. ("sites", "enwiki"),
+	 * 				("titles", titles of entities to retrieve),
+	 * 				("ids", ids of entities to retrieve).
+	 * 				See WikibaseDataFetcher.getWbGetEntitiesUrl(List<String> entityIds)
+	 * 				as an example.
+	 * @return URL string
+	 */
+	String getWbGetEntitiesUrl(Map<String, String> parameters) {
+
+		URIBuilder uriBuilder;
+		try {
+			uriBuilder = new URIBuilder(this.apiBaseUrl);
+		} catch (URISyntaxException e1) {
+			logger.error("Error in API URL \"" + this.apiBaseUrl + "\": "
+					+ e1.toString());
+			return null;
+		}
+
+		uriBuilder.setParameter("action", "wbgetentities");
+		uriBuilder.setParameter("format", "json");
+		setRequestProps(uriBuilder);
+		setRequestLanguages(uriBuilder);
+		setRequestSitefilter(uriBuilder);
+		for (String parameter : parameters.keySet()) {
+			String value = parameters.get(parameter);
+			uriBuilder.setParameter(parameter, value);
+		}
+
+		return uriBuilder.toString();
 	}
 
 	/**
@@ -228,44 +288,8 @@ public class WikibaseDataFetcher {
 	 * @return URL string
 	 */
 	String getWbGetEntitiesUrl(List<String> entityIds) {
-		URIBuilder uriBuilder;
-		try {
-			uriBuilder = new URIBuilder(this.apiBaseUrl);
-		} catch (URISyntaxException e1) {
-			logger.error("Error in API URL \"" + this.apiBaseUrl + "\": "
-					+ e1.toString());
-			return null;
-		}
-
-		uriBuilder.setParameter("action", "wbgetentities");
-		uriBuilder.setParameter("format", "json");
-		setRequestProps(uriBuilder);
-		setRequestLanguages(uriBuilder);
-		setRequestSitefilter(uriBuilder);
-		uriBuilder.setParameter("ids", implodeObjects(entityIds));
-		System.out.println(uriBuilder.toString());
-		return uriBuilder.toString();
-	}
-
-	String getWbGetEntitiesUrl(String siteKey, List<String> titles) {
-		URIBuilder uriBuilder;
-		try {
-			uriBuilder = new URIBuilder(this.apiBaseUrl);
-		} catch (URISyntaxException e1) {
-			logger.error("Error in API URL \"" + this.apiBaseUrl + "\": "
-					+ e1.toString());
-			return null;
-		}
-
-		uriBuilder.setParameter("action", "wbgetentities");
-		uriBuilder.setParameter("format", "json");
-		uriBuilder.setParameter("sites", siteKey);
-		setRequestProps(uriBuilder);
-		setRequestLanguages(uriBuilder);
-		setRequestSitefilter(uriBuilder);
-		uriBuilder.setParameter("titles", implodeObjects(titles));
-		System.out.println(uriBuilder.toString());
-		return uriBuilder.toString();
+		final String entities = implodeObjects(entityIds);
+		return getWbGetEntitiesUrl(new HashMap<String, String>() {{put("ids", entities);}});
 	}
 
 	/**
