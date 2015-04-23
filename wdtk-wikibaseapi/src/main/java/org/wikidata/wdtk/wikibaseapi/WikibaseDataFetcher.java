@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -213,6 +213,11 @@ public class WikibaseDataFetcher {
 
 	}
 
+	public Map<String, EntityDocument> getEntityDocuments(String siteKey, List<String> titles){
+		getWbGetEntitiesUrl(siteKey, titles);
+		return null;
+	}
+
 	/**
 	 * Returns the URL string for a wbgetentities request to the Wikibase API,
 	 * or null if it was not possible to build such a string with the current
@@ -238,7 +243,28 @@ public class WikibaseDataFetcher {
 		setRequestLanguages(uriBuilder);
 		setRequestSitefilter(uriBuilder);
 		uriBuilder.setParameter("ids", implodeObjects(entityIds));
+		System.out.println(uriBuilder.toString());
+		return uriBuilder.toString();
+	}
 
+	String getWbGetEntitiesUrl(String siteKey, List<String> titles) {
+		URIBuilder uriBuilder;
+		try {
+			uriBuilder = new URIBuilder(this.apiBaseUrl);
+		} catch (URISyntaxException e1) {
+			logger.error("Error in API URL \"" + this.apiBaseUrl + "\": "
+					+ e1.toString());
+			return null;
+		}
+
+		uriBuilder.setParameter("action", "wbgetentities");
+		uriBuilder.setParameter("format", "json");
+		uriBuilder.setParameter("sites", siteKey);
+		setRequestProps(uriBuilder);
+		setRequestLanguages(uriBuilder);
+		setRequestSitefilter(uriBuilder);
+		uriBuilder.setParameter("titles", implodeObjects(titles));
+		System.out.println(uriBuilder.toString());
 		return uriBuilder.toString();
 	}
 

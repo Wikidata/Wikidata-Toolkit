@@ -123,7 +123,7 @@ public class WikibaseDataFetcherTest {
 		wdf.webResourceFetcher = wrf;
 
 		Map<String, EntityDocument> results = wdf
-				.getEntityDocuments(Collections.<String> emptyList());
+				.getEntityDocuments(Collections.<String>emptyList());
 
 		assertEquals(0, results.size());
 	}
@@ -165,6 +165,17 @@ public class WikibaseDataFetcherTest {
 				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&ids=Q6%7CQ42%7CP31",
 				wdf.getWbGetEntitiesUrl(entityIds));
 	}
+
+	@Test
+	public void testWbGetEntitiesUrlTitle() throws IOException {
+		List<String> titles = Arrays.asList("Douglas Adams");
+		String siteKey = "enwiki";
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+		assertEquals(
+				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&sites=enwiki&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&titles=Douglas+Adams",
+				wdf.getWbGetEntitiesUrl(siteKey, titles));
+	}
+
 
 	@Test
 	public void testWbGetEntitiesUrlFilterAll() throws IOException {
