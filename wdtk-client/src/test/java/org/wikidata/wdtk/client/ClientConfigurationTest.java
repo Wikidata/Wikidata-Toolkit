@@ -44,7 +44,7 @@ public class ClientConfigurationTest {
 
 		assertTrue(config.getOfflineMode());
 		assertTrue(config.isQuiet());
-		assertEquals(config.getDumpLocation(), "dumps/wikidata/");
+		assertEquals("dumps/wikidata/", config.getDumpLocation());
 		assertEquals(Collections.<String> emptySet(),
 				config.getFilterSiteKeys());
 		assertEquals(Collections.<PropertyIdValue> singleton(Datamodel
@@ -55,7 +55,7 @@ public class ClientConfigurationTest {
 		langFilters.add("zh");
 		assertEquals(langFilters, config.getFilterLanguages());
 
-		assertEquals(config.getActions().size(), 2);
+		assertEquals(2, config.getActions().size());
 		assertTrue(config.getActions().get(0) instanceof RdfSerializationAction);
 		assertTrue(config.getActions().get(1) instanceof JsonSerializationAction);
 		RdfSerializationAction rdfAction = (RdfSerializationAction) config
@@ -64,16 +64,16 @@ public class ClientConfigurationTest {
 				.getActions().get(1);
 
 		assertTrue(rdfAction.useStdOut);
-		assertEquals(rdfAction.compressionType,
-				DumpProcessingOutputAction.COMPRESS_GZIP);
-		assertEquals(rdfAction.outputDestination, "/tmp/wikidata-items.nt");
-		assertEquals(rdfAction.tasks, RdfSerializer.TASK_ITEMS
-				| RdfSerializer.TASK_STATEMENTS | RdfSerializer.TASK_TERMS);
+		assertEquals(DumpProcessingOutputAction.COMPRESS_GZIP,
+				rdfAction.compressionType);
+		assertEquals("/tmp/wikidata-items.nt", rdfAction.outputDestination);
+		assertEquals(RdfSerializer.TASK_ITEMS | RdfSerializer.TASK_STATEMENTS
+				| RdfSerializer.TASK_TERMS, rdfAction.tasks);
 
 		assertFalse(jsonAction.useStdOut);
-		assertEquals(jsonAction.compressionType,
-				DumpProcessingOutputAction.COMPRESS_BZ2);
-		assertEquals(jsonAction.outputDestination, "/tmp/wikidata-dump.json");
+		assertEquals(DumpProcessingOutputAction.COMPRESS_BZ2,
+				jsonAction.compressionType);
+		assertEquals("/tmp/wikidata-dump.json", jsonAction.outputDestination);
 	}
 
 	@Test
@@ -81,10 +81,11 @@ public class ClientConfigurationTest {
 		String[] args = new String[] {};
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
-		assertEquals(config.getDumpLocation(), null);
-		assertEquals(config.getFilterLanguages(), null);
-		assertEquals(config.getFilterSiteKeys(), null);
-		assertEquals(config.getFilterProperties(), null);
+		assertEquals(null, config.getDumpLocation());
+		assertEquals(null, config.getFilterLanguages());
+		assertEquals(null, config.getFilterSiteKeys());
+		assertEquals(null, config.getFilterProperties());
+		assertEquals(null, config.getReportFilename());
 		assertFalse(config.isQuiet());
 	}
 
@@ -92,7 +93,7 @@ public class ClientConfigurationTest {
 	public void testUnknownAction() {
 		String[] args = new String[] { "-a", "notImplemented" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals(config.getActions().size(), 0);
+		assertEquals(0, config.getActions().size());
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "--unknown", "-foo" };
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
-		assertEquals(config.getDumpLocation(), null);
+		assertEquals(null, config.getDumpLocation());
 		assertFalse(config.isQuiet());
 	}
 
@@ -108,14 +109,14 @@ public class ClientConfigurationTest {
 	public void testDumpLocationArgumentsShort() {
 		String[] args = new String[] { "-d", "dumps/wikidata/" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals(config.getDumpLocation(), "dumps/wikidata/");
+		assertEquals("dumps/wikidata/", config.getDumpLocation());
 	}
 
 	@Test
 	public void testDumpLocationArgumentsLong() {
 		String[] args = new String[] { "--dumps", "dumps/wikidata/" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals(config.getDumpLocation(), "dumps/wikidata/");
+		assertEquals("dumps/wikidata/", config.getDumpLocation());
 	}
 
 	@Test
@@ -158,6 +159,20 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "--quiet" };
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertTrue(config.isQuiet());
+	}
+
+	@Test
+	public void testReportArgumentsShort() {
+		String[] args = new String[] { "-r", "output/report.txt" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertEquals("output/report.txt", config.getReportFilename());
+	}
+
+	@Test
+	public void testReportArgumentsLong() {
+		String[] args = new String[] { "--report", "output/report.txt" };
+		ClientConfiguration config = new ClientConfiguration(args);
+		assertEquals("output/report.txt", config.getReportFilename());
 	}
 
 	@Test

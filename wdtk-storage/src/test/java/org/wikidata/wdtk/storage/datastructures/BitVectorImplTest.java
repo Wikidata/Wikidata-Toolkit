@@ -22,9 +22,6 @@ package org.wikidata.wdtk.storage.datastructures;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.storage.datastructures.BitVector;
-import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
-import org.wikidata.wdtk.storage.datastructures.RankedBitVectorImpl;
 
 /**
  * Test class for {@link BitVectorImpl}.
@@ -163,6 +160,24 @@ public class BitVectorImplTest {
 		}
 	}
 
+	@Test
+	public void testGetOutOfRange() {
+		Assert.assertEquals(false, new BitVectorImpl().getBit(1));
+		Assert.assertEquals(false, new BitVectorImpl().getBit(Long.MAX_VALUE));
+	}
+
+	@Test
+	public void testSetOutOfRange() {
+		BitVectorImpl bv = new BitVectorImpl();
+		Assert.assertEquals(0, bv.size());
+		bv.setBit(41, true);
+		Assert.assertEquals(42, bv.size());
+		Assert.assertEquals(false, bv.getBit(40));
+		Assert.assertEquals(true, bv.getBit(41));
+		Assert.assertEquals(false, bv.getBit(42));
+		Assert.assertEquals(false, bv.getBit(43));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidInitialSize() {
 		new BitVectorImpl(-1);
@@ -175,16 +190,11 @@ public class BitVectorImplTest {
 
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testInvalidPositionSizeGet01() {
-		(new BitVectorImpl()).getBit(1);
-	}
-
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeGet02() {
 		BitVectorImpl.getBitInWord((byte) -1, 0);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidPositionSizeGet03() {
+	public void testInvalidPositionSizeGet02() {
 		BitVectorImpl.getBitInWord((byte) 0x40, 0);
 	}
 

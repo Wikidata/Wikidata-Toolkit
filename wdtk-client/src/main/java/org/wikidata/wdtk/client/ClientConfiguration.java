@@ -50,7 +50,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 /**
  * This class handles the program arguments from the conversion command line
  * tool.
- *
+ * 
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -95,6 +95,10 @@ public class ClientConfiguration {
 	 * Short command-line alternative to {@link #OPTION_OUTPUT_STDOUT}.
 	 */
 	public static final String CMD_OPTION_OUTPUT_STDOUT = "s";
+	/**
+	 * Short command-line alternative to {@link #OPTION_CREATE_REPORT}.
+	 */
+	public static final String CMD_OPTION_CREATE_REPORT = "r";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -141,6 +145,11 @@ public class ClientConfiguration {
 	 * specifying the property filters.
 	 */
 	public static final String OPTION_FILTER_PROPERTIES = "fProp";
+	/**
+	 * Name of the long command line option to create a report file about the
+	 * files produced by DumpProcessingOutputActions.
+	 */
+	public static final String OPTION_CREATE_REPORT = "report";
 	/**
 	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
@@ -195,6 +204,12 @@ public class ClientConfiguration {
 	String dumpLocation = null;
 
 	/**
+	 * String representation of the path where the final report should be
+	 * stored.
+	 */
+	String reportFilename = null;
+
+	/**
 	 * True if no status messages should be written to stdout.
 	 */
 	boolean quiet = false;
@@ -217,7 +232,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Constructs a new object for the given arguments.
-	 *
+	 * 
 	 * @param args
 	 *            command-line arguments
 	 */
@@ -227,7 +242,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Returns the list of actions defined for this object.
-	 *
+	 * 
 	 * @return list of actions
 	 */
 	public List<DumpProcessingAction> getActions() {
@@ -241,7 +256,7 @@ public class ClientConfiguration {
 	/**
 	 * Returns true if all operations should be performed in offline mode,
 	 * without accessing the Internet.
-	 *
+	 * 
 	 * @return true if in offline mode
 	 */
 	public boolean getOfflineMode() {
@@ -252,7 +267,7 @@ public class ClientConfiguration {
 	 * Returns true if the application should not write anything to stdout. This
 	 * can be set explicitly or indirectly if one of the actions wants to write
 	 * to stdout.
-	 *
+	 * 
 	 * @return true if the application should not log messages to stdout
 	 */
 	public boolean isQuiet() {
@@ -260,10 +275,20 @@ public class ClientConfiguration {
 	}
 
 	/**
+	 * Returns the output destination where a report file should be created. If
+	 * the client should not create such a file the function will return null.
+	 * 
+	 * @return report filename
+	 */
+	public String getReportFilename() {
+		return this.reportFilename;
+	}
+
+	/**
 	 * Returns a set of language codes that should be used as a filter, or null
 	 * if no filter is set. An empty set means that all languages should be
 	 * filtered.
-	 *
+	 * 
 	 * @return language filter
 	 */
 	public Set<String> getFilterLanguages() {
@@ -274,7 +299,7 @@ public class ClientConfiguration {
 	 * Returns a set of site keys that should be used as a filter for site
 	 * links, or null if no filter is set. An empty set means that all site
 	 * links should be filtered.
-	 *
+	 * 
 	 * @return site key filter
 	 */
 	public Set<String> getFilterSiteKeys() {
@@ -285,7 +310,7 @@ public class ClientConfiguration {
 	 * Returns a set of property ids that should be used as a filter for
 	 * statements, or null if no filter is set. An empty set means that all
 	 * statements should be filtered.
-	 *
+	 * 
 	 * @return property filter
 	 */
 	public Set<PropertyIdValue> getFilterProperties() {
@@ -304,7 +329,7 @@ public class ClientConfiguration {
 	 * This function interprets the arguments of the main function. By doing
 	 * this it will set flags for the dump generation. See in the help text for
 	 * more specific information about the options.
-	 *
+	 * 
 	 * @param args
 	 *            array of arguments from the main function.
 	 * @return list of {@link DumpProcessingOutputAction}
@@ -354,14 +379,14 @@ public class ClientConfiguration {
 	}
 
 	/**
-	 *
+	 * 
 	 * Reads the properties defined in a configuration file. Returns a set of
 	 * configuration property blocks stored in {@link DumpProcessingAction}
 	 * objects and call
 	 * {@link ClientConfiguration#handleGlobalArguments(CommandLine)} to
 	 * interpreted the properties from the general section. The first element of
 	 * the list contains general information (about all dumps).
-	 *
+	 * 
 	 * @param path
 	 *            filename and path of the configuration file
 	 * @return the list with configurations for all output dumps
@@ -380,6 +405,7 @@ public class ClientConfiguration {
 			} else {
 				DumpProcessingAction action = handleActionArguments(section);
 				if (action != null) {
+					action.setActionName(section.getName());
 					result.add(action);
 				}
 			}
@@ -391,7 +417,7 @@ public class ClientConfiguration {
 	 * Analyses the command-line arguments which are relevant for the
 	 * serialization process in general. It fills out the class arguments with
 	 * this data.
-	 *
+	 * 
 	 * @param cmd
 	 *            {@link CommandLine} objects; contains the command line
 	 *            arguments parsed by a {@link CommandLineParser}
@@ -407,6 +433,10 @@ public class ClientConfiguration {
 
 		if (cmd.hasOption(CMD_OPTION_QUIET)) {
 			this.quiet = true;
+		}
+
+		if (cmd.hasOption(CMD_OPTION_CREATE_REPORT)) {
+			this.reportFilename = cmd.getOptionValue(CMD_OPTION_CREATE_REPORT);
 		}
 
 		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
@@ -425,7 +455,7 @@ public class ClientConfiguration {
 	/**
 	 * Analyses the content of the general section of an ini configuration file
 	 * and fills out the class arguments with this data.
-	 *
+	 * 
 	 * @param section
 	 *            {@link Section} with name "general"
 	 */
@@ -441,6 +471,9 @@ public class ClientConfiguration {
 				if (section.get(key).toLowerCase().equals("true")) {
 					this.quiet = true;
 				}
+				break;
+			case OPTION_CREATE_REPORT:
+				this.reportFilename = section.get(key);
 				break;
 			case OPTION_DUMP_LOCATION:
 				this.dumpLocation = section.get(key);
@@ -464,7 +497,7 @@ public class ClientConfiguration {
 	 * Analyses the command-line arguments which are relevant for the specific
 	 * action that is to be executed, and returns a corresponding
 	 * {@link DumpProcessingAction} object.
-	 *
+	 * 
 	 * @param cmd
 	 *            {@link CommandLine} objects; contains the command line
 	 *            arguments parsed by a {@link CommandLineParser}
@@ -491,7 +524,7 @@ public class ClientConfiguration {
 	 * Analyses the content of a section of an ini configuration file (not the
 	 * "general" section) and fills out the class arguments of an new
 	 * {@link DumpProcessingAction} with this data.
-	 *
+	 * 
 	 * @param section
 	 *            {@link Section} with name "general"
 	 * @return {@link DumpProcessingtAction} containing the output parameters
@@ -518,7 +551,7 @@ public class ClientConfiguration {
 	/**
 	 * Checks if a newly created action wants to write output to stdout, and
 	 * logs a warning if other actions are doing the same.
-	 *
+	 * 
 	 * @param newAction
 	 *            the new action to be checked
 	 */
@@ -535,7 +568,7 @@ public class ClientConfiguration {
 	 * Creates a {@link DumpProcessingAction} object for the action of the given
 	 * name. The operation may fail if the name is not associated with any
 	 * action, or if the associated action class cannot be instantiated.
-	 *
+	 * 
 	 * @param name
 	 *            of the action
 	 * @return the {@link DumpProcessingAction} or null if creation failed
@@ -566,7 +599,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of language filters based on the given string.
-	 *
+	 * 
 	 * @param filters
 	 *            comma-separates list of language codes, or "-" to filter all
 	 *            languages
@@ -582,7 +615,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of site filters based on the given string.
-	 *
+	 * 
 	 * @param filters
 	 *            comma-separates list of site keys, or "-" to filter all site
 	 *            links
@@ -598,7 +631,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of property filters based on the given string.
-	 *
+	 * 
 	 * @param filters
 	 *            comma-separates list of property ids, or "-" to filter all
 	 *            statements
@@ -685,6 +718,14 @@ public class ClientConfiguration {
 				.withLongOpt(OPTION_OUTPUT_COMPRESSION)
 				.create(CMD_OPTION_OUTPUT_COMPRESSION);
 
+		Option report = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"specifies a path to print a final report after dump generations.")
+				.withLongOpt(OPTION_CREATE_REPORT)
+				.create(CMD_OPTION_CREATE_REPORT);
+
 		options.addOption(config);
 		options.addOption(action);
 		options.addOption(
@@ -698,6 +739,7 @@ public class ClientConfiguration {
 		options.addOption(filterSites);
 		options.addOption(filterProperties);
 		options.addOption(compressionExtention);
+		options.addOption(report);
 		options.addOption(rdfdump);
 		options.addOption(
 				CMD_OPTION_OFFLINE_MODE,

@@ -104,6 +104,30 @@ public class RdfConverterTest {
 	}
 
 	@Test
+	public void testWriteStatementRankTriple() throws RDFHandlerException,
+			RDFParseException, IOException {
+		StatementRank rank = StatementRank.DEPRECATED;
+		Resource subject = this.rdfFactory
+				.createURI("http://www.wikidata.org/Q10Snone");
+		this.rdfConverter.writeStatementRankTriple(subject, rank);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementRankTriple.rdf")), model);
+	}
+
+	@Test
+	public void testStatement() throws RDFHandlerException, RDFParseException,
+			IOException {
+		Statement statement = objectFactory.createStatement("Q100", "P227");
+		this.rdfConverter.writeStatement(statement);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("Statement.rdf")));
+	}
+
+	@Test
 	public void testWriteBasicDeclarations() throws RDFHandlerException,
 			RDFParseException, IOException {
 		this.rdfConverter.writeBasicDeclarations();
