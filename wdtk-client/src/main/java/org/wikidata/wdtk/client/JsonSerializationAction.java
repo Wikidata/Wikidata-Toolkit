@@ -30,9 +30,9 @@ import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 /**
  * This class represents an action of generating a JSON dump from data. It has
  * no specific options.
- *
+ * 
  * @author Markus Kroetzsch
- *
+ * 
  */
 public class JsonSerializationAction extends DumpProcessingOutputAction {
 
@@ -43,13 +43,19 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.json";
 
 	/**
+	 * default action name is used to separate different
+	 * DumpProcessingOutputActions from each other.
+	 */
+	public final static String DEFAULT_ACTION_NAME = "JsonSerializationAction";
+
+	/**
 	 * The actual serializer used internally.
 	 */
 	JsonSerializer serializer;
 
 	/**
 	 * Constructor. See {@link DumpProcessingOutputAction} for more details.
-	 *
+	 * 
 	 * @param conversionProperties
 	 */
 	public JsonSerializationAction() {
@@ -70,8 +76,7 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public void open() {
 		OutputStream outputStream;
 		try {
-			outputStream = getOutputStream(this.useStdOut,
-					insertDumpInformation(this.outputDestination),
+			outputStream = getOutputStream(this.useStdOut, getOutputFilename(),
 					this.compressionType);
 			this.serializer = new JsonSerializer(outputStream);
 			this.serializer.open();
@@ -95,6 +100,19 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	public void close() {
 		this.serializer.close();
 		super.close();
+	}
+
+	@Override
+	public String getReport() {
+		String message = "Finished serialization of "
+				+ this.serializer.getEntityDocumentCount()
+				+ " EntityDocuments in file " + getOutputFilename();
+		return message;
+	}
+
+	@Override
+	public String getDefaultActionName() {
+		return DEFAULT_ACTION_NAME;
 	}
 
 }

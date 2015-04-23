@@ -231,6 +231,14 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property for Wikibase rank.
+	 */
+	public static final String WB_RANK = PREFIX_WBONTO + "rank";
+	static {
+		VOCABULARY_TYPES.put(WB_RANK, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
 	 * Property for defining the globe of a globe coordinates value.
 	 */
 	public static final String WB_GLOBE = PREFIX_WBONTO + "globe";
@@ -312,6 +320,14 @@ public class Vocabulary {
 	static {
 		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
+
+	public static final String WB_NORMAL_RANK = PREFIX_WBONTO + "NormalRank";
+
+	public static final String WB_PREFERRED_RANK = PREFIX_WBONTO
+			+ "PreferredRank";
+
+	public static final String WB_DEPRECATED_RANK = PREFIX_WBONTO
+			+ "DeprecatedRank";
 
 	/**
 	 * Property for defining a linkage between a property and the URIs which are
