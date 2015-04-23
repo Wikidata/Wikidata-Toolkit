@@ -192,10 +192,12 @@ public class ClientTest {
 		action.open();
 		action.close();
 		client.writeReport();
-		assertEquals(
-				"RdfSerializationAction: Finished serialization of 24 RDF triples in file /output/wikidata.rdf\n",
-				IOUtils.toString(mdm.getInputStreamForFile("report.txt",
-						CompressionType.NONE)));
+		assertTrue(IOUtils
+				.toString(
+						mdm.getInputStreamForFile("report.txt",
+								CompressionType.NONE))
+				.matches(
+						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf\n"));
 
 	}
 }
