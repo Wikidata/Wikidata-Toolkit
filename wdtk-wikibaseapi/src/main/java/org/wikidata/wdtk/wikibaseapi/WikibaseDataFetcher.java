@@ -173,7 +173,7 @@ public class WikibaseDataFetcher {
 	 * Fetches the documents with the titles given in the title list from the wiki
 	 * site given in siteKey, e.g. "enwiki".
 	 * @param siteKey
-	 * 						wiki site id, e.g. "enwiki"
+	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
 	 * 						list of string titles (e.g. "Douglas Adams") of requested entities.
 	 * @return	map from titles for which data could be found to the documents that
