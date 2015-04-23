@@ -175,9 +175,9 @@ public class WikibaseDataFetcher {
 	 * @param siteKey
 	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
-	 * 						list of string titles (e.g. "Douglas Adams") of requested entities.
+	 *            list of string titles (e.g. "Douglas Adams") of requested entities.
 	 * @return	map from titles for which data could be found to the documents that
-	 * 					were retrieved
+	 *          were retrieved
 	 */
 	public Map<String, EntityDocument> getEntityDocument(String siteKey, List<String> titles){
 		final String titleString = implodeObjects(titles);
@@ -191,9 +191,9 @@ public class WikibaseDataFetcher {
 	/**
 	 * Creates a map of identifiers to documents retrieved via the api url.
 	 * @param numOfEntities
-	 * 					number of entities that should be retrieved.
+	 *            number of entities that should be retrieved.
 	 * @param url
-	 * 					the api url
+	 *            the api url
 	 * @return map of document identifiers to documents retrieved via the api url.
 	 */
 	Map<String, EntityDocument> getStringEntityDocumentMap(int numOfEntities, String url) {
@@ -247,11 +247,11 @@ public class WikibaseDataFetcher {
 	 * settings.
 	 *
 	 * @param parameters
-	 * 				map of possible parameters (e.g. ("sites", "enwiki"),
-	 * 				("titles", titles of entities to retrieve),
-	 * 				("ids", ids of entities to retrieve).
-	 * 				See WikibaseDataFetcher.getWbGetEntitiesUrl(List<String> entityIds)
-	 * 				as an example.
+	 *            map of possible parameters (e.g. ("sites", "enwiki"),
+	 *            ("titles", titles of entities to retrieve),
+	 *            ("ids", ids of entities to retrieve).
+	 *            See WikibaseDataFetcher.getWbGetEntitiesUrl(List<String> entityIds)
+	 *            as an example.
 	 * @return URL string
 	 */
 	String getWbGetEntitiesUrl(Map<String, String> parameters) {
