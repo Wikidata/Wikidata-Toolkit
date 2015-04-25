@@ -266,6 +266,30 @@ public class RdfConverterTest {
 	}
 
 	@Test
+	public void writeSubpropertyOfStatementsCollision()
+			throws RDFHandlerException {
+		WikibaseDataFetcher mockDataFetcher = Mockito
+				.mock(WikibaseDataFetcher.class);
+		PropertyDocument propertyDocument = this.dataObjectFactory
+				.getPropertyDocument(
+						this.dataObjectFactory.getPropertyIdValue("P279",
+								"http://www.wikidata.org/"),
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						this.dataObjectFactory
+								.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES));
+
+		Mockito.when(mockDataFetcher.getEntityDocument("P279")).thenReturn(
+				propertyDocument);
+		RdfConverter.dataFetcher = mockDataFetcher;
+		PropertyDocument document = createTestPropertyDocument();
+		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
+		this.rdfWriter.finish();
+		assertEquals("", out.toString());
+	}
+
+	@Test
 	public void testTaxonomy() throws RDFHandlerException, RDFParseException,
 			IOException {
 		ItemDocument document = createTestItemDocument();
