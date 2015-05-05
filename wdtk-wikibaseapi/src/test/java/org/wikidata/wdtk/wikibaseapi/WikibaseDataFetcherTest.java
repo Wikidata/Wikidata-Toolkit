@@ -25,7 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
@@ -120,7 +123,7 @@ public class WikibaseDataFetcherTest {
 		wdf.webResourceFetcher = wrf;
 
 		Map<String, EntityDocument> results = wdf
-				.getEntityDocuments(Collections.<String>emptyList());
+				.getEntityDocuments(Collections.<String> emptyList());
 
 		assertEquals(0, results.size());
 	}
@@ -165,15 +168,48 @@ public class WikibaseDataFetcherTest {
 
 	@Test
 	public void testWbGetEntitiesUrlTitle() throws IOException {
-		List<String> titles = Arrays.asList("Douglas Adams");
+		List<String> titles = Collections
+				.<String> singletonList("Douglas Adams");
 		String siteKey = "enwiki";
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("sites", "enwiki");
-		parameters.put("titles", "Douglas Adams");
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
 		assertEquals(
 				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&sites=enwiki&titles=Douglas+Adams",
-				wdf.getWbGetEntitiesUrl(parameters));
+				wdf.getWbGetEntitiesUrl(siteKey, titles));
+	}
+
+	@Test
+	public void testWbGetEntitiesTitle() throws IOException {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl("enwiki",
+						Collections.<String> singletonList("Douglas Adams")),
+				"/wbgetentities-Douglas-Adams.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf
+				.getEntityDocumentByTitle("enwiki", "Douglas Adams");
+
+		assertEquals("Q42", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWbGetEntitiesTitleEmpty() throws IOException {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl("dewiki",
+						Collections.<String> singletonList("1234567890")),
+				"/wbgetentities-1234567890-missing.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki", "1234567890");
+
+		assertEquals(null, result);
 	}
 
 	@Test
