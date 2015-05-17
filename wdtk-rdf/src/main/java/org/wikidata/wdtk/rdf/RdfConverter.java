@@ -31,12 +31,11 @@ import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
@@ -49,7 +48,6 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
-import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
@@ -72,8 +70,7 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
-	static WikibaseDataFetcher dataFetcher = new WikibaseDataFetcher();
+	static PropertyTypes propertyTypes = new WikidataPropertyTypes();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
@@ -368,14 +365,14 @@ public class RdfConverter {
 						}
 
 						if (mainSnak.getValue() instanceof EntityIdValue) {
-							EntityDocument entityDocument = RdfConverter.dataFetcher
-									.getEntityDocument(((EntityIdValue) mainSnak
-											.getValue()).getId());
-							if (entityDocument instanceof PropertyDocument) {
-								DatatypeIdValue datatype = ((PropertyDocument) entityDocument)
-										.getDatatype();
-								if (!datatype.equals(propertyDocument
-										.getDatatype())) {
+							String id = ((EntityIdValue) mainSnak.getValue())
+									.getId();
+							if (id.startsWith("P")) {
+								String datatype = RdfConverter.propertyTypes
+										.getPropertyType((PropertyIdValue) mainSnak
+												.getValue());
+								if (!propertyDocument.getDatatype().getIri()
+										.equals(datatype)) {
 									logger.warn("Datatype of subproperty "
 											+ propertyDocument.getDatatype()
 													.toString()

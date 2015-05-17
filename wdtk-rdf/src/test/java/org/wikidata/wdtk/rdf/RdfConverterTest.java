@@ -57,7 +57,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 public class RdfConverterTest {
 
@@ -243,50 +242,39 @@ public class RdfConverterTest {
 
 	@Test
 	public void testWriteSubpropertyOfStatements() throws RDFHandlerException {
-		WikibaseDataFetcher mockDataFetcher = Mockito
-				.mock(WikibaseDataFetcher.class);
-		PropertyDocument propertyDocument = this.dataObjectFactory
-				.getPropertyDocument(this.dataObjectFactory.getPropertyIdValue(
-						"P279", "http://www.wikidata.org/"), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(),
-						this.dataObjectFactory
-								.getDatatypeIdValue(DatatypeIdValue.DT_ITEM));
-
-		Mockito.when(mockDataFetcher.getEntityDocument("P279")).thenReturn(
-				propertyDocument);
-		RdfConverter.dataFetcher = mockDataFetcher;
+		PropertyTypes mockPropertyTypes = Mockito
+				.mock(WikidataPropertyTypes.class);
+		Mockito.when(
+				mockPropertyTypes.getPropertyType(dataObjectFactory
+						.getPropertyIdValue("P279", "http://www.wikidata.org/")))
+				.thenReturn(DatatypeIdValue.DT_ITEM);
+		PropertyTypes propertyTypes = RdfConverter.propertyTypes;
+		RdfConverter.propertyTypes = mockPropertyTypes;
 		PropertyDocument document = createTestPropertyDocument();
 		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
 		this.rdfWriter.finish();
 		assertEquals(
 				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.wikidata.org/P279> .\n",
 				out.toString());
+		RdfConverter.propertyTypes = propertyTypes;
 	}
 
 	@Test
 	public void writeSubpropertyOfStatementsCollision()
 			throws RDFHandlerException {
-		WikibaseDataFetcher mockDataFetcher = Mockito
-				.mock(WikibaseDataFetcher.class);
-		PropertyDocument propertyDocument = this.dataObjectFactory
-				.getPropertyDocument(
-						this.dataObjectFactory.getPropertyIdValue("P279",
-								"http://www.wikidata.org/"),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						this.dataObjectFactory
-								.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES));
-
-		Mockito.when(mockDataFetcher.getEntityDocument("P279")).thenReturn(
-				propertyDocument);
-		RdfConverter.dataFetcher = mockDataFetcher;
+		PropertyTypes mockPropertyTypes = Mockito
+				.mock(WikidataPropertyTypes.class);
+		Mockito.when(
+				mockPropertyTypes.getPropertyType(dataObjectFactory
+						.getPropertyIdValue("P279", "http://www.wikidata.org/")))
+				.thenReturn(DatatypeIdValue.DT_GLOBE_COORDINATES);
+		PropertyTypes propertyTypes = RdfConverter.propertyTypes;
+		RdfConverter.propertyTypes = mockPropertyTypes;
 		PropertyDocument document = createTestPropertyDocument();
 		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
 		this.rdfWriter.finish();
 		assertEquals("", out.toString());
+		RdfConverter.propertyTypes = propertyTypes;
 	}
 
 	@Test
