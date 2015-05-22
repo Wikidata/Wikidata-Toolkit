@@ -197,7 +197,8 @@ public class ClientTest {
 						mdm.getInputStreamForFile("report.txt",
 								CompressionType.NONE))
 				.matches(
-						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf\n"));
+						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf"
+								+ System.lineSeparator()));
 
 	}
 }
