@@ -32,7 +32,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.ValueFactory;
@@ -220,6 +219,37 @@ public class RdfConverterTest {
 				labels, descriptions, aliases, statementGroups, datatypeId);
 	}
 
+	private PropertyDocument createWrongTestPropertyDocument() {
+		PropertyIdValue propertyIdValue = this.dataObjectFactory
+				.getPropertyIdValue("P171", "http://www.wikidata.org/");
+		PropertyIdValue subpropertyOf = this.dataObjectFactory
+				.getPropertyIdValue("P1647", "http://www.wikidata.org/");
+		PropertyIdValue wrongProperty = this.dataObjectFactory
+				.getPropertyIdValue("P90000", "http://www.wikidata.org/");
+
+		List<MonolingualTextValue> labels = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
+
+		Claim claim = this.dataObjectFactory.getClaim(propertyIdValue,
+				this.dataObjectFactory.getValueSnak(subpropertyOf,
+						wrongProperty), Collections.<SnakGroup> emptyList());
+		List<Statement> statements = new ArrayList<Statement>();
+		statements.add(this.dataObjectFactory.getStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
+		StatementGroup statementGroup = this.dataObjectFactory
+				.getStatementGroup(statements);
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		statementGroups.add(statementGroup);
+
+		DatatypeIdValue datatypeId = this.dataObjectFactory
+				.getDatatypeIdValue(DatatypeIdValue.DT_ITEM);
+
+		return this.dataObjectFactory.getPropertyDocument(propertyIdValue,
+				labels, descriptions, aliases, statementGroups, datatypeId);
+	}
+
 	@Test
 	public void testWriteInstanceOfStatements() throws RDFHandlerException {
 		this.rdfConverter.tasks = RdfSerializer.TASK_INSTANCE_OF;
@@ -242,39 +272,24 @@ public class RdfConverterTest {
 
 	@Test
 	public void testWriteSubpropertyOfStatements() throws RDFHandlerException {
-		PropertyTypes mockPropertyTypes = Mockito
-				.mock(WikidataPropertyTypes.class);
-		Mockito.when(
-				mockPropertyTypes.getPropertyType(dataObjectFactory
-						.getPropertyIdValue("P279", "http://www.wikidata.org/")))
-				.thenReturn(DatatypeIdValue.DT_ITEM);
-		PropertyTypes propertyTypes = RdfConverter.propertyTypes;
-		RdfConverter.propertyTypes = mockPropertyTypes;
 		PropertyDocument document = createTestPropertyDocument();
 		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
 		this.rdfWriter.finish();
 		assertEquals(
 				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.wikidata.org/P279> .\n",
 				out.toString());
-		RdfConverter.propertyTypes = propertyTypes;
 	}
 
 	@Test
 	public void writeSubpropertyOfStatementsCollision()
 			throws RDFHandlerException {
-		PropertyTypes mockPropertyTypes = Mockito
-				.mock(WikidataPropertyTypes.class);
-		Mockito.when(
-				mockPropertyTypes.getPropertyType(dataObjectFactory
-						.getPropertyIdValue("P279", "http://www.wikidata.org/")))
-				.thenReturn(DatatypeIdValue.DT_GLOBE_COORDINATES);
-		PropertyTypes propertyTypes = RdfConverter.propertyTypes;
-		RdfConverter.propertyTypes = mockPropertyTypes;
-		PropertyDocument document = createTestPropertyDocument();
+		RdfConverter.propertyTypes.setPropertyType(dataObjectFactory
+				.getPropertyIdValue("P90000", "http://www.wikidata.org/"),
+				DatatypeIdValue.DT_GLOBE_COORDINATES);
+		PropertyDocument document = createWrongTestPropertyDocument();
 		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
 		this.rdfWriter.finish();
 		assertEquals("", out.toString());
-		RdfConverter.propertyTypes = propertyTypes;
 	}
 
 	@Test
