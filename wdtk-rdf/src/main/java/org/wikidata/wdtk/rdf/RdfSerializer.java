@@ -36,9 +36,9 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 /**
  * This class implements {@link EntityDocumentDumpProcessor} to provide a RDF
  * serializer to render RDF graphs of {@link EntityDocument} objects.
- *
+ * 
  * @author Michael Günther
- *
+ * 
  */
 public class RdfSerializer implements EntityDocumentDumpProcessor {
 
@@ -69,7 +69,7 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 
 	/**
 	 * Creates a new RDF serializer for the specified format and output stream.
-	 *
+	 * 
 	 * @param format
 	 *            RDF format, such as RDFFormat.TURTLE
 	 * @param output
@@ -77,16 +77,18 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	 * @param sites
 	 *            information about site links
 	 */
-	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites) {
+	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites,
+			String wikibaseUriPrefix) {
 		this.output = output;
 		this.rdfWriter = new RdfWriter(format, output);
-		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
+		this.rdfConverter = new RdfConverter(this.rdfWriter, sites,
+				wikibaseUriPrefix);
 	}
 
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 *
+	 * 
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -98,7 +100,7 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	 * Returns the tasks that should be performed during export. The value
 	 * should be a combination of flags such as
 	 * {@link RdfSerializer#TASK_STATEMENTS}.
-	 *
+	 * 
 	 * @return tasks to be performed
 	 */
 	public int getTasks() {
@@ -107,7 +109,7 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 
 	/**
 	 * Returns the number of triples that have been written so far.
-	 *
+	 * 
 	 * @return number of triples
 	 */
 	public long getTripleCount() {

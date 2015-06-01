@@ -72,11 +72,13 @@ public class RdfConverter {
 	// this.
 	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
 	final Sites sites;
+	final String wikibaseUriPrefix;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
-	public RdfConverter(RdfWriter rdfWriter, Sites sites) {
+	public RdfConverter(RdfWriter rdfWriter, Sites sites,
+			String wikibaseUriPrefix) {
 		this.sites = sites;
 		this.rdfWriter = rdfWriter;
 		this.owlDeclarationBuffer = new OwlDeclarationBuffer();
@@ -87,6 +89,7 @@ public class RdfConverter {
 				this.valueRdfConverter);
 		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
 				this.snakRdfConverter);
+		this.wikibaseUriPrefix = wikibaseUriPrefix;
 	}
 
 	/**
@@ -126,9 +129,7 @@ public class RdfConverter {
 	}
 
 	public void writeNamespaceDeclarations() throws RDFHandlerException {
-		// TODO The prefix for wiki entities should depend on the data
-		this.rdfWriter.writeNamespaceDeclaration("id",
-				"http://www.wikidata.org/entity/");
+		this.rdfWriter.writeNamespaceDeclaration("id", this.wikibaseUriPrefix);
 		this.rdfWriter
 				.writeNamespaceDeclaration("wo", Vocabulary.PREFIX_WBONTO);
 		this.rdfWriter.writeNamespaceDeclaration("rdf", Vocabulary.PREFIX_RDF);

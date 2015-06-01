@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * The Wikidata Toolkit command line client provides a stand-alone tool for
  * generating RDF exports and it supports a range of parameters. This example is
  * merely used to illustrate how to achieve this from your own code if needed.
- *
+ * 
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -116,7 +116,7 @@ public class RdfSerializationExample {
 	 * that). The tasks define what the serializer will be writing into this
 	 * file. The new serializer is also registered in an internal list, so it
 	 * can be started and closed more conveniently.
-	 *
+	 * 
 	 * @param outputFileName
 	 *            filename to write output to
 	 * @param compressionExtension
@@ -168,7 +168,7 @@ public class RdfSerializationExample {
 		// BufferedOutputStream(compressorOutputStream,1024 * 1024 * 50);
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, sites);
+				exportOutputStream, sites, "http://www.wikidata.org/entity/");
 		serializer.setTasks(tasks);
 
 		dumpProcessingController.registerEntityDocumentProcessor(serializer,
@@ -238,7 +238,7 @@ public class RdfSerializationExample {
 	 * This code is inspired by
 	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
 	 * -that-does-its-compression-in-a-separate-thread
-	 *
+	 * 
 	 * @param outputStream
 	 *            the stream to write to in the thread
 	 * @return a new stream that data should be written to
@@ -272,7 +272,7 @@ public class RdfSerializationExample {
 	/**
 	 * Closes a Closeable and swallows any exceptions that might occur in the
 	 * process.
-	 *
+	 * 
 	 * @param closeable
 	 */
 	static void close(Closeable closeable) {

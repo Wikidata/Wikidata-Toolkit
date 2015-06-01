@@ -222,7 +222,8 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				this.compressionType);
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, this.sites);
+				exportOutputStream, this.sites,
+				"http://www.wikidata.org/entity/");
 		serializer.setTasks(this.tasks);
 
 		return serializer;
