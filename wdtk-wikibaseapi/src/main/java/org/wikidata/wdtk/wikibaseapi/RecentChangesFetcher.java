@@ -20,10 +20,13 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -123,7 +126,8 @@ public class RecentChangesFetcher {
 	}
 
 	/**
-	 * parses the name of the property from the item string of
+	 * parses the name of the property from the item string of the recent
+	 * changes feed
 	 * 
 	 * @param itemString
 	 *                substring for an item of the recent changes feed
@@ -137,6 +141,35 @@ public class RecentChangesFetcher {
 		int end = itemString.indexOf(endString);
 		String propertyName = itemString.substring(start, end);
 		return propertyName;
+	}
+
+	/**
+	 * parses the date and time of the change of a property from the item
+	 * string of the recent changes feed
+	 * 
+	 * @param itemString
+	 *                substring for an item of the recent changes feed
+	 * @return date for the recent change
+	 */
+
+	public Date parseTime(String itemString) {
+		String startString = "<pubDate>";
+		String endString = "</pubDate>";
+		int start = itemString.indexOf(startString)
+				+ startString.length();
+		int end = itemString.indexOf(endString);
+		String timeString = itemString.substring(start, end);
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss Z",
+					Locale.ENGLISH).parse(timeString);
+		}
+
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
 	}
 
 	/**

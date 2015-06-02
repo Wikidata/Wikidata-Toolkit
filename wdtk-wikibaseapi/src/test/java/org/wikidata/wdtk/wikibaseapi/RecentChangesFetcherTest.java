@@ -26,6 +26,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Test;
@@ -33,9 +36,14 @@ import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class RecentChangesFetcherTest{
 	@Test
-	public void testCreation(){
-		RecentChangesFetcher rcf = new RecentChangesFetcher();
-		assertEquals(rcf.rdfURL,"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
+	public void testConstructors() {
+		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
+		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
+				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
+		assertEquals(rcf1.rdfURL,
+				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
+		assertEquals(rcf2.rdfURL,
+				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 	}
 	
 	@Test
@@ -48,5 +56,25 @@ public class RecentChangesFetcherTest{
 		Set<String> result = rcf.getRecentChanges();
 		assertTrue(result.contains("Q1876457"));
 		assertFalse(result.contains("Q1"));
+		assertFalse(result.contains("Wikidata  - Recent changes [en]"));
+	}
+
+	@Test
+	public void testParsePropertyName() {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		String itemString = " <title>Q5</title> ";
+		String result = rcf.parsePropertyName(itemString);
+		assertEquals(result, "Q5");
+	}
+
+	@Test
+	public void testParseDate() {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		String itemString = " <pubDate>Tue, 02 Jun 2015 13:21:58 GMT</pubDate> ";
+		Date result = rcf.parseTime(itemString);
+		String resultString = new SimpleDateFormat(
+				"dd.MM.yyyy HH:mm:ss", Locale.GERMANY)
+				.format(result);
+		assertEquals(resultString, "02.06.2015 15:21:58");
 	}
 }
