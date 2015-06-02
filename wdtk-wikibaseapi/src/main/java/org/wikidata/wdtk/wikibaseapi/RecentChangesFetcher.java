@@ -118,7 +118,7 @@ public class RecentChangesFetcher {
 			if (firstEntry) {
 				firstEntry = false;
 			} else {
-				String propertyName = parsePropertyName(item);
+				String propertyName = parsePropertyNameFromItemString(item);
 				propertyNames.add(propertyName);
 			}
 		}
@@ -133,7 +133,7 @@ public class RecentChangesFetcher {
 	 *                substring for an item of the recent changes feed
 	 * @return name of the property
 	 */
-	public String parsePropertyName(String itemString) {
+	public String parsePropertyNameFromItemString(String itemString) {
 		String startString = "<title>";
 		String endString = "</title>";
 		int start = itemString.indexOf(startString)
@@ -149,10 +149,9 @@ public class RecentChangesFetcher {
 	 * 
 	 * @param itemString
 	 *                substring for an item of the recent changes feed
-	 * @return date for the recent change
+	 * @return date and time for the recent change
 	 */
-
-	public Date parseTime(String itemString) {
+	public Date parseTimeFromItemString(String itemString) {
 		String startString = "<pubDate>";
 		String endString = "</pubDate>";
 		int start = itemString.indexOf(startString)
@@ -166,12 +165,32 @@ public class RecentChangesFetcher {
 		}
 
 		catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Could not parse date from string \""
+					+ itemString + "\". Error:\n"
+					+ e.toString());
 		}
 		return date;
 	}
 
+
+	/**
+	 * parses the name or the IP address of the change of a property from
+	 * the item string of the recent changes feed
+	 * 
+	 * @param itemString
+	 *                substring for an item of the recent changes feed
+	 * @return name of the author (if user is registered) or the IP address
+	 *         (if user is not registered)
+	 */
+	public String parseAuthorFromItemString(String itemString) {
+		String startString = "<dc:creator>";
+		String endString = "</dc:creator>";
+		int start = itemString.indexOf(startString)
+				+ startString.length();
+		int end = itemString.indexOf(endString);
+		return itemString.substring(start, end);
+	}
+	
 	/**
 	 * method to call for getting recent changes
 	 * 

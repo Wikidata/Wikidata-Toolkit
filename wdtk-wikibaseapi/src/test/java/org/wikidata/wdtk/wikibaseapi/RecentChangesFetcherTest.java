@@ -63,7 +63,7 @@ public class RecentChangesFetcherTest{
 	public void testParsePropertyName() {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		String itemString = " <title>Q5</title> ";
-		String result = rcf.parsePropertyName(itemString);
+		String result = rcf.parsePropertyNameFromItemString(itemString);
 		assertEquals(result, "Q5");
 	}
 
@@ -71,10 +71,18 @@ public class RecentChangesFetcherTest{
 	public void testParseDate() {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		String itemString = " <pubDate>Tue, 02 Jun 2015 13:21:58 GMT</pubDate> ";
-		Date result = rcf.parseTime(itemString);
+		Date result = rcf.parseTimeFromItemString(itemString);
 		String resultString = new SimpleDateFormat(
 				"dd.MM.yyyy HH:mm:ss", Locale.GERMANY)
 				.format(result);
 		assertEquals(resultString, "02.06.2015 15:21:58");
+	}
+
+	@Test
+	public void testParseAuthor() {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		String itemString = " <dc:creator>Test</dc:creator> ";
+		String result = rcf.parseAuthorFromItemString(itemString);
+		assertEquals(result, "Test");
 	}
 }
