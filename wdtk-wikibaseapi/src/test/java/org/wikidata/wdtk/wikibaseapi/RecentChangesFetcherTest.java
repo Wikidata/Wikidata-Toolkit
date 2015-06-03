@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class RecentChangesFetcherTest{
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
 		wrf.setWebResourceContentsFromResource(rcf.rdfURL,
-				"/recentchanges.rdf", this.getClass());
+				"/recentchanges.xml", this.getClass());
 		rcf.webResourceFetcher = wrf;
 		Set<String> result = rcf.getRecentChanges();
 		assertTrue(result.contains("Q1876457"));
@@ -73,9 +72,9 @@ public class RecentChangesFetcherTest{
 		String itemString = " <pubDate>Tue, 02 Jun 2015 13:21:58 GMT</pubDate> ";
 		Date result = rcf.parseTimeFromItemString(itemString);
 		String resultString = new SimpleDateFormat(
-				"dd.MM.yyyy HH:mm:ss", Locale.GERMANY)
+				"dd.MM.yyyy HH:mm:ss")
 				.format(result);
-		assertEquals(resultString, "02.06.2015 15:21:58");
+		assertEquals(resultString, "02.06.2015 13:21:58");
 	}
 
 	@Test
