@@ -53,6 +53,7 @@ public class RecentChangesFetcherTest{
 				"/recentchanges.xml", this.getClass());
 		rcf.webResourceFetcher = wrf;
 		Set<String> result = rcf.getRecentChanges();
+		assertTrue(result.contains("Q20026648"));
 		assertTrue(result.contains("Q1876457"));
 		assertFalse(result.contains("Q1"));
 		assertFalse(result.contains("Wikidata  - Recent changes [en]"));

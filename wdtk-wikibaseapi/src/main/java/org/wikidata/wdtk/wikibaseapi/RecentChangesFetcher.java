@@ -20,14 +20,15 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -79,28 +80,6 @@ public class RecentChangesFetcher {
 		this.rdfURL = rdfURL;
 	}
 
-	/**
-	 * Fetches IOStream from RDF feed and separates it into different items
-	 * 
-	 * @return Different items of the recent changes feed or null if it does
-	 *         not exist
-	 */
-	public String[] getStringFromIOStream() {
-		String[] result = null;
-		try {
-			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(rdfURL);
-			Scanner scanner = new Scanner(inputStream);
-			String rdfString = scanner.useDelimiter("\\Z").next();
-			result = rdfString.split("<item>");
-			scanner.close();
-			inputStream.close();
-		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + rdfURL
-					+ ". Error:\n" + e.toString());
-		}
-		return result;
-	}
 
 	/**
 	 * parses a substring of the recent changes feed and collects all
@@ -192,13 +171,53 @@ public class RecentChangesFetcher {
 	}
 	
 	/**
-	 * method to call for getting recent changes
+	 * Fetches IOStream from RSS feed and return a set of recent changes.
 	 * 
-	 * @return Set of recent Changes
+	 * @return a set recent changes from the recent changes feed
 	 */
 	public Set<String> getRecentChanges() {
-		String[] recentChangeString = getStringFromIOStream();
-		Set<String> recentChanges = parseItemStrings(recentChangeString);
-		return recentChanges;
+		Set<String> changes = new HashSet<>();
+		try {
+			InputStream inputStream = this.webResourceFetcher
+					.getInputStreamForUrl(rdfURL);
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStream));
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				if (line.contains("<item>")) {
+					changes.add(parseItem(bufferedReader,
+							line));
+				}
+				line = bufferedReader.readLine();
+			}
+			inputStream.close();
+		} catch (IOException e) {
+			logger.error("Could not retrieve data from " + rdfURL
+					+ ". Error:\n" + e.toString());
+		}
+		return changes;
+	}
+
+	String parseItem(BufferedReader bf, String line) {
+		String propertyName = "";
+		while (!line.contains("</item>")) {
+			try {
+				line = bf.readLine();
+				if (line.contains("<title>")) {
+					propertyName = parsePropertyNameFromItemString(line);
+				}
+				// if (line.contains("<pubDate>")) {
+				// date = parseTimeFromItemString(line);
+				// }
+				// if (line.contains("<dc:creator>")) {
+				// author = parseAuthorFromItemString(line);
+				// }
+			} catch (IOException e) {
+				logger.error("Could not retrieve data from "
+						+ rdfURL + ". Error:\n"
+						+ e.toString());
+			}
+		}
+		return propertyName;
 	}
 }
