@@ -79,6 +79,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		KNOWN_TASKS.put("instanceof", RdfSerializer.TASK_INSTANCE_OF);
 		KNOWN_TASKS.put("simplestatements",
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		KNOWN_TASKS.put("subproperties", RdfSerializer.TASK_SUBPROPERTIES);
 	}
 
 	public static final Map<String, String> TASK_HELP = new HashMap<>();
@@ -108,6 +109,9 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		TASK_HELP
 				.put("simplestatements",
 						"export unqualified statements without references as single triples");
+		TASK_HELP
+				.put("subproperties",
+						"export unqualified subpropertyof information in the considered entities");
 	}
 
 	/**

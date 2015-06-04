@@ -74,6 +74,8 @@ public class Vocabulary {
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
 	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
 	public static final String RDFS_SUBCLASS_OF = PREFIX_RDFS + "subClassOf";
+	public static final String RDFS_SUBPROPERTY_OF = PREFIX_RDFS
+			+ "subPropertyOf";
 	public static final String OWL_THING = PREFIX_OWL + "Thing";
 	public static final String OWL_CLASS = PREFIX_OWL + "Class";
 	public static final String OWL_OBJECT_PROPERTY = PREFIX_OWL
