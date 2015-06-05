@@ -50,12 +50,12 @@ public class RecentChangesFetcher {
 	/**
 	 * URL for the recent changes feed of wikidata.org.
 	 */
-	final static String WIKIDATA_RDF_FEED_URL = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
+	final static String WIKIDATA_RSS_FEED_URL = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
 
 	/**
 	 * The URL where the recent changes feed can be found.
 	 */
-	final String rdfURL;
+	final String rssURL;
 
 	/**
 	 * Object used to make web requests. Package-private so that it can be
@@ -67,7 +67,7 @@ public class RecentChangesFetcher {
 	 * Creates an object to fetch recent changes of Wikidata
 	 */
 	public RecentChangesFetcher() {
-		this(WIKIDATA_RDF_FEED_URL);
+		this(WIKIDATA_RSS_FEED_URL);
 	}
 
 	/**
@@ -77,32 +77,9 @@ public class RecentChangesFetcher {
 	 *                URL of the RDF feed
 	 */
 	public RecentChangesFetcher(String rdfURL) {
-		this.rdfURL = rdfURL;
+		this.rssURL = rdfURL;
 	}
 
-
-	/**
-	 * parses a substring of the recent changes feed and collects all
-	 * property names
-	 * 
-	 * @param items
-	 *                substring for an item of the recent changes feed
-	 * @return set of all property names that were changed. Hence multiple
-	 *         changes appear only once.
-	 */
-	public Set<String> parseItemStrings(String[] items) {
-		Set<String> propertyNames = new HashSet<>();
-		boolean firstEntry = true;
-		for (String item : items) {
-			if (firstEntry) {
-				firstEntry = false;
-			} else {
-				String propertyName = parsePropertyNameFromItemString(item);
-				propertyNames.add(propertyName);
-			}
-		}
-		return propertyNames;
-	}
 
 	/**
 	 * parses the name of the property from the item string of the recent
@@ -112,7 +89,7 @@ public class RecentChangesFetcher {
 	 *                substring for an item of the recent changes feed
 	 * @return name of the property
 	 */
-	public String parsePropertyNameFromItemString(String itemString) {
+	String parsePropertyNameFromItemString(String itemString) {
 		String startString = "<title>";
 		String endString = "</title>";
 		int start = itemString.indexOf(startString)
@@ -130,7 +107,7 @@ public class RecentChangesFetcher {
 	 *                substring for an item of the recent changes feed
 	 * @return date and time for the recent change
 	 */
-	public Date parseTimeFromItemString(String itemString) {
+	Date parseTimeFromItemString(String itemString) {
 		String startString = "<pubDate>";
 		String endString = "</pubDate>";
 		int start = itemString.indexOf(startString)
@@ -161,7 +138,7 @@ public class RecentChangesFetcher {
 	 * @return name of the author (if user is registered) or the IP address
 	 *         (if user is not registered)
 	 */
-	public String parseAuthorFromItemString(String itemString) {
+	String parseAuthorFromItemString(String itemString) {
 		String startString = "<dc:creator>";
 		String endString = "</dc:creator>";
 		int start = itemString.indexOf(startString)
@@ -179,7 +156,7 @@ public class RecentChangesFetcher {
 		Set<String> changes = new HashSet<>();
 		try {
 			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(rdfURL);
+					.getInputStreamForUrl(rssURL);
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(inputStream));
 			String line = bufferedReader.readLine();
@@ -192,17 +169,26 @@ public class RecentChangesFetcher {
 			}
 			inputStream.close();
 		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + rdfURL
+			logger.error("Could not retrieve data from " + rssURL
 					+ ". Error:\n" + e.toString());
 		}
 		return changes;
 	}
 
-	String parseItem(BufferedReader bf, String line) {
+	/**
+	 * Parses an item inside the <item>-tag.
+	 * 
+	 * @param bufferedReader
+	 *                reader that reads the InputStream
+	 * @param line
+	 *                last line from the InputStream that has been read
+	 * @return RecentChange that equals the item
+	 */
+	String parseItem(BufferedReader bufferedReader, String line) {
 		String propertyName = "";
 		while (!line.contains("</item>")) {
 			try {
-				line = bf.readLine();
+				line = bufferedReader.readLine();
 				if (line.contains("<title>")) {
 					propertyName = parsePropertyNameFromItemString(line);
 				}
@@ -213,8 +199,8 @@ public class RecentChangesFetcher {
 				// author = parseAuthorFromItemString(line);
 				// }
 			} catch (IOException e) {
-				logger.error("Could not retrieve data from "
-						+ rdfURL + ". Error:\n"
+				logger.error("Could not parse data from "
+						+ rssURL + ". Error:\n"
 						+ e.toString());
 			}
 		}

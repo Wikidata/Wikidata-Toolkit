@@ -39,9 +39,9 @@ public class RecentChangesFetcherTest{
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
 		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
-		assertEquals(rcf1.rdfURL,
+		assertEquals(rcf1.rssURL,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
-		assertEquals(rcf2.rdfURL,
+		assertEquals(rcf2.rssURL,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 	}
 	
@@ -49,7 +49,7 @@ public class RecentChangesFetcherTest{
 	public void testGetRecentChanges() throws IOException {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(rcf.rdfURL,
+		wrf.setWebResourceContentsFromResource(rcf.rssURL,
 				"/recentchanges.xml", this.getClass());
 		rcf.webResourceFetcher = wrf;
 		Set<String> result = rcf.getRecentChanges();
