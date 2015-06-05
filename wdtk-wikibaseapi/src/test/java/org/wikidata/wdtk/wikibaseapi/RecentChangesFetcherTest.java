@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class RecentChangesFetcherTest{
+	private String dateLine = "			<pubDate>Tue, 02 Jun 2015 13:22:02 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1876457</comments>		</item>";
+	
 	@Test
 	public void testConstructors() {
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
@@ -70,12 +72,11 @@ public class RecentChangesFetcherTest{
 	@Test
 	public void testParseDate() {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
-		String itemString = " <pubDate>Tue, 02 Jun 2015 13:21:58 GMT</pubDate> ";
-		Date result = rcf.parseTimeFromItemString(itemString);
+		Date result = rcf.parseTimeFromItemString(dateLine);
 		String resultString = new SimpleDateFormat(
 				"dd.MM.yyyy HH:mm:ss")
 				.format(result);
-		assertEquals(resultString, "02.06.2015 13:21:58");
+		assertEquals(resultString, "02.06.2015 13:22:02");
 	}
 
 	@Test

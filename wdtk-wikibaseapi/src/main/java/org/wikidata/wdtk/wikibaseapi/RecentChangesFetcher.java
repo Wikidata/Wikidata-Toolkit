@@ -108,15 +108,12 @@ public class RecentChangesFetcher {
 	 * @return date and time for the recent change
 	 */
 	Date parseTimeFromItemString(String itemString) {
-		String startString = "<pubDate>";
-		String endString = "</pubDate>";
-		int start = itemString.indexOf(startString)
-				+ startString.length();
-		int end = itemString.indexOf(endString);
+		int start = 17;
+		int end = 41;
 		String timeString = itemString.substring(start, end);
 		Date date = null;
 		try {
-			date = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss Z",
+			date = new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z",
 					Locale.ENGLISH).parse(timeString);
 		}
 
@@ -193,7 +190,7 @@ public class RecentChangesFetcher {
 					propertyName = parsePropertyNameFromItemString(line);
 				}
 				// if (line.contains("<pubDate>")) {
-				// date = parseTimeFromItemString(line);
+				// Date date = parseTimeFromItemString(line);
 				// }
 				// if (line.contains("<dc:creator>")) {
 				// author = parseAuthorFromItemString(line);
