@@ -82,8 +82,7 @@ public class RecentChangesFetcherTest{
 	@Test
 	public void testParseAuthor() {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
-		String itemString = " <dc:creator>Test</dc:creator> ";
-		String result = rcf.parseAuthorFromItemString(itemString);
-		assertEquals(result, "Test");
+		String result = rcf.parseAuthorFromItemString(dateLine);
+		assertEquals(result, "Superzerocool");
 	}
 }

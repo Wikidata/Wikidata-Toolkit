@@ -136,10 +136,8 @@ public class RecentChangesFetcher {
 	 *         (if user is not registered)
 	 */
 	String parseAuthorFromItemString(String itemString) {
-		String startString = "<dc:creator>";
 		String endString = "</dc:creator>";
-		int start = itemString.indexOf(startString)
-				+ startString.length();
+		int start = 66;
 		int end = itemString.indexOf(endString);
 		return itemString.substring(start, end);
 	}
@@ -193,7 +191,8 @@ public class RecentChangesFetcher {
 				// Date date = parseTimeFromItemString(line);
 				// }
 				// if (line.contains("<dc:creator>")) {
-				// author = parseAuthorFromItemString(line);
+				// String author =
+				// parseAuthorFromItemString(line);
 				// }
 			} catch (IOException e) {
 				logger.error("Could not parse data from "
