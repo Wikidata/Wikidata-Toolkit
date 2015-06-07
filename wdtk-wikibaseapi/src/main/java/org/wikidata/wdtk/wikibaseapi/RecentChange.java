@@ -26,6 +26,22 @@ public class RecentChange implements Comparable<RecentChange> {
 	private Date date;
 
 	/**
+	 * Constructor
+	 * 
+	 * @param propertyName
+	 *                name of the changed property
+	 * @param date
+	 *                date of the recent change
+	 * @param author
+	 *                name of the author of the recent change
+	 */
+	public RecentChange(String propertyName, Date date, String author) {
+		this.propertyName = propertyName;
+		this.date = date;
+		this.author = author;
+	}
+
+	/**
 	 * Returns the author of the recent change
 	 * 
 	 * @return name (if user is registered) or the ip adress (if user is
@@ -57,6 +73,9 @@ public class RecentChange implements Comparable<RecentChange> {
 	public int compareTo(RecentChange other) {
 		if (this.date.after(other.date)) {
 			return 1;
+		}
+		if (this.date.before(other.date)) {
+			return -1;
 		}
 		return 0;
 	}
