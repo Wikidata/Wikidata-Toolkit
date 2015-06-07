@@ -27,9 +27,9 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +48,19 @@ public class RecentChangesFetcher {
 			.getLogger(WikibaseDataFetcher.class);
 
 	/**
-	 * URL for the recent changes feed of wikidata.org.
+	 * URL prefix for the recent changes feed of wikidata.org.
 	 */
-	final static String WIKIDATA_RSS_FEED_URL = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
+	final static String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/";
+
+	/**
+	 * URL suffix for RSS recent changes feed
+	 */
+	final static String RSS_FEED_URL_SUFFIX = "w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
 
 	/**
 	 * The URL where the recent changes feed can be found.
 	 */
-	final String rssURL;
+	final String rssUrl;
 
 	/**
 	 * Object used to make web requests. Package-private so that it can be
@@ -67,17 +72,19 @@ public class RecentChangesFetcher {
 	 * Creates an object to fetch recent changes of Wikidata
 	 */
 	public RecentChangesFetcher() {
-		this(WIKIDATA_RSS_FEED_URL);
+		this(WIKIDATA_RSS_FEED_URL_PREFIX);
 	}
 
 	/**
 	 * Creates an object to fetch recent changes
 	 * 
-	 * @param rdfURL
-	 *                URL of the RDF feed
+	 * @param rdfUrlPrefix
+	 *                Prefix of an URL of the RSS recent changes feed, e.g.
+	 *                http://www.wikidata.org/ for wikidata, the suffix is
+	 *                added in this constructor
 	 */
-	public RecentChangesFetcher(String rdfURL) {
-		this.rssURL = rdfURL;
+	public RecentChangesFetcher(String rdfUrlPrefix) {
+		this.rssUrl = rdfUrlPrefix + RSS_FEED_URL_SUFFIX;
 	}
 
 
@@ -147,11 +154,11 @@ public class RecentChangesFetcher {
 	 * 
 	 * @return a set recent changes from the recent changes feed
 	 */
-	public Set<String> getRecentChanges() {
-		Set<String> changes = new HashSet<>();
+	public Set<RecentChange> getRecentChanges() {
+		Set<RecentChange> changes = new TreeSet<>();
 		try {
 			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(rssURL);
+					.getInputStreamForUrl(rssUrl);
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(inputStream));
 			String line = bufferedReader.readLine();
@@ -164,7 +171,7 @@ public class RecentChangesFetcher {
 			}
 			inputStream.close();
 		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + rssURL
+			logger.error("Could not retrieve data from " + rssUrl
 					+ ". Error:\n" + e.toString());
 		}
 		return changes;
@@ -179,28 +186,33 @@ public class RecentChangesFetcher {
 	 *                last line from the InputStream that has been read
 	 * @return RecentChange that equals the item
 	 */
-	String parseItem(BufferedReader bufferedReader, String line) {
-		String propertyName = "";
+	RecentChange parseItem(BufferedReader bufferedReader, String line) {
+		String propertyName = null;
+		String author = null;
+		Date date = null;
 		while (!line.contains("</item>")) {
 			try {
 				line = bufferedReader.readLine();
+
 				if (line.contains("<title>")) {
 					propertyName = parsePropertyNameFromItemString(line);
 				}
-				// if (line.contains("<pubDate>")) {
-				// Date date = parseTimeFromItemString(line);
-				// }
-				// if (line.contains("<dc:creator>")) {
-				// String author =
-				// parseAuthorFromItemString(line);
-				// }
+				if (line.contains("<pubDate>")) {
+					date = parseTimeFromItemString(line);
+				}
+				if (line.contains("<dc:creator>")) {
+					author = parseAuthorFromItemString(line);
+				}
 			} catch (IOException e) {
 				logger.error("Could not parse data from "
-						+ rssURL + ". Error:\n"
+						+ rssUrl + ". Error:\n"
 						+ e.toString());
 			}
 		}
-		return propertyName;
+		if (propertyName == null || author == null || date == null) {
+			throw new NullPointerException();
+		}
+		return new RecentChange(propertyName, date, author);
 	}
 
 

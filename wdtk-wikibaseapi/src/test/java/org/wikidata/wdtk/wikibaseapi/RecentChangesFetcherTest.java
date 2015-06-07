@@ -43,25 +43,35 @@ public class RecentChangesFetcherTest{
 	public void testConstructors() {
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
 		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
+				"http://www.wikidata.org/");
+		assertEquals(rcf1.rssUrl,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
-		assertEquals(rcf1.rssURL,
-				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
-		assertEquals(rcf2.rssURL,
+		assertEquals(rcf2.rssUrl,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 	}
 	
 	@Test
-	public void testGetRecentChanges() throws IOException {
+	public void testGetRecentChanges() throws IOException, ParseException {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(rcf.rssURL,
+		wrf.setWebResourceContentsFromResource(rcf.rssUrl,
 				"/recentchanges.xml", this.getClass());
 		rcf.webResourceFetcher = wrf;
-		Set<String> result = rcf.getRecentChanges();
-		assertTrue(result.contains("Q20026648"));
-		assertTrue(result.contains("Q1876457"));
-		assertFalse(result.contains("Q1"));
-		assertFalse(result.contains("Wikidata  - Recent changes [en]"));
+		Set<RecentChange> result = rcf.getRecentChanges();
+		RecentChange rc1 = new RecentChange(
+				"Q1876457",
+				new SimpleDateFormat("dd.MM.yyyy HH:mm:ss Z",
+						Locale.ENGLISH)
+						.parse("02.06.2015 13:22:02 GMT"),
+				"Superzerocool");
+		assertTrue(result.contains(rc1));
+		// assertTrue(result.contains("Q20026648"));
+		// assertTrue(result.contains("Q1876457"));
+		// assertFalse(result.contains("Q1"));
+		RecentChange rc2 = new RecentChange(
+				"Wikidata  - Recent changes [en]", new Date(),
+				"");
+		assertFalse(result.contains(rc2));
 	}
 
 	@Test

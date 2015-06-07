@@ -70,6 +70,19 @@ public class RecentChange implements Comparable<RecentChange> {
 	}
 
 	@Override
+	public boolean equals(Object other) {
+		if (other instanceof RecentChange) {
+			RecentChange o = (RecentChange) other;
+			if (this.propertyName.equals(o.propertyName)
+					&& (this.date.equals(o.date))
+					&& (this.author.equals(o.author))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public int compareTo(RecentChange other) {
 		if (this.date.after(other.date)) {
 			return 1;
