@@ -35,6 +35,7 @@ import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class RecentChangesFetcherTest{
 	private String dateLine = "			<pubDate>Tue, 02 Jun 2015 13:22:02 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1876457</comments>		</item>";
+	private String titleLine = "			<title>Q1876457</title>";
 	
 	@Test
 	public void testConstructors() {
@@ -64,9 +65,8 @@ public class RecentChangesFetcherTest{
 	@Test
 	public void testParsePropertyName() {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
-		String itemString = " <title>Q5</title> ";
-		String result = rcf.parsePropertyNameFromItemString(itemString);
-		assertEquals(result, "Q5");
+		String result = rcf.parsePropertyNameFromItemString(titleLine);
+		assertEquals(result, "Q1876457");
 	}
 
 	@Test
