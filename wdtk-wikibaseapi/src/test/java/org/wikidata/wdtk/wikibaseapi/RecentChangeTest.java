@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
@@ -16,7 +17,9 @@ public class RecentChangeTest {
 	public void testEquals() {
 		RecentChange rc1 = new RecentChange("a", new Date(), "b");
 		RecentChange rc2 = new RecentChange("a", new Date(), "b");
+		RecentChange rc3 = new RecentChange("c", new Date(), "b");
 		assertTrue(rc1.equals(rc2));
+		assertFalse(rc3.equals(rc2));
 	}
 
 	@Test
