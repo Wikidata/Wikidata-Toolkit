@@ -26,8 +26,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Test;
@@ -70,13 +72,14 @@ public class RecentChangesFetcherTest{
 	}
 
 	@Test
-	public void testParseDate() {
+	public void testParseDate() throws ParseException {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		Date result = rcf.parseTimeFromItemString(dateLine);
-		String resultString = new SimpleDateFormat(
-				"dd.MM.yyyy HH:mm:ss")
-				.format(result);
-		assertEquals(resultString, "02.06.2015 13:22:02");
+		Date actualDate = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss Z",
+				Locale.ENGLISH)
+				.parse("02.06.2015 13:22:02 GMT");
+		assertEquals(actualDate.compareTo(result), 0);
+
 	}
 
 	@Test
