@@ -144,8 +144,9 @@ public class RdfConverterTest {
 			RDFParseException, IOException {
 		this.rdfConverter.writeNamespaceDeclarations();
 		this.rdfWriter.finish();
-		assertEquals(this.out.toString(),
-				RdfTestHelpers.getResourceFromFile("Namespaces.rdf"));
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("Namespaces.rdf")), model);
 	}
 
 	@Test
@@ -213,23 +214,30 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testWriteInstanceOfStatements() throws RDFHandlerException {
+	public void testWriteInstanceOfStatements() throws RDFHandlerException,
+			RDFParseException, IOException {
 		this.rdfConverter.tasks = RdfSerializer.TASK_INSTANCE_OF;
 		ItemDocument document = createTestItemDocument();
 		this.rdfConverter.writeInstanceOfStatements(resource, document);
 		this.rdfWriter.finish();
-		assertEquals(out.toString(),
-				"\n<http://test.org/> a <http://www.wikidata.org/Q10> .\n");
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(
+				RdfTestHelpers
+						.parseRdf("\n<http://test.org/> a <http://www.wikidata.org/Q10> .\n"),
+				model);
 	}
 
 	@Test
-	public void testWriteSubclassOfStatements() throws RDFHandlerException {
+	public void testWriteSubclassOfStatements() throws RDFHandlerException,
+			RDFParseException, IOException {
 		ItemDocument document = createTestItemDocument();
 		this.rdfConverter.writeSubclassOfStatements(resource, document);
 		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
-				out.toString(),
-				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.wikidata.org/Q11> .\n");
+				RdfTestHelpers
+						.parseRdf("<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.wikidata.org/Q11> ."),
+				model);
 	}
 
 	@Test
@@ -246,13 +254,16 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testWriteSimpleStatements() throws RDFHandlerException {
+	public void testWriteSimpleStatements() throws RDFHandlerException,
+			RDFParseException, IOException {
 		ItemDocument document = createTestItemDocument();
 		this.rdfConverter.writeSimpleStatements(resource, document);
 		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
-				out.toString(),
-				"\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n");
+				RdfTestHelpers
+						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n"),
+				model);
 	}
 
 	@Test

@@ -167,6 +167,52 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
+	public void testWbGetEntitiesUrlTitle() throws IOException {
+		List<String> titles = Collections
+				.<String> singletonList("Douglas Adams");
+		String siteKey = "enwiki";
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+		assertEquals(
+				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&sites=enwiki&titles=Douglas+Adams",
+				wdf.getWbGetEntitiesUrl(siteKey, titles));
+	}
+
+	@Test
+	public void testWbGetEntitiesTitle() throws IOException {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl("enwiki",
+						Collections.<String> singletonList("Douglas Adams")),
+				"/wbgetentities-Douglas-Adams.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf
+				.getEntityDocumentByTitle("enwiki", "Douglas Adams");
+
+		assertEquals("Q42", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWbGetEntitiesTitleEmpty() throws IOException {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl("dewiki",
+						Collections.<String> singletonList("1234567890")),
+				"/wbgetentities-1234567890-missing.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki", "1234567890");
+
+		assertEquals(null, result);
+	}
+
+	@Test
 	public void testWbGetEntitiesUrlFilterAll() throws IOException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();

@@ -22,6 +22,7 @@ package org.wikidata.wdtk.examples;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -46,6 +47,7 @@ public class FetchOnlineDataExample {
 		System.out.println("*** Fetching data for several entities:");
 		Map<String, EntityDocument> results = wbdf.getEntityDocuments("Q80",
 				"P31");
+		// Keys of this map are Qids, but we only use the values here:
 		for (EntityDocument ed : results.values()) {
 			System.out.println("Successfully retrieved data for "
 					+ ed.getEntityId().getId());
@@ -69,6 +71,23 @@ public class FetchOnlineDataExample {
 					+ "\nand its English Wikipedia page has the title "
 					+ ((ItemDocument) q8).getSiteLinks().get("enwiki")
 							.getPageTitle() + ".");
+		}
+
+		System.out.println("*** Fetching data based on page title:");
+		EntityDocument edPratchett = wbdf.getEntityDocumentByTitle("enwiki",
+				"Terry Pratchett");
+		System.out.println("The Qid of Terry Pratchett is "
+				+ edPratchett.getEntityId().getId());
+
+		System.out.println("*** Fetching data based on several page titles:");
+		results = wbdf.getEntityDocumentsByTitle("enwiki", "Wikidata",
+				"Wikipedia");
+		// In this case, keys are titles rather than Qids
+		for (Entry<String, EntityDocument> entry : results.entrySet()) {
+			System.out
+					.println("Successfully retrieved data for page entitled \""
+							+ entry.getKey() + "\": "
+							+ entry.getValue().getEntityId().getId());
 		}
 
 		System.out.println("*** Done.");

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
@@ -166,12 +167,92 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		String url = getWbGetEntitiesUrl(entityIds);
+		return getStringEntityDocumentMap(entityIds.size(), url, null);
+	}
 
-		if (entityIds.isEmpty() || url == null) {
+	/**
+	 * Fetches the document for the entity that has a page of the given title on
+	 * the given site. Site keys should be some site identifier known to the
+	 * Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g., "enwiki"
+	 * @param title
+	 *            string titles (e.g. "Douglas Adams") of requested entities
+	 * @return document for the entity with this title, or null if no such
+	 *         document exists
+	 */
+	public EntityDocument getEntityDocumentByTitle(String siteKey, String title) {
+		return getEntityDocumentsByTitle(siteKey, title).get(title);
+	}
+
+	/**
+	 * Fetches the documents for the entities that have pages of the given
+	 * titles on the given site. Site keys should be some site identifier known
+	 * to the Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g. "enwiki"
+	 * @param titles
+	 *            list of string titles (e.g. "Douglas Adams") of requested
+	 *            entities
+	 * @return map from titles for which data could be found to the documents
+	 *         that were retrieved
+	 */
+	public Map<String, EntityDocument> getEntityDocumentsByTitle(
+			String siteKey, String... titles) {
+		return getEntityDocumentsByTitle(siteKey, Arrays.asList(titles));
+	}
+
+	/**
+	 * Fetches the documents for the entities that have pages of the given
+	 * titles on the given site. Site keys should be some site identifier known
+	 * to the Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g. "enwiki"
+	 * @param titles
+	 *            list of string titles (e.g. "Douglas Adams") of requested
+	 *            entities
+	 * @return map from titles for which data could be found to the documents
+	 *         that were retrieved
+	 */
+	public Map<String, EntityDocument> getEntityDocumentsByTitle(
+			String siteKey, List<String> titles) {
+		String url = getWbGetEntitiesUrl(siteKey, titles);
+		return getStringEntityDocumentMap(titles.size(), url, siteKey);
+	}
+
+	/**
+	 * Creates a map of identifiers or page titles to documents retrieved via
+	 * the API URL.
+	 *
+	 * @param numOfEntities
+	 *            number of entities that should be retrieved
+	 * @param url
+	 *            the API URL (with parameters)
+	 * @param siteKey
+	 *            null if the map keys should be document ids; siite key (e.g.,
+	 *            "enwiki") if the map should use page titles of a linked site
+	 *            as keys
+	 * @return map of document identifiers or titles to documents retrieved via
+	 *         the API URL
+	 */
+	Map<String, EntityDocument> getStringEntityDocumentMap(int numOfEntities,
+			String url, String siteKey) {
+		if (numOfEntities == 0 || url == null) {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
-
-		Map<String, EntityDocument> result = new HashMap<>(entityIds.size());
+		Map<String, EntityDocument> result = new HashMap<>(numOfEntities);
 
 		try (InputStream inStream = this.webResourceFetcher
 				.getInputStreamForUrl(url)) {
@@ -195,7 +276,19 @@ public class WikibaseDataFetcher {
 								entityNode,
 								JacksonTermedStatementDocument.class);
 						ed.setSiteIri(this.siteIri);
-						result.put(ed.getEntityId().getId(), ed);
+
+						if (siteKey == null) {
+							result.put(ed.getEntityId().getId(), ed);
+						} else {
+							if (ed instanceof JacksonItemDocument
+									&& ((JacksonItemDocument) ed)
+											.getSiteLinks()
+											.containsKey(siteKey)) {
+								result.put(((JacksonItemDocument) ed)
+										.getSiteLinks().get(siteKey)
+										.getPageTitle(), ed);
+							}
+						}
 					} catch (JsonProcessingException e) {
 						logger.error("Error when reading JSON for entity "
 								+ entityNode.path("id").asText("UNKNOWN")
@@ -210,7 +303,6 @@ public class WikibaseDataFetcher {
 		}
 
 		return result;
-
 	}
 
 	/**
@@ -218,11 +310,16 @@ public class WikibaseDataFetcher {
 	 * or null if it was not possible to build such a string with the current
 	 * settings.
 	 *
-	 * @param entityIds
-	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
+	 * @param parameters
+	 *            map of possible parameters (e.g. ("sites", "enwiki"),
+	 *            ("titles", titles of entities to retrieve), ("ids", ids of
+	 *            entities to retrieve). See
+	 *            WikibaseDataFetcher.getWbGetEntitiesUrl(List<String>
+	 *            entityIds) as an example.
 	 * @return URL string
 	 */
-	String getWbGetEntitiesUrl(List<String> entityIds) {
+	String getWbGetEntitiesUrl(Map<String, String> parameters) {
+
 		URIBuilder uriBuilder;
 		try {
 			uriBuilder = new URIBuilder(this.apiBaseUrl);
@@ -237,9 +334,48 @@ public class WikibaseDataFetcher {
 		setRequestProps(uriBuilder);
 		setRequestLanguages(uriBuilder);
 		setRequestSitefilter(uriBuilder);
-		uriBuilder.setParameter("ids", implodeObjects(entityIds));
+		for (String parameter : parameters.keySet()) {
+			String value = parameters.get(parameter);
+			uriBuilder.setParameter(parameter, value);
+		}
 
 		return uriBuilder.toString();
+	}
+
+	/**
+	 * Returns the URL string for a wbgetentities request to the Wikibase API,
+	 * or null if it was not possible to build such a string with the current
+	 * settings.
+	 *
+	 * @param entityIds
+	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
+	 * @return URL string
+	 */
+	String getWbGetEntitiesUrl(List<String> entityIds) {
+		final String entityString = implodeObjects(entityIds);
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("ids", entityString);
+		return getWbGetEntitiesUrl(parameters);
+	}
+
+	/**
+	 * Returns the URL string for a wbgetentities request to the Wikibase API,
+	 * or null if it was not possible to build such a string with the current
+	 * settings.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g. "enwiki"
+	 * @param titles
+	 *            list of string titles (e.g. "Douglas Adams") of requested
+	 *            entities.
+	 * @return URL string
+	 */
+	String getWbGetEntitiesUrl(String siteKey, List<String> titles) {
+		final String titleString = implodeObjects(titles);
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("sites", siteKey);
+		parameters.put("titles", titleString);
+		return getWbGetEntitiesUrl(parameters);
 	}
 
 	/**
