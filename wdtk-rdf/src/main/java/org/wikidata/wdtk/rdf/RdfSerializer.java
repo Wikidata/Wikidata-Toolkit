@@ -59,6 +59,7 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	public static final int TASK_TAXONOMY = 0x00010000;
 	public static final int TASK_INSTANCE_OF = 0x00020000;
 	public static final int TASK_SIMPLE_STATEMENTS = 0x00040000;
+	public static final int TASK_SUBPROPERTIES = 0x00100000;
 
 	public static final int TASK_ITEMS = 0x00000100;
 	public static final int TASK_PROPERTIES = 0x00000200;

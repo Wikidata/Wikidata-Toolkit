@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
@@ -70,7 +71,7 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
+	static PropertyTypes propertyTypes = new WikidataPropertyTypes();
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
@@ -220,6 +221,11 @@ public class RdfConverter {
 
 		if (hasTask(RdfSerializer.TASK_PROPERTY_LINKS)) {
 			writeInterPropertyLinks(document);
+
+		}
+
+		if (hasTask(RdfSerializer.TASK_SUBPROPERTIES)) {
+			writeSubpropertyOfStatements(subject, document);
 		}
 
 		this.snakRdfConverter.writeAuxiliaryTriples();
@@ -372,6 +378,68 @@ public class RdfConverter {
 							throw new RuntimeException(e.toString(), e);
 						}
 					}
+				}
+			}
+		}
+	}
+
+	void writeSubpropertyOfStatements(Resource subject,
+			PropertyDocument propertyDocument) {
+		for (StatementGroup statementGroup : propertyDocument
+				.getStatementGroups()) {
+			boolean isSubPropertyOf = "P1647".equals(statementGroup
+					.getProperty().getId());
+			if (!isSubPropertyOf) {
+				continue;
+			}
+			for (Statement statement : statementGroup.getStatements()) {
+				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
+					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
+							.getMainSnak();
+					if (statement.getClaim().getQualifiers().size() == 0) {
+						Value value = this.valueRdfConverter.getRdfValue(
+								mainSnak.getValue(), mainSnak.getPropertyId(),
+								true);
+						if (value == null) {
+							logger.error("Clould not serialize subclass of snak: missing value (Snak: "
+									+ mainSnak.toString() + ")");
+							continue;
+						}
+
+						if (mainSnak.getValue() instanceof EntityIdValue) {
+							String id = ((EntityIdValue) mainSnak.getValue())
+									.getId();
+							if (id.startsWith("P")) {
+								String datatype = RdfConverter.propertyTypes
+										.getPropertyType((PropertyIdValue) mainSnak
+												.getValue());
+								if (!propertyDocument.getDatatype().getIri()
+										.equals(datatype)) {
+									logger.warn("Datatype of subproperty "
+											+ propertyDocument.getDatatype()
+													.toString()
+											+ " is different from superproperty "
+											+ datatype.toString());
+									continue;
+								}
+							} else {
+								logger.warn(value.toString()
+										+ " is not a Property");
+							}
+						} else {
+							logger.warn("Not a valid EntityIdValue: "
+									+ value.toString());
+							continue;
+						}
+
+						try {
+							this.rdfWriter.writeTripleValueObject(subject,
+									RdfWriter.RDFS_SUBPROPERTY_OF, value);
+						} catch (RDFHandlerException e) {
+							throw new RuntimeException(e.toString(), e);
+						}
+					}
+
 				}
 			}
 		}

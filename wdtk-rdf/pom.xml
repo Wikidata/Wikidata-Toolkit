@@ -30,6 +30,11 @@
 		<artifactId>wdtk-util</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+	<dependency>			
+		<groupId>${project.groupId}</groupId>
+		<artifactId>wdtk-wikibaseapi</artifactId>
+		<version>${project.version}</version>
+	</dependency>
 	<dependency>
 		<groupId>org.apache.httpcomponents</groupId>
 		<artifactId>httpclient</artifactId>
