@@ -20,28 +20,83 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 /**
- * Interface for retrieving information about Wikibase Properties.
+ * This class helps to manage information about Properties that has to obtained
+ * by a webservice.
  * 
- * @author Michael Günther
+ * @author michael
  * 
  */
-public interface PropertyRegister {
+public class PropertyRegister {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(PropertyRegister.class);
+
+	WikibaseDataFetcher dataFetcher;
+
+	final Map<String, String> datatypes = new HashMap<String, String>();
+
+	final Map<String, String> uriPatterns = new HashMap<String, String>();
+
+	final String uriPatternPropertyId;
+
+	final int API_MAX_ENTITY_DOCUMENT_NUMBER = 50;
+
+	int lowestPropertyIdNumber;
+
+	public PropertyRegister(String uriPatternPropertyId, String apiBaseUrl,
+			String siteUrl) {
+		lowestPropertyIdNumber = 1;
+		this.uriPatternPropertyId = uriPatternPropertyId;
+		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUrl);
+	}
+
+	/**
+	 * Creates an PropertyRegister intended to fetch and cache information about
+	 * Wikidata Properties.
+	 * 
+	 * @return
+	 */
+	public static PropertyRegister getWikidataPropertyRegister() {
+		return new PropertyRegister("P1921",
+				"http://www.wikidata.org/w/api.php",
+				"http://www.wikidata.org/entity/");
+	}
 
 	/**
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
 	 * 
 	 * @param propertyIdValue
 	 */
-	public String getPropertyType(PropertyIdValue propertyIdValue);
+	public String getPropertyType(PropertyIdValue propertyIdValue) {
+		if (!datatypes.containsKey(propertyIdValue.getId())) {
+			fetchPropertyInformation(propertyIdValue);
+		}
+		return datatypes.get(propertyIdValue.getId());
+	}
 
 	/**
 	 * Sets datatypeIri an IRI of the primitive type of an Property for
@@ -51,7 +106,10 @@ public interface PropertyRegister {
 	 * @param datatypeIri
 	 */
 	public void setPropertyType(PropertyIdValue propertyIdValue,
-			String datatypeIri);
+			String datatypeIri) {
+		datatypes.put(propertyIdValue.getId(), datatypeIri);
+
+	}
 
 	/**
 	 * Returns the URI Pattern of an {@link PropertyIdValue} which should be
@@ -60,7 +118,13 @@ public interface PropertyRegister {
 	 * 
 	 * @param propertyIdValue
 	 */
-	public String getPropertyUriPattern(PropertyIdValue propertyIdValue);
+	public String getPropertyUriPattern(PropertyIdValue propertyIdValue) {
+		if (!uriPatterns.containsKey(propertyIdValue.getId())) {
+			fetchPropertyInformation(propertyIdValue);
+		}
+		return uriPatterns.get(propertyIdValue.getId());
+
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -70,7 +134,19 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromEntityIdValue(
-			PropertyIdValue propertyIdValue, EntityIdValue value);
+			PropertyIdValue propertyIdValue, EntityIdValue value) {
+		switch (value.getId().charAt(0)) {
+		case 'Q':
+			return DatatypeIdValue.DT_ITEM;
+		case 'P':
+			return DatatypeIdValue.DT_PROPERTY;
+		default:
+			logger.warn("Could not determine Type of "
+					+ propertyIdValue.getId()
+					+ ". It is not a valid EntityDocument Id");
+			return null;
+		}
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -80,7 +156,9 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromGlobeCoordinatesValue(
-			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value);
+			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value) {
+		return DatatypeIdValue.DT_GLOBE_COORDINATES;
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -90,7 +168,9 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromQuantityValue(
-			PropertyIdValue propertyIdValue, QuantityValue value);
+			PropertyIdValue propertyIdValue, QuantityValue value) {
+		return DatatypeIdValue.DT_QUANTITY;
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -100,7 +180,17 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromStringValue(
-			PropertyIdValue propertyIdValue, StringValue value);
+			PropertyIdValue propertyIdValue, StringValue value) {
+		String datatype = getPropertyType(propertyIdValue);
+		if (datatype == null) {
+			logger.warn("Could not fetch datatype of "
+					+ propertyIdValue.getIri() + ". Assume type "
+					+ DatatypeIdValue.DT_STRING);
+			return DatatypeIdValue.DT_STRING; // default type for StringValue
+		} else {
+			return datatype;
+		}
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -110,7 +200,9 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
-			TimeValue value);
+			TimeValue value) {
+		return DatatypeIdValue.DT_TIME;
+	}
 
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
@@ -120,6 +212,60 @@ public interface PropertyRegister {
 	 * @param value
 	 */
 	public String setPropertyTypeFromMonolingualTextValue(
-			PropertyIdValue propertyIdValue, MonolingualTextValue value);
+			PropertyIdValue propertyIdValue, MonolingualTextValue value) {
+		return DatatypeIdValue.DT_MONOLINGUAL_TEXT;
+	}
+
+	/**
+	 * Fetches the information of startProperty and a couple of other properties
+	 * (depending on the maximum number of entities that the API sends back)
+	 * from the Web API.
+	 * 
+	 * @param startProperty
+	 */
+	void fetchPropertyInformation(PropertyIdValue startProperty) {
+		List<String> propertyIds = new ArrayList<String>();
+
+		propertyIds.add(startProperty.getId());
+		for (int i = 1; i < API_MAX_ENTITY_DOCUMENT_NUMBER; i++) {
+			propertyIds.add("P" + this.lowestPropertyIdNumber);
+			this.lowestPropertyIdNumber++;
+		}
+
+		dataFetcher.getFilter().setLanguageFilter(
+				Collections.<String> emptySet());
+		dataFetcher.getFilter().setSiteLinkFilter(
+				Collections.<String> emptySet());
+
+		Map<String, EntityDocument> properties = dataFetcher
+				.getEntityDocuments(propertyIds);
+
+		// add some handling for the case that the proposed property was not
+		// found
+
+		for (String key : properties.keySet()) {
+			EntityDocument property = properties.get(key);
+			if (property instanceof PropertyDocument) {
+				String datatype = ((PropertyDocument) property).getDatatype()
+						.getIri();
+				datatypes.put(key, datatype);
+				if (datatype == DatatypeIdValue.DT_STRING) {
+					Iterator<Statement> itr = ((PropertyDocument) property)
+							.getAllStatements();
+					while (itr.hasNext()) {
+						Statement statement = itr.next();
+						if (statement.getClaim().getMainSnak().getPropertyId()
+								.getId().equals("P1921")) {
+							String uriPattern = ((StringValue) ((ValueSnak) statement
+									.getClaim().getMainSnak()).getValue())
+									.getString(); // should I insert some
+													// instanceofs?
+							uriPatterns.put(key, uriPattern);
+						}
+					}
+				}
+			}
+		}
+	}
 
 }
