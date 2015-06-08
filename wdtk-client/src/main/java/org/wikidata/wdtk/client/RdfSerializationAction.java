@@ -77,6 +77,8 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		KNOWN_TASKS.put("terms", RdfSerializer.TASK_TERMS);
 		KNOWN_TASKS.put("taxonomy", RdfSerializer.TASK_TAXONOMY);
 		KNOWN_TASKS.put("instanceof", RdfSerializer.TASK_INSTANCE_OF);
+		KNOWN_TASKS
+				.put("interpropertylinks", RdfSerializer.TASK_PROPERTY_LINKS);
 		KNOWN_TASKS.put("simplestatements",
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
 		KNOWN_TASKS.put("subproperties", RdfSerializer.TASK_SUBPROPERTIES);
@@ -109,6 +111,9 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		TASK_HELP
 				.put("simplestatements",
 						"export unqualified statements without references as single triples");
+		TASK_HELP
+				.put("interpropertylinks",
+						"export triples which connect wikidata properties and there respective rdf properties in different contexts");
 		TASK_HELP
 				.put("subproperties",
 						"export unqualified subpropertyof information in the considered entities");

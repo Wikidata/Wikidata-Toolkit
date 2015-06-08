@@ -219,6 +219,11 @@ public class RdfConverter {
 			writeStatements(subject, document);
 		}
 
+		if (hasTask(RdfSerializer.TASK_PROPERTY_LINKS)) {
+			writeInterPropertyLinks(document);
+
+		}
+
 		if (hasTask(RdfSerializer.TASK_SUBPROPERTIES)) {
 			writeSubpropertyOfStatements(subject, document);
 		}
@@ -228,6 +233,42 @@ public class RdfConverter {
 				hasTask(RdfSerializer.TASK_STATEMENTS),
 				hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS));
 		this.referenceRdfConverter.writeReferences();
+	}
+
+	/**
+	 * Writes triples which conect properties with there corresponding rdf
+	 * properties for statements, simple statements, qualifiers, reference
+	 * attributes and values.
+	 * 
+	 * @param document
+	 * @throws RDFHandlerException
+	 */
+	void writeInterPropertyLinks(PropertyDocument document)
+			throws RDFHandlerException {
+		Resource subject = this.rdfWriter.getUri(document.getEntityId()
+				.getIri());
+		this.rdfWriter
+				.writeTripleUriObject(subject, this.rdfWriter
+						.getUri(Vocabulary.WB_PROPERTY_STATEMENT_LINKAGE),
+						Vocabulary.getPropertyUri(document.getPropertyId(),
+								PropertyContext.STATEMENT));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_QUALTIFIER_LINKAGE), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.QUALIFIER));
+		this.rdfWriter
+				.writeTripleUriObject(subject, this.rdfWriter
+						.getUri(Vocabulary.WB_PROPERTY_REFERENCE_LINKAGE),
+						Vocabulary.getPropertyUri(document.getPropertyId(),
+								PropertyContext.REFERENCE));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_SIMPLE_CLAIM), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.SIMPLE_CLAIM));
+		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
+				.getUri(Vocabulary.WB_PROPERTY_VALUE_LINKAGE),
+				Vocabulary.getPropertyUri(document.getPropertyId(),
+						PropertyContext.VALUE));
 	}
 
 	void writeStatements(Resource subject, StatementDocument statementDocument)

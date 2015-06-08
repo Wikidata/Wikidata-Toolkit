@@ -8,6 +8,18 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
+wo:propertyStatementLinkage a owl:ObjectProperty .
+
+wo:propertyValueLinkage a owl:ObjectProperty .
+
+wo:propertyQualifierLinkage a owl:ObjectProperty .
+
+wo:propertyReferenceLinkage a owl:ObjectProperty .
+
+wo:propertySimpleClaim a owl:ObjectProperty .
+
+wo:propertyType a owl:ObjectProperty .
+
 prov:wasDerivedFrom a owl:ObjectProperty .
 
 wo:propertyType a owl:ObjectProperty .

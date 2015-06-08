@@ -332,6 +332,59 @@ public class Vocabulary {
 			+ "DeprecatedRank";
 
 	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to statement.
+	 */
+	public static final String WB_PROPERTY_STATEMENT_LINKAGE = PREFIX_WBONTO
+			+ "propertyStatementLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_STATEMENT_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its values.
+	 */
+	public static final String WB_PROPERTY_VALUE_LINKAGE = PREFIX_WBONTO
+			+ "propertyValueLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_VALUE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its qualifiers.
+	 */
+	public static final String WB_PROPERTY_QUALTIFIER_LINKAGE = PREFIX_WBONTO
+			+ "propertyQualifierLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_QUALTIFIER_LINKAGE,
+				OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect references to its attributes.
+	 */
+	public static final String WB_PROPERTY_REFERENCE_LINKAGE = PREFIX_WBONTO
+			+ "propertyReferenceLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_REFERENCE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to values in simple statements.
+	 */
+	public static final String WB_PROPERTY_SIMPLE_CLAIM = PREFIX_WBONTO
+			+ "propertySimpleClaim";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_SIMPLE_CLAIM, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
 	 * 
 	 * @return a map from vocabulary URIs to OWL type URIs
