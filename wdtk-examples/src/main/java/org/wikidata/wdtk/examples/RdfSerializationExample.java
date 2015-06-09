@@ -39,6 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
@@ -168,7 +169,8 @@ public class RdfSerializationExample {
 		// BufferedOutputStream(compressorOutputStream,1024 * 1024 * 50);
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, sites, "http://www.wikidata.org/entity/");
+				exportOutputStream, sites, "http://www.wikidata.org/entity/",
+				PropertyRegister.getWikidataPropertyRegister());
 		serializer.setTasks(tasks);
 
 		dumpProcessingController.registerEntityDocumentProcessor(serializer,

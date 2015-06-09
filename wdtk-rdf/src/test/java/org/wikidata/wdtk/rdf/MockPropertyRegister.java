@@ -1,10 +1,18 @@
 package org.wikidata.wdtk.rdf;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.rdf.PropertyRegister;
+
 /*
  * #%L
- * Wikidata Toolkit RDF
+ * Wikidata Toolkit Testing Utilities
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,274 +28,31 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.util.WebResourceFetcher;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
- * This class helps to manage the exact datatype of properties used in an RDF
- * dump. It caches known types and fetches type information from the Web if
- * needed.
- *
- * @author Markus Kroetzsch
- *
+ * This is a Helper class for testing processes which need an PropertyRegister.
+ * It includes a couple of property types and pattern URIs for testing.
+ * 
+ * @author michael
+ * 
  */
-public class WikidataPropertyTypes implements PropertyTypes {
+public class MockPropertyRegister extends PropertyRegister {
+	public MockPropertyRegister() {
+		super("P1921", "http://www.wikidata.org/w/api.php",
+				"http://www.wikidata.org/entity/");
+		this.datatypes.putAll(KNOWN_PROPERTY_TYPES);
+		this.uriPatterns.putAll(KNOWN_URI_PATTERNS);
 
-	static final Logger logger = LoggerFactory
-			.getLogger(WikidataPropertyTypes.class);
-
-	final String WEB_API_URL = "http://www.wikidata.org/w/api.php";
-
-	final Map<String, String> propertyTypes;
-
-	final ObjectMapper objectMapper = new ObjectMapper();
-
-	PropertyIdValue propertyRegister = null;
-	String webAPIUrl;
-
-	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
-
-	public WikidataPropertyTypes() {
-		this.propertyTypes = new HashMap<String, String>();
-		this.propertyTypes.putAll(WikidataPropertyTypes.KNOWN_PROPERTY_TYPES);
-		this.webAPIUrl = this.WEB_API_URL;
 	}
 
 	@Override
-	public String getPropertyType(PropertyIdValue propertyIdValue) {
-		if (!propertyTypes.containsKey(propertyIdValue.getId())) {
-			try {
-				propertyTypes.put(propertyIdValue.getId(),
-						fetchPropertyType(propertyIdValue));
-			} catch (IOException e) {
-				logger.error(e.toString());
-			} catch (URISyntaxException e) {
-				logger.error(e.toString());
-			}
-		}
-		return propertyTypes.get(propertyIdValue.getId());
+	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
+		Assert.fail("Please add " + startProperty
+				+ "to the datatypes and uriPatterns map.");
 	}
 
-	@Override
-	public void setPropertyType(PropertyIdValue propertyIdValue,
-			String datatypeIri) {
-		propertyTypes.put(propertyIdValue.getId(), datatypeIri);
-	}
-
-	@Override
-	public String setPropertyTypeFromEntityIdValue(
-			PropertyIdValue propertyIdValue, EntityIdValue value) {
-		// Only Items can be used as entity values so far
-		return DatatypeIdValue.DT_ITEM;
-	}
-
-	@Override
-	public String setPropertyTypeFromGlobeCoordinatesValue(
-			PropertyIdValue propertyIdValue, GlobeCoordinatesValue value) {
-		return DatatypeIdValue.DT_GLOBE_COORDINATES;
-	}
-
-	@Override
-	public String setPropertyTypeFromQuantityValue(
-			PropertyIdValue propertyIdValue, QuantityValue value) {
-		return DatatypeIdValue.DT_QUANTITY;
-	}
-
-	@Override
-	public String setPropertyTypeFromStringValue(
-			PropertyIdValue propertyIdValue, StringValue value) {
-		String datatype = getPropertyType(propertyIdValue);
-		if (datatype == null) {
-			return DatatypeIdValue.DT_STRING; // default type for StringValue
-		} else {
-			return datatype;
-		}
-	}
-
-	@Override
-	public String setPropertyTypeFromTimeValue(PropertyIdValue propertyIdValue,
-			TimeValue value) {
-		return DatatypeIdValue.DT_TIME;
-	}
-
-	@Override
-	public String setPropertyTypeFromMonolingualTextValue(
-			PropertyIdValue propertyIdValue, MonolingualTextValue value) {
-		return DatatypeIdValue.DT_MONOLINGUAL_TEXT;
-	}
-
-	/**
-	 * Find the datatype of a property online.
-	 *
-	 * @param propertyIdValue
-	 * @return IRI of the datatype
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 *             , IOException
-	 */
-	String fetchPropertyType(PropertyIdValue propertyIdValue)
-			throws IOException, URISyntaxException {
-		logger.info("Fetching datatype of property " + propertyIdValue.getId()
-				+ " online.");
-
-		URIBuilder uriBuilder;
-		uriBuilder = new URIBuilder(this.webAPIUrl);
-		uriBuilder.setParameter("action", "wbgetentities");
-		uriBuilder.setParameter("ids", propertyIdValue.getId());
-		uriBuilder.setParameter("format", "json");
-		uriBuilder.setParameter("props", "datatype");
-		InputStream inStream = this.webResourceFetcher
-				.getInputStreamForUrl(uriBuilder.toString());
-
-		JsonNode jsonNode = this.objectMapper.readTree(inStream);
-		String datatype = jsonNode.path("entities")
-				.path(propertyIdValue.getId()).path("datatype").asText();
-		if (datatype == null || "".equals(datatype)) {
-			logger.error("Could not find datatype of property "
-					+ propertyIdValue.getId() + " online.");
-			return null;
-		}
-
-		switch (datatype) {
-		case "wikibase-item":
-			return DatatypeIdValue.DT_ITEM;
-		case "wikibase-property":
-			return DatatypeIdValue.DT_PROPERTY;
-		case "string":
-			return DatatypeIdValue.DT_STRING;
-		case "quantity":
-			return DatatypeIdValue.DT_QUANTITY;
-		case "url":
-			return DatatypeIdValue.DT_URL;
-		case "globe-coordinate":
-			return DatatypeIdValue.DT_GLOBE_COORDINATES;
-		case "time":
-			return DatatypeIdValue.DT_TIME;
-		case "commonsMedia":
-			return DatatypeIdValue.DT_COMMONS_MEDIA;
-		case "monolingualtext":
-			return DatatypeIdValue.DT_MONOLINGUAL_TEXT;
-		default:
-			logger.error("Got unkown datatype " + datatype);
-			return null;
-		}
-	}
-
-	void registerProperty(PropertyIdValue propertyIdValue) {
-		propertyRegister = propertyIdValue;
-	}
-
-	int getIntId(String propertyId) {
-		return Integer.parseInt(propertyId.substring(1));
-	}
-
-	void quicksort(List<String> list, int low, int high) {
-		int i = low;
-		int j = high;
-		String pivotString = list.get(low + (high - low) / 2);
-		int pivot = getIntId(pivotString);
-		while (i <= j) {
-			while (getIntId(list.get(i)) < pivot) {
-				i++;
-			}
-			while (getIntId(list.get(j)) > pivot) {
-				j--;
-			}
-			if (i <= j) {
-				String tmp = list.get(i);
-				list.set(i, list.get(j));
-				list.set(j, tmp);
-				i++;
-				j--;
-			}
-		}
-		if ((i >= list.size()) || (j < 0)) {
-			return;
-		}
-
-		if (low < j) {
-			quicksort(list, low, j);
-		}
-		if (j < high) {
-			quicksort(list, i, high);
-		}
-	}
-
-	List<String> sortByPropertyKey(List<String> keyList) {
-		quicksort(keyList, 0, keyList.size() - 1);
-		return keyList;
-	}
-
-	@Override
-	public void getPropertyList(OutputStream out) throws IOException {
-		out.write("	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();\n	static {\n"
-				.getBytes(StandardCharsets.UTF_8));
-		List<String> keyList = sortByPropertyKey(new ArrayList<String>(
-				propertyTypes.keySet()));
-		for (String key : keyList) {
-			String datatypeNotation = new String();
-			String typeIri = propertyTypes.get(key);
-			switch (typeIri) {
-			case DatatypeIdValue.DT_COMMONS_MEDIA:
-				datatypeNotation = "DT_COMMONS_MEDIA";
-				break;
-			case DatatypeIdValue.DT_GLOBE_COORDINATES:
-				datatypeNotation = "DT_GLOBE_COORDINATES";
-				break;
-			case DatatypeIdValue.DT_ITEM:
-				datatypeNotation = "DT_ITEM";
-				break;
-			case DatatypeIdValue.DT_QUANTITY:
-				datatypeNotation = "DT_QUANTITY";
-				break;
-			case DatatypeIdValue.DT_STRING:
-				datatypeNotation = "DT_STRING";
-				break;
-			case DatatypeIdValue.DT_TIME:
-				datatypeNotation = "DT_TIME";
-				break;
-			case DatatypeIdValue.DT_URL:
-				datatypeNotation = "DT_URL";
-				break;
-			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-				datatypeNotation = "DT_MONOLINGUAL_TEXT";
-				break;
-			default:
-				logger.warn("unknown IRI " + typeIri);
-				datatypeNotation = null;
-
-			}
-			if (datatypeNotation != null) {
-				out.write(("		KNOWN_PROPERTY_TYPES.put(\"" + key
-						+ "\", DatatypeIdValue." + datatypeNotation + ");\n")
-						.getBytes(StandardCharsets.UTF_8));
-			}
-		}
-		out.write("}".getBytes(StandardCharsets.UTF_8));
+	static Map<String, String> KNOWN_URI_PATTERNS = new HashMap<String, String>();
+	static {
+		KNOWN_URI_PATTERNS.put("P434", "https://musicbrainz.org/artist/$1");
 	}
 
 	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();
@@ -932,5 +697,4 @@ public class WikidataPropertyTypes implements PropertyTypes {
 		KNOWN_PROPERTY_TYPES.put("P996", DatatypeIdValue.DT_COMMONS_MEDIA);
 		KNOWN_PROPERTY_TYPES.put("P998", DatatypeIdValue.DT_STRING);
 	}
-
 }

@@ -70,7 +70,7 @@ public class RdfConverter {
 	// type lookup that is used by many serializers; this needs to be managed on
 	// a per-site basis (like the API-URL). A static factory method could do
 	// this.
-	final static PropertyTypes propertyTypes = new WikidataPropertyTypes();
+	final PropertyRegister propertyRegister;
 	final Sites sites;
 	final String wikibaseUriPrefix;
 
@@ -78,14 +78,15 @@ public class RdfConverter {
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
 	public RdfConverter(RdfWriter rdfWriter, Sites sites,
-			String wikibaseUriPrefix) {
+			String wikibaseUriPrefix, PropertyRegister propertyRegister) {
 		this.sites = sites;
 		this.rdfWriter = rdfWriter;
+		this.propertyRegister = propertyRegister;
 		this.owlDeclarationBuffer = new OwlDeclarationBuffer();
 		this.valueRdfConverter = new AnyValueConverter(rdfWriter,
-				this.owlDeclarationBuffer, propertyTypes);
+				this.owlDeclarationBuffer, this.propertyRegister);
 		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
-				this.owlDeclarationBuffer, propertyTypes,
+				this.owlDeclarationBuffer, this.propertyRegister,
 				this.valueRdfConverter);
 		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
 				this.snakRdfConverter);
@@ -194,7 +195,7 @@ public class RdfConverter {
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
-		propertyTypes.setPropertyType(document.getPropertyId(), document
+		propertyRegister.setPropertyType(document.getPropertyId(), document
 				.getDatatype().getIri());
 
 		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {

@@ -78,11 +78,11 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	 *            information about site links
 	 */
 	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites,
-			String wikibaseUriPrefix) {
+			String wikibaseUriPrefix, PropertyRegister propertyRegister) {
 		this.output = output;
 		this.rdfWriter = new RdfWriter(format, output);
 		this.rdfConverter = new RdfConverter(this.rdfWriter, sites,
-				wikibaseUriPrefix);
+				wikibaseUriPrefix, propertyRegister);
 	}
 
 	/**

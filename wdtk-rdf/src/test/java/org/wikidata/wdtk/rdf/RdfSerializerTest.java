@@ -47,7 +47,8 @@ public class RdfSerializerTest {
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
 		this.rdfSerializer = new RdfSerializer(RDFFormat.N3, this.out,
-				new SitesImpl(), "http://www.wikidata.org/entity/");
+				new SitesImpl(), "http://www.wikidata.org/entity/",
+				new MockPropertyRegister());
 
 	}
 

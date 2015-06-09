@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
@@ -223,7 +224,8 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
 				exportOutputStream, this.sites,
-				"http://www.wikidata.org/entity/");
+				"http://www.wikidata.org/entity/",
+				PropertyRegister.getWikidataPropertyRegister());
 		serializer.setTasks(this.tasks);
 
 		return serializer;

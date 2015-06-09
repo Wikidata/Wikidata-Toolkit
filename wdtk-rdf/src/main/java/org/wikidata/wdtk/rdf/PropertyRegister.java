@@ -57,9 +57,9 @@ public class PropertyRegister {
 
 	WikibaseDataFetcher dataFetcher;
 
-	final Map<String, String> datatypes = new HashMap<String, String>();
+	final protected Map<String, String> datatypes = new HashMap<String, String>();
 
-	final Map<String, String> uriPatterns = new HashMap<String, String>();
+	final protected Map<String, String> uriPatterns = new HashMap<String, String>();
 
 	final String uriPatternPropertyId;
 
@@ -223,7 +223,7 @@ public class PropertyRegister {
 	 * 
 	 * @param startProperty
 	 */
-	void fetchPropertyInformation(PropertyIdValue startProperty) {
+	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
 		List<String> propertyIds = new ArrayList<String>();
 
 		propertyIds.add(startProperty.getId());

@@ -77,7 +77,7 @@ public class RdfConverterTest {
 		this.rdfWriter = new RdfWriter(RDFFormat.N3, out);
 		this.sites = new SitesImpl();
 		this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites,
-				"http://www.wikidata.org/entity/");
+				"http://www.wikidata.org/entity/", new MockPropertyRegister());
 		this.rdfWriter.start();
 	}
 

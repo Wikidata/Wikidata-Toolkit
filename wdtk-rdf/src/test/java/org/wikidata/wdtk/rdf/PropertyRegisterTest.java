@@ -135,5 +135,14 @@ public class PropertyRegisterTest {
 								"http://www.wikidata.org/entity/")),
 				DatatypeIdValue.DT_ITEM);
 	}
+	
+	@Test
+	public void testSetPropertyTypeFromStringValue() {
+		assertEquals(this.wikidataPropertyRegister.setPropertyTypeFromStringValue(
+				dataObjectFactory.getPropertyIdValue("P434",
+						"http://www.wikidata.org/property"), dataObjectFactory
+						.getStringValue("http://musicbrainz.org/$1/artist")),
+				"http://www.wikidata.org/ontology#propertyTypeString");
+	}
 
 }

@@ -28,7 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
@@ -36,16 +36,16 @@ public class QuantityValueConverter extends
 		BufferedValueConverter<QuantityValue> {
 
 	public QuantityValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes,
+			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, propertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(QuantityValue value,
 			PropertyIdValue propertyIdValue, boolean simple) {
-		String datatype = this.propertyTypes.setPropertyTypeFromQuantityValue(
-				propertyIdValue, value);
+		String datatype = this.propertyRegister
+				.setPropertyTypeFromQuantityValue(propertyIdValue, value);
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_QUANTITY:

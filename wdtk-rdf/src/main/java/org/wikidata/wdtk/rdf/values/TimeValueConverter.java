@@ -29,22 +29,23 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
-	public TimeValueConverter(RdfWriter rdfWriter, PropertyTypes propertyTypes,
+	public TimeValueConverter(RdfWriter rdfWriter,
+			PropertyRegister PropertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, PropertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(TimeValue value, PropertyIdValue propertyIdValue,
 			boolean simple) {
 
-		String datatype = this.propertyTypes.setPropertyTypeFromTimeValue(
+		String datatype = this.propertyRegister.setPropertyTypeFromTimeValue(
 				propertyIdValue, value);
 
 		switch (datatype) {
