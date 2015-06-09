@@ -74,6 +74,8 @@ public class Vocabulary {
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
 	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
 	public static final String RDFS_SUBCLASS_OF = PREFIX_RDFS + "subClassOf";
+	public static final String RDFS_SUBPROPERTY_OF = PREFIX_RDFS
+			+ "subPropertyOf";
 	public static final String OWL_THING = PREFIX_OWL + "Thing";
 	public static final String OWL_CLASS = PREFIX_OWL + "Class";
 	public static final String OWL_OBJECT_PROPERTY = PREFIX_OWL
@@ -328,6 +330,59 @@ public class Vocabulary {
 
 	public static final String WB_DEPRECATED_RANK = PREFIX_WBONTO
 			+ "DeprecatedRank";
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to statement.
+	 */
+	public static final String WB_PROPERTY_STATEMENT_LINKAGE = PREFIX_WBONTO
+			+ "propertyStatementLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_STATEMENT_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its values.
+	 */
+	public static final String WB_PROPERTY_VALUE_LINKAGE = PREFIX_WBONTO
+			+ "propertyValueLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_VALUE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its qualifiers.
+	 */
+	public static final String WB_PROPERTY_QUALTIFIER_LINKAGE = PREFIX_WBONTO
+			+ "propertyQualifierLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_QUALTIFIER_LINKAGE,
+				OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect references to its attributes.
+	 */
+	public static final String WB_PROPERTY_REFERENCE_LINKAGE = PREFIX_WBONTO
+			+ "propertyReferenceLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_REFERENCE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to values in simple statements.
+	 */
+	public static final String WB_PROPERTY_SIMPLE_CLAIM = PREFIX_WBONTO
+			+ "propertySimpleClaim";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_SIMPLE_CLAIM, OWL_OBJECT_PROPERTY);
+	}
 
 	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.

@@ -43,6 +43,7 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -213,6 +214,68 @@ public class RdfConverterTest {
 				statementGroups, Collections.<String, SiteLink> emptyMap());
 	}
 
+	private PropertyDocument createTestPropertyDocument() {
+		PropertyIdValue propertyIdValue = this.dataObjectFactory
+				.getPropertyIdValue("P171", "http://www.wikidata.org/");
+		PropertyIdValue subpropertyOf = this.dataObjectFactory
+				.getPropertyIdValue("P1647", "http://www.wikidata.org/");
+		PropertyIdValue subclassOf = this.dataObjectFactory.getPropertyIdValue(
+				"P279", "http://www.wikidata.org/");
+
+		List<MonolingualTextValue> labels = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
+
+		Claim claim = this.dataObjectFactory.getClaim(propertyIdValue,
+				this.dataObjectFactory.getValueSnak(subpropertyOf, subclassOf),
+				Collections.<SnakGroup> emptyList());
+		List<Statement> statements = new ArrayList<Statement>();
+		statements.add(this.dataObjectFactory.getStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
+		StatementGroup statementGroup = this.dataObjectFactory
+				.getStatementGroup(statements);
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		statementGroups.add(statementGroup);
+
+		DatatypeIdValue datatypeId = this.dataObjectFactory
+				.getDatatypeIdValue(DatatypeIdValue.DT_ITEM);
+
+		return this.dataObjectFactory.getPropertyDocument(propertyIdValue,
+				labels, descriptions, aliases, statementGroups, datatypeId);
+	}
+
+	private PropertyDocument createWrongTestPropertyDocument() {
+		PropertyIdValue propertyIdValue = this.dataObjectFactory
+				.getPropertyIdValue("P171", "http://www.wikidata.org/");
+		PropertyIdValue subpropertyOf = this.dataObjectFactory
+				.getPropertyIdValue("P1647", "http://www.wikidata.org/");
+		PropertyIdValue wrongProperty = this.dataObjectFactory
+				.getPropertyIdValue("P90000", "http://www.wikidata.org/");
+
+		List<MonolingualTextValue> labels = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
+
+		Claim claim = this.dataObjectFactory.getClaim(propertyIdValue,
+				this.dataObjectFactory.getValueSnak(subpropertyOf,
+						wrongProperty), Collections.<SnakGroup> emptyList());
+		List<Statement> statements = new ArrayList<Statement>();
+		statements.add(this.dataObjectFactory.getStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
+		StatementGroup statementGroup = this.dataObjectFactory
+				.getStatementGroup(statements);
+		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		statementGroups.add(statementGroup);
+
+		DatatypeIdValue datatypeId = this.dataObjectFactory
+				.getDatatypeIdValue(DatatypeIdValue.DT_ITEM);
+
+		return this.dataObjectFactory.getPropertyDocument(propertyIdValue,
+				labels, descriptions, aliases, statementGroups, datatypeId);
+	}
+
 	@Test
 	public void testWriteInstanceOfStatements() throws RDFHandlerException,
 			RDFParseException, IOException {
@@ -241,6 +304,28 @@ public class RdfConverterTest {
 	}
 
 	@Test
+	public void testWriteSubpropertyOfStatements() throws RDFHandlerException {
+		PropertyDocument document = createTestPropertyDocument();
+		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
+		this.rdfWriter.finish();
+		assertEquals(
+				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.wikidata.org/P279> .\n",
+				out.toString());
+	}
+
+	@Test
+	public void writeSubpropertyOfStatementsCollision()
+			throws RDFHandlerException {
+		rdfConverter.propertyRegister.setPropertyType(dataObjectFactory
+				.getPropertyIdValue("P90000", "http://www.wikidata.org/"),
+				DatatypeIdValue.DT_GLOBE_COORDINATES);
+		PropertyDocument document = createWrongTestPropertyDocument();
+		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
+		this.rdfWriter.finish();
+		assertEquals("", out.toString());
+	}
+
+	@Test
 	public void testTaxonomy() throws RDFHandlerException, RDFParseException,
 			IOException {
 		ItemDocument document = createTestItemDocument();
@@ -264,6 +349,26 @@ public class RdfConverterTest {
 				RdfTestHelpers
 						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n"),
 				model);
+	}
+
+	@Test
+	public void testWriteInterPropertyLinks() throws RDFHandlerException,
+			RDFParseException, IOException {
+		PropertyDocument document = this.dataObjectFactory.getPropertyDocument(
+				this.dataObjectFactory.getPropertyIdValue("P17",
+						"http://www.wikidata.org/"), Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(),
+				this.dataObjectFactory
+						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+		this.rdfConverter.writeInterPropertyLinks(document);
+		this.rdfWriter.finish();
+
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("InterPropertyLinks.rdf")), model);
 	}
 
 	@After
