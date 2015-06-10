@@ -696,5 +696,6 @@ public class MockPropertyRegister extends PropertyRegister {
 		KNOWN_PROPERTY_TYPES.put("P991", DatatypeIdValue.DT_ITEM);
 		KNOWN_PROPERTY_TYPES.put("P996", DatatypeIdValue.DT_COMMONS_MEDIA);
 		KNOWN_PROPERTY_TYPES.put("P998", DatatypeIdValue.DT_STRING);
+		KNOWN_PROPERTY_TYPES.put("P1647", DatatypeIdValue.DT_PROPERTY);
 	}
 }

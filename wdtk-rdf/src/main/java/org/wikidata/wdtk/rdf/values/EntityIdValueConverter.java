@@ -42,9 +42,11 @@ public class EntityIdValueConverter extends
 			PropertyIdValue propertyIdValue, boolean simple) {
 		String datatype = this.propertyRegister
 				.setPropertyTypeFromEntityIdValue(propertyIdValue, value);
-
 		switch (datatype) {
 		case DatatypeIdValue.DT_ITEM:
+			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
+			return this.rdfWriter.getUri(value.getIri());
+		case DatatypeIdValue.DT_PROPERTY:
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			return this.rdfWriter.getUri(value.getIri());
 		default:

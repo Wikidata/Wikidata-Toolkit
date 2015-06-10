@@ -389,6 +389,7 @@ public class RdfConverter {
 			if (!isSubPropertyOf) {
 				continue;
 			}
+
 			for (Statement statement : statementGroup.getStatements()) {
 				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
@@ -402,7 +403,6 @@ public class RdfConverter {
 									+ mainSnak.toString() + ")");
 							continue;
 						}
-
 						if (mainSnak.getValue() instanceof EntityIdValue) {
 							String id = ((EntityIdValue) mainSnak.getValue())
 									.getId();
