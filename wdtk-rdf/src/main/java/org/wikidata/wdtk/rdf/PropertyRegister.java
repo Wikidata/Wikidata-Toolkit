@@ -240,8 +240,9 @@ public class PropertyRegister {
 		Map<String, EntityDocument> properties = dataFetcher
 				.getEntityDocuments(propertyIds);
 
-		// add some handling for the case that the proposed property was not
-		// found
+		if (properties.containsKey(startProperty) == false) {
+			logger.error(startProperty.getId() + " not found!");
+		}
 
 		for (String key : properties.keySet()) {
 			EntityDocument property = properties.get(key);
@@ -258,8 +259,7 @@ public class PropertyRegister {
 								.getId().equals("P1921")) {
 							String uriPattern = ((StringValue) ((ValueSnak) statement
 									.getClaim().getMainSnak()).getValue())
-									.getString(); // should I insert some
-													// instanceofs?
+									.getString();
 							uriPatterns.put(key, uriPattern);
 						}
 					}
