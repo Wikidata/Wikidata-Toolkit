@@ -303,13 +303,16 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testWriteSubpropertyOfStatements() throws RDFHandlerException {
+	public void testWriteSubpropertyOfStatements() throws RDFHandlerException,
+			RDFParseException, IOException {
 		PropertyDocument document = createTestPropertyDocument();
 		this.rdfConverter.writeSubpropertyOfStatements(this.resource, document);
 		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
-				"\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.wikidata.org/P279> .\n",
-				out.toString());
+				RdfTestHelpers
+						.parseRdf("\n<http://test.org/> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.wikidata.org/P279> .\n"),
+				model);
 	}
 
 	@Test
