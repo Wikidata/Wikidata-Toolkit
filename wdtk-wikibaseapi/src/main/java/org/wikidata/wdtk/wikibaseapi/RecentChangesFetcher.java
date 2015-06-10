@@ -50,12 +50,12 @@ public class RecentChangesFetcher {
 	/**
 	 * URL prefix for the recent changes feed of wikidata.org.
 	 */
-	final static String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/";
+	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/";
 
 	/**
 	 * URL suffix for RSS recent changes feed
 	 */
-	final static String RSS_FEED_URL_SUFFIX = "w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
+	static final String RSS_FEED_URL_SUFFIX = "w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
 
 	/**
 	 * The URL where the recent changes feed can be found.
@@ -87,6 +87,33 @@ public class RecentChangesFetcher {
 		this.rssUrl = rdfUrlPrefix + RSS_FEED_URL_SUFFIX;
 	}
 
+	/**
+	 * Fetches IOStream from RSS feed and return a set of recent changes.
+	 * 
+	 * @return a set recent changes from the recent changes feed
+	 */
+	public Set<RecentChange> getRecentChanges() {
+		Set<RecentChange> changes = new TreeSet<>();
+		try {
+			InputStream inputStream = this.webResourceFetcher
+					.getInputStreamForUrl(rssUrl);
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStream));
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				if (line.contains("<item>")) {
+					changes.add(parseItem(bufferedReader,
+							line));
+				}
+				line = bufferedReader.readLine();
+			}
+			inputStream.close();
+		} catch (IOException e) {
+			logger.error("Could not retrieve data from " + rssUrl
+					+ ". Error:\n" + e.toString());
+		}
+		return changes;
+	}
 
 	/**
 	 * parses the name of the property from the item string of the recent
@@ -132,7 +159,6 @@ public class RecentChangesFetcher {
 		return date;
 	}
 
-
 	/**
 	 * parses the name or the IP address of the change of a property from
 	 * the item string of the recent changes feed
@@ -149,34 +175,6 @@ public class RecentChangesFetcher {
 		return itemString.substring(start, end);
 	}
 	
-	/**
-	 * Fetches IOStream from RSS feed and return a set of recent changes.
-	 * 
-	 * @return a set recent changes from the recent changes feed
-	 */
-	public Set<RecentChange> getRecentChanges() {
-		Set<RecentChange> changes = new TreeSet<>();
-		try {
-			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(rssUrl);
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(inputStream));
-			String line = bufferedReader.readLine();
-			while (line != null) {
-				if (line.contains("<item>")) {
-					changes.add(parseItem(bufferedReader,
-							line));
-				}
-				line = bufferedReader.readLine();
-			}
-			inputStream.close();
-		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + rssUrl
-					+ ". Error:\n" + e.toString());
-		}
-		return changes;
-	}
-
 	/**
 	 * Parses an item inside the <item>-tag.
 	 * 
@@ -214,6 +212,4 @@ public class RecentChangesFetcher {
 		}
 		return new RecentChange(propertyName, date, author);
 	}
-
-
 }

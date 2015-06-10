@@ -9,7 +9,8 @@ import java.util.Date;
  *
  */
 
-public class RecentChange implements Comparable<RecentChange> {
+class RecentChange implements Comparable<RecentChange> {
+
 	/**
 	 * author of the recent change
 	 */
@@ -35,7 +36,7 @@ public class RecentChange implements Comparable<RecentChange> {
 	 * @param author
 	 *                name of the author of the recent change
 	 */
-	public RecentChange(String propertyName, Date date, String author) {
+	RecentChange(String propertyName, Date date, String author) {
 		this.propertyName = propertyName;
 		this.date = date;
 		this.author = author;
@@ -47,7 +48,7 @@ public class RecentChange implements Comparable<RecentChange> {
 	 * @return name (if user is registered) or the ip adress (if user is
 	 *         unregistered) of the author of the recent change
 	 */
-	public String getAuthor() {
+	String getAuthor() {
 		return author;
 	}
 
@@ -56,7 +57,7 @@ public class RecentChange implements Comparable<RecentChange> {
 	 * 
 	 * @return name of the recently changed property
 	 */
-	public String getPropertyName() {
+	String getPropertyName() {
 		return propertyName;
 	}
 
@@ -65,7 +66,7 @@ public class RecentChange implements Comparable<RecentChange> {
 	 * 
 	 * @return date of the recent change
 	 */
-	public Date getDate() {
+	Date getDate() {
 		return date;
 	}
 

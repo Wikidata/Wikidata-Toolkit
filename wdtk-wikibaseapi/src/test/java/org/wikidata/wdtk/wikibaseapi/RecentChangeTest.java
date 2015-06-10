@@ -45,5 +45,4 @@ public class RecentChangeTest {
 		assertEquals(rc2.compareTo(rc3), -1);
 		assertEquals(rc3.compareTo(rc2), 1);
 	}
-
 }
