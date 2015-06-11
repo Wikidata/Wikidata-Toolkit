@@ -60,7 +60,7 @@ public class RecentChangesFetcher {
 	/**
 	 * URL suffix for the parameter "from" in the RSS recent changes feed
 	 */
-	static final String URL_FROM_DATE_SUFFIX = "&from=";
+	static final String URL_FROM_DATE_PARAMETER = "&from=";
 
 	/**
 	 * The URL where the recent changes feed can be found.
@@ -93,15 +93,40 @@ public class RecentChangesFetcher {
 	}
 
 	/**
-	 * Fetches IOStream from RSS feed and return a set of recent changes.
+	 * Fetches IOStream from RSS recent changes feed and returns a set of
+	 * recent changes.
 	 * 
-	 * @return a set recent changes from the recent changes feed
+	 * @return a set of recent changes from the recent changes feed
 	 */
 	public Set<RecentChange> getRecentChanges() {
+		return getRecentChanges(rssUrl);
+	}
+
+	/**
+	 * Fetches IOStream from RSS recent changes feed and no recent change is
+	 * before the date.
+	 * 
+	 * @param from
+	 *                earliest possible date for a recent change
+	 * @return a set of recent changes from the recent changes feed
+	 */
+	public Set<RecentChange> getRecentChanges(Date from) {
+		return getRecentChanges(buildUrl(from));
+	}
+	
+	/**
+	 * Fetches IOStream from RSS recent changes feed and returns a set of
+	 * recent changes.
+	 * 
+	 * @param url
+	 *                URL of the RSS recent changes feed
+	 * @return a set of recent changes from the recent changes feed
+	 */
+	Set<RecentChange> getRecentChanges(String url) {
 		Set<RecentChange> changes = new TreeSet<>();
 		try {
 			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(rssUrl);
+					.getInputStreamForUrl(url);
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(inputStream));
 			String line = bufferedReader.readLine();
@@ -132,25 +157,7 @@ public class RecentChangesFetcher {
 	String buildUrl(Date from) {
 		String urlDateString = new SimpleDateFormat("yyyyMMddHHmmss")
 				.format(from);
-		return rssUrl + URL_FROM_DATE_SUFFIX + urlDateString;
-	}
-
-	/**
-	 * Returns the InputStream for the recent changes feed for a given URL.
-	 * 
-	 * @param url
-	 *                URL of the recent changes feed
-	 * @return InputStream for the recent changes feed
-	 */
-	InputStream getInputStream(String url) {
-		try {
-			return this.webResourceFetcher
-					.getInputStreamForUrl(url);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return rssUrl + URL_FROM_DATE_PARAMETER + urlDateString;
 	}
 
 	/**
@@ -229,7 +236,6 @@ public class RecentChangesFetcher {
 		while (!line.contains("</item>")) {
 			try {
 				line = bufferedReader.readLine();
-
 				if (line.contains("<title>")) {
 					propertyName = parsePropertyNameFromItemString(line);
 				}

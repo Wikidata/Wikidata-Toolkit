@@ -38,6 +38,8 @@ import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 public class RecentChangesFetcherTest{
 	private String dateLine = "			<pubDate>Tue, 02 Jun 2015 13:22:02 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1876457</comments>		</item>";
 	private String titleLine = "			<title>Q1876457</title>";
+
+	private String urlForFrom = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss&from=20150611154713";
 	
 	@Test
 	public void testConstructors() {
@@ -75,6 +77,29 @@ public class RecentChangesFetcherTest{
 		assertFalse(result.contains(rc3));
 		assertFalse(result.contains(rc4));
 	}
+	
+	@Test
+	public void testGetRecentChangesForUrl() throws IOException,
+			ParseException {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(urlForFrom,
+				"/recentchanges.xml", this.getClass());
+		rcf.webResourceFetcher = wrf;
+		Date date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+				.parse("11.06.2015 15:47:13");
+		Set<RecentChange> result = rcf.getRecentChanges(date);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	public void testGetRecentChangesWithFromParamenter() throws IOException {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(rcf.rssUrl,
+				"/recentchanges.xml", this.getClass());
+		rcf.webResourceFetcher = wrf;
+	}
 
 	@Test
 	public void testParsePropertyName() {
@@ -104,10 +129,9 @@ public class RecentChangesFetcherTest{
 	@Test
 	public void testBuildUrl() throws ParseException {
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
-		String url = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss&from=20150611154713";
 		Date date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
 				.parse("11.06.2015 15:47:13");
 		String result = rcf.buildUrl(date);
-		assertEquals(url, result);
+		assertEquals(urlForFrom, result);
 	}
 }
