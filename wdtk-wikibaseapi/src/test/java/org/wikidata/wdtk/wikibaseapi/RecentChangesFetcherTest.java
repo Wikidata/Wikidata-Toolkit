@@ -43,7 +43,7 @@ public class RecentChangesFetcherTest{
 	public void testConstructors() {
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
 		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
-				"http://www.wikidata.org/");
+				"http://www.wikidata.org/w/api.php?");
 		assertEquals(rcf1.rssUrl,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 		assertEquals(rcf2.rssUrl,
@@ -65,13 +65,15 @@ public class RecentChangesFetcherTest{
 						.parse("02.06.2015 13:22:02 GMT"),
 				"Superzerocool");
 		assertTrue(result.contains(rc1));
-		// assertTrue(result.contains("Q20026648"));
-		// assertTrue(result.contains("Q1876457"));
-		// assertFalse(result.contains("Q1"));
-		RecentChange rc2 = new RecentChange(
+		RecentChange rc2 = new RecentChange("", new Date(), "");
+		RecentChange rc3 = new RecentChange("Q1", new Date(), "");
+		RecentChange rc4 = new RecentChange(
 				"Wikidata  - Recent changes [en]", new Date(),
 				"");
+
 		assertFalse(result.contains(rc2));
+		assertFalse(result.contains(rc3));
+		assertFalse(result.contains(rc4));
 	}
 
 	@Test

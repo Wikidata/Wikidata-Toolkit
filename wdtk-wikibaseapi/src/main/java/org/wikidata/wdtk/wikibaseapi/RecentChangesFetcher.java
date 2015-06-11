@@ -50,12 +50,12 @@ public class RecentChangesFetcher {
 	/**
 	 * URL prefix for the recent changes feed of wikidata.org.
 	 */
-	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/";
+	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/w/api.php?";
 
 	/**
 	 * URL suffix for RSS recent changes feed
 	 */
-	static final String RSS_FEED_URL_SUFFIX = "w/api.php?action=feedrecentchanges&format=json&feedformat=rss";
+	static final String RSS_FEED_URL_SUFFIX = "action=feedrecentchanges&format=json&feedformat=rss";
 
 	/**
 	 * The URL where the recent changes feed can be found.
