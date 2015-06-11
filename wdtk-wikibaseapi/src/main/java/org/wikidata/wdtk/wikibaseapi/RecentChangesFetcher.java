@@ -50,12 +50,17 @@ public class RecentChangesFetcher {
 	/**
 	 * URL prefix for the recent changes feed of wikidata.org.
 	 */
-	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/w/api.php?";
+	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "http://www.wikidata.org/w/api.php";
 
 	/**
 	 * URL suffix for RSS recent changes feed
 	 */
-	static final String RSS_FEED_URL_SUFFIX = "action=feedrecentchanges&format=json&feedformat=rss";
+	static final String RSS_FEED_URL_SUFFIX = "?action=feedrecentchanges&format=json&feedformat=rss";
+
+	/**
+	 * URL suffix for the parameter "from" in the RSS recent changes feed
+	 */
+	static final String URL_FROM_DATE_SUFFIX = "&from=";
 
 	/**
 	 * The URL where the recent changes feed can be found.
@@ -107,12 +112,45 @@ public class RecentChangesFetcher {
 				}
 				line = bufferedReader.readLine();
 			}
+			bufferedReader.close();
 			inputStream.close();
 		} catch (IOException e) {
 			logger.error("Could not retrieve data from " + rssUrl
 					+ ". Error:\n" + e.toString());
 		}
 		return changes;
+	}
+
+	/**
+	 * Builds an URL for the recent change feed which contains the from
+	 * parameter
+	 * 
+	 * @param from
+	 *                earliest Date for recent changes that are fetched
+	 * @return URL for the RSS recent changes feed
+	 */
+	String buildUrl(Date from) {
+		String urlDateString = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(from);
+		return rssUrl + URL_FROM_DATE_SUFFIX + urlDateString;
+	}
+
+	/**
+	 * Returns the InputStream for the recent changes feed for a given URL.
+	 * 
+	 * @param url
+	 *                URL of the recent changes feed
+	 * @return InputStream for the recent changes feed
+	 */
+	InputStream getInputStream(String url) {
+		try {
+			return this.webResourceFetcher
+					.getInputStreamForUrl(url);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class RecentChangesFetcherTest{
 	public void testConstructors() {
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
 		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
-				"http://www.wikidata.org/w/api.php?");
+				"http://www.wikidata.org/w/api.php");
 		assertEquals(rcf1.rssUrl,
 				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 		assertEquals(rcf2.rssUrl,
@@ -99,5 +99,15 @@ public class RecentChangesFetcherTest{
 		RecentChangesFetcher rcf = new RecentChangesFetcher();
 		String result = rcf.parseAuthorFromItemString(dateLine);
 		assertEquals(result, "Superzerocool");
+	}
+
+	@Test
+	public void testBuildUrl() throws ParseException {
+		RecentChangesFetcher rcf = new RecentChangesFetcher();
+		String url = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss&from=20150611154713";
+		Date date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+				.parse("11.06.2015 15:47:13");
+		String result = rcf.buildUrl(date);
+		assertEquals(url, result);
 	}
 }
