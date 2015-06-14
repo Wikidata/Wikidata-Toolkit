@@ -39,12 +39,35 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 
 	protected static Proxy proxy = null;
 
+	/**
+	 * Returns the proxy that will be used for all requests made by Wikidata
+	 * Toolkit.
+	 * 
+	 * @return the proxy represented as java object
+	 */
 	public static Proxy getProxy() {
 		return proxy;
 	}
 
+	/**
+	 * Sets the proxy that will be used for alle requests made by Wikidata
+	 * Toolkit. This should be set in own tools based on Wikidata Toolkit
+	 * esp. when making large amounts of requests.
+	 * 
+	 * @param proxy
+	 *                the proxy represented as java object
+	 */
 	public static void setProxy(Proxy proxy) {
 		WebResourceFetcherImpl.proxy = proxy;
+	}
+
+	/**
+	 * Checks whether a proxy is set.
+	 * 
+	 * @return True if a proxy is set, false, if there isn't set any proxy.
+	 */
+	public static boolean hasProxy() {
+		return (proxy != null);
 	}
 
 	/**
@@ -74,10 +97,10 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 			throws IOException {
 		URL url = new URL(urlString);
 		URLConnection urlConnection;
-		if (proxy == null) {
-			urlConnection = url.openConnection();
-		} else {
+		if (hasProxy()) {
 			urlConnection = url.openConnection(proxy);
+		} else {
+			urlConnection = url.openConnection();
 		}
 		urlConnection.setRequestProperty("User-Agent", userAgent);
 
