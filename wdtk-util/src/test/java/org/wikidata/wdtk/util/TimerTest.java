@@ -53,7 +53,7 @@ public class TimerTest {
 		// compilers
 		Random rand = new Random();
 		int seed = rand.nextInt(10) + 1;
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 10000000; i++) {
 			dummyValue = 10 + ((31 * (dummyValue + seed)) % 1234567);
 		}
 		if (dummyValue < 10) {
