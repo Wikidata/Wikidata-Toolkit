@@ -89,6 +89,12 @@ public class WikibaseDataFetcher {
 	private final DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
+	 * Maximal value for the size of a list that can be processed by the
+	 * Wikibase API
+	 */
+	int maxListSize = 50;
+
+	/**
 	 * Creates an object to fetch data from wikidata.org.
 	 */
 	public WikibaseDataFetcher() {
@@ -171,12 +177,13 @@ public class WikibaseDataFetcher {
 		boolean moreItems = true;
 		while (moreItems) {
 			List<String> subListOfEntityIds;
-			if (entityIds.size() <= 50) {
+			if (entityIds.size() <= maxListSize) {
 				subListOfEntityIds = entityIds;
 				entityIds = new LinkedList<>();
 				moreItems = false;
 			} else {
-				subListOfEntityIds = entityIds.subList(0, 50);
+				subListOfEntityIds = entityIds.subList(0,
+						maxListSize);
 				entityIds.removeAll(subListOfEntityIds);
 			}
 			String url = getWbGetEntitiesUrl(subListOfEntityIds);
@@ -248,12 +255,13 @@ public class WikibaseDataFetcher {
 		boolean moreItems = true;
 		while (moreItems) {
 			List<String> subListOfTitles;
-			if (titles.size() <= 50) {
+			if (titles.size() <= maxListSize) {
 				subListOfTitles = titles;
 				moreItems = false;
 				titles = new LinkedList<>();
 			} else {
-				subListOfTitles = titles.subList(0, 49);
+				subListOfTitles = titles
+						.subList(0, maxListSize);
 				titles.removeAll(subListOfTitles);
 			}
 			String url = getWbGetEntitiesUrl(siteKey,
