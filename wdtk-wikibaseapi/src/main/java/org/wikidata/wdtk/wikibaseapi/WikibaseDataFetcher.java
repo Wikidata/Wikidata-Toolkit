@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -228,9 +229,28 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
-		String url = getWbGetEntitiesUrl(siteKey, titles);
-		return getStringEntityDocumentMap(titles.size(), url, siteKey);
+		Map<String, EntityDocument> result = new HashMap<>();
+		boolean moreItems = true;
+		while (moreItems) {
+			List<String> subListOfTitles;
+			if (titles.size() <= 50) {
+				subListOfTitles = titles;
+				moreItems = false;
+				titles = new LinkedList<>();
+			} else {
+				subListOfTitles = titles.subList(0, 49);
+				titles.removeAll(subListOfTitles);
+			}
+			String url = getWbGetEntitiesUrl(siteKey,
+					subListOfTitles);
+			result.putAll(getStringEntityDocumentMap(
+					subListOfTitles.size(),
+					url, siteKey));
+		}
+		return result;
 	}
+
+
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
