@@ -167,8 +167,23 @@ public class WikibaseDataFetcher {
 	 *         were retrieved
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
-		String url = getWbGetEntitiesUrl(entityIds);
-		return getStringEntityDocumentMap(entityIds.size(), url, null);
+		Map<String, EntityDocument> result = new HashMap<>();
+		boolean moreItems = true;
+		while (moreItems) {
+			List<String> subListOfEntityIds;
+			if (entityIds.size() <= 50) {
+				subListOfEntityIds = entityIds;
+				entityIds = new LinkedList<>();
+				moreItems = false;
+			} else {
+				subListOfEntityIds = entityIds.subList(0, 50);
+				entityIds.removeAll(subListOfEntityIds);
+			}
+			String url = getWbGetEntitiesUrl(subListOfEntityIds);
+			result.putAll(getStringEntityDocumentMap(
+					subListOfEntityIds.size(), url, null));
+		}
+		return result;
 	}
 
 	/**
