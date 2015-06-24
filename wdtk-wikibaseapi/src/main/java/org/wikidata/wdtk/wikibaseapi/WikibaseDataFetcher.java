@@ -254,38 +254,29 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
-		List<String> titles2 = new ArrayList<String>();
-		titles2.addAll(titles);
+		List<String> helpList = new ArrayList<String>();
+		helpList.addAll(titles);
+		titles = helpList;
 		Map<String, EntityDocument> result = new HashMap<>();
 		boolean moreItems = true;
 		while (moreItems) {
 			List<String> subListOfTitles;
-			if (titles2.size() <= maxListSize) {
-				subListOfTitles = titles2;
+			if (titles.size() <= maxListSize) {
+				subListOfTitles = titles;
 				moreItems = false;
-				titles2 = new ArrayList<>();
+				titles = new ArrayList<>();
 			} else {
-				subListOfTitles = getSubList(titles,
-						maxListSize);
-				titles2.removeAll(subListOfTitles);
+				subListOfTitles = titles
+						.subList(0, maxListSize);
 			}
 			String url = getWbGetEntitiesUrl(siteKey,
 					subListOfTitles);
 			result.putAll(getStringEntityDocumentMap(
 					subListOfTitles.size(),
 					url, siteKey));
+			subListOfTitles.clear();
 		}
 		return result;
-	}
-
-	List<String> getSubList(List<String> list, int k) {
-		List<String> subList = new ArrayList<>();
-		k--;
-		while (k >= 0) {
-			subList.add(list.get(k));
-			k--;
-		}
-		return subList;
 	}
 
 
