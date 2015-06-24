@@ -45,13 +45,13 @@ public class WikibaseDataFetcherTest {
 		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
 		wrf.setWebResourceContentsFromResource(
-				wdf.getWbGetEntitiesUrl(Arrays.asList("Q42",
-						"Q6")),
+				wdf.getWbGetEntitiesUrl(Arrays.asList("Q6",
+						"Q42")),
 				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
 		wdf.webResourceFetcher = wrf;
 		wdf.maxListSize = 2;
 		Map<String, EntityDocument> results = wdf.getEntityDocuments(
-				"Q6", "Q42", "P31");
+				"Q1", "Q2", "Q6", "Q42", "P31");
 		assertEquals(2, results.size());
 	}
 	
