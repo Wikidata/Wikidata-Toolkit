@@ -23,10 +23,10 @@ package org.wikidata.wdtk.wikibaseapi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -174,17 +174,19 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		Map<String, EntityDocument> result = new HashMap<>();
-		boolean moreItems = true;
+		List<String> entityIds2 = new ArrayList<>();
+		entityIds2.addAll(entityIds);
+		boolean moreItems = !entityIds.isEmpty();
 		while (moreItems) {
 			List<String> subListOfEntityIds;
-			if (entityIds.size() <= maxListSize) {
-				subListOfEntityIds = entityIds;
-				entityIds = new LinkedList<>();
+			if (entityIds2.size() <= maxListSize) {
+				subListOfEntityIds = entityIds2;
+				entityIds2 = new ArrayList<>();
 				moreItems = false;
 			} else {
-				subListOfEntityIds = entityIds.subList(0,
+				subListOfEntityIds = getSubList(entityIds2,
 						maxListSize);
-				entityIds.removeAll(subListOfEntityIds);
+				entityIds2.removeAll(subListOfEntityIds);
 			}
 			String url = getWbGetEntitiesUrl(subListOfEntityIds);
 			result.putAll(getStringEntityDocumentMap(
@@ -192,6 +194,7 @@ public class WikibaseDataFetcher {
 		}
 		return result;
 	}
+
 
 	/**
 	 * Fetches the document for the entity that has a page of the given title on
@@ -251,18 +254,20 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
+		List<String> titles2 = new ArrayList<String>();
+		titles2.addAll(titles);
 		Map<String, EntityDocument> result = new HashMap<>();
 		boolean moreItems = true;
 		while (moreItems) {
 			List<String> subListOfTitles;
-			if (titles.size() <= maxListSize) {
-				subListOfTitles = titles;
+			if (titles2.size() <= maxListSize) {
+				subListOfTitles = titles2;
 				moreItems = false;
-				titles = new LinkedList<>();
+				titles2 = new ArrayList<>();
 			} else {
-				subListOfTitles = titles
-						.subList(0, maxListSize);
-				titles.removeAll(subListOfTitles);
+				subListOfTitles = getSubList(titles,
+						maxListSize);
+				titles2.removeAll(subListOfTitles);
 			}
 			String url = getWbGetEntitiesUrl(siteKey,
 					subListOfTitles);
@@ -273,6 +278,15 @@ public class WikibaseDataFetcher {
 		return result;
 	}
 
+	List<String> getSubList(List<String> list, int k) {
+		List<String> subList = new ArrayList<>();
+		k--;
+		while (k >= 0) {
+			subList.add(list.get(k));
+			k--;
+		}
+		return subList;
+	}
 
 
 	/**

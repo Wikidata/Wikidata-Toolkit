@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,22 @@ import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 
 public class WikibaseDataFetcherTest {
 
+	@Test
+	public void testWbGetEntitiesSplitted() throws IOException{
+		// List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(Arrays.asList("Q42",
+						"Q6")),
+				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
+		wdf.webResourceFetcher = wrf;
+		wdf.maxListSize = 2;
+		Map<String, EntityDocument> results = wdf.getEntityDocuments(
+				"Q6", "Q42", "P31");
+		assertEquals(2, results.size());
+	}
+	
 	@Test
 	public void testWbGetEntities() throws IOException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
@@ -235,5 +252,20 @@ public class WikibaseDataFetcherTest {
 		assertEquals(
 				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&languages=zh&sitefilter=dewiki&ids=Q6%7CQ42%7CP31",
 				wdf.getWbGetEntitiesUrl(entityIds));
+	}
+
+	@Test
+	public void testSublist() {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+		List<String> list = new ArrayList<>();
+		for (int i = 1; i < 20; i++) {
+			list.add(Integer.toString(i));
+		}
+		List<String> sublist = wdf.getSubList(list, 5);
+		list.removeAll(sublist);
+		assertEquals(14, list.size());
+		sublist = wdf.getSubList(list, 5);
+		assertEquals(5, sublist.size());
+		assertTrue(sublist.contains("6"));
 	}
 }
