@@ -174,17 +174,16 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		Map<String, EntityDocument> result = new HashMap<>();
-		List<String> helpList = new ArrayList<>();
-		helpList.addAll(entityIds);
-		entityIds = helpList;
-		boolean moreItems = !entityIds.isEmpty();
+		List<String> unfixEntitiyIds = new ArrayList<>();
+		unfixEntitiyIds.addAll(entityIds);
+		boolean moreItems = !unfixEntitiyIds.isEmpty();
 		while (moreItems) {
 			List<String> subListOfEntityIds;
-			if (entityIds.size() <= maxListSize) {
-				subListOfEntityIds = entityIds;
+			if (unfixEntitiyIds.size() <= maxListSize) {
+				subListOfEntityIds = unfixEntitiyIds;
 				moreItems = false;
 			} else {
-				subListOfEntityIds = entityIds.subList(0,
+				subListOfEntityIds = unfixEntitiyIds.subList(0,
 						maxListSize);
 			}
 			String url = getWbGetEntitiesUrl(subListOfEntityIds);
@@ -254,19 +253,17 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
-		List<String> helpList = new ArrayList<String>();
-		helpList.addAll(titles);
-		titles = helpList;
+		List<String> unfixedTitles = new ArrayList<String>();
+		unfixedTitles.addAll(titles);
 		Map<String, EntityDocument> result = new HashMap<>();
 		boolean moreItems = true;
 		while (moreItems) {
 			List<String> subListOfTitles;
-			if (titles.size() <= maxListSize) {
-				subListOfTitles = titles;
+			if (unfixedTitles.size() <= maxListSize) {
+				subListOfTitles = unfixedTitles;
 				moreItems = false;
-				titles = new ArrayList<>();
 			} else {
-				subListOfTitles = titles
+				subListOfTitles = unfixedTitles
 						.subList(0, maxListSize);
 			}
 			String url = getWbGetEntitiesUrl(siteKey,
