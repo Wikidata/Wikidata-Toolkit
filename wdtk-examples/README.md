@@ -63,6 +63,14 @@ for specific properties (here we use Wikidata's P569 "birth date" and P570 "deat
 The results are stored in a CSV file that shows average life expectancy by year of
 birth. The overall average is also printed to the output.
 
+#### WorldMapProcessor.java ####
+
+This program generates images of world maps based on the locations of Wikidata items,
+and stores the result in PNG files. The example builds several maps, for Wikidata as
+a whole and for several big Wikipedias (counting only items with an article in there).
+The code offers easy-to-adjust parameters for the size of the output images, the
+Wikimedia projects to consider, and the scale of the color values.
+
 #### GenderRatioProcessor.java ####
 
 This program uses Wikidata to analyse the number of articles that exist on certain
