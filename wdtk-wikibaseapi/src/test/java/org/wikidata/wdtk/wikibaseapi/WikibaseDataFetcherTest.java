@@ -162,7 +162,7 @@ public class WikibaseDataFetcherTest {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
 		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&ids=Q6%7CQ42%7CP31",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&ids=Q6%7CQ42%7CP31",
 				wdf.getWbGetEntitiesUrl(entityIds));
 	}
 
@@ -173,7 +173,7 @@ public class WikibaseDataFetcherTest {
 		String siteKey = "enwiki";
 		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
 		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&sites=enwiki&titles=Douglas+Adams",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&sites=enwiki&titles=Douglas+Adams",
 				wdf.getWbGetEntitiesUrl(siteKey, titles));
 	}
 
@@ -189,8 +189,8 @@ public class WikibaseDataFetcherTest {
 
 		wdf.webResourceFetcher = wrf;
 
-		EntityDocument result = wdf
-				.getEntityDocumentByTitle("enwiki", "Douglas Adams");
+		EntityDocument result = wdf.getEntityDocumentByTitle("enwiki",
+				"Douglas Adams");
 
 		assertEquals("Q42", result.getEntityId().getId());
 	}
@@ -207,7 +207,8 @@ public class WikibaseDataFetcherTest {
 
 		wdf.webResourceFetcher = wrf;
 
-		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki", "1234567890");
+		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki",
+				"1234567890");
 
 		assertEquals(null, result);
 	}
@@ -221,7 +222,7 @@ public class WikibaseDataFetcherTest {
 				Collections.<PropertyIdValue> emptySet());
 		wdf.getFilter().setSiteLinkFilter(Collections.<String> emptySet());
 		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype&ids=Q6%7CQ42%7CP31",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype&ids=Q6%7CQ42%7CP31",
 				wdf.getWbGetEntitiesUrl(entityIds));
 	}
 
@@ -233,7 +234,7 @@ public class WikibaseDataFetcherTest {
 		wdf.getFilter().setSiteLinkFilter(
 				Collections.<String> singleton("dewiki"));
 		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&languages=zh&sitefilter=dewiki&ids=Q6%7CQ42%7CP31",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&languages=zh&sitefilter=dewiki&ids=Q6%7CQ42%7CP31",
 				wdf.getWbGetEntitiesUrl(entityIds));
 	}
 }
