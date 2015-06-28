@@ -71,6 +71,8 @@ a whole and for several big Wikipedias (counting only items with an article in t
 The code offers easy-to-adjust parameters for the size of the output images, the
 Wikimedia projects to consider, and the scale of the color values.
 
+[Wikidata world maps for June 2015](https://ddll.inf.tu-dresden.de/web/Wikidata/Maps-06-2015/en)
+
 #### GenderRatioProcessor.java ####
 
 This program uses Wikidata to analyse the number of articles that exist on certain
