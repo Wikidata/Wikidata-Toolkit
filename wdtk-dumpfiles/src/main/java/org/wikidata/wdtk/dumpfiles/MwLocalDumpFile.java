@@ -51,6 +51,22 @@ public class MwLocalDumpFile implements MwDumpFile {
 				CompressionType.GZIP);
 	}
 
+
+	/**
+	 * Constructor
+	 * 
+	 * @param dumpFileDirectoryManager
+	 *                the directory manager for the directory where dumps
+	 *                are stored
+	 * @param dumpContentType
+	 *                the type of dump this represents
+	 * @param dumpFileName
+	 *                name of the dumpFile
+	 * @param dateStamp
+	 *                dump date in format YYYYMMDD
+	 * @param projectName
+	 *                project name string
+	 */
 	public MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
 			DumpContentType dumpContentType, String dumpFileName,
 			String dateStamp,
@@ -104,6 +120,13 @@ public class MwLocalDumpFile implements MwDumpFile {
 	@Override
 	public void prepareDumpFile() throws IOException {
 		// nothing to do
+	}
+
+	@Override
+	public String toString() {
+		return this.projectName + "-"
+				+ getDumpContentType().toString().toLowerCase()
+				+ "-" + this.dateStamp;
 	}
 
 }
