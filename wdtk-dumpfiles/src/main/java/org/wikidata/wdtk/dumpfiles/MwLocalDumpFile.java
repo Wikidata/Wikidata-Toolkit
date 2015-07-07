@@ -51,13 +51,30 @@ public class MwLocalDumpFile implements MwDumpFile {
 				CompressionType.GZIP);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param dumpFileDirectoryManager
+	 *                the directory manager for the directory where dump is
+	 *                stored
+	 * @param dumpContentType
+	 *                the type of dump this represents
+	 * @param dumpFileName
+	 *                name of the dumpFile
+	 */
+
+	public MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
+			DumpContentType dumpContentType, String dumpFileName) {
+		this(dumpFileDirectoryManager, dumpContentType,
+				dumpFileName, "", "");
+	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param dumpFileDirectoryManager
-	 *                the directory manager for the directory where dumps
-	 *                are stored
+	 *                the directory manager for the directory where dump is
+	 *                stored
 	 * @param dumpContentType
 	 *                the type of dump this represents
 	 * @param dumpFileName
