@@ -99,6 +99,10 @@ public class ClientConfiguration {
 	 * Short command-line alternative to {@link #OPTION_CREATE_REPORT}.
 	 */
 	public static final String CMD_OPTION_CREATE_REPORT = "r";
+	/**
+	 * Short command-line alternative to {@link #OPTION_LOCAL_DUMPFILE}.
+	 */
+	public static final String CMD_OPTION_LOCAL_DUMPFILE = "l";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -171,6 +175,11 @@ public class ClientConfiguration {
 	 * specifying the tasks for RDF serialization.
 	 */
 	public static final String OPTION_OUTPUT_RDF_TYPE = "rdftasks";
+	/**
+	 * Name of the long command line option and configuration for local dump
+	 * files
+	 */
+	public static final String OPTION_LOCAL_DUMPFILE = "localdump";
 
 	static final Map<String, Class<? extends DumpProcessingOutputAction>> KNOWN_ACTIONS = new HashMap<>();
 	static {
@@ -450,6 +459,11 @@ public class ClientConfiguration {
 		if (cmd.hasOption(OPTION_FILTER_PROPERTIES)) {
 			setPropertyFilters(cmd.getOptionValue(OPTION_FILTER_PROPERTIES));
 		}
+
+		if (cmd.hasOption(CMD_OPTION_LOCAL_DUMPFILE)) {
+			setLocalDumpFile(cmd
+					.getOptionValue(OPTION_LOCAL_DUMPFILE));
+		}
 	}
 
 	/**
@@ -486,6 +500,9 @@ public class ClientConfiguration {
 				break;
 			case OPTION_FILTER_PROPERTIES:
 				setPropertyFilters(section.get(key));
+				break;
+			case OPTION_LOCAL_DUMPFILE:
+				setLocalDumpFile(section.get(key));
 				break;
 			default:
 				logger.warn("Unrecognized option: " + key);
@@ -646,6 +663,12 @@ public class ClientConfiguration {
 		}
 	}
 
+	private void setLocalDumpFile(String dumpname) {
+		// TODO
+		// MwLocalDumpFile mwDump = new MwLocalDumpFile(null, null,
+		// dumpname);
+	}
+
 	/**
 	 * Builds a list of legal options and store them into the options objects.
 	 */
@@ -726,6 +749,12 @@ public class ClientConfiguration {
 				.withLongOpt(OPTION_CREATE_REPORT)
 				.create(CMD_OPTION_CREATE_REPORT);
 
+		Option localDump = OptionBuilder.hasArg()
+				.withArgName("localdump")
+				.withDescription("enables ")
+				.withLongOpt(OPTION_LOCAL_DUMPFILE)
+				.create(CMD_OPTION_LOCAL_DUMPFILE);
+
 		options.addOption(config);
 		options.addOption(action);
 		options.addOption(
@@ -740,6 +769,7 @@ public class ClientConfiguration {
 		options.addOption(filterProperties);
 		options.addOption(compressionExtention);
 		options.addOption(report);
+		options.addOption(localDump);
 		options.addOption(rdfdump);
 		options.addOption(
 				CMD_OPTION_OFFLINE_MODE,
