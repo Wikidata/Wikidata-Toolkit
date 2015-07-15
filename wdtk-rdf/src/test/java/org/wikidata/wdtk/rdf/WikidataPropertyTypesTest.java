@@ -48,10 +48,10 @@ public class WikidataPropertyTypesTest {
 		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
 		propertyTypes.webResourceFetcher = wrf;
 		wrf.setWebResourceContents(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&ids=P10&format=json&props=datatype",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&ids=P10&format=json&props=datatype",
 				"{\"entities\":{\"P10\":{\"id\":\"P10\",\"type\":\"property\",\"datatype\":\"commonsMedia\"}},\"success\":1}");
 		wrf.setWebResourceContents(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&ids=P1245&format=json&props=datatype",
+				"https://www.wikidata.org/w/api.php?action=wbgetentities&ids=P1245&format=json&props=datatype",
 				"{\"entities\":{\"P1245\":{\"id\":\"P1245\",\"type\":\"property\",\"datatype\":\"string\"}},\"success\":1}");
 	}
 

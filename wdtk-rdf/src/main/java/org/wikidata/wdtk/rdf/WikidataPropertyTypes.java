@@ -60,7 +60,7 @@ public class WikidataPropertyTypes implements PropertyTypes {
 	static final Logger logger = LoggerFactory
 			.getLogger(WikidataPropertyTypes.class);
 
-	final String WEB_API_URL = "http://www.wikidata.org/w/api.php";
+	final String WEB_API_URL = "https://www.wikidata.org/w/api.php";
 
 	final Map<String, String> propertyTypes;
 
