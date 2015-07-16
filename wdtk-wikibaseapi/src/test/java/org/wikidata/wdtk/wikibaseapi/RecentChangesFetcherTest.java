@@ -39,17 +39,17 @@ public class RecentChangesFetcherTest{
 	private String dateLine = "			<pubDate>Tue, 02 Jun 2015 13:22:02 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1876457</comments>		</item>";
 	private String titleLine = "			<title>Q1876457</title>";
 
-	private String urlForFrom = "http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss&from=20150611154713";
+	private String urlForFrom = "https://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss&from=20150611154713";
 	
 	@Test
 	public void testConstructors() {
 		RecentChangesFetcher rcf1 = new RecentChangesFetcher();
 		RecentChangesFetcher rcf2 = new RecentChangesFetcher(
-				"http://www.wikidata.org/w/api.php");
+				"https://www.wikidata.org/w/api.php");
 		assertEquals(rcf1.rssUrl,
-				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
+				"https://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 		assertEquals(rcf2.rssUrl,
-				"http://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
+				"https://www.wikidata.org/w/api.php?action=feedrecentchanges&format=json&feedformat=rss");
 	}
 	
 	@Test
