@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerImpl;
 
 /**
  * Class for representing dump files that has been previously downladed
@@ -61,12 +62,15 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 *                the type of dump this represents
 	 * @param dumpFileName
 	 *                name of the dumpFile
+	 * @throws IOException
 	 */
 
-	public MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
-			DumpContentType dumpContentType, String dumpFileName) {
-		this(dumpFileDirectoryManager, dumpContentType,
-				dumpFileName, "", "");
+	public MwLocalDumpFile(String dumpFileDirectory,
+			DumpContentType dumpContentType, String dumpFileName)
+			throws IOException {
+		this(new DirectoryManagerImpl(dumpFileDirectory),
+				dumpContentType, dumpFileName,
+				"LocalDate", "LocalDumpFile");
 	}
 
 	/**
@@ -83,11 +87,12 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 *                dump date in format YYYYMMDD
 	 * @param projectName
 	 *                project name string
+	 * @throws IOException
 	 */
 	public MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
 			DumpContentType dumpContentType, String dumpFileName,
-			String dateStamp,
-			String projectName) {
+			String dateStamp, String projectName)
+			throws IOException {
 		this.dateStamp = dateStamp;
 		this.projectName = projectName;
 		this.localDumpfileDirectoryManager = dumpFileDirectoryManager;
@@ -97,11 +102,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	@Override
 	public boolean isAvailable() {
-		if (this.isDone == null) {
-			isDone = this.localDumpfileDirectoryManager
-					.hasFile(dumpFileName);
-		}
-		return isDone;
+		return this.localDumpfileDirectoryManager.hasFile(dumpFileName);
 	}
 
 	@Override
