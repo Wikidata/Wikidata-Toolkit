@@ -20,6 +20,7 @@ package org.wikidata.wdtk.client;
  * #L%
  */
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -46,6 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
  * This class handles the program arguments from the conversion command line
@@ -240,6 +243,12 @@ public class ClientConfiguration {
 	Set<PropertyIdValue> filterProperties = null;
 
 	/**
+	 * Dump file that was previously downloaded and should be processed
+	 * locally, or null if no local dump file is set.
+	 */
+	MwLocalDumpFile localDumpFile = null;
+
+	/**
 	 * Constructs a new object for the given arguments.
 	 * 
 	 * @param args
@@ -324,6 +333,16 @@ public class ClientConfiguration {
 	 */
 	public Set<PropertyIdValue> getFilterProperties() {
 		return this.filterProperties;
+	}
+
+	/**
+	 * Returns a local dump file that was previously downloaded and should
+	 * be locally processed, or null if no local dump file is set.
+	 * 
+	 * @return dump file that should be locally processed
+	 */
+	public MwLocalDumpFile getLocalDumpFile() {
+		return this.localDumpFile;
 	}
 
 	/**
@@ -664,9 +683,23 @@ public class ClientConfiguration {
 	}
 
 	private void setLocalDumpFile(String dumpname) {
-		// TODO
-		// MwLocalDumpFile mwDump = new MwLocalDumpFile(null, null,
-		// dumpname);
+		this.offlineMode = true;
+		MwLocalDumpFile mwDump = null;
+		try {
+			File file = new File(dumpname);
+			if (file.exists()) {
+				mwDump = new MwLocalDumpFile(file,
+						DumpContentType.JSON);
+			}
+
+			else {
+				logger.error("File does not exist: " + dumpname);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.localDumpFile = mwDump;
 	}
 
 	/**
@@ -751,7 +784,8 @@ public class ClientConfiguration {
 
 		Option localDump = OptionBuilder.hasArg()
 				.withArgName("localdump")
-				.withDescription("enables ")
+				.withDescription(
+						"defines a local dump file that will be locally processed; enables offline mode")
 				.withLongOpt(OPTION_LOCAL_DUMPFILE)
 				.create(CMD_OPTION_LOCAL_DUMPFILE);
 

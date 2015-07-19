@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
@@ -53,8 +54,13 @@ public class LocalDumpFileProcessor {
 				"wikidata_wiki");
 		dumpProcessingController.setOfflineMode(true);
 		dumpProcessingController.registerEntityDocumentProcessor(
-				entityDocumentProcessor, null, false);
+				entityDocumentProcessor, null, true);
+		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
+				0);
+		dumpProcessingController.registerEntityDocumentProcessor(
+				entityTimerProcessor, null, true);
 		dumpProcessingController.processDump(mwDumpFile);
+		entityTimerProcessor.close();
 	}
 
 	/**

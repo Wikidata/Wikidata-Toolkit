@@ -120,8 +120,13 @@ public class Client {
 		dumpProcessingController.setPropertyFilter(this.clientConfiguration
 				.getFilterProperties());
 
-		MwDumpFile dumpFile = dumpProcessingController
-				.getMostRecentDump(DumpContentType.JSON);
+		MwDumpFile dumpFile = this.clientConfiguration
+				.getLocalDumpFile();
+
+		if (dumpFile == null) {
+			dumpFile = dumpProcessingController
+					.getMostRecentDump(DumpContentType.JSON);
+		}
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {

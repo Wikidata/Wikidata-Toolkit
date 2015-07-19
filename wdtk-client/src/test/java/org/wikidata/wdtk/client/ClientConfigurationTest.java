@@ -241,4 +241,28 @@ public class ClientConfigurationTest {
 		assertEquals(propFilters, config.getFilterProperties());
 	}
 
+	/*
+	 * @Test public void testLocalDumpFileLong(){ String[] args = new
+	 * String[] { "--localdump", "dumptest" }; ClientConfiguration config =
+	 * new ClientConfiguration(args);
+	 * 
+	 * assertTrue(config.offlineMode); assertEquals("dumptest",
+	 * config.getLocalDumpFile() .getDumpFileName()); }
+	 * 
+	 * @Test public void testLocalDumpFileShort() { String[] args = new
+	 * String[] { "-l", "dumptest" }; ClientConfiguration config = new
+	 * ClientConfiguration(args);
+	 * 
+	 * assertTrue(config.offlineMode); assertEquals("dumptest",
+	 * config.getLocalDumpFile() .getDumpFileName()); }
+	 */
+
+	@Test
+	public void testLocalDumpFileIllegal() {
+		String[] args = new String[] { "-l", "dumptest" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		assertEquals(null, config.getLocalDumpFile());
+	}
+
 }
