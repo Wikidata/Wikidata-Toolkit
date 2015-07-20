@@ -21,14 +21,22 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * Exception thrown if there are no login cookies set and an action is called
- * for which you need to be logged in.
+ * This Exception could be caused by an login action if there are problems with
+ * the login token or the session id.
  * 
  * @author Michael Guenther
  * 
  */
-public class NoLoginException extends Exception {
+public class NeedTokenException extends Exception {
 
-	private static final long serialVersionUID = -4978021044430368426L;
+	public NeedTokenException() {
+		super();
+	}
+
+	public NeedTokenException(String message) {
+		super(message);
+	}
+
+	private static final long serialVersionUID = 4379408974690967477L;
 
 }

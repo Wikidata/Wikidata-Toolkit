@@ -22,6 +22,7 @@ package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -29,7 +30,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,10 +42,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Class to build up and hold a connection to a Wikibase API, managing cookies
  * and login.
  * 
- * @author michael
+ * @author Michael Guenther
  * 
  */
 public class ApiConnection {
+
+	static final Logger logger = LoggerFactory.getLogger(ApiConnection.class);
 
 	final static String wikidataApiUrl = "https://www.wikidata.org/w/api.php/";
 	final static String testWikidataApiUrl = "https://test.wikidata.org/w/api.php";
@@ -54,6 +60,51 @@ public class ApiConnection {
 	 * succesfull.
 	 */
 	final static String LOGIN_RESULT_SUCCESS = "Success";
+	/**
+	 * Wrong Password.
+	 */
+	final static String LOGIN_WRONG_PASS = "WrongPass";
+	/**
+	 * Wrong Password. An authentication plugin rejected the password.
+	 */
+	final static String LOGIN_WRONG_PLUGIN_PASS = "WrongPluginPass";
+	/**
+	 * No Username.
+	 */
+	final static String LOGIN_No_Name = "NoName";
+	/**
+	 * Username does not exist.
+	 */
+	final static String LOGIN_NOT_EXISTS = "NotExists";
+	/**
+	 * Username is illegal.
+	 */
+	final static String LOGIN_ILLEGAL = "Illegal";
+	/**
+	 * There were too many logins in a short time.
+	 */
+	final static String LOGIN_THROTTLED = "Throttled";
+	/**
+	 * Password is empty
+	 */
+	final static String LOGIN_EMPTY_PASS = "EmptyPass";
+	/**
+	 * The wiki tried to automatically create a new account for you, but your IP
+	 * address has been blocked from account creation.
+	 */
+	final static String LOGIN_CREATE_BLOCKED = "CreateBlocked";
+	/**
+	 * The User is blocked.
+	 */
+	final static String LOGIN_BLOCKED = "Blocked";
+	/**
+	 * Token or Session ID is missing.
+	 */
+	final static String LOGIN_NEEDTOKEN = "NeedToken";
+	/**
+	 * Token is wrong.
+	 */
+	final static String LOGIN_WRONG_TOKEN = "WrongToken";
 
 	/**
 	 * base URL to the Wikibase API.
@@ -102,16 +153,26 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Log the user in the api given a username and a password
+	 * Log the user in the API given a username and a password
 	 * 
 	 * @param username
 	 * @param password
-	 * @return true if the login was successfull
+	 * @return true if the login was successful
 	 * @throws IOException
 	 */
 	public boolean login(String username, String password) throws IOException {
 		String token = this.getLoginToken(username, password);
-		return this.confirmLogin(token, username, password);
+		try {
+			return this.confirmLogin(token, username, password);
+		} catch (NeedTokenException e) {
+			token = this.getLoginToken(username, password);
+			try {
+				return this.confirmLogin(token, username, password);
+			} catch (NeedTokenException e1) {
+				logger.warn(e.toString());
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -129,9 +190,8 @@ public class ApiConnection {
 		params.put("lgname", username);
 		params.put("lgpassword", password);
 		params.put("format", "json");
-
-		String tokenResponse = this.sendRequest("POST", params);
-
+		String tokenResponse = this.getRequestResultAsString(this.sendRequest(
+				"POST", params));
 		JsonNode root = this.mapper.readTree(tokenResponse);
 		String token = root.get("login").get("token").textValue();
 
@@ -146,25 +206,64 @@ public class ApiConnection {
 	 * @param password
 	 * @return
 	 * @throws IOException
+	 * @throws NeedTokenException
 	 */
 	boolean confirmLogin(String token, String username, String password)
-			throws IOException {
+			throws IOException, NeedTokenException {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "login");
 		params.put("lgname", username);
 		params.put("lgpassword", password);
 		params.put("lgtoken", token);
 		params.put("format", "json");
-		String json = sendRequest("POST", params);
-
+		String json = this
+				.getRequestResultAsString(sendRequest("POST", params));
 		JsonNode root = this.mapper.readTree(json);
-
-		if (root.get("login").get("result").textValue() != ApiConnection.LOGIN_RESULT_SUCCESS) {
+		String result = root.get("login").get("result").textValue();
+		if (result != ApiConnection.LOGIN_RESULT_SUCCESS) {
 			this.loggedIn = true;
 			this.username = username;
 			this.password = password;
 			return true;
 		} else {
+			// TODO replace some of this warnings through useful exception.
+			switch (result) {
+			case ApiConnection.LOGIN_WRONG_PASS:
+				logger.warn(result + ": Wrong Password.");
+				break;
+			case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
+				logger.warn(result
+						+ ": Wrong Password. An authentication plugin rejected the password.");
+				break;
+			case ApiConnection.LOGIN_NOT_EXISTS:
+				logger.warn(result + ": Username does not exist.");
+				break;
+			case ApiConnection.LOGIN_BLOCKED:
+				logger.warn(result + ": User is blocked.");
+				break;
+			case ApiConnection.LOGIN_EMPTY_PASS:
+				logger.warn(result + ": Password is empty.");
+				break;
+			case ApiConnection.LOGIN_CREATE_BLOCKED:
+				logger.warn(result
+						+ ": The wiki tried to automatically create a new account for you,"
+						+ "but your IP address has been blocked from account creation.");
+				break;
+			case ApiConnection.LOGIN_ILLEGAL:
+				logger.warn(result + ": Usernmame is illegal.");
+				break;
+			case ApiConnection.LOGIN_THROTTLED:
+				logger.warn(result + ": Too many logins in a short time.");
+				break;
+			case ApiConnection.LOGIN_WRONG_TOKEN:
+				logger.warn(result + ": Token is wrong.");
+				break;
+			case ApiConnection.LOGIN_NEEDTOKEN:
+				throw new NeedTokenException(result
+						+ ": Token or Session ID is missing.");
+			default:
+				logger.warn("Login Error: " + result);
+			}
 			return false;
 		}
 	}
@@ -203,7 +302,7 @@ public class ApiConnection {
 	 * @param con
 	 */
 	void fillCookies(HttpURLConnection con) {
-		this.cookies.clear(); // TODO test if this is working
+		this.cookies.clear();
 		String headerName;
 		for (int i = 1; (headerName = con.getHeaderFieldKey(i)) != null; i++) {
 			if (headerName.equals(ApiConnection.HEADER_FIELD_SET_COOKIE)) {
@@ -289,7 +388,7 @@ public class ApiConnection {
 	 * @return api result
 	 * @throws IOException
 	 */
-	public String sendRequest(String requestMethod,
+	public InputStream sendRequest(String requestMethod,
 			Map<String, String> parameters) throws IOException {
 		String queryString = getQueryString(parameters);
 		URL url = new URL(this.apiBaseUrl);
@@ -310,17 +409,69 @@ public class ApiConnection {
 		writer.close();
 		int rc = connection.getResponseCode();
 		if (rc != 200) {
-			System.out.println("Error: Getting Response Code " + rc);
+			logger.warn("Error: Getting Response Code " + rc);
 		}
+		InputStream iStream = connection.getInputStream();
+		this.fillCookies(connection);
+		return iStream;
+	}
+
+	/**
+	 * Halndles errors and warnings. Note that there is at most one error
+	 * message in the json result even if there are more errors in the request.
+	 * Returns true if there are no errors.
+	 * 
+	 * @param root
+	 *            root node of the json result
+	 * @return
+	 */
+	public boolean parseErrorsAndWarnings(JsonNode root) {
+		if (root.has("error")) {
+			JsonNode errorNode = root.path("error");
+			logger.error("Error when reading data from API: "
+					+ errorNode.path("info").asText("DESCRIPTION MISSING")
+					+ " ["
+					+ errorNode.path("code").asText("UNKNOWN ERROR CODE") + "]");
+			return false;
+		}
+		if (root.has("warning")) {
+			JsonNode warningNode = root.path("warning");
+			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
+			while (iter.hasNext()) {
+				Map.Entry<String, JsonNode> node = iter.next();
+				if (node.getKey().equals("main")) {
+					logger.warn("Warning when reading data from API: "
+							+ node.getValue().path("*")
+									.asText("DESCRIPTION MISSING"));
+				} else {
+					logger.warn("Warning when reading data from API "
+							+ node.getKey()
+							+ " :"
+							+ node.getValue().path("*")
+									.asText("DESCRIPTION MISSING"));
+				}
+
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns the content of an {@link InputStream} without line endings.
+	 * 
+	 * @param iStream
+	 * @return String result
+	 * @throws IOException
+	 */
+	private String getRequestResultAsString(InputStream iStream)
+			throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				connection.getInputStream()));
+				iStream));
 		String result = "";
 		for (String line; (line = reader.readLine()) != null;) {
 			result = result.concat(line);
 		}
-		reader.close();
-		System.out.println(connection.getHeaderFields());
-		this.fillCookies(connection);
-		return result; // TODO change result type to inputStream for big content
+		return result;
 	}
+
 }

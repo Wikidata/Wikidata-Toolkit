@@ -21,14 +21,16 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * Exception thrown if there are no login cookies set and an action is called
- * for which you need to be logged in.
+ * This class holds the properties of an wbgetentities action request.
  * 
  * @author Michael Guenther
  * 
  */
-public class NoLoginException extends Exception {
-
-	private static final long serialVersionUID = -4978021044430368426L;
-
+public class WbGetEntitiesProperties {
+	String ids = null;
+	String sites = null;
+	String titles = null;
+	String props = null;
+	String languages = null;
+	String sitefilter = null;
 }

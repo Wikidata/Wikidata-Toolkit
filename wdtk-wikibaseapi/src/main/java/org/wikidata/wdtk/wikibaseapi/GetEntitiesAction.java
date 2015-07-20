@@ -21,14 +21,12 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
@@ -37,6 +35,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Java implementation of the wbgetentities action
+ * 
+ * @author Michael Guenther
+ * 
+ */
 public class GetEntitiesAction {
 
 	static final Logger logger = LoggerFactory
@@ -101,28 +105,30 @@ public class GetEntitiesAction {
 			parameters.put("sites", sites);
 		}
 		if (titles != null) {
-			parameters.put("titles", ids);
+			parameters.put("titles", titles);
 		}
 
 		if (props != null) {
-			parameters.put("props", ids);
+			parameters.put("props", props);
 		}
 		if (languages != null) {
-			parameters.put("languages", ids);
+			parameters.put("languages", languages);
 		}
 		if (sitefilter != null) {
-			parameters.put("sitefilter", ids);
+			parameters.put("sitefilter", sitefilter);
 		}
+
 		parameters.put("format", "json");
 
-		String response;
+		InputStream response;
 		try {
 			response = this.connection.sendRequest("POST", parameters);
-
 			JsonNode root;
 			root = mapper.readTree(response);
 			Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
+			// TODO use ApiConnection functions for global error and warning
+			// handling
 			if (root.has("error")) {
 				JsonNode errorNode = root.path("error");
 				logger.error("Error when reading data from API: "
