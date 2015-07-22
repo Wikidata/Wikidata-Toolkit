@@ -119,7 +119,6 @@ public class GetEntitiesAction {
 		}
 
 		parameters.put("format", "json");
-
 		InputStream response;
 		try {
 			response = this.connection.sendRequest("POST", parameters);
@@ -152,9 +151,9 @@ public class GetEntitiesAction {
 						} else {
 							if (ed instanceof JacksonItemDocument
 									&& ((JacksonItemDocument) ed)
-											.getSiteLinks().containsKey(titles)) {
+											.getSiteLinks().containsKey(sites)) {
 								result.put(((JacksonItemDocument) ed)
-										.getSiteLinks().get(titles)
+										.getSiteLinks().get(sites)
 										.getPageTitle(), ed);
 							}
 						}
@@ -165,7 +164,6 @@ public class GetEntitiesAction {
 					}
 				}
 			}
-
 			return result;
 		} catch (IOException e) {
 			logger.error("Could not retrive data: " + e.toString());
