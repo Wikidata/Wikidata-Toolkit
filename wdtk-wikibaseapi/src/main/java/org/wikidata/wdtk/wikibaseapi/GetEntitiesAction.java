@@ -80,6 +80,22 @@ public class GetEntitiesAction {
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
+	 * the API URL
+	 * 
+	 * @param properties
+	 *            parameter setting for wbgetentities
+	 * @return map of document identifiers or titles to documents retrieved via
+	 *         the API URL
+	 */
+	public Map<String, EntityDocument> wbgetEntities(
+			WbGetEntitiesProperties properties) {
+		return wbgetEntities(properties.ids, properties.sites,
+				properties.titles, properties.props, properties.languages,
+				properties.sitefilter);
+	}
+
+	/**
+	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the API URL.
 	 * 
 	 * @param ids

@@ -27,7 +27,7 @@ package org.wikidata.wdtk.wikibaseapi;
  * @author Michael Guenther
  * 
  */
-public class NeedTokenException extends Exception {
+public class NeedTokenException extends LoginFailedException {
 
 	public NeedTokenException() {
 		super();

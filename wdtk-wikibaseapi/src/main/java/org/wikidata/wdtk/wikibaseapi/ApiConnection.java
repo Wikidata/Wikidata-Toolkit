@@ -159,19 +159,21 @@ public class ApiConnection {
 	 * @param password
 	 * @return true if the login was successful
 	 * @throws IOException
+	 * @throws LoginFailedException
 	 */
-	public boolean login(String username, String password) throws IOException {
-		String token = this.getLoginToken(username, password);
+	public void login(String username, String password)
+			throws LoginFailedException {
+		String token;
 		try {
-			return this.confirmLogin(token, username, password);
-		} catch (NeedTokenException e) {
 			token = this.getLoginToken(username, password);
 			try {
-				return this.confirmLogin(token, username, password);
-			} catch (NeedTokenException e1) {
-				logger.warn(e.toString());
-				return false;
+				this.confirmLogin(token, username, password);
+			} catch (NeedTokenException e) {
+				token = this.getLoginToken(username, password);
+				this.confirmLogin(token, username, password);
 			}
+		} catch (IOException e1) {
+			throw new LoginFailedException(e1.getMessage());
 		}
 	}
 
@@ -206,10 +208,10 @@ public class ApiConnection {
 	 * @param password
 	 * @return
 	 * @throws IOException
-	 * @throws NeedTokenException
+	 * @throws LoginFailedException
 	 */
-	boolean confirmLogin(String token, String username, String password)
-			throws IOException, NeedTokenException {
+	void confirmLogin(String token, String username, String password)
+			throws IOException, LoginFailedException {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "login");
 		params.put("lgname", username);
@@ -220,51 +222,62 @@ public class ApiConnection {
 				.getRequestResultAsString(sendRequest("POST", params));
 		JsonNode root = this.mapper.readTree(json);
 		String result = root.get("login").get("result").textValue();
-		if (result != ApiConnection.LOGIN_RESULT_SUCCESS) {
+		if (result.equals(ApiConnection.LOGIN_RESULT_SUCCESS)) {
 			this.loggedIn = true;
 			this.username = username;
 			this.password = password;
-			return true;
+			return;
 		} else {
-			// TODO replace some of this warnings through useful exception.
+			String message;
 			switch (result) {
 			case ApiConnection.LOGIN_WRONG_PASS:
-				logger.warn(result + ": Wrong Password.");
-				break;
+				message = result + ": Wrong Password.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
-				logger.warn(result
-						+ ": Wrong Password. An authentication plugin rejected the password.");
-				break;
+				message = result
+						+ ": Wrong Password. An authentication plugin rejected the password.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_NOT_EXISTS:
-				logger.warn(result + ": Username does not exist.");
-				break;
+				message = result + ": Username does not exist.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_BLOCKED:
-				logger.warn(result + ": User is blocked.");
-				break;
+				message = result + ": User is blocked.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_EMPTY_PASS:
-				logger.warn(result + ": Password is empty.");
-				break;
+				message = result + ": Password is empty.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_CREATE_BLOCKED:
-				logger.warn(result
+				message = result
 						+ ": The wiki tried to automatically create a new account for you,"
-						+ "but your IP address has been blocked from account creation.");
-				break;
+						+ "but your IP address has been blocked from account creation.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_ILLEGAL:
-				logger.warn(result + ": Usernmame is illegal.");
-				break;
+				message = result + ": Usernmame is illegal.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_THROTTLED:
-				logger.warn(result + ": Too many logins in a short time.");
-				break;
+				message = result + ": Too many logins in a short time.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_WRONG_TOKEN:
-				logger.warn(result + ": Token is wrong.");
-				break;
+				message = result + ": Token is wrong.";
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			case ApiConnection.LOGIN_NEEDTOKEN:
-				throw new NeedTokenException(result
-						+ ": Token or Session ID is missing.");
+				message = result + ": Token or Session ID is missing.";
+				logger.warn(message);
+				throw new NeedTokenException();
 			default:
-				logger.warn("Login Error: " + result);
+				message = "Login Error: " + result;
+				logger.warn(message);
+				throw new LoginFailedException(message);
 			}
-			return false;
 		}
 	}
 

@@ -21,42 +21,20 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This class holds the properties of an wbgetentities action request.
- * 
+ * This Exception is thrown when a login was not successful.
  * @author Michael Guenther
  * 
  */
-public class WbGetEntitiesProperties {
+public class LoginFailedException extends Exception {
 
-	/**
-	 * ids for entities
-	 */
-	public String ids = null;
+	public LoginFailedException(){
+		super();
+	}
+	
+	public LoginFailedException(String message){
+		super(message);
+	}
+	
+	private static final long serialVersionUID = -211632440125669875L;
 
-	/**
-	 * refers to a sites (e.g. "enwiki") to determine the language for the
-	 * titles
-	 */
-	public String sites = null;
-
-	/**
-	 * titles for item documents
-	 */
-	public String titles = null;
-
-	/**
-	 * Describes what should be included in the response. Possible values are
-	 * labels, descriptions, sitelinks, claims, datatype and aliases.
-	 */
-	public String props = null;
-
-	/**
-	 * languages for titles, descriptions and aliases
-	 */
-	public String languages = null;
-
-	/**
-	 * filter for sitelinks
-	 */
-	public String sitefilter = null;
 }
