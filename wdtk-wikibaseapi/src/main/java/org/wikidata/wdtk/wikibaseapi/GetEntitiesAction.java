@@ -142,16 +142,10 @@ public class GetEntitiesAction {
 			root = mapper.readTree(response);
 			Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
-			// TODO use ApiConnection functions for global error and warning
-			// handling
-			if (root.has("error")) {
-				JsonNode errorNode = root.path("error");
-				logger.error("Error when reading data from API: "
-						+ errorNode.path("info").asText("DESCRIPTION MISSING")
-						+ " ["
-						+ errorNode.path("code").asText("UNKNOWN ERROR CODE")
-						+ "]");
-			} // fall through: maybe there are some entities anyway
+			if (this.connection.parseErrorsAndWarnings(root) == false) {
+				logger.error("Could not retrive data");
+				return result;
+			}
 
 			JsonNode entities = root.path("entities");
 			for (JsonNode entityNode : entities) {

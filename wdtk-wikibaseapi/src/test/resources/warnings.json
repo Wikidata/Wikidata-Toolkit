@@ -1,0 +1,10 @@
+{
+    "warnings": {
+        "main": {
+            "*": "Unrecognized parameter: 'rmparam'"
+        },
+        "query": {
+            "*": "Unrecognized value for parameter 'list': raremodule"
+        }
+    }
+}

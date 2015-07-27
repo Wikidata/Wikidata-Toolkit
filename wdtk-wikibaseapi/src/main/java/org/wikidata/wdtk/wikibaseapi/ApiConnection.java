@@ -178,6 +178,25 @@ public class ApiConnection {
 	}
 
 	/**
+	 * Returns true if a user is logged in.
+	 * 
+	 * @return
+	 */
+	public boolean isLoggedIn() {
+		return this.loggedIn;
+	}
+
+	/**
+	 * Returns the username of the user who is currently logged in. If there is
+	 * no user logged in the result is an empty string.
+	 * 
+	 * @return
+	 */
+	public String getCurrentUser() {
+		return this.username;
+	}
+
+	/**
 	 * Returns login Token from an api login query with the given username and
 	 * password.
 	 * 
@@ -286,7 +305,7 @@ public class ApiConnection {
 	 * 
 	 * @throws IOException
 	 */
-	public void Logout() throws IOException {
+	public void logout() throws IOException {
 		if (this.loggedIn) {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("action", "logout");
@@ -361,7 +380,7 @@ public class ApiConnection {
 	 * @throws IOException
 	 */
 	public void clearCookies() throws IOException {
-		this.Logout();
+		this.logout();
 		this.cookies.clear();
 
 	}
@@ -436,7 +455,7 @@ public class ApiConnection {
 	 * 
 	 * @param root
 	 *            root node of the json result
-	 * @return
+	 * @return true if there are no errors
 	 */
 	public boolean parseErrorsAndWarnings(JsonNode root) {
 		if (root.has("error")) {
@@ -447,8 +466,8 @@ public class ApiConnection {
 					+ errorNode.path("code").asText("UNKNOWN ERROR CODE") + "]");
 			return false;
 		}
-		if (root.has("warning")) {
-			JsonNode warningNode = root.path("warning");
+		if (root.has("warnings")) {
+			JsonNode warningNode = root.path("warnings");
 			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
 			while (iter.hasNext()) {
 				Map.Entry<String, JsonNode> node = iter.next();
