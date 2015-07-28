@@ -24,11 +24,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.util.CompressionType;
 
@@ -39,6 +40,9 @@ import org.wikidata.wdtk.util.CompressionType;
  * 
  */
 public class MockApiConnection extends ApiConnection {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(MockApiConnection.class);
 
 	/**
 	 * Mapping from hashs of query parameter maps to request results.
@@ -62,7 +66,9 @@ public class MockApiConnection extends ApiConnection {
 	public void setWebResource(Map<String, String> parameters, String result) {
 		int hash = parameters.hashCode();
 		if (this.webResources.containsKey(hash)) {
-			// TODO logger.warn - add logger to this class
+			logger.warn("There is already a resource in the webResources Map with the same hash. "
+					+ "Either this could happen if there was added a resource for the same parameter setting "
+					+ "or as a result of a hash collision.");
 		}
 		this.webResources.put(hash, result.getBytes(StandardCharsets.UTF_8));
 	}
@@ -71,25 +77,27 @@ public class MockApiConnection extends ApiConnection {
 	// MockWebResourceFetcher. Sharing this code in some way would be more
 	// convenient.
 	/**
-	 * Defines the contents of a new web resource by taking the string from a
-	 * given (Java) resource, possibly using additional compression.
+	 * Defines the contents of a new web resource (result for an API request) by
+	 * taking a list of parameters and the string from a given (Java) resource.
 	 * 
-	 * @param url
-	 *            the URL string
-	 * @param resource
-	 *            the Java resource name
+	 * @param parameters
+	 *            paramerter setting of the query string for an API request.
 	 * @param resourceClass
 	 *            the Class relative to which the resource should be resolved
 	 *            (since resources are stored relative to a classpath); can
 	 *            usually be obtained with getClass() from the calling object
+	 * @param path
+	 *            the path to the java resource
 	 * @param compressionType
-	 *            the compression to use on the mocked contents
+	 *            the compression type of the resource file
+	 * @throws MalformedURLException
+	 * 
 	 * @throws IOException
 	 *             if the Java resource could not be loaded
 	 */
 	public void setWebResourceFromPath(Map<String, String> parameters,
 			Class<?> resourceClass, String path, CompressionType compressionType)
-			throws MalformedURLException, IOException {
+			throws IOException {
 		this.webResources.put(parameters.hashCode(), MockStringContentFactory
 				.getStringFromUrl(resourceClass.getResource(path)).getBytes());
 	}
