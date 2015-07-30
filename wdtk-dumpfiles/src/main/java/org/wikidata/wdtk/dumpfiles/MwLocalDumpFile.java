@@ -27,9 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerImpl;
@@ -43,15 +48,18 @@ import org.wikidata.wdtk.util.DirectoryManagerImpl;
  */
 public class MwLocalDumpFile implements MwDumpFile {
 
+	static final Logger logger = LoggerFactory
+			.getLogger(DumpProcessingController.class);
+
 	protected final String dateStamp;
 	protected final String projectName;
-	Boolean isDone;
-	protected final String dumpFileName;
+	protected String dumpFileName;
+	protected final Path dumpFilePath;
 
 	/**
 	 * DirectoryManager for this local dumpfile
 	 */
-	final DirectoryManager localDumpfileDirectoryManager;
+	DirectoryManager localDumpfileDirectoryManager;
 
 	/**
 	 * Type of this dumpfile
@@ -73,6 +81,19 @@ public class MwLocalDumpFile implements MwDumpFile {
 				CompressionType.GZIP);
 		MwLocalDumpFile.COMPRESSION_TYPE.put(DumpContentType.JSON,
 				CompressionType.GZIP);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 */
+	public MwLocalDumpFile(String filepath) {
+		this.dumpContentType = DumpContentType.JSON;
+		this.dumpFileName = "";
+		this.dumpFilePath = Paths.get(filepath);
+		this.dateStamp = "YYYYMMDD";
+		this.projectName = "LocalDumpFile";
+
 	}
 
 	/**
@@ -137,11 +158,19 @@ public class MwLocalDumpFile implements MwDumpFile {
 		this.localDumpfileDirectoryManager = dumpFileDirectoryManager;
 		this.dumpContentType = dumpContentType;
 		this.dumpFileName = dumpFileName;
+		this.dumpFilePath = Paths.get(dumpFileName);
 	}
 
 	@Override
 	public boolean isAvailable() {
-		return this.localDumpfileDirectoryManager.hasFile(dumpFileName);
+		if (this.localDumpfileDirectoryManager == null) {
+			configureDirectoryManager();
+		}
+		if (this.localDumpfileDirectoryManager != null) {
+			return this.localDumpfileDirectoryManager
+					.hasFile(dumpFileName);
+		}
+		return false;
 	}
 
 	@Override
@@ -185,7 +214,8 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	@Override
 	public void prepareDumpFile() throws IOException {
-		// nothing to do
+		configureDirectoryManager();
+		// inferDumpContentType("");
 	}
 
 	@Override
@@ -193,6 +223,26 @@ public class MwLocalDumpFile implements MwDumpFile {
 		return this.projectName + "-"
 				+ getDumpContentType().toString().toLowerCase()
 				+ "-" + this.dateStamp;
+	}
+
+	public void configureDirectoryManager() {
+		if (Files.exists(dumpFilePath)) {
+			try {
+				if (dumpFilePath.getParent() == null) {
+					System.out.println("null-path:");
+					System.out.println(dumpFilePath);
+				}
+				else{
+					this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
+							dumpFilePath.getParent());
+					dumpFileName = dumpFilePath
+							.getFileName()
+							.toString();
+				}
+			} catch (IOException e) {
+				logger.error("An error occured while creating the DirectryManager.");
+			}
+		}
 	}
 
 }

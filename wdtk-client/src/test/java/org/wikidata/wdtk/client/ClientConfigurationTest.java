@@ -262,6 +262,7 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "-l", "dumptest" };
 		ClientConfiguration config = new ClientConfiguration(args);
 
+		assertTrue(config.offlineMode);
 		assertEquals(null, config.getLocalDumpFile());
 	}
 

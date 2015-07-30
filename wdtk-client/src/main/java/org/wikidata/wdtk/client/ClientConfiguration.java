@@ -249,6 +249,12 @@ public class ClientConfiguration {
 	MwLocalDumpFile localDumpFile = null;
 
 	/**
+	 * Checks, if a local dump file could be found or not. This value
+	 * matters, just if {@link #localDumpFile} is set, too (not null).
+	 */
+	boolean localDumpFound = true;
+
+	/**
 	 * Constructs a new object for the given arguments.
 	 * 
 	 * @param args

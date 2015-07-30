@@ -6,7 +6,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
-import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
@@ -17,12 +16,6 @@ import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
  */
 
 public class LocalDumpFileProcessor {
-
-	final static String COMPRESS_BZ2 = ".bz2";
-	final static String COMPRESS_GZIP = ".gz";
-	final static String COMPRESS_NONE = "";
-
-	private static MwDumpFile mwDumpFile;
 
 	/**
 	 * Name string of the dump file that is locally saved and should be
@@ -43,6 +36,7 @@ public class LocalDumpFileProcessor {
 	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		LocalDumpFileProcessor.printDocumentation();
+		MwLocalDumpFile mwDumpFile = null;
 		try {
 			mwDumpFile = new MwLocalDumpFile(DUMP_DIRECTORY,
 					DUMP_CONTENT_TYPE, FILE_NAME);

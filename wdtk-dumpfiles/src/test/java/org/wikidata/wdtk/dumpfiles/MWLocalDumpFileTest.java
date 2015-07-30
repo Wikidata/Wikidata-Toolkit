@@ -20,9 +20,9 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -54,10 +54,23 @@ public class MWLocalDumpFileTest {
 	@Test
 	public void testGetters() throws IOException {
 		MwLocalDumpFile df = new MwLocalDumpFile(
-				System.getProperty("user.dir"),
-				DumpContentType.DAILY, "empty-dump.xml");
-		assertEquals(df.getDateStamp(), "LocalDate");
+				"./src/test/resources/empty-dump.xml");
+		assertEquals(df.getDateStamp(), "YYYYMMDD");
 		assertEquals(df.getProjectName(), "LocalDumpFile");
-		assertEquals(df.getDumpContentType(), DumpContentType.DAILY);
+		assertEquals(df.getDumpContentType(), DumpContentType.JSON);
+		df.configureDirectoryManager();
+		assertTrue(df.isAvailable());
+	}
+
+	@Test
+	public void testPrepareDumpFile() throws IOException {
+		String filenames = "./src/test/resources/empty-dump.xml";
+		Path path = Paths.get(filenames);
+		System.out.println(path.getParent());
+		MwLocalDumpFile df = new MwLocalDumpFile(filenames);
+		System.out.println(df.dumpFilePath);
+		df.prepareDumpFile();
+		boolean locdump = df.localDumpfileDirectoryManager == null;
+		assertFalse(locdump);
 	}
 }
