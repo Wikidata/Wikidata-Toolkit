@@ -360,14 +360,13 @@ public class ApiConnection {
 	void setCookies(HttpURLConnection con) {
 		String result = "";
 		for (String key : this.cookies.keySet()) {
-			if (this.cookies.get(key) != "") {
+			if (this.cookies.get(key).equals("") == false) {
 				result += key + "=" + this.cookies.get(key) + "; ";
 			} else {
 				result += key + "; ";
 			}
-
 		}
-		if (result != "") {
+		if (result.equals("") == false) {
 			result = result.substring(0, result.length() - 2);
 		}
 		con.setRequestProperty(ApiConnection.PARAM_COOKIE, result);

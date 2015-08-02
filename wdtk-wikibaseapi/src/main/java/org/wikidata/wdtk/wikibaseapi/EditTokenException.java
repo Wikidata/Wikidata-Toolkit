@@ -21,22 +21,22 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * Exception thrown if there are no login cookies set and an action is called
- * for which you need to be logged in.
+ * This Exception is thrown if there was a wrong or empty edit token or the
+ * token parameter was simply null.
  * 
  * @author Michael Guenther
  * 
  */
-public class NoLoginException extends Exception {
+public class EditTokenException extends Exception {
 
-	public NoLoginException() {
+	public EditTokenException() {
 		super();
 	}
 
-	public NoLoginException(String message) {
+	public EditTokenException(String message) {
 		super(message);
 	}
 
-	private static final long serialVersionUID = -4978021044430368426L;
+	private static final long serialVersionUID = -8670142071938325635L;
 
 }
