@@ -30,14 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.util.WebResourceFetcher;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Simple class to fetch data from Wikibase via the online API. Only anonymous,
- * read-only access is supported here.
+ * Simple class to fetch data from Wikibase via the online API.
  * 
  * @author Markus Kroetzsch
  * 
@@ -45,7 +42,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WikibaseDataFetcher {
 
-	static final Logger logger = LoggerFactory.getLogger(WikibaseDataFetcher.class);
+	static final Logger logger = LoggerFactory
+			.getLogger(WikibaseDataFetcher.class);
 
 	/**
 	 * API Action to fetch data.
@@ -75,13 +73,12 @@ public class WikibaseDataFetcher {
 	}
 
 	/**
-	 * Creates an object to fetch data from API at the given URL. The site URI
-	 * is necessary since it is not contained in the data retrieved from the
-	 * URI.
+	 * Creates an object to fetch data from API with the given
+	 * {@link ApiConnection} object. The site URI is necessary since it is not
+	 * contained in the data retrieved from the URI.
 	 * 
-	 * @param apiBaseUrl
-	 *            the base URL of the Web API that should be accessed, e.g.,
-	 *            "http://www.wikidata.org/w/api.php"
+	 * @param connection
+	 *            ApiConnection
 	 * @param siteUri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
@@ -219,7 +216,7 @@ public class WikibaseDataFetcher {
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
-	 * the API URL.
+	 * the APIs.
 	 * 
 	 * @param numOfEntities
 	 *            number of entities that should be retrieved
@@ -242,7 +239,7 @@ public class WikibaseDataFetcher {
 	}
 
 	/**
-	 * TODO document
+	 * Configures props, languages and sitefilter properties.
 	 * 
 	 * @param properties
 	 */
