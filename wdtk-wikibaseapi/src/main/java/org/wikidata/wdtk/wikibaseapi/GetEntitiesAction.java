@@ -62,8 +62,8 @@ public class GetEntitiesAction {
 	final ObjectMapper mapper = new ObjectMapper();
 
 	/**
-	 * Creates an object to fetch data from API at the given URL. The site URI
-	 * is necessary since it is not contained in the data retrieved from the
+	 * Creates an object to fetch data from the given ApiConnection. The site
+	 * URI is necessary since it is not contained in the data retrieved from the
 	 * URI.
 	 * 
 	 * @param connection
