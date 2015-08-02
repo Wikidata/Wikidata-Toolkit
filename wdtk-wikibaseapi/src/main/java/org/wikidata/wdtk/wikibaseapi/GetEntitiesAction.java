@@ -64,7 +64,7 @@ public class GetEntitiesAction {
 	/**
 	 * Creates an object to fetch data from the given ApiConnection. The site
 	 * URI is necessary since it is not contained in the data retrieved from the
-	 * URI.
+	 * API.
 	 * 
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
