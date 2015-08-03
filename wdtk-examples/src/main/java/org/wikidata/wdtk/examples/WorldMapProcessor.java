@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -94,6 +94,11 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 	final Map<String, Integer> siteCounts = new HashMap<>();
 
 	/**
+	 * Identifier of the globe for which coordinates are gathered.
+	 */
+	String globe = GlobeCoordinatesValue.GLOBE_EARTH;
+
+	/**
 	 * Main method. Processes the whole dump using this processor and writes the
 	 * results to a file. To change which dump file to use and whether to run in
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
@@ -109,6 +114,9 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 		double brightness = 1.0;
 		WorldMapProcessor worldMapProcessor = new WorldMapProcessor(imageWidth,
 				brightness);
+		// worldMapProcessor.setGlobe(GlobeCoordinatesValue.GLOBE_MOON);
+		// using the Moon or anything else but Earth might need some brightness
+		// adjustment above, and possibly more frequent reporting below
 
 		worldMapProcessor.addSite(null); // all data, no filter
 		// Some other sites, ranked by the number of geolocated items they had
@@ -176,6 +184,16 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Sets the globe on which coordinates should be gathered. This should be an
+	 * entity URI, e.g., {@link GlobeCoordinatesValue#GLOBE_EARTH}.
+	 *
+	 * @param globe
+	 */
+	public void setGlobe(String globe) {
+		this.globe = globe;
+	}
+
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 
@@ -209,7 +227,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 		}
 
 		GlobeCoordinatesValue coordsValue = (GlobeCoordinatesValue) value;
-		if (!GlobeCoordinatesValue.GLOBE_EARTH.equals((coordsValue.getGlobe()))) {
+		if (!this.globe.equals((coordsValue.getGlobe()))) {
 			return;
 		}
 
@@ -422,7 +440,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 			int scaleMarkStep = 1;
 			for (int x = 0; x < width; x++) {
 				int value = (int) Math.exp(Math.log(10)
-						* Math.log10(this.maxValue) * x / width);
+						* Math.log10(Math.max(10, this.maxValue)) * x / width);
 				int color = getColor(value);
 
 				if (value / scaleMarkStep > previousValue / scaleMarkStep) {
@@ -444,6 +462,13 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 			String fileName = "map-items";
 			if (this.siteFilter != null) {
 				fileName += "-" + this.siteFilter;
+			}
+			if (!GlobeCoordinatesValue.GLOBE_EARTH
+					.equals(WorldMapProcessor.this.globe)) {
+				fileName += "-"
+						+ WorldMapProcessor.this.globe
+								.substring(WorldMapProcessor.this.globe
+										.lastIndexOf('Q'));
 			}
 			fileName += "-" + width + "x" + height + ".png";
 
