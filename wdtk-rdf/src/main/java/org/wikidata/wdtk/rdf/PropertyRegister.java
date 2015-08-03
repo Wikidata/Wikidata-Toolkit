@@ -23,7 +23,6 @@ package org.wikidata.wdtk.rdf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -47,7 +47,7 @@ import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
  * This class helps to manage information about Properties that has to obtained
  * by a webservice.
  *
- * @author michael
+ * @author Michael Guenther
  *
  */
 public class PropertyRegister {
@@ -55,23 +55,58 @@ public class PropertyRegister {
 	static final Logger logger = LoggerFactory
 			.getLogger(PropertyRegister.class);
 
+	/**
+	 * Object used to fetch data. Kept package private to allow being replaced
+	 * by mock object in tests.
+	 */
 	WikibaseDataFetcher dataFetcher;
 
+	/**
+	 * Map that stores the datatype of properties. Properties are identified by
+	 * their Pid; dataypes are identified by their datatype IRI.
+	 */
 	final protected Map<String, String> datatypes = new HashMap<String, String>();
 
+	/**
+	 * Map that stores the URI patterns of properties. Properties are identified
+	 * by their Pid; patterns are given as strings using $1 as placeholder for
+	 * the escaped value.
+	 */
 	final protected Map<String, String> uriPatterns = new HashMap<String, String>();
 
+	/**
+	 * Pid of the proeprty used to store URI patterns, if used, or null if no
+	 * such property should be considered.
+	 */
 	final String uriPatternPropertyId;
 
+	/**
+	 * Maximum number of property documents that can be retrieved in one API
+	 * call.
+	 */
 	final int API_MAX_ENTITY_DOCUMENT_NUMBER = 50;
 
 	int lowestPropertyIdNumber;
 
+	/**
+	 * Constructs a new propety register.
+	 *
+	 * @param uriPatternPropertyId
+	 *            property id used for a URI Pattern property, e.g., P1921 on
+	 *            Wikidata; can be null if no such property should be used
+	 * @param apiBaseUrl
+	 *            URL for accessing the API of the site, e.g.,
+	 *            "https://www.wikidata.org/w/api.php" for Wikidata
+	 * @param siteUri
+	 *            the URI identifying the site that is accessed (usually the
+	 *            prefix of entity URIs), e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 */
 	public PropertyRegister(String uriPatternPropertyId, String apiBaseUrl,
-			String siteUrl) {
-		lowestPropertyIdNumber = 1;
+			String siteUri) {
+		this.lowestPropertyIdNumber = 1;
 		this.uriPatternPropertyId = uriPatternPropertyId;
-		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUrl);
+		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUri);
 	}
 
 	/**
@@ -217,16 +252,16 @@ public class PropertyRegister {
 	}
 
 	/**
-	 * Fetches the information of startProperty and a couple of other properties
-	 * (depending on the maximum number of entities that the API sends back)
-	 * from the Web API.
+	 * Fetches the information of the given property and a couple of other
+	 * properties (depending on the maximum number of entities that the API
+	 * sends back) from the Web API.
 	 *
-	 * @param startProperty
+	 * @param property
 	 */
-	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
+	protected void fetchPropertyInformation(PropertyIdValue property) {
 		List<String> propertyIds = new ArrayList<String>();
 
-		propertyIds.add(startProperty.getId());
+		propertyIds.add(property.getId());
 		for (int i = 1; i < API_MAX_ENTITY_DOCUMENT_NUMBER; i++) {
 			propertyIds.add("P" + this.lowestPropertyIdNumber);
 			this.lowestPropertyIdNumber++;
@@ -240,32 +275,41 @@ public class PropertyRegister {
 		Map<String, EntityDocument> properties = dataFetcher
 				.getEntityDocuments(propertyIds);
 
-		if (properties.containsKey(startProperty) == false) {
-			logger.error(startProperty.getId() + " not found!");
+		if (!properties.containsKey(property)) {
+			logger.error(property.getId() + " not found!");
 		}
 
 		for (String key : properties.keySet()) {
-			EntityDocument property = properties.get(key);
-			if (property instanceof PropertyDocument) {
-				String datatype = ((PropertyDocument) property).getDatatype()
-						.getIri();
-				datatypes.put(key, datatype);
-				if (datatype == DatatypeIdValue.DT_STRING) {
-					Iterator<Statement> itr = ((PropertyDocument) property)
-							.getAllStatements();
-					while (itr.hasNext()) {
-						Statement statement = itr.next();
-						if (statement.getClaim().getMainSnak().getPropertyId()
-								.getId().equals("P1921")) {
-							String uriPattern = ((StringValue) ((ValueSnak) statement
-									.getClaim().getMainSnak()).getValue())
-									.getString();
-							uriPatterns.put(key, uriPattern);
-						}
+			EntityDocument propertyDocument = properties.get(key);
+			if (!(propertyDocument instanceof PropertyDocument)) {
+				continue;
+			}
+
+			String datatype = ((PropertyDocument) propertyDocument)
+					.getDatatype().getIri();
+			datatypes.put(key, datatype);
+
+			if (!DatatypeIdValue.DT_STRING.equals(datatype)) {
+				continue;
+			}
+
+			for (StatementGroup sg : ((PropertyDocument) propertyDocument)
+					.getStatementGroups()) {
+				if (!sg.getProperty().getId().equals(this.uriPatternPropertyId)) {
+					continue;
+				}
+				for (Statement statement : sg.getStatements()) {
+					if (statement.getClaim().getMainSnak() instanceof ValueSnak
+							&& ((ValueSnak) statement.getClaim().getMainSnak())
+									.getValue() instanceof StringValue) {
+						String uriPattern = ((StringValue) ((ValueSnak) statement
+								.getClaim().getMainSnak()).getValue())
+								.getString();
+						uriPatterns.put(key, uriPattern);
 					}
 				}
 			}
+
 		}
 	}
-
 }
