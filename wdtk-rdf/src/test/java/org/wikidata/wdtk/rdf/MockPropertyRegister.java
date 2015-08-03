@@ -6,7 +6,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.rdf.PropertyRegister;
 
 /*
  * #%L
@@ -31,14 +30,14 @@ import org.wikidata.wdtk.rdf.PropertyRegister;
 /**
  * This is a Helper class for testing processes which need an PropertyRegister.
  * It includes a couple of property types and pattern URIs for testing.
- * 
+ *
  * @author michael
- * 
+ *
  */
 public class MockPropertyRegister extends PropertyRegister {
 	public MockPropertyRegister() {
-		super("P1921", "http://www.wikidata.org/w/api.php",
-				"http://www.wikidata.org/entity/");
+		super("P1921", "https://www.wikidata.org/w/api.php",
+				"https://www.wikidata.org/entity/");
 		this.datatypes.putAll(KNOWN_PROPERTY_TYPES);
 		this.uriPatterns.putAll(KNOWN_URI_PATTERNS);
 
