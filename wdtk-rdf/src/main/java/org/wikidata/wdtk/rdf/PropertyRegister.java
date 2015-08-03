@@ -46,9 +46,9 @@ import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 /**
  * This class helps to manage information about Properties that has to obtained
  * by a webservice.
- * 
+ *
  * @author michael
- * 
+ *
  */
 public class PropertyRegister {
 
@@ -77,18 +77,18 @@ public class PropertyRegister {
 	/**
 	 * Creates an PropertyRegister intended to fetch and cache information about
 	 * Wikidata Properties.
-	 * 
+	 *
 	 * @return
 	 */
 	public static PropertyRegister getWikidataPropertyRegister() {
 		return new PropertyRegister("P1921",
-				"http://www.wikidata.org/w/api.php",
-				"http://www.wikidata.org/entity/");
+				"https://www.wikidata.org/w/api.php",
+				"https://www.wikidata.org/entity/");
 	}
 
 	/**
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 */
 	public String getPropertyType(PropertyIdValue propertyIdValue) {
@@ -101,7 +101,7 @@ public class PropertyRegister {
 	/**
 	 * Sets datatypeIri an IRI of the primitive type of an Property for
 	 * {@link PropertyIdValue}.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param datatypeIri
 	 */
@@ -115,7 +115,7 @@ public class PropertyRegister {
 	 * Returns the URI Pattern of an {@link PropertyIdValue} which should be
 	 * used to create URIs of external resources out of statement values for the
 	 * property.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 */
 	public String getPropertyUriPattern(PropertyIdValue propertyIdValue) {
@@ -129,7 +129,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link EntityIdValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -151,7 +151,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link GlobeCoordinatesValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -163,7 +163,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link QuantityValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -175,7 +175,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link StringValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -195,7 +195,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link TimeValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -207,7 +207,7 @@ public class PropertyRegister {
 	/**
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link MonolingualTextValue} objects.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -220,7 +220,7 @@ public class PropertyRegister {
 	 * Fetches the information of startProperty and a couple of other properties
 	 * (depending on the maximum number of entities that the API sends back)
 	 * from the Web API.
-	 * 
+	 *
 	 * @param startProperty
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue startProperty) {

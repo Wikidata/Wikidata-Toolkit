@@ -6,6 +6,8 @@ Version 0.5.0
 
 New features:
 * Support for getting live entity data from wikidata.org (or any other Wikibase site)
+* New example WorldMapProcessor that shows the generation of maps from geographic data
+* Improved output file naming for examples, taking dump date into account
 
 Bug fixes:
 * JSON conversion action of the command-line client was forgetting start of entity list.

@@ -36,6 +36,7 @@ import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor.TimeoutException;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 
 /**
  * Class for sharing code that is used in many examples. It contains several
@@ -80,6 +81,12 @@ public class ExampleHelpers {
 	 * having to wait for a whole dump file to process.
 	 */
 	public static final int TIMEOUT_SEC = 0;
+
+	/**
+	 * Identifier of the dump file that was processed last. This can be used to
+	 * name files generated while processing a dump file.
+	 */
+	private static String lastDumpFileName = "";
 
 	/**
 	 * Defines how messages should be logged. This method can be modified to
@@ -145,27 +152,43 @@ public class ExampleHelpers {
 		dumpProcessingController.registerEntityDocumentProcessor(
 				entityTimerProcessor, null, onlyCurrentRevisions);
 
+		MwDumpFile dumpFile = null;
 		try {
 			// Start processing (may trigger downloads where needed):
 			switch (DUMP_FILE_MODE) {
 			case ALL_REVS:
 			case CURRENT_REVS:
-				dumpProcessingController.processMostRecentMainDump();
+				dumpFile = dumpProcessingController
+						.getMostRecentDump(DumpContentType.FULL);
 				break;
 			case ALL_REVS_WITH_DAILIES:
 			case CURRENT_REVS_WITH_DAILIES:
+				MwDumpFile fullDumpFile = dumpProcessingController
+						.getMostRecentDump(DumpContentType.FULL);
+				MwDumpFile incrDumpFile = dumpProcessingController
+						.getMostRecentDump(DumpContentType.DAILY);
+				lastDumpFileName = fullDumpFile.getProjectName() + "-"
+						+ incrDumpFile.getDateStamp() + "."
+						+ fullDumpFile.getDateStamp();
 				dumpProcessingController.processAllRecentRevisionDumps();
 				break;
 			case JSON:
-				dumpProcessingController.processMostRecentJsonDump();
+				dumpFile = dumpProcessingController
+						.getMostRecentDump(DumpContentType.JSON);
 				break;
 			case JUST_ONE_DAILY_FOR_TEST:
-				dumpProcessingController.processDump(dumpProcessingController
-						.getMostRecentDump(DumpContentType.DAILY));
+				dumpFile = dumpProcessingController
+						.getMostRecentDump(DumpContentType.DAILY);
 				break;
 			default:
 				throw new RuntimeException("Unsupported dump processing type "
 						+ DUMP_FILE_MODE);
+			}
+
+			if (dumpFile != null) {
+				lastDumpFileName = dumpFile.getProjectName() + "-"
+						+ dumpFile.getDateStamp();
+				dumpProcessingController.processDump(dumpFile);
 			}
 		} catch (TimeoutException e) {
 			// The timer caused a time out. Continue and finish normally.
@@ -178,7 +201,7 @@ public class ExampleHelpers {
 	/**
 	 * Opens a new FileOutputStream for a file of the given name in the example
 	 * output directory ({@link ExampleHelpers#EXAMPLE_OUTPUT_DIRECTORY}). Any
-	 * file of this name that exists already will be replaced. The called has is
+	 * file of this name that exists already will be replaced. The caller is
 	 * responsible for eventually closing the stream.
 	 *
 	 * @param filename
@@ -189,10 +212,26 @@ public class ExampleHelpers {
 	 */
 	public static FileOutputStream openExampleFileOuputStream(String filename)
 			throws IOException {
-		Path directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+		Path directoryPath;
+		if ("".equals(lastDumpFileName)) {
+			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+		} else {
+			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY).resolve(
+					lastDumpFileName);
+		}
+
 		createDirectory(directoryPath);
 		Path filePath = directoryPath.resolve(filename);
 		return new FileOutputStream(filePath.toFile());
+	}
+
+	/**
+	 * Returns the name of the dump file that was last processed. This can be
+	 * used to name files generated from this dump. The result might be the
+	 * empty string if no file has been processed yet.
+	 */
+	public String getLastDumpFileName() {
+		return lastDumpFileName;
 	}
 
 	/**

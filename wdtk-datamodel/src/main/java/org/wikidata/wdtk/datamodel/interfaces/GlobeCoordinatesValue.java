@@ -103,9 +103,13 @@ public interface GlobeCoordinatesValue extends Value {
 	static final double PREC_MILLI_ARCSECOND = 1.0 / 3600000;
 
 	/**
-	 * IRI of the earth. Used frequently to specify the globe.
+	 * IRI of the Earth. Used frequently to specify the globe.
 	 */
 	static final String GLOBE_EARTH = "http://www.wikidata.org/entity/Q2";
+	/**
+	 * IRI of the the Earth's Moon.
+	 */
+	static final String GLOBE_MOON = "http://www.wikidata.org/entity/Q405";
 
 	/**
 	 * Get the latitude of this value in degrees. For Earth, the latitude value
