@@ -53,9 +53,9 @@ import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 /**
  * This class provides functions to convert objects of wdtk-datamodel in a rdf
  * graph.
- * 
+ *
  * @author Michael Günther
- * 
+ *
  */
 public class RdfConverter {
 
@@ -66,34 +66,32 @@ public class RdfConverter {
 	final SnakRdfConverter snakRdfConverter;
 	final OwlDeclarationBuffer owlDeclarationBuffer;
 	final ReferenceRdfConverter referenceRdfConverter;
-
-	// TODO Making propertyTypes static is a hack to enable a shared property
-	// type lookup that is used by many serializers; this needs to be managed on
-	// a per-site basis (like the API-URL). A static factory method could do
-	// this.
-	static PropertyTypes propertyTypes = new WikidataPropertyTypes();
+	final PropertyRegister propertyRegister;
 	final Sites sites;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
 
-	public RdfConverter(RdfWriter rdfWriter, Sites sites) {
+	public RdfConverter(RdfWriter rdfWriter, Sites sites,
+			PropertyRegister propertyRegister) {
 		this.sites = sites;
 		this.rdfWriter = rdfWriter;
+		this.propertyRegister = propertyRegister;
+
 		this.owlDeclarationBuffer = new OwlDeclarationBuffer();
 		this.valueRdfConverter = new AnyValueConverter(rdfWriter,
-				this.owlDeclarationBuffer, propertyTypes);
+				this.owlDeclarationBuffer, this.propertyRegister);
 		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
-				this.owlDeclarationBuffer, propertyTypes,
+				this.owlDeclarationBuffer, this.propertyRegister,
 				this.valueRdfConverter);
 		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
-				this.snakRdfConverter);
+				this.snakRdfConverter, this.propertyRegister.siteUri);
 	}
 
 	/**
 	 * Sets the tasks that should be performed during export. The value should
 	 * be a combination of flags such as {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @param tasks
 	 *            the tasks to be performed
 	 */
@@ -105,7 +103,7 @@ public class RdfConverter {
 	 * Returns the tasks that should be performed during export. The value
 	 * should be a combination of flags such as
 	 * {@link RdfSerializer#TASK_STATEMENTS}.
-	 * 
+	 *
 	 * @return tasks to be performed
 	 */
 	public int getTasks() {
@@ -115,7 +113,7 @@ public class RdfConverter {
 	/**
 	 * Writes OWL declarations for all basic vocabulary elements used in the
 	 * dump.
-	 * 
+	 *
 	 * @throws RDFHandlerException
 	 */
 	public void writeBasicDeclarations() throws RDFHandlerException {
@@ -127,9 +125,8 @@ public class RdfConverter {
 	}
 
 	public void writeNamespaceDeclarations() throws RDFHandlerException {
-		// TODO The prefix for wiki entities should depend on the data
 		this.rdfWriter.writeNamespaceDeclaration("id",
-				"http://www.wikidata.org/entity/");
+				this.propertyRegister.getUriPrefix());
 		this.rdfWriter
 				.writeNamespaceDeclaration("wo", Vocabulary.PREFIX_WBONTO);
 		this.rdfWriter.writeNamespaceDeclaration("rdf", Vocabulary.PREFIX_RDF);
@@ -194,7 +191,7 @@ public class RdfConverter {
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
-		propertyTypes.setPropertyType(document.getPropertyId(), document
+		propertyRegister.setPropertyType(document.getPropertyId(), document
 				.getDatatype().getIri());
 
 		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
@@ -239,7 +236,7 @@ public class RdfConverter {
 	 * Writes triples which conect properties with there corresponding rdf
 	 * properties for statements, simple statements, qualifiers, reference
 	 * attributes and values.
-	 * 
+	 *
 	 * @param document
 	 * @throws RDFHandlerException
 	 */
@@ -392,6 +389,7 @@ public class RdfConverter {
 			if (!isSubPropertyOf) {
 				continue;
 			}
+
 			for (Statement statement : statementGroup.getStatements()) {
 				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
 					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
@@ -405,12 +403,11 @@ public class RdfConverter {
 									+ mainSnak.toString() + ")");
 							continue;
 						}
-
 						if (mainSnak.getValue() instanceof EntityIdValue) {
 							String id = ((EntityIdValue) mainSnak.getValue())
 									.getId();
 							if (id.startsWith("P")) {
-								String datatype = RdfConverter.propertyTypes
+								String datatype = this.propertyRegister
 										.getPropertyType((PropertyIdValue) mainSnak
 												.getValue());
 								if (!propertyDocument.getDatatype().getIri()
@@ -475,7 +472,7 @@ public class RdfConverter {
 	/**
 	 * Writes a triple for the {@link StatementRank} of a {@link Statement} to
 	 * the dump.
-	 * 
+	 *
 	 * @param subject
 	 * @param rank
 	 */
@@ -569,7 +566,7 @@ public class RdfConverter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -590,7 +587,7 @@ public class RdfConverter {
 
 	/**
 	 * Checks if the given task (or set of tasks) is to be performed.
-	 * 
+	 *
 	 * @param task
 	 *            the task (or set of tasks) to be checked
 	 * @return true if the tasks include the given task
@@ -601,7 +598,7 @@ public class RdfConverter {
 
 	/**
 	 * Returns an URI which represents the statement rank in a triple.
-	 * 
+	 *
 	 * @param rank
 	 * @return
 	 */

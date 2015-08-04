@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
@@ -41,9 +42,9 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
  * provides the additional option
  * {@link RdfSerializationAction#OPTION_RDF_TASKS}, which is required for
  * generating any output.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class RdfSerializationAction extends DumpProcessingOutputAction {
 
@@ -211,7 +212,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	/**
 	 * Creates a new RDF serializer based on the current configuration of this
 	 * object.
-	 * 
+	 *
 	 * @return the newly created RDF serializer
 	 * @throws IOException
 	 *             if there were problems opening the output files
@@ -231,7 +232,8 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				this.compressionType);
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, this.sites);
+				exportOutputStream, this.sites,
+				PropertyRegister.getWikidataPropertyRegister());
 		serializer.setTasks(this.tasks);
 
 		return serializer;
@@ -239,7 +241,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	/**
 	 * Sets the RDF serialization tasks based on the given string value.
-	 * 
+	 *
 	 * @param tasks
 	 *            a space-free, comma-separated list of task names
 	 */

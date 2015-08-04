@@ -25,7 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfConverter;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
@@ -33,15 +33,15 @@ public class MonolingualTextValueConverter extends
 		AbstractValueConverter<MonolingualTextValue> {
 
 	public MonolingualTextValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes,
+			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, propertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(MonolingualTextValue value,
 			PropertyIdValue propertyIdValue, boolean simple) {
-		String datatype = this.propertyTypes
+		String datatype = this.propertyRegister
 				.setPropertyTypeFromMonolingualTextValue(propertyIdValue, value);
 
 		switch (datatype) {
