@@ -8,9 +8,12 @@ New features:
 * Support for getting live entity data from wikidata.org (or any other Wikibase site)
 * New example WorldMapProcessor that shows the generation of maps from geographic data
 * Improved output file naming for examples, taking dump date into account
+* RDF export uses property register for fewer Web requests during export
+* RDF export supports P1921 URI patterns to create links to external RDF datasets
 
 Bug fixes:
 * JSON conversion action of the command-line client was forgetting start of entity list.
+* Update URLs to use https instead of http
 
 Incompatible changes:
 * EntityDocumentProcessorFilter has a modified constructor that requires a filter object
