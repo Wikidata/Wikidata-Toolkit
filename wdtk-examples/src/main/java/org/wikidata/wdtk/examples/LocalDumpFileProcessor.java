@@ -2,14 +2,13 @@ package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
- * This class illustrates how to process local dumpfiles
+ * This class illustrates how to process local dumpfiles. It uses
+ * {@link EntityTimerProcessor} to process a dump.
  * 
  * @author Markus Damm
  *
@@ -18,42 +17,35 @@ import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 public class LocalDumpFileProcessor {
 
 	/**
-	 * Name string of the dump file that is locally saved and should be
-	 * processed
-	 */
-	private final static String FILE_NAME = "20150713.json.gz";
-
-	/**
 	 * Directory of the dump that should be processed
 	 */
-	private final static String DUMP_DIRECTORY = System
-			.getProperty("user.dir");
+	private final static String DUMP_DIRECTORY = "C:/Users/Markus/workspace/wdtk-parent/wdtk-examples/dumpfiles/wikidatawiki/json-20150713/20150713.json.gz";
 
-	private final static DumpContentType DUMP_CONTENT_TYPE = DumpContentType.JSON;
+	// private final static DumpContentType DUMP_CONTENT_TYPE =
+	// DumpContentType.JSON;
 
-	private static EntityDocumentProcessor entityDocumentProcessor = new GenderRatioProcessor();
+	// private static EntityDocumentProcessor entityDocumentProcessor = new
+	// GenderRatioProcessor();
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		LocalDumpFileProcessor.printDocumentation();
-		MwLocalDumpFile mwDumpFile = null;
-		try {
-			mwDumpFile = new MwLocalDumpFile(DUMP_DIRECTORY,
-					DUMP_CONTENT_TYPE, FILE_NAME);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		DumpProcessingController dumpProcessingController = new DumpProcessingController(
-				"wikidata_wiki");
+				"wikidatawiki");
 		dumpProcessingController.setOfflineMode(true);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				entityDocumentProcessor, null, true);
+		// dumpProcessingController.registerEntityDocumentProcessor(
+		// entityDocumentProcessor, null, true);
 		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
 				0);
 		dumpProcessingController.registerEntityDocumentProcessor(
 				entityTimerProcessor, null, true);
+
+		System.out.println(DUMP_DIRECTORY);
+		MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(DUMP_DIRECTORY);
+		mwDumpFile.prepareDumpFile();
 		dumpProcessingController.processDump(mwDumpFile);
+
 		entityTimerProcessor.close();
 	}
 
@@ -64,7 +56,10 @@ public class LocalDumpFileProcessor {
 		System.out.println("********************************************************************");
 		System.out.println("*** Wikidata Toolkit: ProcessLocalDumpFile");
 		System.out.println("*** ");
-		System.out.println("*** Description.");
+		System.out.println("*** This program should illustrate how to process local dumps.");
+		System.out.println("*** It uses an EntityTimerProcesses which counts processed items");
+		System.out.println("*** and elapsed time.");
+		System.out.println("*** See source code for further details.");
 		System.out.println("********************************************************************");
 	}
 }

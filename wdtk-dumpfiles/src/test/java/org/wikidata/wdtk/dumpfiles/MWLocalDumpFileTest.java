@@ -54,23 +54,25 @@ public class MWLocalDumpFileTest {
 	@Test
 	public void testGetters() throws IOException {
 		MwLocalDumpFile df = new MwLocalDumpFile(
-				"./src/test/resources/empty-dump.xml");
+				"./src/test/resources/empty-dump.xml",
+				DumpContentType.SITES);
+		df.prepareDumpFile();
+
 		assertEquals(df.getDateStamp(), "YYYYMMDD");
 		assertEquals(df.getProjectName(), "LocalDumpFile");
-		assertEquals(df.getDumpContentType(), DumpContentType.JSON);
-		df.configureDirectoryManager();
+		assertEquals(df.getDumpContentType(), DumpContentType.SITES);
 		assertTrue(df.isAvailable());
 	}
 
 	@Test
 	public void testPrepareDumpFile() throws IOException {
-		String filenames = "./src/test/resources/empty-dump.xml";
-		Path path = Paths.get(filenames);
-		System.out.println(path.getParent());
+		String filenames = "./src/test/resources/mock-dump-for-testing.json";
+		
 		MwLocalDumpFile df = new MwLocalDumpFile(filenames);
-		System.out.println(df.dumpFilePath);
 		df.prepareDumpFile();
-		boolean locdump = df.localDumpfileDirectoryManager == null;
-		assertFalse(locdump);
+		
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertEquals(df.getDumpContentType(), DumpContentType.JSON);
 	}
 }

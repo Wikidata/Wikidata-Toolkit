@@ -20,7 +20,6 @@ package org.wikidata.wdtk.client;
  * #L%
  */
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -47,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
@@ -105,7 +103,7 @@ public class ClientConfiguration {
 	/**
 	 * Short command-line alternative to {@link #OPTION_LOCAL_DUMPFILE}.
 	 */
-	public static final String CMD_OPTION_LOCAL_DUMPFILE = "l";
+	public static final String CMD_OPTION_LOCAL_DUMPFILE = "f";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -182,7 +180,7 @@ public class ClientConfiguration {
 	 * Name of the long command line option and configuration for local dump
 	 * files
 	 */
-	public static final String OPTION_LOCAL_DUMPFILE = "localdump";
+	public static final String OPTION_LOCAL_DUMPFILE = "file";
 
 	static final Map<String, Class<? extends DumpProcessingOutputAction>> KNOWN_ACTIONS = new HashMap<>();
 	static {
@@ -247,12 +245,6 @@ public class ClientConfiguration {
 	 * locally, or null if no local dump file is set.
 	 */
 	MwLocalDumpFile localDumpFile = null;
-
-	/**
-	 * Checks, if a local dump file could be found or not. This value
-	 * matters, just if {@link #localDumpFile} is set, too (not null).
-	 */
-	boolean localDumpFound = true;
 
 	/**
 	 * Constructs a new object for the given arguments.
@@ -690,22 +682,7 @@ public class ClientConfiguration {
 
 	private void setLocalDumpFile(String dumpname) {
 		this.offlineMode = true;
-		MwLocalDumpFile mwDump = null;
-		try {
-			File file = new File(dumpname);
-			if (file.exists()) {
-				mwDump = new MwLocalDumpFile(file,
-						DumpContentType.JSON);
-			}
-
-			else {
-				logger.error("File does not exist: " + dumpname);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.localDumpFile = mwDump;
+		this.localDumpFile = new MwLocalDumpFile(dumpname);
 	}
 
 	/**

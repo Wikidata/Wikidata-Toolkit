@@ -22,7 +22,6 @@ package org.wikidata.wdtk.dumpfiles;
 
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,7 +63,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	/**
 	 * Type of this dumpfile
 	 */
-	final DumpContentType dumpContentType;
+	DumpContentType dumpContentType;
 
 	/**
 	 * Hash map defining the compression type of each type of dump.
@@ -84,52 +83,29 @@ public class MwLocalDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor. The DumpContentType will be inferred by the name of the
+	 * file, if possible. If it is not possible, it will be set to JSON by
+	 * default.
 	 * 
+	 * @param filepath
+	 *                Path to the dump file in the file system
 	 */
 	public MwLocalDumpFile(String filepath) {
-		this.dumpContentType = DumpContentType.JSON;
+		this(filepath, null);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param filepath
+	 * @param dumpContentType
+	 */
+	public MwLocalDumpFile(String filepath, DumpContentType dumpContentType) {
+		this.dumpContentType = dumpContentType;
 		this.dumpFileName = "";
 		this.dumpFilePath = Paths.get(filepath);
 		this.dateStamp = "YYYYMMDD";
 		this.projectName = "LocalDumpFile";
-
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param file
-	 *                File in the file system represented as java object
-	 * @param dumpContentType
-	 *                the type of dump this represents
-	 * @throws IOException
-	 *                 if there was a problem finding the path
-	 */
-	public MwLocalDumpFile(File file, DumpContentType dumpContentType)
-			throws IOException {
-		this(file.getParent(), dumpContentType, file.getName());
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param dumpFileDirectoryManager
-	 *                the directory manager for the directory where dump is
-	 *                stored
-	 * @param dumpContentType
-	 *                the type of dump this represents
-	 * @param dumpFileName
-	 *                name of the dumpFile
-	 * @throws IOException
-	 *                 if there was a problem finding the path
-	 */
-	public MwLocalDumpFile(String dumpFileDirectory,
-			DumpContentType dumpContentType, String dumpFileName)
-			throws IOException {
-		this(new DirectoryManagerImpl(dumpFileDirectory),
-				dumpContentType, dumpFileName,
-				"LocalDate", "LocalDumpFile");
 	}
 
 	/**
@@ -215,7 +191,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	@Override
 	public void prepareDumpFile() throws IOException {
 		configureDirectoryManager();
-		// inferDumpContentType("");
+		inferDumpContentType();
 	}
 
 	@Override
@@ -225,22 +201,51 @@ public class MwLocalDumpFile implements MwDumpFile {
 				+ "-" + this.dateStamp;
 	}
 
-	public void configureDirectoryManager() {
+	/**
+	 * Configures the DirectoryManager. It checks whether the give path and
+	 * file exists. If the given file does not exist, the DirectoryManager
+	 * will be set to null, otherwise a corresponding DirectoryManager will
+	 * be created.
+	 */
+	void configureDirectoryManager() {
 		if (Files.exists(dumpFilePath)) {
 			try {
-				if (dumpFilePath.getParent() == null) {
-					System.out.println("null-path:");
-					System.out.println(dumpFilePath);
-				}
-				else{
-					this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
-							dumpFilePath.getParent());
-					dumpFileName = dumpFilePath
-							.getFileName()
-							.toString();
-				}
+				this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
+						dumpFilePath.getParent());
+				dumpFileName = dumpFilePath.getFileName()
+						.toString();
 			} catch (IOException e) {
 				logger.error("An error occured while creating the DirectryManager.");
+			}
+		}
+	}
+
+	/**
+	 * Tries to infer the DumpContentType by filename. If it is not
+	 * possible, the DumpContentType will be set to JSON by default. If the
+	 * DumpContentType has already been set or inferred before, this method
+	 * will not do it again.
+	 */
+	void inferDumpContentType() {
+		if (this.dumpContentType == null) {
+			String lcDumpName = this.dumpFileName.toLowerCase();
+			if (lcDumpName.contains("bz2")
+					|| lcDumpName.contains("full")) {
+				this.dumpContentType = DumpContentType.FULL;
+			}
+			if (lcDumpName.contains("daily")) {
+				this.dumpContentType = DumpContentType.DAILY;
+			}
+			if (lcDumpName.contains("current")) {
+				this.dumpContentType = DumpContentType.CURRENT;
+			}
+			if (lcDumpName.contains("sites")) {
+				this.dumpContentType = DumpContentType.SITES;
+			}
+			if (lcDumpName.contains("json")
+					|| lcDumpName.contains(".gzip")
+					|| this.dumpContentType == null) {
+				this.dumpContentType = DumpContentType.JSON;
 			}
 		}
 	}
