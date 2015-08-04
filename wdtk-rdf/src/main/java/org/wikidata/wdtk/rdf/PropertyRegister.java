@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,10 +87,20 @@ public class PropertyRegister {
 	 */
 	final int API_MAX_ENTITY_DOCUMENT_NUMBER = 50;
 
-	int lowestPropertyIdNumber;
+	/**
+	 * Smallest property number for which no information has been fetched from
+	 * the Web yet in a systematic fashion. Whenever any property data is
+	 * fetched, additional properties are also fetched and this number is
+	 * incremented accordingly.
+	 */
+	int smallestUnfetchedPropertyIdNumber = 1;
+
+	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
+			"P1921", "https://www.wikidata.org/w/api.php",
+			"https://www.wikidata.org/entity/");
 
 	/**
-	 * Constructs a new propety register.
+	 * Constructs a new property register.
 	 *
 	 * @param uriPatternPropertyId
 	 *            property id used for a URI Pattern property, e.g., P1921 on
@@ -104,21 +115,18 @@ public class PropertyRegister {
 	 */
 	public PropertyRegister(String uriPatternPropertyId, String apiBaseUrl,
 			String siteUri) {
-		this.lowestPropertyIdNumber = 1;
 		this.uriPatternPropertyId = uriPatternPropertyId;
 		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUri);
 	}
 
 	/**
-	 * Creates an PropertyRegister intended to fetch and cache information about
-	 * Wikidata Properties.
+	 * Returns a singleton object that serves as a property register for
+	 * Wikidata.
 	 *
-	 * @return
+	 * @return property register for Wikidata
 	 */
 	public static PropertyRegister getWikidataPropertyRegister() {
-		return new PropertyRegister("P1921",
-				"https://www.wikidata.org/w/api.php",
-				"https://www.wikidata.org/entity/");
+		return WIKIDATA_PROPERTY_REGISTER;
 	}
 
 	/**
@@ -252,19 +260,21 @@ public class PropertyRegister {
 	}
 
 	/**
-	 * Fetches the information of the given property and a couple of other
-	 * properties (depending on the maximum number of entities that the API
-	 * sends back) from the Web API.
+	 * Fetches the information of the given property from the Web API. Further
+	 * properties are fetched in the same request and results cached so as to
+	 * limit the total number of Web requests made until all properties are
+	 * fetched.
 	 *
 	 * @param property
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
-		List<String> propertyIds = new ArrayList<String>();
+		List<String> propertyIds = new ArrayList<String>(
+				API_MAX_ENTITY_DOCUMENT_NUMBER);
 
 		propertyIds.add(property.getId());
 		for (int i = 1; i < API_MAX_ENTITY_DOCUMENT_NUMBER; i++) {
-			propertyIds.add("P" + this.lowestPropertyIdNumber);
-			this.lowestPropertyIdNumber++;
+			propertyIds.add("P" + this.smallestUnfetchedPropertyIdNumber);
+			this.smallestUnfetchedPropertyIdNumber++;
 		}
 
 		dataFetcher.getFilter().setLanguageFilter(
@@ -275,19 +285,17 @@ public class PropertyRegister {
 		Map<String, EntityDocument> properties = dataFetcher
 				.getEntityDocuments(propertyIds);
 
-		if (!properties.containsKey(property)) {
-			logger.error(property.getId() + " not found!");
-		}
-
-		for (String key : properties.keySet()) {
-			EntityDocument propertyDocument = properties.get(key);
+		for (Entry<String, EntityDocument> entry : properties.entrySet()) {
+			EntityDocument propertyDocument = entry.getValue();
 			if (!(propertyDocument instanceof PropertyDocument)) {
 				continue;
 			}
 
 			String datatype = ((PropertyDocument) propertyDocument)
 					.getDatatype().getIri();
-			datatypes.put(key, datatype);
+			this.datatypes.put(entry.getKey(), datatype);
+			logger.info("Fetched type information for property "
+					+ entry.getKey() + " online: " + datatype);
 
 			if (!DatatypeIdValue.DT_STRING.equals(datatype)) {
 				continue;
@@ -305,11 +313,15 @@ public class PropertyRegister {
 						String uriPattern = ((StringValue) ((ValueSnak) statement
 								.getClaim().getMainSnak()).getValue())
 								.getString();
-						uriPatterns.put(key, uriPattern);
+						this.uriPatterns.put(entry.getKey(), uriPattern);
 					}
 				}
 			}
+		}
 
+		if (!this.datatypes.containsKey(property.getId())) {
+			logger.error("Failed to fetch type information for property "
+					+ property.getId() + " online.");
 		}
 	}
 }

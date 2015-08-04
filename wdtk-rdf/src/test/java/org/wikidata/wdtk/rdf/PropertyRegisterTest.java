@@ -110,7 +110,7 @@ public class PropertyRegisterTest {
 		this.wikidataPropertyRegister
 				.fetchPropertyInformation(this.dataObjectFactory
 						.getPropertyIdValue("P434", this.siteIri));
-		assertEquals(50, this.wikidataPropertyRegister.lowestPropertyIdNumber);
+		assertEquals(50, this.wikidataPropertyRegister.smallestUnfetchedPropertyIdNumber);
 		assertTrue(this.wikidataPropertyRegister.datatypes.keySet().contains(
 				"P434"));
 		assertEquals("http://musicbrainz.org/$1/artist",
