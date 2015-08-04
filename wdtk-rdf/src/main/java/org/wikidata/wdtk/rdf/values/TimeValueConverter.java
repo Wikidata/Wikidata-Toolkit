@@ -55,7 +55,8 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 				return TimeValueConverter.getTimeLiteral(value, this.rdfWriter);
 			} else {
 				URI valueUri = this.rdfWriter.getUri(Vocabulary
-						.getTimeValueUri(value));
+						.getTimeValueUri(value,
+								this.propertyRegister.getUriPrefix()));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				addValue(value, valueUri);
 
@@ -69,7 +70,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 	/**
 	 * Write the auxiliary RDF data for encoding the given value.
-	 * 
+	 *
 	 * @param value
 	 *            the value to write
 	 * @param resource
@@ -101,7 +102,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 * 1BCE as 0000, while XML Schema, even in version 2, does not allow 0000
 	 * and interprets -0001 as 1BCE. Thus all negative years must be shifted by
 	 * 1, but we only do this if the year is precise.
-	 * 
+	 *
 	 * @param value
 	 *            the value to convert
 	 * @param rdfWriter

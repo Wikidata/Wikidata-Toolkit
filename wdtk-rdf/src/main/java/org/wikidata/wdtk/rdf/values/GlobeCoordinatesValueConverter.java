@@ -51,7 +51,8 @@ public class GlobeCoordinatesValueConverter extends
 		switch (datatype) {
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
 			URI valueUri = this.rdfWriter.getUri(Vocabulary
-					.getGlobeCoordinatesValueUri(value));
+					.getGlobeCoordinatesValueUri(value,
+							this.propertyRegister.getUriPrefix()));
 
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			addValue(value, valueUri);

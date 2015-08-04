@@ -77,10 +77,15 @@ public class PropertyRegister {
 	final protected Map<String, String> uriPatterns = new HashMap<String, String>();
 
 	/**
-	 * Pid of the proeprty used to store URI patterns, if used, or null if no
+	 * Pid of the property used to store URI patterns, if used, or null if no
 	 * such property should be considered.
 	 */
 	final String uriPatternPropertyId;
+
+	/**
+	 * URI prefix to be used on this site.
+	 */
+	final String siteUri;
 
 	/**
 	 * Maximum number of property documents that can be retrieved in one API
@@ -117,6 +122,7 @@ public class PropertyRegister {
 	public PropertyRegister(String uriPatternPropertyId, String apiBaseUrl,
 			String siteUri) {
 		this.uriPatternPropertyId = uriPatternPropertyId;
+		this.siteUri = siteUri;
 		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUri);
 	}
 
@@ -128,6 +134,16 @@ public class PropertyRegister {
 	 */
 	public static PropertyRegister getWikidataPropertyRegister() {
 		return WIKIDATA_PROPERTY_REGISTER;
+	}
+
+	/**
+	 * Returns the URI prefix that is used on the site considered by this
+	 * object. This string also identifies the site globally.
+	 *
+	 * @return The URI prefix, e.g., "http://www.wikidata.org/entity/"
+	 */
+	public String getUriPrefix() {
+		return this.siteUri;
 	}
 
 	/**
