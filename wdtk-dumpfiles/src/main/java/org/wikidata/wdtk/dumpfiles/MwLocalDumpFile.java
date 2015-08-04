@@ -50,9 +50,22 @@ public class MwLocalDumpFile implements MwDumpFile {
 	static final Logger logger = LoggerFactory
 			.getLogger(DumpProcessingController.class);
 
+	/**
+	 * DateStamp when the dump file was created. If there is no special
+	 * dateStamp given in the Constructor, it is set to "YYYYMMDD"
+	 */
 	protected final String dateStamp;
+	/**
+	 * Project name of the dump file
+	 */
 	protected final String projectName;
+	/**
+	 * Name of the dump file in the file system
+	 */
 	protected String dumpFileName;
+	/**
+	 * Path of the dump file presented as Path.
+	 */
 	protected final Path dumpFilePath;
 
 	/**
@@ -85,7 +98,8 @@ public class MwLocalDumpFile implements MwDumpFile {
 	/**
 	 * Constructor. The DumpContentType will be inferred by the name of the
 	 * file, if possible. If it is not possible, it will be set to JSON by
-	 * default.
+	 * default. Before this dump file can be processed, the
+	 * prepareDumpFile() method has to be called.
 	 * 
 	 * @param filepath
 	 *                Path to the dump file in the file system
@@ -95,10 +109,13 @@ public class MwLocalDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor. Before this dump file can be processed, the
+	 * prepareDumpFile() method has to be called.
 	 * 
 	 * @param filepath
+	 *                Path to the dump file in the file system
 	 * @param dumpContentType
+	 *                DumpContentType of the dump file
 	 */
 	public MwLocalDumpFile(String filepath, DumpContentType dumpContentType) {
 		this.dumpContentType = dumpContentType;
@@ -140,7 +157,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	@Override
 	public boolean isAvailable() {
 		if (this.localDumpfileDirectoryManager == null) {
-			configureDirectoryManager();
+			return false;
 		}
 		if (this.localDumpfileDirectoryManager != null) {
 			return this.localDumpfileDirectoryManager

@@ -201,4 +201,14 @@ public class ClientTest {
 								+ System.lineSeparator()));
 
 	}
+
+	@Test
+	public void testNonExistingLocalDump() {
+		String[] args = { "-f", "./src/resources/asfjl.json" };
+		Client client = new Client(mockDpc, args);
+		client.performActions();
+
+		Mockito.verify(mockDpc, Mockito.never()).processDump(
+				Mockito.<MwDumpFile> any());
+	}
 }
