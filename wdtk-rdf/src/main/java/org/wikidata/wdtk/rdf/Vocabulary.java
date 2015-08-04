@@ -69,6 +69,7 @@ public class Vocabulary {
 	// Vocabulary elements that are part of ontology language standards
 	public static final String RDF_TYPE = PREFIX_RDF + "type";
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
+	public static final String RDFS_SEE_ALSO = PREFIX_RDFS + "seeAlso";
 	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
 	public static final String RDFS_SUBCLASS_OF = PREFIX_RDFS + "subClassOf";
 	public static final String RDFS_SUBPROPERTY_OF = PREFIX_RDFS

@@ -39,6 +39,7 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
@@ -51,10 +52,12 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class RdfConverterTest {
@@ -127,6 +130,53 @@ public class RdfConverterTest {
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("Statement.rdf")));
+	}
+
+	@Test
+	public void testUriPatternStatement() throws RDFHandlerException,
+			RDFParseException, IOException {
+
+		ItemIdValue subject = Datamodel.makeItemIdValue("Q100",
+				Datamodel.SITE_WIKIDATA);
+		PropertyIdValue propertyId = Datamodel
+				.makeWikidataPropertyIdValue("P434");
+		StringValue value = Datamodel
+				.makeStringValue("d735497b-25f9-4503-8fb5-f50150730c18");
+		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
+		Claim claim = Datamodel.makeClaim(subject, mainSnak,
+				Collections.<SnakGroup> emptyList());
+		Statement statement = Datamodel.makeStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"stmtid");
+
+		this.rdfConverter.writeStatement(statement);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementMusicBrainz.rdf")));
+	}
+
+	@Test
+	public void testFreebaseStatement() throws RDFHandlerException,
+			RDFParseException, IOException {
+
+		ItemIdValue subject = Datamodel.makeItemIdValue("Q100",
+				Datamodel.SITE_WIKIDATA);
+		PropertyIdValue propertyId = Datamodel
+				.makeWikidataPropertyIdValue("P646");
+		StringValue value = Datamodel.makeStringValue("/m/0j9kvph");
+		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
+		Claim claim = Datamodel.makeClaim(subject, mainSnak,
+				Collections.<SnakGroup> emptyList());
+		Statement statement = Datamodel.makeStatement(claim,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"stmtid");
+
+		this.rdfConverter.writeStatement(statement);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementFreebase.rdf")));
 	}
 
 	@Test

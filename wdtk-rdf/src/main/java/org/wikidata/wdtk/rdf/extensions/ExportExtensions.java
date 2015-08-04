@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 /**
@@ -52,15 +53,18 @@ public class ExportExtensions implements ValueVisitor<Void> {
 
 	final RdfWriter rdfWriter;
 	final OwlDeclarationBuffer owlDeclarationBuffer;
+	final PropertyRegister propertyRegister;
 	final HashMap<String, ValueExportExtension<StringValue>> stringExportExtensions;
 
 	Resource currentResource;
 	PropertyIdValue currentPropertyIdValue;
 
 	public ExportExtensions(RdfWriter rdfWriter,
-			OwlDeclarationBuffer owlDeclarationBuffer) {
+			OwlDeclarationBuffer owlDeclarationBuffer,
+			PropertyRegister propertyRegister) {
 		this.rdfWriter = rdfWriter;
 		this.owlDeclarationBuffer = owlDeclarationBuffer;
+		this.propertyRegister = propertyRegister;
 		this.stringExportExtensions = new HashMap<String, ValueExportExtension<StringValue>>();
 	}
 
@@ -125,15 +129,19 @@ public class ExportExtensions implements ValueVisitor<Void> {
 	public Void visit(StringValue value) {
 		ValueExportExtension<StringValue> vee = this.stringExportExtensions
 				.get(this.currentPropertyIdValue.getIri());
-		if (vee != null) {
-			try {
+
+		try {
+			if (vee != null) {
 				vee.writeExtensionData(this.currentResource,
 						this.currentPropertyIdValue, value, this.rdfWriter,
 						this.owlDeclarationBuffer);
-			} catch (RDFHandlerException e) { // give up; it's probably
-												// impossible to continue anyway
-				throw new RuntimeException(e.toString(), e);
+			} else {
+				writeUriPatternData(this.currentResource,
+						this.currentPropertyIdValue, value);
 			}
+		} catch (RDFHandlerException e) { // give up; it's probably
+											// impossible to continue anyway
+			throw new RuntimeException(e.toString(), e);
 		}
 		return null;
 	}
@@ -141,6 +149,20 @@ public class ExportExtensions implements ValueVisitor<Void> {
 	@Override
 	public Void visit(TimeValue value) {
 		return null;
+	}
+
+	protected void writeUriPatternData(Resource resource,
+			PropertyIdValue propertyIdValue, StringValue value)
+			throws RDFHandlerException {
+
+		String uriPattern = this.propertyRegister
+				.getPropertyUriPattern(propertyIdValue);
+		if (uriPattern == null) {
+			return;
+		}
+
+		this.rdfWriter.writeTripleUriObject(resource, RdfWriter.RDFS_SEE_ALSO,
+				uriPattern.replace("$1", value.getString()));
 	}
 
 	/**
@@ -153,63 +175,7 @@ public class ExportExtensions implements ValueVisitor<Void> {
 	public static void registerWikidataExportExtensions(
 			ExportExtensions exportExtensions) {
 		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newIso639_3ExportExtension(),
-				"http://www.wikidata.org/entity/P220");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newGndExportExtension(),
-				"http://www.wikidata.org/entity/P227");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newViafExportExtension(),
-				"http://www.wikidata.org/entity/P214");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newOclcExportExtension(),
-				"http://www.wikidata.org/entity/P243");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newLcnafExportExtension(),
-				"http://www.wikidata.org/entity/P244");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newSudocExportExtension(),
-				"http://www.wikidata.org/entity/P269");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newNdlExportExtension(),
-				"http://www.wikidata.org/entity/P349");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newChEMBLExportExtension(),
-				"http://www.wikidata.org/entity/P592");
-		exportExtensions.registerStringValueExportExtension(
 				new FreebaseExportExtension(),
 				"http://www.wikidata.org/entity/P646");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newChemSpiderExportExtension(),
-				"http://www.wikidata.org/entity/P661");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newPubChemCidExportExtension(),
-				"http://www.wikidata.org/entity/P662");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newKEGGExportExtension(),
-				"http://www.wikidata.org/entity/P665");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newGeneOntologyExportExtension(),
-				"http://www.wikidata.org/entity/P686");
-
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newMusicBrainzArtistExportExtension(),
-				"http://www.wikidata.org/entity/P434");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newMusicBrainzWorkExportExtension(),
-				"http://www.wikidata.org/entity/P435");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension
-						.newMusicBrainzReleaseGroupExportExtension(),
-				"http://www.wikidata.org/entity/P436");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newMusicBrainzLabelExportExtension(),
-				"http://www.wikidata.org/entity/P966");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newMusicBrainzAreaExportExtension(),
-				"http://www.wikidata.org/entity/P982");
-		exportExtensions.registerStringValueExportExtension(
-				SimpleIdExportExtension.newMusicBrainzPlaceExportExtension(),
-				"http://www.wikidata.org/entity/P1004");
 	}
 }
