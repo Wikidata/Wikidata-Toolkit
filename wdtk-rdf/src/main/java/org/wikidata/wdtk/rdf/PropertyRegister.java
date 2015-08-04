@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -97,7 +98,7 @@ public class PropertyRegister {
 
 	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
 			"P1921", "https://www.wikidata.org/w/api.php",
-			"https://www.wikidata.org/entity/");
+			Datamodel.SITE_WIKIDATA);
 
 	/**
 	 * Constructs a new property register.
