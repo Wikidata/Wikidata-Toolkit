@@ -150,6 +150,9 @@ public class PropertyRegister {
 	 * Returns the IRI of the primitive type of an {@link PropertyIdValue}.
 	 *
 	 * @param propertyIdValue
+	 *            property whose datatype should be fetched
+	 * @return URI of the datatype of this property, or null if the type could
+	 *         not be determined
 	 */
 	public String getPropertyType(PropertyIdValue propertyIdValue) {
 		if (!datatypes.containsKey(propertyIdValue.getId())) {
@@ -172,17 +175,20 @@ public class PropertyRegister {
 	}
 
 	/**
-	 * Returns the URI Pattern of an {@link PropertyIdValue} which should be
-	 * used to create URIs of external resources out of statement values for the
+	 * Returns the URI Pattern of a {@link PropertyIdValue} that should be used
+	 * to create URIs of external resources from statement values for the
 	 * property.
 	 *
 	 * @param propertyIdValue
+	 *            property to fetch URI pattern for
+	 * @return string pattern using "$1" as a placeholder, or null if no pattern
+	 *         was found for the given property
 	 */
 	public String getPropertyUriPattern(PropertyIdValue propertyIdValue) {
-		if (!uriPatterns.containsKey(propertyIdValue.getId())) {
+		if (!this.datatypes.containsKey(propertyIdValue.getId())) {
 			fetchPropertyInformation(propertyIdValue);
 		}
-		return uriPatterns.get(propertyIdValue.getId());
+		return this.uriPatterns.get(propertyIdValue.getId());
 
 	}
 
@@ -244,7 +250,7 @@ public class PropertyRegister {
 		String datatype = getPropertyType(propertyIdValue);
 		if (datatype == null) {
 			logger.warn("Could not fetch datatype of "
-					+ propertyIdValue.getIri() + ". Assume type "
+					+ propertyIdValue.getIri() + ". Assuming type "
 					+ DatatypeIdValue.DT_STRING);
 			return DatatypeIdValue.DT_STRING; // default type for StringValue
 		} else {
@@ -285,6 +291,14 @@ public class PropertyRegister {
 	 * @param property
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
+		int propertyIdNumber = new Integer(property.getId().substring(1));
+		// Don't do anything if all properties up to this index have already
+		// been fetched. In particular, don't try indefinitely to find a
+		// certain property type (maybe the property was deleted).
+		if (this.smallestUnfetchedPropertyIdNumber > propertyIdNumber) {
+			return;
+		}
+
 		List<String> propertyIds = new ArrayList<String>(
 				API_MAX_ENTITY_DOCUMENT_NUMBER);
 
@@ -330,6 +344,11 @@ public class PropertyRegister {
 						String uriPattern = ((StringValue) ((ValueSnak) statement
 								.getClaim().getMainSnak()).getValue())
 								.getString();
+						if (this.uriPatterns.containsKey(entry.getKey())) {
+							logger.info("Found multiple URI patterns for property "
+									+ entry.getKey()
+									+ " but only one is supported in current code.");
+						}
 						this.uriPatterns.put(entry.getKey(), uriPattern);
 					}
 				}

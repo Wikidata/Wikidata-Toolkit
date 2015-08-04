@@ -20,7 +20,9 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,12 +33,14 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -46,103 +50,156 @@ import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 public class PropertyRegisterTest {
 
-	PropertyRegister wikidataPropertyRegister;
+	PropertyRegister propertyRegister;
 
-	final String siteIri = "http://www.wikidata.org/";
+	final String siteIri = "http://www.example.org/entities/";
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
+		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
+		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
+
+		PropertyIdValue pid434 = dataObjectFactory.getPropertyIdValue("P434",
+				this.siteIri);
+		PropertyIdValue pid23 = dataObjectFactory.getPropertyIdValue("P23",
+				this.siteIri);
+		PropertyIdValue pid1921 = dataObjectFactory.getPropertyIdValue("P1921",
+				this.siteIri);
+
+		Statement p23Statement = dataObjectFactory.getStatement(
+				dataObjectFactory.getClaim(pid434, dataObjectFactory
+						.getValueSnak(pid23, dataObjectFactory.getItemIdValue(
+								"Q42", this.siteIri)), Collections
+						.<SnakGroup> emptyList()), Collections
+						.<Reference> emptyList(), StatementRank.NORMAL, "000");
+
+		Statement p1921Statement = dataObjectFactory
+				.getStatement(
+						dataObjectFactory.getClaim(
+								pid434,
+								dataObjectFactory
+										.getValueSnak(
+												pid1921,
+												dataObjectFactory
+														.getStringValue("http://musicbrainz.org/$1/artist")),
+								Collections.<SnakGroup> emptyList()),
+						Collections.<Reference> emptyList(),
+						StatementRank.NORMAL, "000");
+
+		mockStatementGroups.add(dataObjectFactory.getStatementGroup(Collections
+				.singletonList(p23Statement)));
+		mockStatementGroups.add(dataObjectFactory.getStatementGroup(Collections
+				.singletonList(p1921Statement)));
+
+		mockResult
+				.put("P434", dataObjectFactory.getPropertyDocument(pid434,
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						Collections.<MonolingualTextValue> emptyList(),
+						mockStatementGroups, dataObjectFactory
+								.getDatatypeIdValue(DatatypeIdValue.DT_STRING)));
+		mockResult.put("P23", dataObjectFactory.getPropertyDocument(pid23,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM)));
+
+		this.propertyRegister = new PropertyRegister("P1921",
+				"http://localhost/", this.siteIri);
+
+		WikibaseDataFetcher dataFetcher = Mockito
+				.mock(WikibaseDataFetcher.class);
+
 		List<String> propertyIds = new ArrayList<String>();
 		propertyIds.add("P434");
 		for (int i = 1; i < 50; i++) {
 			propertyIds.add("P" + i);
 		}
-		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
-		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
-		List<Statement> mockStatements = new ArrayList<Statement>();
-		mockStatements
-				.add(dataObjectFactory.getStatement(
-						dataObjectFactory.getClaim(
-								dataObjectFactory.getPropertyIdValue("P434",
-										this.siteIri),
-								dataObjectFactory.getValueSnak(
-										dataObjectFactory.getPropertyIdValue(
-												"P1921", this.siteIri),
-										dataObjectFactory
-												.getStringValue("http://musicbrainz.org/$1/artist")),
-								Collections.<SnakGroup> emptyList()),
-						Collections.<Reference> emptyList(),
-						StatementRank.NORMAL, "000"));
-		mockStatementGroups.add(dataObjectFactory
-				.getStatementGroup(mockStatements));
-		mockResult
-				.put("P434", dataObjectFactory.getPropertyDocument(
-						dataObjectFactory.getPropertyIdValue("P434",
-								this.siteIri), Collections
-								.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						mockStatementGroups, dataObjectFactory
-								.getDatatypeIdValue(DatatypeIdValue.DT_STRING)));
-		this.wikidataPropertyRegister = PropertyRegister
-				.getWikidataPropertyRegister();
-		WikibaseDataFetcher dataFetcher = Mockito
-				.mock(WikibaseDataFetcher.class);
 		Mockito.when(dataFetcher.getEntityDocuments(propertyIds)).thenReturn(
 				mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
-		dataFetcher.getEntityDocuments(propertyIds);
-		this.wikidataPropertyRegister.dataFetcher = dataFetcher;
+		this.propertyRegister.dataFetcher = dataFetcher;
 	}
 
 	@Test
 	public void testGetWikidataPropertyRegister() {
-		assertEquals("P1921",
-				this.wikidataPropertyRegister.uriPatternPropertyId);
+		assertEquals("P1921", this.propertyRegister.uriPatternPropertyId);
 	}
 
 	@Test
-	public void testFetchPropertyInformation() {
-		this.wikidataPropertyRegister
-				.fetchPropertyInformation(this.dataObjectFactory
-						.getPropertyIdValue("P434", this.siteIri));
-		assertEquals(50, this.wikidataPropertyRegister.smallestUnfetchedPropertyIdNumber);
-		assertTrue(this.wikidataPropertyRegister.datatypes.keySet().contains(
-				"P434"));
+	public void testFetchPropertyUriPattern() {
+		PropertyIdValue pid = this.dataObjectFactory.getPropertyIdValue("P434",
+				this.siteIri);
 		assertEquals("http://musicbrainz.org/$1/artist",
-				this.wikidataPropertyRegister.uriPatterns.get("P434"));
-
+				this.propertyRegister.getPropertyUriPattern(pid));
+		// Check twice to test that the cached retrieval works too
+		assertEquals("http://musicbrainz.org/$1/artist",
+				this.propertyRegister.getPropertyUriPattern(pid));
+		assertEquals(50,
+				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
+		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
 	}
 
 	@Test
 	public void testGetPropertyType() {
 		assertEquals(DatatypeIdValue.DT_STRING,
-				this.wikidataPropertyRegister.getPropertyType(dataObjectFactory
+				this.propertyRegister.getPropertyType(dataObjectFactory
 						.getPropertyIdValue("P434", this.siteIri)));
+		// Check twice to test that the cached retrieval works too
+		assertEquals(DatatypeIdValue.DT_STRING,
+				this.propertyRegister.getPropertyType(dataObjectFactory
+						.getPropertyIdValue("P434", this.siteIri)));
+		assertEquals(50,
+				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
+		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
+	}
+
+	@Test
+	public void testGetMissingPropertyType() {
+		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
+				.getPropertyIdValue("P10", this.siteIri)));
+		// Check twice to test fast failing on retry
+		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
+				.getPropertyIdValue("P10", this.siteIri)));
 	}
 
 	@Test
 	public void testSetPropertyTypeFromEntityIdValue() {
-		assertEquals(
-				this.wikidataPropertyRegister.setPropertyTypeFromEntityIdValue(
-						this.dataObjectFactory.getPropertyIdValue("P1001",
-								"http://www.wikidata.org/property"),
-						this.dataObjectFactory.getItemIdValue("Q20",
-								"http://www.wikidata.org/entity/")),
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				this.dataObjectFactory
+						.getPropertyIdValue("P1001", this.siteIri),
+				this.dataObjectFactory.getItemIdValue("Q20", this.siteIri)),
 				DatatypeIdValue.DT_ITEM);
 	}
-	
+
 	@Test
 	public void testSetPropertyTypeFromStringValue() {
-		assertEquals(this.wikidataPropertyRegister.setPropertyTypeFromStringValue(
-				dataObjectFactory.getPropertyIdValue("P434",
-						"http://www.wikidata.org/property"), dataObjectFactory
+		assertEquals(this.propertyRegister.setPropertyTypeFromStringValue(
+				dataObjectFactory.getPropertyIdValue("P434", this.siteIri),
+				dataObjectFactory
 						.getStringValue("http://musicbrainz.org/$1/artist")),
 				"http://www.wikidata.org/ontology#propertyTypeString");
+	}
+
+	@Test
+	public void testSetMissingPropertyTypeFromStringValue() {
+		assertEquals(this.propertyRegister.setPropertyTypeFromStringValue(
+				dataObjectFactory.getPropertyIdValue("P10", this.siteIri),
+				dataObjectFactory
+						.getStringValue("http://musicbrainz.org/$1/artist")),
+				"http://www.wikidata.org/ontology#propertyTypeString");
+	}
+
+	@Test
+	public void testWikidataPropertyRegister() {
+		PropertyRegister pr = PropertyRegister.getWikidataPropertyRegister();
+		assertEquals(Datamodel.SITE_WIKIDATA, pr.getUriPrefix());
+		assertEquals("P1921", pr.uriPatternPropertyId);
 	}
 
 }
