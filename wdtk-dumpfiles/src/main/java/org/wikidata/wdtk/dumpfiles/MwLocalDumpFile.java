@@ -243,7 +243,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 				this.dumpContentType = DumpContentType.SITES;
 			}
 			if (lcDumpName.contains("json")
-					|| lcDumpName.contains(".gzip")
+					|| lcDumpName.contains(".gz")
 					|| this.dumpContentType == null) {
 				this.dumpContentType = DumpContentType.JSON;
 			}

@@ -19,13 +19,8 @@ public class LocalDumpFileProcessor {
 	/**
 	 * Directory of the dump that should be processed
 	 */
-	private final static String DUMP_DIRECTORY = "C:/Users/Markus/workspace/wdtk-parent/wdtk-examples/dumpfiles/wikidatawiki/json-20150713/20150713.json.gz";
+	private final static String DUMP_DIRECTORY = "./src/resources/sample_dump.json.gz";
 
-	// private final static DumpContentType DUMP_CONTENT_TYPE =
-	// DumpContentType.JSON;
-
-	// private static EntityDocumentProcessor entityDocumentProcessor = new
-	// GenderRatioProcessor();
 
 	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
@@ -34,14 +29,12 @@ public class LocalDumpFileProcessor {
 		DumpProcessingController dumpProcessingController = new DumpProcessingController(
 				"wikidatawiki");
 		dumpProcessingController.setOfflineMode(true);
-		// dumpProcessingController.registerEntityDocumentProcessor(
-		// entityDocumentProcessor, null, true);
+
 		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
 				0);
 		dumpProcessingController.registerEntityDocumentProcessor(
 				entityTimerProcessor, null, true);
 
-		System.out.println(DUMP_DIRECTORY);
 		MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(DUMP_DIRECTORY);
 		mwDumpFile.prepareDumpFile();
 		dumpProcessingController.processDump(mwDumpFile);
@@ -59,6 +52,7 @@ public class LocalDumpFileProcessor {
 		System.out.println("*** This program should illustrate how to process local dumps.");
 		System.out.println("*** It uses an EntityTimerProcesses which counts processed items");
 		System.out.println("*** and elapsed time.");
+		System.out.println("*** ");
 		System.out.println("*** See source code for further details.");
 		System.out.println("********************************************************************");
 	}
