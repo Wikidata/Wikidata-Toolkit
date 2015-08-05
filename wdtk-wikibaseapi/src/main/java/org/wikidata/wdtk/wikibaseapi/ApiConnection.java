@@ -20,10 +20,8 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -32,6 +30,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,31 +49,41 @@ public class ApiConnection {
 
 	static final Logger logger = LoggerFactory.getLogger(ApiConnection.class);
 
-	final static String wikidataApiUrl = "https://www.wikidata.org/w/api.php/";
-	final static String testWikidataApiUrl = "https://test.wikidata.org/w/api.php";
+	/**
+	 * URL of the API of wikidata.org.
+	 */
+	public final static String URL_WIKIDATA_API = "https://www.wikidata.org/w/api.php/";
+	/**
+	 * URL of the API of test.wikidata.org.
+	 */
+	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
 
 	final static String PARAM_COOKIE = "Cookie";
 	final static String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
 
 	/**
-	 * String value in the result fied of the json response if the login was
-	 * succesfull.
+	 * String value in the result field of the JSON response if the login was
+	 * successful.
 	 */
 	final static String LOGIN_RESULT_SUCCESS = "Success";
 	/**
-	 * Wrong Password.
+	 * String value in the result field of the JSON response if the password was
+	 * wrong.
 	 */
 	final static String LOGIN_WRONG_PASS = "WrongPass";
 	/**
-	 * Wrong Password. An authentication plugin rejected the password.
+	 * String value in the result field of the JSON response if the password was
+	 * rejected by an authentication plugin.
 	 */
 	final static String LOGIN_WRONG_PLUGIN_PASS = "WrongPluginPass";
 	/**
-	 * No Username.
+	 * String value in the result field of the JSON response if no username was
+	 * given.
 	 */
-	final static String LOGIN_No_Name = "NoName";
+	final static String LOGIN_NO_NAME = "NoName";
 	/**
-	 * Username does not exist.
+	 * String value in the result field of the JSON response if given username
+	 * does not exist.
 	 */
 	final static String LOGIN_NOT_EXISTS = "NotExists";
 	/**
@@ -82,33 +91,38 @@ public class ApiConnection {
 	 */
 	final static String LOGIN_ILLEGAL = "Illegal";
 	/**
-	 * There were too many logins in a short time.
+	 * String value in the result field of the JSON response if there were too
+	 * many logins in a short time.
 	 */
 	final static String LOGIN_THROTTLED = "Throttled";
 	/**
-	 * Password is empty
+	 * String value in the result field of the JSON response if password is
+	 * empty.
 	 */
 	final static String LOGIN_EMPTY_PASS = "EmptyPass";
 	/**
-	 * The wiki tried to automatically create a new account for you, but your IP
-	 * address has been blocked from account creation.
+	 * String value in the result field of the JSON response if the wiki tried
+	 * to automatically create a new account for you, but your IP address has
+	 * been blocked from account creation.
 	 */
 	final static String LOGIN_CREATE_BLOCKED = "CreateBlocked";
 	/**
-	 * The User is blocked.
+	 * String value in the result field of the JSON response if the user is
+	 * blocked.
 	 */
 	final static String LOGIN_BLOCKED = "Blocked";
 	/**
-	 * Token or Session ID is missing.
+	 * String value in the result field of the JSON response if token or session
+	 * ID is missing.
 	 */
 	final static String LOGIN_NEEDTOKEN = "NeedToken";
 	/**
-	 * Token is wrong.
+	 * String value in the result field of the JSON response if token is wrong.
 	 */
 	final static String LOGIN_WRONG_TOKEN = "WrongToken";
 
 	/**
-	 * base URL to the Wikibase API.
+	 * URL to access the Wikibase API.
 	 */
 	final String apiBaseUrl;
 
@@ -125,11 +139,12 @@ public class ApiConnection {
 	final ObjectMapper mapper = new ObjectMapper();
 
 	/**
-	 * Creates an object to manage an connection to a Wikibase API and send http
-	 * requests.
+	 * Creates an object to manage a connection to the Web API of a Wikibase
+	 * site.
 	 *
 	 * @param apiBaseUrl
-	 *            base URI to the API - please use https URLs!
+	 *            base URI to the API, e.g.,
+	 *            "https://www.wikidata.org/w/api.php/"
 	 */
 	public ApiConnection(String apiBaseUrl) {
 		this.apiBaseUrl = apiBaseUrl;
@@ -141,35 +156,38 @@ public class ApiConnection {
 	 * @return {@link ApiConnection}
 	 */
 	public static ApiConnection getWikidataApiConnection() {
-		return new ApiConnection(ApiConnection.wikidataApiUrl);
+		return new ApiConnection(ApiConnection.URL_WIKIDATA_API);
 	}
 
 	/**
-	 * Creates an api connection to test.wikidata.org.
+	 * Creates an API connection to test.wikidata.org.
 	 *
 	 * @return {@link ApiConnection}
 	 */
 	public static ApiConnection getTestWikidataApiConnection() {
-		return new ApiConnection(ApiConnection.testWikidataApiUrl);
+		return new ApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
 	}
 
 	/**
-	 * Log the user in the API given a username and a password
+	 * Logs in using the specified user credentials. After successful login, the
+	 * API connection remains in a logged in state, and future actions will be
+	 * run as a logged in user.
 	 *
 	 * @param username
+	 *            the name of the user to log in
 	 * @param password
+	 *            the password of the user
 	 * @return true if the login was successful
-	 * @throws IOException
 	 * @throws LoginFailedException
+	 *             if the login failed for some reason
 	 */
 	public void login(String username, String password)
 			throws LoginFailedException {
-		String token;
 		try {
-			token = this.getLoginToken(username, password);
+			String token = this.getLoginToken(username, password);
 			try {
 				this.confirmLogin(token, username, password);
-			} catch (NeedTokenException e) {
+			} catch (NeedTokenException e) { // try once more
 				token = this.getLoginToken(username, password);
 				this.confirmLogin(token, username, password);
 			}
@@ -181,7 +199,7 @@ public class ApiConnection {
 	/**
 	 * Returns true if a user is logged in.
 	 *
-	 * @return
+	 * @return true if the connection is in a logged in state
 	 */
 	public boolean isLoggedIn() {
 		return this.loggedIn;
@@ -191,14 +209,14 @@ public class ApiConnection {
 	 * Returns the username of the user who is currently logged in. If there is
 	 * no user logged in the result is an empty string.
 	 *
-	 * @return
+	 * @return name of the logged in user
 	 */
 	public String getCurrentUser() {
 		return this.username;
 	}
 
 	/**
-	 * Returns login Token from an api login query with the given username and
+	 * Returns login token from an API login query with the given username and
 	 * password.
 	 *
 	 * @param username
@@ -212,21 +230,25 @@ public class ApiConnection {
 		params.put("lgname", username);
 		params.put("lgpassword", password);
 		params.put("format", "json");
-		String tokenResponse = this.getRequestResultAsString(this.sendRequest(
-				"POST", params));
-		JsonNode root = this.mapper.readTree(tokenResponse);
+
+		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
 		String token = root.get("login").get("token").textValue();
 
 		return token;
 	}
 
 	/**
-	 * Returns true if the query to confirm the login was successful.
+	 * Issues a Web API query to confirm that the previous login attempt was
+	 * successful, and sets the internal state of the API connection accordingly
+	 * in this case.
 	 *
 	 * @param token
+	 *            the token string acquired from a previous call to
+	 *            {@link #getLoginToken(String, String)}
 	 * @param username
+	 *            the name of the user that was logged in
 	 * @param password
-	 * @return
+	 *            the password used to log in
 	 * @throws IOException
 	 * @throws LoginFailedException
 	 */
@@ -238,9 +260,9 @@ public class ApiConnection {
 		params.put("lgpassword", password);
 		params.put("lgtoken", token);
 		params.put("format", "json");
-		String json = this
-				.getRequestResultAsString(sendRequest("POST", params));
-		JsonNode root = this.mapper.readTree(json);
+
+		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
+
 		String result = root.get("login").get("result").textValue();
 		if (result.equals(ApiConnection.LOGIN_RESULT_SUCCESS)) {
 			this.loggedIn = true;
@@ -248,56 +270,49 @@ public class ApiConnection {
 			this.password = password;
 			return;
 		} else {
-			String message;
-			switch (result) {
-			case ApiConnection.LOGIN_WRONG_PASS:
-				message = result + ": Wrong Password.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
-				message = result
-						+ ": Wrong Password. An authentication plugin rejected the password.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_NOT_EXISTS:
-				message = result + ": Username does not exist.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_BLOCKED:
-				message = result + ": User is blocked.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_EMPTY_PASS:
-				message = result + ": Password is empty.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_CREATE_BLOCKED:
-				message = result
-						+ ": The wiki tried to automatically create a new account for you,"
-						+ "but your IP address has been blocked from account creation.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_ILLEGAL:
-				message = result + ": Usernmame is illegal.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_THROTTLED:
-				message = result + ": Too many logins in a short time.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_WRONG_TOKEN:
-				message = result + ": Token is wrong.";
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			case ApiConnection.LOGIN_NEEDTOKEN:
-				message = result + ": Token or Session ID is missing.";
-				logger.warn(message);
-				throw new NeedTokenException();
-			default:
-				message = "Login Error: " + result;
-				logger.warn(message);
-				throw new LoginFailedException(message);
-			}
+			String message = getLoginErrorMessage(result);
+			logger.warn(message);
+			throw new LoginFailedException(message);
+		}
+	}
+
+	/**
+	 * Returns a user-readable message for a given API response.
+	 *
+	 * @param loginResult
+	 *            a API login request result string other than
+	 *            {@link #LOGIN_RESULT_SUCCESS}
+	 * @return error message
+	 */
+	String getLoginErrorMessage(String loginResult) {
+		switch (loginResult) {
+		case ApiConnection.LOGIN_WRONG_PASS:
+			return loginResult + ": Wrong Password.";
+		case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
+			return loginResult
+					+ ": Wrong Password. An authentication plugin rejected the password.";
+		case ApiConnection.LOGIN_NOT_EXISTS:
+			return loginResult + ": Username does not exist.";
+		case ApiConnection.LOGIN_BLOCKED:
+			return loginResult + ": User is blocked.";
+		case ApiConnection.LOGIN_EMPTY_PASS:
+			return loginResult + ": Password is empty.";
+		case ApiConnection.LOGIN_NO_NAME:
+			return loginResult + ": No user name given.";
+		case ApiConnection.LOGIN_CREATE_BLOCKED:
+			return loginResult
+					+ ": The wiki tried to automatically create a new account for you,"
+					+ "but your IP address has been blocked from account creation.";
+		case ApiConnection.LOGIN_ILLEGAL:
+			return loginResult + ": Username is illegal.";
+		case ApiConnection.LOGIN_THROTTLED:
+			return loginResult + ": Too many login attempts in a short time.";
+		case ApiConnection.LOGIN_WRONG_TOKEN:
+			return loginResult + ": Token is wrong.";
+		case ApiConnection.LOGIN_NEEDTOKEN:
+			return loginResult + ": Token or session ID is missing.";
+		default:
+			return "Login Error: " + loginResult;
 		}
 	}
 
@@ -319,34 +334,26 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Sets a cookie for the next requests.
-	 *
-	 * @param key
-	 * @param Value
-	 */
-	public void setCookie(String key, String value) {
-		this.cookies.put(key, value);
-	}
-
-	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
-	 * api connection with it.
+	 * API connection with it.
+	 * <p>
+	 * TODO Why does this method clear all existing cookies?
 	 *
 	 * @param con
 	 */
 	void fillCookies(HttpURLConnection con) {
 		this.cookies.clear();
-		String headerName;
-		for (int i = 1; (headerName = con.getHeaderFieldKey(i)) != null; i++) {
-			if (headerName.equals(ApiConnection.HEADER_FIELD_SET_COOKIE)) {
+
+		String headerFieldKey;
+		for (int i = 1; (headerFieldKey = con.getHeaderFieldKey(i)) != null; i++) {
+			if (ApiConnection.HEADER_FIELD_SET_COOKIE.equals(headerFieldKey)) {
 				String[] cookieResponse = con.getHeaderField(i).split(
 						";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
 					String[] entry = cookieLine.split("=");
 					if (entry.length == 2) {
 						this.cookies.put(entry[0], entry[1]);
-					}
-					if (entry.length == 1) {
+					} else if (entry.length == 1) {
 						this.cookies.put(entry[0], "");
 					}
 				}
@@ -355,30 +362,29 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Sets the cookie request parameter from the cooie map of the api
-	 * connection. This should be done before sending requests to the api.
-	 *
-	 * @param con
+	 * Returns the string representation of the currently stored cookies. This
+	 * data is added to the connection before making requests.
 	 */
-	void setCookies(HttpURLConnection con) {
-		String result = "";
-		for (String key : this.cookies.keySet()) {
-			if (this.cookies.get(key) != "") {
-				result += key + "=" + this.cookies.get(key) + "; ";
+	String getCookieString() {
+		StringBuilder result = new StringBuilder();
+		boolean isFirst = true;
+		for (Entry<String, String> entry : this.cookies.entrySet()) {
+			if (isFirst) {
+				isFirst = false;
 			} else {
-				result += key + "; ";
+				result.append("; ");
+			}
+			result.append(entry.getKey());
+			if (!"".equals(entry.getValue())) {
+				result.append("=").append(this.cookies.get(entry.getValue()));
 			}
 
 		}
-		if (result != "") {
-			result = result.substring(0, result.length() - 2);
-		}
-		con.setRequestProperty(ApiConnection.PARAM_COOKIE, result);
-
+		return result.toString();
 	}
 
 	/**
-	 * Clears the set of cookies. This will cause a Logout.
+	 * Clears the set of cookies. This will cause a logout.
 	 *
 	 * @throws IOException
 	 */
@@ -393,40 +399,43 @@ public class ApiConnection {
 	 *
 	 * @param params
 	 *            Map with parameters
-	 * @return
-	 * @throws UnsupportedEncodingException
+	 * @return query string
 	 */
-	public String getQueryString(Map<String, String> params)
-			throws UnsupportedEncodingException {
+	String getQueryString(Map<String, String> params) {
 		StringBuilder builder = new StringBuilder();
-		for (String key : params.keySet()) {
-			builder.append(URLEncoder.encode(key, "UTF-8"));
-			builder.append("=");
-			builder.append(URLEncoder.encode(params.get(key), "UTF-8"));
-			builder.append("&");
+		try {
+			for (String key : params.keySet()) {
+				builder.append(URLEncoder.encode(key, "UTF-8"));
+				builder.append("=");
+				builder.append(URLEncoder.encode(params.get(key), "UTF-8"));
+				builder.append("&");
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(
+					"Your Java version does not support UTF-8 encoding.");
 		}
 		String result = builder.toString();
 		return result.substring(0, result.length() - 1);
 	}
 
 	/**
-	 * This method send a request to the api with the given parameters and the
-	 * given request method to the api and returns the result string. It
-	 * automatically fill the cookie map with cookies in the result header after
-	 * the request.
+	 * Sends a request to the API with the given parameters and the given
+	 * request method and returns the result string. It automatically fills the
+	 * cookie map with cookies in the result header after the request.
 	 *
 	 * @param requestMethod
 	 *            either POST or GET
 	 * @param parameters
 	 *            Maps parameter keys to values. Out of this map the function
 	 *            will create a query string for the request.
-	 * @return api result
+	 * @return API result
 	 * @throws IOException
 	 */
 	public InputStream sendRequest(String requestMethod,
 			Map<String, String> parameters) throws IOException {
 		String queryString = getQueryString(parameters);
 		URL url = new URL(this.apiBaseUrl);
+
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod(requestMethod);
 		connection.setDoInput(true);
@@ -436,31 +445,36 @@ public class ApiConnection {
 				"application/x-www-form-urlencoded");
 		connection.setRequestProperty("Content-Length",
 				String.valueOf(queryString.length()));
-		this.setCookies(connection);
+		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
+				getCookieString());
+
 		OutputStreamWriter writer = new OutputStreamWriter(
 				connection.getOutputStream());
 		writer.write(queryString);
 		writer.flush();
 		writer.close();
+
 		int rc = connection.getResponseCode();
 		if (rc != 200) {
-			logger.warn("Error: Getting Response Code " + rc);
+			logger.warn("Error: API request returned response code " + rc);
 		}
+
 		InputStream iStream = connection.getInputStream();
-		this.fillCookies(connection);
+		fillCookies(connection);
 		return iStream;
 	}
 
 	/**
-	 * Halndles errors and warnings. Note that there is at most one error
-	 * message in the json result even if there are more errors in the request.
-	 * Returns true if there are no errors.
+	 * Handles errors and warnings that are returned in an API response. Note
+	 * that there is at most one error message in the JSON result even if there
+	 * are more errors in the request. Returns true if there are no errors.
 	 *
 	 * @param root
-	 *            root node of the json result
+	 *            root node of the JSON result
 	 * @return true if there are no errors
 	 */
 	public boolean parseErrorsAndWarnings(JsonNode root) {
+
 		if (root.has("error")) {
 			JsonNode errorNode = root.path("error");
 			logger.error("Error when reading data from API: "
@@ -469,6 +483,7 @@ public class ApiConnection {
 					+ errorNode.path("code").asText("UNKNOWN ERROR CODE") + "]");
 			return false;
 		}
+
 		if (root.has("warnings")) {
 			JsonNode warningNode = root.path("warnings");
 			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
@@ -488,25 +503,8 @@ public class ApiConnection {
 
 			}
 		}
-		return true;
-	}
 
-	/**
-	 * Returns the content of an {@link InputStream} without line endings.
-	 *
-	 * @param iStream
-	 * @return String result
-	 * @throws IOException
-	 */
-	private String getRequestResultAsString(InputStream iStream)
-			throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				iStream));
-		String result = "";
-		for (String line; (line = reader.readLine()) != null;) {
-			result = result.concat(line);
-		}
-		return result;
+		return true;
 	}
 
 }
