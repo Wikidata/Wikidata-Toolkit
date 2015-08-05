@@ -336,14 +336,10 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
-	 * <p>
-	 * TODO Why does this method clear all existing cookies?
 	 *
 	 * @param con
 	 */
 	void fillCookies(HttpURLConnection con) {
-		this.cookies.clear();
-
 		String headerFieldKey;
 		for (int i = 1; (headerFieldKey = con.getHeaderFieldKey(i)) != null; i++) {
 			if (ApiConnection.HEADER_FIELD_SET_COOKIE.equals(headerFieldKey)) {
