@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +42,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Class to build up and hold a connection to a Wikibase API, managing cookies
  * and login.
- * 
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class ApiConnection {
 
@@ -126,7 +127,7 @@ public class ApiConnection {
 	/**
 	 * Creates an object to manage an connection to a Wikibase API and send http
 	 * requests.
-	 * 
+	 *
 	 * @param apiBaseUrl
 	 *            base URI to the API - please use https URLs!
 	 */
@@ -135,8 +136,8 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Creates an api connection to wikidata.org.
-	 * 
+	 * Creates an API connection to wikidata.org.
+	 *
 	 * @return {@link ApiConnection}
 	 */
 	public static ApiConnection getWikidataApiConnection() {
@@ -145,7 +146,7 @@ public class ApiConnection {
 
 	/**
 	 * Creates an api connection to test.wikidata.org.
-	 * 
+	 *
 	 * @return {@link ApiConnection}
 	 */
 	public static ApiConnection getTestWikidataApiConnection() {
@@ -154,7 +155,7 @@ public class ApiConnection {
 
 	/**
 	 * Log the user in the API given a username and a password
-	 * 
+	 *
 	 * @param username
 	 * @param password
 	 * @return true if the login was successful
@@ -179,7 +180,7 @@ public class ApiConnection {
 
 	/**
 	 * Returns true if a user is logged in.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isLoggedIn() {
@@ -189,7 +190,7 @@ public class ApiConnection {
 	/**
 	 * Returns the username of the user who is currently logged in. If there is
 	 * no user logged in the result is an empty string.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCurrentUser() {
@@ -199,7 +200,7 @@ public class ApiConnection {
 	/**
 	 * Returns login Token from an api login query with the given username and
 	 * password.
-	 * 
+	 *
 	 * @param username
 	 * @param password
 	 * @return
@@ -221,7 +222,7 @@ public class ApiConnection {
 
 	/**
 	 * Returns true if the query to confirm the login was successful.
-	 * 
+	 *
 	 * @param token
 	 * @param username
 	 * @param password
@@ -302,7 +303,7 @@ public class ApiConnection {
 
 	/**
 	 * Logs the current user out.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void logout() throws IOException {
@@ -319,7 +320,7 @@ public class ApiConnection {
 
 	/**
 	 * Sets a cookie for the next requests.
-	 * 
+	 *
 	 * @param key
 	 * @param Value
 	 */
@@ -330,7 +331,7 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * api connection with it.
-	 * 
+	 *
 	 * @param con
 	 */
 	void fillCookies(HttpURLConnection con) {
@@ -342,10 +343,12 @@ public class ApiConnection {
 						";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
 					String[] entry = cookieLine.split("=");
-					if (entry.length == 2)
+					if (entry.length == 2) {
 						this.cookies.put(entry[0], entry[1]);
-					if (entry.length == 1)
+					}
+					if (entry.length == 1) {
 						this.cookies.put(entry[0], "");
+					}
 				}
 			}
 		}
@@ -354,7 +357,7 @@ public class ApiConnection {
 	/**
 	 * Sets the cookie request parameter from the cooie map of the api
 	 * connection. This should be done before sending requests to the api.
-	 * 
+	 *
 	 * @param con
 	 */
 	void setCookies(HttpURLConnection con) {
@@ -376,7 +379,7 @@ public class ApiConnection {
 
 	/**
 	 * Clears the set of cookies. This will cause a Logout.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void clearCookies() throws IOException {
@@ -387,7 +390,7 @@ public class ApiConnection {
 
 	/**
 	 * Returns the query string of a URL from a parameter list.
-	 * 
+	 *
 	 * @param params
 	 *            Map with parameters
 	 * @return
@@ -411,7 +414,7 @@ public class ApiConnection {
 	 * given request method to the api and returns the result string. It
 	 * automatically fill the cookie map with cookies in the result header after
 	 * the request.
-	 * 
+	 *
 	 * @param requestMethod
 	 *            either POST or GET
 	 * @param parameters
@@ -452,7 +455,7 @@ public class ApiConnection {
 	 * Halndles errors and warnings. Note that there is at most one error
 	 * message in the json result even if there are more errors in the request.
 	 * Returns true if there are no errors.
-	 * 
+	 *
 	 * @param root
 	 *            root node of the json result
 	 * @return true if there are no errors
@@ -490,7 +493,7 @@ public class ApiConnection {
 
 	/**
 	 * Returns the content of an {@link InputStream} without line endings.
-	 * 
+	 *
 	 * @param iStream
 	 * @return String result
 	 * @throws IOException
