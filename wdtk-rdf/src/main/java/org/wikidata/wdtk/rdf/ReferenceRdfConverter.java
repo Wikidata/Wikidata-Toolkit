@@ -48,6 +48,7 @@ public class ReferenceRdfConverter {
 	final List<Reference> referenceQueue;
 	final List<Resource> referenceSubjectQueue;
 	final HashSet<Resource> declaredReferences;
+	final String siteUri;
 
 	/**
 	 * Constructor.
@@ -56,11 +57,14 @@ public class ReferenceRdfConverter {
 	 *            object to use for constructing URI objects
 	 * @param snakRdfConverter
 	 *            object to use for writing snaks
+	 * @param siteUri
+	 *            URI prefix that is used by the processed site
 	 */
 	public ReferenceRdfConverter(RdfWriter rdfWriter,
-			SnakRdfConverter snakRdfConverter) {
+			SnakRdfConverter snakRdfConverter, String siteUri) {
 		this.rdfWriter = rdfWriter;
 		this.snakRdfConverter = snakRdfConverter;
+		this.siteUri = siteUri;
 
 		this.referenceQueue = new ArrayList<Reference>();
 		this.referenceSubjectQueue = new ArrayList<Resource>();
@@ -76,7 +80,8 @@ public class ReferenceRdfConverter {
 	 * @return RDF resource that represents this reference
 	 */
 	public Resource addReference(Reference reference) {
-		String referenceUri = Vocabulary.getReferenceUri(reference);
+		String referenceUri = Vocabulary.getReferenceUri(reference,
+				this.siteUri);
 		Resource resource = this.rdfWriter.getUri(referenceUri);
 
 		this.referenceQueue.add(reference);

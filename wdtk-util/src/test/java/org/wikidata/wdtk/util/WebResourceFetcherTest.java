@@ -21,6 +21,10 @@ package org.wikidata.wdtk.util;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 import org.junit.Test;
 
@@ -32,4 +36,12 @@ public class WebResourceFetcherTest {
 		assertEquals("My user agent", WebResourceFetcherImpl.getUserAgent());
 	}
 
+	@Test
+	public void testSetProxy() {
+		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+				"test.adress", 8080));
+		WebResourceFetcherImpl.setProxy(proxy);
+		assertTrue(WebResourceFetcherImpl.hasProxy());
+		assertEquals(proxy, WebResourceFetcherImpl.getProxy());
+	}
 }
