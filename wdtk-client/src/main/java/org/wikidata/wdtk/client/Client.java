@@ -127,14 +127,8 @@ public class Client {
 			dumpFile = dumpProcessingController
 					.getMostRecentDump(DumpContentType.JSON);
 		} else {
-			try {
-				dumpFile.prepareDumpFile();
-				if (!dumpFile.isAvailable()) {
-					logger.error("Local file could not be found.");
-					return;
-				}
-			} catch (IOException e) {
-				logger.error("An error occured while searching the local dump file.");
+			if (!dumpFile.isAvailable()) {
+				logger.error("Local file could not be found.");
 				return;
 			}
 		}

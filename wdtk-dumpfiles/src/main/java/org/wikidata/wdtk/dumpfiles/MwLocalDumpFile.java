@@ -79,7 +79,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	DumpContentType dumpContentType;
 
 	/**
-	 * Stores whether this object is prepared or not
+	 * Stores whether this object is already prepared or not
 	 */
 	boolean isPrepared;
 
@@ -103,8 +103,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	/**
 	 * Constructor. The DumpContentType will be inferred by the name of the
 	 * file, if possible. If it is not possible, it will be set to JSON by
-	 * default. Before this dump file can be processed, the
-	 * prepareDumpFile() method has to be called.
+	 * default.
 	 * 
 	 * @param filepath
 	 *                Path to the dump file in the file system
@@ -114,8 +113,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Constructor. Before this dump file can be processed, the
-	 * prepareDumpFile() method has to be called.
+	 * Constructor.
 	 * 
 	 * @param filepath
 	 *                Path to the dump file in the file system
@@ -132,7 +130,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor for test cases with a MockDirectoryManager
 	 * 
 	 * @param dumpFileDirectoryManager
 	 *                the directory manager for the directory where dump is

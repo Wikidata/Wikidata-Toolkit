@@ -57,8 +57,7 @@ public class MWLocalDumpFileTest {
 
 	@Test
 	public void testGetters() {
-		MwLocalDumpFile df = new MwLocalDumpFile(
-				"./src/test/resources/empty-dump.xml",
+		MwLocalDumpFile df = new MwLocalDumpFile("./filename.txt",
 				DumpContentType.SITES);
 
 		assertEquals(df.getDateStamp(), "YYYYMMDD");

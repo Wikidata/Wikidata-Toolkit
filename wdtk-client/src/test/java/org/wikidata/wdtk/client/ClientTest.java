@@ -204,7 +204,7 @@ public class ClientTest {
 
 	@Test
 	public void testNonExistingLocalDump() {
-		String[] args = { "-f", "./src/resources/asfjl.json" };
+		String[] args = { "-f", "./asfjl.json" };
 		Client client = new Client(mockDpc, args);
 		client.performActions();
 
