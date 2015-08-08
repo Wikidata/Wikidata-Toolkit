@@ -79,6 +79,11 @@ public class MwLocalDumpFile implements MwDumpFile {
 	DumpContentType dumpContentType;
 
 	/**
+	 * Stores whether this object is prepared or not
+	 */
+	boolean isPrepared;
+
+	/**
 	 * Hash map defining the compression type of each type of dump.
 	 */
 	static final Map<DumpContentType, CompressionType> COMPRESSION_TYPE = new HashMap<DumpContentType, CompressionType>();
@@ -123,6 +128,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 		this.dumpFilePath = Paths.get(filepath);
 		this.dateStamp = "YYYYMMDD";
 		this.projectName = "LocalDumpFile";
+		this.isPrepared = false;
 	}
 
 	/**
@@ -142,7 +148,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 * @throws IOException
 	 *                 if there was a problem finding the path
 	 */
-	public MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
+	MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
 			DumpContentType dumpContentType, String dumpFileName,
 			String dateStamp, String projectName)
 			throws IOException {
@@ -152,14 +158,16 @@ public class MwLocalDumpFile implements MwDumpFile {
 		this.dumpContentType = dumpContentType;
 		this.dumpFileName = dumpFileName;
 		this.dumpFilePath = Paths.get(dumpFileName);
+		this.isPrepared = false;
 	}
 
 	@Override
 	public boolean isAvailable() {
-		if (this.localDumpfileDirectoryManager == null) {
-			return false;
+		if (!isPrepared) {
+			prepareDumpFile();
 		}
-		if (this.localDumpfileDirectoryManager != null) {
+		if (this.localDumpfileDirectoryManager != null
+				&& this.dumpContentType != null) {
 			return this.localDumpfileDirectoryManager
 					.hasFile(dumpFileName);
 		}
@@ -192,6 +200,9 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
+		if (!isAvailable()) {
+			throw new IOException();
+		}
 		return this.localDumpfileDirectoryManager
 				.getInputStreamForFile(
 						dumpFileName,
@@ -201,12 +212,15 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
+		if (!isAvailable()) {
+			throw new IOException();
+		}
 		return new BufferedReader(new InputStreamReader(
 				getDumpFileStream(), StandardCharsets.UTF_8));
 	}
 
 	@Override
-	public void prepareDumpFile() throws IOException {
+	public void prepareDumpFile() {
 		configureDirectoryManager();
 		inferDumpContentType();
 	}
@@ -219,20 +233,23 @@ public class MwLocalDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Configures the DirectoryManager. It checks whether the give path and
+	 * Configures the DirectoryManager. It checks whether the given path and
 	 * file exists. If the given file does not exist, the DirectoryManager
 	 * will be set to null, otherwise a corresponding DirectoryManager will
 	 * be created.
 	 */
 	void configureDirectoryManager() {
-		if (Files.exists(dumpFilePath)) {
-			try {
-				this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
-						dumpFilePath.getParent());
-				dumpFileName = dumpFilePath.getFileName()
-						.toString();
-			} catch (IOException e) {
-				logger.error("An error occured while creating the DirectryManager.");
+		if (this.localDumpfileDirectoryManager == null) {
+			if (Files.exists(dumpFilePath)) {
+				try {
+					this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
+							dumpFilePath.getParent());
+					dumpFileName = dumpFilePath
+							.getFileName()
+							.toString();
+				} catch (IOException e) {
+					logger.error("An error occured while creating the DirectryManager.");
+				}
 			}
 		}
 	}
@@ -246,24 +263,26 @@ public class MwLocalDumpFile implements MwDumpFile {
 	void inferDumpContentType() {
 		if (this.dumpContentType == null) {
 			String lcDumpName = this.dumpFileName.toLowerCase();
-			if (lcDumpName.contains("bz2")
-					|| lcDumpName.contains("full")) {
+			if (lcDumpName.contains(".json.gz")) {
+				this.dumpContentType = DumpContentType.JSON;
+				return;
+			}
+			if (lcDumpName.contains(".sql.gz")){
+				this.dumpContentType = DumpContentType.SITES;
+				return;
+			}
+			if (lcDumpName.contains(".xml.bz2")){
+				if (lcDumpName.contains("daily")){
+					this.dumpContentType = DumpContentType.DAILY;
+					return;
+				}
+				if (lcDumpName.contains("current")) {
+					this.dumpContentType = DumpContentType.CURRENT;
+					return;
+				}
 				this.dumpContentType = DumpContentType.FULL;
 			}
-			if (lcDumpName.contains("daily")) {
-				this.dumpContentType = DumpContentType.DAILY;
-			}
-			if (lcDumpName.contains("current")) {
-				this.dumpContentType = DumpContentType.CURRENT;
-			}
-			if (lcDumpName.contains("sites")) {
-				this.dumpContentType = DumpContentType.SITES;
-			}
-			if (lcDumpName.contains("json")
-					|| lcDumpName.contains(".gz")
-					|| this.dumpContentType == null) {
-				this.dumpContentType = DumpContentType.JSON;
-			}
+
 		}
 	}
 

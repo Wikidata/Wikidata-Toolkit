@@ -38,9 +38,13 @@ public class MWLocalDumpFileTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.dmPath = Paths.get(System.getProperty("user.dir"))
-				.resolve("dumpfiles").resolve("wikidatawiki");
+		this.dmPath = Paths.get(System.getProperty("user.dir"));
 		this.dm = new MockDirectoryManager(this.dmPath);
+		this.dm.createFile("test.json.gz", "");
+		this.dm.createFile("test.sql.gz", "");
+		this.dm.createFile("test.xml.bz2", "");
+		this.dm.createFile("current-dump.xml.bz2", "");
+		this.dm.createFile("daily-dump.xml.bz2", "");
 	}
 
 	@Test
@@ -52,27 +56,73 @@ public class MWLocalDumpFileTest {
 	}
 
 	@Test
-	public void testGetters() throws IOException {
+	public void testGetters() {
 		MwLocalDumpFile df = new MwLocalDumpFile(
 				"./src/test/resources/empty-dump.xml",
 				DumpContentType.SITES);
-		df.prepareDumpFile();
 
 		assertEquals(df.getDateStamp(), "YYYYMMDD");
 		assertEquals(df.getProjectName(), "LocalDumpFile");
 		assertEquals(df.getDumpContentType(), DumpContentType.SITES);
-		assertTrue(df.isAvailable());
 	}
 
 	@Test
-	public void testPrepareDumpFile() throws IOException {
-		String filenames = "./src/test/resources/mock-dump-for-testing.json";
+	public void testInferJsonDump() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"test.json.gz", "YYYYMMDD", "name");
 		
-		MwLocalDumpFile df = new MwLocalDumpFile(filenames);
 		df.prepareDumpFile();
 		
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
 		assertEquals(df.getDumpContentType(), DumpContentType.JSON);
+	}
+	
+	@Test
+	public void testInferSitesDump() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"test.sql.gz", "YYYYMMDD", "name");
+		
+		df.prepareDumpFile();
+		
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertEquals(df.getDumpContentType(), DumpContentType.SITES);
+	}
+
+	@Test
+	public void testInferFullDump() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"test.xml.bz2", "YYYYMMDD", "name");
+
+		df.prepareDumpFile();
+
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertEquals(df.getDumpContentType(), DumpContentType.FULL);
+	}
+
+	@Test
+	public void testInferDailyDump() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"daily-dump.xml.bz2", "YYYYMMDD", "name");
+
+		df.prepareDumpFile();
+
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertEquals(df.getDumpContentType(), DumpContentType.DAILY);
+	}
+
+	@Test
+	public void testInferCurrentDump() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"current-dump.xml.bz2", "YYYYMMDD", "name");
+
+		df.prepareDumpFile();
+
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertEquals(df.getDumpContentType(), DumpContentType.CURRENT);
 	}
 }
