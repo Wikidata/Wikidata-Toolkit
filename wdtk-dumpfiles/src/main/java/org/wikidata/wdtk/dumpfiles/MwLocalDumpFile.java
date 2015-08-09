@@ -20,7 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -221,13 +220,16 @@ public class MwLocalDumpFile implements MwDumpFile {
 	public void prepareDumpFile() {
 		configureDirectoryManager();
 		inferDumpContentType();
+		isPrepared = true;
 	}
 
 	@Override
 	public String toString() {
-		return this.projectName + "-"
-				+ getDumpContentType().toString().toLowerCase()
-				+ "-" + this.dateStamp;
+		if (isAvailable()){
+			return this.projectName + "-" + getDumpContentType().toString().toLowerCase() + "-" + this.dateStamp;
+		}
+		return this.projectName + "-" + "unknown DumpContentType" + "-"
+				+ this.dateStamp;
 	}
 
 	/**
@@ -254,9 +256,9 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	/**
 	 * Tries to infer the DumpContentType by filename. If it is not
-	 * possible, the DumpContentType will be set to JSON by default. If the
-	 * DumpContentType has already been set or inferred before, this method
-	 * will not do it again.
+	 * possible, the DumpContentType will be null and this dump is not
+	 * available. If the DumpContentType has already been set or inferred
+	 * before, this method will not do it again.
 	 */
 	void inferDumpContentType() {
 		if (this.dumpContentType == null) {
@@ -265,12 +267,12 @@ public class MwLocalDumpFile implements MwDumpFile {
 				this.dumpContentType = DumpContentType.JSON;
 				return;
 			}
-			if (lcDumpName.contains(".sql.gz")){
+			if (lcDumpName.contains(".sql.gz")) {
 				this.dumpContentType = DumpContentType.SITES;
 				return;
 			}
-			if (lcDumpName.contains(".xml.bz2")){
-				if (lcDumpName.contains("daily")){
+			if (lcDumpName.contains(".xml.bz2")) {
+				if (lcDumpName.contains("daily")) {
 					this.dumpContentType = DumpContentType.DAILY;
 					return;
 				}

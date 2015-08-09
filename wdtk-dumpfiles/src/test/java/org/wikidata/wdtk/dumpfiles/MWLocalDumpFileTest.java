@@ -45,6 +45,7 @@ public class MWLocalDumpFileTest {
 		this.dm.createFile("test.xml.bz2", "");
 		this.dm.createFile("current-dump.xml.bz2", "");
 		this.dm.createFile("daily-dump.xml.bz2", "");
+		this.dm.createFile("test-file.txt", "");
 	}
 
 	@Test
@@ -74,6 +75,7 @@ public class MWLocalDumpFileTest {
 		
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
+		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.JSON);
 	}
 	
@@ -86,6 +88,7 @@ public class MWLocalDumpFileTest {
 		
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
+		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.SITES);
 	}
 
@@ -98,6 +101,7 @@ public class MWLocalDumpFileTest {
 
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
+		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.FULL);
 	}
 
@@ -110,6 +114,7 @@ public class MWLocalDumpFileTest {
 
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
+		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.DAILY);
 	}
 
@@ -122,6 +127,20 @@ public class MWLocalDumpFileTest {
 
 		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
 				.getDumpFileName()));
+		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.CURRENT);
+	}
+
+	@Test
+	public void testInferUnknownDumpType() throws IOException {
+		MwLocalDumpFile df = new MwLocalDumpFile(dm, null,
+				"test-file.txt", "YYYYMMDD", "name");
+
+		df.prepareDumpFile();
+
+		assertTrue(df.localDumpfileDirectoryManager.hasFile(df
+				.getDumpFileName()));
+		assertFalse(df.isAvailable());
+		assertEquals(df.getDumpContentType(), null);
 	}
 }
