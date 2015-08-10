@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -339,20 +340,18 @@ public class ApiConnection {
 	 *
 	 * @param con
 	 */
-	void fillCookies(HttpURLConnection con) {
-		String headerFieldKey;
-		for (int i = 1; (headerFieldKey = con.getHeaderFieldKey(i)) != null; i++) {
-			if (ApiConnection.HEADER_FIELD_SET_COOKIE.equals(headerFieldKey)) {
-				String[] cookieResponse = con.getHeaderField(i).split(
-						";\\p{Space}??");
-				for (String cookieLine : cookieResponse) {
-					String[] entry = cookieLine.split("=");
-					if (entry.length == 2) {
-						this.cookies.put(entry[0], entry[1]);
-					} else if (entry.length == 1) {
-						this.cookies.put(entry[0], "");
-					}
-				}
+	void fillCookies(Map<String, List<String>> headerFields) {
+		this.cookies.clear();
+		List<String> cookieList = headerFields
+				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
+		for (int i = 0; i < cookieList.size(); i++) {
+			String[] cookieResponse = cookieList.get(i).split(";\\p{Space}??");
+			for (String cookieLine : cookieResponse) {
+				String[] entry = cookieLine.split("=");
+				if (entry.length == 2)
+					this.cookies.put(entry[0], entry[1]);
+				if (entry.length == 1)
+					this.cookies.put(entry[0], "");
 			}
 		}
 	}
@@ -372,7 +371,7 @@ public class ApiConnection {
 			}
 			result.append(entry.getKey());
 			if (!"".equals(entry.getValue())) {
-				result.append("=").append(this.cookies.get(entry.getValue()));
+				result.append("=").append(entry.getValue());
 			}
 
 		}
@@ -456,7 +455,7 @@ public class ApiConnection {
 		}
 
 		InputStream iStream = connection.getInputStream();
-		fillCookies(connection);
+		fillCookies(connection.getHeaderFields());
 		return iStream;
 	}
 
