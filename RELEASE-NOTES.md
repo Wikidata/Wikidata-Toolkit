@@ -14,6 +14,7 @@ New features:
 Bug fixes:
 * JSON conversion action of the command-line client was forgetting start of entity list.
 * Update URLs to use https instead of http
+* Support URLs in sites table that are not protocol-relative (issue #163)
 
 Incompatible changes:
 * EntityDocumentProcessorFilter has a modified constructor that requires a filter object
