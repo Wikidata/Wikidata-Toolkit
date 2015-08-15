@@ -43,7 +43,7 @@ import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /**
  * This class provides a Java command line client to process dump files.
- * 
+ *
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -67,7 +67,7 @@ public class Client {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param args
 	 *            command line arguments to configure the conversion
 	 * @throws ParseException
@@ -120,8 +120,7 @@ public class Client {
 		dumpProcessingController.setPropertyFilter(this.clientConfiguration
 				.getFilterProperties());
 
-		MwDumpFile dumpFile = this.clientConfiguration
-				.getLocalDumpFile();
+		MwDumpFile dumpFile = this.clientConfiguration.getLocalDumpFile();
 
 		if (dumpFile == null) {
 			dumpFile = dumpProcessingController
@@ -232,7 +231,7 @@ public class Client {
 	 * Writes a report file including the results of the
 	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
 	 * filename specified the reports will be logged.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	void writeReport() throws IOException {
@@ -254,7 +253,7 @@ public class Client {
 				outputDirectory = Paths.get(".");
 			}
 			DirectoryManager dm = DirectoryManagerFactory
-					.createDirectoryManager(outputDirectory);
+					.createDirectoryManager(outputDirectory, false);
 			OutputStream out = dm.getOutputStreamForFile(Paths
 					.get(this.clientConfiguration.getReportFilename())
 					.getFileName().toString());
@@ -277,7 +276,7 @@ public class Client {
 
 	/**
 	 * Launches the client with the specified parameters.
-	 * 
+	 *
 	 * @param args
 	 *            command line parameters
 	 * @throws ParseException

@@ -76,7 +76,7 @@ public class JsonDumpFileProcessingTest {
 	@Test
 	public void testRegularJsonProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		setLocalJsonDumpFile("mock-dump-for-testing.json", "20150223", dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
@@ -97,7 +97,7 @@ public class JsonDumpFileProcessingTest {
 	@Test
 	public void testBuggyJsonProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		setLocalJsonDumpFile("mock-dump-with-bugs.json", "20150223", dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
@@ -118,7 +118,7 @@ public class JsonDumpFileProcessingTest {
 	@Test(expected = EntityTimerProcessor.TimeoutException.class)
 	public void testTimeout() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		setLocalJsonDumpFile("mock-dump-for-long-testing.json", "20150223", dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
@@ -140,7 +140,7 @@ public class JsonDumpFileProcessingTest {
 	@Test
 	public void testNonTimeout() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		setLocalJsonDumpFile("mock-dump-for-long-testing.json", "20150223", dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(

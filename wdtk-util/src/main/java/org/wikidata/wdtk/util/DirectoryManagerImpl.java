@@ -22,6 +22,7 @@ package org.wikidata.wdtk.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +31,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,16 +56,26 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	final Path directory;
 
 	/**
+	 * If false, the directory manager will attempt to create directories when
+	 * changing to a location that does not exist.
+	 */
+	final boolean readOnly;
+
+	/**
 	 * Constructor
 	 *
 	 * @param baseDirectory
 	 *            the directory where the file manager should point initially;
 	 *            will be created if not existing
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @throws IOException
 	 *             if there was a problem creating the directory
 	 */
-	public DirectoryManagerImpl(String baseDirectory) throws IOException {
-		this(Paths.get(baseDirectory));
+	public DirectoryManagerImpl(String baseDirectory, Boolean readOnly)
+			throws IOException {
+		this(Paths.get(baseDirectory), readOnly);
 	}
 
 	/**
@@ -74,11 +84,16 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 * @param baseDirectory
 	 *            the directory where the file manager should point initially;
 	 *            will be created if not existing
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @throws IOException
 	 *             if there was a problem creating the directory
 	 */
-	public DirectoryManagerImpl(Path baseDirectory) throws IOException {
+	public DirectoryManagerImpl(Path baseDirectory, Boolean readOnly)
+			throws IOException {
 		this.directory = baseDirectory;
+		this.readOnly = readOnly;
 		createDirectory(this.directory);
 	}
 
@@ -90,7 +105,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	@Override
 	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException {
-		return new DirectoryManagerImpl(directory.resolve(subdirectoryName));
+		return new DirectoryManagerImpl(directory.resolve(subdirectoryName),
+				this.readOnly);
 	}
 
 	@Override
@@ -110,6 +126,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 			throws IOException {
 		long fileSize;
 		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		try (ReadableByteChannel readableByteChannel = Channels
 				.newChannel(inputStream);
 				FileChannel fc = FileChannel
@@ -125,6 +143,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 			throws IOException {
 		long fileSize;
 		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		Path fileTempPath = this.directory.resolve(fileName + ".part");
 
 		try (ReadableByteChannel readableByteChannel = Channels
@@ -145,6 +165,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	public void createFile(String fileName, String fileContents)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(filePath,
 				StandardCharsets.UTF_8, StandardOpenOption.WRITE,
 				StandardOpenOption.CREATE_NEW)) {
@@ -156,7 +178,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	public OutputStream getOutputStreamForFile(String fileName)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
-	
+		ensureWritePermission(filePath);
+
 		return Files.newOutputStream(filePath);
 	}
 
@@ -164,6 +187,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	public InputStream getInputStreamForFile(String fileName,
 			CompressionType compressionType) throws IOException {
 		Path filePath = this.directory.resolve(fileName);
+
 		InputStream fileInputStream = Files.newInputStream(filePath,
 				StandardOpenOption.READ);
 		switch (compressionType) {
@@ -175,7 +199,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 			return new BZip2CompressorInputStream(new BufferedInputStream(
 					fileInputStream));
 		default:
-			throw new IllegalArgumentException("Unsupported compresion type: "
+			throw new IllegalArgumentException("Unsupported compression type: "
 					+ compressionType);
 		}
 
@@ -196,7 +220,8 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	}
 
 	/**
-	 * Create a directory at the given path if it does not exist yet.
+	 * Creates a directory at the given path if it does not exist yet and if the
+	 * directory manager was not configured for read-only access.
 	 *
 	 * @param path
 	 * @throws IOException
@@ -204,14 +229,37 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 *             path
 	 */
 	void createDirectory(Path path) throws IOException {
-		try {
-			Files.createDirectory(path);
-		} catch (FileAlreadyExistsException e) {
-			if (Files.isDirectory(path)) {
-				// fine, then we don't need to create it
-			} else {
-				throw e;
-			}
+		if (Files.exists(path) && Files.isDirectory(path)) {
+			return;
+		}
+
+		if (this.readOnly) {
+			throw new FileNotFoundException(
+					"The requested directory \""
+							+ path.toString()
+							+ "\" does not exist and we are in read-only mode, so it cannot be created.");
+		}
+
+		Files.createDirectory(path);
+	}
+
+	/**
+	 * Throws an exception if the object is in read-only mode. The file path is
+	 * only needed for the error message. A detailed check for writability is
+	 * not performed (if there is a specific problem for this one path, e.g.,
+	 * due to missing permissions, an exception will be created in due course
+	 * anyway).
+	 *
+	 * @param writeFilePath
+	 *            the name of the file we would like to write to
+	 * @throws IOException
+	 *             if in read-only mode
+	 */
+	void ensureWritePermission(Path writeFilePath) throws IOException {
+		if (this.readOnly) {
+			throw new IOException("Cannot write to \""
+					+ writeFilePath.toString()
+					+ "\" since we are in read-only mode.");
 		}
 	}
 }

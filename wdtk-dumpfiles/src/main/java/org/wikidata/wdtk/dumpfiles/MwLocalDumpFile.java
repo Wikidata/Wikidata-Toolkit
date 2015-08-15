@@ -25,62 +25,58 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
-import org.wikidata.wdtk.util.DirectoryManagerImpl;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /**
- * Class for representing dump files that has been previously downloaded and
- * should be processed locally.
- * 
- * @author Markus Damm
+ * Class for representing dump files that are found at arbitrary (local) file
+ * paths. The meta-data for the dump file (content type, time stamp, etc.) can
+ * be set explicitly, or be guessed from the file name (to the extent possible).
  *
+ * @author Markus Damm
+ * @author Markus Kroetzsch
  */
 public class MwLocalDumpFile implements MwDumpFile {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(DumpProcessingController.class);
+	static final Logger logger = LoggerFactory.getLogger(MwLocalDumpFile.class);
 
 	/**
-	 * DateStamp when the dump file was created. If there is no special
-	 * dateStamp given in the Constructor, it is set to "YYYYMMDD"
+	 * Date stamp when the dump file was created. If there is no date stamp
+	 * given or found, it is set to "YYYYMMDD"
 	 */
-	protected final String dateStamp;
+	final String dateStamp;
 	/**
 	 * Project name of the dump file
 	 */
-	protected final String projectName;
+	final String projectName;
 	/**
 	 * Name of the dump file in the file system
 	 */
-	protected String dumpFileName;
-	/**
-	 * Path of the dump file presented as Path.
-	 */
-	protected final Path dumpFilePath;
-
-	/**
-	 * DirectoryManager for this local dumpfile
-	 */
-	DirectoryManager localDumpfileDirectoryManager;
-
+	final String dumpFileName;
 	/**
 	 * Type of this dumpfile
 	 */
-	DumpContentType dumpContentType;
+	final DumpContentType dumpContentType;
 
 	/**
-	 * Stores whether this object is already prepared or not
+	 * DirectoryManager for accessing the dumpfile
 	 */
-	boolean isPrepared;
+	DirectoryManager directoryManager;
+
+	/**
+	 * True if the given file is available (exists).
+	 */
+	final boolean isAvailable;
 
 	/**
 	 * Hash map defining the compression type of each type of dump.
@@ -103,72 +99,72 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 * Constructor. The DumpContentType will be inferred by the name of the
 	 * file, if possible. If it is not possible, it will be set to JSON by
 	 * default.
-	 * 
+	 *
 	 * @param filepath
-	 *                Path to the dump file in the file system
+	 *            Path to the dump file in the file system
 	 */
 	public MwLocalDumpFile(String filepath) {
-		this(filepath, null);
+		this(filepath, null, null, null);
 	}
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param filepath
-	 *                Path to the dump file in the file system
+	 *
+	 * @param filePath
+	 *            Path to the dump file in the file system
 	 * @param dumpContentType
-	 *                DumpContentType of the dump file
-	 */
-	public MwLocalDumpFile(String filepath, DumpContentType dumpContentType) {
-		this.dumpContentType = dumpContentType;
-		this.dumpFileName = "";
-		this.dumpFilePath = Paths.get(filepath);
-		this.dateStamp = "YYYYMMDD";
-		this.projectName = "LocalDumpFile";
-		this.isPrepared = false;
-	}
-
-	/**
-	 * Constructor for test cases with a MockDirectoryManager
-	 * 
-	 * @param dumpFileDirectoryManager
-	 *                the directory manager for the directory where dump is
-	 *                stored
-	 * @param dumpContentType
-	 *                the type of dump this represents
-	 * @param dumpFileName
-	 *                name of the dumpFile
+	 *            DumpContentType of the dump file, or null if not known to
+	 *            guess it from file name; this information is essential to
+	 *            invoke the correct processing code to read the dump file
 	 * @param dateStamp
-	 *                dump date in format YYYYMMDD
+	 *            dump date in format YYYYMMDD, or null if not known to guess it
+	 *            from file name; this is mainly used for logs and messages
 	 * @param projectName
-	 *                project name string
-	 * @throws IOException
-	 *                 if there was a problem finding the path
+	 *            project name string, or null to use a default string; this is
+	 *            mainly used for logs and messages
 	 */
-	MwLocalDumpFile(DirectoryManager dumpFileDirectoryManager,
-			DumpContentType dumpContentType, String dumpFileName,
-			String dateStamp, String projectName)
-			throws IOException {
-		this.dateStamp = dateStamp;
-		this.projectName = projectName;
-		this.localDumpfileDirectoryManager = dumpFileDirectoryManager;
-		this.dumpContentType = dumpContentType;
-		this.dumpFileName = dumpFileName;
-		this.dumpFilePath = Paths.get(dumpFileName);
-		this.isPrepared = false;
+	public MwLocalDumpFile(String filePath, DumpContentType dumpContentType,
+			String dateStamp, String projectName) {
+		Path dumpFilePath = Paths.get(filePath).toAbsolutePath();
+		this.dumpFileName = dumpFilePath.getFileName().toString();
+
+		try {
+			this.directoryManager = DirectoryManagerFactory
+					.createDirectoryManager(dumpFilePath.getParent(), true);
+		} catch (IOException e) {
+			this.directoryManager = null;
+			logger.error("Could not access local dump file: " + e.toString());
+		}
+
+		if (dumpContentType == null) {
+			this.dumpContentType = guessDumpContentType(this.dumpFileName);
+		} else {
+			this.dumpContentType = dumpContentType;
+		}
+
+		if (dateStamp == null) {
+			this.dateStamp = guessDumpDate(this.dumpFileName);
+		} else {
+			this.dateStamp = dateStamp;
+		}
+
+		if (projectName == null) {
+			this.projectName = "LOCAL";
+		} else {
+			this.projectName = projectName;
+		}
+
+		if (this.directoryManager != null
+				&& this.directoryManager.hasFile(this.dumpFileName)) {
+			this.isAvailable = true;
+		} else {
+			this.isAvailable = false;
+		}
 	}
 
 	@Override
 	public boolean isAvailable() {
-		if (!isPrepared) {
-			prepareDumpFile();
-		}
-		if (this.localDumpfileDirectoryManager != null
-				&& this.dumpContentType != null) {
-			return this.localDumpfileDirectoryManager
-					.hasFile(dumpFileName);
-		}
-		return false;
+		return this.isAvailable;
 	}
 
 	@Override
@@ -181,15 +177,6 @@ public class MwLocalDumpFile implements MwDumpFile {
 		return this.dateStamp;
 	}
 
-	/**
-	 * Returns the name of the dump file.
-	 * 
-	 * @return Name of the dump file.
-	 */
-	public String getDumpFileName() {
-		return this.dumpFileName;
-	}
-
 	@Override
 	public DumpContentType getDumpContentType() {
 		return this.dumpContentType;
@@ -198,92 +185,74 @@ public class MwLocalDumpFile implements MwDumpFile {
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
 		if (!isAvailable()) {
-			throw new IOException();
+			throw new IOException(
+					"Local dump file is not available for reading.");
 		}
-		return this.localDumpfileDirectoryManager
-				.getInputStreamForFile(
-						dumpFileName,
-						MwLocalDumpFile.COMPRESSION_TYPE
-								.get(dumpContentType));
+		return this.directoryManager.getInputStreamForFile(this.dumpFileName,
+				MwLocalDumpFile.COMPRESSION_TYPE.get(this.dumpContentType));
 	}
 
 	@Override
 	public BufferedReader getDumpFileReader() throws IOException {
-		if (!isAvailable()) {
-			throw new IOException();
-		}
-		return new BufferedReader(new InputStreamReader(
-				getDumpFileStream(), StandardCharsets.UTF_8));
+		return new BufferedReader(new InputStreamReader(getDumpFileStream(),
+				StandardCharsets.UTF_8));
 	}
 
 	@Override
 	public void prepareDumpFile() {
-		configureDirectoryManager();
-		inferDumpContentType();
-		isPrepared = true;
+		// nothing to do
 	}
 
 	@Override
 	public String toString() {
-		if (isAvailable()){
-			return this.projectName + "-" + getDumpContentType().toString().toLowerCase() + "-" + this.dateStamp;
-		}
-		return this.projectName + "-" + "unknown DumpContentType" + "-"
+		return this.projectName + "-"
+				+ getDumpContentType().toString().toLowerCase() + "-"
 				+ this.dateStamp;
 	}
 
 	/**
-	 * Configures the DirectoryManager. It checks whether the given path and
-	 * file exists. If the given file does not exist, the DirectoryManager
-	 * will be set to null, otherwise a corresponding DirectoryManager will
-	 * be created.
+	 * Guess the type of the given dump from its filename.
+	 *
+	 * @param fileName
+	 * @return dump type, defaulting to JSON if no type was found
 	 */
-	void configureDirectoryManager() {
-		if (this.localDumpfileDirectoryManager == null) {
-			if (Files.exists(dumpFilePath)) {
-				try {
-					this.localDumpfileDirectoryManager = new DirectoryManagerImpl(
-							dumpFilePath.getParent());
-					dumpFileName = dumpFilePath
-							.getFileName()
-							.toString();
-				} catch (IOException e) {
-					logger.error("An error occured while creating the DirectryManager.");
-				}
+	private static DumpContentType guessDumpContentType(String fileName) {
+		String lcDumpName = fileName.toLowerCase();
+		if (lcDumpName.contains(".json.gz")) {
+			return DumpContentType.JSON;
+		} else if (lcDumpName.contains(".sql.gz")) {
+			return DumpContentType.SITES;
+		} else if (lcDumpName.contains(".xml.bz2")) {
+			if (lcDumpName.contains("daily")) {
+				return DumpContentType.DAILY;
+			} else if (lcDumpName.contains("current")) {
+				return DumpContentType.CURRENT;
+			} else {
+				return DumpContentType.FULL;
 			}
+		} else {
+			logger.warn("Could not guess type of the dump file \"" + fileName
+					+ "\". Defaulting to json.gz.");
+			return DumpContentType.JSON;
 		}
 	}
 
 	/**
-	 * Tries to infer the DumpContentType by filename. If it is not
-	 * possible, the DumpContentType will be null and this dump is not
-	 * available. If the DumpContentType has already been set or inferred
-	 * before, this method will not do it again.
+	 * Guess the date of the dump from the given dump file name.
+	 *
+	 * @param fileName
+	 * @return 8-digit date stamp or YYYYMMDD if none was found
 	 */
-	void inferDumpContentType() {
-		if (this.dumpContentType == null) {
-			String lcDumpName = this.dumpFileName.toLowerCase();
-			if (lcDumpName.contains(".json.gz")) {
-				this.dumpContentType = DumpContentType.JSON;
-				return;
-			}
-			if (lcDumpName.contains(".sql.gz")) {
-				this.dumpContentType = DumpContentType.SITES;
-				return;
-			}
-			if (lcDumpName.contains(".xml.bz2")) {
-				if (lcDumpName.contains("daily")) {
-					this.dumpContentType = DumpContentType.DAILY;
-					return;
-				}
-				if (lcDumpName.contains("current")) {
-					this.dumpContentType = DumpContentType.CURRENT;
-					return;
-				}
-				this.dumpContentType = DumpContentType.FULL;
-			}
+	private static String guessDumpDate(String fileName) {
+		Pattern p = Pattern.compile("([0-9]{8})");
+		Matcher m = p.matcher(fileName);
 
+		if (m.find()) {
+			return m.group(1);
+		} else {
+			logger.info("Could not guess date of the dump file \"" + fileName
+					+ "\". Defaulting to YYYYMMDD.");
+			return "YYYYMMDD";
 		}
 	}
-
 }

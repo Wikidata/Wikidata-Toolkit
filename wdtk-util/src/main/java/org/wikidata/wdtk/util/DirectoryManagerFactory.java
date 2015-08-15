@@ -20,20 +20,20 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 
 /**
  * Static helper class for creating {@link DirectoryManager} objects.
- * 
+ *
  * @author Markus Kroetzsch
  *
  */
 public class DirectoryManagerFactory {
 
 	/**
-	 * The class that will be used for accessing directories. Package-private so
-	 * that it can be overwritten in tests in order to mock file access.
+	 * The class that will be used for accessing directories.
 	 */
 	static Class<? extends DirectoryManager> dmClass = DirectoryManagerImpl.class;
 
@@ -55,15 +55,29 @@ public class DirectoryManagerFactory {
 	 *
 	 * @param path
 	 *            the directory that the directory manager points to
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @return the directory manager
+	 * @throws IOException
+	 *             if there was an IO error constructing the directory manager
 	 */
-	public static DirectoryManager createDirectoryManager(Path path) {
+	public static DirectoryManager createDirectoryManager(Path path,
+			boolean readOnly) throws IOException {
 		try {
-			return dmClass.getConstructor(Path.class).newInstance(path);
+			return dmClass.getConstructor(Path.class, Boolean.class)
+					.newInstance(path, readOnly);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+				| IllegalArgumentException | NoSuchMethodException
+				| SecurityException e) {
 			throw new RuntimeException(e.toString(), e);
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof IOException) {
+				throw (IOException) e.getTargetException();
+			} else {
+				throw new RuntimeException(e.getTargetException().toString(),
+						e.getTargetException());
+			}
 		}
 	}
 
@@ -72,15 +86,30 @@ public class DirectoryManagerFactory {
 	 *
 	 * @param directory
 	 *            the directory that the directory manager points to
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @return the directory manager
+	 * @throws IOException
+	 *             if there was an IO error constructing the directory manager
 	 */
-	public static DirectoryManager createDirectoryManager(String directory) {
+	public static DirectoryManager createDirectoryManager(String directory,
+			boolean readOnly) throws IOException {
 		try {
-			return dmClass.getConstructor(String.class).newInstance(directory);
+			return dmClass.getConstructor(String.class, Boolean.class)
+					.newInstance(directory, readOnly);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+				| IllegalArgumentException | NoSuchMethodException
+				| SecurityException e) {
 			throw new RuntimeException(e.toString(), e);
+		} catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof IOException) {
+				throw (IOException) e.getTargetException();
+			} else {
+				throw new RuntimeException(e.getTargetException().toString(),
+						e.getTargetException());
+			}
 		}
 	}
+
 }
