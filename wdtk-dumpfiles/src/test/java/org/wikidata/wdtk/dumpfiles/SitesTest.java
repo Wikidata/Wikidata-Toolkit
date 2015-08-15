@@ -31,6 +31,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
@@ -75,14 +76,22 @@ public class SitesTest {
 
 		Sites sites = this.dpc.getSitesInformation();
 
-		assertEquals(sites.getLanguageCode("enwikivoyage"), "en");
-		assertEquals(sites.getSiteLinkUrl(siteLink),
-				"http://de.wikipedia.org/wiki/Douglas_Adams");
+		assertEquals("en", sites.getLanguageCode("enwikivoyage"));
+		// Test sites with protocol-relative URLs:
+		assertEquals(SitesImpl.DEFAULT_PROTOCOL_PREFIX
+				+ "//de.wikipedia.org/wiki/Douglas_Adams",
+				sites.getSiteLinkUrl(siteLink));
 		assertEquals(
-				sites.getPageUrl("arwiki", "دوغلاس_آدمز"),
-				"http://ar.wikipedia.org/wiki/%D8%AF%D9%88%D8%BA%D9%84%D8%A7%D8%B3_%D8%A2%D8%AF%D9%85%D8%B2");
-		assertEquals(sites.getFileUrl("enwiki", "api.php"),
-				"http://en.wikipedia.org/w/api.php");
+				SitesImpl.DEFAULT_PROTOCOL_PREFIX
+						+ "//ar.wikipedia.org/wiki/%D8%AF%D9%88%D8%BA%D9%84%D8%A7%D8%B3_%D8%A2%D8%AF%D9%85%D8%B2",
+				sites.getPageUrl("arwiki", "دوغلاس_آدمز"));
+		assertEquals(SitesImpl.DEFAULT_PROTOCOL_PREFIX
+				+ "//en.wikipedia.org/w/api.php",
+				sites.getFileUrl("enwiki", "api.php"));
+
+		// Site with explicit http URL:
+		assertEquals("http://aa.wikipedia.org/wiki/Test",
+				sites.getPageUrl("aawiki", "Test"));
 
 	}
 

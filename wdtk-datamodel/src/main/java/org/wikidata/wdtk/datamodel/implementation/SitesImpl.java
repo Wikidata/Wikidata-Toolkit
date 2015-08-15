@@ -32,11 +32,24 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
  * Implementation of the {@link Sites} interface that allows sites to be
  * registered. Objects of this type are not immutable, since they are not data
  * objects, but the {@link Sites} interface only supports read access.
+ * <p>
+ * This object supports protocol-relative URLs by adding the default protocol
+ * {@link SitesImpl#DEFAULT_PROTOCOL_PREFIX} for these cases.
  *
  * @author Markus Kroetzsch
  *
  */
 public class SitesImpl implements Sites {
+
+	/**
+	 * MediaWiki supports relative URLs in site configurations, which do not
+	 * start with "http://" or "https://", but with "//". The intended usage is
+	 * that generated links to this site will use either http or https depending
+	 * on the access method used to call the page. In Java, we do not have any
+	 * context, and we therefore define a default protocol to be used in such
+	 * cases.
+	 */
+	public static String DEFAULT_PROTOCOL_PREFIX = "https:";
 
 	/**
 	 * Simple record for holding information about a site.
@@ -69,6 +82,9 @@ public class SitesImpl implements Sites {
 			this.group = group;
 			this.languageCode = languageCode;
 			this.siteType = siteType;
+
+			filePath = addProtocolPrefix(filePath);
+			pagePath = addProtocolPrefix(pagePath);
 
 			int iFileName = filePath.indexOf("$1");
 			this.filePathPre = filePath.substring(0, iFileName);
@@ -120,6 +136,23 @@ public class SitesImpl implements Sites {
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(
 						"Your JRE does not support UTF-8 encoding. Srsly?!", e);
+			}
+		}
+
+		/**
+		 * Find the default prefix that should be used for protocol-relative
+		 * URLs. The prefix {@link SitesImpl#DEFAULT_PROTOCOL_PREFIX} is added
+		 * to URLs that do not have a protocol yet.
+		 *
+		 * @param urlPrefix
+		 *            the beginning of the URL
+		 * @return urlPrefix extended with default protocol if needed
+		 */
+		String addProtocolPrefix(String urlPrefix) {
+			if ("//".equals(urlPrefix.substring(0, 2))) {
+				return DEFAULT_PROTOCOL_PREFIX + urlPrefix;
+			} else {
+				return urlPrefix;
 			}
 		}
 	}
