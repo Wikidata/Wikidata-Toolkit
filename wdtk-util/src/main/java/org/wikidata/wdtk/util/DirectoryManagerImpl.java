@@ -33,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,23 +59,6 @@ public class DirectoryManagerImpl implements DirectoryManager {
 	 * changing to a location that does not exist.
 	 */
 	final boolean readOnly;
-
-	/**
-	 * Constructor
-	 *
-	 * @param baseDirectory
-	 *            the directory where the file manager should point initially;
-	 *            will be created if not existing
-	 * @param readOnly
-	 *            if false, the directory manager will attempt to create
-	 *            directories when changing to a location that does not exist
-	 * @throws IOException
-	 *             if there was a problem creating the directory
-	 */
-	public DirectoryManagerImpl(String baseDirectory, Boolean readOnly)
-			throws IOException {
-		this(Paths.get(baseDirectory), readOnly);
-	}
 
 	/**
 	 * Constructor
@@ -190,19 +172,36 @@ public class DirectoryManagerImpl implements DirectoryManager {
 
 		InputStream fileInputStream = Files.newInputStream(filePath,
 				StandardOpenOption.READ);
+
+		return getCompressorInputStream(fileInputStream, compressionType);
+	}
+
+	/**
+	 * Returns an input stream that applies the required decompression to the
+	 * given input stream.
+	 *
+	 * @param inputStream
+	 *            the input stream with the (possibly compressed) data
+	 * @param compressionType
+	 *            the kind of compression
+	 * @return an input stream with decompressed data
+	 * @throws IOException
+	 *             if there was a problem creating the decompression streams
+	 */
+	protected InputStream getCompressorInputStream(InputStream inputStream,
+			CompressionType compressionType) throws IOException {
 		switch (compressionType) {
 		case NONE:
-			return fileInputStream;
+			return inputStream;
 		case GZIP:
-			return new GZIPInputStream(fileInputStream);
+			return new GZIPInputStream(inputStream);
 		case BZ2:
 			return new BZip2CompressorInputStream(new BufferedInputStream(
-					fileInputStream));
+					inputStream));
 		default:
 			throw new IllegalArgumentException("Unsupported compression type: "
 					+ compressionType);
 		}
-
 	}
 
 	@Override

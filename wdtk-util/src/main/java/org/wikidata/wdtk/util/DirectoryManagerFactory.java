@@ -23,6 +23,7 @@ package org.wikidata.wdtk.util;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Static helper class for creating {@link DirectoryManager} objects.
@@ -95,21 +96,7 @@ public class DirectoryManagerFactory {
 	 */
 	public static DirectoryManager createDirectoryManager(String directory,
 			boolean readOnly) throws IOException {
-		try {
-			return dmClass.getConstructor(String.class, Boolean.class)
-					.newInstance(directory, readOnly);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | NoSuchMethodException
-				| SecurityException e) {
-			throw new RuntimeException(e.toString(), e);
-		} catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof IOException) {
-				throw (IOException) e.getTargetException();
-			} else {
-				throw new RuntimeException(e.getTargetException().toString(),
-						e.getTargetException());
-			}
-		}
+		return createDirectoryManager(Paths.get(directory), readOnly);
 	}
 
 }
