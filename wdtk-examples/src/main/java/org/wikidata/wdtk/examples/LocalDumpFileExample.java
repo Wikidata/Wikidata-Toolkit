@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
@@ -53,7 +54,21 @@ public class LocalDumpFileExample {
 		dumpProcessingController.registerEntityDocumentProcessor(
 				entityTimerProcessor, null, true);
 
+		// Select local file (meta-data will be guessed):
+		System.out.println();
+		System.out
+				.println("Processing a local dump file giving only its location");
+		System.out
+				.println("(meta-data like the date is guessed from the file name):");
 		MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(DUMP_FILE);
+		dumpProcessingController.processDump(mwDumpFile);
+
+		// Select local file and set meta-data:
+		System.out.println();
+		System.out
+				.println("Processing a local dump file with all meta-data set:");
+		mwDumpFile = new MwLocalDumpFile(DUMP_FILE, DumpContentType.JSON,
+				"20150815", "wikidatawiki");
 		dumpProcessingController.processDump(mwDumpFile);
 
 		entityTimerProcessor.close();
