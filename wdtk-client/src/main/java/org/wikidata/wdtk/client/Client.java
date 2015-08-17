@@ -1,5 +1,25 @@
 package org.wikidata.wdtk.client;
 
+/*
+ * #%L
+ * Wikidata Toolkit Command-line Tool
+ * %%
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,29 +41,9 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
-/*
- * #%L
- * Wikidata Toolkit Examples
- * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 /**
  * This class provides a Java command line client to process dump files.
- * 
+ *
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -67,7 +67,7 @@ public class Client {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param args
 	 *            command line arguments to configure the conversion
 	 * @throws ParseException
@@ -99,15 +99,15 @@ public class Client {
 		this.dumpProcessingController.setOfflineMode(this.clientConfiguration
 				.getOfflineMode());
 
-		if (this.clientConfiguration.getDumpLocation() != null) {
+		if (this.clientConfiguration.getDumpDirectoryLocation() != null) {
 			try {
 				this.dumpProcessingController
 						.setDownloadDirectory(this.clientConfiguration
-								.getDumpLocation());
+								.getDumpDirectoryLocation());
 			} catch (IOException e) {
 				logger.error("Could not set download directory to "
-						+ this.clientConfiguration.getDumpLocation() + ": "
-						+ e.getMessage());
+						+ this.clientConfiguration.getDumpDirectoryLocation()
+						+ ": " + e.getMessage());
 				logger.error("Aborting");
 				return;
 			}
@@ -120,8 +120,18 @@ public class Client {
 		dumpProcessingController.setPropertyFilter(this.clientConfiguration
 				.getFilterProperties());
 
-		MwDumpFile dumpFile = dumpProcessingController
-				.getMostRecentDump(DumpContentType.JSON);
+		MwDumpFile dumpFile = this.clientConfiguration.getLocalDumpFile();
+
+		if (dumpFile == null) {
+			dumpFile = dumpProcessingController
+					.getMostRecentDump(DumpContentType.JSON);
+		} else {
+			if (!dumpFile.isAvailable()) {
+				logger.error("Dump file not found or not readable: "
+						+ dumpFile.toString());
+				return;
+			}
+		}
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
@@ -159,6 +169,7 @@ public class Client {
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
+
 		try {
 			writeReport();
 		} catch (IOException e) {
@@ -222,14 +233,14 @@ public class Client {
 	 * Writes a report file including the results of the
 	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
 	 * filename specified the reports will be logged.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	void writeReport() throws IOException {
 		StringBuilder builder = new StringBuilder();
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
-			if (this.clientConfiguration.getReportFilename() != null) {
+			if (this.clientConfiguration.getReportFileName() != null) {
 				builder.append(action.getActionName() + ": ");
 				builder.append(action.getReport());
 				builder.append(System.getProperty("line.separator"));
@@ -237,16 +248,16 @@ public class Client {
 				logger.info(action.getActionName() + ": " + action.getReport());
 			}
 		}
-		if (this.clientConfiguration.getReportFilename() != null) {
+		if (this.clientConfiguration.getReportFileName() != null) {
 			Path outputDirectory = Paths.get(
-					this.clientConfiguration.getReportFilename()).getParent();
+					this.clientConfiguration.getReportFileName()).getParent();
 			if (outputDirectory == null) {
 				outputDirectory = Paths.get(".");
 			}
 			DirectoryManager dm = DirectoryManagerFactory
-					.createDirectoryManager(outputDirectory);
+					.createDirectoryManager(outputDirectory, false);
 			OutputStream out = dm.getOutputStreamForFile(Paths
-					.get(this.clientConfiguration.getReportFilename())
+					.get(this.clientConfiguration.getReportFileName())
 					.getFileName().toString());
 			out.write(builder.toString().getBytes(StandardCharsets.UTF_8));
 			out.close();
@@ -267,7 +278,7 @@ public class Client {
 
 	/**
 	 * Launches the client with the specified parameters.
-	 * 
+	 *
 	 * @param args
 	 *            command line parameters
 	 * @throws ParseException

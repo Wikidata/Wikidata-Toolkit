@@ -140,8 +140,8 @@ public class ClientTest {
 	@Test
 	public void testSetDumpsDirectoryException() throws ParseException,
 			IOException {
-		Mockito.doThrow(new IOException()).when(mockDpc)
-				.setDownloadDirectory(Mockito.anyString());
+		Mockito.doThrow(new IOException("Mock exception for testing."))
+				.when(mockDpc).setDownloadDirectory(Mockito.anyString());
 
 		String[] args = new String[] { "-a", "rdf", "--rdftasks",
 				"items,labels", "--dumps", "/tmp/" };
@@ -200,5 +200,15 @@ public class ClientTest {
 						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf"
 								+ System.lineSeparator()));
 
+	}
+
+	@Test
+	public void testNonExistingLocalDump() {
+		String[] args = { "-f", "./asfjl.json" };
+		Client client = new Client(mockDpc, args);
+		client.performActions();
+
+		Mockito.verify(mockDpc, Mockito.never()).processDump(
+				Mockito.<MwDumpFile> any());
 	}
 }

@@ -1,5 +1,25 @@
 package org.wikidata.wdtk.client;
 
+/*
+ * #%L
+ * Wikidata Toolkit Command-line Tool
+ * %%
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -20,33 +40,13 @@ import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
-/*
- * #%L
- * Wikidata Toolkit Examples
- * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 /**
  * Abstract implementation of {@link DumpProcessingAction} that represents
  * actions which generate outputs (in the form of files). It supports options
  * {@link #OPTION_DESTINATION}, {@link #OPTION_COMPRESSION}, and
  * {@link #OPTION_USE_STDOUT}. Moreover, it provides some static helper
  * functions for opening files for writing.
- * 
+ *
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -82,7 +82,7 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Output streams that were created by this class. If close is called, it
 	 * will close all of them properly.
-	 * 
+	 *
 	 */
 	protected Set<Closeable> outputStreams = new HashSet<>();
 
@@ -93,7 +93,7 @@ public abstract class DumpProcessingOutputAction implements
 
 	/**
 	 * The {@link Sites} object if provided.
-	 * 
+	 *
 	 * @see #needsSites()
 	 */
 	protected Sites sites;
@@ -196,7 +196,7 @@ public abstract class DumpProcessingOutputAction implements
 	 * caller and should be closed later. Neverhteless, the {@link #close()}
 	 * method of this class must also be called, since it may free additional
 	 * resources created.
-	 * 
+	 *
 	 * @param useStdOut
 	 *            if true, {@link System#out} is returned and the other
 	 *            parameters are ignored
@@ -207,7 +207,7 @@ public abstract class DumpProcessingOutputAction implements
 	 *            a string that refers to a type of output compression or the
 	 *            empty string (no compression); a suitable file extension will
 	 *            be added to the output file
-	 * 
+	 *
 	 * @return compressing {@link OutputStream}
 	 * @throws IOException
 	 *             if there were problems opening the required streams
@@ -227,8 +227,8 @@ public abstract class DumpProcessingOutputAction implements
 			outputDirectory = Paths.get(".");
 		}
 
-		DirectoryManager dm = DirectoryManagerFactory
-				.createDirectoryManager(outputDirectory);
+		DirectoryManager dm = DirectoryManagerFactory.createDirectoryManager(
+				outputDirectory, false);
 		OutputStream out = dm.getOutputStreamForFile(Paths.get(filePath)
 				.getFileName().toString());
 
@@ -256,9 +256,9 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Simple interface for a Runnable that can be stopped gracefully by calling
 	 * a method {@link FinishableRunnable#finish()}.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	protected interface FinishableRunnable extends Runnable {
 
@@ -277,7 +277,7 @@ public abstract class DumpProcessingOutputAction implements
 	 * This code is inspired by
 	 * http://stackoverflow.com/questions/12532073/gzipoutputstream
 	 * -that-does-its-compression-in-a-separate-thread
-	 * 
+	 *
 	 * @param outputStream
 	 *            the stream to write to in the thread
 	 * @return a new stream that data should be written to
@@ -341,7 +341,7 @@ public abstract class DumpProcessingOutputAction implements
 	/**
 	 * Closes a Closeable and swallows any exceptions that might occur in the
 	 * process.
-	 * 
+	 *
 	 * @param closeable
 	 */
 	private static void close(Closeable closeable) {

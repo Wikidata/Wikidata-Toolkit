@@ -48,7 +48,7 @@ public class SitesTest {
 	@Before
 	public void setUp() throws IOException {
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
-		this.dm = new MockDirectoryManager(this.dmPath);
+		this.dm = new MockDirectoryManager(this.dmPath, true, true);
 
 		this.dpc = new DumpProcessingController("wikidatawiki");
 		this.dpc.downloadDirectoryManager = this.dm;
@@ -60,6 +60,8 @@ public class SitesTest {
 				"wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(DumpContentType.SITES
 				.toString().toLowerCase() + "-" + "20140420");
+		dm.setDirectory(dumpFilePath);
+		dm.setDirectory(thisDumpPath);
 
 		URL resourceUrl = this.getClass().getResource(
 				"/wikidatawiki-20140420-sites.sql");

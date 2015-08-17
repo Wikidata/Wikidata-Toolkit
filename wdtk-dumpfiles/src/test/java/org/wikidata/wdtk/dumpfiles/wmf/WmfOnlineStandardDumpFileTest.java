@@ -42,7 +42,8 @@ public class WmfOnlineStandardDumpFileTest {
 
 	@Before
 	public void setUp() throws IOException {
-		dm = new MockDirectoryManager(Paths.get(System.getProperty("user.dir")));
+		dm = new MockDirectoryManager(
+				Paths.get(System.getProperty("user.dir")), true, false);
 
 		wrf = new MockWebResourceFetcher();
 	}
