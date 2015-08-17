@@ -39,6 +39,35 @@ import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 public class WikibaseDataFetcherTest {
 
 	@Test
+	public void testWbGetEntitiesSplitted() throws IOException{
+		List<String> entityIds = Arrays
+				.asList("Q6", "Q42", "P31", "Q1");
+
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(wdf
+				.getWbGetEntitiesUrl(entityIds.subList(0, 3)),
+				"/wbgetentities-Q6-Q42-P31.json",
+				this.getClass());
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(Arrays.asList("Q1")),
+				"/wbgetentities-Q1.json", this.getClass());
+
+		wdf.webResourceFetcher = wrf;
+		wdf.maxListSize = 3;
+
+		Map<String, EntityDocument> results = wdf
+				.getEntityDocuments(entityIds);
+
+		assertEquals(3, results.size());
+		assertFalse(results.containsKey("Q6"));
+		assertTrue(results.containsKey("Q1"));
+		assertTrue(results.containsKey("P31"));
+		assertTrue(results.containsKey("Q42"));
+	}
+	
+	@Test
 	public void testWbGetEntities() throws IOException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
 
@@ -211,6 +240,39 @@ public class WikibaseDataFetcherTest {
 				"1234567890");
 
 		assertEquals(null, result);
+	}
+
+	@Test
+	public void testGetEntitiesTitleSplitted() throws IOException {
+		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
+
+		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(
+						"enwiki",
+						Collections.<String> singletonList("Douglas Adams")),
+				"/wbgetentities-Douglas-Adams.json", this
+						.getClass());
+		wrf.setWebResourceContentsFromResource(
+				wdf.getWbGetEntitiesUrl(
+						"enwiki",
+						Collections.<String> singletonList("Oliver Kahn")),
+				"/wbgetentities-Oliver-Kahn.json", this
+						.getClass());
+
+		wdf.webResourceFetcher = wrf;
+		wdf.maxListSize = 1;
+
+		Map<String, EntityDocument> result = wdf
+				.getEntityDocumentsByTitle("enwiki",
+						"Oliver Kahn", "Douglas Adams");
+
+		assertEquals(2, result.keySet().size());
+		assertEquals("Q42", result.get("Douglas Adams").getEntityId()
+				.getId());
+		assertEquals("Q131261", result.get("Oliver Kahn").getEntityId()
+				.getId());
+
 	}
 
 	@Test

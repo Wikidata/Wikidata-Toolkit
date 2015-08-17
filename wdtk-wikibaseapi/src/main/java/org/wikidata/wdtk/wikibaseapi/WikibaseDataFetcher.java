@@ -23,6 +23,7 @@ package org.wikidata.wdtk.wikibaseapi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,6 +87,12 @@ public class WikibaseDataFetcher {
 	 * Filter that is used to restrict API requests.
 	 */
 	private final DocumentDataFilter filter = new DocumentDataFilter();
+
+	/**
+	 * Maximal value for the size of a list that can be processed by the
+	 * Wikibase API
+	 */
+	int maxListSize = 50;
 
 	/**
 	 * Creates an object to fetch data from wikidata.org.
@@ -166,9 +173,27 @@ public class WikibaseDataFetcher {
 	 *         were retrieved
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
-		String url = getWbGetEntitiesUrl(entityIds);
-		return getStringEntityDocumentMap(entityIds.size(), url, null);
+		Map<String, EntityDocument> result = new HashMap<>();
+		List<String> unfixEntitiyIds = new ArrayList<>();
+		unfixEntitiyIds.addAll(entityIds);
+		boolean moreItems = !unfixEntitiyIds.isEmpty();
+		while (moreItems) {
+			List<String> subListOfEntityIds;
+			if (unfixEntitiyIds.size() <= maxListSize) {
+				subListOfEntityIds = unfixEntitiyIds;
+				moreItems = false;
+			} else {
+				subListOfEntityIds = unfixEntitiyIds.subList(0,
+						maxListSize);
+			}
+			String url = getWbGetEntitiesUrl(subListOfEntityIds);
+			result.putAll(getStringEntityDocumentMap(
+					subListOfEntityIds.size(), url, null));
+			subListOfEntityIds.clear();
+		}
+		return result;
 	}
+
 
 	/**
 	 * Fetches the document for the entity that has a page of the given title on
@@ -228,9 +253,29 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
-		String url = getWbGetEntitiesUrl(siteKey, titles);
-		return getStringEntityDocumentMap(titles.size(), url, siteKey);
+		List<String> unfixedTitles = new ArrayList<String>();
+		unfixedTitles.addAll(titles);
+		Map<String, EntityDocument> result = new HashMap<>();
+		boolean moreItems = true;
+		while (moreItems) {
+			List<String> subListOfTitles;
+			if (unfixedTitles.size() <= maxListSize) {
+				subListOfTitles = unfixedTitles;
+				moreItems = false;
+			} else {
+				subListOfTitles = unfixedTitles
+						.subList(0, maxListSize);
+			}
+			String url = getWbGetEntitiesUrl(siteKey,
+					subListOfTitles);
+			result.putAll(getStringEntityDocumentMap(
+					subListOfTitles.size(),
+					url, siteKey));
+			subListOfTitles.clear();
+		}
+		return result;
 	}
+
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
