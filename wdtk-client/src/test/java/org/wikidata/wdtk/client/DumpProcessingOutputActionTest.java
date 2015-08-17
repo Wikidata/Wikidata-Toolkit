@@ -30,9 +30,9 @@ import org.junit.Test;
  * Test for general functionality of the abstract class
  * {@link DumpProcessingOutputActionTest}. We use
  * {@link JsonSerializationAction} as an example implementation to do the tests.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class DumpProcessingOutputActionTest {
 

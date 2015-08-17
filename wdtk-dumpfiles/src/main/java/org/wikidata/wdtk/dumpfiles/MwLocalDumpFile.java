@@ -64,6 +64,10 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 */
 	final String dumpFileName;
 	/**
+	 * Absolute path to the dump file
+	 */
+	final Path dumpFilePath;
+	/**
 	 * Type of this dumpfile
 	 */
 	final DumpContentType dumpContentType;
@@ -125,12 +129,12 @@ public class MwLocalDumpFile implements MwDumpFile {
 	 */
 	public MwLocalDumpFile(String filePath, DumpContentType dumpContentType,
 			String dateStamp, String projectName) {
-		Path dumpFilePath = Paths.get(filePath).toAbsolutePath();
-		this.dumpFileName = dumpFilePath.getFileName().toString();
+		this.dumpFilePath = Paths.get(filePath).toAbsolutePath();
+		this.dumpFileName = this.dumpFilePath.getFileName().toString();
 
 		try {
 			this.directoryManager = DirectoryManagerFactory
-					.createDirectoryManager(dumpFilePath.getParent(), true);
+					.createDirectoryManager(this.dumpFilePath.getParent(), true);
 		} catch (IOException e) {
 			this.directoryManager = null;
 			logger.error("Could not access local dump file: " + e.toString());
@@ -162,6 +166,15 @@ public class MwLocalDumpFile implements MwDumpFile {
 		}
 	}
 
+	/**
+	 * Returns the absolute path to this dump file.
+	 *
+	 * @return path
+	 */
+	public Path getPath() {
+		return this.dumpFilePath;
+	}
+
 	@Override
 	public boolean isAvailable() {
 		return this.isAvailable;
@@ -185,8 +198,9 @@ public class MwLocalDumpFile implements MwDumpFile {
 	@Override
 	public InputStream getDumpFileStream() throws IOException {
 		if (!isAvailable()) {
-			throw new IOException(
-					"Local dump file is not available for reading.");
+			throw new IOException("Local dump file \""
+					+ this.dumpFilePath.toString()
+					+ "\" is not available for reading.");
 		}
 		return this.directoryManager.getInputStreamForFile(this.dumpFileName,
 				MwLocalDumpFile.COMPRESSION_TYPE.get(this.dumpContentType));
@@ -205,9 +219,9 @@ public class MwLocalDumpFile implements MwDumpFile {
 
 	@Override
 	public String toString() {
-		return this.projectName + "-"
-				+ getDumpContentType().toString().toLowerCase() + "-"
-				+ this.dateStamp;
+		return this.dumpFilePath.toString() + " (" + this.projectName + "/"
+				+ getDumpContentType().toString().toLowerCase() + "/"
+				+ this.dateStamp + ")";
 	}
 
 	/**

@@ -73,6 +73,10 @@ public class MwLocalDumpFileTest {
 		assertEquals("wikidatawiki", df.getProjectName());
 		assertEquals(DumpContentType.SITES, df.getDumpContentType());
 		String toString = df.toString();
+
+		assertEquals(this.dmPath.resolve("testdump-20150512.json.gz"),
+				df.getPath());
+
 		assertTrue(toString.contains("20150815"));
 		assertTrue(toString.contains("wikidatawiki"));
 		assertTrue(toString.toLowerCase().contains(
