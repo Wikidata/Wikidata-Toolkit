@@ -430,19 +430,9 @@ public class ApiConnection {
 			Map<String, String> parameters) throws IOException {
 		String queryString = getQueryString(parameters);
 		URL url = new URL(this.apiBaseUrl);
-
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod(requestMethod);
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setUseCaches(false);
-		connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		connection.setRequestProperty("Content-Length",
-				String.valueOf(queryString.length()));
-		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
-				getCookieString());
 
+		setupConnection(requestMethod, queryString, connection);
 		OutputStreamWriter writer = new OutputStreamWriter(
 				connection.getOutputStream());
 		writer.write(queryString);
@@ -500,6 +490,28 @@ public class ApiConnection {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Configures an {@link HttpURLConnection} object to send requests. Takes
+	 * the request method (either "POST" or "GET") and query string.
+	 *
+	 * @param requestMethod
+	 * @param queryString
+	 * @throws IOException
+	 */
+	void setupConnection(String requestMethod, String queryString,
+			HttpURLConnection connection) throws IOException {
+		connection.setRequestMethod(requestMethod);
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		connection.setUseCaches(false);
+		connection.setRequestProperty("Content-Type",
+				"application/x-www-form-urlencoded");
+		connection.setRequestProperty("Content-Length",
+				String.valueOf(queryString.length()));
+		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
+				getCookieString());
 	}
 
 }
