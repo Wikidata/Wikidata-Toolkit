@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,6 +167,37 @@ public class ApiConnectionTest {
 						+ "Domain=.wikidata.org; Expires=Sat, 19 Sep 2015 12:00:00 GMT;  secure;  path=/; "
 						+ "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; WMF-Last-Access=18-Aug-2015; Path=/",
 				con.getCookieString());
+	}
+
+	@Test
+	public void testSetupConnection() throws IOException {
+		URL url = new URL("http://example.org/");
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		con.setupConnection("POST", "", connection);
+		assertEquals("application/x-www-form-urlencoded",
+				connection.getRequestProperty("Content-Type"));
+
+	}
+
+	@Test
+	public void testClearCookies() throws IOException {
+		con.cookies.put("Content", "some content");
+		con.clearCookies();
+		assertTrue(con.cookies.keySet().isEmpty());
+	}
+
+	@Test
+	public void testGetWikidataApiConnection() {
+		ApiConnection connection = ApiConnection.getWikidataApiConnection();
+		assertEquals("https://www.wikidata.org/w/api.php/",
+				connection.apiBaseUrl);
+	}
+
+	@Test
+	public void testGetTestWikidataApiConnection() {
+		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		assertEquals("https://test.wikidata.org/w/api.php",
+				connection.apiBaseUrl);
 	}
 
 	private List<String> testCookieList() {
