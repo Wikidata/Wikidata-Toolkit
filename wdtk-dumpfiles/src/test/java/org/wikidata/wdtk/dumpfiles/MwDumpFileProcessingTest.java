@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
@@ -39,6 +40,7 @@ import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfLocalDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 public class MwDumpFileProcessingTest {
 
@@ -95,6 +97,12 @@ public class MwDumpFileProcessingTest {
 			this.propCount++;
 		}
 
+	}
+
+	@Before
+	public void configureDirectoryManager() {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
 	}
 
 	/**
@@ -288,6 +296,11 @@ public class MwDumpFileProcessingTest {
 			throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
 		Path dumpFilePath = dmPath.resolve("dumpfiles").resolve("wikidatawiki");
+
+		dm.setDirectory(dmPath);
+		dm.setDirectory(dmPath.resolve("dumpfiles"));
+		dm.setDirectory(dumpFilePath);
+
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);
 
@@ -335,7 +348,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwDailyDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		setLocalDumpFile("20140420", DumpContentType.DAILY, dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
@@ -392,7 +405,7 @@ public class MwDumpFileProcessingTest {
 		revisionsAllProperties.add(getPropertyRevision(4));
 		revisionsAllProperties.add(getPropertyRevision(5));
 
-		assertEquals(tmrpAll.siteName, "Wikidata Toolkit Test");
+		assertEquals("Wikidata Toolkit Test", tmrpAll.siteName);
 		assertEquals(revisionsAll.size(), mwrpAllStats.getTotalRevisionCount());
 		assertEquals(revisionsAll.size(),
 				mwrpAllStats.getCurrentRevisionCount());
@@ -413,7 +426,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwRecentCurrentDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		mockLocalDumpFile("20140420", 4, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140419", 3, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140418", 2, DumpContentType.DAILY, dm);
@@ -438,7 +451,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwRecentFullDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
 		mockLocalDumpFile("20140420", 4, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140419", 3, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140418", 2, DumpContentType.DAILY, dm);
@@ -463,7 +476,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwMostRecentFullDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
 		mockLocalDumpFile("20140418", 2, DumpContentType.FULL, dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(

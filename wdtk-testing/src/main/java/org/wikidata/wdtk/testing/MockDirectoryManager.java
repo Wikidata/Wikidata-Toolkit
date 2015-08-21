@@ -30,6 +30,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,42 +68,85 @@ public class MockDirectoryManager implements DirectoryManager {
 	public static HashMap<Path, byte[]> files = new HashMap<>();
 
 	final Path directory;
+
+	/**
+	 * If true, all read methods will return objects that will throw exceptions
+	 * when trying to get any data. Used for testing exception handling.
+	 */
 	boolean returnFailingReaders;
 
 	/**
-	 * Creates a new object and clears all previously stored files.
+	 * If false, the directory manager will attempt to create directories when
+	 * changing to a location that does not exist.
+	 */
+	final boolean readOnly;
+
+	/**
+	 * Creates a new object but retains all previously stored files.
 	 *
 	 * @param directory
 	 *            initial directory that is managed
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @throws IOException
 	 */
-	public MockDirectoryManager(Path directory) throws IOException {
-
-		this(directory, true);
+	public MockDirectoryManager(Path directory, Boolean readOnly)
+			throws IOException {
+		this(directory, false, readOnly);
 	}
 
 	/**
-	 * Creates a new object and clears all previously stored if requested.
+	 * Constructor
+	 *
+	 * @param baseDirectory
+	 *            the directory where the file manager should point initially;
+	 *            will be created if not existing
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
+	 * @throws IOException
+	 *             if there was a problem creating the directory
+	 */
+	public MockDirectoryManager(String baseDirectory, Boolean readOnly)
+			throws IOException {
+		this(Paths.get(baseDirectory), readOnly);
+	}
+
+	/**
+	 * Creates a new object and clears all previously stored mock files if
+	 * requested.
 	 *
 	 * @param directory
 	 *            initial directory that is managed
 	 * @param resetFileSystem
-	 *            if true, the previously mocked files will be cleared
+	 *            if true, the previously mocked files will be cleared; in this
+	 *            case, the starting directory will be created, however (even in
+	 *            read-only mode)
+	 * @param readOnly
+	 *            if false, the directory manager will attempt to create
+	 *            directories when changing to a location that does not exist
 	 * @throws IOException
 	 */
-	public MockDirectoryManager(Path directory, boolean resetFileSystem)
-			throws IOException {
+	public MockDirectoryManager(Path directory, boolean resetFileSystem,
+			boolean readOnly) throws IOException {
 		this.directory = directory;
+		this.readOnly = readOnly;
 
 		if (resetFileSystem) {
 			files = new HashMap<>();
+			setDirectory(directory);
 		}
 
-		if (files.containsKey(directory)
-				&& !Arrays.equals(files.get(directory), DIRECTORY_MARKER)) {
-			throw new IOException("Could not create mock working directory.");
+		if (files.containsKey(directory)) {
+			if (!Arrays.equals(files.get(directory), DIRECTORY_MARKER)) {
+				throw new IOException(
+						"Could not create mock working directory.");
+			} // else: directory exists, nothing to do
+		} else {
+			ensureWritePermission(directory);
+			setDirectory(directory);
 		}
-		setDirectory(directory);
 	}
 
 	/**
@@ -129,6 +173,9 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Sets the contents of the file at the given path and creates all parent
 	 * directories in our mocked view of the file system.
+	 * <p>
+	 * This method is used for mocking and is always successful, even if the
+	 * object is in read-only mode otherwise.
 	 *
 	 * @param path
 	 * @param contents
@@ -143,6 +190,9 @@ public class MockDirectoryManager implements DirectoryManager {
 	 * directories in our mocked view of the file system. If a compression is
 	 * chosen, the file contents is the compressed version of the given
 	 * contents. Strings are encoded as UTF8.
+	 * <p>
+	 * This method is used for mocking and is always successful, even if the
+	 * object is in read-only mode otherwise.
 	 *
 	 * @param path
 	 * @param contents
@@ -162,6 +212,9 @@ public class MockDirectoryManager implements DirectoryManager {
 	/**
 	 * Create the given directory and all parent directories in our mocked view
 	 * of the file system.
+	 * <p>
+	 * This method is used for mocking and is always successful, even if the
+	 * object is in read-only mode otherwise.
 	 *
 	 * @param path
 	 * @throws IOException
@@ -174,7 +227,7 @@ public class MockDirectoryManager implements DirectoryManager {
 	public DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException {
 		MockDirectoryManager result = new MockDirectoryManager(
-				directory.resolve(subdirectoryName), false);
+				directory.resolve(subdirectoryName), false, this.readOnly);
 		result.setReturnFailingReaders(this.returnFailingReaders);
 		return result;
 	}
@@ -196,6 +249,9 @@ public class MockDirectoryManager implements DirectoryManager {
 	public long createFile(String fileName, InputStream inputStream)
 			throws IOException {
 
+		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		int nextByte = 0;
 		while ((nextByte = inputStream.read()) >= 0) {
@@ -203,22 +259,9 @@ public class MockDirectoryManager implements DirectoryManager {
 		}
 		out.close();
 
-		Path filePath = this.directory.resolve(fileName);
 		files.put(filePath, out.toByteArray());
 
 		return out.size();
-
-		// BufferedReader br = new BufferedReader(new InputStreamReader(
-		// inputStream));
-		// StringBuilder contentsBuilder = new StringBuilder();
-		// String line;
-		// while ((line = br.readLine()) != null) {
-		// contentsBuilder.append(line).append("\n");
-		// }
-		// createFile(fileName, contentsBuilder.toString());
-		//
-		// return
-		// contentsBuilder.toString().getBytes(StandardCharsets.UTF_8).length;
 	}
 
 	@Override
@@ -234,6 +277,8 @@ public class MockDirectoryManager implements DirectoryManager {
 			throw new FileAlreadyExistsException("File exists");
 		}
 		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		files.put(filePath, fileContents.getBytes(StandardCharsets.UTF_8));
 	}
 
@@ -241,6 +286,8 @@ public class MockDirectoryManager implements DirectoryManager {
 	public OutputStream getOutputStreamForFile(String fileName)
 			throws IOException {
 		Path filePath = this.directory.resolve(fileName);
+		ensureWritePermission(filePath);
+
 		return new MockOutputStream(filePath);
 	}
 
@@ -309,5 +356,25 @@ public class MockDirectoryManager implements DirectoryManager {
 	 */
 	public static byte[] getMockedFileContents(Path filePath) {
 		return files.get(filePath);
+	}
+
+	/**
+	 * Throws an exception if the object is in read-only mode. The file path is
+	 * only needed for the error message. A detailed check for writability is
+	 * not performed (if there is a specific problem for this one path, e.g.,
+	 * due to missing permissions, an exception will be created in due course
+	 * anyway).
+	 *
+	 * @param writeFilePath
+	 *            the name of the file we would like to write to
+	 * @throws IOException
+	 *             if in read-only mode
+	 */
+	void ensureWritePermission(Path writeFilePath) throws IOException {
+		if (this.readOnly) {
+			throw new IOException("Cannot write to \""
+					+ writeFilePath.toString()
+					+ "\" since we are in read-only mode.");
+		}
 	}
 }

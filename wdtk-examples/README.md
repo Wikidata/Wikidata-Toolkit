@@ -46,6 +46,11 @@ be used with any other Wikibase site as well. It is not practical to fetch all d
 in this way, but it can be very convenient to get some data directly even when processing
 a dump (since the dump can only be read in sequence).
 
+#### LocalDumpFileExample.java ####
+
+This program shows how to process a data dump that is available in a local file, rather
+than being automatically downloaded (and possibly cached) from the Wikimedia site.
+
 #### GreatestNumberProcessor.java ####
 
 This simple program looks at all values of a number property to find the item with the
