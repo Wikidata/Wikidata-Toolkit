@@ -29,22 +29,23 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
 public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
-	public TimeValueConverter(RdfWriter rdfWriter, PropertyTypes propertyTypes,
+	public TimeValueConverter(RdfWriter rdfWriter,
+			PropertyRegister PropertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, PropertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(TimeValue value, PropertyIdValue propertyIdValue,
 			boolean simple) {
 
-		String datatype = this.propertyTypes.setPropertyTypeFromTimeValue(
+		String datatype = this.propertyRegister.setPropertyTypeFromTimeValue(
 				propertyIdValue, value);
 
 		switch (datatype) {
@@ -54,7 +55,8 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 				return TimeValueConverter.getTimeLiteral(value, this.rdfWriter);
 			} else {
 				URI valueUri = this.rdfWriter.getUri(Vocabulary
-						.getTimeValueUri(value));
+						.getTimeValueUri(value,
+								this.propertyRegister.getUriPrefix()));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				addValue(value, valueUri);
 
@@ -68,7 +70,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 	/**
 	 * Write the auxiliary RDF data for encoding the given value.
-	 * 
+	 *
 	 * @param value
 	 *            the value to write
 	 * @param resource
@@ -100,7 +102,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 * 1BCE as 0000, while XML Schema, even in version 2, does not allow 0000
 	 * and interprets -0001 as 1BCE. Thus all negative years must be shifted by
 	 * 1, but we only do this if the year is precise.
-	 * 
+	 *
 	 * @param value
 	 *            the value to convert
 	 * @param rdfWriter

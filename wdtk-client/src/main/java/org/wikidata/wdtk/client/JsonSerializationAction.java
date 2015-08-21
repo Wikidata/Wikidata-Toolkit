@@ -107,6 +107,9 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 		String message = "Finished serialization of "
 				+ this.serializer.getEntityDocumentCount()
 				+ " EntityDocuments in file " + getOutputFilename();
+		if (this.compressionType != COMPRESS_NONE) {
+			message += "." + this.compressionType;
+		}
 		return message;
 	}
 

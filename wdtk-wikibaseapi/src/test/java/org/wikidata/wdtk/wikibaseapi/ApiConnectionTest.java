@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,17 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -139,6 +144,71 @@ public class ApiConnectionTest {
 		root = mapper.readTree(path.openStream());
 		assertFalse(con.parseErrorsAndWarnings(root));
 
+	}
+
+	@Test
+	public void testFillCookies() {
+		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("Set-Cookie", cookieList);
+		con.fillCookies(headerFields);
+		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
+
+	}
+
+	@Test
+	public void testGetCookieString() {
+		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("Set-Cookie", cookieList);
+		con.fillCookies(headerFields);
+		assertEquals(
+				"HttpOnly;  httponly;  Path=/; GeoIP=DE:13:Dresden:51.0500:13.7500:v4;  "
+						+ "Domain=.wikidata.org; Expires=Sat, 19 Sep 2015 12:00:00 GMT;  secure;  path=/; "
+						+ "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; WMF-Last-Access=18-Aug-2015; Path=/",
+				con.getCookieString());
+	}
+
+	@Test
+	public void testSetupConnection() throws IOException {
+		URL url = new URL("http://example.org/");
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		con.setupConnection("POST", "", connection);
+		assertEquals("application/x-www-form-urlencoded",
+				connection.getRequestProperty("Content-Type"));
+
+	}
+
+	@Test
+	public void testClearCookies() throws IOException {
+		con.cookies.put("Content", "some content");
+		con.clearCookies();
+		assertTrue(con.cookies.keySet().isEmpty());
+	}
+
+	@Test
+	public void testGetWikidataApiConnection() {
+		ApiConnection connection = ApiConnection.getWikidataApiConnection();
+		assertEquals("https://www.wikidata.org/w/api.php/",
+				connection.apiBaseUrl);
+	}
+
+	@Test
+	public void testGetTestWikidataApiConnection() {
+		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		assertEquals("https://test.wikidata.org/w/api.php",
+				connection.apiBaseUrl);
+	}
+
+	private List<String> testCookieList() {
+		List<String> cookieList = new ArrayList<String>();
+		cookieList
+				.add("WMF-Last-Access=18-Aug-2015;Path=/;HttpOnly;Expires=Sat, 19 Sep 2015 12:00:00 GMT");
+		cookieList
+				.add("GeoIP=DE:13:Dresden:51.0500:13.7500:v4; Path=/; Domain=.wikidata.org");
+		cookieList
+				.add("testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; path=/; secure; httponly");
+		return cookieList;
 	}
 
 	private String getLoginToken() throws IOException {

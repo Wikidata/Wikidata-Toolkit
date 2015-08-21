@@ -96,17 +96,21 @@ public class GetEntitiesAction {
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
-	 * the API URL.
+	 * the API.
 	 * 
 	 * @param ids
+	 *            ids of EnitityDocuments that should be retrieved
 	 * @param sites
+	 *            sitekey (e.g. !enwiki")
 	 * @param titles
-	 *            null if the map keys should be document ids; siite key (e.g.,
-	 *            "enwiki") if the map should use page titles of a linked site
-	 *            as keys
+	 *            titles recording to the sites value; acts as identifier list
+	 *            for EnitityDocuments that should be retrieved
 	 * @param props
+	 *            filter option for content types
 	 * @param languages
+	 *            filter option for languages
 	 * @param sitefilter
+	 *            filter option for sitelinks
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
 	 */

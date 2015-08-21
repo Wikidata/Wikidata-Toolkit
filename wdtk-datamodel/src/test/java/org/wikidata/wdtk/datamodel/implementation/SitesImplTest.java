@@ -39,8 +39,7 @@ public class SitesImplTest {
 				"http://en.wikipedia.org/w/$1",
 				"http://en.wikipedia.org/wiki/$1");
 		this.sites.setSiteInformation("dewiki", "wikipedia", "de", "mediawiki",
-				"http://de.wikipedia.org/w/$1",
-				"http://de.wikipedia.org/wiki/$1");
+				"//de.wikipedia.org/w/$1", "//de.wikipedia.org/wiki/$1");
 		this.sites.setSiteInformation("somesite", "group", "language",
 				"something else", "http://example.org/file/$1",
 				"http://example.org/page/$1");
@@ -50,13 +49,14 @@ public class SitesImplTest {
 	public void siteLinkIri() {
 		SiteLink sSpecialChar = new SiteLinkImpl("&", "dewiki",
 				Collections.<String> emptyList());
-		assertEquals(this.sites.getSiteLinkUrl(sSpecialChar),
-				"http://de.wikipedia.org/wiki/%26");
+		assertEquals(SitesImpl.DEFAULT_PROTOCOL_PREFIX
+				+ "//de.wikipedia.org/wiki/%26",
+				this.sites.getSiteLinkUrl(sSpecialChar));
 
 		SiteLink sSpecialChar2 = new SiteLinkImpl("Björk", "enwiki",
 				Collections.<String> emptyList());
-		assertEquals(this.sites.getSiteLinkUrl(sSpecialChar2),
-				"http://en.wikipedia.org/wiki/Bj%C3%B6rk");
+		assertEquals("http://en.wikipedia.org/wiki/Bj%C3%B6rk",
+				this.sites.getSiteLinkUrl(sSpecialChar2));
 	}
 
 	@Test

@@ -1,0 +1,5 @@
+
+<http://www.wikidata.org/entity/Q100Sstmtid> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/entity/P434v> "d735497b-25f9-4503-8fb5-f50150730c18" ;
+	<http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://musicbrainz.org/artist/d735497b-25f9-4503-8fb5-f50150730c18> ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .

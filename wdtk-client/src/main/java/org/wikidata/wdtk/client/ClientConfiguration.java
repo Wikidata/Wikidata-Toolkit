@@ -2,9 +2,9 @@ package org.wikidata.wdtk.client;
 
 /*
  * #%L
- * Wikidata Toolkit Examples
+ * Wikidata Toolkit Command-line Tool
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +46,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
  * This class handles the program arguments from the conversion command line
  * tool.
- * 
+ *
  * @author Michael Günther
  * @author Markus Kroetzsch
  */
@@ -99,6 +100,10 @@ public class ClientConfiguration {
 	 * Short command-line alternative to {@link #OPTION_CREATE_REPORT}.
 	 */
 	public static final String CMD_OPTION_CREATE_REPORT = "r";
+	/**
+	 * Short command-line alternative to {@link #OPTION_LOCAL_DUMPFILE}.
+	 */
+	public static final String CMD_OPTION_LOCAL_DUMPFILE = "i";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -171,6 +176,11 @@ public class ClientConfiguration {
 	 * specifying the tasks for RDF serialization.
 	 */
 	public static final String OPTION_OUTPUT_RDF_TYPE = "rdftasks";
+	/**
+	 * Name of the long command line option and configuration file field for
+	 * defining the path to a local dump file.
+	 */
+	public static final String OPTION_LOCAL_DUMPFILE = "input";
 
 	static final Map<String, Class<? extends DumpProcessingOutputAction>> KNOWN_ACTIONS = new HashMap<>();
 	static {
@@ -201,7 +211,12 @@ public class ClientConfiguration {
 	 * String representation of the directory where the dump files should be
 	 * sought.
 	 */
-	String dumpLocation = null;
+	String dumpDirectoryLocation = null;
+
+	/**
+	 * Location of a dump file that should be processed.
+	 */
+	String inputDumpLocation = null;
 
 	/**
 	 * String representation of the path where the final report should be
@@ -232,7 +247,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Constructs a new object for the given arguments.
-	 * 
+	 *
 	 * @param args
 	 *            command-line arguments
 	 */
@@ -242,21 +257,27 @@ public class ClientConfiguration {
 
 	/**
 	 * Returns the list of actions defined for this object.
-	 * 
+	 *
 	 * @return list of actions
 	 */
 	public List<DumpProcessingAction> getActions() {
 		return this.actions;
 	}
 
-	public String getDumpLocation() {
-		return this.dumpLocation;
+	/**
+	 * Returns the location of the directory where downloaded dump files are
+	 * stored, or null if the default is to be used.
+	 *
+	 * @return string path to dump file directory
+	 */
+	public String getDumpDirectoryLocation() {
+		return this.dumpDirectoryLocation;
 	}
 
 	/**
 	 * Returns true if all operations should be performed in offline mode,
 	 * without accessing the Internet.
-	 * 
+	 *
 	 * @return true if in offline mode
 	 */
 	public boolean getOfflineMode() {
@@ -267,7 +288,7 @@ public class ClientConfiguration {
 	 * Returns true if the application should not write anything to stdout. This
 	 * can be set explicitly or indirectly if one of the actions wants to write
 	 * to stdout.
-	 * 
+	 *
 	 * @return true if the application should not log messages to stdout
 	 */
 	public boolean isQuiet() {
@@ -277,10 +298,10 @@ public class ClientConfiguration {
 	/**
 	 * Returns the output destination where a report file should be created. If
 	 * the client should not create such a file the function will return null.
-	 * 
+	 *
 	 * @return report filename
 	 */
-	public String getReportFilename() {
+	public String getReportFileName() {
 		return this.reportFilename;
 	}
 
@@ -288,7 +309,7 @@ public class ClientConfiguration {
 	 * Returns a set of language codes that should be used as a filter, or null
 	 * if no filter is set. An empty set means that all languages should be
 	 * filtered.
-	 * 
+	 *
 	 * @return language filter
 	 */
 	public Set<String> getFilterLanguages() {
@@ -299,7 +320,7 @@ public class ClientConfiguration {
 	 * Returns a set of site keys that should be used as a filter for site
 	 * links, or null if no filter is set. An empty set means that all site
 	 * links should be filtered.
-	 * 
+	 *
 	 * @return site key filter
 	 */
 	public Set<String> getFilterSiteKeys() {
@@ -310,11 +331,36 @@ public class ClientConfiguration {
 	 * Returns a set of property ids that should be used as a filter for
 	 * statements, or null if no filter is set. An empty set means that all
 	 * statements should be filtered.
-	 * 
+	 *
 	 * @return property filter
 	 */
 	public Set<PropertyIdValue> getFilterProperties() {
 		return this.filterProperties;
+	}
+
+	/**
+	 * Returns the string path to a dump file that should be processed.
+	 *
+	 * @return string path to file
+	 */
+	public String getInputDumpLocation() {
+		return this.inputDumpLocation;
+	}
+
+	/**
+	 * Returns a local dump file that was previously downloaded and should be
+	 * locally processed, or null if no local dump file is set.
+	 * <p>
+	 * The dump file object will be created based on the current configuration.
+	 *
+	 * @return dump file that should be locally processed
+	 */
+	public MwLocalDumpFile getLocalDumpFile() {
+		if (this.inputDumpLocation != null) {
+			return new MwLocalDumpFile(this.inputDumpLocation);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -329,7 +375,7 @@ public class ClientConfiguration {
 	 * This function interprets the arguments of the main function. By doing
 	 * this it will set flags for the dump generation. See in the help text for
 	 * more specific information about the options.
-	 * 
+	 *
 	 * @param args
 	 *            array of arguments from the main function.
 	 * @return list of {@link DumpProcessingOutputAction}
@@ -379,14 +425,14 @@ public class ClientConfiguration {
 	}
 
 	/**
-	 * 
+	 *
 	 * Reads the properties defined in a configuration file. Returns a set of
 	 * configuration property blocks stored in {@link DumpProcessingAction}
 	 * objects and call
 	 * {@link ClientConfiguration#handleGlobalArguments(CommandLine)} to
 	 * interpreted the properties from the general section. The first element of
 	 * the list contains general information (about all dumps).
-	 * 
+	 *
 	 * @param path
 	 *            filename and path of the configuration file
 	 * @return the list with configurations for all output dumps
@@ -417,14 +463,15 @@ public class ClientConfiguration {
 	 * Analyses the command-line arguments which are relevant for the
 	 * serialization process in general. It fills out the class arguments with
 	 * this data.
-	 * 
+	 *
 	 * @param cmd
 	 *            {@link CommandLine} objects; contains the command line
 	 *            arguments parsed by a {@link CommandLineParser}
 	 */
 	private void handleGlobalArguments(CommandLine cmd) {
 		if (cmd.hasOption(CMD_OPTION_DUMP_LOCATION)) {
-			this.dumpLocation = cmd.getOptionValue(CMD_OPTION_DUMP_LOCATION);
+			this.dumpDirectoryLocation = cmd
+					.getOptionValue(CMD_OPTION_DUMP_LOCATION);
 		}
 
 		if (cmd.hasOption(CMD_OPTION_OFFLINE_MODE)) {
@@ -450,12 +497,16 @@ public class ClientConfiguration {
 		if (cmd.hasOption(OPTION_FILTER_PROPERTIES)) {
 			setPropertyFilters(cmd.getOptionValue(OPTION_FILTER_PROPERTIES));
 		}
+
+		if (cmd.hasOption(CMD_OPTION_LOCAL_DUMPFILE)) {
+			this.inputDumpLocation = cmd.getOptionValue(OPTION_LOCAL_DUMPFILE);
+		}
 	}
 
 	/**
 	 * Analyses the content of the general section of an ini configuration file
 	 * and fills out the class arguments with this data.
-	 * 
+	 *
 	 * @param section
 	 *            {@link Section} with name "general"
 	 */
@@ -476,7 +527,7 @@ public class ClientConfiguration {
 				this.reportFilename = section.get(key);
 				break;
 			case OPTION_DUMP_LOCATION:
-				this.dumpLocation = section.get(key);
+				this.dumpDirectoryLocation = section.get(key);
 				break;
 			case OPTION_FILTER_LANGUAGES:
 				setLanguageFilters(section.get(key));
@@ -486,6 +537,9 @@ public class ClientConfiguration {
 				break;
 			case OPTION_FILTER_PROPERTIES:
 				setPropertyFilters(section.get(key));
+				break;
+			case OPTION_LOCAL_DUMPFILE:
+				this.inputDumpLocation = section.get(key);
 				break;
 			default:
 				logger.warn("Unrecognized option: " + key);
@@ -497,7 +551,7 @@ public class ClientConfiguration {
 	 * Analyses the command-line arguments which are relevant for the specific
 	 * action that is to be executed, and returns a corresponding
 	 * {@link DumpProcessingAction} object.
-	 * 
+	 *
 	 * @param cmd
 	 *            {@link CommandLine} objects; contains the command line
 	 *            arguments parsed by a {@link CommandLineParser}
@@ -524,7 +578,7 @@ public class ClientConfiguration {
 	 * Analyses the content of a section of an ini configuration file (not the
 	 * "general" section) and fills out the class arguments of an new
 	 * {@link DumpProcessingAction} with this data.
-	 * 
+	 *
 	 * @param section
 	 *            {@link Section} with name "general"
 	 * @return {@link DumpProcessingtAction} containing the output parameters
@@ -551,7 +605,7 @@ public class ClientConfiguration {
 	/**
 	 * Checks if a newly created action wants to write output to stdout, and
 	 * logs a warning if other actions are doing the same.
-	 * 
+	 *
 	 * @param newAction
 	 *            the new action to be checked
 	 */
@@ -568,7 +622,7 @@ public class ClientConfiguration {
 	 * Creates a {@link DumpProcessingAction} object for the action of the given
 	 * name. The operation may fail if the name is not associated with any
 	 * action, or if the associated action class cannot be instantiated.
-	 * 
+	 *
 	 * @param name
 	 *            of the action
 	 * @return the {@link DumpProcessingAction} or null if creation failed
@@ -599,7 +653,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of language filters based on the given string.
-	 * 
+	 *
 	 * @param filters
 	 *            comma-separates list of language codes, or "-" to filter all
 	 *            languages
@@ -615,7 +669,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of site filters based on the given string.
-	 * 
+	 *
 	 * @param filters
 	 *            comma-separates list of site keys, or "-" to filter all site
 	 *            links
@@ -631,7 +685,7 @@ public class ClientConfiguration {
 
 	/**
 	 * Sets the set of property filters based on the given string.
-	 * 
+	 *
 	 * @param filters
 	 *            comma-separates list of property ids, or "-" to filter all
 	 *            statements
@@ -667,8 +721,11 @@ public class ClientConfiguration {
 				.withLongOpt(OPTION_OUTPUT_DESTINATION)
 				.create(CMD_OPTION_OUTPUT_DESTINATION);
 
-		Option dumplocation = OptionBuilder.hasArg().withArgName("path")
-				.withDescription("set the location of the dump files")
+		Option dumplocation = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"set the directory where downloaded dump files are stored")
 				.withLongOpt(OPTION_DUMP_LOCATION)
 				.create(CMD_OPTION_DUMP_LOCATION);
 
@@ -722,9 +779,17 @@ public class ClientConfiguration {
 				.hasArg()
 				.withArgName("path")
 				.withDescription(
-						"specifies a path to print a final report after dump generations.")
+						"specifies a path to print a final report after dump generations")
 				.withLongOpt(OPTION_CREATE_REPORT)
 				.create(CMD_OPTION_CREATE_REPORT);
+
+		Option localDump = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"select a dump file for processing; if omitted, then the latest dump from Wikidata will be used (and possibly downloaded)")
+				.withLongOpt(OPTION_LOCAL_DUMPFILE)
+				.create(CMD_OPTION_LOCAL_DUMPFILE);
 
 		options.addOption(config);
 		options.addOption(action);
@@ -740,12 +805,10 @@ public class ClientConfiguration {
 		options.addOption(filterProperties);
 		options.addOption(compressionExtention);
 		options.addOption(report);
+		options.addOption(localDump);
 		options.addOption(rdfdump);
-		options.addOption(
-				CMD_OPTION_OFFLINE_MODE,
-				OPTION_OFFLINE_MODE,
-				false,
-				"execute all operations in offline mode, using only previously downloaded dumps");
+		options.addOption(CMD_OPTION_OFFLINE_MODE, OPTION_OFFLINE_MODE, false,
+				"execute all operations in offline mode, especially do not download new dumps");
 		options.addOption(CMD_OPTION_HELP, OPTION_HELP, false,
 				"print this message");
 

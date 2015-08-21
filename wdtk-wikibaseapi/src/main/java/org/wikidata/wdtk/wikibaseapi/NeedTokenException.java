@@ -21,11 +21,11 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This Exception could be caused by an login action if there are problems with
+ * This exception could be caused by a login action if there are problems with
  * the login token or the session id.
- * 
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class NeedTokenException extends LoginFailedException {
 

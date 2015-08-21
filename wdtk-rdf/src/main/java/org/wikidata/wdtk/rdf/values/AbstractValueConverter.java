@@ -24,23 +24,24 @@ import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public abstract class AbstractValueConverter<V extends org.wikidata.wdtk.datamodel.interfaces.Value>
 		implements ValueConverter<V> {
 
-	final PropertyTypes propertyTypes;
+	final PropertyRegister propertyRegister;
 	final RdfWriter rdfWriter;
 	final OwlDeclarationBuffer rdfConversionBuffer;
 
 	static final Logger logger = LoggerFactory.getLogger(ValueConverter.class);
 
 	public AbstractValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes, OwlDeclarationBuffer rdfConversionBuffer) {
+			PropertyRegister propertyRegister,
+			OwlDeclarationBuffer rdfConversionBuffer) {
 		this.rdfWriter = rdfWriter;
-		this.propertyTypes = propertyTypes;
+		this.propertyRegister = propertyRegister;
 		this.rdfConversionBuffer = rdfConversionBuffer;
 	}
 

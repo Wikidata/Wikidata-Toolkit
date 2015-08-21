@@ -21,20 +21,21 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This Exception is thrown when a login was not successful.
- * @author Michael Guenther
+ * This exception is thrown when a login was not successful.
  * 
+ * @author Michael Guenther
+ *
  */
 public class LoginFailedException extends Exception {
 
-	public LoginFailedException(){
+	public LoginFailedException() {
 		super();
 	}
-	
-	public LoginFailedException(String message){
+
+	public LoginFailedException(String message) {
 		super(message);
 	}
-	
+
 	private static final long serialVersionUID = -211632440125669875L;
 
 }
