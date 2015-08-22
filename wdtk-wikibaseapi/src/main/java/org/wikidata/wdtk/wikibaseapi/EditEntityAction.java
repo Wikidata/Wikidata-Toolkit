@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,27 +27,26 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Java implementation for wbeditentities actions.
- * 
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class EditEntityAction {
 
 	/*
 	 * TODO:
-	 * 
-	 * multiple usage of edit tokens? -> store edit token in this class?
-	 * 
+	 *
 	 * Should getEditToken throw IOExceptions or catch them?
-	 * 
-	 * Separate Class for specific edit use cases like WikibaseDataFetcher?
-	 * 
+	 *
 	 * replace NeedTokenException through separate exception to distinguish
 	 * login from edit tokens?
 	 */
@@ -70,11 +69,13 @@ public class EditEntityAction {
 	 */
 	final ObjectMapper mapper = new ObjectMapper();
 
+	String editToken = "";
+
 	/**
 	 * Creates an object to modify data on a Wikibase site. The API is used to
 	 * request the changes. The site URI is necessary since it is not contained
 	 * in the data retrieved from the API.
-	 * 
+	 *
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
 	 * @param siteUri
@@ -87,9 +88,9 @@ public class EditEntityAction {
 		this.siteIri = siteUri;
 	}
 
-	public JsonNode wbeditentity(String id, String site, String title,
-			String data, String wbNew, String token, boolean bot, boolean clear)
-			throws NeedTokenException {
+	public EntityDocument wbeditentity(String id, String site, String title,
+			String data, String wbNew, boolean bot, boolean clear)
+			throws NeedTokenException, NoLoginException, IOException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("action", "wbeditentity");
 		if (id != null) {
@@ -114,13 +115,17 @@ public class EditEntityAction {
 		if (clear == true) {
 			parameters.put("clear", "");
 		}
-		if ((token == null) || (token == "")) {
-			throw new NeedTokenException(
-					"wbeditentities function needs a token parameter.");
+		if ((this.editToken == null) || (this.editToken.equals(""))) {
+			requestEditToken();
+			if ((this.editToken == null) || (this.editToken.equals(""))) {
+				throw new NeedTokenException(
+						"wbeditentities function needs a token parameter.");
+			} else {
+				parameters.put("token", this.editToken);
+			}
 		} else {
-			parameters.put("token", token);
+			parameters.put("token", this.editToken);
 		}
-
 		parameters.put("format", "json");
 		InputStream response;
 		try {
@@ -132,12 +137,15 @@ public class EditEntityAction {
 			}
 			if (connection.parseErrorsAndWarnings(root)) {
 				if (root.has("item")) {
-					return root.path("item");
+					return parseJsonResponse(root.path("item"));
 				}
 				if (root.has("property")) { // not testable because of missing
 											// permissions - probably better
 											// obmit the case.
-					return root.path("property");
+					return parseJsonResponse(root.path("property"));
+				}
+				if (root.has("entity")) {
+					return parseJsonResponse(root.path("entity"));
 				}
 				return null; // TODO throw exception?
 			} else {
@@ -152,10 +160,9 @@ public class EditEntityAction {
 	}
 
 	/**
-	 * Returns an edit token retrieved from the API. Make sure that an user is
+	 * Sets an new edit token retrieved from the API. Make sure that an user is
 	 * logged in.
-	 * 
-	 * @return edit token
+	 *
 	 * @throws NoLoginException
 	 *             To get an edit token it is necessary to be logged in. If this
 	 *             is not the case a {@link NoLoginException} is thrown.
@@ -164,7 +171,7 @@ public class EditEntityAction {
 	 *             from the API or the result contains errors or the edit token
 	 *             is simply missing.
 	 */
-	public String getEditToken() throws NoLoginException, IOException {
+	public void requestEditToken() throws NoLoginException, IOException {
 		Map<String, String> params = new HashMap<String, String>();
 
 		if (connection.loggedIn == false) {
@@ -180,14 +187,14 @@ public class EditEntityAction {
 
 		root = mapper.readTree(response);
 		if (connection.parseErrorsAndWarnings(root)) {
-
-			JsonNode tokenNode = root.path("query").path("tokens");
+			JsonNode tokenNode = root.path("query").path("tokens")
+					.path("csrftoken");
 			if (tokenNode.isMissingNode() == false) {
 				String token = tokenNode.textValue();
 				if (token.equals("")) {
 					throw new IOException("Token is empty.");
 				} else {
-					return token;
+					this.editToken = token;
 				}
 			} else {
 				throw new IOException("No Token in the response");
@@ -196,6 +203,21 @@ public class EditEntityAction {
 			throw new IOException("Errors in the API response.");
 		}
 
+	}
+
+	private EntityDocument parseJsonResponse(JsonNode entityNode) {
+		try {
+			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
+					JacksonTermedStatementDocument.class);
+			ed.setSiteIri(this.siteIri);
+
+			return ed;
+		} catch (JsonProcessingException e) {
+			logger.error("Error when reading JSON for entity "
+					+ entityNode.path("id").asText("UNKNOWN") + ": "
+					+ e.toString());
+		}
+		return null;
 	}
 
 }

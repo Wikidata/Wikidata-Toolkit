@@ -341,7 +341,6 @@ public class ApiConnection {
 	 * @param con
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
-		this.cookies.clear();
 		List<String> cookieList = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
 		for (int i = 0; i < cookieList.size(); i++) {
