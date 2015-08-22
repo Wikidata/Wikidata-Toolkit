@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 import org.wikidata.wdtk.rdf.RdfSerializer;
+import org.wikidata.wdtk.testing.MockDirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 public class ClientConfigurationTest {
 
@@ -44,7 +49,7 @@ public class ClientConfigurationTest {
 
 		assertTrue(config.getOfflineMode());
 		assertTrue(config.isQuiet());
-		assertEquals("dumps/wikidata/", config.getDumpLocation());
+		assertEquals("dumps/wikidata/", config.getDumpDirectoryLocation());
 		assertEquals(Collections.<String> emptySet(),
 				config.getFilterSiteKeys());
 		assertEquals(Collections.<PropertyIdValue> singleton(Datamodel
@@ -77,15 +82,30 @@ public class ClientConfigurationTest {
 	}
 
 	@Test
+	public void testReadConfigFile2() throws IOException {
+		String configFile = "src/test/resources/testConf2.ini";
+		String[] args = new String[] { "-c", configFile };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		assertFalse(config.getOfflineMode());
+		assertFalse(config.isQuiet());
+		assertEquals("testfile.json.gz", config.getInputDumpLocation());
+		assertEquals("report.txt", config.getReportFileName());
+		// remaining content was already tested above
+	}
+
+	@Test
 	public void testDefaultArguments() {
 		String[] args = new String[] {};
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
-		assertEquals(null, config.getDumpLocation());
+		assertEquals(null, config.getDumpDirectoryLocation());
 		assertEquals(null, config.getFilterLanguages());
 		assertEquals(null, config.getFilterSiteKeys());
 		assertEquals(null, config.getFilterProperties());
-		assertEquals(null, config.getReportFilename());
+		assertEquals(null, config.getReportFileName());
+		assertEquals(null, config.getInputDumpLocation());
+		assertEquals(null, config.getLocalDumpFile());
 		assertFalse(config.isQuiet());
 	}
 
@@ -101,7 +121,7 @@ public class ClientConfigurationTest {
 		String[] args = new String[] { "--unknown", "-foo" };
 		ClientConfiguration config = new ClientConfiguration(args);
 		assertFalse(config.getOfflineMode());
-		assertEquals(null, config.getDumpLocation());
+		assertEquals(null, config.getDumpDirectoryLocation());
 		assertFalse(config.isQuiet());
 	}
 
@@ -109,14 +129,14 @@ public class ClientConfigurationTest {
 	public void testDumpLocationArgumentsShort() {
 		String[] args = new String[] { "-d", "dumps/wikidata/" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals("dumps/wikidata/", config.getDumpLocation());
+		assertEquals("dumps/wikidata/", config.getDumpDirectoryLocation());
 	}
 
 	@Test
 	public void testDumpLocationArgumentsLong() {
 		String[] args = new String[] { "--dumps", "dumps/wikidata/" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals("dumps/wikidata/", config.getDumpLocation());
+		assertEquals("dumps/wikidata/", config.getDumpDirectoryLocation());
 	}
 
 	@Test
@@ -165,14 +185,14 @@ public class ClientConfigurationTest {
 	public void testReportArgumentsShort() {
 		String[] args = new String[] { "-r", "output/report.txt" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals("output/report.txt", config.getReportFilename());
+		assertEquals("output/report.txt", config.getReportFileName());
 	}
 
 	@Test
 	public void testReportArgumentsLong() {
 		String[] args = new String[] { "--report", "output/report.txt" };
 		ClientConfiguration config = new ClientConfiguration(args);
-		assertEquals("output/report.txt", config.getReportFilename());
+		assertEquals("output/report.txt", config.getReportFileName());
 	}
 
 	@Test
@@ -239,6 +259,38 @@ public class ClientConfigurationTest {
 		Set<PropertyIdValue> propFilters = new HashSet<>();
 
 		assertEquals(propFilters, config.getFilterProperties());
+	}
+
+	@Test
+	public void testLocalDumpFileLong() {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
+		String[] args = new String[] { "--input", "dumptest.json" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		MwDumpFile df = config.getLocalDumpFile();
+
+		assertEquals("dumptest.json", config.getInputDumpLocation());
+		assertTrue(df instanceof MwLocalDumpFile);
+		MwLocalDumpFile ldf = (MwLocalDumpFile) df;
+
+		assertEquals(Paths.get("dumptest.json").toAbsolutePath(), ldf.getPath());
+	}
+
+	@Test
+	public void testLocalDumpFileShort() {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
+		String[] args = new String[] { "-i", "dumptest.json" };
+		ClientConfiguration config = new ClientConfiguration(args);
+
+		MwDumpFile df = config.getLocalDumpFile();
+
+		assertEquals("dumptest.json", config.getInputDumpLocation());
+		assertTrue(df instanceof MwLocalDumpFile);
+		MwLocalDumpFile ldf = (MwLocalDumpFile) df;
+
+		assertEquals(Paths.get("dumptest.json").toAbsolutePath(), ldf.getPath());
 	}
 
 }
