@@ -116,9 +116,9 @@ for CSV files.
 
 #### RdfSerializationExample.java ####
 
-This program creates a range of RDF exports. It will be replaced in the future by a
-standalone conversion tool that has all of these features. Then the RDF example can be
-simplified to include only some specific type of RDF export.
+This program creates an RDF export. You can also do this directly using the command line
+client. The purpose of this program is just to show how this could be done in code, e.g.,
+to implement additional pre-processing before the RDF serialisation.
 
 
 Other Helper Code
