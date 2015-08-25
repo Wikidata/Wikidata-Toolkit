@@ -43,6 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 /**
@@ -102,7 +103,7 @@ public class PropertyRegister {
 	int smallestUnfetchedPropertyIdNumber = 1;
 
 	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
-			"P1921", "https://www.wikidata.org/w/api.php",
+			"P1921", ApiConnection.getWikidataApiConnection(),
 			Datamodel.SITE_WIKIDATA);
 
 	/**
@@ -111,19 +112,19 @@ public class PropertyRegister {
 	 * @param uriPatternPropertyId
 	 *            property id used for a URI Pattern property, e.g., P1921 on
 	 *            Wikidata; can be null if no such property should be used
-	 * @param apiBaseUrl
-	 *            URL for accessing the API of the site, e.g.,
-	 *            "https://www.wikidata.org/w/api.php" for Wikidata
+	 * @param apiConnection
+	 *            API connection object that defines how to connect to the
+	 *            online API
 	 * @param siteUri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public PropertyRegister(String uriPatternPropertyId, String apiBaseUrl,
-			String siteUri) {
+	public PropertyRegister(String uriPatternPropertyId,
+			ApiConnection apiConnection, String siteUri) {
 		this.uriPatternPropertyId = uriPatternPropertyId;
 		this.siteUri = siteUri;
-		dataFetcher = new WikibaseDataFetcher(apiBaseUrl, siteUri);
+		dataFetcher = new WikibaseDataFetcher(apiConnection, siteUri);
 	}
 
 	/**

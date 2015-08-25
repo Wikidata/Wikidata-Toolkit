@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 
 /*
  * #%L
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class MockPropertyRegister extends PropertyRegister {
 
 	public MockPropertyRegister() {
-		super("P1921", "https://www.wikidata.org/w/api.php",
+		super("P1921", ApiConnection.getWikidataApiConnection(),
 				Datamodel.SITE_WIKIDATA);
 		this.datatypes.putAll(KNOWN_PROPERTY_TYPES);
 		this.uriPatterns.putAll(KNOWN_URI_PATTERNS);

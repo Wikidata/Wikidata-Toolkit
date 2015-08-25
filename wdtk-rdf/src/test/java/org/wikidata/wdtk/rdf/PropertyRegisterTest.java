@@ -46,6 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 public class PropertyRegisterTest {
@@ -109,7 +110,7 @@ public class PropertyRegisterTest {
 				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM)));
 
 		this.propertyRegister = new PropertyRegister("P1921",
-				"http://localhost/", this.siteIri);
+				new ApiConnection("http://localhost/"), this.siteIri);
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
