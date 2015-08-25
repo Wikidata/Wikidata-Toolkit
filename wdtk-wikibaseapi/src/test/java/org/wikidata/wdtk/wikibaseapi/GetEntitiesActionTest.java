@@ -34,7 +34,7 @@ import org.wikidata.wdtk.util.CompressionType;
 public class GetEntitiesActionTest {
 
 	MockApiConnection con;
-	GetEntitiesAction action;
+	WbGetEntitiesAction action;
 
 	@Before
 	public void setUp() throws Exception {
@@ -48,7 +48,7 @@ public class GetEntitiesActionTest {
 		params.put("ids", "Q6|Q42|P31");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
-		this.action = new GetEntitiesAction(this.con, Datamodel.SITE_WIKIDATA);
+		this.action = new WbGetEntitiesAction(this.con, Datamodel.SITE_WIKIDATA);
 
 	}
 
@@ -57,9 +57,9 @@ public class GetEntitiesActionTest {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
 		properties.ids = "Q6|Q42|P31";
 		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
-		Map<String, EntityDocument> result1 = action.wbgetEntities(properties);
+		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
 
-		Map<String, EntityDocument> result2 = action.wbgetEntities(
+		Map<String, EntityDocument> result2 = action.wbGetEntities(
 				properties.ids, null, null, properties.props, null, null);
 		assertTrue(result1 != null);
 		assertFalse(result1.isEmpty());

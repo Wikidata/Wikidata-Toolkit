@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -207,6 +207,30 @@ public class ApiConnection {
 	 */
 	public static ApiConnection getTestWikidataApiConnection() {
 		return new ApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
+	}
+
+	/**
+	 * Builds a string that serializes a list of objects separated by the pipe
+	 * character. The toString methods are used to turn objects into strings.
+	 * This operation is commonly used to build parameter lists for API
+	 * requests.
+	 *
+	 * @param objects
+	 *            the objects to implode
+	 * @return string of imploded objects
+	 */
+	public static String implodeObjects(Iterable<? extends Object> objects) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for (Object o : objects) {
+			if (first) {
+				first = false;
+			} else {
+				builder.append("|");
+			}
+			builder.append(o.toString());
+		}
+		return builder.toString();
 	}
 
 	/**

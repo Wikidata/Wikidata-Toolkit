@@ -41,10 +41,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Michael Guenther
  *
  */
-public class GetEntitiesAction {
+public class WbGetEntitiesAction {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(GetEntitiesAction.class);
+			.getLogger(WbGetEntitiesAction.class);
 
 	/**
 	 * Connection to an Wikibase API.
@@ -73,7 +73,7 @@ public class GetEntitiesAction {
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public GetEntitiesAction(ApiConnection connection, String siteUri) {
+	public WbGetEntitiesAction(ApiConnection connection, String siteUri) {
 		this.connection = connection;
 		this.siteIri = siteUri;
 	}
@@ -87,9 +87,9 @@ public class GetEntitiesAction {
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
 	 */
-	public Map<String, EntityDocument> wbgetEntities(
+	public Map<String, EntityDocument> wbGetEntities(
 			WbGetEntitiesProperties properties) {
-		return wbgetEntities(properties.ids, properties.sites,
+		return wbGetEntities(properties.ids, properties.sites,
 				properties.titles, properties.props, properties.languages,
 				properties.sitefilter);
 	}
@@ -114,7 +114,7 @@ public class GetEntitiesAction {
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
 	 */
-	public Map<String, EntityDocument> wbgetEntities(String ids, String sites,
+	public Map<String, EntityDocument> wbGetEntities(String ids, String sites,
 			String titles, String props, String languages, String sitefilter) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("action", "wbgetentities");

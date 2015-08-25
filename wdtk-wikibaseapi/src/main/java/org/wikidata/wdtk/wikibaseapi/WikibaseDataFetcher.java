@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,7 +47,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * API Action to fetch data.
 	 */
-	final GetEntitiesAction entitiesAction;
+	final WbGetEntitiesAction entitiesAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -90,7 +90,7 @@ public class WikibaseDataFetcher {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
-		this.entitiesAction = new GetEntitiesAction(connection, siteUri);
+		this.entitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -149,7 +149,7 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
-		final String entityString = implodeObjects(entityIds);
+		final String entityString = ApiConnection.implodeObjects(entityIds);
 		properties.ids = entityString;
 		return getEntityDocumentMap(entityIds.size(), properties);
 	}
@@ -213,7 +213,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
-		String titleString = implodeObjects(titles);
+		String titleString = ApiConnection.implodeObjects(titles);
 		properties.titles = titleString;
 		properties.sites = siteKey;
 		return getEntityDocumentMap(titles.size(), properties);
@@ -236,10 +236,9 @@ public class WikibaseDataFetcher {
 		if (numOfEntities == 0) {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
-		this.configureProperties(properties);
-		Map<String, EntityDocument> result = entitiesAction.wbgetEntities(
-				properties.ids, properties.sites, properties.titles,
-				properties.props, properties.languages, properties.sitefilter);
+		configureProperties(properties);
+		Map<String, EntityDocument> result = this.entitiesAction
+				.wbGetEntities(properties);
 		return result;
 	}
 
@@ -289,7 +288,8 @@ public class WikibaseDataFetcher {
 				|| this.filter.getLanguageFilter() == null) {
 			return;
 		}
-		properties.languages = implodeObjects(this.filter.getLanguageFilter());
+		properties.languages = ApiConnection.implodeObjects(this.filter
+				.getLanguageFilter());
 	}
 
 	/**
@@ -304,29 +304,8 @@ public class WikibaseDataFetcher {
 				|| this.filter.getSiteLinkFilter() == null) {
 			return;
 		}
-		properties.sitefilter = implodeObjects(this.filter.getSiteLinkFilter());
-	}
-
-	/**
-	 * Builds a string that serializes a list of objects separated by the pipe
-	 * character. The toString methods are used to turn objects into strings.
-	 *
-	 * @param objects
-	 *            the objects to implode
-	 * @return string of imploded objects
-	 */
-	String implodeObjects(Iterable<? extends Object> objects) {
-		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for (Object o : objects) {
-			if (first) {
-				first = false;
-			} else {
-				builder.append("|");
-			}
-			builder.append(o.toString());
-		}
-		return builder.toString();
+		properties.sitefilter = ApiConnection.implodeObjects(this.filter
+				.getSiteLinkFilter());
 	}
 
 }

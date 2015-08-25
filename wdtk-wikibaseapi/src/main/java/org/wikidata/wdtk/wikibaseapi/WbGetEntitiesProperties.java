@@ -21,10 +21,12 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This class holds the properties of an wbgetentities action request.
- * 
+ * This class is a simple record that holds the properties of an wbgetentities
+ * action request. It is used internally by {@link WikibaseDataFetcher} to
+ * gather parameters for the request.
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class WbGetEntitiesProperties {
 
