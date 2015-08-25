@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -62,28 +62,29 @@ public class ApiConnection {
 	/**
 	 * Name of the HTTP parameter to submit an action to the API.
 	 */
-	final static String PARAM_ACTION = "action";
+	public final static String PARAM_ACTION = "action";
 	/**
 	 * Name of the HTTP parameter to submit a password to the API.
 	 */
-	final static String PARAM_LOGIN_USERNAME = "lgname";
+	public final static String PARAM_LOGIN_USERNAME = "lgname";
 	/**
 	 * Name of the HTTP parameter to submit a password to the API.
 	 */
-	final static String PARAM_LOGIN_PASSWORD = "lgpassword";
+	public final static String PARAM_LOGIN_PASSWORD = "lgpassword";
 	/**
 	 * Name of the HTTP parameter to submit a login token to the API.
 	 */
-	final static String PARAM_LOGIN_TOKEN = "lgtoken";
+	public final static String PARAM_LOGIN_TOKEN = "lgtoken";
 	/**
 	 * Name of the HTTP parameter to submit the requested result format to the
 	 * API.
 	 */
-	final static String PARAM_FORMAT = "format";
+	public final static String PARAM_FORMAT = "format";
 	/**
 	 * Name of the HTTP parameter to submit cookies to the API.
 	 */
-	final static String PARAM_COOKIE = "Cookie";
+	public final static String PARAM_COOKIE = "Cookie";
+
 	/**
 	 * Name of the HTTP response header field that provides us with cookies we
 	 * should set.

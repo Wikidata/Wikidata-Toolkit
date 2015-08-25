@@ -34,10 +34,10 @@ import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.util.CompressionType;
 
 /**
- * Mock implementation of {@link ApiConnection}
- * 
- * @author michael
- * 
+ * Mock implementation of {@link ApiConnection} used for testing.
+ *
+ * @author Michael Guenther
+ *
  */
 public class MockApiConnection extends ApiConnection {
 
@@ -59,16 +59,15 @@ public class MockApiConnection extends ApiConnection {
 
 	/**
 	 * Adds a new web resource to mock a request.
-	 * 
+	 *
 	 * @param parameters
 	 * @param result
 	 */
 	public void setWebResource(Map<String, String> parameters, String result) {
 		int hash = parameters.hashCode();
 		if (this.webResources.containsKey(hash)) {
-			logger.warn("There is already a resource in the webResources Map with the same hash. "
-					+ "Either this could happen if there was added a resource for the same parameter setting "
-					+ "or as a result of a hash collision.");
+			logger.warn("Overwriting mocked result for parameters "
+					+ parameters.toString());
 		}
 		this.webResources.put(hash, result.getBytes(StandardCharsets.UTF_8));
 	}
@@ -79,7 +78,7 @@ public class MockApiConnection extends ApiConnection {
 	/**
 	 * Defines the contents of a new web resource (result for an API request) by
 	 * taking a list of parameters and the string from a given (Java) resource.
-	 * 
+	 *
 	 * @param parameters
 	 *            paramerter setting of the query string for an API request.
 	 * @param resourceClass
@@ -91,7 +90,7 @@ public class MockApiConnection extends ApiConnection {
 	 * @param compressionType
 	 *            the compression type of the resource file
 	 * @throws MalformedURLException
-	 * 
+	 *
 	 * @throws IOException
 	 *             if the Java resource could not be loaded
 	 */

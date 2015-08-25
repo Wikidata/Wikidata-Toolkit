@@ -96,41 +96,78 @@ public class WbGetEntitiesAction {
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
-	 * the API.
+	 * the API. All parameters that accept lists expect the pipe character | to
+	 * be used as a separator, as created by
+	 * {@link ApiConnection#implodeObjects(Iterable)}. There is a limit on how
+	 * many entities can be retrieved in one request, usually 50 by default and
+	 * 500 for bots. This limit may also apply to the number of language codes
+	 * and sites used for filtering.
+	 * <p>
+	 * The method can fail in two ways. If errors occur (e.g., exceptions trying
+	 * to access the Web API), then the errors will be logged and null will be
+	 * returned. If the API the request is made but the API returns errors, then
+	 * the errors will be logged and an empty map is returned.
 	 *
 	 * @param ids
-	 *            ids of EnitityDocuments that should be retrieved
+	 *            list of ids of entities for which data should be retrieved
 	 * @param sites
-	 *            sitekey (e.g. !enwiki")
+	 *            site key (e.g. "enwiki"); used together with parameters
+	 *            "titles"; the API supports the use of many site keys with a
+	 *            single title, but this implementation does not support this
+	 *            (the resulting map will use title strings for keys)
 	 * @param titles
-	 *            titles recording to the sites value; acts as identifier list
-	 *            for EnitityDocuments that should be retrieved
+	 *            list of titles of the page corresponding to the requested
+	 *            entities on the given site; use together with 'sites', but
+	 *            only give one site for several titles or several sites for one
+	 *            title
 	 * @param props
-	 *            filter option for content types
+	 *            list of strings that specifies what kind of data should be
+	 *            retrieved for each entity; possible values include "info",
+	 *            "sitelinks", "sitelinks/urls", "aliases", "labels",
+	 *            "descriptions", "claims" (statements), "datatype"; additional
+	 *            filters may apply; defaults to
+	 *            "info|sitelinks|aliases|labels|descriptions|claims|datatype"
 	 * @param languages
-	 *            filter option for languages
+	 *            list of language codes to return labels, aliases or
+	 *            descriptions for; if omitted, data for all languages is
+	 *            returned
 	 * @param sitefilter
-	 *            filter option for sitelinks
+	 *            list of site keys to return sitelinks for; if omitted, data
+	 *            for all languages is returned
+	 *
 	 * @return map of document identifiers or titles to documents retrieved via
-	 *         the API URL
+	 *         the API URL, or null if there were errors
+	 * @throws IllegalArgumentException
+	 *             if the given combination of parameters does not make sense
 	 */
 	public Map<String, EntityDocument> wbGetEntities(String ids, String sites,
 			String titles, String props, String languages, String sitefilter) {
+
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("action", "wbgetentities");
+		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
+
 		if (ids != null) {
 			parameters.put("ids", ids);
-		}
-		if (sites != null) {
-			parameters.put("sites", sites);
-		}
-		if (titles != null) {
+			if (titles != null || sites != null) {
+				throw new IllegalArgumentException(
+						"Cannot use parameters \"sites\" or \"titles\" when using ids to get entity data");
+			}
+		} else if (titles != null) {
 			parameters.put("titles", titles);
+			if (sites == null) {
+				throw new IllegalArgumentException(
+						"Sites parameter is required when using titles parameter to get entity data.");
+			}
+			parameters.put("sites", sites);
+		} else {
+			throw new IllegalArgumentException(
+					"Either ids, or titles and site must be specified for this action.");
 		}
 
 		if (props != null) {
 			parameters.put("props", props);
 		}
+
 		if (languages != null) {
 			parameters.put("languages", languages);
 		}
@@ -138,12 +175,11 @@ public class WbGetEntitiesAction {
 			parameters.put("sitefilter", sitefilter);
 		}
 
-		parameters.put("format", "json");
-		InputStream response;
-		try {
-			response = this.connection.sendRequest("POST", parameters);
-			JsonNode root;
-			root = mapper.readTree(response);
+		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+
+		try (InputStream response = this.connection.sendRequest("POST",
+				parameters)) {
+			JsonNode root = mapper.readTree(response);
 			Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
 			if (this.connection.parseErrorsAndWarnings(root) == false) {

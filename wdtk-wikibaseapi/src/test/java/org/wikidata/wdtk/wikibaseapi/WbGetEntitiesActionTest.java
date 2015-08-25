@@ -20,7 +20,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.util.CompressionType;
 
-public class GetEntitiesActionTest {
+public class WbGetEntitiesActionTest {
 
 	MockApiConnection con;
 	WbGetEntitiesAction action;
@@ -53,17 +55,37 @@ public class GetEntitiesActionTest {
 	}
 
 	@Test
-	public void testWbgetEntities() {
+	public void testWbGetEntities() {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
 		properties.ids = "Q6|Q42|P31";
 		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
 		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
-
 		Map<String, EntityDocument> result2 = action.wbGetEntities(
 				properties.ids, null, null, properties.props, null, null);
+
 		assertTrue(result1 != null);
 		assertFalse(result1.isEmpty());
-		assertTrue(result1.equals(result2));
+		assertEquals(result1, result2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIdsAndTitles() {
+		action.wbGetEntities("Q42", null, "Tim Berners Lee", null, null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIdsAndSites() {
+		action.wbGetEntities("Q42", "enwiki", null, null, null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTitlesNoSites() {
+		action.wbGetEntities(null, null, "Tim Berners Lee", null, null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNoTitlesOrIds() {
+		action.wbGetEntities(null, "enwiki", null, null, null, null);
 	}
 
 }
