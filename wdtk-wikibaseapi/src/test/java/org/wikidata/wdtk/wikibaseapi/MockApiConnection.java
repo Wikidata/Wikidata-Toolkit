@@ -103,9 +103,14 @@ public class MockApiConnection extends ApiConnection {
 
 	@Override
 	public InputStream sendRequest(String requestMethod,
-			Map<String, String> parameters) {
-		return new ByteArrayInputStream(this.webResources.get(parameters
-				.hashCode()));
+			Map<String, String> parameters) throws IOException {
+		if (this.webResources.containsKey(parameters.hashCode())) {
+			return new ByteArrayInputStream(this.webResources.get(parameters
+					.hashCode()));
+		} else {
+			throw new IOException("API result not mocked for parameters "
+					+ parameters);
+		}
 	}
 
 }

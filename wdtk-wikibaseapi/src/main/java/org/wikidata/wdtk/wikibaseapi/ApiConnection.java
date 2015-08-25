@@ -447,7 +447,11 @@ public class ApiConnection {
 		} else {
 			String message = getLoginErrorMessage(result);
 			logger.warn(message);
-			throw new LoginFailedException(message);
+			if (ApiConnection.LOGIN_WRONG_TOKEN.equals(result)) {
+				throw new NeedTokenException(message);
+			} else {
+				throw new LoginFailedException(message);
+			}
 		}
 	}
 

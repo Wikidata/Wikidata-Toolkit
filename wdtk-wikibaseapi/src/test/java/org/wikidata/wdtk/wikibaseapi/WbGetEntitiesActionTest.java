@@ -21,7 +21,6 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -45,17 +44,24 @@ public class WbGetEntitiesActionTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "wbgetentities");
 		params.put("format", "json");
+		params.put("ids", "Q6|Q42|P31");
+		this.con.setWebResourceFromPath(params, getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 		params.put("props",
 				"datatype|labels|aliases|descriptions|claims|sitelinks");
-		params.put("ids", "Q6|Q42|P31");
-		this.con.setWebResourceFromPath(params, this.getClass(),
+		this.con.setWebResourceFromPath(params, getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
+		params.put("languages", "en");
+		params.put("sitefilter", "enwiki");
+		this.con.setWebResourceFromPath(params, getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
+
 		this.action = new WbGetEntitiesAction(this.con, Datamodel.SITE_WIKIDATA);
 
 	}
 
 	@Test
-	public void testWbGetEntities() {
+	public void testWbGetEntitiesWithProps() {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
 		properties.ids = "Q6|Q42|P31";
 		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
@@ -63,9 +69,44 @@ public class WbGetEntitiesActionTest {
 		Map<String, EntityDocument> result2 = action.wbGetEntities(
 				properties.ids, null, null, properties.props, null, null);
 
-		assertTrue(result1 != null);
-		assertFalse(result1.isEmpty());
+		assertTrue(result1.containsKey("Q42"));
 		assertEquals(result1, result2);
+	}
+
+	@Test
+	public void testWbGetEntitiesNoProps() {
+		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+		properties.ids = "Q6|Q42|P31";
+		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
+		Map<String, EntityDocument> result2 = action.wbGetEntities(
+				properties.ids, null, null, properties.props, null, null);
+
+		assertTrue(result1.containsKey("Q42"));
+		assertEquals(result1, result2);
+	}
+
+	@Test
+	public void testWbGetEntitiesPropsFilters() {
+		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+		properties.ids = "Q6|Q42|P31";
+		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
+		properties.languages = "en";
+		properties.sitefilter = "enwiki";
+		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
+		Map<String, EntityDocument> result2 = action.wbGetEntities(
+				properties.ids, null, null, properties.props, null, null);
+
+		assertTrue(result1.containsKey("Q42"));
+		assertEquals(result1, result2);
+	}
+
+	@Test
+	public void testWbGetEntitiesIoError() {
+		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+		properties.ids = "Q6|Q42|notmocked";
+		Map<String, EntityDocument> result = action.wbGetEntities(properties);
+
+		assertEquals(null, result);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
