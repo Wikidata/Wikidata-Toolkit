@@ -35,9 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple class to fetch data from Wikibase via the online API.
- * 
+ *
  * @author Markus Kroetzsch
- * 
  * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
@@ -76,7 +75,7 @@ public class WikibaseDataFetcher {
 	 * Creates an object to fetch data from API with the given
 	 * {@link ApiConnection} object. The site URI is necessary since it is not
 	 * contained in the data retrieved from the URI.
-	 * 
+	 *
 	 * @param connection
 	 *            ApiConnection
 	 * @param siteUri
@@ -97,7 +96,7 @@ public class WikibaseDataFetcher {
 	 * Note: Filtering individual properties is currently not supported (such
 	 * filters will be ignored). However, filtering all properties is possible;
 	 * in this case all statements are excluded.
-	 * 
+	 *
 	 * @return the filter used by this object
 	 */
 	public DocumentDataFilter getFilter() {
@@ -107,7 +106,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Fetches the documents for the entity of the given string IDs. The result
 	 * is an {@link EntityDocument} or null if the data could not be fetched.
-	 * 
+	 *
 	 * @param entityId
 	 *            string IDs (e.g., "P31" or "Q42") of requested entity
 	 * @return retrieved entity document or null
@@ -121,7 +120,7 @@ public class WikibaseDataFetcher {
 	 * result is a map from entity IDs to {@link EntityDocument} objects. It is
 	 * possible that a requested ID could not be found: then this key is not set
 	 * in the map.
-	 * 
+	 *
 	 * @param entityIds
 	 *            string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
@@ -136,7 +135,7 @@ public class WikibaseDataFetcher {
 	 * result is a map from entity IDs to {@link EntityDocument} objects. It is
 	 * possible that a requested ID could not be found: then this key is not set
 	 * in the map.
-	 * 
+	 *
 	 * @param entityIds
 	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
@@ -156,7 +155,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g., "enwiki"
 	 * @param title
@@ -175,7 +174,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
@@ -196,7 +195,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
@@ -217,7 +216,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the APIs.
-	 * 
+	 *
 	 * @param numOfEntities
 	 *            number of entities that should be retrieved
 	 * @param properties
@@ -240,7 +239,7 @@ public class WikibaseDataFetcher {
 
 	/**
 	 * Configures props, languages and sitefilter properties.
-	 * 
+	 *
 	 * @param properties
 	 */
 	void configureProperties(WbGetEntitiesProperties properties) {
@@ -252,7 +251,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "props" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -275,7 +274,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "languages" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -290,7 +289,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "sitefilter" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -305,7 +304,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Builds a string that serializes a list of objects separated by the pipe
 	 * character. The toString methods are used to turn objects into strings.
-	 * 
+	 *
 	 * @param objects
 	 *            the objects to implode
 	 * @return string of imploded objects

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -198,6 +198,33 @@ public class ApiConnectionTest {
 		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
 		assertEquals("https://test.wikidata.org/w/api.php",
 				connection.apiBaseUrl);
+	}
+
+	@Test
+	public void testErrorMessages() {
+		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		String[] knownErrors = { ApiConnection.LOGIN_WRONG_PASS,
+				ApiConnection.LOGIN_WRONG_PLUGIN_PASS,
+				ApiConnection.LOGIN_NOT_EXISTS, ApiConnection.LOGIN_BLOCKED,
+				ApiConnection.LOGIN_EMPTY_PASS, ApiConnection.LOGIN_NO_NAME,
+				ApiConnection.LOGIN_CREATE_BLOCKED,
+				ApiConnection.LOGIN_ILLEGAL, ApiConnection.LOGIN_THROTTLED,
+				ApiConnection.LOGIN_WRONG_TOKEN, ApiConnection.LOGIN_NEEDTOKEN };
+
+		ArrayList<String> messages = new ArrayList<>();
+		for (String error : knownErrors) {
+			messages.add(connection.getLoginErrorMessage(error));
+		}
+
+		String unknownMessage = connection
+				.getLoginErrorMessage("unkonwn error code");
+
+		int i = 0;
+		for (String message : messages) {
+			assertFalse(unknownMessage.equals(message));
+			assertTrue(message.contains(knownErrors[i]));
+			i++;
+		}
 	}
 
 	private List<String> testCookieList() {

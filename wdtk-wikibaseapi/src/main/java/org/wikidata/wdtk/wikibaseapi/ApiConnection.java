@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,35 @@ public class ApiConnection {
 	 */
 	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
 
+	/**
+	 * Name of the HTTP parameter to submit an action to the API.
+	 */
+	final static String PARAM_ACTION = "action";
+	/**
+	 * Name of the HTTP parameter to submit a password to the API.
+	 */
+	final static String PARAM_LOGIN_USERNAME = "lgname";
+	/**
+	 * Name of the HTTP parameter to submit a password to the API.
+	 */
+	final static String PARAM_LOGIN_PASSWORD = "lgpassword";
+	/**
+	 * Name of the HTTP parameter to submit a login token to the API.
+	 */
+	final static String PARAM_LOGIN_TOKEN = "lgtoken";
+	/**
+	 * Name of the HTTP parameter to submit the requested result format to the
+	 * API.
+	 */
+	final static String PARAM_FORMAT = "format";
+	/**
+	 * Name of the HTTP parameter to submit cookies to the API.
+	 */
 	final static String PARAM_COOKIE = "Cookie";
+	/**
+	 * Name of the HTTP response header field that provides us with cookies we
+	 * should set.
+	 */
 	final static String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
 
 	/**
@@ -88,7 +116,8 @@ public class ApiConnection {
 	 */
 	final static String LOGIN_NOT_EXISTS = "NotExists";
 	/**
-	 * Username is illegal.
+	 * String value in the result field of the JSON response if the user name is
+	 * illegal.
 	 */
 	final static String LOGIN_ILLEGAL = "Illegal";
 	/**
@@ -127,11 +156,22 @@ public class ApiConnection {
 	 */
 	final String apiBaseUrl;
 
-	// login data
+	/**
+	 * True after successful login.
+	 */
 	boolean loggedIn = false;
+	/**
+	 * User name used to log in.
+	 */
 	String username = "";
+	/**
+	 * Password used to log in.
+	 */
 	String password = "";
 
+	/**
+	 * Map of cookies that are currently set.
+	 */
 	final Map<String, String> cookies = new HashMap<String, String>();
 
 	/**
@@ -178,7 +218,6 @@ public class ApiConnection {
 	 *            the name of the user to log in
 	 * @param password
 	 *            the password of the user
-	 * @return true if the login was successful
 	 * @throws LoginFailedException
 	 *             if the login failed for some reason
 	 */
@@ -193,7 +232,7 @@ public class ApiConnection {
 				this.confirmLogin(token, username, password);
 			}
 		} catch (IOException e1) {
-			throw new LoginFailedException(e1.getMessage());
+			throw new LoginFailedException(e1.getMessage(), e1);
 		}
 	}
 
@@ -217,107 +256,6 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Returns login token from an API login query with the given username and
-	 * password.
-	 *
-	 * @param username
-	 * @param password
-	 * @return
-	 * @throws IOException
-	 */
-	String getLoginToken(String username, String password) throws IOException {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("action", "login");
-		params.put("lgname", username);
-		params.put("lgpassword", password);
-		params.put("format", "json");
-
-		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
-		String token = root.get("login").get("token").textValue();
-
-		return token;
-	}
-
-	/**
-	 * Issues a Web API query to confirm that the previous login attempt was
-	 * successful, and sets the internal state of the API connection accordingly
-	 * in this case.
-	 *
-	 * @param token
-	 *            the token string acquired from a previous call to
-	 *            {@link #getLoginToken(String, String)}
-	 * @param username
-	 *            the name of the user that was logged in
-	 * @param password
-	 *            the password used to log in
-	 * @throws IOException
-	 * @throws LoginFailedException
-	 */
-	void confirmLogin(String token, String username, String password)
-			throws IOException, LoginFailedException {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("action", "login");
-		params.put("lgname", username);
-		params.put("lgpassword", password);
-		params.put("lgtoken", token);
-		params.put("format", "json");
-
-		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
-
-		String result = root.get("login").get("result").textValue();
-		if (result.equals(ApiConnection.LOGIN_RESULT_SUCCESS)) {
-			this.loggedIn = true;
-			this.username = username;
-			this.password = password;
-			return;
-		} else {
-			String message = getLoginErrorMessage(result);
-			logger.warn(message);
-			throw new LoginFailedException(message);
-		}
-	}
-
-	/**
-	 * Returns a user-readable message for a given API response.
-	 *
-	 * @param loginResult
-	 *            a API login request result string other than
-	 *            {@link #LOGIN_RESULT_SUCCESS}
-	 * @return error message
-	 */
-	String getLoginErrorMessage(String loginResult) {
-		switch (loginResult) {
-		case ApiConnection.LOGIN_WRONG_PASS:
-			return loginResult + ": Wrong Password.";
-		case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
-			return loginResult
-					+ ": Wrong Password. An authentication plugin rejected the password.";
-		case ApiConnection.LOGIN_NOT_EXISTS:
-			return loginResult + ": Username does not exist.";
-		case ApiConnection.LOGIN_BLOCKED:
-			return loginResult + ": User is blocked.";
-		case ApiConnection.LOGIN_EMPTY_PASS:
-			return loginResult + ": Password is empty.";
-		case ApiConnection.LOGIN_NO_NAME:
-			return loginResult + ": No user name given.";
-		case ApiConnection.LOGIN_CREATE_BLOCKED:
-			return loginResult
-					+ ": The wiki tried to automatically create a new account for you,"
-					+ "but your IP address has been blocked from account creation.";
-		case ApiConnection.LOGIN_ILLEGAL:
-			return loginResult + ": Username is illegal.";
-		case ApiConnection.LOGIN_THROTTLED:
-			return loginResult + ": Too many login attempts in a short time.";
-		case ApiConnection.LOGIN_WRONG_TOKEN:
-			return loginResult + ": Token is wrong.";
-		case ApiConnection.LOGIN_NEEDTOKEN:
-			return loginResult + ": Token or session ID is missing.";
-		default:
-			return "Login Error: " + loginResult;
-		}
-	}
-
-	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
@@ -327,54 +265,12 @@ public class ApiConnection {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
-			this.sendRequest("POST", params);
+			sendRequest("POST", params);
+
 			this.loggedIn = false;
 			this.username = "";
 			this.password = "";
 		}
-	}
-
-	/**
-	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
-	 * API connection with it.
-	 *
-	 * @param con
-	 */
-	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> cookieList = headerFields
-				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		for (int i = 0; i < cookieList.size(); i++) {
-			String[] cookieResponse = cookieList.get(i).split(";\\p{Space}??");
-			for (String cookieLine : cookieResponse) {
-				String[] entry = cookieLine.split("=");
-				if (entry.length == 2)
-					this.cookies.put(entry[0], entry[1]);
-				if (entry.length == 1)
-					this.cookies.put(entry[0], "");
-			}
-		}
-	}
-
-	/**
-	 * Returns the string representation of the currently stored cookies. This
-	 * data is added to the connection before making requests.
-	 */
-	String getCookieString() {
-		StringBuilder result = new StringBuilder();
-		boolean isFirst = true;
-		for (Entry<String, String> entry : this.cookies.entrySet()) {
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				result.append("; ");
-			}
-			result.append(entry.getKey());
-			if (!"".equals(entry.getValue())) {
-				result.append("=").append(entry.getValue());
-			}
-
-		}
-		return result.toString();
 	}
 
 	/**
@@ -383,33 +279,8 @@ public class ApiConnection {
 	 * @throws IOException
 	 */
 	public void clearCookies() throws IOException {
-		this.logout();
+		logout();
 		this.cookies.clear();
-
-	}
-
-	/**
-	 * Returns the query string of a URL from a parameter list.
-	 *
-	 * @param params
-	 *            Map with parameters
-	 * @return query string
-	 */
-	String getQueryString(Map<String, String> params) {
-		StringBuilder builder = new StringBuilder();
-		try {
-			for (String key : params.keySet()) {
-				builder.append(URLEncoder.encode(key, "UTF-8"));
-				builder.append("=");
-				builder.append(URLEncoder.encode(params.get(key), "UTF-8"));
-				builder.append("&");
-			}
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(
-					"Your Java version does not support UTF-8 encoding.");
-		}
-		String result = builder.toString();
-		return result.substring(0, result.length() - 1);
 	}
 
 	/**
@@ -492,12 +363,197 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Configures an {@link HttpURLConnection} object to send requests. Takes
-	 * the request method (either "POST" or "GET") and query string.
+	 * Returns login token from an API login query with the given username and
+	 * password.
+	 *
+	 * @param username
+	 *            the name of the user to log in
+	 * @param password
+	 *            the password of the user
+	 * @return login token obtained from the API
+	 * @throws IOException
+	 *             if there was a connection problem or if the API response was
+	 *             not understood
+	 */
+	String getLoginToken(String username, String password) throws IOException {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(ApiConnection.PARAM_ACTION, "login");
+		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
+		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
+		params.put(ApiConnection.PARAM_FORMAT, "json");
+
+		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
+		String token = root.path("login").path("token").textValue();
+
+		return token;
+	}
+
+	/**
+	 * Issues a Web API query to confirm that the previous login attempt was
+	 * successful, and sets the internal state of the API connection accordingly
+	 * in this case.
+	 *
+	 * @param token
+	 *            the token string acquired from a previous call to
+	 *            {@link #getLoginToken(String, String)}
+	 * @param username
+	 *            the name of the user that was logged in
+	 * @param password
+	 *            the password used to log in
+	 * @throws IOException
+	 * @throws LoginFailedException
+	 */
+	void confirmLogin(String token, String username, String password)
+			throws IOException, LoginFailedException {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(ApiConnection.PARAM_ACTION, "login");
+		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
+		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
+		params.put(ApiConnection.PARAM_LOGIN_TOKEN, token);
+		params.put(ApiConnection.PARAM_FORMAT, "json");
+
+		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
+
+		String result = root.path("login").path("result").textValue();
+		if (ApiConnection.LOGIN_RESULT_SUCCESS.equals(result)) {
+			this.loggedIn = true;
+			this.username = username;
+			this.password = password;
+		} else {
+			String message = getLoginErrorMessage(result);
+			logger.warn(message);
+			throw new LoginFailedException(message);
+		}
+	}
+
+	/**
+	 * Returns a user-readable message for a given API response.
+	 *
+	 * @param loginResult
+	 *            a API login request result string other than
+	 *            {@link #LOGIN_RESULT_SUCCESS}
+	 * @return error message
+	 */
+	String getLoginErrorMessage(String loginResult) {
+		switch (loginResult) {
+		case ApiConnection.LOGIN_WRONG_PASS:
+			return loginResult + ": Wrong Password.";
+		case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
+			return loginResult
+					+ ": Wrong Password. An authentication plugin rejected the password.";
+		case ApiConnection.LOGIN_NOT_EXISTS:
+			return loginResult + ": Username does not exist.";
+		case ApiConnection.LOGIN_BLOCKED:
+			return loginResult + ": User is blocked.";
+		case ApiConnection.LOGIN_EMPTY_PASS:
+			return loginResult + ": Password is empty.";
+		case ApiConnection.LOGIN_NO_NAME:
+			return loginResult + ": No user name given.";
+		case ApiConnection.LOGIN_CREATE_BLOCKED:
+			return loginResult
+					+ ": The wiki tried to automatically create a new account for you,"
+					+ "but your IP address has been blocked from account creation.";
+		case ApiConnection.LOGIN_ILLEGAL:
+			return loginResult + ": Username is illegal.";
+		case ApiConnection.LOGIN_THROTTLED:
+			return loginResult + ": Too many login attempts in a short time.";
+		case ApiConnection.LOGIN_WRONG_TOKEN:
+			return loginResult + ": Token is wrong.";
+		case ApiConnection.LOGIN_NEEDTOKEN:
+			return loginResult + ": Token or session ID is missing.";
+		default:
+			return "Login Error: " + loginResult;
+		}
+	}
+
+	/**
+	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
+	 * API connection with it.
+	 *
+	 * @param headerFields
+	 */
+	void fillCookies(Map<String, List<String>> headerFields) {
+		List<String> cookieList = headerFields
+				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
+		for (int i = 0; i < cookieList.size(); i++) {
+			String[] cookieResponse = cookieList.get(i).split(";\\p{Space}??");
+			for (String cookieLine : cookieResponse) {
+				String[] entry = cookieLine.split("=");
+				if (entry.length == 2) {
+					this.cookies.put(entry[0], entry[1]);
+				}
+				if (entry.length == 1) {
+					this.cookies.put(entry[0], "");
+				}
+			}
+		}
+	}
+
+	/**
+	 * Returns the string representation of the currently stored cookies. This
+	 * data is added to the connection before making requests.
+	 *
+	 * @return cookie string
+	 */
+	String getCookieString() {
+		StringBuilder result = new StringBuilder();
+		boolean first = true;
+		for (Entry<String, String> entry : this.cookies.entrySet()) {
+			if (first) {
+				first = false;
+			} else {
+				result.append("; ");
+			}
+			result.append(entry.getKey());
+			if (!"".equals(entry.getValue())) {
+				result.append("=").append(entry.getValue());
+			}
+
+		}
+		return result.toString();
+	}
+
+	/**
+	 * Returns the query string of a URL from a parameter list.
+	 *
+	 * @param params
+	 *            Map with parameters
+	 * @return query string
+	 */
+	String getQueryString(Map<String, String> params) {
+		StringBuilder builder = new StringBuilder();
+		try {
+			boolean first = true;
+			for (String key : params.keySet()) {
+				if (first) {
+					first = false;
+				} else {
+					builder.append("&");
+				}
+				builder.append(URLEncoder.encode(key, "UTF-8"));
+				builder.append("=");
+				builder.append(URLEncoder.encode(params.get(key), "UTF-8"));
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(
+					"Your Java version does not support UTF-8 encoding.");
+		}
+
+		return builder.toString();
+	}
+
+	/**
+	 * Configures a given {@link HttpURLConnection} object to send requests.
+	 * Takes the request method (either "POST" or "GET") and query string.
 	 *
 	 * @param requestMethod
+	 *            either "POST" or "GET"
 	 * @param queryString
+	 *            the query string to submit
+	 * @param connection
+	 *            the conncetion to configure
 	 * @throws IOException
+	 *             if the given protocol is not valid
 	 */
 	void setupConnection(String requestMethod, String queryString,
 			HttpURLConnection connection) throws IOException {

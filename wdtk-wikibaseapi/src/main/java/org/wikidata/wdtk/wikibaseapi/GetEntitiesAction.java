@@ -36,10 +36,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Java implementation of the wbgetentities action
- * 
+ * Java implementation of the wbgetentities action.
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class GetEntitiesAction {
 
@@ -65,7 +65,7 @@ public class GetEntitiesAction {
 	 * Creates an object to fetch data from the given ApiConnection. The site
 	 * URI is necessary since it is not contained in the data retrieved from the
 	 * API.
-	 * 
+	 *
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
 	 * @param siteUri
@@ -81,7 +81,7 @@ public class GetEntitiesAction {
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the API URL
-	 * 
+	 *
 	 * @param properties
 	 *            parameter setting for wbgetentities
 	 * @return map of document identifiers or titles to documents retrieved via
@@ -97,7 +97,7 @@ public class GetEntitiesAction {
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the API.
-	 * 
+	 *
 	 * @param ids
 	 *            ids of EnitityDocuments that should be retrieved
 	 * @param sites
