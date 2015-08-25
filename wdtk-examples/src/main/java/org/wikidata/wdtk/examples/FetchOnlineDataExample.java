@@ -35,7 +35,7 @@ public class FetchOnlineDataExample {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
-		WikibaseDataFetcher wbdf = new WikibaseDataFetcher();
+		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
 
 		System.out.println("*** Fetching data for one entity:");
 		EntityDocument q42 = wbdf.getEntityDocument("Q42");

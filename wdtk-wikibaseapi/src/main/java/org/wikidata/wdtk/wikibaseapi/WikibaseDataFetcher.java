@@ -65,10 +65,16 @@ public class WikibaseDataFetcher {
 	private final DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
-	 * Creates an object to fetch data from wikidata.org.
+	 * Creates an object to fetch data from wikidata.org. This convenience
+	 * method creates a default {@link ApiConnection} that is not logged in. To
+	 * use an existing connection, the constructor
+	 * {@link #WikibaseDataFetcher(ApiConnection, String)} should be called,
+	 * using {@link Datamodel#SITE_WIKIDATA} as a site URI.
 	 */
-	public WikibaseDataFetcher() {
-		this(ApiConnection.getWikidataApiConnection(), Datamodel.SITE_WIKIDATA);
+	public static WikibaseDataFetcher getWikidataDataFetcher() {
+		return new WikibaseDataFetcher(
+				ApiConnection.getWikidataApiConnection(),
+				Datamodel.SITE_WIKIDATA);
 	}
 
 	/**
