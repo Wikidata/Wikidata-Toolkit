@@ -58,7 +58,7 @@ public interface ItemIdValue extends EntityIdValue {
 
 		@Override
 		public String getSiteIri() {
-			return "http://localhost/entity/";
+			return EntityIdValue.SITE_LOCAL;
 		}
 
 	};

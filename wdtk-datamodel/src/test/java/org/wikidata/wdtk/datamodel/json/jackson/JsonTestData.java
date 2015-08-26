@@ -120,6 +120,8 @@ public class JsonTestData {
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},"
 			+ JSON_ITEM_TYPE + "}";
+	public static final String JSON_WRAPPED_NOITEMID = "{\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},"
+			+ JSON_ITEM_TYPE + "}";
 	public static final String JSON_WRAPPED_SITE_LINK = "{\"id\":\""
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":"

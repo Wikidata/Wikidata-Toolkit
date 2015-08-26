@@ -37,6 +37,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -193,9 +195,14 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 *
 	 * @return string id
 	 */
+	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("id")
 	public String getJsonId() {
-		return this.entityId;
+		if (!EntityIdValue.SITE_LOCAL.equals(this.siteIri)) {
+			return this.entityId;
+		} else {
+			return null;
+		}
 	}
 
 	/**
