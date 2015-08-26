@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,35 +47,57 @@ public class ApiConnectionTest {
 
 	MockApiConnection con;
 
-	String username = "username";
-	String password = "password";
-
 	@Before
 	public void setUp() throws Exception {
 		this.con = new MockApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "login");
-		params.put("lgname", this.username);
-		params.put("lgpassword", this.password);
+		params.put("lgname", "username");
+		params.put("lgpassword", "password");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/loginNeedToken.json", CompressionType.NONE);
 		params.clear();
 		params.put("action", "login");
-		params.put("lgname", username);
-		params.put("lgpassword", password);
+		params.put("lgname", "username");
+		params.put("lgpassword", "password");
 		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/loginSuccess.json", CompressionType.NONE);
+
 		params.clear();
 		params.put("action", "login");
-		params.put("lgname", username);
-		params.put("lgpassword", password);
-		params.put("lgtoken", "blah");
+		params.put("lgname", "username2");
+		params.put("lgpassword", "password2");
+		params.put("format", "json");
+		this.con.setWebResourceFromPath(params, this.getClass(),
+				"/loginNeedToken2.json", CompressionType.NONE);
+		params.clear();
+		params.put("action", "login");
+		params.put("lgname", "username2");
+		params.put("lgpassword", "password2");
+		params.put("lgtoken", "anothertoken");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/loginError.json", CompressionType.NONE);
+
+		params.clear();
+		params.put("action", "login");
+		params.put("lgname", "username3");
+		params.put("lgpassword", "password3");
+		params.put("format", "json");
+		this.con.setWebResourceFromPath(params, this.getClass(),
+				"/loginNeedToken.json", CompressionType.NONE);
+		params.clear();
+		params.put("action", "login");
+		params.put("lgname", "username3");
+		params.put("lgpassword", "password3");
+		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
+		params.put("format", "json");
+		this.con.setWebResourceFromPath(params, this.getClass(),
+				"/loginError2.json", CompressionType.NONE);
+
 		params.clear();
 		params.put("action", "logout");
 		params.put("format", "json");
@@ -84,27 +106,27 @@ public class ApiConnectionTest {
 
 	@Test
 	public void testGetLoginToken() throws IOException {
-		assertTrue(getLoginToken() != null);
+		assertTrue(this.con.getLoginToken("username", "password") != null);
 	}
 
 	@Test
 	public void testConfirmLogin() throws LoginFailedException, IOException {
-		String token = getLoginToken();
-		this.con.confirmLogin(token, this.username, this.password);
+		String token = this.con.getLoginToken("username", "password");
+		this.con.confirmLogin(token, "username", "password");
 	}
 
 	@Test
 	public void testLogin() throws LoginFailedException {
 		assertFalse(this.con.loggedIn);
-		this.con.login(this.username, this.password);
-		assertEquals(this.username, this.con.getCurrentUser());
-		assertEquals(this.password, this.con.password);
+		this.con.login("username", "password");
+		assertEquals("username", this.con.getCurrentUser());
+		assertEquals("password", this.con.password);
 		assertTrue(this.con.isLoggedIn());
 	}
 
 	@Test
 	public void testLogout() throws IOException, LoginFailedException {
-		this.con.login(this.username, this.password);
+		this.con.login("username", "password");
 		this.con.logout();
 		assertEquals("", this.con.username);
 		assertEquals("", this.con.password);
@@ -113,17 +135,28 @@ public class ApiConnectionTest {
 
 	@Test(expected = LoginFailedException.class)
 	public void loginErrors() throws IOException, LoginFailedException {
-		@SuppressWarnings("unused")
-		String token = this.con.getLoginToken(this.username, this.password);
-		this.con.confirmLogin("blah", this.username, this.password);
+		// This will fail because the token returned is not correct
+		this.con.login("username2", "password2");
+	}
+
+	@Test(expected = LoginFailedException.class)
+	public void loginUserErrors() throws IOException, LoginFailedException {
+		// This will fail because the user is not known
+		this.con.login("username3", "password3");
+	}
+
+	@Test(expected = LoginFailedException.class)
+	public void loginIoErrors() throws IOException, LoginFailedException {
+		// This will fail because the request will throw an IO exception
+		this.con.login("notmocked", "notmocked");
 	}
 
 	@Test
 	public void testGetQueryString() throws UnsupportedEncodingException {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "login");
-		params.put("lgname", username);
-		params.put("lgpassword", password);
+		params.put("lgname", "username");
+		params.put("lgpassword", "password");
 		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
 		params.put("format", "json");
 		assertEquals(
@@ -200,6 +233,33 @@ public class ApiConnectionTest {
 				connection.apiBaseUrl);
 	}
 
+	@Test
+	public void testErrorMessages() {
+		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		String[] knownErrors = { ApiConnection.LOGIN_WRONG_PASS,
+				ApiConnection.LOGIN_WRONG_PLUGIN_PASS,
+				ApiConnection.LOGIN_NOT_EXISTS, ApiConnection.LOGIN_BLOCKED,
+				ApiConnection.LOGIN_EMPTY_PASS, ApiConnection.LOGIN_NO_NAME,
+				ApiConnection.LOGIN_CREATE_BLOCKED,
+				ApiConnection.LOGIN_ILLEGAL, ApiConnection.LOGIN_THROTTLED,
+				ApiConnection.LOGIN_WRONG_TOKEN, ApiConnection.LOGIN_NEEDTOKEN };
+
+		ArrayList<String> messages = new ArrayList<>();
+		for (String error : knownErrors) {
+			messages.add(connection.getLoginErrorMessage(error));
+		}
+
+		String unknownMessage = connection
+				.getLoginErrorMessage("unkonwn error code");
+
+		int i = 0;
+		for (String message : messages) {
+			assertFalse(unknownMessage.equals(message));
+			assertTrue(message.contains(knownErrors[i]));
+			i++;
+		}
+	}
+
 	private List<String> testCookieList() {
 		List<String> cookieList = new ArrayList<String>();
 		cookieList
@@ -209,11 +269,6 @@ public class ApiConnectionTest {
 		cookieList
 				.add("testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; path=/; secure; httponly");
 		return cookieList;
-	}
-
-	private String getLoginToken() throws IOException {
-		String token = this.con.getLoginToken(this.username, this.password);
-		return token;
 	}
 
 }

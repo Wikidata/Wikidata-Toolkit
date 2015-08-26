@@ -21,42 +21,56 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This class holds the properties of an wbgetentities action request.
- * 
+ * This class is a simple record that holds the properties of an wbgetentities
+ * action request. It is used internally by {@link WikibaseDataFetcher} to
+ * gather parameters for the request.
+ *
  * @author Michael Guenther
- * 
+ *
  */
 public class WbGetEntitiesProperties {
 
 	/**
-	 * ids for entities
+	 * List of ids for entities. Use | as a separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String ids = null;
 
 	/**
-	 * refers to a sites (e.g. "enwiki") to determine the language for the
-	 * titles
+	 * List of site keys. Use | as a separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String sites = null;
 
 	/**
-	 * titles for item documents
+	 * List of page titles. Use | as a separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String titles = null;
 
 	/**
-	 * Describes what should be included in the response. Possible values are
-	 * labels, descriptions, sitelinks, claims, datatype and aliases.
+	 * List of strings that define which data should be returned. Use | as a
+	 * separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String props = null;
 
 	/**
-	 * languages for titles, descriptions and aliases
+	 * List of language codes for restricting language-specific data. Use | as a
+	 * separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String languages = null;
 
 	/**
-	 * filter for sitelinks
+	 * List of site keys for restricting site links. Use | as a separator. See
+	 * {@link WbGetEntitiesAction#wbGetEntities(String, String, String, String, String, String)}
+	 * for details.
 	 */
 	public String sitefilter = null;
 }

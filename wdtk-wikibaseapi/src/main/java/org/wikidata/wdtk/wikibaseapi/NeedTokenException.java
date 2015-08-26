@@ -29,10 +29,6 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 public class NeedTokenException extends LoginFailedException {
 
-	public NeedTokenException() {
-		super();
-	}
-
 	public NeedTokenException(String message) {
 		super(message);
 	}

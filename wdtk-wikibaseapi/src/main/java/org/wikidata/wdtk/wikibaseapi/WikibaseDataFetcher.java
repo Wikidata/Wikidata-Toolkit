@@ -35,9 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple class to fetch data from Wikibase via the online API.
- * 
+ *
  * @author Markus Kroetzsch
- * 
  * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
@@ -48,7 +47,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * API Action to fetch data.
 	 */
-	final GetEntitiesAction entitiesAction;
+	final WbGetEntitiesAction entitiesAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -66,17 +65,23 @@ public class WikibaseDataFetcher {
 	private final DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
-	 * Creates an object to fetch data from wikidata.org.
+	 * Creates an object to fetch data from wikidata.org. This convenience
+	 * method creates a default {@link ApiConnection} that is not logged in. To
+	 * use an existing connection, the constructor
+	 * {@link #WikibaseDataFetcher(ApiConnection, String)} should be called,
+	 * using {@link Datamodel#SITE_WIKIDATA} as a site URI.
 	 */
-	public WikibaseDataFetcher() {
-		this(ApiConnection.getWikidataApiConnection(), Datamodel.SITE_WIKIDATA);
+	public static WikibaseDataFetcher getWikidataDataFetcher() {
+		return new WikibaseDataFetcher(
+				ApiConnection.getWikidataApiConnection(),
+				Datamodel.SITE_WIKIDATA);
 	}
 
 	/**
 	 * Creates an object to fetch data from API with the given
 	 * {@link ApiConnection} object. The site URI is necessary since it is not
 	 * contained in the data retrieved from the URI.
-	 * 
+	 *
 	 * @param connection
 	 *            ApiConnection
 	 * @param siteUri
@@ -85,7 +90,7 @@ public class WikibaseDataFetcher {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
-		this.entitiesAction = new GetEntitiesAction(connection, siteUri);
+		this.entitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -97,7 +102,7 @@ public class WikibaseDataFetcher {
 	 * Note: Filtering individual properties is currently not supported (such
 	 * filters will be ignored). However, filtering all properties is possible;
 	 * in this case all statements are excluded.
-	 * 
+	 *
 	 * @return the filter used by this object
 	 */
 	public DocumentDataFilter getFilter() {
@@ -107,7 +112,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Fetches the documents for the entity of the given string IDs. The result
 	 * is an {@link EntityDocument} or null if the data could not be fetched.
-	 * 
+	 *
 	 * @param entityId
 	 *            string IDs (e.g., "P31" or "Q42") of requested entity
 	 * @return retrieved entity document or null
@@ -121,7 +126,7 @@ public class WikibaseDataFetcher {
 	 * result is a map from entity IDs to {@link EntityDocument} objects. It is
 	 * possible that a requested ID could not be found: then this key is not set
 	 * in the map.
-	 * 
+	 *
 	 * @param entityIds
 	 *            string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
@@ -136,7 +141,7 @@ public class WikibaseDataFetcher {
 	 * result is a map from entity IDs to {@link EntityDocument} objects. It is
 	 * possible that a requested ID could not be found: then this key is not set
 	 * in the map.
-	 * 
+	 *
 	 * @param entityIds
 	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
@@ -144,7 +149,7 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
-		final String entityString = implodeObjects(entityIds);
+		final String entityString = ApiConnection.implodeObjects(entityIds);
 		properties.ids = entityString;
 		return getEntityDocumentMap(entityIds.size(), properties);
 	}
@@ -156,7 +161,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g., "enwiki"
 	 * @param title
@@ -175,7 +180,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
@@ -196,7 +201,7 @@ public class WikibaseDataFetcher {
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
-	 * 
+	 *
 	 * @param siteKey
 	 *            wiki site id, e.g. "enwiki"
 	 * @param titles
@@ -208,7 +213,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles) {
 		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
-		String titleString = implodeObjects(titles);
+		String titleString = ApiConnection.implodeObjects(titles);
 		properties.titles = titleString;
 		properties.sites = siteKey;
 		return getEntityDocumentMap(titles.size(), properties);
@@ -217,7 +222,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the APIs.
-	 * 
+	 *
 	 * @param numOfEntities
 	 *            number of entities that should be retrieved
 	 * @param properties
@@ -231,16 +236,15 @@ public class WikibaseDataFetcher {
 		if (numOfEntities == 0) {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
-		this.configureProperties(properties);
-		Map<String, EntityDocument> result = entitiesAction.wbgetEntities(
-				properties.ids, properties.sites, properties.titles,
-				properties.props, properties.languages, properties.sitefilter);
+		configureProperties(properties);
+		Map<String, EntityDocument> result = this.entitiesAction
+				.wbGetEntities(properties);
 		return result;
 	}
 
 	/**
 	 * Configures props, languages and sitefilter properties.
-	 * 
+	 *
 	 * @param properties
 	 */
 	void configureProperties(WbGetEntitiesProperties properties) {
@@ -252,7 +256,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "props" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -275,7 +279,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * Sets the value for the API's "languages" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -284,13 +288,14 @@ public class WikibaseDataFetcher {
 				|| this.filter.getLanguageFilter() == null) {
 			return;
 		}
-		properties.languages = implodeObjects(this.filter.getLanguageFilter());
+		properties.languages = ApiConnection.implodeObjects(this.filter
+				.getLanguageFilter());
 	}
 
 	/**
 	 * Sets the value for the API's "sitefilter" parameter based on the current
 	 * settings.
-	 * 
+	 *
 	 * @param properties
 	 *            current setting of parameters
 	 */
@@ -299,29 +304,8 @@ public class WikibaseDataFetcher {
 				|| this.filter.getSiteLinkFilter() == null) {
 			return;
 		}
-		properties.sitefilter = implodeObjects(this.filter.getSiteLinkFilter());
-	}
-
-	/**
-	 * Builds a string that serializes a list of objects separated by the pipe
-	 * character. The toString methods are used to turn objects into strings.
-	 * 
-	 * @param objects
-	 *            the objects to implode
-	 * @return string of imploded objects
-	 */
-	String implodeObjects(Iterable<? extends Object> objects) {
-		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for (Object o : objects) {
-			if (first) {
-				first = false;
-			} else {
-				builder.append("|");
-			}
-			builder.append(o.toString());
-		}
-		return builder.toString();
+		properties.sitefilter = ApiConnection.implodeObjects(this.filter
+				.getSiteLinkFilter());
 	}
 
 }
