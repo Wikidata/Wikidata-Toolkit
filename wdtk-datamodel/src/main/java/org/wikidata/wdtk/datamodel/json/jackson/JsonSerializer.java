@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -204,6 +205,21 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 */
 	public static String getJsonString(PropertyDocument propertyDocument) {
 		if (!(propertyDocument instanceof JacksonPropertyDocument)) {
+			propertyDocument = datamodelConverter.copy(propertyDocument);
+		}
+		return jacksonObjectToString(propertyDocument);
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string. In
+	 * case of errors, null is returned.
+	 *
+	 * @param propertyDocument
+	 *            object to serialize
+	 * @return JSON serialization or null
+	 */
+	public static String getJsonString(Statement propertyDocument) {
+		if (!(propertyDocument instanceof JacksonStatement)) {
 			propertyDocument = datamodelConverter.copy(propertyDocument);
 		}
 		return jacksonObjectToString(propertyDocument);

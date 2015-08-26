@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,10 +35,15 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -154,6 +159,28 @@ public class JsonSerializerTest {
 
 		JsonComparator.compareJsonStrings(json, result1);
 		JsonComparator.compareJsonStrings(json, result2);
+	}
+
+	@Test
+	public void testStatementToJson() {
+		Statement s = Datamodel
+				.makeStatement(
+						Datamodel.makeClaim(
+								ItemIdValue.NULL,
+								Datamodel.makeNoValueSnak(Datamodel
+										.makeWikidataPropertyIdValue(JsonTestData.TEST_PROPERTY_ID)),
+								Collections.<SnakGroup> emptyList()),
+						Collections.<Reference> emptyList(),
+						StatementRank.NORMAL, JsonTestData.TEST_STATEMENT_ID);
+
+		String result1 = JsonSerializer.getJsonString(s);
+		String result2 = JsonSerializer.getJsonString(datamodelConverter
+				.copy(s));
+
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
+				result1);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
+				result2);
 	}
 
 	@Test
