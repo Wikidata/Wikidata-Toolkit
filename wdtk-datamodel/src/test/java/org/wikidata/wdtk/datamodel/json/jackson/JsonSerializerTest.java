@@ -29,6 +29,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -39,11 +40,15 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 public class JsonSerializerTest {
+
+	static final DatamodelConverter datamodelConverter = new DatamodelConverter(
+			new JacksonObjectFactory());
 
 	@Test
 	public void testSerializer() throws IOException {
@@ -109,5 +114,58 @@ public class JsonSerializerTest {
 			assertEquals(inputDocuments.get(i), outputDocuments.get(i));
 		}
 		assertEquals(serializer.getEntityDocumentCount(), 3);
+	}
+
+	@Test
+	public void testItemDocumentToJson() {
+		ItemDocument id = Datamodel.makeItemDocument(
+				Datamodel.makeWikidataItemIdValue(JsonTestData.TEST_ITEM_ID),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				Collections.<String, SiteLink> emptyMap());
+
+		String result1 = JsonSerializer.getJsonString(id);
+		String result2 = JsonSerializer.getJsonString(datamodelConverter
+				.copy(id));
+
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
+				result1);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
+				result2);
+	}
+
+	@Test
+	public void testPropertyDocumentToJson() {
+		PropertyDocument pd = Datamodel.makePropertyDocument(
+				Datamodel.makeWikidataPropertyIdValue("P1"),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+
+		String result1 = JsonSerializer.getJsonString(pd);
+		String result2 = JsonSerializer.getJsonString(datamodelConverter
+				.copy(pd));
+
+		String json = "{\"id\":\"P1\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"type\":\"property\", \"datatype\":\"wikibase-item\"}";
+
+		JsonComparator.compareJsonStrings(json, result1);
+		JsonComparator.compareJsonStrings(json, result2);
+	}
+
+	@Test
+	public void testJacksonObjectToJsonError() {
+		Object obj = new Object() {
+			@SuppressWarnings("unused")
+			public String getData() throws JsonGenerationException {
+				throw new JsonGenerationException("Test exception");
+			}
+		};
+
+		String result = JsonSerializer.jacksonObjectToString(obj);
+		assertEquals(null, result);
 	}
 }

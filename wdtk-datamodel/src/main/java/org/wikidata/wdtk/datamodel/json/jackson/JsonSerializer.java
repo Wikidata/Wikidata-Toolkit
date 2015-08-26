@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -72,12 +73,16 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * Object used to convert given entity documents to Jackson implementations
 	 * for serialization whenever needed.
 	 */
-	protected final DatamodelConverter datamodelConverter;
+	protected static final DatamodelConverter datamodelConverter = new DatamodelConverter(
+			new JacksonObjectFactory());
 
 	/**
 	 * Object mapper that is used to serialize JSON.
 	 */
-	protected final ObjectMapper mapper;
+	protected static final ObjectMapper mapper = new ObjectMapper();
+	static {
+		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+	}
 
 	/**
 	 * Counter for the number of documents serialized so far.
@@ -94,12 +99,6 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 */
 	public JsonSerializer(OutputStream outputStream) {
 		this.outputStream = outputStream;
-
-		this.mapper = new ObjectMapper();
-		this.mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-
-		this.datamodelConverter = new DatamodelConverter(
-				new JacksonObjectFactory());
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		if (!(itemDocument instanceof JacksonItemDocument)) {
-			itemDocument = this.datamodelConverter.copy(itemDocument);
+			itemDocument = datamodelConverter.copy(itemDocument);
 		}
 		serializeEntityDocument(itemDocument);
 	}
@@ -124,7 +123,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		if (!(propertyDocument instanceof JacksonPropertyDocument)) {
-			propertyDocument = this.datamodelConverter.copy(propertyDocument);
+			propertyDocument = datamodelConverter.copy(propertyDocument);
 		}
 		serializeEntityDocument(propertyDocument);
 	}
@@ -173,11 +172,60 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 			if (this.entityDocumentCount > 0) {
 				this.outputStream.write(JSON_SEP);
 			}
-			this.mapper.writeValue(this.outputStream, entityDocument);
+			mapper.writeValue(this.outputStream, entityDocument);
 		} catch (IOException e) {
 			reportException(e);
 		}
 		this.entityDocumentCount++;
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string. In
+	 * case of errors, null is returned.
+	 *
+	 * @param itemDocument
+	 *            object to serialize
+	 * @return JSON serialization or null
+	 */
+	public static String getJsonString(ItemDocument itemDocument) {
+		if (!(itemDocument instanceof JacksonItemDocument)) {
+			itemDocument = datamodelConverter.copy(itemDocument);
+		}
+		return jacksonObjectToString(itemDocument);
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string. In
+	 * case of errors, null is returned.
+	 *
+	 * @param propertyDocument
+	 *            object to serialize
+	 * @return JSON serialization or null
+	 */
+	public static String getJsonString(PropertyDocument propertyDocument) {
+		if (!(propertyDocument instanceof JacksonPropertyDocument)) {
+			propertyDocument = datamodelConverter.copy(propertyDocument);
+		}
+		return jacksonObjectToString(propertyDocument);
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string. In
+	 * case of errors, null is returned. In particular, this happens if the
+	 * object is not based on a Jackson-annotated class. An error is logged in
+	 * this case.
+	 *
+	 * @param object
+	 *            object to serialize
+	 * @return JSON serialization or null
+	 */
+	protected static String jacksonObjectToString(Object object) {
+		try {
+			return mapper.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			logger.error("Failed to serialize JSON data: " + e.toString());
+			return null;
+		}
 	}
 
 }
