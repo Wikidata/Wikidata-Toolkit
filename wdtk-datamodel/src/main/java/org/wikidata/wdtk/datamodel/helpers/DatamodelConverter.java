@@ -87,7 +87,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private boolean deepCopy = true;
 
 	/**
-	 * If set to true, references will be copied when making deep copyies of
+	 * If set to true, references will be copied when making deep copies of
 	 * statements. This is the default. The setting does not have any effect
 	 * when making shallow copies.
 	 */

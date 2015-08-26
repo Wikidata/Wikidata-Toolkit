@@ -47,6 +47,15 @@ public class TestStatement {
 	}
 
 	@Test
+	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
+		JacksonStatement statement = JsonTestData.getTestNoValueNoIdStatement();
+
+		String result = mapper.writeValueAsString(statement);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_NOVALUE_NOID_STATEMENT, result);
+	}
+
+	@Test
 	public void testEmptyStatementToJava() throws JsonParseException,
 			JsonMappingException, IOException {
 		JacksonStatement result = mapper.readValue(

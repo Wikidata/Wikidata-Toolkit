@@ -24,10 +24,43 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * The id of a Wikibase Item. Objects implementing this interface always return
  * {@link EntityIdValue#ET_ITEM} for {@link EntityIdValue#getEntityType()
  * getEntityType}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface ItemIdValue extends EntityIdValue {
+
+	/**
+	 * Fixed {@link ItemIdValue} that refers to a non-existing item. Can be used
+	 * as a placeholder object in situations where the entity id is irrelevant.
+	 */
+	static final ItemIdValue NULL = new ItemIdValue() {
+
+		@Override
+		public String getIri() {
+			return getSiteIri() + getId();
+		}
+
+		@Override
+		public <T> T accept(ValueVisitor<T> valueVisitor) {
+			return valueVisitor.visit(this);
+		}
+
+		@Override
+		public String getEntityType() {
+			return ET_ITEM;
+		}
+
+		@Override
+		public String getId() {
+			return "Q0";
+		}
+
+		@Override
+		public String getSiteIri() {
+			return "http://localhost/entity/";
+		}
+
+	};
 
 }
