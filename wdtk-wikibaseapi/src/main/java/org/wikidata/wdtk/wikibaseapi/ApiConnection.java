@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -357,7 +357,7 @@ public class ApiConnection {
 
 		if (root.has("error")) {
 			JsonNode errorNode = root.path("error");
-			logger.error("Error when reading data from API: "
+			logger.error("API returned error: "
 					+ errorNode.path("info").asText("DESCRIPTION MISSING")
 					+ " ["
 					+ errorNode.path("code").asText("UNKNOWN ERROR CODE") + "]");
@@ -369,12 +369,12 @@ public class ApiConnection {
 			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
 			while (iter.hasNext()) {
 				Map.Entry<String, JsonNode> node = iter.next();
-				if (node.getKey().equals("main")) {
-					logger.warn("Warning when reading data from API: "
+				if ("main".equals(node.getKey())) {
+					logger.warn("API returned warning: "
 							+ node.getValue().path("*")
 									.asText("DESCRIPTION MISSING"));
 				} else {
-					logger.warn("Warning when reading data from API "
+					logger.warn("API returned warning: "
 							+ node.getKey()
 							+ " :"
 							+ node.getValue().path("*")

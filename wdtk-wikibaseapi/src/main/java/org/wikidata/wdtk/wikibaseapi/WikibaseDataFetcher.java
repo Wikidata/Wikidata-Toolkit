@@ -47,7 +47,7 @@ public class WikibaseDataFetcher {
 	/**
 	 * API Action to fetch data.
 	 */
-	final WbGetEntitiesAction entitiesAction;
+	final WbGetEntitiesAction wbGetEntitiesAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -90,7 +90,7 @@ public class WikibaseDataFetcher {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
-		this.entitiesAction = new WbGetEntitiesAction(connection, siteUri);
+		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -237,7 +237,7 @@ public class WikibaseDataFetcher {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
 		configureProperties(properties);
-		Map<String, EntityDocument> result = this.entitiesAction
+		Map<String, EntityDocument> result = this.wbGetEntitiesAction
 				.wbGetEntities(properties);
 		return result;
 	}

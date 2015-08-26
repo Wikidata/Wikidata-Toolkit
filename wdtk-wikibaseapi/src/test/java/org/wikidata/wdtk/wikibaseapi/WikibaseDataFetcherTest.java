@@ -147,7 +147,7 @@ public class WikibaseDataFetcherTest {
 
 		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
 		assertEquals(ApiConnection.URL_WIKIDATA_API,
-				wbdf.entitiesAction.connection.apiBaseUrl);
+				wbdf.wbGetEntitiesAction.connection.apiBaseUrl);
 	}
 
 	private void setStandardParameters(Map<String, String> parameters) {
