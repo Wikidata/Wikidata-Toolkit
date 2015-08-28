@@ -187,6 +187,9 @@ public class WbEditEntityAction {
 			}
 			parameters.put("site", site);
 			parameters.put("title", title);
+		} else {
+			throw new IllegalArgumentException(
+					"This action must create a new item, or specify an id, or specify a site and title.");
 		}
 
 		parameters.put("data", data);
@@ -238,6 +241,7 @@ public class WbEditEntityAction {
 
 		try (InputStream response = this.connection.sendRequest("POST",
 				parameters)) {
+
 			JsonNode root = this.mapper.readTree(response);
 
 			this.connection.checkErrors(root);
@@ -253,9 +257,8 @@ public class WbEditEntityAction {
 				return parseJsonResponse(root.path("entity"));
 			}
 			logger.error("No entity document found in API response.");
-
-			return null;
 		}
+		return null;
 	}
 
 	/**
@@ -295,6 +298,7 @@ public class WbEditEntityAction {
 		params.put(ApiConnection.PARAM_FORMAT, "json");
 
 		try (InputStream response = this.connection.sendRequest("POST", params)) {
+
 			JsonNode root = this.mapper.readTree(response);
 
 			this.connection.checkErrors(root);
@@ -302,9 +306,6 @@ public class WbEditEntityAction {
 
 			String newToken = root.path("query").path("tokens")
 					.path("csrftoken").textValue();
-			if ("".equals(newToken)) {
-				newToken = null;
-			}
 			return newToken;
 		} catch (IOException | MediaWikiApiErrorException e) {
 			logger.error("Error when trying to fetch csrf token: "

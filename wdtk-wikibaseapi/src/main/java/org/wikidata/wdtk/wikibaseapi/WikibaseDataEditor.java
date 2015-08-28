@@ -82,7 +82,7 @@ public class WikibaseDataEditor {
 	 *
 	 * @return whether to flag edits as bot
 	 */
-	public boolean editAsbot() {
+	public boolean editAsBot() {
 		return this.editAsBot;
 	}
 
