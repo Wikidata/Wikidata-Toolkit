@@ -318,7 +318,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId);
+				Collections.<StatementGroup> emptyList(), datatypeId, 0);
 	}
 
 	@Override
@@ -327,9 +327,20 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
+		return getPropertyDocument(propertyId, labels, descriptions, aliases,
+				statementGroups, datatypeId, 0);
+	}
+
+	@Override
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			long revisionId) {
 		JacksonPropertyDocument result = new JacksonPropertyDocument();
 		initializeTermedStatementDocument(result, propertyId, labels,
-				descriptions, aliases, statementGroups);
+				descriptions, aliases, statementGroups, revisionId);
 
 		switch (datatypeId.getIri()) {
 		case DatatypeIdValue.DT_ITEM:
@@ -374,9 +385,20 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
+		return getItemDocument(itemIdValue, labels, descriptions, aliases,
+				statementGroups, siteLinks, 0);
+	}
+
+	@Override
+	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks, long revisionId) {
 		JacksonItemDocument result = new JacksonItemDocument();
 		initializeTermedStatementDocument(result, itemIdValue, labels,
-				descriptions, aliases, statementGroups);
+				descriptions, aliases, statementGroups, revisionId);
 
 		Map<String, JacksonSiteLink> jacksonSiteLinks = new HashMap<>(
 				siteLinks.size());
@@ -400,10 +422,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			EntityIdValue entityIdValue, List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups) {
+			List<StatementGroup> statementGroups, long revisionId) {
 
 		document.setJsonId(entityIdValue.getId());
 		document.setSiteIri(entityIdValue.getSiteIri());
+		document.setRevisionId(revisionId);
 
 		Map<String, List<JacksonMonolingualTextValue>> aliasMap = new HashMap<>();
 		for (MonolingualTextValue mltv : aliases) {

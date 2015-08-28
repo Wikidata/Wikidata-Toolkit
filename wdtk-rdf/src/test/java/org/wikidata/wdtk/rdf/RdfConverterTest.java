@@ -261,7 +261,7 @@ public class RdfConverterTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap());
+				statementGroups, Collections.<String, SiteLink> emptyMap(), 0);
 	}
 
 	private PropertyDocument createTestPropertyDocument() {
@@ -292,7 +292,7 @@ public class RdfConverterTest {
 				.getDatatypeIdValue(DatatypeIdValue.DT_ITEM);
 
 		return this.dataObjectFactory.getPropertyDocument(propertyIdValue,
-				labels, descriptions, aliases, statementGroups, datatypeId);
+				labels, descriptions, aliases, statementGroups, datatypeId, 0);
 	}
 
 	private PropertyDocument createWrongTestPropertyDocument() {
@@ -323,7 +323,7 @@ public class RdfConverterTest {
 				.getDatatypeIdValue(DatatypeIdValue.DT_ITEM);
 
 		return this.dataObjectFactory.getPropertyDocument(propertyIdValue,
-				labels, descriptions, aliases, statementGroups, datatypeId);
+				labels, descriptions, aliases, statementGroups, datatypeId, 0);
 	}
 
 	@Test
@@ -412,9 +412,9 @@ public class RdfConverterTest {
 						"http://www.wikidata.org/"), Collections
 						.<MonolingualTextValue> emptyList(), Collections
 						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(),
-				this.dataObjectFactory
-						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM));
+						.<MonolingualTextValue> emptyList(), Collections
+						.<StatementGroup> emptyList(), this.dataObjectFactory
+						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM), 0);
 		this.rdfConverter.writeInterPropertyLinks(document);
 		this.rdfWriter.finish();
 

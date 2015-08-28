@@ -22,17 +22,29 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * Interface for datasets that describe an entity.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface EntityDocument {
 
 	/**
-	 * Return the ID of the entity that the data refers to
-	 * 
+	 * Returns the ID of the entity that the data refers to
+	 *
 	 * @return entity id
 	 */
 	EntityIdValue getEntityId();
+
+	/**
+	 * Returns the revision ID of this document, or 0 if no id is known. The
+	 * revision ID is a number stored by MediaWiki to indicate the version of a
+	 * document. It is based on a global counter that is incremented on each
+	 * edit. Not all sources of entity document data may provide the revision
+	 * ID, as it is not strictly part of the data, but part of the document
+	 * metadata.
+	 *
+	 * @return revision id
+	 */
+	long getRevisionId();
 
 }

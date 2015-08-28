@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 /**
  * Abstract base class for builders that construct {@link EntityDocument}
  * objects.
- * 
+ *
  * @author Markus Kroetzsch
  *
  * @param <T>
@@ -51,8 +51,23 @@ public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O
 	final ArrayList<MonolingualTextValue> aliases = new ArrayList<>();
 	final HashMap<PropertyIdValue, ArrayList<Statement>> statements = new HashMap<>();
 
+	long revisionId = 0;
+
 	protected EntityDocumentBuilder(EntityIdValue entityIdValue) {
 		this.entityIdValue = entityIdValue;
+	}
+
+	/**
+	 * Sets the revision id for the constructed document. See
+	 * {@link EntityDocument#getRevisionId()}.
+	 *
+	 * @param revisionId
+	 *            the revision id
+	 * @return builder object to continue construction
+	 */
+	public T withRevisionId(long revisionId) {
+		this.revisionId = revisionId;
+		return getThis();
 	}
 
 	/**

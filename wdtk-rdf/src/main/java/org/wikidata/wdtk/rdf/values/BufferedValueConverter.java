@@ -50,7 +50,7 @@ public abstract class BufferedValueConverter<V extends org.wikidata.wdtk.datamod
 	/**
 	 * Adds the given value to the list of values that should still be
 	 * serialized. The given RDF resource will be used as a subject.
-	 * 
+	 *
 	 * @param value
 	 *            the value to be serialized
 	 * @param resource
@@ -78,7 +78,7 @@ public abstract class BufferedValueConverter<V extends org.wikidata.wdtk.datamod
 	/**
 	 * Writes the triples for a single value, using the given resource as
 	 * subject.
-	 * 
+	 *
 	 * @param value
 	 * @param resource
 	 * @throws RDFHandlerException

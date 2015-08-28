@@ -394,7 +394,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
-				new DatatypeIdImpl(DatatypeIdValue.DT_TIME));
+				new DatatypeIdImpl(DatatypeIdValue.DT_TIME), 1234);
 		PropertyDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
@@ -410,7 +410,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(0, 0), // descriptions
 				getTestMtvList(15, 12), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_ITEM),
-				getTestSiteLinks(20));
+				getTestSiteLinks(20), 1234);
 		ItemDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());

@@ -561,7 +561,8 @@ public class Equality {
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getAliases().equals(other.getAliases())
 				&& o1.getDescriptions().equals(other.getDescriptions())
-				&& o1.getLabels().equals(other.getLabels());
+				&& o1.getLabels().equals(other.getLabels())
+				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
 }

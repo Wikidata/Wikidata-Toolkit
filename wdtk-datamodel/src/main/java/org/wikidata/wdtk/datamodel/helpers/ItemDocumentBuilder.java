@@ -70,7 +70,7 @@ public class ItemDocumentBuilder extends
 		prepareBuild();
 		return factory.getItemDocument((ItemIdValue) this.entityIdValue,
 				this.labels, this.descriptions, this.aliases,
-				getStatementGroups(), this.siteLinks);
+				getStatementGroups(), this.siteLinks, this.revisionId);
 	}
 
 	/**

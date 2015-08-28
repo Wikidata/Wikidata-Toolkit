@@ -93,7 +93,7 @@ public class PropertyDocumentBuilder extends
 		return factory.getPropertyDocument(
 				(PropertyIdValue) this.entityIdValue, this.labels,
 				this.descriptions, this.aliases, getStatementGroups(),
-				this.datatype);
+				this.datatype, this.revisionId);
 	}
 
 	@Override

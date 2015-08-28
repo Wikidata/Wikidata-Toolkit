@@ -42,9 +42,9 @@ import org.wikidata.wdtk.rdf.RdfWriter;
  * data value. Some values are complex and require further RDF triples to be
  * written. In such cases, the class stores the values to a buffer. Methods for
  * writing additional triples for these buffered values can be called later.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class AnyValueConverter implements
 		ValueConverter<org.wikidata.wdtk.datamodel.interfaces.Value>,

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,7 +68,7 @@ public class JsonSerializerTest {
 						.<MonolingualTextValue> emptyList(),
 				DataObjectFactoryImplTest.getTestStatementGroups(1, 24, 1,
 						EntityIdValue.ET_ITEM), Collections
-						.<String, SiteLink> emptyMap());
+						.<String, SiteLink> emptyMap(), 1234);
 		ItemDocument id2 = Datamodel.makeItemDocument(DataObjectFactoryImplTest
 				.getTestItemIdValue(2), Collections
 				.<MonolingualTextValue> emptyList(), Collections
@@ -78,7 +78,7 @@ public class JsonSerializerTest {
 				Collections.<String, SiteLink> singletonMap(
 						"enwiki",
 						Datamodel.makeSiteLink("Title2", "enwiki",
-								Collections.<String> emptyList())));
+								Collections.<String> emptyList())), 0);
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
 				DataObjectFactoryImplTest.getTestPropertyIdValue(1),
 				Collections.<MonolingualTextValue> emptyList(), Collections
@@ -86,7 +86,8 @@ public class JsonSerializerTest {
 						.<MonolingualTextValue> singletonList(Datamodel
 								.makeMonolingualTextValue("Alias1", "lang1")),
 				Collections.<StatementGroup> emptyList(), Datamodel
-						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA));
+						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA),
+				3456);
 
 		serializer.open();
 		serializer.processItemDocument(id1);

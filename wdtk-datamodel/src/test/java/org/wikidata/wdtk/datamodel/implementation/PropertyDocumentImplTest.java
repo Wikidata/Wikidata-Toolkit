@@ -98,9 +98,9 @@ public class PropertyDocumentImplTest {
 		datatypeId = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 
 		pd1 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 		pd2 = new PropertyDocumentImpl(pid, labels, descriptions, aliases,
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 	}
 
 	@Test
@@ -119,28 +119,27 @@ public class PropertyDocumentImplTest {
 				DataObjectFactoryImplTest.getTestPropertyIdValue(3), labels,
 				descriptions, aliases,
 				DataObjectFactoryImplTest.getTestStatementGroups(3, 10, 3,
-						EntityIdValue.ET_PROPERTY), datatypeId);
+						EntityIdValue.ET_PROPERTY), datatypeId, 1234);
 		PropertyDocument pdDiffLabels = new PropertyDocumentImpl(pid,
 				Collections.<MonolingualTextValue> emptyList(), descriptions,
-				aliases, statementGroups, datatypeId);
+				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffDescriptions = new PropertyDocumentImpl(pid,
 				labels, Collections.<MonolingualTextValue> emptyList(),
-				aliases, statementGroups, datatypeId);
+				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffAliases = new PropertyDocumentImpl(pid, labels,
 				descriptions, Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffStatements = new PropertyDocumentImpl(pid,
 				labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId);
+				Collections.<StatementGroup> emptyList(), datatypeId, 1234);
 		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, statementGroups, new DatatypeIdImpl(
-						DatatypeIdValue.DT_STRING));
+						DatatypeIdValue.DT_STRING), 1234);
 
-		ItemDocument id = new ItemDocumentImpl(
-				ItemIdValueImpl.create("Q42", "foo"), labels,
-				descriptions, aliases,
+		ItemDocument id = new ItemDocumentImpl(ItemIdValueImpl.create("Q42",
+				"foo"), labels, descriptions, aliases,
 				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.<String, SiteLink> emptyMap(), 1234);
 
 		assertEquals(pd1, pd1);
 		assertEquals(pd1, pd2);
@@ -163,37 +162,37 @@ public class PropertyDocumentImplTest {
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
 		new PropertyDocumentImpl(null, labels, descriptions, aliases,
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void labelsNotNull() {
 		new PropertyDocumentImpl(pid, null, descriptions, aliases,
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
 		new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
-				datatypeId);
+				datatypeId, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void aliasesNotNull() {
 		new PropertyDocumentImpl(pid, labels, descriptions, null,
-				statementGroups, datatypeId);
+				statementGroups, datatypeId, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void statementGroupsNotNull() {
 		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
-				datatypeId);
+				datatypeId, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void datatypeNotNull() {
 		new PropertyDocumentImpl(pid, labels, descriptions, aliases,
-				statementGroups, null);
+				statementGroups, null, 1234);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -204,7 +203,7 @@ public class PropertyDocumentImplTest {
 				"en"));
 
 		new PropertyDocumentImpl(pid, labels2, descriptions, aliases,
-				statementGroups, null);
+				statementGroups, null, 1234);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -215,7 +214,7 @@ public class PropertyDocumentImplTest {
 				"Noch eine Beschreibung fuer P42", "de"));
 
 		new PropertyDocumentImpl(pid, labels, descriptions2, aliases,
-				statementGroups, null);
+				statementGroups, null, 1234);
 	}
 
 }
