@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.helpers;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ public class ItemDocumentBuilderTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.<String, SiteLink> emptyMap(), 0);
 
 		ItemDocument id2 = ItemDocumentBuilder.forItemId(ItemIdValue.NULL)
 				.build();
@@ -70,13 +70,13 @@ public class ItemDocumentBuilderTest {
 		ItemDocument id1 = Datamodel.makeItemDocument(i,
 				Collections.singletonList(mtv), Collections.singletonList(mtv),
 				Collections.singletonList(mtv), Collections.singletonList(sg),
-				Collections.singletonMap("frwiki", sl));
+				Collections.singletonMap("frwiki", sl), 1234);
 
 		ItemDocument id2 = ItemDocumentBuilder.forItemId(i)
 				.withLabel("Test", "de").withDescription("Test", "de")
 				.withAlias("Test", "de")
 				.withSiteLink("Test", "frwiki", "Badge").withStatement(s1)
-				.withStatement(s2).build();
+				.withStatement(s2).withRevisionId(1234).build();
 
 		assertEquals(id1, id2);
 	}
