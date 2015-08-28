@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -132,18 +134,33 @@ public class WbEditEntityAction {
 	 * @param clear
 	 *            if true, existing data will be cleared (deleted) before
 	 *            writing the new data
+	 * @param bot
+	 *            if true, edits will be flagged as "bot edits" provided that
+	 *            the logged in user is in the bot group; for regular users, the
+	 *            flag will just be ignored
+	 * @param baserevid
+	 *            the revision of the data that the edit refers to or 0 if this
+	 *            should not be submitted; when used, the site will ensure that
+	 *            no edit has happened since this revision to detect edit
+	 *            conflicts; it is recommended to use this whenever in all
+	 *            operations where the outcome depends on the state of the
+	 *            online data
 	 * @param summary
 	 *            summary for the edit; will be prepended by an automatically
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
 	 * @return modified or created entity document, or null if there were errors
-	 * @throws NoLoginException
 	 * @throws IOException
+	 *             if there was an IO problem. such as missing network
+	 *             connection
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
 	 */
 	public EntityDocument wbEditEntity(String id, String site, String title,
-			String newEntity, String data, boolean clear, String summary)
-			throws NoLoginException, IOException {
+			String newEntity, String data, boolean clear, boolean bot,
+			long baserevid, String summary) throws IOException,
+			MediaWikiApiErrorException {
 
 		Validate.notNull(data,
 				"Data parameter cannot be null when editing entity data");
@@ -174,10 +191,13 @@ public class WbEditEntityAction {
 
 		parameters.put("data", data);
 
-		// This will be ignored if our user has no bot rights. Flagging all bot
-		// user edits that are made through this Java code as bot edits should
-		// be fine.
-		parameters.put("bot", "");
+		if (bot) {
+			parameters.put("bot", "");
+		}
+
+		if (baserevid != 0) {
+			parameters.put("baserevid", Long.toString(baserevid));
+		}
 
 		if (clear) {
 			parameters.put("clear", "");
@@ -193,15 +213,10 @@ public class WbEditEntityAction {
 		EntityDocument result;
 		try {
 			result = doWbEditEntity(parameters);
-		} catch (NeedTokenException e) {
+		} catch (TokenErrorException e) { // try once more
 			refreshCsrfToken();
 			parameters.put("token", getCsrfToken());
-			try {
-				result = doWbEditEntity(parameters);
-			} catch (NeedTokenException e1) {
-				logger.error("Edit action failed: could not get valid CSRF token for editing.");
-				result = null;
-			}
+			result = doWbEditEntity(parameters);
 		}
 
 		return result;
@@ -213,35 +228,31 @@ public class WbEditEntityAction {
 	 * @param parameters
 	 *            the parameters to be used in the call
 	 * @return the entity document that is returned, or null in case of errors
-	 * @throws NeedTokenException
-	 *             if the CSRF token was deemed invalid by the API
 	 * @throws IOException
 	 *             if there were IO errors
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returned an error
 	 */
 	private EntityDocument doWbEditEntity(Map<String, String> parameters)
-			throws NeedTokenException, IOException {
+			throws IOException, MediaWikiApiErrorException {
 
 		try (InputStream response = this.connection.sendRequest("POST",
 				parameters)) {
-			JsonNode root = mapper.readTree(response);
-			if ("notoken".equals(root.path("error").path("code").asText())) {
-				throw new NeedTokenException("Edit token is not valid!");
-			}
+			JsonNode root = this.mapper.readTree(response);
 
-			if (connection.parseErrorsAndWarnings(root)) {
-				if (root.has("item")) {
-					return parseJsonResponse(root.path("item"));
-				}
-				if (root.has("property")) { // not testable because of missing
-											// permissions - probably better
-											// omit the case.
-					return parseJsonResponse(root.path("property"));
-				}
-				if (root.has("entity")) {
-					return parseJsonResponse(root.path("entity"));
-				}
-				logger.error("No entity document found in API response.");
+			this.connection.checkErrors(root);
+			this.connection.logWarnings(root);
+
+			if (root.has("item")) {
+				return parseJsonResponse(root.path("item"));
+			} else if (root.has("property")) {
+				// TODO: not tested because of missing
+				// permissions
+				return parseJsonResponse(root.path("property"));
+			} else if (root.has("entity")) {
+				return parseJsonResponse(root.path("entity"));
 			}
+			logger.error("No entity document found in API response.");
 
 			return null;
 		}
@@ -250,12 +261,8 @@ public class WbEditEntityAction {
 	/**
 	 * Returns a CSRF (Cross-Site Request Forgery) token as required to edit
 	 * data.
-	 *
-	 * @throws NoLoginException
-	 *             if we do not have a logged in connection; this is required to
-	 *             get a token
 	 */
-	private String getCsrfToken() throws NoLoginException {
+	private String getCsrfToken() {
 		if (this.csrfToken == null) {
 			refreshCsrfToken();
 		}
@@ -265,16 +272,8 @@ public class WbEditEntityAction {
 	/**
 	 * Obtains and sets a new CSRF token, whether or not there is already a
 	 * token set right now.
-	 *
-	 * @throws NoLoginException
-	 *             if we do not have a logged in connection; this is required to
-	 *             get a token
 	 */
-	private void refreshCsrfToken() throws NoLoginException {
-		if (!this.connection.isLoggedIn()) {
-			throw new NoLoginException(
-					"To retrieve an edit token it is necessary to be logged in.");
-		}
+	private void refreshCsrfToken() {
 
 		this.csrfToken = fetchCsrfToken();
 		// TODO if this is null, we could try to recover here:
@@ -296,16 +295,18 @@ public class WbEditEntityAction {
 		params.put(ApiConnection.PARAM_FORMAT, "json");
 
 		try (InputStream response = this.connection.sendRequest("POST", params)) {
-			JsonNode root = mapper.readTree(response);
-			if (connection.parseErrorsAndWarnings(root)) {
-				String newToken = root.path("query").path("tokens")
-						.path("csrftoken").textValue();
-				if ("".equals(newToken)) {
-					newToken = null;
-				}
-				return newToken;
+			JsonNode root = this.mapper.readTree(response);
+
+			this.connection.checkErrors(root);
+			this.connection.logWarnings(root);
+
+			String newToken = root.path("query").path("tokens")
+					.path("csrftoken").textValue();
+			if ("".equals(newToken)) {
+				newToken = null;
 			}
-		} catch (IOException e) {
+			return newToken;
+		} catch (IOException | MediaWikiApiErrorException e) {
 			logger.error("Error when trying to fetch csrf token: "
 					+ e.toString());
 		}

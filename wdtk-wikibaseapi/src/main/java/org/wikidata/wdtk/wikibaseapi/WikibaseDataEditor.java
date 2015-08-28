@@ -29,6 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
  * Class that provides high-level editing functionality for Wikibase data.
@@ -52,6 +53,12 @@ public class WikibaseDataEditor {
 	final String siteIri;
 
 	/**
+	 * If true, the bot flag will be set for all edits. This will only have
+	 * effect when logged in with a user account that is in the bot group.
+	 */
+	boolean editAsBot = false;
+
+	/**
 	 * Creates an object to edit data via the Web API of the given
 	 * {@link ApiConnection} object. The site URI is necessary to create data
 	 * objects from API responses, since it is not contained in the data
@@ -70,13 +77,35 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * Returns true if edits should be flagged as bot edits. See
+	 * {@link #setEditAsBot(boolean)} for details.
+	 *
+	 * @return whether to flag edits as bot
+	 */
+	public boolean editAsbot() {
+		return this.editAsBot;
+	}
+
+	/**
+	 * Switches the use of the bot parameter on or of. When set to true, the bot
+	 * flag will be set for all edits. This will only have effect when logged in
+	 * with a user account that is in the bot group. Bot users should set this
+	 * to true in almost every case.
+	 *
+	 * @param editAsBot
+	 */
+	public void setEditAsBot(boolean editAsBot) {
+		this.editAsBot = editAsBot;
+	}
+
+	/**
 	 * Creates a new item document with the summary message as provided.
 	 * <p>
 	 * The item document that is given as a parameter must use a local item id,
-	 * such as {@link ItemIdValue#NULL}. The newly created document is returned.
-	 * It will contain the new id. Note that the site IRI used in this ID is not
-	 * part of the API response; the site IRI given when constructing this
-	 * object is used in this place.
+	 * such as {@link ItemIdValue#NULL}, and its revision id must be 0. The
+	 * newly created document is returned. It will contain the new id. Note that
+	 * the site IRI used in this ID is not part of the API response; the site
+	 * IRI given when constructing this object is used in this place.
 	 * <p>
 	 * Statements in the given data must have empty statement IDs.
 	 *
@@ -85,26 +114,26 @@ public class WikibaseDataEditor {
 	 * @param summary
 	 *            additional summary message for the edit, or null to omit this
 	 * @return newly created item document, or null if there was an error
-	 * @throws NoLoginException
-	 *             if our {@link ApiConnection} is not logged in
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
 	 *             connection
+	 * @throws MediaWikiApiErrorException
 	 */
 	public ItemDocument createItemDocument(ItemDocument itemDocument,
-			String summary) throws NoLoginException, IOException {
+			String summary) throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
 		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(null, null,
-				null, "item", data, false, summary);
+				null, "item", data, false, this.editAsBot, 0, summary);
 	}
 
 	/**
 	 * Creates a new property document with the summary message as provided.
 	 * <p>
 	 * The property document that is given as a parameter must use a local
-	 * property id, such as {@link PropertyIdValue#NULL}. The newly created
-	 * document is returned. It will contain the new id. Note that the site IRI
-	 * used in this ID is not part of the API response; the site IRI given when
+	 * property id, such as {@link PropertyIdValue#NULL}, and its revision id
+	 * must be 0. The newly created document is returned. It will contain the
+	 * new property id and revision id. Note that the site IRI used in the
+	 * property id is not part of the API response; the site IRI given when
 	 * constructing this object is used in this place.
 	 * <p>
 	 * Statements in the given data must have empty statement IDs.
@@ -114,18 +143,18 @@ public class WikibaseDataEditor {
 	 * @param summary
 	 *            additional summary message for the edit, or null to omit this
 	 * @return newly created property document, or null if there was an error
-	 * @throws NoLoginException
-	 *             if our {@link ApiConnection} is not logged in
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
 	 *             connection
+	 * @throws MediaWikiApiErrorException
 	 */
 	public PropertyDocument createPropertyDocument(
 			PropertyDocument propertyDocument, String summary)
-			throws NoLoginException, IOException {
+			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
-		return (PropertyDocument) this.wbEditEntityAction.wbEditEntity(null,
-				null, null, "property", data, false, summary);
+		return (PropertyDocument) this.wbEditEntityAction
+				.wbEditEntity(null, null, null, "property", data, false,
+						this.editAsBot, 0, summary);
 	}
 
 	/**
@@ -134,6 +163,12 @@ public class WikibaseDataEditor {
 	 * <p>
 	 * The id of the given item document is used to specify which item document
 	 * should be changed. The site IRI will be ignored for this.
+	 * <p>
+	 * The revision id of the given item document is used to specify the base
+	 * revision, enabling the API to detect edit conflicts. The value 0 can be
+	 * used to omit this. It is strongly recommended to give a revision id when
+	 * making edits where the outcome depends on the previous state of the data
+	 * (i.e., any edit that does not use "clear").
 	 * <p>
 	 * If the data is not cleared, then the existing data will largely be
 	 * preserved. Statements with empty ids will be added without checking if
@@ -153,17 +188,18 @@ public class WikibaseDataEditor {
 	 * @param summary
 	 *            additional summary message for the edit, or null to omit this
 	 * @return the modified item document, or null if there was an error
-	 * @throws NoLoginException
-	 *             if our {@link ApiConnection} is not logged in
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
 	 *             connection
+	 * @throws MediaWikiApiErrorException
 	 */
 	public ItemDocument editItemDocument(ItemDocument itemDocument,
-			boolean clear, String summary) throws NoLoginException, IOException {
+			boolean clear, String summary) throws IOException,
+			MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
 		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(itemDocument
-				.getItemId().getId(), null, null, null, data, clear, summary);
+				.getItemId().getId(), null, null, null, data, clear,
+				this.editAsBot, itemDocument.getRevisionId(), summary);
 	}
 
 	/**
@@ -172,6 +208,12 @@ public class WikibaseDataEditor {
 	 * <p>
 	 * The id of the given property document is used to specify which property
 	 * document should be changed. The site IRI will be ignored for this.
+	 * <p>
+	 * The revision id of the given property document is used to specify the
+	 * base revision, enabling the API to detect edit conflicts. The value 0 can
+	 * be used to omit this. It is strongly recommended to give a revision id
+	 * when making edits where the outcome depends on the previous state of the
+	 * data (i.e., any edit that does not use "clear").
 	 * <p>
 	 * If the data is not cleared, then the existing data will largely be
 	 * preserved. Statements with empty ids will be added without checking if
@@ -191,19 +233,18 @@ public class WikibaseDataEditor {
 	 * @param summary
 	 *            additional summary message for the edit, or null to omit this
 	 * @return the modified property document, or null if there was an error
-	 * @throws NoLoginException
-	 *             if our {@link ApiConnection} is not logged in
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
 	 *             connection
+	 * @throws MediaWikiApiErrorException
 	 */
 	public PropertyDocument editPropertyDocument(
 			PropertyDocument propertyDocument, boolean clear, String summary)
-			throws NoLoginException, IOException {
+			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
 		return (PropertyDocument) this.wbEditEntityAction.wbEditEntity(
 				propertyDocument.getPropertyId().getId(), null, null, null,
-				data, clear, summary);
+				data, clear, this.editAsBot, propertyDocument.getRevisionId(),
+				summary);
 	}
-
 }

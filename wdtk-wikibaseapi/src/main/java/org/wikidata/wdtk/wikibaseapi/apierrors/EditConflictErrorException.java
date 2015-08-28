@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.wikibaseapi;
+package org.wikidata.wdtk.wikibaseapi.apierrors;
 
 /*
  * #%L
@@ -21,22 +21,24 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This Exception is thrown if there was a wrong or empty edit token or the
- * token parameter was simply null.
- * 
- * @author Michael Guenther
- * 
+ * Exception to indicate a MediaWiki API error caused by an edit conflict.
+ *
+ * @author Markus Kroetzsch
+ *
  */
-public class EditTokenException extends Exception {
+public class EditConflictErrorException extends MediaWikiApiErrorException {
 
-	public EditTokenException() {
-		super();
+	private static final long serialVersionUID = 3603929976083601076L;
+
+	/**
+	 * Creates a new exception.
+	 *
+	 * @param errorMessage
+	 *            the error message reported by MediaWiki, or any other
+	 *            meaningful message for the user
+	 */
+	public EditConflictErrorException(String errorMessage) {
+		super(MediaWikiApiErrorHandler.ERROR_EDIT_CONFLICT, errorMessage);
 	}
-
-	public EditTokenException(String message) {
-		super(message);
-	}
-
-	private static final long serialVersionUID = -8670142071938325635L;
 
 }

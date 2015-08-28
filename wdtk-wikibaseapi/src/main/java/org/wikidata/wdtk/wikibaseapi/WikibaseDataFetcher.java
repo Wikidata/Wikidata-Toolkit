@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -116,8 +117,10 @@ public class WikibaseDataFetcher {
 	 * @param entityId
 	 *            string IDs (e.g., "P31" or "Q42") of requested entity
 	 * @return retrieved entity document or null
+	 * @throws MediaWikiApiErrorException
 	 */
-	public EntityDocument getEntityDocument(String entityId) {
+	public EntityDocument getEntityDocument(String entityId)
+			throws MediaWikiApiErrorException {
 		return getEntityDocuments(entityId).get(entityId);
 	}
 
@@ -131,8 +134,10 @@ public class WikibaseDataFetcher {
 	 *            string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, EntityDocument> getEntityDocuments(String... entityIds) {
+	public Map<String, EntityDocument> getEntityDocuments(String... entityIds)
+			throws MediaWikiApiErrorException {
 		return getEntityDocuments(Arrays.asList(entityIds));
 	}
 
@@ -146,9 +151,11 @@ public class WikibaseDataFetcher {
 	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		final String entityString = ApiConnection.implodeObjects(entityIds);
 		properties.ids = entityString;
 		return getEntityDocumentMap(entityIds.size(), properties);
@@ -168,8 +175,10 @@ public class WikibaseDataFetcher {
 	 *            string titles (e.g. "Douglas Adams") of requested entities
 	 * @return document for the entity with this title, or null if no such
 	 *         document exists
+	 * @throws MediaWikiApiErrorException
 	 */
-	public EntityDocument getEntityDocumentByTitle(String siteKey, String title) {
+	public EntityDocument getEntityDocumentByTitle(String siteKey, String title)
+			throws MediaWikiApiErrorException {
 		return getEntityDocumentsByTitle(siteKey, title).get(title);
 	}
 
@@ -188,9 +197,10 @@ public class WikibaseDataFetcher {
 	 *            entities
 	 * @return map from titles for which data could be found to the documents
 	 *         that were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
-			String siteKey, String... titles) {
+			String siteKey, String... titles) throws MediaWikiApiErrorException {
 		return getEntityDocumentsByTitle(siteKey, Arrays.asList(titles));
 	}
 
@@ -209,10 +219,12 @@ public class WikibaseDataFetcher {
 	 *            entities
 	 * @return map from titles for which data could be found to the documents
 	 *         that were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
-			String siteKey, List<String> titles) {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+			String siteKey, List<String> titles)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		String titleString = ApiConnection.implodeObjects(titles);
 		properties.titles = titleString;
 		properties.sites = siteKey;
@@ -230,9 +242,11 @@ public class WikibaseDataFetcher {
 	 *            parameters for the wbgetentities action
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
+	 * @throws MediaWikiApiErrorException
 	 */
 	Map<String, EntityDocument> getEntityDocumentMap(int numOfEntities,
-			WbGetEntitiesProperties properties) {
+			WbGetEntitiesActionData properties)
+			throws MediaWikiApiErrorException {
 		if (numOfEntities == 0) {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
@@ -247,7 +261,7 @@ public class WikibaseDataFetcher {
 	 *
 	 * @param properties
 	 */
-	void configureProperties(WbGetEntitiesProperties properties) {
+	void configureProperties(WbGetEntitiesActionData properties) {
 		setRequestProps(properties);
 		setRequestLanguages(properties);
 		setRequestSitefilter(properties);
@@ -260,9 +274,9 @@ public class WikibaseDataFetcher {
 	 * @param properties
 	 *            current setting of parameters
 	 */
-	private void setRequestProps(WbGetEntitiesProperties properties) {
+	private void setRequestProps(WbGetEntitiesActionData properties) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("datatype");
+		builder.append("info|datatype");
 		if (!this.filter.excludeAllLanguages()) {
 			builder.append("|labels|aliases|descriptions");
 		}
@@ -283,7 +297,7 @@ public class WikibaseDataFetcher {
 	 * @param properties
 	 *            current setting of parameters
 	 */
-	private void setRequestLanguages(WbGetEntitiesProperties properties) {
+	private void setRequestLanguages(WbGetEntitiesActionData properties) {
 		if (this.filter.excludeAllLanguages()
 				|| this.filter.getLanguageFilter() == null) {
 			return;
@@ -299,7 +313,7 @@ public class WikibaseDataFetcher {
 	 * @param properties
 	 *            current setting of parameters
 	 */
-	private void setRequestSitefilter(WbGetEntitiesProperties properties) {
+	private void setRequestSitefilter(WbGetEntitiesActionData properties) {
 		if (this.filter.excludeAllSiteLinks()
 				|| this.filter.getSiteLinkFilter() == null) {
 			return;

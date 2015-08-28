@@ -28,7 +28,7 @@ package org.wikidata.wdtk.wikibaseapi;
  * @author Michael Guenther
  *
  */
-public class WbGetEntitiesProperties {
+public class WbGetEntitiesActionData {
 
 	/**
 	 * List of ids for entities. Use | as a separator. See

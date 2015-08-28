@@ -24,8 +24,8 @@ import org.openrdf.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public abstract class AbstractValueConverter<V extends org.wikidata.wdtk.datamodel.interfaces.Value>
@@ -53,7 +53,7 @@ public abstract class AbstractValueConverter<V extends org.wikidata.wdtk.datamod
 	/**
 	 * Logs a message for a case where the value of a property does not fit to
 	 * its declared datatype.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property that was used
 	 * @param datatype

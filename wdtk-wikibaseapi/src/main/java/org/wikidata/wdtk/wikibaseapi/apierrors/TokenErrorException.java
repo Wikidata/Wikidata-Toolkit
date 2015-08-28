@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.wikibaseapi;
+package org.wikidata.wdtk.wikibaseapi.apierrors;
 
 /*
  * #%L
@@ -21,18 +21,27 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * This exception could be caused by a login action if there are problems with
- * the login token or the session id.
+ * Exception to indicate a MediaWiki API error caused by missing or invalid
+ * token.
  *
- * @author Michael Guenther
+ * @author Markus Kroetzsch
  *
  */
-public class NeedTokenException extends LoginFailedException {
+public class TokenErrorException extends MediaWikiApiErrorException {
 
-	public NeedTokenException(String message) {
-		super(message);
+	private static final long serialVersionUID = 3603929976083601076L;
+
+	/**
+	 * Creates a new exception.
+	 *
+	 * @param errorCode
+	 *            the error code reported by MediaWiki
+	 * @param errorMessage
+	 *            the error message reported by MediaWiki, or any other
+	 *            meaningful message for the user
+	 */
+	public TokenErrorException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage);
 	}
-
-	private static final long serialVersionUID = 4379408974690967477L;
 
 }

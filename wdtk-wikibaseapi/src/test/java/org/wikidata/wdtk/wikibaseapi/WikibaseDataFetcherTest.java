@@ -34,6 +34,8 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
 
 public class WikibaseDataFetcherTest {
 
@@ -47,7 +49,8 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testWbGetEntities() throws IOException {
+	public void testWbGetEntities() throws IOException,
+			MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q6|Q42|P31");
@@ -64,7 +67,8 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testGetEntityDocument() throws IOException {
+	public void testGetEntityDocument() throws IOException,
+			MediaWikiApiErrorException {
 		// We use the mock answer as for a multi request; no problem
 		Map<String, String> parameters = new HashMap<String, String>();
 		setStandardParameters(parameters);
@@ -77,7 +81,8 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testGetMissingEntityDocument() throws IOException {
+	public void testGetMissingEntityDocument() throws IOException,
+			MediaWikiApiErrorException {
 		// List<String> entityIds = Arrays.asList("Q6");
 		Map<String, String> parameters = new HashMap<String, String>();
 		setStandardParameters(parameters);
@@ -90,21 +95,21 @@ public class WikibaseDataFetcherTest {
 		assertEquals(null, result);
 	}
 
-	@Test
-	public void testWbGetEntitiesError() throws IOException {
+	@Test(expected = NoSuchEntityErrorException.class)
+	public void testWbGetEntitiesError() throws IOException,
+			MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "bogus");
 		// We use the mock answer as for a multi request; no problem
 		con.setWebResourceFromPath(parameters, getClass(),
 				"/wbgetentities-bogus.json", CompressionType.NONE);
-		Map<String, EntityDocument> results = wdf.getEntityDocuments("bogus");
-
-		assertEquals(0, results.size());
+		wdf.getEntityDocuments("bogus");
 	}
 
 	@Test
-	public void testWbGetEntitiesEmpty() throws IOException {
+	public void testWbGetEntitiesEmpty() throws IOException,
+			MediaWikiApiErrorException {
 
 		Map<String, EntityDocument> results = wdf
 				.getEntityDocuments(Collections.<String> emptyList());
@@ -113,7 +118,8 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesTitle() throws IOException {
+	public void testWbGetEntitiesTitle() throws IOException,
+			MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "Douglas Adams");
@@ -127,7 +133,8 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesTitleEmpty() throws IOException {
+	public void testWbGetEntitiesTitleEmpty() throws IOException,
+			MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<String, String>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "1234567890");
@@ -154,6 +161,6 @@ public class WikibaseDataFetcherTest {
 		parameters.put("action", "wbgetentities");
 		parameters.put("format", "json");
 		parameters.put("props",
-				"datatype|labels|aliases|descriptions|claims|sitelinks");
+				"info|datatype|labels|aliases|descriptions|claims|sitelinks");
 	}
 }

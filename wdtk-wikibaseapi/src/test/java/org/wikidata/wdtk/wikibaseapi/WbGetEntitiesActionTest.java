@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 public class WbGetEntitiesActionTest {
 
@@ -61,8 +62,8 @@ public class WbGetEntitiesActionTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesWithProps() {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+	public void testWbGetEntitiesWithProps() throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		properties.ids = "Q6|Q42|P31";
 		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
 		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
@@ -74,8 +75,8 @@ public class WbGetEntitiesActionTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesNoProps() {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+	public void testWbGetEntitiesNoProps() throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		properties.ids = "Q6|Q42|P31";
 		Map<String, EntityDocument> result1 = action.wbGetEntities(properties);
 		Map<String, EntityDocument> result2 = action.wbGetEntities(
@@ -86,8 +87,9 @@ public class WbGetEntitiesActionTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesPropsFilters() {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+	public void testWbGetEntitiesPropsFilters()
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		properties.ids = "Q6|Q42|P31";
 		properties.props = "datatype|labels|aliases|descriptions|claims|sitelinks";
 		properties.languages = "en";
@@ -101,8 +103,8 @@ public class WbGetEntitiesActionTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesIoError() {
-		WbGetEntitiesProperties properties = new WbGetEntitiesProperties();
+	public void testWbGetEntitiesIoError() throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 		properties.ids = "Q6|Q42|notmocked";
 		Map<String, EntityDocument> result = action.wbGetEntities(properties);
 
@@ -110,22 +112,22 @@ public class WbGetEntitiesActionTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIdsAndTitles() {
+	public void testIdsAndTitles() throws MediaWikiApiErrorException {
 		action.wbGetEntities("Q42", null, "Tim Berners Lee", null, null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIdsAndSites() {
+	public void testIdsAndSites() throws MediaWikiApiErrorException {
 		action.wbGetEntities("Q42", "enwiki", null, null, null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testTitlesNoSites() {
+	public void testTitlesNoSites() throws MediaWikiApiErrorException {
 		action.wbGetEntities(null, null, "Tim Berners Lee", null, null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testNoTitlesOrIds() {
+	public void testNoTitlesOrIds() throws MediaWikiApiErrorException {
 		action.wbGetEntities(null, "enwiki", null, null, null, null);
 	}
 
