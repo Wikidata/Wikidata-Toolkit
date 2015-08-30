@@ -296,6 +296,7 @@ public class ToString {
 	public static String toString(Statement o) {
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("[ID ").append(o.getStatementId()).append("] ");
 		sb.append(toString(o.getClaim()));
 		if (o.getRank() != StatementRank.NORMAL) {
 			sb.append("  Rank: ").append(o.getRank()).append("\n");
