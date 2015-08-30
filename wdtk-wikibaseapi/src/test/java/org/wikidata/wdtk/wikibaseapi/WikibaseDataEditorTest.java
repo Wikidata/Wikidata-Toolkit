@@ -329,4 +329,5 @@ public class WikibaseDataEditorTest {
 
 		assertEquals(expectedResultDocument, result);
 	}
+
 }
