@@ -214,15 +214,15 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * Serializes the given object in JSON and returns the resulting string. In
 	 * case of errors, null is returned.
 	 *
-	 * @param propertyDocument
+	 * @param statement
 	 *            object to serialize
 	 * @return JSON serialization or null
 	 */
-	public static String getJsonString(Statement propertyDocument) {
-		if (!(propertyDocument instanceof JacksonStatement)) {
-			propertyDocument = datamodelConverter.copy(propertyDocument);
+	public static String getJsonString(Statement statement) {
+		if (!(statement instanceof JacksonStatement)) {
+			statement = datamodelConverter.copy(statement);
 		}
-		return jacksonObjectToString(propertyDocument);
+		return jacksonObjectToString(statement);
 	}
 
 	/**
