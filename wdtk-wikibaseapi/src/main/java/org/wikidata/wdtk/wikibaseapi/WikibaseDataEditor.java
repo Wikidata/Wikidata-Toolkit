@@ -289,7 +289,7 @@ public class WikibaseDataEditor {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
 				.getEntityDocument(itemIdValue.getId());
 
-		return (ItemDocument) updateStatements(currentDocument, addStatements,
+		return updateStatements(currentDocument, addStatements,
 				deleteStatements, summary);
 	}
 
@@ -323,8 +323,8 @@ public class WikibaseDataEditor {
 		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
 				.getEntityDocument(propertyIdValue.getId());
 
-		return (PropertyDocument) updateStatements(currentDocument,
-				addStatements, deleteStatements, summary);
+		return updateStatements(currentDocument, addStatements,
+				deleteStatements, summary);
 	}
 
 	/**
@@ -333,6 +333,11 @@ public class WikibaseDataEditor {
 	 * computed with respect to the data found in the document, making sure that
 	 * no redundant deletions or duplicate insertions happen. The references of
 	 * duplicate statements will be merged.
+	 * <p>
+	 * The generic type T of this method must be a general interface such as
+	 * {@link ItemDocument}, {@link PropertyDocument}, or
+	 * {@link StatementDocument}. Specific implementations of these interfaces
+	 * are not permitted.
 	 *
 	 * @param currentDocument
 	 *            the document that is to be updated; needs to have a correct
@@ -353,17 +358,17 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *             if there are IO problems, such as missing network connection
 	 */
-	public StatementDocument updateStatements(
-			StatementDocument currentDocument, List<Statement> addStatements,
-			List<Statement> deleteStatements, String summary)
-			throws MediaWikiApiErrorException, IOException {
+	@SuppressWarnings("unchecked")
+	public <T extends StatementDocument> T updateStatements(T currentDocument,
+			List<Statement> addStatements, List<Statement> deleteStatements,
+			String summary) throws MediaWikiApiErrorException, IOException {
 
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
 
-		return (StatementDocument) this.wbEditEntityAction.wbEditEntity(
-				currentDocument.getEntityId().getId(), null, null, null,
-				statementUpdate.getJsonUpdateString(), false, this.editAsBot,
-				currentDocument.getRevisionId(), summary);
+		return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
+				.getEntityId().getId(), null, null, null, statementUpdate
+				.getJsonUpdateString(), false, this.editAsBot, currentDocument
+				.getRevisionId(), summary);
 	}
 }

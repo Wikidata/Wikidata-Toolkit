@@ -46,6 +46,15 @@ be used with any other Wikibase site as well. It is not practical to fetch all d
 in this way, but it can be very convenient to get some data directly even when processing
 a dump (since the dump can only be read in sequence).
 
+#### EditOnlineDataExample.java ####
+
+This program shows how to create and modify live data on test.wikidata.org via the Web API.
+This can be used with any other Wikibase site as well. The example first creates a new item
+with some starting data, then adds some additional statements, and finally modifies and 
+deletes existing statements. All data modifications automatically use revision ids to make
+sure that no edit conflicts occur (and we don't modify/delete data that is different from
+what we expect).
+
 #### LocalDumpFileExample.java ####
 
 This program shows how to process a data dump that is available in a local file, rather
