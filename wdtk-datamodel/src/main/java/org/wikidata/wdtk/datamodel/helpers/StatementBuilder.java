@@ -153,8 +153,7 @@ public class StatementBuilder extends
 	 */
 	public StatementBuilder withQualifierValue(PropertyIdValue propertyIdValue,
 			Value value) {
-		getQualifierList(propertyIdValue).add(
-				factory.getValueSnak(propertyIdValue, value));
+		withQualifier(factory.getValueSnak(propertyIdValue, value));
 		return getThis();
 	}
 
@@ -168,8 +167,7 @@ public class StatementBuilder extends
 	 */
 	public StatementBuilder withQualifierSomeValue(
 			PropertyIdValue propertyIdValue) {
-		getQualifierList(propertyIdValue).add(
-				factory.getSomeValueSnak(propertyIdValue));
+		withQualifier(factory.getSomeValueSnak(propertyIdValue));
 		return getThis();
 	}
 
@@ -187,8 +185,49 @@ public class StatementBuilder extends
 	 * @return builder object to continue construction
 	 */
 	public StatementBuilder withQualifierNoValue(PropertyIdValue propertyIdValue) {
-		getQualifierList(propertyIdValue).add(
-				factory.getNoValueSnak(propertyIdValue));
+		withQualifier(factory.getNoValueSnak(propertyIdValue));
+		return getThis();
+	}
+
+	/**
+	 * Adds a qualifier {@link Snak} to the constructed statement.
+	 *
+	 * @param qualifier
+	 *            the qualifier to add
+	 * @return builder object to continue construction
+	 */
+	public StatementBuilder withQualifier(Snak qualifier) {
+		getQualifierList(qualifier.getPropertyId()).add(qualifier);
+		return getThis();
+	}
+
+	/**
+	 * Adds all qualifiers from the given {@link SnakGroup} to the constructed
+	 * statement.
+	 *
+	 * @param qualifiers
+	 *            the group of qualifiers to add
+	 * @return builder object to continue construction
+	 */
+	public StatementBuilder withQualifiers(SnakGroup qualifiers) {
+		getQualifierList(qualifiers.getProperty())
+				.addAll(qualifiers.getSnaks());
+		return getThis();
+	}
+
+	/**
+	 * Adds all qualifiers from the given list of {@link SnakGroup} to the
+	 * constructed statement. This is handy to copy all qualifiers from a given
+	 * statement.
+	 *
+	 * @param qualifiers
+	 *            the list of groups of qualifiers to add
+	 * @return builder object to continue construction
+	 */
+	public StatementBuilder withQualifiers(List<SnakGroup> qualifiers) {
+		for (SnakGroup sg : qualifiers) {
+			withQualifiers(sg);
+		}
 		return getThis();
 	}
 
@@ -201,6 +240,18 @@ public class StatementBuilder extends
 	 */
 	public StatementBuilder withReference(Reference reference) {
 		this.references.add(reference);
+		return getThis();
+	}
+
+	/**
+	 * Adds a list of references to the constructed statement.
+	 *
+	 * @param references
+	 *            the references to be added
+	 * @return builder object to continue construction
+	 */
+	public StatementBuilder withReferences(List<Reference> references) {
+		this.references.addAll(references);
 		return getThis();
 	}
 

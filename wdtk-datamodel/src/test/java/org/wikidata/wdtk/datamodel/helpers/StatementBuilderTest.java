@@ -74,6 +74,55 @@ public class StatementBuilderTest {
 	}
 
 	@Test
+	public void testQualifierList() {
+		ItemIdValue i = ItemIdValue.NULL;
+		PropertyIdValue p = PropertyIdValue.NULL;
+
+		Snak q1 = Datamodel.makeSomeValueSnak(p);
+		Snak q2 = Datamodel.makeNoValueSnak(p);
+		Snak q3 = Datamodel.makeValueSnak(p, i);
+		SnakGroup sg = Datamodel.makeSnakGroup(Arrays.asList(q1, q2, q3));
+
+		Reference r = Datamodel.makeReference(Collections.singletonList(sg));
+
+		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
+				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg)),
+				Collections.singletonList(r), StatementRank.PREFERRED, "id");
+		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
+				.withRank(StatementRank.PREFERRED).withValue(i)
+				.withQualifiers(stmt1.getClaim().getQualifiers()).withId("id")
+				.withReference(r).build();
+
+		assertEquals(stmt1, stmt2);
+	}
+
+	@Test
+	public void testReferenceList() {
+		ItemIdValue i = ItemIdValue.NULL;
+		PropertyIdValue p = PropertyIdValue.NULL;
+
+		Reference r1 = ReferenceBuilder.newInstance().withSomeValue(p).build();
+		Reference r2 = ReferenceBuilder.newInstance().withPropertyValue(p, i)
+				.build();
+
+		Snak q1 = Datamodel.makeSomeValueSnak(p);
+		Snak q2 = Datamodel.makeNoValueSnak(p);
+		Snak q3 = Datamodel.makeValueSnak(p, i);
+		SnakGroup sg = Datamodel.makeSnakGroup(Arrays.asList(q1, q2, q3));
+
+		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
+				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg)),
+				Arrays.asList(r1, r2), StatementRank.PREFERRED, "id");
+		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
+				.withRank(StatementRank.PREFERRED).withValue(i)
+				.withQualifierSomeValue(p).withQualifierNoValue(p)
+				.withQualifierValue(p, i).withId("id")
+				.withReferences(Arrays.asList(r1, r2)).build();
+
+		assertEquals(stmt1, stmt2);
+	}
+
+	@Test
 	public void testNoValueStatement() {
 		ItemIdValue i = ItemIdValue.NULL;
 		PropertyIdValue p = PropertyIdValue.NULL;
