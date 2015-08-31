@@ -21,13 +21,45 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 /**
- * The id of a Wikibase Property. Objects implementing this interface always return
- * {@link EntityIdValue#ET_PROPERTY} for {@link EntityIdValue#getEntityType()
- * getEntityType}.
- * 
+ * The id of a Wikibase Property. Objects implementing this interface always
+ * return {@link EntityIdValue#ET_PROPERTY} for
+ * {@link EntityIdValue#getEntityType() getEntityType}.
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface PropertyIdValue extends EntityIdValue {
+	/**
+	 * Fixed {@link PropertyIdValue} that refers to a non-existing property. Can
+	 * be used as a placeholder object in situations where the entity id is
+	 * irrelevant.
+	 */
+	static final PropertyIdValue NULL = new PropertyIdValue() {
 
+		@Override
+		public String getIri() {
+			return getSiteIri() + getId();
+		}
+
+		@Override
+		public <T> T accept(ValueVisitor<T> valueVisitor) {
+			return valueVisitor.visit(this);
+		}
+
+		@Override
+		public String getEntityType() {
+			return ET_PROPERTY;
+		}
+
+		@Override
+		public String getId() {
+			return "P0";
+		}
+
+		@Override
+		public String getSiteIri() {
+			return EntityIdValue.SITE_LOCAL;
+		}
+
+	};
 }

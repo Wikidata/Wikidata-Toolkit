@@ -87,7 +87,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private boolean deepCopy = true;
 
 	/**
-	 * If set to true, references will be copied when making deep copyies of
+	 * If set to true, references will be copied when making deep copies of
 	 * statements. This is the default. The setting does not have any effect
 	 * when making shallow copies.
 	 */
@@ -495,14 +495,16 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 					deepCopyMonoLingualTextValues(object.getDescriptions()
 							.values()), flattenDeepCopyAliasMap(object
 							.getAliases()), deepCopyStatementGroups(object
-							.getStatementGroups()), copy(object.getDatatype()));
+							.getStatementGroups()), copy(object.getDatatype()),
+					object.getRevisionId());
 		} else {
 			return this.dataObjectFactory.getPropertyDocument(object
 					.getPropertyId(), copyMonoLingualTextValues(object
 					.getLabels().values()), copyMonoLingualTextValues(object
 					.getDescriptions().values()), flattenAliasMap(object
 					.getAliases()), copyStatementGroups(object
-					.getStatementGroups()), object.getDatatype());
+					.getStatementGroups()), object.getDatatype(), object
+					.getRevisionId());
 		}
 	}
 
@@ -522,7 +524,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 							.values()), flattenDeepCopyAliasMap(object
 							.getAliases()), deepCopyStatementGroups(object
 							.getStatementGroups()), deepCopySiteLinks(object
-							.getSiteLinks()));
+							.getSiteLinks()), object.getRevisionId());
 		} else {
 			return this.dataObjectFactory
 					.getItemDocument(object.getItemId(),
@@ -532,7 +534,8 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 									.values()), flattenAliasMap(object
 									.getAliases()), copyStatementGroups(object
 									.getStatementGroups()),
-							copySiteLinks(object.getSiteLinks()));
+							copySiteLinks(object.getSiteLinks()), object
+									.getRevisionId());
 		}
 	}
 

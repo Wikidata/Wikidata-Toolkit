@@ -342,6 +342,7 @@ public class Hash {
 		result = o.getAliases().hashCode();
 		result = prime * result + o.getDescriptions().hashCode();
 		result = prime * result + o.getLabels().hashCode();
+		result = prime * result + new Long(o.getRevisionId()).hashCode();
 		return result;
 	}
 

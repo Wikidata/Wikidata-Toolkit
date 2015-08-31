@@ -24,6 +24,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
+
 /**
  * Interface for factories that create data objects that implement the
  * interfaces from this package.
@@ -208,7 +213,8 @@ public interface DataObjectFactory {
 			List<SnakGroup> qualifiers);
 
 	/**
-	 * Creates a {@link Reference}.
+	 * Creates a {@link Reference}. It might be more convenient to use
+	 * {@link ReferenceBuilder} instead.
 	 *
 	 * @param snakGroups
 	 *            list of snak groups
@@ -217,7 +223,8 @@ public interface DataObjectFactory {
 	Reference getReference(List<SnakGroup> snakGroups);
 
 	/**
-	 * Creates a {@link Statement}.
+	 * Creates a {@link Statement}. It might be more convenient to use
+	 * {@link StatementBuilder} instead.
 	 * <p>
 	 * The string id is used mainly for communication with a Wikibase site, in
 	 * order to refer to statements of that site. When creating new statements
@@ -278,14 +285,18 @@ public interface DataObjectFactory {
 	 * @param datatypeId
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
+	 * @deprecated Use
+	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, int)}
 	 */
+	@Deprecated
 	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId);
 
 	/**
-	 * Creates a {@link PropertyDocument}.
+	 * Creates a {@link PropertyDocument}. It might be more convenient to use
+	 * the {@link PropertyDocumentBuilder} instead.
 	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -303,7 +314,10 @@ public interface DataObjectFactory {
 	 * @param datatypeId
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
+	 * @deprecated Use
+	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, int)}
 	 */
+	@Deprecated
 	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
@@ -311,7 +325,39 @@ public interface DataObjectFactory {
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId);
 
 	/**
-	 * Creates an {@link ItemDocument}.
+	 * Creates a {@link PropertyDocument}. It might be more convenient to use
+	 * the {@link PropertyDocumentBuilder} instead.
+	 *
+	 * @param propertyId
+	 *            the id of the property that data is about
+	 * @param labels
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
+	 * @param descriptions
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
+	 * @param aliases
+	 *            the list of aliases of this property
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
+	 * @param datatypeId
+	 *            the datatype of that property
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link PropertyDocument} corresponding to the input
+	 */
+	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			long revisionId);
+
+	/**
+	 * Creates an {@link ItemDocument}. It might be more convenient to use the
+	 * {@link ItemDocumentBuilder} instead.
 	 *
 	 * @param itemIdValue
 	 *            the id of the item that data is about
@@ -329,12 +375,47 @@ public interface DataObjectFactory {
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemDocument} corresponding to the input
+	 * @deprecated Use
+	 *             {@link #getItemDocument(ItemIdValue, List, List, List, List, Map, int)}
+	 *             instead
 	 */
+	@Deprecated
 	ItemDocument getItemDocument(ItemIdValue itemIdValue,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks);
+
+	/**
+	 * Creates an {@link ItemDocument}. It might be more convenient to use the
+	 * {@link ItemDocumentBuilder} instead.
+	 *
+	 * @param itemIdValue
+	 *            the id of the item that data is about
+	 * @param labels
+	 *            the list of labels of this item, with at most one label for
+	 *            each language code
+	 * @param descriptions
+	 *            the list of descriptions of this item, with at most one
+	 *            description for each language code
+	 * @param aliases
+	 *            the list of aliases of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
+	 * @param siteLinks
+	 *            the sitelinks of this item by site key
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return an {@link ItemDocument} corresponding to the input
+	 */
+	ItemDocument getItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks, long revisionId);
 
 }

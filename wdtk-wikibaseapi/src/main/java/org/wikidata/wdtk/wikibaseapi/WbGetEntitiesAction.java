@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -86,9 +87,12 @@ public class WbGetEntitiesAction {
 	 *            parameter setting for wbgetentities
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
 	 */
 	public Map<String, EntityDocument> wbGetEntities(
-			WbGetEntitiesProperties properties) {
+			WbGetEntitiesActionData properties)
+			throws MediaWikiApiErrorException {
 		return wbGetEntities(properties.ids, properties.sites,
 				properties.titles, properties.props, properties.languages,
 				properties.sitefilter);
@@ -137,11 +141,14 @@ public class WbGetEntitiesAction {
 	 *
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL, or null if there were errors
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
 	 * @throws IllegalArgumentException
 	 *             if the given combination of parameters does not make sense
 	 */
 	public Map<String, EntityDocument> wbGetEntities(String ids, String sites,
-			String titles, String props, String languages, String sitefilter) {
+			String titles, String props, String languages, String sitefilter)
+			throws MediaWikiApiErrorException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
@@ -182,10 +189,8 @@ public class WbGetEntitiesAction {
 			JsonNode root = mapper.readTree(response);
 			Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
-			if (this.connection.parseErrorsAndWarnings(root) == false) {
-				logger.error("Could not retrive data");
-				return result;
-			}
+			this.connection.checkErrors(root);
+			this.connection.logWarnings(root);
 
 			JsonNode entities = root.path("entities");
 			for (JsonNode entityNode : entities) {

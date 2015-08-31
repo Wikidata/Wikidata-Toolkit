@@ -35,6 +35,8 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -252,7 +254,7 @@ public class ApiConnection {
 			String token = this.getLoginToken(username, password);
 			try {
 				this.confirmLogin(token, username, password);
-			} catch (NeedTokenException e) { // try once more
+			} catch (NeedLoginTokenException e) { // try once more
 				token = this.getLoginToken(username, password);
 				this.confirmLogin(token, username, password);
 			}
@@ -345,36 +347,41 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Handles errors and warnings that are returned in an API response. Note
-	 * that there is at most one error message in the JSON result even if there
-	 * are more errors in the request. Returns true if there are no errors.
+	 * Checks if an API response contains an error and throws a suitable
+	 * exception in this case.
 	 *
 	 * @param root
 	 *            root node of the JSON result
-	 * @return true if there are no errors
+	 * @throws MediaWikiApiErrorException
 	 */
-	public boolean parseErrorsAndWarnings(JsonNode root) {
-
+	public void checkErrors(JsonNode root) throws MediaWikiApiErrorException {
 		if (root.has("error")) {
 			JsonNode errorNode = root.path("error");
-			logger.error("Error when reading data from API: "
-					+ errorNode.path("info").asText("DESCRIPTION MISSING")
-					+ " ["
-					+ errorNode.path("code").asText("UNKNOWN ERROR CODE") + "]");
-			return false;
+			MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(errorNode
+					.path("code").asText("UNKNOWN"), errorNode.path("info")
+					.asText("No details provided"));
 		}
+	}
 
+	/**
+	 * Extracts and logs any warnings that are returned in an API response.
+	 *
+	 * @param root
+	 *            root node of the JSON result
+	 */
+	public void logWarnings(JsonNode root) {
 		if (root.has("warnings")) {
 			JsonNode warningNode = root.path("warnings");
+			System.out.println("There are warnings: " + warningNode.toString());
 			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
 			while (iter.hasNext()) {
 				Map.Entry<String, JsonNode> node = iter.next();
-				if (node.getKey().equals("main")) {
-					logger.warn("Warning when reading data from API: "
+				if ("main".equals(node.getKey())) {
+					logger.warn("API returned warning: "
 							+ node.getValue().path("*")
 									.asText("DESCRIPTION MISSING"));
 				} else {
-					logger.warn("Warning when reading data from API "
+					logger.warn("API returned warning: "
 							+ node.getKey()
 							+ " :"
 							+ node.getValue().path("*")
@@ -383,8 +390,6 @@ public class ApiConnection {
 
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -448,7 +453,7 @@ public class ApiConnection {
 			String message = getLoginErrorMessage(result);
 			logger.warn(message);
 			if (ApiConnection.LOGIN_WRONG_TOKEN.equals(result)) {
-				throw new NeedTokenException(message);
+				throw new NeedLoginTokenException(message);
 			} else {
 				throw new LoginFailedException(message);
 			}

@@ -75,7 +75,7 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 
 	/**
 	 * Returns the Wikimedia Commons page URL for the given page name.
-	 * 
+	 *
 	 * @param pageName
 	 *            name of a page on Wikimedia Commons
 	 * @return URL of the page

@@ -36,6 +36,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -165,18 +166,21 @@ public class ApiConnectionTest {
 				con.getQueryString(params));
 	}
 
-	@Test
-	public void testParseErrorsAndWarnings() throws JsonProcessingException,
-			IOException {
+	// @Test
+	// public void testWarnings() throws JsonProcessingException, IOException {
+	// JsonNode root;
+	// URL path = this.getClass().getResource("/warnings.json");
+	// root = mapper.readTree(path.openStream());
+	// assertTrue(con.logWarnings(root));
+	// }
+
+	@Test(expected = MediaWikiApiErrorException.class)
+	public void testErrors() throws JsonProcessingException, IOException,
+			MediaWikiApiErrorException {
 		JsonNode root;
-		URL path = this.getClass().getResource("/warnings.json");
+		URL path = this.getClass().getResource("/error.json");
 		root = mapper.readTree(path.openStream());
-		assertTrue(con.parseErrorsAndWarnings(root));
-
-		path = this.getClass().getResource("/error.json");
-		root = mapper.readTree(path.openStream());
-		assertFalse(con.parseErrorsAndWarnings(root));
-
+		con.checkErrors(root);
 	}
 
 	@Test

@@ -45,6 +45,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
  * This class helps to manage information about Properties that has to obtained
@@ -314,8 +315,14 @@ public class PropertyRegister {
 		dataFetcher.getFilter().setSiteLinkFilter(
 				Collections.<String> emptySet());
 
-		Map<String, EntityDocument> properties = dataFetcher
-				.getEntityDocuments(propertyIds);
+		Map<String, EntityDocument> properties;
+		try {
+			properties = dataFetcher.getEntityDocuments(propertyIds);
+		} catch (MediaWikiApiErrorException e) {
+			logger.error("Error when trying to fetch property data: "
+					+ e.toString());
+			properties = Collections.emptyMap();
+		}
 
 		for (Entry<String, EntityDocument> entry : properties.entrySet()) {
 			EntityDocument propertyDocument = entry.getValue();

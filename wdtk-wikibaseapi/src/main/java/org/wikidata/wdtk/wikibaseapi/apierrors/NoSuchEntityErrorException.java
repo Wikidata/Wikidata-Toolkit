@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.wikibaseapi;
+package org.wikidata.wdtk.wikibaseapi.apierrors;
 
 /*
  * #%L
@@ -21,14 +21,25 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 /**
- * Exception thrown if there are no login cookies set and an action is called
- * for which you need to be logged in.
- * 
- * @author Michael Guenther
- * 
+ * Exception to indicate a MediaWiki API error caused by trying to access an
+ * entity that does not exist.
+ *
+ * @author Markus Kroetzsch
+ *
  */
-public class NoLoginException extends Exception {
+public class NoSuchEntityErrorException extends MediaWikiApiErrorException {
 
-	private static final long serialVersionUID = -4978021044430368426L;
+	private static final long serialVersionUID = -6500316776536101550L;
+
+	/**
+	 * Creates a new exception.
+	 *
+	 * @param errorMessage
+	 *            the error message reported by MediaWiki, or any other
+	 *            meaningful message for the user
+	 */
+	public NoSuchEntityErrorException(String errorMessage) {
+		super(MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, errorMessage);
+	}
 
 }

@@ -28,6 +28,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -135,6 +136,17 @@ public class TestItemDocument {
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
+				result);
+	}
+
+	@Test
+	public void testEmptyItemIdToJson() throws JsonProcessingException {
+		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
+		document.setJsonId(ItemIdValue.NULL.getId());
+		document.setSiteIri(ItemIdValue.NULL.getSiteIri());
+
+		String result = mapper.writeValueAsString(document);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_NOITEMID,
 				result);
 	}
 

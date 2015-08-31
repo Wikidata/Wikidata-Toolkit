@@ -52,9 +52,9 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  * This class provides functions to create objects from
  * {@link org.wikidata.wdtk.datamodel.interfaces} with certain predefined
  * parameters.
- * 
+ *
  * @author Michael Günther, Fredo Erxleben
- * 
+ *
  */
 public class TestObjectFactory {
 
@@ -63,11 +63,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates an empty {@link PropertyDocument}
-	 * 
+	 *
 	 * <p>
 	 * ID = PropDoc
 	 * </p>
-	 * 
+	 *
 	 * @return empty {@link PropertyDocument}
 	 */
 	public PropertyDocument createEmptyPropertyDocument() {
@@ -80,17 +80,18 @@ public class TestObjectFactory {
 		DatatypeIdValue datatypeId = this.factory
 				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
 		PropertyDocument document = this.factory.getPropertyDocument(
-				propertyId, labels, descriptions, aliases, datatypeId);
+				propertyId, labels, descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), datatypeId, 0);
 		return document;
 	}
 
 	/**
 	 * Creates a {@link ItemDocument}
-	 * 
+	 *
 	 * <p>
 	 * ID = Item
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -142,7 +143,7 @@ public class TestObjectFactory {
 	 * </li>
 	 * </ul>
 	 * </li> </ul>
-	 * 
+	 *
 	 * @return {@link ItemDocument}
 	 */
 	public ItemDocument createItemDocument() {
@@ -173,16 +174,16 @@ public class TestObjectFactory {
 		statementGroups.add(factory.getStatementGroup(statements3));
 		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),
-				statementGroups, createSiteLinks());
+				statementGroups, createSiteLinks(), 0);
 	}
 
 	/**
 	 * Creates a {@link Statement} with entity-id qId, property-id pId
-	 * 
+	 *
 	 * <p>
 	 * ID = Stat
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -192,7 +193,7 @@ public class TestObjectFactory {
 	 * <li>StatementId: "id111"
 	 * <li>References: {@link #createReferences() Refs}
 	 * </ul>
-	 * 
+	 *
 	 * @param qId
 	 * @param pId
 	 * @return {@link Statement}
@@ -205,11 +206,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link StatementGroup}
-	 * 
+	 *
 	 * <p>
 	 * ID = StatGr
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -220,7 +221,7 @@ public class TestObjectFactory {
 	 * {@link #createValueSnakQuantityValue(String) ValSnakQuant}, StatementId =
 	 * "id112"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return {@link StatementGroup}
 	 */
 	public StatementGroup createStatementGroup() {
@@ -237,11 +238,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a list of labels.
-	 * 
+	 *
 	 * <p>
 	 * ID = Labs
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -251,7 +252,7 @@ public class TestObjectFactory {
 	 * <li>MonolingualTextValue2: "bar" (label in the certain language), "lc2"
 	 * (LanguageCode)</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return list of {@link MonolingualTextValue}
 	 */
 	public List<MonolingualTextValue> createLabels() {
@@ -263,11 +264,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a list of aliases.
-	 * 
+	 *
 	 * <p>
 	 * ID = Aliases
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -276,7 +277,7 @@ public class TestObjectFactory {
 	 * (LanguageCode)</li>
 	 * <li>MonolingualTextValue: "bar" (label in the certain language), "lc"
 	 * (LanguageCode)</li>
-	 * 
+	 *
 	 * @return List of {@link MonolingualTextValue}
 	 */
 	public List<MonolingualTextValue> createAliases() {
@@ -288,11 +289,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a list of descriptions.
-	 * 
+	 *
 	 * <p>
 	 * ID = Descs
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -302,7 +303,7 @@ public class TestObjectFactory {
 	 * <li>MonolingualTextValue: "it's bar" (description in the certain
 	 * language), "lc2" (LanguageCode)</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return List of {@link MonolingualTextValue}
 	 */
 	public List<MonolingualTextValue> createDescriptions() {
@@ -323,7 +324,7 @@ public class TestObjectFactory {
 	 * <li>"enwiki" => SiteLink: title = "title_en", siteKey = "enwiki"</li>
 	 * <li>"dewiki" => SiteLink: title = "title_de", siteKey = "dewiki"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return Map for {@link SiteLink}s and their titles
 	 */
 	public Map<String, SiteLink> createSiteLinks() {
@@ -337,11 +338,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a list of qualifiers.
-	 * 
+	 *
 	 * <p>
 	 * ID = Quals
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -349,7 +350,7 @@ public class TestObjectFactory {
 	 * <li>ValSnakTime (
 	 * <li>
 	 * </ul>
-	 * 
+	 *
 	 * @return List of {@link Snak}
 	 */
 	public List<SnakGroup> createQualifiers() {
@@ -359,11 +360,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Create a list of {@link Reference}s (containing only one reference).
-	 * 
+	 *
 	 * <p>
 	 * ID = Refs
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -371,7 +372,7 @@ public class TestObjectFactory {
 	 * <li>reference: snaks = {@link #createValueSnakTimeValue(String)
 	 * ValSnakTime}</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return List of {@link Reference}
 	 */
 	public List<? extends Reference> createReferences() {
@@ -384,11 +385,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link Reference}.
-	 * 
+	 *
 	 * <p>
 	 * ID = Ref
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>DefualtValues</b>
 	 * </p>
@@ -398,7 +399,7 @@ public class TestObjectFactory {
 	 * <li>Snak2: {@link #createValueSnakQuantityValue(String) ValSnakQuant (pId
 	 * = 211)}</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return {@link Reference}
 	 */
 	public Reference createReference() {
@@ -414,16 +415,16 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link Claim}.
-	 * 
+	 *
 	 * <p>
 	 * ID = Claim
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            id of the subject of the {@link Claim}
 	 * @param snak
 	 *            mainsnak for the {@link Claim}
-	 * 
+	 *
 	 * @return {@link Claim} with the given parameters
 	 */
 	public Claim createClaim(String id, Snak snak) {
@@ -433,18 +434,18 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link SomeValueSnak} with pId.
-	 * 
+	 *
 	 * <p>
 	 * ID = SomeValSnak
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
 	 * <li>baseIri: "test"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
 	 * @return {@link SomeValueSnak}
@@ -456,23 +457,23 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link ValueSnak} with an {@link ItemIdValue} in it.
-	 * 
+	 *
 	 * <p>
 	 * ID = ValSnakItem
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
 	 * <li>baseIri: "test"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
 	 * @param qId
 	 *            item-id of the containing value
-	 * 
+	 *
 	 * @return {@link ValueSnak}
 	 */
 	public ValueSnak createValueSnakItemIdValue(String pId, String qId) {
@@ -483,11 +484,11 @@ public class TestObjectFactory {
 	/**
 	 * Creates a {@link ValueSnak} with an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.StringValue} in it.
-	 * 
+	 *
 	 * <p>
 	 * ID = ValSnakStr
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -495,10 +496,10 @@ public class TestObjectFactory {
 	 * <li>baseIri: "test"</li>
 	 * <li>String: "TestString"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
-	 * 
+	 *
 	 * @return {@link ValueSnak}
 	 */
 	public ValueSnak createValueSnakStringValue(String pId) {
@@ -508,11 +509,11 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link ValueSnak} with an {@link GlobeCoordinatesValue} in it.
-	 * 
+	 *
 	 * <p>
 	 * ID = ValSnakGlCo
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -521,10 +522,10 @@ public class TestObjectFactory {
 	 * <li>longitude: 21314</li>
 	 * <li>precision: 16666667</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
-	 * 
+	 *
 	 * @return {@link ValueSnak}
 	 */
 	public ValueSnak createValueSnakGlobeCoordinatesValue(String pId) {
@@ -537,11 +538,11 @@ public class TestObjectFactory {
 	/**
 	 * Creates a {@link ValueSnak} with an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.QuantityValue} in it.
-	 * 
+	 *
 	 * <p>
 	 * ID = ValSnakQuant
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -551,10 +552,10 @@ public class TestObjectFactory {
 	 * <li>lowerBound: 3</li>
 	 * <li>upperBound: 3</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
-	 * 
+	 *
 	 * @return {@link ValueSnak}
 	 */
 	public ValueSnak createValueSnakQuantityValue(String pId) {
@@ -566,11 +567,11 @@ public class TestObjectFactory {
 	/**
 	 * Creates a {@link ValueSnak} with an
 	 * {@link org.wikidata.wdtk.datamodel.interfaces.TimeValue} in it.
-	 * 
+	 *
 	 * <p>
 	 * ID = ValSnakTime
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
@@ -588,10 +589,10 @@ public class TestObjectFactory {
 	 * <li>timezoneOffset: 0</li>
 	 * <li>calendarModel: "http://www.wikidata.org/entity/Q1985727"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pId
 	 *            property-id
-	 * 
+	 *
 	 * @return {@link ValueSnak}
 	 */
 	public ValueSnak createValueSnakTimeValue(String pId) {
@@ -603,21 +604,21 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates a {@link PropertyIdValue}.
-	 * 
+	 *
 	 * <p>
 	 * ID = PropVal
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
 	 * <li>baseIri: "test"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param id
 	 *            property-id
-	 * 
+	 *
 	 * @return {@link PropertyIdValue}
 	 */
 	public PropertyIdValue createPropertyIdValue(String id) {
@@ -626,21 +627,21 @@ public class TestObjectFactory {
 
 	/**
 	 * Creates an {@link ItemIdValue}.
-	 * 
+	 *
 	 * <p>
 	 * ID = ItemVal
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Default values</b>
 	 * </p>
 	 * <ul>
 	 * <li>baseIri: "test"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param id
 	 *            item-id
-	 * 
+	 *
 	 * @return {@link ItemIdValue}
 	 */
 	public ItemIdValue createItemIdValue(String id) {

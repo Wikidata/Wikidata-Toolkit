@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -37,6 +38,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -105,6 +108,14 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 */
 	@JsonIgnore
 	protected String siteIri = null;
+
+	/**
+	 * The revision id of this document.
+	 *
+	 * @see EntityDocument#getRevisionId()
+	 */
+	@JsonProperty("lastrevid")
+	protected long revisionId = 0;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -193,9 +204,14 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 *
 	 * @return string id
 	 */
+	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("id")
 	public String getJsonId() {
-		return this.entityId;
+		if (!EntityIdValue.SITE_LOCAL.equals(this.siteIri)) {
+			return this.entityId;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -274,6 +290,26 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	@JsonIgnore
 	public Iterator<Statement> getAllStatements() {
 		return new NestedIterator<>(this.getStatementGroups());
+	}
+
+	/**
+	 * Sets the revision id of this document. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param revisionId
+	 *            new value
+	 */
+	@JsonProperty("lastrevid")
+	public void setRevisionId(long revisionId) {
+		this.revisionId = revisionId;
+	}
+
+	@Override
+	@JsonInclude(Include.NON_DEFAULT)
+	@JsonProperty("lastrevid")
+	public long getRevisionId() {
+		return this.revisionId;
+
 	}
 
 }

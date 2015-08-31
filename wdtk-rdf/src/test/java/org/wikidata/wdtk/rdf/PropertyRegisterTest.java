@@ -48,6 +48,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 public class PropertyRegisterTest {
 
@@ -59,7 +60,7 @@ public class PropertyRegisterTest {
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
 	@Before
-	public void setUp() {
+	public void setUp() throws MediaWikiApiErrorException {
 		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
 		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
 
@@ -95,19 +96,21 @@ public class PropertyRegisterTest {
 		mockStatementGroups.add(dataObjectFactory.getStatementGroup(Collections
 				.singletonList(p1921Statement)));
 
-		mockResult
-				.put("P434", dataObjectFactory.getPropertyDocument(pid434,
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
-						Collections.<MonolingualTextValue> emptyList(),
+		mockResult.put("P434",
+				dataObjectFactory.getPropertyDocument(pid434, Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(), Collections
+						.<MonolingualTextValue> emptyList(),
 						mockStatementGroups, dataObjectFactory
-								.getDatatypeIdValue(DatatypeIdValue.DT_STRING)));
+								.getDatatypeIdValue(DatatypeIdValue.DT_STRING),
+						0));
 		mockResult.put("P23", dataObjectFactory.getPropertyDocument(pid23,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(),
-				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM)));
+				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM),
+				0));
 
 		this.propertyRegister = new PropertyRegister("P1921",
 				new ApiConnection("http://localhost/"), this.siteIri);

@@ -52,6 +52,13 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 * IRI of the type of an entity that is a property.
 	 */
 	static final String ET_PROPERTY = "http://www.wikidata.org/ontology#Property";
+	/**
+	 * The site IRI of "local" identifiers. These are used to mark internal ids
+	 * that are not found on any external site. Components that send data to
+	 * external services or that create data exports should omit such ids, if
+	 * possible.
+	 */
+	static public String SITE_LOCAL = "http://localhost/entity/";
 
 	/**
 	 * Returns the type of this entity. This should be an IRI that identifies an
