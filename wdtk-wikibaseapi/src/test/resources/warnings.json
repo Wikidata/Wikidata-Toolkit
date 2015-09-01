@@ -5,6 +5,18 @@
         },
         "query": {
             "*": "Unrecognized value for parameter 'list': raremodule"
-        }
+        },
+        "wbeditentity": {
+	        "messages": [
+    	      	{
+        	  		"name":"wikibase-self-conflict-patched",
+					"parameters":[],
+         			"html": { "*":"Your edit was patched into the latest version, overriding some of your own intermediate changes."}
+		       	}
+		   	]
+    	},
+    	"test": {
+            "*": { "unknown": "structure" }
+        }    	
     }
 }

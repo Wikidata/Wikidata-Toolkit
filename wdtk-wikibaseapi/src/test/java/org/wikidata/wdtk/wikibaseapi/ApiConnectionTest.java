@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,13 +167,19 @@ public class ApiConnectionTest {
 				con.getQueryString(params));
 	}
 
-	// @Test
-	// public void testWarnings() throws JsonProcessingException, IOException {
-	// JsonNode root;
-	// URL path = this.getClass().getResource("/warnings.json");
-	// root = mapper.readTree(path.openStream());
-	// assertTrue(con.logWarnings(root));
-	// }
+	@Test
+	public void testWarnings() throws JsonProcessingException, IOException {
+		JsonNode root;
+		URL path = this.getClass().getResource("/warnings.json");
+		root = mapper.readTree(path.openStream());
+		List<String> warnings = con.getWarnings(root);
+		List<String> expectedWarnings = Arrays
+				.asList("[main]: Unrecognized parameter: 'rmparam'",
+						"[query]: Unrecognized value for parameter 'list': raremodule",
+						"[wbeditentity]: Your edit was patched into the latest version, overriding some of your own intermediate changes.",
+						"[test]: Warning was not understood. Please report this to Wikidata Toolkit. JSON source: {\"unknown\":\"structure\"}");
+		assertEquals(expectedWarnings, warnings);
+	}
 
 	@Test(expected = MediaWikiApiErrorException.class)
 	public void testErrors() throws JsonProcessingException, IOException,

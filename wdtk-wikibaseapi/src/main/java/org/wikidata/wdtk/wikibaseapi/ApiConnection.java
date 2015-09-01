@@ -27,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -370,26 +371,57 @@ public class ApiConnection {
 	 *            root node of the JSON result
 	 */
 	public void logWarnings(JsonNode root) {
+		for (String warning : getWarnings(root)) {
+			logger.warn("API warning " + warning);
+		}
+	}
+
+	/**
+	 * Extracts warnings that are returned in an API response.
+	 *
+	 * @param root
+	 *            root node of the JSON result
+	 */
+	List<String> getWarnings(JsonNode root) {
+		ArrayList<String> warnings = new ArrayList<>();
+
 		if (root.has("warnings")) {
 			JsonNode warningNode = root.path("warnings");
-			System.out.println("There are warnings: " + warningNode.toString());
-			Iterator<Map.Entry<String, JsonNode>> iter = warningNode.fields();
-			while (iter.hasNext()) {
-				Map.Entry<String, JsonNode> node = iter.next();
-				if ("main".equals(node.getKey())) {
-					logger.warn("API returned warning: "
-							+ node.getValue().path("*")
-									.asText("DESCRIPTION MISSING"));
-				} else {
-					logger.warn("API returned warning: "
-							+ node.getKey()
-							+ " :"
-							+ node.getValue().path("*")
-									.asText("DESCRIPTION MISSING"));
+			Iterator<Map.Entry<String, JsonNode>> moduleIterator = warningNode
+					.fields();
+			while (moduleIterator.hasNext()) {
+				Map.Entry<String, JsonNode> moduleNode = moduleIterator.next();
+				Iterator<JsonNode> moduleOutputIterator = moduleNode.getValue()
+						.elements();
+				while (moduleOutputIterator.hasNext()) {
+					JsonNode moduleOutputNode = moduleOutputIterator.next();
+					if (moduleOutputNode.isTextual()) {
+						warnings.add("[" + moduleNode.getKey() + "]: "
+								+ moduleOutputNode.textValue());
+					} else if (moduleOutputNode.isArray()) {
+						Iterator<JsonNode> messageIterator = moduleOutputNode
+								.elements();
+						while (messageIterator.hasNext()) {
+							JsonNode messageNode = messageIterator.next();
+							warnings.add("["
+									+ moduleNode.getKey()
+									+ "]: "
+									+ messageNode.path("html").path("*")
+											.asText(messageNode.toString()));
+						}
+					} else {
+						warnings.add("["
+								+ moduleNode.getKey()
+								+ "]: "
+								+ "Warning was not understood. Please report this to Wikidata Toolkit. JSON source: "
+								+ moduleOutputNode.toString());
+					}
 				}
 
 			}
 		}
+
+		return warnings;
 	}
 
 	/**
