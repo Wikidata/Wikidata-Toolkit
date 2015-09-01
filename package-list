@@ -12,6 +12,7 @@ org.wikidata.wdtk.rdf
 org.wikidata.wdtk.rdf.extensions
 org.wikidata.wdtk.rdf.values
 org.wikidata.wdtk.storage.datastructures
-org.wikidata.wdtk.storage.dbquery
 org.wikidata.wdtk.testing
 org.wikidata.wdtk.util
+org.wikidata.wdtk.wikibaseapi
+org.wikidata.wdtk.wikibaseapi.apierrors
