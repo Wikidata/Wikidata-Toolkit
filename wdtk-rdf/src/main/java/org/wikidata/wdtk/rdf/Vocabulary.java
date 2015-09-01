@@ -321,6 +321,20 @@ public class Vocabulary {
 		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
+	/**
+	 * Property for defining the unit of a quantity value.
+	 */
+	public static final String WB_QUANTITY_UNIT = PREFIX_WBONTO
+			+ "quantityUnit";
+	static {
+		VOCABULARY_TYPES.put(WB_QUANTITY_UNIT, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * IRI used as the unit of quantities that have no unit.
+	 */
+	public static final String WB_NO_UNIT = "http://www.wikidata.org/entity/Q199";
+
 	public static final String WB_NORMAL_RANK = PREFIX_WBONTO + "NormalRank";
 
 	public static final String WB_PREFERRED_RANK = PREFIX_WBONTO

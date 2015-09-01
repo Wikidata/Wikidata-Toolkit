@@ -132,6 +132,8 @@ public class RdfWriter {
 			.createURI(Vocabulary.WB_LOWER_BOUND);
 	public static final URI WB_UPPER_BOUND = factory
 			.createURI(Vocabulary.WB_UPPER_BOUND);
+	public static final URI WB_QUANTITY_UNIT = factory
+			.createURI(Vocabulary.WB_QUANTITY_UNIT);
 	public static final URI WB_RANK = factory.createURI(Vocabulary.WB_RANK);
 
 	RDFWriter writer;
