@@ -7,6 +7,7 @@ Version 0.5.0
 New features:
 * Support for reading and writing live entity data from wikidata.org or any other Wikibase site (issue #162)
 * New examples for illustrating read/write API support
+* Support for quantities with units of measurement (new feature in Wikibase; still beta)
 * New builder classes to simplify construction of EntityDocuments, Statements, and References
 * Support processing of local dump files by file name in code and command-line client (issue #136)
 * New example WorldMapProcessor that shows the generation of maps from geographic data
