@@ -83,6 +83,14 @@ public class QuantityValueConverter extends
 		this.rdfWriter.writeTripleLiteralObject(resource,
 				RdfWriter.WB_UPPER_BOUND, value.getUpperBound().toString(),
 				RdfWriter.XSD_DECIMAL);
+		String unitIri;
+		if ("".equals(value.getUnit())) {
+			unitIri = Vocabulary.WB_NO_UNIT;
+		} else {
+			unitIri = value.getUnit();
+		}
+		this.rdfWriter.writeTripleUriObject(resource,
+				RdfWriter.WB_QUANTITY_UNIT, unitIri);
 	}
 
 }

@@ -57,8 +57,8 @@ public class RdfSerializerTest {
 				.createItemDocument());
 		this.rdfSerializer.close();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("completeRDFDocument.rdf")));
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("completeRDFDocument.rdf")), model);
 	}
 
 }

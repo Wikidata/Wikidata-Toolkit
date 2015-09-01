@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
@@ -60,11 +61,11 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(JsonTestData.JSON_STRING_VALUE,
 				JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueString);
 		assertEquals(result.getType(), JsonTestData.TEST_STRING_VALUE.getType());
 		assertEquals(((JacksonValueString) result).getValue(),
 				JsonTestData.TEST_STRING_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_STRING_VALUE, result);
 	}
 
 	@Test
@@ -81,12 +82,14 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
 				JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueItemId);
+		((JacksonValueItemId) result).setSiteIri(Datamodel.SITE_WIKIDATA);
+
 		assertEquals(result.getType(),
 				JsonTestData.TEST_ITEM_ID_VALUE.getType());
 		assertEquals(((JacksonValueItemId) result).getValue(),
 				JsonTestData.TEST_ITEM_ID_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_ITEM_ID_VALUE, result);
 	}
 
 	@Test
@@ -103,12 +106,14 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_PROPERTY_ID_VALUE, JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValuePropertyId);
+		((JacksonValuePropertyId) result).setSiteIri(Datamodel.SITE_WIKIDATA);
+
 		assertEquals(result.getType(),
 				JsonTestData.TEST_PROPERTY_ID_VALUE.getType());
 		assertEquals(((JacksonValuePropertyId) result).getValue(),
 				JsonTestData.TEST_PROPERTY_ID_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_PROPERTY_ID_VALUE, result);
 	}
 
 	@Test
@@ -177,12 +182,12 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueGlobeCoordinates);
 		assertEquals(result.getType(),
 				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getType());
 		assertEquals(((JacksonValueGlobeCoordinates) result).getValue(),
 				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_GLOBE_COORDINATES_VALUE, result);
 	}
 
 	@Test
@@ -199,12 +204,12 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_QUANTITY_VALUE, JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueQuantity);
 		assertEquals(result.getType(),
 				JsonTestData.TEST_QUANTITY_VALUE.getType());
 		assertEquals(((JacksonValueQuantity) result).getValue(),
 				JsonTestData.TEST_QUANTITY_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_QUANTITY_VALUE, result);
 	}
 
 	@Test
@@ -221,9 +226,9 @@ public class TestValue {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE, JacksonValue.class);
 
-		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueMonolingualText);
-		assertEquals((result), JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE);
+		assertEquals(JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE, result);
+
 	}
 
 }

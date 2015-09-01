@@ -185,8 +185,8 @@ public class RdfConverterTest {
 		this.rdfConverter.writeBasicDeclarations();
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("BasicDeclarations.rdf")));
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("BasicDeclarations.rdf")), model);
 
 	}
 

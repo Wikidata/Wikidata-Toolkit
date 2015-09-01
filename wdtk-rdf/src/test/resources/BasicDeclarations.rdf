@@ -27,6 +27,8 @@
 
 <http://www.wikidata.org/ontology#lowerBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
+<http://www.wikidata.org/ontology#quantityUnit> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
 <http://www.wikidata.org/ontology#Reference> a <http://www.w3.org/2002/07/owl#Class> .
 
 <http://www.wikidata.org/ontology#GlobeCoordinatesValue> a <http://www.w3.org/2002/07/owl#Class> .
