@@ -338,7 +338,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	public QuantityValue copy(QuantityValue object) {
 		return this.dataObjectFactory.getQuantityValue(
 				object.getNumericValue(), object.getLowerBound(),
-				object.getUpperBound());
+				object.getUpperBound(), object.getUnit());
 	}
 
 	/**

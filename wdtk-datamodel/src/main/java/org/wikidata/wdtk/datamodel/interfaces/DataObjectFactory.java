@@ -151,7 +151,7 @@ public interface DataObjectFactory {
 			String languageCode);
 
 	/**
-	 * Creates a {@link QuantityValue}.
+	 * Creates a {@link QuantityValue} without a unit of measurement.
 	 *
 	 * @param numericValue
 	 *            the numeric value of this quantity
@@ -163,6 +163,23 @@ public interface DataObjectFactory {
 	 */
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound);
+
+	/**
+	 * Creates a {@link QuantityValue}.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit of this quantity, or the empty string if there is no
+	 *            unit
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit);
 
 	/**
 	 * Creates a {@link ValueSnak}.

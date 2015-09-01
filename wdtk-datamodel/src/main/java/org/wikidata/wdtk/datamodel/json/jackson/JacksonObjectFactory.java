@@ -168,8 +168,14 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
+		return getQuantityValue(numericValue, lowerBound, upperBound, "");
+	}
+
+	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
 		JacksonInnerQuantity innerQuantity = new JacksonInnerQuantity(
-				numericValue, upperBound, lowerBound);
+				numericValue, upperBound, lowerBound, unit);
 		JacksonValueQuantity result = new JacksonValueQuantity();
 		result.setValue(innerQuantity);
 		return result;

@@ -40,6 +40,7 @@ public class JacksonInnerQuantity {
 	private BigDecimal amount;
 	private BigDecimal upperBound;
 	private BigDecimal lowerBound;
+	private String jsonUnit;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -49,17 +50,24 @@ public class JacksonInnerQuantity {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor.
+	 * Constructor. The unit given here is a unit string as used in WDTK, with
+	 * the empty string meaning "no unit".
 	 *
 	 * @param amount
 	 * @param upperBound
 	 * @param lowerBound
+	 * @param unit
 	 */
 	public JacksonInnerQuantity(BigDecimal amount, BigDecimal upperBound,
-			BigDecimal lowerBound) {
+			BigDecimal lowerBound, String unit) {
 		this.amount = amount;
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
+		if ("".equals(unit)) {
+			this.jsonUnit = "1";
+		} else {
+			this.jsonUnit = unit;
+		}
 	}
 
 	/**
@@ -141,14 +149,42 @@ public class JacksonInnerQuantity {
 	}
 
 	/**
-	 * Returns the string to use for the "unit" field in JSON. Units of
-	 * mesurement are not supported yet, so this is a constant value of 1.
+	 * Returns the string to use for the "unit" field in JSON. The value "1" is
+	 * used to denote "no unit"; otherwise an IRI is used to denote specific
+	 * units.
 	 *
 	 * @return unit string
 	 */
 	@JsonProperty("unit")
+	public String getJsonUnit() {
+		return this.jsonUnit;
+	}
+
+	/**
+	 * Sets the lower bound to the given value. Only for use by Jackson during
+	 * deserialization.
+	 *
+	 * @param unit
+	 *            new unit value, the string "1" is used in JSON to denote that
+	 *            there is no unit for a quantity
+	 */
+	@JsonProperty("unit")
+	public void setJsonUnit(String unit) {
+		this.jsonUnit = unit;
+	}
+
+	/**
+	 * Returns the unit to be used, converting JSON-specific encodings of
+	 * "no unit" to the one used in WDTK.
+	 *
+	 * @return unit string
+	 */
 	public String getUnit() {
-		return "1";
+		if ("1".equals(this.jsonUnit)) {
+			return "";
+		} else {
+			return this.jsonUnit;
+		}
 	}
 
 	@Override
@@ -163,7 +199,8 @@ public class JacksonInnerQuantity {
 
 		return this.amount.equals(other.amount)
 				&& this.lowerBound.equals(other.lowerBound)
-				&& this.upperBound.equals(other.upperBound);
+				&& this.upperBound.equals(other.upperBound)
+				&& this.jsonUnit.equals(other.jsonUnit);
 	}
 
 	/**

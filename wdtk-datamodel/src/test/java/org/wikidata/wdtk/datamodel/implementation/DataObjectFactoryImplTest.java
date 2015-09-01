@@ -216,7 +216,8 @@ public class DataObjectFactoryImplTest {
 				+ ".123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
-		return new QuantityValueImpl(nv, lb, ub);
+		return new QuantityValueImpl(nv, lb, ub,
+				"http://wikidata.org/entity/Q11573");
 	}
 
 	public static Value getTestValue(ValueType valueType, int seed) {

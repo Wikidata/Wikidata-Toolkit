@@ -185,7 +185,7 @@ public class ToString {
 	public static String toString(QuantityValue o) {
 		return o.getNumericValue().toString() + " ["
 				+ o.getLowerBound().toString() + " .. "
-				+ o.getUpperBound().toString() + "]";
+				+ o.getUpperBound().toString() + "]" + " " + o.getUnit();
 	}
 
 	/**

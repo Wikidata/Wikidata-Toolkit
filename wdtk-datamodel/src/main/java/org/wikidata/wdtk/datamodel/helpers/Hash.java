@@ -170,6 +170,7 @@ public class Hash {
 		result = o.getNumericValue().hashCode();
 		result = prime * result + o.getLowerBound().hashCode();
 		result = prime * result + o.getUpperBound().hashCode();
+		result = prime * result + o.getUnit().hashCode();
 		return result;
 	}
 
