@@ -295,7 +295,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 			while (this.xmlReader.hasNext()) {
 				this.xmlReader.next();
 				if (this.xmlReader.getEventType() == XMLStreamConstants.END_ELEMENT
-						&& this.xmlReader.getLocalName() == MwRevisionDumpFileProcessor.E_PAGE) {
+						&& this.xmlReader.getLocalName().equals(MwRevisionDumpFileProcessor.E_PAGE)) {
 					MwRevisionDumpFileProcessor.logger
 							.info("... recovery successful. Continuing processing.");
 					return;
