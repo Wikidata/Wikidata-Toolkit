@@ -58,7 +58,7 @@ public class ExampleHelpers {
 	 * Enum to say which dumps should be downloaded and processed. Used as
 	 * possible values of {@link ExampleHelpers#DUMP_FILE_MODE}.
 	 */
-	public static enum DumpProcessingMode {
+	public enum DumpProcessingMode {
 		JSON, CURRENT_REVS, ALL_REVS, CURRENT_REVS_WITH_DAILIES, ALL_REVS_WITH_DAILIES, JUST_ONE_DAILY_FOR_TEST
 	}
 
