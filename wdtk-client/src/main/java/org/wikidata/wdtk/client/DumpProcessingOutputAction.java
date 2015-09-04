@@ -267,7 +267,7 @@ public abstract class DumpProcessingOutputAction implements
 		 * the thread has really finished.
 		 */
 		void finish();
-	};
+	}
 
 	/**
 	 * Creates a separate thread for writing into the given output stream and

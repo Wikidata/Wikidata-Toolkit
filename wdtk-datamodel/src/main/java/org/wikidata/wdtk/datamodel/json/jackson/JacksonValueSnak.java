@@ -114,7 +114,6 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 		super.setSiteIri(siteIri);
 		if (this.datavalue instanceof JacksonValueEntityId) {
 			((JacksonValueEntityId) this.datavalue).setSiteIri(siteIri);
-			;
 		}
 	}
 
