@@ -52,8 +52,8 @@ public interface ValueExportExtension<V extends Value> {
 	 * @throws RDFHandlerException
 	 *             if the data could not be written
 	 */
-	public void writeExtensionData(Resource resource,
-			PropertyIdValue propertyIdValue, V value, RdfWriter rdfWriter,
-			OwlDeclarationBuffer owlDeclarationBuffer)
+	void writeExtensionData(Resource resource,
+							PropertyIdValue propertyIdValue, V value, RdfWriter rdfWriter,
+							OwlDeclarationBuffer owlDeclarationBuffer)
 			throws RDFHandlerException;
 }

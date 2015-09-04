@@ -178,8 +178,8 @@ public interface DataObjectFactory {
 	 *            unit
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
-	public QuantityValue getQuantityValue(BigDecimal numericValue,
-			BigDecimal lowerBound, BigDecimal upperBound, String unit);
+	QuantityValue getQuantityValue(BigDecimal numericValue,
+								   BigDecimal lowerBound, BigDecimal upperBound, String unit);
 
 	/**
 	 * Creates a {@link ValueSnak}.
