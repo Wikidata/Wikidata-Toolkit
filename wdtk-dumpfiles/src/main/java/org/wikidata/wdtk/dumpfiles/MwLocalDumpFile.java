@@ -158,12 +158,8 @@ public class MwLocalDumpFile implements MwDumpFile {
 			this.projectName = projectName;
 		}
 
-		if (this.directoryManager != null
-				&& this.directoryManager.hasFile(this.dumpFileName)) {
-			this.isAvailable = true;
-		} else {
-			this.isAvailable = false;
-		}
+		this.isAvailable = this.directoryManager != null
+				&& this.directoryManager.hasFile(this.dumpFileName);
 	}
 
 	/**
