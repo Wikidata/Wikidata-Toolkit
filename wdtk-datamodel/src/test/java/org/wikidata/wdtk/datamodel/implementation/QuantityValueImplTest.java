@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 public class QuantityValueImplTest {
 
 	final BigDecimal nv = new BigDecimal(
-			"0.123456789012345678901234567890123456789");;
+			"0.123456789012345678901234567890123456789");
 	final BigDecimal lb = new BigDecimal(
 			"0.123456789012345678901234567890123456788");
 	final BigDecimal ub = new BigDecimal(
