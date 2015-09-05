@@ -281,7 +281,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		String message = "Finished serialization of "
 				+ this.serializer.getTripleCount() + " RDF triples in file "
 				+ this.insertDumpInformation(this.outputDestination);
-		if (this.compressionType != COMPRESS_NONE) {
+		if (!this.compressionType.equals(COMPRESS_NONE)) {
 			message += "." + this.compressionType;
 		}
 		return message;
