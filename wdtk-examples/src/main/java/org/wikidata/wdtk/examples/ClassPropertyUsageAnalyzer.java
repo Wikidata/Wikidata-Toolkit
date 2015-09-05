@@ -508,7 +508,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
@@ -536,7 +535,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
