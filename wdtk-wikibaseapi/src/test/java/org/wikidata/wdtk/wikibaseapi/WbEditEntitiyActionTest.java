@@ -66,6 +66,7 @@ public class WbEditEntitiyActionTest {
 		params.put("token", null);
 		params.put("format", "json");
 		params.put("data", "{}");
+		params.put("maxlag", "5");
 		con.setWebResourceFromPath(params, this.getClass(),
 				"/error-badtoken.json", CompressionType.NONE);
 
@@ -92,6 +93,7 @@ public class WbEditEntitiyActionTest {
 		params.put("token", null);
 		params.put("format", "json");
 		params.put("data", "{}");
+		params.put("maxlag", "5");
 		con.setWebResourceFromPath(params, this.getClass(),
 				"/error-badtoken.json", CompressionType.NONE);
 

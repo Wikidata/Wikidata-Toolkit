@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -181,7 +182,7 @@ public class WbEditEntityAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
-	 * @return modified or created entity document, or null if there were errors
+	 * @return modified or created entity document
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
 	 *             connection
@@ -307,10 +308,11 @@ public class WbEditEntityAction {
 				return parseJsonResponse(root.path("property"));
 			} else if (root.has("entity")) {
 				return parseJsonResponse(root.path("entity"));
+			} else {
+				throw new JsonMappingException(
+						"No entity document found in API response.");
 			}
-			logger.error("No entity document found in API response.");
 		}
-		return null;
 	}
 
 	/**
@@ -376,8 +378,11 @@ public class WbEditEntityAction {
 	 * @param entityNode
 	 *            the JSON node that should contain the entity document data
 	 * @return the entitiy document, or null if there were unrecoverable errors
+	 * @throws IOException
+	 * @throws JsonProcessingException
 	 */
-	private EntityDocument parseJsonResponse(JsonNode entityNode) {
+	private EntityDocument parseJsonResponse(JsonNode entityNode)
+			throws JsonProcessingException, IOException {
 		try {
 			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
 					JacksonTermedStatementDocument.class);
@@ -402,19 +407,10 @@ public class WbEditEntityAction {
 					.reader(JacksonTermedStatementDocument.class);
 
 			JacksonTermedStatementDocument ed;
-			try {
-				ed = documentReader.readValue(jsonString);
-				ed.setSiteIri(this.siteIri);
-				return ed;
-			} catch (IOException e1) {
-				logger.error("Failed to recover parsing of entity "
-						+ entityNode.path("id").asText("UNKNOWN") + ": "
-						+ e.toString() + "\nModified JSON data was: "
-						+ jsonString);
-			}
+			ed = documentReader.readValue(jsonString);
+			ed.setSiteIri(this.siteIri);
+			return ed;
 		}
-
-		return null;
 	}
 
 }
