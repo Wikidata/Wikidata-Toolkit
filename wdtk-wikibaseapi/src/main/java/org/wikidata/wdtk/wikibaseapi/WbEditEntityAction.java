@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
@@ -71,6 +72,12 @@ public class WbEditEntityAction {
 	String csrfToken = null;
 
 	/**
+	 * Value in seconds of MediaWiki's maxlag parameter. Shorter is nicer,
+	 * longer is more aggressive.
+	 */
+	int maxLag = 5;
+
+	/**
 	 * Creates an object to modify data on a Wikibase site. The API is used to
 	 * request the changes. The site URI is necessary since it is not contained
 	 * in the data retrieved from the API.
@@ -85,6 +92,30 @@ public class WbEditEntityAction {
 	public WbEditEntityAction(ApiConnection connection, String siteUri) {
 		this.connection = connection;
 		this.siteIri = siteUri;
+	}
+
+	/**
+	 * Returns the current value of the maxlag parameter. It specifies the
+	 * number of seconds. To save actions causing any more site replication lag,
+	 * this parameter can make the client wait until the replication lag is less
+	 * than the specified value. In case of excessive lag, error code "maxlag"
+	 * is returned upon API requests.
+	 *
+	 * @return current setting of the maxlag parameter
+	 */
+	public int getMaxLag() {
+		return this.maxLag;
+	}
+
+	/**
+	 * Set the value of the maxlag parameter. If unsure, keep the default. See
+	 * {@link #getMaxLag()} for details.
+	 *
+	 * @param maxLag
+	 *            the new value in seconds
+	 */
+	public void setMaxLag(int maxLag) {
+		this.maxLag = maxLag;
 	}
 
 	/**
@@ -210,16 +241,37 @@ public class WbEditEntityAction {
 			parameters.put("summary", summary);
 		}
 
+		parameters.put("maxlag", new Integer(this.maxLag).toString());
 		parameters.put("token", getCsrfToken());
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
 
-		EntityDocument result;
-		try {
-			result = doWbEditEntity(parameters);
-		} catch (TokenErrorException e) { // try once more
-			refreshCsrfToken();
-			parameters.put("token", getCsrfToken());
-			result = doWbEditEntity(parameters);
+		EntityDocument result = null;
+		int retry = 5;
+		MediaWikiApiErrorException lastException = null;
+		while (retry > 0) {
+			try {
+				result = doWbEditEntity(parameters);
+				break;
+			} catch (TokenErrorException e) { // try again with a fresh token
+				lastException = e;
+				refreshCsrfToken();
+				parameters.put("token", getCsrfToken());
+			} catch (MaxlagErrorException e) { // wait for 5 seconds
+				lastException = e;
+				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+			}
+			retry--;
+		}
+
+		if (result == null) {
+			logger.error("Gave up after several retries. Last error was: "
+					+ lastException.toString());
+			throw lastException;
 		}
 
 		return result;

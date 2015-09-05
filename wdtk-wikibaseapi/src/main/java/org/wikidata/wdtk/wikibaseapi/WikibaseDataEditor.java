@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -106,6 +106,30 @@ public class WikibaseDataEditor {
 	 */
 	public void setEditAsBot(boolean editAsBot) {
 		this.editAsBot = editAsBot;
+	}
+
+	/**
+	 * Returns the current value of the maxlag parameter. It specifies the
+	 * number of seconds. To save actions causing any more site replication lag,
+	 * this parameter can make the client wait until the replication lag is less
+	 * than the specified value. In case of excessive lag, error code "maxlag"
+	 * is returned upon API requests.
+	 *
+	 * @return current setting of the maxlag parameter
+	 */
+	public int getMaxLag() {
+		return this.wbEditEntityAction.getMaxLag();
+	}
+
+	/**
+	 * Set the value of the maxlag parameter. If unsure, keep the default. See
+	 * {@link WikibaseDataEditor#getMaxLag()} for details.
+	 *
+	 * @param maxLag
+	 *            the new value in seconds
+	 */
+	public void setMaxLag(int maxLag) {
+		this.wbEditEntityAction.setMaxLag(maxLag);
 	}
 
 	/**
