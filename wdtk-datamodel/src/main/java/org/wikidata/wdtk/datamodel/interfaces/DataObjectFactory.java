@@ -161,7 +161,7 @@ public interface DataObjectFactory {
 	 *            the upper bound of the numeric value of this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
-	public QuantityValue getQuantityValue(BigDecimal numericValue,
+	QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound);
 
 	/**
@@ -179,7 +179,7 @@ public interface DataObjectFactory {
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	QuantityValue getQuantityValue(BigDecimal numericValue,
-								   BigDecimal lowerBound, BigDecimal upperBound, String unit);
+			BigDecimal lowerBound, BigDecimal upperBound, String unit);
 
 	/**
 	 * Creates a {@link ValueSnak}.
