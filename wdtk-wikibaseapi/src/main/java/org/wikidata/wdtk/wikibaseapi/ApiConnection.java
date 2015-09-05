@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
@@ -328,7 +329,8 @@ public class ApiConnection {
 			Map<String, String> parameters) throws IOException {
 		String queryString = getQueryString(parameters);
 		URL url = new URL(this.apiBaseUrl);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl
+				.getUrlConnection(url);
 
 		setupConnection(requestMethod, queryString, connection);
 		OutputStreamWriter writer = new OutputStreamWriter(
@@ -617,7 +619,7 @@ public class ApiConnection {
 	 * @param queryString
 	 *            the query string to submit
 	 * @param connection
-	 *            the conncetion to configure
+	 *            the connection to configure
 	 * @throws IOException
 	 *             if the given protocol is not valid
 	 */
