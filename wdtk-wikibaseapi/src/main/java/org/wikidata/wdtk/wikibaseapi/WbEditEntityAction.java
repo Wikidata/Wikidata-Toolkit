@@ -51,6 +51,8 @@ public class WbEditEntityAction {
 	static final Logger logger = LoggerFactory
 			.getLogger(WbEditEntityAction.class);
 
+	static int MAXLAG_SLEEP_TIME = 5000;
+
 	/**
 	 * Connection to an Wikibase API.
 	 */
@@ -261,7 +263,7 @@ public class WbEditEntityAction {
 				lastException = e;
 				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(MAXLAG_SLEEP_TIME);
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

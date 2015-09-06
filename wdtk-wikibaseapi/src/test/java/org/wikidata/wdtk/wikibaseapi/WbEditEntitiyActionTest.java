@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
@@ -100,6 +101,34 @@ public class WbEditEntitiyActionTest {
 		WbEditEntityAction weea = new WbEditEntityAction(con,
 				Datamodel.SITE_WIKIDATA);
 
+		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null);
+	}
+
+	@Test(expected = MaxlagErrorException.class)
+	public void testApiErrorMaxLag() throws IOException,
+			MediaWikiApiErrorException {
+		MockApiConnection con = new MockApiConnection();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "query");
+		params.put("meta", "tokens");
+		params.put("format", "json");
+		con.setWebResourceFromPath(params, this.getClass(),
+				"/query-csrf-token-loggedin-response.json",
+				CompressionType.NONE);
+
+		params.clear();
+		params.put("action", "wbeditentity");
+		params.put("id", "Q42");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("data", "{}");
+		params.put("maxlag", "5");
+		con.setWebResourceFromPath(params, this.getClass(),
+				"/error-maxlag.json", CompressionType.NONE);
+
+		WbEditEntityAction weea = new WbEditEntityAction(con,
+				Datamodel.SITE_WIKIDATA);
+		WbEditEntityAction.MAXLAG_SLEEP_TIME = 0; // speed up the test ...
 		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null);
 	}
 

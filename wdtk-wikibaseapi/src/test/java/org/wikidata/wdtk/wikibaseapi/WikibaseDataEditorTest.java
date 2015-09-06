@@ -59,6 +59,14 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	public void testSetMaxLag() throws IOException, MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLag(3);
+		assertEquals(3, wde.getMaxLag());
+	}
+
+	@Test
 	public void testCreateItem() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
