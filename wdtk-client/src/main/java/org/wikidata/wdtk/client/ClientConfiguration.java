@@ -661,9 +661,7 @@ public class ClientConfiguration {
 	private void setLanguageFilters(String filters) {
 		this.filterLanguages = new HashSet<>();
 		if (!"-".equals(filters)) {
-			for (String lang : filters.split(",")) {
-				this.filterLanguages.add(lang);
-			}
+			Collections.addAll(this.filterLanguages, filters.split(","));
 		}
 	}
 
@@ -677,9 +675,7 @@ public class ClientConfiguration {
 	private void setSiteFilters(String filters) {
 		this.filterSites = new HashSet<>();
 		if (!"-".equals(filters)) {
-			for (String siteKey : filters.split(",")) {
-				this.filterSites.add(siteKey);
-			}
+			Collections.addAll(this.filterSites, filters.split(","));
 		}
 	}
 
