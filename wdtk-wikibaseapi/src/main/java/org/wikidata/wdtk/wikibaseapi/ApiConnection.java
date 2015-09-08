@@ -223,7 +223,7 @@ public class ApiConnection {
 	 *            the objects to implode
 	 * @return string of imploded objects
 	 */
-	public static String implodeObjects(Iterable<? extends Object> objects) {
+	public static String implodeObjects(Iterable<?> objects) {
 		StringBuilder builder = new StringBuilder();
 		boolean first = true;
 		for (Object o : objects) {
