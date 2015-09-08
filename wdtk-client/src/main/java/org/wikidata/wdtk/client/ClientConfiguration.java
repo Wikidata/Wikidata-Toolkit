@@ -388,12 +388,12 @@ public class ClientConfiguration {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e) {
 			logger.error("Failed to parse arguments: " + e.getMessage());
-			return Collections.<DumpProcessingAction> emptyList();
+			return Collections.emptyList();
 		}
 
 		// Stop processing if a help text is to be printed:
 		if ((cmd.hasOption(CMD_OPTION_HELP)) || (args.length == 0)) {
-			return Collections.<DumpProcessingAction> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<DumpProcessingAction> configuration = new ArrayList<>();
