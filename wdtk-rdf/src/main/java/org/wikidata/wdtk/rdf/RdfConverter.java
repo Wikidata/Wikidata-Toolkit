@@ -416,7 +416,7 @@ public class RdfConverter {
 											+ propertyDocument.getDatatype()
 													.toString()
 											+ " is different from superproperty "
-											+ datatype.toString());
+											+ datatype);
 									continue;
 								}
 							} else {
