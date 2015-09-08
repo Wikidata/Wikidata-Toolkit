@@ -67,6 +67,15 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	public void testSetAverageTimePerEdit() throws IOException,
+			MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setAverageTimePerEdit(5000);
+		assertEquals(5000, wde.getAverageTimePerEdit());
+	}
+
+	@Test
 	public void testCreateItem() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);

@@ -81,6 +81,30 @@ public class WbEditEntityAction {
 	int maxLag = 5;
 
 	/**
+	 * Number of recent editing times to monitor in order to avoid editing too
+	 * fast. Wikidata.org seems to block fast editors after 9 edits, so this
+	 * size seems to make sense.
+	 */
+	final static int editTimeWindow = 9;
+
+	/**
+	 * Average time to wait after each edit. Individual edits can be faster than
+	 * this, but it is ensured that this time will be taken per edit in the long
+	 * run.
+	 */
+	int averageMsecsPerEdit = 2000;
+
+	/**
+	 * Times of the last {@link #editTimeWindow} edits. Used in a loop. Most
+	 * recent edit time is at {@link #curEditTimeSlot}.
+	 */
+	final long[] recentEditTimes = new long[editTimeWindow];
+	/**
+	 * @see #recentEditTimes
+	 */
+	int curEditTimeSlot = 0;
+
+	/**
 	 * Creates an object to modify data on a Wikibase site. The API is used to
 	 * request the changes. The site URI is necessary since it is not contained
 	 * in the data retrieved from the API.
@@ -119,6 +143,34 @@ public class WbEditEntityAction {
 	 */
 	public void setMaxLag(int maxLag) {
 		this.maxLag = maxLag;
+	}
+
+	/**
+	 * Returns the average time in milliseconds that one edit will take. This
+	 * time is enforced to avoid overloading the site with too many edits, and
+	 * also to throttle the rate of editing (which is useful to stop a bot in
+	 * case of errors). Individual edits can be faster than this, but if several
+	 * consecutive edits are above this rate, the program will pause until the
+	 * expected speed is reached again. The delay is based on real system time.
+	 * This means that it will only wait as long as necessary. If your program
+	 * takes time between edits for other reasons, there will be no additional
+	 * delay caused by this feature.
+	 *
+	 * @return average time per edit in milliseconds
+	 */
+	public int getAverageTimePerEdit() {
+		return this.averageMsecsPerEdit;
+	}
+
+	/**
+	 * Sets the average time that a single edit should take, measured in
+	 * milliseconds. See {@link #getAverageTimePerEdit()} for details.
+	 *
+	 * @param milliseconds
+	 *            the new value in milliseconds
+	 */
+	public void setAverageTimePerEdit(int milliseconds) {
+		this.averageMsecsPerEdit = milliseconds;
 	}
 
 	/**
@@ -247,6 +299,8 @@ public class WbEditEntityAction {
 		parameters.put("maxlag", new Integer(this.maxLag).toString());
 		parameters.put("token", getCsrfToken());
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+
+		checkEditSpeed();
 
 		EntityDocument result = null;
 		int retry = 5;
@@ -413,6 +467,35 @@ public class WbEditEntityAction {
 			ed.setSiteIri(this.siteIri);
 			return ed;
 		}
+	}
+
+	/**
+	 * Makes sure that we are not editing too fast. The method stores the last
+	 * {@link WbEditEntityAction#editTimeWindow} time points when an edit was
+	 * made. If the time since the oldest edit in this window is shorter than
+	 * {@link #averageMsecsPerEdit} milliseconds, then the method will pause the
+	 * thread for the remaining time.
+	 */
+	private void checkEditSpeed() {
+		long currentTime = System.nanoTime();
+		int nextIndex = (this.curEditTimeSlot + 1) % editTimeWindow;
+		if (this.recentEditTimes[nextIndex] != 0
+				&& currentTime - this.recentEditTimes[nextIndex] < this.averageMsecsPerEdit
+						* editTimeWindow * 1000000) {
+			long sleepTime = this.averageMsecsPerEdit * editTimeWindow
+					- (currentTime - this.recentEditTimes[nextIndex]) / 1000000;
+			logger.info("We are editing too fast. Pausing for " + sleepTime
+					+ " milliseconds.");
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
+			currentTime = System.nanoTime();
+		}
+
+		this.recentEditTimes[nextIndex] = currentTime;
+		this.curEditTimeSlot = nextIndex;
 	}
 
 }

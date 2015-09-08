@@ -133,6 +133,29 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * Returns the average time that a single edit should take, measured in
+	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * details.
+	 *
+	 * @return average time per edit in milliseconds
+	 */
+	public int getAverageTimePerEdit() {
+		return this.wbEditEntityAction.getAverageTimePerEdit();
+	}
+
+	/**
+	 * Sets the average time that a single edit should take, measured in
+	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * details.
+	 *
+	 * @param milliseconds
+	 *            the new value in milliseconds
+	 */
+	public void setAverageTimePerEdit(int milliseconds) {
+		this.wbEditEntityAction.setAverageTimePerEdit(milliseconds);
+	}
+
+	/**
 	 * Creates a new item document with the summary message as provided.
 	 * <p>
 	 * The item document that is given as a parameter must use a local item id,
