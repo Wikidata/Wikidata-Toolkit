@@ -160,6 +160,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 				try {
 					this.xmlReader.close();
 				} catch (XMLStreamException e) {
+					//noinspection ThrowFromFinallyBlock
 					throw new RuntimeException(
 							"Problem closing XML Reader. This hides an earlier exception.",
 							e);

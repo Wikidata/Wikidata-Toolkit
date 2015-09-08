@@ -304,9 +304,8 @@ public class WbEditEntityAction {
 			this.connection.checkErrors(root);
 			this.connection.logWarnings(root);
 
-			String newToken = root.path("query").path("tokens")
+			return root.path("query").path("tokens")
 					.path("csrftoken").textValue();
-			return newToken;
 		} catch (IOException | MediaWikiApiErrorException e) {
 			logger.error("Error when trying to fetch csrf token: "
 					+ e.toString());

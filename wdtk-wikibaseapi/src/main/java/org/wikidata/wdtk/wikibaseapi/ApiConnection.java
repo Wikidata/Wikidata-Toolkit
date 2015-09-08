@@ -445,9 +445,8 @@ public class ApiConnection {
 		params.put(ApiConnection.PARAM_FORMAT, "json");
 
 		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
-		String token = root.path("login").path("token").textValue();
 
-		return token;
+		return root.path("login").path("token").textValue();
 	}
 
 	/**
