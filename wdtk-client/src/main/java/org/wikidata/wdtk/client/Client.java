@@ -241,7 +241,8 @@ public class Client {
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
 			if (this.clientConfiguration.getReportFileName() != null) {
-				builder.append(action.getActionName() + ": ");
+				builder.append(action.getActionName());
+				builder.append(": ");
 				builder.append(action.getReport());
 				builder.append(System.getProperty("line.separator"));
 			} else {
