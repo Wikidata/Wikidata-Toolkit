@@ -79,10 +79,9 @@ public class TestObjectFactory {
 		List<MonolingualTextValue> aliases = new LinkedList<>();
 		DatatypeIdValue datatypeId = this.factory
 				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
-		PropertyDocument document = this.factory.getPropertyDocument(
+		return this.factory.getPropertyDocument(
 				propertyId, labels, descriptions, aliases,
 				Collections.<StatementGroup> emptyList(), datatypeId, 0);
-		return document;
 	}
 
 	/**

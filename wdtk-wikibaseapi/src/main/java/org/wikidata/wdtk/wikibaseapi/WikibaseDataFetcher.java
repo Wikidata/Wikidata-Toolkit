@@ -156,8 +156,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
 			throws MediaWikiApiErrorException {
 		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
-		final String entityString = ApiConnection.implodeObjects(entityIds);
-		properties.ids = entityString;
+		properties.ids = ApiConnection.implodeObjects(entityIds);
 		return getEntityDocumentMap(entityIds.size(), properties);
 	}
 
@@ -225,8 +224,7 @@ public class WikibaseDataFetcher {
 			String siteKey, List<String> titles)
 			throws MediaWikiApiErrorException {
 		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
-		String titleString = ApiConnection.implodeObjects(titles);
-		properties.titles = titleString;
+		properties.titles = ApiConnection.implodeObjects(titles);
 		properties.sites = siteKey;
 		return getEntityDocumentMap(titles.size(), properties);
 	}
@@ -251,9 +249,8 @@ public class WikibaseDataFetcher {
 			return Collections.<String, EntityDocument> emptyMap();
 		}
 		configureProperties(properties);
-		Map<String, EntityDocument> result = this.wbGetEntitiesAction
+		return this.wbGetEntitiesAction
 				.wbGetEntities(properties);
-		return result;
 	}
 
 	/**
