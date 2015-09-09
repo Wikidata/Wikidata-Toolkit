@@ -758,7 +758,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<Reference> deepCopyReferences(
 			List<? extends Reference> references) {
 		if (!this.deepCopyReferences) {
-			return Collections.<Reference> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<Reference> result = new ArrayList<>(references.size());
@@ -834,7 +834,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<StatementGroup> deepCopyStatementGroups(
 			List<StatementGroup> statementGroups) {
 		if (this.filter.excludeAllProperties()) {
-			return Collections.<StatementGroup> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
@@ -862,7 +862,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getPropertyFilter() == null) {
 			return statementGroups;
 		} else if (this.filter.getPropertyFilter().isEmpty()) {
-			return Collections.<StatementGroup> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
@@ -886,7 +886,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<MonolingualTextValue> deepCopyMonoLingualTextValues(
 			Collection<MonolingualTextValue> monoLingualTextValues) {
 		if (this.filter.excludeAllLanguages()) {
-			return Collections.<MonolingualTextValue> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
@@ -911,7 +911,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getLanguageFilter() == null) {
 			return new ArrayList<>(monoLingualTextValues);
 		} else if (this.filter.getLanguageFilter().isEmpty()) {
-			return Collections.<MonolingualTextValue> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
@@ -935,7 +935,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private Map<String, SiteLink> deepCopySiteLinks(
 			Map<String, SiteLink> siteLinks) {
 		if (this.filter.excludeAllSiteLinks()) {
-			return Collections.<String, SiteLink> emptyMap();
+			return Collections.emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
@@ -958,7 +958,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getSiteLinkFilter() == null) {
 			return siteLinks;
 		} else if (this.filter.getSiteLinkFilter().isEmpty()) {
-			return Collections.<String, SiteLink> emptyMap();
+			return Collections.emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());

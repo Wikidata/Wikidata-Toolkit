@@ -246,7 +246,7 @@ public class WikibaseDataFetcher {
 			WbGetEntitiesActionData properties)
 			throws MediaWikiApiErrorException {
 		if (numOfEntities == 0) {
-			return Collections.<String, EntityDocument> emptyMap();
+			return Collections.emptyMap();
 		}
 		configureProperties(properties);
 		return this.wbGetEntitiesAction

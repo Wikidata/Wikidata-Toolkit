@@ -250,7 +250,7 @@ public class WmfDumpFileManager {
 					.getSubdirectories(directoryPattern);
 		} catch (IOException e) {
 			logger.error("Unable to access dump directory: " + e.toString());
-			return Collections.<MwDumpFile> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MwDumpFile> result = new ArrayList<MwDumpFile>();

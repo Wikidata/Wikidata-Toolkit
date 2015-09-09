@@ -52,8 +52,8 @@ public class ClientConfigurationTest {
 		assertEquals("dumps/wikidata/", config.getDumpDirectoryLocation());
 		assertEquals(Collections.<String> emptySet(),
 				config.getFilterSiteKeys());
-		assertEquals(Collections.<PropertyIdValue> singleton(Datamodel
-				.makeWikidataPropertyIdValue("P31")),
+		assertEquals(Collections.singleton(Datamodel
+						.makeWikidataPropertyIdValue("P31")),
 				config.getFilterProperties());
 		Set<String> langFilters = new HashSet<>();
 		langFilters.add("fr");
