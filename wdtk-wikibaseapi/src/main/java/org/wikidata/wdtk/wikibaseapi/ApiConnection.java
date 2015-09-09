@@ -176,7 +176,7 @@ public class ApiConnection {
 	/**
 	 * Map of cookies that are currently set.
 	 */
-	final Map<String, String> cookies = new HashMap<String, String>();
+	final Map<String, String> cookies = new HashMap<>();
 
 	/**
 	 * Mapper object used for deserializing JSON data.
@@ -290,7 +290,7 @@ public class ApiConnection {
 	 */
 	public void logout() throws IOException {
 		if (this.loggedIn) {
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
 			sendRequest("POST", params);
@@ -438,7 +438,7 @@ public class ApiConnection {
 	 *             not understood
 	 */
 	String getLoginToken(String username, String password) throws IOException {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "login");
 		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
 		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
@@ -466,7 +466,7 @@ public class ApiConnection {
 	 */
 	void confirmLogin(String token, String username, String password)
 			throws IOException, LoginFailedException {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "login");
 		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
 		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
