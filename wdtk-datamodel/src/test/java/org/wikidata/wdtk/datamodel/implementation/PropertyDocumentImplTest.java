@@ -86,7 +86,7 @@ public class PropertyDocumentImplTest {
 		enAliases.add(alias3);
 		aliasMap.put("en", enAliases);
 		aliasMap.put("de",
-				Collections.<MonolingualTextValue> singletonList(alias2));
+				Collections.singletonList(alias2));
 		aliases = new ArrayList<MonolingualTextValue>();
 		aliases.add(alias1);
 		aliases.add(alias2);
