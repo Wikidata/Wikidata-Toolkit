@@ -247,9 +247,7 @@ public class ExampleHelpers {
 		try {
 			Files.createDirectory(path);
 		} catch (FileAlreadyExistsException e) {
-			if (Files.isDirectory(path)) {
-				// fine, then we don't need to create it
-			} else {
+			if (!Files.isDirectory(path)) {
 				throw e;
 			}
 		}
