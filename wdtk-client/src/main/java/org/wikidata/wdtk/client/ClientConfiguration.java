@@ -581,7 +581,7 @@ public class ClientConfiguration {
 	 *
 	 * @param section
 	 *            {@link Section} with name "general"
-	 * @return {@link DumpProcessingtAction} containing the output parameters
+	 * @return {@link DumpProcessingAction} containing the output parameters
 	 */
 	private DumpProcessingAction handleActionArguments(Section section) {
 		DumpProcessingAction result = makeDumpProcessingAction(section.get(
