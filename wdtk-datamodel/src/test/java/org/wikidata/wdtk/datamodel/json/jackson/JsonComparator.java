@@ -51,8 +51,6 @@ public class JsonComparator {
 			JsonNode tree1 = mapper.readTree(string1);
 			JsonNode tree2 = mapper.readTree(string2);
 			Assert.assertEquals(tree1, tree2);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
