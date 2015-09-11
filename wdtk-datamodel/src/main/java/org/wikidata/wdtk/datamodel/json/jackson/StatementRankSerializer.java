@@ -41,8 +41,7 @@ public class StatementRankSerializer extends JsonSerializer<StatementRank> {
 
 	@Override
 	public void serialize(StatementRank value, JsonGenerator jgen,
-			SerializerProvider provider) throws IOException,
-			JsonProcessingException {
+			SerializerProvider provider) throws IOException {
 
 		jgen.writeString(value.name().toLowerCase());
 

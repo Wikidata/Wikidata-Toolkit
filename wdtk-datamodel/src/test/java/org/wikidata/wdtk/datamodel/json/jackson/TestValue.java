@@ -56,8 +56,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testStringValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testStringValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(JsonTestData.JSON_STRING_VALUE,
 				JacksonValue.class);
 
@@ -77,8 +77,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testItemIdValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testItemIdValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
 				JacksonValue.class);
 
@@ -101,8 +101,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testPropertyIdValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testPropertyIdValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_PROPERTY_ID_VALUE, JacksonValue.class);
 
@@ -123,8 +123,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testTimeValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testTimeValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(JsonTestData.JSON_TIME_VALUE,
 				JacksonValue.class);
 		JacksonValueTime castedResult = (JacksonValueTime) result;
@@ -177,8 +177,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testGlobeCoordinateValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testGlobeCoordinateValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, JacksonValue.class);
 
@@ -199,8 +199,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testQuantityValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testQuantityValueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_QUANTITY_VALUE, JacksonValue.class);
 
@@ -221,8 +221,8 @@ public class TestValue {
 	}
 
 	@Test
-	public void testMltDatavalueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testMltDatavalueToJava() throws
+			IOException {
 		JacksonValue result = mapper.readValue(
 				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE, JacksonValue.class);
 

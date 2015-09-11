@@ -56,8 +56,8 @@ public class TestStatement {
 	}
 
 	@Test
-	public void testEmptyStatementToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testEmptyStatementToJava() throws
+			IOException {
 		JacksonStatement result = mapper.readValue(
 				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonStatement.class);
 		result.setSubject(JsonTestData.getEmtpyTestItemDocument().getEntityId());
