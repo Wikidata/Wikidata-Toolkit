@@ -176,9 +176,9 @@ public class WmfDumpFileManager {
 	public MwDumpFile findMostRecentDump(DumpContentType dumpContentType) {
 		List<MwDumpFile> dumps = findAllDumps(dumpContentType);
 
-		for (int i = 0; i < dumps.size(); i++) {
-			if (dumps.get(i).isAvailable()) {
-				return dumps.get(i);
+		for (MwDumpFile dump : dumps) {
+			if (dump.isAvailable()) {
+				return dump;
 			}
 		}
 		return null;
