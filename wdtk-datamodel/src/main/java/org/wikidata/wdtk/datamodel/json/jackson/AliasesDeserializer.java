@@ -53,8 +53,7 @@ public class AliasesDeserializer extends
 
 	@Override
 	public Map<String, List<JacksonMonolingualTextValue>> deserialize(
-			JsonParser jp, DeserializationContext ctxt) throws IOException,
-			JsonProcessingException {
+			JsonParser jp, DeserializationContext ctxt) throws IOException {
 
 		Map<String, List<JacksonMonolingualTextValue>> contents = new HashMap<>();
 

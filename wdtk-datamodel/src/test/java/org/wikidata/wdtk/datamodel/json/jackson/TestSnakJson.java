@@ -39,8 +39,8 @@ public class TestSnakJson {
 	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	public void testNoValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testNoValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
 				JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
@@ -59,8 +59,8 @@ public class TestSnakJson {
 	}
 
 	@Test
-	public void testSomeValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testSomeValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
 				JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
@@ -79,8 +79,8 @@ public class TestSnakJson {
 	}
 
 	@Test
-	public void testCommonsValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testCommonsValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(
 				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);

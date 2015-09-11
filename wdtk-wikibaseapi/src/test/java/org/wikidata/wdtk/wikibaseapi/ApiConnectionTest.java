@@ -168,7 +168,7 @@ public class ApiConnectionTest {
 	}
 
 	@Test
-	public void testWarnings() throws JsonProcessingException, IOException {
+	public void testWarnings() throws IOException {
 		JsonNode root;
 		URL path = this.getClass().getResource("/warnings.json");
 		root = mapper.readTree(path.openStream());
@@ -182,7 +182,7 @@ public class ApiConnectionTest {
 	}
 
 	@Test(expected = MediaWikiApiErrorException.class)
-	public void testErrors() throws JsonProcessingException, IOException,
+	public void testErrors() throws IOException,
 			MediaWikiApiErrorException {
 		JsonNode root;
 		URL path = this.getClass().getResource("/error.json");

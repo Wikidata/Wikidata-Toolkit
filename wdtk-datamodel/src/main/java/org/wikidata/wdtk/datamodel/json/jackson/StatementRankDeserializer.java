@@ -41,7 +41,7 @@ public class StatementRankDeserializer extends JsonDeserializer<StatementRank> {
 
 	@Override
 	public StatementRank deserialize(JsonParser jp, DeserializationContext ctxt)
-			throws IOException, JsonProcessingException {
+			throws IOException {
 		
 		return StatementRank.valueOf(jp.getText().toUpperCase());
 	}

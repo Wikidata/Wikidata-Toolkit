@@ -47,8 +47,8 @@ public class TestAliasBug {
 			+ buggedAliasesJson + "}";
 
 	@Test
-	public void testAliasesToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testAliasesToJava() throws
+			IOException {
 		JacksonItemDocument result = mapper.readValue(buggedItemJson,
 				JacksonItemDocument.class);
 

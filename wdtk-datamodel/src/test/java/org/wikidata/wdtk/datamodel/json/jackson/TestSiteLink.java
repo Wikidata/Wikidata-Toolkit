@@ -51,8 +51,8 @@ public class TestSiteLink {
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
 	}
 
-	public void testSiteLinkToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testSiteLinkToJava() throws
+			IOException {
 		JacksonSiteLink result = mapper.readValue(JsonTestData.JSON_SITE_LINK,
 				JacksonSiteLink.class);
 

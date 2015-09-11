@@ -64,8 +64,8 @@ public class TestItemDocument {
 	 * @throws JsonParseException
 	 */
 	@Test
-	public void testLabelToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testLabelToJava() throws
+			IOException {
 		JacksonItemDocument result = mapper.readValue(
 				JsonTestData.JSON_WRAPPED_LABEL, JacksonItemDocument.class);
 
@@ -98,8 +98,8 @@ public class TestItemDocument {
 	 * @throws JsonParseException
 	 */
 	@Test
-	public void testDescriptionsToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testDescriptionsToJava() throws
+			IOException {
 		JacksonItemDocument result = mapper.readValue(
 				JsonTestData.JSON_WRAPPED_DESCRIPTIONS,
 				JacksonItemDocument.class);
@@ -119,8 +119,8 @@ public class TestItemDocument {
 	}
 
 	@Test
-	public void testAliasesToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testAliasesToJava() throws
+			IOException {
 
 		JacksonItemDocument result = mapper.readValue(
 				JsonTestData.JSON_WRAPPED_ALIASES, JacksonItemDocument.class);
@@ -151,8 +151,8 @@ public class TestItemDocument {
 	}
 
 	@Test
-	public void testItemIdToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testItemIdToJava() throws
+			IOException {
 
 		JacksonItemDocument result = mapper.readValue(
 				JsonTestData.JSON_WRAPPED_ITEMID, JacksonItemDocument.class);
@@ -172,8 +172,8 @@ public class TestItemDocument {
 	}
 
 	@Test
-	public void testSiteLinksToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testSiteLinksToJava() throws
+			IOException {
 		JacksonItemDocument result = mapper.readValue(
 				JsonTestData.JSON_WRAPPED_SITE_LINK, JacksonItemDocument.class);
 
