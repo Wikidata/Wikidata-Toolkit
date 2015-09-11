@@ -538,10 +538,10 @@ public class ApiConnection {
 	 * @param headerFields
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> cookieList = headerFields
+		List<String> headerCookies = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		for (String aCookieList : cookieList) {
-			String[] cookieResponse = aCookieList.split(";\\p{Space}??");
+		for (String cookie : headerCookies) {
+			String[] cookieResponse = cookie.split(";\\p{Space}??");
 			for (String cookieLine : cookieResponse) {
 				String[] entry = cookieLine.split("=");
 				if (entry.length == 2) {
