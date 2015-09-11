@@ -305,7 +305,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				newStatements.add(this.dataModelConverter.copy(statement));
 			}
 		}
-		return Datamodel.makeStatementGroup(statements);
+		return Datamodel.makeStatementGroup(newStatements);
 	}
 
 	@Override
