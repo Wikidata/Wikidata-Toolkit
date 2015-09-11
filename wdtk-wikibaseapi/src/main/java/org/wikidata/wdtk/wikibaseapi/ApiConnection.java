@@ -540,8 +540,8 @@ public class ApiConnection {
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> cookieList = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		for (int i = 0; i < cookieList.size(); i++) {
-			String[] cookieResponse = cookieList.get(i).split(";\\p{Space}??");
+		for (String aCookieList : cookieList) {
+			String[] cookieResponse = aCookieList.split(";\\p{Space}??");
 			for (String cookieLine : cookieResponse) {
 				String[] entry = cookieLine.split("=");
 				if (entry.length == 2) {
