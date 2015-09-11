@@ -66,14 +66,10 @@ public class AliasesDeserializer extends
 					List<JacksonMonolingualTextValue> mltvList = new ArrayList<>();
 					Entry<String, JsonNode> currentNode = nodeIterator.next();
 					// get the list of MLTVs
-					Iterator<JsonNode> mltvListIterator = currentNode
-							.getValue().iterator();
-					while (mltvListIterator.hasNext()) {
-						JsonNode mltvEntry = mltvListIterator.next();
+					for (JsonNode mltvEntry : currentNode.getValue()) {
 						String language = mltvEntry.get("language").asText();
 						String value = mltvEntry.get("value").asText();
-						mltvList.add(new JacksonMonolingualTextValue(language,
-								value));
+						mltvList.add(new JacksonMonolingualTextValue(language,value));
 					}
 
 					contents.put(currentNode.getKey(), mltvList);
