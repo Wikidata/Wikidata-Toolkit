@@ -335,10 +335,6 @@ public class FilterCopyTest {
 		siteLinks.put(s3.getSiteKey(), s3);
 		siteLinks.put(s4.getSiteKey(), s4);
 
-		Map<String, SiteLink> siteLinksFiltered = new HashMap<>();
-		siteLinksFiltered.put(s2.getSiteKey(), s2);
-		siteLinksFiltered.put(s4.getSiteKey(), s4);
-
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
 				Collections.<MonolingualTextValue> emptyList(),
