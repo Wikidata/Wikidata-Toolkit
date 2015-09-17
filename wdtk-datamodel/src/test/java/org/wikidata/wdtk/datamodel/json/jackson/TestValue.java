@@ -38,9 +38,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestValue {
