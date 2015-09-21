@@ -27,14 +27,14 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.util.WebResourceFetcher;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
 /**
  * Simple class to fetch recent changes
@@ -48,58 +48,38 @@ public class RecentChangesFetcher {
 			.getLogger(WikibaseDataFetcher.class);
 
 	/**
-	 * URL prefix for the recent changes feed of wikidata.org.
+	 * Connection to WikiBase API
 	 */
-	static final String WIKIDATA_RSS_FEED_URL_PREFIX = "https://www.wikidata.org/w/api.php";
-
-	/**
-	 * URL suffix for RSS recent changes feed
-	 */
-	static final String RSS_FEED_URL_SUFFIX = "?action=feedrecentchanges&format=json&feedformat=rss";
-
-	/**
-	 * URL suffix for the parameter "from" in the RSS recent changes feed
-	 */
-	static final String URL_FROM_DATE_PARAMETER = "&from=";
-
-	/**
-	 * The URL where the recent changes feed can be found.
-	 */
-	final String rssUrl;
-
-	/**
-	 * Object used to make web requests. Package-private so that it can be
-	 * overwritten with a mock object in tests.
-	 */
-	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
+	static ApiConnection apiConnection;
 
 	/**
 	 * Creates an object to fetch recent changes of Wikidata
 	 */
 	public RecentChangesFetcher() {
-		this(WIKIDATA_RSS_FEED_URL_PREFIX);
+		this(ApiConnection.URL_WIKIDATA_API);
 	}
 
 	/**
 	 * Creates an object to fetch recent changes
 	 * 
-	 * @param rdfUrlPrefix
-	 *                Prefix of an URL of the RSS recent changes feed, e.g.
-	 *                http://www.wikidata.org/ for wikidata, the suffix is
-	 *                added in this constructor
+	 * @param apiBaseUrl
+	 *            base URI to the API, e.g.,
+	 *            "https://www.wikidata.org/w/api.php/"
 	 */
-	public RecentChangesFetcher(String rdfUrlPrefix) {
-		this.rssUrl = rdfUrlPrefix + RSS_FEED_URL_SUFFIX;
+	public RecentChangesFetcher(String apiBaseUrl) {
+		RecentChangesFetcher.apiConnection = new ApiConnection(apiBaseUrl);
 	}
 
 	/**
-	 * Fetches IOStream from RSS recent changes feed and returns a set of
-	 * recent changes.
+	 * Fetches IOStream from RSS recent changes feed and returns a set of recent
+	 * changes.
 	 * 
 	 * @return a set of recent changes from the recent changes feed
+	 * @throws IOException
+	 *             if an error occured while connecting to Wikibase API
 	 */
 	public Set<RecentChange> getRecentChanges() {
-		return getRecentChanges(rssUrl);
+		return getRecentChanges(getParameters());
 	}
 
 	/**
@@ -107,57 +87,83 @@ public class RecentChangesFetcher {
 	 * before the date.
 	 * 
 	 * @param from
-	 *                earliest possible date for a recent change
+	 *            earliest possible date for a recent change
 	 * @return a set of recent changes from the recent changes feed
 	 */
 	public Set<RecentChange> getRecentChanges(Date from) {
-		return getRecentChanges(buildUrl(from));
+		return getRecentChanges(getParameters(from));
 	}
 	
-	/**
-	 * Fetches IOStream from RSS recent changes feed and returns a set of
-	 * recent changes.
-	 * 
-	 * @param url
-	 *                URL of the RSS recent changes feed
-	 * @return a set of recent changes from the recent changes feed
-	 */
-	Set<RecentChange> getRecentChanges(String url) {
-		Set<RecentChange> changes = new TreeSet<>();
+	Set<RecentChange> getRecentChanges(Map<String,String> parameters){
+		Set<RecentChange> recentChanges = new TreeSet<>();
 		try {
-			InputStream inputStream = this.webResourceFetcher
-					.getInputStreamForUrl(url);
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(inputStream));
-			String line = bufferedReader.readLine();
-			while (line != null) {
-				if (line.contains("<item>")) {
-					changes.add(parseItem(bufferedReader,
-							line));
-				}
-				line = bufferedReader.readLine();
-			}
-			bufferedReader.close();
-			inputStream.close();
+			recentChanges = parseInputStream(apiConnection.sendRequest("POST",
+					parameters));
 		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + rssUrl
-					+ ". Error:\n" + e.toString());
+			logger.error("Could not retrieve data from "
+					+ apiConnection.apiBaseUrl
+					+ apiConnection.getQueryString(parameters) + ". Error:\n"
+					+ e.toString());
 		}
+		return recentChanges;
+	}
+
+	/**
+	 * Parses a given RSS feed as an InputSteam and returns the recent changes.
+	 * The InputStream will be closed at the end of this method.
+	 * 
+	 * @param inputStream
+	 *            given RSS recent changes feed
+	 * @return set of recent changes
+	 * @throws IOException
+	 *             if an error occurred while parsing the RSS feed
+	 */
+	Set<RecentChange> parseInputStream(InputStream inputStream)
+			throws IOException {
+		Set<RecentChange> changes = new TreeSet<>();
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream));
+		String line = bufferedReader.readLine();
+		while (line != null) {
+			if (line.contains("<item>")) {
+				changes.add(parseItem(bufferedReader, line));
+			}
+			line = bufferedReader.readLine();
+		}
+		bufferedReader.close();
+		inputStream.close();
 		return changes;
 	}
 
 	/**
-	 * Builds an URL for the recent change feed which contains the from
-	 * parameter
+	 * Builds a map of parameters for a recent changes request
+	 * 
+	 * @return map of parameters for a recent changes request
+	 */
+	Map<String, String> getParameters() {
+		Map<String, String> params = new HashMap<>();
+		params.put("action", "feedrecentchanges");
+		params.put("format", "json");
+		params.put("feedformat", "rss");
+
+		return params;
+	}
+
+	/**
+	 * Builds a map of parameters for a recent changes request and adds the
+	 * parameter "from" which defines the earliest possible date of a recent
+	 * change
 	 * 
 	 * @param from
-	 *                earliest Date for recent changes that are fetched
-	 * @return URL for the RSS recent changes feed
+	 *            earliest date for a recent change that are requested
+	 * @return map of parameters for a recent changes request
 	 */
-	String buildUrl(Date from) {
-		String urlDateString = new SimpleDateFormat("yyyyMMddHHmmss")
-				.format(from);
-		return rssUrl + URL_FROM_DATE_PARAMETER + urlDateString;
+	Map<String, String> getParameters(Date from) {
+		Map<String, String> params = getParameters();
+		params.put("from", new SimpleDateFormat("yyyyMMddHHmmss").format(from));
+
+		return params;
 	}
 
 	/**
@@ -165,25 +171,23 @@ public class RecentChangesFetcher {
 	 * changes feed
 	 * 
 	 * @param itemString
-	 *                substring for an item of the recent changes feed
+	 *            substring for an item of the recent changes feed
 	 * @return name of the property
 	 */
 	String parsePropertyNameFromItemString(String itemString) {
-		String startString = "<title>";
 		String endString = "</title>";
-		int start = itemString.indexOf(startString)
-				+ startString.length();
+		int start = 10;
 		int end = itemString.indexOf(endString);
 		String propertyName = itemString.substring(start, end);
 		return propertyName;
 	}
 
 	/**
-	 * parses the date and time of the change of a property from the item
-	 * string of the recent changes feed
+	 * Parses the date and time of the change of a property from the item string
+	 * of the recent changes feed
 	 * 
 	 * @param itemString
-	 *                substring for an item of the recent changes feed
+	 *            substring for an item of the recent changes feed
 	 * @return date and time for the recent change
 	 */
 	Date parseTimeFromItemString(String itemString) {
@@ -197,21 +201,20 @@ public class RecentChangesFetcher {
 		}
 
 		catch (ParseException e) {
-			logger.error("Could not parse date from string \""
-					+ itemString + "\". Error:\n"
-					+ e.toString());
+			logger.error("Could not parse date from string \"" + itemString
+					+ "\". Error:\n" + e.toString());
 		}
 		return date;
 	}
 
 	/**
-	 * parses the name or the IP address of the change of a property from
-	 * the item string of the recent changes feed
+	 * Parses the name or the IP address of the change of a property from the
+	 * item string of the recent changes feed
 	 * 
 	 * @param itemString
-	 *                substring for an item of the recent changes feed
-	 * @return name of the author (if user is registered) or the IP address
-	 *         (if user is not registered)
+	 *            substring for an item of the recent changes feed
+	 * @return name of the author (if user is registered) or the IP address (if
+	 *         user is not registered)
 	 */
 	String parseAuthorFromItemString(String itemString) {
 		String endString = "</dc:creator>";
@@ -219,14 +222,14 @@ public class RecentChangesFetcher {
 		int end = itemString.indexOf(endString);
 		return itemString.substring(start, end);
 	}
-	
+
 	/**
 	 * Parses an item inside the <item>-tag.
 	 * 
 	 * @param bufferedReader
-	 *                reader that reads the InputStream
+	 *            reader that reads the InputStream
 	 * @param line
-	 *                last line from the InputStream that has been read
+	 *            last line from the InputStream that has been read
 	 * @return RecentChange that equals the item
 	 */
 	RecentChange parseItem(BufferedReader bufferedReader, String line) {
@@ -247,11 +250,12 @@ public class RecentChangesFetcher {
 				}
 			} catch (IOException e) {
 				logger.error("Could not parse data from "
-						+ rssUrl + ". Error:\n"
+						+ apiConnection.apiBaseUrl + ". Error:\n"
 						+ e.toString());
 			}
 		}
 		if (propertyName == null || author == null || date == null) {
+			// This should actually not happen
 			throw new NullPointerException();
 		}
 		return new RecentChange(propertyName, date, author);
