@@ -131,7 +131,7 @@ public class WikibaseDataFetcherTest {
 
 		EntityDocument result = wdf.getEntityDocumentByTitle("enwiki",
 				"Douglas Adams");
-		
+
 		assertEquals("Q42", result.getEntityId().getId());
 	}
 
@@ -161,29 +161,60 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testWbGetEntitesSplitted() throws IOException, MediaWikiApiErrorException {
+	public void testWbGetEntitesSplitted() throws IOException,
+			MediaWikiApiErrorException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31", "Q1");
+
 		Map<String, String> parameters1 = new HashMap<String, String>();
 		setStandardParameters(parameters1);
 		parameters1.put("ids", "Q6|Q42|P31");
-		
+
 		Map<String, String> parameters2 = new HashMap<String, String>();
 		setStandardParameters(parameters2);
 		parameters2.put("ids", "Q1");
-		
-		con.setWebResourceFromPath(parameters1, this.getClass(), "/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
-		con.setWebResourceFromPath(parameters2, this.getClass(), "/wbgetentities-Q1.json", CompressionType.NONE);
-		
+
+		con.setWebResourceFromPath(parameters1, this.getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
+		con.setWebResourceFromPath(parameters2, this.getClass(),
+				"/wbgetentities-Q1.json", CompressionType.NONE);
+
 		wdf.maxListSize = 3;
 
-		Map<String, EntityDocument> results = wdf
-				.getEntityDocuments(entityIds);
-		
+		Map<String, EntityDocument> results = wdf.getEntityDocuments(entityIds);
+
 		assertEquals(3, results.size());
 		assertFalse(results.containsKey("Q6"));
 		assertTrue(results.containsKey("Q1"));
 		assertTrue(results.containsKey("P31"));
 		assertTrue(results.containsKey("Q42"));
+	}
+
+	@Test
+	public void testGetEntitiesTitleSplitted() throws IOException,
+			MediaWikiApiErrorException {
+		Map<String, String> parameters1 = new HashMap<String, String>();
+		this.setStandardParameters(parameters1);
+		parameters1.put("titles", "Douglas Adams");
+		parameters1.put("sites", "enwiki");
+		con.setWebResourceFromPath(parameters1, getClass(),
+				"/wbgetentities-Douglas-Adams.json", CompressionType.NONE);
+
+		Map<String, String> parameters2 = new HashMap<String, String>();
+		this.setStandardParameters(parameters2);
+		parameters2.put("titles", "Oliver Kahn");
+		parameters2.put("sites", "enwiki");
+		con.setWebResourceFromPath(parameters2, getClass(),
+				"/wbgetentites-Oliver-Kahn.json", CompressionType.NONE);
+
+		wdf.maxListSize = 1;
+
+		Map<String, EntityDocument> result = wdf.getEntityDocumentsByTitle(
+				"enwiki", "Oliver Kahn", "Douglas Adams");
+
+		assertEquals(2, result.keySet().size());
+		assertEquals("Q42", result.get("Douglas Adams").getEntityId().getId());
+		assertEquals("Q131261", result.get("Oliver Kahn").getEntityId().getId());
+
 	}
 
 	private void setStandardParameters(Map<String, String> parameters) {

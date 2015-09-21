@@ -246,10 +246,27 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles)
 			throws MediaWikiApiErrorException {
-		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
-		properties.titles = ApiConnection.implodeObjects(titles);
-		properties.sites = siteKey;
-		return getEntityDocumentMap(titles.size(), properties);
+		List<String> newTitles = new ArrayList<>();
+		newTitles.addAll(titles);
+		Map<String, EntityDocument> result = new HashMap<>();
+		boolean moreItems = !newTitles.isEmpty();
+
+		while (moreItems) {
+			List<String> subListOfTitles;
+			if (newTitles.size() <= maxListSize) {
+				subListOfTitles = newTitles;
+				moreItems = false;
+			} else {
+				subListOfTitles = newTitles.subList(0, maxListSize);
+			}
+			WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+			properties.titles = ApiConnection.implodeObjects(subListOfTitles);
+			properties.sites = siteKey;
+			result.putAll(getEntityDocumentMap(subListOfTitles.size(),
+					properties));
+			subListOfTitles.clear();
+		}
+		return result;
 	}
 
 	/**
