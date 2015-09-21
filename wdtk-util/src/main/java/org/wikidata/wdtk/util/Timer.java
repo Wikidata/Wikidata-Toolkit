@@ -296,7 +296,7 @@ public class Timer {
 		StringBuilder labels = new StringBuilder();
 		StringBuilder values = new StringBuilder();
 
-		String separator = "";
+		String separator;
 		if ((todoFlags & RECORD_CPUTIME) != 0 && threadId != 0) {
 			labels.append("CPU");
 			values.append(totalCpuTime / 1000000);

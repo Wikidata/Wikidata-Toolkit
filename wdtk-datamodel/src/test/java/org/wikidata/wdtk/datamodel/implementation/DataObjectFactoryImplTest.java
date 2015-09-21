@@ -216,7 +216,8 @@ public class DataObjectFactoryImplTest {
 				+ ".123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
-		return new QuantityValueImpl(nv, lb, ub);
+		return new QuantityValueImpl(nv, lb, ub,
+				"http://wikidata.org/entity/Q11573");
 	}
 
 	public static Value getTestValue(ValueType valueType, int seed) {
@@ -394,7 +395,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
-				new DatatypeIdImpl(DatatypeIdValue.DT_TIME));
+				new DatatypeIdImpl(DatatypeIdValue.DT_TIME), 1234);
 		PropertyDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
@@ -410,7 +411,7 @@ public class DataObjectFactoryImplTest {
 				getTestMtvList(0, 0), // descriptions
 				getTestMtvList(15, 12), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_ITEM),
-				getTestSiteLinks(20));
+				getTestSiteLinks(20), 1234);
 		ItemDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());

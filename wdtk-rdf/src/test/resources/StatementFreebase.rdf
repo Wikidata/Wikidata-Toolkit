@@ -1,0 +1,5 @@
+
+<http://www.wikidata.org/entity/Q100Sstmtid> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/entity/P646v> "/m/0j9kvph" ;
+	<http://www.wikidata.org/entity/P646-freebase> <http://rdf.freebase.com/ns/m.0j9kvph> ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .

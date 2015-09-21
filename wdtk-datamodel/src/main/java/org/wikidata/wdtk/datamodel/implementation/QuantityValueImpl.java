@@ -39,10 +39,11 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 public class QuantityValueImpl implements QuantityValue, Serializable {
 
 	private static final long serialVersionUID = 3245696048836886990L;
-	
+
 	final BigDecimal numericValue;
 	final BigDecimal lowerBound;
 	final BigDecimal upperBound;
+	final String unit;
 
 	/**
 	 * Constructor.
@@ -53,12 +54,16 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 	 *            the lower bound of the numeric value of this quantity
 	 * @param upperBound
 	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit of this quantity, or the empty string if there is no
+	 *            unit
 	 */
 	QuantityValueImpl(BigDecimal numericValue, BigDecimal lowerBound,
-			BigDecimal upperBound) {
+			BigDecimal upperBound, String unit) {
 		Validate.notNull(numericValue, "Numeric value cannot be null");
 		Validate.notNull(lowerBound, "Lower bound cannot be null");
 		Validate.notNull(upperBound, "Upper bound cannot be null");
+		Validate.notNull(unit, "Unit cannot be null");
 		if (lowerBound.compareTo(numericValue) == 1) {
 			throw new IllegalArgumentException(
 					"Lower bound cannot be strictly greater than numeric value");
@@ -71,21 +76,27 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 		this.numericValue = numericValue;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
+		this.unit = unit;
 	}
 
 	@Override
 	public BigDecimal getNumericValue() {
-		return numericValue;
+		return this.numericValue;
 	}
 
 	@Override
 	public BigDecimal getLowerBound() {
-		return lowerBound;
+		return this.lowerBound;
 	}
 
 	@Override
 	public BigDecimal getUpperBound() {
-		return upperBound;
+		return this.upperBound;
+	}
+
+	@Override
+	public String getUnit() {
+		return this.unit;
 	}
 
 	@Override

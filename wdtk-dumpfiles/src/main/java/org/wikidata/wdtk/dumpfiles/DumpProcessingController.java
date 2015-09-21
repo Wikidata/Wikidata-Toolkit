@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -221,7 +221,7 @@ public class DumpProcessingController {
 	public void setDownloadDirectory(String downloadDirectory)
 			throws IOException {
 		this.downloadDirectoryManager = DirectoryManagerFactory
-				.createDirectoryManager(downloadDirectory);
+				.createDirectoryManager(downloadDirectory, false);
 	}
 
 	/**
@@ -677,9 +677,8 @@ public class DumpProcessingController {
 				&& this.filter.getLanguageFilter() == null) {
 			return processor;
 		} else {
-			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
+			return new EntityDocumentProcessorFilter(
 					processor, this.filter);
-			return filter;
 		}
 	}
 
@@ -702,7 +701,7 @@ public class DumpProcessingController {
 
 		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> edpEntry : this.entityDocumentProcessors
 				.entrySet()) {
-			EntityDocumentProcessor resultEdp = null;
+			EntityDocumentProcessor resultEdp;
 			if (edpEntry.getValue().size() == 1) {
 				resultEdp = edpEntry.getValue().get(0);
 			} else {

@@ -26,8 +26,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -47,8 +46,8 @@ public class TestAliasBug {
 			+ buggedAliasesJson + "}";
 
 	@Test
-	public void testAliasesToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testAliasesToJava() throws
+			IOException {
 		JacksonItemDocument result = mapper.readValue(buggedItemJson,
 				JacksonItemDocument.class);
 

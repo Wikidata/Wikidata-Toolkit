@@ -5,7 +5,7 @@
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.5.0-SNAPSHOT</version>
+	<version>0.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
@@ -47,7 +47,7 @@
 		<developer>
 			<id>julian</id>
 			<name>Julian Mendez</name>
-			<email>mendez@tcs.inf.tu-dresden.de</email>
+			<email>julian.mendez@tu-dresden.de</email>
 		</developer>
 		<developer>
 			<id>fer-rum</id>
@@ -173,16 +173,17 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- Create code coverage reports and submit them to coverall.io. -->
+				<!-- Create code coverage reports and submit them to coveralls.io. -->
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>2.1.0</version>
 			</plugin>
 			<plugin>
 				<!-- Plugin for actually computing code coverage. -->
+				<!-- Change format to html and call mvn cobertura:cobertura to generate HTML report locally. -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.7</version>
 				<configuration>
 					<format>xml</format>
 					<!-- <format>html</format> -->

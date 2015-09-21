@@ -33,7 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 /**
@@ -42,9 +42,9 @@ import org.wikidata.wdtk.rdf.RdfWriter;
  * data value. Some values are complex and require further RDF triples to be
  * written. In such cases, the class stores the values to a buffer. Methods for
  * writing additional triples for these buffered values can be called later.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class AnyValueConverter implements
 		ValueConverter<org.wikidata.wdtk.datamodel.interfaces.Value>,
@@ -65,20 +65,20 @@ public class AnyValueConverter implements
 
 	public AnyValueConverter(RdfWriter rdfWriter,
 			OwlDeclarationBuffer rdfConversionBuffer,
-			PropertyTypes propertyTypes) {
+			PropertyRegister propertyRegister) {
 
 		this.entityIdValueConverter = new EntityIdValueConverter(rdfWriter,
-				propertyTypes, rdfConversionBuffer);
+				propertyRegister, rdfConversionBuffer);
 		this.stringValueConverter = new StringValueConverter(rdfWriter,
-				propertyTypes, rdfConversionBuffer);
+				propertyRegister, rdfConversionBuffer);
 		this.timeValueConverter = new TimeValueConverter(rdfWriter,
-				propertyTypes, rdfConversionBuffer);
+				propertyRegister, rdfConversionBuffer);
 		this.globeCoordinatesValueConverter = new GlobeCoordinatesValueConverter(
-				rdfWriter, propertyTypes, rdfConversionBuffer);
+				rdfWriter, propertyRegister, rdfConversionBuffer);
 		this.quantityValueConverter = new QuantityValueConverter(rdfWriter,
-				propertyTypes, rdfConversionBuffer);
+				propertyRegister, rdfConversionBuffer);
 		this.monolingualTextValueConverter = new MonolingualTextValueConverter(
-				rdfWriter, propertyTypes, rdfConversionBuffer);
+				rdfWriter, propertyRegister, rdfConversionBuffer);
 	}
 
 	@Override

@@ -44,8 +44,8 @@ public class TestMonolingualTextValue {
 	 * @throws JsonParseException
 	 */
 	@Test
-	public void testMonolingualTextValueToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testMonolingualTextValueToJava() throws
+			IOException {
 		JacksonMonolingualTextValue result = mapper.readValue(
 				JsonTestData.JSON_TERM_MLTV,
 				JacksonMonolingualTextValue.class);

@@ -40,9 +40,9 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 /**
  * This class contains static methods and constants that define the various OWL
  * and RDF vocabularies that are used in the export.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class Vocabulary {
 
@@ -56,9 +56,6 @@ public class Vocabulary {
 		}
 	}
 
-	// TODO The prefix for wiki entities should be determined from the data; not
-	// a constant
-	private static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 	// Prefixes
 	public static final String PREFIX_WBONTO = "http://www.wikidata.org/ontology#";
 	public static final String PREFIX_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -72,8 +69,11 @@ public class Vocabulary {
 	// Vocabulary elements that are part of ontology language standards
 	public static final String RDF_TYPE = PREFIX_RDF + "type";
 	public static final String RDFS_LABEL = PREFIX_RDFS + "label";
+	public static final String RDFS_SEE_ALSO = PREFIX_RDFS + "seeAlso";
 	public static final String RDFS_LITERAL = PREFIX_RDFS + "Literal";
 	public static final String RDFS_SUBCLASS_OF = PREFIX_RDFS + "subClassOf";
+	public static final String RDFS_SUBPROPERTY_OF = PREFIX_RDFS
+			+ "subPropertyOf";
 	public static final String OWL_THING = PREFIX_OWL + "Thing";
 	public static final String OWL_CLASS = PREFIX_OWL + "Class";
 	public static final String OWL_OBJECT_PROPERTY = PREFIX_OWL
@@ -321,6 +321,20 @@ public class Vocabulary {
 		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
+	/**
+	 * Property for defining the unit of a quantity value.
+	 */
+	public static final String WB_QUANTITY_UNIT = PREFIX_WBONTO
+			+ "quantityUnit";
+	static {
+		VOCABULARY_TYPES.put(WB_QUANTITY_UNIT, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * IRI used as the unit of quantities that have no unit.
+	 */
+	public static final String WB_NO_UNIT = "http://www.wikidata.org/entity/Q199";
+
 	public static final String WB_NORMAL_RANK = PREFIX_WBONTO + "NormalRank";
 
 	public static final String WB_PREFERRED_RANK = PREFIX_WBONTO
@@ -330,8 +344,61 @@ public class Vocabulary {
 			+ "DeprecatedRank";
 
 	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to statement.
+	 */
+	public static final String WB_PROPERTY_STATEMENT_LINKAGE = PREFIX_WBONTO
+			+ "propertyStatementLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_STATEMENT_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its values.
+	 */
+	public static final String WB_PROPERTY_VALUE_LINKAGE = PREFIX_WBONTO
+			+ "propertyValueLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_VALUE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect statements to its qualifiers.
+	 */
+	public static final String WB_PROPERTY_QUALTIFIER_LINKAGE = PREFIX_WBONTO
+			+ "propertyQualifierLinkage";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_QUALTIFIER_LINKAGE,
+				OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect references to its attributes.
+	 */
+	public static final String WB_PROPERTY_REFERENCE_LINKAGE = PREFIX_WBONTO
+			+ "propertyReferenceLinkage";
+	static {
+		VOCABULARY_TYPES
+				.put(WB_PROPERTY_REFERENCE_LINKAGE, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for defining a linkage between a property and the URIs which are
+	 * used to connect properties to values in simple statements.
+	 */
+	public static final String WB_PROPERTY_SIMPLE_CLAIM = PREFIX_WBONTO
+			+ "propertySimpleClaim";
+	static {
+		VOCABULARY_TYPES.put(WB_PROPERTY_SIMPLE_CLAIM, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
 	 * Returns a map that defines OWL types for all known vocabulary elements.
-	 * 
+	 *
 	 * @return a map from vocabulary URIs to OWL type URIs
 	 */
 	public static Map<String, String> getKnownVocabularyTypes() {
@@ -340,7 +407,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given statement.
-	 * 
+	 *
 	 * @param statement
 	 *            the statement for which to create a URI
 	 * @return the URI
@@ -353,7 +420,7 @@ public class Vocabulary {
 
 	/**
 	 * Get the URI for the given property in the given context.
-	 * 
+	 *
 	 * @param propertyIdValue
 	 *            the property id for which to create a URI
 	 * @param propertyContext
@@ -378,7 +445,7 @@ public class Vocabulary {
 		}
 	}
 
-	public static String getReferenceUri(Reference reference) {
+	public static String getReferenceUri(Reference reference, String uriPrefix) {
 		md.reset();
 		for (SnakGroup snakgroup : reference.getSnakGroups()) {
 			for (Snak snak : snakgroup.getSnaks()) {
@@ -386,11 +453,10 @@ public class Vocabulary {
 			}
 		}
 
-		return PREFIX_WIKIDATA + VALUE_PREFIX_REFERENCE
-				+ bytesToHex(md.digest());
+		return uriPrefix + VALUE_PREFIX_REFERENCE + bytesToHex(md.digest());
 	}
 
-	public static String getTimeValueUri(TimeValue value) {
+	public static String getTimeValueUri(TimeValue value, String uriPrefix) {
 		md.reset();
 		updateMessageDigestWithLong(md, value.getYear());
 		md.update(value.getMonth());
@@ -403,10 +469,11 @@ public class Vocabulary {
 		updateMessageDigestWithInt(md, value.getAfterTolerance());
 		updateMessageDigestWithInt(md, value.getTimezoneOffset());
 
-		return PREFIX_WIKIDATA + VALUE_PREFIX_TIME + bytesToHex(md.digest());
+		return uriPrefix + VALUE_PREFIX_TIME + bytesToHex(md.digest());
 	}
 
-	public static String getGlobeCoordinatesValueUri(GlobeCoordinatesValue value) {
+	public static String getGlobeCoordinatesValueUri(
+			GlobeCoordinatesValue value, String uriPrefix) {
 		md.reset();
 		updateMessageDigestWithString(md, value.getGlobe());
 		updateMessageDigestWithLong(md, Double.valueOf(value.getLatitude())
@@ -416,18 +483,17 @@ public class Vocabulary {
 		updateMessageDigestWithLong(md, Double.valueOf(value.getPrecision())
 				.hashCode());
 
-		return PREFIX_WIKIDATA + VALUE_PREFIX_GLOBECOORDS
-				+ bytesToHex(md.digest());
+		return uriPrefix + VALUE_PREFIX_GLOBECOORDS + bytesToHex(md.digest());
 	}
 
-	public static String getQuantityValueUri(QuantityValue value) {
+	public static String getQuantityValueUri(QuantityValue value,
+			String uriPrefix) {
 		md.reset();
 		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
 		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
 		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
 
-		return PREFIX_WIKIDATA + VALUE_PREFIX_QUANTITY
-				+ bytesToHex(md.digest());
+		return uriPrefix + VALUE_PREFIX_QUANTITY + bytesToHex(md.digest());
 	}
 
 	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE / 8);

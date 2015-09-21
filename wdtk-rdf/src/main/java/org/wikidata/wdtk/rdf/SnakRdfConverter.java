@@ -79,7 +79,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	final AnyValueConverter valueRdfConverter;
 
 	final RdfWriter rdfWriter;
-	final PropertyTypes propertyTypes;
+	final PropertyRegister propertyRegister;
 	final OwlDeclarationBuffer rdfConversionBuffer;
 	final ExportExtensions exportExtensions;
 
@@ -92,13 +92,14 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	public SnakRdfConverter(RdfWriter rdfWriter,
 			OwlDeclarationBuffer owlDeclarationBuffer,
-			PropertyTypes propertyTypes, AnyValueConverter valueRdfConverter) {
+			PropertyRegister propertyRegister,
+			AnyValueConverter valueRdfConverter) {
 		this.rdfWriter = rdfWriter;
 		this.rdfConversionBuffer = owlDeclarationBuffer;
-		this.propertyTypes = propertyTypes;
+		this.propertyRegister = propertyRegister;
 		this.valueRdfConverter = valueRdfConverter;
 		this.exportExtensions = new ExportExtensions(rdfWriter,
-				owlDeclarationBuffer);
+				owlDeclarationBuffer, propertyRegister);
 		ExportExtensions
 				.registerWikidataExportExtensions(this.exportExtensions);
 
@@ -300,7 +301,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * @return the range URI
 	 */
 	String getRangeUri(PropertyIdValue propertyIdValue) {
-		String datatype = this.propertyTypes.getPropertyType(propertyIdValue);
+		String datatype = this.propertyRegister
+				.getPropertyType(propertyIdValue);
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:

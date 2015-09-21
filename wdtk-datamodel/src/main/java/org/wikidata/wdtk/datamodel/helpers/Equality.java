@@ -249,7 +249,8 @@ public class Equality {
 		QuantityValue other = (QuantityValue) o2;
 		return o1.getNumericValue().equals(other.getNumericValue())
 				&& o1.getLowerBound().equals(other.getLowerBound())
-				&& o1.getUpperBound().equals(other.getUpperBound());
+				&& o1.getUpperBound().equals(other.getUpperBound())
+				&& o1.getUnit().equals(other.getUnit());
 	}
 
 	/**
@@ -561,7 +562,8 @@ public class Equality {
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getAliases().equals(other.getAliases())
 				&& o1.getDescriptions().equals(other.getDescriptions())
-				&& o1.getLabels().equals(other.getLabels());
+				&& o1.getLabels().equals(other.getLabels())
+				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
 }

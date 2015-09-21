@@ -28,7 +28,7 @@ import java.util.List;
 import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public abstract class BufferedValueConverter<V extends org.wikidata.wdtk.datamodel.interfaces.Value>
@@ -39,9 +39,9 @@ public abstract class BufferedValueConverter<V extends org.wikidata.wdtk.datamod
 	final HashSet<Resource> declaredValues;
 
 	public BufferedValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes,
+			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, propertyRegister, rdfConversionBuffer);
 		this.valueQueue = new ArrayList<V>();
 		this.valueSubjectQueue = new ArrayList<Resource>();
 		this.declaredValues = new HashSet<Resource>();

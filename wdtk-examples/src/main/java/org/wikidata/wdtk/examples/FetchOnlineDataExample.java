@@ -28,17 +28,21 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 public class FetchOnlineDataExample {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MediaWikiApiErrorException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
-		WikibaseDataFetcher wbdf = new WikibaseDataFetcher();
+		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
 
 		System.out.println("*** Fetching data for one entity:");
 		EntityDocument q42 = wbdf.getEntityDocument("Q42");
+		System.out
+				.println("The current revision of the data for entity Q42 is "
+						+ q42.getRevisionId());
 		if (q42 instanceof ItemDocument) {
 			System.out.println("The English name for entity Q42 is "
 					+ ((ItemDocument) q42).getLabels().get("en").getText());
@@ -57,10 +61,10 @@ public class FetchOnlineDataExample {
 				.println("*** Fetching data using filters to reduce data volume:");
 		// Only site links from English Wikipedia:
 		wbdf.getFilter().setSiteLinkFilter(
-				Collections.<String> singleton("enwiki"));
+				Collections.singleton("enwiki"));
 		// Only labels in French:
 		wbdf.getFilter()
-				.setLanguageFilter(Collections.<String> singleton("fr"));
+				.setLanguageFilter(Collections.singleton("fr"));
 		// No statements at all:
 		wbdf.getFilter().setPropertyFilter(
 				Collections.<PropertyIdValue> emptySet());

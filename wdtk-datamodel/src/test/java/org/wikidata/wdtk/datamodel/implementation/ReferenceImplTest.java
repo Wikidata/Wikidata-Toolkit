@@ -55,14 +55,14 @@ public class ReferenceImplTest {
 		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
 				Collections.<Snak> singletonList(valueSnak));
-		r1 = new ReferenceImpl(Collections.<SnakGroup> singletonList(snakGroup));
-		r2 = new ReferenceImpl(Collections.<SnakGroup> singletonList(snakGroup));
+		r1 = new ReferenceImpl(Collections.singletonList(snakGroup));
+		r2 = new ReferenceImpl(Collections.singletonList(snakGroup));
 	}
 
 	@Test
 	public void snakListIsCorrect() {
 		assertEquals(r1.getSnakGroups(),
-				Collections.<SnakGroup> singletonList(snakGroup));
+				Collections.singletonList(snakGroup));
 	}
 
 	@Test
