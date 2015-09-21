@@ -25,8 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -129,6 +131,7 @@ public class WikibaseDataFetcherTest {
 
 		EntityDocument result = wdf.getEntityDocumentByTitle("enwiki",
 				"Douglas Adams");
+		
 		assertEquals("Q42", result.getEntityId().getId());
 	}
 
@@ -155,6 +158,32 @@ public class WikibaseDataFetcherTest {
 		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
 		assertEquals(ApiConnection.URL_WIKIDATA_API,
 				wbdf.wbGetEntitiesAction.connection.apiBaseUrl);
+	}
+
+	@Test
+	public void testWbGetEntitesSplitted() throws IOException, MediaWikiApiErrorException {
+		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31", "Q1");
+		Map<String, String> parameters1 = new HashMap<String, String>();
+		setStandardParameters(parameters1);
+		parameters1.put("ids", "Q6|Q42|P31");
+		
+		Map<String, String> parameters2 = new HashMap<String, String>();
+		setStandardParameters(parameters2);
+		parameters2.put("ids", "Q1");
+		
+		con.setWebResourceFromPath(parameters1, this.getClass(), "/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
+		con.setWebResourceFromPath(parameters2, this.getClass(), "/wbgetentities-Q1.json", CompressionType.NONE);
+		
+		wdf.maxListSize = 3;
+
+		Map<String, EntityDocument> results = wdf
+				.getEntityDocuments(entityIds);
+		
+		assertEquals(3, results.size());
+		assertFalse(results.containsKey("Q6"));
+		assertTrue(results.containsKey("Q1"));
+		assertTrue(results.containsKey("P31"));
+		assertTrue(results.containsKey("Q42"));
 	}
 
 	private void setStandardParameters(Map<String, String> parameters) {
