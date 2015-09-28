@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -119,11 +119,27 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property "prefLabel" of SKOS.
+	 */
+	public static final String SKOS_PREF_LABEL = PREFIX_SKOS + "prefLabel";
+	static {
+		VOCABULARY_TYPES.put(SKOS_PREF_LABEL, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
 	 * Property "about" of schema.org.
 	 */
 	public static final String SCHEMA_ABOUT = PREFIX_SCHEMA + "about";
 	static {
 		VOCABULARY_TYPES.put(SCHEMA_ABOUT, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property "name" of schema.org.
+	 */
+	public static final String SCHEMA_NAME = PREFIX_SCHEMA + "name";
+	static {
+		VOCABULARY_TYPES.put(SCHEMA_NAME, OWL_OBJECT_PROPERTY);
 	}
 
 	/**

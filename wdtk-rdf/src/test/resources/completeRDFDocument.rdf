@@ -48,6 +48,8 @@ wo:latitude a owl:DatatypeProperty .
 
 schema:about a owl:ObjectProperty .
 
+schema:name a owl:ObjectProperty .
+
 wo:longitude a owl:DatatypeProperty .
 
 wo:QuantityValue a owl:Class .
@@ -57,6 +59,8 @@ wo:quantityUnit a owl:ObjectProperty .
 schema:description a owl:DatatypeProperty .
 
 skos:altLabel a owl:DatatypeProperty .
+
+skos:prefLabel a owl:DatatypeProperty .
 
 wo:globe a owl:ObjectProperty .
 
@@ -74,6 +78,8 @@ wo:Property a owl:Class .
 
 <http://www.wikidata.org/Q10> a wo:Item ;
 	rdfs:label "bar"@lc2 , "foo"@lc ;
+	skos:prefLabel "bar"@lc2 , "foo"@lc ;
+	schema:name "bar"@lc2 , "foo"@lc ;
 	schema:description "it's bar"@lc2 , "it's foo"@lc ;
 	skos:altLabel "foo"@lc , "bar"@lc ;
 	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;

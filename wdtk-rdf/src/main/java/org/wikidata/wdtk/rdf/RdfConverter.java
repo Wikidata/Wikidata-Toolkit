@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -447,6 +447,10 @@ public class RdfConverter {
 		if (hasTask(RdfSerializer.TASK_LABELS)) {
 			writeTermTriples(subject, RdfWriter.RDFS_LABEL, document
 					.getLabels().values());
+			writeTermTriples(subject, RdfWriter.SKOS_PREF_LABEL, document
+					.getLabels().values());
+			writeTermTriples(subject, RdfWriter.SCHEMA_NAME, document.getLabels().values());
+
 		}
 		if (hasTask(RdfSerializer.TASK_DESCRIPTIONS)) {
 			writeTermTriples(subject, RdfWriter.SCHEMA_DESCRIPTION, document
