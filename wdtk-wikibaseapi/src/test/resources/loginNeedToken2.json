@@ -1,0 +1,8 @@
+{
+    "login": {
+        "result": "NeedToken",
+        "token": "anothertoken",
+        "cookieprefix": "enwiki",
+        "sessionid": "17ab96bd8ffbe8ca58a78657a918558e"
+    }
+}

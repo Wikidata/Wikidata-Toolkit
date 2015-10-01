@@ -87,7 +87,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private boolean deepCopy = true;
 
 	/**
-	 * If set to true, references will be copied when making deep copyies of
+	 * If set to true, references will be copied when making deep copies of
 	 * statements. This is the default. The setting does not have any effect
 	 * when making shallow copies.
 	 */
@@ -338,7 +338,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	public QuantityValue copy(QuantityValue object) {
 		return this.dataObjectFactory.getQuantityValue(
 				object.getNumericValue(), object.getLowerBound(),
-				object.getUpperBound());
+				object.getUpperBound(), object.getUnit());
 	}
 
 	/**
@@ -495,14 +495,16 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 					deepCopyMonoLingualTextValues(object.getDescriptions()
 							.values()), flattenDeepCopyAliasMap(object
 							.getAliases()), deepCopyStatementGroups(object
-							.getStatementGroups()), copy(object.getDatatype()));
+							.getStatementGroups()), copy(object.getDatatype()),
+					object.getRevisionId());
 		} else {
 			return this.dataObjectFactory.getPropertyDocument(object
 					.getPropertyId(), copyMonoLingualTextValues(object
 					.getLabels().values()), copyMonoLingualTextValues(object
 					.getDescriptions().values()), flattenAliasMap(object
 					.getAliases()), copyStatementGroups(object
-					.getStatementGroups()), object.getDatatype());
+					.getStatementGroups()), object.getDatatype(), object
+					.getRevisionId());
 		}
 	}
 
@@ -522,7 +524,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 							.values()), flattenDeepCopyAliasMap(object
 							.getAliases()), deepCopyStatementGroups(object
 							.getStatementGroups()), deepCopySiteLinks(object
-							.getSiteLinks()));
+							.getSiteLinks()), object.getRevisionId());
 		} else {
 			return this.dataObjectFactory
 					.getItemDocument(object.getItemId(),
@@ -532,7 +534,8 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 									.values()), flattenAliasMap(object
 									.getAliases()), copyStatementGroups(object
 									.getStatementGroups()),
-							copySiteLinks(object.getSiteLinks()));
+							copySiteLinks(object.getSiteLinks()), object
+									.getRevisionId());
 		}
 	}
 
@@ -755,7 +758,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<Reference> deepCopyReferences(
 			List<? extends Reference> references) {
 		if (!this.deepCopyReferences) {
-			return Collections.<Reference> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<Reference> result = new ArrayList<>(references.size());
@@ -831,7 +834,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<StatementGroup> deepCopyStatementGroups(
 			List<StatementGroup> statementGroups) {
 		if (this.filter.excludeAllProperties()) {
-			return Collections.<StatementGroup> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
@@ -859,7 +862,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getPropertyFilter() == null) {
 			return statementGroups;
 		} else if (this.filter.getPropertyFilter().isEmpty()) {
-			return Collections.<StatementGroup> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
@@ -883,7 +886,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private List<MonolingualTextValue> deepCopyMonoLingualTextValues(
 			Collection<MonolingualTextValue> monoLingualTextValues) {
 		if (this.filter.excludeAllLanguages()) {
-			return Collections.<MonolingualTextValue> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
@@ -908,7 +911,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getLanguageFilter() == null) {
 			return new ArrayList<>(monoLingualTextValues);
 		} else if (this.filter.getLanguageFilter().isEmpty()) {
-			return Collections.<MonolingualTextValue> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MonolingualTextValue> result = new ArrayList<>(
@@ -932,7 +935,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	private Map<String, SiteLink> deepCopySiteLinks(
 			Map<String, SiteLink> siteLinks) {
 		if (this.filter.excludeAllSiteLinks()) {
-			return Collections.<String, SiteLink> emptyMap();
+			return Collections.emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
@@ -955,7 +958,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (this.filter.getSiteLinkFilter() == null) {
 			return siteLinks;
 		} else if (this.filter.getSiteLinkFilter().isEmpty()) {
-			return Collections.<String, SiteLink> emptyMap();
+			return Collections.emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());

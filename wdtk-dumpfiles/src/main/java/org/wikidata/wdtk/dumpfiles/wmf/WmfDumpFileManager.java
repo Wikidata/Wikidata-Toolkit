@@ -176,9 +176,9 @@ public class WmfDumpFileManager {
 	public MwDumpFile findMostRecentDump(DumpContentType dumpContentType) {
 		List<MwDumpFile> dumps = findAllDumps(dumpContentType);
 
-		for (int i = 0; i < dumps.size(); i++) {
-			if (dumps.get(i).isAvailable()) {
-				return dumps.get(i);
+		for (MwDumpFile dump : dumps) {
+			if (dump.isAvailable()) {
+				return dump;
 			}
 		}
 		return null;
@@ -250,7 +250,7 @@ public class WmfDumpFileManager {
 					.getSubdirectories(directoryPattern);
 		} catch (IOException e) {
 			logger.error("Unable to access dump directory: " + e.toString());
-			return Collections.<MwDumpFile> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<MwDumpFile> result = new ArrayList<MwDumpFile>();

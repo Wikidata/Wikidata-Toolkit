@@ -51,10 +51,14 @@ public class RdfWriter {
 	public static final URI RDF_TYPE = factory.createURI(Vocabulary.RDF_TYPE);
 	public static final URI RDFS_LABEL = factory
 			.createURI(Vocabulary.RDFS_LABEL);
+	public static final URI RDFS_SEE_ALSO = factory
+			.createURI(Vocabulary.RDFS_SEE_ALSO);
 	public static final URI RDFS_LITERAL = factory
 			.createURI(Vocabulary.RDFS_LITERAL);
 	public static final URI RDFS_SUBCLASS_OF = factory
 			.createURI(Vocabulary.RDFS_SUBCLASS_OF);
+	public static final URI RDFS_SUBPROPERTY_OF = factory
+			.createURI(Vocabulary.RDFS_SUBPROPERTY_OF);
 	public static final URI OWL_THING = factory.createURI(Vocabulary.OWL_THING);
 	public static final URI OWL_CLASS = factory.createURI(Vocabulary.OWL_CLASS);
 	public static final URI OWL_OBJECT_PROPERTY = factory
@@ -128,6 +132,9 @@ public class RdfWriter {
 			.createURI(Vocabulary.WB_LOWER_BOUND);
 	public static final URI WB_UPPER_BOUND = factory
 			.createURI(Vocabulary.WB_UPPER_BOUND);
+	public static final URI WB_QUANTITY_UNIT = factory
+			.createURI(Vocabulary.WB_QUANTITY_UNIT);
+	public static final URI WB_RANK = factory.createURI(Vocabulary.WB_RANK);
 
 	RDFWriter writer;
 

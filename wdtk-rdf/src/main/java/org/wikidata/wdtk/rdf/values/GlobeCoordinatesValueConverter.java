@@ -28,7 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
@@ -36,22 +36,23 @@ public class GlobeCoordinatesValueConverter extends
 		BufferedValueConverter<GlobeCoordinatesValue> {
 
 	public GlobeCoordinatesValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes,
+			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, propertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(GlobeCoordinatesValue value,
 			PropertyIdValue propertyIdValue, boolean simple) {
-		String datatype = this.propertyTypes
+		String datatype = this.propertyRegister
 				.setPropertyTypeFromGlobeCoordinatesValue(propertyIdValue,
 						value);
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
 			URI valueUri = this.rdfWriter.getUri(Vocabulary
-					.getGlobeCoordinatesValueUri(value));
+					.getGlobeCoordinatesValueUri(value,
+							this.propertyRegister.getUriPrefix()));
 
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			addValue(value, valueUri);

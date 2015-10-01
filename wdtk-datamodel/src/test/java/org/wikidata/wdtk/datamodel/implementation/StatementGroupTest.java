@@ -69,15 +69,15 @@ public class StatementGroupTest {
 				"MyId");
 
 		sg1 = new StatementGroupImpl(
-				Collections.<Statement> singletonList(statement1));
+				Collections.singletonList(statement1));
 		sg2 = new StatementGroupImpl(
-				Collections.<Statement> singletonList(statement1));
+				Collections.singletonList(statement1));
 	}
 
 	@Test
 	public void statementListIsCorrect() {
 		assertEquals(sg1.getStatements(),
-				Collections.<Statement> singletonList(statement1));
+				Collections.singletonList(statement1));
 	}
 
 	@Test

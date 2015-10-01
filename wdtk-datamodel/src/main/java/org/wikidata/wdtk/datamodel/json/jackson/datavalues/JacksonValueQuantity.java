@@ -96,6 +96,12 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 		return this.value.getUpperBound();
 	}
 
+	@JsonIgnore
+	@Override
+	public String getUnit() {
+		return this.value.getUnit();
+	}
+
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);

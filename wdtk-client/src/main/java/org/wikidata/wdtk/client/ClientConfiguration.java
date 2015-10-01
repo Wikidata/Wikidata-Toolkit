@@ -2,9 +2,9 @@ package org.wikidata.wdtk.client;
 
 /*
  * #%L
- * Wikidata Toolkit Examples
+ * Wikidata Toolkit Command-line Tool
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 
 /**
  * This class handles the program arguments from the conversion command line
@@ -95,6 +96,14 @@ public class ClientConfiguration {
 	 * Short command-line alternative to {@link #OPTION_OUTPUT_STDOUT}.
 	 */
 	public static final String CMD_OPTION_OUTPUT_STDOUT = "s";
+	/**
+	 * Short command-line alternative to {@link #OPTION_CREATE_REPORT}.
+	 */
+	public static final String CMD_OPTION_CREATE_REPORT = "r";
+	/**
+	 * Short command-line alternative to {@link #OPTION_LOCAL_DUMPFILE}.
+	 */
+	public static final String CMD_OPTION_LOCAL_DUMPFILE = "i";
 
 	/**
 	 * Name of the long command line option for printing the help text.
@@ -142,6 +151,11 @@ public class ClientConfiguration {
 	 */
 	public static final String OPTION_FILTER_PROPERTIES = "fProp";
 	/**
+	 * Name of the long command line option to create a report file about the
+	 * files produced by DumpProcessingOutputActions.
+	 */
+	public static final String OPTION_CREATE_REPORT = "report";
+	/**
 	 * Name of the long command line option and configuration file field for
 	 * defining the destination (usually output file name) of actions that
 	 * produce output.
@@ -162,6 +176,11 @@ public class ClientConfiguration {
 	 * specifying the tasks for RDF serialization.
 	 */
 	public static final String OPTION_OUTPUT_RDF_TYPE = "rdftasks";
+	/**
+	 * Name of the long command line option and configuration file field for
+	 * defining the path to a local dump file.
+	 */
+	public static final String OPTION_LOCAL_DUMPFILE = "input";
 
 	static final Map<String, Class<? extends DumpProcessingOutputAction>> KNOWN_ACTIONS = new HashMap<>();
 	static {
@@ -192,7 +211,18 @@ public class ClientConfiguration {
 	 * String representation of the directory where the dump files should be
 	 * sought.
 	 */
-	String dumpLocation = null;
+	String dumpDirectoryLocation = null;
+
+	/**
+	 * Location of a dump file that should be processed.
+	 */
+	String inputDumpLocation = null;
+
+	/**
+	 * String representation of the path where the final report should be
+	 * stored.
+	 */
+	String reportFilename = null;
 
 	/**
 	 * True if no status messages should be written to stdout.
@@ -234,8 +264,14 @@ public class ClientConfiguration {
 		return this.actions;
 	}
 
-	public String getDumpLocation() {
-		return this.dumpLocation;
+	/**
+	 * Returns the location of the directory where downloaded dump files are
+	 * stored, or null if the default is to be used.
+	 *
+	 * @return string path to dump file directory
+	 */
+	public String getDumpDirectoryLocation() {
+		return this.dumpDirectoryLocation;
 	}
 
 	/**
@@ -257,6 +293,16 @@ public class ClientConfiguration {
 	 */
 	public boolean isQuiet() {
 		return this.quiet;
+	}
+
+	/**
+	 * Returns the output destination where a report file should be created. If
+	 * the client should not create such a file the function will return null.
+	 *
+	 * @return report filename
+	 */
+	public String getReportFileName() {
+		return this.reportFilename;
 	}
 
 	/**
@@ -293,6 +339,31 @@ public class ClientConfiguration {
 	}
 
 	/**
+	 * Returns the string path to a dump file that should be processed.
+	 *
+	 * @return string path to file
+	 */
+	public String getInputDumpLocation() {
+		return this.inputDumpLocation;
+	}
+
+	/**
+	 * Returns a local dump file that was previously downloaded and should be
+	 * locally processed, or null if no local dump file is set.
+	 * <p>
+	 * The dump file object will be created based on the current configuration.
+	 *
+	 * @return dump file that should be locally processed
+	 */
+	public MwLocalDumpFile getLocalDumpFile() {
+		if (this.inputDumpLocation != null) {
+			return new MwLocalDumpFile(this.inputDumpLocation);
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Prints a help text to the console.
 	 */
 	public void printHelp() {
@@ -317,12 +388,12 @@ public class ClientConfiguration {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e) {
 			logger.error("Failed to parse arguments: " + e.getMessage());
-			return Collections.<DumpProcessingAction> emptyList();
+			return Collections.emptyList();
 		}
 
 		// Stop processing if a help text is to be printed:
 		if ((cmd.hasOption(CMD_OPTION_HELP)) || (args.length == 0)) {
-			return Collections.<DumpProcessingAction> emptyList();
+			return Collections.emptyList();
 		}
 
 		List<DumpProcessingAction> configuration = new ArrayList<>();
@@ -380,6 +451,7 @@ public class ClientConfiguration {
 			} else {
 				DumpProcessingAction action = handleActionArguments(section);
 				if (action != null) {
+					action.setActionName(section.getName());
 					result.add(action);
 				}
 			}
@@ -398,7 +470,8 @@ public class ClientConfiguration {
 	 */
 	private void handleGlobalArguments(CommandLine cmd) {
 		if (cmd.hasOption(CMD_OPTION_DUMP_LOCATION)) {
-			this.dumpLocation = cmd.getOptionValue(CMD_OPTION_DUMP_LOCATION);
+			this.dumpDirectoryLocation = cmd
+					.getOptionValue(CMD_OPTION_DUMP_LOCATION);
 		}
 
 		if (cmd.hasOption(CMD_OPTION_OFFLINE_MODE)) {
@@ -407,6 +480,10 @@ public class ClientConfiguration {
 
 		if (cmd.hasOption(CMD_OPTION_QUIET)) {
 			this.quiet = true;
+		}
+
+		if (cmd.hasOption(CMD_OPTION_CREATE_REPORT)) {
+			this.reportFilename = cmd.getOptionValue(CMD_OPTION_CREATE_REPORT);
 		}
 
 		if (cmd.hasOption(OPTION_FILTER_LANGUAGES)) {
@@ -419,6 +496,10 @@ public class ClientConfiguration {
 
 		if (cmd.hasOption(OPTION_FILTER_PROPERTIES)) {
 			setPropertyFilters(cmd.getOptionValue(OPTION_FILTER_PROPERTIES));
+		}
+
+		if (cmd.hasOption(CMD_OPTION_LOCAL_DUMPFILE)) {
+			this.inputDumpLocation = cmd.getOptionValue(OPTION_LOCAL_DUMPFILE);
 		}
 	}
 
@@ -442,8 +523,11 @@ public class ClientConfiguration {
 					this.quiet = true;
 				}
 				break;
+			case OPTION_CREATE_REPORT:
+				this.reportFilename = section.get(key);
+				break;
 			case OPTION_DUMP_LOCATION:
-				this.dumpLocation = section.get(key);
+				this.dumpDirectoryLocation = section.get(key);
 				break;
 			case OPTION_FILTER_LANGUAGES:
 				setLanguageFilters(section.get(key));
@@ -453,6 +537,9 @@ public class ClientConfiguration {
 				break;
 			case OPTION_FILTER_PROPERTIES:
 				setPropertyFilters(section.get(key));
+				break;
+			case OPTION_LOCAL_DUMPFILE:
+				this.inputDumpLocation = section.get(key);
 				break;
 			default:
 				logger.warn("Unrecognized option: " + key);
@@ -494,7 +581,7 @@ public class ClientConfiguration {
 	 *
 	 * @param section
 	 *            {@link Section} with name "general"
-	 * @return {@link DumpProcessingtAction} containing the output parameters
+	 * @return {@link DumpProcessingAction} containing the output parameters
 	 */
 	private DumpProcessingAction handleActionArguments(Section section) {
 		DumpProcessingAction result = makeDumpProcessingAction(section.get(
@@ -574,9 +661,7 @@ public class ClientConfiguration {
 	private void setLanguageFilters(String filters) {
 		this.filterLanguages = new HashSet<>();
 		if (!"-".equals(filters)) {
-			for (String lang : filters.split(",")) {
-				this.filterLanguages.add(lang);
-			}
+			Collections.addAll(this.filterLanguages, filters.split(","));
 		}
 	}
 
@@ -590,9 +675,7 @@ public class ClientConfiguration {
 	private void setSiteFilters(String filters) {
 		this.filterSites = new HashSet<>();
 		if (!"-".equals(filters)) {
-			for (String siteKey : filters.split(",")) {
-				this.filterSites.add(siteKey);
-			}
+			Collections.addAll(this.filterSites, filters.split(","));
 		}
 	}
 
@@ -634,8 +717,11 @@ public class ClientConfiguration {
 				.withLongOpt(OPTION_OUTPUT_DESTINATION)
 				.create(CMD_OPTION_OUTPUT_DESTINATION);
 
-		Option dumplocation = OptionBuilder.hasArg().withArgName("path")
-				.withDescription("set the location of the dump files")
+		Option dumplocation = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"set the directory where downloaded dump files are stored")
 				.withLongOpt(OPTION_DUMP_LOCATION)
 				.create(CMD_OPTION_DUMP_LOCATION);
 
@@ -685,6 +771,22 @@ public class ClientConfiguration {
 				.withLongOpt(OPTION_OUTPUT_COMPRESSION)
 				.create(CMD_OPTION_OUTPUT_COMPRESSION);
 
+		Option report = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"specifies a path to print a final report after dump generations")
+				.withLongOpt(OPTION_CREATE_REPORT)
+				.create(CMD_OPTION_CREATE_REPORT);
+
+		Option localDump = OptionBuilder
+				.hasArg()
+				.withArgName("path")
+				.withDescription(
+						"select a dump file for processing; if omitted, then the latest dump from Wikidata will be used (and possibly downloaded)")
+				.withLongOpt(OPTION_LOCAL_DUMPFILE)
+				.create(CMD_OPTION_LOCAL_DUMPFILE);
+
 		options.addOption(config);
 		options.addOption(action);
 		options.addOption(
@@ -698,12 +800,11 @@ public class ClientConfiguration {
 		options.addOption(filterSites);
 		options.addOption(filterProperties);
 		options.addOption(compressionExtention);
+		options.addOption(report);
+		options.addOption(localDump);
 		options.addOption(rdfdump);
-		options.addOption(
-				CMD_OPTION_OFFLINE_MODE,
-				OPTION_OFFLINE_MODE,
-				false,
-				"execute all operations in offline mode, using only previously downloaded dumps");
+		options.addOption(CMD_OPTION_OFFLINE_MODE, OPTION_OFFLINE_MODE, false,
+				"execute all operations in offline mode, especially do not download new dumps");
 		options.addOption(CMD_OPTION_HELP, OPTION_HELP, false,
 				"print this message");
 

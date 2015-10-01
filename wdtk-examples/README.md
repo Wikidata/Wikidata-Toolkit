@@ -46,6 +46,20 @@ be used with any other Wikibase site as well. It is not practical to fetch all d
 in this way, but it can be very convenient to get some data directly even when processing
 a dump (since the dump can only be read in sequence).
 
+#### EditOnlineDataExample.java ####
+
+This program shows how to create and modify live data on test.wikidata.org via the Web API.
+This can be used with any other Wikibase site as well. The example first creates a new item
+with some starting data, then adds some additional statements, and finally modifies and 
+deletes existing statements. All data modifications automatically use revision ids to make
+sure that no edit conflicts occur (and we don't modify/delete data that is different from
+what we expect).
+
+#### LocalDumpFileExample.java ####
+
+This program shows how to process a data dump that is available in a local file, rather
+than being automatically downloaded (and possibly cached) from the Wikimedia site.
+
 #### GreatestNumberProcessor.java ####
 
 This simple program looks at all values of a number property to find the item with the
@@ -62,6 +76,16 @@ Wikidata. It shows how to get details (here: year numbers) of specific statement
 for specific properties (here we use Wikidata's P569 "birth date" and P570 "death date").
 The results are stored in a CSV file that shows average life expectancy by year of
 birth. The overall average is also printed to the output.
+
+#### WorldMapProcessor.java ####
+
+This program generates images of world maps based on the locations of Wikidata items,
+and stores the result in PNG files. The example builds several maps, for Wikidata as
+a whole and for several big Wikipedias (counting only items with an article in there).
+The code offers easy-to-adjust parameters for the size of the output images, the
+Wikimedia projects to consider, and the scale of the color values.
+
+[Wikidata world maps for June 2015](https://ddll.inf.tu-dresden.de/web/Wikidata/Maps-06-2015/en)
 
 #### GenderRatioProcessor.java ####
 
@@ -101,9 +125,9 @@ for CSV files.
 
 #### RdfSerializationExample.java ####
 
-This program creates a range of RDF exports. It will be replaced in the future by a
-standalone conversion tool that has all of these features. Then the RDF example can be
-simplified to include only some specific type of RDF export.
+This program creates an RDF export. You can also do this directly using the command line
+client. The purpose of this program is just to show how this could be done in code, e.g.,
+to implement additional pre-processing before the RDF serialisation.
 
 
 Other Helper Code

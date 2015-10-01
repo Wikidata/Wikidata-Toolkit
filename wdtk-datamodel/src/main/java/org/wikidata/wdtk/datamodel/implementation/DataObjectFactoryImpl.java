@@ -108,7 +108,13 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
-		return new QuantityValueImpl(numericValue, lowerBound, upperBound);
+		return getQuantityValue(numericValue, lowerBound, upperBound, "");
+	}
+
+	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
+		return new QuantityValueImpl(numericValue, lowerBound, upperBound, unit);
 	}
 
 	@Override
@@ -165,8 +171,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		return new PropertyDocumentImpl(propertyId, labels, descriptions,
-				aliases, Collections.<StatementGroup> emptyList(), datatypeId);
+		return getPropertyDocument(propertyId, labels, descriptions, aliases,
+				Collections.<StatementGroup> emptyList(), datatypeId, 0);
 	}
 
 	@Override
@@ -175,8 +181,19 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
+		return getPropertyDocument(propertyId, labels, descriptions, aliases,
+				statementGroups, datatypeId, 0);
+	}
+
+	@Override
+	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			long revisionId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
-				aliases, statementGroups, datatypeId);
+				aliases, statementGroups, datatypeId, revisionId);
 	}
 
 	@Override
@@ -186,8 +203,19 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
+		return getItemDocument(itemIdValue, labels, descriptions, aliases,
+				statementGroups, siteLinks, 0);
+	}
+
+	@Override
+	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks, long revisionId) {
 		return new ItemDocumentImpl(itemIdValue, labels, descriptions, aliases,
-				statementGroups, siteLinks);
+				statementGroups, siteLinks, revisionId);
 	}
 
 }

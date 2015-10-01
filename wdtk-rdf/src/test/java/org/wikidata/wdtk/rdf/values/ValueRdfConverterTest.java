@@ -43,18 +43,18 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.rdf.MockPropertyRegister;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfTestHelpers;
 import org.wikidata.wdtk.rdf.RdfWriter;
-import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
 
 public class ValueRdfConverterTest {
 
 	ByteArrayOutputStream out;
 	RdfWriter rdfWriter;
 	OwlDeclarationBuffer rdfConversionBuffer;
-	PropertyTypes propertyTypes = new WikidataPropertyTypes();
+	PropertyRegister propertyRegister = new MockPropertyRegister();
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
 	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
@@ -73,7 +73,7 @@ public class ValueRdfConverterTest {
 	public void testWriteQuantityValue() throws RDFHandlerException,
 			RDFParseException, IOException {
 		QuantityValueConverter valueConverter = new QuantityValueConverter(
-				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+				this.rdfWriter, this.propertyRegister, this.rdfConversionBuffer);
 
 		QuantityValue value = this.objectFactory.getQuantityValue(
 				new BigDecimal(100), new BigDecimal(100), new BigDecimal(100));
@@ -91,7 +91,7 @@ public class ValueRdfConverterTest {
 	@Test
 	public void testWriteMonolingualTextValue() throws RDFHandlerException {
 		MonolingualTextValueConverter valueConverter = new MonolingualTextValueConverter(
-				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+				this.rdfWriter, this.propertyRegister, this.rdfConversionBuffer);
 
 		MonolingualTextValue value = this.objectFactory
 				.getMonolingualTextValue("中华人民共和国", "zh-hans");
@@ -108,7 +108,7 @@ public class ValueRdfConverterTest {
 	public void testWriteGlobeCoordinatesValue() throws RDFHandlerException,
 			RDFParseException, IOException {
 		GlobeCoordinatesValueConverter valueConverter = new GlobeCoordinatesValueConverter(
-				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+				this.rdfWriter, this.propertyRegister, this.rdfConversionBuffer);
 
 		GlobeCoordinatesValue value = this.objectFactory
 				.getGlobeCoordinatesValue(51.033333333333, 13.733333333333,
@@ -129,7 +129,7 @@ public class ValueRdfConverterTest {
 	public void testWriteTimeValue() throws RDFHandlerException,
 			RDFParseException, IOException {
 		TimeValueConverter valueConverter = new TimeValueConverter(
-				this.rdfWriter, this.propertyTypes, this.rdfConversionBuffer);
+				this.rdfWriter, this.propertyRegister, this.rdfConversionBuffer);
 
 		TimeValue value = objectFactory.getTimeValue(2008, (byte) 1, (byte) 1,
 				(byte) 0, (byte) 0, (byte) 0, (byte) 9, 0, 0, 0,

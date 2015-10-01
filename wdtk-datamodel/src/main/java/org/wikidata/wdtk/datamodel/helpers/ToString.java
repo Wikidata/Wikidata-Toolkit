@@ -144,10 +144,9 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(GlobeCoordinatesValue o) {
-		return ((double) o.getLatitude() / GlobeCoordinatesValue.PREC_DEGREE)
-				+ ":"
-				+ ((double) o.getLongitude() / GlobeCoordinatesValue.PREC_DEGREE)
-				+ " (" + getGlobeString(o.getGlobe()) + ")";
+		return (o.getLatitude() / GlobeCoordinatesValue.PREC_DEGREE) + ":"
+				+ (o.getLongitude() / GlobeCoordinatesValue.PREC_DEGREE) + " ("
+				+ getGlobeString(o.getGlobe()) + ")";
 	}
 
 	/**
@@ -186,7 +185,7 @@ public class ToString {
 	public static String toString(QuantityValue o) {
 		return o.getNumericValue().toString() + " ["
 				+ o.getLowerBound().toString() + " .. "
-				+ o.getUpperBound().toString() + "]";
+				+ o.getUpperBound().toString() + "]" + " " + o.getUnit();
 	}
 
 	/**
@@ -297,6 +296,7 @@ public class ToString {
 	public static String toString(Statement o) {
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("[ID ").append(o.getStatementId()).append("] ");
 		sb.append(toString(o.getClaim()));
 		if (o.getRank() != StatementRank.NORMAL) {
 			sb.append("  Rank: ").append(o.getRank()).append("\n");
@@ -352,9 +352,9 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(PropertyDocument o) {
-		return "==PropertyDocument " + o.getPropertyId().getIri() + "==\n"
-				+ "* Datatype: " + o.getDatatype()
-				+ toStringForTermedDocument(o)
+		return "==PropertyDocument " + o.getPropertyId().getIri() + " (r"
+				+ o.getRevisionId() + ") ==\n" + "* Datatype: "
+				+ o.getDatatype() + toStringForTermedDocument(o)
 				+ toStringForStatementDocument(o);
 	}
 
@@ -369,6 +369,7 @@ public class ToString {
 	public static String toString(ItemDocument o) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("==ItemDocument ").append(o.getItemId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
 		sb.append("==").append(toStringForTermedDocument(o));
 		sb.append(toStringForStatementDocument(o));
 

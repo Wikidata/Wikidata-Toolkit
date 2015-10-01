@@ -47,17 +47,19 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	public static final int TASK_STATEMENTS = 0x00000001;
 	public static final int TASK_SITELINKS = 0x00000002;
 	public static final int TASK_DATATYPES = 0x00000004;
+	public static final int TASK_PROPERTY_LINKS = 0x00000080;
 	public static final int TASK_LABELS = 0x00000010;
 	public static final int TASK_DESCRIPTIONS = 0x00000020;
 	public static final int TASK_ALIASES = 0x00000040;
 	public static final int TASK_TERMS = TASK_LABELS | TASK_DESCRIPTIONS
 			| TASK_ALIASES;
 	public static final int TASK_ALL_EXACT_DATA = TASK_TERMS | TASK_STATEMENTS
-			| TASK_SITELINKS | TASK_DATATYPES;
+			| TASK_SITELINKS | TASK_DATATYPES | TASK_PROPERTY_LINKS;
 
 	public static final int TASK_TAXONOMY = 0x00010000;
 	public static final int TASK_INSTANCE_OF = 0x00020000;
 	public static final int TASK_SIMPLE_STATEMENTS = 0x00040000;
+	public static final int TASK_SUBPROPERTIES = 0x00100000;
 
 	public static final int TASK_ITEMS = 0x00000100;
 	public static final int TASK_PROPERTIES = 0x00000200;
@@ -77,10 +79,12 @@ public class RdfSerializer implements EntityDocumentDumpProcessor {
 	 * @param sites
 	 *            information about site links
 	 */
-	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites) {
+	public RdfSerializer(RDFFormat format, OutputStream output, Sites sites,
+			PropertyRegister propertyRegister) {
 		this.output = output;
 		this.rdfWriter = new RdfWriter(format, output);
-		this.rdfConverter = new RdfConverter(this.rdfWriter, sites);
+		this.rdfConverter = new RdfConverter(this.rdfWriter, sites,
+				propertyRegister);
 	}
 
 	/**

@@ -41,7 +41,7 @@ public class WmfLocalDumpFileTest {
 	public void setUp() throws Exception {
 		this.dmPath = Paths.get(System.getProperty("user.dir"))
 				.resolve("dumpfiles").resolve("wikidatawiki");
-		this.dm = new MockDirectoryManager(this.dmPath);
+		this.dm = new MockDirectoryManager(this.dmPath, true, true);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

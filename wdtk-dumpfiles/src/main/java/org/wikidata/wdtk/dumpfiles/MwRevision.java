@@ -32,19 +32,19 @@ public interface MwRevision {
 	 * The model used for MediaWiki revisions in traditional Wikitext. Revisions
 	 * with this format should always use "text/x-wiki" as their format.
 	 */
-	static final String MODEL_WIKITEXT = "wikitext";
+	String MODEL_WIKITEXT = "wikitext";
 	/**
 	 * The model used for MediaWiki revisions representing Wikibase items.
 	 * Revisions with this format should always use "application/json" as their
 	 * format.
 	 */
-	static final String MODEL_WIKIBASE_ITEM = "wikibase-item";
+	String MODEL_WIKIBASE_ITEM = "wikibase-item";
 	/**
 	 * The model used for MediaWiki revisions representing Wikibase properties.
 	 * Revisions with this format should always use "application/json" as their
 	 * format.
 	 */
-	static final String MODEL_WIKIBASE_PROPERTY = "wikibase-property";
+	String MODEL_WIKIBASE_PROPERTY = "wikibase-property";
 
 	/**
 	 * Returns the title string of the revised page, including namespace

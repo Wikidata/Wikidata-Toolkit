@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
@@ -77,8 +78,11 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		KNOWN_TASKS.put("terms", RdfSerializer.TASK_TERMS);
 		KNOWN_TASKS.put("taxonomy", RdfSerializer.TASK_TAXONOMY);
 		KNOWN_TASKS.put("instanceof", RdfSerializer.TASK_INSTANCE_OF);
+		KNOWN_TASKS
+				.put("interpropertylinks", RdfSerializer.TASK_PROPERTY_LINKS);
 		KNOWN_TASKS.put("simplestatements",
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		KNOWN_TASKS.put("subproperties", RdfSerializer.TASK_SUBPROPERTIES);
 	}
 
 	public static final Map<String, String> TASK_HELP = new HashMap<>();
@@ -108,7 +112,25 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		TASK_HELP
 				.put("simplestatements",
 						"export unqualified statements without references as single triples");
+		TASK_HELP
+				.put("interpropertylinks",
+						"export triples which connect wikidata properties and there respective rdf properties in different contexts");
+		TASK_HELP
+				.put("subproperties",
+						"export unqualified subpropertyof information in the considered entities");
 	}
+
+	/**
+	 * The base file name that will be used by default. File endings for
+	 * indicating compression will be appended where required.
+	 */
+	public final static String DEFAULT_FILE_NAME = "{PROJECT}-{DATE}.rdf";
+
+	/**
+	 * default action name is used to separate different
+	 * DumpProcessingOutputActions from each other.
+	 */
+	public final static String DEFAULT_ACTION_NAME = "RdfSerializationAction";
 
 	/**
 	 * Internal serializer object that will actually write the RDF output.
@@ -125,6 +147,10 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	 * Integer that holds the serialization task flags.
 	 */
 	int tasks = 0;
+
+	public RdfSerializationAction() {
+		this.outputDestination = DEFAULT_FILE_NAME;
+	}
 
 	@Override
 	public boolean setOption(String option, String value) {
@@ -181,9 +207,6 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	public void close() {
 		this.serializer.close();
 		super.close();
-		logger.info("Finished serialization of "
-				+ this.serializer.getTripleCount() + " RDF triples in file "
-				+ this.outputDestination);
 	}
 
 	/**
@@ -209,7 +232,8 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 				this.compressionType);
 
 		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, this.sites);
+				exportOutputStream, this.sites,
+				PropertyRegister.getWikidataPropertyRegister());
 		serializer.setTasks(this.tasks);
 
 		return serializer;
@@ -250,5 +274,21 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 			System.out.println(WordUtils.wrap("* \"" + supportedTask + "\": "
 					+ TASK_HELP.get(supportedTask), 75, "\n   ", true));
 		}
+	}
+
+	@Override
+	public String getReport() {
+		String message = "Finished serialization of "
+				+ this.serializer.getTripleCount() + " RDF triples in file "
+				+ this.insertDumpInformation(this.outputDestination);
+		if (!this.compressionType.equals(COMPRESS_NONE)) {
+			message += "." + this.compressionType;
+		}
+		return message;
+	}
+
+	@Override
+	public String getDefaultActionName() {
+		return DEFAULT_ACTION_NAME;
 	}
 }
