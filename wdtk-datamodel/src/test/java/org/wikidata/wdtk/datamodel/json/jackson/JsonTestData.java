@@ -120,6 +120,8 @@ public class JsonTestData {
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},"
 			+ JSON_ITEM_TYPE + "}";
+	public static final String JSON_WRAPPED_NOITEMID = "{\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{},"
+			+ JSON_ITEM_TYPE + "}";
 	public static final String JSON_WRAPPED_SITE_LINK = "{\"id\":\""
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":"
@@ -130,6 +132,9 @@ public class JsonTestData {
 			+ "\",\"rank\":\""
 			+ JSON_RANK_NORMAL
 			+ "\",\"mainsnak\":" + JSON_NOVALUE_SNAK + "}";
+
+	public static final String JSON_NOVALUE_NOID_STATEMENT = "{\"type\":\"statement\",\"rank\":\""
+			+ JSON_RANK_NORMAL + "\",\"mainsnak\":" + JSON_NOVALUE_SNAK + "}";
 
 	// objects to test against
 	// should (of course) correspond to the JSON strings counterpart
@@ -199,6 +204,12 @@ public class JsonTestData {
 	public static JacksonStatement getTestNoValueStatement() {
 		JacksonStatement result = new JacksonStatement(TEST_STATEMENT_ID,
 				TEST_NOVALUE_SNAK);
+		result.setSubject(getEmtpyTestItemDocument().getEntityId());
+		return result;
+	}
+
+	public static JacksonStatement getTestNoValueNoIdStatement() {
+		JacksonStatement result = new JacksonStatement("", TEST_NOVALUE_SNAK);
 		result.setSubject(getEmtpyTestItemDocument().getEntityId());
 		return result;
 	}

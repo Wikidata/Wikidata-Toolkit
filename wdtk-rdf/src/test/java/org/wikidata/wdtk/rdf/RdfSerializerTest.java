@@ -20,7 +20,7 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,8 +32,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
-import org.wikidata.wdtk.rdf.TestObjectFactory;
-import org.wikidata.wdtk.rdf.RdfSerializer;
 
 public class RdfSerializerTest {
 
@@ -47,7 +45,7 @@ public class RdfSerializerTest {
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
 		this.rdfSerializer = new RdfSerializer(RDFFormat.N3, this.out,
-				new SitesImpl());
+				new SitesImpl(), new MockPropertyRegister());
 
 	}
 
@@ -59,8 +57,8 @@ public class RdfSerializerTest {
 				.createItemDocument());
 		this.rdfSerializer.close();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("completeRDFDocument.rdf")));
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("completeRDFDocument.rdf")), model);
 	}
 
 }

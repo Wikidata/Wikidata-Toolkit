@@ -1,31 +1,10 @@
 package org.wikidata.wdtk.client;
 
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.util.DirectoryManager;
-import org.wikidata.wdtk.util.DirectoryManagerImpl;
-
 /*
  * #%L
- * Wikidata Toolkit Examples
+ * Wikidata Toolkit Command-line Tool
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +19,26 @@ import org.wikidata.wdtk.util.DirectoryManagerImpl;
  * limitations under the License.
  * #L%
  */
+
+import java.io.BufferedOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /**
  * Abstract implementation of {@link DumpProcessingAction} that represents
@@ -81,17 +80,16 @@ public abstract class DumpProcessingOutputAction implements
 	public static final String COMPRESS_NONE = "";
 
 	/**
-	 * The class that will be used for accessing directories. Package-private so
-	 * that it can be overwritten in tests in order to mock file access.
-	 */
-	static Class<? extends DirectoryManager> dmClass = DirectoryManagerImpl.class;
-
-	/**
 	 * Output streams that were created by this class. If close is called, it
 	 * will close all of them properly.
 	 *
 	 */
 	protected Set<Closeable> outputStreams = new HashSet<>();
+
+	/**
+	 * The name of the action.
+	 */
+	protected String name;
 
 	/**
 	 * The {@link Sites} object if provided.
@@ -159,6 +157,28 @@ public abstract class DumpProcessingOutputAction implements
 		this.dateStamp = dateStamp;
 	}
 
+	@Override
+	public void setActionName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getActionName() {
+		if (this.name != null) {
+			return this.name;
+		} else {
+			return getDefaultActionName();
+		}
+	}
+
+	public String getOutputFilename() {
+		if (this.outputDestination == null) {
+			return "unnamed.out";
+		} else {
+			return insertDumpInformation(this.outputDestination);
+		}
+	}
+
 	public String insertDumpInformation(String pattern) {
 		return pattern.replace("{DATE}", this.dateStamp).replace("{PROJECT}",
 				this.project);
@@ -207,17 +227,10 @@ public abstract class DumpProcessingOutputAction implements
 			outputDirectory = Paths.get(".");
 		}
 
-		OutputStream out;
-		try {
-			DirectoryManager dm = dmClass.getConstructor(Path.class)
-					.newInstance(outputDirectory);
-			out = dm.getOutputStreamForFile(Paths.get(filePath).getFileName()
-					.toString());
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException(e.toString(), e);
-		}
+		DirectoryManager dm = DirectoryManagerFactory.createDirectoryManager(
+				outputDirectory, false);
+		OutputStream out = dm.getOutputStreamForFile(Paths.get(filePath)
+				.getFileName().toString());
 
 		OutputStream bufferedFileOutputStream = new BufferedOutputStream(out,
 				1024 * 1024 * 5);
@@ -254,7 +267,7 @@ public abstract class DumpProcessingOutputAction implements
 		 * the thread has really finished.
 		 */
 		void finish();
-	};
+	}
 
 	/**
 	 * Creates a separate thread for writing into the given output stream and
@@ -341,4 +354,5 @@ public abstract class DumpProcessingOutputAction implements
 			}
 		}
 	}
+
 }

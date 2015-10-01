@@ -27,9 +27,17 @@ import org.apache.commons.lang3.Validate;
 /**
  * Default implementation of {@link BitVector}. This implementation contains an
  * array of <b>long</b>, and each <b>long</b> stores 64 bits. When more space is
- * needed, the internal array grows exponentially.
- * 
+ * needed, the internal array grows exponentially. This bit vector is
+ * <i>flexible</i>, which means that:
+ * <ol>
+ * <li>it is always possible to store a bit in any non-negative position without
+ * explicitly resizing the vector,</li>
+ * <li>any non-negative position outside the bit vector can be retrieved and
+ * contains a <code>false</code>.</li>
+ * </ol>
+ *
  * @author Julian Mendez
+ *
  */
 public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
@@ -46,7 +54,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Constructor of a bit vector of size 0.
-	 * 
+	 *
 	 */
 	public BitVectorImpl() {
 		this.arrayOfBits = new long[MINIMUM_ARRAY_SIZE];
@@ -54,7 +62,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Copy constructor of a bit vector.
-	 * 
+	 *
 	 * @param bitVector
 	 *            bit vector
 	 */
@@ -78,10 +86,10 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	/**
 	 * Constructor of a bit vector of size <i>initialSize</i>. The bit vector
 	 * contains <code>false</code> at all indexes.
-	 * 
+	 *
 	 * @param initialSize
 	 *            initial size of this bit vector
-	 * 
+	 *
 	 */
 	public BitVectorImpl(long initialSize) {
 		if (initialSize < 0) {
@@ -113,8 +121,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @return the minimum array size for a bit vector of <i>bitVectorSize</i>
 	 */
 	static int getMinimumArraySize(long bitVectorSize) {
-		return Math.max(MINIMUM_ARRAY_SIZE,
-				(int) (bitVectorSize >> LG_WORD_SIZE) + 1);
+		return Math.max(MINIMUM_ARRAY_SIZE, getSizeInWords(bitVectorSize));
 	}
 
 	/**
@@ -147,11 +154,20 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 		return (new StringBuilder(binaryDigits)).reverse().toString();
 	}
 
+	/**
+	 * @param sizeInBits
+	 *            size in bits
+	 * @return the size in words
+	 */
+	static int getSizeInWords(long sizeInBits) {
+		return (int) ((sizeInBits >> LG_WORD_SIZE) + 1);
+	}
+
 	@Override
 	public boolean addBit(boolean bit) {
 		this.validHashCode = false;
 		this.size++;
-		if (((this.size >> LG_WORD_SIZE) + 1) > this.arrayOfBits.length) {
+		if (getSizeInWords(this.size) > this.arrayOfBits.length) {
 			resizeArray(GROWTH_FACTOR * this.arrayOfBits.length);
 		}
 		setBit(this.size - 1, bit);
@@ -162,12 +178,36 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 	 * @param position
 	 *            position
 	 * @throws IndexOutOfBoundsException
-	 *             if the position is out of bounds
+	 *             if the position is a negative number
 	 */
-	void assertRange(long position) throws IndexOutOfBoundsException {
-		if ((position < 0) || (position >= this.size)) {
+	void assertNonNegativePosition(long position)
+			throws IndexOutOfBoundsException {
+		if ((position < 0)) {
 			throw new IndexOutOfBoundsException("Position " + position
 					+ " is out of bounds.");
+		}
+	}
+
+	/**
+	 * Ensures that the bit vector is large enough to contain an element at the
+	 * given position. If the bit vector needs to be enlarged, new
+	 * <code>false</code> elements are added.
+	 *
+	 * @param position
+	 *            position
+	 */
+	void ensureSize(long position) {
+		assertNonNegativePosition(position);
+		if (position >= this.size) {
+			this.validHashCode = false;
+			long newSize = position + 1;
+			int arrayOfBitsLength = this.arrayOfBits.length;
+			int sizeInWords = getSizeInWords(newSize);
+			while (sizeInWords > arrayOfBitsLength) {
+				arrayOfBitsLength = GROWTH_FACTOR * arrayOfBitsLength;
+			}
+			resizeArray(arrayOfBitsLength);
+			this.size = newSize;
 		}
 	}
 
@@ -238,7 +278,10 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public boolean getBit(long position) {
-		assertRange(position);
+		assertNonNegativePosition(position);
+		if (position >= this.size) {
+			return false;
+		}
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
 		byte wordPos = (byte) (position & WORD_MASK);
 		return getBitInWord(wordPos, this.arrayOfBits[arrayPos]);
@@ -260,7 +303,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	/**
 	 * Resizes the array that represents this bit vector.
-	 * 
+	 *
 	 * @param newArraySize
 	 *            new array size
 	 */
@@ -273,7 +316,7 @@ public class BitVectorImpl implements BitVector, Iterable<Boolean> {
 
 	@Override
 	public void setBit(long position, boolean bit) {
-		assertRange(position);
+		ensureSize(position);
 		this.validHashCode = false;
 		int arrayPos = (int) (position >> LG_WORD_SIZE);
 		byte wordPos = (byte) (position & WORD_MASK);

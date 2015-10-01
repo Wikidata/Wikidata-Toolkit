@@ -28,17 +28,17 @@ import java.util.Comparator;
 /**
  * Representation of MediaWiki dump files, which provides access to important
  * basic properties of dumps, and to the content of the dump itself.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface MwDumpFile {
 
 	/**
 	 * Comparator to sort dumps by date.
-	 * 
+	 *
 	 * @author Markus Kroetzsch
-	 * 
+	 *
 	 */
 	class DateComparator implements Comparator<MwDumpFile> {
 		@Override
@@ -55,7 +55,7 @@ public interface MwDumpFile {
 	 * the download will succeed, since there can always be IO errors anyway,
 	 * but it helps to detect cases where the dump is clearly not in a usable
 	 * state.
-	 * 
+	 *
 	 * @return true if the dump file is likely to be available
 	 */
 	boolean isAvailable();
@@ -64,7 +64,7 @@ public interface MwDumpFile {
 	 * Returns the project name for this dump. Together with the dump content
 	 * type and date stamp, this identifies the dump, and it is therefore always
 	 * available.
-	 * 
+	 *
 	 * @return a project name string
 	 */
 	String getProjectName();
@@ -73,7 +73,7 @@ public interface MwDumpFile {
 	 * Returns the date stamp for this dump. Together with the project name and
 	 * dump content type, this identifies the dump, and it is therefore always
 	 * available.
-	 * 
+	 *
 	 * @return a string that represents a date in format YYYYMMDD
 	 */
 	String getDateStamp();
@@ -82,7 +82,7 @@ public interface MwDumpFile {
 	 * Returns information about the content of the dump. Together with the
 	 * project name and date stamp, this identifies the dump, and it is
 	 * therefore always available.
-	 * 
+	 *
 	 * @return the content type of this dump
 	 */
 	DumpContentType getDumpContentType();
@@ -92,7 +92,7 @@ public interface MwDumpFile {
 	 * content of the dump file.
 	 * <p>
 	 * It is important to close the stream after use.
-	 * 
+	 *
 	 * @return an input stream to read the dump file
 	 * @throws IOException
 	 *             if the dump file contents could not be accessed
@@ -104,7 +104,7 @@ public interface MwDumpFile {
 	 * content of the dump file.
 	 * <p>
 	 * It is important to close the reader after use.
-	 * 
+	 *
 	 * @return a buffered reader to read the dump file
 	 * @throws IOException
 	 *             if the dump file contents could not be accessed
@@ -115,7 +115,7 @@ public interface MwDumpFile {
 	 * Prepares the dump file for access via {@link #getDumpFileStream()} or
 	 * {@link #getDumpFileReader()}. In particular, this will download any
 	 * remote files.
-	 * 
+	 *
 	 * @throws IOException
 	 *             if there was a problem preparing the files
 	 */

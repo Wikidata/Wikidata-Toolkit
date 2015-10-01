@@ -30,15 +30,15 @@ import org.wikidata.wdtk.rdf.RdfWriter;
 /**
  * Classes that implement this interface export additional data for snaks with
  * certain values.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface ValueExportExtension<V extends Value> {
 
 	/**
 	 * Writes additional RDF data for the given data.
-	 * 
+	 *
 	 * @param resource
 	 *            the subject for which to write the data
 	 * @param propertyIdValue
@@ -52,8 +52,8 @@ public interface ValueExportExtension<V extends Value> {
 	 * @throws RDFHandlerException
 	 *             if the data could not be written
 	 */
-	public void writeExtensionData(Resource resource,
-			PropertyIdValue propertyIdValue, V value, RdfWriter rdfWriter,
+	void writeExtensionData(Resource resource, PropertyIdValue propertyIdValue,
+			V value, RdfWriter rdfWriter,
 			OwlDeclarationBuffer owlDeclarationBuffer)
 			throws RDFHandlerException;
 }

@@ -28,26 +28,20 @@ import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
 public class QuantityValueImplTest {
 
-	QuantityValue q1;
-	QuantityValue q2;
-	BigDecimal nv;
-	BigDecimal lb;
-	BigDecimal ub;
-
-	@Before
-	public void setUp() throws Exception {
-		nv = new BigDecimal("0.123456789012345678901234567890123456789");
-		lb = new BigDecimal("0.123456789012345678901234567890123456788");
-		ub = new BigDecimal("0.123456789012345678901234567890123456790");
-		q1 = new QuantityValueImpl(nv, lb, ub);
-		q2 = new QuantityValueImpl(nv, lb, ub);
-	}
+	final BigDecimal nv = new BigDecimal(
+			"0.123456789012345678901234567890123456789");
+	final BigDecimal lb = new BigDecimal(
+			"0.123456789012345678901234567890123456788");
+	final BigDecimal ub = new BigDecimal(
+			"0.123456789012345678901234567890123456790");
+	final String unitMeter = "http://wikidata.org/entity/Q11573";
+	final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
+	final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 
 	@Test
 	public void gettersWorking() {
@@ -62,15 +56,17 @@ public class QuantityValueImplTest {
 				"0.1234567890123456789012345678901234567895");
 		BigDecimal nvminus = new BigDecimal(
 				"0.1234567890123456789012345678901234567885");
-		QuantityValue q3 = new QuantityValueImpl(nvplus, lb, ub);
-		QuantityValue q4 = new QuantityValueImpl(nv, nvminus, ub);
-		QuantityValue q5 = new QuantityValueImpl(nv, lb, nvplus);
+		QuantityValue q3 = new QuantityValueImpl(nvplus, lb, ub, unitMeter);
+		QuantityValue q4 = new QuantityValueImpl(nv, nvminus, ub, unitMeter);
+		QuantityValue q5 = new QuantityValueImpl(nv, lb, nvplus, unitMeter);
+		QuantityValue q6 = new QuantityValueImpl(nv, lb, ub, "");
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
 		assertThat(q1, not(equalTo(q3)));
 		assertThat(q1, not(equalTo(q4)));
 		assertThat(q1, not(equalTo(q5)));
+		assertThat(q1, not(equalTo(q6)));
 		assertThat(q1, not(equalTo(null)));
 		assertFalse(q1.equals(this));
 	}
@@ -82,27 +78,32 @@ public class QuantityValueImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void numValueNotNull() {
-		new QuantityValueImpl(null, lb, ub);
+		new QuantityValueImpl(null, lb, ub, unitMeter);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void lowerBoundNotNull() {
-		new QuantityValueImpl(nv, null, lb);
+		new QuantityValueImpl(nv, null, lb, unitMeter);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void upperBoundNotNull() {
-		new QuantityValueImpl(nv, lb, null);
+		new QuantityValueImpl(nv, lb, null, unitMeter);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void unitNotNull() {
+		new QuantityValueImpl(nv, lb, ub, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void lowerBoundNotGreaterNumVal() {
-		new QuantityValueImpl(lb, nv, ub);
+		new QuantityValueImpl(lb, nv, ub, unitMeter);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void numValNotGreaterLowerBound() {
-		new QuantityValueImpl(ub, lb, nv);
+		new QuantityValueImpl(ub, lb, nv, unitMeter);
 	}
 
 }

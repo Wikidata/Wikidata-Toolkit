@@ -38,6 +38,7 @@ public class RdfSerializationActionTest {
 		assertTrue(action instanceof RdfSerializationAction);
 		assertTrue(action.needsSites());
 		assertTrue(action.isReady());
+		assertEquals(action.getActionName(), "RdfSerializationAction");
 	}
 
 	@Test
@@ -62,7 +63,6 @@ public class RdfSerializationActionTest {
 		action.open(); // creates and initializes serializer (prints to stdout)
 		action.close(); // just to test that this causes no exceptions
 
-		assertTrue(action instanceof RdfSerializationAction);
 		assertTrue(action.needsSites());
 		assertEquals(action.serializer.getTasks(),
 				RdfSerializer.TASK_PROPERTIES | RdfSerializer.TASK_LABELS);

@@ -42,7 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFileManager;
 import org.wikidata.wdtk.util.DirectoryManager;
-import org.wikidata.wdtk.util.DirectoryManagerImpl;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 import org.wikidata.wdtk.util.WebResourceFetcher;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 
@@ -220,8 +220,8 @@ public class DumpProcessingController {
 	 */
 	public void setDownloadDirectory(String downloadDirectory)
 			throws IOException {
-		this.downloadDirectoryManager = new DirectoryManagerImpl(
-				downloadDirectory);
+		this.downloadDirectoryManager = DirectoryManagerFactory
+				.createDirectoryManager(downloadDirectory, false);
 	}
 
 	/**
@@ -677,9 +677,8 @@ public class DumpProcessingController {
 				&& this.filter.getLanguageFilter() == null) {
 			return processor;
 		} else {
-			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
+			return new EntityDocumentProcessorFilter(
 					processor, this.filter);
-			return filter;
 		}
 	}
 
@@ -702,7 +701,7 @@ public class DumpProcessingController {
 
 		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> edpEntry : this.entityDocumentProcessors
 				.entrySet()) {
-			EntityDocumentProcessor resultEdp = null;
+			EntityDocumentProcessor resultEdp;
 			if (edpEntry.getValue().size() == 1) {
 				resultEdp = edpEntry.getValue().get(0);
 			} else {

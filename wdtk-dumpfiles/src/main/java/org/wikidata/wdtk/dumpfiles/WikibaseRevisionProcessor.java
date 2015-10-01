@@ -97,7 +97,6 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 					mwRevision.getText(), JacksonItemDocument.class);
 			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processItemDocument(document);
-			return;
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for item "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
@@ -129,7 +128,6 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 					mwRevision.getText(), JacksonPropertyDocument.class);
 			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processPropertyDocument(document);
-			return;
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for property "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());

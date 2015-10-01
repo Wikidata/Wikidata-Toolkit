@@ -148,19 +148,20 @@ public class TemplateParser {
 
 	private List<String> getParameterList(String str) {
 		ArrayList<String> ret = new ArrayList<String>();
-		boolean nowiki = false;
-		LookAhead nextItem = findItem(str, 0, nowiki);
+		LookAhead nextItem = findItem(str, 0, false);
 		int level = 0;
 		int lastPos = 0;
+		boolean noWiki = false;
+
 		while (!nextItem.item.equals(LookAheadItem.UNDEFINED)) {
 			if (nextItem.item.equals(LookAheadItem.OPENING_BRACES)) {
 				level++;
 			} else if (nextItem.item.equals(LookAheadItem.CLOSING_BRACES)) {
 				level--;
 			} else if (nextItem.item.equals(LookAheadItem.OPENING_NOWIKI)) {
-				nowiki = true;
+				noWiki = true;
 			} else if (nextItem.item.equals(LookAheadItem.CLOSING_NOWIKI)) {
-				nowiki = false;
+				noWiki = false;
 			} else if (nextItem.item.equals(LookAheadItem.VERTICAL_BAR)) {
 				if (level == 0) {
 					ret.add(str.substring(lastPos, nextItem.position));
@@ -170,7 +171,7 @@ public class TemplateParser {
 			}
 			nextItem = findItem(str,
 					nextItem.position + getString(nextItem.item).length(),
-					nowiki);
+					noWiki);
 		}
 		ret.add(str.substring(lastPos));
 		return ret;

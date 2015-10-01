@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -53,6 +54,7 @@ public abstract class TermedStatementDocumentImpl implements TermedDocument,
 	final Map<String, MonolingualTextValue> descriptions;
 	final Map<String, List<MonolingualTextValue>> aliases;
 	final List<StatementGroup> statementGroups;
+	final long revisionId;
 
 	/**
 	 * Constructor.
@@ -71,16 +73,21 @@ public abstract class TermedStatementDocumentImpl implements TermedDocument,
 	 * @param statementGroups
 	 *            the list of statement groups of this item; all of them must
 	 *            have the given itemIdValue as their subject
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
 	 */
 	TermedStatementDocumentImpl(EntityIdValue entityIdValue,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups) {
+			List<StatementGroup> statementGroups, long revisionId) {
 		Validate.notNull(labels, "list of labels cannot be null");
 		Validate.notNull(descriptions, "list of descriptions cannot be null");
 		Validate.notNull(aliases, "list of aliases cannot be null");
 		Validate.notNull(statementGroups, "statement list cannot be null");
+
+		this.revisionId = revisionId;
 
 		this.labels = new HashMap<String, MonolingualTextValue>();
 		for (MonolingualTextValue label : labels) {
@@ -155,4 +162,8 @@ public abstract class TermedStatementDocumentImpl implements TermedDocument,
 		return new NestedIterator<>(statementGroups);
 	}
 
+	@Override
+	public long getRevisionId() {
+		return this.revisionId;
+	}
 }

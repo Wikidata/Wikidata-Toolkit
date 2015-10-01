@@ -66,73 +66,73 @@ public interface TimeValue extends Value {
 	 * IRI of the proleptic Gregorian calendar; often used to specify the
 	 * calendar model
 	 */
-	static final String CM_GREGORIAN_PRO = "http://www.wikidata.org/entity/Q1985727";
+	String CM_GREGORIAN_PRO = "http://www.wikidata.org/entity/Q1985727";
 	/**
 	 * IRI of the proleptic Julian calendar; often used to specify the calendar
 	 * model
 	 */
-	static final String CM_JULIAN_PRO = "http://www.wikidata.org/entity/Q1985786";
+	String CM_JULIAN_PRO = "http://www.wikidata.org/entity/Q1985786";
 
 	/**
 	 * Precision constant for dates that are precise to the second.
 	 */
-	static final byte PREC_SECOND = 14;
+	byte PREC_SECOND = 14;
 	/**
 	 * Precision constant for dates that are precise to the minute.
 	 */
-	static final byte PREC_MINUTE = 13;
+	byte PREC_MINUTE = 13;
 	/**
 	 * Precision constant for dates that are precise to the hour.
 	 */
-	static final byte PREC_HOUR = 12;
+	byte PREC_HOUR = 12;
 	/**
 	 * Precision constant for dates that are precise to the day.
 	 */
-	static final byte PREC_DAY = 11;
+	byte PREC_DAY = 11;
 	/**
 	 * Precision constant for dates that are precise to the month.
 	 */
-	static final byte PREC_MONTH = 10;
+	byte PREC_MONTH = 10;
 	/**
 	 * Precision constant for dates that are precise to the year.
 	 */
-	static final byte PREC_YEAR = 9;
+	byte PREC_YEAR = 9;
 	/**
 	 * Precision constant for dates that are precise to the decade.
 	 */
-	static final byte PREC_DECADE = 8;
+	byte PREC_DECADE = 8;
 	/**
 	 * Precision constant for dates that are precise to 100 years.
 	 */
-	static final byte PREC_100Y = 7;
+	byte PREC_100Y = 7;
 	/**
 	 * Precision constant for dates that are precise to 1,000 years.
 	 */
-	static final byte PREC_1KY = 6;
+	byte PREC_1KY = 6;
 	/**
 	 * Precision constant for dates that are precise to 10,000 years.
 	 */
-	static final byte PREC_10KY = 5;
+	byte PREC_10KY = 5;
 	/**
 	 * Precision constant for dates that are precise to 100,000 years.
 	 */
-	static final byte PREC_100KY = 4;
+	byte PREC_100KY = 4;
 	/**
 	 * Precision constant for dates that are precise to 1 million years.
 	 */
-	static final byte PREC_1MY = 3;
+	byte PREC_1MY = 3;
 	/**
 	 * Precision constant for dates that are precise to 10 million years.
 	 */
-	static final byte PREC_10MY = 2;
+	byte PREC_10MY = 2;
 	/**
 	 * Precision constant for dates that are precise to 100 million years.
 	 */
-	static final byte PREC_100MY = 1;
+	byte PREC_100MY = 1;
 	/**
 	 * Precision constant for dates that are precise to 10^9 years.
 	 */
-	static final byte PREC_1GY = 0;
+	byte PREC_1GY = 0;
 
 	/**
 	 * Get the year stored for this date. Years in Wikibase can be 0; see "Y0K"

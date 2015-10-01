@@ -115,7 +115,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.DAILY, this.dateStamp));
 
-		long size = 0;
+		long size;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
 			size = dailyDirectoryManager
