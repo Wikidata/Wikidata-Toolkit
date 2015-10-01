@@ -1,0 +1,6 @@
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#propertyStatementLinkage> <http://www.wikidata.org/P17s> ;
+	<http://www.wikidata.org/ontology#propertyQualifierLinkage> <http://www.wikidata.org/P17q> ;
+	<http://www.wikidata.org/ontology#propertyReferenceLinkage> <http://www.wikidata.org/P17r> ;
+	<http://www.wikidata.org/ontology#propertySimpleClaim> <http://www.wikidata.org/P17c> ;
+	<http://www.wikidata.org/ontology#propertyValueLinkage> <http://www.wikidata.org/P17v> .
+

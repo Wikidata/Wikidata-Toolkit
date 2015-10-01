@@ -56,13 +56,13 @@ public class SnakGroupTest {
 		snak1 = new ValueSnakImpl(property, subject);
 		snak2 = new SomeValueSnakImpl(property);
 
-		sg1 = new SnakGroupImpl(Collections.<Snak> singletonList(snak1));
-		sg2 = new SnakGroupImpl(Collections.<Snak> singletonList(snak1));
+		sg1 = new SnakGroupImpl(Collections.singletonList(snak1));
+		sg2 = new SnakGroupImpl(Collections.singletonList(snak1));
 	}
 
 	@Test
 	public void snakListIsCorrect() {
-		assertEquals(sg1.getSnaks(), Collections.<Snak> singletonList(snak1));
+		assertEquals(sg1.getSnaks(), Collections.singletonList(snak1));
 	}
 
 	@Test

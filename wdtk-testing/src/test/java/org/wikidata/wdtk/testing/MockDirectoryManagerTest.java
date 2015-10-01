@@ -45,11 +45,12 @@ import org.wikidata.wdtk.util.DirectoryManager;
 public class MockDirectoryManagerTest {
 
 	MockDirectoryManager mdm;
+	Path basePath;
 
 	@Before
 	public void setUp() throws Exception {
-		Path basePath = Paths.get(System.getProperty("user.dir"));
-		mdm = new MockDirectoryManager(basePath);
+		basePath = Paths.get(System.getProperty("user.dir"));
+		mdm = new MockDirectoryManager(basePath, true, false);
 		mdm.setDirectory(basePath.resolve("dir1").resolve("subdir"));
 		mdm.setFileContents(basePath.resolve("dir2").resolve("test.txt"),
 				"Test contents");
@@ -195,6 +196,43 @@ public class MockDirectoryManagerTest {
 	@Test(expected = FileNotFoundException.class)
 	public void fileNotFound() throws IOException {
 		mdm.getInputStreamForFile("test.txt", CompressionType.NONE);
+	}
+
+	@Test(expected = IOException.class)
+	public void createFileFromStringReadOnly() throws IOException {
+		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
+				false, true);
+		mdmReadOnly.createFile("newfile.txt", "New contents");
+	}
+
+	@Test(expected = IOException.class)
+	public void createFileFromInputStreamReadOnly() throws IOException {
+		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
+				false, true);
+		mdmReadOnly.createFile("newfile.txt",
+				MockStringContentFactory.newMockInputStream("content"));
+	}
+
+	@Test(expected = IOException.class)
+	public void createFileFromInputStreamAtomicReadOnly() throws IOException {
+		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
+				false, true);
+		mdmReadOnly.createFileAtomic("newfile.txt",
+				MockStringContentFactory.newMockInputStream("content"));
+	}
+
+	@Test(expected = IOException.class)
+	public void getOutputStreamReadOnly() throws IOException {
+		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
+				false, true);
+		mdmReadOnly.getOutputStreamForFile("newfile.txt");
+	}
+
+	@Test(expected = IOException.class)
+	public void openInNonexistingDirectoryReadOnly() throws IOException {
+		DirectoryManager mdmReadOnly = new MockDirectoryManager(basePath,
+				false, true);
+		mdmReadOnly.getSubdirectoryManager("doesNotExist");
 	}
 
 }

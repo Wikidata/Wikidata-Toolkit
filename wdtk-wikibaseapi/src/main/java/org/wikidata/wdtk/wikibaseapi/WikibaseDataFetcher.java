@@ -20,35 +20,25 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
-import org.wikidata.wdtk.util.WebResourceFetcher;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Simple class to fetch data from Wikibase via the online API. Only anonymous,
- * read-only access is supported here.
+ * Simple class to fetch data from Wikibase via the online API.
  *
  * @author Markus Kroetzsch
- *
+ * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
 
@@ -56,20 +46,9 @@ public class WikibaseDataFetcher {
 			.getLogger(WikibaseDataFetcher.class);
 
 	/**
-	 * URL of the Web API of wikidata.org.
+	 * API Action to fetch data.
 	 */
-	final static String WIKIDATA_API_URL = "http://www.wikidata.org/w/api.php";
-
-	/**
-	 * Object used to make web requests. Package-private so that it can be
-	 * overwritten with a mock object in tests.
-	 */
-	WebResourceFetcher webResourceFetcher = new WebResourceFetcherImpl();
-
-	/**
-	 * The URL where the MediaWiki API can be found.
-	 */
-	final String apiBaseUrl;
+	final WbGetEntitiesAction wbGetEntitiesAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -87,27 +66,32 @@ public class WikibaseDataFetcher {
 	private final DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
-	 * Creates an object to fetch data from wikidata.org.
+	 * Creates an object to fetch data from wikidata.org. This convenience
+	 * method creates a default {@link ApiConnection} that is not logged in. To
+	 * use an existing connection, the constructor
+	 * {@link #WikibaseDataFetcher(ApiConnection, String)} should be called,
+	 * using {@link Datamodel#SITE_WIKIDATA} as a site URI.
 	 */
-	public WikibaseDataFetcher() {
-		this(WIKIDATA_API_URL, Datamodel.SITE_WIKIDATA);
+	public static WikibaseDataFetcher getWikidataDataFetcher() {
+		return new WikibaseDataFetcher(
+				ApiConnection.getWikidataApiConnection(),
+				Datamodel.SITE_WIKIDATA);
 	}
 
 	/**
-	 * Creates an object to fetch data from API at the given URL. The site URI
-	 * is necessary since it is not contained in the data retrieved from the
-	 * URI.
+	 * Creates an object to fetch data from API with the given
+	 * {@link ApiConnection} object. The site URI is necessary since it is not
+	 * contained in the data retrieved from the URI.
 	 *
-	 * @param apiBaseUrl
-	 *            the base URL of the Web API that should be accessed, e.g.,
-	 *            "http://www.wikidata.org/w/api.php"
+	 * @param connection
+	 *            ApiConnection
 	 * @param siteUri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public WikibaseDataFetcher(String apiBaseUrl, String siteUri) {
-		this.apiBaseUrl = apiBaseUrl;
+	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
+		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -133,8 +117,10 @@ public class WikibaseDataFetcher {
 	 * @param entityId
 	 *            string IDs (e.g., "P31" or "Q42") of requested entity
 	 * @return retrieved entity document or null
+	 * @throws MediaWikiApiErrorException
 	 */
-	public EntityDocument getEntityDocument(String entityId) {
+	public EntityDocument getEntityDocument(String entityId)
+			throws MediaWikiApiErrorException {
 		return getEntityDocuments(entityId).get(entityId);
 	}
 
@@ -148,8 +134,10 @@ public class WikibaseDataFetcher {
 	 *            string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, EntityDocument> getEntityDocuments(String... entityIds) {
+	public Map<String, EntityDocument> getEntityDocuments(String... entityIds)
+			throws MediaWikiApiErrorException {
 		return getEntityDocuments(Arrays.asList(entityIds));
 	}
 
@@ -163,95 +151,129 @@ public class WikibaseDataFetcher {
 	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
+	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds) {
-		String url = getWbGetEntitiesUrl(entityIds);
-
-		if (entityIds.isEmpty() || url == null) {
-			return Collections.<String, EntityDocument> emptyMap();
-		}
-
-		Map<String, EntityDocument> result = new HashMap<>(entityIds.size());
-
-		try (InputStream inStream = this.webResourceFetcher
-				.getInputStreamForUrl(url)) {
-
-			JsonNode root = mapper.readTree(inStream);
-
-			if (root.has("error")) {
-				JsonNode errorNode = root.path("error");
-				logger.error("Error when reading data from API: "
-						+ errorNode.path("info").asText("DESCRIPTION MISSING")
-						+ " ["
-						+ errorNode.path("code").asText("UNKNOWN ERROR CODE")
-						+ "]");
-			} // fall through: maybe there are some entities anyway
-
-			JsonNode entities = root.path("entities");
-			for (JsonNode entityNode : entities) {
-				if (!entityNode.has("missing")) {
-					try {
-						JacksonTermedStatementDocument ed = mapper.treeToValue(
-								entityNode,
-								JacksonTermedStatementDocument.class);
-						ed.setSiteIri(this.siteIri);
-						result.put(ed.getEntityId().getId(), ed);
-					} catch (JsonProcessingException e) {
-						logger.error("Error when reading JSON for entity "
-								+ entityNode.path("id").asText("UNKNOWN")
-								+ ": " + e.toString());
-					}
-				}
-			}
-
-		} catch (IOException e) {
-			logger.error("Could not retrieve data from " + url + ". Error:\n"
-					+ e.toString());
-		}
-
-		return result;
-
+	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+		properties.ids = ApiConnection.implodeObjects(entityIds);
+		return getEntityDocumentMap(entityIds.size(), properties);
 	}
 
 	/**
-	 * Returns the URL string for a wbgetentities request to the Wikibase API,
-	 * or null if it was not possible to build such a string with the current
-	 * settings.
+	 * Fetches the document for the entity that has a page of the given title on
+	 * the given site. Site keys should be some site identifier known to the
+	 * Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
 	 *
-	 * @param entityIds
-	 *            list of string IDs (e.g., "P31", "Q42") of requested entities
-	 * @return URL string
+	 * @param siteKey
+	 *            wiki site id, e.g., "enwiki"
+	 * @param title
+	 *            string titles (e.g. "Douglas Adams") of requested entities
+	 * @return document for the entity with this title, or null if no such
+	 *         document exists
+	 * @throws MediaWikiApiErrorException
 	 */
-	String getWbGetEntitiesUrl(List<String> entityIds) {
-		URIBuilder uriBuilder;
-		try {
-			uriBuilder = new URIBuilder(this.apiBaseUrl);
-		} catch (URISyntaxException e1) {
-			logger.error("Error in API URL \"" + this.apiBaseUrl + "\": "
-					+ e1.toString());
-			return null;
+	public EntityDocument getEntityDocumentByTitle(String siteKey, String title)
+			throws MediaWikiApiErrorException {
+		return getEntityDocumentsByTitle(siteKey, title).get(title);
+	}
+
+	/**
+	 * Fetches the documents for the entities that have pages of the given
+	 * titles on the given site. Site keys should be some site identifier known
+	 * to the Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g. "enwiki"
+	 * @param titles
+	 *            list of string titles (e.g. "Douglas Adams") of requested
+	 *            entities
+	 * @return map from titles for which data could be found to the documents
+	 *         that were retrieved
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, EntityDocument> getEntityDocumentsByTitle(
+			String siteKey, String... titles) throws MediaWikiApiErrorException {
+		return getEntityDocumentsByTitle(siteKey, Arrays.asList(titles));
+	}
+
+	/**
+	 * Fetches the documents for the entities that have pages of the given
+	 * titles on the given site. Site keys should be some site identifier known
+	 * to the Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 * <p>
+	 * Note: This method will not work properly if a filter is set for sites
+	 * that excludes the requested site.
+	 *
+	 * @param siteKey
+	 *            wiki site id, e.g. "enwiki"
+	 * @param titles
+	 *            list of string titles (e.g. "Douglas Adams") of requested
+	 *            entities
+	 * @return map from titles for which data could be found to the documents
+	 *         that were retrieved
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, EntityDocument> getEntityDocumentsByTitle(
+			String siteKey, List<String> titles)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+		properties.titles = ApiConnection.implodeObjects(titles);
+		properties.sites = siteKey;
+		return getEntityDocumentMap(titles.size(), properties);
+	}
+
+	/**
+	 * Creates a map of identifiers or page titles to documents retrieved via
+	 * the APIs.
+	 *
+	 * @param numOfEntities
+	 *            number of entities that should be retrieved
+	 * @param properties
+	 *            WbGetEntitiesProperties object that includes all relevant
+	 *            parameters for the wbgetentities action
+	 * @return map of document identifiers or titles to documents retrieved via
+	 *         the API URL
+	 * @throws MediaWikiApiErrorException
+	 */
+	Map<String, EntityDocument> getEntityDocumentMap(int numOfEntities,
+			WbGetEntitiesActionData properties)
+			throws MediaWikiApiErrorException {
+		if (numOfEntities == 0) {
+			return Collections.emptyMap();
 		}
+		configureProperties(properties);
+		return this.wbGetEntitiesAction
+				.wbGetEntities(properties);
+	}
 
-		uriBuilder.setParameter("action", "wbgetentities");
-		uriBuilder.setParameter("format", "json");
-		setRequestProps(uriBuilder);
-		setRequestLanguages(uriBuilder);
-		setRequestSitefilter(uriBuilder);
-		uriBuilder.setParameter("ids", implodeObjects(entityIds));
-
-		return uriBuilder.toString();
+	/**
+	 * Configures props, languages and sitefilter properties.
+	 *
+	 * @param properties
+	 */
+	void configureProperties(WbGetEntitiesActionData properties) {
+		setRequestProps(properties);
+		setRequestLanguages(properties);
+		setRequestSitefilter(properties);
 	}
 
 	/**
 	 * Sets the value for the API's "props" parameter based on the current
 	 * settings.
 	 *
-	 * @param uriBuilder
-	 *            the URI builder to set the parameter in
+	 * @param properties
+	 *            current setting of parameters
 	 */
-	private void setRequestProps(URIBuilder uriBuilder) {
+	private void setRequestProps(WbGetEntitiesActionData properties) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("datatype");
+		builder.append("info|datatype");
 		if (!this.filter.excludeAllLanguages()) {
 			builder.append("|labels|aliases|descriptions");
 		}
@@ -262,61 +284,39 @@ public class WikibaseDataFetcher {
 			builder.append("|sitelinks");
 		}
 
-		uriBuilder.setParameter("props", builder.toString());
+		properties.props = builder.toString();
 	}
 
 	/**
 	 * Sets the value for the API's "languages" parameter based on the current
 	 * settings.
 	 *
-	 * @param uriBuilder
-	 *            the URI builder to set the parameter in
+	 * @param properties
+	 *            current setting of parameters
 	 */
-	private void setRequestLanguages(URIBuilder uriBuilder) {
+	private void setRequestLanguages(WbGetEntitiesActionData properties) {
 		if (this.filter.excludeAllLanguages()
 				|| this.filter.getLanguageFilter() == null) {
 			return;
 		}
-		uriBuilder.setParameter("languages",
-				implodeObjects(this.filter.getLanguageFilter()));
+		properties.languages = ApiConnection.implodeObjects(this.filter
+				.getLanguageFilter());
 	}
 
 	/**
 	 * Sets the value for the API's "sitefilter" parameter based on the current
 	 * settings.
 	 *
-	 * @param uriBuilder
-	 *            the URI builder to set the parameter in
+	 * @param properties
+	 *            current setting of parameters
 	 */
-	private void setRequestSitefilter(URIBuilder uriBuilder) {
+	private void setRequestSitefilter(WbGetEntitiesActionData properties) {
 		if (this.filter.excludeAllSiteLinks()
 				|| this.filter.getSiteLinkFilter() == null) {
 			return;
 		}
-		uriBuilder.setParameter("sitefilter",
-				implodeObjects(this.filter.getSiteLinkFilter()));
-	}
-
-	/**
-	 * Builds a string that serializes a list of objects separated by the pipe
-	 * character. The toString methods are used to turn objects into strings.
-	 *
-	 * @param objects
-	 *            the objects to implode
-	 * @return string of imploded objects
-	 */
-	private String implodeObjects(Iterable<? extends Object> objects) {
-		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for (Object o : objects) {
-			if (first) {
-				first = false;
-			} else {
-				builder.append("|");
-			}
-			builder.append(o.toString());
-		}
-		return builder.toString();
+		properties.sitefilter = ApiConnection.implodeObjects(this.filter
+				.getSiteLinkFilter());
 	}
 
 }

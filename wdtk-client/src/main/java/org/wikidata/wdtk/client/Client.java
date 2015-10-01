@@ -1,25 +1,10 @@
 package org.wikidata.wdtk.client;
 
-import java.io.IOException;
-
-import org.apache.commons.cli.ParseException;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.varia.LevelRangeFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
-import org.wikidata.wdtk.dumpfiles.MwDumpFile;
-
 /*
  * #%L
- * Wikidata Toolkit Examples
+ * Wikidata Toolkit Command-line Tool
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +19,27 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFile;
  * limitations under the License.
  * #L%
  */
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.apache.commons.cli.ParseException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.varia.LevelRangeFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.dumpfiles.DumpContentType;
+import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
+import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
+import org.wikidata.wdtk.dumpfiles.MwDumpFile;
+import org.wikidata.wdtk.util.DirectoryManager;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
 
 /**
  * This class provides a Java command line client to process dump files.
@@ -78,6 +84,7 @@ public class Client {
 		} else {
 			consoleAppender.setThreshold(Level.INFO);
 		}
+
 	}
 
 	/**
@@ -92,15 +99,15 @@ public class Client {
 		this.dumpProcessingController.setOfflineMode(this.clientConfiguration
 				.getOfflineMode());
 
-		if (this.clientConfiguration.getDumpLocation() != null) {
+		if (this.clientConfiguration.getDumpDirectoryLocation() != null) {
 			try {
 				this.dumpProcessingController
 						.setDownloadDirectory(this.clientConfiguration
-								.getDumpLocation());
+								.getDumpDirectoryLocation());
 			} catch (IOException e) {
 				logger.error("Could not set download directory to "
-						+ this.clientConfiguration.getDumpLocation() + ": "
-						+ e.getMessage());
+						+ this.clientConfiguration.getDumpDirectoryLocation()
+						+ ": " + e.getMessage());
 				logger.error("Aborting");
 				return;
 			}
@@ -113,11 +120,22 @@ public class Client {
 		dumpProcessingController.setPropertyFilter(this.clientConfiguration
 				.getFilterProperties());
 
-		MwDumpFile dumpFile = dumpProcessingController
-				.getMostRecentDump(DumpContentType.JSON);
+		MwDumpFile dumpFile = this.clientConfiguration.getLocalDumpFile();
+
+		if (dumpFile == null) {
+			dumpFile = dumpProcessingController
+					.getMostRecentDump(DumpContentType.JSON);
+		} else {
+			if (!dumpFile.isAvailable()) {
+				logger.error("Dump file not found or not readable: "
+						+ dumpFile.toString());
+				return;
+			}
+		}
 
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
+
 			if (!props.isReady()) {
 				continue;
 			}
@@ -151,6 +169,13 @@ public class Client {
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
+
+		try {
+			writeReport();
+		} catch (IOException e) {
+			logger.error("Could not print report file: " + e.getMessage());
+		}
+
 	}
 
 	private void prepareSites() {
@@ -158,7 +183,8 @@ public class Client {
 			try {
 				sites = this.dumpProcessingController.getSitesInformation();
 			} catch (IOException e) {
-				logger.error("Failed to get sites information.");
+				logger.error("Failed to get sites information: "
+						+ e.getMessage());
 			}
 		}
 	}
@@ -204,6 +230,42 @@ public class Client {
 	}
 
 	/**
+	 * Writes a report file including the results of the
+	 * {@link DumpProcessingAction#getReport()} methods. If there is no report
+	 * filename specified the reports will be logged.
+	 *
+	 * @throws IOException
+	 */
+	void writeReport() throws IOException {
+		StringBuilder builder = new StringBuilder();
+		for (DumpProcessingAction action : this.clientConfiguration
+				.getActions()) {
+			if (this.clientConfiguration.getReportFileName() != null) {
+				builder.append(action.getActionName());
+				builder.append(": ");
+				builder.append(action.getReport());
+				builder.append(System.getProperty("line.separator"));
+			} else {
+				logger.info(action.getActionName() + ": " + action.getReport());
+			}
+		}
+		if (this.clientConfiguration.getReportFileName() != null) {
+			Path outputDirectory = Paths.get(
+					this.clientConfiguration.getReportFileName()).getParent();
+			if (outputDirectory == null) {
+				outputDirectory = Paths.get(".");
+			}
+			DirectoryManager dm = DirectoryManagerFactory
+					.createDirectoryManager(outputDirectory, false);
+			OutputStream out = dm.getOutputStreamForFile(Paths
+					.get(this.clientConfiguration.getReportFileName())
+					.getFileName().toString());
+			out.write(builder.toString().getBytes(StandardCharsets.UTF_8));
+			out.close();
+		}
+	}
+
+	/**
 	 * Finishes the work of each configured action by calling its
 	 * {@link DumpProcessingOutputAction#close()} method.
 	 */
@@ -212,6 +274,7 @@ public class Client {
 				.getActions()) {
 			action.close();
 		}
+
 	}
 
 	/**

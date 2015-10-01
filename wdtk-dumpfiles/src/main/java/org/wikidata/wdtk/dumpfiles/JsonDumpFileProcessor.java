@@ -123,14 +123,12 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	 */
 	private void handleDocument(JacksonTermedStatementDocument document) {
 		document.setSiteIri(siteIri);
-		if (document != null) {
-			if (document instanceof JacksonItemDocument) {
-				this.entityDocumentProcessor
-						.processItemDocument((JacksonItemDocument) document);
-			} else if (document instanceof JacksonPropertyDocument) {
-				this.entityDocumentProcessor
-						.processPropertyDocument((JacksonPropertyDocument) document);
-			}
+		if (document instanceof JacksonItemDocument) {
+			this.entityDocumentProcessor
+					.processItemDocument((JacksonItemDocument) document);
+		} else if (document instanceof JacksonPropertyDocument) {
+			this.entityDocumentProcessor
+					.processPropertyDocument((JacksonPropertyDocument) document);
 		}
 	}
 

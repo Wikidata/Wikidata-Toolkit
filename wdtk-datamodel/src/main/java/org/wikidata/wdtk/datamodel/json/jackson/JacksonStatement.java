@@ -98,7 +98,7 @@ public class JacksonStatement implements Statement {
 	 * List of property string ids that encodes the desired order of qualifiers,
 	 * which is not specified by the map.
 	 */
-	private List<String> propertyOrder = Collections.<String> emptyList();
+	private List<String> propertyOrder = Collections.emptyList();
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

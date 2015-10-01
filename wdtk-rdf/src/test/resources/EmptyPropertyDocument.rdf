@@ -1,4 +1,9 @@
 
 <http://www.wikidata.org/P1> a <http://www.wikidata.org/ontology#Property> ;
-	<http://www.wikidata.org/ontology#propertyType> <http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates> .
+	<http://www.wikidata.org/ontology#propertyType> <http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates> ;
+	<http://www.wikidata.org/ontology#propertyStatementLinkage> <http://www.wikidata.org/P1s> ;
+	<http://www.wikidata.org/ontology#propertyQualifierLinkage> <http://www.wikidata.org/P1q> ;
+	<http://www.wikidata.org/ontology#propertyReferenceLinkage> <http://www.wikidata.org/P1r> ;
+	<http://www.wikidata.org/ontology#propertySimpleClaim> <http://www.wikidata.org/P1c> ;
+	<http://www.wikidata.org/ontology#propertyValueLinkage> <http://www.wikidata.org/P1v> .
 

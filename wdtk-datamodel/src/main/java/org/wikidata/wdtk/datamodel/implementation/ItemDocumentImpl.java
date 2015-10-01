@@ -29,6 +29,7 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -62,14 +63,18 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl implements
 	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
 	 *            the sitelinks of this item by site key
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
 	 */
 	ItemDocumentImpl(ItemIdValue itemIdValue,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
-			Map<String, SiteLink> siteLinks) {
-		super(itemIdValue, labels, descriptions, aliases, statementGroups);
+			Map<String, SiteLink> siteLinks, long revisionId) {
+		super(itemIdValue, labels, descriptions, aliases, statementGroups,
+				revisionId);
 		Validate.notNull(itemIdValue, "item ID cannot be null");
 		Validate.notNull(siteLinks, "site links cannot be null");
 

@@ -152,8 +152,8 @@ public class MwSitesDumpFileProcessor implements MwDumpFileProcessor {
 		MwSitesDumpFileProcessor.logger.debug("Found site data \"" + row[1]
 				+ "\" (group \"" + row[3] + "\", language \"" + row[5]
 				+ "\", type \"" + row[2] + "\")");
-		this.sites.setSiteInformation(row[1], row[3], row[5], row[2], "http:"
-				+ filePath, "http:" + pagePath);
+		this.sites.setSiteInformation(row[1], row[3], row[5], row[2], filePath,
+				pagePath);
 	}
 
 	/**

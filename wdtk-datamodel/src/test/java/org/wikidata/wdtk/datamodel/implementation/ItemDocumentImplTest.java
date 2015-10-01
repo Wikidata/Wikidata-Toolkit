@@ -61,12 +61,11 @@ public class ItemDocumentImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		iid = ItemIdValueImpl.create("Q42",
-				"http://wikibase.org/entity/");
+		iid = ItemIdValueImpl.create("Q42", "http://wikibase.org/entity/");
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
-				PropertyIdValueImpl.create("P42",
-						"http://wikibase.org/entity/")),
+				PropertyIdValueImpl
+						.create("P42", "http://wikibase.org/entity/")),
 				Collections.<SnakGroup> emptyList());
 		s = new StatementImpl(c, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
@@ -81,12 +80,12 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 		ir2 = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test
@@ -103,12 +102,18 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), sitelinks);
+				Collections.<StatementGroup> emptyList(), sitelinks, 1234);
 		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap());
+				statementGroups, Collections.<String, SiteLink> emptyMap(),
+				1234);
+		ItemDocument irDiffRevisions = new ItemDocumentImpl(iid,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				statementGroups, sitelinks, 1235);
 
 		PropertyDocument pr = new PropertyDocumentImpl(
 				PropertyIdValueImpl.create("P42", "foo"),
@@ -116,22 +121,22 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<StatementGroup> emptyList(), new DatatypeIdImpl(
-						DatatypeIdValue.DT_STRING));
+						DatatypeIdValue.DT_STRING), 1234);
 
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal
 		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
-				ItemIdValueImpl.create("Q23",
-						"http://example.org/"),
+				ItemIdValueImpl.create("Q23", "http://example.org/"),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), sitelinks);
+				Collections.<StatementGroup> emptyList(), sitelinks, 1234);
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
 		assertThat(ir1, not(equalTo(irDiffStatementGroups)));
 		assertThat(ir1, not(equalTo(irDiffSiteLinks)));
+		assertThat(ir1, not(equalTo(irDiffRevisions)));
 		assertThat(irDiffStatementGroups, not(equalTo(irDiffItemIdValue)));
 		assertFalse(ir1.equals(pr));
 		assertThat(ir1, not(equalTo(null)));
@@ -149,7 +154,7 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -157,7 +162,7 @@ public class ItemDocumentImplTest {
 		new ItemDocumentImpl(iid, null,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -165,7 +170,7 @@ public class ItemDocumentImplTest {
 		new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(), null,
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -173,7 +178,7 @@ public class ItemDocumentImplTest {
 		new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(), null,
-				statementGroups, sitelinks);
+				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -181,16 +186,16 @@ public class ItemDocumentImplTest {
 		new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), null, sitelinks);
+				Collections.<MonolingualTextValue> emptyList(), null,
+				sitelinks, 1234);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
-		ItemIdValue iid2 = ItemIdValueImpl.create("Q23",
-				"http://example.org/");
+		ItemIdValue iid2 = ItemIdValueImpl.create("Q23", "http://example.org/");
 		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
-				PropertyIdValueImpl.create("P42",
-						"http://wikibase.org/entity/")),
+				PropertyIdValueImpl
+						.create("P42", "http://wikibase.org/entity/")),
 				Collections.<SnakGroup> emptyList());
 		Statement s2 = new StatementImpl(c2,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
@@ -206,7 +211,7 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups2, sitelinks);
+				statementGroups2, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -215,7 +220,7 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, null);
+				statementGroups, null, 1234);
 	}
 
 	@Test

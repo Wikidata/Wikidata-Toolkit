@@ -204,7 +204,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return o2.getValue().subclassCount + o2.getValue().itemCount
 					- (o1.getValue().subclassCount + o1.getValue().itemCount);
 		}
-	};
+	}
 
 	/**
 	 * Comparator to order class items by their number of instances and direct
@@ -225,7 +225,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 					- (o1.getValue().itemCount + o1.getValue().qualifierCount + o1
 							.getValue().referenceCount);
 		}
-	};
+	}
 
 	/**
 	 * Total number of items processed.
@@ -508,7 +508,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
@@ -536,7 +535,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 

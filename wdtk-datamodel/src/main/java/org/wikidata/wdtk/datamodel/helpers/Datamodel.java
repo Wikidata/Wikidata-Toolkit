@@ -27,6 +27,7 @@ import java.util.Map;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -365,7 +366,8 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link Reference}.
+	 * Creates a {@link Reference}. It might be more convenient to use the
+	 * {@link ReferenceBuilder} instead.
 	 *
 	 * @param snakGroups
 	 *            list of snak groups
@@ -376,7 +378,8 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link Statement}.
+	 * Creates a {@link Statement}. It might be more convenient to use the
+	 * {@link StatementBuilder} instead.
 	 * <p>
 	 * The string id is used mainly for communication with a Wikibase site, in
 	 * order to refer to statements of that site. When creating new statements
@@ -428,7 +431,9 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link PropertyDocument} without statements.
+	 * Creates a {@link PropertyDocument} without statements and empty revision
+	 * id. It might be more convenient to use the
+	 * {@link PropertyDocumentBuilder} instead.
 	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -453,7 +458,8 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link PropertyDocument}.
+	 * Creates a {@link PropertyDocument} with empty revision id. It might be
+	 * more convenient to use the {@link PropertyDocumentBuilder} instead.
 	 *
 	 * @param propertyId
 	 *            the id of the property that data is about
@@ -477,12 +483,47 @@ public class Datamodel {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
-		return factory.getPropertyDocument(propertyId, labels, descriptions,
-				aliases, statementGroups, datatypeId);
+		return makePropertyDocument(propertyId, labels, descriptions, aliases,
+				statementGroups, datatypeId, 0);
 	}
 
 	/**
-	 * Creates an {@link ItemDocument}.
+	 * Creates a {@link PropertyDocument}. It might be more convenient to use
+	 * the {@link PropertyDocumentBuilder} instead.
+	 *
+	 * @param propertyId
+	 *            the id of the property that data is about
+	 * @param labels
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
+	 * @param descriptions
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
+	 * @param aliases
+	 *            the list of aliases of this property
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
+	 * @param datatypeId
+	 *            the datatype of that property
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link PropertyDocument} corresponding to the input
+	 */
+	public static PropertyDocument makePropertyDocument(
+			PropertyIdValue propertyId, List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			long revisionId) {
+		return factory.getPropertyDocument(propertyId, labels, descriptions,
+				aliases, statementGroups, datatypeId, revisionId);
+	}
+
+	/**
+	 * Creates an {@link ItemDocument} with empty revision id. It might be more
+	 * convenient to use the {@link ItemDocumentBuilder} instead.
 	 *
 	 * @param itemIdValue
 	 *            the id of the item that data is about
@@ -507,8 +548,42 @@ public class Datamodel {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks) {
+		return makeItemDocument(itemIdValue, labels, descriptions, aliases,
+				statementGroups, siteLinks, 0);
+	}
+
+	/**
+	 * Creates an {@link ItemDocument}. It might be more convenient to use the
+	 * {@link ItemDocumentBuilder} instead.
+	 *
+	 * @param itemIdValue
+	 *            the id of the item that data is about
+	 * @param labels
+	 *            the list of labels of this item, with at most one label for
+	 *            each language code
+	 * @param descriptions
+	 *            the list of descriptions of this item, with at most one
+	 *            description for each language code
+	 * @param aliases
+	 *            the list of aliases of this item
+	 * @param statementGroups
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
+	 * @param siteLinks
+	 *            the sitelinks of this item by site key
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return an {@link ItemDocument} corresponding to the input
+	 */
+	public static ItemDocument makeItemDocument(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statementGroups,
+			Map<String, SiteLink> siteLinks, long revisionId) {
 		return factory.getItemDocument(itemIdValue, labels, descriptions,
-				aliases, statementGroups, siteLinks);
+				aliases, statementGroups, siteLinks, revisionId);
 	}
 
 }

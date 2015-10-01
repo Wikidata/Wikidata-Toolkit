@@ -28,9 +28,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestStatement {
@@ -47,8 +45,17 @@ public class TestStatement {
 	}
 
 	@Test
-	public void testEmptyStatementToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
+		JacksonStatement statement = JsonTestData.getTestNoValueNoIdStatement();
+
+		String result = mapper.writeValueAsString(statement);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_NOVALUE_NOID_STATEMENT, result);
+	}
+
+	@Test
+	public void testEmptyStatementToJava() throws
+			IOException {
 		JacksonStatement result = mapper.readValue(
 				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonStatement.class);
 		result.setSubject(JsonTestData.getEmtpyTestItemDocument().getEntityId());

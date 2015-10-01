@@ -5,10 +5,20 @@ Version 0.5.0
 -------------
 
 New features:
-* Support for getting live entity data from wikidata.org (or any other Wikibase site)
+* Support for reading and writing live entity data from wikidata.org or any other Wikibase site (issue #162)
+* New examples for illustrating read/write API support
+* Support for quantities with units of measurement (new feature in Wikibase; still beta)
+* New builder classes to simplify construction of EntityDocuments, Statements, and References
+* Support processing of local dump files by file name in code and command-line client (issue #136)
+* New example WorldMapProcessor that shows the generation of maps from geographic data
+* Improved output file naming for examples, taking dump date into account
+* RDF export uses property register for fewer Web requests during export
+* RDF export supports P1921 URI patterns to create links to external RDF datasets
 
 Bug fixes:
 * JSON conversion action of the command-line client was forgetting start of entity list.
+* Update URLs to use https instead of http
+* Support URLs in sites table that are not protocol-relative (issue #163)
 
 Incompatible changes:
 * EntityDocumentProcessorFilter has a modified constructor that requires a filter object

@@ -25,21 +25,21 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
-import org.wikidata.wdtk.rdf.PropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
 public class StringValueConverter extends AbstractValueConverter<StringValue> {
 
 	public StringValueConverter(RdfWriter rdfWriter,
-			PropertyTypes propertyTypes,
+			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
-		super(rdfWriter, propertyTypes, rdfConversionBuffer);
+		super(rdfWriter, propertyRegister, rdfConversionBuffer);
 	}
 
 	@Override
 	public Value getRdfValue(StringValue value,
 			PropertyIdValue propertyIdValue, boolean simple) {
-		String datatype = this.propertyTypes.setPropertyTypeFromStringValue(
+		String datatype = this.propertyRegister.setPropertyTypeFromStringValue(
 				propertyIdValue, value);
 
 		String valueUriString;
@@ -75,7 +75,7 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 
 	/**
 	 * Returns the Wikimedia Commons page URL for the given page name.
-	 * 
+	 *
 	 * @param pageName
 	 *            name of a page on Wikimedia Commons
 	 * @return URL of the page

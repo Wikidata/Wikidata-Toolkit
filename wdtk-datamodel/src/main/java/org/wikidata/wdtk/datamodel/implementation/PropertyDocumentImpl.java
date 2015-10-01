@@ -28,6 +28,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -66,13 +67,18 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
 	 *            have the given itemIdValue as their subject
 	 * @param datatypeId
 	 *            the datatype of that property
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
 	 */
 	PropertyDocumentImpl(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
-		super(propertyId, labels, descriptions, aliases, statementGroups);
+			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			long revisionId) {
+		super(propertyId, labels, descriptions, aliases, statementGroups,
+				revisionId);
 		Validate.notNull(propertyId, "property ID cannot be null");
 		Validate.notNull(datatypeId, "datatype ID cannot be null");
 		this.propertyId = propertyId;

@@ -30,31 +30,39 @@ import java.math.BigDecimal;
  * As of Jan 2014, units of measurement are not supported yet. The interface may
  * be extended to account for this in the future. It is intended to use external
  * definitions for units and to identify units by wikidata.org entity ids.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface QuantityValue extends Value {
 
 	/**
-	 * Get the main numeric value of this quantity.
-	 * 
+	 * Returns the main numeric value of this quantity.
+	 *
 	 * @return numeric value as a decimal value of arbitrary precision
 	 */
-	public BigDecimal getNumericValue();
+	BigDecimal getNumericValue();
 
 	/**
-	 * Get the upper bound for the numeric value of this quantity.
-	 * 
+	 * Returns the upper bound for the numeric value of this quantity.
+	 *
 	 * @return numeric value as a decimal value of arbitrary precision
 	 */
-	public BigDecimal getLowerBound();
+	BigDecimal getLowerBound();
 
 	/**
-	 * Get the upper bound for the numeric value of this quantity.
-	 * 
+	 * Returns the upper bound for the numeric value of this quantity.
+	 *
 	 * @return numeric value as a decimal value of arbitrary precision
 	 */
-	public BigDecimal getUpperBound();
+	BigDecimal getUpperBound();
+
+	/**
+	 * Returns the unit of this quantity, or an empty string if there is no
+	 * unit. Units are typically encoded as entity IRIs.
+	 *
+	 * @return unit string, or empty string if no unit is given
+	 */
+	String getUnit();
 
 }

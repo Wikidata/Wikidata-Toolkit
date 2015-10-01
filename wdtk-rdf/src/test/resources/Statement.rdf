@@ -1,0 +1,6 @@
+
+<http://www.wikidata.org/Q100Sid111> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/P227v> "TestString" ;
+	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+

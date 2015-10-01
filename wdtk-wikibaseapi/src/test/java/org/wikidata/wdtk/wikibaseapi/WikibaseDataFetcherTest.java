@@ -25,31 +25,37 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.testing.MockWebResourceFetcher;
+import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
 
 public class WikibaseDataFetcherTest {
 
+	MockApiConnection con;
+	WikibaseDataFetcher wdf;
+
+	@Before
+	public void setUp() throws Exception {
+		con = new MockApiConnection();
+		wdf = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
+	}
+
 	@Test
-	public void testWbGetEntities() throws IOException {
-		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
-
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(
-				wdf.getWbGetEntitiesUrl(entityIds),
-				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
-
-		wdf.webResourceFetcher = wrf;
+	public void testWbGetEntities() throws IOException,
+			MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardParameters(parameters);
+		parameters.put("ids", "Q6|Q42|P31");
+		con.setWebResourceFromPath(parameters, this.getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 
 		Map<String, EntityDocument> results = wdf.getEntityDocuments("Q6",
 				"Q42", "P31");
@@ -61,66 +67,49 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testGetEntityDocument() throws IOException {
-		List<String> entityIds = Arrays.asList("Q42");
-
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-
+	public void testGetEntityDocument() throws IOException,
+			MediaWikiApiErrorException {
 		// We use the mock answer as for a multi request; no problem
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(
-				wdf.getWbGetEntitiesUrl(entityIds),
-				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
-
-		wdf.webResourceFetcher = wrf;
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardParameters(parameters);
+		parameters.put("ids", "Q42");
+		con.setWebResourceFromPath(parameters, this.getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 
 		EntityDocument result = wdf.getEntityDocument("Q42");
-
 		assertTrue(result != null);
 	}
 
 	@Test
-	public void testGetMissingEntityDocument() throws IOException {
-		List<String> entityIds = Arrays.asList("Q6");
-
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-
+	public void testGetMissingEntityDocument() throws IOException,
+			MediaWikiApiErrorException {
+		// List<String> entityIds = Arrays.asList("Q6");
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardParameters(parameters);
+		parameters.put("ids", "Q6");
 		// We use the mock answer as for a multi request; no problem
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(
-				wdf.getWbGetEntitiesUrl(entityIds),
-				"/wbgetentities-Q6-Q42-P31.json", this.getClass());
-
-		wdf.webResourceFetcher = wrf;
-
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 		EntityDocument result = wdf.getEntityDocument("Q6");
 
-		assertTrue(result == null);
+		assertEquals(null, result);
+	}
+
+	@Test(expected = NoSuchEntityErrorException.class)
+	public void testWbGetEntitiesError() throws IOException,
+			MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardParameters(parameters);
+		parameters.put("ids", "bogus");
+		// We use the mock answer as for a multi request; no problem
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-bogus.json", CompressionType.NONE);
+		wdf.getEntityDocuments("bogus");
 	}
 
 	@Test
-	public void testWbGetEntitiesError() throws IOException {
-		List<String> entityIds = Arrays.asList("bogus");
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setWebResourceContentsFromResource(
-				wdf.getWbGetEntitiesUrl(entityIds),
-				"/wbgetentities-bogus.json", this.getClass());
-
-		wdf.webResourceFetcher = wrf;
-
-		Map<String, EntityDocument> results = wdf.getEntityDocuments("bogus");
-
-		assertEquals(0, results.size());
-	}
-
-	@Test
-	public void testWbGetEntitiesEmpty() throws IOException {
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-		wdf.webResourceFetcher = wrf;
+	public void testWbGetEntitiesEmpty() throws IOException,
+			MediaWikiApiErrorException {
 
 		Map<String, EntityDocument> results = wdf
 				.getEntityDocuments(Collections.<String> emptyList());
@@ -129,65 +118,49 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
-	public void testWbGetEntitiesNoWebAccess() throws IOException {
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
-		wrf.setReturnFailingReaders(true);
+	public void testWbGetEntitiesTitle() throws IOException,
+			MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "Douglas Adams");
+		parameters.put("sites", "enwiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-Douglas-Adams.json", CompressionType.NONE);
 
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-		wdf.webResourceFetcher = wrf;
-
-		Map<String, EntityDocument> results = wdf.getEntityDocuments("Q6",
-				"Q42", "P31");
-
-		// No data mocked, no results (but also no exception thrown)
-		assertEquals(0, results.size());
+		EntityDocument result = wdf.getEntityDocumentByTitle("enwiki",
+				"Douglas Adams");
+		assertEquals("Q42", result.getEntityId().getId());
 	}
 
 	@Test
-	public void testWbGetEntitiesApiUrlError() throws IOException {
-		MockWebResourceFetcher wrf = new MockWebResourceFetcher();
+	public void testWbGetEntitiesTitleEmpty() throws IOException,
+			MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "1234567890");
+		parameters.put("sites", "dewiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-1234567890-missing.json", CompressionType.NONE);
 
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher("invalid URL",
-				Datamodel.SITE_WIKIDATA);
-		wdf.webResourceFetcher = wrf;
+		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki",
+				"1234567890");
 
-		Map<String, EntityDocument> results = wdf.getEntityDocuments("Q6",
-				"Q42", "P31");
-
-		assertEquals(0, results.size());
+		assertEquals(null, result);
 	}
 
 	@Test
-	public void testWbGetEntitiesUrl() throws IOException {
-		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&ids=Q6%7CQ42%7CP31",
-				wdf.getWbGetEntitiesUrl(entityIds));
+	public void testWikidataDataFetcher() throws IOException {
+		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
+
+		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
+		assertEquals(ApiConnection.URL_WIKIDATA_API,
+				wbdf.wbGetEntitiesAction.connection.apiBaseUrl);
 	}
 
-	@Test
-	public void testWbGetEntitiesUrlFilterAll() throws IOException {
-		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-		wdf.getFilter().setLanguageFilter(Collections.<String> emptySet());
-		wdf.getFilter().setPropertyFilter(
-				Collections.<PropertyIdValue> emptySet());
-		wdf.getFilter().setSiteLinkFilter(Collections.<String> emptySet());
-		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype&ids=Q6%7CQ42%7CP31",
-				wdf.getWbGetEntitiesUrl(entityIds));
-	}
-
-	@Test
-	public void testWbGetEntitiesUrlFilterSome() throws IOException {
-		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31");
-		WikibaseDataFetcher wdf = new WikibaseDataFetcher();
-		wdf.getFilter().setLanguageFilter(Collections.<String> singleton("zh"));
-		wdf.getFilter().setSiteLinkFilter(
-				Collections.<String> singleton("dewiki"));
-		assertEquals(
-				"http://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=datatype%7Clabels%7Caliases%7Cdescriptions%7Cclaims%7Csitelinks&languages=zh&sitefilter=dewiki&ids=Q6%7CQ42%7CP31",
-				wdf.getWbGetEntitiesUrl(entityIds));
+	private void setStandardParameters(Map<String, String> parameters) {
+		parameters.put("action", "wbgetentities");
+		parameters.put("format", "json");
+		parameters.put("props",
+				"info|datatype|labels|aliases|descriptions|claims|sitelinks");
 	}
 }

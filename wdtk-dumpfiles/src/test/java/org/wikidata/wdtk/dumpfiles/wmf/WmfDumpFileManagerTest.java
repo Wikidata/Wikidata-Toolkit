@@ -74,7 +74,7 @@ public class WmfDumpFileManagerTest {
 	public void setUp() throws IOException {
 		this.wrf = new MockWebResourceFetcher();
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
-		this.dm = new MockDirectoryManager(this.dmPath);
+		this.dm = new MockDirectoryManager(this.dmPath, true, false);
 	}
 
 	/**
