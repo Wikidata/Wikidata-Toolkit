@@ -24,7 +24,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintOneOf;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
-import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 
 /**
  * An object of this class is a builder of a 'One of' constraint.
@@ -46,8 +46,8 @@ class ConstraintOneOfBuilder implements ConstraintBuilder {
 		ConstraintOneOf ret = null;
 		String values = template.getValue(ConstraintBuilderConstant.P_VALUES);
 		if ((constrainedProperty != null) && (values != null)) {
-			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
-			String propertyType = wdPropertyTypes
+			PropertyRegister propertyRegister = PropertyRegister.getWikidataPropertyRegister();
+			String propertyType = propertyRegister
 					.getPropertyType(constrainedProperty);
 
 			if (propertyType.equals(DatatypeIdValue.DT_ITEM)) {

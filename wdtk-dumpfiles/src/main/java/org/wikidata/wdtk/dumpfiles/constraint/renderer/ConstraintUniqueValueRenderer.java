@@ -25,7 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.format.RendererFormat;
 import org.wikidata.wdtk.dumpfiles.constraint.model.Constraint;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintUniqueValue;
-import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 
 /**
  * 
@@ -52,8 +52,8 @@ class ConstraintUniqueValueRenderer implements ConstraintRenderer {
 	}
 
 	public boolean isObjectProperty(PropertyIdValue constrainedProperty) {
-		WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
-		String propertyType = wdPropertyTypes
+		PropertyRegister propertyRegister = PropertyRegister.getWikidataPropertyRegister();
+		String propertyType = propertyRegister
 				.getPropertyType(constrainedProperty);
 		return propertyType.equals(DatatypeIdValue.DT_ITEM);
 	}

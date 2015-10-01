@@ -31,7 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintRange;
 import org.wikidata.wdtk.dumpfiles.constraint.model.DateAndNow;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
-import org.wikidata.wdtk.rdf.WikidataPropertyTypes;
+import org.wikidata.wdtk.rdf.PropertyRegister;
 
 /**
  * An object of this class is a builder of a 'Range' constraint.
@@ -123,8 +123,8 @@ class ConstraintRangeBuilder implements ConstraintBuilder {
 				.toLowerCase().trim();
 		if ((constrainedProperty != null) && (minStr != null)
 				&& (maxStr != null)) {
-			WikidataPropertyTypes wdPropertyTypes = new WikidataPropertyTypes();
-			String propertyType = wdPropertyTypes
+			PropertyRegister propertyRegister = PropertyRegister.getWikidataPropertyRegister();
+			String propertyType = propertyRegister
 					.getPropertyType(constrainedProperty);
 
 			if (propertyType.equals(DatatypeIdValue.DT_TIME)) {
