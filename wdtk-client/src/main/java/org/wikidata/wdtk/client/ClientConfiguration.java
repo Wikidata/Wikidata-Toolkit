@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -246,6 +246,15 @@ public class ClientConfiguration {
 	Set<PropertyIdValue> filterProperties = null;
 
 	/**
+	 * Date stamp of the dump to be processed.
+	 */
+	String dateStamp = "UNKNOWN";
+	/**
+	 * String name of the site that the processed dump file comes from.
+	 */
+	String project = "UNKNOWN";
+
+	/**
 	 * Constructs a new object for the given arguments.
 	 *
 	 * @param args
@@ -253,6 +262,22 @@ public class ClientConfiguration {
 	 */
 	public ClientConfiguration(String[] args) {
 		this.actions = handleArguments(args);
+	}
+
+	/**
+	 * Inserts the information about the dateStamp of a dump and the project
+	 * name into a pattern.
+	 *
+	 * @param pattern
+	 *            String with wildcards
+	 * @param dateStamp
+	 * @param project
+	 * @return String with injected information.
+	 */
+	public static String insertDumpInformation(String pattern,
+			String dateStamp, String project) {
+		return pattern.replace("{DATE}", dateStamp).replace("{PROJECT}",
+				project);
 	}
 
 	/**
@@ -364,11 +389,52 @@ public class ClientConfiguration {
 	}
 
 	/**
+	 * Sets the project name of the dump file.
+	 *
+	 * @param project
+	 */
+	public void setProjectName(String project) {
+		this.project = project;
+	}
+
+	/**
+	 * Sets the date stamp of the dump file.
+	 *
+	 * @param dateStamp
+	 */
+	public void setDateStamp(String dateStamp) {
+		this.dateStamp = dateStamp;
+	}
+
+	/**
+	 * Returns the project name according to the dump file.
+	 *
+	 * @return project name
+	 */
+	public String getProjectName() {
+		return this.project;
+	}
+
+	/**
+	 * Returns the date stamp of the dump file.
+	 *
+	 * @return date stamp
+	 */
+	public String getDateStamp() {
+		return this.dateStamp;
+	}
+
+	/**
 	 * Prints a help text to the console.
 	 */
 	public void printHelp() {
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("wdtk-client", options);
+	}
+
+	public String insertDumpInformation(String pattern) {
+		return ClientConfiguration.insertDumpInformation(pattern,
+				this.dateStamp, this.project);
 	}
 
 	/**
