@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -276,8 +276,12 @@ public class ClientConfiguration {
 	 */
 	public static String insertDumpInformation(String pattern,
 			String dateStamp, String project) {
-		return pattern.replace("{DATE}", dateStamp).replace("{PROJECT}",
-				project);
+		if (pattern == null) {
+			return null;
+		} else {
+			return pattern.replace("{DATE}", dateStamp).replace("{PROJECT}",
+					project);
+		}
 	}
 
 	/**
@@ -327,7 +331,7 @@ public class ClientConfiguration {
 	 * @return report filename
 	 */
 	public String getReportFileName() {
-		return this.reportFilename;
+		return this.insertDumpInformation(this.reportFilename);
 	}
 
 	/**

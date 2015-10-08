@@ -185,8 +185,8 @@ public class ClientTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(
 				Paths.get("/output/"), false);
 
-		String[] args = { "-a", "rdf", "-o", "/output/wikidata.rdf", "-r",
-				"/output/report.txt" };
+		String[] args = { "-n", "-a", "rdf", "-o", "/output/wikidata.rdf",
+				"-r", "/output/report.txt" };
 		Client client = new Client(mockDpc, args);
 		DumpProcessingAction action = client.clientConfiguration.actions.get(0);
 		action.open();
@@ -200,6 +200,24 @@ public class ClientTest {
 						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf"
 								+ System.lineSeparator()));
 
+	}
+
+	@Test
+	public void testInsertDumpInformation() throws IOException {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
+
+		MockDirectoryManager mdm = new MockDirectoryManager(
+				Paths.get("/output/"), false);
+
+		String[] args = { "-n", "-a", "rdf", "-o", "/output/wikidata.rdf",
+				"--rdftasks", "aliases", "-r", "/output/report-{DATE}.txt" };
+
+		Client client = new Client(mockDpc, args);
+		client.performActions();
+
+		assertTrue(mdm.hasFile("/output/report-"
+				+ client.clientConfiguration.getDateStamp() + ".txt"));
 	}
 
 	@Test
