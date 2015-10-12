@@ -64,18 +64,23 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testExplicitGetters() throws IOException {
-		this.dm.setFileContents(
-				this.dmPath.resolve("testdump-20150512.json.gz"), "");
-		MwLocalDumpFile df = new MwLocalDumpFile("/testdump-20150512.json.gz",
-				DumpContentType.SITES, "20150815", "wikidatawiki");
+		this.dm.setFileContents(this.dmPath
+				.resolve("testdump-20150512.json.gz"), "");
+		MwLocalDumpFile df = new MwLocalDumpFile(
+				"/testdump-20150512.json.gz",
+				DumpContentType.SITES, "20150815",
+				"wikidatawiki");
 
 		assertEquals("20150815", df.getDateStamp());
 		assertEquals("wikidatawiki", df.getProjectName());
 		assertEquals(DumpContentType.SITES, df.getDumpContentType());
 		String toString = df.toString();
 
-		assertEquals(this.dmPath.resolve("testdump-20150512.json.gz"),
-				df.getPath());
+		assertTrue(this.dmPath.resolve("testdump-20150512.json.gz")
+				.equals(df.getPath())
+				|| this.dmPath.resolve(
+						"C:/testdump-20150512.json.gz")
+						.equals(df.getPath()));
 
 		assertTrue(toString.contains("20150815"));
 		assertTrue(toString.contains("wikidatawiki"));
@@ -85,9 +90,12 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testGuessJsonDumpAndDate() throws IOException {
-		this.dm.setFileContents(
-				this.dmPath.resolve("testdump-20150512.json.gz"), "");
-		MwLocalDumpFile df = new MwLocalDumpFile("/testdump-20150512.json.gz");
+		this.dm.setFileContents(this.dmPath
+				.resolve("C:/testdump-20150512.json.gz"), "");
+		this.dm.setFileContents(this.dmPath
+				.resolve("testdump-20150512.json.gz"), "");
+		MwLocalDumpFile df = new MwLocalDumpFile(
+				"/testdump-20150512.json.gz");
 		assertTrue(df.isAvailable());
 		assertEquals("20150512", df.getDateStamp());
 		assertEquals("LOCAL", df.getProjectName());
@@ -96,10 +104,14 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testJsonReader() throws IOException {
-		this.dm.setFileContents(
-				this.dmPath.resolve("testdump-20150512.json.gz"),
+		this.dm.setFileContents(this.dmPath
+				.resolve("C:/testdump-20150512.json.gz"),
 				"Test contents", CompressionType.GZIP);
-		MwLocalDumpFile df = new MwLocalDumpFile("/testdump-20150512.json.gz");
+		this.dm.setFileContents(this.dmPath
+				.resolve("testdump-20150512.json.gz"),
+				"Test contents", CompressionType.GZIP);
+		MwLocalDumpFile df = new MwLocalDumpFile(
+				"/testdump-20150512.json.gz");
 		BufferedReader br = df.getDumpFileReader();
 		assertEquals("Test contents", br.readLine());
 		assertTrue(br.readLine() == null);
@@ -107,12 +119,15 @@ public class MwLocalDumpFileTest {
 
 	@Test(expected = IOException.class)
 	public void testUnavailableReader() throws IOException {
-		MwLocalDumpFile df = new MwLocalDumpFile("/testdump-20150512.json.gz");
+		MwLocalDumpFile df = new MwLocalDumpFile(
+				"/testdump-20150512.json.gz");
 		df.getDumpFileReader();
 	}
 
 	@Test
 	public void testGuessSitesDump() throws IOException {
+		this.dm.setFileContents(this.dmPath.resolve("C:/test.sql.gz"),
+				"");
 		this.dm.setFileContents(this.dmPath.resolve("test.sql.gz"), "");
 		MwLocalDumpFile df = new MwLocalDumpFile("/test.sql.gz");
 		assertTrue(df.isAvailable());
@@ -122,6 +137,8 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testGuessFullDump() throws IOException {
+		this.dm.setFileContents(this.dmPath.resolve("C:/test.xml.bz2"),
+				"");
 		this.dm.setFileContents(this.dmPath.resolve("test.xml.bz2"), "");
 		MwLocalDumpFile df = new MwLocalDumpFile("/test.xml.bz2");
 		assertTrue(df.isAvailable());
@@ -130,7 +147,11 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testGuessDailyDump() throws IOException {
-		this.dm.setFileContents(this.dmPath.resolve("daily-dump.xml.bz2"), "");
+		this.dm.setFileContents(
+				this.dmPath.resolve("C:/daily-dump.xml.bz2"),
+				"");
+		this.dm.setFileContents(
+				this.dmPath.resolve("daily-dump.xml.bz2"), "");
 		MwLocalDumpFile df = new MwLocalDumpFile("/daily-dump.xml.bz2");
 		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.DAILY);
@@ -138,14 +159,21 @@ public class MwLocalDumpFileTest {
 
 	@Test
 	public void testGuessCurrentDump() throws IOException {
-		this.dm.setFileContents(this.dmPath.resolve("current-dump.xml.bz2"), "");
-		MwLocalDumpFile df = new MwLocalDumpFile("/current-dump.xml.bz2");
+		this.dm.setFileContents(
+				this.dmPath.resolve("C:/current-dump.xml.bz2"),
+				"");
+		this.dm.setFileContents(
+				this.dmPath.resolve("current-dump.xml.bz2"), "");
+		MwLocalDumpFile df = new MwLocalDumpFile(
+				"/current-dump.xml.bz2");
 		assertTrue(df.isAvailable());
 		assertEquals(df.getDumpContentType(), DumpContentType.CURRENT);
 	}
 
 	@Test
 	public void testGuessUnknownDumpType() throws IOException {
+		this.dm.setFileContents(this.dmPath.resolve("C:/current-dump"),
+				"");
 		this.dm.setFileContents(this.dmPath.resolve("current-dump"), "");
 		MwLocalDumpFile df = new MwLocalDumpFile("/current-dump");
 		assertTrue(df.isAvailable());
