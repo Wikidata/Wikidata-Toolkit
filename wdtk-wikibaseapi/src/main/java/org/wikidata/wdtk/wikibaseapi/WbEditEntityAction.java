@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -480,8 +480,8 @@ public class WbEditEntityAction {
 		long currentTime = System.nanoTime();
 		int nextIndex = (this.curEditTimeSlot + 1) % editTimeWindow;
 		if (this.recentEditTimes[nextIndex] != 0
-				&& currentTime - this.recentEditTimes[nextIndex] < this.averageMsecsPerEdit
-						* editTimeWindow * 1000000) {
+				&& (currentTime - this.recentEditTimes[nextIndex]) / 1000000 < this.averageMsecsPerEdit
+						* editTimeWindow) {
 			long sleepTime = this.averageMsecsPerEdit * editTimeWindow
 					- (currentTime - this.recentEditTimes[nextIndex]) / 1000000;
 			logger.info("We are editing too fast. Pausing for " + sleepTime
