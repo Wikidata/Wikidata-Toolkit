@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.helpers;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,9 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -108,6 +110,30 @@ public abstract class AbstractTermedStatementDocument implements
 	@Override
 	public boolean hasStatement(String propertyId) {
 		return findStatementGroup(propertyId) != null;
+	}
+
+	@Override
+	public boolean hasStatementValue(PropertyIdValue propertyIdValue,
+			Value value) {
+		return hasStatementValue(propertyIdValue, Collections.singleton(value));
+	}
+
+	@Override
+	public boolean hasStatementValue(String propertyId, Value value) {
+		return hasStatementValue(propertyId, Collections.singleton(value));
+	}
+
+	@Override
+	public boolean hasStatementValue(PropertyIdValue propertyIdValue,
+			Set<? extends Value> values) {
+		return containsStatementValue(findStatementGroup(propertyIdValue),
+				values);
+	}
+
+	@Override
+	public boolean hasStatementValue(String propertyId,
+			Set<? extends Value> values) {
+		return containsStatementValue(findStatementGroup(propertyId), values);
 	}
 
 	@Override
@@ -234,6 +260,34 @@ public abstract class AbstractTermedStatementDocument implements
 			String propertyId) {
 		return castValue(findStatementValue(propertyId),
 				GlobeCoordinatesValue.class);
+	}
+
+	/**
+	 * Returns true if the given statement group contains a statement with one
+	 * of the given values.
+	 *
+	 * @param statementGroup
+	 *            the group of statements to search
+	 * @param values
+	 *            set of acceptable values
+	 * @return true if found
+	 */
+	protected boolean containsStatementValue(StatementGroup statementGroup,
+			Set<? extends Value> values) {
+		if (statementGroup == null) {
+			return false;
+		}
+		for (Statement statement : statementGroup.getStatements()) {
+			if (!(statement.getClaim().getMainSnak() instanceof ValueSnak)) {
+				continue;
+			}
+			ValueSnak valueSnak = (ValueSnak) statement.getClaim()
+					.getMainSnak();
+			if (values.contains(valueSnak.getValue())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

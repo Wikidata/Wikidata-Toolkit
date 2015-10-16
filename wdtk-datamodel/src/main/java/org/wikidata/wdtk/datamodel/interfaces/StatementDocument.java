@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface for EntityDocuments that can have statements.
@@ -97,6 +98,66 @@ public interface StatementDocument extends EntityDocument {
 	 * @return true if a statement for this property exists
 	 */
 	boolean hasStatement(String propertyId);
+
+	/**
+	 * Returns true if there is a statement for the given property and value.
+	 * This is a convenience method for accessing the data that can be obtained
+	 * via {@link #getStatementGroups()}.
+	 *
+	 * @param propertyIdValue
+	 *            the property to search for
+	 * @param value
+	 *            the value to search
+	 * @return true if a statement for this property and value exists
+	 */
+	boolean hasStatementValue(PropertyIdValue propertyIdValue, Value value);
+
+	/**
+	 * Returns true if there is a statement for the given property and value.
+	 * Only the string id of the property is compared, not the site id. This is
+	 * useful in situations where all data is known to come from a single site.
+	 * <p>
+	 * This is a convenience method for accessing the data that can be obtained
+	 * via {@link #getStatementGroups()}.
+	 *
+	 * @param propertyId
+	 *            the property to search for
+	 * @param value
+	 *            the value to search
+	 * @return true if a statement for this property and value exists
+	 */
+	boolean hasStatementValue(String propertyId, Value value);
+
+	/**
+	 * Returns true if there is a statement for the given property and one of
+	 * the given values. This is a convenience method for accessing the data
+	 * that can be obtained via {@link #getStatementGroups()}.
+	 *
+	 * @param propertyIdValue
+	 *            the property to search for
+	 * @param value
+	 *            the value to search
+	 * @return true if a statement for this property and value exists
+	 */
+	boolean hasStatementValue(PropertyIdValue propertyIdValue,
+			Set<? extends Value> values);
+
+	/**
+	 * Returns true if there is a statement for the given property and one of
+	 * the given values. Only the string id of the property is compared, not the
+	 * site id. This is useful in situations where all data is known to come
+	 * from a single site.
+	 * <p>
+	 * This is a convenience method for accessing the data that can be obtained
+	 * via {@link #getStatementGroups()}.
+	 *
+	 * @param propertyId
+	 *            the property to search for
+	 * @param value
+	 *            the value to search
+	 * @return true if a statement for this property and value exists
+	 */
+	boolean hasStatementValue(String propertyId, Set<? extends Value> values);
 
 	/**
 	 * Returns the unique {@link Statement} for the given property, or null if

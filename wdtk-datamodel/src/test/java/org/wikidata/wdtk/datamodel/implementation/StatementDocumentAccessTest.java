@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.mockito.internal.util.collections.Sets;
 import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
@@ -87,6 +88,25 @@ public class StatementDocumentAccessTest {
 		assertEquals(q1, id.findStatementValue(p1));
 		assertEquals(null, id.findStatementValue(p2));
 		assertEquals(null, id.findStatementValue(p3));
+	}
+
+	@Test
+	public void testHasStatementValue() {
+		Statement s1 = StatementBuilder.forSubjectAndProperty(q1, p1)
+				.withValue(q1).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(q1, p1)
+				.withValue(q2).build();
+		Statement s3 = StatementBuilder.forSubjectAndProperty(q1, p1)
+				.withSomeValue().build();
+
+		ItemDocument id = ItemDocumentBuilder.forItemId(q1).withStatement(s1)
+				.withStatement(s2).withStatement(s3).build();
+
+		assertTrue(id.hasStatementValue(p1, q2));
+		assertTrue(id.hasStatementValue("P1", q2));
+		assertTrue(id.hasStatementValue(p1, Sets.newSet(q1, p3)));
+		assertFalse(id.hasStatementValue(p1, p3));
+		assertFalse(id.hasStatementValue("P2", q2));
 	}
 
 	@Test
