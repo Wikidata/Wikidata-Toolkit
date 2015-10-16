@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.helpers;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -275,6 +275,25 @@ public class Datamodel {
 
 	/**
 	 * Creates a {@link QuantityValue}.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
+				unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} with an empty unit.
 	 *
 	 * @param numericValue
 	 *            the numeric value of this quantity
