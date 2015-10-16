@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,19 +23,16 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -59,8 +56,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonSubTypes({
 		@Type(value = JacksonItemDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_ITEM),
 		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_PROPERTY) })
-public abstract class JacksonTermedStatementDocument implements TermedDocument,
-		StatementDocument {
+public abstract class JacksonTermedStatementDocument extends
+		AbstractTermedStatementDocument {
 
 	/**
 	 * String used to refer to items in JSON.
@@ -284,12 +281,6 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	@JsonProperty("claims")
 	public Map<String, List<JacksonStatement>> getJsonClaims() {
 		return this.claims;
-	}
-
-	@Override
-	@JsonIgnore
-	public Iterator<Statement> getAllStatements() {
-		return new NestedIterator<>(this.getStatementGroups());
 	}
 
 	/**

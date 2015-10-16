@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -111,6 +113,24 @@ public class PropertyDocumentImplTest {
 		assertEquals(pd1.getDescriptions(), descriptionMap);
 		assertEquals(pd1.getAliases(), aliasMap);
 		assertEquals(pd1.getDatatype(), datatypeId);
+	}
+
+	@Test
+	public void hasStatements() {
+		assertTrue(pd1.hasStatement("P411"));
+		assertFalse(pd1.hasStatement("P1234"));
+		assertTrue(pd1.hasStatement(Datamodel.makePropertyIdValue("P411",
+				"foo:")));
+		assertFalse(pd1.hasStatement(Datamodel.makePropertyIdValue("P411",
+				"bar:")));
+	}
+
+	@Test
+	public void findTerms() {
+		assertEquals("Property 42", pd1.findLabel("en"));
+		assertEquals(null, pd1.findLabel("ja"));
+		assertEquals("Dies ist Property 42.", pd1.findDescription("de"));
+		assertEquals(null, pd1.findDescription("ja"));
 	}
 
 	@Test
