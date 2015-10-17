@@ -179,8 +179,6 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 
 		dataFetcher = new WikibaseDataFetcher(connection,
 				Datamodel.SITE_WIKIDATA);
-		System.out.println("Time per edit: "
-				+ dataEditor.getAverageTimePerEdit());
 
 		String timeStamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 				.format(new Date());
