@@ -71,7 +71,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * <li>Scan a recent dump for items worth changing</li>
  * <li>Check the online version of each item before really changing it, and use
  * the online revision id to prevent edit conflicts</li>
- * <li>Create data objects for writing</li>
+ * <li>Update statements while preserving most of their content</li>
  * <li>Use basic bot configuration features (login, disable editing for test,
  * limited numbers of test edits)</li>
  * </ul>
@@ -170,9 +170,11 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		if (itemDocument.hasStatement(editPropertyId)) {
+		if (hasPlusMinusOneValues(itemDocument
+				.findStatementGroup(editPropertyId))) {
 			fixIntegerPrecisions(itemDocument.getItemId());
-		} // else: ignore items that have no value for the property we consider
+		} // else: ignore items that have no value or only correct values for
+			// the property we consider
 	}
 
 	@Override
@@ -225,13 +227,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 				if (s.getClaim().getMainSnak() instanceof ValueSnak) {
 					QuantityValue qv = (QuantityValue) ((ValueSnak) s
 							.getClaim().getMainSnak()).getValue();
-					BigDecimal valueSucc = qv.getNumericValue().add(
-							BigDecimal.ONE);
-					BigDecimal valuePrec = qv.getNumericValue().subtract(
-							BigDecimal.ONE);
-					if (qv.getLowerBound().equals(valuePrec)
-							&& qv.getUpperBound().equals(valueSucc)
-							&& qv.getUnit().equals("")) {
+					if (isPlusMinusOneValue(qv)) {
 						QuantityValue exactValue = Datamodel.makeQuantityValue(
 								qv.getNumericValue(), qv.getNumericValue(),
 								qv.getNumericValue(), "");
@@ -288,5 +284,44 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		if (modifiedEntities % 10 == 0) {
 			this.logfile.flush();
 		}
+	}
+
+	/**
+	 * Checks if the given value is a number with precision +/-1.
+	 *
+	 * @param quantityValue
+	 * @return
+	 */
+	protected boolean isPlusMinusOneValue(QuantityValue quantityValue) {
+		BigDecimal valueSucc = quantityValue.getNumericValue().add(
+				BigDecimal.ONE);
+		BigDecimal valuePrec = quantityValue.getNumericValue().subtract(
+				BigDecimal.ONE);
+		return (quantityValue.getLowerBound().equals(valuePrec)
+				&& quantityValue.getUpperBound().equals(valueSucc) && ""
+					.equals(quantityValue.getUnit()));
+	}
+
+	/**
+	 * Checks if the given statement group contains at least one value of
+	 * precision +/-1.
+	 *
+	 * @param statementGroup
+	 * @return
+	 */
+	protected boolean hasPlusMinusOneValues(StatementGroup statementGroup) {
+		if (statementGroup == null) {
+			return false;
+		}
+		for (Statement s : statementGroup.getStatements()) {
+			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
+				QuantityValue qv = (QuantityValue) ((ValueSnak) s.getClaim()
+						.getMainSnak()).getValue();
+				if (isPlusMinusOneValue(qv)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
