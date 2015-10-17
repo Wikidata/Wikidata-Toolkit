@@ -160,6 +160,9 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 
 		dataFetcher = new WikibaseDataFetcher(connection,
 				Datamodel.SITE_WIKIDATA);
+		// Do not retrieve data that we don't care about here:
+		dataFetcher.getFilter().excludeAllLanguages();
+		dataFetcher.getFilter().excludeAllSiteLinks();
 
 		String timeStamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 				.format(new Date());
