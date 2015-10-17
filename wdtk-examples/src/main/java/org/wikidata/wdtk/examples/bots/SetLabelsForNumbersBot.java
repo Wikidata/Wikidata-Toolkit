@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples.bots;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,14 +49,30 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * This bot adds a default label to Wikidata items that are about numbers, by
  * simply creating a string for any integer number. Decimal numbers that are not
  * integers are not touched since they usually should have more meaningful
- * labels than the numerical representation.
+ * labels than the numerical representation. Moreover, the bot checks the class
+ * (P31 value) of each item to make sure that only items about numbers are
+ * re-labelled.
  * <p>
  * The activity of the bot is logged in the file activity-log-TIMESTAMP.txt.
  * <p>
- * By default, this program has the actual editing disabled (see source code for
- * details), so as to avoid accidental modifications. The output will still
- * mention changes that would be done. If you want to do real edits, please
- * respect the bot etiquette and community guidelines.
+ * By default, this program has the actual editing disabled (see source code),
+ * so as to avoid accidental modifications. The output will still mention
+ * changes that would be done. If you want to do real edits, please respect the
+ * bot etiquette and community guidelines.
+ * <p>
+ * The function of the bot is very basic, but it illustrates some important
+ * techniques:
+ * <ul>
+ * <li>Scan a recent dump for items worth changing</li>
+ * <li>Check the online version of each item before really changing it, and use
+ * the online revision id to prevent edit conflicts</li>
+ * <li>Create data objects for writing</li>
+ * <li>Use basic bot configuration features (login, disable editing for test,
+ * limited numbers of test edits)</li>
+ * </ul>
+ * The bot is tried and tested, and has been used on Wikidata to perform its
+ * task on over 10,000 items (see <a
+ * href="https://www.wikidata.org/wiki/User:Makrobot">User:Makrobot</a>).
  *
  * @author Markus Kroetzsch
  *
@@ -83,7 +99,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 	 * of course.
 	 */
 	final static String[] arabicNumeralLanguages = { "en", "de", "fr", "pt",
-			"it", "es", "nl" };
+			"it", "es", "nl", "da", "ru" };
 
 	/**
 	 * Set of Wikidata items that are commonly used to classify numbers that we
@@ -133,11 +149,11 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 		System.out.println("*** Wikidata Toolkit: SetLabelsForNumbersBot");
 		System.out.println("*** ");
 		System.out
-				.println("*** This program downloads recent Wikidata dumps to locate items about");
+				.println("*** This bot downloads recent Wikidata dumps to locate items about");
 		System.out
 				.println("*** integer numbers, and it adds default labels for these items in ");
 		System.out
-				.println("*** languages, provided there is no label in that language yet.");
+				.println("*** several languages, if there is no label for a language yet.");
 		System.out
 				.println("********************************************************************");
 	}
@@ -158,8 +174,13 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 		}
 		dataEditor = new WikibaseDataEditor(connection, Datamodel.SITE_WIKIDATA);
 		dataEditor.setEditAsBot(BotSettings.EDIT_AS_BOT);
+		dataEditor.disableEditing(); // do no actual edits
+		// dataEditor.setRemainingEdits(5); // do at most 5 (test) edits
+
 		dataFetcher = new WikibaseDataFetcher(connection,
 				Datamodel.SITE_WIKIDATA);
+		System.out.println("Time per edit: "
+				+ dataEditor.getAverageTimePerEdit());
 
 		String timeStamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 				.format(new Date());
@@ -266,19 +287,8 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 			logEntityModification(currentItemDocument.getItemId(),
 					numberString, languages);
 
-			// Comment this to really change something.
-			if ("don't edit anything".equals("don't edit anything")) {
-				return;
-			}
-
 			dataEditor.editItemDocument(itemDocumentBuilder.build(), false,
 					"Set labels to numeric value (Task MB1)");
-
-			// The following is a simple way to stop after a few test edits:
-			// if (modifiedEntities.size() > 15) {
-			// finish();
-			// throw new RuntimeException("Interrupting after 50 writes.");
-			// }
 		} catch (MediaWikiApiErrorException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
