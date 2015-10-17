@@ -156,6 +156,38 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * Returns the number of edits that will be performed before entering
+	 * simulation mode, or -1 if there is no limit on the number of edits
+	 * (default). See {@link WbEditEntityAction#getRemainingEdits()} for
+	 * details.
+	 *
+	 * @return number of remaining edits
+	 */
+	public int getRemainingEdits() {
+		return this.wbEditEntityAction.getRemainingEdits();
+	}
+
+	/**
+	 * Sets the number of edits that this object can still perform. See
+	 * {@link WbEditEntityAction#setRemainingEdits(int)} for details.
+	 *
+	 * @param remainingEdits
+	 *            number of edits that can still be performed, or -1 to disable
+	 *            this limit (default setting)
+	 */
+	public void setRemainingEdits(int remainingEdits) {
+		this.wbEditEntityAction.setRemainingEdits(remainingEdits);
+	}
+
+	/**
+	 * Sets the remaining edits for this component to 0, so that all edits are
+	 * simulated but not actually send to the API.
+	 */
+	public void disableEditing() {
+		this.wbEditEntityAction.setRemainingEdits(0);
+	}
+
+	/**
 	 * Creates a new item document with the summary message as provided.
 	 * <p>
 	 * The item document that is given as a parameter must use a local item id,

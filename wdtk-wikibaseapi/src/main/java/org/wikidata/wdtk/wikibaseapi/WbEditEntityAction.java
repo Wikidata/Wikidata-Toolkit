@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -105,6 +105,12 @@ public class WbEditEntityAction {
 	int curEditTimeSlot = 0;
 
 	/**
+	 * Number of edits that will be performed before the object enters
+	 * simulation mode, or -1 if there is no limit on the number of edits.
+	 */
+	int remainingEdits = -1;
+
+	/**
 	 * Creates an object to modify data on a Wikibase site. The API is used to
 	 * request the changes. The site URI is necessary since it is not contained
 	 * in the data retrieved from the API.
@@ -143,6 +149,33 @@ public class WbEditEntityAction {
 	 */
 	public void setMaxLag(int maxLag) {
 		this.maxLag = maxLag;
+	}
+
+	/**
+	 * Returns the number of edits that will be performed before entering
+	 * simulation mode, or -1 if there is no limit on the number of edits
+	 * (default).
+	 *
+	 * @return number of remaining edits
+	 */
+	public int getRemainingEdits() {
+		return this.remainingEdits;
+	}
+
+	/**
+	 * Sets the number of edits that this object can still perform. Thereafter,
+	 * edits will only be prepared but not actually performed in the Web API.
+	 * This function is useful to do a defined number of test edits. If this
+	 * number is set to 0, then no edits will be performed. If it is set to -1
+	 * (or any other negative number), then there is no limit on the edits
+	 * performed.
+	 *
+	 * @param remainingEdits
+	 *            number of edits that can still be performed, or -1 to disable
+	 *            this limit (default setting)
+	 */
+	public void setRemainingEdits(int remainingEdits) {
+		this.remainingEdits = remainingEdits;
 	}
 
 	/**
@@ -299,6 +332,14 @@ public class WbEditEntityAction {
 		parameters.put("maxlag", new Integer(this.maxLag).toString());
 		parameters.put("token", getCsrfToken());
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+
+		if (this.remainingEdits > 0) {
+			this.remainingEdits--;
+		} else if (this.remainingEdits == 0) {
+			logger.info("Not editing entity (simulation mode). Request parameters were: "
+					+ parameters.toString());
+			return null;
+		}
 
 		checkEditSpeed();
 
