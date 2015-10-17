@@ -53,7 +53,10 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * (P31 value) of each item to make sure that only items about numbers are
  * re-labelled.
  * <p>
- * The activity of the bot is logged in the file activity-log-TIMESTAMP.txt.
+ * The activity of the bot is logged in the file
+ * bot-log-setnumlabels-TIMESTAMP.txt. Note that this log contains all edits
+ * that would have been made, even if editing was disabled. Errors are logged to
+ * the console only.
  * <p>
  * By default, this program has the actual editing disabled (see source code),
  * so as to avoid accidental modifications. The output will still mention
@@ -183,8 +186,9 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 				.format(new Date());
 		this.logfile = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("activity-log-"
-						+ timeStamp + ".txt"));
+				ExampleHelpers
+						.openExampleFileOuputStream("bot-log-setnumlabels-"
+								+ timeStamp + ".txt"));
 	}
 
 	@Override
