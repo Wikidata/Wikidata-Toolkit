@@ -216,7 +216,9 @@ public class ExampleHelpers {
 		if ("".equals(lastDumpFileName)) {
 			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
 		} else {
-			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY).resolve(
+			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+			createDirectory(directoryPath);
+			directoryPath = directoryPath.resolve(
 					lastDumpFileName);
 		}
 

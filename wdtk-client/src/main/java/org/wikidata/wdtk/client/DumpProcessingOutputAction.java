@@ -180,8 +180,8 @@ public abstract class DumpProcessingOutputAction implements
 	}
 
 	public String insertDumpInformation(String pattern) {
-		return pattern.replace("{DATE}", this.dateStamp).replace("{PROJECT}",
-				this.project);
+		return ClientConfiguration.insertDumpInformation(pattern,
+				this.dateStamp, this.project);
 	}
 
 	@Override
