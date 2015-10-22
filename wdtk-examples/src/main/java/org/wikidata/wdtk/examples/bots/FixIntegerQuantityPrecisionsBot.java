@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
@@ -81,6 +83,70 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  */
 public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor {
 
+	/**
+	 * List of all integer properties considered by this bot.
+	 */
+	final static String[] integerProperties = { "P1082", // population
+			"P1083", // capacity (seats etc.)
+			"P1092", // total produced (product)
+			"P1098", // number of speakers
+			"P1099", // number of masts
+			"P1100", // number of cylinders
+			"P1101", // floors above ground
+			"P1103", // number of platforms
+			"P1104", // number of pages
+			"P1110", // attendance (people attending an event)
+			"P1111", // votes received
+			"P1113", // series length
+			"P1114", // quantity (how many?)
+			"P1120", // number of deaths
+			"P1128", // employees
+			"P1129", // national team caps
+			"P1132", // number of participants
+			"P1139", // floors below ground
+			"P1141", // number of processor cores
+			"P1164", // cardinality of the group (in mathematics):
+			"P1174", // visitors per year
+			"P1301", // number of elevators
+			"P1314", // number of spans (bridge)
+			"P1339", // number of injured
+			"P1342", // number of seats
+			"P1345", // number of victims
+			"P1350", // number of matches played
+			"P1355", // wins (of sports matches)
+			"P1356", // losses (of sports matches)
+			"P1357", // matches/games drawn/tied
+			"P1359", // number of points/goals conceded
+			"P1373", // daily ridership
+			"P1410", // number of seats of the organization in legislature
+			"P1418", // number of orbits completed
+			"P1436", // collection or exhibition size
+			"P1446", // number of missing
+			"P1538", // number of households
+			"P1539", // female population
+			"P1540", // male population
+			"P1548", // maximum Strahler number (of rivers etc.)
+			"P1561", // number of survivors
+			"P1569", // number of edges
+			"P1570", // number of vertices
+			"P1590", // number of casualties
+			"P1603", // number of cases (in medical outbreaks)
+			"P1641", // port (-number; in computing)
+			"P1658", // number of faces (of a mathematical solid)
+			"P1831", // electorate (number of registered voters)
+			"P1833", // number of registered users/contributors
+			"P1867", // eligible voters
+			"P1868", // ballots cast
+			"P1872", // minimum number of players
+			"P1873", // maximum number of players
+			"P1971", // number of children
+			"P2021", // Erdős number
+			"P2103", // size of team at start
+			"P2105", // size of team at finish
+			"P2124", // membership
+			"P2196", // students count
+	};
+
 	final ApiConnection connection;
 	final WikibaseDataEditor dataEditor;
 	final WikibaseDataFetcher dataFetcher;
@@ -89,15 +155,19 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 	 * Number of entities modified so far.
 	 */
 	int modifiedEntities = 0;
+	/**
+	 * Number of statements modified so far.
+	 */
+	int modifiedStatements = 0;
+	/**
+	 * Number of statements modified so far, per property.
+	 */
+	Map<String, Integer> modifiedStatementsByProperty = new HashMap<>();
 
 	/**
 	 * The place to write logging information to.
 	 */
 	final PrintStream logfile;
-
-	final static String editPropertyId = "P1082";
-	final static PropertyIdValue editProperty = Datamodel
-			.makeWikidataPropertyIdValue(editPropertyId);
 
 	/**
 	 * Main method to run the bot.
@@ -130,10 +200,11 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		System.out
 				.println("*** This bot downloads recent Wikidata dumps to locate items about");
 		System.out
-				.println("*** that use quantity values for property P1082 (population) and ");
+				.println("*** that use quantity values for integer-valued properties, such as");
 		System.out
-				.println("*** checks if they have a precision of +/-1. In this case, it fixes");
-		System.out.println("*** their precision to be exact (+/-0).");
+				.println("*** popluation, and checks if they have a precision of +/-1. In this");
+		System.out
+				.println("*** case, it fixes their precision to be exact (+/-0).");
 		System.out
 				.println("********************************************************************");
 	}
@@ -164,6 +235,11 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		dataFetcher.getFilter().excludeAllLanguages();
 		dataFetcher.getFilter().excludeAllSiteLinks();
 
+		// Initialise array to count
+		for (String propertyId : integerProperties) {
+			this.modifiedStatementsByProperty.put(propertyId, 0);
+		}
+
 		String timeStamp = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 				.format(new Date());
 		this.logfile = new PrintStream(
@@ -173,11 +249,13 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		if (hasPlusMinusOneValues(itemDocument
-				.findStatementGroup(editPropertyId))) {
-			fixIntegerPrecisions(itemDocument.getItemId());
-		} // else: ignore items that have no value or only correct values for
-			// the property we consider
+		for (String propertyId : integerProperties) {
+			if (hasPlusMinusOneValues(itemDocument
+					.findStatementGroup(propertyId))) {
+				fixIntegerPrecisions(itemDocument.getItemId(), propertyId);
+			} // else: ignore items that have no value or only correct values
+				// for the property we consider
+		}
 	}
 
 	@Override
@@ -190,6 +268,9 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 	 */
 	public void finish() {
 		this.logfile.close();
+		System.out.println("### " + modifiedStatements
+				+ " statements modified: "
+				+ modifiedStatementsByProperty.toString());
 	}
 
 	/**
@@ -198,8 +279,11 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 	 *
 	 * @param itemIdValue
 	 *            the id of the document to inspect
+	 * @param propertyId
+	 *            id of the property to consider
 	 */
-	protected void fixIntegerPrecisions(ItemIdValue itemIdValue) {
+	protected void fixIntegerPrecisions(ItemIdValue itemIdValue,
+			String propertyId) {
 
 		String qid = itemIdValue.getId();
 
@@ -216,15 +300,15 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 
 			// Get the current statements for the property we want to fix:
 			StatementGroup editPropertyStatements = currentItemDocument
-					.findStatementGroup(editPropertyId);
+					.findStatementGroup(propertyId);
 			if (editPropertyStatements == null) {
-				System.out
-						.println("*** " + qid
-								+ " no longer has any statements for "
-								+ editPropertyId);
+				System.out.println("*** " + qid
+						+ " no longer has any statements for " + propertyId);
 				return;
 			}
 
+			PropertyIdValue property = Datamodel
+					.makeWikidataPropertyIdValue(propertyId);
 			List<Statement> updateStatements = new ArrayList<>();
 			for (Statement s : editPropertyStatements.getStatements()) {
 				if (s.getClaim().getMainSnak() instanceof ValueSnak) {
@@ -235,8 +319,8 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 								qv.getNumericValue(), qv.getNumericValue(),
 								qv.getNumericValue(), "");
 						Statement exactStatement = StatementBuilder
-								.forSubjectAndProperty(itemIdValue,
-										editProperty).withValue(exactValue)
+								.forSubjectAndProperty(itemIdValue, property)
+								.withValue(exactValue)
 								.withId(s.getStatementId())
 								.withQualifiers(s.getClaim().getQualifiers())
 								.withReferences(s.getReferences())
@@ -247,17 +331,18 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 			}
 
 			if (updateStatements.size() == 0) {
-				System.out.println("*** Quantity values already fixed for "
-						+ qid);
+				System.out.println("*** " + qid + " quantity values for "
+						+ propertyId + " already fixed");
 				return;
 			}
 
 			logEntityModification(currentItemDocument.getItemId(),
-					updateStatements);
+					updateStatements, propertyId);
 
 			dataEditor.updateStatements(currentItemDocument, updateStatements,
 					Collections.<Statement> emptyList(),
-					"Set exact values for integer quantities (Task MB2)");
+					"Set exact values for [[Property:" + propertyId + "|"
+							+ propertyId + "]] integer quantities (Task MB2)");
 
 		} catch (MediaWikiApiErrorException e) {
 			e.printStackTrace();
@@ -272,20 +357,29 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 	 * @param entityId
 	 *            the id of the modified item
 	 * @param updateStatements
+	 * @param propertyId
 	 */
 	protected void logEntityModification(EntityIdValue entityId,
-			List<Statement> updateStatements) {
+			List<Statement> updateStatements, String propertyId) {
 		modifiedEntities++;
+		modifiedStatements += updateStatements.size();
+		modifiedStatementsByProperty.put(
+				propertyId,
+				modifiedStatementsByProperty.get(propertyId)
+						+ updateStatements.size());
 
 		System.out.println(entityId.getId() + ": fixing "
-				+ updateStatements.size() + " statements (" + modifiedEntities
-				+ " entities modified so far)");
+				+ updateStatements.size() + " statement(s) for " + propertyId
+				+ " (" + modifiedEntities + " entities modified so far)");
 
 		this.logfile.println("\n==" + entityId.getId() + "==\n"
 				+ updateStatements.toString());
 
 		if (modifiedEntities % 10 == 0) {
 			this.logfile.flush();
+			System.out.println("### " + modifiedStatements
+					+ " statements modified so far: "
+					+ modifiedStatementsByProperty.toString());
 		}
 	}
 
