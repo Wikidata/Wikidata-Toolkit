@@ -49,15 +49,21 @@
 
 <http://www.wikidata.org/ontology#Property> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#propertyStatementLinkage> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.wikidata.org/ontology#directClaim> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#propertyValueLinkage> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.wikidata.org/ontology#statementValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#propertyQualifierLinkage> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.wikidata.org/ontology#statementProperty> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#propertyReferenceLinkage> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.wikidata.org/ontology#claim> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#propertySimpleClaim> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.wikidata.org/ontology#qualifier> a <http://www.w3.org/2002/07/owl#Class> .
+
+<http://www.wikidata.org/ontology#qualifierValue> a <http://www.w3.org/2002/07/owl#Class> .
+
+<http://www.wikidata.org/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#Class> .
+
+<http://www.wikidata.org/ontology#novalue> a <http://www.w3.org/2002/07/owl#Class> .
 
 <http://www.wikidata.org/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

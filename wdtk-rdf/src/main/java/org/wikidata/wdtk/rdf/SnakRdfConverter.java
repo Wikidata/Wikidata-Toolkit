@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -143,7 +143,11 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public void setSnakContext(Resource subject, PropertyContext propertyContext) {
 		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
-		this.simple = (this.currentPropertyContext == PropertyContext.SIMPLE_CLAIM);
+		this.simple = (this.currentPropertyContext == PropertyContext.DIRECT)
+				|| (this.currentPropertyContext == PropertyContext.SIMPLE_VALUE)
+				|| (this.currentPropertyContext == PropertyContext.QUALIFIER_SIMPLE)
+				|| (this.currentPropertyContext == PropertyContext.SIMPLE_REFERENCE);
+
 	}
 
 	@Override
@@ -153,7 +157,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		URI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
 				snak.getPropertyId(), this.simple);
-		if (value == null) {
+		if (value == null) { // TODO: could also be null if there is no complex
+								// representation but simple = false
 			logger.error("Could not serialize snak: missing value (Snak: "
 					+ snak.toString() + ")");
 			return null;
@@ -197,26 +202,28 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	@Override
 	public Void visit(NoValueSnak snak) {
-		String rangeUri = getRangeUri(snak.getPropertyId());
-		if (rangeUri == null) {
-			logger.error("Count not export NoValueSnak for property "
-					+ snak.getPropertyId().getId() + ": OWL range not known.");
-			return null;
-		} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
-			rangeUri = Vocabulary.RDFS_LITERAL;
-		}
+		if (!simple) {
+			String rangeUri = getRangeUri(snak.getPropertyId());
+			if (rangeUri == null) {
+				logger.error("Count not export NoValueSnak for property "
+						+ snak.getPropertyId().getId()
+						+ ": OWL range not known.");
+				return null;
+			} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
+				rangeUri = Vocabulary.RDFS_LITERAL;
+			}
 
-		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
-				this.currentPropertyContext);
-		Resource bnode = this.rdfWriter.getFreshBNode();
-		addNoValuesRestriction(bnode, propertyUri, rangeUri);
-		try {
-			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					RdfWriter.RDF_TYPE, bnode);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e.toString(), e);
+			String propertyUri = Vocabulary.getPropertyUri(
+					snak.getPropertyId(), this.currentPropertyContext);
+			Resource bnode = this.rdfWriter.getFreshBNode();
+			addNoValuesRestriction(bnode, propertyUri, rangeUri);
+			try {
+				this.rdfWriter.writeTripleValueObject(this.currentSubject,
+						RdfWriter.RDF_TYPE, bnode);
+			} catch (RDFHandlerException e) {
+				throw new RuntimeException(e.toString(), e);
+			}
 		}
-
 		return null;
 	}
 

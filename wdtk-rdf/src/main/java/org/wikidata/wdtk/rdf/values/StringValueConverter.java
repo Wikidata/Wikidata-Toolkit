@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf.values;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,16 +42,20 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 		String datatype = this.propertyRegister.setPropertyTypeFromStringValue(
 				propertyIdValue, value);
 
-		String valueUriString;
+		String valueUriString = null;
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
 			valueUriString = null;
 			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			valueUriString = getCommonsUrl(value.getString());
+			if (simple) {
+				valueUriString = getCommonsUrl(value.getString());
+			}
 			break;
 		case DatatypeIdValue.DT_URL:
-			valueUriString = value.getString();
+			if (simple) {
+				valueUriString = value.getString();
+			}
 			break;
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "string");
@@ -59,8 +63,12 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 		}
 
 		if (valueUriString == null) {
-			this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
-			return this.rdfWriter.getLiteral(value.getString());
+			if (simple) {
+				this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
+				return this.rdfWriter.getLiteral(value.getString());
+			} else {
+				return null; // or blank node
+			}
 		} else {
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			try {

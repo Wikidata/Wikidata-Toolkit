@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -145,6 +145,7 @@ public class OwlDeclarationBuffer {
 	public void writePropertyDeclarations(RdfWriter rdfWriter,
 			boolean fullStatements, boolean simpleClaims)
 			throws RDFHandlerException {
+		boolean anyStatements = fullStatements || simpleClaims;
 		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
@@ -162,11 +163,26 @@ public class OwlDeclarationBuffer {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.REFERENCE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.QUALIFIER_SIMPLE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_REFERENCE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 			}
 			if (simpleClaims) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_CLAIM),
+						propertyIdValue, PropertyContext.DIRECT),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+			}
+			if (anyStatements) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.NO_VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
 			}
 		}
 		this.objectPropertyQueue.clear();
@@ -188,12 +204,23 @@ public class OwlDeclarationBuffer {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.REFERENCE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.QUALIFIER_SIMPLE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_REFERENCE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
+
 			}
 			if (simpleClaims) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_CLAIM),
+						propertyIdValue, PropertyContext.DIRECT),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 			}
+
 		}
 		this.datatypePropertyQueue.clear();
 

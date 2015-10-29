@@ -1,6 +1,18 @@
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#propertyStatementLinkage> <http://www.wikidata.org/P17s> ;
-	<http://www.wikidata.org/ontology#propertyQualifierLinkage> <http://www.wikidata.org/P17q> ;
-	<http://www.wikidata.org/ontology#propertyReferenceLinkage> <http://www.wikidata.org/P17r> ;
-	<http://www.wikidata.org/ontology#propertySimpleClaim> <http://www.wikidata.org/P17c> ;
-	<http://www.wikidata.org/ontology#propertyValueLinkage> <http://www.wikidata.org/P17v> .
 
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#directClaim> <http://www.wikidata.org/prop/direct/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#claim> <http://www.wikidata.org/prop/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#statementProperty> <http://www.wikidata.org/prop/statement/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#statementValue> <http://www.wikidata.org/prop/statement/value/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#qualifier> <http://www.wikidata.org/prop/qualifier/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#Reference> <http://www.wikidata.org/prop/reference/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P17> .
+
+<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#novalue> <http://www.wikidata.org/prop/novalue/P17> .
