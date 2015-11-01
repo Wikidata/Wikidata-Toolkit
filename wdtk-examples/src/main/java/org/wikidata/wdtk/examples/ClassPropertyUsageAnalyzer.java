@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -38,6 +40,8 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This advanced example analyses the use of properties and classes in a dump
@@ -213,6 +217,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * added Q-ID for disambiguation.
 	 */
 	final HashMap<String, EntityIdValue> labels = new HashMap<>();
+	
+	final Set<EntityIdValue> unCalculatedSuperClasses = new HashSet<>();
 
 	/**
 	 * Main method. Processes the whole dump using this processor. To change
@@ -237,8 +243,17 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		if (itemDocument.getStatementGroups().size() > 0) {
 			this.countPropertyItems++;
 		}
-		ClassRecord classRecord = getClassRecord(itemDocument
-				.getItemId());
+		
+		ClassRecord classRecord = null;
+		if (this.classRecords.containsKey(itemDocument.getItemId())
+				|| unCalculatedSuperClasses
+						.contains(itemDocument
+								.getItemId())) {
+			classRecord = getClassRecord(itemDocument.getItemId());
+			unCalculatedSuperClasses.remove(itemDocument
+					.getItemId());
+		}
+
 		for (StatementGroup sg : itemDocument.getStatementGroups()) {
 			PropertyRecord propertyRecord = getPropertyRecord(sg
 					.getProperty());
@@ -250,6 +265,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 					.getId());
 			boolean isSubclassOf = "P279".equals(sg.getProperty()
 					.getId());
+
+			if (isSubclassOf && classRecord == null) {
+				classRecord = getClassRecord(itemDocument
+						.getItemId());
+			}
 
 			for (Statement s : sg.getStatements()) {
 				// Count uses of properties in qualifiers
@@ -271,9 +291,25 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 										.size());
 					}
 				}
-				if (isInstanceOf || isSubclassOf) {
-					// TODO: handle is instance of /subclass
-					// of
+				if ((isInstanceOf || isSubclassOf)
+						&& s.getClaim().getMainSnak() instanceof ValueSnak) {
+					Value value = ((ValueSnak) s.getClaim()
+							.getMainSnak())
+							.getValue();
+					if (value instanceof EntityIdValue) {
+						if (!classRecords.containsKey((EntityIdValue) value)) {
+							unCalculatedSuperClasses
+									.add((EntityIdValue) value);
+						}
+						ClassRecord otherClassRecord = getClassRecord((EntityIdValue) value);
+						if (isInstanceOf) {
+							otherClassRecord.itemCount++;
+							countCooccurringProperties(
+									itemDocument,
+									otherClassRecord,
+									null);
+						}
+					}
 				}
 			}
 			countCooccurringProperties(itemDocument,
@@ -295,7 +331,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// TODO
+		this.countProperties++;
+		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
+				.getPropertyId());
+		// TODO: putPropertyDocument
 	}
 
 	/**
