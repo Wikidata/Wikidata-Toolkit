@@ -21,25 +21,32 @@ package org.wikidata.wdtk.examples;
  */
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
@@ -87,6 +94,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * explained for {@link UsageRecord#itemCount}).
 		 */
 		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<PropertyIdValue, Integer>();
+		public String label;
+		public String description;
+		public String url;
 	}
 
 	/**
@@ -116,7 +126,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		/**
 		 * {@link PropertyDocument} for this property.
 		 */
-		public PropertyDocument propertyDocument = null;
+		// public PropertyDocument propertyDocument = null;
+		/**
+		 * datatype of this property
+		 */
+		public String datatype;
 	}
 
 	/**
@@ -334,16 +348,240 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		this.countProperties++;
 		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
 				.getPropertyId());
+		propertyRecord.datatype = getDatatypeLabel(propertyDocument
+				.getDatatype());
+		setTermsToUsageRecord(propertyDocument, propertyRecord, null);
 		// TODO: putPropertyDocument
 	}
+
 
 	/**
 	 * Creates the final file output of the analysis.
 	 */
 	public void writeFinalReports() {
 		// TODO
-		// writePropertyData();
+		writePropertyData();
 		// writeClassData();
+	}
+
+	/**
+	 * Sets the terms (label, etc.) of one entity to the given usageRecord.
+	 * This will lead to several values, which are the same for properties
+	 * and class items and will be printed later to the CSV-file.
+	 *
+	 * @param termedDocument
+	 *                the document that provides the terms
+	 * @param usageRecord
+	 *                the UsageRecord in which the data should be stored
+	 * @param specialLabel
+	 *                special label to use (rather than the label string in
+	 *                the document) or null if not using; used by classes,
+	 *                which need to support disambiguation in their labels
+	 */
+	private void setTermsToUsageRecord(TermedDocument termedDocument,
+			UsageRecord usageRecord, String specialLabel) {
+		usageRecord.label = specialLabel;
+		usageRecord.description = "-";
+
+		if (termedDocument != null) {
+			if (usageRecord.label == null) {
+				MonolingualTextValue labelValue = termedDocument
+						.getLabels().get("en");
+				if (labelValue != null) {
+					usageRecord.label = csvStringEscape(labelValue
+							.getText());
+				}
+			}
+			MonolingualTextValue descriptionValue = termedDocument
+					.getDescriptions().get("en");
+			if (descriptionValue != null) {
+				usageRecord.description = csvStringEscape(descriptionValue
+						.getText());
+			}
+		}
+	}
+
+	/**
+	 * Writes the data collected about properties to a file.
+	 */
+	private void writePropertyData() {
+		try (PrintStream out = new PrintStream(
+				ExampleHelpers.openExampleFileOuputStream("properties.csv"))) {
+
+			out.println("Id" + ",Label" + ",Description" + ",URL"
+					+ ",Datatype" + ",Uses in statements"
+					+ ",Items with such statements"
+					+ ",Uses in statements with qualifiers"
+					+ ",Uses in qualifiers"
+					+ ",Uses in references" + ",Uses total"
+					+ ",Related properties");
+
+			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
+					this.propertyRecords.entrySet());
+			Collections.sort(list, new UsageRecordComparator());
+			for (Entry<PropertyIdValue, PropertyRecord> entry : list) {
+				printPropertyRecord(out, entry.getValue(),
+						entry.getKey());
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Prints the data of one property to the given output. This will be a
+	 * single line in CSV.
+	 *
+	 * @param out
+	 *                the output to write to
+	 * @param propertyRecord
+	 *                the data to write
+	 * @param propertyIdValue
+	 *                the property that the data refers to
+	 */
+	private void printPropertyRecord(PrintStream out,
+			PropertyRecord propertyRecord, PropertyIdValue propertyIdValue) {
+
+		printTerms(out, propertyRecord, propertyIdValue);
+
+		if (propertyRecord.datatype == null) {
+			propertyRecord.datatype = "Unknown";
+		}
+
+		out.print(","
+				+ propertyRecord.datatype
+				+ ","
+				+ propertyRecord.statementCount
+				+ ","
+				+ propertyRecord.itemCount
+				+ ","
+				+ propertyRecord.statementWithQualifierCount
+				+ ","
+				+ propertyRecord.qualifierCount
+				+ ","
+				+ propertyRecord.referenceCount
+				+ ","
+				+ (propertyRecord.statementCount
+						+ propertyRecord.qualifierCount + propertyRecord.referenceCount));
+
+		printRelatedProperties(out, propertyRecord);
+
+		out.println("");
+	}
+	
+	/**
+	 * Prints the terms (label, etc.) of one entity to the given stream.
+	 * This will lead to several values in the CSV file, which are the same
+	 * for properties and class items.
+	 *
+	 * @param out
+	 *                the output to write to
+	 * @param termedDocument
+	 *                the document that provides the terms to write
+	 * @param entityIdValue
+	 *                the entity that the data refers to.
+	 * @param specialLabel
+	 *                special label to use (rather than the label string in
+	 *                the document) or null if not using; used by classes,
+	 *                which need to support disambiguation in their labels
+	 */
+	private void printTerms(PrintStream out, UsageRecord usageRecord,
+			EntityIdValue entityIdValue) {
+
+		if (usageRecord.description == null) {
+			usageRecord.description = "-";
+		}
+
+		if (usageRecord.label == null) {
+			usageRecord.label = entityIdValue.getId();
+		}
+
+		out.print(entityIdValue.getId() + "," + usageRecord.label + ","
+				+ usageRecord.description + ","
+				+ entityIdValue.getIri());
+	}
+	
+	/**
+	 * Prints a list of related properties to the output. The list is encoded as
+	 * a single CSV value, using "@" as a separator. Miga can decode this.
+	 * Standard CSV processors do not support lists of entries as values,
+	 * however.
+	 *
+	 * @param out
+	 *            the output to write to
+	 * @param usageRecord
+	 *            the data to write
+	 */
+	private void printRelatedProperties(PrintStream out, UsageRecord usageRecord) {
+		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
+				usageRecord.propertyCoCounts.size());
+		for (Entry<PropertyIdValue, Integer> coCountEntry : usageRecord.propertyCoCounts
+				.entrySet()) {
+			double otherThisItemRate = (double) coCountEntry
+					.getValue() / usageRecord.itemCount;
+			double otherGlobalItemRate = (double) this.propertyRecords
+					.get(coCountEntry.getKey()).itemCount
+					/ this.countPropertyItems;
+			double otherThisItemRateStep = 1 / (1 + Math
+					.exp(6 * (-2 * otherThisItemRate + 0.5)));
+			double otherInvGlobalItemRateStep = 1 / (1 + Math
+					.exp(6 * (-2
+							* (1 - otherGlobalItemRate) + 0.5)));
+
+			list.add(new ImmutablePair<PropertyIdValue, Double>(
+					coCountEntry.getKey(),
+					otherThisItemRateStep
+							* otherInvGlobalItemRateStep
+							* otherThisItemRate
+							/ otherGlobalItemRate));
+		}
+
+		Collections.sort(
+				list,
+				new Comparator<ImmutablePair<PropertyIdValue, Double>>() {
+					@Override
+					public int compare(
+							ImmutablePair<PropertyIdValue, Double> o1,
+							ImmutablePair<PropertyIdValue, Double> o2) {
+						return o2.getValue().compareTo(
+								o1.getValue());
+					}
+				});
+
+		out.print(",\"");
+		int count = 0;
+		for (ImmutablePair<PropertyIdValue, Double> relatedProperty : list) {
+			if (relatedProperty.right < 1.5) {
+				break;
+			}
+			if (count > 0) {
+				out.print("@");
+			}
+			// makeshift escaping for Miga:
+			out.print(getPropertyLabel(relatedProperty.left)
+					.replace("@", "＠"));
+			count++;
+		}
+		out.print("\"");
+	}
+
+	/**
+	 * Returns a string that should be used as a label for the given
+	 * property.
+	 *
+	 * @param propertyIdValue
+	 *                the property to label
+	 * @return the label
+	 */
+	private String getPropertyLabel(PropertyIdValue propertyIdValue) {
+		PropertyRecord propertyRecord = this.propertyRecords
+				.get(propertyIdValue);
+		if (propertyRecord == null) {
+			return propertyIdValue.getId();
+		} else {
+			return propertyRecord.label;
+		}
 	}
 
 	/**
@@ -456,5 +694,52 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		System.out.println(" * Classes encountered: "
 				+ this.classRecords.size());
 		System.out.println(" * Class documents: " + this.countClasses);
+	}
+
+	/**
+	 * Returns an English label for a given datatype.
+	 *
+	 * @param datatype
+	 *                the datatype to label
+	 * @return the label
+	 */
+	private String getDatatypeLabel(DatatypeIdValue datatype) {
+		if (datatype.getIri() == null) { // TODO should be redundant
+						 // once the
+						 // JSON parsing works
+			return "Unknown";
+		}
+
+		switch (datatype.getIri()) {
+		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			return "Commons media";
+		case DatatypeIdValue.DT_GLOBE_COORDINATES:
+			return "Globe coordinates";
+		case DatatypeIdValue.DT_ITEM:
+			return "Item";
+		case DatatypeIdValue.DT_QUANTITY:
+			return "Quantity";
+		case DatatypeIdValue.DT_STRING:
+			return "String";
+		case DatatypeIdValue.DT_TIME:
+			return "Time";
+		case DatatypeIdValue.DT_URL:
+			return "URL";
+		default:
+			throw new RuntimeException("Unknown datatype "
+					+ datatype.getIri());
+		}
+	}
+
+	/**
+	 * Escapes a string for use in CSV. In particular, the string is quoted
+	 * and quotation marks are escaped.
+	 *
+	 * @param string
+	 *                the string to escape
+	 * @return the escaped string
+	 */
+	private String csvStringEscape(String string) {
+		return "\"" + string.replace("\"", "\"\"") + "\"";
 	}
 }
