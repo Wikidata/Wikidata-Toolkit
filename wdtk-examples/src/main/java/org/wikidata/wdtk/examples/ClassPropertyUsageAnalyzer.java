@@ -34,6 +34,10 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * This advanced example analyses the use of properties and classes in a dump
@@ -60,8 +64,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	DataObjectFactory factory = new DataObjectFactoryImpl();
 	DatamodelConverter converter = new DatamodelConverter(factory);
 
-
-
 	/**
 	 * Class to record the use of some class item or property.
 	 *
@@ -70,15 +72,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private abstract class UsageRecord {
 		/**
-		 * Number of items using this entity. For properties, this is the number
-		 * of items with such a property. For class items, this is the number of
-		 * instances of this class.
+		 * Number of items using this entity. For properties, this is
+		 * the number of items with such a property. For class items,
+		 * this is the number of instances of this class.
 		 */
 		public int itemCount = 0;
 		/**
-		 * Map that records how many times certain properties are used on items
-		 * that use this entity (where "use" has the meaning explained for
-		 * {@link UsageRecord#itemCount}).
+		 * Map that records how many times certain properties are used
+		 * on items that use this entity (where "use" has the meaning
+		 * explained for {@link UsageRecord#itemCount}).
 		 */
 		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<PropertyIdValue, Integer>();
 	}
@@ -103,8 +105,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 */
 		public int qualifierCount = 0;
 		/**
-		 * Number of uses of this property in references. Multiple uses in the
-		 * same references will be counted.
+		 * Number of uses of this property in references. Multiple uses
+		 * in the same references will be counted.
 		 */
 		public int referenceCount = 0;
 		/**
@@ -135,26 +137,29 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	}
 
 	/**
-	 * Comparator to order class items by their number of instances and direct
-	 * subclasses.
+	 * Comparator to order class items by their number of instances and
+	 * direct subclasses.
 	 *
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class ClassUsageRecordComparator implements
+	private class ClassUsageRecordComparator
+			implements
 			Comparator<Entry<? extends EntityIdValue, ? extends ClassRecord>> {
 		@Override
 		public int compare(
 				Entry<? extends EntityIdValue, ? extends ClassRecord> o1,
 				Entry<? extends EntityIdValue, ? extends ClassRecord> o2) {
-			return o2.getValue().subclassCount + o2.getValue().itemCount
-					- (o1.getValue().subclassCount + o1.getValue().itemCount);
+			return o2.getValue().subclassCount
+					+ o2.getValue().itemCount
+					- (o1.getValue().subclassCount + o1
+							.getValue().itemCount);
 		}
 	}
 
 	/**
-	 * Comparator to order class items by their number of instances and direct
-	 * subclasses.
+	 * Comparator to order class items by their number of instances and
+	 * direct subclasses.
 	 *
 	 * @author Markus Kroetzsch
 	 *
@@ -166,10 +171,12 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		public int compare(
 				Entry<? extends EntityIdValue, ? extends PropertyRecord> o1,
 				Entry<? extends EntityIdValue, ? extends PropertyRecord> o2) {
-			return (o2.getValue().itemCount + o2.getValue().qualifierCount + o2
-					.getValue().referenceCount)
-					- (o1.getValue().itemCount + o1.getValue().qualifierCount + o1
-							.getValue().referenceCount);
+			return (o2.getValue().itemCount
+					+ o2.getValue().qualifierCount + o2
+						.getValue().referenceCount)
+					- (o1.getValue().itemCount
+							+ o1.getValue().qualifierCount + o1
+								.getValue().referenceCount);
 		}
 	}
 
@@ -193,7 +200,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	/**
 	 * Collection of all property records.
 	 */
-	final HashMap<PropertyIdValue, PropertyRecord> propertyRecords = new HashMap<PropertyIdValue, PropertyRecord>();
+	final HashMap<PropertyIdValue, PropertyRecord> propertyRecords = new HashMap<>();
 	/**
 	 * Collection of all item records of items used as classes.
 	 */
@@ -201,9 +208,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 	/**
 	 * Map used during serialization to ensure that every label is used only
-	 * once. The Map assigns an item to each label. If another item wants to use
-	 * a label that is already assigned, it will use a label with an added Q-ID
-	 * for disambiguation.
+	 * once. The Map assigns an item to each label. If another item wants to
+	 * use a label that is already assigned, it will use a label with an
+	 * added Q-ID for disambiguation.
 	 */
 	final HashMap<String, EntityIdValue> labels = new HashMap<>();
 
@@ -221,22 +228,74 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		ClassPropertyUsageAnalyzer processor = new ClassPropertyUsageAnalyzer();
 		// ExampleHelpers.processEntitiesFromWikidataDump(processor);
-		processor.addUnknownLabels();
 		processor.writeFinalReports();
 	}
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
+		this.countItems++;
+		if (itemDocument.getStatementGroups().size() > 0) {
+			this.countPropertyItems++;
+		}
+		ClassRecord classRecord = getClassRecord(itemDocument
+				.getItemId());
+		for (StatementGroup sg : itemDocument.getStatementGroups()) {
+			PropertyRecord propertyRecord = getPropertyRecord(sg
+					.getProperty());
+			propertyRecord.itemCount++;
+			propertyRecord.statementCount = propertyRecord.statementCount
+					+ sg.getStatements().size();
+
+			boolean isInstanceOf = "P31".equals(sg.getProperty()
+					.getId());
+			boolean isSubclassOf = "P279".equals(sg.getProperty()
+					.getId());
+
+			for (Statement s : sg.getStatements()) {
+				// Count uses of properties in qualifiers
+				for (SnakGroup q : s.getClaim().getQualifiers()) {
+					countPropertyQualifier(q.getProperty(),
+							q.getSnaks().size());
+				}
+				// Count statements with qualifiers
+				if (s.getClaim().getQualifiers().size() > 0) {
+					propertyRecord.statementWithQualifierCount++;
+				}
+				// Count uses of properties in references
+				for (Reference r : s.getReferences()) {
+					for (SnakGroup snakGroup : r
+							.getSnakGroups()) {
+						countPropertyReference(
+								snakGroup.getProperty(),
+								snakGroup.getSnaks()
+										.size());
+					}
+				}
+				if (isInstanceOf || isSubclassOf) {
+					// TODO: handle is instance of /subclass
+					// of
+				}
+			}
+			countCooccurringProperties(itemDocument,
+					propertyRecord, sg.getProperty());
+
+		}
+
+		if (classRecord != null) {
+			this.countClasses++;
+			classRecord.itemDocument = converter.copy(itemDocument);
+		}
+
+		// print a report once in a while:
+		if (this.countItems % 100000 == 0) {
+			printReport();
+		}
 
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-
-	}
-
-	public void addUnknownLabels() {
-
+		// TODO
 	}
 
 	/**
@@ -252,21 +311,111 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Print some basic documentation about this program.
 	 */
 	public static void printDocumentation() {
-		System.out
-				.println("********************************************************************");
-		System.out
-				.println("*** Wikidata Toolkit: Class and Property Usage Analyzer");
+		System.out.println("********************************************************************");
+		System.out.println("*** Wikidata Toolkit: Class and Property Usage Analyzer");
 		System.out.println("*** ");
-		System.out
-				.println("*** This program will download and process dumps from Wikidata.");
-		System.out
-				.println("*** It will create a CSV file with statistics about class and");
-		System.out
-				.println("*** property useage. These files can be used with the Miga data");
+		System.out.println("*** This program will download and process dumps from Wikidata.");
+		System.out.println("*** It will create a CSV file with statistics about class and");
+		System.out.println("*** property useage. These files can be used with the Miga data");
 		System.out.println("*** viewer to create the browser seen at ");
-		System.out
-				.println("*** http://tools.wmflabs.org/wikidata-exports/miga/");
-		System.out
-				.println("********************************************************************");
+		System.out.println("*** http://tools.wmflabs.org/wikidata-exports/miga/");
+		System.out.println("********************************************************************");
+	}
+
+	/**
+	 * Returns record where statistics about a class should be stored.
+	 *
+	 * @param entityIdValue
+	 *                the class to initialize
+	 * @return the class record
+	 */
+	private ClassRecord getClassRecord(EntityIdValue entityIdValue) {
+		if (!this.classRecords.containsKey(entityIdValue)) {
+			ClassRecord classRecord = new ClassRecord();
+			this.classRecords.put(entityIdValue, classRecord);
+			return classRecord;
+		} else {
+			return this.classRecords.get(entityIdValue);
+		}
+	}
+
+	/**
+	 * Returns record where statistics about a property should be stored.
+	 *
+	 * @param property
+	 *                the property to initialize
+	 * @return the property record
+	 */
+	private PropertyRecord getPropertyRecord(PropertyIdValue property) {
+		if (!this.propertyRecords.containsKey(property)) {
+			PropertyRecord propertyRecord = new PropertyRecord();
+			this.propertyRecords.put(property, propertyRecord);
+			return propertyRecord;
+		} else {
+			return this.propertyRecords.get(property);
+		}
+	}
+
+	private void countCooccurringProperties(ItemDocument itemDocument,
+			UsageRecord usageRecord,
+			PropertyIdValue thisPropertyIdValue) {
+		for (StatementGroup sg : itemDocument.getStatementGroups()) {
+			if (!sg.getProperty().equals(thisPropertyIdValue)) {
+				if (!usageRecord.propertyCoCounts
+						.containsKey(sg.getProperty())) {
+					usageRecord.propertyCoCounts.put(
+							sg.getProperty(), 1);
+				} else {
+					usageRecord.propertyCoCounts
+							.put(sg.getProperty(),
+									usageRecord.propertyCoCounts
+											.get(sg.getProperty()) + 1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Counts additional occurrences of a property as qualifier property of
+	 * statements.
+	 *
+	 * @param property
+	 *                the property to count
+	 * @param count
+	 *                the number of times to count the property
+	 */
+	private void countPropertyQualifier(PropertyIdValue property, int count) {
+		PropertyRecord propertyRecord = getPropertyRecord(property);
+		propertyRecord.qualifierCount = propertyRecord.qualifierCount
+				+ count;
+	}
+
+	/**
+	 * Counts additional occurrences of a property as property in
+	 * references.
+	 *
+	 * @param property
+	 *                the property to count
+	 * @param count
+	 *                the number of times to count the property
+	 */
+	private void countPropertyReference(PropertyIdValue property, int count) {
+		PropertyRecord propertyRecord = getPropertyRecord(property);
+		propertyRecord.referenceCount = propertyRecord.referenceCount
+				+ count;
+	}
+
+	/**
+	 * Prints a report about the statistics gathered so far.
+	 */
+	private void printReport() {
+		System.out.println("Processed " + this.countItems + " items:");
+		System.out.println(" * Properties encountered: "
+				+ this.propertyRecords.size());
+		System.out.println(" * Property documents: "
+				+ this.countProperties);
+		System.out.println(" * Classes encountered: "
+				+ this.classRecords.size());
+		System.out.println(" * Class documents: " + this.countClasses);
 	}
 }
