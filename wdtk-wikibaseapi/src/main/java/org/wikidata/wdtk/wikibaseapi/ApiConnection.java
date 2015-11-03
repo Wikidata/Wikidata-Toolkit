@@ -534,8 +534,6 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
-	 *
-	 * @param headerFields
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> headerCookies = headerFields
