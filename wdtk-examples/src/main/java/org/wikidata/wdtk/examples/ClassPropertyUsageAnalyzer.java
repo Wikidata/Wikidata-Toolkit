@@ -38,6 +38,7 @@ import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -52,6 +53,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
  * This advanced example analyses the use of properties and classes in a dump
@@ -132,7 +135,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		/**
 		 * datatype of this property
 		 */
-		public String datatype;
+		public String datatype = "Unknown";
 	}
 
 	/**
@@ -254,7 +257,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		ClassPropertyUsageAnalyzer.printDocumentation();
 
 		ClassPropertyUsageAnalyzer processor = new ClassPropertyUsageAnalyzer();
-		// ExampleHelpers.processEntitiesFromWikidataDump(processor);
+		ExampleHelpers.processEntitiesFromWikidataDump(processor);
+		// processor.completeOverseenLabels();
 		processor.writeFinalReports();
 	}
 
@@ -340,7 +344,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		if (classRecord != null) {
 			this.countClasses++;
-			setImageFile(itemDocument, classRecord);
+			setImageFileToClassRecord(itemDocument, classRecord);
 			setDescriptionToUsageRecord(itemDocument, classRecord);
 			setLabelToClassRecord(itemDocument, classRecord);
 
@@ -358,8 +362,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		this.countProperties++;
 		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
 				.getPropertyId());
-		propertyRecord.datatype = getDatatypeLabel(propertyDocument
-				.getDatatype());
+		// propertyRecord.datatype = getDatatypeLabel(propertyDocument
+		// .getDatatype());
 		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
 		MonolingualTextValue labelValue = propertyDocument.getLabels().get("en");
 		if (labelValue != null) {
@@ -376,6 +380,35 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		writeClassData();
 	}
 
+	public void completeOverseenLabels() {
+		for (EntityIdValue entityIdValue : unCalculatedSuperClasses) {
+			ClassRecord classRecord = getClassRecord(entityIdValue);
+			classRecord.label = lookupLabel(entityIdValue);
+		}
+	}
+
+	private String lookupLabel(EntityIdValue entityIdValue) {
+		// TODO
+		WikibaseDataFetcher wdf = WikibaseDataFetcher
+				.getWikidataDataFetcher();
+		EntityDocument ed = null;
+		try {
+			ed = wdf.getEntityDocument(entityIdValue.getId());
+			if (ed != null && ed instanceof TermedDocument) {
+				TermedDocument td = (TermedDocument) ed;
+				MonolingualTextValue labelValue = td
+						.getLabels().get("en");
+				if (labelValue != null) {
+					return labelValue.getText();
+				}
+			}
+		} catch (MediaWikiApiErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return entityIdValue.getId();
+	}
+
 	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
 			UsageRecord usageRecord) {
 		usageRecord.description = "-";
@@ -389,7 +422,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
-	private void setImageFile(ItemDocument itemDocument,
+	private void setImageFileToClassRecord(ItemDocument itemDocument,
 			ClassRecord classRecord) {
 		if (itemDocument != null && classRecord != null) {
 			for (StatementGroup sg : itemDocument
@@ -655,7 +688,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		if (usageRecord.label == null) {
 			usageRecord.label = entityIdValue.getId();
 		}
-
 		out.print(entityIdValue.getId() + "," + usageRecord.label + ","
 				+ usageRecord.description + ","
 				+ entityIdValue.getIri());
