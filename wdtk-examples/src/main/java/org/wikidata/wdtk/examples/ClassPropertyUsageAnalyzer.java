@@ -22,6 +22,8 @@ package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,6 +48,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -96,7 +99,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<PropertyIdValue, Integer>();
 		public String label;
 		public String description;
-		public String url;
 	}
 
 	/**
@@ -147,11 +149,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		/**
 		 * {@link ItemDocument} of this class.
 		 */
-		public ItemDocument itemDocument = null;
+		// public ItemDocument itemDocument = null;
 		/**
 		 * List of all super classes of this class.
 		 */
 		public ArrayList<EntityIdValue> superClasses = new ArrayList<>();
+		/**
+		 * name of the imageFile for a thumbnail for this class
+		 */
+		public String imageFile;
 	}
 
 	/**
@@ -333,7 +339,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		if (classRecord != null) {
 			this.countClasses++;
-			classRecord.itemDocument = converter.copy(itemDocument);
+			// classRecord.itemDocument =
+			// converter.copy(itemDocument);
+			setImageFile(itemDocument, classRecord);
+			setTermsToUsageRecord(itemDocument, classRecord, "/");
 		}
 
 		// print a report once in a while:
@@ -351,7 +360,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
 		setTermsToUsageRecord(propertyDocument, propertyRecord, null);
-		// TODO: putPropertyDocument
 	}
 
 
@@ -359,9 +367,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Creates the final file output of the analysis.
 	 */
 	public void writeFinalReports() {
-		// TODO
 		writePropertyData();
-		// writeClassData();
+		writeClassData();
 	}
 
 	/**
@@ -401,6 +408,36 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	private void setImageFile(ItemDocument itemDocument,
+			ClassRecord classRecord) {
+		if (itemDocument != null && classRecord != null) {
+			for (StatementGroup sg : itemDocument
+					.getStatementGroups()) {
+				boolean isImage = "P18".equals(sg.getProperty()
+						.getId());
+				if (!isImage) {
+					continue;
+				}
+				for (Statement s : sg.getStatements()) {
+					if (s.getClaim().getMainSnak() instanceof ValueSnak) {
+						Value value = ((ValueSnak) s
+								.getClaim()
+								.getMainSnak())
+								.getValue();
+						if (value instanceof StringValue) {
+							classRecord.imageFile = ((StringValue) value)
+									.getString();
+							break;
+						}
+					}
+				}
+				if (classRecord.imageFile != null) {
+					break;
+				}
+			}
+		}
+	}
+
 	/**
 	 * Writes the data collected about properties to a file.
 	 */
@@ -427,6 +464,147 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Writes the data collected about classes to a file.
+	 */
+	private void writeClassData() {
+		try (PrintStream out = new PrintStream(
+				ExampleHelpers.openExampleFileOuputStream("classes.csv"))) {
+
+			out.println("Id" + ",Label" + ",Description" + ",URL"
+					+ ",Image"
+					+ ",Number of direct instances"
+					+ ",Number of direct subclasses"
+					+ ",Direct superclasses"
+					+ ",All superclasses"
+					+ ",Related properties");
+
+			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
+					this.classRecords.entrySet());
+			Collections.sort(list, new ClassUsageRecordComparator());
+			for (Entry<EntityIdValue, ClassRecord> entry : list) {
+				if (entry.getValue().itemCount > 0
+						|| entry.getValue().subclassCount > 0) {
+					printClassRecord(out, entry.getValue(),
+							entry.getKey());
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Prints the data for a single class to the given stream. This will be
+	 * a single line in CSV.
+	 *
+	 * @param out
+	 *                the output to write to
+	 * @param classRecord
+	 *                the class record to write
+	 * @param entityIdValue
+	 *                the item id that this class record belongs to
+	 */
+	private void printClassRecord(PrintStream out, ClassRecord classRecord,
+			EntityIdValue entityIdValue) {
+		printTerms(out, classRecord, entityIdValue);
+		printImage(out, classRecord);
+
+		out.print("," + classRecord.itemCount + ","
+				+ classRecord.subclassCount);
+
+		printClassList(out, classRecord.superClasses);
+
+		HashSet<EntityIdValue> superClasses = new HashSet<>();
+		for (EntityIdValue superClass : classRecord.superClasses) {
+			addSuperClasses(superClass, superClasses);
+		}
+
+		printClassList(out, superClasses);
+
+		printRelatedProperties(out, classRecord);
+
+		out.println("");
+	}
+
+	/**
+	 * Prints the URL of a thumbnail for the given item document to the
+	 * output, or a default image if no image is given for the item.
+	 *
+	 * @param out
+	 *                the output to write to
+	 * @param classRecord
+	 *                the classRecord that may provide the image information
+	 */
+	private void printImage(PrintStream out, ClassRecord classRecord) {
+		if (classRecord.imageFile == null) {
+			out.print(",\"http://commons.wikimedia.org/w/thumb.php?f=MA_Route_blank.svg&w=50\"");
+		} else {
+			try {
+				String imageFileEncoded;
+				imageFileEncoded = URLEncoder.encode(
+						classRecord.imageFile.replace(
+								" ", "_"),
+						"utf-8");
+				// Keep special title symbols unescaped:
+				imageFileEncoded = imageFileEncoded.replace(
+						"%3A", ":").replace("%2F", "/");
+				out.print(","
+						+ csvStringEscape("http://commons.wikimedia.org/w/thumb.php?f="
+								+ imageFileEncoded)
+						+ "&w=50");
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(
+						"Your JRE does not support UTF-8 encoding. Srsly?!",
+						e);
+			}
+		}
+	}
+
+	private void addSuperClasses(EntityIdValue itemIdValue,
+			HashSet<EntityIdValue> superClasses) {
+		if (superClasses.contains(itemIdValue)) {
+			return;
+		}
+		superClasses.add(itemIdValue);
+		ClassRecord classRecord = this.classRecords.get(itemIdValue);
+		if (classRecord == null) {
+			return;
+		}
+
+		for (EntityIdValue superClass : classRecord.superClasses) {
+			addSuperClasses(superClass, superClasses);
+		}
+	}
+
+	/**
+	 * Prints a list of classes to the given output. The list is encoded as
+	 * a single CSV value, using "@" as a separator. Miga can decode this.
+	 * Standard CSV processors do not support lists of entries as values,
+	 * however.
+	 *
+	 * @param out
+	 *                the output to write to
+	 * @param classes
+	 *                the list of class items
+	 */
+	private void printClassList(PrintStream out,
+			Iterable<EntityIdValue> classes) {
+		out.print(",\"");
+		boolean first = true;
+		for (EntityIdValue superClass : classes) {
+			if (first) {
+				first = false;
+			} else {
+				out.print("@");
+			}
+			// makeshift escaping for Miga:
+			out.print(getClassLabel(superClass).replace("@", "＠"));
+		}
+		out.print("\"");
 	}
 
 	/**
@@ -581,6 +759,50 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return propertyIdValue.getId();
 		} else {
 			return propertyRecord.label;
+		}
+	}
+
+	/**
+	 * Returns a string that should be used as a label for the given item.
+	 * The method also ensures that each label is used for only one class.
+	 * Other classes with the same label will have their QID added for
+	 * disambiguation.
+	 *
+	 * @param entityIdValue
+	 *                the item to label
+	 * @return the label
+	 */
+	private String getClassLabel(EntityIdValue entityIdValue) {
+		ClassRecord classRecord = this.classRecords.get(entityIdValue);
+		String label;
+		if (classRecord == null || classRecord.label == null) {
+			label = entityIdValue.getId();
+		} else {
+			label = classRecord.label;
+		}
+		return label;
+	}
+
+	/**
+	 * Returns the CSV-escaped label for the given entity based on the terms
+	 * in the given document. The returned string will have its quotes
+	 * escaped, but it will not be put in quotes (since this is not
+	 * appropriate in all contexts where this method is used).
+	 *
+	 * @param entityIdValue
+	 *                the entity to label
+	 * @param termedDocument
+	 *                the document to get labels from
+	 * @return the label
+	 */
+	private String getLabel(EntityIdValue entityIdValue,
+			TermedDocument termedDocument) {
+		MonolingualTextValue labelValue = termedDocument.getLabels()
+				.get("en");
+		if (labelValue != null) {
+			return labelValue.getText().replace("\"", "\"\"");
+		} else {
+			return entityIdValue.getId();
 		}
 	}
 
