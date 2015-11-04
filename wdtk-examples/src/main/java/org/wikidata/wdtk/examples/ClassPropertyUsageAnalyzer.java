@@ -258,7 +258,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		ClassPropertyUsageAnalyzer processor = new ClassPropertyUsageAnalyzer();
 		ExampleHelpers.processEntitiesFromWikidataDump(processor);
-		// processor.completeOverseenLabels();
+		processor.completeOverseenClasses();
 		processor.writeFinalReports();
 	}
 
@@ -347,7 +347,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			setImageFileToClassRecord(itemDocument, classRecord);
 			setDescriptionToUsageRecord(itemDocument, classRecord);
 			setLabelToClassRecord(itemDocument, classRecord);
-
 		}
 
 		// print a report once in a while:
@@ -376,37 +375,44 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Creates the final file output of the analysis.
 	 */
 	public void writeFinalReports() {
+		System.out.println("print final report");
 		writePropertyData();
 		writeClassData();
+		System.out.println("done!");
 	}
 
-	public void completeOverseenLabels() {
+	public void completeOverseenClasses() {
+		System.out.println("Number of overseen classes: "
+				+ unCalculatedSuperClasses.size());
 		for (EntityIdValue entityIdValue : unCalculatedSuperClasses) {
 			ClassRecord classRecord = getClassRecord(entityIdValue);
-			classRecord.label = lookupLabel(entityIdValue);
+			ItemDocument itemDocument = getItemDocument(entityIdValue);
+			if (itemDocument != null) {
+				setImageFileToClassRecord(itemDocument,
+						classRecord);
+				setDescriptionToUsageRecord(itemDocument,
+						classRecord);
+				setLabelToClassRecord(itemDocument, classRecord);
+			}
 		}
 	}
 
-	private String lookupLabel(EntityIdValue entityIdValue) {
-		// TODO
+	private ItemDocument getItemDocument(EntityIdValue entityIdValue) {
 		WikibaseDataFetcher wdf = WikibaseDataFetcher
 				.getWikidataDataFetcher();
-		EntityDocument ed = null;
 		try {
-			ed = wdf.getEntityDocument(entityIdValue.getId());
-			if (ed != null && ed instanceof TermedDocument) {
-				TermedDocument td = (TermedDocument) ed;
-				MonolingualTextValue labelValue = td
-						.getLabels().get("en");
-				if (labelValue != null) {
-					return labelValue.getText();
-				}
+			EntityDocument entityDocument = wdf
+					.getEntityDocument(entityIdValue
+							.getId());
+			if (entityDocument != null
+					&& entityDocument instanceof ItemDocument) {
+				return (ItemDocument) entityDocument;
 			}
 		} catch (MediaWikiApiErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return entityIdValue.getId();
+		return null;
 	}
 
 	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
@@ -558,8 +564,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			out.print(",\"http://commons.wikimedia.org/w/thumb.php?f=MA_Route_blank.svg&w=50\"");
 		} else {
 			try {
-				String imageFileEncoded;
-				imageFileEncoded = URLEncoder.encode(
+				String imageFileEncoded = URLEncoder.encode(
 						classRecord.imageFile.replace(
 								" ", "_"),
 						"utf-8");
@@ -681,15 +686,20 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private void printTerms(PrintStream out, UsageRecord usageRecord,
 			EntityIdValue entityIdValue) {
 
-		if (usageRecord.description == null) {
-			usageRecord.description = "-";
+		String description = "-";
+		String label = "";
+
+		if (usageRecord.description != null) {
+			description = csvStringEscape(usageRecord.description);
 		}
 
 		if (usageRecord.label == null) {
 			usageRecord.label = entityIdValue.getId();
 		}
-		out.print(entityIdValue.getId() + "," + usageRecord.label + ","
-				+ usageRecord.description + ","
+		label = csvStringEscape(usageRecord.label);
+		// label = "\"" + usageRecord.label + "\"";
+		out.print(entityIdValue.getId() + "," + label + ","
+				+ description + ","
 				+ entityIdValue.getIri());
 	}
 	
@@ -768,10 +778,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private String getPropertyLabel(PropertyIdValue propertyIdValue) {
 		PropertyRecord propertyRecord = this.propertyRecords
 				.get(propertyIdValue);
-		if (propertyRecord == null) {
-			return propertyIdValue.getId();
-		} else {
+		if (propertyRecord != null && propertyRecord.label != null) {
 			return propertyRecord.label;
+		} else {
+			return propertyIdValue.getId();
 		}
 	}
 
@@ -820,8 +830,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			} else {
 				classRecord.label = labelValue.getText();
 			}
+		} else {
+			classRecord.label = entityIdValue.getId();
 		}
-		classRecord.label = entityIdValue.getId();
 	}
 
 	/**
