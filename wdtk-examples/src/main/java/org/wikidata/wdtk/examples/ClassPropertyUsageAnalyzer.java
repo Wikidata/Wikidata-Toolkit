@@ -236,7 +236,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * use a label that is already assigned, it will use a label with an
 	 * added Q-ID for disambiguation.
 	 */
-	final HashMap<String, EntityIdValue> labels = new HashMap<>();
+	// final HashMap<String, EntityIdValue> labels = new HashMap<>();
+	final HashSet<String> labels = new HashSet<>();
 	
 	final Set<EntityIdValue> unCalculatedSuperClasses = new HashSet<>();
 
@@ -339,10 +340,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		if (classRecord != null) {
 			this.countClasses++;
-			// classRecord.itemDocument =
-			// converter.copy(itemDocument);
 			setImageFile(itemDocument, classRecord);
-			setTermsToUsageRecord(itemDocument, classRecord, "/");
+			setDescriptionToUsageRecord(itemDocument, classRecord);
+			setLabelToClassRecord(itemDocument, classRecord);
+
 		}
 
 		// print a report once in a while:
@@ -359,7 +360,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				.getPropertyId());
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
-		setTermsToUsageRecord(propertyDocument, propertyRecord, null);
+		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
+		MonolingualTextValue labelValue = propertyDocument.getLabels().get("en");
+		if (labelValue != null) {
+			propertyRecord.label = labelValue.getText();
+		}
 	}
 
 
@@ -371,39 +376,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		writeClassData();
 	}
 
-	/**
-	 * Sets the terms (label, etc.) of one entity to the given usageRecord.
-	 * This will lead to several values, which are the same for properties
-	 * and class items and will be printed later to the CSV-file.
-	 *
-	 * @param termedDocument
-	 *                the document that provides the terms
-	 * @param usageRecord
-	 *                the UsageRecord in which the data should be stored
-	 * @param specialLabel
-	 *                special label to use (rather than the label string in
-	 *                the document) or null if not using; used by classes,
-	 *                which need to support disambiguation in their labels
-	 */
-	private void setTermsToUsageRecord(TermedDocument termedDocument,
-			UsageRecord usageRecord, String specialLabel) {
-		usageRecord.label = specialLabel;
+	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
+			UsageRecord usageRecord) {
 		usageRecord.description = "-";
-
 		if (termedDocument != null) {
-			if (usageRecord.label == null) {
-				MonolingualTextValue labelValue = termedDocument
-						.getLabels().get("en");
-				if (labelValue != null) {
-					usageRecord.label = csvStringEscape(labelValue
-							.getText());
-				}
-			}
 			MonolingualTextValue descriptionValue = termedDocument
 					.getDescriptions().get("en");
 			if (descriptionValue != null) {
-				usageRecord.description = csvStringEscape(descriptionValue
-						.getText());
+				usageRecord.description = descriptionValue
+						.getText();
 			}
 		}
 	}
@@ -795,15 +776,20 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *                the document to get labels from
 	 * @return the label
 	 */
-	private String getLabel(EntityIdValue entityIdValue,
-			TermedDocument termedDocument) {
-		MonolingualTextValue labelValue = termedDocument.getLabels()
-				.get("en");
+	private void setLabelToClassRecord(ItemDocument itemDocument,
+			ClassRecord classRecord) {
+		EntityIdValue entityIdValue = itemDocument.getItemId();
+		MonolingualTextValue labelValue = itemDocument.getLabels().get(
+				"en");
 		if (labelValue != null) {
-			return labelValue.getText().replace("\"", "\"\"");
-		} else {
-			return entityIdValue.getId();
+			if (labels.contains(labelValue)) {
+				classRecord.label = labelValue.getText() + " ("
+						+ entityIdValue.getId() + ")";
+			} else {
+				classRecord.label = labelValue.getText();
+			}
 		}
+		classRecord.label = entityIdValue.getId();
 	}
 
 	/**
