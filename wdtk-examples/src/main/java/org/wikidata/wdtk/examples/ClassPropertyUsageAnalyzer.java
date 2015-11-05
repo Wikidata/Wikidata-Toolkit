@@ -361,12 +361,19 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		this.countProperties++;
 		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
 				.getPropertyId());
-		// propertyRecord.datatype = getDatatypeLabel(propertyDocument
-		// .getDatatype());
+		System.out.print(propertyDocument.getPropertyId().getId()
+				+ " - ");
+		System.out.println(getDatatypeLabel(propertyDocument
+						.getDatatype()));
+		propertyRecord.datatype = getDatatypeLabel(propertyDocument
+				.getDatatype());
 		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
 		MonolingualTextValue labelValue = propertyDocument.getLabels().get("en");
 		if (labelValue != null) {
 			propertyRecord.label = labelValue.getText();
+		} else {
+			propertyRecord.label = propertyDocument.getPropertyId()
+					.getId();
 		}
 	}
 
@@ -409,7 +416,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				return (ItemDocument) entityDocument;
 			}
 		} catch (MediaWikiApiErrorException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -976,6 +982,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return "Time";
 		case DatatypeIdValue.DT_URL:
 			return "URL";
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			return "Monolingual text";
+		case DatatypeIdValue.DT_PROPERTY:
+			return "Property";
+
 		default:
 			throw new RuntimeException("Unknown datatype "
 					+ datatype.getIri());
