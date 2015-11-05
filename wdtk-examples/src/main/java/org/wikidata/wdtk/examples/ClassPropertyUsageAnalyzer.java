@@ -333,6 +333,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 									itemDocument,
 									otherClassRecord,
 									null);
+						} else {
+							otherClassRecord.subclassCount++;
+							classRecord.superClasses
+									.add((EntityIdValue) value);
 						}
 					}
 				}
