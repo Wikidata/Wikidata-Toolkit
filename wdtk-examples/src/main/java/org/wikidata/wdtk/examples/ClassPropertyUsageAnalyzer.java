@@ -34,9 +34,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
@@ -74,17 +71,16 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * an advanced example, not as a first introduction.
  *
  * @author Markus Kroetzsch
+ * @author Markus Damm
  *
  */
 public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
-
-	DataObjectFactory factory = new DataObjectFactoryImpl();
-	DatamodelConverter converter = new DatamodelConverter(factory);
 
 	/**
 	 * Class to record the use of some class item or property.
 	 *
 	 * @author Markus Kroetzsch
+	 * @author Markus Damm
 	 *
 	 */
 	private abstract class UsageRecord {
@@ -100,7 +96,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * explained for {@link UsageRecord#itemCount}).
 		 */
 		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<PropertyIdValue, Integer>();
+		/**
+		 * The label of this item. If a label is ambiguous, the EntityId
+		 * of this item is added in brackets. If there isn't any English
+		 * label available, the label is set to null.
+		 */
 		public String label;
+		/**
+		 * The description of this item. If there isn't any English
+		 * description available, the description is set to a hyphen.
+		 */
 		public String description;
 	}
 
@@ -129,11 +134,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 */
 		public int referenceCount = 0;
 		/**
-		 * {@link PropertyDocument} for this property.
-		 */
-		// public PropertyDocument propertyDocument = null;
-		/**
-		 * datatype of this property
+		 * Datatype of this property
 		 */
 		public String datatype = "Unknown";
 	}
@@ -142,6 +143,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Class to record the usage of a class item in the data.
 	 *
 	 * @author Markus Kroetzsch
+	 * @author Markus Damm
 	 *
 	 */
 	private class ClassRecord extends UsageRecord {
@@ -149,10 +151,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * Number of subclasses of this class item.
 		 */
 		public int subclassCount = 0;
-		/**
-		 * {@link ItemDocument} of this class.
-		 */
-		// public ItemDocument itemDocument = null;
 		/**
 		 * List of all super classes of this class.
 		 */
@@ -234,14 +232,17 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	final HashMap<EntityIdValue, ClassRecord> classRecords = new HashMap<>();
 
 	/**
-	 * Map used during serialization to ensure that every label is used only
-	 * once. The Map assigns an item to each label. If another item wants to
-	 * use a label that is already assigned, it will use a label with an
-	 * added Q-ID for disambiguation.
+	 * Set used during serialization to ensure that every label is used only
+	 * once. If another item wants to use a label that is already assigned,
+	 * it will use a label with an added Q-ID for disambiguation.
 	 */
-	// final HashMap<String, EntityIdValue> labels = new HashMap<>();
-	final HashSet<String> labels = new HashSet<>();
+	final Set<String> labels = new HashSet<>();
 	
+	/**
+	 * Set used for storing of classes of which a subclass was calculated
+	 * but not the superclass. After processing the dump file classes of
+	 * this set represented by it EntityIdValue will be downloaded later.
+	 */
 	final Set<EntityIdValue> unCalculatedSuperClasses = new HashSet<>();
 
 	/**
@@ -386,12 +387,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Creates the final file output of the analysis.
 	 */
 	public void writeFinalReports() {
-		System.out.println("print final report");
 		writePropertyData();
 		writeClassData();
-		System.out.println("done!");
 	}
 
+	/**
+	 * Completes the data in the classRecords of classes that where not
+	 * processed. The elements are requested by the Wikidata API.
+	 */
 	public void completeOverseenClasses() {
 		System.out.println("Number of overseen classes: "
 				+ unCalculatedSuperClasses.size());
@@ -408,6 +411,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Fetches an ItemDocument for a class via the Wikidata API.
+	 * 
+	 * @param entityIdValue
+	 *                EntityIdValue that represents the class
+	 * @return ItemDocument of this class
+	 */
 	private ItemDocument getItemDocument(EntityIdValue entityIdValue) {
 		WikibaseDataFetcher wdf = WikibaseDataFetcher
 				.getWikidataDataFetcher();
@@ -425,6 +435,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		return null;
 	}
 
+	/**
+	 * Sets the description of a record.
+	 * 
+	 * @param termedDocument
+	 *                Document that provides the description.
+	 * @param usageRecord
+	 *                usage record that represents an entry.
+	 */
 	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
 			UsageRecord usageRecord) {
 		usageRecord.description = "-";
@@ -438,6 +456,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Sets the image file name to a class record. If there is no image
+	 * available, the image file is set to null.
+	 * 
+	 * @param itemDocument
+	 *                Document that provides the image file.
+	 * @param classRecord
+	 *                class record that represents an entry
+	 */
 	private void setImageFileToClassRecord(ItemDocument itemDocument,
 			ClassRecord classRecord) {
 		if (itemDocument != null && classRecord != null) {
@@ -593,6 +620,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Collects all super classes of a class and stores the result to a set.
+	 * 
+	 * @param itemIdValue
+	 *                Id value of this class
+	 * @param superClasses
+	 *                Set of all already known super classes.
+	 */
 	private void addSuperClasses(EntityIdValue itemIdValue,
 			HashSet<EntityIdValue> superClasses) {
 		if (superClasses.contains(itemIdValue)) {
@@ -684,20 +719,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *
 	 * @param out
 	 *                the output to write to
-	 * @param termedDocument
-	 *                the document that provides the terms to write
+	 * @param usageRecord
+	 *                the usage record that provides the terms to write
 	 * @param entityIdValue
 	 *                the entity that the data refers to.
-	 * @param specialLabel
-	 *                special label to use (rather than the label string in
-	 *                the document) or null if not using; used by classes,
-	 *                which need to support disambiguation in their labels
 	 */
 	private void printTerms(PrintStream out, UsageRecord usageRecord,
 			EntityIdValue entityIdValue) {
 
 		String description = "-";
-		String label = "";
+		String label;
 
 		if (usageRecord.description != null) {
 			description = csvStringEscape(usageRecord.description);
@@ -817,10 +848,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	}
 
 	/**
-	 * Returns the CSV-escaped label for the given entity based on the terms
-	 * in the given document. The returned string will have its quotes
-	 * escaped, but it will not be put in quotes (since this is not
-	 * appropriate in all contexts where this method is used).
+	 * Sets the label for the given class record based on the terms in the
+	 * given document. If there is an ambiguous label, the Q-ID of this
+	 * class is added in braces.
 	 *
 	 * @param entityIdValue
 	 *                the entity to label
@@ -894,6 +924,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Counts properties that occurs together
+	 * 
+	 * @param itemDocument
+	 *                document which is scanned for a cooccurring property
+	 * @param usageRecord
+	 *                usage record for storing cooccuring
+	 * @param thisPropertyIdValue
+	 *                the property to count
+	 */
 	private void countCooccurringProperties(ItemDocument itemDocument,
 			UsageRecord usageRecord,
 			PropertyIdValue thisPropertyIdValue) {
