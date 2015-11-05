@@ -864,11 +864,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		MonolingualTextValue labelValue = itemDocument.getLabels().get(
 				"en");
 		if (labelValue != null) {
-			if (labels.contains(labelValue)) {
-				classRecord.label = labelValue.getText() + " ("
+			String label = labelValue.getText();
+			if (labels.contains(label)) {
+				classRecord.label = label + " ("
 						+ entityIdValue.getId() + ")";
 			} else {
-				classRecord.label = labelValue.getText();
+				classRecord.label = label;
+				labels.add(label);
 			}
 		} else {
 			classRecord.label = entityIdValue.getId();
