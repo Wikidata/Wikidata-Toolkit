@@ -9,9 +9,9 @@ package org.wikidata.wdtk.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -185,8 +185,9 @@ public class ClientTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(
 				Paths.get("/output/"), false);
 
-		String[] args = { "-a", "rdf", "--rdftasks", "aliases", "-o",
+		String[] args = {"-n", "-a", "rdf", "--rdftasks", "aliases", "-o",
 				"/output/wikidata.rdf", "-r", "/output/report.txt" };
+
 		Client client = new Client(mockDpc, args);
 		DumpProcessingAction action = client.clientConfiguration.actions.get(0);
 		action.open();
@@ -200,6 +201,24 @@ public class ClientTest {
 						"RdfSerializationAction: Finished serialization of \\d+ RDF triples in file /output/wikidata.rdf"
 								+ System.lineSeparator()));
 
+	}
+
+	@Test
+	public void testInsertDumpInformation() throws IOException {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(MockDirectoryManager.class);
+
+		MockDirectoryManager mdm = new MockDirectoryManager(
+				Paths.get("/output/"), false);
+
+		String[] args = { "-n", "-a", "rdf", "-o", "/output/wikidata.rdf",
+				"--rdftasks", "aliases", "-r", "/output/report-{DATE}.txt" };
+
+		Client client = new Client(mockDpc, args);
+		client.performActions();
+
+		assertTrue(mdm.hasFile("/output/report-"
+				+ client.clientConfiguration.getDateStamp() + ".txt"));
 	}
 
 	@Test
