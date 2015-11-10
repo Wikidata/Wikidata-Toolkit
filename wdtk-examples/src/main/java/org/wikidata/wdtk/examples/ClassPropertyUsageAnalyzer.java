@@ -259,7 +259,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		ClassPropertyUsageAnalyzer processor = new ClassPropertyUsageAnalyzer();
 		ExampleHelpers.processEntitiesFromWikidataDump(processor);
-		processor.completeOverseenClasses();
+		processor.completeMissedClasses();
 		processor.writeFinalReports();
 	}
 
@@ -395,8 +395,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Completes the data in the classRecords of classes that where not
 	 * processed. The elements are requested by the Wikidata API.
 	 */
-	public void completeOverseenClasses() {
-		System.out.println("Number of overseen classes: "
+	public void completeMissedClasses() {
+		System.out.println("Number of Missed classes: "
 				+ unCalculatedSuperClasses.size());
 		for (EntityIdValue entityIdValue : unCalculatedSuperClasses) {
 			ClassRecord classRecord = getClassRecord(entityIdValue);
