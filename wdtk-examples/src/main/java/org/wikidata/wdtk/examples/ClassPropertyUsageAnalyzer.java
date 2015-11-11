@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -395,20 +396,62 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Completes the data in the classRecords of classes that where not
 	 * processed. The elements are requested by the Wikidata API.
 	 */
-	public void completeMissedClasses() {
+	private void completeMissedClasses() {
 		System.out.println("Number of Missed classes: "
 				+ unCalculatedSuperClasses.size());
-		for (EntityIdValue entityIdValue : unCalculatedSuperClasses) {
-			ClassRecord classRecord = getClassRecord(entityIdValue);
-			ItemDocument itemDocument = getItemDocument(entityIdValue);
-			if (itemDocument != null) {
-				setImageFileToClassRecord(itemDocument,
-						classRecord);
-				setDescriptionToUsageRecord(itemDocument,
-						classRecord);
-				setLabelToClassRecord(itemDocument, classRecord);
+		while (!unCalculatedSuperClasses.isEmpty()) {
+			Set<EntityIdValue> entityIdValues = getSubSetOfUncalculatedSuperClasses();
+			System.out.println("EntityIdValues: "
+					+ entityIdValues.size());
+			Map<String, EntityDocument> result = getItemDocuments(entityIdValues);
+			System.out.println("Result: " + result.size());
+			for (EntityIdValue entityIdValue : entityIdValues) {
+				EntityDocument entityDocument = result
+						.get(entityIdValue.getId());
+				if (entityDocument != null
+						&& entityDocument instanceof ItemDocument) {
+					ItemDocument itemDocument = (ItemDocument) entityDocument;
+					ClassRecord classRecord = getClassRecord(entityIdValue);
+
+					setImageFileToClassRecord(itemDocument,
+							classRecord);
+					setDescriptionToUsageRecord(
+							itemDocument,
+							classRecord);
+					setLabelToClassRecord(itemDocument,
+							classRecord);
+				}
 			}
 		}
+	}
+
+	private Set<EntityIdValue> getSubSetOfUncalculatedSuperClasses() {
+		Set<EntityIdValue> entityIdValues = new HashSet<>();
+		if (unCalculatedSuperClasses.size() <= 50) {
+			entityIdValues.addAll(unCalculatedSuperClasses);
+			unCalculatedSuperClasses.clear();
+		} else {
+			int i = 0;
+			for (EntityIdValue eiv : unCalculatedSuperClasses) {
+				entityIdValues.add(eiv);
+				i++;
+				if (i >= 50) {
+					unCalculatedSuperClasses
+							.removeAll(entityIdValues);
+					return entityIdValues;
+				}
+			}
+		}
+		return entityIdValues;
+	}
+
+	private List<String> entityIdValueSetToStringList(
+			Set<EntityIdValue> entityIdValues) {
+		List<String> strings = new ArrayList<>();
+		for (EntityIdValue eid : entityIdValues) {
+			strings.add(eid.getId());
+		}
+		return strings;
 	}
 
 	/**
@@ -418,17 +461,12 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *                EntityIdValue that represents the class
 	 * @return ItemDocument of this class
 	 */
-	private ItemDocument getItemDocument(EntityIdValue entityIdValue) {
+	private Map<String, EntityDocument> getItemDocuments(
+			Set<EntityIdValue> entityIdValues) {
 		WikibaseDataFetcher wdf = WikibaseDataFetcher
 				.getWikidataDataFetcher();
 		try {
-			EntityDocument entityDocument = wdf
-					.getEntityDocument(entityIdValue
-							.getId());
-			if (entityDocument != null
-					&& entityDocument instanceof ItemDocument) {
-				return (ItemDocument) entityDocument;
-			}
+			return wdf.getEntityDocuments(entityIdValueSetToStringList(entityIdValues));
 		} catch (MediaWikiApiErrorException e) {
 			e.printStackTrace();
 		}
