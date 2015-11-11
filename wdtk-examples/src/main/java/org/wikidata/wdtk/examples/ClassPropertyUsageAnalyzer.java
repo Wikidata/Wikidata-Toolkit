@@ -367,10 +367,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		this.countProperties++;
 		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
 				.getPropertyId());
-		System.out.print(propertyDocument.getPropertyId().getId()
-				+ " - ");
-		System.out.println(getDatatypeLabel(propertyDocument
-						.getDatatype()));
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
 		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
@@ -388,8 +384,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Creates the final file output of the analysis.
 	 */
 	public void writeFinalReports() {
+		System.out.println(" * Fetching data from Wikidata API finished");
+		System.out.println(" * Printing data to CSV output file");
 		writePropertyData();
 		writeClassData();
+		System.out.println(" * Finished printing data");
 	}
 
 	/**
@@ -397,9 +396,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * processed. The elements are requested by the Wikidata API.
 	 */
 	private void completeMissedClasses() {
-		System.out.println("Number of Missed classes: "
-				+ unCalculatedSuperClasses.size());
-		while (!unCalculatedSuperClasses.isEmpty()) {
+		System.out.println(" * Start to fetch data from Wikidata API to collect missed");
+		System.out.println(" * labels, descriptions and images.");
+		System.out.println(" * Number of missed classes: "
+				+ this.unCalculatedSuperClasses.size());
+		while (!this.unCalculatedSuperClasses.isEmpty()) {
 			Set<EntityIdValue> entityIdValues = getSubSetOfUncalculatedSuperClasses();
 			System.out.println("EntityIdValues: "
 					+ entityIdValues.size());
@@ -427,16 +428,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 	private Set<EntityIdValue> getSubSetOfUncalculatedSuperClasses() {
 		Set<EntityIdValue> entityIdValues = new HashSet<>();
-		if (unCalculatedSuperClasses.size() <= 50) {
-			entityIdValues.addAll(unCalculatedSuperClasses);
-			unCalculatedSuperClasses.clear();
+		if (this.unCalculatedSuperClasses.size() <= 50) {
+			entityIdValues.addAll(this.unCalculatedSuperClasses);
+			this.unCalculatedSuperClasses.clear();
 		} else {
 			int i = 0;
-			for (EntityIdValue eiv : unCalculatedSuperClasses) {
+			for (EntityIdValue eiv : this.unCalculatedSuperClasses) {
 				entityIdValues.add(eiv);
 				i++;
 				if (i >= 50) {
-					unCalculatedSuperClasses
+					this.unCalculatedSuperClasses
 							.removeAll(entityIdValues);
 					return entityIdValues;
 				}
