@@ -383,7 +383,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	/**
 	 * Creates the final file output of the analysis.
 	 */
-	public void writeFinalReports() {
+	private void writeFinalReports() {
 		System.out.println(" * Fetching data from Wikidata API finished");
 		System.out.println(" * Printing data to CSV output file");
 		writePropertyData();
@@ -426,6 +426,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
+	/**
+	 * Collects 50 missed classes and deletes from the
+	 * unCulculatedSuperClasses. If there are less than 50 missed classes
+	 * remaining, all classes are returned. This step is necessary since the
+	 * API processes at most 50 entities per request.
+	 * 
+	 * @return Set of 50 missed classes
+	 */
 	private Set<EntityIdValue> getSubSetOfUncalculatedSuperClasses() {
 		Set<EntityIdValue> entityIdValues = new HashSet<>();
 		if (this.unCalculatedSuperClasses.size() <= 50) {
@@ -446,6 +454,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		return entityIdValues;
 	}
 
+	/**
+	 * Takes a set of EntityIdValues and returns a list of id strings
+	 * 
+	 * @param entityIdValues
+	 *                set of EntityIdValues
+	 * @return list of id strings
+	 */
 	private List<String> entityIdValueSetToStringList(
 			Set<EntityIdValue> entityIdValues) {
 		List<String> strings = new ArrayList<>();
