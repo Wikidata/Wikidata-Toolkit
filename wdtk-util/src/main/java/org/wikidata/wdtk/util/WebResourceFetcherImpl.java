@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.HttpURLConnection;
 
 /**
  * Standard implementation of {@link WebResourceFetcher}.
@@ -96,13 +97,14 @@ public class WebResourceFetcherImpl implements WebResourceFetcher {
 	public InputStream getInputStreamForUrl(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
-		URLConnection urlConnection;
+		HttpURLConnection urlConnection;
 		if (hasProxy()) {
-			urlConnection = url.openConnection(proxy);
+			urlConnection = (HttpURLConnection) url.openConnection(proxy);
 		} else {
-			urlConnection = url.openConnection();
+			urlConnection = (HttpURLConnection) url.openConnection();
 		}
 		urlConnection.setRequestProperty("User-Agent", userAgent);
+		urlConnection.setFollowRedirects(true);
 
 		return urlConnection.getInputStream();
 	}
