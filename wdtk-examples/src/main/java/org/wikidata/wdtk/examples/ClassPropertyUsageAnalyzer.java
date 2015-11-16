@@ -402,16 +402,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				+ this.unCalculatedSuperClasses.size());
 		while (!this.unCalculatedSuperClasses.isEmpty()) {
 			Set<EntityIdValue> entityIdValues = getSubSetOfUncalculatedSuperClasses();
-			System.out.println("EntityIdValues: "
-					+ entityIdValues.size());
 			Map<String, EntityDocument> result = getItemDocuments(entityIdValues);
-			System.out.println("Result: " + result.size());
 			for (EntityIdValue entityIdValue : entityIdValues) {
 				EntityDocument entityDocument = result
 						.get(entityIdValue.getId());
 				if (entityDocument != null
 						&& entityDocument instanceof ItemDocument) {
 					ItemDocument itemDocument = (ItemDocument) entityDocument;
+
 					ClassRecord classRecord = getClassRecord(entityIdValue);
 
 					setImageFileToClassRecord(itemDocument,
@@ -720,7 +718,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				out.print("@");
 			}
 			// makeshift escaping for Miga:
-			out.print(getClassLabel(superClass).replace("@", "＠"));
+			out.print(getClassLabel(superClass).replace("@", "＠")
+					.replace("\"", "\"\""));
 		}
 		out.print("\"");
 	}
@@ -792,7 +791,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			usageRecord.label = entityIdValue.getId();
 		}
 		label = csvStringEscape(usageRecord.label);
-		// label = "\"" + usageRecord.label + "\"";
 		out.print(entityIdValue.getId() + "," + label + ","
 				+ description + ","
 				+ entityIdValue.getIri());
