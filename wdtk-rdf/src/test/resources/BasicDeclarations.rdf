@@ -1,69 +1,69 @@
 
-<http://www.wikidata.org/ontology#propertyType> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#propertyType> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://www.w3.org/ns/prov#wasDerivedFrom> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/ontology#longitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#longitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#timePrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#timePrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://schema.org/description> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#QuantityValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#QuantityValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#upperBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#upperBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#time> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#time> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#gcPrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#gcPrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://www.w3.org/2004/02/skos/core#altLabel> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#globe> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#globe> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/ontology#preferredCalendar> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#preferredCalendar> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://schema.org/inLanguage> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#lowerBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#lowerBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#quantityUnit> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#quantityUnit> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/ontology#Reference> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#Reference> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#GlobeCoordinatesValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#GlobeCoordinatesValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#TimeValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#TimeValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#Statement> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#Statement> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#latitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#latitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/ontology#Article> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#Article> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#numericValue> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#numericValue> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://schema.org/about> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/ontology#Item> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#Item> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#Property> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#Property> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#directClaim> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#directClaim> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#statementValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#statementValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#statementProperty> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#statementProperty> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#claim> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#claim> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#qualifier> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#qualifier> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#qualifierValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#qualifierValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#novalue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#novalue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://www.wikidata.org/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

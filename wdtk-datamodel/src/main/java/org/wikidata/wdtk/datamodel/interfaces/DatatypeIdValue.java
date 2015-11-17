@@ -32,38 +32,38 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */
-	String DT_ITEM = "http://www.wikidata.org/ontology#propertyTypeItem";
+	String DT_ITEM = "http://wikiba.se/ontology#propertyTypeItem";
 	/**
 	 * IRI of the property datatype in Wikibase.
 	 */
-	String DT_PROPERTY = "http://www.wikidata.org/ontology#propertyTypeProperty";
+	String DT_PROPERTY = "http://wikiba.se/ontology#propertyTypeProperty";
 	/**
 	 * IRI of the string datatype in Wikibase.
 	 */
-	String DT_STRING = "http://www.wikidata.org/ontology#propertyTypeString";
+	String DT_STRING = "http://wikiba.se/ontology#propertyTypeString";
 	/**
 	 * IRI of the URL datatype in Wikibase.
 	 */
-	String DT_URL = "http://www.wikidata.org/ontology#propertyTypeUrl";
+	String DT_URL = "http://wikiba.se/ontology#propertyTypeUrl";
 	/**
 	 * IRI of the Commons media datatype in Wikibase.
 	 */
-	String DT_COMMONS_MEDIA = "http://www.wikidata.org/ontology#propertyTypeCommonsMedia";
+	String DT_COMMONS_MEDIA = "http://wikiba.se/ontology#propertyTypeCommonsMedia";
 	/**
 	 * IRI of the time datatype in Wikibase.
 	 */
-	String DT_TIME = "http://www.wikidata.org/ontology#propertyTypeTime";
+	String DT_TIME = "http://wikiba.se/ontology#propertyTypeTime";
 	/**
 	 * IRI of the globe coordinates datatype in Wikibase.
 	 */
-	String DT_GLOBE_COORDINATES = "http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates";
+	String DT_GLOBE_COORDINATES = "http://wikiba.se/ontology#propertyTypeGlobeCoordinates";
 	/**
 	 * IRI of the quantity datatype in Wikibase.
 	 */
-	String DT_QUANTITY = "http://www.wikidata.org/ontology#propertyTypeQuantity";
+	String DT_QUANTITY = "http://wikiba.se/ontology#propertyTypeQuantity";
 	/**
 	 * IRI of the monolingual text datatype in Wikibase.
 	 */
-	String DT_MONOLINGUAL_TEXT = "http://www.wikidata.org/ontology#propertyTypeMonolingualText";
+	String DT_MONOLINGUAL_TEXT = "http://wikiba.se/ontology#propertyTypeMonolingualText";
 
 }

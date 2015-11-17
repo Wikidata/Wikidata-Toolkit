@@ -1,5 +1,5 @@
 
-<http://www.wikidata.org/Q10> a <http://www.wikidata.org/ontology#Item> ;
+<http://www.wikidata.org/Q10> a <http://wikiba.se/ontology#Item> ;
 	<http://www.w3.org/2000/01/rdf-schema#label> "bar"@lc2 , "foo"@lc ;
 	<http://schema.org/description> "it's bar"@lc2 , "it's foo"@lc ;
 	<http://www.w3.org/2004/02/skos/core#altLabel> "foo"@lc , "bar"@lc ;
@@ -7,20 +7,20 @@
 	<http://www.wikidata.org/prop/P569> <http://www.wikidata.org/entity/statement/Q10-none2> ;
 	<http://www.wikidata.org/prop/P549> <http://www.wikidata.org/entity/statement/Q10-none> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a <http://www.wikidata.org/ontology#Statement> , _:node1a2ni22hrx1 ;
-	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> , _:node1a2ni22hrx1 ;
+	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
-<http://www.wikidata.org/entity/statement/Q10-none2> a <http://www.wikidata.org/ontology#Statement> ;
+<http://www.wikidata.org/entity/statement/Q10-none2> a <http://wikiba.se/ontology#Statement> ;
 	<http://www.wikidata.org/prop/statement/value/P569> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.wikidata.org/prop/statement/P569> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	<http://www.wikidata.org/prop/qualifier/value/P15> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
-	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a <http://www.wikidata.org/ontology#Statement> ;
+<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> ;
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
-	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
 _:node1a2ni22hrx1 a <http://www.w3.org/2002/07/owl#Class> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1a2ni22hrx2 .
@@ -29,10 +29,10 @@ _:node1a2ni22hrx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/prop/statement/value/P10> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
-<http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> a <http://www.wikidata.org/ontology#TimeValue> ;
-	<http://www.wikidata.org/ontology#time> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	<http://www.wikidata.org/ontology#timePrecision> "32"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://www.wikidata.org/ontology#preferredCalendar> <http://www.wikidata.org/entity/Q1985727> .
+<http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> a <http://wikiba.se/ontology#TimeValue> ;
+	<http://wikiba.se/ontology#time> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	<http://wikiba.se/ontology#timePrecision> "32"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://wikiba.se/ontology#preferredCalendar> <http://www.wikidata.org/entity/Q1985727> .
 
 <http://www.wikidata.org/prop/P10> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
@@ -96,5 +96,5 @@ _:node1a2ni22hrx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 
 <http://www.wikidata.org/prop/reference/P549> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a <http://www.wikidata.org/ontology#Reference> ;
+<http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a <http://wikiba.se/ontology#Reference> ;
 	<http://www.wikidata.org/prop/reference/value/P112> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> .

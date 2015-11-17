@@ -40,7 +40,7 @@ public class DatatypeIdImplTest {
 	public void setUp() {
 		d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
 		d2 = new DatatypeIdImpl(
-				"http://www.wikidata.org/ontology#propertyTypeItem");
+				"http://wikiba.se/ontology#propertyTypeItem");
 		d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 	}
 

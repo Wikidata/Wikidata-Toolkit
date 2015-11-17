@@ -1,13 +1,13 @@
 
-<http://www.wikidata.org/P1> a <http://www.wikidata.org/ontology#Property> ;
-	<http://www.wikidata.org/ontology#propertyType> <http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates> ;
-	<http://www.wikidata.org/ontology#directClaim> <http://www.wikidata.org/prop/direct/P1> ;
-	<http://www.wikidata.org/ontology#claim> <http://www.wikidata.org/prop/P1> ;
-	<http://www.wikidata.org/ontology#statementProperty> <http://www.wikidata.org/prop/statement/P1> ;
-	<http://www.wikidata.org/ontology#statementValue> <http://www.wikidata.org/prop/statement/value/P1> ;
-	<http://www.wikidata.org/ontology#qualifier> <http://www.wikidata.org/prop/qualifier/P1> ;
-	<http://www.wikidata.org/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P1> ;
-	<http://www.wikidata.org/ontology#Reference> <http://www.wikidata.org/prop/reference/P1> ;
-	<http://www.wikidata.org/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P1> ;
-	<http://www.wikidata.org/ontology#novalue> <http://www.wikidata.org/prop/novalue/P1> .
+<http://www.wikidata.org/P1> a <http://wikiba.se/ontology#Property> ;
+	<http://wikiba.se/ontology#propertyType> <http://wikiba.se/ontology#propertyTypeGlobeCoordinates> ;
+	<http://wikiba.se/ontology#directClaim> <http://www.wikidata.org/prop/direct/P1> ;
+	<http://wikiba.se/ontology#claim> <http://www.wikidata.org/prop/P1> ;
+	<http://wikiba.se/ontology#statementProperty> <http://www.wikidata.org/prop/statement/P1> ;
+	<http://wikiba.se/ontology#statementValue> <http://www.wikidata.org/prop/statement/value/P1> ;
+	<http://wikiba.se/ontology#qualifier> <http://www.wikidata.org/prop/qualifier/P1> ;
+	<http://wikiba.se/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P1> ;
+	<http://wikiba.se/ontology#Reference> <http://www.wikidata.org/prop/reference/P1> ;
+	<http://wikiba.se/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P1> ;
+	<http://wikiba.se/ontology#novalue> <http://www.wikidata.org/prop/novalue/P1> .
 
