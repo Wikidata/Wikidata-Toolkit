@@ -63,7 +63,9 @@
 
 <http://wikiba.se/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://wikiba.se/ontology#novalue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#novalue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://wikiba.se/ontology#noqualifiervalue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://wikiba.se/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

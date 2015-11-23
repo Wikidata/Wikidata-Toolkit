@@ -10,71 +10,73 @@
 
 prov:wasDerivedFrom a owl:ObjectProperty .
 
-wo:propertyType a owl:ObjectProperty .
-
-wo:timePrecision a owl:DatatypeProperty .
-
-wo:upperBound a owl:DatatypeProperty .
-
-wo:gcPrecision a owl:DatatypeProperty .
-
 wo:time a owl:DatatypeProperty .
-
-wo:rank a owl:ObjectProperty .
-
-wo:preferredCalendar a owl:ObjectProperty .
-
-schema:inLanguage a owl:DatatypeProperty .
-
-wo:referenceValue a owl:Class .
 
 wo:lowerBound a owl:DatatypeProperty .
 
-wo:GlobeCoordinatesValue a owl:Class .
-
-wo:statementValue a owl:Class .
-
-wo:TimeValue a owl:Class .
+wo:quantityUnit a owl:ObjectProperty .
 
 wo:qualifier a owl:Class .
 
-wo:statementProperty a owl:Class .
-
 wo:latitude a owl:DatatypeProperty .
 
-wo:novalue a owl:Class .
+wo:Property a owl:Class .
 
-schema:about a owl:ObjectProperty .
+schema:inLanguage a owl:DatatypeProperty .
 
 wo:qualifierValue a owl:Class .
 
-wo:longitude a owl:DatatypeProperty .
-
-wo:QuantityValue a owl:Class .
-
-schema:description a owl:DatatypeProperty .
-
-skos:altLabel a owl:DatatypeProperty .
-
-wo:globe a owl:ObjectProperty .
+wo:upperBound a owl:DatatypeProperty .
 
 wo:directClaim a owl:Class .
 
-wo:Reference a owl:Class .
-
-wo:quantityUnit a owl:ObjectProperty .
+wo:globe a owl:ObjectProperty .
 
 wo:claim a owl:Class .
 
-wo:Statement a owl:Class .
+wo:timePrecision a owl:DatatypeProperty .
+
+schema:about a owl:ObjectProperty .
+
+wo:propertyType a owl:ObjectProperty .
+
+wo:preferredCalendar a owl:ObjectProperty .
+
+wo:gcPrecision a owl:DatatypeProperty .
+
+wo:longitude a owl:DatatypeProperty .
+
+wo:GlobeCoordinatesValue a owl:Class .
+
+wo:Reference a owl:Class .
+
+wo:referenceValue a owl:Class .
+
+schema:description a owl:DatatypeProperty .
 
 wo:Article a owl:Class .
 
-wo:numericValue a owl:DatatypeProperty .
+wo:noqualifiervalue a owl:ObjectProperty .
+
+wo:novalue a owl:ObjectProperty .
+
+skos:altLabel a owl:DatatypeProperty .
+
+wo:rank a owl:ObjectProperty .
+
+wo:QuantityValue a owl:Class .
+
+wo:statementProperty a owl:Class .
 
 wo:Item a owl:Class .
 
-wo:Property a owl:Class .
+wo:TimeValue a owl:Class .
+
+wo:Statement a owl:Class .
+
+wo:statementValue a owl:Class .
+
+wo:numericValue a owl:DatatypeProperty .
 
 <http://www.wikidata.org/Q10> a wo:Item ;
 	rdfs:label "bar"@lc2 , "foo"@lc ;
@@ -84,7 +86,7 @@ wo:Property a owl:Class .
 	<http://www.wikidata.org/prop/P569> <http://www.wikidata.org/entity/statement/Q10-none2> ;
 	<http://www.wikidata.org/prop/P549> <http://www.wikidata.org/entity/statement/Q10-none> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a wo:Statement , _:node1a2penae1x3 ;
+<http://www.wikidata.org/entity/statement/Q10-none> a wo:Statement , <http://www.wikidata.org/prop/novalue/P10> ;
 	wo:rank wo:NormalRank .
 
 <http://www.wikidata.org/entity/statement/Q10-none2> a wo:Statement ;
@@ -99,13 +101,6 @@ wo:Property a owl:Class .
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
 	wo:rank wo:NormalRank .
 
-_:node1a2penae1x3 a owl:Class ;
-	owl:complementOf _:node1a2penae1x4 .
-
-_:node1a2penae1x4 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/prop/statement/value/P10> ;
-	owl:someValuesFrom owl:Thing .
-
 id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 	wo:time "0306-11-03"^^xsd:date ;
 	wo:timePrecision "32"^^xsd:int ;
@@ -113,21 +108,21 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 <http://www.wikidata.org/prop/P10> a owl:ObjectProperty .
 
+<http://www.wikidata.org/prop/statement/P10> a owl:ObjectProperty .
+
 <http://www.wikidata.org/prop/statement/value/P10> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/qualifier/value/P10> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/reference/value/P10> a owl:ObjectProperty .
 
-<http://www.wikidata.org/prop/statement/P10> a owl:ObjectProperty .
-
 <http://www.wikidata.org/prop/qualifier/P10> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/reference/P10> a owl:ObjectProperty .
 
-<http://www.wikidata.org/prop/novalue/P10> a owl:Class .
-
 <http://www.wikidata.org/prop/P569> a owl:ObjectProperty .
+
+<http://www.wikidata.org/prop/statement/P569> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/statement/value/P569> a owl:ObjectProperty .
 
@@ -135,15 +130,13 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 <http://www.wikidata.org/prop/reference/value/P569> a owl:ObjectProperty .
 
-<http://www.wikidata.org/prop/statement/P569> a owl:ObjectProperty .
-
 <http://www.wikidata.org/prop/qualifier/P569> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/reference/P569> a owl:ObjectProperty .
 
-<http://www.wikidata.org/prop/novalue/P569> a owl:Class .
-
 <http://www.wikidata.org/prop/P15> a owl:ObjectProperty .
+
+<http://www.wikidata.org/prop/statement/P15> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/statement/value/P15> a owl:ObjectProperty .
 
@@ -151,13 +144,9 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 
 <http://www.wikidata.org/prop/reference/value/P15> a owl:ObjectProperty .
 
-<http://www.wikidata.org/prop/statement/P15> a owl:ObjectProperty .
-
 <http://www.wikidata.org/prop/qualifier/P15> a owl:ObjectProperty .
 
 <http://www.wikidata.org/prop/reference/P15> a owl:ObjectProperty .
-
-<http://www.wikidata.org/prop/novalue/P15> a owl:Class .
 
 <http://www.wikidata.org/prop/P549> a owl:ObjectProperty .
 
@@ -172,6 +161,10 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
 <http://www.wikidata.org/prop/qualifier/P549> a owl:DatatypeProperty .
 
 <http://www.wikidata.org/prop/reference/P549> a owl:DatatypeProperty .
+
+<http://www.wikidata.org/prop/noqualifiervalue/P10> a owl:Class .
+
+<http://www.wikidata.org/prop/novalue/P10> a owl:Class .
 
 <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a wo:Reference ;
 	<http://www.wikidata.org/prop/reference/value/P112> id:VTec11d94e4f5bb7b00a79196734f49066 .

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,6 +49,8 @@ public class OwlDeclarationBuffer {
 	final HashSet<URI> declaredPropertyUris;
 	final List<EntityIdValue> classEntityQueue;
 	final HashSet<EntityIdValue> declaredClassEntities;
+	final List<PropertyIdValue> noValueClassQueue;
+	final HashSet<PropertyIdValue> declearedPropertyNoValueClasses;
 
 	public OwlDeclarationBuffer() {
 		this.objectPropertyQueue = new ArrayList<PropertyIdValue>();
@@ -59,6 +61,8 @@ public class OwlDeclarationBuffer {
 		this.declaredPropertyUris = new HashSet<URI>();
 		this.classEntityQueue = new ArrayList<EntityIdValue>();
 		this.declaredClassEntities = new HashSet<EntityIdValue>();
+		this.noValueClassQueue = new ArrayList<PropertyIdValue>();
+		this.declearedPropertyNoValueClasses = new HashSet<PropertyIdValue>();
 	}
 
 	/**
@@ -85,6 +89,17 @@ public class OwlDeclarationBuffer {
 		if (!this.declaredPropertyUris.contains(propertyUri)) {
 			this.objectPropertyUriQueue.add(propertyUri);
 		}
+	}
+
+	/**
+	 * Adds the given property id value to the list of properties for which
+	 * should be decleared a novalue OWL class.
+	 *
+	 * @param propertyIdValue
+	 *            property for novalue class
+	 */
+	public void addNoValueClass(PropertyIdValue propertyIdValue) {
+		this.noValueClassQueue.add(propertyIdValue);
 	}
 
 	/**
@@ -145,7 +160,6 @@ public class OwlDeclarationBuffer {
 	public void writePropertyDeclarations(RdfWriter rdfWriter,
 			boolean fullStatements, boolean simpleClaims)
 			throws RDFHandlerException {
-		boolean anyStatements = fullStatements || simpleClaims;
 		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
@@ -155,6 +169,9 @@ public class OwlDeclarationBuffer {
 						propertyIdValue, PropertyContext.STATEMENT),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.SIMPLE_VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.VALUE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
@@ -162,10 +179,6 @@ public class OwlDeclarationBuffer {
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.REFERENCE),
-						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-
-				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_VALUE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.QUALIFIER_SIMPLE),
@@ -178,11 +191,6 @@ public class OwlDeclarationBuffer {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.DIRECT),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
-			}
-			if (anyStatements) {
-				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.NO_VALUE),
-						RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
 			}
 		}
 		this.objectPropertyQueue.clear();
@@ -241,6 +249,21 @@ public class OwlDeclarationBuffer {
 					RdfWriter.OWL_DATATYPE_PROPERTY);
 		}
 		this.datatypePropertyUriQueue.clear();
+
+		for (PropertyIdValue propertyIdValue : this.noValueClassQueue) {
+			if (!this.declearedPropertyNoValueClasses.add(propertyIdValue)) {
+				continue;
+			}
+			if (fullStatements) {
+				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+						propertyIdValue, PropertyContext.NO_QUALIFIER_VALUE),
+						RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
+			}
+			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
+					propertyIdValue, PropertyContext.NO_VALUE),
+					RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
+		}
+		this.noValueClassQueue.clear();
 
 	}
 

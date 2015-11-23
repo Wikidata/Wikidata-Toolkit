@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,7 +75,9 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
-	public static final String PREFIX_WBONTO = "http://www.wikidata.org/ontology#";
+	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
+
+	public static final String PREFIX_WBONTO = "http://wikiba.se/ontology#";
 	public static final String PREFIX_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String PREFIX_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 	public static final String PREFIX_OWL = "http://www.w3.org/2002/07/owl#";
@@ -427,7 +429,13 @@ public class Vocabulary {
 	 */
 	public static final String WB_NO_VALUE = PREFIX_WBONTO + "novalue";
 	static {
-		VOCABULARY_TYPES.put(WB_NO_VALUE, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_NO_VALUE, OWL_OBJECT_PROPERTY);
+	}
+
+	public static final String WB_NO_QUALIFIER_VALUE = PREFIX_WBONTO
+			+ "noqualifiervalue";
+	static {
+		VOCABULARY_TYPES.put(WB_NO_QUALIFIER_VALUE, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
@@ -483,6 +491,8 @@ public class Vocabulary {
 			return PREFIX_PROPERTY_REFERENCE + propertyIdValue.getId();
 		case NO_VALUE:
 			return PREFIX_WIKIDATA_NO_VALUE + propertyIdValue.getId();
+		case NO_QUALIFIER_VALUE:
+			return PREFIX_WIKIDATA_NO_QUALIFIER_VALUE + propertyIdValue.getId();
 		default:
 			return null;
 		}

@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,7 +202,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	@Override
 	public Void visit(NoValueSnak snak) {
-		if (!simple) {
+		if (simple) {
+			this.rdfConversionBuffer.addNoValueClass(snak.getPropertyId());
 			String rangeUri = getRangeUri(snak.getPropertyId());
 			if (rangeUri == null) {
 				logger.error("Count not export NoValueSnak for property "
@@ -213,13 +214,19 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				rangeUri = Vocabulary.RDFS_LITERAL;
 			}
 
-			String propertyUri = Vocabulary.getPropertyUri(
-					snak.getPropertyId(), this.currentPropertyContext);
-			Resource bnode = this.rdfWriter.getFreshBNode();
-			addNoValuesRestriction(bnode, propertyUri, rangeUri);
+			String noValueClass;
+			if ((this.currentPropertyContext == PropertyContext.QUALIFIER)
+					|| (this.currentPropertyContext == PropertyContext.QUALIFIER_SIMPLE)) {
+				noValueClass = Vocabulary.getPropertyUri(snak.getPropertyId(),
+						PropertyContext.NO_QUALIFIER_VALUE);
+			} else {
+				noValueClass = Vocabulary.getPropertyUri(snak.getPropertyId(),
+						PropertyContext.NO_VALUE);
+			}
+			// TODO add restrictions
 			try {
-				this.rdfWriter.writeTripleValueObject(this.currentSubject,
-						RdfWriter.RDF_TYPE, bnode);
+				this.rdfWriter.writeTripleUriObject(this.currentSubject,
+						RdfWriter.RDF_TYPE, noValueClass);
 			} catch (RDFHandlerException e) {
 				throw new RuntimeException(e.toString(), e);
 			}

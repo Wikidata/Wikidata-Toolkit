@@ -7,7 +7,7 @@
 	<http://www.wikidata.org/prop/P569> <http://www.wikidata.org/entity/statement/Q10-none2> ;
 	<http://www.wikidata.org/prop/P549> <http://www.wikidata.org/entity/statement/Q10-none> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> , _:node1a2ni22hrx1 ;
+<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> , <http://www.wikidata.org/prop/novalue/P10> ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
 <http://www.wikidata.org/entity/statement/Q10-none2> a <http://wikiba.se/ontology#Statement> ;
@@ -21,13 +21,6 @@
 <http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> ;
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
-
-_:node1a2ni22hrx1 a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1a2ni22hrx2 .
-
-_:node1a2ni22hrx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/prop/statement/value/P10> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
 <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> a <http://wikiba.se/ontology#TimeValue> ;
 	<http://wikiba.se/ontology#time> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -64,8 +57,6 @@ _:node1a2ni22hrx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 
 <http://www.wikidata.org/prop/reference/P569> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/prop/novalue/P569> a <http://www.w3.org/2002/07/owl#Class> .
-
 <http://www.wikidata.org/prop/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://www.wikidata.org/prop/statement/value/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -80,7 +71,7 @@ _:node1a2ni22hrx2 a <http://www.w3.org/2002/07/owl#Restriction> ;
 
 <http://www.wikidata.org/prop/reference/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/prop/novalue/P15> a <http://www.w3.org/2002/07/owl#Class> .
+<http://www.wikidata.org/prop/noqualifiervalue/P10> a <http://www.w3.org/2002/07/owl#Class> .
 
 <http://www.wikidata.org/prop/P549> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
