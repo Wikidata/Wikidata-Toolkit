@@ -169,7 +169,7 @@ public class TestObjectFactory {
 				Collections.<SnakGroup> emptyList());
 		statements3.add(factory.getStatement(claim3,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
+				"none3"));
 		statementGroups.add(factory.getStatementGroup(statements3));
 		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -49,8 +50,6 @@ public class OwlDeclarationBuffer {
 	final HashSet<URI> declaredPropertyUris;
 	final List<EntityIdValue> classEntityQueue;
 	final HashSet<EntityIdValue> declaredClassEntities;
-	final List<PropertyIdValue> noValueClassQueue;
-	final HashSet<PropertyIdValue> declearedPropertyNoValueClasses;
 
 	public OwlDeclarationBuffer() {
 		this.objectPropertyQueue = new ArrayList<PropertyIdValue>();
@@ -61,8 +60,6 @@ public class OwlDeclarationBuffer {
 		this.declaredPropertyUris = new HashSet<URI>();
 		this.classEntityQueue = new ArrayList<EntityIdValue>();
 		this.declaredClassEntities = new HashSet<EntityIdValue>();
-		this.noValueClassQueue = new ArrayList<PropertyIdValue>();
-		this.declearedPropertyNoValueClasses = new HashSet<PropertyIdValue>();
 	}
 
 	/**
@@ -89,17 +86,6 @@ public class OwlDeclarationBuffer {
 		if (!this.declaredPropertyUris.contains(propertyUri)) {
 			this.objectPropertyUriQueue.add(propertyUri);
 		}
-	}
-
-	/**
-	 * Adds the given property id value to the list of properties for which
-	 * should be decleared a novalue OWL class.
-	 *
-	 * @param propertyIdValue
-	 *            property for novalue class
-	 */
-	public void addNoValueClass(PropertyIdValue propertyIdValue) {
-		this.noValueClassQueue.add(propertyIdValue);
 	}
 
 	/**
@@ -160,9 +146,19 @@ public class OwlDeclarationBuffer {
 	public void writePropertyDeclarations(RdfWriter rdfWriter,
 			boolean fullStatements, boolean simpleClaims)
 			throws RDFHandlerException {
+		boolean anyStatements = fullStatements || simpleClaims;
 		for (PropertyIdValue propertyIdValue : this.objectPropertyQueue) {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
+			}
+			if (anyStatements) {
+				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
+						Vocabulary.OWL_THING, Vocabulary.getPropertyUri(
+								propertyIdValue, PropertyContext.NO_VALUE));
+				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
+						Vocabulary.OWL_THING, Vocabulary.getPropertyUri(
+								propertyIdValue,
+								PropertyContext.NO_QUALIFIER_VALUE));
 			}
 			if (fullStatements) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
@@ -198,6 +194,15 @@ public class OwlDeclarationBuffer {
 		for (PropertyIdValue propertyIdValue : this.datatypePropertyQueue) {
 			if (!this.declaredProperties.add(propertyIdValue)) {
 				continue;
+			}
+			if (anyStatements) {
+				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
+						Vocabulary.XSD_STRING, Vocabulary.getPropertyUri(
+								propertyIdValue, PropertyContext.NO_VALUE));
+				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
+						Vocabulary.XSD_STRING, Vocabulary.getPropertyUri(
+								propertyIdValue,
+								PropertyContext.NO_QUALIFIER_VALUE));
 			}
 			if (fullStatements) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
@@ -250,21 +255,6 @@ public class OwlDeclarationBuffer {
 		}
 		this.datatypePropertyUriQueue.clear();
 
-		for (PropertyIdValue propertyIdValue : this.noValueClassQueue) {
-			if (!this.declearedPropertyNoValueClasses.add(propertyIdValue)) {
-				continue;
-			}
-			if (fullStatements) {
-				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.NO_QUALIFIER_VALUE),
-						RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
-			}
-			rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-					propertyIdValue, PropertyContext.NO_VALUE),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
-		}
-		this.noValueClassQueue.clear();
-
 	}
 
 	/**
@@ -286,6 +276,36 @@ public class OwlDeclarationBuffer {
 					RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
 		}
 		this.classEntityQueue.clear();
+	}
+
+	/**
+	 * Writes no-value restriction.
+	 *
+	 * @param rdfWriter
+	 *            the writer to write the restrictions to
+	 * @param propertyUri
+	 *            URI of the property to which the restriction applies
+	 * @param rangeUri
+	 *            URI of the class or datatype to which the restriction applies
+	 * @param subject
+	 *            node representing the restriction
+	 * @throws RDFHandlerException
+	 *             if there was a problem writing the RDF triples
+	 */
+	void writeNoValueRestriction(RdfWriter rdfWriter, String propertyUri,
+			String rangeUri, String subject) throws RDFHandlerException {
+
+		Resource bnodeSome = rdfWriter.getFreshBNode();
+		rdfWriter.writeTripleValueObject(subject, RdfWriter.RDF_TYPE,
+				RdfWriter.OWL_CLASS);
+		rdfWriter.writeTripleValueObject(subject, RdfWriter.OWL_COMPLEMENT_OF,
+				bnodeSome);
+		rdfWriter.writeTripleValueObject(bnodeSome, RdfWriter.RDF_TYPE,
+				RdfWriter.OWL_RESTRICTION);
+		rdfWriter.writeTripleUriObject(bnodeSome, RdfWriter.OWL_ON_PROPERTY,
+				propertyUri);
+		rdfWriter.writeTripleUriObject(bnodeSome,
+				RdfWriter.OWL_SOME_VALUES_FROM, rangeUri);
 	}
 
 }

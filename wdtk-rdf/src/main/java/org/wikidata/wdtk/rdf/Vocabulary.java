@@ -425,13 +425,16 @@ public class Vocabulary {
 	}
 
 	/**
-	 * Class for Wikibase no values.
+	 * Property for Wikibase no values.
 	 */
 	public static final String WB_NO_VALUE = PREFIX_WBONTO + "novalue";
 	static {
 		VOCABULARY_TYPES.put(WB_NO_VALUE, OWL_OBJECT_PROPERTY);
 	}
 
+	/**
+	 * Property for Wikibase no qualifier values.
+	 */
 	public static final String WB_NO_QUALIFIER_VALUE = PREFIX_WBONTO
 			+ "noqualifiervalue";
 	static {
