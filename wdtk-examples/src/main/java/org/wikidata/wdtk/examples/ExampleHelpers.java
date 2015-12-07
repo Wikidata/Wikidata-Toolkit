@@ -212,27 +212,22 @@ public class ExampleHelpers {
 	 */
 	public static FileOutputStream openExampleFileOuputStream(String filename)
 			throws IOException {
-		// Path directoryPath = Paths.get("public_html").resolve("miga")
-		// .resolve("apps");
-		Path directoryPath;
+		Path directoryPath = Paths.get("public_html").resolve("miga")
+				.resolve("apps");
 		if ("".equals(lastDumpFileName)) {
 			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
 		} else {
-			//if ("Classes.csv".equals(filename)) {
-			//	directoryPath = directoryPath
-			//			.resolve("classes");
-			//} else {
-			//	directoryPath = directoryPath
-		//				.resolve("properties");
-			//
-			// }
-			 directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
-			 createDirectory(directoryPath);
-			 directoryPath = directoryPath.resolve(lastDumpFileName);
+			if ("Classes.csv".equals(filename)) {
+				directoryPath = directoryPath
+						.resolve("classes");
+			} else {
+				directoryPath = directoryPath
+						.resolve("properties");
+			}
 		}
-
 		createDirectory(directoryPath);
 		Path filePath = directoryPath.resolve(filename);
+		System.out.println(filePath.toString());
 		return new FileOutputStream(filePath.toFile());
 	}
 
