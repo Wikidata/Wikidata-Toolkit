@@ -552,7 +552,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writePropertyData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("properties.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Properties.csv"))) {
 
 			out.println("Id" + ",Label" + ",Description" + ",URL"
 					+ ",Datatype" + ",Uses in statements"
@@ -580,7 +580,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writeClassData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("classes.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Classes.csv"))) {
 
 			out.println("Id" + ",Label" + ",Description" + ",URL"
 					+ ",Image"
