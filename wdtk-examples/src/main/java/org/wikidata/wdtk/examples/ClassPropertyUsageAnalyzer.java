@@ -135,6 +135,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 */
 		public int referenceCount = 0;
 		/**
+		 * Number of uses of this property in other properties.
+		 */
+		public int propertyCount = 0;
+		/**
 		 * Datatype of this property
 		 */
 		public String datatype = "Unknown";
@@ -367,6 +371,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		this.countProperties++;
 		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
 				.getPropertyId());
+
+		for (StatementGroup sg : propertyDocument.getStatementGroups()) {
+			PropertyRecord otherPropertyRecord = getPropertyRecord(sg
+					.getProperty());
+			otherPropertyRecord.propertyCount++;
+		}
+
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
 		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
@@ -559,7 +570,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 					+ ",Items with such statements"
 					+ ",Uses in statements with qualifiers"
 					+ ",Uses in qualifiers"
-					+ ",Uses in references" + ",Uses total"
+					+ ",Uses in references"
+					+ ",Uses in properties" + ",Uses total"
 					+ ",Related properties");
 
 			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
@@ -757,8 +769,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				+ ","
 				+ propertyRecord.referenceCount
 				+ ","
+				+ propertyRecord.propertyCount
+				+ ","
 				+ (propertyRecord.statementCount
-						+ propertyRecord.qualifierCount + propertyRecord.referenceCount));
+						+ propertyRecord.qualifierCount
+						+ propertyRecord.referenceCount + propertyRecord.propertyCount));
 
 		printRelatedProperties(out, propertyRecord);
 
