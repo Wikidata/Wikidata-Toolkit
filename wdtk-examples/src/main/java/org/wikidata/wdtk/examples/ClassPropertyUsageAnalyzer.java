@@ -376,6 +376,26 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			PropertyRecord otherPropertyRecord = getPropertyRecord(sg
 					.getProperty());
 			otherPropertyRecord.propertyCount++;
+			for (Statement s: sg.getStatements()){
+			// Count uses of properties in qualifiers
+			for (SnakGroup q : s.getClaim().getQualifiers()) {
+				countPropertyQualifier(q.getProperty(),
+						q.getSnaks().size());
+			}
+			// Count statements with qualifiers
+			if (s.getClaim().getQualifiers().size() > 0) {
+				propertyRecord.statementWithQualifierCount++;
+			}
+			// Count uses of properties in references
+			for (Reference r : s.getReferences()) {
+				for (SnakGroup snakGroup : r
+						.getSnakGroups()) {
+					countPropertyReference(
+							snakGroup.getProperty(),
+							snakGroup.getSnaks()
+									.size());
+				}
+			}
 		}
 
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
@@ -387,6 +407,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		} else {
 			propertyRecord.label = propertyDocument.getPropertyId()
 					.getId();
+			}
 		}
 	}
 
