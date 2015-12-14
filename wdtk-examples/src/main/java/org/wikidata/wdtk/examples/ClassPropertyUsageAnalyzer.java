@@ -242,7 +242,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * it will use a label with an added Q-ID for disambiguation.
 	 */
 	final Set<String> labels = new HashSet<>();
-	
+
 	/**
 	 * Set used for storing of classes of which a subclass was calculated
 	 * but not the superclass. After processing the dump file classes of
@@ -274,7 +274,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		if (itemDocument.getStatementGroups().size() > 0) {
 			this.countPropertyItems++;
 		}
-		
+
 		ClassRecord classRecord = null;
 		if (this.classRecords.containsKey(itemDocument.getItemId())
 				|| unCalculatedSuperClasses
@@ -328,7 +328,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 							.getMainSnak())
 							.getValue();
 					if (value instanceof EntityIdValue) {
-						if (!classRecords.containsKey((EntityIdValue) value)) {
+						if (!classRecords
+								.containsKey((EntityIdValue) value)) {
 							unCalculatedSuperClasses
 									.add((EntityIdValue) value);
 						}
@@ -376,24 +377,25 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			PropertyRecord otherPropertyRecord = getPropertyRecord(sg
 					.getProperty());
 			otherPropertyRecord.propertyCount++;
-			for (Statement s: sg.getStatements()){
-			// Count uses of properties in qualifiers
-			for (SnakGroup q : s.getClaim().getQualifiers()) {
-				countPropertyQualifier(q.getProperty(),
-						q.getSnaks().size());
-			}
-			// Count statements with qualifiers
-			if (s.getClaim().getQualifiers().size() > 0) {
-				propertyRecord.statementWithQualifierCount++;
-			}
-			// Count uses of properties in references
-			for (Reference r : s.getReferences()) {
-				for (SnakGroup snakGroup : r
-						.getSnakGroups()) {
-					countPropertyReference(
-							snakGroup.getProperty(),
-							snakGroup.getSnaks()
-									.size());
+			for (Statement s : sg.getStatements()) {
+				// Count uses of properties in qualifiers
+				for (SnakGroup q : s.getClaim().getQualifiers()) {
+					countPropertyQualifier(q.getProperty(),
+							q.getSnaks().size());
+				}
+				// Count statements with qualifiers
+				if (s.getClaim().getQualifiers().size() > 0) {
+					otherPropertyRecord.statementWithQualifierCount++;
+				}
+				// Count uses of properties in references
+				for (Reference r : s.getReferences()) {
+					for (SnakGroup snakGroup : r
+							.getSnakGroups()) {
+						countPropertyReference(
+								snakGroup.getProperty(),
+								snakGroup.getSnaks()
+										.size());
+					}
 				}
 			}
 		}
@@ -401,16 +403,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
 		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
-		MonolingualTextValue labelValue = propertyDocument.getLabels().get("en");
+		MonolingualTextValue labelValue = propertyDocument.getLabels()
+				.get("en");
 		if (labelValue != null) {
 			propertyRecord.label = labelValue.getText();
 		} else {
 			propertyRecord.label = propertyDocument.getPropertyId()
 					.getId();
-			}
 		}
-	}
 
+	}
 
 	/**
 	 * Creates the final file output of the analysis.
@@ -584,7 +586,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writePropertyData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("properties.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Properties.csv"))) {
 
 			out.println("Id" + ",Label" + ",Description" + ",URL"
 					+ ",Datatype" + ",Uses in statements"
@@ -613,7 +615,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writeClassData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("classes.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Classes.csv"))) {
 
 			out.println("Id" + ",Label" + ",Description" + ",URL"
 					+ ",Image"
@@ -769,7 +771,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *                the property that the data refers to
 	 */
 	private void printPropertyRecord(PrintStream out,
-			PropertyRecord propertyRecord, PropertyIdValue propertyIdValue) {
+			PropertyRecord propertyRecord,
+			PropertyIdValue propertyIdValue) {
 
 		printTerms(out, propertyRecord, propertyIdValue);
 
@@ -800,7 +803,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		out.println("");
 	}
-	
+
 	/**
 	 * Prints the terms (label, etc.) of one entity to the given stream.
 	 * This will lead to several values in the CSV file, which are the same
@@ -828,22 +831,22 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 		label = csvStringEscape(usageRecord.label);
 		out.print(entityIdValue.getId() + "," + label + ","
-				+ description + ","
-				+ entityIdValue.getIri());
+				+ description + "," + entityIdValue.getIri());
 	}
-	
+
 	/**
-	 * Prints a list of related properties to the output. The list is encoded as
-	 * a single CSV value, using "@" as a separator. Miga can decode this.
-	 * Standard CSV processors do not support lists of entries as values,
-	 * however.
+	 * Prints a list of related properties to the output. The list is
+	 * encoded as a single CSV value, using "@" as a separator. Miga can
+	 * decode this. Standard CSV processors do not support lists of entries
+	 * as values, however.
 	 *
 	 * @param out
-	 *            the output to write to
+	 *                the output to write to
 	 * @param usageRecord
-	 *            the data to write
+	 *                the data to write
 	 */
-	private void printRelatedProperties(PrintStream out, UsageRecord usageRecord) {
+	private void printRelatedProperties(PrintStream out,
+			UsageRecord usageRecord) {
 		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
 				usageRecord.propertyCoCounts.size());
 		for (Entry<PropertyIdValue, Integer> coCountEntry : usageRecord.propertyCoCounts
