@@ -22,26 +22,36 @@ package org.wikidata.wdtk.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.io.InputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
 public class WebResourceFetcherTest {
 
-	@Test
-	public void testSetUserAgent() {
-		WebResourceFetcherImpl.setUserAgent("My user agent");
-		assertEquals("My user agent", WebResourceFetcherImpl.getUserAgent());
-	}
+    @Test
+    public void testSetUserAgent() {
+        WebResourceFetcherImpl.setUserAgent("My user agent");
+        assertEquals("My user agent", WebResourceFetcherImpl.getUserAgent());
+    }
 
-	@Test
-	public void testSetProxy() {
-		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
-				"test.adress", 8080));
-		WebResourceFetcherImpl.setProxy(proxy);
-		assertTrue(WebResourceFetcherImpl.hasProxy());
-		assertEquals(proxy, WebResourceFetcherImpl.getProxy());
-	}
+    @Test
+    public void testSetProxy() {
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+                "test.adress", 8080));
+        WebResourceFetcherImpl.setProxy(proxy);
+        assertTrue(WebResourceFetcherImpl.hasProxy());
+        assertEquals(proxy, WebResourceFetcherImpl.getProxy());
+    }
+
+    @Test
+    public void testGetInputStreamForUrl() throws IOException {
+	WebResourceFetcherImpl rf = new WebResourceFetcherImpl();
+        InputStream is = rf.getInputStreamForUrl("http://www.wikidata.org/w/api.php");
+        assertNotNull(is);
+    }
 }
