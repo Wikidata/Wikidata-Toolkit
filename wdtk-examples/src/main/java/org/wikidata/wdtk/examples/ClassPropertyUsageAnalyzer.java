@@ -107,7 +107,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * The description of this item. If there isn't any English
 		 * description available, the description is set to a hyphen.
 		 */
-		public String description;
+		// public String description;
 	}
 
 	/**
@@ -531,13 +531,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
 			UsageRecord usageRecord) {
-		usageRecord.description = "-";
+		//usageRecord.description = "-";
 		if (termedDocument != null) {
 			MonolingualTextValue descriptionValue = termedDocument
 					.getDescriptions().get("en");
 			if (descriptionValue != null) {
-				usageRecord.description = descriptionValue
-						.getText();
+				//usageRecord.description = descriptionValue
+				// .getText();
 			}
 		}
 	}
@@ -586,9 +586,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writePropertyData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("Properties.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Properties.csv"),
+				true, "UTF-8")) {
 
-			out.println("Id" + ",Label" + ",Description" + ",URL"
+			out.println("Id" + ",Label" + ",URL"
 					+ ",Datatype" + ",Uses in statements"
 					+ ",Items with such statements"
 					+ ",Uses in statements with qualifiers"
@@ -615,9 +616,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writeClassData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("Classes.csv"))) {
+				ExampleHelpers.openExampleFileOuputStream("Classes.csv"),
+				true, "UTF-8")) {
 
-			out.println("Id" + ",Label" + ",Description" + ",URL"
+			out.println("Id" + ",Label" + ",URL"
 					+ ",Image"
 					+ ",Number of direct instances"
 					+ ",Number of direct subclasses"
@@ -819,19 +821,18 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private void printTerms(PrintStream out, UsageRecord usageRecord,
 			EntityIdValue entityIdValue) {
 
-		String description = "-";
 		String label;
 
-		if (usageRecord.description != null) {
-			description = csvStringEscape(usageRecord.description);
-		}
+		// if (usageRecord.description != null) {
+		// description = csvStringEscape(usageRecord.description);
+		// }
 
 		if (usageRecord.label == null) {
 			usageRecord.label = entityIdValue.getId();
 		}
 		label = csvStringEscape(usageRecord.label);
 		out.print(entityIdValue.getId() + "," + label + ","
-				+ description + "," + entityIdValue.getIri());
+				+ entityIdValue.getIri());
 	}
 
 	/**
@@ -893,7 +894,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			}
 			// makeshift escaping for Miga:
 			out.print(getPropertyLabel(relatedProperty.left)
-					.replace("@", "＠"));
+					.replace("@", "＠")
+					.replace("\"", "\"\""));
 			count++;
 		}
 		out.print("\"");
