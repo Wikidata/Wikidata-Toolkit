@@ -42,7 +42,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.examples.ExampleHelpers;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
@@ -311,22 +310,18 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 					.makeWikidataPropertyIdValue(propertyId);
 			List<Statement> updateStatements = new ArrayList<>();
 			for (Statement s : editPropertyStatements.getStatements()) {
-				if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-					QuantityValue qv = (QuantityValue) ((ValueSnak) s
-							.getClaim().getMainSnak()).getValue();
-					if (isPlusMinusOneValue(qv)) {
-						QuantityValue exactValue = Datamodel.makeQuantityValue(
-								qv.getNumericValue(), qv.getNumericValue(),
-								qv.getNumericValue(), "");
-						Statement exactStatement = StatementBuilder
-								.forSubjectAndProperty(itemIdValue, property)
-								.withValue(exactValue)
-								.withId(s.getStatementId())
-								.withQualifiers(s.getClaim().getQualifiers())
-								.withReferences(s.getReferences())
-								.withRank(s.getRank()).build();
-						updateStatements.add(exactStatement);
-					}
+				QuantityValue qv = (QuantityValue) s.getValue();
+				if (qv != null && isPlusMinusOneValue(qv)) {
+					QuantityValue exactValue = Datamodel.makeQuantityValue(
+							qv.getNumericValue(), qv.getNumericValue(),
+							qv.getNumericValue(), "");
+					Statement exactStatement = StatementBuilder
+							.forSubjectAndProperty(itemIdValue, property)
+							.withValue(exactValue).withId(s.getStatementId())
+							.withQualifiers(s.getClaim().getQualifiers())
+							.withReferences(s.getReferences())
+							.withRank(s.getRank()).build();
+					updateStatements.add(exactStatement);
 				}
 			}
 
@@ -411,12 +406,9 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 			return false;
 		}
 		for (Statement s : statementGroup.getStatements()) {
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				QuantityValue qv = (QuantityValue) ((ValueSnak) s.getClaim()
-						.getMainSnak()).getValue();
-				if (isPlusMinusOneValue(qv)) {
-					return true;
-				}
+			QuantityValue qv = (QuantityValue) s.getValue();
+			if (qv != null && isPlusMinusOneValue(qv)) {
+				return true;
 			}
 		}
 		return false;
