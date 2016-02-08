@@ -16,7 +16,7 @@ wo:lowerBound a owl:DatatypeProperty .
 
 wo:quantityUnit a owl:ObjectProperty .
 
-wo:qualifier a owl:Class .
+wo:qualifier a owl:ObjectProperty .
 
 wo:latitude a owl:DatatypeProperty .
 
@@ -24,15 +24,15 @@ wo:Property a owl:Class .
 
 schema:inLanguage a owl:DatatypeProperty .
 
-wo:qualifierValue a owl:Class .
+wo:qualifierValue a owl:ObjectProperty .
 
 wo:upperBound a owl:DatatypeProperty .
 
-wo:directClaim a owl:Class .
+wo:directClaim a owl:ObjectProperty .
 
 wo:globe a owl:ObjectProperty .
 
-wo:claim a owl:Class .
+wo:claim a owl:ObjectProperty .
 
 wo:timePrecision a owl:DatatypeProperty .
 
@@ -50,7 +50,9 @@ wo:GlobeCoordinatesValue a owl:Class .
 
 wo:Reference a owl:Class .
 
-wo:referenceValue a owl:Class .
+wo:reference a owl:ObjectProperty .
+
+wo:referenceValue a owl:ObjectProperty .
 
 schema:description a owl:DatatypeProperty .
 
@@ -66,7 +68,7 @@ wo:rank a owl:ObjectProperty .
 
 wo:QuantityValue a owl:Class .
 
-wo:statementProperty a owl:Class .
+wo:statementProperty a owl:ObjectProperty .
 
 wo:Item a owl:Class .
 
@@ -74,7 +76,7 @@ wo:TimeValue a owl:Class .
 
 wo:Statement a owl:Class .
 
-wo:statementValue a owl:Class .
+wo:statementValue a owl:ObjectProperty .
 
 wo:numericValue a owl:DatatypeProperty .
 

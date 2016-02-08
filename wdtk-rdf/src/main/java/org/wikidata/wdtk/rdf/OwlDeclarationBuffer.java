@@ -165,7 +165,7 @@ public class OwlDeclarationBuffer {
 						propertyIdValue, PropertyContext.STATEMENT),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_VALUE),
+						propertyIdValue, PropertyContext.VALUE_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.VALUE),
@@ -180,7 +180,7 @@ public class OwlDeclarationBuffer {
 						propertyIdValue, PropertyContext.QUALIFIER_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_REFERENCE),
+						propertyIdValue, PropertyContext.REFERENCE_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_OBJECT_PROPERTY);
 			}
 			if (simpleClaims) {
@@ -218,13 +218,13 @@ public class OwlDeclarationBuffer {
 						propertyIdValue, PropertyContext.REFERENCE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_VALUE),
+						propertyIdValue, PropertyContext.VALUE_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
 						propertyIdValue, PropertyContext.QUALIFIER_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
-						propertyIdValue, PropertyContext.SIMPLE_REFERENCE),
+						propertyIdValue, PropertyContext.REFERENCE_SIMPLE),
 						RdfWriter.RDF_TYPE, RdfWriter.OWL_DATATYPE_PROPERTY);
 
 			}

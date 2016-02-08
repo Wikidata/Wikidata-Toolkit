@@ -248,46 +248,50 @@ public class RdfConverter {
 		Resource subject = this.rdfWriter.getUri(document.getEntityId()
 				.getIri());
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_DIRECT_CLAIM), Vocabulary.getPropertyUri(
-				document.getPropertyId(), PropertyContext.DIRECT));
+				.getUri(Vocabulary.WB_DIRECT_CLAIM_PROP), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.DIRECT));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_CLAIM), Vocabulary.getPropertyUri(
+				.getUri(Vocabulary.WB_CLAIM_PROP), Vocabulary.getPropertyUri(
 				document.getPropertyId(), PropertyContext.STATEMENT));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_STATEMENT_PROPERTY), Vocabulary
+				.getUri(Vocabulary.WB_STATEMENT_PROP), Vocabulary
 				.getPropertyUri(document.getPropertyId(),
-						PropertyContext.SIMPLE_VALUE));
+						PropertyContext.VALUE_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_STATEMENT_VALUE),
+				.getUri(Vocabulary.WB_STATEMENT_VALUE_PROP),
 				Vocabulary.getPropertyUri(document.getPropertyId(),
 						PropertyContext.VALUE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_QUALIFIER), Vocabulary.getPropertyUri(
-				document.getPropertyId(), PropertyContext.QUALIFIER_SIMPLE));
+				.getUri(Vocabulary.WB_QUALIFIER_PROP), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.QUALIFIER_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_QUALIFIER_VALUE), Vocabulary
+				.getUri(Vocabulary.WB_QUALIFIER_VALUE_PROP), Vocabulary
 				.getPropertyUri(document.getPropertyId(),
 						PropertyContext.QUALIFIER));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_REFERENCE), Vocabulary.getPropertyUri(
-				document.getPropertyId(), PropertyContext.SIMPLE_REFERENCE));
+				.getUri(Vocabulary.WB_REFERENCE_PROP), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.REFERENCE_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_REFERENCE_VALUE), Vocabulary
+				.getUri(Vocabulary.WB_REFERENCE_VALUE_PROP), Vocabulary
 				.getPropertyUri(document.getPropertyId(),
 						PropertyContext.REFERENCE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_NO_VALUE), Vocabulary.getPropertyUri(
-				document.getPropertyId(), PropertyContext.NO_VALUE));
+				.getUri(Vocabulary.WB_NO_VALUE_PROP), Vocabulary
+				.getPropertyUri(document.getPropertyId(),
+						PropertyContext.NO_VALUE));
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_NO_QUALIFIER_VALUE), Vocabulary
+				.getUri(Vocabulary.WB_NO_QUALIFIER_VALUE_PROP), Vocabulary
 				.getPropertyUri(document.getPropertyId(),
 						PropertyContext.NO_QUALIFIER_VALUE));
 		// TODO something more with NO_VALUE
@@ -540,7 +544,7 @@ public class RdfConverter {
 				PropertyContext.VALUE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
 		this.snakRdfConverter.setSnakContext(claimResource,
-				PropertyContext.SIMPLE_VALUE);
+				PropertyContext.VALUE_SIMPLE);
 		claim.getMainSnak().accept(this.snakRdfConverter);
 		// write qualifier
 		this.snakRdfConverter.setSnakContext(claimResource,

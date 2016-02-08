@@ -49,19 +49,21 @@
 
 <http://wikiba.se/ontology#Property> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://wikiba.se/ontology#directClaim> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#directClaim> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#statementValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#statementValue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#statementProperty> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#statementProperty> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#claim> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#claim> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#qualifier> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#qualifier> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#qualifierValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#qualifierValue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#Class> .
+<http://wikiba.se/ontology#reference> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://wikiba.se/ontology#referenceValue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://wikiba.se/ontology#novalue> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

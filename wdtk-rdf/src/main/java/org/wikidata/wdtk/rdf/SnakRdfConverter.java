@@ -142,9 +142,9 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
 		this.simple = (this.currentPropertyContext == PropertyContext.DIRECT)
-				|| (this.currentPropertyContext == PropertyContext.SIMPLE_VALUE)
+				|| (this.currentPropertyContext == PropertyContext.VALUE_SIMPLE)
 				|| (this.currentPropertyContext == PropertyContext.QUALIFIER_SIMPLE)
-				|| (this.currentPropertyContext == PropertyContext.SIMPLE_REFERENCE);
+				|| (this.currentPropertyContext == PropertyContext.REFERENCE_SIMPLE);
 
 	}
 

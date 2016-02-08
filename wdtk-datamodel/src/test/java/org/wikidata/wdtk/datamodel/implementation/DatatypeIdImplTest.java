@@ -39,8 +39,7 @@ public class DatatypeIdImplTest {
 	@Before
 	public void setUp() {
 		d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
-		d2 = new DatatypeIdImpl(
-				"http://wikiba.se/ontology#propertyTypeItem");
+		d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
 		d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 	}
 
