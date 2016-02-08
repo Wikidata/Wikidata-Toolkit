@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -782,6 +782,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return "Time";
 		case DatatypeIdValue.DT_URL:
 			return "URL";
+		case DatatypeIdValue.DT_PROPERTY:
+			return "Property";
+		case DatatypeIdValue.DT_EXTERNAL_ID:
+			return "External identifier";
+		case DatatypeIdValue.DT_MATH:
+			return "Math";
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			return "Monolingual Text";
 		default:
 			throw new RuntimeException("Unknown datatype " + datatype.getIri());
 		}
