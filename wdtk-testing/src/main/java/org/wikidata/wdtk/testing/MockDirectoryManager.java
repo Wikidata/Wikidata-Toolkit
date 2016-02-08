@@ -253,7 +253,7 @@ public class MockDirectoryManager implements DirectoryManager {
 		ensureWritePermission(filePath);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		int nextByte = 0;
+		int nextByte;
 		while ((nextByte = inputStream.read()) >= 0) {
 			out.write(nextByte);
 		}

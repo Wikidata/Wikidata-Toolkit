@@ -41,75 +41,75 @@ public interface GlobeCoordinatesValue extends Value {
 	/**
 	 * Precision constant for globe coordinates that are precise to ten degrees.
 	 */
-	static final double PREC_TEN_DEGREE = 10.0;
+	double PREC_TEN_DEGREE = 10.0;
 	/**
 	 * Precision constant for globe coordinates that are precise to the degree.
 	 */
-	static final double PREC_DEGREE = 1.0;
+	double PREC_DEGREE = 1.0;
 	/**
 	 * Precision constant for globe coordinates that are precise to the tenth of
 	 * a degree.
 	 */
-	static final double PREC_DECI_DEGREE = 0.1;
+	double PREC_DECI_DEGREE = 0.1;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * arcminute.
 	 */
-	static final double PREC_ARCMINUTE = 1.0 / 60;
+	double PREC_ARCMINUTE = 1.0 / 60;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * hundredth of a degree.
 	 */
-	static final double PREC_CENTI_DEGREE = 0.01;
+	double PREC_CENTI_DEGREE = 0.01;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * thousandth of a degree.
 	 */
-	static final double PREC_MILLI_DEGREE = 0.001;
+	double PREC_MILLI_DEGREE = 0.001;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * arcsecond.
 	 */
-	static final double PREC_ARCSECOND = 1.0 / 3600;
+	double PREC_ARCSECOND = 1.0 / 3600;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * ten-thousandth of a degree.
 	 */
-	static final double PREC_HUNDRED_MICRO_DEGREE = 0.0001;
+	double PREC_HUNDRED_MICRO_DEGREE = 0.0001;
 	/**
 	 * Precision constant for globe coordinates that are precise to the tenth of
 	 * an arcsecond.
 	 */
-	static final double PREC_DECI_ARCSECOND = 1.0 / 36000;
+	double PREC_DECI_ARCSECOND = 1.0 / 36000;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * hundred-thousandth of a degree.
 	 */
-	static final double PREC_TEN_MICRO_DEGREE = 0.00001;
+	double PREC_TEN_MICRO_DEGREE = 0.00001;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * hundredth of an arcsecond.
 	 */
-	static final double PREC_CENTI_ARCSECOND = 1.0 / 360000;
+	double PREC_CENTI_ARCSECOND = 1.0 / 360000;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * millionth of a degree.
 	 */
-	static final double PREC_MICRO_DEGREE = 0.000001;
+	double PREC_MICRO_DEGREE = 0.000001;
 	/**
 	 * Precision constant for globe coordinates that are precise to the
 	 * thousandth of an arcsecond.
 	 */
-	static final double PREC_MILLI_ARCSECOND = 1.0 / 3600000;
+	double PREC_MILLI_ARCSECOND = 1.0 / 3600000;
 
 	/**
 	 * IRI of the Earth. Used frequently to specify the globe.
 	 */
-	static final String GLOBE_EARTH = "http://www.wikidata.org/entity/Q2";
+	String GLOBE_EARTH = "http://www.wikidata.org/entity/Q2";
 	/**
 	 * IRI of the the Earth's Moon.
 	 */
-	static final String GLOBE_MOON = "http://www.wikidata.org/entity/Q405";
+	String GLOBE_MOON = "http://www.wikidata.org/entity/Q405";
 
 	/**
 	 * Get the latitude of this value in degrees. For Earth, the latitude value

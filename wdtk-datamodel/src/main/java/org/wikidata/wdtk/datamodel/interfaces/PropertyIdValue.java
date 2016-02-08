@@ -34,7 +34,7 @@ public interface PropertyIdValue extends EntityIdValue {
 	 * be used as a placeholder object in situations where the entity id is
 	 * irrelevant.
 	 */
-	static final PropertyIdValue NULL = new PropertyIdValue() {
+	PropertyIdValue NULL = new PropertyIdValue() {
 
 		@Override
 		public String getIri() {

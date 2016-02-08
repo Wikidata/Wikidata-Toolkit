@@ -124,7 +124,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						this.dumpContentType, this.dateStamp));
 
-		long size = 0;
+		long size;
 		try (InputStream inputStream = webResourceFetcher
 				.getInputStreamForUrl(urlString)) {
 			size = thisDumpDirectoryManager.createFileAtomic(fileName,

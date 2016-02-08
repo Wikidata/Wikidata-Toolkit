@@ -702,7 +702,7 @@ public class DumpProcessingController {
 
 		for (Map.Entry<ListenerRegistration, List<EntityDocumentProcessor>> edpEntry : this.entityDocumentProcessors
 				.entrySet()) {
-			EntityDocumentProcessor resultEdp = null;
+			EntityDocumentProcessor resultEdp;
 			if (edpEntry.getValue().size() == 1) {
 				resultEdp = edpEntry.getValue().get(0);
 			} else {

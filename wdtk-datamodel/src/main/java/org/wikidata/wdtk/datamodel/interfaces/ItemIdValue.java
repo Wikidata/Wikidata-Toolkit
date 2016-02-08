@@ -34,7 +34,7 @@ public interface ItemIdValue extends EntityIdValue {
 	 * Fixed {@link ItemIdValue} that refers to a non-existing item. Can be used
 	 * as a placeholder object in situations where the entity id is irrelevant.
 	 */
-	static final ItemIdValue NULL = new ItemIdValue() {
+	ItemIdValue NULL = new ItemIdValue() {
 
 		@Override
 		public String getIri() {
