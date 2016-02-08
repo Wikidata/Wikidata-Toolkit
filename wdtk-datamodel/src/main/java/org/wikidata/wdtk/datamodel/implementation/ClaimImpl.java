@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.util.NestedIterator;
 
 /**
@@ -44,7 +45,7 @@ import org.wikidata.wdtk.util.NestedIterator;
 public class ClaimImpl implements Claim, Serializable {
 
 	private static final long serialVersionUID = -2991778567647082844L;
-	
+
 	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<SnakGroup> qualifiers;
@@ -88,6 +89,11 @@ public class ClaimImpl implements Claim, Serializable {
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
 		return new NestedIterator<>(this.qualifiers);
+	}
+
+	@Override
+	public Value getValue() {
+		return mainSnak.getValue();
 	}
 
 	@Override

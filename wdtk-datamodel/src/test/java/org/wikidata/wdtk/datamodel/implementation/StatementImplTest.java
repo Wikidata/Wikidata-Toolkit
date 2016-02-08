@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,10 +52,9 @@ public class StatementImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = ItemIdValueImpl.create("Q42",
+		subject = ItemIdValueImpl.create("Q42", "http://wikidata.org/entity/");
+		PropertyIdValue property = PropertyIdValueImpl.create("P42",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = PropertyIdValueImpl.create(
-				"P42", "http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
 		claim = new ClaimImpl(subject, mainSnak,
@@ -73,6 +72,7 @@ public class StatementImplTest {
 				Collections.<List<? extends Snak>> emptyList());
 		assertEquals(s1.getRank(), StatementRank.NORMAL);
 		assertEquals(s1.getStatementId(), "MyId");
+		assertEquals(s1.getValue(), subject);
 	}
 
 	@Test(expected = NullPointerException.class)
