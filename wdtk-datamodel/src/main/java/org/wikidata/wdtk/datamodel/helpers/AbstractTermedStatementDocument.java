@@ -322,11 +322,7 @@ public abstract class AbstractTermedStatementDocument implements
 		if (statement == null) {
 			return null;
 		}
-		if (!(statement.getClaim().getMainSnak() instanceof ValueSnak)) {
-			return null;
-		}
-		ValueSnak valueSnak = (ValueSnak) statement.getClaim().getMainSnak();
-		return valueSnak.getValue();
+		return statement.getClaim().getMainSnak().getValue();
 	}
 
 	/**

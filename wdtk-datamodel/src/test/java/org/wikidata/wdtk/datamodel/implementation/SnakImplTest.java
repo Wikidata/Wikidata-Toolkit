@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,6 +72,12 @@ public class SnakImplTest {
 		assertEquals(vs1.hashCode(), vs2.hashCode());
 		assertEquals(svs1.hashCode(), svs2.hashCode());
 		assertEquals(nvs1.hashCode(), nvs2.hashCode());
+	}
+
+	@Test
+	public void snaksWithoutValues() {
+		assertEquals(svs1.getValue(), null);
+		assertEquals(nvs1.getValue(), null);
 	}
 
 	@Test
