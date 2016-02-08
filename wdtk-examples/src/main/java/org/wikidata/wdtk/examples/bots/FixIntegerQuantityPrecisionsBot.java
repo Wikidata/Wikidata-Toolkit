@@ -76,6 +76,9 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * <li>Use basic bot configuration features (login, disable editing for test,
  * limited numbers of test edits)</li>
  * </ul>
+ * The bot is tried and tested, and has been used on Wikidata to perform its
+ * task on several 1,000 items (see <a
+ * href="https://www.wikidata.org/wiki/User:Makrobot">User:Makrobot</a>).
  *
  * @author Markus Kroetzsch
  *
