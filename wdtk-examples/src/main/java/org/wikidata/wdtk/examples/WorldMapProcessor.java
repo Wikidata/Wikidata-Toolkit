@@ -39,7 +39,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This example class processes EntityDocuments to create a map image that shows
@@ -216,12 +215,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 	 */
 	private void countCoordinateStatement(Statement statement,
 			ItemDocument itemDocument) {
-		if (!(statement.getClaim().getMainSnak() instanceof ValueSnak)) {
-			return;
-		}
-
-		Value value = ((ValueSnak) statement.getClaim().getMainSnak())
-				.getValue();
+		Value value = statement.getValue();
 		if (!(value instanceof GlobeCoordinatesValue)) {
 			return;
 		}
