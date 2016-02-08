@@ -59,7 +59,7 @@ public class SiteLinkImplTest {
 		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki",
 				Collections.<String> emptyList());
 		SiteLink sDiffBadges = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.<String> singletonList("some badge?"));
+				Collections.singletonList("some badge?"));
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);

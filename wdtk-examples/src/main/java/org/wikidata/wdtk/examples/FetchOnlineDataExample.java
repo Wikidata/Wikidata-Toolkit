@@ -61,10 +61,10 @@ public class FetchOnlineDataExample {
 				.println("*** Fetching data using filters to reduce data volume:");
 		// Only site links from English Wikipedia:
 		wbdf.getFilter().setSiteLinkFilter(
-				Collections.<String> singleton("enwiki"));
+				Collections.singleton("enwiki"));
 		// Only labels in French:
 		wbdf.getFilter()
-				.setLanguageFilter(Collections.<String> singleton("fr"));
+				.setLanguageFilter(Collections.singleton("fr"));
 		// No statements at all:
 		wbdf.getFilter().setPropertyFilter(
 				Collections.<PropertyIdValue> emptySet());

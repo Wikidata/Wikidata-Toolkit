@@ -53,8 +53,7 @@ public class AliasesDeserializer extends
 
 	@Override
 	public Map<String, List<JacksonMonolingualTextValue>> deserialize(
-			JsonParser jp, DeserializationContext ctxt) throws IOException,
-			JsonProcessingException {
+			JsonParser jp, DeserializationContext ctxt) throws IOException {
 
 		Map<String, List<JacksonMonolingualTextValue>> contents = new HashMap<>();
 
@@ -66,14 +65,10 @@ public class AliasesDeserializer extends
 					List<JacksonMonolingualTextValue> mltvList = new ArrayList<>();
 					Entry<String, JsonNode> currentNode = nodeIterator.next();
 					// get the list of MLTVs
-					Iterator<JsonNode> mltvListIterator = currentNode
-							.getValue().iterator();
-					while (mltvListIterator.hasNext()) {
-						JsonNode mltvEntry = mltvListIterator.next();
+					for (JsonNode mltvEntry : currentNode.getValue()) {
 						String language = mltvEntry.get("language").asText();
 						String value = mltvEntry.get("value").asText();
-						mltvList.add(new JacksonMonolingualTextValue(language,
-								value));
+						mltvList.add(new JacksonMonolingualTextValue(language,value));
 					}
 
 					contents.put(currentNode.getKey(), mltvList);

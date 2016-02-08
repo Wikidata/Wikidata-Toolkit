@@ -133,6 +133,9 @@ public class Client {
 			}
 		}
 
+		this.clientConfiguration.setProjectName(dumpFile.getProjectName());
+		this.clientConfiguration.setDateStamp(dumpFile.getDateStamp());
+
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
 
@@ -165,7 +168,6 @@ public class Client {
 			this.dumpProcessingController.registerEntityDocumentProcessor(
 					entityTimerProcessor, null, true);
 		}
-
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
@@ -241,8 +243,13 @@ public class Client {
 		for (DumpProcessingAction action : this.clientConfiguration
 				.getActions()) {
 			if (this.clientConfiguration.getReportFileName() != null) {
-				builder.append(action.getActionName() + ": ");
-				builder.append(action.getReport());
+				builder.append(action.getActionName());
+				builder.append(": ");
+				if (action.isReady()) {
+					builder.append(action.getReport());
+				} else {
+					builder.append("Action was not executed.");
+				}
 				builder.append(System.getProperty("line.separator"));
 			} else {
 				logger.info(action.getActionName() + ": " + action.getReport());

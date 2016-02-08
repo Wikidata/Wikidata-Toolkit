@@ -177,7 +177,7 @@ public class ApiConnection {
 	/**
 	 * Map of cookies that are currently set.
 	 */
-	final Map<String, String> cookies = new HashMap<String, String>();
+	final Map<String, String> cookies = new HashMap<>();
 
 	/**
 	 * Mapper object used for deserializing JSON data.
@@ -224,7 +224,7 @@ public class ApiConnection {
 	 *            the objects to implode
 	 * @return string of imploded objects
 	 */
-	public static String implodeObjects(Iterable<? extends Object> objects) {
+	public static String implodeObjects(Iterable<?> objects) {
 		StringBuilder builder = new StringBuilder();
 		boolean first = true;
 		for (Object o : objects) {
@@ -291,7 +291,7 @@ public class ApiConnection {
 	 */
 	public void logout() throws IOException {
 		if (this.loggedIn) {
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
 			sendRequest("POST", params);
@@ -440,16 +440,15 @@ public class ApiConnection {
 	 *             not understood
 	 */
 	String getLoginToken(String username, String password) throws IOException {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "login");
 		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
 		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
 		params.put(ApiConnection.PARAM_FORMAT, "json");
 
 		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
-		String token = root.path("login").path("token").textValue();
 
-		return token;
+		return root.path("login").path("token").textValue();
 	}
 
 	/**
@@ -469,7 +468,7 @@ public class ApiConnection {
 	 */
 	void confirmLogin(String token, String username, String password)
 			throws IOException, LoginFailedException {
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "login");
 		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
 		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
@@ -541,20 +540,19 @@ public class ApiConnection {
 	 * @param headerFields
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> cookieList = headerFields
+		List<String> headerCookies = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		if (cookieList == null) {
-			return;
-		}
-		for (int i = 0; i < cookieList.size(); i++) {
-			String[] cookieResponse = cookieList.get(i).split(";\\p{Space}??");
-			for (String cookieLine : cookieResponse) {
-				String[] entry = cookieLine.split("=");
-				if (entry.length == 2) {
-					this.cookies.put(entry[0], entry[1]);
-				}
-				if (entry.length == 1) {
-					this.cookies.put(entry[0], "");
+		if (headerCookies != null) {
+			for (String cookie : headerCookies) {
+				String[] cookieResponse = cookie.split(";\\p{Space}??");
+				for (String cookieLine : cookieResponse) {
+					String[] entry = cookieLine.split("=");
+					if (entry.length == 2) {
+						this.cookies.put(entry[0], entry[1]);
+					}
+					if (entry.length == 1) {
+						this.cookies.put(entry[0], "");
+					}
 				}
 			}
 		}

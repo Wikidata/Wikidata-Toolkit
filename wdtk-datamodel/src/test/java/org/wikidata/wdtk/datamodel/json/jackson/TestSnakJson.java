@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,9 +30,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestSnakJson {
@@ -40,8 +38,8 @@ public class TestSnakJson {
 	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	public void testNoValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testNoValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
 				JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
@@ -61,8 +59,8 @@ public class TestSnakJson {
 	}
 
 	@Test
-	public void testSomeValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testSomeValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
 				JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
@@ -82,8 +80,8 @@ public class TestSnakJson {
 	}
 
 	@Test
-	public void testCommonsValueSnakToJava() throws JsonParseException,
-			JsonMappingException, IOException {
+	public void testCommonsValueSnakToJava() throws
+			IOException {
 		JacksonSnak result = mapper.readValue(
 				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);

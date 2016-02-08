@@ -227,9 +227,9 @@ public class DatamodelTest {
 		Snak s = factory.getNoValueSnak(factory
 				.getPropertyIdValue("P42", "foo"));
 		SnakGroup o1 = Datamodel.makeSnakGroup(Collections
-				.<Snak> singletonList(s));
+				.singletonList(s));
 		SnakGroup o2 = factory
-				.getSnakGroup(Collections.<Snak> singletonList(s));
+				.getSnakGroup(Collections.singletonList(s));
 		assertEquals(o1, o2);
 	}
 
@@ -284,9 +284,9 @@ public class DatamodelTest {
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");
 		StatementGroup o1 = new StatementGroupImpl(
-				Collections.<Statement> singletonList(s));
+				Collections.singletonList(s));
 		StatementGroup o2 = factory.getStatementGroup(Collections
-				.<Statement> singletonList(s));
+				.singletonList(s));
 		assertEquals(o1, o2);
 	}
 

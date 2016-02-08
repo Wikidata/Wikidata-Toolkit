@@ -33,13 +33,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,6 +50,15 @@ public class ApiConnectionTest {
 	final ObjectMapper mapper = new ObjectMapper();
 
 	MockApiConnection con;
+
+	Set<String> split(String str, char ch) {
+		Set<String> set = new TreeSet<String>();
+		StringTokenizer stok = new StringTokenizer(str, "" + ch);
+		while (stok.hasMoreTokens()) {
+			set.add(stok.nextToken().trim());
+		}
+		return set;
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -162,13 +173,13 @@ public class ApiConnectionTest {
 		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
 		params.put("format", "json");
 		assertEquals(
-				"lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password"
-						+ "&action=login&lgname=username&format=json",
-				con.getQueryString(params));
+				split("lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password"
+						+ "&action=login&lgname=username&format=json", '&'),
+				split(con.getQueryString(params), '&'));
 	}
 
 	@Test
-	public void testWarnings() throws JsonProcessingException, IOException {
+	public void testWarnings() throws IOException {
 		JsonNode root;
 		URL path = this.getClass().getResource("/warnings.json");
 		root = mapper.readTree(path.openStream());
@@ -182,7 +193,7 @@ public class ApiConnectionTest {
 	}
 
 	@Test(expected = MediaWikiApiErrorException.class)
-	public void testErrors() throws JsonProcessingException, IOException,
+	public void testErrors() throws IOException,
 			MediaWikiApiErrorException {
 		JsonNode root;
 		URL path = this.getClass().getResource("/error.json");
@@ -207,10 +218,10 @@ public class ApiConnectionTest {
 		headerFields.put("Set-Cookie", cookieList);
 		con.fillCookies(headerFields);
 		assertEquals(
-				"HttpOnly;  httponly;  Path=/; GeoIP=DE:13:Dresden:51.0500:13.7500:v4;  "
+				split("HttpOnly;  httponly;  Path=/; GeoIP=DE:13:Dresden:51.0500:13.7500:v4;  "
 						+ "Domain=.wikidata.org; Expires=Sat, 19 Sep 2015 12:00:00 GMT;  secure;  path=/; "
-						+ "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; WMF-Last-Access=18-Aug-2015; Path=/",
-				con.getCookieString());
+						+ "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; WMF-Last-Access=18-Aug-2015; Path=/", ';'),
+				split(con.getCookieString(), ';'));
 	}
 
 	@Test

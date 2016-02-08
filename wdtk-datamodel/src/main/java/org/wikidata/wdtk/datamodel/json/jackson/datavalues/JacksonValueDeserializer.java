@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,8 +55,7 @@ public class JacksonValueDeserializer extends StdDeserializer<JacksonValue> {
 
 	@Override
 	public JacksonValue deserialize(JsonParser jsonParser,
-			DeserializationContext ctxt) throws IOException,
-			JsonProcessingException {
+			DeserializationContext ctxt) throws IOException {
 
 		ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
 		JsonNode root = mapper.readTree(jsonParser);

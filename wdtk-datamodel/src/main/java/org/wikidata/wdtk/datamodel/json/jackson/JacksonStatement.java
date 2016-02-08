@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -99,7 +99,7 @@ public class JacksonStatement implements Statement {
 	 * List of property string ids that encodes the desired order of qualifiers,
 	 * which is not specified by the map.
 	 */
-	private List<String> propertyOrder = Collections.<String> emptyList();
+	private List<String> propertyOrder = Collections.emptyList();
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

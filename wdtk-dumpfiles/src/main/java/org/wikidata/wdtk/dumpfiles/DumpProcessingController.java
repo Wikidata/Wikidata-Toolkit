@@ -677,9 +677,8 @@ public class DumpProcessingController {
 				&& this.filter.getLanguageFilter() == null) {
 			return processor;
 		} else {
-			EntityDocumentProcessorFilter filter = new EntityDocumentProcessorFilter(
+			return new EntityDocumentProcessorFilter(
 					processor, this.filter);
-			return filter;
 		}
 	}
 

@@ -62,7 +62,7 @@ public class JsonSerializerTest {
 
 		ItemDocument id1 = Datamodel.makeItemDocument(DataObjectFactoryImplTest
 				.getTestItemIdValue(1), Collections
-				.<MonolingualTextValue> singletonList(Datamodel
+				.singletonList(Datamodel
 						.makeMonolingualTextValue("Label1", "lang1")),
 				Collections.<MonolingualTextValue> emptyList(), Collections
 						.<MonolingualTextValue> emptyList(),
@@ -75,15 +75,15 @@ public class JsonSerializerTest {
 				.<MonolingualTextValue> emptyList(), Collections
 				.<MonolingualTextValue> emptyList(), DataObjectFactoryImplTest
 				.getTestStatementGroups(2, 23, 1, EntityIdValue.ET_ITEM),
-				Collections.<String, SiteLink> singletonMap(
+				Collections.singletonMap(
 						"enwiki",
 						Datamodel.makeSiteLink("Title2", "enwiki",
-								Collections.<String> emptyList())), 0);
+								Collections.<String>emptyList())), 0);
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
 				DataObjectFactoryImplTest.getTestPropertyIdValue(1),
 				Collections.<MonolingualTextValue> emptyList(), Collections
 						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> singletonList(Datamodel
+						.singletonList(Datamodel
 								.makeMonolingualTextValue("Alias1", "lang1")),
 				Collections.<StatementGroup> emptyList(), Datamodel
 						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA),
