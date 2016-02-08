@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,6 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This example class processes EntityDocuments to create a map image that shows
@@ -216,12 +215,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 	 */
 	private void countCoordinateStatement(Statement statement,
 			ItemDocument itemDocument) {
-		if (!(statement.getClaim().getMainSnak() instanceof ValueSnak)) {
-			return;
-		}
-
-		Value value = ((ValueSnak) statement.getClaim().getMainSnak())
-				.getValue();
+		Value value = statement.getValue();
 		if (!(value instanceof GlobeCoordinatesValue)) {
 			return;
 		}

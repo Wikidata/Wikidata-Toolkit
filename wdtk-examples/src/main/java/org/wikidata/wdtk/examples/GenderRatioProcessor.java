@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,6 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This document processor calculates the gender ratios of people featured on
@@ -381,15 +380,10 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 		List<EntityIdValue> result = new ArrayList<>(statementGroup
 				.getStatements().size());
 
-		// Iterate over all statements
 		for (Statement s : statementGroup.getStatements()) {
-			// Find the main claim and check if it has a value
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				Value v = ((ValueSnak) s.getClaim().getMainSnak()).getValue();
-				// Check if the value is an ItemIdValue
-				if (v instanceof EntityIdValue) {
-					result.add((EntityIdValue) v);
-				}
+			Value v = s.getValue();
+			if (v instanceof EntityIdValue) {
+				result.add((EntityIdValue) v);
 			}
 		}
 
@@ -407,15 +401,9 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @return true if value was found
 	 */
 	private boolean containsValue(StatementGroup statementGroup, Value value) {
-		// Iterate over all statements
 		for (Statement s : statementGroup.getStatements()) {
-			// Find the main claim and check if it has a value
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				Value v = ((ValueSnak) s.getClaim().getMainSnak()).getValue();
-				// Check if the value is an ItemIdValue
-				if (value.equals(v)) {
-					return true;
-				}
+			if (value.equals(s.getValue())) {
+				return true;
 			}
 		}
 
