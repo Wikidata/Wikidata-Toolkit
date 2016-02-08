@@ -40,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
  */
 public class GreatestNumberProcessor implements EntityDocumentProcessor {
 
-	static final String numberPropertyId = "P1101";
+	static final String numberPropertyId = "P1113"; // "series length"
 	// P1090 is "redshift"
 	// P1351 is "number of points/goals scored"
 	// P1350 is "number of matches played"
@@ -116,7 +116,7 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 				+ " matching items after scanning " + this.itemCount
 				+ " items.");
 		if (this.largestNumberValue != null) {
-			System.out.println("The items with the greatest number is: "
+			System.out.println("The item with the greatest number is: "
 					+ this.largestNumberItemLabel + " ("
 					+ this.largestNumberItem.getId() + ") with number "
 					+ this.largestNumberValue);
