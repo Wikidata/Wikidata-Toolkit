@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
@@ -328,7 +329,8 @@ public class ApiConnection {
 			Map<String, String> parameters) throws IOException {
 		String queryString = getQueryString(parameters);
 		URL url = new URL(this.apiBaseUrl);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl
+				.getUrlConnection(url);
 
 		setupConnection(requestMethod, queryString, connection);
 		OutputStreamWriter writer = new OutputStreamWriter(
@@ -540,15 +542,17 @@ public class ApiConnection {
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> headerCookies = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		for (String cookie : headerCookies) {
-			String[] cookieResponse = cookie.split(";\\p{Space}??");
-			for (String cookieLine : cookieResponse) {
-				String[] entry = cookieLine.split("=");
-				if (entry.length == 2) {
-					this.cookies.put(entry[0], entry[1]);
-				}
-				if (entry.length == 1) {
-					this.cookies.put(entry[0], "");
+		if (headerCookies != null) {
+			for (String cookie : headerCookies) {
+				String[] cookieResponse = cookie.split(";\\p{Space}??");
+				for (String cookieLine : cookieResponse) {
+					String[] entry = cookieLine.split("=");
+					if (entry.length == 2) {
+						this.cookies.put(entry[0], entry[1]);
+					}
+					if (entry.length == 1) {
+						this.cookies.put(entry[0], "");
+					}
 				}
 			}
 		}
@@ -616,7 +620,7 @@ public class ApiConnection {
 	 * @param queryString
 	 *            the query string to submit
 	 * @param connection
-	 *            the conncetion to configure
+	 *            the connection to configure
 	 * @throws IOException
 	 *             if the given protocol is not valid
 	 */

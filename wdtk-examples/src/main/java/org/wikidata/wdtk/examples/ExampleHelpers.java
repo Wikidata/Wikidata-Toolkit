@@ -216,7 +216,9 @@ public class ExampleHelpers {
 		if ("".equals(lastDumpFileName)) {
 			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
 		} else {
-			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY).resolve(
+			directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+			createDirectory(directoryPath);
+			directoryPath = directoryPath.resolve(
 					lastDumpFileName);
 		}
 
@@ -230,7 +232,7 @@ public class ExampleHelpers {
 	 * used to name files generated from this dump. The result might be the
 	 * empty string if no file has been processed yet.
 	 */
-	public String getLastDumpFileName() {
+	public static String getLastDumpFileName() {
 		return lastDumpFileName;
 	}
 

@@ -45,6 +45,8 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 		String valueUriString = null;
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
+		case DatatypeIdValue.DT_EXTERNAL_ID:
+		case DatatypeIdValue.DT_MATH:
 			valueUriString = null;
 			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
