@@ -655,9 +655,61 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		out.println(builder.toString());
 	}
 	
-	private String buildStringForRelatedProperties(ClassRecord classRecord) {
-		String ret = jsonStringEscape("relpros") + ":";
-		return ret;
+	private String buildStringForRelatedProperties(UsageRecord usageRecord) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(jsonStringEscape("relpros")).append(":{");
+
+		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
+				usageRecord.propertyCoCounts.size());
+		for (Entry<PropertyIdValue, Integer> coCountEntry : usageRecord.propertyCoCounts
+				.entrySet()) {
+			double otherThisItemRate = (double) coCountEntry
+					.getValue() / usageRecord.itemCount;
+			double otherGlobalItemRate = (double) this.propertyRecords
+					.get(coCountEntry.getKey()).itemCount
+					/ this.countPropertyItems;
+			double otherThisItemRateStep = 1 / (1 + Math
+					.exp(6 * (-2 * otherThisItemRate + 0.5)));
+			double otherInvGlobalItemRateStep = 1 / (1 + Math
+					.exp(6 * (-2
+							* (1 - otherGlobalItemRate) + 0.5)));
+
+			list.add(new ImmutablePair<PropertyIdValue, Double>(
+					coCountEntry.getKey(),
+					otherThisItemRateStep
+							* otherInvGlobalItemRateStep
+							* otherThisItemRate
+							/ otherGlobalItemRate));
+		}
+
+		Collections.sort(
+				list,
+				new Comparator<ImmutablePair<PropertyIdValue, Double>>() {
+					@Override
+					public int compare(
+							ImmutablePair<PropertyIdValue, Double> o1,
+							ImmutablePair<PropertyIdValue, Double> o2) {
+						return o2.getValue().compareTo(
+								o1.getValue());
+					}
+				});
+
+		int count = 0;
+		for (ImmutablePair<PropertyIdValue, Double> relatedProperty : list) {
+			if (relatedProperty.right < 1.5) {
+				break;
+			}
+			if (count > 0) {
+				builder.append(",");
+			}
+			// makeshift escaping for Miga:
+			builder.append(jsonStringEscape(entityIdValueToInt(relatedProperty.left)));
+			builder.append(":");
+			builder.append(relatedProperty.right);
+			count++;
+		}
+		builder.append("}");
+		return builder.toString();
 	}
 
 	private String jsonStringEscape(String string) {
@@ -711,7 +763,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 						+ propertyRecord.qualifierCount
 						+ propertyRecord.referenceCount + propertyRecord.propertyCount));
 
-		printRelatedProperties(out, propertyRecord);
+		// printRelatedProperties(out, propertyRecord);
 
 		out.println("");
 	}
@@ -745,89 +797,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				+ entityIdValue.getIri());
 	}
 
-	/**
-	 * Prints a list of related properties to the output. The list is
-	 * encoded as a single CSV value, using "@" as a separator. Miga can
-	 * decode this. Standard CSV processors do not support lists of entries
-	 * as values, however.
-	 *
-	 * @param out
-	 *                the output to write to
-	 * @param usageRecord
-	 *                the data to write
-	 */
-	private void printRelatedProperties(PrintStream out,
-			UsageRecord usageRecord) {
-		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
-				usageRecord.propertyCoCounts.size());
-		for (Entry<PropertyIdValue, Integer> coCountEntry : usageRecord.propertyCoCounts
-				.entrySet()) {
-			double otherThisItemRate = (double) coCountEntry
-					.getValue() / usageRecord.itemCount;
-			double otherGlobalItemRate = (double) this.propertyRecords
-					.get(coCountEntry.getKey()).itemCount
-					/ this.countPropertyItems;
-			double otherThisItemRateStep = 1 / (1 + Math
-					.exp(6 * (-2 * otherThisItemRate + 0.5)));
-			double otherInvGlobalItemRateStep = 1 / (1 + Math
-					.exp(6 * (-2
-							* (1 - otherGlobalItemRate) + 0.5)));
-
-			list.add(new ImmutablePair<PropertyIdValue, Double>(
-					coCountEntry.getKey(),
-					otherThisItemRateStep
-							* otherInvGlobalItemRateStep
-							* otherThisItemRate
-							/ otherGlobalItemRate));
-		}
-
-		Collections.sort(
-				list,
-				new Comparator<ImmutablePair<PropertyIdValue, Double>>() {
-					@Override
-					public int compare(
-							ImmutablePair<PropertyIdValue, Double> o1,
-							ImmutablePair<PropertyIdValue, Double> o2) {
-						return o2.getValue().compareTo(
-								o1.getValue());
-					}
-				});
-
-		out.print(",\"");
-		int count = 0;
-		for (ImmutablePair<PropertyIdValue, Double> relatedProperty : list) {
-			if (relatedProperty.right < 1.5) {
-				break;
-			}
-			if (count > 0) {
-				out.print("@");
-			}
-			// makeshift escaping for Miga:
-			out.print(getPropertyLabel(relatedProperty.left)
-					.replace("@", "＠")
-					.replace("\"", "\"\""));
-			count++;
-		}
-		out.print("\"");
-	}
-
-	/**
-	 * Returns a string that should be used as a label for the given
-	 * property.
-	 *
-	 * @param propertyIdValue
-	 *                the property to label
-	 * @return the label
-	 */
-	private String getPropertyLabel(PropertyIdValue propertyIdValue) {
-		PropertyRecord propertyRecord = this.propertyRecords
-				.get(propertyIdValue);
-		if (propertyRecord != null && propertyRecord.label != null) {
-			return propertyRecord.label;
-		} else {
-			return propertyIdValue.getId();
-		}
-	}
 
 	/**
 	 * Returns a string that should be used as a label for the given item.
