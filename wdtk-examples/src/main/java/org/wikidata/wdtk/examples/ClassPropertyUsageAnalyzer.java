@@ -45,8 +45,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
@@ -149,40 +147,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *
 	 */
 	private class ClassRecord extends UsageRecord {
-		/**
-		 * Number of subclasses of this class item.
-		 */
-		public int subclassCount = 0;
-		/**
-		 * List of all super classes of this class.
-		 */
-		public ArrayList<EntityIdValue> superClasses = new ArrayList<>();
-		/**
-		 * name of the imageFile for a thumbnail for this class
-		 */
-		public String imageFile;
+
 	}
 
-	/**
-	 * Comparator to order class items by their number of instances and
-	 * direct subclasses.
-	 *
-	 * @author Markus Kroetzsch
-	 *
-	 */
-	private class ClassUsageRecordComparator
-			implements
-			Comparator<Entry<? extends EntityIdValue, ? extends ClassRecord>> {
-		@Override
-		public int compare(
-				Entry<? extends EntityIdValue, ? extends ClassRecord> o1,
-				Entry<? extends EntityIdValue, ? extends ClassRecord> o2) {
-			return o2.getValue().subclassCount
-					+ o2.getValue().itemCount
-					- (o1.getValue().subclassCount + o1
-							.getValue().itemCount);
-		}
-	}
 
 	/**
 	 * Comparator to order class items by their number of instances and
@@ -337,10 +304,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 									itemDocument,
 									otherClassRecord,
 									null);
-						} else {
-							otherClassRecord.subclassCount++;
-							classRecord.superClasses
-									.add((EntityIdValue) value);
 						}
 					}
 				}
@@ -352,8 +315,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		if (classRecord != null) {
 			this.countClasses++;
-			setImageFileToClassRecord(itemDocument, classRecord);
-			setDescriptionToUsageRecord(itemDocument, classRecord);
 			setLabelToClassRecord(itemDocument, classRecord);
 		}
 
@@ -399,7 +360,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		propertyRecord.datatype = getDatatypeLabel(propertyDocument
 				.getDatatype());
-		setDescriptionToUsageRecord(propertyDocument, propertyRecord);
 		MonolingualTextValue labelValue = propertyDocument.getLabels()
 				.get("en");
 		if (labelValue != null) {
@@ -443,11 +403,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 					ClassRecord classRecord = getClassRecord(entityIdValue);
 
-					setImageFileToClassRecord(itemDocument,
-							classRecord);
-					setDescriptionToUsageRecord(
-							itemDocument,
-							classRecord);
 					setLabelToClassRecord(itemDocument,
 							classRecord);
 				}
@@ -519,66 +474,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	}
 
 	/**
-	 * Sets the description of a record.
-	 * 
-	 * @param termedDocument
-	 *                Document that provides the description.
-	 * @param usageRecord
-	 *                usage record that represents an entry.
-	 */
-	private void setDescriptionToUsageRecord(TermedDocument termedDocument,
-			UsageRecord usageRecord) {
-		//usageRecord.description = "-";
-		if (termedDocument != null) {
-			MonolingualTextValue descriptionValue = termedDocument
-					.getDescriptions().get("en");
-			if (descriptionValue != null) {
-				//usageRecord.description = descriptionValue
-				// .getText();
-			}
-		}
-	}
-
-	/**
-	 * Sets the image file name to a class record. If there is no image
-	 * available, the image file is set to null.
-	 * 
-	 * @param itemDocument
-	 *                Document that provides the image file.
-	 * @param classRecord
-	 *                class record that represents an entry
-	 */
-	private void setImageFileToClassRecord(ItemDocument itemDocument,
-			ClassRecord classRecord) {
-		if (itemDocument != null && classRecord != null) {
-			for (StatementGroup sg : itemDocument
-					.getStatementGroups()) {
-				boolean isImage = "P18".equals(sg.getProperty()
-						.getId());
-				if (!isImage) {
-					continue;
-				}
-				for (Statement s : sg.getStatements()) {
-					if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-						Value value = ((ValueSnak) s
-								.getClaim()
-								.getMainSnak())
-								.getValue();
-						if (value instanceof StringValue) {
-							classRecord.imageFile = ((StringValue) value)
-									.getString();
-							break;
-						}
-					}
-				}
-				if (classRecord.imageFile != null) {
-					break;
-				}
-			}
-		}
-	}
-
-	/**
 	 * Writes the data collected about properties to a file.
 	 */
 	private void writePropertyData() {
@@ -619,7 +514,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			out.println("}\";");
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
-			Collections.sort(list, new ClassUsageRecordComparator());
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
 				printClassRecord(out, entry.getValue(),
 						entry.getKey());
@@ -795,28 +689,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		label = csvStringEscape(usageRecord.label);
 		out.print(entityIdValue.getId() + "," + label + ","
 				+ entityIdValue.getIri());
-	}
-
-
-	/**
-	 * Returns a string that should be used as a label for the given item.
-	 * The method also ensures that each label is used for only one class.
-	 * Other classes with the same label will have their QID added for
-	 * disambiguation.
-	 *
-	 * @param entityIdValue
-	 *                the item to label
-	 * @return the label
-	 */
-	private String getClassLabel(EntityIdValue entityIdValue) {
-		ClassRecord classRecord = this.classRecords.get(entityIdValue);
-		String label;
-		if (classRecord == null || classRecord.label == null) {
-			label = entityIdValue.getId();
-		} else {
-			label = classRecord.label;
-		}
-		return label;
 	}
 
 	/**
