@@ -107,7 +107,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * The description of this item. If there isn't any English
 		 * description available, the description is set to a hyphen.
 		 */
-		// public String description;
 	}
 
 	/**
@@ -616,32 +615,42 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writeClassData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("Classes.csv"),
+				ExampleHelpers.openExampleFileOuputStream("classes.js"),
 				true, "UTF-8")) {
-
-			out.println("Id" + ",Label" + ",URL"
-					+ ",Image"
-					+ ",Number of direct instances"
-					+ ",Number of direct subclasses"
-					+ ",Direct superclasses"
-					+ ",All superclasses"
-					+ ",Related properties");
-
+			out.println("classes = \"{");
+			out.println("}\";");
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
 			Collections.sort(list, new ClassUsageRecordComparator());
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
-				if (entry.getValue().itemCount > 0
-						|| entry.getValue().subclassCount > 0) {
-					printClassRecord(out, entry.getValue(),
-							entry.getKey());
-				}
+				printClassRecord(out, entry.getValue(),
+						entry.getKey());
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	/*
+	 * private void writeClassData() { try (PrintStream out = new
+	 * PrintStream(
+	 * ExampleHelpers.openExampleFileOuputStream("Classes.csv"), true,
+	 * "UTF-8")) {
+	 * 
+	 * out.println("Id" + ",Label" + ",URL" + ",Image" +
+	 * ",Number of direct instances" + ",Number of direct subclasses" +
+	 * ",Direct superclasses" + ",All superclasses" +
+	 * ",Related properties");
+	 * 
+	 * List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
+	 * this.classRecords.entrySet()); Collections.sort(list, new
+	 * ClassUsageRecordComparator()); for (Entry<EntityIdValue, ClassRecord>
+	 * entry : list) { if (entry.getValue().itemCount > 0 ||
+	 * entry.getValue().subclassCount > 0) { printClassRecord(out,
+	 * entry.getValue(), entry.getKey()); } }
+	 * 
+	 * } catch (IOException e) { e.printStackTrace(); } }
+	 */
 
 	/**
 	 * Prints the data for a single class to the given stream. This will be
@@ -656,25 +665,51 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void printClassRecord(PrintStream out, ClassRecord classRecord,
 			EntityIdValue entityIdValue) {
-		printTerms(out, classRecord, entityIdValue);
-		printImage(out, classRecord);
-
-		out.print("," + classRecord.itemCount + ","
-				+ classRecord.subclassCount);
-
-		printClassList(out, classRecord.superClasses);
-
-		HashSet<EntityIdValue> superClasses = new HashSet<>();
-		for (EntityIdValue superClass : classRecord.superClasses) {
-			addSuperClasses(superClass, superClasses);
-		}
-
-		printClassList(out, superClasses);
-
-		printRelatedProperties(out, classRecord);
-
-		out.println("");
+		StringBuilder builder = new StringBuilder();
+		builder.append(jsonStringEscape(entityIdValueToInt(entityIdValue)))
+				.append(":{");
+		builder.append(jsonStringEscape("label")).append(":")
+				.append(jsonStringEscape(classRecord.label))
+				.append(",");
+		builder.append(jsonStringEscape("items")).append(":")
+				.append(classRecord.itemCount).append(",");
+		builder.append(buildStringForRelatedProperties(classRecord));
+		builder.append("}");
+		out.println(builder.toString());
 	}
+	
+	private String buildStringForRelatedProperties(ClassRecord classRecord) {
+		return "";
+	}
+
+	private String jsonStringEscape(String string) {
+		string = string.replace("\\", "\\\\\\\\");
+		return "\\\"" + string.replace("\"", "\\\\\"") + "\\\"";
+	}
+
+	private String entityIdValueToInt(EntityIdValue entityIdValue) {
+		return entityIdValue.getId().substring(1);
+	}
+	/*
+	 * private void printClassRecord(PrintStream out, ClassRecord
+	 * classRecord, EntityIdValue entityIdValue) { printTerms(out,
+	 * classRecord, entityIdValue); printImage(out, classRecord);
+	 * 
+	 * out.print("," + classRecord.itemCount + "," +
+	 * classRecord.subclassCount);
+	 * 
+	 * printClassList(out, classRecord.superClasses);
+	 * 
+	 * HashSet<EntityIdValue> superClasses = new HashSet<>(); for
+	 * (EntityIdValue superClass : classRecord.superClasses) {
+	 * addSuperClasses(superClass, superClasses); }
+	 * 
+	 * printClassList(out, superClasses);
+	 * 
+	 * printRelatedProperties(out, classRecord);
+	 * 
+	 * out.println(""); }
+	 */
 
 	/**
 	 * Prints the URL of a thumbnail for the given item document to the
