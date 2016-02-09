@@ -22,8 +22,6 @@ package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -631,27 +629,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
-	/*
-	 * private void writeClassData() { try (PrintStream out = new
-	 * PrintStream(
-	 * ExampleHelpers.openExampleFileOuputStream("Classes.csv"), true,
-	 * "UTF-8")) {
-	 * 
-	 * out.println("Id" + ",Label" + ",URL" + ",Image" +
-	 * ",Number of direct instances" + ",Number of direct subclasses" +
-	 * ",Direct superclasses" + ",All superclasses" +
-	 * ",Related properties");
-	 * 
-	 * List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
-	 * this.classRecords.entrySet()); Collections.sort(list, new
-	 * ClassUsageRecordComparator()); for (Entry<EntityIdValue, ClassRecord>
-	 * entry : list) { if (entry.getValue().itemCount > 0 ||
-	 * entry.getValue().subclassCount > 0) { printClassRecord(out,
-	 * entry.getValue(), entry.getKey()); } }
-	 * 
-	 * } catch (IOException e) { e.printStackTrace(); } }
-	 */
-
 	/**
 	 * Prints the data for a single class to the given stream. This will be
 	 * a single line in CSV.
@@ -679,7 +656,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	}
 	
 	private String buildStringForRelatedProperties(ClassRecord classRecord) {
-		return "";
+		String ret = jsonStringEscape("relpros") + ":";
+		return ret;
 	}
 
 	private String jsonStringEscape(String string) {
@@ -690,111 +668,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private String entityIdValueToInt(EntityIdValue entityIdValue) {
 		return entityIdValue.getId().substring(1);
 	}
-	/*
-	 * private void printClassRecord(PrintStream out, ClassRecord
-	 * classRecord, EntityIdValue entityIdValue) { printTerms(out,
-	 * classRecord, entityIdValue); printImage(out, classRecord);
-	 * 
-	 * out.print("," + classRecord.itemCount + "," +
-	 * classRecord.subclassCount);
-	 * 
-	 * printClassList(out, classRecord.superClasses);
-	 * 
-	 * HashSet<EntityIdValue> superClasses = new HashSet<>(); for
-	 * (EntityIdValue superClass : classRecord.superClasses) {
-	 * addSuperClasses(superClass, superClasses); }
-	 * 
-	 * printClassList(out, superClasses);
-	 * 
-	 * printRelatedProperties(out, classRecord);
-	 * 
-	 * out.println(""); }
-	 */
 
-	/**
-	 * Prints the URL of a thumbnail for the given item document to the
-	 * output, or a default image if no image is given for the item.
-	 *
-	 * @param out
-	 *                the output to write to
-	 * @param classRecord
-	 *                the classRecord that may provide the image information
-	 */
-	private void printImage(PrintStream out, ClassRecord classRecord) {
-		if (classRecord.imageFile == null) {
-			out.print(",\"http://commons.wikimedia.org/w/thumb.php?f=MA_Route_blank.svg&w=50\"");
-		} else {
-			try {
-				String imageFileEncoded = URLEncoder.encode(
-						classRecord.imageFile.replace(
-								" ", "_"),
-						"utf-8");
-				// Keep special title symbols unescaped:
-				imageFileEncoded = imageFileEncoded.replace(
-						"%3A", ":").replace("%2F", "/");
-				out.print(","
-						+ csvStringEscape("http://commons.wikimedia.org/w/thumb.php?f="
-								+ imageFileEncoded)
-						+ "&w=50");
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(
-						"Your JRE does not support UTF-8 encoding. Srsly?!",
-						e);
-			}
-		}
-	}
 
-	/**
-	 * Collects all super classes of a class and stores the result to a set.
-	 * 
-	 * @param itemIdValue
-	 *                Id value of this class
-	 * @param superClasses
-	 *                Set of all already known super classes.
-	 */
-	private void addSuperClasses(EntityIdValue itemIdValue,
-			HashSet<EntityIdValue> superClasses) {
-		if (superClasses.contains(itemIdValue)) {
-			return;
-		}
-		superClasses.add(itemIdValue);
-		ClassRecord classRecord = this.classRecords.get(itemIdValue);
-		if (classRecord == null) {
-			return;
-		}
-
-		for (EntityIdValue superClass : classRecord.superClasses) {
-			addSuperClasses(superClass, superClasses);
-		}
-	}
-
-	/**
-	 * Prints a list of classes to the given output. The list is encoded as
-	 * a single CSV value, using "@" as a separator. Miga can decode this.
-	 * Standard CSV processors do not support lists of entries as values,
-	 * however.
-	 *
-	 * @param out
-	 *                the output to write to
-	 * @param classes
-	 *                the list of class items
-	 */
-	private void printClassList(PrintStream out,
-			Iterable<EntityIdValue> classes) {
-		out.print(",\"");
-		boolean first = true;
-		for (EntityIdValue superClass : classes) {
-			if (first) {
-				first = false;
-			} else {
-				out.print("@");
-			}
-			// makeshift escaping for Miga:
-			out.print(getClassLabel(superClass).replace("@", "＠")
-					.replace("\"", "\"\""));
-		}
-		out.print("\"");
-	}
 
 	/**
 	 * Prints the data of one property to the given output. This will be a
