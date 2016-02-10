@@ -4,6 +4,9 @@ Wikidata Toolkit Release Notes
 Version 0.6.0
 -------------
 
+A new stand-alone example project is now showing how to use WDTK as a library:
+https://github.com/Wikidata/Wikidata-Toolkit-Examples
+
 New features:
 * Support for new Wikidata property type "external identifier"
 * Support for new Wikidata property type "math"
