@@ -26,20 +26,20 @@ import java.util.Map;
 /**
  * Interface for EntityDocuments that can be described by terms in several
  * languages. These terms consist labels, descriptions, and aliases.
- * 
+ *
  * @author Markus Kroetzsch
  */
 public interface TermedDocument extends EntityDocument {
 	/**
 	 * Return a Map from Wikibase language codes to labels.
-	 * 
+	 *
 	 * @return the map of labels
 	 */
 	Map<String, MonolingualTextValue> getLabels();
 
 	/**
 	 * Return a Map from Wikibase language codes to descriptions.
-	 * 
+	 *
 	 * @return the map of descriptions
 	 */
 	Map<String, MonolingualTextValue> getDescriptions();
@@ -47,9 +47,31 @@ public interface TermedDocument extends EntityDocument {
 	/**
 	 * Return a Map from Wikibase language codes to lists of alias labels for a
 	 * given language.
-	 * 
+	 *
 	 * @return the aliases for this language
 	 */
 	Map<String, List<MonolingualTextValue>> getAliases();
+
+	/**
+	 * Returns the string label for the given language code, or null if there is
+	 * no label for this code. This is a convenience method for accessing the
+	 * data that can be obtained via {@link #getLabels()}.
+	 *
+	 * @param languageCode
+	 *            a string that represents language
+	 * @return the label string
+	 */
+	String findLabel(String languageCode);
+
+	/**
+	 * Returns the string description for the given language code, or null if
+	 * there is no description for this code. This is a convenience method for
+	 * accessing the data that can be obtained via {@link #getDescriptions()}.
+	 *
+	 * @param languageCode
+	 *            a string that represents language
+	 * @return the description string
+	 */
+	String findDescription(String languageCode);
 
 }

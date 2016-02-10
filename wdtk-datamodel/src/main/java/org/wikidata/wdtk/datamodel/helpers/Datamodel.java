@@ -282,6 +282,25 @@ public class Datamodel {
 	 *            the lower bound of the numeric value of this quantity
 	 * @param upperBound
 	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
+				unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} with an empty unit.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
