@@ -8,6 +8,7 @@ org.wikidata.wdtk.dumpfiles
 org.wikidata.wdtk.dumpfiles.constraint.template
 org.wikidata.wdtk.dumpfiles.wmf
 org.wikidata.wdtk.examples
+org.wikidata.wdtk.examples.bots
 org.wikidata.wdtk.rdf
 org.wikidata.wdtk.rdf.extensions
 org.wikidata.wdtk.rdf.values
