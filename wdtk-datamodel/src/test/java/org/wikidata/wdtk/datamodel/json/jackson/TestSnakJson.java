@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class TestSnakJson {
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
+		assertNull(result.getValue());
 		assertTrue(result instanceof JacksonNoValueSnak);
 		assertEquals(result, JsonTestData.TEST_NOVALUE_SNAK);
 	}
@@ -64,6 +66,7 @@ public class TestSnakJson {
 		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
+		assertNull(result.getValue());
 		assertTrue(result instanceof JacksonSomeValueSnak);
 		assertEquals(result, JsonTestData.TEST_SOMEVALUE_SNAK);
 	}

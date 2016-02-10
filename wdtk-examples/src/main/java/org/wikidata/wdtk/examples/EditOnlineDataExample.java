@@ -40,6 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.LoginFailedException;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataEditor;
@@ -91,6 +92,10 @@ public class EditOnlineDataExample {
 			IOException, MediaWikiApiErrorException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
+
+		// Always set your User-Agent to the name of your application:
+		WebResourceFetcherImpl
+				.setUserAgent("Wikidata Toolkit EditOnlineDataExample");
 
 		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
 		// Optional login -- required for operations on real wikis:

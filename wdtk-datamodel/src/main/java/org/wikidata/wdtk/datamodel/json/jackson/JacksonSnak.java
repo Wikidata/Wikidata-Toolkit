@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -109,6 +110,12 @@ public abstract class JacksonSnak implements Snak {
 					"Cannot access the property id of an insufficiently initialised Jackson snak.");
 			// return Datamodel.makeWikidataPropertyIdValue(property);
 		}
+	}
+
+	@JsonIgnore
+	@Override
+	public Value getValue() {
+		return null;
 	}
 
 	/**
