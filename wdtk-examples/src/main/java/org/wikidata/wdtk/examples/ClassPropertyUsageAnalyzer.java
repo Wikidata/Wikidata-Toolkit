@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -133,10 +132,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * Number of uses of this property in other properties.
 		 */
 		public int propertyCount = 0;
-		/**
-		 * Datatype of this property
-		 */
-		public String datatype = "Unknown";
 	}
 
 	/**
@@ -351,15 +346,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			}
 		}
 
-		propertyRecord.datatype = getDatatypeLabel(propertyDocument
-				.getDatatype());
 		MonolingualTextValue labelValue = propertyDocument.getLabels()
 				.get("en");
 		if (labelValue != null) {
 			propertyRecord.label = labelValue.getText();
-		} else {
-			propertyRecord.label = propertyDocument.getPropertyId()
-					.getId();
 		}
 
 	}
@@ -474,15 +464,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				ExampleHelpers.openExampleFileOuputStream("properties.js"),
 				true, "UTF-8")) {
 
-			out.println("Id" + ",Label" + ",URL"
-					+ ",Datatype" + ",Uses in statements"
-					+ ",Items with such statements"
-					+ ",Uses in statements with qualifiers"
-					+ ",Uses in qualifiers"
-					+ ",Uses in references"
-					+ ",Uses in properties" + ",Uses total"
-					+ ",Related properties");
-
+			out.print("properties = \"{");
 			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
 					this.propertyRecords.entrySet());
 			Collections.sort(list, new UsageRecordComparator());
@@ -491,10 +473,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 						entry.getKey());
 			}
 
+			out.print("}\";");
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 
 	/**
 	 * Writes the data collected about classes to a file.
@@ -503,14 +488,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		try (PrintStream out = new PrintStream(
 				ExampleHelpers.openExampleFileOuputStream("classes.js"),
 				true, "UTF-8")) {
-			out.println("classes = \"{");
-			out.println("}\";");
+			out.print("classes = \"{");
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
 				printClassRecord(out, entry.getValue(),
 						entry.getKey());
 			}
+			out.print("}\";");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -530,24 +515,20 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private void printClassRecord(PrintStream out, ClassRecord classRecord,
 			EntityIdValue entityIdValue) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(jsonStringEscape(entityIdValueToInt(entityIdValue)))
+		builder.append(jsonStringEscape(entityIdValue.getId()))
 				.append(":{");
-		if (classRecord.label != null) {
-			builder.append(jsonStringEscape("label"))
-					.append(":")
-					.append(jsonStringEscape(classRecord.label))
-					.append(",");
-		}
+		builder.append(getJsonStringForLabel(classRecord));
 		builder.append(jsonStringEscape("items")).append(":")
 				.append(classRecord.itemCount).append(",");
 		builder.append(buildStringForRelatedProperties(classRecord));
 		builder.append("}");
-		out.println(builder.toString());
+		out.print(builder.toString());
 	}
 	
 	private String buildStringForRelatedProperties(UsageRecord usageRecord) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(jsonStringEscape("relpros")).append(":{");
+		builder.append(jsonStringEscape("relatedProperties")).append(
+				":{");
 
 		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
 				usageRecord.propertyCoCounts.size());
@@ -593,7 +574,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				builder.append(",");
 			}
 			// makeshift escaping for Miga:
-			builder.append(jsonStringEscape(entityIdValueToInt(relatedProperty.left)));
+			builder.append(jsonStringEscape(relatedProperty.left
+					.getId()));
 			builder.append(":");
 			builder.append(relatedProperty.right);
 			count++;
@@ -602,16 +584,19 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		return builder.toString();
 	}
 
-	private String jsonStringEscape(String string) {
-		string = string.replace("\\", "\\\\\\\\");
-		return "\\\"" + string.replace("\"", "\\\\\"") + "\\\"";
+
+
+	private String getJsonStringForLabel(UsageRecord usageRecord) {
+
+		StringBuilder builder = new StringBuilder();
+		if (usageRecord.label != null) {
+			builder.append(jsonStringEscape("label"))
+					.append(":")
+					.append(jsonStringEscape(usageRecord.label))
+					.append(",");
+		}
+		return builder.toString();
 	}
-
-	private String entityIdValueToInt(EntityIdValue entityIdValue) {
-		return entityIdValue.getId().substring(1);
-	}
-
-
 
 	/**
 	 * Prints the data of one property to the given output. This will be a
@@ -628,63 +613,37 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			PropertyRecord propertyRecord,
 			PropertyIdValue propertyIdValue) {
 
-		printTerms(out, propertyRecord, propertyIdValue);
-
-		if (propertyRecord.datatype == null) {
-			propertyRecord.datatype = "Unknown";
-		}
-
-		out.print(","
-				+ propertyRecord.datatype
-				+ ","
-				+ propertyRecord.statementCount
-				+ ","
-				+ propertyRecord.itemCount
-				+ ","
-				+ propertyRecord.statementWithQualifierCount
-				+ ","
-				+ propertyRecord.qualifierCount
-				+ ","
-				+ propertyRecord.referenceCount
-				+ ","
-				+ propertyRecord.propertyCount
-				+ ","
-				+ (propertyRecord.statementCount
-						+ propertyRecord.qualifierCount
-						+ propertyRecord.referenceCount + propertyRecord.propertyCount));
-
-		// printRelatedProperties(out, propertyRecord);
-
-		out.println("");
-	}
-
-	/**
-	 * Prints the terms (label, etc.) of one entity to the given stream.
-	 * This will lead to several values in the CSV file, which are the same
-	 * for properties and class items.
-	 *
-	 * @param out
-	 *                the output to write to
-	 * @param usageRecord
-	 *                the usage record that provides the terms to write
-	 * @param entityIdValue
-	 *                the entity that the data refers to.
-	 */
-	private void printTerms(PrintStream out, UsageRecord usageRecord,
-			EntityIdValue entityIdValue) {
-
-		String label;
-
-		// if (usageRecord.description != null) {
-		// description = csvStringEscape(usageRecord.description);
-		// }
-
-		if (usageRecord.label == null) {
-			usageRecord.label = entityIdValue.getId();
-		}
-		label = csvStringEscape(usageRecord.label);
-		out.print(entityIdValue.getId() + "," + label + ","
-				+ entityIdValue.getIri());
+		StringBuilder builder = new StringBuilder();
+		builder.append(jsonStringEscape(propertyIdValue.getId()))
+				.append(":{");
+		builder.append(getJsonStringForLabel(propertyRecord));
+		builder.append(jsonStringEscape("usesInStatements"))
+				.append(":")
+				.append(propertyRecord.statementCount)
+				.append(",");
+		builder.append(jsonStringEscape("itemWithSuchStatements"))
+				.append(":").append(propertyRecord.itemCount)
+				.append(",");
+		builder.append(jsonStringEscape("usesInStatementsWithQualifiers"))
+				.append(":")
+				.append(propertyRecord.statementWithQualifierCount)
+				.append(",");
+		builder.append(jsonStringEscape("usesInQualifiers"))
+				.append(":")
+				.append(propertyRecord.qualifierCount)
+				.append(",");
+		builder.append(jsonStringEscape("usesInReferences"))
+				.append(":")
+				.append(propertyRecord.referenceCount)
+				.append(",");
+		builder.append(jsonStringEscape("usesInProperties"))
+				.append(":")
+				.append(propertyRecord.propertyCount)
+				.append(",");
+		
+		builder.append(buildStringForRelatedProperties(propertyRecord));
+		builder.append("}");
+		out.print(builder.toString());
 	}
 
 	/**
@@ -833,55 +792,18 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		System.out.println(" * Class documents: " + this.countClasses);
 	}
 
-	/**
-	 * Returns an English label for a given datatype.
-	 *
-	 * @param datatype
-	 *                the datatype to label
-	 * @return the label
-	 */
-	private String getDatatypeLabel(DatatypeIdValue datatype) {
-		if (datatype.getIri() == null) { // TODO should be redundant
-						 // once the
-						 // JSON parsing works
-			return "Unknown";
-		}
-
-		switch (datatype.getIri()) {
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			return "Commons media";
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			return "Globe coordinates";
-		case DatatypeIdValue.DT_ITEM:
-			return "Item";
-		case DatatypeIdValue.DT_QUANTITY:
-			return "Quantity";
-		case DatatypeIdValue.DT_STRING:
-			return "String";
-		case DatatypeIdValue.DT_TIME:
-			return "Time";
-		case DatatypeIdValue.DT_URL:
-			return "URL";
-		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-			return "Monolingual text";
-		case DatatypeIdValue.DT_PROPERTY:
-			return "Property";
-
-		default:
-			throw new RuntimeException("Unknown datatype "
-					+ datatype.getIri());
-		}
-	}
 
 	/**
-	 * Escapes a string for use in CSV. In particular, the string is quoted
-	 * and quotation marks are escaped.
+	 * Escapes a string for use in Json. In particular, the string is quoted
+	 * and quotation marks and backslashes are escaped.
 	 *
 	 * @param string
 	 *                the string to escape
 	 * @return the escaped string
 	 */
-	private String csvStringEscape(String string) {
-		return "\"" + string.replace("\"", "\"\"") + "\"";
+	private String jsonStringEscape(String string) {
+		string = string.replace("\\", "\\\\\\\\");
+		return "\\\"" + string.replace("\"", "\\\\\"") + "\\\"";
 	}
+
 }
