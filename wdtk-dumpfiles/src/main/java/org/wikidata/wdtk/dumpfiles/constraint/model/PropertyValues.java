@@ -62,7 +62,7 @@ public class PropertyValues {
 	 * 
 	 * @param property
 	 *            property
-	 * @param list
+	 * @param items
 	 *            list of items
 	 */
 	public PropertyValues(PropertyIdValue property, List<ItemIdValue> items) {
@@ -84,7 +84,7 @@ public class PropertyValues {
 	 * 
 	 * @param property
 	 *            property
-	 * @param list
+	 * @param items
 	 *            list of items
 	 * @param hasAllValues
 	 *            <code>true</code> if the property spans all values
