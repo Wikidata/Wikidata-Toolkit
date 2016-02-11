@@ -47,7 +47,7 @@ public class ConstraintConflictsWith implements Constraint {
 	final List<PropertyValues> list = new ArrayList<PropertyValues>();
 
 	/**
-	 * Constructs a new {@link ConstraintConflictWith}.
+	 * Constructs a new {@link ConstraintConflictsWith}.
 	 * 
 	 * @param constrainedProperty
 	 *            constrained property

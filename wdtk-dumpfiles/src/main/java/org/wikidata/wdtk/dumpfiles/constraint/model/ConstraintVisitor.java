@@ -24,6 +24,9 @@ package org.wikidata.wdtk.dumpfiles.constraint.model;
  * This class models a visitor of {@link Constraint}.
  *
  * @author Julian Mendez
+ * 
+ * @param <T>
+ *            result of visit
  *
  * @see Constraint
  */
