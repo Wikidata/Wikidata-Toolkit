@@ -201,13 +201,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	final HashMap<EntityIdValue, ClassRecord> classRecords = new HashMap<>();
 
 	/**
-	 * Set used during serialization to ensure that every label is used only
-	 * once. If another item wants to use a label that is already assigned,
-	 * it will use a label with an added Q-ID for disambiguation.
-	 */
-	final Set<String> labels = new HashSet<>();
-
-	/**
 	 * Set used for storing of classes of which a subclass was calculated
 	 * but not the superclass. After processing the dump file classes of
 	 * this set represented by it EntityIdValue will be downloaded later.
@@ -478,7 +471,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writePropertyData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("Properties.csv"),
+				ExampleHelpers.openExampleFileOuputStream("properties.js"),
 				true, "UTF-8")) {
 
 			out.println("Id" + ",Label" + ",URL"
@@ -539,9 +532,12 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		StringBuilder builder = new StringBuilder();
 		builder.append(jsonStringEscape(entityIdValueToInt(entityIdValue)))
 				.append(":{");
-		builder.append(jsonStringEscape("label")).append(":")
-				.append(jsonStringEscape(classRecord.label))
-				.append(",");
+		if (classRecord.label != null) {
+			builder.append(jsonStringEscape("label"))
+					.append(":")
+					.append(jsonStringEscape(classRecord.label))
+					.append(",");
+		}
 		builder.append(jsonStringEscape("items")).append(":")
 				.append(classRecord.itemCount).append(",");
 		builder.append(buildStringForRelatedProperties(classRecord));
@@ -709,13 +705,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				"en");
 		if (labelValue != null) {
 			String label = labelValue.getText();
-			if (labels.contains(label)) {
-				classRecord.label = label + " ("
-						+ entityIdValue.getId() + ")";
-			} else {
-				classRecord.label = label;
-				labels.add(label);
-			}
+			classRecord.label = label;
 		} else {
 			classRecord.label = entityIdValue.getId();
 		}
