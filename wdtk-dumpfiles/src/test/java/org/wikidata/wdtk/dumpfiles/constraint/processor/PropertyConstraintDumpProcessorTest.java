@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
@@ -24,6 +25,8 @@ import org.wikidata.wdtk.dumpfiles.constraint.model.ConstraintTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.renderer.ConstraintRendererTestHelper;
 import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
+import org.wikidata.wdtk.util.DirectoryManagerFactory;
+import org.wikidata.wdtk.util.DirectoryManagerImpl;
 
 /*
  * #%L
@@ -75,6 +78,11 @@ public class PropertyConstraintDumpProcessorTest {
 	final String TEMPLATE_NO_CONSTRAINT = "{{Property documentation\n }}";
 
 	public PropertyConstraintDumpProcessorTest() {
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		DirectoryManagerFactory.setDirectoryManagerClass(DirectoryManagerImpl.class);
 	}
 
 	@Test
