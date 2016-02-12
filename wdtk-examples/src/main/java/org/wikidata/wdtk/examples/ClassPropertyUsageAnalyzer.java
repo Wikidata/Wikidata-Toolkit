@@ -162,10 +162,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		public int compare(
 				Entry<? extends EntityIdValue, ? extends UsageRecord> o1,
 				Entry<? extends EntityIdValue, ? extends UsageRecord> o2) {
-			// return (o2.getValue().itemCount -
-			// (o1.getValue().itemCount));
-			return o2.getKey().getId()
-					.compareTo(o1.getKey().getId());
+			return (o2.getValue().itemCount - (o1.getValue().itemCount));
 		}
 	}
 
