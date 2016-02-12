@@ -142,9 +142,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 *
 	 */
 	private class ClassRecord extends UsageRecord {
-
+		/**
+		 * Number of subclasses of this class item.
+		 */
+		public int subclassCount = 0;
 	}
-
 
 	/**
 	 * Comparator to order class items by their number of instances and
@@ -155,17 +157,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private class UsageRecordComparator
 			implements
-			Comparator<Entry<? extends EntityIdValue, ? extends PropertyRecord>> {
+			Comparator<Entry<? extends EntityIdValue, ? extends UsageRecord>> {
 		@Override
 		public int compare(
-				Entry<? extends EntityIdValue, ? extends PropertyRecord> o1,
-				Entry<? extends EntityIdValue, ? extends PropertyRecord> o2) {
-			return (o2.getValue().itemCount
-					+ o2.getValue().qualifierCount + o2
-						.getValue().referenceCount)
-					- (o1.getValue().itemCount
-							+ o1.getValue().qualifierCount + o1
-								.getValue().referenceCount);
+				Entry<? extends EntityIdValue, ? extends UsageRecord> o1,
+				Entry<? extends EntityIdValue, ? extends UsageRecord> o2) {
+			// return (o2.getValue().itemCount -
+			// (o1.getValue().itemCount));
+			return o2.getKey().getId()
+					.compareTo(o1.getKey().getId());
 		}
 	}
 
@@ -292,6 +292,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 									itemDocument,
 									otherClassRecord,
 									null);
+						} else {
+							otherClassRecord.subclassCount++;
 						}
 					}
 				}
@@ -464,11 +466,19 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				ExampleHelpers.openExampleFileOuputStream("properties.js"),
 				true, "UTF-8")) {
 
-			out.print("properties = \"{");
+			out.print("var properties = \"{");
 			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
 					this.propertyRecords.entrySet());
 			Collections.sort(list, new UsageRecordComparator());
+			boolean first = true;
 			for (Entry<PropertyIdValue, PropertyRecord> entry : list) {
+				if (!first) {
+					// out.println(",\" + ");
+					// out.print("\"");
+					out.print(",");
+				} else {
+					first = false;
+				}
 				printPropertyRecord(out, entry.getValue(),
 						entry.getKey());
 			}
@@ -480,26 +490,39 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 	}
 
-
 	/**
 	 * Writes the data collected about classes to a file.
 	 */
 	private void writeClassData() {
-		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("classes.js"),
-				true, "UTF-8")) {
-			out.print("classes = \"{");
+		try {
+			PrintStream out = new PrintStream(
+					ExampleHelpers.openExampleFileOuputStream("classes.js"),
+					true, "UTF-8");
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
+			Collections.sort(list, new UsageRecordComparator());
+			out.print("var classes = \"{");
+			boolean first = true;
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
-				printClassRecord(out, entry.getValue(),
-						entry.getKey());
+				if (entry.getValue().itemCount > 0
+						|| entry.getValue().subclassCount > 0) {
+					if (!first) {
+						out.print(",");
+					} else {
+						first = false;
+					}
+					printClassRecord(out, entry.getValue(),
+							entry.getKey());
+				}
+
 			}
 			out.print("}\";");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+
 
 	/**
 	 * Prints the data for a single class to the given stream. This will be
@@ -515,19 +538,21 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private void printClassRecord(PrintStream out, ClassRecord classRecord,
 			EntityIdValue entityIdValue) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(jsonStringEscape(entityIdValue.getId()))
-				.append(":{");
+		builder.append(jsonStringEscape(entityIdValue.getId())).append(
+				":{");
 		builder.append(getJsonStringForLabel(classRecord));
-		builder.append(jsonStringEscape("items")).append(":")
+		builder.append(jsonStringEscape("i")).append(":")
 				.append(classRecord.itemCount).append(",");
+		builder.append(jsonStringEscape("s")).append(":")
+				.append(classRecord.subclassCount).append(",");
 		builder.append(buildStringForRelatedProperties(classRecord));
 		builder.append("}");
 		out.print(builder.toString());
 	}
-	
+
 	private String buildStringForRelatedProperties(UsageRecord usageRecord) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(jsonStringEscape("relatedProperties")).append(
+		builder.append(jsonStringEscape("r")).append(
 				":{");
 
 		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
@@ -573,24 +598,21 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			if (count > 0) {
 				builder.append(",");
 			}
-			// makeshift escaping for Miga:
 			builder.append(jsonStringEscape(relatedProperty.left
 					.getId()));
 			builder.append(":");
-			builder.append(relatedProperty.right);
+			builder.append(Math.round(relatedProperty.right * 100) / 100);
 			count++;
 		}
 		builder.append("}");
 		return builder.toString();
 	}
 
-
-
 	private String getJsonStringForLabel(UsageRecord usageRecord) {
 
 		StringBuilder builder = new StringBuilder();
 		if (usageRecord.label != null) {
-			builder.append(jsonStringEscape("label"))
+			builder.append(jsonStringEscape("l"))
 					.append(":")
 					.append(jsonStringEscape(usageRecord.label))
 					.append(",");
@@ -617,30 +639,30 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		builder.append(jsonStringEscape(propertyIdValue.getId()))
 				.append(":{");
 		builder.append(getJsonStringForLabel(propertyRecord));
-		builder.append(jsonStringEscape("usesInStatements"))
+		builder.append(jsonStringEscape("Statements"))
 				.append(":")
 				.append(propertyRecord.statementCount)
 				.append(",");
-		builder.append(jsonStringEscape("itemWithSuchStatements"))
+		builder.append(jsonStringEscape("item"))
 				.append(":").append(propertyRecord.itemCount)
 				.append(",");
-		builder.append(jsonStringEscape("usesInStatementsWithQualifiers"))
+		builder.append(jsonStringEscape("w"))
 				.append(":")
 				.append(propertyRecord.statementWithQualifierCount)
 				.append(",");
-		builder.append(jsonStringEscape("usesInQualifiers"))
+		builder.append(jsonStringEscape("q"))
 				.append(":")
 				.append(propertyRecord.qualifierCount)
 				.append(",");
-		builder.append(jsonStringEscape("usesInReferences"))
+		builder.append(jsonStringEscape("e"))
 				.append(":")
 				.append(propertyRecord.referenceCount)
 				.append(",");
-		builder.append(jsonStringEscape("usesInProperties"))
+		builder.append(jsonStringEscape("p"))
 				.append(":")
 				.append(propertyRecord.propertyCount)
 				.append(",");
-		
+
 		builder.append(buildStringForRelatedProperties(propertyRecord));
 		builder.append("}");
 		out.print(builder.toString());
@@ -659,14 +681,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void setLabelToClassRecord(ItemDocument itemDocument,
 			ClassRecord classRecord) {
-		EntityIdValue entityIdValue = itemDocument.getItemId();
 		MonolingualTextValue labelValue = itemDocument.getLabels().get(
 				"en");
 		if (labelValue != null) {
 			String label = labelValue.getText();
 			classRecord.label = label;
-		} else {
-			classRecord.label = entityIdValue.getId();
 		}
 	}
 
@@ -792,7 +811,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		System.out.println(" * Class documents: " + this.countClasses);
 	}
 
-
 	/**
 	 * Escapes a string for use in Json. In particular, the string is quoted
 	 * and quotation marks and backslashes are escaped.
@@ -802,8 +820,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @return the escaped string
 	 */
 	private String jsonStringEscape(String string) {
+		string = string.replace("\t", " ").replace("\n", " ")
+				.replace("\b", " ").replace("\f", " ")
+				.replace("\r", " ");
 		string = string.replace("\\", "\\\\\\\\");
-		return "\\\"" + string.replace("\"", "\\\\\"") + "\\\"";
+		return "\\\"" + string.replace("\"", "\\\\\\\"") + "\\\"";
 	}
 
 }
