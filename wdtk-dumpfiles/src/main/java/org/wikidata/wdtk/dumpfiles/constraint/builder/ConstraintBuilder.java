@@ -40,7 +40,7 @@ public interface ConstraintBuilder {
 	 *            constrained property
 	 * @param template
 	 *            template transclusion
-	 * @return
+	 * @return a new constraint based on a template transclusion
 	 */
 	Constraint parse(PropertyIdValue constrainedProperty, Template template);
 

@@ -226,8 +226,11 @@ public class PropertyConstraintDumpProcessor {
 	 * Processes the templates.
 	 * 
 	 * @param templateMap
+	 *            template map
 	 * @param rendererFormats
+	 *            renderer formats
 	 * @throws IOException
+	 *             if something goes wrong with I/O
 	 */
 	public void processTemplates(
 			Map<PropertyIdValue, List<Template>> templateMap,

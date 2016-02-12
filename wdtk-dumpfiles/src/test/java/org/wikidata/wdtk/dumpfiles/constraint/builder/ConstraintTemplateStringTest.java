@@ -29,7 +29,7 @@ import org.wikidata.wdtk.dumpfiles.constraint.template.Template;
 import org.wikidata.wdtk.dumpfiles.constraint.template.TemplateParser;
 
 /**
- * Test class for {@link ConstraintTemplateString}.
+ * Test class for method <code>getTemplate()</code> of {@link Constraint}.
  *
  * @author Julian Mendez
  *
