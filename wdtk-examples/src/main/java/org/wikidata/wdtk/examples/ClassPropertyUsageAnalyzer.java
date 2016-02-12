@@ -636,11 +636,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		builder.append(jsonStringEscape(propertyIdValue.getId()))
 				.append(":{");
 		builder.append(getJsonStringForLabel(propertyRecord));
-		builder.append(jsonStringEscape("Statements"))
+		builder.append(jsonStringEscape("s"))
 				.append(":")
 				.append(propertyRecord.statementCount)
 				.append(",");
-		builder.append(jsonStringEscape("item"))
+		builder.append(jsonStringEscape("i"))
 				.append(":").append(propertyRecord.itemCount)
 				.append(",");
 		builder.append(jsonStringEscape("w"))
