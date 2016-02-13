@@ -32,6 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 /**
  * Implementation of {@link Statement}.
@@ -42,7 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 public class StatementImpl implements Statement, Serializable {
 
 	private static final long serialVersionUID = -9151463996806807715L;
-	
+
 	final Claim claim;
 	final List<? extends Reference> references;
 	final StatementRank rank;
@@ -95,6 +96,11 @@ public class StatementImpl implements Statement, Serializable {
 	@Override
 	public String getStatementId() {
 		return this.statementId;
+	}
+
+	@Override
+	public Value getValue() {
+		return this.claim.getValue();
 	}
 
 	@Override

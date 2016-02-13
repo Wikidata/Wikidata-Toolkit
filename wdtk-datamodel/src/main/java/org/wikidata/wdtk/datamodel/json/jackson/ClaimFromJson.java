@@ -30,7 +30,10 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.util.NestedIterator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Helper class to represent a {@link Claim} deserialized from JSON. The actual
@@ -75,6 +78,12 @@ public class ClaimFromJson implements Claim {
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
 		return new NestedIterator<>(getQualifiers());
+	}
+
+	@Override
+	@JsonIgnore
+	public Value getValue() {
+		return this.statement.getMainsnak().getValue();
 	}
 
 	@Override

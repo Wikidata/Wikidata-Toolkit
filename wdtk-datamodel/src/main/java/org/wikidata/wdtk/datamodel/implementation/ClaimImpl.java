@@ -33,6 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.util.NestedIterator;
 
 /**
@@ -44,7 +45,7 @@ import org.wikidata.wdtk.util.NestedIterator;
 public class ClaimImpl implements Claim, Serializable {
 
 	private static final long serialVersionUID = -2991778567647082844L;
-	
+
 	final EntityIdValue subject;
 	final Snak mainSnak;
 	final List<SnakGroup> qualifiers;
@@ -88,6 +89,11 @@ public class ClaimImpl implements Claim, Serializable {
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
 		return new NestedIterator<>(this.qualifiers);
+	}
+
+	@Override
+	public Value getValue() {
+		return mainSnak.getValue();
 	}
 
 	@Override

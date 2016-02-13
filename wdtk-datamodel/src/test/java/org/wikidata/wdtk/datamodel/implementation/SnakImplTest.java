@@ -75,6 +75,12 @@ public class SnakImplTest {
 	}
 
 	@Test
+	public void snaksWithoutValues() {
+		assertEquals(svs1.getValue(), null);
+		assertEquals(nvs1.getValue(), null);
+	}
+
+	@Test
 	public void snakEqualityBasedOnType() {
 		assertFalse(svs1.equals(nvs1));
 		assertFalse(nvs1.equals(svs1));

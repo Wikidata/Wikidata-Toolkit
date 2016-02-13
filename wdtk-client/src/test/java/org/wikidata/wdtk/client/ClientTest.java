@@ -185,8 +185,9 @@ public class ClientTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(
 				Paths.get("/output/"), false);
 
-		String[] args = { "-n", "-a", "rdf", "-o", "/output/wikidata.rdf",
-				"-r", "/output/report.txt" };
+		String[] args = {"-n", "-a", "rdf", "--rdftasks", "aliases", "-o",
+				"/output/wikidata.rdf", "-r", "/output/report.txt" };
+
 		Client client = new Client(mockDpc, args);
 		DumpProcessingAction action = client.clientConfiguration.actions.get(0);
 		action.open();

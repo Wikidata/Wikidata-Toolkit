@@ -245,7 +245,11 @@ public class Client {
 			if (this.clientConfiguration.getReportFileName() != null) {
 				builder.append(action.getActionName());
 				builder.append(": ");
-				builder.append(action.getReport());
+				if (action.isReady()) {
+					builder.append(action.getReport());
+				} else {
+					builder.append("Action was not executed.");
+				}
 				builder.append(System.getProperty("line.separator"));
 			} else {
 				logger.info(action.getActionName() + ": " + action.getReport());

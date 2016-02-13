@@ -9,9 +9,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,13 @@ public class TestDatatypeId extends JsonTestData {
 		JacksonDatatypeId uut = new JacksonDatatypeId(
 				JacksonDatatypeId.JSON_DT_ITEM);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_ITEM);
+	}
+
+	@Test
+	public void testIriForProperty() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_PROPERTY);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_PROPERTY);
 	}
 
 	@Test
@@ -70,10 +77,31 @@ public class TestDatatypeId extends JsonTestData {
 	}
 
 	@Test
+	public void testIriForExternalId() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_EXTERNAL_ID);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_EXTERNAL_ID);
+	}
+
+	@Test
+	public void testIriForMath() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_MATH);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_MATH);
+	}
+
+	@Test
 	public void testIriForUrl() {
 		JacksonDatatypeId uut = new JacksonDatatypeId(
 				JacksonDatatypeId.JSON_DT_URL);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_URL);
+	}
+
+	@Test
+	public void testIriForMonolingualText() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_MONOLINGUAL_TEXT);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

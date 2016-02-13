@@ -25,17 +25,18 @@ import java.io.Serializable;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 /**
  * Implementation of {@link Snak}.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public abstract class SnakImpl implements Snak, Serializable {
 
 	private static final long serialVersionUID = 7513457794344946061L;
-	
+
 	final PropertyIdValue propertyId;
 
 	SnakImpl(PropertyIdValue propertyId) {
@@ -48,4 +49,8 @@ public abstract class SnakImpl implements Snak, Serializable {
 		return propertyId;
 	}
 
+	@Override
+	public Value getValue() {
+		return null;
+	}
 }

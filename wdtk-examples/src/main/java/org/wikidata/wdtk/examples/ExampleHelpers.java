@@ -232,7 +232,7 @@ public class ExampleHelpers {
 	 * used to name files generated from this dump. The result might be the
 	 * empty string if no file has been processed yet.
 	 */
-	public String getLastDumpFileName() {
+	public static String getLastDumpFileName() {
 		return lastDumpFileName;
 	}
 

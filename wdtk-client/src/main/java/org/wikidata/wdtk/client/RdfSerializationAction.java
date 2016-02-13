@@ -278,13 +278,19 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 
 	@Override
 	public String getReport() {
-		String message = "Finished serialization of "
-				+ this.serializer.getTripleCount() + " RDF triples in file "
-				+ this.insertDumpInformation(this.outputDestination);
-		if (!this.compressionType.equals(COMPRESS_NONE)) {
-			message += "." + this.compressionType;
+		if (this.serializer != null) {
+			String message = "Finished serialization of "
+					+ this.serializer.getTripleCount()
+					+ " RDF triples in file "
+					+ this.insertDumpInformation(this.outputDestination);
+			if (!this.compressionType.equals(COMPRESS_NONE)) {
+				message += "." + this.compressionType;
+			}
+			return message;
+		} else {
+			logger.warn("Could not create report. open() was not executed.");
+			return "";
 		}
-		return message;
 	}
 
 	@Override

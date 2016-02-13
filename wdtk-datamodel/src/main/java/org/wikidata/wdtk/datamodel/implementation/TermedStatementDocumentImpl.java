@@ -24,19 +24,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Implementation of {@link TermedDocument}. This abstract class defines the
@@ -45,8 +42,8 @@ import org.wikidata.wdtk.util.NestedIterator;
  * @author Markus Kroetzsch
  *
  */
-public abstract class TermedStatementDocumentImpl implements TermedDocument,
-		StatementDocument, Serializable {
+public abstract class TermedStatementDocumentImpl extends
+		AbstractTermedStatementDocument implements Serializable {
 
 	private static final long serialVersionUID = 821881839755909320L;
 
@@ -155,11 +152,6 @@ public abstract class TermedStatementDocumentImpl implements TermedDocument,
 	@Override
 	public List<StatementGroup> getStatementGroups() {
 		return Collections.unmodifiableList(statementGroups);
-	}
-
-	@Override
-	public Iterator<Statement> getAllStatements() {
-		return new NestedIterator<>(statementGroups);
 	}
 
 	@Override
