@@ -1125,6 +1125,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return "Monolingual text";
 		case DatatypeIdValue.DT_PROPERTY:
 			return "Property";
+		case DatatypeIdValue.DT_MATH:
+			return "Math";
+		case DatatypeIdValue.DT_EXTERNAL_ID:
+			return "External ID";
 
 		default:
 			throw new RuntimeException("Unknown datatype "
