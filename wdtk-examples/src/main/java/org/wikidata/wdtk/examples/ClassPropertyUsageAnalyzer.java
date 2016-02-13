@@ -460,18 +460,16 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void writePropertyData() {
 		try (PrintStream out = new PrintStream(
-				ExampleHelpers.openExampleFileOuputStream("properties.js"),
+				ExampleHelpers.openExampleFileOuputStream("properties.json"),
 				true, "UTF-8")) {
 
-			out.print("var properties = \"{");
+			out.print("{");
 			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
 					this.propertyRecords.entrySet());
 			Collections.sort(list, new UsageRecordComparator());
 			boolean first = true;
 			for (Entry<PropertyIdValue, PropertyRecord> entry : list) {
 				if (!first) {
-					// out.println(",\" + ");
-					// out.print("\"");
 					out.print(",");
 				} else {
 					first = false;
@@ -480,7 +478,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 						entry.getKey());
 			}
 
-			out.print("}\";");
+			out.print("}");
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -493,12 +491,12 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	private void writeClassData() {
 		try {
 			PrintStream out = new PrintStream(
-					ExampleHelpers.openExampleFileOuputStream("classes.js"),
+					ExampleHelpers.openExampleFileOuputStream("classes.json"),
 					true, "UTF-8");
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
 			Collections.sort(list, new UsageRecordComparator());
-			out.print("var classes = \"{");
+			out.print("{");
 			boolean first = true;
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
 				if (entry.getValue().itemCount > 0
@@ -513,7 +511,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				}
 
 			}
-			out.print("}\";");
+			out.print("}");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -821,7 +819,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				.replace("\b", " ").replace("\f", " ")
 				.replace("\r", " ");
 		string = string.replace("\\", "\\\\\\\\");
-		return "\\\"" + string.replace("\"", "\\\\\\\"") + "\\\"";
+		return "\"" + string.replace("\"", "\\\\\\\"") + "\"";
 	}
 
 }
