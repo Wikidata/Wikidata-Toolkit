@@ -1,10 +1,16 @@
-package org.wikidata.wdtk.datamodel.interfaces;
+/**
+ * Package for examples of bots that edit Wikidata.
+ *
+ * @author Markus Kroetzsch
+ *
+ */
+package org.wikidata.wdtk.examples.bots;
 
 /*
  * #%L
- * Wikidata Toolkit Data Model
+ * Wikidata Toolkit Examples
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2015 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +25,3 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
-
-/**
- * ValueSnaks represent property-value pairs, where the property are represented
- * by a {@link PropertyIdValue} and the value is represented by a {@link Value}.
- * Objects of this type must always return a non-null value on
- * {@link Snak#getValue()}.
- *
- * @author Markus Kroetzsch
- *
- */
-public interface ValueSnak extends Snak {
-
-}

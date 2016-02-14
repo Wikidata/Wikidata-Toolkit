@@ -1,6 +1,26 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.6.0
+-------------
+
+A new stand-alone example project is now showing how to use WDTK as a library:
+https://github.com/Wikidata/Wikidata-Toolkit-Examples
+
+New features:
+* Support for new Wikidata property type "external identifier"
+* Support for new Wikidata property type "math"
+* Bots: support maxlag parameter and edit-rate throttling
+* Bots: better Wikidata API error handling
+* Bots: several real-world bot examples
+* New convenience methods for accessing Wikidata Java objects, for simpler code
+* full compatibility with Java 8
+
+Bug fixes:
+* Fix NullPointerException when trying to establish API connection (issue #217)
+* Avoid test failures on some platforms (based on too strict assumptions)
+
+
 Version 0.5.0
 -------------
 

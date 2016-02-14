@@ -29,10 +29,6 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This simple {@link EntityDocumentProcessor} finds the greatest number
@@ -44,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
  */
 public class GreatestNumberProcessor implements EntityDocumentProcessor {
 
-	static final String numberPropertyId = "P1101";
+	static final String numberPropertyId = "P1113"; // "series length"
 	// P1090 is "redshift"
 	// P1351 is "number of points/goals scored"
 	// P1350 is "number of matches played"
@@ -78,18 +74,15 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 	public void processItemDocument(ItemDocument itemDocument) {
 		this.itemCount++;
 
-		BigDecimal numericValue = null;
+		// Find the first quantity value for this property, if any:
+		QuantityValue quantityValue = itemDocument
+				.findStatementQuantityValue(numberPropertyId);
 
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			switch (statementGroup.getProperty().getId()) {
-			case numberPropertyId:
-				numericValue = getNumericValue(statementGroup);
-			}
-		}
-
-		if (numericValue != null) {
+		// If a value was found, compare it to the current maximum:
+		if (quantityValue != null) {
 			this.itemsWithPropertyCount++;
 
+			BigDecimal numericValue = quantityValue.getNumericValue();
 			if (this.largestNumberValue == null
 					|| numericValue.compareTo(this.largestNumberValue) > 0) {
 				this.largestNumberValue = numericValue;
@@ -104,6 +97,7 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 			}
 		}
 
+		// Print progress every 100,000 items:
 		if (this.itemCount % 100000 == 0) {
 			printStatus();
 		}
@@ -122,7 +116,7 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 				+ " matching items after scanning " + this.itemCount
 				+ " items.");
 		if (this.largestNumberValue != null) {
-			System.out.println("The items with the greatest number is: "
+			System.out.println("The item with the greatest number is: "
 					+ this.largestNumberItemLabel + " ("
 					+ this.largestNumberItem.getId() + ") with number "
 					+ this.largestNumberValue);
@@ -147,31 +141,6 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 		System.out.println("*** See source code for further details.");
 		System.out
 				.println("********************************************************************");
-	}
-
-	/**
-	 * Helper method that extracts a numeric value from the first quantity value
-	 * found in a statement of the given statement group. It checks if the
-	 * statement has a {@link QuantityValue}.
-	 *
-	 * @param statementGroup
-	 *            the {@link StatementGroup} to extract the value from
-	 * @return the number, or null if none was found
-	 */
-	private BigDecimal getNumericValue(StatementGroup statementGroup) {
-		// Iterate over all statements
-		for (Statement s : statementGroup.getStatements()) {
-			// Find the main claim and check if it has a value
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				Value v = ((ValueSnak) s.getClaim().getMainSnak()).getValue();
-				// Check if the value is a TimeValue of sufficient precision
-				if (v instanceof QuantityValue) {
-					return ((QuantityValue) v).getNumericValue();
-				}
-			}
-		}
-
-		return null;
 	}
 
 }

@@ -109,6 +109,85 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * Returns the current value of the maxlag parameter. It specifies the
+	 * number of seconds. To save actions causing any more site replication lag,
+	 * this parameter can make the client wait until the replication lag is less
+	 * than the specified value. In case of excessive lag, error code "maxlag"
+	 * is returned upon API requests.
+	 *
+	 * @return current setting of the maxlag parameter
+	 */
+	public int getMaxLag() {
+		return this.wbEditEntityAction.getMaxLag();
+	}
+
+	/**
+	 * Set the value of the maxlag parameter. If unsure, keep the default. See
+	 * {@link WikibaseDataEditor#getMaxLag()} for details.
+	 *
+	 * @param maxLag
+	 *            the new value in seconds
+	 */
+	public void setMaxLag(int maxLag) {
+		this.wbEditEntityAction.setMaxLag(maxLag);
+	}
+
+	/**
+	 * Returns the average time that a single edit should take, measured in
+	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * details.
+	 *
+	 * @return average time per edit in milliseconds
+	 */
+	public int getAverageTimePerEdit() {
+		return this.wbEditEntityAction.getAverageTimePerEdit();
+	}
+
+	/**
+	 * Sets the average time that a single edit should take, measured in
+	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * details.
+	 *
+	 * @param milliseconds
+	 *            the new value in milliseconds
+	 */
+	public void setAverageTimePerEdit(int milliseconds) {
+		this.wbEditEntityAction.setAverageTimePerEdit(milliseconds);
+	}
+
+	/**
+	 * Returns the number of edits that will be performed before entering
+	 * simulation mode, or -1 if there is no limit on the number of edits
+	 * (default). See {@link WbEditEntityAction#getRemainingEdits()} for
+	 * details.
+	 *
+	 * @return number of remaining edits
+	 */
+	public int getRemainingEdits() {
+		return this.wbEditEntityAction.getRemainingEdits();
+	}
+
+	/**
+	 * Sets the number of edits that this object can still perform. See
+	 * {@link WbEditEntityAction#setRemainingEdits(int)} for details.
+	 *
+	 * @param remainingEdits
+	 *            number of edits that can still be performed, or -1 to disable
+	 *            this limit (default setting)
+	 */
+	public void setRemainingEdits(int remainingEdits) {
+		this.wbEditEntityAction.setRemainingEdits(remainingEdits);
+	}
+
+	/**
+	 * Sets the remaining edits for this component to 0, so that all edits are
+	 * simulated but not actually send to the API.
+	 */
+	public void disableEditing() {
+		this.wbEditEntityAction.setRemainingEdits(0);
+	}
+
+	/**
 	 * Creates a new item document with the summary message as provided.
 	 * <p>
 	 * The item document that is given as a parameter must use a local item id,

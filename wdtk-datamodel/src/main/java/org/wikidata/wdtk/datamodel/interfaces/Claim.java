@@ -28,15 +28,15 @@ import java.util.List;
  * Statements that express a claim about a subject entity, such as the claim
  * that Berlin has 3 million inhabitants. Additional information, such as
  * references and ranks, are not part of the claim.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface Claim {
 
 	/**
 	 * The subject that the claim refers to, e.g., the id of "Berlin".
-	 * 
+	 *
 	 * @return EntityId of the subject
 	 */
 	EntityIdValue getSubject();
@@ -44,7 +44,7 @@ public interface Claim {
 	/**
 	 * Main Snak of the statement. This Snak refers directly to the subject,
 	 * e.g., the {@link ValueSnak} "Population: 3000000".
-	 * 
+	 *
 	 * @return the main snak
 	 */
 	Snak getMainSnak();
@@ -54,7 +54,7 @@ public interface Claim {
 	 * additional context information for this claim. For example, "as of: 2014"
 	 * might be a temporal context given for a claim that provides a population
 	 * number. The snaks are grouped by the property that they use.
-	 * 
+	 *
 	 * @return list of snak groups
 	 */
 	List<SnakGroup> getQualifiers();
@@ -62,8 +62,16 @@ public interface Claim {
 	/**
 	 * Returns an iterator over all qualifiers, without considering qualifier
 	 * groups. The relative order of qualifiers is preserved.
-	 * 
+	 *
 	 * @return iterator over all qualifier snaks
 	 */
 	Iterator<Snak> getAllQualifiers();
+
+	/**
+	 * Convenience method to get the value of the claim's main snak, or null if
+	 * there is none.
+	 *
+	 * @return main value of the claim, or null
+	 */
+	Value getValue();
 }

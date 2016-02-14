@@ -26,11 +26,8 @@ import java.io.PrintStream;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * This document processor calculates the average life expectancy of people,
@@ -72,19 +69,8 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		int birthYear = Integer.MIN_VALUE;
-		int deathYear = Integer.MIN_VALUE;
-
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			switch (statementGroup.getProperty().getId()) {
-			case "P569": // P569 is "birth date"
-				birthYear = getYearValueIfAny(statementGroup);
-				break;
-			case "P570": // P570 is "death date"
-				deathYear = getYearValueIfAny(statementGroup);
-				break;
-			}
-		}
+		int birthYear = getYearIfAny(itemDocument, "P569");
+		int deathYear = getYearIfAny(itemDocument, "P570");
 
 		if (birthYear != Integer.MIN_VALUE && deathYear != Integer.MIN_VALUE
 				&& birthYear >= 1200) {
@@ -164,30 +150,23 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 	}
 
 	/**
-	 * Helper method that extracts an integer year from the first time value
-	 * found in a statement of the given statement group. It checks if the
-	 * statement has a {@link TimeValue} but also if this value has sufficient
+	 * Helper method that finds the first value of a time-valued property (if
+	 * any), and extracts an integer year. It checks if the value has sufficient
 	 * precision to extract an exact year.
 	 *
-	 * @param statementGroup
-	 *            the {@link StatementGroup} to extract the year from
+	 * @param document
+	 *            the document to extract the data from
+	 * @param the
+	 *            string id of the property to look for
 	 * @return the year, or Interger.MIN_VALUE if none was found
 	 */
-	private int getYearValueIfAny(StatementGroup statementGroup) {
-		// Iterate over all statements
-		for (Statement s : statementGroup.getStatements()) {
-			// Find the main claim and check if it has a value
-			if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-				Value v = ((ValueSnak) s.getClaim().getMainSnak()).getValue();
-				// Check if the value is a TimeValue of sufficient precision
-				if (v instanceof TimeValue
-						&& ((TimeValue) v).getPrecision() >= TimeValue.PREC_YEAR) {
-					return (int) ((TimeValue) v).getYear();
-				}
-			}
+	private int getYearIfAny(StatementDocument document, String propertyId) {
+		TimeValue date = document.findStatementTimeValue(propertyId);
+		if (date != null && date.getPrecision() >= TimeValue.PREC_YEAR) {
+			return (int) date.getYear();
+		} else {
+			return Integer.MIN_VALUE;
 		}
-
-		return Integer.MIN_VALUE;
 	}
 
 }

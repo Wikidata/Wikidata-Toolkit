@@ -249,8 +249,7 @@ public class WikibaseDataFetcher {
 			return Collections.emptyMap();
 		}
 		configureProperties(properties);
-		return this.wbGetEntitiesAction
-				.wbGetEntities(properties);
+		return this.wbGetEntitiesAction.wbGetEntities(properties);
 	}
 
 	/**

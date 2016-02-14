@@ -81,4 +81,12 @@ public interface Statement {
 	 * @return the statement string id
 	 */
 	String getStatementId();
+
+	/**
+	 * Convenience method to get the value of the statement's claim's main snak,
+	 * or null if there is none.
+	 *
+	 * @return main value of the statement, or null
+	 */
+	Value getValue();
 }

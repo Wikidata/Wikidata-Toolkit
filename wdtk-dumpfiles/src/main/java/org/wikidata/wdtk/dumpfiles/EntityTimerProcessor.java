@@ -2,9 +2,9 @@ package org.wikidata.wdtk.dumpfiles;
 
 /*
  * #%L
- * Wikidata Toolkit Examples
+ * Wikidata Toolkit Dump File Handling
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2014 - 2016 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

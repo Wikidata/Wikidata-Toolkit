@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
@@ -61,6 +62,8 @@ public class TestStatement {
 		result.setSubject(JsonTestData.getEmtpyTestItemDocument().getEntityId());
 
 		assertNotNull(result);
+		assertNull(result.getValue());
+		assertNull(result.getClaim().getValue());
 		assertEquals(JsonTestData.getTestNoValueStatement(), result);
 
 	}

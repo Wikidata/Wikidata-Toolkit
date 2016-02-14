@@ -28,22 +28,30 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * <p>
  * The most basic (and most common) form of Snaks are property-value pairs, but
  * other forms exist.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public interface Snak {
 
 	/**
 	 * Get the id of the property that this snak refers to.
-	 * 
+	 *
 	 * @return PropertyId of this Snak
 	 */
 	PropertyIdValue getPropertyId();
 
 	/**
+	 * Get the {@link Value} of this Snak, or null if the snak has no specified
+	 * value.
+	 *
+	 * @return Value
+	 */
+	Value getValue();
+
+	/**
 	 * Accept a SnakVisitor and return its output.
-	 * 
+	 *
 	 * @param snakVisitor
 	 *            the SnakVisitor
 	 * @return output of the visitor

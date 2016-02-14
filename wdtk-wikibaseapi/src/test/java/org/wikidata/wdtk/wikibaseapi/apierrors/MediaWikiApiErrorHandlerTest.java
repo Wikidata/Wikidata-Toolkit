@@ -66,4 +66,11 @@ public class MediaWikiApiErrorHandlerTest {
 				MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, "some message");
 	}
 
+	@Test(expected = MaxlagErrorException.class)
+	public void testMaxlagError() throws MediaWikiApiErrorException {
+		MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(
+				MediaWikiApiErrorHandler.ERROR_MAXLAG,
+				"Waiting for 10.64.16.27: 2 seconds lagged");
+	}
+
 }
