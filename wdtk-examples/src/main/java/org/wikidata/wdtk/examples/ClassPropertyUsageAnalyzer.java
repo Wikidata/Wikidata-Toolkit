@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -132,6 +133,10 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * Number of uses of this property in other properties.
 		 */
 		public int propertyCount = 0;
+		/**
+		 * Datatype of this property
+		 */
+		public String datatype = "Unknown";
 	}
 
 	/**
@@ -350,6 +355,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		if (labelValue != null) {
 			propertyRecord.label = labelValue.getText();
 		}
+		propertyRecord.datatype = getDatatypeLabel(propertyDocument
+				.getDatatype());
 
 	}
 
@@ -521,7 +528,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 	/**
 	 * Prints the data for a single class to the given stream. This will be
-	 * a single line in CSV.
+	 * a single element in json.
 	 *
 	 * @param out
 	 *                the output to write to
@@ -545,6 +552,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		out.print(builder.toString());
 	}
 
+	/**
+	 * Builds a string for json of the related properties to the output.
+	 *
+	 * @param usageRecord
+	 *                the data to write
+	 * @return String for json
+	 */
 	private String buildStringForRelatedProperties(UsageRecord usageRecord) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(jsonStringEscape("r")).append(
@@ -603,6 +617,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		return builder.toString();
 	}
 
+	/**
+	 * Returns Json-String for the label, if the label exists.
+	 * 
+	 * @param usageRecord
+	 *                the record to get the label from
+	 * @return Json-String for label
+	 */
 	private String getJsonStringForLabel(UsageRecord usageRecord) {
 
 		StringBuilder builder = new StringBuilder();
@@ -617,7 +638,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 	/**
 	 * Prints the data of one property to the given output. This will be a
-	 * single line in CSV.
+	 * single object in JSON.
 	 *
 	 * @param out
 	 *                the output to write to
@@ -657,6 +678,15 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				.append(":")
 				.append(propertyRecord.propertyCount)
 				.append(",");
+		if (propertyRecord.datatype != null) {
+			builder.append(jsonStringEscape("d")).append(":")
+					.append(jsonStringEscape(propertyRecord.datatype))
+					.append(",");
+		} else {
+			builder.append(jsonStringEscape("d")).append(":")
+					.append(jsonStringEscape("unknown"))
+					.append(",");
+		}
 
 		builder.append(buildStringForRelatedProperties(propertyRecord));
 		builder.append("}");
@@ -820,6 +850,50 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				.replace("\r", " ");
 		string = string.replace("\\", "\\\\\\\\");
 		return "\"" + string.replace("\"", "\\\\\\\"") + "\"";
+	}
+
+	/**
+	 * Returns an English label for a given datatype.
+	 *
+	 * @param datatype
+	 *                the datatype to label
+	 * @return the label
+	 */
+	private String getDatatypeLabel(DatatypeIdValue datatype) {
+		if (datatype.getIri() == null) { // TODO should be redundant
+						 // once the
+						 // JSON parsing works
+			return "Unknown";
+		}
+
+		switch (datatype.getIri()) {
+		case DatatypeIdValue.DT_COMMONS_MEDIA:
+			return "Commons media";
+		case DatatypeIdValue.DT_GLOBE_COORDINATES:
+			return "Globe coordinates";
+		case DatatypeIdValue.DT_ITEM:
+			return "Item";
+		case DatatypeIdValue.DT_QUANTITY:
+			return "Quantity";
+		case DatatypeIdValue.DT_STRING:
+			return "String";
+		case DatatypeIdValue.DT_TIME:
+			return "Time";
+		case DatatypeIdValue.DT_URL:
+			return "URL";
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			return "Monolingual text";
+		case DatatypeIdValue.DT_PROPERTY:
+			return "Property";
+		case DatatypeIdValue.DT_MATH:
+			return "Math";
+		case DatatypeIdValue.DT_EXTERNAL_ID:
+			return "External ID";
+
+		default:
+			throw new RuntimeException("Unknown datatype "
+					+ datatype.getIri());
+		}
 	}
 
 }
