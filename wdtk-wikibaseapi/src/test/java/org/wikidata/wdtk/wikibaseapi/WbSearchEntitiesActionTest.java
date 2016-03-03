@@ -63,26 +63,27 @@ public class WbSearchEntitiesActionTest {
 	public void testWbSearchEntities() throws MediaWikiApiErrorException {
 		List<WbSearchEntitiesResult> results = action.wbSearchEntities("abc",
 				"en", null, null, null, null);
-		
-		assertEquals(results.size(), 7);
-		
-		WbSearchEntitiesResult firstMatch = results.get(0);
-		assertEquals(firstMatch.getEntityId(), "Q169889");
-		assertEquals(firstMatch.getConceptUri(),
+
+		assertEquals(7, results.size());
+
+		WbSearchEntitiesResult firstResult = results.get(0);
+		assertEquals("Q169889", firstResult.getEntityId());
+		assertEquals(firstResult.getConceptUri(),
 				"http://www.wikidata.org/entity/Q169889");
-		assertEquals(firstMatch.getUrl(), "//www.wikidata.org/wiki/Q169889");
-		assertEquals(firstMatch.getTitle(), "Q169889");
-		assertEquals(firstMatch.getPageId(), 170288);
-		assertEquals(firstMatch.getLabel(), "American Broadcasting Company");
-		assertEquals(firstMatch.getDescription(),
-				"American broadcast television network");
-		assertEquals(firstMatch.getMatch(), new WbSearchEntitiesResult.Match(
-				"alias", "en", "ABC"));
+		assertEquals(firstResult.getUrl(), "//www.wikidata.org/wiki/Q169889");
+		assertEquals("Q169889", firstResult.getTitle());
+		assertEquals(170288, firstResult.getPageId());
+		assertEquals("American Broadcasting Company", firstResult.getLabel());
+		assertEquals("American broadcast television network",
+				firstResult.getDescription());
+		WbSearchEntitiesResult.Match match = new JacksonWbSearchEntitiesResult.JacksonMatch(
+				"alias", "en", "ABC");
+		assertEquals(match, firstResult.getMatch());
 		List<String> aliases = new ArrayList<>();
 		aliases.add("ABC");
-		assertEquals(firstMatch.getAliases(), aliases);
+		assertEquals(aliases, firstResult.getAliases());
 	}
-	
+
 	@Test
 	public void testWbSearchEntitiesEmpty() throws MediaWikiApiErrorException {
 		List<WbSearchEntitiesResult> results = action.wbSearchEntities(

@@ -153,7 +153,6 @@ public class WbSearchEntitiesAction {
 			parameters.put("continue", Long.toString(offset));
 		}
 
-//		Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 		List<WbSearchEntitiesResult> results = new ArrayList<>();
 
 		try (InputStream response = this.connection.sendRequest("POST",
@@ -166,8 +165,8 @@ public class WbSearchEntitiesAction {
 			JsonNode entities = root.path("search");
 			for (JsonNode entityNode : entities) {
 				try {
-					WbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
-							WbSearchEntitiesResult.class);
+					JacksonWbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
+							JacksonWbSearchEntitiesResult.class);
 					results.add(ed);
 				} catch (JsonProcessingException e) {
 					logger.error("Error when reading JSON for entity "
