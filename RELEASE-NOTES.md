@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.7.0
+-------------
+
+Bug fixes:
+* Update Wikimedia dump location to https so that dump downloads work again
+
 Version 0.6.0
 -------------
 
