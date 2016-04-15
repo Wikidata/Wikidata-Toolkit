@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,13 +51,13 @@ public class WmfOnlineStandardDumpFileTest {
 	@Test
 	public void validCurrentDumpPropertiesOldFormat() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html", this.getClass());
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
@@ -74,13 +74,13 @@ public class WmfOnlineStandardDumpFileTest {
 	@Test
 	public void validCurrentDumpPropertiesNewFormat() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140508-index.html", this.getClass());
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);

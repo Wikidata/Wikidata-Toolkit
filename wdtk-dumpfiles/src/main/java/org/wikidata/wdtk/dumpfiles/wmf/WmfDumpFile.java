@@ -42,7 +42,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * The default URL of the website to obtain the dump files from.
 	 */
-	protected static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
+	protected static final String DUMP_SITE_BASE_URL = "https://dumps.wikimedia.org/";
 
 	/**
 	 * Hash map defining the relative Web directory of each type of dump.

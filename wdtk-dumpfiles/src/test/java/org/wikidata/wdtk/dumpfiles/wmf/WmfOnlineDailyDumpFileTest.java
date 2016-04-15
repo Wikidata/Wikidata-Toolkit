@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,10 +51,10 @@ public class WmfOnlineDailyDumpFileTest {
 	public void validDumpProperties() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "done");
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
 						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
 				CompressionType.BZ2);
