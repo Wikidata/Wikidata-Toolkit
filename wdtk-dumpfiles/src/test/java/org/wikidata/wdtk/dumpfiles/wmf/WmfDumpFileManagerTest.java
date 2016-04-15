@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -106,7 +106,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllDailyDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
@@ -148,7 +148,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllJsonDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/wikidata/",
+				"https://dumps.wikimedia.org/other/wikidata/",
 				"/other-wikidata-index.html", this.getClass());
 
 		setLocalDump("20141110", DumpContentType.JSON, true);
@@ -188,7 +188,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
@@ -223,7 +223,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
@@ -324,13 +324,13 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllRelevantDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
