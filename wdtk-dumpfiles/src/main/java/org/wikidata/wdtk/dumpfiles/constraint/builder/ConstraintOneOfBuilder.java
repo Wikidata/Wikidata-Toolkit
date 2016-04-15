@@ -62,6 +62,10 @@ class ConstraintOneOfBuilder implements ConstraintBuilder {
 				ret = new ConstraintOneOf(constrainedProperty,
 						ConstraintMainBuilder.parseListOfStrings(values), "");
 
+			} else if (propertyType.equals(DatatypeIdValue.DT_EXTERNAL_ID)) {
+				ret = new ConstraintOneOf(constrainedProperty,
+						ConstraintMainBuilder.parseListOfStrings(values), "");
+
 			} else {
 				throw new IllegalArgumentException(
 						"'Constraint:One of' cannot be used for property '"
