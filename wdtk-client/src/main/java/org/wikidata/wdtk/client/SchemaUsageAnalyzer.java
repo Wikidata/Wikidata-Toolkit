@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.examples;
+package org.wikidata.wdtk.client;
 
 /*
  * #%L
@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,12 +46,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
@@ -67,11 +62,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.dumpfiles.DumpContentType;
-import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
-import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor;
-import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor.TimeoutException;
-import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -87,7 +77,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author Markus Kroetzsch
  */
-public class SchemaUsageAnalyzer implements EntityDocumentProcessor {
+public class SchemaUsageAnalyzer implements DumpProcessingAction {
 
 	private static final ItemIdValue ItemGadgetAuthorityControl = Datamodel
 			.makeWikidataItemIdValue("Q22348290");
@@ -103,12 +93,20 @@ public class SchemaUsageAnalyzer implements EntityDocumentProcessor {
 	/**
 	 * The place where result files will be stored.
 	 */
-	private final Path resultDirectory;
+	protected Path resultDirectory;
 
 	/**
 	 * Sites information used to extract site data.
 	 */
-	private final Sites sites;
+	protected Sites sites;
+
+	/**
+	 * Name as an action, if any
+	 */
+	protected String name = null;
+
+	protected String dateStamp;
+	protected String project;
 
 	/**
 	 * Simple record class to keep track of some usage numbers for one type of
@@ -383,70 +381,6 @@ public class SchemaUsageAnalyzer implements EntityDocumentProcessor {
 	private final EntityStatistics propertyStatistics = new EntityStatistics();
 
 	/**
-	 * Main method. Processes the whole dump using this processor.
-	 *
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		configureLogging();
-		SchemaUsageAnalyzer.printDocumentation();
-
-		// Locate dump file to process
-		DumpProcessingController dumpProcessingController = new DumpProcessingController(
-				"wikidatawiki");
-		dumpProcessingController.setOfflineMode(true);
-
-		// Get sites data
-		Sites sites = dumpProcessingController.getSitesInformation();
-
-		// Get JSON data
-		MwDumpFile dumpFile = dumpProcessingController
-				.getMostRecentDump(DumpContentType.JSON);
-		dumpFile.prepareDumpFile(); // do the download first, if needed
-		String dumpDateStamp = dumpFile.getDateStamp();
-		System.out.println("Using Wikidata dumpfile " + dumpDateStamp + ".");
-
-		// Make output directories for results
-		Path directoryPath = Paths.get("results");
-		createDirectory(directoryPath);
-		directoryPath = directoryPath.resolve("wikidatawiki-" + dumpDateStamp);
-		createDirectory(directoryPath);
-
-		// Initialise processor object
-		SchemaUsageAnalyzer processor = new SchemaUsageAnalyzer(directoryPath,
-				sites);
-		processor.fetchSubclassHierarchy();
-
-		// Subscribe to the most recent entity documents of type wikibase item:
-		dumpProcessingController.registerEntityDocumentProcessor(processor,
-				null, true);
-		// Also add a timer that reports some basic progress information:
-		EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
-		dumpProcessingController.registerEntityDocumentProcessor(
-				entityTimerProcessor, null, true);
-
-		System.out.println("Processing Wikidata dumpfile ...");
-		try {
-			dumpProcessingController.processDump(dumpFile);
-		} catch (TimeoutException e) {
-			System.out.println("Processing was interrupted.");
-		}
-
-		// Close everything and write final reports
-		entityTimerProcessor.close();
-		processor.writeFinalReports();
-
-		try (PrintStream out = new PrintStream(openResultFileOuputStream(
-				directoryPath, "statistics.json"))) {
-			out.println("{ ");
-			processor.writeStatisticsData(out);
-			out.println(" \"dumpDate\": \"" + dumpDateStamp + "\"");
-			out.println("}");
-		}
-	}
-
-	/**
 	 * Create a directory at the given path if it does not exist yet.
 	 *
 	 * @param path
@@ -482,31 +416,6 @@ public class SchemaUsageAnalyzer implements EntityDocumentProcessor {
 			Path resultDirectory, String filename) throws IOException {
 		Path filePath = resultDirectory.resolve(filename);
 		return new FileOutputStream(filePath.toFile());
-	}
-
-	/**
-	 * Defines how messages should be logged. This method can be modified to
-	 * restrict the logging messages that are shown on the console or to change
-	 * their formatting. See the documentation of Log4J for details on how to do
-	 * this.
-	 */
-	private static void configureLogging() {
-		// Create the appender that will write log messages to the console.
-		ConsoleAppender consoleAppender = new ConsoleAppender();
-		// Define the pattern of log messages.
-		// Insert the string "%c{1}:%L" to also show class name and line.
-		String pattern = "%d{yyyy-MM-dd HH:mm:ss} %-5p - %m%n";
-		consoleAppender.setLayout(new PatternLayout(pattern));
-		// Change to Level.ERROR for fewer messages:
-		consoleAppender.setThreshold(Level.INFO);
-
-		consoleAppender.activateOptions();
-		Logger.getRootLogger().addAppender(consoleAppender);
-	}
-
-	public SchemaUsageAnalyzer(Path resultDirectory, Sites sites) {
-		this.resultDirectory = resultDirectory;
-		this.sites = sites;
 	}
 
 	@Override
@@ -999,34 +908,161 @@ public class SchemaUsageAnalyzer implements EntityDocumentProcessor {
 	}
 
 	/**
-	 * Print some basic documentation about this program.
-	 */
-	public static void printDocumentation() {
-		System.out
-				.println("********************************************************************");
-		System.out
-				.println("*** Wikidata Toolkit: Class and Property Usage Analyzer");
-		System.out.println("*** ");
-		System.out
-				.println("*** This program gathers statistics about the use of properties");
-		System.out
-				.println("*** and classes on Wikidata. Results are stored in JSON files.");
-		System.out
-				.println("*** To obtain the data, live data from the Wikidata SPARQL endpoint");
-		System.out
-				.println("*** is combined with all data from the complete dumps.");
-		System.out
-				.println("********************************************************************");
-	}
-
-	/**
 	 * Prints a report about the statistics gathered so far.
 	 */
 	private void printReport() {
-		System.out.println("Processed " + this.countEntities + " entities:");
-		System.out.println(" * Property documents: "
-				+ this.propertyRecords.size());
-		System.out.println(" * Class documents: " + this.classRecords.size());
+		System.out.println(getReport());
+	}
+
+	@Override
+	public boolean needsSites() {
+		return true;
+	}
+
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public String getReport() {
+		return "Processed " + this.countEntities + " entities:\n"
+				+ " * Property documents: " + this.propertyRecords.size()
+				+ "\n" + " * Class documents: " + this.classRecords.size();
+	}
+
+	/**
+	 * Main method. Processes the whole dump using this processor.
+	 *
+	 * @param args
+	 * @throws IOException
+	 */
+	// public static void main(String[] args) throws IOException {
+	// // Locate dump file to process
+	// DumpProcessingController dumpProcessingController = new
+	// DumpProcessingController(
+	// "wikidatawiki");
+	// dumpProcessingController.setOfflineMode(true);
+	//
+	// // Get sites data
+	// Sites sites = dumpProcessingController.getSitesInformation();
+	//
+	// // Get JSON data
+	// MwDumpFile dumpFile = dumpProcessingController
+	// .getMostRecentDump(DumpContentType.JSON);
+	// dumpFile.prepareDumpFile(); // do the download first, if needed
+	// String dumpDateStamp = dumpFile.getDateStamp();
+	// System.out.println("Using Wikidata dumpfile " + dumpDateStamp + ".");
+	//
+	// // Make output directories for results
+	// Path directoryPath = Paths.get("results");
+	// createDirectory(directoryPath);
+	// directoryPath = directoryPath.resolve("wikidatawiki-" + dumpDateStamp);
+	// createDirectory(directoryPath);
+	//
+	// // Initialise processor object
+	// SchemaUsageAnalyzer processor = new SchemaUsageAnalyzer(directoryPath,
+	// sites);
+	// processor.fetchSubclassHierarchy();
+	//
+	// // Subscribe to the most recent entity documents of type wikibase item:
+	// dumpProcessingController.registerEntityDocumentProcessor(processor,
+	// null, true);
+	// // Also add a timer that reports some basic progress information:
+	// EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
+	// dumpProcessingController.registerEntityDocumentProcessor(
+	// entityTimerProcessor, null, true);
+	//
+	// System.out.println("Processing Wikidata dumpfile ...");
+	// try {
+	// dumpProcessingController.processDump(dumpFile);
+	// } catch (TimeoutException e) {
+	// System.out.println("Processing was interrupted.");
+	// }
+	//
+	// // Close everything and write final reports
+	// entityTimerProcessor.close();
+	// processor.writeFinalReports();
+	//
+	// try (PrintStream out = new PrintStream(openResultFileOuputStream(
+	// directoryPath, "statistics.json"))) {
+	// out.println("{ ");
+	// processor.writeStatisticsData(out);
+	// out.println(" \"dumpDate\": \"" + dumpDateStamp + "\"");
+	// out.println("}");
+	// }
+	// }
+
+	@Override
+	public void open() {
+		this.resultDirectory = Paths.get("results");
+		try {
+			// Make output directories for results
+			createDirectory(resultDirectory);
+			resultDirectory = resultDirectory.resolve("wikidatawiki-"
+					+ dateStamp);
+			createDirectory(resultDirectory);
+
+			// Initialise processor object
+			fetchSubclassHierarchy();
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+	}
+
+	@Override
+	public void close() {
+		writeFinalReports();
+		try (PrintStream out = new PrintStream(openResultFileOuputStream(
+				resultDirectory, "statistics.json"))) {
+			out.println("{ ");
+			writeStatisticsData(out);
+			out.println(" \"dumpDate\": \"" + dateStamp + "\"");
+			out.println("}");
+		} catch (IOException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+	}
+
+	@Override
+	public void setSites(Sites sites) {
+		this.sites = sites;
+	}
+
+	@Override
+	public boolean setOption(String option, String value) {
+		// no options
+		return false;
+	}
+
+	@Override
+	public boolean useStdOut() {
+		return true;
+	}
+
+	@Override
+	public void setDumpInformation(String project, String dateStamp) {
+		this.project = project;
+		this.dateStamp = dateStamp;
+	}
+
+	@Override
+	public void setActionName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getActionName() {
+		if (this.name != null) {
+			return this.name;
+		} else {
+			return getDefaultActionName();
+		}
+	}
+
+	@Override
+	public String getDefaultActionName() {
+		return "SchemaAnalyzerAction";
 	}
 
 }
