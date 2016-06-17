@@ -126,6 +126,10 @@ public class JsonTestData {
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":"
 			+ JSON_SITE_LINK + "}," + JSON_ITEM_TYPE + "}";
+	public static final String JSON_EMPTY_ARRAY_AS_CONTAINER = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":[],\"labels\":[],\"descriptions\":[],\"claims\":[],\"sitelinks\":[],"
+			+ JSON_ITEM_TYPE + "}";
 
 	public static final String JSON_NOVALUE_STATEMENT = "{\"type\":\"statement\",\"id\":\""
 			+ TEST_STATEMENT_ID

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -179,6 +180,20 @@ public class TestItemDocument {
 
 		assertNotNull(result);
 		assertEquals(JsonTestData.getTestSiteLinkMap(), result.getSiteLinks());
+	}
+
+	@Test
+	public void testEmptyArraysForTerms() throws IOException {
+		JacksonItemDocument result = mapper.reader(JacksonItemDocument.class)
+			.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+			.readValue(JsonTestData.JSON_EMPTY_ARRAY_AS_CONTAINER);
+
+		assertNotNull(result);
+		assertNotNull(result.getLabels());
+		assertNotNull(result.getDescriptions());
+		assertNotNull(result.getAliases());
+		assertNotNull(result.getAllStatements());
+		assertNotNull(result.getSiteLinks());
 	}
 
 	@Test

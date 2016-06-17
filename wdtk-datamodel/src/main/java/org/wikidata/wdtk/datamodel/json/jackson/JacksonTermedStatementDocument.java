@@ -130,7 +130,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	public void setAliases(
 			Map<String, List<JacksonMonolingualTextValue>> aliases) {
-		this.aliases = aliases;
+		if (aliases == null) {
+			this.aliases = Collections.emptyMap();
+		} else {
+			this.aliases = aliases;
+		}
 	}
 
 	@Override
@@ -157,7 +161,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	public void setDescriptions(
 			Map<String, JacksonMonolingualTextValue> descriptions) {
-		this.descriptions = descriptions;
+		if (descriptions == null) {
+			this.descriptions = Collections.emptyMap();
+		} else {
+			this.descriptions = descriptions;
+		}
 	}
 
 	@Override
@@ -174,7 +182,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 *            new value
 	 */
 	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
-		this.labels = labels;
+		if (labels == null) {
+			this.labels = Collections.emptyMap();
+		} else {
+			this.labels = labels;
+		}
 	}
 
 	@Override
@@ -265,7 +277,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	@JsonProperty("claims")
 	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
-		this.claims = claims;
+		if (claims == null) {
+			this.claims = Collections.emptyMap();
+		} else {
+			this.claims = claims;
+		}
 		this.statementGroups = null; // clear cache
 	}
 
