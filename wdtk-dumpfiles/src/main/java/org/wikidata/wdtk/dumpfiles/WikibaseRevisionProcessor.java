@@ -23,6 +23,7 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.IOException;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
@@ -93,8 +94,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	public void processItemRevision(MwRevision mwRevision) {
 		try {
-			JacksonItemDocument document = mapper.readValue(
-					mwRevision.getText(), JacksonItemDocument.class);
+			JacksonItemDocument document = readValue(mwRevision.getText(), JacksonItemDocument.class);
 			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processItemDocument(document);
 		} catch (JsonParseException e1) {
@@ -124,8 +124,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	public void processPropertyRevision(MwRevision mwRevision) {
 		try {
-			JacksonPropertyDocument document = mapper.readValue(
-					mwRevision.getText(), JacksonPropertyDocument.class);
+			JacksonPropertyDocument document = readValue(mwRevision.getText(), JacksonPropertyDocument.class);
 			document.setSiteIri(this.siteIri);
 			this.entityDocumentProcessor.processPropertyDocument(document);
 		} catch (JsonParseException e1) {
@@ -153,6 +152,12 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		// + mwRevision.toString() + " (" + e.toString() + ")");
 		// }
 
+	}
+
+	public <T> T readValue(String content, Class<T> valueType) throws IOException {
+		return mapper.reader(valueType)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+				.readValue(content);
 	}
 
 	@Override
