@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerEntityId {
 	// TODO maybe replace IllegalArgumentException with a checked one; maybe do
 	// the check when the type is set
