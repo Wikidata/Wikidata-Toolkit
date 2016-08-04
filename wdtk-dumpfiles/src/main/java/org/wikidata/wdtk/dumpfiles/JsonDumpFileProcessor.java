@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
@@ -51,7 +52,8 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final ObjectReader documentReader = this.mapper
-			.reader(JacksonTermedStatementDocument.class);
+			.reader(JacksonTermedStatementDocument.class)
+			.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
 	private final String siteIri;
