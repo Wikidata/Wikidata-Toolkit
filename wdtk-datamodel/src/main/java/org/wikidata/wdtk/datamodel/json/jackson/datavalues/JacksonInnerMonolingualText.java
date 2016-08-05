@@ -2,6 +2,8 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -30,6 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerMonolingualText {
 
 	String language = "";

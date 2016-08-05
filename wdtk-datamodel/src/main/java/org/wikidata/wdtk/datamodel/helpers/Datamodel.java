@@ -178,7 +178,7 @@ public class Datamodel {
 
 	/**
 	 * Creates a {@link TimeValue} for a given date and time. The precision is
-	 * automatically set to {@link TimeValue.PREC_SECOND}.
+	 * automatically set to {@link TimeValue#PREC_SECOND}.
 	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
@@ -210,7 +210,7 @@ public class Datamodel {
 
 	/**
 	 * Creates a {@link TimeValue} for a given date. The precision is
-	 * automatically set to {@link TimeValue.PREC_DAY}.
+	 * automatically set to {@link TimeValue#PREC_DAY}.
 	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE

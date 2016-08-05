@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Abstract base implementation of {@link EntityIdValue} for Jackson.
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Markus Kroetzsch
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class JacksonValueEntityId extends JacksonValue implements
 		EntityIdValue {
 
@@ -107,7 +109,7 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 * of the JSON serialization of values. This method should only be used
 	 * during deserialization.
 	 *
-	 * @param parentDocument
+	 * @param siteIri
 	 *            new value
 	 */
 	@JsonIgnore

@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Helper object that represents the JSON object structure that is used to
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerTime {
 	private String time;
 	private int timezone;
