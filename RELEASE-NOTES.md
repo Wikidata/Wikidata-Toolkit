@@ -4,7 +4,14 @@ Wikidata Toolkit Release Notes
 Version 0.7.0
 -------------
 
+New features:
+* Add a new client action "sqid" that analyses dumps to create the statistics
+  JSON files that are the basis for the SQID Wikidata Browser that is found at
+  https://tools.wmflabs.org/sqid/
+
 Bug fixes:
+* Fix JavaDoc errors to enable build using Java 8 (with doclint)
+* Make JSON parser more tolerant towards unknown keys; avoids breaking on recent API changes
 * Update Wikimedia dump location to https so that dump downloads work again
 
 Version 0.6.0

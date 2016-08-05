@@ -46,6 +46,7 @@ public interface DirectoryManager {
 	 *            the string name of the subdirectory
 	 * @throws IOException
 	 *             if directory could not be created
+	 * @return DirectoryManager for subdirectory
 	 */
 	DirectoryManager getSubdirectoryManager(String subdirectoryName)
 			throws IOException;

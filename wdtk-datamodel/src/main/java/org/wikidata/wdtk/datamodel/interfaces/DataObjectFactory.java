@@ -303,7 +303,7 @@ public interface DataObjectFactory {
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
 	 * @deprecated Use
-	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, int)}
+	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
 	 */
 	@Deprecated
 	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
@@ -332,7 +332,7 @@ public interface DataObjectFactory {
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
 	 * @deprecated Use
-	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, int)}
+	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
 	 */
 	@Deprecated
 	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
@@ -393,7 +393,7 @@ public interface DataObjectFactory {
 	 *            the sitelinks of this item by site key
 	 * @return an {@link ItemDocument} corresponding to the input
 	 * @deprecated Use
-	 *             {@link #getItemDocument(ItemIdValue, List, List, List, List, Map, int)}
+	 *             {@link #getItemDocument(ItemIdValue, List, List, List, List, Map, long)}
 	 *             instead
 	 */
 	@Deprecated

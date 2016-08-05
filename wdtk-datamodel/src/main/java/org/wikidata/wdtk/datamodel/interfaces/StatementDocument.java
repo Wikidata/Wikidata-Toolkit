@@ -135,8 +135,8 @@ public interface StatementDocument extends EntityDocument {
 	 *
 	 * @param propertyIdValue
 	 *            the property to search for
-	 * @param value
-	 *            the value to search
+	 * @param values
+	 *            the set of values to search
 	 * @return true if a statement for this property and value exists
 	 */
 	boolean hasStatementValue(PropertyIdValue propertyIdValue,
@@ -153,8 +153,8 @@ public interface StatementDocument extends EntityDocument {
 	 *
 	 * @param propertyId
 	 *            the property to search for
-	 * @param value
-	 *            the value to search
+	 * @param values
+	 *            the set of values to search
 	 * @return true if a statement for this property and value exists
 	 */
 	boolean hasStatementValue(String propertyId, Set<? extends Value> values);
@@ -193,7 +193,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link Value} or null
 	 */
@@ -221,7 +221,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link StringValue} or null
 	 */
@@ -250,7 +250,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link QuantityValue} or null
 	 */
@@ -280,7 +280,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link GlobeCoordinatesValue} or null
 	 */
@@ -310,7 +310,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link TimeValue} or null
 	 */
@@ -339,7 +339,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link MonolingualTextValue} or null
 	 */
@@ -369,7 +369,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link ItemIdValue} or null
 	 */
@@ -398,7 +398,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link PropertyIdValue} or null
 	 */
@@ -428,7 +428,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link EntityIdValue} or null
 	 */
@@ -458,7 +458,7 @@ public interface StatementDocument extends EntityDocument {
 	 * This is a convenience method for accessing the data that can be obtained
 	 * via {@link #getStatementGroups()}.
 	 *
-	 * @param propertyId
+	 * @param propertyIdValue
 	 *            the property to search for
 	 * @return {@link DatatypeIdValue} or null
 	 */

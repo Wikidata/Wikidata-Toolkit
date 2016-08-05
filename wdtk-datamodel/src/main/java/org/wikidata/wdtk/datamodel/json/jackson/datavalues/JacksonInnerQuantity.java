@@ -126,7 +126,7 @@ public class JacksonInnerQuantity {
 	 * Sets the lower bound to the given value. Only for use by Jackson during
 	 * deserialization.
 	 *
-	 * @param lower
+	 * @param lowerBound
 	 *            bound new value
 	 */
 	public void setLowerBound(BigDecimal lowerBound) {
