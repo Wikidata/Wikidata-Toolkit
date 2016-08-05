@@ -931,68 +931,6 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 				+ "\n" + " * Class documents: " + this.classRecords.size();
 	}
 
-	/**
-	 * Main method. Processes the whole dump using this processor.
-	 *
-	 * @param args
-	 * @throws IOException
-	 */
-	// public static void main(String[] args) throws IOException {
-	// // Locate dump file to process
-	// DumpProcessingController dumpProcessingController = new
-	// DumpProcessingController(
-	// "wikidatawiki");
-	// dumpProcessingController.setOfflineMode(true);
-	//
-	// // Get sites data
-	// Sites sites = dumpProcessingController.getSitesInformation();
-	//
-	// // Get JSON data
-	// MwDumpFile dumpFile = dumpProcessingController
-	// .getMostRecentDump(DumpContentType.JSON);
-	// dumpFile.prepareDumpFile(); // do the download first, if needed
-	// String dumpDateStamp = dumpFile.getDateStamp();
-	// System.out.println("Using Wikidata dumpfile " + dumpDateStamp + ".");
-	//
-	// // Make output directories for results
-	// Path directoryPath = Paths.get("results");
-	// createDirectory(directoryPath);
-	// directoryPath = directoryPath.resolve("wikidatawiki-" + dumpDateStamp);
-	// createDirectory(directoryPath);
-	//
-	// // Initialise processor object
-	// SchemaUsageAnalyzer processor = new SchemaUsageAnalyzer(directoryPath,
-	// sites);
-	// processor.fetchSubclassHierarchy();
-	//
-	// // Subscribe to the most recent entity documents of type wikibase item:
-	// dumpProcessingController.registerEntityDocumentProcessor(processor,
-	// null, true);
-	// // Also add a timer that reports some basic progress information:
-	// EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
-	// dumpProcessingController.registerEntityDocumentProcessor(
-	// entityTimerProcessor, null, true);
-	//
-	// System.out.println("Processing Wikidata dumpfile ...");
-	// try {
-	// dumpProcessingController.processDump(dumpFile);
-	// } catch (TimeoutException e) {
-	// System.out.println("Processing was interrupted.");
-	// }
-	//
-	// // Close everything and write final reports
-	// entityTimerProcessor.close();
-	// processor.writeFinalReports();
-	//
-	// try (PrintStream out = new PrintStream(openResultFileOuputStream(
-	// directoryPath, "statistics.json"))) {
-	// out.println("{ ");
-	// processor.writeStatisticsData(out);
-	// out.println(" \"dumpDate\": \"" + dumpDateStamp + "\"");
-	// out.println("}");
-	// }
-	// }
-
 	@Override
 	public void open() {
 		this.resultDirectory = Paths.get("results");

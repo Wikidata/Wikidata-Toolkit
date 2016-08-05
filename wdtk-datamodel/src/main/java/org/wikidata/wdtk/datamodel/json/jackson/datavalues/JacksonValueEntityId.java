@@ -109,7 +109,7 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 * of the JSON serialization of values. This method should only be used
 	 * during deserialization.
 	 *
-	 * @param parentDocument
+	 * @param siteIri
 	 *            new value
 	 */
 	@JsonIgnore

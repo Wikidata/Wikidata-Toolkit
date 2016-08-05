@@ -10,6 +10,7 @@ New features:
   https://tools.wmflabs.org/sqid/
 
 Bug fixes:
+* Fix JavaDoc errors to enable build using Java 8 (with doclint)
 * Make JSON parser more tolerant towards unknown keys; avoids breaking on recent API changes
 * Update Wikimedia dump location to https so that dump downloads work again
 
