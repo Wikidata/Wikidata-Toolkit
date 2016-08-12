@@ -41,15 +41,15 @@ import org.apache.commons.lang3.Validate;
  * }}
  * <p>
  * Each <i>parameter</i><sub><i>i</i></sub> can be of the form:
- * <i>name</i><sub><i>i</i>=<i>value</i><sub><i>i</i></sub>, or just
+ * <i>name</i><sub><i>i</i></sub>=<i>value</i><sub><i>i</i></sub>, or just
  * <i>value</i><sub><i>i</i></sub>. The former type of parameter is called
  * <i>named parameter</i>, and the latter is called <i>unnamed parameter</i>.
  * All unnamed parameters are actually implicitly named as sequential positive
  * integers. Thus, the first one is "1", the second one is "2", and so on and so
  * forth.
- * 
+ *
  * @author Julian Mendez
- * 
+ *
  */
 public class Template {
 
@@ -62,7 +62,7 @@ public class Template {
 	 * their values. The values need to be already 'resolved'. If they contain
 	 * references to other templates or Wikibase commands, these values will be
 	 * considered as simple text.
-	 * 
+	 *
 	 * @param name
 	 *            template name
 	 * @param parameters
@@ -82,7 +82,7 @@ public class Template {
 
 	/**
 	 * Returns the identifier of this template.
-	 * 
+	 *
 	 * @return the identifier of this template
 	 */
 	public String getName() {
@@ -92,7 +92,7 @@ public class Template {
 	/**
 	 * Returns a map containing all parameter names with the associated values
 	 * that this template has.
-	 * 
+	 *
 	 * @return a map containing all parameter names with the associated values
 	 *         that this template has
 	 */
@@ -102,7 +102,7 @@ public class Template {
 
 	/**
 	 * Returns the parameter names that this template has.
-	 * 
+	 *
 	 * @return the parameter names that this template has
 	 */
 	public Set<String> getParameterNames() {
@@ -111,7 +111,7 @@ public class Template {
 
 	/**
 	 * Returns the value associated to the specified parameter name
-	 * 
+	 *
 	 * @param parameterName
 	 *            the parameter name
 	 * @return the value associated to the specified parameter name
