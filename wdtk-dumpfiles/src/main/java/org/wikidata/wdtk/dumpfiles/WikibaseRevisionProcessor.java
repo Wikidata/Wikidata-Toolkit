@@ -22,6 +22,7 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseRevisionProcessor.class);
+	static final Pattern redirectionsPattern = Pattern.compile("\\{\"entity\":\"[^\"]*\",\"redirect\":\"[^\"]*\"\\}");
 
 	/**
 	 * The IRI of the site that this data comes from. This cannot be extracted
@@ -93,6 +95,10 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public void processItemRevision(MwRevision mwRevision) {
+		if(isWikibaseRedirection(mwRevision)) {
+			return;
+		}
+
 		try {
 			JacksonItemDocument document = readValue(mwRevision.getText(), JacksonItemDocument.class);
 			document.setSiteIri(this.siteIri);
@@ -123,6 +129,10 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public void processPropertyRevision(MwRevision mwRevision) {
+		if(isWikibaseRedirection(mwRevision)) {
+			return;
+		}
+
 		try {
 			JacksonPropertyDocument document = readValue(mwRevision.getText(), JacksonPropertyDocument.class);
 			document.setSiteIri(this.siteIri);
@@ -152,6 +162,10 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		// + mwRevision.toString() + " (" + e.toString() + ")");
 		// }
 
+	}
+
+	private boolean isWikibaseRedirection(MwRevision mwRevision) {
+		return redirectionsPattern.matcher(mwRevision.getText()).matches();
 	}
 
 	public <T> T readValue(String content, Class<T> valueType) throws IOException {
