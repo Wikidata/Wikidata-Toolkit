@@ -47,7 +47,6 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WikibaseRevisionProcessor.class);
-	static final Pattern redirectionsPattern = Pattern.compile("\\{\"entity\":\"[^\"]*\",\"redirect\":\"[^\"]*\"\\}");
 
 	/**
 	 * The IRI of the site that this data comes from. This cannot be extracted
@@ -165,7 +164,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	private boolean isWikibaseRedirection(MwRevision mwRevision) {
-		return redirectionsPattern.matcher(mwRevision.getText()).matches();
+		return mwRevision.getText().contains("\"redirect\":"); //Hacky but fast
 	}
 
 	public <T> T readValue(String content, Class<T> valueType) throws IOException {
