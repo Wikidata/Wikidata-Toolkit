@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -118,6 +119,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 	 */
 	public MwRevisionDumpFileProcessor(MwRevisionProcessor mwRevisionProcessor) {
 		this.xmlFactory = XMLInputFactory.newInstance();
+		this.xmlFactory.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, "false");
 		this.namespaces = new HashMap<Integer, String>();
 		this.mwRevision = new MwRevisionImpl();
 		this.mwRevisionProcessor = mwRevisionProcessor;
