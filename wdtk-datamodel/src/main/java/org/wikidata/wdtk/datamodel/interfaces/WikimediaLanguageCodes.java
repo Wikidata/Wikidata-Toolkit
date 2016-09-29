@@ -259,6 +259,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("lmo", "lmo");
 		LANGUAGE_CODES.put("ln", "ln");
 		LANGUAGE_CODES.put("lo", "lo");
+		LANGUAGE_CODES.put("lrc", "lrc");
 		LANGUAGE_CODES.put("ltg", "ltg");
 		LANGUAGE_CODES.put("lt", "lt");
 		LANGUAGE_CODES.put("lv", "lv");
