@@ -293,6 +293,19 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates a {@link QuantityValue} without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
+		return factory.getQuantityValue(numericValue, unit);
+	}
+
+	/**
 	 * Creates a {@link QuantityValue} with an empty unit.
 	 *
 	 * @param numericValue
@@ -306,6 +319,17 @@ public class Datamodel {
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} with an empty unit and without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue) {
+		return factory.getQuantityValue(numericValue);
 	}
 
 	/**

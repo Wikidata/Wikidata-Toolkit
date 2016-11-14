@@ -51,9 +51,11 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 	 * @param numericValue
 	 *            the numeric value of this quantity
 	 * @param lowerBound
-	 *            the lower bound of the numeric value of this quantity
+	 *            the lower bound of the numeric value of this quantity or null
+	 *            if not set
 	 * @param upperBound
-	 *            the upper bound of the numeric value of this quantity
+	 *            the upper bound of the numeric value of this quantity or null
+	 *            if not set
 	 * @param unit
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
@@ -61,16 +63,20 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 	QuantityValueImpl(BigDecimal numericValue, BigDecimal lowerBound,
 			BigDecimal upperBound, String unit) {
 		Validate.notNull(numericValue, "Numeric value cannot be null");
-		Validate.notNull(lowerBound, "Lower bound cannot be null");
-		Validate.notNull(upperBound, "Upper bound cannot be null");
 		Validate.notNull(unit, "Unit cannot be null");
-		if (lowerBound.compareTo(numericValue) == 1) {
-			throw new IllegalArgumentException(
-					"Lower bound cannot be strictly greater than numeric value");
-		}
-		if (numericValue.compareTo(upperBound) == 1) {
-			throw new IllegalArgumentException(
-					"Upper bound cannot be strictly smaller than numeric value");
+
+		if(lowerBound != null || upperBound != null) {
+			Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
+			Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
+
+			if (lowerBound.compareTo(numericValue) == 1) {
+				throw new IllegalArgumentException(
+						"Lower bound cannot be strictly greater than numeric value");
+			}
+			if (numericValue.compareTo(upperBound) == 1) {
+				throw new IllegalArgumentException(
+						"Upper bound cannot be strictly smaller than numeric value");
+			}
 		}
 
 		this.numericValue = numericValue;

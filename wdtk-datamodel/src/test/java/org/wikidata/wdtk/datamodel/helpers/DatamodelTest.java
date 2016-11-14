@@ -183,6 +183,24 @@ public class DatamodelTest {
 	}
 
 	@Test
+	public final void testGetQuantityValueNoBounds() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
+		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBoundsAndUnits() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv);
+		QuantityValue o2 = factory.getQuantityValue(nv);
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetLongQuantityValue() {
 		BigDecimal nv = new BigDecimal("1234567890123456789");
 		BigDecimal lb = new BigDecimal("1234567890123456788");
