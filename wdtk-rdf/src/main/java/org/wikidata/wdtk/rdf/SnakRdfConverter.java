@@ -304,6 +304,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		String datatype = this.propertyRegister
 				.getPropertyType(propertyIdValue);
 
+        if (datatype == null)
+            return null;
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
 		case DatatypeIdValue.DT_EXTERNAL_ID:
