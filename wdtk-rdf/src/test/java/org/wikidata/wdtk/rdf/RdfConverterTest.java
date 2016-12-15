@@ -24,7 +24,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -93,20 +96,20 @@ public class RdfConverterTest {
 				.getResourceFromFile("ItemDocument.rdf")));
 	}
 
-    @Test
-    public void testWriteItemDocumentWithNullPropertyTypes() throws RDFHandlerException,
-            IOException, RDFParseException {
-        this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites,
-                new MockPropertyRegister.WithNullPropertyTypes());
+	@Test
+	public void testWriteItemDocumentWithNullPropertyTypes() throws RDFHandlerException,
+			IOException, RDFParseException {
+		this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites,
+				new MockPropertyRegister.WithNullPropertyTypes());
 
-        ItemDocument document = this.objectFactory.createItemDocument();
-        this.rdfConverter.writeItemDocument(document);
-        this.rdfWriter.finish();
-        Model model = RdfTestHelpers.parseRdf(out.toString());
-        Model expected = RdfTestHelpers.parseRdf(RdfTestHelpers
-                .getResourceFromFile("ItemDocumentUnknownPropertyTypes.rdf"));
-        assertEquals(model, expected);
-    }
+		ItemDocument document = this.objectFactory.createItemDocument();
+		this.rdfConverter.writeItemDocument(document);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("ItemDocumentUnknownPropertyTypes.rdf")));
+	}
+
 
     @Test
 	public void testWritePropertyDocument() throws RDFHandlerException,
@@ -236,7 +239,7 @@ public class RdfConverterTest {
 		ItemIdValue value1 = dataObjectFactory.getItemIdValue("Q10",
 				"http://www.wikidata.org/");
 		ItemIdValue value2 = dataObjectFactory.getItemIdValue("Q11",
-                "http://www.wikidata.org/");
+				"http://www.wikidata.org/");
 		PropertyIdValue propertyIdValueP31 = dataObjectFactory
 				.getPropertyIdValue("P31", "http://www.wikidata.org/");
 		PropertyIdValue propertyIdValueP279 = dataObjectFactory

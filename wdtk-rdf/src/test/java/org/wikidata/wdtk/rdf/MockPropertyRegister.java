@@ -47,10 +47,11 @@ public class MockPropertyRegister extends PropertyRegister {
 
 	}
 
-    public MockPropertyRegister (String uriPatternPropertyId,
-                                                 ApiConnection apiConnection, String siteUri) {
-        super(uriPatternPropertyId, apiConnection, siteUri);
-    }
+	public MockPropertyRegister (String uriPatternPropertyId,
+								 ApiConnection apiConnection, String siteUri) {
+		super(uriPatternPropertyId, apiConnection, siteUri);
+	}
+
 
 	@Override
 	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
@@ -705,21 +706,20 @@ public class MockPropertyRegister extends PropertyRegister {
 		KNOWN_PROPERTY_TYPES.put("P996", DatatypeIdValue.DT_COMMONS_MEDIA);
 		KNOWN_PROPERTY_TYPES.put("P998", DatatypeIdValue.DT_STRING);
 		KNOWN_PROPERTY_TYPES.put("P1647", DatatypeIdValue.DT_PROPERTY);
-        KNOWN_PROPERTY_TYPES.put("P1291", null);
 	}
 
-    public static class WithNullPropertyTypes extends MockPropertyRegister {
+	public static class WithNullPropertyTypes extends MockPropertyRegister {
 
-        public WithNullPropertyTypes() {
-            super("P1921", ApiConnection.getWikidataApiConnection(),
-                    Datamodel.SITE_WIKIDATA);
-            Map<String, String> NULL_PROPERTY_TYPES = new HashMap<>();
-            for (Map.Entry<String, String> e : KNOWN_PROPERTY_TYPES.entrySet()) {
-                NULL_PROPERTY_TYPES.put(e.getKey(), null);
-            }
-            this.datatypes.putAll(NULL_PROPERTY_TYPES);
-            this.uriPatterns.putAll(KNOWN_URI_PATTERNS);
+		public WithNullPropertyTypes() {
+			super("P1921", ApiConnection.getWikidataApiConnection(),
+					Datamodel.SITE_WIKIDATA);
+			Map<String, String> NULL_PROPERTY_TYPES = new HashMap<>();
+			for (Map.Entry<String, String> e : KNOWN_PROPERTY_TYPES.entrySet()) {
+				NULL_PROPERTY_TYPES.put(e.getKey(), null);
+			}
+			this.datatypes.putAll(NULL_PROPERTY_TYPES);
+			this.uriPatterns.putAll(KNOWN_URI_PATTERNS);
 
-        }
-    }
+		}
+	}
 }
