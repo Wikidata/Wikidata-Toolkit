@@ -248,9 +248,13 @@ public class Equality {
 		}
 		QuantityValue other = (QuantityValue) o2;
 		return o1.getNumericValue().equals(other.getNumericValue())
-				&& o1.getLowerBound().equals(other.getLowerBound())
-				&& o1.getUpperBound().equals(other.getUpperBound())
+				&& equalsNullable(o1.getLowerBound(), other.getLowerBound())
+				&& equalsNullable(o1.getUpperBound(), other.getUpperBound())
 				&& o1.getUnit().equals(other.getUnit());
+	}
+
+	private static boolean equalsNullable(Object o1, Object o2) {
+		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 
 	/**
