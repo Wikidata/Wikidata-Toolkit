@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -89,8 +89,12 @@ public class RdfWriter {
 			.createURI(Vocabulary.XSD_STRING);
 	public static final URI SKOS_ALT_LABEL = factory
 			.createURI(Vocabulary.SKOS_ALT_LABEL);
+	public static final URI SKOS_PREF_LABEL = factory
+			.createURI(Vocabulary.SKOS_PREF_LABEL);
 	public static final URI SCHEMA_ABOUT = factory
 			.createURI(Vocabulary.SCHEMA_ABOUT);
+	public static final URI SCHEMA_NAME = factory
+			.createURI(Vocabulary.SCHEMA_NAME);
 	public static final URI SCHEMA_DESCRIPTION = factory
 			.createURI(Vocabulary.SCHEMA_DESCRIPTION);
 	public static final URI SCHEMA_IN_LANGUAGE = factory

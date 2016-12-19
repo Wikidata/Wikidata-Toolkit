@@ -1,6 +1,8 @@
 
 <http://www.wikidata.org/Q10> a <http://www.wikidata.org/ontology#Item> ;
 	<http://www.w3.org/2000/01/rdf-schema#label> "bar"@lc2 , "foo"@lc ;
+	<http://schema.org/name> "bar"@lc2 , "foo"@lc ;
+	<http://www.w3.org/2004/02/skos/core#prefLabel> "bar"@lc2 , "foo"@lc ;
 	<http://schema.org/description> "it's bar"@lc2 , "it's foo"@lc ;
 	<http://www.w3.org/2004/02/skos/core#altLabel> "foo"@lc , "bar"@lc ;
 	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;
