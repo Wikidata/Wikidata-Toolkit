@@ -165,10 +165,21 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		return result;
 	}
 
+
+	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue) {
+		return getQuantityValue(numericValue, null, null, "");
+	}
+
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
 		return getQuantityValue(numericValue, lowerBound, upperBound, "");
+	}
+
+	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue, String unit) {
+		return getQuantityValue(numericValue, null, null, unit);
 	}
 
 	@Override
