@@ -298,11 +298,14 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 *
 	 * @param propertyIdValue
 	 *            the property for which to get a range
-	 * @return the range URI
+	 * @return the range URI or null if the datatype could not be identified.
 	 */
 	String getRangeUri(PropertyIdValue propertyIdValue) {
 		String datatype = this.propertyRegister
 				.getPropertyType(propertyIdValue);
+
+		if (datatype == null)
+			return null;
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:

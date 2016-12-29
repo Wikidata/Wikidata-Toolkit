@@ -211,6 +211,28 @@ public class TestValue {
 	}
 
 	@Test
+	public void testUnboundedQuantityValueToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE,
+				result);
+	}
+
+	@Test
+	public void testUnboundedQuantityValueToJava() throws
+			IOException {
+		JacksonValue result = mapper.readValue(
+				JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE, JacksonValue.class);
+
+		assertTrue(result instanceof JacksonValueQuantity);
+		assertEquals(result.getType(),
+				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getType());
+		assertEquals(((JacksonValueQuantity) result).getValue(),
+				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE, result);
+	}
+
+	@Test
 	public void testMltDatavalueToJson() throws JsonProcessingException {
 		String result = mapper
 				.writeValueAsString(JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE);

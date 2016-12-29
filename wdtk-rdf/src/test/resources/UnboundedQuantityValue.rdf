@@ -1,0 +1,4 @@
+
+<http://www.wikidata.org/entity/VQ5848bf8e7e0f5b519f848167bbeed681> a <http://www.wikidata.org/ontology#QuantityValue> ;
+	<http://www.wikidata.org/ontology#numericValue> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://www.wikidata.org/ontology#quantityUnit> <http://www.wikidata.org/entity/Q199>.

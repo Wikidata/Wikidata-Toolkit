@@ -183,9 +183,14 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(QuantityValue o) {
-		return o.getNumericValue().toString() + " ["
-				+ o.getLowerBound().toString() + " .. "
-				+ o.getUpperBound().toString() + "]" + " " + o.getUnit();
+		String str = o.getNumericValue().toString();
+		if(o.getLowerBound() != null && o.getUpperBound() != null) {
+			str += " [" + o.getLowerBound().toString() + " .. " + o.getUpperBound().toString() + "]";
+		}
+		if(!"".equals(o.getUnit())) {
+			str += " " + o.getUnit();
+		}
+		return str;
 	}
 
 	/**
