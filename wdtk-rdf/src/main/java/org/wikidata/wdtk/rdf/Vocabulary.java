@@ -490,8 +490,13 @@ public class Vocabulary {
 			String uriPrefix) {
 		md.reset();
 		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
-		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
-		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+		if(value.getLowerBound() != null) {
+			updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
+		}
+		if(value.getUpperBound() != null) {
+			updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+		}
+		updateMessageDigestWithInt(md, value.getUnit().hashCode());
 
 		return uriPrefix + VALUE_PREFIX_QUANTITY + bytesToHex(md.digest());
 	}

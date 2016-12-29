@@ -42,14 +42,14 @@ public interface QuantityValue extends Value {
 	/**
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
-	 * @return numeric value as a decimal value of arbitrary precision
+	 * @return numeric value as a decimal value of arbitrary precision or null if not set
 	 */
 	BigDecimal getLowerBound();
 
 	/**
 	 * Returns the upper bound for the numeric value of this quantity.
 	 *
-	 * @return numeric value as a decimal value of arbitrary precision
+	 * @return numeric value as a decimal value of arbitrary precision or null if not set
 	 */
 	BigDecimal getUpperBound();
 

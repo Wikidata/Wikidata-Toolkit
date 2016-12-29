@@ -88,6 +88,9 @@ public class JsonTestData {
 	public static final String JSON_QUANTITY_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
 			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	public static final String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"type\":\""
+			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
+			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\"}}";
 	public static final String JSON_MONOLINGUAL_TEXT_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_MONOLINGUAL_TEXT
 			+ "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
@@ -162,6 +165,8 @@ public class JsonTestData {
 	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
 			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),
 					new BigDecimal(1.5));
+	public static final JacksonValueQuantity TEST_UNBOUNDED_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
+			.getQuantityValue(new BigDecimal(1));
 	public static final JacksonValueMonolingualText TEST_MONOLINGUAL_TEXT_VALUE = (JacksonValueMonolingualText) JACKSON_OBJECT_FACTORY
 			.getMonolingualTextValue("foobar", "en");
 

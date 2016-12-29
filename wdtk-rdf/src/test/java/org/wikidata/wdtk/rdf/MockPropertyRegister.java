@@ -47,10 +47,25 @@ public class MockPropertyRegister extends PropertyRegister {
 
 	}
 
+
 	@Override
 	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
 		Assert.fail("Please add " + startProperty
 				+ "to the datatypes and uriPatterns map.");
+	}
+
+	public static class WithNullPropertyTypes extends MockPropertyRegister {
+
+		public WithNullPropertyTypes() {
+			super();
+			Map<String, String> NULL_PROPERTY_TYPES = new HashMap<>();
+			for (Map.Entry<String, String> e : KNOWN_PROPERTY_TYPES.entrySet()) {
+				NULL_PROPERTY_TYPES.put(e.getKey(), null);
+			}
+			this.datatypes.putAll(NULL_PROPERTY_TYPES);
+			this.uriPatterns.putAll(KNOWN_URI_PATTERNS);
+
+		}
 	}
 
 	static Map<String, String> KNOWN_URI_PATTERNS = new HashMap<String, String>();
