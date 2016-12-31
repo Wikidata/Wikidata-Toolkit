@@ -58,7 +58,7 @@ public class JsonDumpFileProcessingTest {
 				boolean busywait = true;
 				while (busywait) {
 					timer.stop();
-					if (timer.getTotalCpuTime() > 1000000000) {
+					if (timer.getTotalCpuTime() > 2000000000) {
 						busywait = false;
 					}
 					timer.start();
