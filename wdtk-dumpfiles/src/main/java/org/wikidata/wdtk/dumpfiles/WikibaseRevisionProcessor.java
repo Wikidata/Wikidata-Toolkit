@@ -9,9 +9,9 @@ package org.wikidata.wdtk.dumpfiles;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,15 +23,16 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.IOException;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonRedirect;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -101,10 +102,15 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 			logger.error("Failed to parse JSON for item "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
 		} catch (JsonMappingException e1) {
-			logger.error("Failed to map JSON for item "
-					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
-			e1.printStackTrace();
-			System.out.print(mwRevision.getText());
+			try {
+				readValue(mwRevision.getText(), JacksonRedirect.class);
+			} catch (JsonMappingException e2) {
+				logger.error("Failed to map JSON for item "
+						+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				logger.error("Failed to read revision: " + e2.getMessage());
+			}
 		} catch (IOException e1) {
 			logger.error("Failed to read revision: " + e1.getMessage());
 		}
@@ -131,10 +137,16 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 			logger.error("Failed to parse JSON for property "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
 		} catch (JsonMappingException e1) {
-			logger.error("Failed to map JSON for property "
-					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
-			e1.printStackTrace();
-			System.out.print(mwRevision.getText());
+			// TODO check if redirect
+			try {
+				readValue(mwRevision.getText(), JacksonRedirect.class);
+			} catch (JsonMappingException e2) {
+				logger.error("Failed to map JSON for property "
+						+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				logger.error("Failed to read revision: " + e2.getMessage());
+			}
 		} catch (IOException e1) {
 			logger.error("Failed to read revision: " + e1.getMessage());
 		}
