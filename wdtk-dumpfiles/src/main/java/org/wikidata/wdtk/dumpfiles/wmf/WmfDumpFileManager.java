@@ -155,8 +155,11 @@ public class WmfDumpFileManager {
 
 		if (logger.isInfoEnabled()) {
 			StringBuilder logMessage = new StringBuilder();
-			logMessage.append("Found " + result.size()
-					+ " relevant dumps to process:");
+
+			logMessage.append("Found ");
+			logMessage.append(result.size());
+			logMessage.append(" relevant dumps to process:");
+
 			for (MwDumpFile dumpFile : result) {
 				logMessage.append("\n * ").append(dumpFile.toString());
 			}
