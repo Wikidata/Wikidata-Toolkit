@@ -90,6 +90,11 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	 * {@link DatatypeIdValue#DT_MATH} in JSON.
 	 */
 	public static final String JSON_DT_MATH = "math";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_GEO_SHAPE} in JSON.
+	 */
+	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
 
 	/**
 	 * Datatype IRI as used in Wikidata Toolkit.
@@ -129,6 +134,8 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 			return DT_EXTERNAL_ID;
 		case JSON_DT_MATH:
 			return DT_MATH;
+		case JSON_DT_GEO_SHAPE:
+			return DT_GEO_SHAPE;
 		default:
 			throw new IllegalArgumentException("Unknown JSON datatype \""
 					+ jsonDatatype + "\"");
