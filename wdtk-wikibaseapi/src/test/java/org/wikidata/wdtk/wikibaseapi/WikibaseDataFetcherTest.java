@@ -25,9 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -155,6 +153,38 @@ public class WikibaseDataFetcherTest {
 		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
 		assertEquals(ApiConnection.URL_WIKIDATA_API,
 				wbdf.wbGetEntitiesAction.connection.apiBaseUrl);
+	}
+
+	@Test
+	public void testWbSearchEntities() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardSearchParameters(parameters);
+		parameters.put("search", "abc");
+		parameters.put("language", "en");
+		con.setWebResourceFromPath(parameters, this.getClass(),
+				"/wbsearchentities-abc.json", CompressionType.NONE);
+
+		List<WbSearchEntitiesResult> results = wdf.searchEntities("abc");
+
+		assertEquals(7, results.size());
+		List<String> expectedIds = new ArrayList<>();
+		expectedIds.add("Q169889");
+		expectedIds.add("Q286874");
+		expectedIds.add("Q781365");
+		expectedIds.add("Q287076");
+		expectedIds.add("Q304330");
+		expectedIds.add("Q1057802");
+		expectedIds.add("Q26298");
+		List<String> actualIds = new ArrayList<>();
+		for (WbSearchEntitiesResult result: results) {
+			actualIds.add(result.getEntityId());
+		}
+		assertEquals(expectedIds, actualIds);
+	}
+
+	private void setStandardSearchParameters(Map<String, String> parameters) {
+		parameters.put("action", "wbsearchentities");
+		parameters.put("format", "json");
 	}
 
 	private void setStandardParameters(Map<String, String> parameters) {
