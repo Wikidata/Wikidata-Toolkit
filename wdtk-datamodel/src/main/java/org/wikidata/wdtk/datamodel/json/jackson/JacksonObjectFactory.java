@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.apache.commons.lang3.StringUtils;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
@@ -27,6 +28,8 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -39,6 +42,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
 			this);
+
+	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
@@ -319,49 +324,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		JacksonPropertyDocument result = new JacksonPropertyDocument();
 		initializeTermedStatementDocument(result, propertyId, labels,
 				descriptions, aliases, statementGroups, revisionId);
-
-		switch (datatypeId.getIri()) {
-		case DatatypeIdValue.DT_ITEM:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_ITEM);
-			break;
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES);
-			break;
-		case DatatypeIdValue.DT_URL:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_URL);
-			break;
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_COMMONS_MEDIA);
-			break;
-		case DatatypeIdValue.DT_TIME:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_TIME);
-			break;
-		case DatatypeIdValue.DT_QUANTITY:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_QUANTITY);
-			break;
-		case DatatypeIdValue.DT_STRING:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_STRING);
-			break;
-		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT);
-			break;
-		case DatatypeIdValue.DT_PROPERTY:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_PROPERTY);
-			break;
-		case DatatypeIdValue.DT_EXTERNAL_ID:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_EXTERNAL_ID);
-			break;
-		case DatatypeIdValue.DT_MATH:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MATH);
-			break;
-		case DatatypeIdValue.DT_GEO_SHAPE:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_GEO_SHAPE);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown datatype: "
-					+ datatypeId.getIri());
-		}
-
+		result.setJsonDatatype(convertDatatype(datatypeId));
 		return result;
 	}
 
@@ -509,5 +472,46 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			}
 		}
 		return result;
+	}
+
+	private String convertDatatype(DatatypeIdValue datatypeId) {
+		switch (datatypeId.getIri()) {
+			case DatatypeIdValue.DT_ITEM:
+				return JacksonDatatypeId.JSON_DT_ITEM;
+			case DatatypeIdValue.DT_GLOBE_COORDINATES:
+				return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+			case DatatypeIdValue.DT_URL:
+				return JacksonDatatypeId.JSON_DT_URL;
+			case DatatypeIdValue.DT_COMMONS_MEDIA:
+				return JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
+			case DatatypeIdValue.DT_TIME:
+				return JacksonDatatypeId.JSON_DT_TIME;
+			case DatatypeIdValue.DT_QUANTITY:
+				return JacksonDatatypeId.JSON_DT_QUANTITY;
+			case DatatypeIdValue.DT_STRING:
+				return JacksonDatatypeId.JSON_DT_STRING;
+			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+				return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
+			case DatatypeIdValue.DT_PROPERTY:
+				return JacksonDatatypeId.JSON_DT_PROPERTY;
+			default:
+				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
+				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeId.getIri());
+				if(!matcher.matches()) {
+					throw new IllegalArgumentException("Unknown datatype: " + datatypeId.getIri());
+				}
+
+				StringBuilder jsonDatatypeBuilder = new StringBuilder();
+				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
+					if(Character.isUpperCase(ch)) {
+						jsonDatatypeBuilder
+								.append('-')
+								.append(Character.toLowerCase(ch));
+					} else {
+						jsonDatatypeBuilder.append(ch);
+					}
+				}
+				return jsonDatatypeBuilder.toString();
+		}
 	}
 }
