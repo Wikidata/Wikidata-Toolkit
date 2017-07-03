@@ -20,10 +20,10 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestDatatypeId extends JsonTestData {
 
@@ -88,6 +88,13 @@ public class TestDatatypeId extends JsonTestData {
 		JacksonDatatypeId uut = new JacksonDatatypeId(
 				JacksonDatatypeId.JSON_DT_MATH);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_MATH);
+	}
+
+	@Test
+	public void testIriForGeoShape() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_GEO_SHAPE);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_GEO_SHAPE);
 	}
 
 	@Test

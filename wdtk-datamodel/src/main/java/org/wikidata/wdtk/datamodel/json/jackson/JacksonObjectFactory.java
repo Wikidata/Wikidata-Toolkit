@@ -20,52 +20,13 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -392,6 +353,9 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			break;
 		case DatatypeIdValue.DT_MATH:
 			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MATH);
+			break;
+		case DatatypeIdValue.DT_GEO_SHAPE:
+			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_GEO_SHAPE);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown datatype: "
