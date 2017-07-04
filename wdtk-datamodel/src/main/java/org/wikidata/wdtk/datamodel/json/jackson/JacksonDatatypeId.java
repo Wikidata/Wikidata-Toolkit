@@ -20,11 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
+import org.apache.commons.lang3.StringUtils;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+
+import java.util.regex.Pattern;
 
 /**
  * Jackson implementation of {@link DatatypeIdValue}. This is not actually
@@ -90,6 +93,13 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	 * {@link DatatypeIdValue#DT_MATH} in JSON.
 	 */
 	public static final String JSON_DT_MATH = "math";
+	/**
+	 * String used to refer to the property datatype
+	 * {@link DatatypeIdValue#DT_GEO_SHAPE} in JSON.
+	 */
+	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
+
+	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-z\\-]+$");
 
 	/**
 	 * Datatype IRI as used in Wikidata Toolkit.
@@ -125,13 +135,16 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 			return DT_STRING;
 		case JSON_DT_MONOLINGUAL_TEXT:
 			return DT_MONOLINGUAL_TEXT;
-		case JSON_DT_EXTERNAL_ID:
-			return DT_EXTERNAL_ID;
-		case JSON_DT_MATH:
-			return DT_MATH;
 		default:
-			throw new IllegalArgumentException("Unknown JSON datatype \""
-					+ jsonDatatype + "\"");
+			if(!JSON_DATATYPE_PATTERN.matcher(jsonDatatype).matches()) {
+				throw new IllegalArgumentException("Invalid JSON datatype \"" + jsonDatatype + "\"");
+			}
+
+			String[] parts = jsonDatatype.split("-");
+			for(int i = 0; i < parts.length; i++) {
+				parts[i] = StringUtils.capitalize(parts[i]);
+			}
+			return "http://wikiba.se/ontology#" + StringUtils.join(parts);
 		}
 	}
 

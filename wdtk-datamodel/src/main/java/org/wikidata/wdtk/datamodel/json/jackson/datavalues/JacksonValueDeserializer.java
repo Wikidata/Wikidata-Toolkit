@@ -20,14 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
  * #L%
  */
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
+import java.io.IOException;
 
 /**
  * Custom Jackson deserializer that maps the JSON representation of Wikibase
@@ -82,17 +82,36 @@ public class JacksonValueDeserializer extends StdDeserializer<JacksonValue> {
 		case JacksonValue.JSON_VALUE_TYPE_ENTITY_ID:
 			JsonNode valueNode = jsonNode.get("value");
 			if (valueNode != null) {
-				String entityType = valueNode.get("entity-type").asText();
-				switch (entityType) {
-				case JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM:
-					return JacksonValueItemId.class;
-				case JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY:
-					return JacksonValuePropertyId.class;
-				default:
-					throw new JsonMappingException("Entities of type \""
-							+ entityType
-							+ "\" are not supported as property values yet.");
+				if(valueNode.has("entity-type")) {
+					String entityType = valueNode.get("entity-type").asText();
+					switch (entityType) {
+						case JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM:
+							return JacksonValueItemId.class;
+						case JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY:
+							return JacksonValuePropertyId.class;
+						default:
+							throw new JsonMappingException("Entities of type \""
+									+ entityType
+									+ "\" are not supported as property values yet.");
+					}
+				} else if(valueNode.has("id")) {
+					String id = valueNode.get("id").asText();
+					if(id.isEmpty()) {
+						throw new JsonMappingException("Entity ids should not be empty.");
+					}
+					switch (id.charAt(0)) {
+						case 'Q':
+							return JacksonValueItemId.class;
+						case 'P':
+							return JacksonValuePropertyId.class;
+						default:
+							throw new JsonMappingException("Entity id \"" + id
+									+ "\" is not supported as property values yet.");
+					}
+				} else {
+					throw new JsonMappingException("Unexpected entity id serialization");
 				}
+
 			}
 		case JacksonValue.JSON_VALUE_TYPE_STRING:
 			return JacksonValueString.class;

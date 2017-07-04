@@ -73,5 +73,9 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	 * IRI of the math datatype in Wikibase.
 	 */
 	String DT_MATH = "http://wikiba.se/ontology#Math";
+	/**
+	 * IRI of the geo shape datatype in Wikibase.
+	 */
+	String DT_GEO_SHAPE = "http://wikiba.se/ontology#GeoShape";
 
 }

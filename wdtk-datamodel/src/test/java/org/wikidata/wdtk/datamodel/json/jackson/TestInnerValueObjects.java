@@ -20,15 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * This class tests the inner objects lying behind the …ValueImpl-classes.
@@ -38,15 +37,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  */
 public class TestInnerValueObjects {
 
-	private static String itemType = "item";
-	private static String wrongType = "wrongType";
-
 	private JacksonInnerEntityId testEntityId;
 	private JacksonInnerMonolingualText testMonolingualText;
 
 	@Before
 	public void setupTestEntityIds() throws JsonMappingException {
-		this.testEntityId = new JacksonInnerEntityId(itemType, 1);
+		this.testEntityId = new JacksonInnerEntityId("Q1");
 	}
 
 	@Before
@@ -57,16 +53,21 @@ public class TestInnerValueObjects {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEntityIdConstructor() throws JsonMappingException {
-		JacksonInnerEntityId testId = new JacksonInnerEntityId(wrongType, 1);
+		JacksonInnerEntityId testId = new JacksonInnerEntityId("W1");
 		testId.getStringId(); // should fail
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testEntityIdSetterLegacy() throws JsonMappingException {
+		JacksonInnerEntityId testId = new JacksonInnerEntityId();
+		testId.setNumericId(1);
+		testId.setJsonEntityType("wrongType"); // should fail
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEntityIdSetter() throws JsonMappingException {
 		JacksonInnerEntityId testId = new JacksonInnerEntityId();
-		testId.setNumericId(1);
-		testId.setJsonEntityType(wrongType);
-		testId.getStringId(); // should fail
+		testId.setStringId("W1"); // should fail
 	}
 
 	@Test
@@ -75,11 +76,11 @@ public class TestInnerValueObjects {
 		assertEquals(this.testEntityId.getNumericId(), 1);
 
 		// test equals
-		assertEquals(this.testEntityId, new JacksonInnerEntityId("item", 1));
+		assertEquals(this.testEntityId, new JacksonInnerEntityId("Q1"));
 		assertEquals(this.testEntityId, this.testEntityId);
 		assertFalse(this.testEntityId.equals(new Object()));
 		assertFalse(this.testEntityId
-				.equals(new JacksonInnerEntityId("item", 2)));
+				.equals(new JacksonInnerEntityId("Q2")));
 
 	}
 
