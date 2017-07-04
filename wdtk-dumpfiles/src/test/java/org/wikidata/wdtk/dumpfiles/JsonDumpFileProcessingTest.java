@@ -170,11 +170,9 @@ public class JsonDumpFileProcessingTest {
 		Path dumpFilePath = dmPath.resolve("dumpfiles").resolve("wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);
-		dm.setFileContents(
-				thisDumpPath.resolve(dateStamp
-						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
-				MockStringContentFactory.getStringFromUrl(resourceUrl),
-				WmfDumpFile.getDumpFileCompressionType(dumpContentType));
+		Path filePath = thisDumpPath.resolve(dateStamp + WmfDumpFile.getDumpFilePostfix(dumpContentType));
+		dm.setFileContents(filePath, MockStringContentFactory.getStringFromUrl(resourceUrl),
+				WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 	}
 
 }
