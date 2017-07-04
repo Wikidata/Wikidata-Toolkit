@@ -156,7 +156,7 @@ public class PropertyDocumentImplTest {
 				descriptions, aliases, statementGroups, new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING), 1234);
 
-		ItemDocument id = new ItemDocumentImpl(ItemIdValueImpl.create("Q42",
+		ItemDocument id = new ItemDocumentImpl(new ItemIdValueImpl("Q42",
 				"foo"), labels, descriptions, aliases,
 				Collections.<StatementGroup> emptyList(),
 				Collections.<String, SiteLink> emptyMap(), 1234);

@@ -48,9 +48,9 @@ public class ReferenceImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		EntityIdValue subject = ItemIdValueImpl.create("Q42",
+		EntityIdValue subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = PropertyIdValueImpl.create(
+		PropertyIdValue property = new PropertyIdValueImpl(
 				"P42", "http://wikidata.org/entity/");
 		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
