@@ -112,7 +112,7 @@ public class TestDatatypeId extends JsonTestData {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIriForUnknownType() {
+	public void testIriForInvalidType() {
 		new JacksonDatatypeId("some wrong type");
 	}
 }
