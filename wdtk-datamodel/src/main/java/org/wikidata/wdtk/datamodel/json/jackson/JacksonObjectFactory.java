@@ -42,36 +42,18 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		if (id.length() > 0 && id.charAt(0) == 'Q') {
-			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity;
-			innerEntity = new JacksonInnerEntityId(
-					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
-
-			JacksonValueItemId result = new JacksonValueItemId();
-			result.setValue(innerEntity);
-			result.setSiteIri(siteIri);
-			return result;
-		} else {
-			throw new IllegalArgumentException("Illegal item id: " + id);
-		}
+		JacksonValueItemId result = new JacksonValueItemId();
+		result.setValue(new JacksonInnerEntityId(id));
+		result.setSiteIri(siteIri);
+		return result;
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		if (id.length() > 0 && id.charAt(0) == 'P') {
-			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity;
-			innerEntity = new JacksonInnerEntityId(
-					JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY, numericId);
-
-			JacksonValuePropertyId result = new JacksonValuePropertyId();
-			result.setValue(innerEntity);
-			result.setSiteIri(siteIri);
-			return result;
-		} else {
-			throw new IllegalArgumentException("Illegal property id: " + id);
-		}
+		JacksonValuePropertyId result = new JacksonValuePropertyId();
+		result.setValue(new JacksonInnerEntityId(id));
+		result.setSiteIri(siteIri);
+		return result;
 	}
 
 	@Override
