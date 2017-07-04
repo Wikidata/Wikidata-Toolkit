@@ -20,52 +20,16 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.commons.lang3.StringUtils;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -79,38 +43,22 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
 			this);
 
+	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
+
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		if (id.length() > 0 && id.charAt(0) == 'Q') {
-			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity;
-			innerEntity = new JacksonInnerEntityId(
-					JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM, numericId);
-
-			JacksonValueItemId result = new JacksonValueItemId();
-			result.setValue(innerEntity);
-			result.setSiteIri(siteIri);
-			return result;
-		} else {
-			throw new IllegalArgumentException("Illegal item id: " + id);
-		}
+		JacksonValueItemId result = new JacksonValueItemId();
+		result.setValue(new JacksonInnerEntityId(id));
+		result.setSiteIri(siteIri);
+		return result;
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		if (id.length() > 0 && id.charAt(0) == 'P') {
-			Integer numericId = Integer.valueOf(id.substring(1));
-			JacksonInnerEntityId innerEntity;
-			innerEntity = new JacksonInnerEntityId(
-					JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY, numericId);
-
-			JacksonValuePropertyId result = new JacksonValuePropertyId();
-			result.setValue(innerEntity);
-			result.setSiteIri(siteIri);
-			return result;
-		} else {
-			throw new IllegalArgumentException("Illegal property id: " + id);
-		}
+		JacksonValuePropertyId result = new JacksonValuePropertyId();
+		result.setValue(new JacksonInnerEntityId(id));
+		result.setSiteIri(siteIri);
+		return result;
 	}
 
 	@Override
@@ -358,46 +306,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		JacksonPropertyDocument result = new JacksonPropertyDocument();
 		initializeTermedStatementDocument(result, propertyId, labels,
 				descriptions, aliases, statementGroups, revisionId);
-
-		switch (datatypeId.getIri()) {
-		case DatatypeIdValue.DT_ITEM:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_ITEM);
-			break;
-		case DatatypeIdValue.DT_GLOBE_COORDINATES:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES);
-			break;
-		case DatatypeIdValue.DT_URL:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_URL);
-			break;
-		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_COMMONS_MEDIA);
-			break;
-		case DatatypeIdValue.DT_TIME:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_TIME);
-			break;
-		case DatatypeIdValue.DT_QUANTITY:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_QUANTITY);
-			break;
-		case DatatypeIdValue.DT_STRING:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_STRING);
-			break;
-		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT);
-			break;
-		case DatatypeIdValue.DT_PROPERTY:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_PROPERTY);
-			break;
-		case DatatypeIdValue.DT_EXTERNAL_ID:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_EXTERNAL_ID);
-			break;
-		case DatatypeIdValue.DT_MATH:
-			result.setJsonDatatype(JacksonDatatypeId.JSON_DT_MATH);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown datatype: "
-					+ datatypeId.getIri());
-		}
-
+		result.setJsonDatatype(convertDatatype(datatypeId));
 		return result;
 	}
 
@@ -545,5 +454,46 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			}
 		}
 		return result;
+	}
+
+	private String convertDatatype(DatatypeIdValue datatypeId) {
+		switch (datatypeId.getIri()) {
+			case DatatypeIdValue.DT_ITEM:
+				return JacksonDatatypeId.JSON_DT_ITEM;
+			case DatatypeIdValue.DT_GLOBE_COORDINATES:
+				return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+			case DatatypeIdValue.DT_URL:
+				return JacksonDatatypeId.JSON_DT_URL;
+			case DatatypeIdValue.DT_COMMONS_MEDIA:
+				return JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
+			case DatatypeIdValue.DT_TIME:
+				return JacksonDatatypeId.JSON_DT_TIME;
+			case DatatypeIdValue.DT_QUANTITY:
+				return JacksonDatatypeId.JSON_DT_QUANTITY;
+			case DatatypeIdValue.DT_STRING:
+				return JacksonDatatypeId.JSON_DT_STRING;
+			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+				return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
+			case DatatypeIdValue.DT_PROPERTY:
+				return JacksonDatatypeId.JSON_DT_PROPERTY;
+			default:
+				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
+				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeId.getIri());
+				if(!matcher.matches()) {
+					throw new IllegalArgumentException("Unknown datatype: " + datatypeId.getIri());
+				}
+
+				StringBuilder jsonDatatypeBuilder = new StringBuilder();
+				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
+					if(Character.isUpperCase(ch)) {
+						jsonDatatypeBuilder
+								.append('-')
+								.append(Character.toLowerCase(ch));
+					} else {
+						jsonDatatypeBuilder.append(ch);
+					}
+				}
+				return jsonDatatypeBuilder.toString();
+		}
 	}
 }
