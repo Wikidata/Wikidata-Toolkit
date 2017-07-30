@@ -240,15 +240,13 @@ public class ToString {
 	public static String toString(SnakGroup o) {
 		final String indent = "      ";
 
-		String result = null;
+		StringBuilder result = new StringBuilder();
 		for (Snak s : o.getSnaks()) {
-			if (result == null) {
-				result = indent + s.toString() + "\n";
-			} else {
-				result += indent + s.toString() + "\n";
-			}
+			result.append(indent)
+					.append(s.toString())
+					.append("\n");
 		}
-		return result;
+		return result.toString();
 	}
 
 	/**

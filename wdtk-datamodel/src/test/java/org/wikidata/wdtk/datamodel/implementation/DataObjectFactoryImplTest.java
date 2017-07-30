@@ -152,7 +152,7 @@ public class DataObjectFactoryImplTest {
 
 	public static TimeValue getTestTimeValue(int seed) {
 		return new TimeValueImpl(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
-				(byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				(byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 	}
 
