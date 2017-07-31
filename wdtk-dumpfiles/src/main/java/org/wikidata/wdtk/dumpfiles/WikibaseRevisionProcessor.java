@@ -22,7 +22,6 @@ package org.wikidata.wdtk.dumpfiles;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
