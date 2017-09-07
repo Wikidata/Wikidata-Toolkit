@@ -104,7 +104,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static ItemIdValue getTestItemIdValue(int seed) {
-		return ItemIdValueImpl.create("Q4" + seed, "foo:");
+		return new ItemIdValueImpl("Q4" + seed, "foo:");
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static PropertyIdValue getTestPropertyIdValue(int seed) {
-		return PropertyIdValueImpl.create("P4" + seed, "foo:");
+		return new PropertyIdValueImpl("P4" + seed, "foo:");
 	}
 
 	public static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
