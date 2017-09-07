@@ -329,7 +329,7 @@ public class WbEditEntityAction {
 			parameters.put("summary", summary);
 		}
 
-		parameters.put("maxlag", new Integer(this.maxLag).toString());
+		parameters.put("maxlag", Integer.toString(this.maxLag));
 		parameters.put("token", getCsrfToken());
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
 
@@ -366,7 +366,7 @@ public class WbEditEntityAction {
 			retry--;
 		}
 
-		if (result == null) {
+		if (lastException != null) {
 			logger.error("Gave up after several retries. Last error was: "
 					+ lastException.toString());
 			throw lastException;
@@ -475,10 +475,8 @@ public class WbEditEntityAction {
 	 *            the JSON node that should contain the entity document data
 	 * @return the entitiy document, or null if there were unrecoverable errors
 	 * @throws IOException
-	 * @throws JsonProcessingException
 	 */
-	private EntityDocument parseJsonResponse(JsonNode entityNode)
-			throws JsonProcessingException, IOException {
+	private EntityDocument parseJsonResponse(JsonNode entityNode) throws IOException {
 		try {
 			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
 					JacksonTermedStatementDocument.class);
