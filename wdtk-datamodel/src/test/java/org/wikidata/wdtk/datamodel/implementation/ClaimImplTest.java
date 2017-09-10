@@ -51,9 +51,9 @@ public class ClaimImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = ItemIdValueImpl.create("Q42",
+		subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = PropertyIdValueImpl.create(
+		PropertyIdValue property = new PropertyIdValueImpl(
 				"P42", "http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
@@ -93,9 +93,9 @@ public class ClaimImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		Claim cDiffSubject, cDiffMainSnak, cDiffQualifiers;
-		EntityIdValue subject2 = ItemIdValueImpl.create("Q43",
+		EntityIdValue subject2 = new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = PropertyIdValueImpl.create(
+		PropertyIdValue property = new PropertyIdValueImpl(
 				"P43", "http://wikidata.org/entity/");
 		ValueSnak mainSnak2 = new ValueSnakImpl(property, subject2);
 
@@ -118,14 +118,12 @@ public class ClaimImplTest {
 
 	@Test
 	public void accessSnakGroups() {
-		EntityIdValue value1 = ItemIdValueImpl.create("Q1",
+		EntityIdValue value1 = new ItemIdValueImpl("Q1",
 				"http://wikidata.org/entity/");
-		EntityIdValue value2 = ItemIdValueImpl.create("Q2",
+		EntityIdValue value2 = new ItemIdValueImpl("Q2",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property1 = PropertyIdValueImpl
-				.create("P1", "http://wikidata.org/entity/");
-		PropertyIdValue property2 = PropertyIdValueImpl
-				.create("P2", "http://wikidata.org/entity/");
+		PropertyIdValue property1 = new PropertyIdValueImpl("P1", "http://wikidata.org/entity/");
+		PropertyIdValue property2 = new PropertyIdValueImpl("P2", "http://wikidata.org/entity/");
 		Snak snak1 = new ValueSnakImpl(property1, value1);
 		Snak snak2 = new ValueSnakImpl(property1, value2);
 		Snak snak3 = new ValueSnakImpl(property2, value2);

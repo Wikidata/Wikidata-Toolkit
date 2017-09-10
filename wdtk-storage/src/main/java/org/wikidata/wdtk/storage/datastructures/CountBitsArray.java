@@ -154,9 +154,6 @@ class CountBitsArray {
 	/**
 	 * Notifies this object that the bit vector has changed, and therefore, the
 	 * computed internal array must be updated.
-	 * 
-	 * @param bitVector
-	 *            new bit vector
 	 */
 	public void update() {
 		this.hasChanged = true;
