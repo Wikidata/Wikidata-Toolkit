@@ -180,16 +180,10 @@ public class WbGetEntitiesAction {
 			parameters.put("sitefilter", sitefilter);
 		}
 
-		parameters.put(ApiConnection.PARAM_FORMAT, "json");
-
 		Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
-		try (InputStream response = this.connection.sendRequest("POST",
-				parameters)) {
-			JsonNode root = mapper.readTree(response);
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
+		try {
+			JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
 			JsonNode entities = root.path("entities");
 			for (JsonNode entityNode : entities) {

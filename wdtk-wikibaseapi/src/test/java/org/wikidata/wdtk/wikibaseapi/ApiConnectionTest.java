@@ -118,12 +118,12 @@ public class ApiConnectionTest {
 	}
 
 	@Test
-	public void testGetLoginToken() throws IOException {
+	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
 		assertTrue(this.con.getLoginToken("username", "password") != null);
 	}
 
 	@Test
-	public void testConfirmLogin() throws LoginFailedException, IOException {
+	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
 		String token = this.con.getLoginToken("username", "password");
 		this.con.confirmLogin(token, "username", "password");
 	}
