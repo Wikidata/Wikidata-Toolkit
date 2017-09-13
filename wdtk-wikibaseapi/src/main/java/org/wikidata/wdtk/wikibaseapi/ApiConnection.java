@@ -57,7 +57,7 @@ public class ApiConnection {
 	/**
 	 * URL of the API of wikidata.org.
 	 */
-	public final static String URL_WIKIDATA_API = "https://www.wikidata.org/w/api.php/";
+	public final static String URL_WIKIDATA_API = "https://www.wikidata.org/w/api.php";
 	/**
 	 * URL of the API of test.wikidata.org.
 	 */
