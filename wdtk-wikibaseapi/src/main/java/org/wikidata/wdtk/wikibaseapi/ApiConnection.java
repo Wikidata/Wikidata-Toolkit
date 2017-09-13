@@ -667,8 +667,6 @@ public class ApiConnection {
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
-		connection.setRequestProperty("Content-Length",
-				String.valueOf(queryString.length()));
 		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
 				getCookieString());
 	}
