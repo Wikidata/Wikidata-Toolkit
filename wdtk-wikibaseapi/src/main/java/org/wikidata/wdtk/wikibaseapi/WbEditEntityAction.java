@@ -331,7 +331,6 @@ public class WbEditEntityAction {
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
 		parameters.put("token", getCsrfToken());
-		parameters.put(ApiConnection.PARAM_FORMAT, "json");
 
 		if (this.remainingEdits > 0) {
 			this.remainingEdits--;
@@ -389,26 +388,19 @@ public class WbEditEntityAction {
 	private EntityDocument doWbEditEntity(Map<String, String> parameters)
 			throws IOException, MediaWikiApiErrorException {
 
-		try (InputStream response = this.connection.sendRequest("POST",
-				parameters)) {
+		JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
-			JsonNode root = this.mapper.readTree(response);
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
-
-			if (root.has("item")) {
-				return parseJsonResponse(root.path("item"));
-			} else if (root.has("property")) {
-				// TODO: not tested because of missing
-				// permissions
-				return parseJsonResponse(root.path("property"));
-			} else if (root.has("entity")) {
-				return parseJsonResponse(root.path("entity"));
-			} else {
-				throw new JsonMappingException(
-						"No entity document found in API response.");
-			}
+		if (root.has("item")) {
+			return parseJsonResponse(root.path("item"));
+		} else if (root.has("property")) {
+			// TODO: not tested because of missing
+			// permissions
+			return parseJsonResponse(root.path("property"));
+		} else if (root.has("entity")) {
+			return parseJsonResponse(root.path("entity"));
+		} else {
+			throw new JsonMappingException(
+					"No entity document found in API response.");
 		}
 	}
 
@@ -446,14 +438,9 @@ public class WbEditEntityAction {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(ApiConnection.PARAM_ACTION, "query");
 		params.put("meta", "tokens");
-		params.put(ApiConnection.PARAM_FORMAT, "json");
 
-		try (InputStream response = this.connection.sendRequest("POST", params)) {
-
-			JsonNode root = this.mapper.readTree(response);
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
+		try {
+			JsonNode root = this.connection.sendJsonRequest("POST", params);
 
 			return root.path("query").path("tokens")
 					.path("csrftoken").textValue();
