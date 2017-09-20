@@ -689,7 +689,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 		if (snak instanceof ValueSnak) {
 			return this.dataObjectFactory.getValueSnak(
 					copy(snak.getPropertyId()),
-					copyValue(((ValueSnak) snak).getValue()));
+					copyValue(snak.getValue()));
 		} else if (snak instanceof NoValueSnak) {
 			return this.dataObjectFactory.getNoValueSnak(copy(snak
 					.getPropertyId()));

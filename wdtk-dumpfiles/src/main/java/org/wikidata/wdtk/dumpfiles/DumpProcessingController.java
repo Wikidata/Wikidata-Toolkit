@@ -181,7 +181,7 @@ public class DumpProcessingController {
 	 */
 	DirectoryManager downloadDirectoryManager;
 
-	DocumentDataFilter filter = new DocumentDataFilter();
+	final DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
 	 * Creates a new DumpFileProcessingController for the project of the given
@@ -371,7 +371,6 @@ public class DumpProcessingController {
 	 * that the wiki has never really been in. It might thus be preferable to
 	 * process only a single (main) dump file without any incremental dumps.
 	 *
-	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processMostRecentMainDump()
 	 * @see DumpProcessingController#processDump(MwDumpFile)
 	 * @see DumpProcessingController#getMostRecentDump(DumpContentType)
@@ -450,7 +449,6 @@ public class DumpProcessingController {
 	 * processing it with {@link #processDump(MwDumpFile)}. The individual
 	 * methods should be used for better control and error handling.
 	 *
-	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 */
 	public void processMostRecentMainDump() {
@@ -472,7 +470,6 @@ public class DumpProcessingController {
 	 * {@link #processDump(MwDumpFile)}. The individual methods should be used
 	 * for better control and error handling.
 	 *
-	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 */
 	public void processMostRecentJsonDump() {
@@ -520,7 +517,6 @@ public class DumpProcessingController {
 	 * processor.
 	 *
 	 * @see DumpProcessingController#processMostRecentMainDump()
-	 * @see DumpProcessingController#processMostRecentDailyDump()
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 *
 	 * @param dumpContentType

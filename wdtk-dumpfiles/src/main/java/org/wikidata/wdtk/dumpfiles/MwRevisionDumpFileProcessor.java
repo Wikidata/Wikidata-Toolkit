@@ -82,7 +82,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(MwRevisionDumpFileProcessor.class);
 
-	XMLInputFactory xmlFactory;
+	final XMLInputFactory xmlFactory;
 	XMLStreamReader xmlReader;
 
 	/**

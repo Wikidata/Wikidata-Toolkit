@@ -79,8 +79,8 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 */
 	int currentPageId;
 
-	BitVector encounteredPages;
-	BitVector encounteredRevisions;
+	final BitVector encounteredPages;
+	final BitVector encounteredRevisions;
 
 	public MwRevisionProcessorBroker() {
 		this.revisionSubscriptions = new ArrayList<MwRevisionProcessorBroker.RevisionSubscription>();

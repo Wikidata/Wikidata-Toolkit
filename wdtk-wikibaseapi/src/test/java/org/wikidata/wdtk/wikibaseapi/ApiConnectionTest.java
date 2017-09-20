@@ -118,12 +118,12 @@ public class ApiConnectionTest {
 	}
 
 	@Test
-	public void testGetLoginToken() throws IOException {
+	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
 		assertTrue(this.con.getLoginToken("username", "password") != null);
 	}
 
 	@Test
-	public void testConfirmLogin() throws LoginFailedException, IOException {
+	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
 		String token = this.con.getLoginToken("username", "password");
 		this.con.confirmLogin(token, "username", "password");
 	}
@@ -229,6 +229,8 @@ public class ApiConnectionTest {
 		URL url = new URL("http://example.org/");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		con.setupConnection("POST", "", connection);
+		assertEquals("POST",
+				connection.getRequestMethod());
 		assertEquals("application/x-www-form-urlencoded",
 				connection.getRequestProperty("Content-Type"));
 
@@ -244,7 +246,7 @@ public class ApiConnectionTest {
 	@Test
 	public void testGetWikidataApiConnection() {
 		ApiConnection connection = ApiConnection.getWikidataApiConnection();
-		assertEquals("https://www.wikidata.org/w/api.php/",
+		assertEquals("https://www.wikidata.org/w/api.php",
 				connection.apiBaseUrl);
 	}
 
