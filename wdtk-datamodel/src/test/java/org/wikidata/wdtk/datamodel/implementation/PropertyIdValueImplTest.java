@@ -39,13 +39,13 @@ public class PropertyIdValueImplTest {
 
 	@Before
 	public void setUp() {
-		prop1 = PropertyIdValueImpl.create("P42",
+		prop1 = new PropertyIdValueImpl("P42",
 				"http://www.wikidata.org/entity/");
-		prop2 = PropertyIdValueImpl.create("P42",
+		prop2 = new PropertyIdValueImpl("P42",
 				"http://www.wikidata.org/entity/");
-		prop3 = PropertyIdValueImpl.create("P57",
+		prop3 = new PropertyIdValueImpl("P57",
 				"http://www.wikidata.org/entity/");
-		prop4 = PropertyIdValueImpl.create("P42",
+		prop4 = new PropertyIdValueImpl("P42",
 				"http://www.example.org/entity/");
 	}
 
@@ -82,17 +82,17 @@ public class PropertyIdValueImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForFirstLetter() {
-		PropertyIdValueImpl.create("Q12345", "http://www.wikidata.org/entity/");
+		new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		ItemIdValueImpl.create("P", "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl("P", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		PropertyIdValueImpl.create("P34d23", "http://www.wikidata.org/entity/");
+		new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/");
 	}
 
 }

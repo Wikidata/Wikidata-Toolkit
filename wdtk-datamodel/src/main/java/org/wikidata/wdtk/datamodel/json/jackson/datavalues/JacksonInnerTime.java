@@ -122,7 +122,7 @@ public class JacksonInnerTime {
 	 */
 	private void decomposeTimeString() {
 		// decompose the time string into its parts
-		String[] substrings = time.split("(?<!\\A)[\\-\\:TZ]");
+		String[] substrings = time.split("(?<!\\A)[\\-:TZ]");
 
 		// get the components of the date
 		this.year = Long.parseLong(substrings[0]);

@@ -97,6 +97,8 @@ public class JsonTestData {
 			+ TEST_PROPERTY_ID + "\"}";
 	public static final String JSON_VALUE_SNAK_STRING = "{\"snaktype\":\"value\",\"property\":\""
 			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + "}";
+	public static final String JSON_VALUE_SNAK_STRING_HASH = "{\"snaktype\":\"value\",\"property\":\""
+			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + ",\"hash\":\"foobar\"}";
 
 	// wrapping into item document structure for dedicated tests
 	public static final String JSON_WRAPPED_LABEL = "{\"id\":\""

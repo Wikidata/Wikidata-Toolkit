@@ -99,4 +99,16 @@ public class TestSnakJson {
 				result);
 	}
 
+	@Test
+	public void testCommonsValueSnakToJavaWithHash() throws
+			IOException {
+		JacksonSnak result = mapper.readValue(
+				JsonTestData.JSON_VALUE_SNAK_STRING_HASH, JacksonSnak.class);
+		result.setSiteIri(Datamodel.SITE_WIKIDATA);
+
+		assertNotNull(result);
+		assertTrue(result instanceof JacksonValueSnak);
+		assertEquals(result, JsonTestData.TEST_STRING_VALUE_SNAK);
+	}
+
 }
