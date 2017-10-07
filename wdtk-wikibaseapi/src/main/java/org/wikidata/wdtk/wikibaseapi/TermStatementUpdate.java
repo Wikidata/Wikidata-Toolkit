@@ -198,10 +198,12 @@ public class TermStatementUpdate extends StatementUpdate {
         String lang = alias.getLanguageCode();
         AliasesWithUpdate currentAliasesUpdate = newAliases.get(lang);
         
+        NameWithUpdate currentLabel = newLabels.get(lang);
         // If there isn't any label for that language, put the alias there
-        if (!newLabels.containsKey(lang)) {
+        if (currentLabel == null) {
             newLabels.put(lang, new NameWithUpdate(alias, true));
-        } else {
+        // If the new alias is equal to the current label, skip it
+        } else if (!currentLabel.value.equals(alias)) {
         	if (currentAliasesUpdate == null) {
         		currentAliasesUpdate = new AliasesWithUpdate(new ArrayList<MonolingualTextValue>(), true);
         	}
@@ -235,8 +237,15 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     protected void processLabels(List<MonolingualTextValue> labels) {
         for(MonolingualTextValue label : labels) {
-            newLabels.put(label.getLanguageCode(),
+        	String lang = label.getLanguageCode();
+            newLabels.put(lang,
                     new NameWithUpdate(label, true));
+            
+            // Delete any alias that matches the new label
+            AliasesWithUpdate currentAliases = newAliases.get(lang);
+            if (currentAliases != null && currentAliases.aliases.contains(label)) {
+            	deleteAlias(label);
+            }
         }
         
     }
