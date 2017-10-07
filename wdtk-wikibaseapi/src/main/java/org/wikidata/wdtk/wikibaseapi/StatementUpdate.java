@@ -42,6 +42,8 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -168,6 +170,7 @@ public class StatementUpdate {
 	}
 	
 	@JsonProperty("claims")
+	@JsonInclude(Include.NON_EMPTY)
 	public List<Statement> getUpdatedStatements() {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
 				new JacksonObjectFactory());
