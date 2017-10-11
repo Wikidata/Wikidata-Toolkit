@@ -77,8 +77,7 @@ public class JsonOnlineDumpFile extends WmfDumpFile {
 				.getSubdirectoryManager(WmfDumpFile.getDumpFileDirectoryName(
 						DumpContentType.JSON, this.dateStamp));
 
-		return dailyDirectoryManager.getInputStreamForFile(fileName,
-				WmfDumpFile.getDumpFileCompressionType(DumpContentType.JSON));
+		return dailyDirectoryManager.getInputStreamForFile(fileName, WmfDumpFile.getDumpFileCompressionType(fileName));
 	}
 
 	@Override

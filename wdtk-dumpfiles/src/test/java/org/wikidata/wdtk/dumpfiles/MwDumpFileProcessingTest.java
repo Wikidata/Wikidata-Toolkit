@@ -274,11 +274,10 @@ public class MwDumpFileProcessingTest {
 		Path dumpFilePath = dmPath.resolve("dumpfiles").resolve("wikidatawiki");
 		Path thisDumpPath = dumpFilePath.resolve(dumpContentType.toString()
 				.toLowerCase() + "-" + dateStamp);
-		dm.setFileContents(
-				thisDumpPath.resolve("wikidatawiki-" + dateStamp
-						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
-				MockStringContentFactory.getStringFromUrl(resourceUrl),
-				WmfDumpFile.getDumpFileCompressionType(dumpContentType));
+		Path filePath = thisDumpPath.resolve("wikidatawiki-" + dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(dumpContentType));
+		dm.setFileContents(filePath, MockStringContentFactory.getStringFromUrl(resourceUrl),
+				WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 	}
 
 	/**
@@ -338,11 +337,9 @@ public class MwDumpFileProcessingTest {
 		}
 		dumpContents += "</mediawiki>\n";
 
-		dm.setFileContents(
-				thisDumpPath.resolve("wikidatawiki-" + dateStamp
-						+ WmfDumpFile.getDumpFilePostfix(dumpContentType)),
-				dumpContents,
-				WmfDumpFile.getDumpFileCompressionType(dumpContentType));
+		Path filePath = thisDumpPath.resolve("wikidatawiki-" + dateStamp
+				+ WmfDumpFile.getDumpFilePostfix(dumpContentType));
+		dm.setFileContents(filePath, dumpContents, WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 	}
 
 	@Test
