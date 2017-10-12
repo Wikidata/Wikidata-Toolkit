@@ -99,8 +99,7 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 				this.projectName, this.dateStamp);
 
 		return this.localDumpfileDirectoryManager.getInputStreamForFile(
-				dumpFileName,
-				WmfDumpFile.getDumpFileCompressionType(this.dumpContentType));
+				dumpFileName, WmfDumpFile.getDumpFileCompressionType(dumpFileName));
 	}
 
 	@Override

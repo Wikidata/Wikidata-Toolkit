@@ -34,7 +34,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
-public class WbEditEntitiyActionTest {
+public class WbEditEntityActionTest {
 
 	@Test(expected = IOException.class)
 	public void testOffineErrors() throws IOException,
