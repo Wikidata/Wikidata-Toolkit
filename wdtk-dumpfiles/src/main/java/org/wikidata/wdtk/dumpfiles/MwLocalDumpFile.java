@@ -230,6 +230,8 @@ public class MwLocalDumpFile implements MwDumpFile {
 		String lcDumpName = fileName.toLowerCase();
 		if (lcDumpName.contains(".json.gz")) {
 			return DumpContentType.JSON;
+		} else if (lcDumpName.contains(".json.bz2")) {
+			return DumpContentType.JSON;
 		} else if (lcDumpName.contains(".sql.gz")) {
 			return DumpContentType.SITES;
 		} else if (lcDumpName.contains(".xml.bz2")) {

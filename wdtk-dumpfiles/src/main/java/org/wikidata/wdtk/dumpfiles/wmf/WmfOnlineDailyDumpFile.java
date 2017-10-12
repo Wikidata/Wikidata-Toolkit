@@ -90,7 +90,7 @@ class WmfOnlineDailyDumpFile extends WmfDumpFile {
 						DumpContentType.DAILY, this.dateStamp));
 
 		return dailyDirectoryManager.getInputStreamForFile(fileName,
-				WmfDumpFile.getDumpFileCompressionType(DumpContentType.DAILY));
+				WmfDumpFile.getDumpFileCompressionType(fileName));
 	}
 
 	@Override

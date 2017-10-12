@@ -28,6 +28,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -36,7 +37,15 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class to plan a statement update operation.
@@ -65,8 +74,61 @@ public class StatementUpdate {
 			this.write = write;
 		}
 	}
+	
+	/**
+	 * Helper class to ease serialization of deleted statements. Jackson will
+	 * serialize this class according to the format required by the API.
+	 * 
+	 * @author antonin
+	 */
+	class DeletedStatement implements Statement {
+		
+		private String id;
+		
+		public DeletedStatement(String id) {
+			this.id = id;
+		}
 
+		@Override
+		@JsonIgnore
+		public Claim getClaim() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public StatementRank getRank() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public List<? extends Reference> getReferences() {
+			return null;
+		}
+
+		@Override
+		@JsonProperty("id")
+		public String getStatementId() {
+			return id;
+		}
+
+		@Override
+		@JsonIgnore
+		public Value getValue() {
+			return null;
+		}
+		
+		@JsonProperty("remove")
+		public String getRemoveCommand() {
+			return "";
+		}
+		
+	}
+
+	@JsonIgnore
 	final HashMap<PropertyIdValue, List<StatementWithUpdate>> toKeep;
+	@JsonIgnore
 	final List<String> toDelete;
 
 	/**
@@ -97,36 +159,35 @@ public class StatementUpdate {
 	 *
 	 * @return JSON serialization of updates
 	 */
+	@JsonIgnore
 	public String getJsonUpdateString() {
-		StringBuilder jsonData = new StringBuilder("{\"claims\":[");
-		boolean first = true;
-		for (String id : toDelete) {
-			if (first) {
-				first = false;
-			} else {
-				jsonData.append(",");
-			}
-			jsonData.append("{\"id\":\"").append(id)
-					.append("\",\"remove\":\"\"}");
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return ("Failed to serialize statement update to JSON: " + e.toString());
 		}
-
+	}
+	
+	@JsonProperty("claims")
+	@JsonInclude(Include.NON_EMPTY)
+	public List<Statement> getUpdatedStatements() {
+		DatamodelConverter datamodelConverter = new DatamodelConverter(
+				new JacksonObjectFactory());
+		List<Statement> updatedStatements = new ArrayList<>();
 		for (List<StatementWithUpdate> swus : toKeep.values()) {
 			for (StatementWithUpdate swu : swus) {
 				if (!swu.write) {
 					continue;
 				}
-				if (first) {
-					first = false;
-				} else {
-					jsonData.append(",");
-				}
-				jsonData.append(JsonSerializer.getJsonString(swu.statement));
+				updatedStatements.add(datamodelConverter.copy(swu.statement));
 			}
 		}
-
-		jsonData.append("]}");
-
-		return jsonData.toString();
+		
+		for (String id : toDelete) {
+			updatedStatements.add(new DeletedStatement(id));
+		}
+		return updatedStatements;
 	}
 
 	/**

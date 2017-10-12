@@ -94,12 +94,11 @@ public class WmfDumpFileManagerTest {
 				.toLowerCase() + "-" + dateStamp);
 		dm.setDirectory(thisDumpPath);
 		if (isDone) {
-			dm.setFileContents(
-					thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
-							dumpContentType, "wikidatawiki", dateStamp)),
-					"Contents of " + dumpContentType.toString().toLowerCase()
-							+ " " + dateStamp, WmfDumpFile
-							.getDumpFileCompressionType(dumpContentType));
+			Path filePath = thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
+					dumpContentType, "wikidatawiki", dateStamp));
+			dm.setFileContents(filePath,
+					"Contents of " + dumpContentType.toString().toLowerCase() + " " + dateStamp,
+					WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 		}
 	}
 
