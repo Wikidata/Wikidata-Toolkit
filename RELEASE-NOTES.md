@@ -1,6 +1,21 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.8.0
+-------------
+
+New features:
+* Compatibility with JDK 9
+* Allow to edit labels, descriptions and aliases using the WikibaseDataEditor (this is a work in progress that is likely to change)
+* Quantities bounds are now optional following the change in Wikibase
+* Add the "id" field to entity id JSON serialization following the change in Wikibase
+
+Bug fixes:
+* Do not fail when reading redirections in daily XML dumps
+* Do not fail when new datatypes are introduced in Wikibase
+* Make sure that API warnings are read for all requests
+* Do not fail when reading a bz2 compressed dump when a gzip dump was expected
+
 Version 0.7.0
 -------------
 
