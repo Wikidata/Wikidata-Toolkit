@@ -210,9 +210,9 @@ public class WikibaseDataFetcherTest {
 		assertEquals(2, result.keySet().size());
 		assertEquals("Q42", result.get("Douglas Adams").getEntityId().getId());
 		assertEquals("Q131261", result.get("Oliver Kahn").getEntityId().getId());
-  }
+	}
   
-  private void setStandardParameters(Map<String, String> parameters) {
+	private void setStandardParameters(Map<String, String> parameters) {
 		parameters.put("action", "wbgetentities");
 		parameters.put("format", "json");
 		parameters.put("props",
