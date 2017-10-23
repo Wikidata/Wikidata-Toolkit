@@ -7,6 +7,7 @@ Version 0.8.0
 New features:
 * Compatibility with JDK 9
 * Allow to edit labels, descriptions and aliases using the WikibaseDataEditor (this is a work in progress that is likely to change)
+* Allow to use the wbEntitySearch API action using WikibaseDataFetcher
 * Quantities bounds are now optional following the change in Wikibase
 * Add the "id" field to entity id JSON serialization following the change in Wikibase
 
