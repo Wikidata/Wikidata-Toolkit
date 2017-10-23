@@ -16,6 +16,7 @@ Bug fixes:
 * Do not fail when new datatypes are introduced in Wikibase
 * Make sure that API warnings are read for all requests
 * Do not fail when reading a bz2 compressed dump when a gzip dump was expected
+* WikibaseDataFetcher is now able to retrieve more than 50 entities at once
 
 Version 0.7.0
 -------------
