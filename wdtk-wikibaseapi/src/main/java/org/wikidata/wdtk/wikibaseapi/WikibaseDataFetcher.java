@@ -50,6 +50,8 @@ public class WikibaseDataFetcher {
 	 */
 	final WbGetEntitiesAction wbGetEntitiesAction;
 
+	final WbSearchEntitiesAction wbSearchEntitiesAction;
+
 	/**
 	 * The IRI that identifies the site that the data is from.
 	 */
@@ -92,6 +94,7 @@ public class WikibaseDataFetcher {
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
+		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -250,6 +253,45 @@ public class WikibaseDataFetcher {
 		}
 		configureProperties(properties);
 		return this.wbGetEntitiesAction.wbGetEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = "en";
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, String language)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = language;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, Long limit)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = "en";
+		properties.limit = limit;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, String language, Long limit)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = language;
+		properties.limit = limit;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(WbGetEntitiesSearchData properties)
+			throws MediaWikiApiErrorException {
+		return this.wbSearchEntitiesAction.wbSearchEntities(properties);
 	}
 
 	/**
