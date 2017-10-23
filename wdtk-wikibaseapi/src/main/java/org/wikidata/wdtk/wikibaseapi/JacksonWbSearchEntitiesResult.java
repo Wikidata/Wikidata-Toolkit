@@ -23,6 +23,7 @@ package org.wikidata.wdtk.wikibaseapi;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,16 +34,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
+class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
 
     /**
      * Jackson implementation of {@link Match}
      */
-    public static class JacksonMatch implements Match {
+    static class JacksonMatch implements Match {
 
-        public JacksonMatch() {}
-
-        public JacksonMatch(String type, String language, String text) {
+        @JsonCreator
+        JacksonMatch(
+                @JsonProperty("type") String type,
+                @JsonProperty("language") String language,
+                @JsonProperty("text") String text
+        ) {
             this.type = type;
             this.language = language;
             this.text = text;
@@ -52,40 +56,28 @@ public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
          * e.g "entityId", "label" or "alias".
          */
         @JsonProperty("type")
-        protected String type;
+        private String type;
         /**
          * Language of the matching term field.
          */
         @JsonProperty("language")
-        protected String language;
+        private String language;
         /**
          * Text of the matching term.
          */
         @JsonProperty("text")
-        protected String text;
+        private String text;
 
         public String getType() {
             return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
         }
 
         public String getLanguage() {
             return language;
         }
 
-        public void setLanguage(String language) {
-            this.language = language;
-        }
-
         public String getText() {
             return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
         }
 
         @Override
@@ -131,37 +123,37 @@ public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
      * Constructor. Creates an empty object that can be populated during JSON
      * deserialization. Should only be used by Jackson for this very purpose.
      */
-    public JacksonWbSearchEntitiesResult() {}
+    JacksonWbSearchEntitiesResult() {}
 
     /**
      * The id of the entity that the document refers to.
      */
     @JsonProperty("id")
-    protected String entityId;
+    private String entityId;
 
     /**
      * The full concept URI (the site IRI with entity ID).
      */
     @JsonProperty("concepturi")
-    protected String conceptUri;
+    private String conceptUri;
 
     /**
      * The URL of the wiki site that shows the concept.
      */
     @JsonProperty("url")
-    protected String url;
+    private String url;
 
     /**
      * Title of the entity (currently is the same as the entity ID).
      */
     @JsonProperty("title")
-    protected String title;
+    private String title;
 
     /**
      * The internal Mediawiki pageid of the entity.
      */
     @JsonProperty("pageid")
-    protected long pageId;
+    private long pageId;
 
     /**
      * Label of the entity
@@ -171,7 +163,7 @@ public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
      * Accept-Language header or the uselang URL parameter.
      */
     @JsonProperty("label")
-    protected String label;
+    private String label;
 
     /**
      * Description of the entity
@@ -181,19 +173,19 @@ public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
      * Accept-Language header or the uselang URL parameter.
      */
     @JsonProperty("description")
-    protected String description;
+    private String description;
 
     /**
      * Detailed information about how a document matched the query
      */
     @JsonProperty("match")
-    protected JacksonMatch match;
+    private JacksonMatch match;
 
     /**
      * A list of alias labels (returned only when an alias matched the query)
      */
     @JsonProperty("aliases")
-    protected List<String> aliases;
+    private List<String> aliases;
 
     public void setEntityId(String id) {
         this.entityId = id;
@@ -283,7 +275,7 @@ public class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
      * @see org.wikidata.wdtk.wikibaseapi.IWbSearchInterfaceResult#getMatch()
      */
     @Override
-    public JacksonMatch getMatch() {
+    public Match getMatch() {
         return match;
     }
 
