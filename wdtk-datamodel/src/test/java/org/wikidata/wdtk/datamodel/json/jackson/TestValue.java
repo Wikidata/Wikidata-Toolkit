@@ -20,26 +20,15 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
 import java.io.IOException;
 
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerTime;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.*;
 
 public class TestValue {
 
@@ -77,9 +66,25 @@ public class TestValue {
 	@Test
 	public void testItemIdValueToJava() throws
 			IOException {
-		JacksonValue result = mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
-				JacksonValue.class);
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
+				JacksonValue.class));
+	}
 
+	@Test
+	public void testItemIdValueToJavaWithoutId() throws
+			IOException {
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_ID,
+				JacksonValue.class));
+	}
+
+	@Test
+	public void testItemIdValueToJavaWithoutNumericalId() throws
+			IOException {
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID,
+				JacksonValue.class));
+	}
+
+	private void assertItemIdValue(JacksonValue result) {
 		assertTrue(result instanceof JacksonValueItemId);
 		((JacksonValueItemId) result).setSiteIri(Datamodel.SITE_WIKIDATA);
 
@@ -208,6 +213,28 @@ public class TestValue {
 		assertEquals(((JacksonValueQuantity) result).getValue(),
 				JsonTestData.TEST_QUANTITY_VALUE.getValue());
 		assertEquals(JsonTestData.TEST_QUANTITY_VALUE, result);
+	}
+
+	@Test
+	public void testUnboundedQuantityValueToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE,
+				result);
+	}
+
+	@Test
+	public void testUnboundedQuantityValueToJava() throws
+			IOException {
+		JacksonValue result = mapper.readValue(
+				JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE, JacksonValue.class);
+
+		assertTrue(result instanceof JacksonValueQuantity);
+		assertEquals(result.getType(),
+				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getType());
+		assertEquals(((JacksonValueQuantity) result).getValue(),
+				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE, result);
 	}
 
 	@Test

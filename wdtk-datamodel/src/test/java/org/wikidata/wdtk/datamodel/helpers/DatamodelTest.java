@@ -101,10 +101,10 @@ public class DatamodelTest {
 	@Test
 	public final void testGetTimeValue() {
 		TimeValue o1 = Datamodel.makeTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(o1, o2);
 	}
@@ -113,9 +113,9 @@ public class DatamodelTest {
 	public final void testGetTimeValueTime() {
 		TimeValue o1 = Datamodel
 				.makeTimeValue(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-						(byte) 00, 60, TimeValue.CM_GREGORIAN_PRO);
+						(byte) 0, 60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(o1, o2);
 	}
@@ -125,7 +125,7 @@ public class DatamodelTest {
 		TimeValue o1 = Datamodel.makeTimeValue(2007, (byte) 5, (byte) 12,
 				TimeValue.CM_GREGORIAN_PRO);
 		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
-				(byte) 0, (byte) 0, (byte) 00, TimeValue.PREC_DAY, 0, 1, 0,
+				(byte) 0, (byte) 0, (byte) 0, TimeValue.PREC_DAY, 0, 1, 0,
 				TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(o1, o2);
 	}
@@ -164,8 +164,39 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(
 				"0.123456789012345678901234567890123456790");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, "unit");
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoUnit() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		BigDecimal lb = new BigDecimal(
+				"0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal(
+				"0.123456789012345678901234567890123456790");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub);
 		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBounds() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
+		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBoundsAndUnits() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv);
+		QuantityValue o2 = factory.getQuantityValue(nv);
 		assertEquals(o1, o2);
 	}
 

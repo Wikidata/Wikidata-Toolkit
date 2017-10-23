@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -111,13 +112,19 @@ public abstract class JacksonSnak implements Snak {
 		}
 	}
 
+	@JsonIgnore
+	@Override
+	public Value getValue() {
+		return null;
+	}
+
 	/**
 	 * Sets the IRI of the site this snak belongs to. This provides the snak
 	 * with information about the site IRI of its components, which is not part
 	 * of the JSON serialization of snaks. This method should only be used
 	 * during deserialization.
 	 *
-	 * @param parentDocument
+	 * @param siteIri
 	 *            new value
 	 */
 	@JsonIgnore

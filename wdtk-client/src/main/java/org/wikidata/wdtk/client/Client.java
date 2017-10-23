@@ -70,8 +70,6 @@ public class Client {
 	 *
 	 * @param args
 	 *            command line arguments to configure the conversion
-	 * @throws ParseException
-	 * @throws IOException
 	 */
 	public Client(DumpProcessingController dumpProcessingController,
 			String args[]) {
@@ -133,6 +131,9 @@ public class Client {
 			}
 		}
 
+		this.clientConfiguration.setProjectName(dumpFile.getProjectName());
+		this.clientConfiguration.setDateStamp(dumpFile.getDateStamp());
+
 		boolean hasReadyProcessor = false;
 		for (DumpProcessingAction props : this.clientConfiguration.getActions()) {
 
@@ -165,7 +166,6 @@ public class Client {
 			this.dumpProcessingController.registerEntityDocumentProcessor(
 					entityTimerProcessor, null, true);
 		}
-
 		openActions();
 		this.dumpProcessingController.processDump(dumpFile);
 		closeActions();
@@ -243,7 +243,11 @@ public class Client {
 			if (this.clientConfiguration.getReportFileName() != null) {
 				builder.append(action.getActionName());
 				builder.append(": ");
-				builder.append(action.getReport());
+				if (action.isReady()) {
+					builder.append(action.getReport());
+				} else {
+					builder.append("Action was not executed.");
+				}
 				builder.append(System.getProperty("line.separator"));
 			} else {
 				logger.info(action.getActionName() + ": " + action.getReport());

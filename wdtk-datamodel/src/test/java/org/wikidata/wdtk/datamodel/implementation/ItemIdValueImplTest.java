@@ -38,13 +38,10 @@ public class ItemIdValueImplTest {
 
 	@Before
 	public void setUp() {
-		item1 = ItemIdValueImpl
-				.create("Q42", "http://www.wikidata.org/entity/");
-		item2 = ItemIdValueImpl
-				.create("Q42", "http://www.wikidata.org/entity/");
-		item3 = ItemIdValueImpl
-				.create("Q57", "http://www.wikidata.org/entity/");
-		item4 = ItemIdValueImpl.create("Q42", "http://www.example.org/entity/");
+		item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+		item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+		item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
+		item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
 	}
 
 	@Test
@@ -85,27 +82,27 @@ public class ItemIdValueImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForFirstLetter() {
-		ItemIdValueImpl.create("P12345", "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl("P12345", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForNumber() {
-		ItemIdValueImpl.create("Q34d23", "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl("Q34d23", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idValidatedForLength() {
-		ItemIdValueImpl.create("Q", "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl("Q", "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void idNotNull() {
-		ItemIdValueImpl.create(null, "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl(null, "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
-		ItemIdValueImpl.create("Q42", null);
+		new ItemIdValueImpl("Q42", null);
 	}
 
 }

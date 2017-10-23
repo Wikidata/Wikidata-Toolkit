@@ -34,21 +34,21 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * once) added up to total times. The number of start-stop measurements is
  * recorded, and one can also query the average times. Finally, a timer can be
  * reset.
- * 
+ *
  * There are two main ways of accessing timers: by creating a Timer object
  * directly or by using a global registry of timers. Registered timers are
  * identified by their string name and thread id. The global registry is useful
  * since it makes it much easier to re-integrate measurements taken in many
  * threads. They also free the caller of the burden of keeping a reference to
  * the Timer.
- * 
- * The code in tis file was adapted from the <a href=
+ *
+ * The code in this file was adapted from the <a href=
  * "https://code.google.com/p/elk-reasoner/source/browse/elk-util-parent/elk-util-logging/src/main/java/org/semanticweb/elk/util/logging/ElkTimer.java"
- * >ElkTimer<\a> class of the ELK reasoner, with contributions from Yevgeny
+ * >ElkTimer</a> class of the ELK reasoner, with contributions from Yevgeny
  * Kasakov and Pavel Klinov.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class Timer {
 
@@ -82,16 +82,16 @@ public class Timer {
 	/**
 	 * Constructor. Every timer is identified by three things: a string name, an
 	 * integer for flagging its tasks (todos), and a thread id (long).
-	 * 
+	 *
 	 * Tasks can be flagged by a disjunction of constants like RECORD_CPUTIME
 	 * and RECORD_WALLTIME. Only times for which an according flag is set will
 	 * be recorded.
-	 * 
+	 *
 	 * The thread id can be the actual id of the thread that is measured, or 0
 	 * (invalid id) to not assign the timer to any thread. In this case, no CPU
 	 * time measurement is possible since Java does not allow us to measure the
 	 * total CPU time across all threads.
-	 * 
+	 *
 	 * @param name
 	 *            a string that identifies the timer
 	 * @param todoFlags
@@ -113,7 +113,7 @@ public class Timer {
 	/**
 	 * Constructor. Same as {@link #Timer(String, int, long)}, but using the
 	 * current thread instead of a freely specified thread.
-	 * 
+	 *
 	 * @param name
 	 *            a string that identifies the timer
 	 * @param todoFlags
@@ -125,7 +125,7 @@ public class Timer {
 
 	/**
 	 * Get the string name of the timer.
-	 * 
+	 *
 	 * @return string name
 	 */
 	public String getName() {
@@ -134,7 +134,7 @@ public class Timer {
 
 	/**
 	 * Get the ID of the thread for which this timer was created.
-	 * 
+	 *
 	 * @return thread ID
 	 */
 	public long getThreadId() {
@@ -143,7 +143,7 @@ public class Timer {
 
 	/**
 	 * Return true if the timer is running.
-	 * 
+	 *
 	 * @return true if running
 	 */
 	public boolean isRunning() {
@@ -152,7 +152,7 @@ public class Timer {
 
 	/**
 	 * Get the total recorded CPU time in nanoseconds.
-	 * 
+	 *
 	 * @return recorded CPU time in nanoseconds
 	 */
 	public long getTotalCpuTime() {
@@ -161,7 +161,7 @@ public class Timer {
 
 	/**
 	 * Return the average CPU time across all measurements.
-	 * 
+	 *
 	 * @return the average CPU time across all measurements
 	 */
 	public long getAvgCpuTime() {
@@ -174,7 +174,7 @@ public class Timer {
 
 	/**
 	 * Get the total recorded wall clock time in nanoseconds.
-	 * 
+	 *
 	 * @return recorded wall time in nanoseconds
 	 */
 	public long getTotalWallTime() {
@@ -183,7 +183,7 @@ public class Timer {
 
 	/**
 	 * Return the average wall clock time across all measurements.
-	 * 
+	 *
 	 * @return the average wall clock time across all measurements
 	 */
 	public long getAvgWallTime() {
@@ -228,10 +228,10 @@ public class Timer {
 	 * Stop the timer and record the times that have passed since its start. The
 	 * times that have passed are added to the internal state and can be
 	 * retrieved with {@link #getTotalCpuTime()} etc.
-	 * 
+	 *
 	 * If CPU times are recorded, then the method returns the CPU time that has
 	 * passed since the timer was last started; otherwise -1 is returned.
-	 * 
+	 *
 	 * @return CPU time that the timer was running, or -1 if timer not running
 	 *         or CPU time unavailable for other reasons
 	 */
@@ -267,7 +267,7 @@ public class Timer {
 	 * recorded so far. If the timer is still running, then it will not be
 	 * stopped to add the currently measured time to the output but a warning
 	 * will added.
-	 * 
+	 *
 	 * @return string description of the timer results and state
 	 */
 	@Override
@@ -341,7 +341,7 @@ public class Timer {
 	/**
 	 * Start a timer of the given string name for all todos and the current
 	 * thread. If no such timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 */
@@ -352,7 +352,7 @@ public class Timer {
 	/**
 	 * Start a timer of the given string name for the current thread. If no such
 	 * timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -364,7 +364,7 @@ public class Timer {
 	/**
 	 * Start a timer of the given string name for the current thread. If no such
 	 * timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -381,7 +381,7 @@ public class Timer {
 	 * Stop a timer of the given string name for all todos and the current
 	 * thread. If no such timer exists, -1 will be returned. Otherwise the
 	 * return value is the CPU time that was measured.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @return CPU time if timer existed and was running, and -1 otherwise
@@ -395,7 +395,7 @@ public class Timer {
 	 * Stop a timer of the given string name for the current thread. If no such
 	 * timer exists, -1 will be returned. Otherwise the return value is the CPU
 	 * time that was measured.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -410,7 +410,7 @@ public class Timer {
 	 * Stop a timer of the given string name for the given thread. If no such
 	 * timer exists, -1 will be returned. Otherwise the return value is the CPU
 	 * time that was measured.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -432,7 +432,7 @@ public class Timer {
 	/**
 	 * Reset a timer of the given string name for all todos and the current
 	 * thread. If no such timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 */
@@ -443,7 +443,7 @@ public class Timer {
 	/**
 	 * Reset a timer of the given string name for the current thread. If no such
 	 * timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -455,7 +455,7 @@ public class Timer {
 	/**
 	 * Reset a timer of the given string name for the given thread. If no such
 	 * timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -472,7 +472,7 @@ public class Timer {
 	 * Get a timer of the given string name that takes all possible times
 	 * (todos) for the current thread. If no such timer exists yet, then it will
 	 * be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @return timer
@@ -485,7 +485,7 @@ public class Timer {
 	/**
 	 * Get a timer of the given string name and todos for the current thread. If
 	 * no such timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -499,7 +499,7 @@ public class Timer {
 	/**
 	 * Get a timer of the given string name for the given thread. If no such
 	 * timer exists yet, then it will be newly created.
-	 * 
+	 *
 	 * @param timerName
 	 *            the name of the timer
 	 * @param todoFlags
@@ -519,7 +519,7 @@ public class Timer {
 	 * Collect the total times measured by all known named timers of the given
 	 * name. This is useful to add up times that were collected across separate
 	 * threads.
-	 * 
+	 *
 	 * @param timerName
 	 * @return timer
 	 */
@@ -575,7 +575,7 @@ public class Timer {
 
 	/**
 	 * Get the current CPU time of the given thread.
-	 * 
+	 *
 	 * @param threadId
 	 *            id of the thread to get CPU time for
 	 * @return current CPU time in the given thread, or 0 if thread is 0

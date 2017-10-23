@@ -42,6 +42,7 @@ public class QuantityValueImplTest {
 	final String unitMeter = "http://wikidata.org/entity/Q11573";
 	final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
+	final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
 
 	@Test
 	public void gettersWorking() {
@@ -56,10 +57,10 @@ public class QuantityValueImplTest {
 				"0.1234567890123456789012345678901234567895");
 		BigDecimal nvminus = new BigDecimal(
 				"0.1234567890123456789012345678901234567885");
-		QuantityValue q3 = new QuantityValueImpl(nvplus, lb, ub, unitMeter);
-		QuantityValue q4 = new QuantityValueImpl(nv, nvminus, ub, unitMeter);
-		QuantityValue q5 = new QuantityValueImpl(nv, lb, nvplus, unitMeter);
-		QuantityValue q6 = new QuantityValueImpl(nv, lb, ub, "");
+		QuantityValue q4 = new QuantityValueImpl(nvplus, lb, ub, unitMeter);
+		QuantityValue q5 = new QuantityValueImpl(nv, nvminus, ub, unitMeter);
+		QuantityValue q6 = new QuantityValueImpl(nv, lb, nvplus, unitMeter);
+		QuantityValue q7 = new QuantityValueImpl(nv, lb, ub, "");
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
@@ -67,6 +68,7 @@ public class QuantityValueImplTest {
 		assertThat(q1, not(equalTo(q4)));
 		assertThat(q1, not(equalTo(q5)));
 		assertThat(q1, not(equalTo(q6)));
+		assertThat(q1, not(equalTo(q7)));
 		assertThat(q1, not(equalTo(null)));
 		assertFalse(q1.equals(this));
 	}

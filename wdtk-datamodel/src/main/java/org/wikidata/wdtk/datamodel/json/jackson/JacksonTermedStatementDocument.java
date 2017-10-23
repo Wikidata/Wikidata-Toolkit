@@ -23,21 +23,19 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -55,12 +53,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
 		@Type(value = JacksonItemDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_ITEM),
 		@Type(value = JacksonPropertyDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_PROPERTY) })
-public abstract class JacksonTermedStatementDocument implements TermedDocument,
-		StatementDocument {
+public abstract class JacksonTermedStatementDocument extends
+		AbstractTermedStatementDocument {
 
 	/**
 	 * String used to refer to items in JSON.
@@ -133,7 +132,11 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 */
 	public void setAliases(
 			Map<String, List<JacksonMonolingualTextValue>> aliases) {
-		this.aliases = aliases;
+		if (aliases == null) {
+			this.aliases = Collections.emptyMap();
+		} else {
+			this.aliases = aliases;
+		}
 	}
 
 	@Override
@@ -160,7 +163,11 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 */
 	public void setDescriptions(
 			Map<String, JacksonMonolingualTextValue> descriptions) {
-		this.descriptions = descriptions;
+		if (descriptions == null) {
+			this.descriptions = Collections.emptyMap();
+		} else {
+			this.descriptions = descriptions;
+		}
 	}
 
 	@Override
@@ -177,7 +184,11 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 *            new value
 	 */
 	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
-		this.labels = labels;
+		if (labels == null) {
+			this.labels = Collections.emptyMap();
+		} else {
+			this.labels = labels;
+		}
 	}
 
 	@Override
@@ -268,7 +279,11 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	 */
 	@JsonProperty("claims")
 	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
-		this.claims = claims;
+		if (claims == null) {
+			this.claims = Collections.emptyMap();
+		} else {
+			this.claims = claims;
+		}
 		this.statementGroups = null; // clear cache
 	}
 
@@ -284,12 +299,6 @@ public abstract class JacksonTermedStatementDocument implements TermedDocument,
 	@JsonProperty("claims")
 	public Map<String, List<JacksonStatement>> getJsonClaims() {
 		return this.claims;
-	}
-
-	@Override
-	@JsonIgnore
-	public Iterator<Statement> getAllStatements() {
-		return new NestedIterator<>(this.getStatementGroups());
 	}
 
 	/**

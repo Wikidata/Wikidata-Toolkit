@@ -38,10 +38,10 @@ public class TimeValueImplTest {
 	@Before
 	public void setUp() throws Exception {
 		t1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60,
+				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60,
+				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 	}
 
@@ -63,37 +63,37 @@ public class TimeValueImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		TimeValue tdYear = new TimeValueImpl(2013, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdMonth = new TimeValueImpl(2007, (byte) 6, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdDay = new TimeValueImpl(2007, (byte) 5, (byte) 13,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdHour = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 11, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 11, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdMinute = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 47, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 47, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdSecond = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 01, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 1, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdTimezone = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				120, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdBefore = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 1, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 1, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdAfter = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 2,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 2,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdPrecision = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_DAY, 0, 1, 60,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 		TimeValue tdCalendar = new TimeValueImpl(2007, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_JULIAN_PRO);
 
 		assertEquals(t1, t1);
@@ -121,14 +121,14 @@ public class TimeValueImplTest {
 	@Test(expected = NullPointerException.class)
 	public void calendarModelNotNull() {
 		new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 00, TimeValue.PREC_SECOND, 0, 1, 60, null);
+				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60, null);
 	}
 
 	@Test
 	public void largeYearValues() {
 		// May 12 in the first year after the beginning of the universe:
 		TimeValue t = new TimeValueImpl(-13800000000L, (byte) 5, (byte) 12,
-				(byte) 10, (byte) 45, (byte) 00, TimeValue.PREC_SECOND, 0, 1,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(t.getYear(), -13800000000L);
 	}

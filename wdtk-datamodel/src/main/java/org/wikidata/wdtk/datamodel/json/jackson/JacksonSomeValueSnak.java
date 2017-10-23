@@ -26,12 +26,15 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Jackson implementation of {@link SomeValueSnak}.
  *
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 
 	/**

@@ -42,7 +42,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * The default URL of the website to obtain the dump files from.
 	 */
-	protected static final String DUMP_SITE_BASE_URL = "http://dumps.wikimedia.org/";
+	protected static final String DUMP_SITE_BASE_URL = "https://dumps.wikimedia.org/";
 
 	/**
 	 * Hash map defining the relative Web directory of each type of dump.
@@ -69,23 +69,6 @@ public abstract class WmfDumpFile implements MwDumpFile {
 				"-pages-meta-history.xml.bz2");
 		WmfDumpFile.POSTFIXES.put(DumpContentType.SITES, "-sites.sql.gz");
 		WmfDumpFile.POSTFIXES.put(DumpContentType.JSON, ".json.gz");
-	}
-
-	/**
-	 * Hash map defining the compression type of each type of dump.
-	 */
-	static final Map<DumpContentType, CompressionType> COMPRESSION_TYPE = new HashMap<DumpContentType, CompressionType>();
-	static {
-		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.DAILY,
-				CompressionType.BZ2);
-		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.CURRENT,
-				CompressionType.BZ2);
-		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.FULL,
-				CompressionType.BZ2);
-		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.SITES,
-				CompressionType.GZIP);
-		WmfDumpFile.COMPRESSION_TYPE.put(DumpContentType.JSON,
-				CompressionType.GZIP);
 	}
 
 	/**
@@ -207,21 +190,20 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	}
 
 	/**
-	 * Returns the compression type of this kind of dump file.
+	 * Returns the compression type of this kind of dump file using file suffixes
 	 *
-	 * @param dumpContentType
-	 *            the type of dump
+	 * @param fileName the name of the file
 	 * @return compression type
 	 * @throws IllegalArgumentException
 	 *             if the given dump file type is not known
 	 */
-	public static CompressionType getDumpFileCompressionType(
-			DumpContentType dumpContentType) {
-		if (WmfDumpFile.COMPRESSION_TYPE.containsKey(dumpContentType)) {
-			return WmfDumpFile.COMPRESSION_TYPE.get(dumpContentType);
+	public static CompressionType getDumpFileCompressionType(String fileName) {
+		if (fileName.endsWith(".gz")) {
+			return CompressionType.GZIP;
+		} else if (fileName.endsWith(".bz2")) {
+			return CompressionType.BZ2;
 		} else {
-			throw new IllegalArgumentException("Unsupported dump type "
-					+ dumpContentType);
+			return CompressionType.NONE;
 		}
 	}
 

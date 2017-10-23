@@ -52,10 +52,9 @@ public class StatementImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = ItemIdValueImpl.create("Q42",
+		subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
+		PropertyIdValue property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
-		PropertyIdValue property = PropertyIdValueImpl.create(
-				"P42", "http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
 		claim = new ClaimImpl(subject, mainSnak,
@@ -73,6 +72,7 @@ public class StatementImplTest {
 				Collections.<List<? extends Snak>> emptyList());
 		assertEquals(s1.getRank(), StatementRank.NORMAL);
 		assertEquals(s1.getStatementId(), "MyId");
+		assertEquals(s1.getValue(), subject);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -107,7 +107,7 @@ public class StatementImplTest {
 	public void equalityBasedOnContent() {
 		Statement sDiffClaim, sDiffReferences, sDiffRank, sDiffId;
 
-		Claim claim2 = new ClaimImpl(ItemIdValueImpl.create("Q43",
+		Claim claim2 = new ClaimImpl(new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/"), mainSnak,
 				Collections.<SnakGroup> emptyList());
 

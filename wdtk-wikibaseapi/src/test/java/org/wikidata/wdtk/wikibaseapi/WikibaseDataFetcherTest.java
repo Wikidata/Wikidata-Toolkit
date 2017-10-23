@@ -25,11 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -214,13 +210,43 @@ public class WikibaseDataFetcherTest {
 		assertEquals(2, result.keySet().size());
 		assertEquals("Q42", result.get("Douglas Adams").getEntityId().getId());
 		assertEquals("Q131261", result.get("Oliver Kahn").getEntityId().getId());
-
-	}
-
-	private void setStandardParameters(Map<String, String> parameters) {
+  }
+  
+  private void setStandardParameters(Map<String, String> parameters) {
 		parameters.put("action", "wbgetentities");
 		parameters.put("format", "json");
 		parameters.put("props",
 				"info|datatype|labels|aliases|descriptions|claims|sitelinks");
+	}
+
+	public void testWbSearchEntities() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		setStandardSearchParameters(parameters);
+		parameters.put("search", "abc");
+		parameters.put("language", "en");
+		con.setWebResourceFromPath(parameters, this.getClass(),
+				"/wbsearchentities-abc.json", CompressionType.NONE);
+
+		List<WbSearchEntitiesResult> results = wdf.searchEntities("abc");
+
+		assertEquals(7, results.size());
+		List<String> expectedIds = new ArrayList<>();
+		expectedIds.add("Q169889");
+		expectedIds.add("Q286874");
+		expectedIds.add("Q781365");
+		expectedIds.add("Q287076");
+		expectedIds.add("Q304330");
+		expectedIds.add("Q1057802");
+		expectedIds.add("Q26298");
+		List<String> actualIds = new ArrayList<>();
+		for (WbSearchEntitiesResult result: results) {
+			actualIds.add(result.getEntityId());
+		}
+		assertEquals(expectedIds, actualIds);
+	}
+
+	private void setStandardSearchParameters(Map<String, String> parameters) {
+		parameters.put("action", "wbsearchentities");
+		parameters.put("format", "json");
 	}
 }

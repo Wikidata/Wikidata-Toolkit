@@ -168,9 +168,13 @@ public class Hash {
 	public static int hashCode(QuantityValue o) {
 		int result;
 		result = o.getNumericValue().hashCode();
-		result = prime * result + o.getLowerBound().hashCode();
-		result = prime * result + o.getUpperBound().hashCode();
 		result = prime * result + o.getUnit().hashCode();
+		if(o.getLowerBound() != null) {
+			result = prime * result + o.getLowerBound().hashCode();
+		}
+		if(o.getUpperBound() != null) {
+			result = prime * result + o.getUpperBound().hashCode();
+		}
 		return result;
 	}
 
