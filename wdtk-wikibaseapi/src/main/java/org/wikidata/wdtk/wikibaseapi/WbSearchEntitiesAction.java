@@ -43,23 +43,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WbSearchEntitiesAction {
 
-    static final Logger logger = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(WbSearchEntitiesAction.class);
 
     /**
      * Connection to a Wikibase API.
      */
-    final ApiConnection connection;
+    private final ApiConnection connection;
 
     /**
      * The IRI that identifies the site that the data is from.
      */
-    final String siteIri;
+    private final String siteIri;
 
     /**
      * Mapper object used for deserializing JSON data.
      */
-    final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Creates an object to fetch data from the given ApiConnection. The site
@@ -175,13 +175,13 @@ public class WbSearchEntitiesAction {
                             JacksonWbSearchEntitiesResult.class);
                     results.add(ed);
                 } catch (JsonProcessingException e) {
-                    logger.error("Error when reading JSON for entity "
+                    LOGGER.error("Error when reading JSON for entity "
                             + entityNode.path("id").asText("UNKNOWN") + ": "
                             + e.toString());
                 }
             }
         } catch (IOException e) {
-            logger.error("Could not retrive data: " + e.toString());
+            LOGGER.error("Could not retrive data: " + e.toString());
         }
 
         return results;
