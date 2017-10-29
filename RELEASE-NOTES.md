@@ -12,6 +12,7 @@ New features:
 * Add the "id" field to entity id JSON serialization following the change in Wikibase
 
 Bug fixes:
+* Do not fail when logging in
 * Do not fail when reading redirections in daily XML dumps
 * Do not fail when new datatypes are introduced in Wikibase
 * Make sure that API warnings are read for all requests
