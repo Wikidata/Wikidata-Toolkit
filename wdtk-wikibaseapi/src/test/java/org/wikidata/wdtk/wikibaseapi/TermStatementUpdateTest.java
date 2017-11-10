@@ -2,28 +2,19 @@ package org.wikidata.wdtk.wikibaseapi;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonInnerMonolingualText;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /*
@@ -171,10 +162,54 @@ public class TermStatementUpdateTest {
 				Collections.<MonolingualTextValue> emptyList());
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
-		assertEquals(su.getAliasUpdates().size(), 1);
-		assertEquals(su.getAliasUpdates().get("fr").size(), 2);
+		assertEquals(1, su.getAliasUpdates().size());
+		assertEquals(2, su.getAliasUpdates().get("fr").size());
 		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"},{\"language\":\"fr\",\"text\":\"Apfelstrudeln\"}]}}",
 				su.getJsonUpdateString());
+	}
+	
+	/**
+	 * Adding an alias identical to the label in the same language does not do anything
+	 */
+	@Test
+	public void testAddLabelAsAlias() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("Apfelstrudel", "de");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
+		
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.singletonList(label),
+				Collections.<MonolingualTextValue> emptyList()
+				);
+		
+		
+		assertTrue(su.getLabelUpdates().isEmpty());
+		assertTrue(su.getAliasUpdates().isEmpty());
+		assertTrue(su.getDescriptionUpdates().isEmpty());
+	}
+	
+	/**
+	 * Adding a label identical to an alias updates the label and deletes the alias
+	 */
+	@Test
+	public void testAddAliasAsLabel() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).withAlias(alias).build();
+		
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.singletonList(alias),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList()
+				);
+		
+		assertEquals(Collections.singleton("fr"), su.getAliasUpdates().keySet());
+		assertTrue(su.getAliasUpdates().get("fr").isEmpty());
+		assertEquals(Collections.singleton("fr"), su.getLabelUpdates().keySet());
+		assertEquals(su.getLabelUpdates().get("fr").getText(), alias.getText());
+		assertTrue(su.getDescriptionUpdates().isEmpty());
 	}
 	
 	/**

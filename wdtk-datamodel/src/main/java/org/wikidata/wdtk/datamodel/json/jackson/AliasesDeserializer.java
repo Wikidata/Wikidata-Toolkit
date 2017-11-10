@@ -75,8 +75,6 @@ public class AliasesDeserializer extends
 				}
 			}
 
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
