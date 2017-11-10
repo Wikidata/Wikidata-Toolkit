@@ -20,8 +20,10 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,8 @@ public class WikibaseDataFetcher {
 	 */
 	final WbGetEntitiesAction wbGetEntitiesAction;
 
+	final WbSearchEntitiesAction wbSearchEntitiesAction;
+
 	/**
 	 * The IRI that identifies the site that the data is from.
 	 */
@@ -64,6 +68,12 @@ public class WikibaseDataFetcher {
 	 * Filter that is used to restrict API requests.
 	 */
 	private final DocumentDataFilter filter = new DocumentDataFilter();
+
+	/**
+	 * Maximal value for the size of a list that can be processed by the
+	 * Wikibase API in one cycle
+	 */
+	int maxListSize = 50;
 
 	/**
 	 * Creates an object to fetch data from wikidata.org. This convenience
@@ -92,6 +102,7 @@ public class WikibaseDataFetcher {
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
+		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -155,9 +166,24 @@ public class WikibaseDataFetcher {
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
 			throws MediaWikiApiErrorException {
-		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
-		properties.ids = ApiConnection.implodeObjects(entityIds);
-		return getEntityDocumentMap(entityIds.size(), properties);
+		Map<String, EntityDocument> result = new HashMap<>();
+		List<String> newEntityIds = new ArrayList<>();
+		newEntityIds.addAll(entityIds);
+		boolean moreItems = !newEntityIds.isEmpty();
+		while (moreItems) {
+			List<String> subListOfEntityIds;
+			if (newEntityIds.size() <= maxListSize) {
+				subListOfEntityIds = newEntityIds;
+				moreItems = false;
+			} else {
+				subListOfEntityIds = newEntityIds.subList(0, maxListSize);
+			}
+			WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+			properties.ids = ApiConnection.implodeObjects(subListOfEntityIds);
+			result.putAll(getEntityDocumentMap(entityIds.size(), properties));
+			subListOfEntityIds.clear();
+		}
+		return result;
 	}
 
 	/**
@@ -223,10 +249,27 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles)
 			throws MediaWikiApiErrorException {
-		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
-		properties.titles = ApiConnection.implodeObjects(titles);
-		properties.sites = siteKey;
-		return getEntityDocumentMap(titles.size(), properties);
+		List<String> newTitles = new ArrayList<>();
+		newTitles.addAll(titles);
+		Map<String, EntityDocument> result = new HashMap<>();
+		boolean moreItems = !newTitles.isEmpty();
+
+		while (moreItems) {
+			List<String> subListOfTitles;
+			if (newTitles.size() <= maxListSize) {
+				subListOfTitles = newTitles;
+				moreItems = false;
+			} else {
+				subListOfTitles = newTitles.subList(0, maxListSize);
+			}
+			WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+			properties.titles = ApiConnection.implodeObjects(subListOfTitles);
+			properties.sites = siteKey;
+			result.putAll(getEntityDocumentMap(subListOfTitles.size(),
+					properties));
+			subListOfTitles.clear();
+		}
+		return result;
 	}
 
 	/**
@@ -250,6 +293,45 @@ public class WikibaseDataFetcher {
 		}
 		configureProperties(properties);
 		return this.wbGetEntitiesAction.wbGetEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = "en";
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, String language)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = language;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, Long limit)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = "en";
+		properties.limit = limit;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(String search, String language, Long limit)
+			throws MediaWikiApiErrorException {
+		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
+		properties.search = search;
+		properties.language = language;
+		properties.limit = limit;
+		return searchEntities(properties);
+	}
+
+	public List<WbSearchEntitiesResult> searchEntities(WbGetEntitiesSearchData properties)
+			throws MediaWikiApiErrorException {
+		return this.wbSearchEntitiesAction.wbSearchEntities(properties);
 	}
 
 	/**
