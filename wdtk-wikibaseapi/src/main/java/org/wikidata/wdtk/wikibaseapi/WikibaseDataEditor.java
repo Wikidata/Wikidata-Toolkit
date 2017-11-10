@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -371,6 +372,58 @@ public class WikibaseDataEditor {
 		return updateStatements(currentDocument, addStatements,
 				deleteStatements, summary);
 	}
+	
+	
+	/**
+	 * Updates the terms and statements of the item document identified by the
+	 * given item id. The updates are computed with respect to the current data
+	 * found online, making sure that no redundant deletions or duplicate insertions
+	 * happen. The references of duplicate statements will be merged. The labels
+	 * and aliases in a given language are kept distinct.
+	 * 
+	 * @param itemIdValue
+	 * 			id of the document to be updated
+	 * @param addLabels
+	 * 			labels to be set on the item. They will overwrite existing values
+	 * 			in the same language.
+	 * @param addDescriptions
+	 * 		    description to be set on the item. They will overwrite existing values
+	 * 	 		in the same language.
+	 * @param addAliases
+	 * 			aliases to be added. Existing aliases will be kept.
+	 * @param deleteAliases
+	 * 		    aliases to be deleted.
+	 * @param addStatements
+	 *          the list of statements to be added or updated; statements with
+	 *          empty statement id will be added; statements with non-empty
+	 *          statement id will be updated (if such a statement exists)
+	 * @param deleteStatements
+	 *          the list of statements to be deleted; statements will only be
+	 *          deleted if they are present in the current document (in
+	 *          exactly the same form, with the same id)
+	 * @param summary
+	 * 			short edit summary
+	 * @return the updated document
+	 * @throws MediaWikiApiErrorException
+	 * 			if the API returns errors
+	 * @throws IOException
+	 *          if there are any IO errors, such as missing network connection
+	 */
+	public ItemDocument updateTermsStatements(ItemIdValue itemIdValue,
+			List<MonolingualTextValue> addLabels,
+			List<MonolingualTextValue> addDescriptions,
+			List<MonolingualTextValue> addAliases,
+			List<MonolingualTextValue> deleteAliases,
+			List<Statement> addStatements,
+			List<Statement> deleteStatements,
+			String summary) throws MediaWikiApiErrorException, IOException {
+		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
+				.getEntityDocument(itemIdValue.getId());
+		
+		return updateTermsStatements(currentDocument, addLabels,
+				addDescriptions, addAliases, deleteAliases,
+				addStatements, deleteStatements, summary);
+	}
 
 	/**
 	 * Updates the statements of the property document identified by the given
@@ -447,6 +500,60 @@ public class WikibaseDataEditor {
 
 		return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
+				.getJsonUpdateString(), false, this.editAsBot, currentDocument
+				.getRevisionId(), summary);
+	}
+	
+	/**
+	 * Updates the terms and statements of the current document.
+	 * The updates are computed with respect to the current data in the document,
+	 * making sure that no redundant deletions or duplicate insertions
+	 * happen. The references of duplicate statements will be merged. The labels
+	 * and aliases in a given language are kept distinct.
+	 * 
+     * @param currentDocument
+	 * 			the document to be updated; needs to have a correct revision id and
+	 * 			entity id
+	 * @param addLabels
+	 * 			labels to be set on the item. They will overwrite existing values
+	 * 			in the same language.
+	 * @param addDescriptions
+	 * 		    description to be set on the item. They will overwrite existing values
+	 * 	 		in the same language.
+	 * @param addAliases
+	 * 			aliases to be added. Existing aliases will be kept.
+	 * @param deleteAliases
+	 * 		    aliases to be deleted.
+	 * @param addStatements
+	 *          the list of statements to be added or updated; statements with
+	 *          empty statement id will be added; statements with non-empty
+	 *          statement id will be updated (if such a statement exists)
+	 * @param deleteStatements
+	 *          the list of statements to be deleted; statements will only be
+	 *          deleted if they are present in the current document (in
+	 *          exactly the same form, with the same id)
+	 * @param summary
+	 * 			short edit summary
+	 * @return the updated document
+	 * @throws MediaWikiApiErrorException
+	 * 			if the API returns errors
+	 * @throws IOException
+	 *          if there are any IO errors, such as missing network connection
+	 */
+	public ItemDocument updateTermsStatements(ItemDocument currentDocument,
+			List<MonolingualTextValue> addLabels,
+			List<MonolingualTextValue> addDescriptions,
+			List<MonolingualTextValue> addAliases,
+			List<MonolingualTextValue> deleteAliases,
+			List<Statement> addStatements, List<Statement> deleteStatements,
+			String summary) throws MediaWikiApiErrorException, IOException {
+		
+		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(currentDocument,
+				addStatements, deleteStatements,
+				addLabels, addDescriptions, addAliases, deleteAliases);
+
+		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(currentDocument
+				.getEntityId().getId(), null, null, null, termStatementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), summary);
 	}
