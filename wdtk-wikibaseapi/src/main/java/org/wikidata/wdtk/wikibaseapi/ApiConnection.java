@@ -253,11 +253,11 @@ public class ApiConnection {
 	public void login(String username, String password)
 			throws LoginFailedException {
 		try {
-			String token = this.getLoginToken(username, password);
+			String token = fetchToken("login");
 			try {
 				this.confirmLogin(token, username, password);
 			} catch (NeedLoginTokenException e) { // try once more
-				token = this.getLoginToken(username, password);
+				token = fetchToken("login");
 				this.confirmLogin(token, username, password);
 			}
 		} catch (IOException | MediaWikiApiErrorException e1) {
@@ -314,6 +314,29 @@ public class ApiConnection {
 	public void clearCookies() throws IOException {
 		logout();
 		this.cookies.clear();
+	}
+
+	/**
+	 * Executes a API query action to get a new token.
+	 * The method only executes the action, without doing any
+	 * checks first. If errors occur, they are logged and null is returned.
+	 *
+	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
+	 * @return newly retrieved token or null if no token was retrieved
+	 */
+	String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
+		Map<String, String> params = new HashMap<>();
+		params.put(ApiConnection.PARAM_ACTION, "query");
+		params.put("meta", "tokens");
+		params.put("type", tokenType);
+
+		try {
+			JsonNode root = this.sendJsonRequest("POST", params);
+			return root.path("query").path("tokens").path(tokenType + "token").textValue();
+		} catch (IOException | MediaWikiApiErrorException e) {
+			logger.error("Error when trying to fetch token: " + e.toString());
+		}
+		return null;
 	}
 
 	/**
@@ -465,38 +488,12 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Returns login token from an API login query with the given username and
-	 * password.
-	 *
-	 * @param username
-	 *            the name of the user to log in
-	 * @param password
-	 *            the password of the user
-	 * @return login token obtained from the API
-	 * @throws IOException
-	 *             if there was a connection problem or if the API response was
-	 *             not understood
-	 */
-	String getLoginToken(String username, String password) throws IOException, MediaWikiApiErrorException {
-		Map<String, String> params = new HashMap<>();
-		params.put(ApiConnection.PARAM_ACTION, "login");
-		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
-		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
-
-		JsonNode root = sendJsonRequest("POST", params);
-		String val = root.path("login").path("token").textValue();
-
-		return root.path("login").path("token").textValue();
-	}
-
-	/**
 	 * Issues a Web API query to confirm that the previous login attempt was
 	 * successful, and sets the internal state of the API connection accordingly
 	 * in this case.
 	 *
 	 * @param token
-	 *            the token string acquired from a previous call to
-	 *            {@link #getLoginToken(String, String)}
+	 *            the login token string
 	 * @param username
 	 *            the name of the user that was logged in
 	 * @param password
