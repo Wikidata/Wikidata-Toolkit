@@ -435,15 +435,8 @@ public class WbEditEntityAction {
 	 * @return newly retrieved token or null if no token was retrieved
 	 */
 	private String fetchCsrfToken() {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put(ApiConnection.PARAM_ACTION, "query");
-		params.put("meta", "tokens");
-
 		try {
-			JsonNode root = this.connection.sendJsonRequest("POST", params);
-
-			return root.path("query").path("tokens")
-					.path("csrftoken").textValue();
+			return connection.fetchToken("csrf");
 		} catch (IOException | MediaWikiApiErrorException e) {
 			logger.error("Error when trying to fetch csrf token: "
 					+ e.toString());
