@@ -64,12 +64,19 @@ public class ApiConnectionTest {
 	public void setUp() throws Exception {
 		this.con = new MockApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("action", "login");
-		params.put("lgname", "username");
-		params.put("lgpassword", "password");
+		params.put("action", "query");
+		params.put("meta", "tokens");
+		params.put("type", "csrf");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginNeedToken.json", CompressionType.NONE);
+				"/query-csrf-token-loggedin-response.json", CompressionType.NONE);
+		params.clear();
+		params.put("action", "query");
+		params.put("meta", "tokens");
+		params.put("type", "login");
+		params.put("format", "json");
+		this.con.setWebResourceFromPath(params, this.getClass(),
+				"/query-login-token.json", CompressionType.NONE);
 		params.clear();
 		params.put("action", "login");
 		params.put("lgname", "username");
@@ -83,25 +90,11 @@ public class ApiConnectionTest {
 		params.put("action", "login");
 		params.put("lgname", "username2");
 		params.put("lgpassword", "password2");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginNeedToken2.json", CompressionType.NONE);
-		params.clear();
-		params.put("action", "login");
-		params.put("lgname", "username2");
-		params.put("lgpassword", "password2");
 		params.put("lgtoken", "anothertoken");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/loginError.json", CompressionType.NONE);
 
-		params.clear();
-		params.put("action", "login");
-		params.put("lgname", "username3");
-		params.put("lgpassword", "password3");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginNeedToken.json", CompressionType.NONE);
 		params.clear();
 		params.put("action", "login");
 		params.put("lgname", "username3");
@@ -118,13 +111,18 @@ public class ApiConnectionTest {
 	}
 
 	@Test
+	public void testGetToken() throws IOException, MediaWikiApiErrorException {
+		assertTrue(this.con.fetchToken("csrf") != null);
+	}
+
+	@Test
 	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
-		assertTrue(this.con.getLoginToken("username", "password") != null);
+		assertTrue(this.con.fetchToken("login") != null);
 	}
 
 	@Test
 	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
-		String token = this.con.getLoginToken("username", "password");
+		String token = this.con.fetchToken("login");
 		this.con.confirmLogin(token, "username", "password");
 	}
 

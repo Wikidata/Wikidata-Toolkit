@@ -128,7 +128,6 @@ public class WbSearchEntitiesAction {
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
-        parameters.put(ApiConnection.PARAM_FORMAT, "json");
 
         if (search != null) {
             parameters.put("search", search);
@@ -161,13 +160,8 @@ public class WbSearchEntitiesAction {
 
         List<WbSearchEntitiesResult> results = new ArrayList<>();
 
-        try (InputStream response = this.connection.sendRequest("POST",
-                parameters)) {
-            JsonNode root = mapper.readTree(response);
-
-            this.connection.checkErrors(root);
-            this.connection.logWarnings(root);
-
+        try {
+            JsonNode root = this.connection.sendJsonRequest("POST", parameters);
             JsonNode entities = root.path("search");
             for (JsonNode entityNode : entities) {
                 try {
