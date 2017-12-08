@@ -52,6 +52,7 @@ public class WikibaseDataEditorTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
+		params.put("type", "csrf");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json",
