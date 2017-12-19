@@ -1,0 +1,5 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P1632s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P1632s> )
+Declaration( DataProperty( <http://www.wikidata.org/entity/P1632v> ) )
+DataPropertyRange( <http://www.wikidata.org/entity/P1632v> DataOneOf( "m"^^<http://www.w3.org/2001/XMLSchema#string> ) )
+

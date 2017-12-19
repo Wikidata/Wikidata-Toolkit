@@ -1,0 +1,4 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P36s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P36s> )
+FunctionalObjectProperty( <http://www.wikidata.org/entity/P36s> )
+

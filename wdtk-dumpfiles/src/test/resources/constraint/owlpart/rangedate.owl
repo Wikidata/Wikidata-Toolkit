@@ -1,0 +1,7 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P620s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P620s> )
+Declaration( Datatype( <http://www.wikidata.org/entity/P620aux0> ) )
+DatatypeDefinition( <http://www.wikidata.org/entity/P620aux0> DataIntersectionOf( DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#dateTime> <http://www.w3.org/2001/XMLSchema#minInclusive> "1957-10-04"^^<http://www.w3.org/2001/XMLSchema#dateTime> ) DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#dateTime> <http://www.w3.org/2001/XMLSchema#maxInclusive> "now"^^<http://www.w3.org/2001/XMLSchema#dateTime> ) ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P620v> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P620v> DataSomeValuesFrom( <http://www.wikidata.org/ontology#TimeValue> <http://www.wikidata.org/entity/P620aux0> ) )
+

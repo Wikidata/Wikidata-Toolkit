@@ -1,0 +1,11 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P883s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P883s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P17s> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P17v> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q30> ) )
+ObjectPropertyDomain( <http://www.wikidata.org/entity/P883s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P17s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P17v> ObjectOneOf( <http://www.wikidata.org/entity/Q30> ) ) ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q695> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q702> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q709> ) )
+ObjectPropertyDomain( <http://www.wikidata.org/entity/P883s> ObjectOneOf( <http://www.wikidata.org/entity/Q695> <http://www.wikidata.org/entity/Q702> <http://www.wikidata.org/entity/Q709>  ) )
+

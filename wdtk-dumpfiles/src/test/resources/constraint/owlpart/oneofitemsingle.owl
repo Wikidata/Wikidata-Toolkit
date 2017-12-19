@@ -1,0 +1,6 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P412s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P412s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P412v> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q27914> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P412v> ObjectOneOf( <http://www.wikidata.org/entity/Q27914> ) )
+

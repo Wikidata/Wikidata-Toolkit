@@ -1,0 +1,7 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P218s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P218s> )
+Declaration( Datatype( <http://www.wikidata.org/entity/P218aux0> ) )
+DatatypeDefinition( <http://www.wikidata.org/entity/P218aux0> DatatypeRestriction( <http://www.w3.org/2001/XMLSchema#string> <http://www.w3.org/2001/XMLSchema#pattern> "[a-z]{2}"^^<http://www.w3.org/2001/XMLSchema#string> ) )
+Declaration( DataProperty( <http://www.wikidata.org/entity/P218v> ) )
+DataPropertyRange( <http://www.wikidata.org/entity/P218v> <http://www.wikidata.org/entity/P218aux0> )
+

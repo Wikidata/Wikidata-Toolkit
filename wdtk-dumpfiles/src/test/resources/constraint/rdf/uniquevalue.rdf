@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P238s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P238v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing">
+	<owl:hasKey rdf:nodeID="node192f2uo9jx107"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx107">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/P238v"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+</rdf:RDF>
+

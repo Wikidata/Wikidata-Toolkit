@@ -1,0 +1,6 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P19s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P19s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P19v> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P17s> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P19v> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P17s> <http://www.w3.org/2002/07/owl#Thing> ) )
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:wo="http://www.wikidata.org/ontology#"
+	xmlns:id="http://www.wikidata.org/entity/">
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P412s">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P412v">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q27914">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q30903">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q31687">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q37137">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q186506">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/Q27911">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx248">
+	<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+	<owl:oneOf rdf:nodeID="node192f2uo9jx249"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx249">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q27914"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx250"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx250">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q30903"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx251"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx251">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q31687"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx252"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx252">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q37137"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx253"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx253">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q186506"/>
+	<rdf:rest rdf:nodeID="node192f2uo9jx254"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node192f2uo9jx254">
+	<rdf:first rdf:resource="http://www.wikidata.org/entity/Q27911"/>
+	<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.wikidata.org/entity/P412v">
+	<rdfs:range rdf:nodeID="node192f2uo9jx248"/>
+</rdf:Description>
+
+</rdf:RDF>
+

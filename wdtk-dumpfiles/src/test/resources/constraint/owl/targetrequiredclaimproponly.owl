@@ -1,0 +1,21 @@
+Prefix(:=<http://www.wikidata.org/entity/constraints/>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Prefix(wo:=<http://www.wikidata.org/ontology#>)
+Prefix(id:=<http://www.wikidata.org/entity/>)
+
+
+Ontology(<http://www.wikidata.org/entity/constraints/ont>
+
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P19s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P19s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P19v> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P17s> ) )
+ObjectPropertyRange( <http://www.wikidata.org/entity/P19v> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P17s> <http://www.w3.org/2002/07/owl#Thing> ) )
+
+)
+
+

@@ -1,0 +1,29 @@
+Prefix(:=<http://www.wikidata.org/entity/constraints/>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+Prefix(wo:=<http://www.wikidata.org/ontology#>)
+Prefix(id:=<http://www.wikidata.org/entity/>)
+
+
+Ontology(<http://www.wikidata.org/entity/constraints/ont>
+
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P569s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P569s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P569v> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P527s> ) )
+DisjointClasses( ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P569v> <http://www.w3.org/2002/07/owl#Thing> ) ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P527s> <http://www.w3.org/2002/07/owl#Thing> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P31s> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P31v> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q14756018> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q14073567> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q4167410> ) )
+DisjointClasses( ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P569v> <http://www.w3.org/2002/07/owl#Thing> ) ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P31s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P31v> ObjectOneOf( <http://www.wikidata.org/entity/Q14756018> <http://www.wikidata.org/entity/Q14073567> <http://www.wikidata.org/entity/Q4167410>  ) ) ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P625s> ) )
+DisjointClasses( ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P569v> <http://www.w3.org/2002/07/owl#Thing> ) ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P625s> <http://www.w3.org/2002/07/owl#Thing> ) )
+
+)
+
+

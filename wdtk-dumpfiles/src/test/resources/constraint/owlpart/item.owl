@@ -1,0 +1,7 @@
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P345s> ) )
+InverseFunctionalObjectProperty( <http://www.wikidata.org/entity/P345s> )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P107s> ) )
+Declaration( ObjectProperty( <http://www.wikidata.org/entity/P107v> ) )
+Declaration( NamedIndividual( <http://www.wikidata.org/entity/Q386724> ) )
+ObjectPropertyDomain( <http://www.wikidata.org/entity/P345s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P107s> ObjectSomeValuesFrom( <http://www.wikidata.org/entity/P107v> ObjectOneOf( <http://www.wikidata.org/entity/Q386724> ) ) ) )
+
