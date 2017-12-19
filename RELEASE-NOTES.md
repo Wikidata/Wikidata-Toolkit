@@ -18,6 +18,7 @@ Bug fixes:
 * Make sure that API warnings are read for all requests
 * Do not fail when reading a bz2 compressed dump when a gzip dump was expected
 * WikibaseDataFetcher is now able to retrieve more than 50 entities at once
+* Switch to the new way of retrieving MediaWiki API tokens
 
 Version 0.7.0
 -------------
