@@ -46,6 +46,7 @@ public class MwRevisionImpl implements MwRevision {
 	int namespace;
 	int pageId;
 	long revisionId;
+	long parentRevisionId;
 
 	/**
 	 * Constructor.
@@ -70,6 +71,7 @@ public class MwRevisionImpl implements MwRevision {
 		this.namespace = mwRevision.getNamespace();
 		this.pageId = mwRevision.getPageId();
 		this.revisionId = mwRevision.getRevisionId();
+		this.parentRevisionId = mwRevision.getParentRevisionId();
 	}
 
 	@Override
@@ -102,6 +104,11 @@ public class MwRevisionImpl implements MwRevision {
 	@Override
 	public long getRevisionId() {
 		return this.revisionId;
+	}
+
+	@Override
+	public long getParentRevisionId() {
+		return this.parentRevisionId;
 	}
 
 	@Override
@@ -159,7 +166,8 @@ public class MwRevisionImpl implements MwRevision {
 	 * currently being processed.
 	 */
 	void resetCurrentRevisionData() {
-		this.revisionId = -1; // impossible as an id in MediaWiki
+		this.revisionId = NO_REVISION_ID; // impossible as an id in MediaWiki
+		this.parentRevisionId = NO_REVISION_ID;
 		this.text = null;
 		this.comment = null;
 		this.format = null;
@@ -174,7 +182,8 @@ public class MwRevisionImpl implements MwRevision {
 				+ "). Created at " + this.timeStamp + " by " + this.contributor
 				+ " (" + this.contributorId + ") with comment \""
 				+ this.comment + "\". Model " + this.model + " (" + this.format
-				+ "). Text length: " + this.text.length();
+				+ "). Text length: " + this.text.length() +
+				" Parent revision id: " + this.parentRevisionId;
 	}
 
 }

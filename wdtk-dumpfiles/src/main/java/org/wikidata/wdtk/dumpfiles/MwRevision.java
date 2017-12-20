@@ -45,6 +45,10 @@ public interface MwRevision {
 	 * format.
 	 */
 	String MODEL_WIKIBASE_PROPERTY = "wikibase-property";
+	/**
+	 * The revision id set when the revision does not exist
+	 */
+	long NO_REVISION_ID = -1;
 
 	/**
 	 * Returns the title string of the revised page, including namespace
@@ -111,6 +115,16 @@ public interface MwRevision {
 	 * @return long revision id
 	 */
 	long getRevisionId();
+
+	/**
+	 * Returns the numeric id of the parent revision.
+	 * It is the id of the revision the current revision is based on.
+	 * It returns -1 if there is no parent revision i.e. the page
+	 * have been created.
+	 *
+	 * @return revision id
+	 */
+	long getParentRevisionId();
 
 	/**
 	 * Returns the time stamp at which the current revision was made. The time

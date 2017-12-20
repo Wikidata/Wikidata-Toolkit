@@ -407,10 +407,11 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 					processXmlContributor();
 					break;
 				case MwRevisionDumpFileProcessor.E_REV_ID:
-					this.mwRevision.revisionId = new Long(
-							this.xmlReader.getElementText());
+					this.mwRevision.revisionId = Long.parseLong(this.xmlReader.getElementText());
 					break;
 				case MwRevisionDumpFileProcessor.E_REV_PARENT_ID:
+					this.mwRevision.parentRevisionId = Long.parseLong(this.xmlReader.getElementText());
+					break;
 				case MwRevisionDumpFileProcessor.E_REV_SHA1:
 				case MwRevisionDumpFileProcessor.E_REV_MINOR:
 					break;

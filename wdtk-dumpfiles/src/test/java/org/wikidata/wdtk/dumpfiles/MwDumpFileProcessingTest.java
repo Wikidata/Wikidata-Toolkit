@@ -116,6 +116,7 @@ public class MwDumpFileProcessingTest {
 		result.namespace = 0;
 		result.pageId = 32;
 		result.revisionId = number;
+		result.parentRevisionId = number - 1;
 		result.timeStamp = "2014-02-19T23:34:1" + (number % 10) + "Z";
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_ITEM;
@@ -138,6 +139,7 @@ public class MwDumpFileProcessingTest {
 		result.namespace = 120;
 		result.pageId = 12345;
 		result.revisionId = number + 10000;
+		result.parentRevisionId = number + 9999;
 		result.timeStamp = "2014-02-19T23:34:1" + (number % 10) + "Z";
 		result.format = "application/json";
 		result.model = MwRevision.MODEL_WIKIBASE_PROPERTY;
@@ -160,6 +162,7 @@ public class MwDumpFileProcessingTest {
 		result.namespace = 4;
 		result.pageId = 181;
 		result.revisionId = 110689110 + number;
+		result.parentRevisionId = 110689109 + number;
 		result.timeStamp = "2014-02-20T23:34:1" + number + "Z";
 		result.format = "text/x-wiki";
 		result.model = MwRevision.MODEL_WIKITEXT;
@@ -187,6 +190,8 @@ public class MwDumpFileProcessingTest {
 				rev1.getPageId(), rev2.getPageId());
 		assertEquals("[" + test + "] Revision ids do not match:",
 				rev1.getRevisionId(), rev2.getRevisionId());
+		assertEquals("[" + test + "] Revision parent ids do not match:",
+				rev1.getParentRevisionId(), rev2.getParentRevisionId());
 		assertEquals("[" + test + "] Revision timestamps do not match:",
 				rev1.getTimeStamp(), rev2.getTimeStamp());
 		assertEquals("[" + test + "] Revision formats do not match:",
