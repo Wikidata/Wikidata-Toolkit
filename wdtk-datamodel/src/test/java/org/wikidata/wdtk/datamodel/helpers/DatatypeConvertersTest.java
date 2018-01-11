@@ -32,7 +32,7 @@ public class DatatypeConvertersTest {
 	@Test
 	public void testFormatTimeISO8601() {
 		TimeValue time = Datamodel.makeTimeValue(306, (byte) 11, (byte) 3,
-				(byte) 13, (byte) 07, (byte) 06, TimeValue.PREC_SECOND, 0, 0,
+				(byte) 13, (byte) 7, (byte) 6, TimeValue.PREC_SECOND, 0, 0,
 				0, TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(DataFormatter.formatTimeISO8601(time),
 				"+00000000306-11-03T13:07:06Z");

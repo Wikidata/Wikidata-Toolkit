@@ -1,8 +1,43 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.8.0
+-------------
+
+New features:
+* Compatibility with JDK 9
+* Allow to edit labels, descriptions and aliases using the WikibaseDataEditor (this is a work in progress that is likely to change)
+* Allow to use the wbEntitySearch API action using WikibaseDataFetcher
+* Quantities bounds are now optional following the change in Wikibase
+* Add the "id" field to entity id JSON serialization following the change in Wikibase
+
+Bug fixes:
+* Do not fail when logging in
+* Do not fail when reading redirections in daily XML dumps
+* Do not fail when new datatypes are introduced in Wikibase
+* Make sure that API warnings are read for all requests
+* Do not fail when reading a bz2 compressed dump when a gzip dump was expected
+* WikibaseDataFetcher is now able to retrieve more than 50 entities at once
+* Switch to the new way of retrieving MediaWiki API tokens
+
+Version 0.7.0
+-------------
+
+New features:
+* Add a new client action "sqid" that analyses dumps to create the statistics
+  JSON files that are the basis for the SQID Wikidata Browser that is found at
+  https://tools.wmflabs.org/sqid/
+
+Bug fixes:
+* Fix JavaDoc errors to enable build using Java 8 (with doclint)
+* Make JSON parser more tolerant towards unknown keys; avoids breaking on recent API changes
+* Update Wikimedia dump location to https so that dump downloads work again
+
 Version 0.6.0
 -------------
+
+A new stand-alone example project is now showing how to use WDTK as a library:
+https://github.com/Wikidata/Wikidata-Toolkit-Examples
 
 New features:
 * Support for new Wikidata property type "external identifier"

@@ -29,6 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -97,6 +98,11 @@ public class FetchOnlineDataExample {
 					.println("Successfully retrieved data for page entitled \""
 							+ entry.getKey() + "\": "
 							+ entry.getValue().getEntityId().getId());
+		}
+
+		System.out.println("** Doing search on Wikidata:");
+		for(WbSearchEntitiesResult result : wbdf.searchEntities("Douglas Adams", "fr")) {
+			System.out.println("Found " + result.getEntityId() + " with label " + result.getLabel());
 		}
 
 		System.out.println("*** Done.");

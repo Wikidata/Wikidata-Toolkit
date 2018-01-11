@@ -20,9 +20,15 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+
+import java.util.regex.Pattern;
 
 /**
  * Generic implementation of {@link ItemIdValue} that works with arbitrary
@@ -31,10 +37,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
  * @author Markus Kroetzsch
  *
  */
-public class ItemIdValueImpl extends NumericEntityIdValueImpl implements
-		ItemIdValue {
+public class ItemIdValueImpl implements ItemIdValue {
 
 	private static final long serialVersionUID = -2430982177464510496L;
+	private static final Pattern ITEM_ID_PATTERN = Pattern.compile("^Q\\d+$");
+
+	private final String id;
+	private final String siteIri;
 
 	/**
 	 * Creates a new object of this type.
@@ -46,36 +55,30 @@ public class ItemIdValueImpl extends NumericEntityIdValueImpl implements
 	 *            the first part of the entity IRI of the site this belongs to,
 	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
+	@Deprecated
 	public static ItemIdValueImpl create(String id, String baseIri) {
-		if (id == null || id.length() <= 1 || id.charAt(0) != 'Q') {
-			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
-							+ id + "\"");
-		}
-
-		try {
-			int numId = new Integer(id.substring(1));
-			return new ItemIdValueImpl(numId, baseIri);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
-							+ id + "\"");
-		}
+		return new ItemIdValueImpl(id, baseIri);
 	}
 
 	/**
-	 * Constructor. Use {@link #create(String, String)} to create objects of
-	 * this type.
-	 *
-	 * @see NumericEntityIdValueImpl#EntityIdImpl(int, String)
+	 * Constructor.
+
 	 * @param id
-	 *            the numeric id of this property (the number after "Q")
-	 * @param baseIri
+	 *            a string of the form Qn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
 	 *            the first part of the entity IRI of the site this belongs to,
 	 *            e.g., "http://www.wikidata.org/entity/"
 	 */
-	private ItemIdValueImpl(int id, String baseIri) {
-		super(id, baseIri);
+	ItemIdValueImpl(String id, String siteIri) {
+		Validate.notNull(siteIri, "Entity site IRIs cannot be null");
+		if (id == null || !ITEM_ID_PATTERN.matcher(id).matches()) {
+			throw new IllegalArgumentException(
+					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
+							+ id + "\"");
+		}
+		this.id = id;
+		this.siteIri = siteIri;
 	}
 
 	@Override
@@ -90,6 +93,31 @@ public class ItemIdValueImpl extends NumericEntityIdValueImpl implements
 
 	@Override
 	public String getId() {
-		return "Q" + this.id;
+		return this.id;
+	}
+
+	@Override
+	public String getIri() {
+		return siteIri + id;
+	}
+
+	@Override
+	public String getSiteIri() {
+		return this.siteIri;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Hash.hashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return Equality.equalsEntityIdValue(this, obj);
 	}
 }

@@ -70,8 +70,6 @@ public class Client {
 	 *
 	 * @param args
 	 *            command line arguments to configure the conversion
-	 * @throws ParseException
-	 * @throws IOException
 	 */
 	public Client(DumpProcessingController dumpProcessingController,
 			String args[]) {

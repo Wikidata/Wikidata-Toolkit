@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -52,6 +53,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
 		@Type(value = JacksonItemDocument.class, name = JacksonTermedStatementDocument.JSON_TYPE_ITEM),
@@ -130,7 +132,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	public void setAliases(
 			Map<String, List<JacksonMonolingualTextValue>> aliases) {
-		this.aliases = aliases;
+		if (aliases == null) {
+			this.aliases = Collections.emptyMap();
+		} else {
+			this.aliases = aliases;
+		}
 	}
 
 	@Override
@@ -157,7 +163,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	public void setDescriptions(
 			Map<String, JacksonMonolingualTextValue> descriptions) {
-		this.descriptions = descriptions;
+		if (descriptions == null) {
+			this.descriptions = Collections.emptyMap();
+		} else {
+			this.descriptions = descriptions;
+		}
 	}
 
 	@Override
@@ -174,7 +184,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 *            new value
 	 */
 	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
-		this.labels = labels;
+		if (labels == null) {
+			this.labels = Collections.emptyMap();
+		} else {
+			this.labels = labels;
+		}
 	}
 
 	@Override
@@ -265,7 +279,11 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	@JsonProperty("claims")
 	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
-		this.claims = claims;
+		if (claims == null) {
+			this.claims = Collections.emptyMap();
+		} else {
+			this.claims = claims;
+		}
 		this.statementGroups = null; // clear cache
 	}
 

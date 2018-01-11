@@ -5,7 +5,7 @@
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.6.0-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
@@ -58,6 +58,11 @@
 			<id>michael</id>
 			<name>Michael Günther</name>
 			<email>guenthermi50@yahoo.de</email>
+		</developer>
+		<developer>
+			<id>tpt</id>
+			<name>Thomas Pellissier Tanon</name>
+			<email>thomas@pellissier-tanon.fr</email>
 		</developer>
 	</developers>
 

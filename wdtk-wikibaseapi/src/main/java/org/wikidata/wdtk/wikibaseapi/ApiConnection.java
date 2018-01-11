@@ -57,7 +57,7 @@ public class ApiConnection {
 	/**
 	 * URL of the API of wikidata.org.
 	 */
-	public final static String URL_WIKIDATA_API = "https://www.wikidata.org/w/api.php/";
+	public final static String URL_WIKIDATA_API = "https://www.wikidata.org/w/api.php";
 	/**
 	 * URL of the API of test.wikidata.org.
 	 */
@@ -253,14 +253,14 @@ public class ApiConnection {
 	public void login(String username, String password)
 			throws LoginFailedException {
 		try {
-			String token = this.getLoginToken(username, password);
+			String token = fetchToken("login");
 			try {
 				this.confirmLogin(token, username, password);
 			} catch (NeedLoginTokenException e) { // try once more
-				token = this.getLoginToken(username, password);
+				token = fetchToken("login");
 				this.confirmLogin(token, username, password);
 			}
-		} catch (IOException e1) {
+		} catch (IOException | MediaWikiApiErrorException e1) {
 			throw new LoginFailedException(e1.getMessage(), e1);
 		}
 	}
@@ -294,7 +294,11 @@ public class ApiConnection {
 			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
-			sendRequest("POST", params);
+			try {
+				sendJsonRequest("POST", params);
+			} catch (MediaWikiApiErrorException e) {
+				throw new IOException(e.getMessage(), e); //TODO: we should throw a better exception
+			}
 
 			this.loggedIn = false;
 			this.username = "";
@@ -313,9 +317,62 @@ public class ApiConnection {
 	}
 
 	/**
+	 * Executes a API query action to get a new token.
+	 * The method only executes the action, without doing any
+	 * checks first. If errors occur, they are logged and null is returned.
+	 *
+	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
+	 * @return newly retrieved token or null if no token was retrieved
+	 */
+	String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
+		Map<String, String> params = new HashMap<>();
+		params.put(ApiConnection.PARAM_ACTION, "query");
+		params.put("meta", "tokens");
+		params.put("type", tokenType);
+
+		try {
+			JsonNode root = this.sendJsonRequest("POST", params);
+			return root.path("query").path("tokens").path(tokenType + "token").textValue();
+		} catch (IOException | MediaWikiApiErrorException e) {
+			logger.error("Error when trying to fetch token: " + e.toString());
+		}
+		return null;
+	}
+
+	/**
+	 * Sends a request to the API with the given parameters and the given
+	 * request method and returns the result JSON tree. It automatically fills the
+	 * cookie map with cookies in the result header after the request.
+	 * It logs the request warnings and adds makes sure that "format": "json"
+	 * parameter is set.
+	 *
+	 * @param requestMethod
+	 *            either POST or GET
+	 * @param parameters
+	 *            Maps parameter keys to values. Out of this map the function
+	 *            will create a query string for the request.
+	 * @return API result
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException if the API returns an error
+	 */
+	public JsonNode sendJsonRequest(String requestMethod, Map<String,String> parameters) throws IOException, MediaWikiApiErrorException {
+		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+		try (InputStream response = sendRequest(requestMethod, parameters)) {
+			JsonNode root = this.mapper.readTree(response);
+			this.checkErrors(root);
+			this.logWarnings(root);
+			return root;
+		}
+	}
+
+	/**
 	 * Sends a request to the API with the given parameters and the given
 	 * request method and returns the result string. It automatically fills the
 	 * cookie map with cookies in the result header after the request.
+	 *
+	 * Warning: You probably want to use ApiConnection.sendJsonRequest
+	 * that execute the request using JSON content format,
+	 * throws the errors and logs the warnings.
 	 *
 	 * @param requestMethod
 	 *            either POST or GET
@@ -350,6 +407,8 @@ public class ApiConnection {
 	}
 
 	/**
+	 * @deprecated Use ApiConnection.sendJsonRequest that executes this method
+	 *
 	 * Checks if an API response contains an error and throws a suitable
 	 * exception in this case.
 	 *
@@ -367,6 +426,8 @@ public class ApiConnection {
 	}
 
 	/**
+	 * @deprecated Use ApiConnection.sendJsonRequest that executes this method
+	 *
 	 * Extracts and logs any warnings that are returned in an API response.
 	 *
 	 * @param root
@@ -427,38 +488,12 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Returns login token from an API login query with the given username and
-	 * password.
-	 *
-	 * @param username
-	 *            the name of the user to log in
-	 * @param password
-	 *            the password of the user
-	 * @return login token obtained from the API
-	 * @throws IOException
-	 *             if there was a connection problem or if the API response was
-	 *             not understood
-	 */
-	String getLoginToken(String username, String password) throws IOException {
-		Map<String, String> params = new HashMap<>();
-		params.put(ApiConnection.PARAM_ACTION, "login");
-		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
-		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
-		params.put(ApiConnection.PARAM_FORMAT, "json");
-
-		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
-
-		return root.path("login").path("token").textValue();
-	}
-
-	/**
 	 * Issues a Web API query to confirm that the previous login attempt was
 	 * successful, and sets the internal state of the API connection accordingly
 	 * in this case.
 	 *
 	 * @param token
-	 *            the token string acquired from a previous call to
-	 *            {@link #getLoginToken(String, String)}
+	 *            the login token string
 	 * @param username
 	 *            the name of the user that was logged in
 	 * @param password
@@ -467,15 +502,14 @@ public class ApiConnection {
 	 * @throws LoginFailedException
 	 */
 	void confirmLogin(String token, String username, String password)
-			throws IOException, LoginFailedException {
+			throws IOException, LoginFailedException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "login");
 		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
 		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
 		params.put(ApiConnection.PARAM_LOGIN_TOKEN, token);
-		params.put(ApiConnection.PARAM_FORMAT, "json");
 
-		JsonNode root = this.mapper.readTree(sendRequest("POST", params));
+		JsonNode root = sendJsonRequest("POST", params);
 
 		String result = root.path("login").path("result").textValue();
 		if (ApiConnection.LOGIN_RESULT_SUCCESS.equals(result)) {
@@ -536,8 +570,6 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
-	 *
-	 * @param headerFields
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> headerCookies = headerFields
@@ -593,15 +625,15 @@ public class ApiConnection {
 		StringBuilder builder = new StringBuilder();
 		try {
 			boolean first = true;
-			for (String key : params.keySet()) {
+			for (Map.Entry<String,String> entry : params.entrySet()) {
 				if (first) {
 					first = false;
 				} else {
 					builder.append("&");
 				}
-				builder.append(URLEncoder.encode(key, "UTF-8"));
+				builder.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
 				builder.append("=");
-				builder.append(URLEncoder.encode(params.get(key), "UTF-8"));
+				builder.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(
@@ -632,8 +664,6 @@ public class ApiConnection {
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
-		connection.setRequestProperty("Content-Length",
-				String.valueOf(queryString.length()));
 		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
 				getCookieString());
 	}

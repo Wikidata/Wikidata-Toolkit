@@ -182,10 +182,11 @@ public class ClientConfiguration {
 	 */
 	public static final String OPTION_LOCAL_DUMPFILE = "input";
 
-	static final Map<String, Class<? extends DumpProcessingOutputAction>> KNOWN_ACTIONS = new HashMap<>();
+	static final Map<String, Class<? extends DumpProcessingAction>> KNOWN_ACTIONS = new HashMap<>();
 	static {
 		KNOWN_ACTIONS.put("rdf", RdfSerializationAction.class);
 		KNOWN_ACTIONS.put("json", JsonSerializationAction.class);
+		KNOWN_ACTIONS.put("sqid", SchemaUsageAnalyzer.class);
 	}
 
 	/**
@@ -704,7 +705,7 @@ public class ClientConfiguration {
 		}
 
 		try {
-			Constructor<? extends DumpProcessingOutputAction> constructor = KNOWN_ACTIONS
+			Constructor<? extends DumpProcessingAction> constructor = KNOWN_ACTIONS
 					.get(name).getConstructor();
 			return constructor.newInstance();
 		} catch (NoSuchMethodException | SecurityException

@@ -94,19 +94,18 @@ public class WmfDumpFileManagerTest {
 				.toLowerCase() + "-" + dateStamp);
 		dm.setDirectory(thisDumpPath);
 		if (isDone) {
-			dm.setFileContents(
-					thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
-							dumpContentType, "wikidatawiki", dateStamp)),
-					"Contents of " + dumpContentType.toString().toLowerCase()
-							+ " " + dateStamp, WmfDumpFile
-							.getDumpFileCompressionType(dumpContentType));
+			Path filePath = thisDumpPath.resolve(WmfDumpFile.getDumpFileName(
+					dumpContentType, "wikidatawiki", dateStamp));
+			dm.setFileContents(filePath,
+					"Contents of " + dumpContentType.toString().toLowerCase() + " " + dateStamp,
+					WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 		}
 	}
 
 	@Test
 	public void getAllDailyDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);
@@ -148,7 +147,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllJsonDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/wikidata/",
+				"https://dumps.wikimedia.org/other/wikidata/",
 				"/other-wikidata-index.html", this.getClass());
 
 		setLocalDump("20141110", DumpContentType.JSON, true);
@@ -188,7 +187,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllCurrentDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.CURRENT, false);
@@ -223,7 +222,7 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllFullDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 
 		setLocalDump("20140210", DumpContentType.FULL, false);
@@ -324,13 +323,13 @@ public class WmfDumpFileManagerTest {
 	@Test
 	public void getAllRelevantDumps() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/",
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/",
 				"/other-incr-wikidatawiki-index.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/",
+				"https://dumps.wikimedia.org/wikidatawiki/",
 				"/wikidatawiki-index-old.html", this.getClass());
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 
 		setLocalDump("20140220", DumpContentType.DAILY, true);

@@ -53,9 +53,9 @@ public class StatementGroupTest {
 
 	@Before
 	public void setUp() throws Exception {
-		subject = ItemIdValueImpl.create("Q42",
+		subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
-		property = PropertyIdValueImpl.create("P42",
+		property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new ValueSnakImpl(property, subject);
 		Claim claim = new ClaimImpl(subject, mainSnak,
@@ -125,7 +125,7 @@ public class StatementGroupTest {
 
 		statements.add(statement1);
 
-		EntityIdValue subject2 = ItemIdValueImpl.create("Q23",
+		EntityIdValue subject2 = new ItemIdValueImpl("Q23",
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property);
 		Claim claim = new ClaimImpl(subject2, mainSnak,
@@ -144,8 +144,7 @@ public class StatementGroupTest {
 
 		statements.add(statement1);
 
-		PropertyIdValue property2 = PropertyIdValueImpl
-				.create("P23", "http://wikidata.org/entity/");
+		PropertyIdValue property2 = new PropertyIdValueImpl("P23", "http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property2);
 		Claim claim = new ClaimImpl(subject, mainSnak,
 				Collections.<SnakGroup> emptyList());

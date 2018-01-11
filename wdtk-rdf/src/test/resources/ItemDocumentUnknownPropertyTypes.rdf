@@ -1,0 +1,54 @@
+
+<http://www.wikidata.org/Q10> a <http://www.wikidata.org/ontology#Item> ;
+	<http://www.w3.org/2000/01/rdf-schema#label> "bar"@lc2 , "foo"@lc ;
+	<http://schema.org/description> "it's bar"@lc2 , "it's foo"@lc ;
+	<http://www.w3.org/2004/02/skos/core#altLabel> "foo"@lc , "bar"@lc ;
+	<http://www.wikidata.org/P10s> <http://www.wikidata.org/Q10Snone> ;
+	<http://www.wikidata.org/P569s> <http://www.wikidata.org/Q10Snone2> ;
+	<http://www.wikidata.org/P549s> <http://www.wikidata.org/Q10Snone> .
+
+<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+
+<http://www.wikidata.org/Q10Snone2> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/P569v> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
+	<http://www.wikidata.org/P15q> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
+	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+
+<http://www.wikidata.org/Q10Snone> a <http://www.wikidata.org/ontology#Statement> ;
+	<http://www.wikidata.org/P549v> "TestString" ;
+	<http://www.wikidata.org/ontology#rank> <http://www.wikidata.org/ontology#NormalRank> .
+
+<http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> a <http://www.wikidata.org/ontology#TimeValue> ;
+	<http://www.wikidata.org/ontology#time> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	<http://www.wikidata.org/ontology#timePrecision> "32"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://www.wikidata.org/ontology#preferredCalendar> <http://www.wikidata.org/entity/Q1985727> .
+
+<http://www.wikidata.org/P569s> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P569v> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P569q> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P569r> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P15s> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P15v> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P15q> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P15r> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P549s> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://www.wikidata.org/P549v> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+<http://www.wikidata.org/P549q> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+<http://www.wikidata.org/P549r> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+
+<http://www.wikidata.org/entity/R29b7008efe33a96335e456305edfb481> a <http://www.wikidata.org/ontology#Reference> ;
+	<http://www.wikidata.org/P112r> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> .
+

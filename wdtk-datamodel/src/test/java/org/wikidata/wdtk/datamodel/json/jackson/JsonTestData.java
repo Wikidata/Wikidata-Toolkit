@@ -20,27 +20,12 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Class that provides objects and strings for testing the conversion between
@@ -74,11 +59,18 @@ public class JsonTestData {
 	public static final String JSON_ITEM_ID_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
 			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_ITEM
-			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + "}}";
+			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + ",\"id\":\"" + TEST_ITEM_ID + "\"}}";
+    public static final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\""
+            + JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
+            + "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_ITEM
+            + "\",\"numeric-id\":\"" + TEST_NUMERIC_ID + "\"}}";
+    public static final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\""
+            + JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
+            + "\",\"value\":{\"id\":\"" + TEST_ITEM_ID + "\"}}";
 	public static final String JSON_PROPERTY_ID_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_ENTITY_ID
 			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_PROPERTY
-			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + "}}";
+			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + ",\"id\":\"" + TEST_PROPERTY_ID + "\"}}";
 	public static final String JSON_TIME_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_TIME
 			+ "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
@@ -88,6 +80,9 @@ public class JsonTestData {
 	public static final String JSON_QUANTITY_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
 			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
+	public static final String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"type\":\""
+			+ JacksonValue.JSON_VALUE_TYPE_QUANTITY
+			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\"}}";
 	public static final String JSON_MONOLINGUAL_TEXT_VALUE = "{\"type\":\""
 			+ JacksonValue.JSON_VALUE_TYPE_MONOLINGUAL_TEXT
 			+ "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
@@ -102,6 +97,8 @@ public class JsonTestData {
 			+ TEST_PROPERTY_ID + "\"}";
 	public static final String JSON_VALUE_SNAK_STRING = "{\"snaktype\":\"value\",\"property\":\""
 			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + "}";
+	public static final String JSON_VALUE_SNAK_STRING_HASH = "{\"snaktype\":\"value\",\"property\":\""
+			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + ",\"hash\":\"foobar\"}";
 
 	// wrapping into item document structure for dedicated tests
 	public static final String JSON_WRAPPED_LABEL = "{\"id\":\""
@@ -126,6 +123,10 @@ public class JsonTestData {
 			+ TEST_ITEM_ID
 			+ "\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":"
 			+ JSON_SITE_LINK + "}," + JSON_ITEM_TYPE + "}";
+	public static final String JSON_EMPTY_ARRAY_AS_CONTAINER = "{\"id\":\""
+			+ TEST_ITEM_ID
+			+ "\",\"aliases\":[],\"labels\":[],\"descriptions\":[],\"claims\":[],\"sitelinks\":[],"
+			+ JSON_ITEM_TYPE + "}";
 
 	public static final String JSON_NOVALUE_STATEMENT = "{\"type\":\"statement\",\"id\":\""
 			+ TEST_STATEMENT_ID
@@ -158,6 +159,8 @@ public class JsonTestData {
 	public static final JacksonValueQuantity TEST_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
 			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),
 					new BigDecimal(1.5));
+	public static final JacksonValueQuantity TEST_UNBOUNDED_QUANTITY_VALUE = (JacksonValueQuantity) JACKSON_OBJECT_FACTORY
+			.getQuantityValue(new BigDecimal(1));
 	public static final JacksonValueMonolingualText TEST_MONOLINGUAL_TEXT_VALUE = (JacksonValueMonolingualText) JACKSON_OBJECT_FACTORY
 			.getMonolingualTextValue("foobar", "en");
 

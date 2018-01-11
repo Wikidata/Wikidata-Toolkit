@@ -1,0 +1,119 @@
+{
+  "searchinfo": {
+    "search": "abc"
+  },
+  "search": [
+    {
+      "id": "Q169889",
+      "concepturi": "http://www.wikidata.org/entity/Q169889",
+      "url": "//www.wikidata.org/wiki/Q169889",
+      "title": "Q169889",
+      "pageid": 170288,
+      "label": "American Broadcasting Company",
+      "description": "American broadcast television network",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "ABC"
+      },
+      "aliases": [
+        "ABC"
+      ]
+    },
+    {
+      "id": "Q286874",
+      "concepturi": "http://www.wikidata.org/entity/Q286874",
+      "url": "//www.wikidata.org/wiki/Q286874",
+      "title": "Q286874",
+      "pageid": 277328,
+      "label": "ABC",
+      "description": "Wikimedia disambiguation page",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "ABC"
+      }
+    },
+    {
+      "id": "Q781365",
+      "concepturi": "http://www.wikidata.org/entity/Q781365",
+      "url": "//www.wikidata.org/wiki/Q781365",
+      "title": "Q781365",
+      "pageid": 734387,
+      "label": "Australian Broadcasting Corporation",
+      "description": "Australia's state-owned and funded national public broadcaster",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "ABC"
+      },
+      "aliases": [
+        "ABC"
+      ]
+    },
+    {
+      "id": "Q287076",
+      "concepturi": "http://www.wikidata.org/entity/Q287076",
+      "url": "//www.wikidata.org/wiki/Q287076",
+      "title": "Q287076",
+      "pageid": 277519,
+      "label": "ABC",
+      "description": "Spanish newspaper",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "ABC"
+      }
+    },
+    {
+      "id": "Q304330",
+      "concepturi": "http://www.wikidata.org/entity/Q304330",
+      "url": "//www.wikidata.org/wiki/Q304330",
+      "title": "Q304330",
+      "pageid": 293199,
+      "label": "Abacavir",
+      "description": "pharmaceutical drug",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "ABC"
+      },
+      "aliases": [
+        "ABC"
+      ]
+    },
+    {
+      "id": "Q1057802",
+      "concepturi": "http://www.wikidata.org/entity/Q1057802",
+      "url": "//www.wikidata.org/wiki/Q1057802",
+      "title": "Q1057802",
+      "pageid": 1006628,
+      "label": "ABC",
+      "description": "programming language",
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "ABC"
+      }
+    },
+    {
+      "id": "Q26298",
+      "concepturi": "http://www.wikidata.org/entity/Q26298",
+      "url": "//www.wikidata.org/wiki/Q26298",
+      "title": "Q26298",
+      "pageid": 29721,
+      "label": "Agricultural Bank of China",
+      "description": "major bank in the People's Republic of China",
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "ABC"
+      },
+      "aliases": [
+        "ABC"
+      ]
+    }
+  ],
+  "search-continue": 7,
+  "success": 1
+}

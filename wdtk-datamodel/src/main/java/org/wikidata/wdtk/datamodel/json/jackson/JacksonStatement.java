@@ -71,7 +71,7 @@ public class JacksonStatement implements Statement {
 	 * is not part of the JSON serialization of statements, but is needed in
 	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
 	 * information after each deserialization using
-	 * {@link JacksonStatement#setParentDocument(JacksonTermedStatementDocument)}
+	 * {@link JacksonStatement#setSubject(EntityIdValue)}
 	 * .
 	 */
 	@JsonIgnore

@@ -34,7 +34,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
-public class WbEditEntitiyActionTest {
+public class WbEditEntityActionTest {
 
 	@Test(expected = IOException.class)
 	public void testOffineErrors() throws IOException,
@@ -55,6 +55,7 @@ public class WbEditEntitiyActionTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
+		params.put("type", "csrf");
 		params.put("format", "json");
 		// This error makes no sense for this action, but that does not matter
 		// here:
@@ -111,6 +112,7 @@ public class WbEditEntitiyActionTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
+		params.put("type", "csrf");
 		params.put("format", "json");
 		con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json",

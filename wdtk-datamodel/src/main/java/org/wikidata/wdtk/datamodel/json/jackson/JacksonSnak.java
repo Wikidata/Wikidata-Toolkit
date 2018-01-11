@@ -124,7 +124,7 @@ public abstract class JacksonSnak implements Snak {
 	 * of the JSON serialization of snaks. This method should only be used
 	 * during deserialization.
 	 *
-	 * @param parentDocument
+	 * @param siteIri
 	 *            new value
 	 */
 	@JsonIgnore

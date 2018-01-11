@@ -30,9 +30,9 @@ import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 /**
  * This class represents an action of generating a JSON dump from data. It has
  * no specific options.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public class JsonSerializationAction extends DumpProcessingOutputAction {
 
@@ -55,8 +55,6 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 
 	/**
 	 * Constructor. See {@link DumpProcessingOutputAction} for more details.
-	 * 
-	 * @param conversionProperties
 	 */
 	public JsonSerializationAction() {
 		this.outputDestination = DEFAULT_FILE_NAME;

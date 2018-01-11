@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -276,11 +276,14 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 *
 	 * @param propertyIdValue
 	 *            the property for which to get a range
-	 * @return the range URI
+	 * @return the range URI or null if the datatype could not be identified.
 	 */
 	String getRangeUri(PropertyIdValue propertyIdValue) {
 		String datatype = this.propertyRegister
 				.getPropertyType(propertyIdValue);
+
+		if (datatype == null)
+			return null;
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:

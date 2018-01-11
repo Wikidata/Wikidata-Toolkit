@@ -183,9 +183,14 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(QuantityValue o) {
-		return o.getNumericValue().toString() + " ["
-				+ o.getLowerBound().toString() + " .. "
-				+ o.getUpperBound().toString() + "]" + " " + o.getUnit();
+		String str = o.getNumericValue().toString();
+		if(o.getLowerBound() != null && o.getUpperBound() != null) {
+			str += " [" + o.getLowerBound().toString() + " .. " + o.getUpperBound().toString() + "]";
+		}
+		if(!"".equals(o.getUnit())) {
+			str += " " + o.getUnit();
+		}
+		return str;
 	}
 
 	/**
@@ -235,15 +240,13 @@ public class ToString {
 	public static String toString(SnakGroup o) {
 		final String indent = "      ";
 
-		String result = null;
+		StringBuilder result = new StringBuilder();
 		for (Snak s : o.getSnaks()) {
-			if (result == null) {
-				result = indent + s.toString() + "\n";
-			} else {
-				result += indent + s.toString() + "\n";
-			}
+			result.append(indent)
+					.append(s.toString())
+					.append("\n");
 		}
-		return result;
+		return result.toString();
 	}
 
 	/**
