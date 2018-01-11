@@ -48,9 +48,9 @@ public class SnakImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropertyIdValue p1 = PropertyIdValueImpl.create("P42",
+		PropertyIdValue p1 = new PropertyIdValueImpl("P42",
 				"http://example.com/entity/");
-		PropertyIdValue p2 = PropertyIdValueImpl.create("P43",
+		PropertyIdValue p2 = new PropertyIdValueImpl("P43",
 				"http://example.com/entity/");
 
 		vs1 = new ValueSnakImpl(p1, p1);
@@ -72,6 +72,12 @@ public class SnakImplTest {
 		assertEquals(vs1.hashCode(), vs2.hashCode());
 		assertEquals(svs1.hashCode(), svs2.hashCode());
 		assertEquals(nvs1.hashCode(), nvs2.hashCode());
+	}
+
+	@Test
+	public void snaksWithoutValues() {
+		assertEquals(svs1.getValue(), null);
+		assertEquals(nvs1.getValue(), null);
 	}
 
 	@Test
@@ -113,7 +119,7 @@ public class SnakImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void snakValueNotNull() {
-		new ValueSnakImpl(PropertyIdValueImpl.create("P42",
+		new ValueSnakImpl(new PropertyIdValueImpl("P42",
 				"http://example.com/entity/"), null);
 	}
 }

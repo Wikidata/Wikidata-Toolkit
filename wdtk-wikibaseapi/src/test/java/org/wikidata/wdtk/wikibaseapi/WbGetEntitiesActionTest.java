@@ -23,6 +23,7 @@ package org.wikidata.wdtk.wikibaseapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public class WbGetEntitiesActionTest {
 		properties.ids = "Q6|Q42|notmocked";
 		Map<String, EntityDocument> result = action.wbGetEntities(properties);
 
-		assertEquals(null, result);
+		assertEquals(Collections.<String, EntityDocument> emptyMap(), result);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

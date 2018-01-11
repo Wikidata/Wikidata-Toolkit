@@ -32,38 +32,50 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */
-	String DT_ITEM = "http://www.wikidata.org/ontology#propertyTypeItem";
+	String DT_ITEM = "http://wikiba.se/ontology#WikibaseItem";
 	/**
 	 * IRI of the property datatype in Wikibase.
 	 */
-	String DT_PROPERTY = "http://www.wikidata.org/ontology#propertyTypeProperty";
+	String DT_PROPERTY = "http://wikiba.se/ontology#WikibaseProperty";
 	/**
 	 * IRI of the string datatype in Wikibase.
 	 */
-	String DT_STRING = "http://www.wikidata.org/ontology#propertyTypeString";
+	String DT_STRING = "http://wikiba.se/ontology#String";
 	/**
 	 * IRI of the URL datatype in Wikibase.
 	 */
-	String DT_URL = "http://www.wikidata.org/ontology#propertyTypeUrl";
+	String DT_URL = "http://wikiba.se/ontology#Url";
 	/**
 	 * IRI of the Commons media datatype in Wikibase.
 	 */
-	String DT_COMMONS_MEDIA = "http://www.wikidata.org/ontology#propertyTypeCommonsMedia";
+	String DT_COMMONS_MEDIA = "http://wikiba.se/ontology#CommonsMedia";
 	/**
 	 * IRI of the time datatype in Wikibase.
 	 */
-	String DT_TIME = "http://www.wikidata.org/ontology#propertyTypeTime";
+	String DT_TIME = "http://wikiba.se/ontology#Time";
 	/**
 	 * IRI of the globe coordinates datatype in Wikibase.
 	 */
-	String DT_GLOBE_COORDINATES = "http://www.wikidata.org/ontology#propertyTypeGlobeCoordinates";
+	String DT_GLOBE_COORDINATES = "http://wikiba.se/ontology#GlobeCoordinate";
 	/**
 	 * IRI of the quantity datatype in Wikibase.
 	 */
-	String DT_QUANTITY = "http://www.wikidata.org/ontology#propertyTypeQuantity";
+	String DT_QUANTITY = "http://wikiba.se/ontology#Quantity";
 	/**
 	 * IRI of the monolingual text datatype in Wikibase.
 	 */
-	String DT_MONOLINGUAL_TEXT = "http://www.wikidata.org/ontology#propertyTypeMonolingualText";
+	String DT_MONOLINGUAL_TEXT = "http://wikiba.se/ontology#Monolingualtext";
+	/**
+	 * IRI of the external identifier datatype in Wikibase.
+	 */
+	String DT_EXTERNAL_ID = "http://wikiba.se/ontology#ExternalId";
+	/**
+	 * IRI of the math datatype in Wikibase.
+	 */
+	String DT_MATH = "http://wikiba.se/ontology#Math";
+	/**
+	 * IRI of the geo shape datatype in Wikibase.
+	 */
+	String DT_GEO_SHAPE = "http://wikiba.se/ontology#GeoShape";
 
 }

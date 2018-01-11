@@ -87,7 +87,11 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument
 	 */
 	@JsonProperty("sitelinks")
 	public void setSiteLinks(Map<String, JacksonSiteLink> sitelinks) {
-		this.sitelinks = sitelinks;
+		if (sitelinks == null) {
+			this.sitelinks = Collections.emptyMap();
+		} else {
+			this.sitelinks = sitelinks;
+		}
 	}
 
 	@JsonProperty("sitelinks")

@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @author Fredo Erxleben
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 
 	/**

@@ -52,10 +52,83 @@ public class WikibaseDataEditorTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
+		params.put("type", "csrf");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json",
 				CompressionType.NONE);
+	}
+
+	@Test
+	public void testSetMaxLag() throws IOException, MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLag(3);
+		assertEquals(3, wde.getMaxLag());
+	}
+
+	@Test
+	public void testSetAverageTimePerEdit() throws IOException,
+			MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setAverageTimePerEdit(5000);
+		assertEquals(5000, wde.getAverageTimePerEdit());
+	}
+
+	@Test
+	public void testSetRemainingEdits() throws IOException,
+			MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setRemainingEdits(1);
+
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(
+				ItemIdValue.NULL).build();
+		ItemDocument expectedResultDocument = ItemDocumentBuilder
+				.forItemId(Datamodel.makeWikidataItemIdValue("Q1234"))
+				.withRevisionId(1234).build();
+		String resultData = JsonSerializer
+				.getJsonString(expectedResultDocument);
+		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbeditentity");
+		params.put("summary", "My summary");
+		params.put("new", "item");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("maxlag", "5");
+		String data = JsonSerializer.getJsonString(itemDocument);
+		params.put("data", data);
+		con.setWebResource(params, expectedResult);
+
+		assertEquals(1, wde.getRemainingEdits());
+		ItemDocument result = wde
+				.createItemDocument(itemDocument, "My summary");
+		assertEquals(expectedResultDocument, result);
+		assertEquals(0, wde.getRemainingEdits());
+		result = wde.createItemDocument(itemDocument, "My summary");
+		assertEquals(null, result);
+		assertEquals(0, wde.getRemainingEdits());
+	}
+
+	@Test
+	public void testDisableEditing() throws IOException,
+			MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.disableEditing();
+
+		assertEquals(0, wde.getRemainingEdits());
+
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(
+				ItemIdValue.NULL).build();
+		ItemDocument result = wde
+				.createItemDocument(itemDocument, "My summary");
+
+		assertEquals(null, result);
+		assertEquals(0, wde.getRemainingEdits());
 	}
 
 	@Test
@@ -78,6 +151,7 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
@@ -86,6 +160,7 @@ public class WikibaseDataEditorTest {
 				.createItemDocument(itemDocument, "My summary");
 
 		assertEquals(expectedResultDocument, result);
+		assertEquals(-1, wde.getRemainingEdits());
 	}
 
 	@Test(expected = TokenErrorException.class)
@@ -103,6 +178,7 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		this.con.setWebResourceFromPath(params, this.getClass(),
@@ -132,6 +208,7 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
@@ -147,6 +224,8 @@ public class WikibaseDataEditorTest {
 	@Test
 	public void testCreateItemWikibaseJsonBug() throws IOException,
 			MediaWikiApiErrorException {
+		// Test what happens if the API returns JSON without an actual entity
+		// document and without any respective key
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
 
@@ -165,6 +244,7 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
@@ -175,9 +255,11 @@ public class WikibaseDataEditorTest {
 		assertEquals(expectedResultDocument, result);
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testCreateItemBadEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
+		// Test what happens if the API returns JSON without an actual entity
+		// document, but with a respective key pointing to an empty object
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
 
@@ -191,17 +273,15 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
-
-		assertEquals(null, result);
+		wde.createItemDocument(itemDocument, "My summary");
 	}
 
-	@Test
+	@Test(expected = IOException.class)
 	public void testCreateItemMissingEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -217,14 +297,12 @@ public class WikibaseDataEditorTest {
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
-
-		assertEquals(null, result);
+		wde.createItemDocument(itemDocument, "My summary");
 	}
 
 	@Test
@@ -251,6 +329,7 @@ public class WikibaseDataEditorTest {
 		params.put("bot", "");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(propertyDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
@@ -284,6 +363,7 @@ public class WikibaseDataEditorTest {
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
 		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
@@ -320,6 +400,7 @@ public class WikibaseDataEditorTest {
 		params.put("format", "json");
 		params.put("clear", "");
 		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);

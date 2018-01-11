@@ -1,8 +1,8 @@
 
-<http://de.wikipedia.org/wiki/title_de> a <http://www.wikidata.org/ontology#Article> ;
+<http://de.wikipedia.org/wiki/title_de> a <http://wikiba.se/ontology#Article> ;
 	<http://schema.org/about> <http://test.org/> ;
 	<http://schema.org/inLanguage> "de" .
 
-<http://en.wikipedia.org/wiki/title_en> a <http://www.wikidata.org/ontology#Article> ;
+<http://en.wikipedia.org/wiki/title_en> a <http://wikiba.se/ontology#Article> ;
 	<http://schema.org/about> <http://test.org/> ;
 	<http://schema.org/inLanguage> "en" .

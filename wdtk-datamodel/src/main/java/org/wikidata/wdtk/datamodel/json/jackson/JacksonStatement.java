@@ -34,6 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -70,7 +71,7 @@ public class JacksonStatement implements Statement {
 	 * is not part of the JSON serialization of statements, but is needed in
 	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
 	 * information after each deserialization using
-	 * {@link JacksonStatement#setParentDocument(JacksonTermedStatementDocument)}
+	 * {@link JacksonStatement#setSubject(EntityIdValue)}
 	 * .
 	 */
 	@JsonIgnore
@@ -299,6 +300,12 @@ public class JacksonStatement implements Statement {
 	@JsonProperty("qualifiers-order")
 	public List<String> getPropertyOrder() {
 		return this.propertyOrder;
+	}
+
+	@Override
+	@JsonIgnore
+	public Value getValue() {
+		return this.mainsnak.getValue();
 	}
 
 	@Override

@@ -51,13 +51,13 @@ public class WmfOnlineStandardDumpFileTest {
 	@Test
 	public void validCurrentDumpPropertiesOldFormat() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140210-index.html", this.getClass());
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
@@ -74,13 +74,13 @@ public class WmfOnlineStandardDumpFileTest {
 	@Test
 	public void validCurrentDumpPropertiesNewFormat() throws IOException {
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/",
 				"/wikidatawiki-20140508-index.html", this.getClass());
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
 				"Line1", CompressionType.BZ2);
 		wrf.setWebResourceContentsFromResource(
-				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
+				"https://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-md5sums.txt",
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);

@@ -65,10 +65,10 @@ public class SitesTest {
 
 		URL resourceUrl = this.getClass().getResource(
 				"/wikidatawiki-20140420-sites.sql");
-		dm.setFileContents(thisDumpPath.resolve("wikidatawiki-" + "20140420"
-				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.SITES)),
-				MockStringContentFactory.getStringFromUrl(resourceUrl),
-				WmfDumpFile.getDumpFileCompressionType(DumpContentType.SITES));
+		Path filePath = thisDumpPath.resolve("wikidatawiki-" + "20140420"
+				+ WmfDumpFile.getDumpFilePostfix(DumpContentType.SITES));
+		dm.setFileContents(filePath, MockStringContentFactory.getStringFromUrl(resourceUrl),
+				WmfDumpFile.getDumpFileCompressionType(filePath.toString()));
 
 		this.dpc.setOfflineMode(true);
 

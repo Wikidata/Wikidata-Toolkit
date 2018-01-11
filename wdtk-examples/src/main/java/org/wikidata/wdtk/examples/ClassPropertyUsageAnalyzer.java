@@ -782,6 +782,14 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			return "Time";
 		case DatatypeIdValue.DT_URL:
 			return "URL";
+		case DatatypeIdValue.DT_PROPERTY:
+			return "Property";
+		case DatatypeIdValue.DT_EXTERNAL_ID:
+			return "External identifier";
+		case DatatypeIdValue.DT_MATH:
+			return "Math";
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			return "Monolingual Text";
 		default:
 			throw new RuntimeException("Unknown datatype " + datatype.getIri());
 		}

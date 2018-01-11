@@ -75,7 +75,9 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
-	public static final String PREFIX_WBONTO = "http://www.wikidata.org/ontology#";
+	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
+
+	public static final String PREFIX_WBONTO = "http://wikiba.se/ontology#";
 	public static final String PREFIX_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String PREFIX_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 	public static final String PREFIX_OWL = "http://www.w3.org/2002/07/owl#";
@@ -371,71 +373,101 @@ public class Vocabulary {
 			+ "DeprecatedRank";
 
 	/**
-	 * Class for Wikibase direct claims.
+	 * Property for connecting Wikibase property entities to their direct value
+	 * properties (linking entities to their simplified statement's main
+	 * values).
 	 */
-	public static final String WB_DIRECT_CLAIM = PREFIX_WBONTO + "directClaim";
+	public static final String WB_DIRECT_CLAIM_PROP = PREFIX_WBONTO
+			+ "directClaim";
 	static {
-		VOCABULARY_TYPES.put(WB_DIRECT_CLAIM, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_DIRECT_CLAIM_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase claims.
+	 * Property for connecting Wikibase property entities to their statement
+	 * properties (linking entities to statements).
 	 */
-	public static final String WB_CLAIM = PREFIX_WBONTO + "claim";
+	public static final String WB_CLAIM_PROP = PREFIX_WBONTO + "claim";
 	static {
-		VOCABULARY_TYPES.put(WB_CLAIM, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_CLAIM_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase direct statement properties.
+	 * Property for connecting Wikibase property entities to their statement
+	 * main value properties (linking to a statement's main value).
 	 */
-	public static final String WB_STATEMENT_PROPERTY = PREFIX_WBONTO
+	public static final String WB_STATEMENT_PROP = PREFIX_WBONTO
 			+ "statementProperty";
 	static {
-		VOCABULARY_TYPES.put(WB_STATEMENT_PROPERTY, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_STATEMENT_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase statement values.
+	 * Property for connecting Wikibase property entities to their statement
+	 * main value properties, value version (linking to a statement's main
+	 * value).
 	 */
-	public static final String WB_STATEMENT_VALUE = PREFIX_WBONTO
+	public static final String WB_STATEMENT_VALUE_PROP = PREFIX_WBONTO
 			+ "statementValue";
 	static {
-		VOCABULARY_TYPES.put(WB_STATEMENT_VALUE, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_STATEMENT_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase qualifiers.
+	 * Property for connecting Wikibase property entities to their qualifier
+	 * properties (linking to a statement's qualifier value).
 	 */
-	public static final String WB_QUALIFIER = PREFIX_WBONTO + "qualifier";
+	public static final String WB_QUALIFIER_PROP = PREFIX_WBONTO + "qualifier";
 	static {
-		VOCABULARY_TYPES.put(WB_QUALIFIER, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_QUALIFIER_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase qualifier values.
+	 * Property for connecting Wikibase property entities to their qualifier
+	 * value properties (linking to a statement's qualifier value).
 	 */
-	public static final String WB_QUALIFIER_VALUE = PREFIX_WBONTO
+	public static final String WB_QUALIFIER_VALUE_PROP = PREFIX_WBONTO
 			+ "qualifierValue";
 	static {
-		VOCABULARY_TYPES.put(WB_QUALIFIER_VALUE, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_QUALIFIER_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase references values.
+	 * Property for connecting Wikibase property entities to their reference
+	 * properties.
 	 */
-	public static final String WB_REFERENCE_VALUE = PREFIX_WBONTO
+	public static final String WB_REFERENCE_PROP = PREFIX_WBONTO + "reference";
+	static {
+		VOCABULARY_TYPES.put(WB_REFERENCE_PROP, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for connecting Wikibase property entities to their reference
+	 * value properties.
+	 */
+	public static final String WB_REFERENCE_VALUE_PROP = PREFIX_WBONTO
 			+ "referenceValue";
 	static {
-		VOCABULARY_TYPES.put(WB_REFERENCE_VALUE, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_REFERENCE_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
-	 * Class for Wikibase no values.
+	 * Property for connecting Wikibase property entities to their main no-value
+	 * classes.
 	 */
-	public static final String WB_NO_VALUE = PREFIX_WBONTO + "novalue";
+	public static final String WB_NO_VALUE_PROP = PREFIX_WBONTO + "novalue";
 	static {
-		VOCABULARY_TYPES.put(WB_NO_VALUE, OWL_CLASS);
+		VOCABULARY_TYPES.put(WB_NO_VALUE_PROP, OWL_OBJECT_PROPERTY);
+	}
+
+	/**
+	 * Property for connecting Wikibase property entities to their no-value
+	 * classes for qualifiers.
+	 */
+	public static final String WB_NO_QUALIFIER_VALUE_PROP = PREFIX_WBONTO
+			+ "noqualifiervalue";
+	static {
+		VOCABULARY_TYPES.put(WB_NO_QUALIFIER_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
@@ -477,7 +509,7 @@ public class Vocabulary {
 			return PREFIX_PROPERTY_DIRECT + propertyIdValue.getId();
 		case STATEMENT:
 			return PREFIX_PROPERTY + propertyIdValue.getId();
-		case SIMPLE_VALUE:
+		case VALUE_SIMPLE:
 			return PREFIX_PROPERTY_STATEMENT + propertyIdValue.getId();
 		case VALUE:
 			return PREFIX_PROPERTY_STATEMENT_VALUE + propertyIdValue.getId();
@@ -487,10 +519,12 @@ public class Vocabulary {
 			return PREFIX_PROPERTY_QUALIFIER + propertyIdValue.getId();
 		case REFERENCE:
 			return PREFIX_PROPERTY_REFERENCE_VALUE + propertyIdValue.getId();
-		case SIMPLE_REFERENCE:
+		case REFERENCE_SIMPLE:
 			return PREFIX_PROPERTY_REFERENCE + propertyIdValue.getId();
 		case NO_VALUE:
 			return PREFIX_WIKIDATA_NO_VALUE + propertyIdValue.getId();
+		case NO_QUALIFIER_VALUE:
+			return PREFIX_WIKIDATA_NO_QUALIFIER_VALUE + propertyIdValue.getId();
 		default:
 			return null;
 		}
@@ -541,8 +575,13 @@ public class Vocabulary {
 			String uriPrefix) {
 		md.reset();
 		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
-		updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
-		updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+		if(value.getLowerBound() != null) {
+			updateMessageDigestWithInt(md, value.getLowerBound().hashCode());
+		}
+		if(value.getUpperBound() != null) {
+			updateMessageDigestWithInt(md, value.getUpperBound().hashCode());
+		}
+		updateMessageDigestWithInt(md, value.getUnit().hashCode());
 
 		return uriPrefix + VALUE_PREFIX_QUANTITY + bytesToHex(md.digest());
 	}

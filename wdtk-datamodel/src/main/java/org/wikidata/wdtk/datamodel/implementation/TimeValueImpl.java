@@ -69,7 +69,7 @@ public class TimeValueImpl implements TimeValue, Serializable {
 	 *            a second number between 0 and 60 (possible leap second)
 	 * @param precision
 	 *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
-	 *            {@link TimeValue#PREC_GY}
+	 *            {@link TimeValue#PREC_1GY}
 	 * @param beforeTolerance
 	 *            non-negative integer tolerance before the value; see
 	 *            {@link TimeValue#getBeforeTolerance()}

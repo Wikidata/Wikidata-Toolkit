@@ -30,10 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -48,6 +50,8 @@ public class WbEditEntityAction {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WbEditEntityAction.class);
+
+	static int MAXLAG_SLEEP_TIME = 5000;
 
 	/**
 	 * Connection to an Wikibase API.
@@ -71,6 +75,42 @@ public class WbEditEntityAction {
 	String csrfToken = null;
 
 	/**
+	 * Value in seconds of MediaWiki's maxlag parameter. Shorter is nicer,
+	 * longer is more aggressive.
+	 */
+	int maxLag = 5;
+
+	/**
+	 * Number of recent editing times to monitor in order to avoid editing too
+	 * fast. Wikidata.org seems to block fast editors after 9 edits, so this
+	 * size seems to make sense.
+	 */
+	final static int editTimeWindow = 9;
+
+	/**
+	 * Average time to wait after each edit. Individual edits can be faster than
+	 * this, but it is ensured that this time will be taken per edit in the long
+	 * run.
+	 */
+	int averageMsecsPerEdit = 2000;
+
+	/**
+	 * Times of the last {@link #editTimeWindow} edits. Used in a loop. Most
+	 * recent edit time is at {@link #curEditTimeSlot}.
+	 */
+	final long[] recentEditTimes = new long[editTimeWindow];
+	/**
+	 * @see #recentEditTimes
+	 */
+	int curEditTimeSlot = 0;
+
+	/**
+	 * Number of edits that will be performed before the object enters
+	 * simulation mode, or -1 if there is no limit on the number of edits.
+	 */
+	int remainingEdits = -1;
+
+	/**
 	 * Creates an object to modify data on a Wikibase site. The API is used to
 	 * request the changes. The site URI is necessary since it is not contained
 	 * in the data retrieved from the API.
@@ -85,6 +125,85 @@ public class WbEditEntityAction {
 	public WbEditEntityAction(ApiConnection connection, String siteUri) {
 		this.connection = connection;
 		this.siteIri = siteUri;
+	}
+
+	/**
+	 * Returns the current value of the maxlag parameter. It specifies the
+	 * number of seconds. To save actions causing any more site replication lag,
+	 * this parameter can make the client wait until the replication lag is less
+	 * than the specified value. In case of excessive lag, error code "maxlag"
+	 * is returned upon API requests.
+	 *
+	 * @return current setting of the maxlag parameter
+	 */
+	public int getMaxLag() {
+		return this.maxLag;
+	}
+
+	/**
+	 * Set the value of the maxlag parameter. If unsure, keep the default. See
+	 * {@link #getMaxLag()} for details.
+	 *
+	 * @param maxLag
+	 *            the new value in seconds
+	 */
+	public void setMaxLag(int maxLag) {
+		this.maxLag = maxLag;
+	}
+
+	/**
+	 * Returns the number of edits that will be performed before entering
+	 * simulation mode, or -1 if there is no limit on the number of edits
+	 * (default).
+	 *
+	 * @return number of remaining edits
+	 */
+	public int getRemainingEdits() {
+		return this.remainingEdits;
+	}
+
+	/**
+	 * Sets the number of edits that this object can still perform. Thereafter,
+	 * edits will only be prepared but not actually performed in the Web API.
+	 * This function is useful to do a defined number of test edits. If this
+	 * number is set to 0, then no edits will be performed. If it is set to -1
+	 * (or any other negative number), then there is no limit on the edits
+	 * performed.
+	 *
+	 * @param remainingEdits
+	 *            number of edits that can still be performed, or -1 to disable
+	 *            this limit (default setting)
+	 */
+	public void setRemainingEdits(int remainingEdits) {
+		this.remainingEdits = remainingEdits;
+	}
+
+	/**
+	 * Returns the average time in milliseconds that one edit will take. This
+	 * time is enforced to avoid overloading the site with too many edits, and
+	 * also to throttle the rate of editing (which is useful to stop a bot in
+	 * case of errors). Individual edits can be faster than this, but if several
+	 * consecutive edits are above this rate, the program will pause until the
+	 * expected speed is reached again. The delay is based on real system time.
+	 * This means that it will only wait as long as necessary. If your program
+	 * takes time between edits for other reasons, there will be no additional
+	 * delay caused by this feature.
+	 *
+	 * @return average time per edit in milliseconds
+	 */
+	public int getAverageTimePerEdit() {
+		return this.averageMsecsPerEdit;
+	}
+
+	/**
+	 * Sets the average time that a single edit should take, measured in
+	 * milliseconds. See {@link #getAverageTimePerEdit()} for details.
+	 *
+	 * @param milliseconds
+	 *            the new value in milliseconds
+	 */
+	public void setAverageTimePerEdit(int milliseconds) {
+		this.averageMsecsPerEdit = milliseconds;
 	}
 
 	/**
@@ -150,7 +269,7 @@ public class WbEditEntityAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
-	 * @return modified or created entity document, or null if there were errors
+	 * @return modified or created entity document
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
 	 *             connection
@@ -210,16 +329,46 @@ public class WbEditEntityAction {
 			parameters.put("summary", summary);
 		}
 
+		parameters.put("maxlag", Integer.toString(this.maxLag));
 		parameters.put("token", getCsrfToken());
-		parameters.put(ApiConnection.PARAM_FORMAT, "json");
 
-		EntityDocument result;
-		try {
-			result = doWbEditEntity(parameters);
-		} catch (TokenErrorException e) { // try once more
-			refreshCsrfToken();
-			parameters.put("token", getCsrfToken());
-			result = doWbEditEntity(parameters);
+		if (this.remainingEdits > 0) {
+			this.remainingEdits--;
+		} else if (this.remainingEdits == 0) {
+			logger.info("Not editing entity (simulation mode). Request parameters were: "
+					+ parameters.toString());
+			return null;
+		}
+
+		checkEditSpeed();
+
+		EntityDocument result = null;
+		int retry = 5;
+		MediaWikiApiErrorException lastException = null;
+		while (retry > 0) {
+			try {
+				result = doWbEditEntity(parameters);
+				break;
+			} catch (TokenErrorException e) { // try again with a fresh token
+				lastException = e;
+				refreshCsrfToken();
+				parameters.put("token", getCsrfToken());
+			} catch (MaxlagErrorException e) { // wait for 5 seconds
+				lastException = e;
+				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
+				try {
+					Thread.sleep(MAXLAG_SLEEP_TIME);
+				} catch (InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+			}
+			retry--;
+		}
+
+		if (lastException != null) {
+			logger.error("Gave up after several retries. Last error was: "
+					+ lastException.toString());
+			throw lastException;
 		}
 
 		return result;
@@ -239,26 +388,20 @@ public class WbEditEntityAction {
 	private EntityDocument doWbEditEntity(Map<String, String> parameters)
 			throws IOException, MediaWikiApiErrorException {
 
-		try (InputStream response = this.connection.sendRequest("POST",
-				parameters)) {
+		JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
-			JsonNode root = this.mapper.readTree(response);
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
-
-			if (root.has("item")) {
-				return parseJsonResponse(root.path("item"));
-			} else if (root.has("property")) {
-				// TODO: not tested because of missing
-				// permissions
-				return parseJsonResponse(root.path("property"));
-			} else if (root.has("entity")) {
-				return parseJsonResponse(root.path("entity"));
-			}
-			logger.error("No entity document found in API response.");
+		if (root.has("item")) {
+			return parseJsonResponse(root.path("item"));
+		} else if (root.has("property")) {
+			// TODO: not tested because of missing
+			// permissions
+			return parseJsonResponse(root.path("property"));
+		} else if (root.has("entity")) {
+			return parseJsonResponse(root.path("entity"));
+		} else {
+			throw new JsonMappingException(
+					"No entity document found in API response.");
 		}
-		return null;
 	}
 
 	/**
@@ -292,20 +435,8 @@ public class WbEditEntityAction {
 	 * @return newly retrieved token or null if no token was retrieved
 	 */
 	private String fetchCsrfToken() {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put(ApiConnection.PARAM_ACTION, "query");
-		params.put("meta", "tokens");
-		params.put(ApiConnection.PARAM_FORMAT, "json");
-
-		try (InputStream response = this.connection.sendRequest("POST", params)) {
-
-			JsonNode root = this.mapper.readTree(response);
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
-
-			return root.path("query").path("tokens")
-					.path("csrftoken").textValue();
+		try {
+			return connection.fetchToken("csrf");
 		} catch (IOException | MediaWikiApiErrorException e) {
 			logger.error("Error when trying to fetch csrf token: "
 					+ e.toString());
@@ -323,8 +454,9 @@ public class WbEditEntityAction {
 	 * @param entityNode
 	 *            the JSON node that should contain the entity document data
 	 * @return the entitiy document, or null if there were unrecoverable errors
+	 * @throws IOException
 	 */
-	private EntityDocument parseJsonResponse(JsonNode entityNode) {
+	private EntityDocument parseJsonResponse(JsonNode entityNode) throws IOException {
 		try {
 			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
 					JacksonTermedStatementDocument.class);
@@ -349,19 +481,39 @@ public class WbEditEntityAction {
 					.reader(JacksonTermedStatementDocument.class);
 
 			JacksonTermedStatementDocument ed;
+			ed = documentReader.readValue(jsonString);
+			ed.setSiteIri(this.siteIri);
+			return ed;
+		}
+	}
+
+	/**
+	 * Makes sure that we are not editing too fast. The method stores the last
+	 * {@link WbEditEntityAction#editTimeWindow} time points when an edit was
+	 * made. If the time since the oldest edit in this window is shorter than
+	 * {@link #averageMsecsPerEdit} milliseconds, then the method will pause the
+	 * thread for the remaining time.
+	 */
+	private void checkEditSpeed() {
+		long currentTime = System.nanoTime();
+		int nextIndex = (this.curEditTimeSlot + 1) % editTimeWindow;
+		if (this.recentEditTimes[nextIndex] != 0
+				&& (currentTime - this.recentEditTimes[nextIndex]) / 1000000 < this.averageMsecsPerEdit
+						* editTimeWindow) {
+			long sleepTime = this.averageMsecsPerEdit * editTimeWindow
+					- (currentTime - this.recentEditTimes[nextIndex]) / 1000000;
+			logger.info("We are editing too fast. Pausing for " + sleepTime
+					+ " milliseconds.");
 			try {
-				ed = documentReader.readValue(jsonString);
-				ed.setSiteIri(this.siteIri);
-				return ed;
-			} catch (IOException e1) {
-				logger.error("Failed to recover parsing of entity "
-						+ entityNode.path("id").asText("UNKNOWN") + ": "
-						+ e.toString() + "\nModified JSON data was: "
-						+ jsonString);
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException ex) {
+				Thread.currentThread().interrupt();
 			}
+			currentTime = System.nanoTime();
 		}
 
-		return null;
+		this.recentEditTimes[nextIndex] = currentTime;
+		this.curEditTimeSlot = nextIndex;
 	}
 
 }

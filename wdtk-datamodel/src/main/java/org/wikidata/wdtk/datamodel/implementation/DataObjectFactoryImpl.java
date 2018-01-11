@@ -65,12 +65,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		return ItemIdValueImpl.create(id, siteIri);
+		return new ItemIdValueImpl(id, siteIri);
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return PropertyIdValueImpl.create(id, siteIri);
+		return new PropertyIdValueImpl(id, siteIri);
 	}
 
 	@Override
@@ -106,9 +106,19 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue) {
+		return getQuantityValue(numericValue, null, null, "");
+	}
+
+	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
 		return getQuantityValue(numericValue, lowerBound, upperBound, "");
+	}
+
+    @Override
+	public QuantityValue getQuantityValue(BigDecimal numericValue, String unit) {
+		return new QuantityValueImpl(numericValue, null, null, unit);
 	}
 
 	@Override

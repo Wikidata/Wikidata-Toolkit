@@ -51,10 +51,10 @@ public class WmfOnlineDailyDumpFileTest {
 	public void validDumpProperties() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/status.txt", "done");
 		wrf.setWebResourceContents(
-				"http://dumps.wikimedia.org/other/incr/wikidatawiki/"
+				"https://dumps.wikimedia.org/other/incr/wikidatawiki/"
 						+ dateStamp + "/wikidatawiki-" + dateStamp
 						+ "-pages-meta-hist-incr.xml.bz2", "Line1",
 				CompressionType.BZ2);

@@ -178,7 +178,7 @@ public class Datamodel {
 
 	/**
 	 * Creates a {@link TimeValue} for a given date and time. The precision is
-	 * automatically set to {@link TimeValue.PREC_SECOND}.
+	 * automatically set to {@link TimeValue#PREC_SECOND}.
 	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
@@ -210,7 +210,7 @@ public class Datamodel {
 
 	/**
 	 * Creates a {@link TimeValue} for a given date. The precision is
-	 * automatically set to {@link TimeValue.PREC_DAY}.
+	 * automatically set to {@link TimeValue#PREC_DAY}.
 	 *
 	 * @param year
 	 *            a year number, where 0 refers to 1BCE
@@ -282,11 +282,54 @@ public class Datamodel {
 	 *            the lower bound of the numeric value of this quantity
 	 * @param upperBound
 	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
+				unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
+		return factory.getQuantityValue(numericValue, unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} with an empty unit.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} with an empty unit and without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue) {
+		return factory.getQuantityValue(numericValue);
 	}
 
 	/**

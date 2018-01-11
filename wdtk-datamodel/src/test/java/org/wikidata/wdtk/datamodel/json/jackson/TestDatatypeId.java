@@ -20,10 +20,10 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestDatatypeId extends JsonTestData {
 
@@ -32,6 +32,13 @@ public class TestDatatypeId extends JsonTestData {
 		JacksonDatatypeId uut = new JacksonDatatypeId(
 				JacksonDatatypeId.JSON_DT_ITEM);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_ITEM);
+	}
+
+	@Test
+	public void testIriForProperty() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_PROPERTY);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_PROPERTY);
 	}
 
 	@Test
@@ -70,14 +77,42 @@ public class TestDatatypeId extends JsonTestData {
 	}
 
 	@Test
+	public void testIriForExternalId() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_EXTERNAL_ID);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_EXTERNAL_ID);
+	}
+
+	@Test
+	public void testIriForMath() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_MATH);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_MATH);
+	}
+
+	@Test
+	public void testIriForGeoShape() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_GEO_SHAPE);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_GEO_SHAPE);
+	}
+
+	@Test
 	public void testIriForUrl() {
 		JacksonDatatypeId uut = new JacksonDatatypeId(
 				JacksonDatatypeId.JSON_DT_URL);
 		assertEquals(uut.getIri(), DatatypeIdValue.DT_URL);
 	}
 
+	@Test
+	public void testIriForMonolingualText() {
+		JacksonDatatypeId uut = new JacksonDatatypeId(
+				JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT);
+		assertEquals(uut.getIri(), DatatypeIdValue.DT_MONOLINGUAL_TEXT);
+	}
+
 	@Test(expected = IllegalArgumentException.class)
-	public void testIriForUnknownType() {
+	public void testIriForInvalidType() {
 		new JacksonDatatypeId("some wrong type");
 	}
 }

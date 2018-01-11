@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -126,7 +127,7 @@ public class JacksonInnerQuantity {
 	 * Sets the lower bound to the given value. Only for use by Jackson during
 	 * deserialization.
 	 *
-	 * @param lower
+	 * @param lowerBound
 	 *            bound new value
 	 */
 	public void setLowerBound(BigDecimal lowerBound) {
@@ -139,13 +140,15 @@ public class JacksonInnerQuantity {
 	}
 
 	@JsonProperty("upperBound")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public String getUpperBoundAsString() {
-		return bigDecimalToSignedString(this.upperBound);
+		return this.upperBound != null ? bigDecimalToSignedString(this.upperBound) : null;
 	}
 
 	@JsonProperty("lowerBound")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public String getLowerBoundAsString() {
-		return bigDecimalToSignedString(this.lowerBound);
+		return this.lowerBound != null ? bigDecimalToSignedString(this.lowerBound) : null;
 	}
 
 	/**
@@ -198,9 +201,13 @@ public class JacksonInnerQuantity {
 		JacksonInnerQuantity other = (JacksonInnerQuantity) o;
 
 		return this.amount.equals(other.amount)
-				&& this.lowerBound.equals(other.lowerBound)
-				&& this.upperBound.equals(other.upperBound)
+				&& equalsNullable(this.lowerBound, other.lowerBound)
+				&& equalsNullable(this.upperBound, other.upperBound)
 				&& this.jsonUnit.equals(other.jsonUnit);
+	}
+
+	private boolean equalsNullable(Object o1, Object o2) {
+		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 
 	/**

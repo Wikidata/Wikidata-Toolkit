@@ -1,18 +1,20 @@
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#directClaim> <http://www.wikidata.org/prop/direct/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#directClaim> <http://www.wikidata.org/prop/direct/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#claim> <http://www.wikidata.org/prop/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#claim> <http://www.wikidata.org/prop/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#statementProperty> <http://www.wikidata.org/prop/statement/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#statementProperty> <http://www.wikidata.org/prop/statement/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#statementValue> <http://www.wikidata.org/prop/statement/value/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#statementValue> <http://www.wikidata.org/prop/statement/value/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#qualifier> <http://www.wikidata.org/prop/qualifier/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#qualifier> <http://www.wikidata.org/prop/qualifier/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#Reference> <http://www.wikidata.org/prop/reference/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#reference> <http://www.wikidata.org/prop/reference/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P17> .
 
-<http://www.wikidata.org/P17> <http://www.wikidata.org/ontology#novalue> <http://www.wikidata.org/prop/novalue/P17> .
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#novalue> <http://www.wikidata.org/prop/novalue/P17> .
+
+<http://www.wikidata.org/P17> <http://wikiba.se/ontology#noqualifiervalue> <http://www.wikidata.org/prop/noqualifiervalue/P17> .

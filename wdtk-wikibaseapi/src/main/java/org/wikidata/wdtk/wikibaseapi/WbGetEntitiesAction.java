@@ -107,10 +107,8 @@ public class WbGetEntitiesAction {
 	 * 500 for bots. This limit may also apply to the number of language codes
 	 * and sites used for filtering.
 	 * <p>
-	 * The method can fail in two ways. If errors occur (e.g., exceptions trying
-	 * to access the Web API), then the errors will be logged and null will be
-	 * returned. If the API the request is made but the API returns errors, then
-	 * the errors will be logged and an empty map is returned.
+	 * If errors occur (e.g., exceptions trying to access the Web API), then the
+	 * errors will be logged and an empty collection will be returned.
 	 *
 	 * @param ids
 	 *            list of ids of entities for which data should be retrieved
@@ -140,7 +138,7 @@ public class WbGetEntitiesAction {
 	 *            for all languages is returned
 	 *
 	 * @return map of document identifiers or titles to documents retrieved via
-	 *         the API URL, or null if there were errors
+	 *         the API URL
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns an error
 	 * @throws IllegalArgumentException
@@ -182,15 +180,10 @@ public class WbGetEntitiesAction {
 			parameters.put("sitefilter", sitefilter);
 		}
 
-		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+		Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
 
-		try (InputStream response = this.connection.sendRequest("POST",
-				parameters)) {
-			JsonNode root = mapper.readTree(response);
-			Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
-
-			this.connection.checkErrors(root);
-			this.connection.logWarnings(root);
+		try {
+			JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
 			JsonNode entities = root.path("entities");
 			for (JsonNode entityNode : entities) {
@@ -219,11 +212,11 @@ public class WbGetEntitiesAction {
 					}
 				}
 			}
-			return result;
 		} catch (IOException e) {
 			logger.error("Could not retrive data: " + e.toString());
-			return null;
 		}
+
+		return result;
 	}
 
 }

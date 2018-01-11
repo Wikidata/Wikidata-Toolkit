@@ -98,7 +98,7 @@ public class WmfOnlineStandardDumpFile extends WmfDumpFile {
 						this.dumpContentType, this.dateStamp));
 
 		return thisDumpDirectoryManager.getInputStreamForFile(fileName,
-				WmfDumpFile.getDumpFileCompressionType(this.dumpContentType));
+				WmfDumpFile.getDumpFileCompressionType(fileName));
 	}
 
 	@Override
