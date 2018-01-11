@@ -57,7 +57,6 @@ public class Vocabulary {
 	}
 
 	// Prefixes
-	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 	public static final String PREFIX_WIKIDATA_STATEMENT = "http://www.wikidata.org/entity/statement/";
 
 	public static final String PREFIX_PROPERTY = "http://www.wikidata.org/prop/";
@@ -119,7 +118,6 @@ public class Vocabulary {
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
 	static final String VALUE_PREFIX_QUANTITY = "VQ";
 	static final String VALUE_PREFIX_TIME = "VT";
-	static final String VALUE_PREFIX_REFERENCE = "R";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -317,12 +315,21 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property for defining the timezone of a time value.
+	 */
+	public static final String WB_TIME_TIMEZONE = PREFIX_WBONTO
+			+ "timeTimezone";
+	static {
+		VOCABULARY_TYPES.put(WB_TIME_TIMEZONE, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
 	 * Property for defining the preferred calendar of a time value.
 	 */
-	public static final String WB_PREFERRED_CALENDAR = PREFIX_WBONTO
-			+ "preferredCalendar";
+	public static final String WB_TIME_CALENDAR_MODEL = PREFIX_WBONTO
+			+ "timeCalendarModel";
 	static {
-		VOCABULARY_TYPES.put(WB_PREFERRED_CALENDAR, OWL_OBJECT_PROPERTY);
+		VOCABULARY_TYPES.put(WB_TIME_CALENDAR_MODEL, OWL_OBJECT_PROPERTY);
 	}
 
 	/**

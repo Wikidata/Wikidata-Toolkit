@@ -21,7 +21,9 @@
 
 <http://wikiba.se/ontology#globe> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#preferredCalendar> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#timeCalendarModel> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+
+<http://wikiba.se/ontology#timeTimezone> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://schema.org/inLanguage> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 

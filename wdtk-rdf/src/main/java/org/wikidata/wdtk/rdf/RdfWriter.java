@@ -124,8 +124,10 @@ public class RdfWriter {
 	public static final URI WB_TIME = factory.createURI(Vocabulary.WB_TIME);
 	public static final URI WB_TIME_PRECISION = factory
 			.createURI(Vocabulary.WB_TIME_PRECISION);
-	public static final URI WB_PREFERRED_CALENDAR = factory
-			.createURI(Vocabulary.WB_PREFERRED_CALENDAR);
+	public static final URI WB_TIME_TIMEZONE = factory
+			.createURI(Vocabulary.WB_TIME_TIMEZONE);
+	public static final URI WB_TIME_CALENDAR_MODEL = factory
+			.createURI(Vocabulary.WB_TIME_CALENDAR_MODEL);
 	public static final URI WB_NUMERIC_VALUE = factory
 			.createURI(Vocabulary.WB_NUMERIC_VALUE);
 	public static final URI WB_LOWER_BOUND = factory

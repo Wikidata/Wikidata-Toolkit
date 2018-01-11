@@ -1,5 +1,6 @@
 
 <http://www.wikidata.org/entity/VT916df1a6567186e91bd43adc424eeec0> a <http://wikiba.se/ontology#TimeValue> ;
-	<http://wikiba.se/ontology#time> "2008"^^<http://www.w3.org/2001/XMLSchema#gYear> ;
+	<http://wikiba.se/ontology#time> "2008-01-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://wikiba.se/ontology#timePrecision> "9"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://wikiba.se/ontology#preferredCalendar> <http://www.wikidata.org/entity/Q1985727> .
+	<http://wikiba.se/ontology#timeTimezone> "0"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://wikiba.se/ontology#timeCalendarModel> <http://www.wikidata.org/entity/Q1985727> .
