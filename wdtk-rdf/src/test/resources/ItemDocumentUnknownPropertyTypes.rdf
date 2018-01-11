@@ -7,10 +7,10 @@
 	<http://www.wikidata.org/prop/P569> <http://www.wikidata.org/entity/statement/Q10-none2> ;
 	<http://www.wikidata.org/prop/P549> <http://www.wikidata.org/entity/statement/Q10-none3> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> ;
+<http://www.wikidata.org/entity/statement/Q10-none> a <http://wikiba.se/ontology#Statement> , <http://wikiba.se/ontology#BestRank> ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
-<http://www.wikidata.org/entity/statement/Q10-none2> a <http://wikiba.se/ontology#Statement> ;
+<http://www.wikidata.org/entity/statement/Q10-none2> a <http://wikiba.se/ontology#Statement> , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/value/P569> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
 	<http://www.wikidata.org/prop/statement/P569> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	<http://www.wikidata.org/prop/qualifier/value/P15> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
@@ -18,7 +18,7 @@
 	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
-<http://www.wikidata.org/entity/statement/Q10-none3> a <http://wikiba.se/ontology#Statement> ;
+<http://www.wikidata.org/entity/statement/Q10-none3> a <http://wikiba.se/ontology#Statement> , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 

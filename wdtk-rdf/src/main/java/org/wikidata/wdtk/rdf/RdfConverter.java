@@ -68,6 +68,7 @@ public class RdfConverter {
 	final ReferenceRdfConverter referenceRdfConverter;
 	final PropertyRegister propertyRegister;
 	final Sites sites;
+	final RankBuffer rankBuffer;
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
@@ -86,6 +87,7 @@ public class RdfConverter {
 				this.valueRdfConverter);
 		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
 				this.snakRdfConverter, this.propertyRegister.siteUri);
+		this.rankBuffer = new RankBuffer();
 	}
 
 	/**
@@ -314,6 +316,7 @@ public class RdfConverter {
 			for (Statement statement : statementGroup.getStatements()) {
 				writeStatement(statement);
 			}
+			writeBestRankTriples();
 		}
 	}
 
@@ -509,9 +512,26 @@ public class RdfConverter {
 		try {
 			this.rdfWriter.writeTripleUriObject(subject, RdfWriter.WB_RANK,
 					getUriStringForRank(rank));
+			this.rankBuffer.add(rank, subject);
+
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Writes triples to determine the statements with the highest rank.
+	 */
+	void writeBestRankTriples() {
+		for (Resource resource : this.rankBuffer.getBestRankedStatements()) {
+			try {
+				this.rdfWriter.writeTripleUriObject(resource,
+						RdfWriter.RDF_TYPE, RdfWriter.WB_BEST_RANK.toString());
+			} catch (RDFHandlerException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+		}
+		this.rankBuffer.clear();
 	}
 
 	void writeStatement(Statement statement) throws RDFHandlerException {

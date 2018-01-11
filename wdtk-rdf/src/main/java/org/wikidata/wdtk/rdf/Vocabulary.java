@@ -260,6 +260,14 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Class for Wikibase best rank.
+	 */
+	public static final String WB_BEST_RANK = PREFIX_WBONTO + "BestRank";
+	static {
+		VOCABULARY_TYPES.put(WB_BEST_RANK, OWL_CLASS);
+	}
+
+	/**
 	 * Property for defining the globe of a globe coordinates value.
 	 */
 	public static final String WB_GLOBE = PREFIX_WBONTO + "globe";

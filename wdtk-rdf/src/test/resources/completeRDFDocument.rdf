@@ -80,6 +80,8 @@ wo:statementValue a owl:ObjectProperty .
 
 wo:numericValue a owl:DatatypeProperty .
 
+wo:BestRank a owl:Class .
+
 <http://www.wikidata.org/Q10> a wo:Item ;
 	rdfs:label "bar"@lc2 , "foo"@lc ;
 	schema:description "it's bar"@lc2 , "it's foo"@lc ;
@@ -88,10 +90,10 @@ wo:numericValue a owl:DatatypeProperty .
 	<http://www.wikidata.org/prop/P569> <http://www.wikidata.org/entity/statement/Q10-none2> ;
 	<http://www.wikidata.org/prop/P549> <http://www.wikidata.org/entity/statement/Q10-none3> .
 
-<http://www.wikidata.org/entity/statement/Q10-none> a wo:Statement , <http://www.wikidata.org/prop/novalue/P10> ;
+<http://www.wikidata.org/entity/statement/Q10-none> a wo:Statement , <http://www.wikidata.org/prop/novalue/P10> , <http://wikiba.se/ontology#BestRank> ;
 	wo:rank wo:NormalRank .
 
-<http://www.wikidata.org/entity/statement/Q10-none2> a wo:Statement ;
+<http://www.wikidata.org/entity/statement/Q10-none2> a wo:Statement , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/value/P569> id:VTec11d94e4f5bb7b00a79196734f49066 ;
 	<http://www.wikidata.org/prop/statement/P569> "0306-11-03"^^xsd:date ;
 	<http://www.wikidata.org/prop/qualifier/value/P15> id:VTec11d94e4f5bb7b00a79196734f49066 ;
@@ -99,7 +101,7 @@ wo:numericValue a owl:DatatypeProperty .
 	prov:wasDerivedFrom <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
 	wo:rank wo:NormalRank .
 
-<http://www.wikidata.org/entity/statement/Q10-none3> a wo:Statement ;
+<http://www.wikidata.org/entity/statement/Q10-none3> a wo:Statement , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
 	wo:rank wo:NormalRank .
 
