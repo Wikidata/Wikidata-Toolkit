@@ -268,33 +268,33 @@ public class Vocabulary {
 	/**
 	 * Property for defining the globe of a globe coordinates value.
 	 */
-	public static final String WB_GLOBE = PREFIX_WBONTO + "globe";
+	public static final String WB_GEO_GLOBE = PREFIX_WBONTO + "geoGlobe";
 	static {
-		VOCABULARY_TYPES.put(WB_GLOBE, OWL_OBJECT_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_GLOBE, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the latitude of a globe coordinates value.
 	 */
-	public static final String WB_LATITUDE = PREFIX_WBONTO + "latitude";
+	public static final String WB_GEO_LATITUDE = PREFIX_WBONTO + "geoLatitude";
 	static {
-		VOCABULARY_TYPES.put(WB_LATITUDE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_LATITUDE, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the longitude of a globe coordinates value.
 	 */
-	public static final String WB_LONGITUDE = PREFIX_WBONTO + "longitude";
+	public static final String WB_GEO_LONGITUDE = PREFIX_WBONTO + "geoLongitude";
 	static {
-		VOCABULARY_TYPES.put(WB_LONGITUDE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_LONGITUDE, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the precision of a globe coordinates value.
 	 */
-	public static final String WB_GC_PRECISION = PREFIX_WBONTO + "gcPrecision";
+	public static final String WB_GEO_PRECISION = PREFIX_WBONTO + "geoPrecision";
 	static {
-		VOCABULARY_TYPES.put(WB_GC_PRECISION, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_PRECISION, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**

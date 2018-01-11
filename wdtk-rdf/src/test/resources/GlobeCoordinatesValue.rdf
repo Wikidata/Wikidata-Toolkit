@@ -1,6 +1,6 @@
 
 <http://www.wikidata.org/entity/VC29def5bc38867d9750430b4f14949f22> a <http://wikiba.se/ontology#GlobeCoordinatesValue> ;
-	<http://wikiba.se/ontology#latitude> "51.033333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
-	<http://wikiba.se/ontology#longitude> "13.733333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
-	<http://wikiba.se/ontology#gcPrecision> "0.1"^^<http://www.w3.org/2001/XMLSchema#double> ;
-	<http://wikiba.se/ontology#globe> <http://www.wikidata.org/entity/Q2> .
+	<http://wikiba.se/ontology#geoLatitude> "51.033333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
+	<http://wikiba.se/ontology#geoLongitude> "13.733333333333"^^<http://www.w3.org/2001/XMLSchema#double> ;
+	<http://wikiba.se/ontology#geoPrecision> "0.1"^^<http://www.w3.org/2001/XMLSchema#double> ;
+	<http://wikiba.se/ontology#geoGlobe> <http://www.wikidata.org/entity/Q2> .

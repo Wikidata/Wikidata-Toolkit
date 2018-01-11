@@ -3,7 +3,7 @@
 
 <http://www.w3.org/ns/prov#wasDerivedFrom> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://wikiba.se/ontology#longitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#geoLongitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://wikiba.se/ontology#timePrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
@@ -15,11 +15,11 @@
 
 <http://wikiba.se/ontology#time> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://wikiba.se/ontology#gcPrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#geoPrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://www.w3.org/2004/02/skos/core#altLabel> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://wikiba.se/ontology#globe> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://wikiba.se/ontology#geoGlobe> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://wikiba.se/ontology#timeCalendarModel> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
@@ -39,7 +39,7 @@
 
 <http://wikiba.se/ontology#Statement> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://wikiba.se/ontology#latitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#geoLatitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://wikiba.se/ontology#Article> a <http://www.w3.org/2002/07/owl#Class> .
 

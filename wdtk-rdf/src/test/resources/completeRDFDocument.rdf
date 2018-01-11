@@ -18,7 +18,7 @@ wo:quantityUnit a owl:ObjectProperty .
 
 wo:qualifier a owl:ObjectProperty .
 
-wo:latitude a owl:DatatypeProperty .
+wo:geoLatitude a owl:DatatypeProperty .
 
 wo:Property a owl:Class .
 
@@ -30,7 +30,7 @@ wo:upperBound a owl:DatatypeProperty .
 
 wo:directClaim a owl:ObjectProperty .
 
-wo:globe a owl:ObjectProperty .
+wo:geoGlobe a owl:ObjectProperty .
 
 wo:timeTimezone a owl:DatatypeProperty .
 
@@ -44,9 +44,9 @@ wo:propertyType a owl:ObjectProperty .
 
 wo:timeCalendarModel a owl:ObjectProperty .
 
-wo:gcPrecision a owl:DatatypeProperty .
+wo:geoPrecision a owl:DatatypeProperty .
 
-wo:longitude a owl:DatatypeProperty .
+wo:geoLongitude a owl:DatatypeProperty .
 
 wo:GlobeCoordinatesValue a owl:Class .
 
