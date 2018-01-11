@@ -128,12 +128,12 @@ public class RdfWriter {
 			.createURI(Vocabulary.WB_TIME_TIMEZONE);
 	public static final URI WB_TIME_CALENDAR_MODEL = factory
 			.createURI(Vocabulary.WB_TIME_CALENDAR_MODEL);
-	public static final URI WB_NUMERIC_VALUE = factory
-			.createURI(Vocabulary.WB_NUMERIC_VALUE);
-	public static final URI WB_LOWER_BOUND = factory
-			.createURI(Vocabulary.WB_LOWER_BOUND);
-	public static final URI WB_UPPER_BOUND = factory
-			.createURI(Vocabulary.WB_UPPER_BOUND);
+	public static final URI WB_QUANTITY_AMOUNT = factory
+			.createURI(Vocabulary.WB_QUANTITY_AMOUNT);
+	public static final URI WB_QUANTITY_LOWER_BOUND = factory
+			.createURI(Vocabulary.WB_QUANTITY_LOWER_BOUND);
+	public static final URI WB_QUANTITY_UPPER_BOUND = factory
+			.createURI(Vocabulary.WB_QUANTITY_UPPER_BOUND);
 	public static final URI WB_QUANTITY_UNIT = factory
 			.createURI(Vocabulary.WB_QUANTITY_UNIT);
 	public static final URI OGC_LOCATION = factory

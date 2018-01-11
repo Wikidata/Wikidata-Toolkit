@@ -11,7 +11,7 @@
 
 <http://wikiba.se/ontology#QuantityValue> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://wikiba.se/ontology#upperBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#quantityUpperBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://wikiba.se/ontology#time> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
@@ -27,7 +27,7 @@
 
 <http://schema.org/inLanguage> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://wikiba.se/ontology#lowerBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#quantityLowerBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://wikiba.se/ontology#quantityUnit> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
@@ -43,7 +43,7 @@
 
 <http://wikiba.se/ontology#Article> a <http://www.w3.org/2002/07/owl#Class> .
 
-<http://wikiba.se/ontology#numericValue> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#quantityAmount> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://schema.org/about> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

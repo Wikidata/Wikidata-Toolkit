@@ -335,26 +335,28 @@ public class Vocabulary {
 	/**
 	 * Property for defining the numeric value of a quantity value.
 	 */
-	public static final String WB_NUMERIC_VALUE = PREFIX_WBONTO
-			+ "numericValue";
+	public static final String WB_QUANTITY_AMOUNT = PREFIX_WBONTO
+			+ "quantityAmount";
 	static {
-		VOCABULARY_TYPES.put(WB_NUMERIC_VALUE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_AMOUNT, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the lower bound of a quantity value.
 	 */
-	public static final String WB_LOWER_BOUND = PREFIX_WBONTO + "lowerBound";
+	public static final String WB_QUANTITY_LOWER_BOUND = PREFIX_WBONTO
+			+ "quantityLowerBound";
 	static {
-		VOCABULARY_TYPES.put(WB_LOWER_BOUND, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_LOWER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the upper bound of a quantity value.
 	 */
-	public static final String WB_UPPER_BOUND = PREFIX_WBONTO + "upperBound";
+	public static final String WB_QUANTITY_UPPER_BOUND = PREFIX_WBONTO
+			+ "quantityUpperBound";
 	static {
-		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
