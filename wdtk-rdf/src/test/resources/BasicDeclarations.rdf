@@ -71,5 +71,4 @@
 
 <http://wikiba.se/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
-<http://www.wikidata.org/ontology#BestRank> a <http://www.w3.org/2002/07/owl#Class> .
-
+<http://wikiba.se/ontology#BestRank> a <http://www.w3.org/2002/07/owl#Class> .

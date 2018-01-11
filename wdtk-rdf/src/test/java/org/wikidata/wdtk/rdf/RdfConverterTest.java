@@ -217,7 +217,6 @@ public class RdfConverterTest {
 			RDFParseException, IOException {
 		this.rdfConverter.writeBasicDeclarations();
 		this.rdfWriter.finish();
-		System.out.println(out.toString());
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("BasicDeclarations.rdf")), model);

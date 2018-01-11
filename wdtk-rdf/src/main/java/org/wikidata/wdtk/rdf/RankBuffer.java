@@ -39,12 +39,12 @@ public class RankBuffer {
 	/**
 	 * highest Rank of an statment in the current {@link EntityDocument}.
 	 */
-	StatementRank bestRank = null;
+	private StatementRank bestRank;
 
 	/**
 	 * Rdf Resources that refer to statements with the highest rank.
 	 */
-	final Set<Resource> subjects = new HashSet<Resource>();
+	private final Set<Resource> subjects = new HashSet<>();
 
 	/**
 	 * Clears the buffer. This function should be called after each export of an
@@ -64,32 +64,24 @@ public class RankBuffer {
 	 *            rdf resource that refers to the statement
 	 */
 	public void add(StatementRank rank, Resource subject) {
-		if ((this.bestRank == null)
-				|| (this.bestRank == StatementRank.DEPRECATED)
-				|| ((this.bestRank == StatementRank.NORMAL) && (rank != StatementRank.DEPRECATED))
-				|| ((this.bestRank == StatementRank.PREFERRED) && (rank == StatementRank.PREFERRED))) {
-			if (this.bestRank == null) {
-				this.bestRank = rank;
-				subjects.add(subject);
-				return;
-			}
-			if (this.bestRank == rank) {
-				subjects.add(subject);
-				return;
-
-			} else {
-				subjects.clear();
-				this.bestRank = rank;
-				subjects.add(subject);
-				return;
-			}
+		if (this.bestRank == null) {
+			this.bestRank = rank;
+			subjects.add(subject);
+		} else if (this.bestRank == rank) {
+			subjects.add(subject);
+		} else if(this.bestRank == StatementRank.DEPRECATED && rank != StatementRank.NORMAL ||
+				this.bestRank == StatementRank.NORMAL && rank == StatementRank.PREFERRED) {
+			//Better rank found
+			subjects.clear();
+			this.bestRank = rank;
+			subjects.add(subject);
 		}
 	}
 
 	/**
 	 * Returns the statements with the highest rank.
 	 *
-	 * @return statment resource with the highest rank.
+	 * @return statement resource with the highest rank.
 	 */
 	public Set<Resource> getBestRankedStatements() {
 		return this.subjects;
