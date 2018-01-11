@@ -187,7 +187,7 @@ public class PropertyRegisterTest {
 				dataObjectFactory.getPropertyIdValue("P434", this.siteIri),
 				dataObjectFactory
 						.getStringValue("http://musicbrainz.org/$1/artist")),
-				"http://www.wikidata.org/ontology#propertyTypeString");
+				"http://wikiba.se/ontology#String");
 	}
 
 	@Test
@@ -196,7 +196,7 @@ public class PropertyRegisterTest {
 				dataObjectFactory.getPropertyIdValue("P10", this.siteIri),
 				dataObjectFactory
 						.getStringValue("http://musicbrainz.org/$1/artist")),
-				"http://www.wikidata.org/ontology#propertyTypeString");
+				"http://wikiba.se/ontology#String");
 	}
 
 	@Test

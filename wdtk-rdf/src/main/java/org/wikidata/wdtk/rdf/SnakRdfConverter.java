@@ -84,7 +84,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	final ExportExtensions exportExtensions;
 
 	final List<PropertyRestriction> someValuesQueue;
-	final List<PropertyRestriction> noValuesQueue;
 
 	Resource currentSubject;
 	PropertyContext currentPropertyContext;
@@ -104,7 +103,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				.registerWikidataExportExtensions(this.exportExtensions);
 
 		this.someValuesQueue = new ArrayList<PropertyRestriction>();
-		this.noValuesQueue = new ArrayList<PropertyRestriction>();
 	}
 
 	/**
@@ -143,7 +141,11 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public void setSnakContext(Resource subject, PropertyContext propertyContext) {
 		this.currentSubject = subject;
 		this.currentPropertyContext = propertyContext;
-		this.simple = (this.currentPropertyContext == PropertyContext.SIMPLE_CLAIM);
+		this.simple = (this.currentPropertyContext == PropertyContext.DIRECT)
+				|| (this.currentPropertyContext == PropertyContext.VALUE_SIMPLE)
+				|| (this.currentPropertyContext == PropertyContext.QUALIFIER_SIMPLE)
+				|| (this.currentPropertyContext == PropertyContext.REFERENCE_SIMPLE);
+
 	}
 
 	@Override
@@ -153,7 +155,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		URI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
 				snak.getPropertyId(), this.simple);
-		if (value == null) {
+		if (value == null) { // TODO: could also be null if there is no complex
+								// representation but simple = false
 			logger.error("Could not serialize snak: missing value (Snak: "
 					+ snak.toString() + ")");
 			return null;
@@ -197,26 +200,34 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 
 	@Override
 	public Void visit(NoValueSnak snak) {
-		String rangeUri = getRangeUri(snak.getPropertyId());
-		if (rangeUri == null) {
-			logger.error("Count not export NoValueSnak for property "
-					+ snak.getPropertyId().getId() + ": OWL range not known.");
-			return null;
-		} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
-			rangeUri = Vocabulary.RDFS_LITERAL;
-		}
+		if (simple) {
+			String rangeUri = getRangeUri(snak.getPropertyId());
+			if (rangeUri == null) {
+				logger.error("Count not export NoValueSnak for property "
+						+ snak.getPropertyId().getId()
+						+ ": OWL range not known.");
+				return null;
+			} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
+				rangeUri = Vocabulary.RDFS_LITERAL;
+			}
 
-		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
-				this.currentPropertyContext);
-		Resource bnode = this.rdfWriter.getFreshBNode();
-		addNoValuesRestriction(bnode, propertyUri, rangeUri);
-		try {
-			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					RdfWriter.RDF_TYPE, bnode);
-		} catch (RDFHandlerException e) {
-			throw new RuntimeException(e.toString(), e);
+			String noValueClass;
+			if ((this.currentPropertyContext == PropertyContext.QUALIFIER)
+					|| (this.currentPropertyContext == PropertyContext.QUALIFIER_SIMPLE)) {
+				noValueClass = Vocabulary.getPropertyUri(snak.getPropertyId(),
+						PropertyContext.NO_QUALIFIER_VALUE);
+			} else {
+				noValueClass = Vocabulary.getPropertyUri(snak.getPropertyId(),
+						PropertyContext.NO_VALUE);
+			}
+			// TODO add restrictions
+			try {
+				this.rdfWriter.writeTripleUriObject(this.currentSubject,
+						RdfWriter.RDF_TYPE, noValueClass);
+			} catch (RDFHandlerException e) {
+				throw new RuntimeException(e.toString(), e);
+			}
 		}
-
 		return null;
 	}
 
@@ -233,11 +244,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 			writeSomeValueRestriction(pr.propertyUri, pr.rangeUri, pr.subject);
 		}
 		this.someValuesQueue.clear();
-
-		for (PropertyRestriction pr : this.noValuesQueue) {
-			writeNoValueRestriction(pr.propertyUri, pr.rangeUri, pr.subject);
-		}
-		this.noValuesQueue.clear();
 
 		this.valueRdfConverter.writeAuxiliaryTriples();
 	}
@@ -261,34 +267,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.rdfWriter.writeTripleUriObject(bnode, RdfWriter.OWL_ON_PROPERTY,
 				propertyUri);
 		this.rdfWriter.writeTripleUriObject(bnode,
-				RdfWriter.OWL_SOME_VALUES_FROM, rangeUri);
-	}
-
-	/**
-	 * Writes a buffered no-value restriction.
-	 *
-	 * @param propertyUri
-	 *            URI of the property to which the restriction applies
-	 * @param rangeUri
-	 *            URI of the class or datatype to which the restriction applies
-	 * @param bnode
-	 *            blank node representing the restriction
-	 * @throws RDFHandlerException
-	 *             if there was a problem writing the RDF triples
-	 */
-	void writeNoValueRestriction(String propertyUri, String rangeUri,
-			Resource bnode) throws RDFHandlerException {
-
-		Resource bnodeSome = this.rdfWriter.getFreshBNode();
-		this.rdfWriter.writeTripleValueObject(bnode, RdfWriter.RDF_TYPE,
-				RdfWriter.OWL_CLASS);
-		this.rdfWriter.writeTripleValueObject(bnode,
-				RdfWriter.OWL_COMPLEMENT_OF, bnodeSome);
-		this.rdfWriter.writeTripleValueObject(bnodeSome, RdfWriter.RDF_TYPE,
-				RdfWriter.OWL_RESTRICTION);
-		this.rdfWriter.writeTripleUriObject(bnodeSome,
-				RdfWriter.OWL_ON_PROPERTY, propertyUri);
-		this.rdfWriter.writeTripleUriObject(bnodeSome,
 				RdfWriter.OWL_SOME_VALUES_FROM, rangeUri);
 	}
 
@@ -341,17 +319,4 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 				rangeUri));
 	}
 
-	/**
-	 * Adds the given no-value restriction to the list of restrictions that
-	 * should still be serialized. The given resource will be used as a subject.
-	 *
-	 * @param subject
-	 * @param propertyUri
-	 * @param rangeUri
-	 */
-	void addNoValuesRestriction(Resource subject, String propertyUri,
-			String rangeUri) {
-		this.noValuesQueue.add(new PropertyRestriction(subject, propertyUri,
-				rangeUri));
-	}
 }

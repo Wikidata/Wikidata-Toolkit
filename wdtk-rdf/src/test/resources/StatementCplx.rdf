@@ -1,0 +1,5 @@
+
+<http://www.wikidata.org/entity/statement/Q0-> a <http://wikiba.se/ontology#Statement> ;
+	<http://www.wikidata.org/prop/statement/value/P0> <http://www.wikidata.org/entity/VCffc4e2c3e1979c0dd53184be282bd01c> ;
+	<http://www.wikidata.org/prop/statement/P0> "Point(51.0 13.0)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> ;
+	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .

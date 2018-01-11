@@ -9,9 +9,9 @@ package org.wikidata.wdtk.examples;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +24,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -37,13 +39,18 @@ public class FetchOnlineDataExample {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
-		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
+		WikibaseDataFetcher wbdf = new WikibaseDataFetcher(
+				ApiConnection.getTestWikidataApiConnection(),
+				Datamodel.SITE_WIKIDATA);
 
 		System.out.println("*** Fetching data for one entity:");
-		EntityDocument q42 = wbdf.getEntityDocument("Q42");
-		System.out
-				.println("The current revision of the data for entity Q42 is "
-						+ q42.getRevisionId());
+		EntityDocument q42 = wbdf.getEntityDocument("P176");
+		System.out.println(q42);
+
+		if (1 == 1) {
+			return;
+		}
+
 		if (q42 instanceof ItemDocument) {
 			System.out.println("The English name for entity Q42 is "
 					+ ((ItemDocument) q42).getLabels().get("en").getText());
@@ -61,11 +68,9 @@ public class FetchOnlineDataExample {
 		System.out
 				.println("*** Fetching data using filters to reduce data volume:");
 		// Only site links from English Wikipedia:
-		wbdf.getFilter().setSiteLinkFilter(
-				Collections.singleton("enwiki"));
+		wbdf.getFilter().setSiteLinkFilter(Collections.singleton("enwiki"));
 		// Only labels in French:
-		wbdf.getFilter()
-				.setLanguageFilter(Collections.singleton("fr"));
+		wbdf.getFilter().setLanguageFilter(Collections.singleton("fr"));
 		// No statements at all:
 		wbdf.getFilter().setPropertyFilter(
 				Collections.<PropertyIdValue> emptySet());

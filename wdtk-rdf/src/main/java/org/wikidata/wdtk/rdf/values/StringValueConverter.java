@@ -42,7 +42,7 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 		String datatype = this.propertyRegister.setPropertyTypeFromStringValue(
 				propertyIdValue, value);
 
-		String valueUriString;
+		String valueUriString = null;
 		switch (datatype) {
 		case DatatypeIdValue.DT_STRING:
 		case DatatypeIdValue.DT_EXTERNAL_ID:
@@ -50,10 +50,14 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 			valueUriString = null;
 			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
-			valueUriString = getCommonsUrl(value.getString());
+			if (simple) {
+				valueUriString = getCommonsUrl(value.getString());
+			}
 			break;
 		case DatatypeIdValue.DT_URL:
-			valueUriString = value.getString();
+			if (simple) {
+				valueUriString = value.getString();
+			}
 			break;
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "string");
@@ -61,8 +65,12 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 		}
 
 		if (valueUriString == null) {
-			this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
-			return this.rdfWriter.getLiteral(value.getString());
+			if (simple) {
+				this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
+				return this.rdfWriter.getLiteral(value.getString());
+			} else {
+				return null; // or blank node
+			}
 		} else {
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			try {

@@ -23,10 +23,10 @@ package org.wikidata.wdtk.rdf;
 /**
  * Enum to define the context in which a propery is used in the RDF export. We
  * use different URIs depending on this context.
- * 
+ *
  * @author Markus Kroetzsch
- * 
+ *
  */
 public enum PropertyContext {
-	STATEMENT, VALUE, QUALIFIER, REFERENCE, SIMPLE_CLAIM
+	STATEMENT, VALUE, QUALIFIER, REFERENCE, REFERENCE_SIMPLE, DIRECT, VALUE_SIMPLE, QUALIFIER_SIMPLE, NO_VALUE, NO_QUALIFIER_VALUE
 }

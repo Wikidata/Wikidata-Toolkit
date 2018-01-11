@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf.values;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,9 +46,13 @@ public class MonolingualTextValueConverter extends
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
-			return RdfConverter.getMonolingualTextValueLiteral(value,
-					this.rdfWriter);
+			if (simple) {
+				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
+				return RdfConverter.getMonolingualTextValueLiteral(value,
+						this.rdfWriter);
+			} else {
+				return null; // or blank node
+			}
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "entity");
 			return null;

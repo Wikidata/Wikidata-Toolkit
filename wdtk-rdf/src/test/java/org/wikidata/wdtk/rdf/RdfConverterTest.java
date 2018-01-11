@@ -9,9 +9,9 @@ package org.wikidata.wdtk.rdf;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,11 +40,13 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -137,14 +139,30 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testStatement() throws RDFHandlerException, RDFParseException,
-			IOException {
+	public void testStatementSimpleValue() throws RDFHandlerException,
+			RDFParseException, IOException {
 		Statement statement = objectFactory.createStatement("Q100", "P227");
 		this.rdfConverter.writeStatement(statement);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("Statement.rdf")));
+	}
+
+	@Test
+	public void testStatementComplexValue() throws RDFHandlerException,
+			RDFParseException, IOException {
+		GlobeCoordinatesValue value = Datamodel.makeGlobeCoordinatesValue(51,
+				13, GlobeCoordinatesValue.PREC_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		Statement statement = StatementBuilder
+				.forSubjectAndProperty(ItemIdValue.NULL, PropertyIdValue.NULL)
+				.withValue(value).build();
+		this.rdfConverter.writeStatement(statement);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementCplx.rdf")));
 	}
 
 	@Test
@@ -415,7 +433,8 @@ public class RdfConverterTest {
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
 				RdfTestHelpers
-						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/P31c> <http://www.wikidata.org/Q10> ;\n	<http://www.wikidata.org/P279c> <http://www.wikidata.org/Q11> .\n"),
+						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/Q10> ;\n"
+								+ "<http://www.wikidata.org/prop/direct/P279> <http://www.wikidata.org/Q11> .\n"),
 				model);
 	}
 
@@ -432,7 +451,6 @@ public class RdfConverterTest {
 						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM), 0);
 		this.rdfConverter.writeInterPropertyLinks(document);
 		this.rdfWriter.finish();
-
 		Model model = RdfTestHelpers.parseRdf(out.toString());
 
 		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
