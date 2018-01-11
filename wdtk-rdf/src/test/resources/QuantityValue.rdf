@@ -1,5 +1,5 @@
-<http://www.wikidata.org/entity/VQe2632d37f5189ef2e1087f0267377ad3> a <http://www.wikidata.org/ontology#QuantityValue> ;
-	<http://www.wikidata.org/ontology#numericValue> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
-	<http://www.wikidata.org/ontology#lowerBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
-	<http://www.wikidata.org/ontology#upperBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
-	<http://www.wikidata.org/ontology#quantityUnit> <http://www.wikidata.org/entity/Q199>.
+<http://www.wikidata.org/entity/VQe2632d37f5189ef2e1087f0267377ad3> a <http://wikiba.se/ontology#QuantityValue> ;
+	<http://wikiba.se/ontology#numericValue> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://wikiba.se/ontology#lowerBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://wikiba.se/ontology#upperBound> "100"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://wikiba.se/ontology#quantityUnit> <http://www.wikidata.org/entity/Q199>.
