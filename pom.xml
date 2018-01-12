@@ -68,11 +68,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<apacheCommonsCompressVersion>1.9</apacheCommonsCompressVersion>
-		<apacheCommonsLangVersion>3.3.2</apacheCommonsLangVersion>
-		<apacheHttpVersion>4.3.3</apacheHttpVersion>
-		<commonsCliVersion>1.2</commonsCliVersion>
-		<ini4JVersion>0.5.2</ini4JVersion>
+		<apacheCommonsCompressVersion>1.15</apacheCommonsCompressVersion>
+		<apacheCommonsLangVersion>3.7</apacheCommonsLangVersion>
+		<apacheHttpVersion>4.5.4</apacheHttpVersion>
+		<commonsCliVersion>1.4</commonsCliVersion>
+		<ini4JVersion>0.5.4</ini4JVersion>
 		<jacksonVersion>2.5.0</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
