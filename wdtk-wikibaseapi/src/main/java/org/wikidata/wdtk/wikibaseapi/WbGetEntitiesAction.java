@@ -23,7 +23,9 @@ package org.wikidata.wdtk.wikibaseapi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +188,11 @@ public class WbGetEntitiesAction {
 			JsonNode root = this.connection.sendJsonRequest("POST", parameters);
 
 			JsonNode entities = root.path("entities");
-			for (JsonNode entityNode : entities) {
+			Iterator<Entry<String,JsonNode>> entitiesIterator = entities.fields();
+			while(entitiesIterator.hasNext()) {
+				Entry<String,JsonNode> entry = entitiesIterator.next();
+				JsonNode entityNode = entry.getValue();
+				String queriedEntityId = entry.getKey();
 				if (!entityNode.has("missing")) {
 					try {
 						JacksonTermedStatementDocument ed = mapper.treeToValue(
@@ -195,7 +201,9 @@ public class WbGetEntitiesAction {
 						ed.setSiteIri(this.siteIri);
 
 						if (titles == null) {
-							result.put(ed.getEntityId().getId(), ed);
+							// We use the JSON key rather than the id of the value
+							// so that retrieving redirected entities works.
+							result.put(entry.getKey(), ed);
 						} else {
 							if (ed instanceof JacksonItemDocument
 									&& ((JacksonItemDocument) ed)

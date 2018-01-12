@@ -46,6 +46,9 @@ public class WbGetEntitiesActionTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "wbgetentities");
 		params.put("format", "json");
+		params.put("ids", "Q32063953");
+		this.con.setWebResourceFromPath(params, getClass(),
+				"/wbgetentities-Q32063953.json", CompressionType.NONE);
 		params.put("ids", "Q6|Q42|P31");
 		this.con.setWebResourceFromPath(params, getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
@@ -85,6 +88,15 @@ public class WbGetEntitiesActionTest {
 
 		assertTrue(result1.containsKey("Q42"));
 		assertEquals(result1, result2);
+	}
+	
+	@Test
+	public void testWbGetEntitiesRedirected() throws MediaWikiApiErrorException {
+		WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
+		properties.ids = "Q32063953";
+		Map<String, EntityDocument> result = action.wbGetEntities(properties);
+		
+		assertTrue(result.containsKey("Q32063953"));
 	}
 
 	@Test
