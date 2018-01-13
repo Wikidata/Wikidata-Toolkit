@@ -408,6 +408,40 @@ public class WikibaseDataEditorTest {
 		assertEquals(itemDocument, editedItemDocument);
 		assertEquals(10, wde.getRemainingEdits());
 	}
+	
+	@Test
+	public void testNullEdit() throws IOException, MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setRemainingEdits(10);
+		
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
+		PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withRevisionId(1234).build();
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbeditentity");
+		params.put("id", "Q1234");
+		params.put("summary", "My summary");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("data", "{}");
+		String data = JsonSerializer.getJsonString(itemDocument);
+		String expectedResult = "{\"entity\":"+data+",\"success\":1}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument nullEditedItemDocument = wde.nullEdit(itemDocument, "My summary");
+		
+		assertEquals(itemDocument, nullEditedItemDocument);
+		assertEquals(9, wde.getRemainingEdits());
+	}
 
 	@Test
 	public void testEditProperty() throws IOException,

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -564,5 +565,75 @@ public class WikibaseDataEditor {
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), summary);
 		}
+	}
+	
+	/**
+	 * Performs a null edit on an item. This has some effects on Wikibase,
+	 * such as refreshing the labels of the referred items in the UI.
+	 * 
+	 * @param currentDocument
+	 * 			the document to perform a null edit on
+	 * @param summary
+	 * 			a summary that can be passed to Wikibase (although it is not
+	 * 			clear if it is kept at all)
+	 * @throws MediaWikiApiErrorException
+	 * 	        if the API returns errors
+	 * @throws IOException 
+	 * 		    if there are any IO errors, such as missing network connection
+	 */
+	public <T extends StatementDocument> void nullEdit(ItemIdValue itemId, String summary)
+			throws IOException, MediaWikiApiErrorException {
+		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
+				.getEntityDocument(itemId.getId());
+		
+		nullEdit(currentDocument, summary);
+	}
+	
+	/**
+	 * Performs a null edit on a property. This has some effects on Wikibase,
+	 * such as refreshing the labels of the referred items in the UI.
+	 * 
+	 * @param currentDocument
+	 * 			the document to perform a null edit on
+	 * @param summary
+	 * 			a summary that can be passed to Wikibase (although it is not
+	 * 			clear if it is kept at all)
+	 * @throws MediaWikiApiErrorException
+	 * 	        if the API returns errors
+	 * @throws IOException 
+	 * 		    if there are any IO errors, such as missing network connection
+	 */
+	public <T extends StatementDocument> void nullEdit(PropertyIdValue propertyId, String summary)
+			throws IOException, MediaWikiApiErrorException {
+		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
+				.getEntityDocument(propertyId.getId());
+		
+		nullEdit(currentDocument, summary);
+	}
+	
+	/**
+	 * Performs a null edit on an entity. This has some effects on Wikibase,
+	 * such as refreshing the labels of the referred items in the UI.
+	 * 
+	 * @param currentDocument
+	 * 			the document to perform a null edit on
+	 * @param summary
+	 * 			a summary that can be passed to Wikibase (although it is not
+	 * 			clear if it is kept at all)
+	 * @throws MediaWikiApiErrorException
+	 * 	        if the API returns errors
+	 * @throws IOException 
+	 * 		    if there are any IO errors, such as missing network connection
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends StatementDocument> T nullEdit(T currentDocument, String summary)
+			throws IOException, MediaWikiApiErrorException {
+		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
+				Collections.<Statement>emptyList(), Collections.<Statement>emptyList());
+		
+	    return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
+				.getEntityId().getId(), null, null, null, statementUpdate
+				.getJsonUpdateString(), false, this.editAsBot, currentDocument
+				.getRevisionId(), summary);
 	}
 }
