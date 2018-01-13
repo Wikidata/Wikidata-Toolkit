@@ -497,11 +497,15 @@ public class WikibaseDataEditor {
 
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
-
-		return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
+		
+		if (statementUpdate.isNull()) {
+			return currentDocument;
+		} else {
+			return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), summary);
+		}
 	}
 	
 	/**
@@ -551,10 +555,14 @@ public class WikibaseDataEditor {
 		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(currentDocument,
 				addStatements, deleteStatements,
 				addLabels, addDescriptions, addAliases, deleteAliases);
-
-		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(currentDocument
+		
+		if (termStatementUpdate.isNull()) {
+			return currentDocument;
+		} else {
+			return (ItemDocument) this.wbEditEntityAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, termStatementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), summary);
+		}
 	}
 }

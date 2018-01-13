@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,11 +33,13 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -372,6 +375,38 @@ public class WikibaseDataEditorTest {
 				"My summary");
 
 		assertEquals(expectedResultDocument, result);
+	}
+	
+	@Test
+	public void testStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
+		PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
+
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		Statement s1dup = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(id).build();
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withRevisionId(1234).build();
+		
+		wde.setRemainingEdits(10);
+		
+		ItemDocument editedItemDocument = wde.updateStatements(
+				itemDocument,
+				Arrays.asList(s1dup),
+				Arrays.asList(s2),
+				"Doing spurious changes");
+		
+		// no edit was made at all
+		assertEquals(itemDocument, editedItemDocument);
+		assertEquals(10, wde.getRemainingEdits());
 	}
 
 	@Test
