@@ -74,7 +74,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getDescriptionUpdates().isEmpty());
 		
 		// Check JSON output
-		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"text\":\"Apfelstrudel\"}}}",
+		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"value\":\"Apfelstrudel\"}}}",
 				su.getJsonUpdateString());
 		assertTrue(!su.isNull());
 	}
@@ -143,7 +143,7 @@ public class TermStatementUpdateTest {
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(su.getAliasUpdates().size(), 1);
-		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"}]}}",
+		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"}]}}",
 				su.getJsonUpdateString());
 		assertTrue(!su.isNull());
 	}
@@ -168,7 +168,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(1, su.getAliasUpdates().size());
 		assertEquals(2, su.getAliasUpdates().get("fr").size());
-		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"},{\"language\":\"fr\",\"text\":\"Apfelstrudeln\"}]}}",
+		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"},{\"language\":\"fr\",\"value\":\"Apfelstrudeln\"}]}}",
 				su.getJsonUpdateString());
 		assertTrue(!su.isNull());
 	}
@@ -263,7 +263,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertEquals(Collections.singleton("fr"), su.getDescriptionUpdates().keySet());
 		assertEquals("délicieuse pâtisserie aux pommes", su.getDescriptionUpdates().get("fr").getText());
-		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"text\":\"délicieuse pâtisserie aux pommes\"}}}",
+		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"délicieuse pâtisserie aux pommes\"}}}",
 				su.getJsonUpdateString());
 		assertTrue(!su.isNull());
 	}
