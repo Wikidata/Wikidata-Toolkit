@@ -267,4 +267,63 @@ public class TermStatementUpdateTest {
 				su.getJsonUpdateString());
 		assertTrue(!su.isNull());
 	}
+	
+	/**
+	 * Adding a label, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalLabel() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.singletonList(label),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isNull());
+	}
+	
+	/**
+	 * Adding a description, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalDescription() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("délicieuse pâtisserie aux pommes", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
+				.withLabel(label)
+				.withDescription(description)
+				.build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.singletonList(description),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isNull());
+	}
+	
+	/**
+	 * Adding an alias, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalAlias() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
+				.withLabel(label)
+				.withAlias(alias)
+				.build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.singletonList(alias),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isNull());
+	}
 }

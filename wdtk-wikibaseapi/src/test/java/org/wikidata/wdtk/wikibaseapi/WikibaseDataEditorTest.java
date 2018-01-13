@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
@@ -408,6 +410,48 @@ public class WikibaseDataEditorTest {
 		assertEquals(itemDocument, editedItemDocument);
 		assertEquals(10, wde.getRemainingEdits());
 	}
+	
+	@Test
+	public void testTermStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
+		PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("My label", "en");
+		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("Meine Beschreibung", "de");
+		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Mon alias", "fr");
+
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		Statement s1dup = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(id).build();
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withLabel(label)
+				.withDescription(description)
+				.withStatement(s1)
+				.withRevisionId(1234).build();
+		
+		wde.setRemainingEdits(10);
+		
+		ItemDocument editedItemDocument = wde.updateTermsStatements(
+				itemDocument,
+				Arrays.asList(label),
+				Arrays.asList(description), 
+				Collections.<MonolingualTextValue>emptyList(),
+				Arrays.asList(alias),
+				Arrays.asList(s1dup),
+				Arrays.asList(s2),
+				"Doing spurious changes");
+		
+		// no edit was made at all
+		assertEquals(itemDocument, editedItemDocument);
+		assertEquals(10, wde.getRemainingEdits());
+	}
+	
 	
 	@Test
 	public void testNullEdit() throws IOException, MediaWikiApiErrorException {

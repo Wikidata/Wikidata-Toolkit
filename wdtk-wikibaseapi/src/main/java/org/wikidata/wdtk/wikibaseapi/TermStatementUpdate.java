@@ -124,7 +124,7 @@ public class TermStatementUpdate extends StatementUpdate {
         
         // Fill the terms with their current values
         newLabels = initUpdatesFromCurrentValues(currentDocument.getLabels().values());
-        newDescriptions = initUpdatesFromCurrentValues(currentDocument.getLabels().values());
+        newDescriptions = initUpdatesFromCurrentValues(currentDocument.getDescriptions().values());
         newAliases = new HashMap<>();
         for(Map.Entry<String, List<MonolingualTextValue>> entry : currentDocument.getAliases().entrySet()) {
             newAliases.put(entry.getKey(),
@@ -224,8 +224,12 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     protected void processDescriptions(List<MonolingualTextValue> descriptions) {
         for(MonolingualTextValue description : descriptions) {
-            newDescriptions.put(description.getLanguageCode(),
+        	NameWithUpdate currentValue = newDescriptions.get(description.getLanguageCode());
+        	// only mark the description as added if the value we are writing is different from the current one
+        	if (currentValue == null || !currentValue.value.equals(description)) {
+        		newDescriptions.put(description.getLanguageCode(),
                     new NameWithUpdate(description, true));
+        	}
         }
     }
 
@@ -238,14 +242,17 @@ public class TermStatementUpdate extends StatementUpdate {
     protected void processLabels(List<MonolingualTextValue> labels) {
         for(MonolingualTextValue label : labels) {
         	String lang = label.getLanguageCode();
-            newLabels.put(lang,
-                    new NameWithUpdate(label, true));
-            
-            // Delete any alias that matches the new label
-            AliasesWithUpdate currentAliases = newAliases.get(lang);
-            if (currentAliases != null && currentAliases.aliases.contains(label)) {
-            	deleteAlias(label);
-            }
+        	NameWithUpdate currentValue = newLabels.get(lang);
+        	if (currentValue == null || !currentValue.value.equals(label)) {
+	            newLabels.put(lang,
+	                    new NameWithUpdate(label, true));
+	            
+	            // Delete any alias that matches the new label
+	            AliasesWithUpdate currentAliases = newAliases.get(lang);
+	            if (currentAliases != null && currentAliases.aliases.contains(label)) {
+	            	deleteAlias(label);
+	            }
+        	}
         }
         
     }
