@@ -189,6 +189,16 @@ public class StatementUpdate {
 		}
 		return updatedStatements;
 	}
+	
+	/**
+	 * Returns true when the edit is not going to change anything on the item.
+	 * In this case, the change can be safely skipped, except if the side effects
+	 * of a null edit are desired.
+	 */
+	@JsonIgnore
+	public boolean isNull() {
+		return getUpdatedStatements().isEmpty();
+	}
 
 	/**
 	 * Marks the given lists of statements for being added to or deleted from

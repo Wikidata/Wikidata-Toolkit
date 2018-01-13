@@ -76,6 +76,7 @@ public class TermStatementUpdateTest {
 		// Check JSON output
 		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"text\":\"Apfelstrudel\"}}}",
 				su.getJsonUpdateString());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -98,6 +99,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getLabelUpdates().get("de").getText(), alias.getText());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -119,6 +121,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getAliasUpdates().keySet());
 		assertEquals(alias.getText(), su.getAliasUpdates().get("fr").get(0).getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -142,6 +145,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getAliasUpdates().size(), 1);
 		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"}]}}",
 				su.getJsonUpdateString());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -166,6 +170,7 @@ public class TermStatementUpdateTest {
 		assertEquals(2, su.getAliasUpdates().get("fr").size());
 		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"},{\"language\":\"fr\",\"text\":\"Apfelstrudeln\"}]}}",
 				su.getJsonUpdateString());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -187,6 +192,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertTrue(su.isNull());
 	}
 	
 	/**
@@ -210,6 +216,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getLabelUpdates().keySet());
 		assertEquals(su.getLabelUpdates().get("fr").getText(), alias.getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -233,6 +240,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getAliasUpdates().get("fr").size(), 0);
 		assertEquals("{\"aliases\":{\"fr\":[]}}",
 				su.getJsonUpdateString());
+		assertTrue(!su.isNull());
 	}
 	
 	/**
@@ -257,5 +265,6 @@ public class TermStatementUpdateTest {
 		assertEquals("délicieuse pâtisserie aux pommes", su.getDescriptionUpdates().get("fr").getText());
 		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"text\":\"délicieuse pâtisserie aux pommes\"}}}",
 				su.getJsonUpdateString());
+		assertTrue(!su.isNull());
 	}
 }

@@ -291,6 +291,18 @@ public class TermStatementUpdate extends StatementUpdate {
     }
     
     /**
+     * Is this change null?
+     */
+    @Override
+    @JsonIgnore
+    public boolean isNull() {
+    	return (super.isNull() && 
+    			getLabelUpdates().isEmpty() &&
+    			getDescriptionUpdates().isEmpty() &&
+    			getAliasUpdates().isEmpty());
+    }
+    
+    /**
      * Helper to format term updates as expected by the Wikibase API
      * @param updates
      * 		planned updates for the type of term
