@@ -50,7 +50,7 @@ public class WikibaseDataEditor {
 	/**
 	 * API Action to edit data.
 	 */
-	final WbEditEntityAction wbEditEntityAction;
+	final WbEditingAction wbEditEntityAction;
 
 	/**
 	 * Helper class to read data. Used for checking the state of the online data
@@ -83,7 +83,7 @@ public class WikibaseDataEditor {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataEditor(ApiConnection connection, String siteUri) {
-		this.wbEditEntityAction = new WbEditEntityAction(connection, siteUri);
+		this.wbEditEntityAction = new WbEditingAction(connection, siteUri);
 		this.wikibaseDataFetcher = new WikibaseDataFetcher(connection, siteUri);
 		this.siteIri = siteUri;
 	}
@@ -136,7 +136,7 @@ public class WikibaseDataEditor {
 
 	/**
 	 * Returns the average time that a single edit should take, measured in
-	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * milliseconds. See {@link WbEditingAction#getAverageTimePerEdit()} for
 	 * details.
 	 *
 	 * @return average time per edit in milliseconds
@@ -147,7 +147,7 @@ public class WikibaseDataEditor {
 
 	/**
 	 * Sets the average time that a single edit should take, measured in
-	 * milliseconds. See {@link WbEditEntityAction#getAverageTimePerEdit()} for
+	 * milliseconds. See {@link WbEditingAction#getAverageTimePerEdit()} for
 	 * details.
 	 *
 	 * @param milliseconds
@@ -160,7 +160,7 @@ public class WikibaseDataEditor {
 	/**
 	 * Returns the number of edits that will be performed before entering
 	 * simulation mode, or -1 if there is no limit on the number of edits
-	 * (default). See {@link WbEditEntityAction#getRemainingEdits()} for
+	 * (default). See {@link WbEditingAction#getRemainingEdits()} for
 	 * details.
 	 *
 	 * @return number of remaining edits
@@ -171,7 +171,7 @@ public class WikibaseDataEditor {
 
 	/**
 	 * Sets the number of edits that this object can still perform. See
-	 * {@link WbEditEntityAction#setRemainingEdits(int)} for details.
+	 * {@link WbEditingAction#setRemainingEdits(int)} for details.
 	 *
 	 * @param remainingEdits
 	 *            number of edits that can still be performed, or -1 to disable
