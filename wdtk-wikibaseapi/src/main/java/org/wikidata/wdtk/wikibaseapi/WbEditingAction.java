@@ -22,6 +22,7 @@ package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.*;
@@ -41,10 +42,10 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
  * @author Michael Guenther
  * @author Markus Kroetzsch
  */
-public class WbEditEntityAction {
+public class WbEditingAction {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(WbEditEntityAction.class);
+			.getLogger(WbEditingAction.class);
 
 	static int MAXLAG_SLEEP_TIME = 5000;
 
@@ -117,7 +118,8 @@ public class WbEditEntityAction {
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public WbEditEntityAction(ApiConnection connection, String siteIri) {
+
+	public WbEditingAction(ApiConnection connection, String siteUri) {
 		this.connection = connection;
 		this.siteIri = siteIri;
 		this.mapper = new DatamodelMapper(siteIri);
@@ -281,8 +283,204 @@ public class WbEditEntityAction {
 				"Data parameter cannot be null when editing entity data");
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(ApiConnection.PARAM_ACTION, "wbeditentity");
-
+		parameters.put("data", data);
+		if (clear) {
+			parameters.put("clear", "");
+		}
+		
+		return performAPIAction("wbeditentity", id, site, title, newEntity, parameters, summary, baserevid, bot);
+	}
+	
+	/**
+	 * Executes the API action "wbsetlabel" for the given parameters.
+	 * @param id
+	 *            the id of the entity to be edited; if used, the site and title
+	 *            parameters must be null
+	 * @param site
+	 *            when selecting an entity by title, the site key for the title,
+	 *            e.g., "enwiki"; if used, title must also be given but id must
+	 *            be null
+	 * @param title
+	 *            string used to select an entity by title; if used, site must
+	 *            also be given but id must be null
+	 * @param newEntity
+	 *            used for creating a new entity of a given type; the value
+	 *            indicates the intended entity type; possible values include
+	 *            "item" and "property"; if used, the parameters id, site, and
+	 *            title must be null
+	 * @param language
+	 *            the language code for the label
+	 * @param value
+	 *            the value of the label to set. Set it to null to remove the label.
+     * @param bot
+	 *            if true, edits will be flagged as "bot edits" provided that
+	 *            the logged in user is in the bot group; for regular users, the
+	 *            flag will just be ignored
+	 * @param baserevid
+	 *            the revision of the data that the edit refers to or 0 if this
+	 *            should not be submitted; when used, the site will ensure that
+	 *            no edit has happened since this revision to detect edit
+	 *            conflicts; it is recommended to use this whenever in all
+	 *            operations where the outcome depends on the state of the
+	 *            online data
+	 * @param summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @return the JSON response from the API
+	 * @throws IOException
+	 *             if there was an IO problem. such as missing network
+	 *             connection
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public EntityDocument wbSetLabel(String id, String site, String title,
+			String newEntity, String language, String value,
+			boolean bot, long baserevid, String summary)
+					throws IOException, MediaWikiApiErrorException {
+		Validate.notNull(language,
+				"Language parameter cannot be null when setting a label");
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("language", language);
+		if (value != null) {
+			parameters.put("value", value);
+		}
+		
+		return performAPIAction("wbsetlabel", id, site, title, newEntity, parameters, summary, baserevid, bot);
+	}
+	
+	/**
+	 * Executes the API action "wbsetaliases" for the given parameters.
+	 * 
+	 * @param id
+	 *            the id of the entity to be edited; if used, the site and title
+	 *            parameters must be null
+	 * @param site
+	 *            when selecting an entity by title, the site key for the title,
+	 *            e.g., "enwiki"; if used, title must also be given but id must
+	 *            be null
+	 * @param title
+	 *            string used to select an entity by title; if used, site must
+	 *            also be given but id must be null
+	 * @param newEntity
+	 *            used for creating a new entity of a given type; the value
+	 *            indicates the intended entity type; possible values include
+	 *            "item" and "property"; if used, the parameters id, site, and
+	 *            title must be null
+	 * @param language
+	 *            the language code for the label
+	 * @param set
+	 *            the value of the aliases to set. This will erase any existing
+	 *            aliases in this language and replace them by the given list.
+     * @param bot
+	 *            if true, edits will be flagged as "bot edits" provided that
+	 *            the logged in user is in the bot group; for regular users, the
+	 *            flag will just be ignored
+	 * @param baserevid
+	 *            the revision of the data that the edit refers to or 0 if this
+	 *            should not be submitted; when used, the site will ensure that
+	 *            no edit has happened since this revision to detect edit
+	 *            conflicts; it is recommended to use this whenever in all
+	 *            operations where the outcome depends on the state of the
+	 *            online data
+	 * @param summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @return the JSON response from the API
+	 * @throws IOException
+	 *             if there was an IO problem. such as missing network
+	 *             connection
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public EntityDocument wbSetAliases(String id, String site, String title,
+			String newEntity, String language, List<String> set,
+			boolean bot, long baserevid, String summary)
+					throws IOException, MediaWikiApiErrorException {
+		Validate.notNull(language,
+				"Language parameter cannot be null when setting aliases");
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("language", language);
+		if (set != null) {
+			parameters.put("set", ApiConnection.implodeObjects(set));
+		}
+		
+		return performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, baserevid, bot);
+	}
+	
+	/**
+	 * Executes an editing API action for the given parameters. The resulting
+	 * entity returned by Wikibase is returned as a result.
+	 * <p>
+	 * See the <a href=
+	 * "https://www.wikidata.org/w/api.php?action=help&modules=main"
+	 * >online API documentation</a> for further information.
+	 *
+	 * @param id
+	 *            the id of the entity to be edited; if used, the site and title
+	 *            parameters must be null
+	 * @param site
+	 *            when selecting an entity by title, the site key for the title,
+	 *            e.g., "enwiki"; if used, title must also be given but id must
+	 *            be null
+	 * @param title
+	 *            string used to select an entity by title; if used, site must
+	 *            also be given but id must be null
+	 * @param newEntity
+	 *            used for creating a new entity of a given type; the value
+	 *            indicates the intended entity type; possible values include
+	 *            "item" and "property"; if used, the parameters id, site, and
+	 *            title must be null
+	 * @param parameters
+	 *            the other parameters which are specific to the particular
+	 *            action being carried out
+	 * @param bot
+	 *            if true, edits will be flagged as "bot edits" provided that
+	 *            the logged in user is in the bot group; for regular users, the
+	 *            flag will just be ignored
+	 * @param baserevid
+	 *            the revision of the data that the edit refers to or 0 if this
+	 *            should not be submitted; when used, the site will ensure that
+	 *            no edit has happened since this revision to detect edit
+	 *            conflicts; it is recommended to use this whenever in all
+	 *            operations where the outcome depends on the state of the
+	 *            online data
+	 * @param summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @return the JSON response from the API
+	 * @throws IOException
+	 *             if there was an IO problem. such as missing network
+	 *             connection
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
+	 */
+	private EntityDocument performAPIAction(
+			String action,
+			String id,
+			String site,
+			String title,
+			String newEntity,
+			Map<String, String> parameters,
+			String summary,
+			long baserevid,
+			boolean bot)
+			throws IOException, MediaWikiApiErrorException {
+		
+		parameters.put(ApiConnection.PARAM_ACTION, action);
+		System.out.println("----"+action+"-----");
+		
 		if (newEntity != null) {
 			parameters.put("new", newEntity);
 			if (title != null || site != null || id != null) {
@@ -306,21 +504,15 @@ public class WbEditEntityAction {
 			throw new IllegalArgumentException(
 					"This action must create a new item, or specify an id, or specify a site and title.");
 		}
-
-		parameters.put("data", data);
-
+		
 		if (bot) {
 			parameters.put("bot", "");
 		}
-
+		
 		if (baserevid != 0) {
 			parameters.put("baserevid", Long.toString(baserevid));
 		}
-
-		if (clear) {
-			parameters.put("clear", "");
-		}
-
+		
 		if (summary != null) {
 			parameters.put("summary", summary);
 		}
@@ -337,13 +529,26 @@ public class WbEditEntityAction {
 		}
 
 		checkEditSpeed();
-
 		EntityDocument result = null;
+		
 		int retry = 5;
 		MediaWikiApiErrorException lastException = null;
 		while (retry > 0) {
 			try {
-				result = doWbEditEntity(parameters);
+				JsonNode root = this.connection.sendJsonRequest("POST", parameters);
+				System.out.println(root.toString());
+				if (root.has("item")) {
+					result = parseJsonResponse(root.path("item"));
+				} else if (root.has("property")) {
+					// TODO: not tested because of missing
+					// permissions
+					result = parseJsonResponse(root.path("property"));
+				} else if (root.has("entity")) {
+					result = parseJsonResponse(root.path("entity"));
+				} else {
+					throw new JsonMappingException(
+							"No entity document found in API response.");
+				}
 				break;
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
@@ -368,36 +573,6 @@ public class WbEditEntityAction {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Executes a call to wbeditentity. Minimal error handling.
-	 *
-	 * @param parameters
-	 *            the parameters to be used in the call
-	 * @return the entity document that is returned, or null in case of errors
-	 * @throws IOException
-	 *             if there were IO errors
-	 * @throws MediaWikiApiErrorException
-	 *             if the API returned an error
-	 */
-	private EntityDocument doWbEditEntity(Map<String, String> parameters)
-			throws IOException, MediaWikiApiErrorException {
-
-		JsonNode root = this.connection.sendJsonRequest("POST", parameters);
-
-		if (root.has("item")) {
-			return parseJsonResponse(root.path("item"));
-		} else if (root.has("property")) {
-			// TODO: not tested because of missing
-			// permissions
-			return parseJsonResponse(root.path("property"));
-		} else if (root.has("entity")) {
-			return parseJsonResponse(root.path("entity"));
-		} else {
-			throw new JsonMappingException(
-					"No entity document found in API response.");
-		}
 	}
 
 	/**
@@ -460,7 +635,7 @@ public class WbEditEntityAction {
 
 	/**
 	 * Makes sure that we are not editing too fast. The method stores the last
-	 * {@link WbEditEntityAction#editTimeWindow} time points when an edit was
+	 * {@link WbEditingAction#editTimeWindow} time points when an edit was
 	 * made. If the time since the oldest edit in this window is shorter than
 	 * {@link #averageMsecsPerEdit} milliseconds, then the method will pause the
 	 * thread for the remaining time.
