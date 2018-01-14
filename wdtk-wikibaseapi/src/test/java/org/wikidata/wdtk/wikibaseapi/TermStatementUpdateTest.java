@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +77,7 @@ public class TermStatementUpdateTest {
 		// Check JSON output
 		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"value\":\"Apfelstrudel\"}}}",
 				su.getJsonUpdateString());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getLabelUpdates().get("de").getText(), alias.getText());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -121,7 +122,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getAliasUpdates().keySet());
 		assertEquals(alias.getText(), su.getAliasUpdates().get("fr").get(0).getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -145,7 +146,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getAliasUpdates().size(), 1);
 		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"}]}}",
 				su.getJsonUpdateString());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -170,7 +171,7 @@ public class TermStatementUpdateTest {
 		assertEquals(2, su.getAliasUpdates().get("fr").size());
 		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"},{\"language\":\"fr\",\"value\":\"Apfelstrudeln\"}]}}",
 				su.getJsonUpdateString());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -192,7 +193,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
-		assertTrue(su.isNull());
+		assertTrue(su.isEmptyEdit());
 	}
 	
 	/**
@@ -216,7 +217,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getLabelUpdates().keySet());
 		assertEquals(su.getLabelUpdates().get("fr").getText(), alias.getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -240,7 +241,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getAliasUpdates().get("fr").size(), 0);
 		assertEquals("{\"aliases\":{\"fr\":[]}}",
 				su.getJsonUpdateString());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -265,7 +266,7 @@ public class TermStatementUpdateTest {
 		assertEquals("délicieuse pâtisserie aux pommes", su.getDescriptionUpdates().get("fr").getText());
 		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"délicieuse pâtisserie aux pommes\"}}}",
 				su.getJsonUpdateString());
-		assertTrue(!su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -282,7 +283,7 @@ public class TermStatementUpdateTest {
 				Collections.<MonolingualTextValue> emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
-		assertTrue(su.isNull());
+		assertTrue(su.isEmptyEdit());
 	}
 	
 	/**
@@ -303,7 +304,7 @@ public class TermStatementUpdateTest {
 				Collections.<MonolingualTextValue> emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
-		assertTrue(su.isNull());
+		assertTrue(su.isEmptyEdit());
 	}
 	
 	/**
@@ -324,6 +325,6 @@ public class TermStatementUpdateTest {
 				Collections.<MonolingualTextValue> emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
-		assertTrue(su.isNull());
+		assertTrue(su.isEmptyEdit());
 	}
 }

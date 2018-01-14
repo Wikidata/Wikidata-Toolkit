@@ -499,7 +499,7 @@ public class WikibaseDataEditor {
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
 		
-		if (statementUpdate.isNull()) {
+		if (statementUpdate.isEmptyEdit()) {
 			return currentDocument;
 		} else {
 			return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
@@ -557,7 +557,7 @@ public class WikibaseDataEditor {
 				addStatements, deleteStatements,
 				addLabels, addDescriptions, addAliases, deleteAliases);
 		
-		if (termStatementUpdate.isNull()) {
+		if (termStatementUpdate.isEmptyEdit()) {
 			return currentDocument;
 		} else {
 			return (ItemDocument) this.wbEditEntityAction.wbEditEntity(currentDocument
@@ -573,9 +573,6 @@ public class WikibaseDataEditor {
 	 * 
 	 * @param currentDocument
 	 * 			the document to perform a null edit on
-	 * @param summary
-	 * 			a summary that can be passed to Wikibase (although it is not
-	 * 			clear if it is kept at all)
 	 * @throws MediaWikiApiErrorException
 	 * 	        if the API returns errors
 	 * @throws IOException 
@@ -586,7 +583,7 @@ public class WikibaseDataEditor {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
 				.getEntityDocument(itemId.getId());
 		
-		nullEdit(currentDocument, summary);
+		nullEdit(currentDocument);
 	}
 	
 	/**
@@ -595,20 +592,17 @@ public class WikibaseDataEditor {
 	 * 
 	 * @param currentDocument
 	 * 			the document to perform a null edit on
-	 * @param summary
-	 * 			a summary that can be passed to Wikibase (although it is not
-	 * 			clear if it is kept at all)
 	 * @throws MediaWikiApiErrorException
 	 * 	        if the API returns errors
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
-	public <T extends StatementDocument> void nullEdit(PropertyIdValue propertyId, String summary)
+	public <T extends StatementDocument> void nullEdit(PropertyIdValue propertyId)
 			throws IOException, MediaWikiApiErrorException {
 		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
 				.getEntityDocument(propertyId.getId());
 		
-		nullEdit(currentDocument, summary);
+		nullEdit(currentDocument);
 	}
 	
 	/**
@@ -617,16 +611,13 @@ public class WikibaseDataEditor {
 	 * 
 	 * @param currentDocument
 	 * 			the document to perform a null edit on
-	 * @param summary
-	 * 			a summary that can be passed to Wikibase (although it is not
-	 * 			clear if it is kept at all)
 	 * @throws MediaWikiApiErrorException
 	 * 	        if the API returns errors
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends StatementDocument> T nullEdit(T currentDocument, String summary)
+	public <T extends StatementDocument> T nullEdit(T currentDocument)
 			throws IOException, MediaWikiApiErrorException {
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				Collections.<Statement>emptyList(), Collections.<Statement>emptyList());
@@ -634,6 +625,6 @@ public class WikibaseDataEditor {
 	    return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), summary);
+				.getRevisionId(), null);
 	}
 }

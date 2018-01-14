@@ -275,7 +275,7 @@ public class StatementUpdateTest {
 		assertTrue(su.toKeep.containsKey(P2));
 		assertEquals(1, su.toKeep.get(P2).size());
 		assertEquals(s3, su.toKeep.get(P2).get(0).statement);
-		assertFalse(su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 
 	@Test
@@ -303,7 +303,7 @@ public class StatementUpdateTest {
 		assertTrue(su.toKeep.get(P1).get(0).write);
 		assertEquals(s2, su.toKeep.get(P1).get(1).statement);
 		assertFalse(su.toKeep.get(P1).get(1).write);
-		assertFalse(su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	@Test
@@ -320,7 +320,7 @@ public class StatementUpdateTest {
 		
 		StatementUpdate su = new StatementUpdate(currentDocument,
 				Arrays.asList(s1dup), Arrays.asList(s2));
-		assertTrue(su.isNull());
+		assertTrue(su.isEmptyEdit());
 		
 	}
 
@@ -344,7 +344,7 @@ public class StatementUpdateTest {
 		assertEquals(1, su.toKeep.get(P3).size());
 		assertEquals(s1, su.toKeep.get(P3).get(0).statement);
 		assertTrue(su.toKeep.get(P3).get(0).write);
-		assertFalse(su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 
 	@Test
@@ -379,7 +379,7 @@ public class StatementUpdateTest {
 		assertEquals(Arrays.asList("ID-s2", "ID-s5"), su.toDelete);
 		assertEquals(0, su.toKeep.size());
 		assertEquals(expectedJson, actualJson);
-		assertFalse(su.isNull());
+		assertFalse(su.isEmptyEdit());
 	}
 
 }

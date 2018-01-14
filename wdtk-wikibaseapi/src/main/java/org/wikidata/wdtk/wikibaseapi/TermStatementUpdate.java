@@ -302,8 +302,8 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     @Override
     @JsonIgnore
-    public boolean isNull() {
-    	return (super.isNull() && 
+    public boolean isEmptyEdit() {
+    	return (super.isEmptyEdit() && 
     			getLabelUpdates().isEmpty() &&
     			getDescriptionUpdates().isEmpty() &&
     			getAliasUpdates().isEmpty());

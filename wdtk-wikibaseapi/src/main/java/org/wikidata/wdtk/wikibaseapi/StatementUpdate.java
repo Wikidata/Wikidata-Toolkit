@@ -196,7 +196,7 @@ public class StatementUpdate {
 	 * of a null edit are desired.
 	 */
 	@JsonIgnore
-	public boolean isNull() {
+	public boolean isEmptyEdit() {
 		return getUpdatedStatements().isEmpty();
 	}
 

@@ -471,7 +471,6 @@ public class WikibaseDataEditorTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "wbeditentity");
 		params.put("id", "Q1234");
-		params.put("summary", "My summary");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
 		params.put("baserevid", "1234");
@@ -481,7 +480,7 @@ public class WikibaseDataEditorTest {
 		String expectedResult = "{\"entity\":"+data+",\"success\":1}";
 		con.setWebResource(params, expectedResult);
 		
-		ItemDocument nullEditedItemDocument = wde.nullEdit(itemDocument, "My summary");
+		ItemDocument nullEditedItemDocument = wde.nullEdit(itemDocument);
 		
 		assertEquals(itemDocument, nullEditedItemDocument);
 		assertEquals(9, wde.getRemainingEdits());
