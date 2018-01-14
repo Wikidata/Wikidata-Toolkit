@@ -21,6 +21,7 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -79,7 +80,7 @@ public class WmfOnlineDailyDumpFileTest {
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
-		assertTrue(!dump.isAvailable());
+		assertFalse(dump.isAvailable());
 		assertEquals(dateStamp, dump.getDateStamp());
 	}
 
@@ -92,7 +93,7 @@ public class WmfOnlineDailyDumpFileTest {
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
-		assertTrue(!dump.isAvailable());
+		assertFalse(dump.isAvailable());
 		assertEquals(dateStamp, dump.getDateStamp());
 	}
 
@@ -106,7 +107,7 @@ public class WmfOnlineDailyDumpFileTest {
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
 
-		assertTrue(!dump.isAvailable());
+		assertFalse(dump.isAvailable());
 	}
 
 	@Test(expected = IOException.class)
