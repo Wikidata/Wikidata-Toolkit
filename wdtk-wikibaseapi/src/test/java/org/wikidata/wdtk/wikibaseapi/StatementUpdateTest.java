@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,10 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class StatementUpdateTest {
 
@@ -270,6 +275,7 @@ public class StatementUpdateTest {
 		assertTrue(su.toKeep.containsKey(P2));
 		assertEquals(1, su.toKeep.get(P2).size());
 		assertEquals(s3, su.toKeep.get(P2).get(0).statement);
+		assertFalse(su.isEmptyEdit());
 	}
 
 	@Test
@@ -297,6 +303,25 @@ public class StatementUpdateTest {
 		assertTrue(su.toKeep.get(P1).get(0).write);
 		assertEquals(s2, su.toKeep.get(P1).get(1).statement);
 		assertFalse(su.toKeep.get(P1).get(1).write);
+		assertFalse(su.isEmptyEdit());
+	}
+	
+	@Test
+	public void testNullEdit() {
+		Statement s1 = StatementBuilder.forSubjectAndProperty(Q1, P1)
+				.withValue(Q1).withId("ID-s1").build();
+		Statement s1dup = StatementBuilder.forSubjectAndProperty(Q1, P1)
+				.withValue(Q1).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(Q1, P1)
+				.withValue(Q1).withId("ID-s2").build();
+		
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
+				.withStatement(s1).build();
+		
+		StatementUpdate su = new StatementUpdate(currentDocument,
+				Arrays.asList(s1dup), Arrays.asList(s2));
+		assertTrue(su.isEmptyEdit());
+		
 	}
 
 	@Test
@@ -319,10 +344,11 @@ public class StatementUpdateTest {
 		assertEquals(1, su.toKeep.get(P3).size());
 		assertEquals(s1, su.toKeep.get(P3).get(0).statement);
 		assertTrue(su.toKeep.get(P3).get(0).write);
+		assertFalse(su.isEmptyEdit());
 	}
 
 	@Test
-	public void testDelete() {
+	public void testDelete() throws JsonProcessingException, IOException {
 		Statement s1 = StatementBuilder.forSubjectAndProperty(Q1, P1)
 				.withValue(Q1).withId("ID-s1").build();
 		Statement s2 = StatementBuilder.forSubjectAndProperty(Q1, P1)
@@ -345,12 +371,15 @@ public class StatementUpdateTest {
 		StatementUpdate su = new StatementUpdate(currentDocument,
 				Collections.<Statement> emptyList(), Arrays.asList(s2, s3, s4,
 						s5));
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode expectedJson = mapper.readTree("{\"claims\":[{\"id\":\"ID-s2\",\"remove\":\"\"},{\"id\":\"ID-s5\",\"remove\":\"\"}]}");
+		JsonNode actualJson = mapper.readTree(su.getJsonUpdateString());
 
 		assertEquals(Arrays.asList("ID-s2", "ID-s5"), su.toDelete);
 		assertEquals(0, su.toKeep.size());
-		assertEquals(
-				"{\"claims\":[{\"id\":\"ID-s2\",\"remove\":\"\"},{\"id\":\"ID-s5\",\"remove\":\"\"}]}",
-				su.getJsonUpdateString());
+		assertEquals(expectedJson, actualJson);
+		assertFalse(su.isEmptyEdit());
 	}
 
 }

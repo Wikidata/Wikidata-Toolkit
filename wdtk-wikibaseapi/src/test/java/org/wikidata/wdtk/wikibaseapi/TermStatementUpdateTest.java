@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,8 +75,9 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getDescriptionUpdates().isEmpty());
 		
 		// Check JSON output
-		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"text\":\"Apfelstrudel\"}}}",
+		assertEquals("{\"labels\":{\"de\":{\"language\":\"de\",\"value\":\"Apfelstrudel\"}}}",
 				su.getJsonUpdateString());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -98,6 +100,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getLabelUpdates().get("de").getText(), alias.getText());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -119,6 +122,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getAliasUpdates().keySet());
 		assertEquals(alias.getText(), su.getAliasUpdates().get("fr").get(0).getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -140,8 +144,9 @@ public class TermStatementUpdateTest {
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(su.getAliasUpdates().size(), 1);
-		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"}]}}",
+		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"}]}}",
 				su.getJsonUpdateString());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -164,8 +169,9 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(1, su.getAliasUpdates().size());
 		assertEquals(2, su.getAliasUpdates().get("fr").size());
-		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"text\":\"Apfelstrudel\"},{\"language\":\"fr\",\"text\":\"Apfelstrudeln\"}]}}",
+		assertEquals("{\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\"Apfelstrudel\"},{\"language\":\"fr\",\"value\":\"Apfelstrudeln\"}]}}",
 				su.getJsonUpdateString());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -187,6 +193,7 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertTrue(su.isEmptyEdit());
 	}
 	
 	/**
@@ -210,6 +217,7 @@ public class TermStatementUpdateTest {
 		assertEquals(Collections.singleton("fr"), su.getLabelUpdates().keySet());
 		assertEquals(su.getLabelUpdates().get("fr").getText(), alias.getText());
 		assertTrue(su.getDescriptionUpdates().isEmpty());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -233,6 +241,7 @@ public class TermStatementUpdateTest {
 		assertEquals(su.getAliasUpdates().get("fr").size(), 0);
 		assertEquals("{\"aliases\":{\"fr\":[]}}",
 				su.getJsonUpdateString());
+		assertFalse(su.isEmptyEdit());
 	}
 	
 	/**
@@ -255,7 +264,67 @@ public class TermStatementUpdateTest {
 		assertTrue(su.getAliasUpdates().isEmpty());
 		assertEquals(Collections.singleton("fr"), su.getDescriptionUpdates().keySet());
 		assertEquals("délicieuse pâtisserie aux pommes", su.getDescriptionUpdates().get("fr").getText());
-		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"text\":\"délicieuse pâtisserie aux pommes\"}}}",
+		assertEquals("{\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"délicieuse pâtisserie aux pommes\"}}}",
 				su.getJsonUpdateString());
+		assertFalse(su.isEmptyEdit());
+	}
+	
+	/**
+	 * Adding a label, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalLabel() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.singletonList(label),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isEmptyEdit());
+	}
+	
+	/**
+	 * Adding a description, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalDescription() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("délicieuse pâtisserie aux pommes", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
+				.withLabel(label)
+				.withDescription(description)
+				.build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.singletonList(description),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isEmptyEdit());
+	}
+	
+	/**
+	 * Adding an alias, identical to the current one
+	 */
+	@Test
+	public void testAddIdenticalAlias() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
+		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
+		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
+				.withLabel(label)
+				.withAlias(alias)
+				.build();
+		TermStatementUpdate su = makeUpdate(currentDocument,
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.<MonolingualTextValue> emptyList(),
+				Collections.singletonList(alias),
+				Collections.<MonolingualTextValue> emptyList());
+		
+		assertEquals("{}", su.getJsonUpdateString());
+		assertTrue(su.isEmptyEdit());
 	}
 }
