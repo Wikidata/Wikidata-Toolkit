@@ -76,13 +76,13 @@ public class GlobeCoordinatesValueConverter extends
 				RdfWriter.WB_GLOBE_COORDINATES_VALUE);
 
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_LATITUDE, Double.valueOf(value.getLatitude())
+				RdfWriter.WB_GEO_LATITUDE, Double.valueOf(value.getLatitude())
 						.toString(), RdfWriter.XSD_DOUBLE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_LONGITUDE, Double.valueOf(value.getLongitude())
+				RdfWriter.WB_GEO_LONGITUDE, Double.valueOf(value.getLongitude())
 						.toString(), RdfWriter.XSD_DOUBLE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_GC_PRECISION, Double.valueOf(value.getPrecision())
+				RdfWriter.WB_GEO_PRECISION, Double.valueOf(value.getPrecision())
 						.toString(), RdfWriter.XSD_DOUBLE);
 
 		URI globeUri;
@@ -95,12 +95,17 @@ public class GlobeCoordinatesValueConverter extends
 			globeUri = this.rdfWriter.getUri(GlobeCoordinatesValue.GLOBE_EARTH);
 		}
 
-		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.WB_GLOBE,
+		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.WB_GEO_GLOBE,
 				globeUri);
 	}
 
 	private Literal getSimpleGeoValue(GlobeCoordinatesValue value) {
 		StringBuilder builder = new StringBuilder();
+		if(!value.getGlobe().equals(GlobeCoordinatesValue.GLOBE_EARTH)) {
+			builder.append("<")
+					.append(value.getGlobe().replace(">", "%3E"))
+					.append("> ");
+		}
 		builder.append("Point(");
 		builder.append(value.getLatitude());
 		builder.append(" ");

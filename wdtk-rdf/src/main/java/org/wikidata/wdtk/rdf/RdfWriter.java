@@ -114,24 +114,26 @@ public class RdfWriter {
 			.createURI(Vocabulary.WB_GLOBE_COORDINATES_VALUE);
 	public static final URI WB_PROPERTY_TYPE = factory
 			.createURI(Vocabulary.WB_PROPERTY_TYPE);
-	public static final URI WB_GLOBE = factory.createURI(Vocabulary.WB_GLOBE);
-	public static final URI WB_LATITUDE = factory
-			.createURI(Vocabulary.WB_LATITUDE);
-	public static final URI WB_LONGITUDE = factory
-			.createURI(Vocabulary.WB_LONGITUDE);
-	public static final URI WB_GC_PRECISION = factory
-			.createURI(Vocabulary.WB_GC_PRECISION);
+	public static final URI WB_GEO_GLOBE = factory.createURI(Vocabulary.WB_GEO_GLOBE);
+	public static final URI WB_GEO_LATITUDE = factory
+			.createURI(Vocabulary.WB_GEO_LATITUDE);
+	public static final URI WB_GEO_LONGITUDE = factory
+			.createURI(Vocabulary.WB_GEO_LONGITUDE);
+	public static final URI WB_GEO_PRECISION = factory
+			.createURI(Vocabulary.WB_GEO_PRECISION);
 	public static final URI WB_TIME = factory.createURI(Vocabulary.WB_TIME);
 	public static final URI WB_TIME_PRECISION = factory
 			.createURI(Vocabulary.WB_TIME_PRECISION);
-	public static final URI WB_PREFERRED_CALENDAR = factory
-			.createURI(Vocabulary.WB_PREFERRED_CALENDAR);
-	public static final URI WB_NUMERIC_VALUE = factory
-			.createURI(Vocabulary.WB_NUMERIC_VALUE);
-	public static final URI WB_LOWER_BOUND = factory
-			.createURI(Vocabulary.WB_LOWER_BOUND);
-	public static final URI WB_UPPER_BOUND = factory
-			.createURI(Vocabulary.WB_UPPER_BOUND);
+	public static final URI WB_TIME_TIMEZONE = factory
+			.createURI(Vocabulary.WB_TIME_TIMEZONE);
+	public static final URI WB_TIME_CALENDAR_MODEL = factory
+			.createURI(Vocabulary.WB_TIME_CALENDAR_MODEL);
+	public static final URI WB_QUANTITY_AMOUNT = factory
+			.createURI(Vocabulary.WB_QUANTITY_AMOUNT);
+	public static final URI WB_QUANTITY_LOWER_BOUND = factory
+			.createURI(Vocabulary.WB_QUANTITY_LOWER_BOUND);
+	public static final URI WB_QUANTITY_UPPER_BOUND = factory
+			.createURI(Vocabulary.WB_QUANTITY_UPPER_BOUND);
 	public static final URI WB_QUANTITY_UNIT = factory
 			.createURI(Vocabulary.WB_QUANTITY_UNIT);
 	public static final URI OGC_LOCATION = factory

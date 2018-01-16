@@ -12,13 +12,13 @@ prov:wasDerivedFrom a owl:ObjectProperty .
 
 wo:time a owl:DatatypeProperty .
 
-wo:lowerBound a owl:DatatypeProperty .
+wo:quantityLowerBound a owl:DatatypeProperty .
 
 wo:quantityUnit a owl:ObjectProperty .
 
 wo:qualifier a owl:ObjectProperty .
 
-wo:latitude a owl:DatatypeProperty .
+wo:geoLatitude a owl:DatatypeProperty .
 
 wo:Property a owl:Class .
 
@@ -26,11 +26,13 @@ schema:inLanguage a owl:DatatypeProperty .
 
 wo:qualifierValue a owl:ObjectProperty .
 
-wo:upperBound a owl:DatatypeProperty .
+wo:quantityUpperBound a owl:DatatypeProperty .
 
 wo:directClaim a owl:ObjectProperty .
 
-wo:globe a owl:ObjectProperty .
+wo:geoGlobe a owl:ObjectProperty .
+
+wo:timeTimezone a owl:DatatypeProperty .
 
 wo:claim a owl:ObjectProperty .
 
@@ -40,11 +42,11 @@ schema:about a owl:ObjectProperty .
 
 wo:propertyType a owl:ObjectProperty .
 
-wo:preferredCalendar a owl:ObjectProperty .
+wo:timeCalendarModel a owl:ObjectProperty .
 
-wo:gcPrecision a owl:DatatypeProperty .
+wo:geoPrecision a owl:DatatypeProperty .
 
-wo:longitude a owl:DatatypeProperty .
+wo:geoLongitude a owl:DatatypeProperty .
 
 wo:GlobeCoordinatesValue a owl:Class .
 
@@ -78,7 +80,7 @@ wo:Statement a owl:Class .
 
 wo:statementValue a owl:ObjectProperty .
 
-wo:numericValue a owl:DatatypeProperty .
+wo:quantityAmount a owl:DatatypeProperty .
 
 wo:BestRank a owl:Class .
 
@@ -95,9 +97,9 @@ wo:BestRank a owl:Class .
 
 <http://www.wikidata.org/entity/statement/Q10-none2> a wo:Statement , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/value/P569> id:VTec11d94e4f5bb7b00a79196734f49066 ;
-	<http://www.wikidata.org/prop/statement/P569> "0306-11-03"^^xsd:date ;
+	<http://www.wikidata.org/prop/statement/P569> "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	<http://www.wikidata.org/prop/qualifier/value/P15> id:VTec11d94e4f5bb7b00a79196734f49066 ;
-	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03"^^xsd:date ;
+	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	prov:wasDerivedFrom <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
 	wo:rank wo:NormalRank .
 
@@ -106,9 +108,10 @@ wo:BestRank a owl:Class .
 	wo:rank wo:NormalRank .
 
 id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
-	wo:time "0306-11-03"^^xsd:date ;
+	wo:time "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	wo:timePrecision "32"^^xsd:int ;
-	wo:preferredCalendar id:Q1985727 .
+	wo:timeTimezone "0"^^xsd:int ;
+	wo:timeCalendarModel id:Q1985727 .
 
 <http://www.wikidata.org/prop/P10> a owl:ObjectProperty .
 

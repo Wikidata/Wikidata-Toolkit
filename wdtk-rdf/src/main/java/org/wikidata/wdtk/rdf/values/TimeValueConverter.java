@@ -88,8 +88,11 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 		this.rdfWriter.writeTripleIntegerObject(resource,
 				RdfWriter.WB_TIME_PRECISION, value.getPrecision());
+		this.rdfWriter.writeTripleIntegerObject(resource,
+				RdfWriter.WB_TIME_TIMEZONE,
+				value.getTimezoneOffset());
 		this.rdfWriter.writeTripleUriObject(resource,
-				RdfWriter.WB_PREFERRED_CALENDAR,
+				RdfWriter.WB_TIME_CALENDAR_MODEL,
 				value.getPreferredCalendarModel());
 	}
 
@@ -109,33 +112,18 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 *            the object to use for creating the literal
 	 * @return the RDF literal
 	 */
-	public static Literal getTimeLiteral(TimeValue value, RdfWriter rdfWriter) {
-		String xsdYearString;
-		if (value.getYear() == 0
-				|| (value.getYear() < 0 && value.getPrecision() >= TimeValue.PREC_YEAR)) {
-			xsdYearString = String.format("%05d", value.getYear() - 1);
-		} else {
-			xsdYearString = String.format("%04d", value.getYear());
+	private static Literal getTimeLiteral(TimeValue value, RdfWriter rdfWriter) {
+		long year = value.getYear();
+
+		//Year normalization
+		if (year == 0 || (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR)) {
+			year--;
 		}
 
-		if (value.getPrecision() >= TimeValue.PREC_DAY) {
-			if (value.getPrecision() > TimeValue.PREC_DAY) {
-				logger.warn("Time values with times of day not supported yet. Exporting only date of "
-						+ value.toString());
-			}
-			return rdfWriter.getLiteral(
-					xsdYearString + "-"
-							+ String.format("%02d", value.getMonth()) + "-"
-							+ String.format("%02d", value.getDay()),
-					RdfWriter.XSD_DATE);
-		} else if (value.getPrecision() == TimeValue.PREC_MONTH) {
-			return rdfWriter.getLiteral(
-					xsdYearString + "-"
-							+ String.format("%02d", value.getMonth()),
-					RdfWriter.XSD_G_YEAR_MONTH);
-		} else { // (value.getPrecision() <= TimeValue.PREC_YEAR)
-			return rdfWriter.getLiteral(xsdYearString, RdfWriter.XSD_G_YEAR);
-		}
+		String timestamp = String.format("%04d-%02d-%02dT%02d:%02d:%02dZ",
+				year, value.getMonth(), value.getDay(),
+				value.getHour(), value.getMinute(), value.getSecond());
+		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
 	}
 
 }

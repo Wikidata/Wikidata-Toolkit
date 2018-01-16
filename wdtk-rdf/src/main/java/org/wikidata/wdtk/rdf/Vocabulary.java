@@ -57,7 +57,6 @@ public class Vocabulary {
 	}
 
 	// Prefixes
-	public static final String PREFIX_WIKIDATA = "http://www.wikidata.org/entity/";
 	public static final String PREFIX_WIKIDATA_STATEMENT = "http://www.wikidata.org/entity/statement/";
 
 	public static final String PREFIX_PROPERTY = "http://www.wikidata.org/prop/";
@@ -119,7 +118,6 @@ public class Vocabulary {
 	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
 	static final String VALUE_PREFIX_QUANTITY = "VQ";
 	static final String VALUE_PREFIX_TIME = "VT";
-	static final String VALUE_PREFIX_REFERENCE = "R";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -270,33 +268,33 @@ public class Vocabulary {
 	/**
 	 * Property for defining the globe of a globe coordinates value.
 	 */
-	public static final String WB_GLOBE = PREFIX_WBONTO + "globe";
+	public static final String WB_GEO_GLOBE = PREFIX_WBONTO + "geoGlobe";
 	static {
-		VOCABULARY_TYPES.put(WB_GLOBE, OWL_OBJECT_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_GLOBE, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the latitude of a globe coordinates value.
 	 */
-	public static final String WB_LATITUDE = PREFIX_WBONTO + "latitude";
+	public static final String WB_GEO_LATITUDE = PREFIX_WBONTO + "geoLatitude";
 	static {
-		VOCABULARY_TYPES.put(WB_LATITUDE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_LATITUDE, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the longitude of a globe coordinates value.
 	 */
-	public static final String WB_LONGITUDE = PREFIX_WBONTO + "longitude";
+	public static final String WB_GEO_LONGITUDE = PREFIX_WBONTO + "geoLongitude";
 	static {
-		VOCABULARY_TYPES.put(WB_LONGITUDE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_LONGITUDE, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the precision of a globe coordinates value.
 	 */
-	public static final String WB_GC_PRECISION = PREFIX_WBONTO + "gcPrecision";
+	public static final String WB_GEO_PRECISION = PREFIX_WBONTO + "geoPrecision";
 	static {
-		VOCABULARY_TYPES.put(WB_GC_PRECISION, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_GEO_PRECISION, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
@@ -317,37 +315,48 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Property for defining the timezone of a time value.
+	 */
+	public static final String WB_TIME_TIMEZONE = PREFIX_WBONTO
+			+ "timeTimezone";
+	static {
+		VOCABULARY_TYPES.put(WB_TIME_TIMEZONE, OWL_DATATYPE_PROPERTY);
+	}
+
+	/**
 	 * Property for defining the preferred calendar of a time value.
 	 */
-	public static final String WB_PREFERRED_CALENDAR = PREFIX_WBONTO
-			+ "preferredCalendar";
+	public static final String WB_TIME_CALENDAR_MODEL = PREFIX_WBONTO
+			+ "timeCalendarModel";
 	static {
-		VOCABULARY_TYPES.put(WB_PREFERRED_CALENDAR, OWL_OBJECT_PROPERTY);
+		VOCABULARY_TYPES.put(WB_TIME_CALENDAR_MODEL, OWL_OBJECT_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the numeric value of a quantity value.
 	 */
-	public static final String WB_NUMERIC_VALUE = PREFIX_WBONTO
-			+ "numericValue";
+	public static final String WB_QUANTITY_AMOUNT = PREFIX_WBONTO
+			+ "quantityAmount";
 	static {
-		VOCABULARY_TYPES.put(WB_NUMERIC_VALUE, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_AMOUNT, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the lower bound of a quantity value.
 	 */
-	public static final String WB_LOWER_BOUND = PREFIX_WBONTO + "lowerBound";
+	public static final String WB_QUANTITY_LOWER_BOUND = PREFIX_WBONTO
+			+ "quantityLowerBound";
 	static {
-		VOCABULARY_TYPES.put(WB_LOWER_BOUND, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_LOWER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**
 	 * Property for defining the upper bound of a quantity value.
 	 */
-	public static final String WB_UPPER_BOUND = PREFIX_WBONTO + "upperBound";
+	public static final String WB_QUANTITY_UPPER_BOUND = PREFIX_WBONTO
+			+ "quantityUpperBound";
 	static {
-		VOCABULARY_TYPES.put(WB_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
+		VOCABULARY_TYPES.put(WB_QUANTITY_UPPER_BOUND, OWL_DATATYPE_PROPERTY);
 	}
 
 	/**

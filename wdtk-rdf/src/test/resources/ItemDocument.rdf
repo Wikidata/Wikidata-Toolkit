@@ -12,9 +12,9 @@
 
 <http://www.wikidata.org/entity/statement/Q10-none2> a <http://wikiba.se/ontology#Statement> , <http://wikiba.se/ontology#BestRank> ;
 	<http://www.wikidata.org/prop/statement/value/P569> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
-	<http://www.wikidata.org/prop/statement/P569> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	<http://www.wikidata.org/prop/statement/P569> "0306-11-03T13:07:06Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://www.wikidata.org/prop/qualifier/value/P15> <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> ;
-	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03T13:07:06Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://www.w3.org/ns/prov#wasDerivedFrom> <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
@@ -23,9 +23,10 @@
 	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
 
 <http://www.wikidata.org/entity/VTec11d94e4f5bb7b00a79196734f49066> a <http://wikiba.se/ontology#TimeValue> ;
-	<http://wikiba.se/ontology#time> "0306-11-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	<http://wikiba.se/ontology#time> "0306-11-03T13:07:06Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://wikiba.se/ontology#timePrecision> "32"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://wikiba.se/ontology#preferredCalendar> <http://www.wikidata.org/entity/Q1985727> .
+	<http://wikiba.se/ontology#timeTimezone> "0"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://wikiba.se/ontology#timeCalendarModel> <http://www.wikidata.org/entity/Q1985727> .
 	
 <http://www.wikidata.org/prop/novalue/P10> a <http://www.w3.org/2002/07/owl#Class> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x1 .	
