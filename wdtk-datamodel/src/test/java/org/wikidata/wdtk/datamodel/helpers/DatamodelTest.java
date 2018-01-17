@@ -332,7 +332,8 @@ public class DatamodelTest {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME),
+				0);
 		assertEquals(o1, o2);
 	}
 
@@ -351,7 +352,8 @@ public class DatamodelTest {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Collections.emptyMap());
+				Collections.emptyMap(),
+				0);
 		assertEquals(o1, o2);
 	}
 }
