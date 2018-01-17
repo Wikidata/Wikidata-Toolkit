@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 /**
  * Holds information about the highest rank in an {@link EntityDocument} and the
  * corresponding statement to generate BestRank triples.
+ * Ignores deprecated statements
  *
  * @author Michael Guenther
  *
@@ -39,7 +40,7 @@ public class RankBuffer {
 	/**
 	 * highest Rank of an statment in the current {@link EntityDocument}.
 	 */
-	private StatementRank bestRank;
+	private StatementRank bestRank = StatementRank.NORMAL;
 
 	/**
 	 * Rdf Resources that refer to statements with the highest rank.
@@ -51,7 +52,7 @@ public class RankBuffer {
 	 * entity document.
 	 */
 	public void clear() {
-		this.bestRank = null;
+		bestRank = StatementRank.NORMAL;
 		subjects.clear();
 	}
 
@@ -64,16 +65,12 @@ public class RankBuffer {
 	 *            rdf resource that refers to the statement
 	 */
 	public void add(StatementRank rank, Resource subject) {
-		if (this.bestRank == null) {
-			this.bestRank = rank;
+		if (this.bestRank == rank) {
 			subjects.add(subject);
-		} else if (this.bestRank == rank) {
-			subjects.add(subject);
-		} else if(this.bestRank == StatementRank.DEPRECATED && rank != StatementRank.NORMAL ||
-				this.bestRank == StatementRank.NORMAL && rank == StatementRank.PREFERRED) {
-			//Better rank found
+		} else if(bestRank == StatementRank.NORMAL && rank == StatementRank.PREFERRED) {
+			//We found a preferred statement
 			subjects.clear();
-			this.bestRank = rank;
+			bestRank = StatementRank.PREFERRED;
 			subjects.add(subject);
 		}
 	}
