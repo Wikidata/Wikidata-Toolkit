@@ -67,7 +67,7 @@ public class ReferenceImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		Reference r3 = new ReferenceImpl(Collections.<SnakGroup> emptyList());
+		Reference r3 = new ReferenceImpl(Collections.emptyList());
 
 		assertEquals(r1, r1);
 		assertEquals(r1, r2);

@@ -40,10 +40,10 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 
 	private static final long serialVersionUID = 3245696048836886990L;
 
-	final BigDecimal numericValue;
-	final BigDecimal lowerBound;
-	final BigDecimal upperBound;
-	final String unit;
+	private final BigDecimal numericValue;
+	private final BigDecimal lowerBound;
+	private final BigDecimal upperBound;
+	private final String unit;
 
 	/**
 	 * Constructor.

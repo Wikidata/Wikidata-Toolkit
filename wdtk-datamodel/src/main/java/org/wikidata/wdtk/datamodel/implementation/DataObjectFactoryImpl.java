@@ -182,7 +182,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 0);
+				Collections.emptyList(), datatypeId, 0);
 	}
 
 	@Override

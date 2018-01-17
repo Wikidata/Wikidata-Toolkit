@@ -141,25 +141,25 @@ public class PropertyDocumentImplTest {
 				DataObjectFactoryImplTest.getTestStatementGroups(3, 10, 3,
 						EntityIdValue.ET_PROPERTY), datatypeId, 1234);
 		PropertyDocument pdDiffLabels = new PropertyDocumentImpl(pid,
-				Collections.<MonolingualTextValue> emptyList(), descriptions,
+				Collections.emptyList(), descriptions,
 				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffDescriptions = new PropertyDocumentImpl(pid,
-				labels, Collections.<MonolingualTextValue> emptyList(),
+				labels, Collections.emptyList(),
 				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffAliases = new PropertyDocumentImpl(pid, labels,
-				descriptions, Collections.<MonolingualTextValue> emptyList(),
+				descriptions, Collections.emptyList(),
 				statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffStatements = new PropertyDocumentImpl(pid,
 				labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 1234);
+				Collections.emptyList(), datatypeId, 1234);
 		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, statementGroups, new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING), 1234);
 
 		ItemDocument id = new ItemDocumentImpl(new ItemIdValueImpl("Q42",
 				"foo"), labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap(), 1234);
+				Collections.emptyList(),
+				Collections.emptyMap(), 1234);
 
 		assertEquals(pd1, pd1);
 		assertEquals(pd1, pd2);

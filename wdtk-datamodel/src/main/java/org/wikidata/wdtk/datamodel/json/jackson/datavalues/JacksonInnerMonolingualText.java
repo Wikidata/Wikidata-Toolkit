@@ -35,8 +35,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerMonolingualText {
 
-	String language = "";
-	String text = "";
+	private String language = "";
+	private String text = "";
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

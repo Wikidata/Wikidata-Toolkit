@@ -42,8 +42,7 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 * information after each deserialization using
 	 * {@link JacksonValueEntityId#setSiteIri(String)} .
 	 */
-	@JsonIgnore
-	String siteIri = null;
+	private String siteIri = null;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON

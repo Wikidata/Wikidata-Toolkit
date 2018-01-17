@@ -190,7 +190,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		// Jackson claims cannot exist without a statement.
 		Statement statement = getStatement(
 				Datamodel.makeClaim(subject, mainSnak, qualifiers),
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"empty id 12345");
 		return statement.getClaim();
 	}
@@ -283,7 +283,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
 		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 0);
+				Collections.emptyList(), datatypeId, 0);
 	}
 
 	@Override

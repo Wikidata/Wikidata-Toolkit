@@ -36,8 +36,8 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
  */
 public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 
-	final DatamodelConverter converter;
-	final EntityDocumentProcessor entityDocumentProcessor;
+	private final DatamodelConverter converter;
+	private final EntityDocumentProcessor entityDocumentProcessor;
 
 	/**
 	 * Constructor.

@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class WikimediaLanguageCodes {
 
-	static Map<String, String> LANGUAGE_CODES = new HashMap<String, String>();
+	private static Map<String, String> LANGUAGE_CODES = new HashMap<String, String>();
 	static {
 		LANGUAGE_CODES.put("aa", "aa"); // Afar
 		LANGUAGE_CODES.put("ab", "ab"); // Abkhazian

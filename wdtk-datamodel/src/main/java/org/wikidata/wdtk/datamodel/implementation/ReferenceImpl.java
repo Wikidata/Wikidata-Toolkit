@@ -44,7 +44,7 @@ public class ReferenceImpl implements Reference, Serializable {
 
 	private static final long serialVersionUID = 3871345253196551888L;
 	
-	List<? extends SnakGroup> snakGroups;
+	private List<SnakGroup> snakGroups;
 
 	/**
 	 * Constructor.

@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 public class PropertyDocumentBuilder extends
 		EntityDocumentBuilder<PropertyDocumentBuilder, PropertyDocument> {
 
-	final DatatypeIdValue datatype;
+	private final DatatypeIdValue datatype;
 
 	/**
 	 * Constructor.

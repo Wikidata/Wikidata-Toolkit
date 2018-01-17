@@ -46,8 +46,8 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
 
 	private static final long serialVersionUID = 3202706015471781558L;
 
-	final PropertyIdValue propertyId;
-	final DatatypeIdValue datatypeId;
+	private final PropertyIdValue propertyId;
+	private final DatatypeIdValue datatypeId;
 
 	/**
 	 * Constructor.

@@ -59,13 +59,13 @@ public class StatementGroupTest {
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new ValueSnakImpl(property, subject);
 		Claim claim = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 
 		statement1 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		statement2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.PREFERRED,
+				Collections.emptyList(), StatementRank.PREFERRED,
 				"MyId");
 
 		sg1 = new StatementGroupImpl(
@@ -116,7 +116,7 @@ public class StatementGroupTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void statementListNotEmpty() {
-		new StatementGroupImpl(Collections.<Statement> emptyList());
+		new StatementGroupImpl(Collections.emptyList());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -129,9 +129,9 @@ public class StatementGroupTest {
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property);
 		Claim claim = new ClaimImpl(subject2, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		Statement s2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		statements.add(s2);
 
@@ -147,9 +147,9 @@ public class StatementGroupTest {
 		PropertyIdValue property2 = new PropertyIdValueImpl("P23", "http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property2);
 		Claim claim = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		Statement s2 = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		statements.add(s2);
 

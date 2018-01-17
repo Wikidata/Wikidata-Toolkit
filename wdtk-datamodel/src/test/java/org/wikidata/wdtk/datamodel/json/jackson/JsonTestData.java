@@ -142,7 +142,7 @@ public class JsonTestData {
 	public static final JacksonMonolingualTextValue TEST_MLTV_TERM_VALUE = new JacksonMonolingualTextValue(
 			"en", "foobar");
 	public static final JacksonSiteLink TEST_SITE_LINK = (JacksonSiteLink) JACKSON_OBJECT_FACTORY
-			.getSiteLink("foobar", "enwiki", Collections.<String> emptyList());
+			.getSiteLink("foobar", "enwiki", Collections.emptyList());
 
 	public static final JacksonValueString TEST_STRING_VALUE = (JacksonValueString) JACKSON_OBJECT_FACTORY
 			.getStringValue("foobar");

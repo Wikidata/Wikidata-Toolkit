@@ -41,11 +41,10 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  */
 public class StatementGroupFromJson implements StatementGroup {
 
-	final List<Statement> statements;
+	private final List<Statement> statements;
 
 	public StatementGroupFromJson(List<JacksonStatement> jacksonStatements) {
-		this.statements = Collections
-				.<Statement> unmodifiableList(jacksonStatements);
+		this.statements = Collections.unmodifiableList(jacksonStatements);
 	}
 
 	@Override

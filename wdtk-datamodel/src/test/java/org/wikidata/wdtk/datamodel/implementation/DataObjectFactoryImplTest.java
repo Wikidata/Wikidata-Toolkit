@@ -382,7 +382,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetSiteLink() {
 		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink o2 = converter.copy(o1);
 		assertEquals(o2, o1);
 	}
@@ -446,7 +446,7 @@ public class DataObjectFactoryImplTest {
 						"site" + i, someBadges));
 			} else {
 				result.put("site" + i, new SiteLinkImpl("Article" + i, "site"
-						+ i, Collections.<String> emptyList()));
+						+ i, Collections.emptyList()));
 			}
 		}
 		return result;

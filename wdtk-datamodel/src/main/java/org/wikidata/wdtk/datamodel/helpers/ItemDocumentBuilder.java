@@ -36,7 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 public class ItemDocumentBuilder extends
 		EntityDocumentBuilder<ItemDocumentBuilder, ItemDocument> {
 
-	final HashMap<String, SiteLink> siteLinks = new HashMap<>();
+	private final HashMap<String, SiteLink> siteLinks = new HashMap<>();
 
 	/**
 	 * Constructor.

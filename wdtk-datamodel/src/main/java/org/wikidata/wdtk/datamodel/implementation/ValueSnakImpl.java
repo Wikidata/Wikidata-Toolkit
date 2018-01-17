@@ -39,14 +39,8 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	private static final long serialVersionUID = -5477498393375628725L;
 	
-	final Value value;
+	private final Value value;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param propertyId
-	 * @param value
-	 */
 	ValueSnakImpl(PropertyIdValue propertyId, Value value) {
 		super(propertyId);
 		Validate.notNull(value, "ValueSnak values cannot be null");

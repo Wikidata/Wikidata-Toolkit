@@ -75,7 +75,7 @@ public class JacksonStatement implements Statement {
 	 * .
 	 */
 	@JsonIgnore
-	EntityIdValue subject = null;
+	private EntityIdValue subject = null;
 
 	/**
 	 * Rank of this statement.
@@ -171,7 +171,7 @@ public class JacksonStatement implements Statement {
 		}
 
 		for (JacksonReference reference : this.references) {
-			for (List<JacksonSnak> snaks : reference.snaks.values()) {
+			for (List<JacksonSnak> snaks : reference.getSnaks().values()) {
 				for (JacksonSnak snak : snaks) {
 					snak.setSiteIri(subject.getSiteIri());
 				}

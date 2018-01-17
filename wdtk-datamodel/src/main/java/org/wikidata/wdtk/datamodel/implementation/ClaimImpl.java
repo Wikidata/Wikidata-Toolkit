@@ -46,9 +46,9 @@ public class ClaimImpl implements Claim, Serializable {
 
 	private static final long serialVersionUID = -2991778567647082844L;
 
-	final EntityIdValue subject;
-	final Snak mainSnak;
-	final List<SnakGroup> qualifiers;
+	private final EntityIdValue subject;
+	private final Snak mainSnak;
+	private final List<SnakGroup> qualifiers;
 
 	/**
 	 * Constructor.

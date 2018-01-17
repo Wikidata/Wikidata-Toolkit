@@ -257,21 +257,21 @@ public class DatamodelTest {
 				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-						.<SnakGroup> emptyList());
+						.emptyList());
 		Claim o2 = factory
 				.getClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-						.<SnakGroup> emptyList());
+						.emptyList());
 		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetReference() {
 		Reference r1 = Datamodel.makeReference(Collections
-				.<SnakGroup> emptyList());
+				.emptyList());
 		Reference r2 = factory
-				.getReference(Collections.<SnakGroup> emptyList());
+				.getReference(Collections.emptyList());
 		assertEquals(r1, r2);
 	}
 
@@ -281,12 +281,12 @@ public class DatamodelTest {
 				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-						.<SnakGroup> emptyList());
+						.emptyList());
 		Statement o1 = Datamodel.makeStatement(c,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		Statement o2 = factory.getStatement(c,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		assertEquals(o1, o2);
 	}
@@ -297,9 +297,9 @@ public class DatamodelTest {
 				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
 						.getNoValueSnak(factory
 								.getPropertyIdValue("P42", "foo")), Collections
-						.<SnakGroup> emptyList());
+						.emptyList());
 		Statement s = Datamodel.makeStatement(c,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		StatementGroup o1 = new StatementGroupImpl(
 				Collections.singletonList(s));
@@ -311,9 +311,9 @@ public class DatamodelTest {
 	@Test
 	public final void testGetSiteLink() {
 		SiteLink o1 = Datamodel.makeSiteLink("SOLID", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink o2 = factory.getSiteLink("SOLID", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		assertEquals(o1, o2);
 	}
 
@@ -321,15 +321,15 @@ public class DatamodelTest {
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = Datamodel.makePropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		assertEquals(o1, o2);
 	}
@@ -338,18 +338,18 @@ public class DatamodelTest {
 	public final void testGetItemDocument() {
 		ItemDocument o1 = Datamodel.makeItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap());
 		ItemDocument o2 = factory.getItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap());
 		assertEquals(o1, o2);
 	}
 }

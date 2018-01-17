@@ -40,9 +40,9 @@ public class PropertyDocumentBuilderTest {
 
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
 				PropertyIdValue.NULL, Collections.singletonList(mtv),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 
 		PropertyDocument pd2 = PropertyDocumentBuilder

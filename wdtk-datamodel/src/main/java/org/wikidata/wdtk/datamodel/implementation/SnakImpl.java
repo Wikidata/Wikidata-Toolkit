@@ -37,7 +37,7 @@ public abstract class SnakImpl implements Snak, Serializable {
 
 	private static final long serialVersionUID = 7513457794344946061L;
 
-	final PropertyIdValue propertyId;
+	private final PropertyIdValue propertyId;
 
 	SnakImpl(PropertyIdValue propertyId) {
 		Validate.notNull(propertyId, "Snak property ids cannot be null");

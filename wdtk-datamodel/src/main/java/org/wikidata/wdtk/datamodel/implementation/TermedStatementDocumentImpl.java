@@ -47,11 +47,11 @@ public abstract class TermedStatementDocumentImpl extends
 
 	private static final long serialVersionUID = 821881839755909320L;
 
-	final Map<String, MonolingualTextValue> labels;
-	final Map<String, MonolingualTextValue> descriptions;
-	final Map<String, List<MonolingualTextValue>> aliases;
-	final List<StatementGroup> statementGroups;
-	final long revisionId;
+	private final Map<String, MonolingualTextValue> labels;
+	private final Map<String, MonolingualTextValue> descriptions;
+	private final Map<String, List<MonolingualTextValue>> aliases;
+	private final List<StatementGroup> statementGroups;
+	private final long revisionId;
 
 	/**
 	 * Constructor.

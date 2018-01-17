@@ -38,11 +38,11 @@ public class ItemDocumentBuilderTest {
 	@Test
 	public void testEmptyItemDocumentBuild() {
 		ItemDocument id1 = Datamodel.makeItemDocument(ItemIdValue.NULL,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap(), 0);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap(), 0);
 
 		ItemDocument id2 = ItemDocumentBuilder.forItemId(ItemIdValue.NULL)
 				.build();

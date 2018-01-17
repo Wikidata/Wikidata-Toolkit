@@ -44,10 +44,10 @@ public class StatementImpl implements Statement, Serializable {
 
 	private static final long serialVersionUID = -9151463996806807715L;
 
-	final Claim claim;
-	final List<? extends Reference> references;
-	final StatementRank rank;
-	final String statementId;
+	private final Claim claim;
+	private final List<? extends Reference> references;
+	private final StatementRank rank;
+	private final String statementId;
 
 	/**
 	 * Constructor.
