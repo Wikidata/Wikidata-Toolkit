@@ -54,7 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonSerializer implements EntityDocumentDumpProcessor {
 
-	static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
+	private static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
 	static final byte[] JSON_START_LIST = "[\n".getBytes(Charsets.UTF_8);
 	static final byte[] JSON_SEP = ",\n".getBytes(Charsets.UTF_8);

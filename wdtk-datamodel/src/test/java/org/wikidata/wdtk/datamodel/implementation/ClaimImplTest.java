@@ -58,9 +58,9 @@ public class ClaimImplTest {
 		mainSnak = new ValueSnakImpl(property, subject);
 
 		c1 = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		c2 = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 	}
 
 	@Test
@@ -72,12 +72,12 @@ public class ClaimImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void subjectNotNull() {
-		new ClaimImpl(null, mainSnak, Collections.<SnakGroup> emptyList());
+		new ClaimImpl(null, mainSnak, Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void mainSnakNotNull() {
-		new ClaimImpl(subject, null, Collections.<SnakGroup> emptyList());
+		new ClaimImpl(subject, null, Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -100,11 +100,11 @@ public class ClaimImplTest {
 		ValueSnak mainSnak2 = new ValueSnakImpl(property, subject2);
 
 		cDiffSubject = new ClaimImpl(subject2, mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		cDiffMainSnak = new ClaimImpl(subject, mainSnak2,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		cDiffQualifiers = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> singletonList(new SnakGroupImpl(
+				Collections.singletonList(new SnakGroupImpl(
 						Collections.<Snak> singletonList(mainSnak))));
 
 		assertEquals(c1, c1);

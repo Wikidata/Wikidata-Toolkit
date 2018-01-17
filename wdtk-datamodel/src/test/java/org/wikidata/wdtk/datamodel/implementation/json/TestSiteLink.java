@@ -64,12 +64,12 @@ public class TestSiteLink {
 	@Test
 	public void testEquals() {
 		SiteLink match = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
-				"foobar", "enwiki", Collections.<String> emptyList());
+				"foobar", "enwiki", Collections.emptyList());
 		SiteLink wrongLanguage = JsonTestData.JACKSON_OBJECT_FACTORY
 				.getSiteLink("foobar", "dewiki",
-						Collections.<String> emptyList());
+						Collections.emptyList());
 		SiteLink wrongValue = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
-				"barfoo", "enwiki", Collections.<String> emptyList());
+				"barfoo", "enwiki", Collections.emptyList());
 
 		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
 		assertEquals(JsonTestData.TEST_SITE_LINK, match);
