@@ -102,6 +102,7 @@ public class JsonSerializationActionTest {
 						Arrays.asList(mtv1),
 						Collections.<MonolingualTextValue> emptyList(),
 						Arrays.asList(mtv1),
+						Collections.emptyList(),
 						Datamodel
 								.makeDatatypeIdValue(DatatypeIdValue.DT_MONOLINGUAL_TEXT));
 
