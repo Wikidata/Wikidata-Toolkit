@@ -326,9 +326,11 @@ public class DatamodelTest {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
+				Collections.emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
+				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),

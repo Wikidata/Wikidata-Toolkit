@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -492,13 +493,15 @@ public class Datamodel {
 	 * @param datatypeId
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
+	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
 	 */
+	@Deprecated
 	public static PropertyDocument makePropertyDocument(
 			PropertyIdValue propertyId, List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		return factory.getPropertyDocument(propertyId, labels, descriptions,
-				aliases, datatypeId);
+		return makePropertyDocument(propertyId, labels, descriptions,
+				aliases, Collections.emptyList(), datatypeId);
 	}
 
 	/**
