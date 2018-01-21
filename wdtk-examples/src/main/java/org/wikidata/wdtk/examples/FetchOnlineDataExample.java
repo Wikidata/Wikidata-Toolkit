@@ -47,10 +47,6 @@ public class FetchOnlineDataExample {
 		EntityDocument q42 = wbdf.getEntityDocument("P176");
 		System.out.println(q42);
 
-		if (1 == 1) {
-			return;
-		}
-
 		if (q42 instanceof ItemDocument) {
 			System.out.println("The English name for entity Q42 is "
 					+ ((ItemDocument) q42).getLabels().get("en").getText());
