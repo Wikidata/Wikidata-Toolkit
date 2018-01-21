@@ -64,28 +64,30 @@ public class RdfSerializationExample {
 
 		// Prepare a compressed output stream to write the data to
 		// (admittedly, this is slightly over-optimized for an example)
-		OutputStream bufferedFileOutputStream = new BufferedOutputStream(
-				ExampleHelpers
-						.openExampleFileOuputStream("wikidata-simple-statements.nt.gz"),
-				1024 * 1024 * 5);
-		GzipParameters gzipParameters = new GzipParameters();
-		gzipParameters.setCompressionLevel(7);
-		OutputStream compressorOutputStream = new GzipCompressorOutputStream(
-				bufferedFileOutputStream, gzipParameters);
-		OutputStream exportOutputStream = asynchronousOutputStream(compressorOutputStream);
+		try(OutputStream bufferedFileOutputStream = new BufferedOutputStream(
+				ExampleHelpers.openExampleFileOuputStream("wikidata-simple-statements.nt.gz"),
+				1024 * 1024 * 5
+		)) {
+			GzipParameters gzipParameters = new GzipParameters();
+			gzipParameters.setCompressionLevel(7);
+			OutputStream compressorOutputStream = new GzipCompressorOutputStream(
+					bufferedFileOutputStream, gzipParameters);
+			OutputStream exportOutputStream = asynchronousOutputStream(compressorOutputStream);
 
-		// Create a serializer processor
-		RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
-				exportOutputStream, sites,
-				PropertyRegister.getWikidataPropertyRegister());
-		// Serialize simple statements (and nothing else) for all items
-		serializer.setTasks(RdfSerializer.TASK_ITEMS
-				| RdfSerializer.TASK_SIMPLE_STATEMENTS);
+			// Create a serializer processor
+			RdfSerializer serializer = new RdfSerializer(RDFFormat.NTRIPLES,
+					exportOutputStream, sites,
+					PropertyRegister.getWikidataPropertyRegister());
+			// Serialize simple statements (and nothing else) for all items
+			serializer.setTasks(RdfSerializer.TASK_ITEMS
+					| RdfSerializer.TASK_SIMPLE_STATEMENTS);
 
-		// Run serialization
-		serializer.open();
-		ExampleHelpers.processEntitiesFromWikidataDump(serializer);
-		serializer.close();
+			// Run serialization
+			serializer.open();
+			ExampleHelpers.processEntitiesFromWikidataDump(serializer);
+			serializer.close();
+		}
+
 	}
 
 	/**

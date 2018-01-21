@@ -513,21 +513,22 @@ public class ClientConfiguration {
 			throws IOException {
 		List<DumpProcessingAction> result = new ArrayList<>();
 
-		FileReader reader = new FileReader(path);
-		Ini ini = new Ini(reader);
+		try(FileReader reader = new FileReader(path)) {
+			Ini ini = new Ini(reader);
 
-		for (Section section : ini.values()) {
-			if (section.getName().toLowerCase().equals("general")) {
-				handleGlobalArguments(section);
-			} else {
-				DumpProcessingAction action = handleActionArguments(section);
-				if (action != null) {
-					action.setActionName(section.getName());
-					result.add(action);
+			for (Section section : ini.values()) {
+				if (section.getName().toLowerCase().equals("general")) {
+					handleGlobalArguments(section);
+				} else {
+					DumpProcessingAction action = handleActionArguments(section);
+					if (action != null) {
+						action.setActionName(section.getName());
+						result.add(action);
+					}
 				}
 			}
+			return result;
 		}
-		return result;
 	}
 
 	/**
