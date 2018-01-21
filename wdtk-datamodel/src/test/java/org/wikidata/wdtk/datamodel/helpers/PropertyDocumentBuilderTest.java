@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -50,5 +51,28 @@ public class PropertyDocumentBuilderTest {
 						DatatypeIdValue.DT_ITEM).withLabel(mtv).build();
 
 		assertEquals(pd1, pd2);
+	}
+	
+	@Test
+	public void testModifyingBuild() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("color",
+				"en");
+		
+		PropertyDocument initial = Datamodel.makePropertyDocument(PropertyIdValue.NULL,
+				Collections.singletonList(label),
+				Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(),
+				Collections.<StatementGroup> emptyList(),
+				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_QUANTITY),
+		        1234);
+		
+		PropertyDocument copy = PropertyDocumentBuilder.fromPropertyDocument(initial).build();
+		assertEquals(copy, initial);
+		
+		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("tone",
+				"en");
+		
+		PropertyDocument withAlias = PropertyDocumentBuilder.fromPropertyDocument(initial).withAlias(alias).build();
+		assertEquals(withAlias.getAliases().get("en"), Arrays.asList(alias));
 	}
 }

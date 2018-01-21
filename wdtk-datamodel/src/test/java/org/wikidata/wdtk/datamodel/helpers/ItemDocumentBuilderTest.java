@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -34,6 +35,23 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class ItemDocumentBuilderTest {
+	
+	ItemIdValue i;
+	StatementGroup sg;
+	Statement s2;
+	Statement s1;
+	
+	@Before
+	public void setUp() {
+		i = ItemIdValue.NULL;
+		s1 = StatementBuilder.forSubjectAndProperty(i,
+				Datamodel.makeWikidataPropertyIdValue("P1")).build();
+		s2 = StatementBuilder
+				.forSubjectAndProperty(i,
+						Datamodel.makeWikidataPropertyIdValue("P1"))
+				.withValue(i).build();
+		sg = Datamodel.makeStatementGroup(Arrays.asList(s1, s2));
+	}
 
 	@Test
 	public void testEmptyItemDocumentBuild() {
@@ -52,20 +70,12 @@ public class ItemDocumentBuilderTest {
 
 	@Test
 	public void testComplexItemDocumentBuild() {
-		ItemIdValue i = ItemIdValue.NULL;
+
 
 		MonolingualTextValue mtv = Datamodel.makeMonolingualTextValue("Test",
 				"de");
 		SiteLink sl = Datamodel.makeSiteLink("Test", "frwiki",
 				Collections.singletonList("Badge"));
-
-		Statement s1 = StatementBuilder.forSubjectAndProperty(i,
-				Datamodel.makeWikidataPropertyIdValue("P1")).build();
-		Statement s2 = StatementBuilder
-				.forSubjectAndProperty(i,
-						Datamodel.makeWikidataPropertyIdValue("P1"))
-				.withValue(i).build();
-		StatementGroup sg = Datamodel.makeStatementGroup(Arrays.asList(s1, s2));
 
 		ItemDocument id1 = Datamodel.makeItemDocument(i,
 				Collections.singletonList(mtv), Collections.singletonList(mtv),
@@ -79,6 +89,34 @@ public class ItemDocumentBuilderTest {
 				.withStatement(s2).withRevisionId(1234).build();
 
 		assertEquals(id1, id2);
+	}
+	
+	@Test
+	public void testModifyingBuild() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("canneberge",
+				"fr");
+		MonolingualTextValue alias1 = Datamodel.makeMonolingualTextValue("grande airelle rouge d’Amérique du Nord",
+				"fr");
+		MonolingualTextValue alias2 = Datamodel.makeMonolingualTextValue("atoca", "fr");
+		SiteLink sl = Datamodel.makeSiteLink("Canneberge", "frwiki",
+				Collections.singletonList("Badge"));
+		
+		ItemDocument initial = Datamodel.makeItemDocument(i,
+				Collections.singletonList(label),
+				Collections.<MonolingualTextValue>emptyList(),
+		        Arrays.asList(alias1, alias2),
+		        Collections.singletonList(sg),
+		        Collections.singletonMap("frwiki", sl), 1234);
+		
+		ItemDocument copy = ItemDocumentBuilder.fromItemDocument(initial).build();
+		
+		assertEquals(copy, initial);
+		
+		MonolingualTextValue alias3 = Datamodel.makeMonolingualTextValue("cranberry",
+				"fr");
+		
+		ItemDocument withAlias = ItemDocumentBuilder.fromItemDocument(initial).withAlias(alias3).build();
+		assertEquals(withAlias.getAliases().get("fr"), Arrays.asList(alias1, alias2, alias3));
 	}
 
 	@Test(expected = IllegalStateException.class)

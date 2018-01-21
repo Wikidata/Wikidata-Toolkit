@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -29,7 +30,9 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 /**
  * Abstract base class for builders that construct {@link EntityDocument}
@@ -42,7 +45,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  * @param <O>
  *            the type of the object that is being built
  */
-public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O>, O>
+public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O>, O extends StatementDocument & TermedDocument>
 		extends AbstractDataObjectBuilder<T, O> {
 
 	final EntityIdValue entityIdValue;
@@ -55,6 +58,33 @@ public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O
 
 	protected EntityDocumentBuilder(EntityIdValue entityIdValue) {
 		this.entityIdValue = entityIdValue;
+	}
+	
+	/**
+	 * Starts constructing an EntityDocument from an initial version
+	 * of this document.
+	 * 
+	 * @param initialDocument
+	 * 			the initial version of the document to use
+	 */
+	protected EntityDocumentBuilder(O initialDocument) {
+		this.entityIdValue = initialDocument.getEntityId();
+		this.revisionId = initialDocument.getRevisionId();
+		for(MonolingualTextValue label : initialDocument.getLabels().values()) {
+			withLabel(label);
+		}
+		for(MonolingualTextValue description : initialDocument.getDescriptions().values()) {
+			withDescription(description);
+		}
+		for(List<MonolingualTextValue> aliases : initialDocument.getAliases().values()) {
+			for(MonolingualTextValue alias : aliases) {
+				withAlias(alias);
+			}
+		}
+		Iterator<Statement> iterator = initialDocument.getAllStatements();
+		while(iterator.hasNext()) {
+			withStatement(iterator.next());		
+		}
 	}
 
 	/**

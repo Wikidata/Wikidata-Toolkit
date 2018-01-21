@@ -39,12 +39,25 @@ public class ItemDocumentBuilder extends
 	final HashMap<String, SiteLink> siteLinks = new HashMap<>();
 
 	/**
-	 * Constructor.
+	 * Constructor to start the build from a blank item.
 	 *
 	 * @param itemIdValue
 	 */
 	protected ItemDocumentBuilder(ItemIdValue itemIdValue) {
 		super(itemIdValue);
+	}
+	
+	/**
+	 * Constructor to start the build from an existing item.
+	 * 
+	 * @param initialDocument
+	 *         the item to start the build from
+	 */
+	protected ItemDocumentBuilder(ItemDocument initialDocument) {
+		super(initialDocument);
+		for(SiteLink siteLink : initialDocument.getSiteLinks().values()) {
+			withSiteLink(siteLink);
+		}
 	}
 
 	/**
@@ -56,6 +69,17 @@ public class ItemDocumentBuilder extends
 	 */
 	public static ItemDocumentBuilder forItemId(ItemIdValue itemIdValue) {
 		return new ItemDocumentBuilder(itemIdValue);
+	}
+	
+	/**
+	 * Starts the construction of an {@link ItemDocument} from an existing value.
+	 * 
+	 * @param initialDocument
+	 * 			  the item to start the construction from
+	 * @return builder object to continue construction
+	 */
+	public static ItemDocumentBuilder fromItemDocument(ItemDocument initialDocument) {
+		return new ItemDocumentBuilder(initialDocument);
 	}
 
 	/**
