@@ -37,7 +37,7 @@ public class PropertyDocumentBuilder extends
 	final DatatypeIdValue datatype;
 
 	/**
-	 * Constructor.
+	 * Constructor when building the property document from scratch.
 	 *
 	 * @param propertyIdValue
 	 *            id of the newly constructed property document
@@ -48,6 +48,17 @@ public class PropertyDocumentBuilder extends
 			DatatypeIdValue datatype) {
 		super(propertyIdValue);
 		this.datatype = datatype;
+	}
+	
+	/**
+	 * Constructor when building the property document from an existing one.
+	 * 
+	 * @param initialDocument
+	 * 			the initial property document to start the build from
+	 */
+	protected PropertyDocumentBuilder(PropertyDocument initialDocument) {
+		super(initialDocument);
+		this.datatype = initialDocument.getDatatype();
 	}
 
 	/**
@@ -62,6 +73,19 @@ public class PropertyDocumentBuilder extends
 	public static PropertyDocumentBuilder forPropertyIdAndDatatype(
 			PropertyIdValue propertyIdValue, DatatypeIdValue datatype) {
 		return new PropertyDocumentBuilder(propertyIdValue, datatype);
+	}
+	
+	/**
+	 * Starts the construction of an {@link PropertyDocument} from the existing
+	 * document.
+	 * 
+	 * @param initialDocument
+	 *           the existing document to start the build from
+	 * @return builder object to continue construction
+	 */
+	public static PropertyDocumentBuilder fromPropertyDocument(
+			PropertyDocument initialDocument) {
+		return new PropertyDocumentBuilder(initialDocument);
 	}
 
 	/**
