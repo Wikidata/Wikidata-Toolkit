@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  *
  */
 public class PropertyDocumentBuilder extends
-		EntityDocumentBuilder<PropertyDocumentBuilder, PropertyDocument> {
+		TermedStatementDocumentBuilder<PropertyDocumentBuilder, PropertyDocument> {
 
 	final DatatypeIdValue datatype;
 
