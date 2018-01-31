@@ -38,4 +38,15 @@ public class WikimediaLanguageCodesTest {
 		WikimediaLanguageCodes.getLanguageCode("unknown");
 	}
 
+	@Test
+	public void fixDeprecatedLanguageCode() {
+		assertEquals("nb", WikimediaLanguageCodes.fixLanguageCodeIfDeprecated("no"));
+		assertEquals("en", WikimediaLanguageCodes.fixLanguageCodeIfDeprecated("en"));
+	}
+	
+	@Test
+	public void fixUnknownLanguageCode() {
+		assertEquals("unknown",
+				WikimediaLanguageCodes.fixLanguageCodeIfDeprecated("unknown"));
+	}
 }
