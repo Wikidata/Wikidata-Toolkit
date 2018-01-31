@@ -473,6 +473,30 @@ public class WikimediaLanguageCodes {
 										// same as zh-Hans or zh-Hant?
 		LANGUAGE_CODES.put("zu", "zu"); // Zulu
 	}
+	
+	static Map<String, String> DEPRECATED_LANGUAGE_CODES = new HashMap<String, String>();
+	static {
+		/*
+		 * Source:
+		 * https://www.mediawiki.org/wiki/Manual:$wgExtraLanguageCodes
+		 */
+		DEPRECATED_LANGUAGE_CODES.put("bh","bho"); // Bihari language family
+		DEPRECATED_LANGUAGE_CODES.put("no","nb"); // Norwegian language family
+		DEPRECATED_LANGUAGE_CODES.put("simple","en"); // Simple English
+		/*
+		 * Source:
+		 * https://www.mediawiki.org/wiki/Manual:$wgDummyLanguageCodes
+		 * The ones already included above have been omitted, as well as "qqq" and "qqx".
+		 */
+		DEPRECATED_LANGUAGE_CODES.put("als", "gsw");
+		DEPRECATED_LANGUAGE_CODES.put("bat-smg", "sgs");
+		DEPRECATED_LANGUAGE_CODES.put("be-x-old", "be-tarask");
+		DEPRECATED_LANGUAGE_CODES.put("fiu-vro", "vro");
+		DEPRECATED_LANGUAGE_CODES.put("roa-rup", "rup");
+		DEPRECATED_LANGUAGE_CODES.put("zh-classical", "lzh");
+		DEPRECATED_LANGUAGE_CODES.put("zh-min-nan", "nan");
+		DEPRECATED_LANGUAGE_CODES.put("zh-yue", "yue");
+	}
 
 	/**
 	 * Get a <a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
@@ -495,5 +519,24 @@ public class WikimediaLanguageCodes {
 					+ wikimediaLanguageCode + "\".");
 		}
 
+	}
+	
+	/**
+	 * Translate a Wikimedia language code to its preferred value
+	 * if this code is deprecated, or return it untouched if the string
+	 * is not a known deprecated Wikimedia language code
+	 * 
+	 * @param wikimediaLanguageCode
+	 * 			the language code as used by Wikimedia
+	 * @return
+	 * 			the preferred language code corresponding to the original language code
+	 */
+	public static String fixLanguageCodeIfDeprecated(String wikimediaLanguageCode) {
+		if (DEPRECATED_LANGUAGE_CODES.containsKey(wikimediaLanguageCode)) {
+			return DEPRECATED_LANGUAGE_CODES.get(wikimediaLanguageCode);
+		} else {
+			return wikimediaLanguageCode;
+		}
+			
 	}
 }
