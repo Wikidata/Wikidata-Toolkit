@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /*
  * #%L
@@ -46,10 +48,27 @@ public class JacksonInnerGlobeCoordinates {
 	private String globe = GlobeCoordinatesValue.GLOBE_EARTH;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
+	 * Constructor. Creates an oject that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonInnerGlobeCoordinates() {
+	@JsonCreator
+	public JacksonInnerGlobeCoordinates(
+			@JsonProperty("latitude") double latitude,
+			@JsonProperty("longitude") double longitude,
+			@JsonProperty("precision") double precision,
+			@JsonProperty("globe") String globe)  {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		if (precision <= 0.0) {
+			// We just do this silently because it is so common in the data.
+			// Precision "0" does not make sense for a physical quantity.
+			// Automatic precision does not make sense for floating point
+			// values. "0" also is commonly produced from "null" in JSON.
+			this.precision = GlobeCoordinatesValue.PREC_ARCSECOND;
+		} else {
+			this.precision = precision;
+		}
+		this.globe = globe;
 	}
 
 	/**
@@ -63,17 +82,6 @@ public class JacksonInnerGlobeCoordinates {
 	}
 
 	/**
-	 * Sets the latitude to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param latitude
-	 *            new value
-	 */
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	/**
 	 * Returns the longitude.
 	 *
 	 * @see GlobeCoordinatesValue#getLongitude()
@@ -81,17 +89,6 @@ public class JacksonInnerGlobeCoordinates {
 	 */
 	public double getLongitude() {
 		return this.longitude;
-	}
-
-	/**
-	 * Sets the longitude to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param longitude
-	 *            new value
-	 */
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
 	}
 
 	/**
@@ -105,25 +102,6 @@ public class JacksonInnerGlobeCoordinates {
 	}
 
 	/**
-	 * Sets the precision to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param precision
-	 *            new value
-	 */
-	public void setPrecision(double precision) {
-		if (precision <= 0.0) {
-			// We just do this silently because it is so common in the data.
-			// Precision "0" does not make sense for a physical quantity.
-			// Automatic precision does not make sense for floating point
-			// values. "0" also is commonly produced from "null" in JSON.
-			this.precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-		} else {
-			this.precision = precision;
-		}
-	}
-
-	/**
 	 * Returns the globe.
 	 *
 	 * @see GlobeCoordinatesValue#getGlobe()
@@ -131,17 +109,6 @@ public class JacksonInnerGlobeCoordinates {
 	 */
 	public String getGlobe() {
 		return this.globe;
-	}
-
-	/**
-	 * Sets the globe to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param globe
-	 *            new value
-	 */
-	public void setGlobe(String globe) {
-		this.globe = globe;
 	}
 
 	@Override

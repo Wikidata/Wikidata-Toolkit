@@ -47,17 +47,13 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		JacksonValueItemId result = new JacksonValueItemId();
-		result.setValue(new JacksonInnerEntityId(id));
-		result.setSiteIri(siteIri);
+		JacksonValueItemId result = new JacksonValueItemId(new JacksonInnerEntityId(id), siteIri);
 		return result;
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		JacksonValuePropertyId result = new JacksonValuePropertyId();
-		result.setValue(new JacksonInnerEntityId(id));
-		result.setSiteIri(siteIri);
+		JacksonValuePropertyId result = new JacksonValuePropertyId(new JacksonInnerEntityId(id), siteIri);
 		return result;
 	}
 
@@ -73,8 +69,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		JacksonInnerTime innerTime = new JacksonInnerTime(year, month, day,
 				hour, minute, second, timezoneOffset, beforeTolerance,
 				afterTolerance, precision, calendarModel);
-		JacksonValueTime result = new JacksonValueTime();
-		result.setValue(innerTime);
+		JacksonValueTime result = new JacksonValueTime(innerTime);
 		return result;
 	}
 
@@ -86,20 +81,18 @@ public class JacksonObjectFactory implements DataObjectFactory {
 					"Coordinates precision must be non-zero positive. Given value: "
 							+ precision);
 		}
-		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates();
-		innerCoordinates.setLatitude(latitude);
-		innerCoordinates.setLongitude(longitude);
-		innerCoordinates.setPrecision(precision);
-		innerCoordinates.setGlobe(globeIri);
-		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates();
-		result.setValue(innerCoordinates);
+		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
+				latitude,
+				longitude,
+				precision,
+				globeIri);
+		JacksonValueGlobeCoordinates result = new JacksonValueGlobeCoordinates(innerCoordinates);
 		return result;
 	}
 
 	@Override
 	public StringValue getStringValue(String string) {
-		JacksonValueString result = new JacksonValueString();
-		result.setValue(string);
+		JacksonValueString result = new JacksonValueString(string);
 		return result;
 	}
 
@@ -108,8 +101,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			String languageCode) {
 		JacksonInnerMonolingualText innerMtlv = new JacksonInnerMonolingualText(
 				languageCode, text);
-		JacksonValueMonolingualText result = new JacksonValueMonolingualText();
-		result.setValue(innerMtlv);
+		JacksonValueMonolingualText result = new JacksonValueMonolingualText(innerMtlv);
 		return result;
 	}
 
@@ -135,8 +127,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
 		JacksonInnerQuantity innerQuantity = new JacksonInnerQuantity(
 				numericValue, upperBound, lowerBound, unit);
-		JacksonValueQuantity result = new JacksonValueQuantity();
-		result.setValue(innerQuantity);
+		JacksonValueQuantity result = new JacksonValueQuantity(innerQuantity);
 		return result;
 	}
 

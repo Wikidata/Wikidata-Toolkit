@@ -21,9 +21,11 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
 import java.io.IOException;
@@ -32,7 +34,7 @@ import static org.junit.Assert.*;
 
 public class TestValue {
 
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	@Test
 	public void testStringValueToJson() throws JsonProcessingException {
@@ -86,7 +88,6 @@ public class TestValue {
 
 	private void assertItemIdValue(JacksonValue result) {
 		assertTrue(result instanceof JacksonValueItemId);
-		((JacksonValueItemId) result).setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertEquals(result.getType(),
 				JsonTestData.TEST_ITEM_ID_VALUE.getType());
@@ -110,7 +111,6 @@ public class TestValue {
 				JsonTestData.JSON_PROPERTY_ID_VALUE, JacksonValue.class);
 
 		assertTrue(result instanceof JacksonValuePropertyId);
-		((JacksonValuePropertyId) result).setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertEquals(result.getType(),
 				JsonTestData.TEST_PROPERTY_ID_VALUE.getType());

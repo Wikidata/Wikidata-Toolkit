@@ -22,8 +22,11 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Abstract base implementation of {@link EntityIdValue} for Jackson.
@@ -55,8 +58,13 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonValueEntityId() {
+	@JsonCreator
+	public JacksonValueEntityId(
+			@JsonProperty("value") JacksonInnerEntityId value,
+			@JacksonInject String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
+		this.value = value;
+		this.siteIri = siteIri;
 	}
 
 	/**
@@ -65,19 +73,9 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 *
 	 * @return the inner entity id value
 	 */
+	@JsonProperty("value")
 	public JacksonInnerEntityId getValue() {
 		return value;
-	}
-
-	/**
-	 * Sets the inner value helper object to the given value. Only for use by
-	 * Jackson during deserialization.
-	 *
-	 * @param value
-	 *            new value
-	 */
-	public void setValue(JacksonInnerEntityId value) {
-		this.value = value;
 	}
 
 	@JsonIgnore
@@ -103,17 +101,4 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 		}
 	}
 
-	/**
-	 * Sets the parent document of this value to the given value. This document
-	 * provides the value with information about its site IRI, which is not part
-	 * of the JSON serialization of values. This method should only be used
-	 * during deserialization.
-	 *
-	 * @param siteIri
-	 *            new value
-	 */
-	@JsonIgnore
-	public void setSiteIri(String siteIri) {
-		this.siteIri = siteIri;
-	}
 }

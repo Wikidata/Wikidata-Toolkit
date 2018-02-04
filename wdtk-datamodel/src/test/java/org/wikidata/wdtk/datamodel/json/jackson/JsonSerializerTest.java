@@ -30,6 +30,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -102,7 +103,7 @@ public class JsonSerializerTest {
 
 		ArrayList<EntityDocument> outputDocuments = new ArrayList<>();
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
 				.reader(JacksonTermedStatementDocument.class);
 

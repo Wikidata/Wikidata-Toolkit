@@ -220,14 +220,12 @@ public class JsonTestData {
 	public static JacksonItemDocument getEmtpyTestItemDocument() {
 		JacksonItemDocument testItemDocument = new JacksonItemDocument();
 		testItemDocument.setJsonId(getTestItemId().getId());
-		testItemDocument.setSiteIri(Datamodel.SITE_WIKIDATA);
 		return testItemDocument;
 	}
 
 	public static JacksonItemDocument getTestItemDocument() {
 		JacksonItemDocument testItemDocument = new JacksonItemDocument();
 		testItemDocument.setJsonId(getTestItemId().getId());
-		testItemDocument.setSiteIri(Datamodel.SITE_WIKIDATA);
 		testItemDocument.setAliases(getTestAliases());
 		testItemDocument.setDescriptions(getTestMltvMap());
 		testItemDocument.setLabels(getTestMltvMap());

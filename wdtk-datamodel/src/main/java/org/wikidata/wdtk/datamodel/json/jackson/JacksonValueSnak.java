@@ -112,14 +112,6 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	}
 
 	@Override
-	void setSiteIri(String siteIri) {
-		super.setSiteIri(siteIri);
-		if (this.datavalue instanceof JacksonValueEntityId) {
-			((JacksonValueEntityId) this.datavalue).setSiteIri(siteIri);
-		}
-	}
-
-	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);
 	}

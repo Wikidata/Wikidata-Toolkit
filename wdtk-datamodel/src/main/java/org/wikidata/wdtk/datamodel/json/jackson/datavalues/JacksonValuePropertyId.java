@@ -27,8 +27,11 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -43,21 +46,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class JacksonValuePropertyId extends JacksonValueEntityId implements
 		PropertyIdValue {
 
-	/**
-	 * Sets the inner value helper object to the given value. Only for use by
-	 * Jackson during deserialization.
-	 *
-	 * @param value
-	 *            new value
-	 */
-	@Override
-	public void setValue(JacksonInnerEntityId value) {
+	@JsonCreator
+	public JacksonValuePropertyId(
+			@JsonProperty("value") JacksonInnerEntityId value,
+			@JacksonInject("siteIri") String siteIri) {
+		super(value, siteIri);
 		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY.equals(value
 				.getJsonEntityType())) {
 			throw new RuntimeException("Unexpected inner value type: "
 					+ value.getJsonEntityType());
 		}
-		this.value = value;
 	}
 
 	@JsonIgnore

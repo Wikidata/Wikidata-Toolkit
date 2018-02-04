@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
@@ -50,10 +51,8 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(JsonDumpFileProcessor.class);
 
-	private final ObjectMapper mapper = new ObjectMapper();
-	private final ObjectReader documentReader = this.mapper
-			.reader(JacksonTermedStatementDocument.class)
-			.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+	private final ObjectMapper mapper;
+	private final ObjectReader documentReader;
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
 	private final String siteIri;
@@ -62,6 +61,10 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
 		this.siteIri = siteIri;
+		this.mapper = new DatamodelMapper(siteIri);
+		this.documentReader = this.mapper
+				.reader(JacksonTermedStatementDocument.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 
 	/**
@@ -124,7 +127,6 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	 *            the document to process
 	 */
 	private void handleDocument(JacksonTermedStatementDocument document) {
-		document.setSiteIri(siteIri);
 		if (document instanceof JacksonItemDocument) {
 			this.entityDocumentProcessor
 					.processItemDocument((JacksonItemDocument) document);

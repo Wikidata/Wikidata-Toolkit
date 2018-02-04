@@ -66,30 +66,12 @@ public abstract class JacksonValue implements Value {
 	private String type;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonValue() {
-	}
-
-	/**
 	 * Constructor. Creates a value object with the given JSON type.
 	 *
 	 * @param type
 	 *            JSON type constant
 	 */
 	public JacksonValue(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * Sets the JSON type string to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param type
-	 *            new value
-	 */
-	public void setType(String type) {
 		this.type = type;
 	}
 

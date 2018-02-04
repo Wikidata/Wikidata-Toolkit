@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -44,13 +45,6 @@ public class JacksonInnerQuantity {
 	private String jsonUnit;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonInnerQuantity() {
-	}
-
-	/**
 	 * Constructor. The unit given here is a unit string as used in WDTK, with
 	 * the empty string meaning "no unit".
 	 *
@@ -59,8 +53,12 @@ public class JacksonInnerQuantity {
 	 * @param lowerBound
 	 * @param unit
 	 */
-	public JacksonInnerQuantity(BigDecimal amount, BigDecimal upperBound,
-			BigDecimal lowerBound, String unit) {
+	@JsonCreator
+	public JacksonInnerQuantity(
+			@JsonProperty("amount") BigDecimal amount,
+			@JsonProperty("upperBound") BigDecimal upperBound,
+			@JsonProperty("lowerBound") BigDecimal lowerBound,
+			@JsonProperty("unit") String unit) {
 		this.amount = amount;
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
@@ -82,17 +80,6 @@ public class JacksonInnerQuantity {
 	}
 
 	/**
-	 * Sets the numerical value to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param amount
-	 *            new value
-	 */
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	/**
 	 * Returns the upper bound.
 	 *
 	 * @see QuantityValue#getUpperBound()
@@ -103,17 +90,6 @@ public class JacksonInnerQuantity {
 	}
 
 	/**
-	 * Sets the upper bound to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param upperBound
-	 *            new value
-	 */
-	public void setUpperBound(BigDecimal upperBound) {
-		this.upperBound = upperBound;
-	}
-
-	/**
 	 * Returns the lower bound.
 	 *
 	 * @see QuantityValue#getLowerBound()
@@ -121,17 +97,6 @@ public class JacksonInnerQuantity {
 	 */
 	public BigDecimal getLowerBound() {
 		return lowerBound;
-	}
-
-	/**
-	 * Sets the lower bound to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param lowerBound
-	 *            bound new value
-	 */
-	public void setLowerBound(BigDecimal lowerBound) {
-		this.lowerBound = lowerBound;
 	}
 
 	@JsonProperty("amount")
@@ -161,19 +126,6 @@ public class JacksonInnerQuantity {
 	@JsonProperty("unit")
 	public String getJsonUnit() {
 		return this.jsonUnit;
-	}
-
-	/**
-	 * Sets the lower bound to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param unit
-	 *            new unit value, the string "1" is used in JSON to denote that
-	 *            there is no unit for a quantity
-	 */
-	@JsonProperty("unit")
-	public void setJsonUnit(String unit) {
-		this.jsonUnit = unit;
 	}
 
 	/**

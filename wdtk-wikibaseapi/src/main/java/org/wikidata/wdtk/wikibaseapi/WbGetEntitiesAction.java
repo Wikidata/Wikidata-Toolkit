@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
@@ -62,7 +63,7 @@ public class WbGetEntitiesAction {
 	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
-	final ObjectMapper mapper = new ObjectMapper();
+	final ObjectMapper mapper;
 
 	/**
 	 * Creates an object to fetch data from the given ApiConnection. The site
@@ -71,14 +72,15 @@ public class WbGetEntitiesAction {
 	 *
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
-	 * @param siteUri
+	 * @param siteIri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public WbGetEntitiesAction(ApiConnection connection, String siteUri) {
+	public WbGetEntitiesAction(ApiConnection connection, String siteIri) {
 		this.connection = connection;
-		this.siteIri = siteUri;
+		this.siteIri = siteIri;
+		this.mapper = new DatamodelMapper(siteIri);
 	}
 
 	/**

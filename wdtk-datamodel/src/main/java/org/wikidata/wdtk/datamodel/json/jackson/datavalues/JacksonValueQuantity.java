@@ -28,8 +28,10 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -50,21 +52,13 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	private JacksonInnerQuantity value;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
+	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonValueQuantity() {
+	@JsonCreator
+	public JacksonValueQuantity(
+			@JsonProperty("value") JacksonInnerQuantity value) {
 		super(JSON_VALUE_TYPE_QUANTITY);
-	}
-
-	/**
-	 * Sets the inner value helper object to the given value. Only for use by
-	 * Jackson during deserialization.
-	 *
-	 * @param value
-	 *            new value
-	 */
-	public void setValue(JacksonInnerQuantity value) {
 		this.value = value;
 	}
 

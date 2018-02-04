@@ -22,8 +22,10 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Helper object that represents the JSON object structure that is used to
@@ -53,14 +55,7 @@ public class JacksonInnerTime {
 	private byte minute;
 	@JsonIgnore
 	private byte second;
-
-	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonInnerTime() {
-	}
-
+	
 	/**
 	 * Constructs a new object for the given data.
 	 *
@@ -71,9 +66,14 @@ public class JacksonInnerTime {
 	 * @param precision
 	 * @param calendarModel
 	 */
-	public JacksonInnerTime(String time, int timezoneOffset,
-			int beforeTolerance, int afterTolerance, int precision,
-			String calendarModel) {
+	@JsonCreator
+	public JacksonInnerTime(
+			@JsonProperty("time") String time,
+			@JsonProperty("timezone") int timezoneOffset,
+			@JsonProperty("before") int beforeTolerance,
+			@JsonProperty("after") int afterTolerance,
+			@JsonProperty("precision") int precision,
+			@JsonProperty("calendarmodel") String calendarModel) {
 		this.time = time;
 		this.timezone = timezoneOffset;
 		this.before = beforeTolerance;
@@ -153,18 +153,6 @@ public class JacksonInnerTime {
 	}
 
 	/**
-	 * Sets the formatted date-time string to the given value. Only for use by
-	 * Jackson during deserialization.
-	 *
-	 * @param time
-	 *            new value
-	 */
-	public void setTime(String time) {
-		this.time = time;
-		this.decomposeTimeString();
-	}
-
-	/**
 	 * Returns the timezone offset.
 	 *
 	 * @see TimeValue#getTimezoneOffset()
@@ -172,17 +160,6 @@ public class JacksonInnerTime {
 	 */
 	public int getTimezone() {
 		return timezone;
-	}
-
-	/**
-	 * Sets the timezone offset to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param timezone
-	 *            new value
-	 */
-	public void setTimezone(int timezone) {
-		this.timezone = timezone;
 	}
 
 	/**
@@ -196,17 +173,6 @@ public class JacksonInnerTime {
 	}
 
 	/**
-	 * Sets the before tolerance to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param before
-	 *            new value
-	 */
-	public void setBefore(int before) {
-		this.before = before;
-	}
-
-	/**
 	 * Returns the after tolerance.
 	 *
 	 * @see TimeValue#getAfterTolerance()
@@ -214,17 +180,6 @@ public class JacksonInnerTime {
 	 */
 	public int getAfter() {
 		return after;
-	}
-
-	/**
-	 * Sets the after tolerance to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param after
-	 *            new value
-	 */
-	public void setAfter(int after) {
-		this.after = after;
 	}
 
 	/**
@@ -238,17 +193,6 @@ public class JacksonInnerTime {
 	}
 
 	/**
-	 * Sets the precision to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param precision
-	 *            new value
-	 */
-	public void setPrecision(int precision) {
-		this.precision = precision;
-	}
-
-	/**
 	 * Returns the calendar model IRI.
 	 *
 	 * @see TimeValue#getPreferredCalendarModel()
@@ -256,17 +200,6 @@ public class JacksonInnerTime {
 	 */
 	public String getCalendarmodel() {
 		return calendarmodel;
-	}
-
-	/**
-	 * Sets the calendar model IRI to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param calendarmodel
-	 *            new value
-	 */
-	public void setCalendarmodel(String calendarmodel) {
-		this.calendarmodel = calendarmodel;
 	}
 
 	/**

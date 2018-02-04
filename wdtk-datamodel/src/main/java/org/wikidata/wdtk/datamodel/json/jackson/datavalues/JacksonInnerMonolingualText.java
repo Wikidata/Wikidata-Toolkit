@@ -2,7 +2,9 @@ package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /*
  * #%L
@@ -39,19 +41,17 @@ public class JacksonInnerMonolingualText {
 	String text = "";
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonInnerMonolingualText() {
-	}
-
-	/**
-	 * TODO Review the utility of this constructor.
+	 * Constructor.
 	 *
 	 * @param language
+	 * 		the Wikimedia language code
 	 * @param text
+	 * 		the text of the value
 	 */
-	public JacksonInnerMonolingualText(String language, String text) {
+	@JsonCreator
+	public JacksonInnerMonolingualText(
+			@JsonProperty("language") String language,
+			@JsonProperty("text") String text) {
 		this.language = language;
 		this.text = text;
 	}
@@ -67,17 +67,6 @@ public class JacksonInnerMonolingualText {
 	}
 
 	/**
-	 * Sets the language code to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param language
-	 *            new value
-	 */
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	/**
 	 * Returns the text.
 	 *
 	 * @see MonolingualTextValue#getText()
@@ -85,17 +74,6 @@ public class JacksonInnerMonolingualText {
 	 */
 	public String getText() {
 		return this.text;
-	}
-
-	/**
-	 * Sets the text to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param text
-	 *            new value
-	 */
-	public void setText(String text) {
-		this.text = text;
 	}
 
 	@Override

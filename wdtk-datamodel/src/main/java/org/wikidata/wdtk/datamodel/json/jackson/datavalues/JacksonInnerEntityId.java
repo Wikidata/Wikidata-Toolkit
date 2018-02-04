@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson.datavalues;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -58,13 +60,6 @@ public class JacksonInnerEntityId {
 	private String id = null;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonInnerEntityId() {
-	}
-
-	/**
 	 * Constructor. Supported entity types so far are "item" and "property".
 	 *
 	 * @param entityType
@@ -87,6 +82,22 @@ public class JacksonInnerEntityId {
 		this.id = id;
 		checkAndFillFields();
 	}
+	
+	/**
+	 * Constructor. Creates an object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	@JsonCreator
+	public JacksonInnerEntityId(
+			@JsonProperty("id") String id,
+			@JsonProperty("numeric-id") int numericId,
+			@JsonProperty("entity-type") String entityType
+		) {
+		this.id = id;
+		this.numericId = numericId;
+		this.entityType = entityType;
+		checkAndFillFields();
+	}
 
 	/**
 	 * Returns the entity type string as used in JSON. Only for use by Jackson
@@ -100,19 +111,6 @@ public class JacksonInnerEntityId {
 	}
 
 	/**
-	 * Sets the entity type string to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param entityType
-	 *            new value
-	 */
-	@JsonProperty("entity-type")
-	public void setJsonEntityType(String entityType) {
-		this.entityType = entityType;
-		checkAndFillFields();
-	}
-
-	/**
 	 * Returns the numeric item id as used in JSON. Only for use by Jackson
 	 * during serialization.
 	 *
@@ -121,19 +119,6 @@ public class JacksonInnerEntityId {
 	@JsonProperty("numeric-id")
 	public int getNumericId() {
 		return numericId;
-	}
-
-	/**
-	 * Sets the numeric item id to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param numericId
-	 *            new value
-	 */
-	@JsonProperty("numeric-id")
-	public void setNumericId(int numericId) {
-		this.numericId = numericId;
-		checkAndFillFields();
 	}
 
 	/**
@@ -149,19 +134,6 @@ public class JacksonInnerEntityId {
 	@JsonProperty("id")
 	public String getStringId() throws IllegalArgumentException {
 		return id;
-	}
-
-	/**
-	 * Sets the string entity id to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param id
-	 *            new value
-	 */
-	@JsonProperty("id")
-	public void setStringId(String id) {
-		this.id = id;
-		checkAndFillFields();
 	}
 
 	@Override
