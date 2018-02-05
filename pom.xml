@@ -73,7 +73,7 @@
 		<apacheHttpVersion>4.5.4</apacheHttpVersion>
 		<commonsCliVersion>1.4</commonsCliVersion>
 		<ini4JVersion>0.5.4</ini4JVersion>
-		<jacksonVersion>2.5.0</jacksonVersion>
+		<jacksonVersion>2.9.1</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
 		<sesameVersion>2.7.14</sesameVersion>
