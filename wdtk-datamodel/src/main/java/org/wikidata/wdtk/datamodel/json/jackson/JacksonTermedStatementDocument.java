@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -34,6 +35,8 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -72,6 +75,7 @@ public abstract class JacksonTermedStatementDocument extends
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
 	protected Map<String, List<JacksonMonolingualTextValue>> aliases = new HashMap<>();
+	
 	protected Map<String, JacksonMonolingualTextValue> labels = new HashMap<>();
 	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
 
@@ -117,28 +121,53 @@ public abstract class JacksonTermedStatementDocument extends
 	protected long revisionId = 0;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
+	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonTermedStatementDocument() {
-	}
-
-	/**
-	 * Sets the aliases to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param aliases
-	 *            new value
-	 */
-	public void setAliases(
-			Map<String, List<JacksonMonolingualTextValue>> aliases) {
-		if (aliases == null) {
-			this.aliases = Collections.emptyMap();
+	// @JsonCreator
+	public JacksonTermedStatementDocument(
+			@JsonProperty("id") String jsonId,
+			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
+			@JsonProperty("claims") Map<String, List<JacksonStatement>> claims,
+			@JsonProperty("lastrevid") long revisionId,
+			@JacksonInject("siteIri") String siteIri) {
+		this.entityId = jsonId;
+		Validate.notNull(jsonId);
+		if (labels != null) {
+			this.labels = labels;
 		} else {
+			this.labels = Collections.<String, JacksonMonolingualTextValue>emptyMap();
+		}
+		if (descriptions != null) {
+			this.descriptions = descriptions;
+		} else {
+			this.descriptions = Collections.<String, JacksonMonolingualTextValue>emptyMap();
+		}
+		if (aliases != null) {
 			this.aliases = aliases;
+		} else {
+			this.aliases = Collections.<String, List<JacksonMonolingualTextValue>>emptyMap();
+		}
+		if (claims != null) {
+			this.claims = claims;
+		} else {
+			this.claims = Collections.<String,List<JacksonStatement>>emptyMap();
+		}
+		this.revisionId = revisionId;
+		this.siteIri = siteIri;
+		EntityIdValue subject = this.getEntityId();
+		for (Entry<String, List<JacksonStatement>> entry : this.claims
+				.entrySet()) {
+			for (JacksonStatement statement : entry.getValue()) {
+				statement.setSubject(subject);
+			}
 		}
 	}
 
+
+	@JsonProperty("aliases")
 	@Override
 	public Map<String, List<MonolingualTextValue>> getAliases() {
 		// because of the typing provided by the interface one has to
@@ -154,59 +183,18 @@ public abstract class JacksonTermedStatementDocument extends
 		return Collections.unmodifiableMap(returnMap);
 	}
 
-	/**
-	 * Sets the descriptions to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param descriptions
-	 *            new value
-	 */
-	public void setDescriptions(
-			Map<String, JacksonMonolingualTextValue> descriptions) {
-		if (descriptions == null) {
-			this.descriptions = Collections.emptyMap();
-		} else {
-			this.descriptions = descriptions;
-		}
-	}
-
+	@JsonProperty("descriptions")
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
 		return Collections
 				.<String, MonolingualTextValue> unmodifiableMap(this.descriptions);
 	}
 
-	/**
-	 * Sets the labels to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param labels
-	 *            new value
-	 */
-	public void setLabels(Map<String, JacksonMonolingualTextValue> labels) {
-		if (labels == null) {
-			this.labels = Collections.emptyMap();
-		} else {
-			this.labels = labels;
-		}
-	}
-
+	@JsonProperty("labels")
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
 		return Collections
 				.<String, MonolingualTextValue> unmodifiableMap(this.labels);
-	}
-
-	/**
-	 * Sets the string id of the entity that this document refers to. Only for
-	 * use by Jackson during deserialization.
-	 *
-	 * @param id
-	 *            new value
-	 */
-	@JsonProperty("id")
-	public void setJsonId(String id) {
-		this.entityId = id;
 	}
 
 	/**
@@ -222,30 +210,6 @@ public abstract class JacksonTermedStatementDocument extends
 			return this.entityId;
 		} else {
 			return null;
-		}
-	}
-
-	/**
-	 * Sets the site iri to the given value. This can be used to inject
-	 * information about the site the object belongs to after the object is
-	 * constructed. This is needed since this information is not part of the
-	 * JSON serialization.
-	 *
-	 * @see EntityIdValue#getSiteIri()
-	 * @param siteIri
-	 *            the site IRI
-	 */
-	@JsonIgnore
-	public void setSiteIri(String siteIri) {
-		this.siteIri = siteIri;
-
-		EntityIdValue subject = this.getEntityId();
-
-		for (Entry<String, List<JacksonStatement>> entry : this.claims
-				.entrySet()) {
-			for (JacksonStatement statement : entry.getValue()) {
-				statement.setSubject(subject);
-			}
 		}
 	}
 
@@ -268,26 +232,6 @@ public abstract class JacksonTermedStatementDocument extends
 	}
 
 	/**
-	 * Sets the "claims" to the given value. Only for use by Jackson during
-	 * deserialization.
-	 * <p>
-	 * The name refers to the JSON model, where claims are similar to statement
-	 * groups. This should not be confused with claims as used in the WDTK data
-	 * model. This will probably only be used by the Jacksons' ObjectMapper.
-	 *
-	 * @param claims
-	 */
-	@JsonProperty("claims")
-	public void setJsonClaims(Map<String, List<JacksonStatement>> claims) {
-		if (claims == null) {
-			this.claims = Collections.emptyMap();
-		} else {
-			this.claims = claims;
-		}
-		this.statementGroups = null; // clear cache
-	}
-
-	/**
 	 * Returns the "claims". Only used by Jackson.
 	 * <p>
 	 * JSON "claims" correspond to statement groups in the WDTK model. You
@@ -300,21 +244,16 @@ public abstract class JacksonTermedStatementDocument extends
 	public Map<String, List<JacksonStatement>> getJsonClaims() {
 		return this.claims;
 	}
-
-	/**
-	 * Sets the revision id of this document. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param revisionId
-	 *            new value
-	 */
-	@JsonProperty("lastrevid")
-	public void setRevisionId(long revisionId) {
-		this.revisionId = revisionId;
+	
+	private static class NonZeroFilter {
+		@Override
+		public boolean equals(Object other) {
+			return (other instanceof Long) && (long)other == 0;
+		}
 	}
 
 	@Override
-	@JsonInclude(Include.NON_DEFAULT)
+	@JsonInclude(value=Include.CUSTOM, valueFilter=NonZeroFilter.class)
 	@JsonProperty("lastrevid")
 	public long getRevisionId() {
 		return this.revisionId;

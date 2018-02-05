@@ -294,10 +294,15 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId) {
-		JacksonPropertyDocument result = new JacksonPropertyDocument();
-		initializeTermedStatementDocument(result, propertyId, labels,
-				descriptions, aliases, statementGroups, revisionId);
-		result.setJsonDatatype(convertDatatype(datatypeId));
+		JacksonPropertyDocument result = new JacksonPropertyDocument(
+				propertyId.getId(),
+				buildTermMapFromTermList(labels),
+				buildTermMapFromTermList(descriptions),
+				buildAliasMapFromAliasList(aliases),
+				buildStatementMapFromStatementGroups(statementGroups),
+				convertDatatype(datatypeId),
+				revisionId,
+				propertyId.getSiteIri());
 		return result;
 	}
 
@@ -319,9 +324,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks, long revisionId) {
-		JacksonItemDocument result = new JacksonItemDocument();
-		initializeTermedStatementDocument(result, itemIdValue, labels,
-				descriptions, aliases, statementGroups, revisionId);
 
 		Map<String, JacksonSiteLink> jacksonSiteLinks = new HashMap<>(
 				siteLinks.size());
@@ -335,22 +337,20 @@ public class JacksonObjectFactory implements DataObjectFactory {
 								.copy(siteLink));
 			}
 		}
-		result.setSiteLinks(jacksonSiteLinks);
+		JacksonItemDocument result = new JacksonItemDocument(
+				itemIdValue.getId(),
+				buildTermMapFromTermList(labels),
+				buildTermMapFromTermList(descriptions),
+				buildAliasMapFromAliasList(aliases),
+				buildStatementMapFromStatementGroups(statementGroups),
+				jacksonSiteLinks,
+				revisionId,
+				itemIdValue.getSiteIri());
 
 		return result;
 	}
-
-	private void initializeTermedStatementDocument(
-			JacksonTermedStatementDocument document,
-			EntityIdValue entityIdValue, List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, long revisionId) {
-
-		document.setJsonId(entityIdValue.getId());
-		document.setSiteIri(entityIdValue.getSiteIri());
-		document.setRevisionId(revisionId);
-
+	
+	private Map<String, List<JacksonMonolingualTextValue>> buildAliasMapFromAliasList(List<MonolingualTextValue> aliases) {
 		Map<String, List<JacksonMonolingualTextValue>> aliasMap = new HashMap<>();
 		for (MonolingualTextValue mltv : aliases) {
 			List<JacksonMonolingualTextValue> langAliases = aliasMap.get(mltv
@@ -361,11 +361,10 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			}
 			langAliases.add(convertMltv(mltv));
 		}
-		document.setAliases(aliasMap);
-
-		document.setLabels(buildTermMapFromTermList(labels));
-		document.setDescriptions(buildTermMapFromTermList(descriptions));
-
+		return aliasMap;
+	}
+	
+	private Map<String, List<JacksonStatement>> buildStatementMapFromStatementGroups(List<StatementGroup> statementGroups) {
 		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
 		for (StatementGroup sg : statementGroups) {
 			String propertyId = sg.getProperty().getId();
@@ -383,7 +382,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				}
 			}
 		}
-		document.setJsonClaims(jacksonStatements);
+		return jacksonStatements;
 	}
 
 	private Map<String, JacksonMonolingualTextValue> buildTermMapFromTermList(

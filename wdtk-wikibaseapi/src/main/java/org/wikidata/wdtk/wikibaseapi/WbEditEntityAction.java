@@ -462,7 +462,6 @@ public class WbEditEntityAction {
 		try {
 			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
 					JacksonTermedStatementDocument.class);
-			ed.setSiteIri(this.siteIri);
 
 			return ed;
 		} catch (JsonProcessingException e) {
@@ -484,7 +483,6 @@ public class WbEditEntityAction {
 
 			JacksonTermedStatementDocument ed;
 			ed = documentReader.readValue(jsonString);
-			ed.setSiteIri(this.siteIri);
 			return ed;
 		}
 	}

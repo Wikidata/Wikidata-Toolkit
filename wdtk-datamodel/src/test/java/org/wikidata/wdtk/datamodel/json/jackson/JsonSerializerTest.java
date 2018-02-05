@@ -103,7 +103,7 @@ public class JsonSerializerTest {
 
 		ArrayList<EntityDocument> outputDocuments = new ArrayList<>();
 
-		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
+		ObjectMapper mapper = new DatamodelMapper("foo:");
 		ObjectReader documentReader = mapper
 				.reader(JacksonTermedStatementDocument.class);
 
@@ -112,7 +112,6 @@ public class JsonSerializerTest {
 		while (documentIterator.hasNextValue()) {
 			JacksonTermedStatementDocument document = documentIterator
 					.nextValue();
-			document.setSiteIri("foo:");
 			outputDocuments.add(document);
 		}
 		documentIterator.close();

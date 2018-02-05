@@ -218,17 +218,26 @@ public class JsonTestData {
 	}
 
 	public static JacksonItemDocument getEmtpyTestItemDocument() {
-		JacksonItemDocument testItemDocument = new JacksonItemDocument();
-		testItemDocument.setJsonId(getTestItemId().getId());
+		JacksonItemDocument testItemDocument = new JacksonItemDocument(
+				getTestItemId().getId(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, getTestItemId().getSiteIri());
 		return testItemDocument;
 	}
 
 	public static JacksonItemDocument getTestItemDocument() {
-		JacksonItemDocument testItemDocument = new JacksonItemDocument();
-		testItemDocument.setJsonId(getTestItemId().getId());
-		testItemDocument.setAliases(getTestAliases());
-		testItemDocument.setDescriptions(getTestMltvMap());
-		testItemDocument.setLabels(getTestMltvMap());
+		JacksonItemDocument testItemDocument = new JacksonItemDocument(
+				getTestItemId().getId(),
+				getTestMltvMap(),
+				getTestMltvMap(),
+				getTestAliases(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, getTestItemId().getSiteIri());
 		return testItemDocument;
 	}
 

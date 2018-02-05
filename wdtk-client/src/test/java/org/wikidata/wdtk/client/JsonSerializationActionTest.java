@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -114,7 +115,7 @@ public class JsonSerializationActionTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(
 				Paths.get("/path/to/"), false);
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
 				.reader(JacksonTermedStatementDocument.class);
 		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
@@ -125,7 +126,6 @@ public class JsonSerializationActionTest {
 		while (documentIterator.hasNextValue()) {
 			JacksonTermedStatementDocument document = documentIterator
 					.nextValue();
-			document.setSiteIri(Datamodel.SITE_WIKIDATA);
 			results.add(document);
 		}
 		documentIterator.close();
@@ -168,7 +168,7 @@ public class JsonSerializationActionTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(
 				Paths.get("/path/to/"), false);
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
 				.reader(JacksonTermedStatementDocument.class);
 		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
@@ -179,7 +179,6 @@ public class JsonSerializationActionTest {
 		while (documentIterator.hasNextValue()) {
 			JacksonTermedStatementDocument document = documentIterator
 					.nextValue();
-			document.setSiteIri(Datamodel.SITE_WIKIDATA);
 			results.add(document);
 		}
 		documentIterator.close();
@@ -219,7 +218,7 @@ public class JsonSerializationActionTest {
 		MockDirectoryManager mdm = new MockDirectoryManager(Paths.get("."),
 				false);
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
 				.reader(JacksonTermedStatementDocument.class);
 		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
@@ -230,7 +229,6 @@ public class JsonSerializationActionTest {
 		while (documentIterator.hasNextValue()) {
 			JacksonTermedStatementDocument document = documentIterator
 					.nextValue();
-			document.setSiteIri(Datamodel.SITE_WIKIDATA);
 			results.add(document);
 		}
 		documentIterator.close();

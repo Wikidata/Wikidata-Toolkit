@@ -194,13 +194,11 @@ public class WbGetEntitiesAction {
 			while(entitiesIterator.hasNext()) {
 				Entry<String,JsonNode> entry = entitiesIterator.next();
 				JsonNode entityNode = entry.getValue();
-				String queriedEntityId = entry.getKey();
 				if (!entityNode.has("missing")) {
 					try {
 						JacksonTermedStatementDocument ed = mapper.treeToValue(
 								entityNode,
 								JacksonTermedStatementDocument.class);
-						ed.setSiteIri(this.siteIri);
 
 						if (titles == null) {
 							// We use the JSON key rather than the id of the value

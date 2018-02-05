@@ -25,7 +25,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 
 import org.junit.Test;
-
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,10 +40,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TestAliasBug {
 
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	String buggedAliasesJson = "\"aliases\":[]";
-	String buggedItemJson = "{" + JsonTestData.JSON_ITEM_TYPE + ","
+	String buggedItemJson = "{\"id\":\"Q4\"," + JsonTestData.JSON_ITEM_TYPE + ","
 			+ buggedAliasesJson + "}";
 
 	@Test

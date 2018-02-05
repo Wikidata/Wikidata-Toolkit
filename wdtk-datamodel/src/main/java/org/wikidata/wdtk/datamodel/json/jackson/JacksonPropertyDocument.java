@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import java.util.List;
+import java.util.Map;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -29,6 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,7 +61,18 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonPropertyDocument() {
+	@JsonCreator
+	public JacksonPropertyDocument(
+			@JsonProperty("id") String jsonId,
+			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
+			@JsonProperty("claims") Map<String, List<JacksonStatement>> claims,
+			@JsonProperty("datatype") String datatype,
+			@JsonProperty("lastrevid") long revisionId,
+			@JacksonInject("siteIri") String siteIri) {
+		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+		this.datatype = datatype;
 	}
 
 	/**
@@ -70,18 +86,6 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	@JsonProperty("datatype")
 	public String getJsonDatatype() {
 		return this.datatype;
-	}
-
-	/**
-	 * Sets the datatype to the given JSON datatype string. Only for use by
-	 * Jackson during deserialization.
-	 *
-	 * @see #getJsonDatatype()
-	 * @param datatype
-	 */
-	@JsonProperty("datatype")
-	public void setJsonDatatype(String datatype) {
-		this.datatype = datatype;
 	}
 
 	@JsonIgnore

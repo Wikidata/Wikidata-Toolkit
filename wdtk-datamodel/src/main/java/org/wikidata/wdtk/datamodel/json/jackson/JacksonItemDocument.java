@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
@@ -33,6 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,10 +59,25 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument
 	private Map<String, JacksonSiteLink> sitelinks = new HashMap<>();
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
+	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonItemDocument() {
+	@JsonCreator
+	public JacksonItemDocument(
+			@JsonProperty("id") String jsonId,
+			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
+			@JsonProperty("claims") Map<String, List<JacksonStatement>> claims,
+			@JsonProperty("sitelinks") Map<String, JacksonSiteLink> sitelinks,
+			@JsonProperty("lastrevid") long revisionId,
+			@JacksonInject("siteIri") String siteIri) {
+		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+		if (sitelinks != null) {
+			this.sitelinks = sitelinks;
+		} else {
+			this.sitelinks = Collections.<String, JacksonSiteLink>emptyMap();
+		}
 	}
 
 	@JsonIgnore
@@ -76,22 +94,6 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument
 	@Override
 	public EntityIdValue getEntityId() {
 		return getItemId();
-	}
-
-	/**
-	 * Sets the site links to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param sitelinks
-	 *            new value
-	 */
-	@JsonProperty("sitelinks")
-	public void setSiteLinks(Map<String, JacksonSiteLink> sitelinks) {
-		if (sitelinks == null) {
-			this.sitelinks = Collections.emptyMap();
-		} else {
-			this.sitelinks = sitelinks;
-		}
 	}
 
 	@JsonProperty("sitelinks")

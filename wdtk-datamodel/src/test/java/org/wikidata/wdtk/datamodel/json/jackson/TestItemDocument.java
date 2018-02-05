@@ -24,10 +24,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
@@ -40,7 +44,7 @@ public class TestItemDocument {
 
 	// TODO test statements (JSON claim)
 
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Pojo to Json
@@ -49,8 +53,14 @@ public class TestItemDocument {
 	 */
 	@Test
 	public void testLabelsToJson() throws JsonProcessingException {
-		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setLabels(JsonTestData.getTestMltvMap());
+		JacksonItemDocument document = new JacksonItemDocument(
+				JsonTestData.getTestItemId().getId(),
+				JsonTestData.getTestMltvMap(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_LABEL,
@@ -82,8 +92,14 @@ public class TestItemDocument {
 	 */
 	@Test
 	public void testDescriptionsToJson() throws JsonProcessingException {
-		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setDescriptions(JsonTestData.getTestMltvMap());
+		JacksonItemDocument document = new JacksonItemDocument(
+				JsonTestData.getTestItemId().getId(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				JsonTestData.getTestMltvMap(),
+				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(
@@ -111,8 +127,14 @@ public class TestItemDocument {
 
 	@Test
 	public void testAliasesToJson() throws JsonProcessingException {
-		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setAliases(JsonTestData.getTestAliases());
+		JacksonItemDocument document = new JacksonItemDocument(
+				JsonTestData.getTestItemId().getId(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				JsonTestData.getTestAliases(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ALIASES,
@@ -133,7 +155,6 @@ public class TestItemDocument {
 	@Test
 	public void testItemIdToJson() throws JsonProcessingException {
 		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setJsonId(JsonTestData.getTestItemId().getId());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
@@ -142,9 +163,14 @@ public class TestItemDocument {
 
 	@Test
 	public void testEmptyItemIdToJson() throws JsonProcessingException {
-		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setJsonId(ItemIdValue.NULL.getId());
-		document.setSiteIri(ItemIdValue.NULL.getSiteIri());
+		JacksonItemDocument document = new JacksonItemDocument(
+				ItemIdValue.NULL.getId(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, JacksonSiteLink>emptyMap(),
+				0, ItemIdValue.NULL.getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_NOITEMID,
@@ -164,8 +190,14 @@ public class TestItemDocument {
 
 	@Test
 	public void testSiteLinksToJson() throws JsonProcessingException {
-		JacksonItemDocument document = JsonTestData.getEmtpyTestItemDocument();
-		document.setSiteLinks(JsonTestData.getTestSiteLinkMap());
+		JacksonItemDocument document = new JacksonItemDocument(
+				JsonTestData.getTestItemId().getId(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				JsonTestData.getTestSiteLinkMap(),
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_SITE_LINK,
@@ -198,11 +230,14 @@ public class TestItemDocument {
 
 	@Test
 	public void testGenerationFromOtherItemDocument() {
-		JacksonItemDocument fullDocument = new JacksonItemDocument();
-		fullDocument.setJsonId(JsonTestData.getTestItemId().getId());
-		fullDocument.setAliases(JsonTestData.getTestAliases());
-		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
-		fullDocument.setLabels(JsonTestData.getTestMltvMap());
+		JacksonItemDocument fullDocument = new JacksonItemDocument(
+				JsonTestData.getTestItemId().getId(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestAliases(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				JsonTestData.getTestSiteLinkMap(),
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		assertEquals(fullDocument.getAliases(), JsonTestData.getTestAliases());
 		assertEquals(fullDocument.getDescriptions(),

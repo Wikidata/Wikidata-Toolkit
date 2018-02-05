@@ -22,6 +22,9 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -34,12 +37,14 @@ public class TestPropertyDocument {
 
 	@Test
 	public void testFullDocumentSetup() {
-		JacksonPropertyDocument fullDocument = new JacksonPropertyDocument();
-		fullDocument.setJsonId(JsonTestData.getTestPropertyId().getId());
-		fullDocument.setAliases(JsonTestData.getTestAliases());
-		fullDocument.setDescriptions(JsonTestData.getTestMltvMap());
-		fullDocument.setLabels(JsonTestData.getTestMltvMap());
-		fullDocument.setJsonDatatype("quantity");
+		JacksonPropertyDocument fullDocument = new JacksonPropertyDocument(
+				JsonTestData.getTestPropertyId().getId(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestAliases(),
+				Collections.<String, List<JacksonStatement>>emptyMap(),
+				"quantity",
+				0, JsonTestData.getTestItemId().getSiteIri());
 
 		assertEquals(fullDocument.getAliases(), JsonTestData.getTestAliases());
 		assertEquals(fullDocument.getDescriptions(),
