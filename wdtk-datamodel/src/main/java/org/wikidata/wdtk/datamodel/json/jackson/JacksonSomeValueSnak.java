@@ -26,7 +26,10 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link SomeValueSnak}.
@@ -38,11 +41,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
+	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonSomeValueSnak() {
-		super();
+	@JsonCreator
+	protected JacksonSomeValueSnak(
+			@JsonProperty("property") String property,
+			@JacksonInject("siteIri") String siteIri) {
+		super(property, siteIri);
 	}
 
 	@Override

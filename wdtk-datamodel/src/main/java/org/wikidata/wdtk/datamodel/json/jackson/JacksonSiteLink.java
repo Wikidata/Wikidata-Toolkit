@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import java.util.Collections;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -23,11 +25,13 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,19 +52,20 @@ public class JacksonSiteLink implements SiteLink {
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	JacksonSiteLink() {
-	}
-
-	/**
-	 * Sets the page title to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param title
-	 *            new value
-	 */
-	@JsonProperty("title")
-	public void setPageTitle(String title) {
+	@JsonCreator
+	JacksonSiteLink(
+			@JsonProperty("title") String title,
+			@JsonProperty("site") String site,
+			@JsonProperty("badges") List<String> badges) {
+		Validate.notNull(title);
 		this.title = title;
+		Validate.notNull(site);
+		this.site = site;
+		if (badges != null) {
+			this.badges = badges;
+		} else {
+			this.badges = Collections.<String>emptyList();
+		}
 	}
 
 	@JsonProperty("title")
@@ -69,33 +74,10 @@ public class JacksonSiteLink implements SiteLink {
 		return this.title;
 	}
 
-	/**
-	 * Sets the site key to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param siteKey
-	 *            new value
-	 */
-	@JsonProperty("site")
-	public void setSiteKey(String siteKey) {
-		this.site = siteKey;
-	}
-
 	@JsonProperty("site")
 	@Override
 	public String getSiteKey() {
 		return this.site;
-	}
-
-	/**
-	 * Sets the badges to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param badges
-	 *            new value
-	 */
-	public void setBadges(List<String> badges) {
-		this.badges = badges;
 	}
 
 	@Override

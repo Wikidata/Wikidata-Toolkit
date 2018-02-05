@@ -142,8 +142,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	 */
 	@Override
 	public ValueSnak getValueSnak(PropertyIdValue propertyId, Value value) {
-		JacksonValueSnak result = new JacksonValueSnak();
-		result.setProperty(propertyId.getId());
 		if (value instanceof JacksonValue) {
 			return getJacksonValueSnak(propertyId, (JacksonValue) value,
 					getJsonPropertyTypeForValueType(value));
@@ -156,17 +154,17 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
-		JacksonSomeValueSnak result = new JacksonSomeValueSnak();
-		result.setProperty(propertyId.getId());
-		result.setSiteIri(propertyId.getSiteIri());
+		JacksonSomeValueSnak result = new JacksonSomeValueSnak(
+				propertyId.getId(),
+				propertyId.getSiteIri());
 		return result;
 	}
 
 	@Override
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
-		JacksonNoValueSnak result = new JacksonNoValueSnak();
-		result.setProperty(propertyId.getId());
-		result.setSiteIri(propertyId.getSiteIri());
+		JacksonNoValueSnak result = new JacksonNoValueSnak(
+				propertyId.getId(),
+				propertyId.getSiteIri());
 		return result;
 	}
 
@@ -188,7 +186,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public Reference getReference(List<SnakGroup> snakGroups) {
-		JacksonReference result = new JacksonReference();
 		Map<String, List<JacksonSnak>> snakMap = new HashMap<>();
 		List<String> propertyOrder = new ArrayList<>(snakGroups.size());
 		for (SnakGroup snakGroup : snakGroups) {
@@ -196,22 +193,20 @@ public class JacksonObjectFactory implements DataObjectFactory {
 					convertSnakList(snakGroup.getSnaks()));
 			propertyOrder.add(snakGroup.getProperty().getId());
 		}
-		result.setSnaks(snakMap);
-		result.setPropertyOrder(propertyOrder);
-		return result;
+		return new JacksonReference(snakMap, propertyOrder);
 	}
 
 	@Override
 	public Statement getStatement(Claim claim,
 			List<? extends Reference> references, StatementRank rank,
 			String statementId) {
-		JacksonStatement result = new JacksonStatement();
 
+	    JacksonSnak mainsnak = null;
 		if (claim.getMainSnak() instanceof JacksonSnak) {
-			result.setMainsnak((JacksonSnak) claim.getMainSnak());
+			mainsnak = (JacksonSnak) claim.getMainSnak();
 		} else {
-			result.setMainsnak((JacksonSnak) dataModelConverter.copySnak(claim
-					.getMainSnak()));
+			mainsnak = (JacksonSnak) dataModelConverter.copySnak(claim
+					.getMainSnak());
 		}
 
 		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
@@ -221,9 +216,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			qualifiers.put(sg.getProperty().getId(),
 					convertSnakList(sg.getSnaks()));
 			propertyOrder.add(sg.getProperty().getId());
-		}
-		result.setQualifiers(qualifiers);
-		result.setPropertyOrder(propertyOrder);
+		};
 
 		List<JacksonReference> jacksonReferences = new ArrayList<>(
 				references.size());
@@ -235,14 +228,9 @@ public class JacksonObjectFactory implements DataObjectFactory {
 						.copy(reference));
 			}
 		}
-		result.setReferences(jacksonReferences);
 
-		result.setRank(rank);
-		result.setStatementId(statementId);
-
-		result.setSubject(claim.getSubject());
-
-		return result;
+		return new JacksonStatement(statementId,
+				rank, mainsnak, qualifiers, jacksonReferences, claim.getSubject());
 	}
 
 	@Override
@@ -261,10 +249,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	@Override
 	public SiteLink getSiteLink(String title, String siteKey,
 			List<String> badges) {
-		JacksonSiteLink result = new JacksonSiteLink();
-		result.setPageTitle(title);
-		result.setSiteKey(siteKey);
-		result.setBadges(badges);
+		JacksonSiteLink result = new JacksonSiteLink(
+				title, siteKey, badges);
 		return result;
 	}
 
@@ -405,11 +391,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	private ValueSnak getJacksonValueSnak(PropertyIdValue propertyId,
 			JacksonValue value, String propertyDatatype) {
-		JacksonValueSnak result = new JacksonValueSnak();
-		result.setProperty(propertyId.getId());
-		result.setDatavalue(value);
-		result.setDatatype(propertyDatatype);
-		result.setSiteIri(propertyId.getSiteIri());
+		JacksonValueSnak result = new JacksonValueSnak(
+				propertyId.getId(),
+				propertyDatatype,
+				value,
+				propertyId.getSiteIri());
 		return result;
 	}
 

@@ -29,20 +29,20 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestSnakJson {
 
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	@Test
 	public void testNoValueSnakToJava() throws
 			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
 				JacksonSnak.class);
-		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertNull(result.getValue());
@@ -63,7 +63,6 @@ public class TestSnakJson {
 			IOException {
 		JacksonSnak result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
 				JacksonSnak.class);
-		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertNull(result.getValue());
@@ -84,7 +83,6 @@ public class TestSnakJson {
 			IOException {
 		JacksonSnak result = mapper.readValue(
 				JsonTestData.JSON_VALUE_SNAK_STRING, JacksonSnak.class);
-		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueSnak);
@@ -104,7 +102,6 @@ public class TestSnakJson {
 			IOException {
 		JacksonSnak result = mapper.readValue(
 				JsonTestData.JSON_VALUE_SNAK_STRING_HASH, JacksonSnak.class);
-		result.setSiteIri(Datamodel.SITE_WIKIDATA);
 
 		assertNotNull(result);
 		assertTrue(result instanceof JacksonValueSnak);

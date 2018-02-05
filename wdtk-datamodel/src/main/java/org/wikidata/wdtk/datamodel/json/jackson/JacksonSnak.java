@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import org.apache.commons.lang3.Validate;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -25,8 +27,11 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -76,7 +81,14 @@ public abstract class JacksonSnak implements Snak {
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	protected JacksonSnak() {
+	@JsonCreator
+	protected JacksonSnak(
+			@JsonProperty("property") String property,
+			@JacksonInject("siteIri") String siteIri) {
+		Validate.notNull(property);
+		this.property = property;
+		Validate.notNull(siteIri);
+		this.siteIri = siteIri;
 	}
 
 	/**
@@ -85,51 +97,21 @@ public abstract class JacksonSnak implements Snak {
 	 *
 	 * @return the property id string
 	 */
+	@JsonProperty("property")
 	public String getProperty() {
 		return this.property;
-	}
-
-	/**
-	 * Sets the property id string to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param property
-	 *            new value
-	 */
-	public void setProperty(String property) {
-		this.property = property;
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		if (this.siteIri != null) {
-			return Datamodel.makePropertyIdValue(property, this.siteIri);
-		} else {
-			throw new RuntimeException(
-					"Cannot access the property id of an insufficiently initialised Jackson snak.");
-			// return Datamodel.makeWikidataPropertyIdValue(property);
-		}
+		return Datamodel.makePropertyIdValue(property, this.siteIri);
 	}
 
 	@JsonIgnore
 	@Override
 	public Value getValue() {
 		return null;
-	}
-
-	/**
-	 * Sets the IRI of the site this snak belongs to. This provides the snak
-	 * with information about the site IRI of its components, which is not part
-	 * of the JSON serialization of snaks. This method should only be used
-	 * during deserialization.
-	 *
-	 * @param siteIri
-	 *            new value
-	 */
-	@JsonIgnore
-	void setSiteIri(String siteIri) {
-		this.siteIri = siteIri;
 	}
 
 }

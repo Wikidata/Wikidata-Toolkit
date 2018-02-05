@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,13 +53,6 @@ public class JacksonMonolingualTextValue implements MonolingualTextValue {
 	private String text = "";
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 */
-	public JacksonMonolingualTextValue() {
-	}
-
-	/**
 	 * Create a new object from the given data.
 	 *
 	 * @param languageCode
@@ -66,7 +60,10 @@ public class JacksonMonolingualTextValue implements MonolingualTextValue {
 	 * @param text
 	 *            the text content of the value
 	 */
-	public JacksonMonolingualTextValue(String languageCode, String text) {
+	@JsonCreator
+	public JacksonMonolingualTextValue(
+			@JsonProperty("language") String languageCode,
+			@JsonProperty("value") String text) {
 		this.languageCode = languageCode;
 		this.text = text;
 	}
@@ -79,30 +76,6 @@ public class JacksonMonolingualTextValue implements MonolingualTextValue {
 	 */
 	public JacksonMonolingualTextValue(MonolingualTextValue mltv) {
 		this(mltv.getLanguageCode(), mltv.getText());
-	}
-
-	/**
-	 * Sets the language code to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param languageCode
-	 *            new value
-	 */
-	@JsonProperty("language")
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
-	}
-
-	/**
-	 * Sets the text to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param text
-	 *            new value
-	 */
-	@JsonProperty("value")
-	public void setText(String text) {
-		this.text = text;
 	}
 
 	@Override

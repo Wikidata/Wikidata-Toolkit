@@ -29,9 +29,12 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link ValueSnak}.
@@ -47,21 +50,21 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	 */
 	private JacksonValue datavalue;
 
-	/**
-	 * The property datatype of the property used for this value snak. This is
-	 * redundant information provided in the JSON but not represented in the
-	 * datamodel. We keep it and serialize it if given, but if we do not have
-	 * it, we set it to null and it will be omitted in the serialization.
-	 */
-	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	private String datatype = null;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonValueSnak() {
-		super();
+	@JsonCreator
+	protected JacksonValueSnak(
+			@JsonProperty("property") String property,
+			@JsonProperty("datatype") String datatype,
+			@JsonProperty("datavalue") JacksonValue datavalue,
+			@JacksonInject("siteIri") String siteIri) {
+		super(property, siteIri);
+		this.datatype = datatype;
+		this.datavalue = datavalue;
 	}
 
 	@JsonIgnore
@@ -73,33 +76,18 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	/**
 	 * Returns the JSON datatype string. Only for use by Jackson during
 	 * serialization.
+	 * 
+	 * The property datatype of the property used for this value snak. This is
+	 * redundant information provided in the JSON but not represented in the
+	 * datamodel. We keep it and serialize it if given, but if we do not have
+	 * it, we set it to null and it will be omitted in the serialization.
 	 *
 	 * @return the JSON datatype string
 	 */
+	@JsonProperty("datatype")
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	public String getDatatype() {
 		return this.datatype;
-	}
-
-	/**
-	 * Sets the JSON datatype string to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param datatype
-	 *            new value
-	 */
-	public void setDatatype(String datatype) {
-		this.datatype = datatype;
-	}
-
-	/**
-	 * Sets the snak value to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param datavalue
-	 *            new value
-	 */
-	public void setDatavalue(JacksonValue datavalue) {
-		this.datavalue = datavalue;
 	}
 
 	/**

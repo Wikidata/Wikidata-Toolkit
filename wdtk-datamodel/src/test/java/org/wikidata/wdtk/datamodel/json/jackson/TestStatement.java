@@ -28,13 +28,15 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestStatement {
 
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	@Test
 	public void testEmptyStatementToJson() throws JsonProcessingException {

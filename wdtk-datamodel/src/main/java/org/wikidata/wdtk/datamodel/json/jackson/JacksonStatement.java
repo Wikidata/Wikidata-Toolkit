@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -36,6 +37,8 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -105,7 +108,31 @@ public class JacksonStatement implements Statement {
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonStatement() {
+	@JsonCreator
+	public JacksonStatement(
+			@JsonProperty("id") String id,
+			@JsonProperty("rank") StatementRank rank,
+			@JsonProperty("mainsnak") JacksonSnak mainsnak,
+			@JsonProperty("qualifiers") Map<String, List<JacksonSnak>> qualifiers,
+			@JsonProperty("references") List<JacksonReference> references,
+			@JacksonInject("subject") EntityIdValue subject) {
+		this.id = id;
+		Validate.notNull(rank, "No rank provided to create a statement.");
+		this.rank = rank;
+		Validate.notNull(mainsnak, "No main snak provided to create a statement.");
+		this.mainsnak = mainsnak;
+		if (qualifiers != null) {
+			this.qualifiers = qualifiers;
+		} else {
+			this.qualifiers = Collections.<String, List<JacksonSnak>>emptyMap();
+		}
+		if (references != null) {
+			this.references = references;
+		} else {
+			this.references = Collections.<JacksonReference>emptyList();
+		}
+		Validate.notNull(subject, "No subject provided to create a statement.");
+		this.subject = subject;
 	}
 
 	/**
@@ -161,22 +188,6 @@ public class JacksonStatement implements Statement {
 	@JsonIgnore
 	void setSubject(EntityIdValue subject) {
 		this.subject = subject;
-
-		this.mainsnak.setSiteIri(subject.getSiteIri());
-
-		for (List<JacksonSnak> snaks : this.qualifiers.values()) {
-			for (JacksonSnak snak : snaks) {
-				snak.setSiteIri(subject.getSiteIri());
-			}
-		}
-
-		for (JacksonReference reference : this.references) {
-			for (List<JacksonSnak> snaks : reference.snaks.values()) {
-				for (JacksonSnak snak : snaks) {
-					snak.setSiteIri(subject.getSiteIri());
-				}
-			}
-		}
 	}
 
 	@JsonIgnore
@@ -190,49 +201,15 @@ public class JacksonStatement implements Statement {
 		return this.rank;
 	}
 
-	/**
-	 * Sets the statement rank to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param rank
-	 *            new value
-	 */
-	public void setRank(StatementRank rank) {
-		this.rank = rank;
-	}
-
 	@Override
 	public List<? extends Reference> getReferences() {
 		return this.references;
-	}
-
-	/**
-	 * Sets the references to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param references
-	 *            new value
-	 */
-	public void setReferences(List<JacksonReference> references) {
-		this.references = references;
 	}
 
 	@JsonProperty("id")
 	@Override
 	public String getStatementId() {
 		return this.id;
-	}
-
-	/**
-	 * Sets the statement id to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param id
-	 *            new value
-	 */
-	@JsonProperty("id")
-	public void setStatementId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -247,17 +224,6 @@ public class JacksonStatement implements Statement {
 	}
 
 	/**
-	 * Sets the main snak of the claim of this statement to the given value.
-	 * Only for use by Jackson during deserialization.
-	 *
-	 * @param mainsnak
-	 *            new value
-	 */
-	public void setMainsnak(JacksonSnak mainsnak) {
-		this.mainsnak = mainsnak;
-	}
-
-	/**
 	 * Returns the qualifiers of the claim of this statement. Only for use by
 	 * Jackson during serialization. To access this data, use
 	 * {@link #getClaim()}.
@@ -266,29 +232,6 @@ public class JacksonStatement implements Statement {
 	 */
 	public Map<String, List<JacksonSnak>> getQualifiers() {
 		return this.qualifiers;
-	}
-
-	/**
-	 * Sets the qualifiers to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param qualifiers
-	 *            new value
-	 */
-	public void setQualifiers(Map<String, List<JacksonSnak>> qualifiers) {
-		this.qualifiers = qualifiers;
-	}
-
-	/**
-	 * Sets the list of property ids to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param propertyOrder
-	 *            new value
-	 */
-	@JsonProperty("qualifiers-order")
-	public void setPropertyOrder(List<String> propertyOrder) {
-		this.propertyOrder = propertyOrder;
 	}
 
 	/**

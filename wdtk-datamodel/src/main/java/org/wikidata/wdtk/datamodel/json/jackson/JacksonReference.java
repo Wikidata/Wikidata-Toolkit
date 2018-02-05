@@ -32,6 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -58,6 +59,14 @@ public class JacksonReference implements Reference {
 	 * which is not specified by the map.
 	 */
 	List<String> propertyOrder;
+	
+	@JsonCreator
+	public JacksonReference(
+			@JsonProperty("snaks") Map<String, List<JacksonSnak>> snaks,
+			@JsonProperty("snaks-order") List<String> propertyOrder) {
+		this.snaks = snaks;
+		this.propertyOrder = propertyOrder;
+	}
 
 	@JsonIgnore
 	@Override
@@ -70,18 +79,6 @@ public class JacksonReference implements Reference {
 	}
 
 	/**
-	 * Sets the map of snaks to the given value. Only for use by Jackson during
-	 * deserialization.
-	 *
-	 * @param snaks
-	 *            new value
-	 */
-	public void setSnaks(Map<String, List<JacksonSnak>> snaks) {
-		this.snaks = snaks;
-		this.snakGroups = null; // clear cache
-	}
-
-	/**
 	 * Returns the map of snaks as found in JSON. Only for use by Jackson during
 	 * serialization.
 	 *
@@ -89,19 +86,6 @@ public class JacksonReference implements Reference {
 	 */
 	public Map<String, List<JacksonSnak>> getSnaks() {
 		return this.snaks;
-	}
-
-	/**
-	 * Sets the list of property ids to the given value. Only for use by Jackson
-	 * during deserialization.
-	 *
-	 * @param propertyOrder
-	 *            new value
-	 */
-	@JsonProperty("snaks-order")
-	public void setPropertyOrder(List<String> propertyOrder) {
-		this.propertyOrder = propertyOrder;
-		this.snakGroups = null; // clear cache
 	}
 
 	/**

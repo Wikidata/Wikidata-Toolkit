@@ -26,7 +26,10 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link NoValueSnak}.
@@ -41,8 +44,11 @@ public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 */
-	public JacksonNoValueSnak() {
-		super();
+	@JsonCreator
+	protected JacksonNoValueSnak(
+			@JsonProperty("property") String property,
+			@JacksonInject("siteIri") String siteIri) {
+		super(property, siteIri);
 	}
 
 	@Override
