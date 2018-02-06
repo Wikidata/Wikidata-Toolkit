@@ -36,7 +36,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -74,16 +73,16 @@ public abstract class JacksonTermedStatementDocument extends
 	public static final String JSON_TYPE_PROPERTY = "property";
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
-	protected Map<String, List<JacksonMonolingualTextValue>> aliases;
+	protected final Map<String, List<JacksonMonolingualTextValue>> aliases;
 	
-	protected Map<String, JacksonMonolingualTextValue> labels;
-	protected Map<String, JacksonMonolingualTextValue> descriptions;
+	protected final Map<String, JacksonMonolingualTextValue> labels;
+	protected final Map<String, JacksonMonolingualTextValue> descriptions;
 
 	/**
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private Map<String, List<JacksonStatement>> claims;
+	private final Map<String, List<JacksonStatement>> claims;
 
 	/**
 	 * Statement groups. This member is initialized when statements are
@@ -101,7 +100,7 @@ public abstract class JacksonTermedStatementDocument extends
 	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
 	 * from the outside (if not, we default to Wikidata).
 	 */
-	protected String entityId;
+	protected final String entityId;
 
 	/**
 	 * The site IRI that this document refers to, or null if not specified. In
@@ -110,7 +109,7 @@ public abstract class JacksonTermedStatementDocument extends
 	 * @see EntityIdValue#getSiteIri()
 	 */
 	@JsonIgnore
-	protected String siteIri;
+	protected final String siteIri;
 
 	/**
 	 * The revision id of this document.

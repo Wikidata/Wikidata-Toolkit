@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(using = None.class)
 public class JacksonValueString extends JacksonValue implements StringValue {
 
-	private String value;
+	private final String value;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

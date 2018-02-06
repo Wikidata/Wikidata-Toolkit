@@ -47,7 +47,7 @@ public class JacksonValueTime extends JacksonValue implements TimeValue {
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.
 	 */
-	private JacksonInnerTime value;
+	private final JacksonInnerTime value;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

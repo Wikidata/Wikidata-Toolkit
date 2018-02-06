@@ -55,7 +55,7 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	 * Datatype string as used in JSON. See {@link JacksonDatatypeId} for a
 	 * mapping to WDTK datatype IRIs.
 	 */
-	private String datatype;
+	private final String datatype;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

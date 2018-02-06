@@ -56,7 +56,7 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument
 	/**
 	 * Map to store site links.
 	 */
-	private Map<String, JacksonSiteLink> sitelinks = new HashMap<>();
+	private final Map<String, JacksonSiteLink> sitelinks;
 
 	/**
 	 * Constructor. Creates an object that can be populated during JSON

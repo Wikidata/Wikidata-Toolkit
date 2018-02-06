@@ -49,7 +49,7 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.
 	 */
-	private JacksonInnerQuantity value;
+	private final JacksonInnerQuantity value;
 
 	/**
 	 * Constructor. Creates an object that can be populated during JSON

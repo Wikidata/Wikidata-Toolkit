@@ -66,7 +66,7 @@ public abstract class JacksonSnak implements Snak {
 	/**
 	 * Value of the "property" field in JSON, e.g., "P31".
 	 */
-	private String property;
+	private final String property;
 
 	/**
 	 * The site IRI of this snak. This is needed since the site that this snak
@@ -75,7 +75,7 @@ public abstract class JacksonSnak implements Snak {
 	 * necessary to set this information after each deserialization.
 	 */
 	@JsonIgnore
-	String siteIri = null;
+	private final String siteIri;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

@@ -54,7 +54,7 @@ public class JacksonValueMonolingualText extends JacksonValue implements
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.
 	 */
-	JacksonInnerMonolingualText value;
+	private final JacksonInnerMonolingualText value;
 
 	/**
 	 * Constructor. Creates an object that can be populated during JSON

@@ -56,7 +56,7 @@ public class TestSiteLink {
 
 		assertEquals("enwiki", result.getSiteKey());
 		assertEquals("foobar", result.getPageTitle());
-		assert (result.badges.isEmpty());
+		assert (result.getBadges().isEmpty());
 	}
 
 	@Test

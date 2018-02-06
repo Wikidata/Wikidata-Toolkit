@@ -46,11 +46,11 @@ public class JacksonMonolingualTextValue implements MonolingualTextValue {
 	/**
 	 * The language code.
 	 */
-	private String languageCode = "";
+	private final String languageCode;
 	/**
 	 * The text value.
 	 */
-	private String text = "";
+	private final String text;
 
 	/**
 	 * Create a new object from the given data.

@@ -37,8 +37,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerMonolingualText {
 
-	String language = "";
-	String text = "";
+	private final String language;
+	private final String text;
 
 	/**
 	 * Constructor.

@@ -63,7 +63,7 @@ public abstract class JacksonValue implements Value {
 	/**
 	 * JSON type id of this value.
 	 */
-	private String type;
+	private final String type;
 
 	/**
 	 * Constructor. Creates a value object with the given JSON type.

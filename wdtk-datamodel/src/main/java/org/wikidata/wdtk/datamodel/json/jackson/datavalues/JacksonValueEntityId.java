@@ -41,18 +41,16 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON
 	 * serialization of value, but is needed in WDTK to build all current types
-	 * of {@link EntityIdValue} objects. Thus, it is necessary to set this
-	 * information after each deserialization using
-	 * {@link JacksonValueEntityId#setSiteIri(String)} .
+	 * of {@link EntityIdValue} objects.
 	 */
 	@JsonIgnore
-	String siteIri = null;
+	private final String siteIri;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.
 	 */
-	protected JacksonInnerEntityId value;
+	protected final JacksonInnerEntityId value;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

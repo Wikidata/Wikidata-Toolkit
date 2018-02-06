@@ -42,10 +42,10 @@ public class JacksonInnerGlobeCoordinates {
 	static final Logger logger = LoggerFactory
 			.getLogger(JacksonInnerGlobeCoordinates.class);
 
-	private double latitude = 0;
-	private double longitude = 0;
-	private double precision = GlobeCoordinatesValue.PREC_ARCSECOND;
-	private String globe = GlobeCoordinatesValue.GLOBE_EARTH;
+	private final double latitude;
+	private final double longitude;
+	private final double precision;
+	private final String globe;
 
 	/**
 	 * Constructor. Creates an oject that can be populated during JSON

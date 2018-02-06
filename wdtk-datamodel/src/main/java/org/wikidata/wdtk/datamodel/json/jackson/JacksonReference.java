@@ -47,18 +47,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonReference implements Reference {
 
-	private List<SnakGroup> snakGroups = null;
+	private List<SnakGroup> snakGroups;
 
 	/**
 	 * Map of property id strings to snaks, as used to encode snaks in JSON.
 	 */
-	Map<String, List<JacksonSnak>> snaks;
+	private final Map<String, List<JacksonSnak>> snaks;
 
 	/**
 	 * List of property string ids that encodes the desired order of snaks,
 	 * which is not specified by the map.
 	 */
-	List<String> propertyOrder;
+	private final List<String> propertyOrder;
 	
 	@JsonCreator
 	public JacksonReference(

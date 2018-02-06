@@ -56,7 +56,7 @@ public class JacksonStatement extends JacksonPreStatement implements Statement {
 	 * .
 	 */
 	@JsonIgnore
-	private EntityIdValue subject = null;
+	private final EntityIdValue subject;
 	
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

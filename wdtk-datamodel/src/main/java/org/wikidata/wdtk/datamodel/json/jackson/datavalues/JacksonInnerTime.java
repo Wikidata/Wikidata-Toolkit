@@ -37,11 +37,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerTime {
 	private String time;
-	private int timezone;
-	private int before;
-	private int after;
-	private int precision;
-	private String calendarmodel;
+	private final int timezone;
+	private final int before;
+	private final int after;
+	private final int precision;
+	private final String calendarmodel;
 
 	@JsonIgnore
 	private long year;

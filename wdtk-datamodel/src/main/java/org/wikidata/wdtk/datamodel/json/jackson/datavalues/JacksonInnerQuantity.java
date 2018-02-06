@@ -39,10 +39,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerQuantity {
 
-	private BigDecimal amount;
-	private BigDecimal upperBound;
-	private BigDecimal lowerBound;
-	private String jsonUnit;
+	private final BigDecimal amount;
+	private final BigDecimal upperBound;
+	private final BigDecimal lowerBound;
+	private final String jsonUnit;
 
 	/**
 	 * Constructor. The unit given here is a unit string as used in WDTK, with

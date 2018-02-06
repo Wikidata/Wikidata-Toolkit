@@ -55,31 +55,31 @@ public class JacksonPreStatement {
 	 *
 	 * @see Statement#getStatementId()
 	 */
-	private String id;
+	private final String id;
 
 	/**
 	 * Rank of this statement.
 	 */
 	@JsonSerialize(using = StatementRankSerializer.class)
 	@JsonDeserialize(using = StatementRankDeserializer.class)
-	private StatementRank rank;
+	private final StatementRank rank;
 
-	private List<JacksonReference> references;
+	private final List<JacksonReference> references;
 
 	/**
 	 * The main snak of this statement.
 	 */
-	private JacksonSnak mainsnak;
+	private final JacksonSnak mainsnak;
 
 	/**
 	 * A map from property id strings to snaks that encodes the qualifiers.
 	 */
-	private Map<String, List<JacksonSnak>> qualifiers;
+	private final Map<String, List<JacksonSnak>> qualifiers;
 	/**
 	 * List of property string ids that encodes the desired order of qualifiers,
 	 * which is not specified by the map.
 	 */
-	private List<String> propertyOrder;
+	private final List<String> propertyOrder;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

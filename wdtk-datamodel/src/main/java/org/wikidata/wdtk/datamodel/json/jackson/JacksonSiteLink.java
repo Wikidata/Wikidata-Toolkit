@@ -22,7 +22,6 @@ import java.util.Collections;
  * #L%
  */
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -44,9 +43,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonSiteLink implements SiteLink {
 
-	String title;
-	String site;
-	List<String> badges = new LinkedList<>();
+	private final String title;
+	private final String site;
+	private final List<String> badges;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

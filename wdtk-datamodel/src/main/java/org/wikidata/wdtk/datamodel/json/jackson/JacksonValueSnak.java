@@ -27,7 +27,6 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValue;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -48,9 +47,13 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	/**
 	 * The {@link Value} assigned to this snak.
 	 */
-	private JacksonValue datavalue;
+	private final JacksonValue datavalue;
 
-	private String datatype = null;
+	/**
+	 * The datatype of this property which determines
+	 * the type of datavalue it stores.
+	 */
+	private final String datatype;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
