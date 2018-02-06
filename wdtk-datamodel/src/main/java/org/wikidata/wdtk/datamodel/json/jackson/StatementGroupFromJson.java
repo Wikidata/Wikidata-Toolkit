@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
  * Helper class to represent a {@link StatementGroup} deserialized from JSON.
- * The actual data is part of a map of lists of {@link JacksonStatement} objects
+ * The actual data is part of a map of lists of {@link JacksonPreStatement} objects
  * in JSON, so there is no corresponding JSON object.
  *
  * @author Markus Kroetzsch
@@ -43,9 +43,9 @@ public class StatementGroupFromJson implements StatementGroup {
 
 	final List<Statement> statements;
 
-	public StatementGroupFromJson(List<JacksonStatement> jacksonStatements) {
+	public StatementGroupFromJson(List<JacksonStatement> statements2) {
 		this.statements = Collections
-				.<Statement> unmodifiableList(jacksonStatements);
+				.<Statement> unmodifiableList(statements2);
 	}
 
 	@Override

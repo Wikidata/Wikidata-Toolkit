@@ -206,14 +206,14 @@ public class JsonTestData {
 
 	public static JacksonStatement getTestNoValueStatement() {
 		JacksonStatement result = new JacksonStatement(TEST_STATEMENT_ID,
-				TEST_NOVALUE_SNAK);
-		result.setSubject(getEmtpyTestItemDocument().getEntityId());
+				TEST_NOVALUE_SNAK,
+				getEmtpyTestItemDocument().getEntityId());
 		return result;
 	}
 
 	public static JacksonStatement getTestNoValueNoIdStatement() {
-		JacksonStatement result = new JacksonStatement("", TEST_NOVALUE_SNAK);
-		result.setSubject(getEmtpyTestItemDocument().getEntityId());
+		JacksonStatement result = new JacksonStatement("",
+				TEST_NOVALUE_SNAK,getEmtpyTestItemDocument().getEntityId());
 		return result;
 	}
 
@@ -223,7 +223,7 @@ public class JsonTestData {
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, getTestItemId().getSiteIri());
 		return testItemDocument;
@@ -235,7 +235,7 @@ public class JsonTestData {
 				getTestMltvMap(),
 				getTestMltvMap(),
 				getTestAliases(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, getTestItemId().getSiteIri());
 		return testItemDocument;

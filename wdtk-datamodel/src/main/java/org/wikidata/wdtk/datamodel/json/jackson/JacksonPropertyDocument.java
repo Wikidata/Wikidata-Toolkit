@@ -67,7 +67,7 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
 			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
 			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
-			@JsonProperty("claims") Map<String, List<JacksonStatement>> claims,
+			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {

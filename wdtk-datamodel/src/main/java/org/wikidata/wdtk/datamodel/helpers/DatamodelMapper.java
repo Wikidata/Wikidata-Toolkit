@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DatamodelMapper extends ObjectMapper {
 
 	private static final long serialVersionUID = -236841297410109272L;
-
+	
 	/**
 	 * Constructs a mapper with the given siteIri. This IRI
 	 * will be used to fill all the siteIris of the entity ids
@@ -49,5 +49,4 @@ public class DatamodelMapper extends ObjectMapper {
 				.addValue("siteIri", siteIri);
 		this.setInjectableValues(injection);
 	}
-
 }

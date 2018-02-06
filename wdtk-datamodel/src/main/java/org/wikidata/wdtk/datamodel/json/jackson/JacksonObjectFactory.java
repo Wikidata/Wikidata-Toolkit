@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import org.apache.commons.lang3.StringUtils;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
@@ -228,16 +229,16 @@ public class JacksonObjectFactory implements DataObjectFactory {
 						.copy(reference));
 			}
 		}
-
 		return new JacksonStatement(statementId,
-				rank, mainsnak, qualifiers, jacksonReferences, claim.getSubject());
+				rank, mainsnak, qualifiers, propertyOrder,
+				jacksonReferences, claim.getSubject());
 	}
 
 	@Override
 	public StatementGroup getStatementGroup(List<Statement> statements) {
 		List<Statement> newStatements = new ArrayList<>(statements.size());
 		for (Statement statement : statements) {
-			if (statement instanceof JacksonStatement) {
+			if (statement instanceof JacksonPreStatement) {
 				newStatements.add(statement);
 			} else {
 				newStatements.add(this.dataModelConverter.copy(statement));
@@ -350,20 +351,20 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		return aliasMap;
 	}
 	
-	private Map<String, List<JacksonStatement>> buildStatementMapFromStatementGroups(List<StatementGroup> statementGroups) {
-		Map<String, List<JacksonStatement>> jacksonStatements = new HashMap<>();
+	private Map<String, List<JacksonPreStatement>> buildStatementMapFromStatementGroups(List<StatementGroup> statementGroups) {
+		Map<String, List<JacksonPreStatement>> jacksonStatements = new HashMap<>();
 		for (StatementGroup sg : statementGroups) {
 			String propertyId = sg.getProperty().getId();
-			List<JacksonStatement> propertyStatements = new ArrayList<>(sg
+			List<JacksonPreStatement> propertyStatements = new ArrayList<>(sg
 					.getStatements().size());
 			jacksonStatements.put(propertyId, propertyStatements);
 
 			for (Statement s : sg) {
-				if (s instanceof JacksonStatement) {
-					propertyStatements.add((JacksonStatement) s);
+				if (s instanceof JacksonPreStatement) {
+					propertyStatements.add((JacksonPreStatement) s);
 				} else {
 					propertyStatements
-							.add((JacksonStatement) this.dataModelConverter
+							.add((JacksonPreStatement) this.dataModelConverter
 									.copy(s));
 				}
 			}

@@ -219,7 +219,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @return JSON serialization or null
 	 */
 	public static String getJsonString(Statement statement) {
-		if (!(statement instanceof JacksonStatement)) {
+		if (!(statement instanceof JacksonPreStatement)) {
 			statement = datamodelConverter.copy(statement);
 		}
 		return jacksonObjectToString(statement);

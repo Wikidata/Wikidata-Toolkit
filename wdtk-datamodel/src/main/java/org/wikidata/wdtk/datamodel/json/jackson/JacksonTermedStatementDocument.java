@@ -74,22 +74,22 @@ public abstract class JacksonTermedStatementDocument extends
 	public static final String JSON_TYPE_PROPERTY = "property";
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
-	protected Map<String, List<JacksonMonolingualTextValue>> aliases = new HashMap<>();
+	protected Map<String, List<JacksonMonolingualTextValue>> aliases;
 	
-	protected Map<String, JacksonMonolingualTextValue> labels = new HashMap<>();
-	protected Map<String, JacksonMonolingualTextValue> descriptions = new HashMap<>();
+	protected Map<String, JacksonMonolingualTextValue> labels;
+	protected Map<String, JacksonMonolingualTextValue> descriptions;
 
 	/**
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private Map<String, List<JacksonStatement>> claims = new HashMap<>();
+	private Map<String, List<JacksonStatement>> claims;
 
 	/**
 	 * Statement groups. This member is initialized when statements are
 	 * accessed.
 	 */
-	private List<StatementGroup> statementGroups = null;
+	private List<StatementGroup> statementGroups;
 
 	/**
 	 * The id of the entity that the document refers to. This is not mapped to
@@ -101,7 +101,7 @@ public abstract class JacksonTermedStatementDocument extends
 	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
 	 * from the outside (if not, we default to Wikidata).
 	 */
-	protected String entityId = "";
+	protected String entityId;
 
 	/**
 	 * The site IRI that this document refers to, or null if not specified. In
@@ -110,7 +110,7 @@ public abstract class JacksonTermedStatementDocument extends
 	 * @see EntityIdValue#getSiteIri()
 	 */
 	@JsonIgnore
-	protected String siteIri = null;
+	protected String siteIri;
 
 	/**
 	 * The revision id of this document.
@@ -130,10 +130,11 @@ public abstract class JacksonTermedStatementDocument extends
 			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
 			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
 			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
-			@JsonProperty("claims") Map<String, List<JacksonStatement>> claims,
+			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		this.entityId = jsonId;
+		this.siteIri = siteIri;
 		Validate.notNull(jsonId);
 		if (labels != null) {
 			this.labels = labels;
@@ -151,19 +152,20 @@ public abstract class JacksonTermedStatementDocument extends
 			this.aliases = Collections.<String, List<JacksonMonolingualTextValue>>emptyMap();
 		}
 		if (claims != null) {
-			this.claims = claims;
+			this.claims = new HashMap<String, List<JacksonStatement>>();
+			EntityIdValue subject = this.getEntityId();
+			for (Entry<String, List<JacksonPreStatement>> entry : claims
+					.entrySet()) {
+				List<JacksonStatement> statements = new ArrayList<>(entry.getValue().size());
+				for (JacksonPreStatement statement : entry.getValue()) {
+					statements.add(statement.withSubject(subject));
+				}
+				this.claims.put(entry.getKey(), statements);
+			}
 		} else {
 			this.claims = Collections.<String,List<JacksonStatement>>emptyMap();
 		}
 		this.revisionId = revisionId;
-		this.siteIri = siteIri;
-		EntityIdValue subject = this.getEntityId();
-		for (Entry<String, List<JacksonStatement>> entry : this.claims
-				.entrySet()) {
-			for (JacksonStatement statement : entry.getValue()) {
-				statement.setSubject(subject);
-			}
-		}
 	}
 
 

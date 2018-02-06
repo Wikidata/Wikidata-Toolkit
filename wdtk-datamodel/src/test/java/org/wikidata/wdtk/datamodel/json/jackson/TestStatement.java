@@ -40,7 +40,7 @@ public class TestStatement {
 
 	@Test
 	public void testEmptyStatementToJson() throws JsonProcessingException {
-		JacksonStatement statement = JsonTestData.getTestNoValueStatement();
+		JacksonPreStatement statement = JsonTestData.getTestNoValueStatement();
 
 		String result = mapper.writeValueAsString(statement);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
@@ -49,7 +49,7 @@ public class TestStatement {
 
 	@Test
 	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
-		JacksonStatement statement = JsonTestData.getTestNoValueNoIdStatement();
+		JacksonPreStatement statement = JsonTestData.getTestNoValueNoIdStatement();
 
 		String result = mapper.writeValueAsString(statement);
 		JsonComparator.compareJsonStrings(
@@ -60,8 +60,8 @@ public class TestStatement {
 	public void testEmptyStatementToJava() throws
 			IOException {
 		JacksonStatement result = mapper.readValue(
-				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonStatement.class);
-		result.setSubject(JsonTestData.getEmtpyTestItemDocument().getEntityId());
+				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonPreStatement.class).withSubject(
+			JsonTestData.getEmtpyTestItemDocument().getEntityId());
 
 		assertNotNull(result);
 		assertNull(result.getValue());
@@ -73,12 +73,12 @@ public class TestStatement {
 	@Test
 	public void testEquality() {
 		JacksonStatement correctStatement = new JacksonStatement(
-				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK);
-		correctStatement.setSubject(JsonTestData.getEmtpyTestItemDocument()
+				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK,
+				JsonTestData.getEmtpyTestItemDocument()
 				.getEntityId());
 		JacksonStatement wrongId = new JacksonStatement("another id",
-				JsonTestData.TEST_NOVALUE_SNAK);
-		wrongId.setSubject(JsonTestData.getEmtpyTestItemDocument()
+				JsonTestData.TEST_NOVALUE_SNAK,
+				JsonTestData.getEmtpyTestItemDocument()
 				.getEntityId());
 
 		assertEquals(JsonTestData.getTestNoValueStatement(),

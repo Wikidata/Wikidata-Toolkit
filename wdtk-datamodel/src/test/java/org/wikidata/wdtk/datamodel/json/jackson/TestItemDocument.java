@@ -58,7 +58,7 @@ public class TestItemDocument {
 				JsonTestData.getTestMltvMap(),
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
@@ -97,7 +97,7 @@ public class TestItemDocument {
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				JsonTestData.getTestMltvMap(),
 				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
@@ -132,7 +132,7 @@ public class TestItemDocument {
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				JsonTestData.getTestAliases(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
@@ -168,7 +168,7 @@ public class TestItemDocument {
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				Collections.<String, JacksonSiteLink>emptyMap(),
 				0, ItemIdValue.NULL.getSiteIri());
 
@@ -195,7 +195,7 @@ public class TestItemDocument {
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
 				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				JsonTestData.getTestSiteLinkMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
@@ -235,7 +235,7 @@ public class TestItemDocument {
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestAliases(),
-				Collections.<String, List<JacksonStatement>>emptyMap(),
+				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				JsonTestData.getTestSiteLinkMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 

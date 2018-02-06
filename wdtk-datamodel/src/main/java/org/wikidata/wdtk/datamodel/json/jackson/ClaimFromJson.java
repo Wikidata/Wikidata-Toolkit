@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Helper class to represent a {@link Claim} deserialized from JSON. The actual
- * data is part of {@link JacksonStatement}. This is merely a facade that
+ * data is part of {@link JacksonPreStatement}. This is merely a facade that
  * provides a suitable view.
  *
  * @author Fredo Erxleben
