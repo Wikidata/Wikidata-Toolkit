@@ -30,11 +30,11 @@ import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
@@ -72,7 +72,7 @@ public class SitesTest {
 
 		this.dpc.setOfflineMode(true);
 
-		DataObjectFactory factory = new DataObjectFactoryImpl();
+		DataObjectFactory factory = new JacksonObjectFactory();
 		SiteLink siteLink = factory.getSiteLink("Douglas Adams", "dewiki",
 				Collections.<String> emptyList());
 

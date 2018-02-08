@@ -41,7 +41,6 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -61,6 +60,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 public class RdfConverterTest {
 
@@ -75,7 +75,7 @@ public class RdfConverterTest {
 	Resource resource = rdfFactory.createURI("http://test.org/");
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
-	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
+	final DataObjectFactory dataObjectFactory = new JacksonObjectFactory();
 
 	@Before
 	public void setUp() throws Exception {

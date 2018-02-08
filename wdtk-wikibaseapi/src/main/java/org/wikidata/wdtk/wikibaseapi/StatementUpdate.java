@@ -103,7 +103,7 @@ public class StatementUpdate {
 
 		@Override
 		@JsonIgnore
-		public List<? extends Reference> getReferences() {
+		public List<Reference> getReferences() {
 			return null;
 		}
 

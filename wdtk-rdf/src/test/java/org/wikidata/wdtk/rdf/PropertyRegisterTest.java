@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
@@ -46,6 +45,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -57,7 +57,7 @@ public class PropertyRegisterTest {
 	final String siteIri = "http://www.example.org/entities/";
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
-	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
+	final DataObjectFactory dataObjectFactory = new JacksonObjectFactory();
 
 	@Before
 	public void setUp() throws MediaWikiApiErrorException {
