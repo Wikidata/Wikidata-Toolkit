@@ -34,6 +34,8 @@ import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,10 +58,10 @@ public class TestItemDocument {
 		JacksonItemDocument document = new JacksonItemDocument(
 				JsonTestData.getTestItemId().getId(),
 				JsonTestData.getTestMltvMap(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, List<MonolingualTextValue>>emptyMap(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
+				Collections.<String, SiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -94,11 +96,11 @@ public class TestItemDocument {
 	public void testDescriptionsToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
 				JsonTestData.getTestMltvMap(),
-				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, List<MonolingualTextValue>>emptyMap(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
+				Collections.<String, SiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -129,11 +131,11 @@ public class TestItemDocument {
 	public void testAliasesToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
 				JsonTestData.getTestAliases(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
+				Collections.<String, SiteLink>emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -165,11 +167,11 @@ public class TestItemDocument {
 	public void testEmptyItemIdToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument(
 				ItemIdValue.NULL.getId(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, List<MonolingualTextValue>>emptyMap(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
+				Collections.<String, SiteLink>emptyMap(),
 				0, ItemIdValue.NULL.getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -192,9 +194,9 @@ public class TestItemDocument {
 	public void testSiteLinksToJson() throws JsonProcessingException {
 		JacksonItemDocument document = new JacksonItemDocument(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.<String, List<MonolingualTextValue>>emptyMap(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
 				JsonTestData.getTestSiteLinkMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());

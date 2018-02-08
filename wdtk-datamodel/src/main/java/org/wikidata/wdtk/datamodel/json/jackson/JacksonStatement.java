@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import java.util.HashMap;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,6 +24,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
@@ -29,6 +32,9 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
@@ -59,16 +65,57 @@ public class JacksonStatement extends JacksonPreStatement implements Statement {
 	private final EntityIdValue subject;
 	
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor for freshly created objects, not deserialized from JSON.
+	 * @param id
+	 * @param rank
+	 * @param claim
+	 * @param references
+	 * @param subject
+	 */
+	public JacksonStatement(String id, StatementRank rank, Claim claim,
+			List<Reference> references, EntityIdValue subject) {
+		super(id, rank, claim.getMainSnak(),
+				qualifierListToMap(claim.getQualifiers()),
+				claim.getQualifiers().stream().map(g -> g.getProperty().getId()).collect(Collectors.toList()),
+				references);
+		Validate.notNull(subject);
+		this.subject = subject;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public JacksonStatement(
 			String id,
 			StatementRank rank,
-			JacksonSnak mainsnak,
-			Map<String, List<JacksonSnak>> qualifiers,
+			Snak mainsnak,
+			List<SnakGroup> qualifiers,
+			List<Reference> references,
+			EntityIdValue subjectId) {
+		super(id, rank, mainsnak,
+				qualifiers.stream()
+				.collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks)),
+				qualifiers.stream()
+					.map(g -> g.getProperty().getId())
+					.collect(Collectors.toList()),
+				references);
+		Validate.notNull(subjectId);
+		this.subject = subjectId;
+	}
+	
+	/**
+	 * Constructor used for JSON deserialization with Jackson.
+	 * Not marked as @JsonCreator because it is not called directly by Jackson,
+	 * but rather from {@link JacksonTermedStatementDocument} to convert it
+	 * from a {@link JacksonPreStatement}.
+	 */
+	public JacksonStatement(
+			String id,
+			StatementRank rank,
+			Snak mainsnak,
+			Map<String,List<Snak>> qualifiers,
 			List<String> propertyOrder,
-			List<JacksonReference> references,
+			List<Reference> references,
 			EntityIdValue subjectId) {
 		super(id, rank, mainsnak, qualifiers, propertyOrder, references);
 		Validate.notNull(subjectId);
@@ -82,10 +129,11 @@ public class JacksonStatement extends JacksonPreStatement implements Statement {
 	 * @param id
 	 * @param mainsnak
 	 */
-	public JacksonStatement(String id, JacksonSnak mainsnak, EntityIdValue subject) {
+	public JacksonStatement(String id, Snak mainsnak, EntityIdValue subject) {
 		super(id, StatementRank.NORMAL, mainsnak, null, null, null);
 		this.subject = subject;
 	}
+
 
 	/**
 	 * Returns the subject that this statement refers to. This method is only
@@ -118,5 +166,22 @@ public class JacksonStatement extends JacksonPreStatement implements Statement {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+	
+	/**
+	 * Helper to convert a list of qualifiers to the internal JSON representation.
+	 * @param qualifiers
+	 * @return
+	 */
+	private static Map<String, List<Snak>> qualifierListToMap(List<SnakGroup> qualifiers) {
+		Map<String, List<Snak>> map = new HashMap<>();
+		for(SnakGroup group : qualifiers) {
+			if(map.containsKey(group.getProperty().getId())) {
+				throw new IllegalArgumentException("Attempting to create qualifiers with two snak groups for the same property");
+			} else {
+				map.put(group.getProperty().getId(), group.getSnaks());
+			}
+		}
+		return map;
 	}
 }

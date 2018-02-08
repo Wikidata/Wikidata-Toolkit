@@ -85,7 +85,7 @@ public class JacksonInnerTime {
 	}
 
 	/**
-	 * TODO Review the utility of this constructor.
+	 * Constructor for times that have already been parsed.
 	 *
 	 * @param year
 	 * @param month

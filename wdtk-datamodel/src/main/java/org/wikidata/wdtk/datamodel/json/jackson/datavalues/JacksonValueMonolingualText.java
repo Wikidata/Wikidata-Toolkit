@@ -55,10 +55,20 @@ public class JacksonValueMonolingualText extends JacksonValue implements
 	 * structure that is required here.
 	 */
 	private final JacksonInnerMonolingualText value;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param text
+	 * @param language
+	 */
+	public JacksonValueMonolingualText(String text, String language) {
+		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
+		this.value = new JacksonInnerMonolingualText(language, text);
+	}
 
 	/**
-	 * Constructor. Creates an object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
 	public JacksonValueMonolingualText(

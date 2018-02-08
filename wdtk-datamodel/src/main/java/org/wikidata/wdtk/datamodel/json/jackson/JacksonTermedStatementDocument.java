@@ -32,8 +32,10 @@ import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -73,16 +75,18 @@ public abstract class JacksonTermedStatementDocument extends
 	public static final String JSON_TYPE_PROPERTY = "property";
 
 	@JsonDeserialize(using = AliasesDeserializer.class)
-	protected final Map<String, List<JacksonMonolingualTextValue>> aliases;
+	protected final Map<String, List<MonolingualTextValue>> aliases;
 	
-	protected final Map<String, JacksonMonolingualTextValue> labels;
-	protected final Map<String, JacksonMonolingualTextValue> descriptions;
+	@JsonDeserialize(contentAs=JacksonMonolingualTextValue.class)
+	protected final Map<String, MonolingualTextValue> labels;
+	@JsonDeserialize(contentAs=JacksonMonolingualTextValue.class)
+	protected final Map<String, MonolingualTextValue> descriptions;
 
 	/**
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private final Map<String, List<JacksonStatement>> claims;
+	private final Map<String, List<Statement>> claims;
 
 	/**
 	 * Statement groups. This member is initialized when statements are
@@ -118,17 +122,52 @@ public abstract class JacksonTermedStatementDocument extends
 	 */
 	@JsonProperty("lastrevid")
 	protected long revisionId = 0;
+	
+	/**
+	 * Constructor.
+	 */
+	public JacksonTermedStatementDocument(
+			EntityIdValue id,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> claims,
+			long revisionId) {
+		Validate.notNull(id);
+		this.entityId = id.getId();
+		this.siteIri = id.getSiteIri();
+		if (labels != null) {
+			this.labels = constructTermMap(labels);
+		} else {
+			this.labels = Collections.<String, MonolingualTextValue>emptyMap();
+		}
+		if (descriptions != null) {
+			this.descriptions = constructTermMap(descriptions);
+		} else {
+			this.descriptions = Collections.<String, MonolingualTextValue>emptyMap();
+		}
+		if (aliases != null) {
+			this.aliases = constructTermListMap(aliases);
+		} else {
+			this.aliases = Collections.<String, List<MonolingualTextValue>>emptyMap();
+		}
+		this.claims = new HashMap<>();
+		if(claims != null) {
+			for(StatementGroup group : claims) {
+				this.claims.put(group.getProperty().getId(), group.getStatements());
+			}
+		}
+		this.revisionId = revisionId;
+	}
 
 	/**
-	 * Constructor. Creates an object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor used for JSON deserialization with Jackson.
 	 */
-	// @JsonCreator
 	public JacksonTermedStatementDocument(
 			@JsonProperty("id") String jsonId,
-			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
-			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
-			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
+			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
 			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
@@ -138,31 +177,31 @@ public abstract class JacksonTermedStatementDocument extends
 		if (labels != null) {
 			this.labels = labels;
 		} else {
-			this.labels = Collections.<String, JacksonMonolingualTextValue>emptyMap();
+			this.labels = Collections.<String, MonolingualTextValue>emptyMap();
 		}
 		if (descriptions != null) {
 			this.descriptions = descriptions;
 		} else {
-			this.descriptions = Collections.<String, JacksonMonolingualTextValue>emptyMap();
+			this.descriptions = Collections.<String, MonolingualTextValue>emptyMap();
 		}
 		if (aliases != null) {
 			this.aliases = aliases;
 		} else {
-			this.aliases = Collections.<String, List<JacksonMonolingualTextValue>>emptyMap();
+			this.aliases = Collections.<String, List<MonolingualTextValue>>emptyMap();
 		}
 		if (claims != null) {
-			this.claims = new HashMap<String, List<JacksonStatement>>();
+			this.claims = new HashMap<String, List<Statement>>();
 			EntityIdValue subject = this.getEntityId();
 			for (Entry<String, List<JacksonPreStatement>> entry : claims
 					.entrySet()) {
-				List<JacksonStatement> statements = new ArrayList<>(entry.getValue().size());
+				List<Statement> statements = new ArrayList<>(entry.getValue().size());
 				for (JacksonPreStatement statement : entry.getValue()) {
 					statements.add(statement.withSubject(subject));
 				}
 				this.claims.put(entry.getKey(), statements);
 			}
 		} else {
-			this.claims = Collections.<String,List<JacksonStatement>>emptyMap();
+			this.claims = Collections.<String,List<Statement>>emptyMap();
 		}
 		this.revisionId = revisionId;
 	}
@@ -175,7 +214,7 @@ public abstract class JacksonTermedStatementDocument extends
 		// re-create the map anew, simple casting is not possible
 		Map<String, List<MonolingualTextValue>> returnMap = new HashMap<>();
 
-		for (Entry<String, List<JacksonMonolingualTextValue>> entry : this.aliases
+		for (Entry<String, List<MonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
 			returnMap.put(entry.getKey(), Collections
 					.<MonolingualTextValue> unmodifiableList(entry.getValue()));
@@ -224,7 +263,7 @@ public abstract class JacksonTermedStatementDocument extends
 	public List<StatementGroup> getStatementGroups() {
 		if (this.statementGroups == null) {
 			this.statementGroups = new ArrayList<>(this.claims.size());
-			for (List<JacksonStatement> statements : this.claims.values()) {
+			for (List<Statement> statements : this.claims.values()) {
 				this.statementGroups
 						.add(new StatementGroupFromJson(statements));
 			}
@@ -242,7 +281,7 @@ public abstract class JacksonTermedStatementDocument extends
 	 * @return map of statement groups
 	 */
 	@JsonProperty("claims")
-	public Map<String, List<JacksonStatement>> getJsonClaims() {
+	public Map<String, List<Statement>> getJsonClaims() {
 		return this.claims;
 	}
 	
@@ -259,6 +298,47 @@ public abstract class JacksonTermedStatementDocument extends
 	public long getRevisionId() {
 		return this.revisionId;
 
+	}
+	
+	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
+		Map<String, MonolingualTextValue> map = new HashMap<>();
+		for(MonolingualTextValue term : terms) {
+			String language = term.getLanguageCode();
+			if(map.containsKey(language)) {
+				throw new IllegalArgumentException("Multiple terms provided for the same language.");
+			}
+			// We need to make sure the terms are of the right type, otherwise they will not
+			// be serialized correctly.
+			map.put(language, new JacksonMonolingualTextValue(term));
+		}
+		return map;
+	}
+	
+	protected static Map<String, List<MonolingualTextValue>> constructTermListMap(List<MonolingualTextValue> terms) {
+		Map<String, List<MonolingualTextValue>> map = new HashMap<>();
+		for(MonolingualTextValue term : terms) {
+			String language = term.getLanguageCode();
+			// We need to make sure the terms are of the right type, otherwise they will not
+			// be serialized correctly.
+			JacksonMonolingualTextValue castTerm = new JacksonMonolingualTextValue(term);
+			List<MonolingualTextValue> aliases = map.get(language);
+			if(aliases == null) {
+				aliases = new ArrayList<>();
+				aliases.add(castTerm);
+				map.put(language, aliases);
+			} else {
+				aliases.add(castTerm);
+			}
+		}
+		return map;
+	}
+	
+	protected static Map<String,List<Statement>> constructStatementMap(List<StatementGroup> groups) {
+		Map<String,List<Statement>> map = new HashMap<>();
+		for(StatementGroup group : groups) {
+			map.put(group.getProperty().getId(), group.getStatements());
+		}
+		return map;
 	}
 
 }

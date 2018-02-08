@@ -48,10 +48,34 @@ public class JacksonValueTime extends JacksonValue implements TimeValue {
 	 * structure that is required here.
 	 */
 	private final JacksonInnerTime value;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param time
+	 * @param timezoneOffset
+	 * @param beforeTolerance
+	 * @param afterTolerance
+	 * @param precision
+	 * @param calendarModel
+	 */
+	public JacksonValueTime(
+			long year, byte month, byte day, byte hour,
+			byte minute, byte second,
+			int timezoneOffset,
+			int beforeTolerance,
+			int afterTolerance,
+			int precision,
+			String calendarModel) {
+		super(JSON_VALUE_TYPE_TIME);
+		this.value = new JacksonInnerTime(
+				year, month, day, hour, minute, second,
+				timezoneOffset, beforeTolerance, afterTolerance,
+				precision, calendarModel);
+	}
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
 	public JacksonValueTime(

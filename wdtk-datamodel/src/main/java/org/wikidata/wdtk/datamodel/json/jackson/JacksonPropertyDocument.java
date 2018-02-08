@@ -29,8 +29,10 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -52,10 +54,34 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 		implements PropertyDocument {
 
 	/**
-	 * Datatype string as used in JSON. See {@link JacksonDatatypeId} for a
-	 * mapping to WDTK datatype IRIs.
+	 * Datatype of the property. This is internally stored as 
+	 * a Jackson object because we need to be able to serialize
+	 * it directly to JSON as a field.
 	 */
-	private final String datatype;
+	private final JacksonDatatypeId datatype;
+	
+	/**
+	 * Constructor for instances that are built manually, rather than from JSON.
+	 * 
+	 * @param id
+	 * @param labels
+	 * @param descriptions
+	 * @param aliases
+	 * @param statements
+	 * @param datatype
+	 * @param revisionId
+	 */
+	public JacksonPropertyDocument(
+			PropertyIdValue id,
+			List<MonolingualTextValue> labels,
+			List<MonolingualTextValue> descriptions,
+			List<MonolingualTextValue> aliases,
+			List<StatementGroup> statements,
+			DatatypeIdValue datatype,
+			long revisionId) {
+		super(id, labels, descriptions, aliases, statements, revisionId);
+		this.datatype = new JacksonDatatypeId(datatype);
+	}
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
@@ -64,15 +90,15 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	@JsonCreator
 	public JacksonPropertyDocument(
 			@JsonProperty("id") String jsonId,
-			@JsonProperty("labels") Map<String, JacksonMonolingualTextValue> labels,
-			@JsonProperty("descriptions") Map<String, JacksonMonolingualTextValue> descriptions,
-			@JsonProperty("aliases") Map<String, List<JacksonMonolingualTextValue>> aliases,
+			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
 			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
-		this.datatype = datatype;
+		this.datatype = new JacksonDatatypeId(datatype);
 	}
 
 	/**
@@ -85,7 +111,7 @@ public class JacksonPropertyDocument extends JacksonTermedStatementDocument
 	 */
 	@JsonProperty("datatype")
 	public String getJsonDatatype() {
-		return this.datatype;
+		return this.datatype.getJsonString();
 	}
 
 	@JsonIgnore

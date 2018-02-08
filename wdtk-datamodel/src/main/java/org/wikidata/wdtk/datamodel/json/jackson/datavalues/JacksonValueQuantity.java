@@ -50,10 +50,26 @@ public class JacksonValueQuantity extends JacksonValue implements QuantityValue 
 	 * structure that is required here.
 	 */
 	private final JacksonInnerQuantity value;
+	
+	/**
+	 * Constructor
+	 * @param amount
+	 * @param upperBound
+	 * @param lowerBound
+	 * @param unit
+	 */
+	public JacksonValueQuantity(
+			BigDecimal amount,
+			BigDecimal upperBound,
+			BigDecimal lowerBound,
+			String unit) {
+		super(JSON_VALUE_TYPE_QUANTITY);
+		this.value = new JacksonInnerQuantity(amount, upperBound,
+				lowerBound, unit);
+	}
 
 	/**
-	 * Constructor. Creates an object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
 	public JacksonValueQuantity(

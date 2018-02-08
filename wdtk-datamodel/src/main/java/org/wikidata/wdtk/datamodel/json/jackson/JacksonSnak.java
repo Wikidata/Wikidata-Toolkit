@@ -113,5 +113,7 @@ public abstract class JacksonSnak implements Snak {
 	public Value getValue() {
 		return null;
 	}
-
+	
+	@JsonProperty("snaktype")
+	public abstract String getSnakType();
 }

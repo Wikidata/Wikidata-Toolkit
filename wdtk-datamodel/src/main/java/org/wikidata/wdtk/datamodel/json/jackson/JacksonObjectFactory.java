@@ -20,17 +20,14 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  * #L%
  */
 
-import org.apache.commons.lang3.StringUtils;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -43,8 +40,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
 			this);
-
-	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
@@ -60,7 +55,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public DatatypeIdValue getDatatypeIdValue(String id) {
-		return Datamodel.makeDatatypeIdValue(id);
+		return new JacksonDatatypeId(JacksonDatatypeId.getJsonDatatypeFromDatatypeIri(id));
 	}
 
 	@Override
@@ -143,14 +138,12 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	 */
 	@Override
 	public ValueSnak getValueSnak(PropertyIdValue propertyId, Value value) {
-		if (value instanceof JacksonValue) {
-			return getJacksonValueSnak(propertyId, (JacksonValue) value,
-					getJsonPropertyTypeForValueType(value));
-		} else {
-			return getJacksonValueSnak(propertyId,
-					(JacksonValue) this.dataModelConverter.copyValue(value),
-					getJsonPropertyTypeForValueType(value));
-		}
+		JacksonValueSnak result = new JacksonValueSnak(
+				propertyId.getId(),
+				getJsonPropertyTypeForValueType(value),
+				value,
+				propertyId.getSiteIri());
+		return result;
 	}
 
 	@Override
@@ -171,7 +164,11 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public SnakGroup getSnakGroup(List<? extends Snak> snaks) {
-		return Datamodel.makeSnakGroup(convertSnakList(snaks));
+		List<Snak> snakList = new ArrayList<>(snaks.size());
+		for(Snak snak : snaks) {
+			snakList.add(snak);
+		}
+		return new SnakGroupFromJson(snakList);
 	}
 
 	@Override
@@ -179,7 +176,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<SnakGroup> qualifiers) {
 		// Jackson claims cannot exist without a statement.
 		Statement statement = getStatement(
-				Datamodel.makeClaim(subject, mainSnak, qualifiers),
+				subject, mainSnak, qualifiers,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"empty id 12345");
 		return statement.getClaim();
@@ -187,51 +184,23 @@ public class JacksonObjectFactory implements DataObjectFactory {
 
 	@Override
 	public Reference getReference(List<SnakGroup> snakGroups) {
-		Map<String, List<JacksonSnak>> snakMap = new HashMap<>();
-		List<String> propertyOrder = new ArrayList<>(snakGroups.size());
-		for (SnakGroup snakGroup : snakGroups) {
-			snakMap.put(snakGroup.getProperty().getId(),
-					convertSnakList(snakGroup.getSnaks()));
-			propertyOrder.add(snakGroup.getProperty().getId());
-		}
-		return new JacksonReference(snakMap, propertyOrder);
+		return new JacksonReference(snakGroups);
 	}
 
 	@Override
 	public Statement getStatement(Claim claim,
-			List<? extends Reference> references, StatementRank rank,
+			List<Reference> references, StatementRank rank,
 			String statementId) {
+		return getStatement(claim.getSubject(), claim.getMainSnak(), claim.getQualifiers(),
+				references, rank, statementId);
+	}
+	
+	private Statement getStatement(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers,
+			List<Reference> references, StatementRank rank, String statementId) {
 
-	    JacksonSnak mainsnak = null;
-		if (claim.getMainSnak() instanceof JacksonSnak) {
-			mainsnak = (JacksonSnak) claim.getMainSnak();
-		} else {
-			mainsnak = (JacksonSnak) dataModelConverter.copySnak(claim
-					.getMainSnak());
-		}
-
-		Map<String, List<JacksonSnak>> qualifiers = new HashMap<>();
-		List<String> propertyOrder = new ArrayList<>(claim.getQualifiers()
-				.size());
-		for (SnakGroup sg : claim.getQualifiers()) {
-			qualifiers.put(sg.getProperty().getId(),
-					convertSnakList(sg.getSnaks()));
-			propertyOrder.add(sg.getProperty().getId());
-		};
-
-		List<JacksonReference> jacksonReferences = new ArrayList<>(
-				references.size());
-		for (Reference reference : references) {
-			if (reference instanceof JacksonReference) {
-				jacksonReferences.add((JacksonReference) reference);
-			} else {
-				jacksonReferences.add((JacksonReference) dataModelConverter
-						.copy(reference));
-			}
-		}
 		return new JacksonStatement(statementId,
-				rank, mainsnak, qualifiers, propertyOrder,
-				jacksonReferences, claim.getSubject());
+				rank, mainSnak, qualifiers,
+				references, subject);
 	}
 
 	@Override
@@ -244,7 +213,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				newStatements.add(this.dataModelConverter.copy(statement));
 			}
 		}
-		return Datamodel.makeStatementGroup(newStatements);
+		return new StatementGroupFromJson(newStatements);
 	}
 
 	@Override
@@ -282,14 +251,8 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId) {
 		JacksonPropertyDocument result = new JacksonPropertyDocument(
-				propertyId.getId(),
-				buildTermMapFromTermList(labels),
-				buildTermMapFromTermList(descriptions),
-				buildAliasMapFromAliasList(aliases),
-				buildStatementMapFromStatementGroups(statementGroups),
-				convertDatatype(datatypeId),
-				revisionId,
-				propertyId.getSiteIri());
+				propertyId, labels, descriptions, aliases, statementGroups,
+				datatypeId,	revisionId);
 		return result;
 	}
 
@@ -312,91 +275,10 @@ public class JacksonObjectFactory implements DataObjectFactory {
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks, long revisionId) {
 
-		Map<String, JacksonSiteLink> jacksonSiteLinks = new HashMap<>(
-				siteLinks.size());
-		for (SiteLink siteLink : siteLinks.values()) {
-			if (siteLink instanceof JacksonSiteLink) {
-				jacksonSiteLinks.put(siteLink.getSiteKey(),
-						(JacksonSiteLink) siteLink);
-			} else {
-				jacksonSiteLinks.put(siteLink.getSiteKey(),
-						(JacksonSiteLink) this.dataModelConverter
-								.copy(siteLink));
-			}
-		}
 		JacksonItemDocument result = new JacksonItemDocument(
-				itemIdValue.getId(),
-				buildTermMapFromTermList(labels),
-				buildTermMapFromTermList(descriptions),
-				buildAliasMapFromAliasList(aliases),
-				buildStatementMapFromStatementGroups(statementGroups),
-				jacksonSiteLinks,
-				revisionId,
-				itemIdValue.getSiteIri());
+				itemIdValue, labels, descriptions, aliases, statementGroups,
+				siteLinks.values().stream().collect(Collectors.toList()), revisionId);
 
-		return result;
-	}
-	
-	private Map<String, List<JacksonMonolingualTextValue>> buildAliasMapFromAliasList(List<MonolingualTextValue> aliases) {
-		Map<String, List<JacksonMonolingualTextValue>> aliasMap = new HashMap<>();
-		for (MonolingualTextValue mltv : aliases) {
-			List<JacksonMonolingualTextValue> langAliases = aliasMap.get(mltv
-					.getLanguageCode());
-			if (langAliases == null) {
-				langAliases = new ArrayList<>();
-				aliasMap.put(mltv.getLanguageCode(), langAliases);
-			}
-			langAliases.add(convertMltv(mltv));
-		}
-		return aliasMap;
-	}
-	
-	private Map<String, List<JacksonPreStatement>> buildStatementMapFromStatementGroups(List<StatementGroup> statementGroups) {
-		Map<String, List<JacksonPreStatement>> jacksonStatements = new HashMap<>();
-		for (StatementGroup sg : statementGroups) {
-			String propertyId = sg.getProperty().getId();
-			List<JacksonPreStatement> propertyStatements = new ArrayList<>(sg
-					.getStatements().size());
-			jacksonStatements.put(propertyId, propertyStatements);
-
-			for (Statement s : sg) {
-				if (s instanceof JacksonPreStatement) {
-					propertyStatements.add((JacksonPreStatement) s);
-				} else {
-					propertyStatements
-							.add((JacksonPreStatement) this.dataModelConverter
-									.copy(s));
-				}
-			}
-		}
-		return jacksonStatements;
-	}
-
-	private Map<String, JacksonMonolingualTextValue> buildTermMapFromTermList(
-			List<MonolingualTextValue> terms) {
-		Map<String, JacksonMonolingualTextValue> result = new HashMap<>(
-				terms.size());
-		for (MonolingualTextValue mltv : terms) {
-			result.put(mltv.getLanguageCode(), convertMltv(mltv));
-		}
-		return result;
-	}
-
-	private JacksonMonolingualTextValue convertMltv(MonolingualTextValue mltv) {
-		if (mltv instanceof JacksonMonolingualTextValue) {
-			return (JacksonMonolingualTextValue) mltv;
-		} else {
-			return new JacksonMonolingualTextValue(mltv);
-		}
-	}
-
-	private ValueSnak getJacksonValueSnak(PropertyIdValue propertyId,
-			JacksonValue value, String propertyDatatype) {
-		JacksonValueSnak result = new JacksonValueSnak(
-				propertyId.getId(),
-				propertyDatatype,
-				value,
-				propertyId.getSiteIri());
 		return result;
 	}
 
@@ -418,59 +300,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		} else {
 			throw new UnsupportedOperationException("Unsupported value type "
 					+ value.getClass());
-		}
-	}
-
-	private List<JacksonSnak> convertSnakList(List<? extends Snak> snaks) {
-		List<JacksonSnak> result = new ArrayList<>(snaks.size());
-		for (Snak snak : snaks) {
-			if (snak instanceof JacksonSnak) {
-				result.add((JacksonSnak) snak);
-			} else {
-				result.add((JacksonSnak) dataModelConverter.copySnak(snak));
-			}
-		}
-		return result;
-	}
-
-	private String convertDatatype(DatatypeIdValue datatypeId) {
-		switch (datatypeId.getIri()) {
-			case DatatypeIdValue.DT_ITEM:
-				return JacksonDatatypeId.JSON_DT_ITEM;
-			case DatatypeIdValue.DT_GLOBE_COORDINATES:
-				return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
-			case DatatypeIdValue.DT_URL:
-				return JacksonDatatypeId.JSON_DT_URL;
-			case DatatypeIdValue.DT_COMMONS_MEDIA:
-				return JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
-			case DatatypeIdValue.DT_TIME:
-				return JacksonDatatypeId.JSON_DT_TIME;
-			case DatatypeIdValue.DT_QUANTITY:
-				return JacksonDatatypeId.JSON_DT_QUANTITY;
-			case DatatypeIdValue.DT_STRING:
-				return JacksonDatatypeId.JSON_DT_STRING;
-			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
-				return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
-			case DatatypeIdValue.DT_PROPERTY:
-				return JacksonDatatypeId.JSON_DT_PROPERTY;
-			default:
-				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
-				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeId.getIri());
-				if(!matcher.matches()) {
-					throw new IllegalArgumentException("Unknown datatype: " + datatypeId.getIri());
-				}
-
-				StringBuilder jsonDatatypeBuilder = new StringBuilder();
-				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
-					if(Character.isUpperCase(ch)) {
-						jsonDatatypeBuilder
-								.append('-')
-								.append(Character.toLowerCase(ch));
-					} else {
-						jsonDatatypeBuilder.append(ch);
-					}
-				}
-				return jsonDatatypeBuilder.toString();
 		}
 	}
 }

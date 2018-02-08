@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
@@ -56,7 +57,28 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.ClaimFromJson;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonDatatypeId;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonNoValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonReference;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonSiteLink;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonSomeValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonStatement;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.SnakGroupFromJson;
+import org.wikidata.wdtk.datamodel.json.jackson.StatementGroupFromJson;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
+import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
 
 public class DataObjectFactoryImplTest {
 
@@ -86,7 +108,7 @@ public class DataObjectFactoryImplTest {
 	protected DatamodelConverter converter;
 
 	public DataObjectFactoryImplTest() {
-		factory = new DataObjectFactoryImpl();
+		factory = new JacksonObjectFactory();
 		converter = new DatamodelConverter(factory);
 	}
 
@@ -105,7 +127,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static ItemIdValue getTestItemIdValue(int seed) {
-		return new ItemIdValueImpl("Q4" + seed, "foo:");
+		return new JacksonValueItemId("Q4" + seed, "foo:");
 	}
 
 	@Test
@@ -118,7 +140,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static PropertyIdValue getTestPropertyIdValue(int seed) {
-		return new PropertyIdValueImpl("P4" + seed, "foo:");
+		return new JacksonValuePropertyId("P4" + seed, "foo:");
 	}
 
 	public static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
@@ -135,7 +157,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetDatatypeId() {
-		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
+		DatatypeIdValue o1 = new JacksonDatatypeId(JacksonDatatypeId.JSON_DT_TIME);
 		DatatypeIdValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -152,7 +174,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static TimeValue getTestTimeValue(int seed) {
-		return new TimeValueImpl(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
+		return new JacksonValueTime(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
 				(byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 	}
@@ -167,7 +189,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
-		return new GlobeCoordinatesValueImpl((10 + seed)
+		return new JacksonValueGlobeCoordinates((10 + seed)
 				* GlobeCoordinatesValue.PREC_DEGREE, (1905 + seed)
 				* GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				GlobeCoordinatesValue.PREC_DECI_DEGREE,
@@ -184,7 +206,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static StringValue getTestStringValue(int seed) {
-		return new StringValueImpl("foo" + seed);
+		return new JacksonValueString("foo" + seed);
 	}
 
 	@Test
@@ -198,7 +220,7 @@ public class DataObjectFactoryImplTest {
 
 	public static MonolingualTextValue getTestMonolingualTextValue(int seed,
 			String language) {
-		return new MonolingualTextValueImpl("foo" + seed, language);
+		return new JacksonValueMonolingualText("foo" + seed, language);
 	}
 
 	@Test
@@ -217,7 +239,7 @@ public class DataObjectFactoryImplTest {
 				+ ".123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
-		return new QuantityValueImpl(nv, lb, ub,
+		return new JacksonValueQuantity(nv, lb, ub,
 				"http://wikidata.org/entity/Q11573");
 	}
 
@@ -248,16 +270,36 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
 	}
+	
+	private static String getJsonValueType(ValueType valueType) {
+		switch(valueType) {
+		case GLOBE_COORDINATES:
+			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+		case ITEM:
+			return JacksonDatatypeId.JSON_DT_ITEM;
+		case MONOLINGUAL_TEXT:
+			return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
+		case QUANTITY:
+			return JacksonDatatypeId.JSON_DT_QUANTITY;
+		case STRING:
+			return null;
+		case TIME:
+			return JacksonDatatypeId.JSON_DT_TIME;
+		default:
+			throw new RuntimeException("Unsupported value type.");
+		}
+	}
 
 	public static ValueSnak getTestValueSnak(ValueType valueType, int pseed,
 			int vseed) {
-		return new ValueSnakImpl(getTestPropertyIdValue(pseed), getTestValue(
-				valueType, vseed));
+		PropertyIdValue property = getTestPropertyIdValue(pseed);
+		Value value =  getTestValue(valueType, vseed);
+		return new JacksonValueSnak(property, getJsonValueType(valueType), value);
 	}
 
 	@Test
 	public final void testGetSomeValueSnak() {
-		SomeValueSnak o1 = new SomeValueSnakImpl(getTestPropertyIdValue(0));
+		SomeValueSnak o1 = new JacksonSomeValueSnak(getTestPropertyIdValue(0));
 		SomeValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -266,7 +308,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetNoValueSnak() {
-		NoValueSnak o1 = new NoValueSnakImpl(getTestPropertyIdValue(0));
+		NoValueSnak o1 = new JacksonNoValueSnak(getTestPropertyIdValue(0));
 		NoValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -288,14 +330,15 @@ public class DataObjectFactoryImplTest {
 		for (int i = 0; i < size; i++) {
 			snaks.add(getTestValueSnak(valueType, pseed, i));
 		}
-		return new SnakGroupImpl(snaks);
+		return new SnakGroupFromJson(snaks);
 	}
 
 	public static List<SnakGroup> getTestValueSnakGroups(int seed, int size) {
 		List<SnakGroup> snakGroups = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			snakGroups.add(getTestValueSnakGroup(ValueType.fromInt(i + seed), i
-					+ seed, i + 1));
+			SnakGroup group = getTestValueSnakGroup(ValueType.fromInt(i + seed), i
+					+ seed, i + 1);
+			snakGroups.add(group);
 		}
 		return snakGroups;
 	}
@@ -311,14 +354,14 @@ public class DataObjectFactoryImplTest {
 
 	public static Claim getTestClaim(int subjectSeed, int seed, int size,
 			String entityType) {
-		return new ClaimImpl(getTestEntityIdValue(subjectSeed, entityType),
-				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
-				getTestValueSnakGroups(seed * 100, size));
+		
+		return getTestStatement(subjectSeed, seed, size, entityType).getClaim();
 	}
 
 	@Test
 	public final void testGetReference() {
-		Reference o1 = new ReferenceImpl(getTestValueSnakGroups(10, 3));
+		List<SnakGroup> referenceSnaks = getTestValueSnakGroups(10, 3);
+		Reference o1 = new JacksonReference(referenceSnaks);
 		Reference o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -328,8 +371,9 @@ public class DataObjectFactoryImplTest {
 	public static List<Reference> getReferenceList(int seed, int size) {
 		List<Reference> references = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			references.add(new ReferenceImpl(getTestValueSnakGroups(seed,
-					(seed + i) % 4 + 1)));
+			List<SnakGroup> referenceSnaks = getTestValueSnakGroups(seed,
+					(seed + i) % 4 + 1);
+			references.add(new JacksonReference(referenceSnaks));
 		}
 		return references;
 	}
@@ -345,9 +389,13 @@ public class DataObjectFactoryImplTest {
 
 	public static Statement getTestStatement(int subjectSeed, int seed,
 			int size, String entityType) {
-		return new StatementImpl(getTestClaim(subjectSeed, seed, size,
-				entityType), getReferenceList(seed, size),
-				StatementRank.NORMAL, "MyId" + seed);
+		List<SnakGroup> qualifiers = getTestValueSnakGroups(seed * 100, size);
+		Statement statement = new JacksonStatement("",
+				StatementRank.NORMAL,
+				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
+				qualifiers, null,
+				getTestEntityIdValue(subjectSeed, entityType));
+		return statement;
 	}
 
 	@Test
@@ -367,22 +415,23 @@ public class DataObjectFactoryImplTest {
 		for (int i = 0; i < size; i++) {
 			statements.add(getTestStatement(subjectSeed, seed, i, entityType));
 		}
-		return new StatementGroupImpl(statements);
+		return new StatementGroupFromJson(statements);
 	}
 
 	public static List<StatementGroup> getTestStatementGroups(int subjectSeed,
 			int seed, int size, String entityType) {
-		List<StatementGroup> statementGroups = new ArrayList<>(size);
+		List<StatementGroup> statementGroups = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
-			statementGroups.add(getTestStatementGroup(subjectSeed, i + seed,
-					i * 2 + 1, entityType));
+			StatementGroup group = getTestStatementGroup(subjectSeed, i + seed,
+					i * 2 + 1, entityType);
+			statementGroups.add(group);
 		}
 		return statementGroups;
 	}
 
 	@Test
 	public final void testGetSiteLink() {
-		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
+		SiteLink o1 = new JacksonSiteLink("SOLID", "enwiki",
 				Collections.<String> emptyList());
 		SiteLink o2 = converter.copy(o1);
 		assertEquals(o2, o1);
@@ -390,13 +439,14 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetPropertyDocument() {
-		PropertyDocument o1 = new PropertyDocumentImpl(
-				getTestPropertyIdValue(2),
+		PropertyIdValue subject = getTestPropertyIdValue(2);
+		PropertyDocument o1 = new JacksonPropertyDocument(
+				subject,
 				getTestMtvList(1, 0), // labels
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
-				new DatatypeIdImpl(DatatypeIdValue.DT_TIME), 1234);
+				new JacksonDatatypeId(JacksonDatatypeId.JSON_DT_TIME), 1234);
 		PropertyDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
@@ -406,7 +456,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemDocument() {
-		ItemDocument o1 = new ItemDocumentImpl(
+		ItemDocument o1 = new JacksonItemDocument(
 				getTestItemIdValue(2),
 				getTestMtvList(5, 0), // labels
 				getTestMtvList(0, 0), // descriptions
@@ -421,32 +471,33 @@ public class DataObjectFactoryImplTest {
 	}
 
 	/**
-	 * Creates a test list of {@link MonolingualTextValue} objects.
+	 * Creates a test map of {@link MonolingualTextValue} objects. If size > 6
+	 * then multiple terms for the same language will be provided.
 	 *
 	 * @param size
-	 *            if bigger than 5, some language keys will occur multiple times
 	 * @param seed
 	 * @return
 	 */
 	public static List<MonolingualTextValue> getTestMtvList(int size, int seed) {
 		List<MonolingualTextValue> result = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			result.add(getTestMonolingualTextValue(i + seed, "lang" + (i % 6)));
+			String lang = "lang" + (i % 6);
+			result.add(getTestMonolingualTextValue(i + seed, lang));
 		}
 		return result;
 	}
 
-	public static Map<String, SiteLink> getTestSiteLinks(int size) {
-		Map<String, SiteLink> result = new HashMap<>(size);
+	public static List<SiteLink> getTestSiteLinks(int size) {
+		List<SiteLink> result = new ArrayList<>(size);
 		List<String> someBadges = new ArrayList<>(2);
 		someBadges.add("badge1");
 		someBadges.add("badge2");
 		for (int i = 0; i < size; i++) {
 			if (i % 3 == 0) {
-				result.put("site" + i, new JacksonSiteLink("Badged article" + i,
+				result.add(new JacksonSiteLink("Badged article" + i,
 						"site" + i, someBadges));
 			} else {
-				result.put("site" + i, new JacksonSiteLink("Article" + i, "site"
+				result.add(new JacksonSiteLink("Article" + i, "site"
 						+ i, Collections.<String> emptyList()));
 			}
 		}

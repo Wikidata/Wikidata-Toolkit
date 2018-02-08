@@ -45,14 +45,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * the first document is serialized. It is the responsibility of the caller to
  * do this.
  * <p>
- * To generate the correct official JSON serialization used by Wikidata,
- * serialized entity documents must be based on the Jackson implementations,
- * i.e., be instances of {@link JacksonItemDocument} or
- * {@link JacksonPropertyDocument}. The serializer checks is this is the case
- * and converts the data if not. If the caller can provide data based on Jackson
- * objects or has the choice of generating data in this format (e.g., if
- * documents are converted for filtering purposes anyway), then this will
- * improve performance since no conversion is needed there.
+ * Implementations of the data model are expected to be appropriately serializable
+ * to JSON with Jackson.
  *
  * @author Markus Kroetzsch
  *
@@ -115,17 +109,11 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		if (!(itemDocument instanceof JacksonItemDocument)) {
-			itemDocument = datamodelConverter.copy(itemDocument);
-		}
 		serializeEntityDocument(itemDocument);
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		if (!(propertyDocument instanceof JacksonPropertyDocument)) {
-			propertyDocument = datamodelConverter.copy(propertyDocument);
-		}
 		serializeEntityDocument(propertyDocument);
 	}
 
@@ -189,9 +177,6 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @return JSON serialization or null
 	 */
 	public static String getJsonString(ItemDocument itemDocument) {
-		if (!(itemDocument instanceof JacksonItemDocument)) {
-			itemDocument = datamodelConverter.copy(itemDocument);
-		}
 		return jacksonObjectToString(itemDocument);
 	}
 
@@ -204,9 +189,6 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @return JSON serialization or null
 	 */
 	public static String getJsonString(PropertyDocument propertyDocument) {
-		if (!(propertyDocument instanceof JacksonPropertyDocument)) {
-			propertyDocument = datamodelConverter.copy(propertyDocument);
-		}
 		return jacksonObjectToString(propertyDocument);
 	}
 
@@ -219,9 +201,6 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @return JSON serialization or null
 	 */
 	public static String getJsonString(Statement statement) {
-		if (!(statement instanceof JacksonPreStatement)) {
-			statement = datamodelConverter.copy(statement);
-		}
 		return jacksonObjectToString(statement);
 	}
 

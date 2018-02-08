@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -49,20 +51,20 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class AliasesDeserializer extends
-		JsonDeserializer<Map<String, List<JacksonMonolingualTextValue>>> {
+		JsonDeserializer<Map<String, List<MonolingualTextValue>>> {
 
 	@Override
-	public Map<String, List<JacksonMonolingualTextValue>> deserialize(
+	public Map<String, List<MonolingualTextValue>> deserialize(
 			JsonParser jp, DeserializationContext ctxt) throws IOException {
 
-		Map<String, List<JacksonMonolingualTextValue>> contents = new HashMap<>();
+		Map<String, List<MonolingualTextValue>> contents = new HashMap<>();
 
 		try {
 			JsonNode node = jp.getCodec().readTree(jp);
 			if (!node.isArray()) {
 				Iterator<Entry<String, JsonNode>> nodeIterator = node.fields();
 				while (nodeIterator.hasNext()) {
-					List<JacksonMonolingualTextValue> mltvList = new ArrayList<>();
+					List<MonolingualTextValue> mltvList = new ArrayList<>();
 					Entry<String, JsonNode> currentNode = nodeIterator.next();
 					// get the list of MLTVs
 					for (JsonNode mltvEntry : currentNode.getValue()) {
@@ -76,6 +78,7 @@ public class AliasesDeserializer extends
 			}
 
 		} catch (Exception e) {
+			// TODO: we should not fail silently here!
 			e.printStackTrace();
 		}
 

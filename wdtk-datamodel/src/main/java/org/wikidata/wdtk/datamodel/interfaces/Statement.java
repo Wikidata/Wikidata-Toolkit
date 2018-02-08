@@ -52,7 +52,7 @@ public interface Statement {
 	 *
 	 * @return the list of references
 	 */
-	List<? extends Reference> getReferences();
+	List<Reference> getReferences();
 
 	/**
 	 * Return the id used to identify this statement.

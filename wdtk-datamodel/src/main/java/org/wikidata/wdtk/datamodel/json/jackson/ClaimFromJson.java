@@ -47,7 +47,12 @@ public class ClaimFromJson implements Claim {
 	private final JacksonStatement statement;
 
 	private List<SnakGroup> qualifiers = null;
-
+	
+	/**
+	 * Constructor used to initialize a claim from a JacksonStatement,
+	 * should only be used internally.
+	 * @param statement
+	 */
 	public ClaimFromJson(JacksonStatement statement) {
 		this.statement = statement;
 	}

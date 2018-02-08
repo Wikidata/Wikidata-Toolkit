@@ -51,10 +51,24 @@ public abstract class JacksonValueEntityId extends JacksonValue implements
 	 * structure that is required here.
 	 */
 	protected final JacksonInnerEntityId value;
+	
+	/**
+	 * Constructor.
+	 * @param id
+	 * 		the identifier of the entity, such as "Q42"
+	 * @param siteIri
+	 *      the siteIRI that this value refers to
+	 */
+	public JacksonValueEntityId(
+			String id,
+			String siteIri) {
+		super(JSON_VALUE_TYPE_ENTITY_ID);
+		this.value = new JacksonInnerEntityId(id);
+		this.siteIri = siteIri;
+	}
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor used for deserialization with Jackson.
 	 */
 	@JsonCreator
 	public JacksonValueEntityId(

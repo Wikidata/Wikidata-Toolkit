@@ -24,6 +24,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
@@ -39,10 +40,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
+	
+	/**
+	 * Constructor.
+	 */
+	public JacksonNoValueSnak(PropertyIdValue property) {
+		super(property.getId(), property.getSiteIri());
+	}
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
 	protected JacksonNoValueSnak(
@@ -69,5 +76,11 @@ public class JacksonNoValueSnak extends JacksonSnak implements NoValueSnak {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	@JsonProperty("snaktype")
+	public String getSnakType() {
+		return JacksonSnak.JSON_SNAK_TYPE_NOVALUE;
 	}
 }

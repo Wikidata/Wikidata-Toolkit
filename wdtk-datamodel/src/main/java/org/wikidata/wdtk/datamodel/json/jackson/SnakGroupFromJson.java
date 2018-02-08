@@ -45,7 +45,7 @@ public class SnakGroupFromJson implements SnakGroup {
 
 	private final List<Snak> snaks;
 
-	public SnakGroupFromJson(List<JacksonSnak> snaks) {
+	public SnakGroupFromJson(List<Snak> snaks) {
 		this.snaks = Collections.<Snak> unmodifiableList(snaks);
 	}
 
@@ -73,7 +73,7 @@ public class SnakGroupFromJson implements SnakGroup {
 	 * @return the result list
 	 */
 	public static List<SnakGroup> makeSnakGroups(
-			Map<String, List<JacksonSnak>> snaks, List<String> propertyOrder) {
+			Map<String, List<Snak>> snaks, List<String> propertyOrder) {
 
 		List<SnakGroup> result = new ArrayList<>(snaks.size());
 

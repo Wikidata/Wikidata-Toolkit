@@ -45,12 +45,37 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(using = None.class)
 public class JacksonValueItemId extends JacksonValueEntityId implements
 		ItemIdValue {
-
+	
+	/**
+	 * Constructor.
+	 * @param id
+	 * 		the identifier of the entity, such as "Q42"
+	 * @param siteIri
+	 *      the siteIRI that this value refers to
+	 */
+	public JacksonValueItemId(
+			String id,
+			String siteIri) {
+		super(id, siteIri);
+		checkEntityIdType();
+	}
+	/**
+	 * Constructor used for deserialization with Jackson
+	 * @param value
+	 * @param siteIri
+	 */
 	@JsonCreator
 	public JacksonValueItemId(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject("siteIri") String siteIri) {
 		super(value, siteIri);
+		checkEntityIdType();
+	}
+	
+	/**
+	 * Checks that the entity id is of the right type.
+	 */
+	private void checkEntityIdType() {
 		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM.equals(value
 				.getJsonEntityType())) {
 			throw new RuntimeException("Unexpected inner value type: "

@@ -174,16 +174,16 @@ public class JsonTestData {
 	// TODO continue testing using stringValueSnak, timeValueSnak,
 	// globeCoordinateValueSnak
 
-	public static Map<String, JacksonMonolingualTextValue> getTestMltvMap() {
-		Map<String, JacksonMonolingualTextValue> testMltvMap = new HashMap<>();
+	public static Map<String, MonolingualTextValue> getTestMltvMap() {
+		Map<String, MonolingualTextValue> testMltvMap = new HashMap<>();
 		testMltvMap.put("en", TEST_MLTV_TERM_VALUE);
 		return testMltvMap;
 	}
 
-	public static Map<String, List<JacksonMonolingualTextValue>> getTestAliases() {
-		Map<String, List<JacksonMonolingualTextValue>> testAliases = new HashMap<>();
+	public static Map<String, List<MonolingualTextValue>> getTestAliases() {
+		Map<String, List<MonolingualTextValue>> testAliases = new HashMap<>();
 
-		List<JacksonMonolingualTextValue> enAliases = new ArrayList<>();
+		List<MonolingualTextValue> enAliases = new ArrayList<>();
 		enAliases.add(TEST_MLTV_TERM_VALUE);
 		testAliases.put("en", enAliases);
 
@@ -198,8 +198,8 @@ public class JsonTestData {
 		return Datamodel.makeWikidataPropertyIdValue(TEST_PROPERTY_ID);
 	}
 
-	public static Map<String, JacksonSiteLink> getTestSiteLinkMap() {
-		Map<String, JacksonSiteLink> testSiteLinkMap = new HashMap<>();
+	public static Map<String, SiteLink> getTestSiteLinkMap() {
+		Map<String, SiteLink> testSiteLinkMap = new HashMap<>();
 		testSiteLinkMap.put("enwiki", TEST_SITE_LINK);
 		return testSiteLinkMap;
 	}
@@ -219,13 +219,13 @@ public class JsonTestData {
 
 	public static JacksonItemDocument getEmtpyTestItemDocument() {
 		JacksonItemDocument testItemDocument = new JacksonItemDocument(
-				getTestItemId().getId(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, JacksonMonolingualTextValue>emptyMap(),
-				Collections.<String, List<JacksonMonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
-				0, getTestItemId().getSiteIri());
+				getTestItemId(),
+				Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(),
+				Collections.<StatementGroup>emptyList(),
+				Collections.<SiteLink>emptyList(),
+				0);
 		return testItemDocument;
 	}
 
@@ -236,7 +236,7 @@ public class JsonTestData {
 				getTestMltvMap(),
 				getTestAliases(),
 				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, JacksonSiteLink>emptyMap(),
+				Collections.<String, SiteLink>emptyMap(),
 				0, getTestItemId().getSiteIri());
 		return testItemDocument;
 	}

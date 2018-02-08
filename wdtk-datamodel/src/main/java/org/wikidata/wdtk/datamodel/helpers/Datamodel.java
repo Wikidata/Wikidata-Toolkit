@@ -440,7 +440,7 @@ public class Datamodel {
 	 * @return a {@link Statement} corresponding to the input
 	 */
 	public static Statement makeStatement(Claim claim,
-			List<? extends Reference> references, StatementRank rank,
+			List<Reference> references, StatementRank rank,
 			String statementId) {
 		return factory.getStatement(claim, references, rank, statementId);
 	}

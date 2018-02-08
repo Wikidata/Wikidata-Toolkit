@@ -27,6 +27,9 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -100,6 +103,7 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	public static final String JSON_DT_GEO_SHAPE = "geo-shape";
 
 	private static final Pattern JSON_DATATYPE_PATTERN = Pattern.compile("^[a-z\\-]+$");
+	private static final Pattern DATATYPE_ID_PATTERN = Pattern.compile("^http://wikiba\\.se/ontology#([a-zA-Z]+)$");
 
 	/**
 	 * Datatype IRI as used in Wikidata Toolkit.
@@ -147,12 +151,68 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 			return "http://wikiba.se/ontology#" + StringUtils.join(parts);
 		}
 	}
+	
+	/**
+	 * Returns the JSON datatype for the property datatype as represented by
+	 * the given WDTK datatype IRI string.
+	 *
+	 * @param datatypeIri
+	 *            the WDTK datatype IRI string; case-sensitive
+	 * @throws IllegalArgumentException
+	 *             if the given datatype string is not known
+	 */
+	public static String getJsonDatatypeFromDatatypeIri(String datatypeIri) {
+		switch (datatypeIri) {
+			case DatatypeIdValue.DT_ITEM:
+				return JacksonDatatypeId.JSON_DT_ITEM;
+			case DatatypeIdValue.DT_GLOBE_COORDINATES:
+				return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+			case DatatypeIdValue.DT_URL:
+				return JacksonDatatypeId.JSON_DT_URL;
+			case DatatypeIdValue.DT_COMMONS_MEDIA:
+				return JacksonDatatypeId.JSON_DT_COMMONS_MEDIA;
+			case DatatypeIdValue.DT_TIME:
+				return JacksonDatatypeId.JSON_DT_TIME;
+			case DatatypeIdValue.DT_QUANTITY:
+				return JacksonDatatypeId.JSON_DT_QUANTITY;
+			case DatatypeIdValue.DT_STRING:
+				return JacksonDatatypeId.JSON_DT_STRING;
+			case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+				return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
+			case DatatypeIdValue.DT_PROPERTY:
+				return JacksonDatatypeId.JSON_DT_PROPERTY;
+			default:
+				//We apply the reverse algorithm of JacksonDatatypeId::getDatatypeIriFromJsonDatatype
+				Matcher matcher = DATATYPE_ID_PATTERN.matcher(datatypeIri);
+				if(!matcher.matches()) {
+					throw new IllegalArgumentException("Unknown datatype: " + datatypeIri);
+				}
+		
+				StringBuilder jsonDatatypeBuilder = new StringBuilder();
+				for(char ch : StringUtils.uncapitalize(matcher.group(1)).toCharArray()) {
+					if(Character.isUpperCase(ch)) {
+						jsonDatatypeBuilder
+								.append('-')
+								.append(Character.toLowerCase(ch));
+					} else {
+						jsonDatatypeBuilder.append(ch);
+					}
+				}
+				return jsonDatatypeBuilder.toString();
+		}
+	}
+	
+	/**
+	 * Copy constructor.
+	 */
+	public JacksonDatatypeId(DatatypeIdValue other) {
+		this.iri = other.getIri();
+	}
 
 	/**
 	 * Constructs an object representing the datatype id from a string denoting
-	 * the datatype. It also sets the correct IRI for the datatype.
-	 * <p>
-	 * TODO Review the utility of this constructor.
+	 * the datatype. It also sets the correct IRI for the datatype. This constructor
+	 * is meant to be used for JSON deserialization.
 	 *
 	 * @param jsonDatatype
 	 *            denotes the datatype which to represent; case-sensitive
@@ -163,6 +223,14 @@ public class JacksonDatatypeId implements DatatypeIdValue {
 	public JacksonDatatypeId(String jsonDatatype)
 			throws IllegalArgumentException {
 		this.iri = getDatatypeIriFromJsonDatatype(jsonDatatype);
+	}
+	
+	/**
+	 * Returns the string used to represent this datatype in JSON.
+	 * @return
+	 */
+	public String getJsonString() {
+		return getJsonDatatypeFromDatatypeIri(this.iri);
 	}
 
 	@Override

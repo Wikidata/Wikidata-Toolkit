@@ -21,11 +21,15 @@ package org.wikidata.wdtk.datamodel.json.jackson;
  */
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -64,17 +68,24 @@ public class JacksonPreStatement {
 	@JsonDeserialize(using = StatementRankDeserializer.class)
 	private final StatementRank rank;
 
-	private final List<JacksonReference> references;
+	@JsonDeserialize(contentAs=JacksonReference.class)
+	private final List<Reference> references;
 
 	/**
 	 * The main snak of this statement.
 	 */
-	private final JacksonSnak mainsnak;
+	@JsonDeserialize(contentAs=JacksonSnak.class)
+	private final Snak mainsnak;
 
 	/**
 	 * A map from property id strings to snaks that encodes the qualifiers.
+	 * We use the explicit type {@link JacksonSnak} because Jackson does
+	 * not know yet how to specify subclasses for interfaces nested in two
+	 * containers.
 	 */
-	private final Map<String, List<JacksonSnak>> qualifiers;
+	@JsonIgnore
+	private final Map<String, List<Snak>> qualifiers;
+	
 	/**
 	 * List of property string ids that encodes the desired order of qualifiers,
 	 * which is not specified by the map.
@@ -82,17 +93,18 @@ public class JacksonPreStatement {
 	private final List<String> propertyOrder;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor.
 	 */
-	@JsonCreator
 	public JacksonPreStatement(
-			@JsonProperty("id") String id,
-			@JsonProperty("rank") StatementRank rank,
-			@JsonProperty("mainsnak") JacksonSnak mainsnak,
-			@JsonProperty("qualifiers") Map<String, List<JacksonSnak>> qualifiers,
-			@JsonProperty("qualifiers-order") List<String> propertyOrder,
-			@JsonProperty("references") List<JacksonReference> references) {
+			String id,
+			StatementRank rank,
+			Snak mainsnak,
+			Map<String, List<Snak>> qualifiers,
+			List<String> propertyOrder,
+			List<Reference> references) {
+		if (id == null) {
+			id = "";
+		}
 		this.id = id;
 		Validate.notNull(rank, "No rank provided to create a statement.");
 		this.rank = rank;
@@ -101,7 +113,7 @@ public class JacksonPreStatement {
 		if (qualifiers != null) {
 			this.qualifiers = qualifiers;
 		} else {
-			this.qualifiers = Collections.<String, List<JacksonSnak>>emptyMap();
+			this.qualifiers = Collections.<String, List<Snak>>emptyMap();
 		}
 		if (propertyOrder != null) {
 			this.propertyOrder = propertyOrder;
@@ -111,9 +123,33 @@ public class JacksonPreStatement {
 		if (references != null) {
 			this.references = references;
 		} else {
-			this.references = Collections.<JacksonReference>emptyList();
+			this.references = Collections.<Reference>emptyList();
 		}
 	}
+	
+	/**
+	 * JSON deserialization creator.
+	 */
+	@JsonCreator
+	protected static JacksonPreStatement fromJson(
+			@JsonProperty("id") String id,
+			@JsonProperty("rank") StatementRank rank,
+			@JsonProperty("mainsnak") JacksonSnak mainsnak,
+			@JsonProperty("qualifiers") Map<String, List<JacksonSnak>> qualifiers,
+			@JsonProperty("qualifiers-order") List<String> propertyOrder,
+			@JsonProperty("references") List<Reference> references) {
+		// Forget the concrete type of Jackson snaks for the qualifiers
+		if(qualifiers == null) {
+			qualifiers = Collections.emptyMap();
+		}
+		Map<String, List<Snak>> newQualifiers = new HashMap<>(qualifiers.size());
+		for(Map.Entry<String,List<JacksonSnak>> entry : qualifiers.entrySet()) {
+			List<Snak> snaks = entry.getValue().stream().collect(Collectors.toList());
+			newQualifiers.put(entry.getKey(), snaks);
+		}
+		return new JacksonPreStatement(id, rank, mainsnak, newQualifiers, propertyOrder, references);
+	}
+	
 	
 	public JacksonStatement withSubject(EntityIdValue subject) {
 		return new JacksonStatement(
@@ -143,7 +179,7 @@ public class JacksonPreStatement {
 	 * Returns the references of this statement
 	 * @return "references"
 	 */
-	public List<JacksonReference> getReferences() {
+	public List<Reference> getReferences() {
 		return this.references;
 	}
 
@@ -155,6 +191,7 @@ public class JacksonPreStatement {
 	public String getStatementId() {
 		return this.id;
 	}
+	
 
 	/**
 	 * Returns the main snak of the claim of this statement. Only for use by
@@ -163,7 +200,7 @@ public class JacksonPreStatement {
 	 *
 	 * @return main snak
 	 */
-	public JacksonSnak getMainsnak() {
+	public Snak getMainsnak() {
 		return this.mainsnak;
 	}
 
@@ -174,7 +211,7 @@ public class JacksonPreStatement {
 	 *
 	 * @return qualifiers
 	 */
-	public Map<String, List<JacksonSnak>> getQualifiers() {
+	public Map<String, List<Snak>> getQualifiers() {
 		return this.qualifiers;
 	}
 

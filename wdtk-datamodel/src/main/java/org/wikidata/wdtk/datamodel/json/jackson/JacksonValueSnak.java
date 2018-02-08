@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import org.apache.commons.lang3.Validate;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -23,6 +25,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
@@ -34,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Jackson implementation of {@link ValueSnak}.
@@ -47,30 +51,51 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	/**
 	 * The {@link Value} assigned to this snak.
 	 */
-	private final JacksonValue datavalue;
+	@JsonDeserialize(as = JacksonValue.class)
+	private final Value datavalue;
 
 	/**
 	 * The datatype of this property which determines
-	 * the type of datavalue it stores.
+	 * the type of datavalue it stores. It can be null, in the case
+	 * of string datavalues.
 	 */
 	private final String datatype;
+	
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor.
+	 * @param property
+	 * @param datatype
+	 * @param value
+	 */
+	public JacksonValueSnak(PropertyIdValue property, String datatype, Value value) {
+		super(property.getId(), property.getSiteIri());
+		Validate.notNull(value, "A datavalue must be provided to create a value snak.");
+		this.datavalue = value;
+		this.datatype = datatype;
+	}
+
+	/**
+	 * Constructor used to deserialize from JSON with Jackson.
 	 */
 	@JsonCreator
 	protected JacksonValueSnak(
 			@JsonProperty("property") String property,
 			@JsonProperty("datatype") String datatype,
-			@JsonProperty("datavalue") JacksonValue datavalue,
+			@JsonProperty("datavalue") Value datavalue,
 			@JacksonInject("siteIri") String siteIri) {
 		super(property, siteIri);
-		this.datatype = datatype;
+		Validate.notNull(datavalue, "A datavalue must be provided to create a value snak.");
 		this.datavalue = datavalue;
+		this.datatype = datatype;
 	}
 
-	@JsonIgnore
+
+	@JsonProperty("datavalue")
+	public Value getDatavalue() {
+		return this.datavalue;
+	}
+	
 	@Override
 	public Value getValue() {
 		return this.datavalue;
@@ -92,14 +117,11 @@ public class JacksonValueSnak extends JacksonSnak implements ValueSnak {
 	public String getDatatype() {
 		return this.datatype;
 	}
-
-	/**
-	 * Returns the snak value. Only for use by Jackson during serialization.
-	 *
-	 * @return the snak value
-	 */
-	public JacksonValue getDatavalue() {
-		return this.datavalue;
+	
+	@Override
+	@JsonProperty("snaktype")
+	public String getSnakType() {
+		return JacksonSnak.JSON_SNAK_TYPE_VALUE;
 	}
 
 	@Override

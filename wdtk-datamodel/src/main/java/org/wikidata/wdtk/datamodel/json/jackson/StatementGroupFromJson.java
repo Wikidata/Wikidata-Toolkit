@@ -43,7 +43,7 @@ public class StatementGroupFromJson implements StatementGroup {
 
 	final List<Statement> statements;
 
-	public StatementGroupFromJson(List<JacksonStatement> statements2) {
+	public StatementGroupFromJson(List<Statement> statements2) {
 		this.statements = Collections
 				.<Statement> unmodifiableList(statements2);
 	}

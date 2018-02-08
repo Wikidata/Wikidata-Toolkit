@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
@@ -39,10 +40,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
+	
+	/**
+	 * Constructor.
+	 */
+	public JacksonSomeValueSnak(PropertyIdValue property) {
+		super(property.getId(), property.getSiteIri());
+	}
 
 	/**
-	 * Constructor. Creates an object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
 	protected JacksonSomeValueSnak(
@@ -50,7 +57,12 @@ public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 			@JacksonInject("siteIri") String siteIri) {
 		super(property, siteIri);
 	}
-
+	@Override
+	@JsonProperty("snaktype")
+	public String getSnakType() {
+		return JacksonSnak.JSON_SNAK_TYPE_SOMEVALUE;
+	}
+  
 	@Override
 	public <T> T accept(SnakVisitor<T> snakVisitor) {
 		return snakVisitor.visit(this);
@@ -70,4 +82,5 @@ public class JacksonSomeValueSnak extends JacksonSnak implements SomeValueSnak {
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

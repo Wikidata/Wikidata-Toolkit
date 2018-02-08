@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.json.jackson;
 
+import java.util.HashMap;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -23,6 +25,7 @@ package org.wikidata.wdtk.datamodel.json.jackson;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -36,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Jackson implementation of {@link Reference}.
@@ -52,7 +56,7 @@ public class JacksonReference implements Reference {
 	/**
 	 * Map of property id strings to snaks, as used to encode snaks in JSON.
 	 */
-	private final Map<String, List<JacksonSnak>> snaks;
+	private final Map<String, List<Snak>> snaks;
 
 	/**
 	 * List of property string ids that encodes the desired order of snaks,
@@ -60,11 +64,32 @@ public class JacksonReference implements Reference {
 	 */
 	private final List<String> propertyOrder;
 	
+	/**
+	 * Constructor.
+	 * @param groups
+	 */
+	public JacksonReference(List<SnakGroup> groups) {
+		this.propertyOrder = groups.stream()
+				.map(g -> g.getProperty().getId())
+				.collect(Collectors.toList());
+		this.snaks = groups.stream()
+				.collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks));
+	}
+	
+	/**
+	 * Constructor for deserialization from JSON.
+	 * @param snaks
+	 * @param propertyOrder
+	 */
 	@JsonCreator
 	public JacksonReference(
 			@JsonProperty("snaks") Map<String, List<JacksonSnak>> snaks,
 			@JsonProperty("snaks-order") List<String> propertyOrder) {
-		this.snaks = snaks;
+		this.snaks = new HashMap<>(snaks.size());
+		for(Map.Entry<String, List<JacksonSnak>> entry : snaks.entrySet()) {
+			this.snaks.put(entry.getKey(),
+					entry.getValue().stream().collect(Collectors.toList()));
+		}
 		this.propertyOrder = propertyOrder;
 	}
 
@@ -84,7 +109,7 @@ public class JacksonReference implements Reference {
 	 *
 	 * @return the map of snaks
 	 */
-	public Map<String, List<JacksonSnak>> getSnaks() {
+	public Map<String, List<Snak>> getSnaks() {
 		return this.snaks;
 	}
 

@@ -49,11 +49,25 @@ public class JacksonValueGlobeCoordinates extends JacksonValue implements
 	 * structure that is required here.
 	 */
 	private final JacksonInnerGlobeCoordinates value;
-
+	
 	/**
-	 * Constructor. Creates an object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
-	 * @param innerCoordinates 
+	 * Constructor.
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param precision
+	 * @param globe
+	 */
+	public JacksonValueGlobeCoordinates(double latitude, double longitude,
+			double precision, String globe) {
+		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
+		this.value = new JacksonInnerGlobeCoordinates(latitude, longitude,
+				precision, globe);
+	}
+
+	
+	/**
+	 * Constructor for deserialization from JSON via Jackson.
 	 */
 	@JsonCreator
 	public JacksonValueGlobeCoordinates(
