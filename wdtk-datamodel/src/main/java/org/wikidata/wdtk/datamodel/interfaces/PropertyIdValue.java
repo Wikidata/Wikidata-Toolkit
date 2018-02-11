@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -61,5 +63,9 @@ public interface PropertyIdValue extends EntityIdValue {
 			return EntityIdValue.SITE_LOCAL;
 		}
 
+		@Override
+		public boolean equals(Object other) {
+			return Equality.equalsEntityIdValue(this, other);
+		}
 	};
 }
