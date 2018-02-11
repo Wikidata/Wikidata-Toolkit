@@ -56,6 +56,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonSiteLink;
 
 public class DataObjectFactoryImplTest {
 
@@ -442,10 +443,10 @@ public class DataObjectFactoryImplTest {
 		someBadges.add("badge2");
 		for (int i = 0; i < size; i++) {
 			if (i % 3 == 0) {
-				result.put("site" + i, new SiteLinkImpl("Badged article" + i,
+				result.put("site" + i, new JacksonSiteLink("Badged article" + i,
 						"site" + i, someBadges));
 			} else {
-				result.put("site" + i, new SiteLinkImpl("Article" + i, "site"
+				result.put("site" + i, new JacksonSiteLink("Article" + i, "site"
 						+ i, Collections.<String> emptyList()));
 			}
 		}

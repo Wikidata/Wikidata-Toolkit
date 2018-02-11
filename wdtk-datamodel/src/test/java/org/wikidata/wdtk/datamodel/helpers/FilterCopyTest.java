@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -44,6 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 public class FilterCopyTest {
 
@@ -65,7 +65,7 @@ public class FilterCopyTest {
 	@Test
 	public void testEmptyLanguageFilter() {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionLanguageFilter(Collections
 				.<String> emptySet());
 
@@ -103,7 +103,7 @@ public class FilterCopyTest {
 		languageFilter.add("he");
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionLanguageFilter(languageFilter);
 
 		List<MonolingualTextValue> labels = new ArrayList<>();
@@ -187,7 +187,7 @@ public class FilterCopyTest {
 		propertyFilter.add(p3);
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionPropertyFilter(propertyFilter);
 
 		List<StatementGroup> statementGroups = new ArrayList<>();
@@ -233,7 +233,7 @@ public class FilterCopyTest {
 		PropertyIdValue p4 = Datamodel.makeWikidataPropertyIdValue("P4");
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionPropertyFilter(Collections
 				.<PropertyIdValue> emptySet());
 
@@ -276,7 +276,7 @@ public class FilterCopyTest {
 		siteLinkFilter.add("site4");
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionSiteLinkFilter(siteLinkFilter);
 
 		Map<String, SiteLink> siteLinks = new HashMap<>();
@@ -325,7 +325,7 @@ public class FilterCopyTest {
 				Collections.<String> emptyList());
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionSiteLinkFilter(Collections
 				.<String> emptySet());
 
@@ -359,7 +359,7 @@ public class FilterCopyTest {
 	@Test
 	public void testDeepCopyReferencesFilter() {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
+				new JacksonObjectFactory());
 		datamodelConverter.setOptionDeepCopyReferences(false);
 
 		PropertyIdValue propertyIdValue = Datamodel

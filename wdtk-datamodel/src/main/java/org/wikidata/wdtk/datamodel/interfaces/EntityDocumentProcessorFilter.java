@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * Implementation of {@link EntityDocumentProcessor} that acts as a filter,
@@ -50,7 +50,7 @@ public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 	public EntityDocumentProcessorFilter(
 			EntityDocumentProcessor entityDocumentProcessor,
 			DocumentDataFilter filter) {
-		this.converter = new DatamodelConverter(new DataObjectFactoryImpl());
+		this.converter = new DatamodelConverter(new JacksonObjectFactory());
 		this.converter.setOptionFilter(filter);
 		this.entityDocumentProcessor = entityDocumentProcessor;
 	}

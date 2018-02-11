@@ -48,11 +48,10 @@ public class JacksonSiteLink implements SiteLink {
 	private final List<String> badges;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor.
 	 */
 	@JsonCreator
-	JacksonSiteLink(
+	public JacksonSiteLink(
 			@JsonProperty("title") String title,
 			@JsonProperty("site") String site,
 			@JsonProperty("badges") List<String> badges) {

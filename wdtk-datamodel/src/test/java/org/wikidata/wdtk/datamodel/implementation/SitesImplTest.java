@@ -27,6 +27,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.json.jackson.JacksonSiteLink;
 
 public class SitesImplTest {
 
@@ -47,13 +48,13 @@ public class SitesImplTest {
 
 	@Test
 	public void siteLinkIri() {
-		SiteLink sSpecialChar = new SiteLinkImpl("&", "dewiki",
+		SiteLink sSpecialChar = new JacksonSiteLink("&", "dewiki",
 				Collections.<String> emptyList());
 		assertEquals(SitesImpl.DEFAULT_PROTOCOL_PREFIX
 				+ "//de.wikipedia.org/wiki/%26",
 				this.sites.getSiteLinkUrl(sSpecialChar));
 
-		SiteLink sSpecialChar2 = new SiteLinkImpl("Björk", "enwiki",
+		SiteLink sSpecialChar2 = new JacksonSiteLink("Björk", "enwiki",
 				Collections.<String> emptyList());
 		assertEquals("http://en.wikipedia.org/wiki/Bj%C3%B6rk",
 				this.sites.getSiteLinkUrl(sSpecialChar2));
