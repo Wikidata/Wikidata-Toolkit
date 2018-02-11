@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class ItemDocumentImplTest {
 
 	ItemIdValue iid;
 	List<StatementGroup> statementGroups;
-	Map<String, SiteLink> sitelinks;
+	List<SiteLink> sitelinks;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,7 +73,7 @@ public class ItemDocumentImplTest {
 
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
 				Collections.<String> emptyList());
-		sitelinks = Collections.singletonMap("enwiki", sl);
+		sitelinks = Collections.singletonList(sl);
 
 		ir1 = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
@@ -92,7 +92,8 @@ public class ItemDocumentImplTest {
 		assertEquals(ir1.getItemId(), iid);
 		assertEquals(ir1.getEntityId(), iid);
 		assertEquals(ir1.getStatementGroups(), statementGroups);
-		assertEquals(ir1.getSiteLinks(), sitelinks);
+		assertEquals(ir1.getSiteLinks().values().stream().collect(Collectors.toList()),
+				sitelinks);
 	}
 
 	@Test
@@ -106,7 +107,7 @@ public class ItemDocumentImplTest {
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap(),
+				statementGroups, Collections.<SiteLink> emptyList(),
 				1234);
 		ItemDocument irDiffRevisions = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
@@ -156,37 +157,37 @@ public class ItemDocumentImplTest {
 				statementGroups, sitelinks, 1234);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void labelsNotNull() {
-		new ItemDocumentImpl(iid, null,
+	public void labelsCanBeNull() {
+		ItemDocument doc = new ItemDocumentImpl(iid, null,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, sitelinks, 1234);
+		assertTrue(doc.getLabels().isEmpty());
 	}
 
-	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
-		new ItemDocumentImpl(iid,
+		ItemDocument doc = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(), null,
 				Collections.<MonolingualTextValue> emptyList(),
 				statementGroups, sitelinks, 1234);
+		assertTrue(doc.getDescriptions().isEmpty());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void aliasesNotNull() {
-		new ItemDocumentImpl(iid,
+	public void aliasesCanBeNull() {
+		ItemDocument doc =new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(), null,
 				statementGroups, sitelinks, 1234);
+		assertTrue(doc.getAliases().isEmpty());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void statementGroupsNotNull() {
-		new ItemDocumentImpl(iid,
+	public void statementGroupsCanBeNull() {
+		ItemDocument doc = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(),
 				Collections.<MonolingualTextValue> emptyList(), null,
 				sitelinks, 1234);
+		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

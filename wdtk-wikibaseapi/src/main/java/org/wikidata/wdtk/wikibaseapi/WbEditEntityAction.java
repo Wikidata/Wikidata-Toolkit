@@ -29,8 +29,8 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
@@ -460,8 +460,8 @@ public class WbEditEntityAction {
 	 */
 	private EntityDocument parseJsonResponse(JsonNode entityNode) throws IOException {
 		try {
-			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
-					JacksonTermedStatementDocument.class);
+			TermedStatementDocumentImpl ed = mapper.treeToValue(entityNode,
+					TermedStatementDocumentImpl.class);
 
 			return ed;
 		} catch (JsonProcessingException e) {
@@ -479,9 +479,9 @@ public class WbEditEntityAction {
 					.replace("\"descriptions\":[]", "\"descriptions\":{}");
 
 			ObjectReader documentReader = this.mapper
-					.reader(JacksonTermedStatementDocument.class);
+					.reader(TermedStatementDocumentImpl.class);
 
-			JacksonTermedStatementDocument ed;
+			TermedStatementDocumentImpl ed;
 			ed = documentReader.readValue(jsonString);
 			return ed;
 		}

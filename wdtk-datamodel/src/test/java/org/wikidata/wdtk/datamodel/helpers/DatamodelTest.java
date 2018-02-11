@@ -27,6 +27,9 @@ import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -49,16 +52,13 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonStatement;
-import org.wikidata.wdtk.datamodel.json.jackson.StatementGroupFromJson;
 
 public class DatamodelTest {
 	DataObjectFactory factory;
 
 	@Before
 	public void setUp() throws Exception {
-		factory = new JacksonObjectFactory();
+		factory = new DataObjectFactoryImpl();
 	}
 
 	@Test
@@ -303,8 +303,8 @@ public class DatamodelTest {
 		Statement s = Datamodel.makeStatement(c,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");
-		StatementGroup o1 = new StatementGroupFromJson(
-				Collections.singletonList((JacksonStatement)s));
+		StatementGroup o1 = new StatementGroupImpl(
+				Collections.singletonList((StatementImpl)s));
 		StatementGroup o2 = factory.getStatementGroup(Collections
 				.singletonList(s));
 		assertEquals(o1, o2);

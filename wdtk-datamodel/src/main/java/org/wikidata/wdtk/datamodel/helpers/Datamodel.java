@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -49,7 +50,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * This class contains static methods to create WDTK data objects. This is the
@@ -64,7 +64,7 @@ public class Datamodel {
 	 */
 	static public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
 
-	private final static DataObjectFactory factory = new JacksonObjectFactory();
+	private final static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	/**
 	 * Creates an {@link ItemIdValue}.

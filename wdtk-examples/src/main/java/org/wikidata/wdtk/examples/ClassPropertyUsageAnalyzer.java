@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
@@ -50,7 +51,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * This advanced example analyses the use of properties and classes in a dump
@@ -74,7 +74,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
  */
 public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
-	DataObjectFactory factory = new JacksonObjectFactory();
+	DataObjectFactory factory = new DataObjectFactoryImpl();
 	DatamodelConverter converter = new DatamodelConverter(factory);
 
 	/**

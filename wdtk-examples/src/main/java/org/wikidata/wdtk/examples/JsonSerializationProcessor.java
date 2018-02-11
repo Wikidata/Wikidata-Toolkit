@@ -30,6 +30,8 @@ import java.util.Set;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -39,8 +41,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 
 /**
  * This example illustrates how to create a JSON serialization of some of the
@@ -99,7 +99,7 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 		// objects from any other implementation of the Wikidata Toolkit
 		// datamodel.
 		this.datamodelConverter = new DatamodelConverter(
-				new JacksonObjectFactory());
+				new DataObjectFactoryImpl());
 		// Do not copy references at all:
 		this.datamodelConverter.setOptionDeepCopyReferences(false);
 		// Only copy English labels, descriptions, and aliases:

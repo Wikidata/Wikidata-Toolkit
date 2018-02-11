@@ -159,7 +159,7 @@ public class PropertyDocumentImplTest {
 		ItemDocument id = new ItemDocumentImpl(new ItemIdValueImpl("Q42",
 				"foo"), labels, descriptions, aliases,
 				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap(), 1234);
+				Collections.<SiteLink> emptyList(), 1234);
 
 		assertEquals(pd1, pd1);
 		assertEquals(pd1, pd2);
@@ -185,28 +185,28 @@ public class PropertyDocumentImplTest {
 				statementGroups, datatypeId, 1234);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void labelsNotNull() {
-		new PropertyDocumentImpl(pid, null, descriptions, aliases,
+	public void labelsCanBeNull() {
+		PropertyDocument doc = new PropertyDocumentImpl(pid, null, descriptions, aliases,
 				statementGroups, datatypeId, 1234);
+		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getLabels());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void descriptionsNotNull() {
-		new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
+	public void descriptionsCanBeNull() {
+		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
 				datatypeId, 1234);
+		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getDescriptions());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void aliasesNotNull() {
-		new PropertyDocumentImpl(pid, labels, descriptions, null,
+	public void aliasesCanBeNull() {
+		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, null,
 				statementGroups, datatypeId, 1234);
+		assertEquals(Collections.<String, List<MonolingualTextValue>>emptyMap(), doc.getAliases());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void statementGroupsNotNull() {
-		new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
+	public void statementGroupsCanBeNull() {
+		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
 				datatypeId, 1234);
+		assertEquals(Collections.<StatementGroup>emptyList(), doc.getStatementGroups());
 	}
 
 	@Test(expected = NullPointerException.class)

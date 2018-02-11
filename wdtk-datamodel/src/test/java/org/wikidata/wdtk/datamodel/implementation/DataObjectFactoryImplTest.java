@@ -57,28 +57,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.ClaimFromJson;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonDatatypeId;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonNoValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonReference;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonSiteLink;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonSomeValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonStatement;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.SnakGroupFromJson;
-import org.wikidata.wdtk.datamodel.json.jackson.StatementGroupFromJson;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueEntityId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueGlobeCoordinates;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueItemId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueMonolingualText;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValuePropertyId;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueQuantity;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueString;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.JacksonValueTime;
 
 public class DataObjectFactoryImplTest {
 
@@ -108,7 +86,7 @@ public class DataObjectFactoryImplTest {
 	protected DatamodelConverter converter;
 
 	public DataObjectFactoryImplTest() {
-		factory = new JacksonObjectFactory();
+		factory = new DataObjectFactoryImpl();
 		converter = new DatamodelConverter(factory);
 	}
 
@@ -127,7 +105,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static ItemIdValue getTestItemIdValue(int seed) {
-		return new JacksonValueItemId("Q4" + seed, "foo:");
+		return new ItemIdValueImpl("Q4" + seed, "foo:");
 	}
 
 	@Test
@@ -140,7 +118,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static PropertyIdValue getTestPropertyIdValue(int seed) {
-		return new JacksonValuePropertyId("P4" + seed, "foo:");
+		return new PropertyIdValueImpl("P4" + seed, "foo:");
 	}
 
 	public static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
@@ -157,7 +135,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetDatatypeId() {
-		DatatypeIdValue o1 = new JacksonDatatypeId(JacksonDatatypeId.JSON_DT_TIME);
+		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 		DatatypeIdValue o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -174,7 +152,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static TimeValue getTestTimeValue(int seed) {
-		return new JacksonValueTime(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
+		return new TimeValueImpl(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
 				(byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
 	}
@@ -189,7 +167,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
-		return new JacksonValueGlobeCoordinates((10 + seed)
+		return new GlobeCoordinatesValueImpl((10 + seed)
 				* GlobeCoordinatesValue.PREC_DEGREE, (1905 + seed)
 				* GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				GlobeCoordinatesValue.PREC_DECI_DEGREE,
@@ -206,7 +184,7 @@ public class DataObjectFactoryImplTest {
 	}
 
 	public static StringValue getTestStringValue(int seed) {
-		return new JacksonValueString("foo" + seed);
+		return new StringValueImpl("foo" + seed);
 	}
 
 	@Test
@@ -220,7 +198,7 @@ public class DataObjectFactoryImplTest {
 
 	public static MonolingualTextValue getTestMonolingualTextValue(int seed,
 			String language) {
-		return new JacksonValueMonolingualText("foo" + seed, language);
+		return new MonolingualTextValueImpl("foo" + seed, language);
 	}
 
 	@Test
@@ -239,7 +217,7 @@ public class DataObjectFactoryImplTest {
 				+ ".123456789012345678901234567890123456788");
 		BigDecimal ub = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456790");
-		return new JacksonValueQuantity(nv, lb, ub,
+		return new QuantityValueImpl(nv, lb, ub,
 				"http://wikidata.org/entity/Q11573");
 	}
 
@@ -274,17 +252,17 @@ public class DataObjectFactoryImplTest {
 	private static String getJsonValueType(ValueType valueType) {
 		switch(valueType) {
 		case GLOBE_COORDINATES:
-			return JacksonDatatypeId.JSON_DT_GLOBE_COORDINATES;
+			return DatatypeIdImpl.JSON_DT_GLOBE_COORDINATES;
 		case ITEM:
-			return JacksonDatatypeId.JSON_DT_ITEM;
+			return DatatypeIdImpl.JSON_DT_ITEM;
 		case MONOLINGUAL_TEXT:
-			return JacksonDatatypeId.JSON_DT_MONOLINGUAL_TEXT;
+			return DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT;
 		case QUANTITY:
-			return JacksonDatatypeId.JSON_DT_QUANTITY;
+			return DatatypeIdImpl.JSON_DT_QUANTITY;
 		case STRING:
 			return null;
 		case TIME:
-			return JacksonDatatypeId.JSON_DT_TIME;
+			return DatatypeIdImpl.JSON_DT_TIME;
 		default:
 			throw new RuntimeException("Unsupported value type.");
 		}
@@ -294,12 +272,12 @@ public class DataObjectFactoryImplTest {
 			int vseed) {
 		PropertyIdValue property = getTestPropertyIdValue(pseed);
 		Value value =  getTestValue(valueType, vseed);
-		return new JacksonValueSnak(property, getJsonValueType(valueType), value);
+		return new ValueSnakImpl(property, value);
 	}
 
 	@Test
 	public final void testGetSomeValueSnak() {
-		SomeValueSnak o1 = new JacksonSomeValueSnak(getTestPropertyIdValue(0));
+		SomeValueSnak o1 = new SomeValueSnakImpl(getTestPropertyIdValue(0));
 		SomeValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -308,7 +286,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetNoValueSnak() {
-		NoValueSnak o1 = new JacksonNoValueSnak(getTestPropertyIdValue(0));
+		NoValueSnak o1 = new NoValueSnakImpl(getTestPropertyIdValue(0));
 		NoValueSnak o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -330,7 +308,7 @@ public class DataObjectFactoryImplTest {
 		for (int i = 0; i < size; i++) {
 			snaks.add(getTestValueSnak(valueType, pseed, i));
 		}
-		return new SnakGroupFromJson(snaks);
+		return new SnakGroupImpl(snaks);
 	}
 
 	public static List<SnakGroup> getTestValueSnakGroups(int seed, int size) {
@@ -361,7 +339,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetReference() {
 		List<SnakGroup> referenceSnaks = getTestValueSnakGroups(10, 3);
-		Reference o1 = new JacksonReference(referenceSnaks);
+		Reference o1 = new ReferenceImpl(referenceSnaks);
 		Reference o2 = converter.copy(o1);
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
@@ -373,7 +351,7 @@ public class DataObjectFactoryImplTest {
 		for (int i = 0; i < size; i++) {
 			List<SnakGroup> referenceSnaks = getTestValueSnakGroups(seed,
 					(seed + i) % 4 + 1);
-			references.add(new JacksonReference(referenceSnaks));
+			references.add(new ReferenceImpl(referenceSnaks));
 		}
 		return references;
 	}
@@ -390,7 +368,7 @@ public class DataObjectFactoryImplTest {
 	public static Statement getTestStatement(int subjectSeed, int seed,
 			int size, String entityType) {
 		List<SnakGroup> qualifiers = getTestValueSnakGroups(seed * 100, size);
-		Statement statement = new JacksonStatement("",
+		Statement statement = new StatementImpl("",
 				StatementRank.NORMAL,
 				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
 				qualifiers, null,
@@ -415,7 +393,7 @@ public class DataObjectFactoryImplTest {
 		for (int i = 0; i < size; i++) {
 			statements.add(getTestStatement(subjectSeed, seed, i, entityType));
 		}
-		return new StatementGroupFromJson(statements);
+		return new StatementGroupImpl(statements);
 	}
 
 	public static List<StatementGroup> getTestStatementGroups(int subjectSeed,
@@ -431,7 +409,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetSiteLink() {
-		SiteLink o1 = new JacksonSiteLink("SOLID", "enwiki",
+		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
 				Collections.<String> emptyList());
 		SiteLink o2 = converter.copy(o1);
 		assertEquals(o2, o1);
@@ -440,13 +418,13 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetPropertyDocument() {
 		PropertyIdValue subject = getTestPropertyIdValue(2);
-		PropertyDocument o1 = new JacksonPropertyDocument(
+		PropertyDocument o1 = new PropertyDocumentImpl(
 				subject,
 				getTestMtvList(1, 0), // labels
 				getTestMtvList(4, 13), // descriptions
 				getTestMtvList(0, 0), // aliases
 				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
-				new JacksonDatatypeId(JacksonDatatypeId.JSON_DT_TIME), 1234);
+				new DatatypeIdImpl(DatatypeIdValue.DT_TIME), 1234);
 		PropertyDocument o2 = converter.copy(o1);
 
 		assertEquals(o1.toString(), o2.toString());
@@ -456,7 +434,7 @@ public class DataObjectFactoryImplTest {
 
 	@Test
 	public final void testGetItemDocument() {
-		ItemDocument o1 = new JacksonItemDocument(
+		ItemDocument o1 = new ItemDocumentImpl(
 				getTestItemIdValue(2),
 				getTestMtvList(5, 0), // labels
 				getTestMtvList(0, 0), // descriptions
@@ -494,10 +472,10 @@ public class DataObjectFactoryImplTest {
 		someBadges.add("badge2");
 		for (int i = 0; i < size; i++) {
 			if (i % 3 == 0) {
-				result.add(new JacksonSiteLink("Badged article" + i,
+				result.add(new SiteLinkImpl("Badged article" + i,
 						"site" + i, someBadges));
 			} else {
-				result.add(new JacksonSiteLink("Article" + i, "site"
+				result.add(new SiteLinkImpl("Article" + i, "site"
 						+ i, Collections.<String> emptyList()));
 			}
 		}

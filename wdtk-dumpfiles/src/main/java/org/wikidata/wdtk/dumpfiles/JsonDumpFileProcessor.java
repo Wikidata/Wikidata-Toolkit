@@ -29,10 +29,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,7 +63,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		this.siteIri = siteIri;
 		this.mapper = new DatamodelMapper(siteIri);
 		this.documentReader = this.mapper
-				.reader(JacksonTermedStatementDocument.class)
+				.reader(TermedStatementDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 
@@ -84,12 +84,12 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 		try {
 			try {
-				MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 						.readValues(inputStream);
 				documentIterator.getParser().disable(Feature.AUTO_CLOSE_SOURCE);
 
 				while (documentIterator.hasNextValue()) {
-					JacksonTermedStatementDocument document = documentIterator
+					TermedStatementDocumentImpl document = documentIterator
 							.nextValue();
 					handleDocument(document);
 				}
@@ -119,20 +119,20 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	}
 
 	/**
-	 * Handles a {@link JacksonTermedStatementDocument} that was retrieved by
+	 * Handles a {@link TermedStatementDocumentImpl} that was retrieved by
 	 * parsing the JSON input. It will call appropriate processing methods
 	 * depending on the type of document.
 	 *
 	 * @param document
 	 *            the document to process
 	 */
-	private void handleDocument(JacksonTermedStatementDocument document) {
-		if (document instanceof JacksonItemDocument) {
+	private void handleDocument(TermedStatementDocumentImpl document) {
+		if (document instanceof ItemDocumentImpl) {
 			this.entityDocumentProcessor
-					.processItemDocument((JacksonItemDocument) document);
-		} else if (document instanceof JacksonPropertyDocument) {
+					.processItemDocument((ItemDocumentImpl) document);
+		} else if (document instanceof PropertyDocumentImpl) {
 			this.entityDocumentProcessor
-					.processPropertyDocument((JacksonPropertyDocument) document);
+					.processPropertyDocument((PropertyDocumentImpl) document);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		line = br.readLine();
 		while (line != null && line.length() > 1) {
 			try {
-				JacksonTermedStatementDocument document;
+				TermedStatementDocumentImpl document;
 				if (line.charAt(line.length() - 1) == ',') {
 					document = documentReader.readValue(line.substring(0,
 							line.length() - 1));

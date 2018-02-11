@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -21,7 +23,6 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * Abstract base class for all builder objects that create data model objects.
@@ -35,7 +36,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
  */
 public abstract class AbstractDataObjectBuilder<T extends AbstractDataObjectBuilder<T, O>, O> {
 
-	static DataObjectFactory factory = new JacksonObjectFactory();
+	static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	boolean isBuilt = false;
 

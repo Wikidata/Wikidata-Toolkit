@@ -30,9 +30,9 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -196,19 +196,19 @@ public class WbGetEntitiesAction {
 				JsonNode entityNode = entry.getValue();
 				if (!entityNode.has("missing")) {
 					try {
-						JacksonTermedStatementDocument ed = mapper.treeToValue(
+						TermedStatementDocumentImpl ed = mapper.treeToValue(
 								entityNode,
-								JacksonTermedStatementDocument.class);
+								TermedStatementDocumentImpl.class);
 
 						if (titles == null) {
 							// We use the JSON key rather than the id of the value
 							// so that retrieving redirected entities works.
 							result.put(entry.getKey(), ed);
 						} else {
-							if (ed instanceof JacksonItemDocument
-									&& ((JacksonItemDocument) ed)
+							if (ed instanceof ItemDocumentImpl
+									&& ((ItemDocumentImpl) ed)
 											.getSiteLinks().containsKey(sites)) {
-								result.put(((JacksonItemDocument) ed)
+								result.put(((ItemDocumentImpl) ed)
 										.getSiteLinks().get(sites)
 										.getPageTitle(), ed);
 							}

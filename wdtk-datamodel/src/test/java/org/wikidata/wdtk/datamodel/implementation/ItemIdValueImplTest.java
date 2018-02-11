@@ -80,7 +80,7 @@ public class ItemIdValueImplTest {
 		assertEquals(item1.hashCode(), item2.hashCode());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
 		new ItemIdValueImpl("P12345", "http://www.wikidata.org/entity/");
 	}
@@ -95,9 +95,9 @@ public class ItemIdValueImplTest {
 		new ItemIdValueImpl("Q", "http://www.wikidata.org/entity/");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = RuntimeException.class)
 	public void idNotNull() {
-		new ItemIdValueImpl(null, "http://www.wikidata.org/entity/");
+		new ItemIdValueImpl((String)null, "http://www.wikidata.org/entity/");
 	}
 
 	@Test(expected = NullPointerException.class)

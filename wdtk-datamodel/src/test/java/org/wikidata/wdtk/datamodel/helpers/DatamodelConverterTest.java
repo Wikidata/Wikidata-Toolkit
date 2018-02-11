@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -41,7 +42,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * Test for special aspectes of {@link DatamodelConverter}. Regular operation is
@@ -127,7 +127,7 @@ public class DatamodelConverterTest {
 				Collections.<String, SiteLink> emptyMap());
 
 		DatamodelConverter dmc = new DatamodelConverter(
-				new JacksonObjectFactory());
+				new DataObjectFactoryImpl());
 
 		assertEquals(fixedId, dmc.copy(brokenId));
 	}
@@ -181,7 +181,7 @@ public class DatamodelConverterTest {
 				Collections.<String, SiteLink> emptyMap());
 
 		DatamodelConverter dmc = new DatamodelConverter(
-				new JacksonObjectFactory());
+				new DataObjectFactoryImpl());
 
 		assertEquals(fixedId, dmc.copy(brokenId));
 	}

@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,9 +82,9 @@ public class StatementImplTest {
 				StatementRank.NORMAL, "MyId");
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void referencesNotNull() {
-		new StatementImpl(claim, null, StatementRank.NORMAL, "MyId");
+	public void referencesCanBeNull() {
+		Statement statement = new StatementImpl(claim, null, StatementRank.NORMAL, "MyId");
+		assertTrue(statement.getReferences().isEmpty());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -92,10 +93,10 @@ public class StatementImplTest {
 				"MyId");
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void idNotNull() {
-		new StatementImpl(claim, Collections.<Reference> emptyList(),
+	public void idCanBeNull() {
+		Statement statement = new StatementImpl(claim, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, null);
+		assertEquals(statement.getStatementId(), "");
 	}
 
 	@Test

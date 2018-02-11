@@ -89,7 +89,7 @@ public class SnakGroupTest {
 		assertEquals(sg1.hashCode(), sg2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void snakListNotNull() {
 		new SnakGroupImpl(null);
 	}

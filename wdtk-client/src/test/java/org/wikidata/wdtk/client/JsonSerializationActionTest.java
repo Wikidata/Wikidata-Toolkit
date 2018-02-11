@@ -34,6 +34,7 @@ import java.util.List;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -42,7 +43,6 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
@@ -117,14 +117,14 @@ public class JsonSerializationActionTest {
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
-				.reader(JacksonTermedStatementDocument.class);
-		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				.reader(TermedStatementDocumentImpl.class);
+		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json",
 						CompressionType.NONE));
 
 		List<EntityDocument> results = new ArrayList<>();
 		while (documentIterator.hasNextValue()) {
-			JacksonTermedStatementDocument document = documentIterator
+			TermedStatementDocumentImpl document = documentIterator
 					.nextValue();
 			results.add(document);
 		}
@@ -170,14 +170,14 @@ public class JsonSerializationActionTest {
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
-				.reader(JacksonTermedStatementDocument.class);
-		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				.reader(TermedStatementDocumentImpl.class);
+		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json.gz",
 						CompressionType.GZIP));
 
 		List<EntityDocument> results = new ArrayList<>();
 		while (documentIterator.hasNextValue()) {
-			JacksonTermedStatementDocument document = documentIterator
+			TermedStatementDocumentImpl document = documentIterator
 					.nextValue();
 			results.add(document);
 		}
@@ -220,14 +220,14 @@ public class JsonSerializationActionTest {
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 		ObjectReader documentReader = mapper
-				.reader(JacksonTermedStatementDocument.class);
-		MappingIterator<JacksonTermedStatementDocument> documentIterator = documentReader
+				.reader(TermedStatementDocumentImpl.class);
+		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json.bz2",
 						CompressionType.BZ2));
 
 		List<EntityDocument> results = new ArrayList<>();
 		while (documentIterator.hasNextValue()) {
-			JacksonTermedStatementDocument document = documentIterator
+			TermedStatementDocumentImpl document = documentIterator
 					.nextValue();
 			results.add(document);
 		}

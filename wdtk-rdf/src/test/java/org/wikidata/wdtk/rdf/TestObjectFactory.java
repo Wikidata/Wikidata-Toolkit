@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -46,7 +47,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 /**
  * This class provides functions to create objects from
@@ -58,7 +58,7 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
  */
 public class TestObjectFactory {
 
-	private final DataObjectFactory factory = new JacksonObjectFactory();
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 	private static String baseIri = "http://www.wikidata.org/";
 
 	/**

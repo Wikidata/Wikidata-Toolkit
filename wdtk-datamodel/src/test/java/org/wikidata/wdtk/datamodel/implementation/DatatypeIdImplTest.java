@@ -45,7 +45,7 @@ public class DatatypeIdImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void datatypeIdNotNull() {
-		new DatatypeIdImpl(null);
+		new DatatypeIdImpl((String) null);
 	}
 
 	@Test
