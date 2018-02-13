@@ -136,7 +136,7 @@ public abstract class DumpProcessingOutputAction implements
 			this.outputDestination = value;
 			return true;
 		case OPTION_COMPRESSION:
-			this.compressionType = value.toLowerCase();
+			this.compressionType = (value == null) ? COMPRESS_NONE : value.toLowerCase();
 			return true;
 		case OPTION_USE_STDOUT:
 			this.useStdOut = (value == null) || "true".equals(value);
