@@ -180,41 +180,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 0);
-	}
-
-	@Override
-	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
-		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				statementGroups, datatypeId, 0);
-	}
-
-	@Override
-	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId) {
 		return new PropertyDocumentImpl(propertyId, labels, descriptions,
 				aliases, statementGroups, datatypeId, revisionId);
-	}
-
-	@Override
-	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups,
-			Map<String, SiteLink> siteLinks) {
-		return getItemDocument(itemIdValue, labels, descriptions, aliases,
-				statementGroups, siteLinks, 0);
 	}
 
 	@Override

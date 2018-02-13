@@ -39,7 +39,7 @@ public class DatatypeIdImpl implements DatatypeIdValue, Serializable {
 
 	private static final long serialVersionUID = 8021986102992714526L;
 	
-	final String iri;
+	private final String iri;
 
 	/**
 	 * Constructor. The datatype IRI is usually one of the constants defined in

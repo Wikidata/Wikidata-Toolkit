@@ -37,7 +37,7 @@ public class ReferenceBuilderTest {
 	@Test
 	public void testEmptyReference() {
 		Reference r1 = Datamodel.makeReference(Collections
-				.<SnakGroup> emptyList());
+				.emptyList());
 		Reference r2 = ReferenceBuilder.newInstance().build();
 
 		assertEquals(r1, r2);

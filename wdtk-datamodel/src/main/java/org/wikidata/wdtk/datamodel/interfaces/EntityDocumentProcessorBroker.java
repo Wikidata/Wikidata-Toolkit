@@ -33,8 +33,8 @@ import java.util.List;
  */
 public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 
-	final List<EntityDocumentProcessor> entityDocumentProcessors = new ArrayList<EntityDocumentProcessor>();
-	final HashSet<EntityDocumentProcessor> entityDocumentProcessorRegistry = new HashSet<>();
+	private final List<EntityDocumentProcessor> entityDocumentProcessors = new ArrayList<EntityDocumentProcessor>();
+	private final HashSet<EntityDocumentProcessor> entityDocumentProcessorRegistry = new HashSet<>();
 
 	/**
 	 * Registers a listener which will be called for all entity documents that

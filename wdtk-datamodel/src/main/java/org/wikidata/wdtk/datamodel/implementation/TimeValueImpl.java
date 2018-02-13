@@ -40,17 +40,17 @@ public class TimeValueImpl implements TimeValue, Serializable {
 
 	private static final long serialVersionUID = 3969248626709737997L;
 
-	final long year;
-	final byte month;
-	final byte day;
-	final byte hour;
-	final byte minute;
-	final byte second;
-	final byte precision;
-	final int timezoneOffset;
-	final int beforeTolerance;
-	final int afterTolerance;
-	final String calendarModel;
+	private final long year;
+	private final byte month;
+	private final byte day;
+	private final byte hour;
+	private final byte minute;
+	private final byte second;
+	private final byte precision;
+	private final int timezoneOffset;
+	private final int beforeTolerance;
+	private final int afterTolerance;
+	private final String calendarModel;
 
 	/**
 	 * Constructor.

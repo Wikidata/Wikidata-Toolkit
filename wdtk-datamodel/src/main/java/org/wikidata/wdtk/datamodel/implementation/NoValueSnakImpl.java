@@ -41,8 +41,6 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak, Serializab
 
 	/**
 	 * Constructor.
-	 *
-	 * @param propertyId
 	 */
 	NoValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);

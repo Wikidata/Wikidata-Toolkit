@@ -58,10 +58,10 @@ public class StatementImplTest {
 		mainSnak = new ValueSnakImpl(property, subject);
 
 		claim = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
-		s1 = new StatementImpl(claim, Collections.<Reference> emptyList(),
+				Collections.emptyList());
+		s1 = new StatementImpl(claim, Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
-		s2 = new StatementImpl(claim, Collections.<Reference> emptyList(),
+		s2 = new StatementImpl(claim, Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
 	}
 
@@ -77,7 +77,7 @@ public class StatementImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void claimNotNull() {
-		new StatementImpl(null, Collections.<Reference> emptyList(),
+		new StatementImpl(null, Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
 	}
 
@@ -88,13 +88,13 @@ public class StatementImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
-		new StatementImpl(claim, Collections.<Reference> emptyList(), null,
+		new StatementImpl(claim, Collections.emptyList(), null,
 				"MyId");
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new StatementImpl(claim, Collections.<Reference> emptyList(),
+		new StatementImpl(claim, Collections.emptyList(),
 				StatementRank.NORMAL, null);
 	}
 
@@ -109,21 +109,21 @@ public class StatementImplTest {
 
 		Claim claim2 = new ClaimImpl(new ItemIdValueImpl("Q43",
 				"http://wikidata.org/entity/"), mainSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 
 		sDiffClaim = new StatementImpl(claim2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		sDiffReferences = new StatementImpl(
 				claim,
 				Collections.<Reference> singletonList(new ReferenceImpl(
-						Collections.<SnakGroup> singletonList(new SnakGroupImpl(
+						Collections.singletonList(new SnakGroupImpl(
 								Collections.<Snak> singletonList(mainSnak))))),
 				StatementRank.NORMAL, "MyId");
 		sDiffRank = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.PREFERRED,
+				Collections.emptyList(), StatementRank.PREFERRED,
 				"MyId");
-		sDiffId = new StatementImpl(claim, Collections.<Reference> emptyList(),
+		sDiffId = new StatementImpl(claim, Collections.emptyList(),
 				StatementRank.NORMAL, "MyOtherId");
 
 		assertEquals(s1, s1);

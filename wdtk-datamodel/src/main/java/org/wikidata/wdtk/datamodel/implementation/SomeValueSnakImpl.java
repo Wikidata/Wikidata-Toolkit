@@ -33,11 +33,6 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak, Serial
 
 	private static final long serialVersionUID = -3117177303461177521L;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param propertyId
-	 */
 	SomeValueSnakImpl(PropertyIdValue propertyId) {
 		super(propertyId);
 	}

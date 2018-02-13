@@ -40,10 +40,10 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue,
 
 	private static final long serialVersionUID = 5232034046447738117L;
 
-	final double latitude;
-	final double longitude;
-	final double precision;
-	final String globeIri;
+	private final double latitude;
+	private final double longitude;
+	private final double precision;
+	private final String globeIri;
 
 	/**
 	 * Constructor.

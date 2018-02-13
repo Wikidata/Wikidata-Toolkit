@@ -65,22 +65,6 @@ public class JacksonInnerEntityId {
 	}
 
 	/**
-	 * Constructor. Supported entity types so far are "item" and "property".
-	 *
-	 * @param entityType
-	 *            (case-sensitive)
-	 * @param numericId
-	 *
-	 * @deprecated You should input the entity Id
-	 */
-	@Deprecated
-	public JacksonInnerEntityId(String entityType, int numericId) {
-		this.entityType = entityType;
-		this.numericId = numericId;
-		checkAndFillFields();
-	}
-
-	/**
 	 * Constructor.
 	 */
 	public JacksonInnerEntityId(String id) {
@@ -169,13 +153,9 @@ public class JacksonInnerEntityId {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof JacksonInnerEntityId)) {
-			return false;
-		}
-
-		return (this.numericId == ((JacksonInnerEntityId) o).numericId)
-				&& (this.entityType
-						.equals(((JacksonInnerEntityId) o).entityType));
+		return o instanceof JacksonInnerEntityId
+			&& (this.numericId == ((JacksonInnerEntityId) o).numericId)
+			&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
 	private void checkAndFillFields() {

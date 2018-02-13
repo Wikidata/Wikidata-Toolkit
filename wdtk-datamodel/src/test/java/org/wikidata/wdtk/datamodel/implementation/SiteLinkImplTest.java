@@ -40,9 +40,9 @@ public class SiteLinkImplTest {
 	@Before
 	public void setUp() throws Exception {
 		s1 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		s2 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 	}
 
 	@Test
@@ -55,9 +55,9 @@ public class SiteLinkImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		SiteLink sDiffTitle = new SiteLinkImpl("Berlin", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink sDiffBadges = new SiteLinkImpl("Dresden", "enwiki",
 				Collections.singletonList("some badge?"));
 
@@ -77,12 +77,12 @@ public class SiteLinkImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void titleNotNull() {
-		new SiteLinkImpl(null, "enwiki", Collections.<String> emptyList());
+		new SiteLinkImpl(null, "enwiki", Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void siteKeyNotNull() {
-		new SiteLinkImpl("Dresden", null, Collections.<String> emptyList());
+		new SiteLinkImpl("Dresden", null, Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)

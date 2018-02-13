@@ -38,15 +38,15 @@ import org.wikidata.wdtk.datamodel.interfaces.Value;
 public class StatementBuilder extends
 		AbstractDataObjectBuilder<StatementBuilder, Statement> {
 
-	final EntityIdValue subject;
-	final PropertyIdValue mainProperty;
-	Value mainValue = null;
-	boolean noMainValue = false;
+	private final EntityIdValue subject;
+	private final PropertyIdValue mainProperty;
+	private Value mainValue = null;
+	private boolean noMainValue = false;
 
-	final HashMap<PropertyIdValue, ArrayList<Snak>> qualifiers = new HashMap<>();
-	String statementId = "";
-	StatementRank rank = StatementRank.NORMAL;
-	final ArrayList<Reference> references = new ArrayList<>();
+	private final HashMap<PropertyIdValue, ArrayList<Snak>> qualifiers = new HashMap<>();
+	private String statementId = "";
+	private StatementRank rank = StatementRank.NORMAL;
+	private final ArrayList<Reference> references = new ArrayList<>();
 
 	/**
 	 * Constructor.

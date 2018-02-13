@@ -39,13 +39,8 @@ public class StringValueImpl implements StringValue, Serializable {
 
 	private static final long serialVersionUID = -3372698418036275469L;
 	
-	final String string;
+	private final String string;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param string
-	 */
 	StringValueImpl(String string) {
 		Validate.notNull(string, "URL cannot be null");
 		this.string = string;

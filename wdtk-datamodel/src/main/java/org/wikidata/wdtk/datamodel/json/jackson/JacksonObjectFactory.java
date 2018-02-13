@@ -190,7 +190,7 @@ public class JacksonObjectFactory implements DataObjectFactory {
 		// Jackson claims cannot exist without a statement.
 		Statement statement = getStatement(
 				Datamodel.makeClaim(subject, mainSnak, qualifiers),
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"empty id 12345");
 		return statement.getClaim();
 	}
@@ -281,25 +281,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 0);
-	}
-
-	@Override
-	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId) {
-		return getPropertyDocument(propertyId, labels, descriptions, aliases,
-				statementGroups, datatypeId, 0);
-	}
-
-	@Override
-	public PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId) {
@@ -308,17 +289,6 @@ public class JacksonObjectFactory implements DataObjectFactory {
 				descriptions, aliases, statementGroups, revisionId);
 		result.setJsonDatatype(convertDatatype(datatypeId));
 		return result;
-	}
-
-	@Override
-	public ItemDocument getItemDocument(ItemIdValue itemIdValue,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups,
-			Map<String, SiteLink> siteLinks) {
-		return getItemDocument(itemIdValue, labels, descriptions, aliases,
-				statementGroups, siteLinks, 0);
 	}
 
 	@Override

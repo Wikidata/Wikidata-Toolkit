@@ -44,7 +44,7 @@ public class StatementGroupImpl implements StatementGroup, Serializable {
 
 	private static final long serialVersionUID = -7455251135036540828L;
 	
-	final List<Statement> statements;
+	private final List<Statement> statements;
 
 	/**
 	 * Constructor.

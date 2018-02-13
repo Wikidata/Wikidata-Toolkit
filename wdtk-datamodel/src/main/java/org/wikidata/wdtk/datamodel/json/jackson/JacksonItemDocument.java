@@ -97,7 +97,7 @@ public class JacksonItemDocument extends JacksonTermedStatementDocument
 	@JsonProperty("sitelinks")
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		return Collections.<String, SiteLink> unmodifiableMap(this.sitelinks);
+		return Collections.unmodifiableMap(this.sitelinks);
 	}
 
 	@Override

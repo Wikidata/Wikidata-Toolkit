@@ -96,7 +96,7 @@ public class SnakGroupTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void snakListNotEmpty() {
-		new SnakGroupImpl(Collections.<Snak> emptyList());
+		new SnakGroupImpl(Collections.emptyList());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

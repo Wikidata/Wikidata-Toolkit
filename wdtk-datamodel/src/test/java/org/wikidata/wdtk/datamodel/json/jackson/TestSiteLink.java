@@ -49,6 +49,7 @@ public class TestSiteLink {
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
 	}
 
+	@Test
 	public void testSiteLinkToJava() throws
 			IOException {
 		JacksonSiteLink result = mapper.readValue(JsonTestData.JSON_SITE_LINK,
@@ -56,18 +57,18 @@ public class TestSiteLink {
 
 		assertEquals("enwiki", result.getSiteKey());
 		assertEquals("foobar", result.getPageTitle());
-		assert (result.badges.isEmpty());
+		assert (result.getBadges().isEmpty());
 	}
 
 	@Test
 	public void testEquals() {
 		SiteLink match = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
-				"foobar", "enwiki", Collections.<String> emptyList());
+				"foobar", "enwiki", Collections.emptyList());
 		SiteLink wrongLanguage = JsonTestData.JACKSON_OBJECT_FACTORY
 				.getSiteLink("foobar", "dewiki",
-						Collections.<String> emptyList());
+						Collections.emptyList());
 		SiteLink wrongValue = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
-				"barfoo", "enwiki", Collections.<String> emptyList());
+				"barfoo", "enwiki", Collections.emptyList());
 
 		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
 		assertEquals(JsonTestData.TEST_SITE_LINK, match);

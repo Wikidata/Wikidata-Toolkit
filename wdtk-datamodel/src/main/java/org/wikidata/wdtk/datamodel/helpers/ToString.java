@@ -378,7 +378,7 @@ public class ToString {
 
 		sb.append("* Site links: ");
 		boolean first = true;
-		SortedSet<String> siteKeys = new TreeSet<String>(o.getSiteLinks()
+		SortedSet<String> siteKeys = new TreeSet<>(o.getSiteLinks()
 				.keySet());
 		for (String key : siteKeys) {
 			if (first) {
@@ -419,7 +419,7 @@ public class ToString {
 
 		sb.append("\n* Labels: ");
 		first = true;
-		SortedSet<String> labelKeys = new TreeSet<String>(o.getLabels()
+		SortedSet<String> labelKeys = new TreeSet<>(o.getLabels()
 				.keySet());
 		for (String key : labelKeys) {
 			if (first) {
@@ -432,7 +432,7 @@ public class ToString {
 
 		sb.append("\n* Descriptions: ");
 		first = true;
-		SortedSet<String> descriptionKeys = new TreeSet<String>(o
+		SortedSet<String> descriptionKeys = new TreeSet<>(o
 				.getDescriptions().keySet());
 		for (String key : descriptionKeys) {
 			if (first) {
@@ -445,7 +445,7 @@ public class ToString {
 
 		sb.append("\n* Aliases: ");
 		first = true;
-		SortedSet<String> aliasKeys = new TreeSet<String>(o.getAliases()
+		SortedSet<String> aliasKeys = new TreeSet<>(o.getAliases()
 				.keySet());
 		for (String key : aliasKeys) {
 			for (MonolingualTextValue mtv : o.getAliases().get(key)) {

@@ -46,7 +46,7 @@ public class SnakGroupFromJson implements SnakGroup {
 	private final List<Snak> snaks;
 
 	public SnakGroupFromJson(List<JacksonSnak> snaks) {
-		this.snaks = Collections.<Snak> unmodifiableList(snaks);
+		this.snaks = Collections.unmodifiableList(snaks);
 	}
 
 	@Override

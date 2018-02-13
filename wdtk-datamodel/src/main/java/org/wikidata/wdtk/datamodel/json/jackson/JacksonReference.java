@@ -51,13 +51,13 @@ public class JacksonReference implements Reference {
 	/**
 	 * Map of property id strings to snaks, as used to encode snaks in JSON.
 	 */
-	Map<String, List<JacksonSnak>> snaks;
+	private Map<String, List<JacksonSnak>> snaks;
 
 	/**
 	 * List of property string ids that encodes the desired order of snaks,
 	 * which is not specified by the map.
 	 */
-	List<String> propertyOrder;
+	private List<String> propertyOrder;
 
 	@JsonIgnore
 	@Override

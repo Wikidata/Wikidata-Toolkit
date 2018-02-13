@@ -40,9 +40,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonSiteLink implements SiteLink {
 
-	String title;
-	String site;
-	List<String> badges = new LinkedList<>();
+	private String title;
+	private String site;
+	private List<String> badges = new LinkedList<>();
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

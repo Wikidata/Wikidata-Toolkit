@@ -44,9 +44,9 @@ public class SiteLinkImpl implements SiteLink, Serializable {
 
 	private static final long serialVersionUID = 8921712582883517425L;
 	
-	final String title;
-	final String siteKey;
-	final List<String> badges;
+	private final String title;
+	private final String siteKey;
+	private final List<String> badges;
 
 	/**
 	 * Constructor.

@@ -43,8 +43,8 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
 				Datamodel.makeSomeValueSnak(p),
-				Collections.<SnakGroup> emptyList()), Collections
-				.<Reference> emptyList(), StatementRank.NORMAL, "");
+				Collections.emptyList()), Collections
+				.emptyList(), StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p).build();
 
 		assertEquals(stmt1, stmt2);
@@ -129,8 +129,8 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
 				Datamodel.makeNoValueSnak(p),
-				Collections.<SnakGroup> emptyList()), Collections
-				.<Reference> emptyList(), StatementRank.NORMAL, "");
+				Collections.emptyList()), Collections
+				.emptyList(), StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withNoValue().build();
 
@@ -144,8 +144,8 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
 				Datamodel.makeSomeValueSnak(p),
-				Collections.<SnakGroup> emptyList()), Collections
-				.<Reference> emptyList(), StatementRank.NORMAL, "");
+				Collections.emptyList()), Collections
+				.emptyList(), StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withSomeValue().build();
 

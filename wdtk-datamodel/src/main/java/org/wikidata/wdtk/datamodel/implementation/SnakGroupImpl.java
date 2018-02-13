@@ -43,7 +43,7 @@ public class SnakGroupImpl implements SnakGroup, Serializable {
 
 	private static final long serialVersionUID = -6497504020405854760L;
 	
-	final List<? extends Snak> snaks;
+	private final List<? extends Snak> snaks;
 
 	/**
 	 * Constructor.

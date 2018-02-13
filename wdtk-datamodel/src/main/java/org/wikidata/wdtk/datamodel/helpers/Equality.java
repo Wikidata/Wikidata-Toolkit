@@ -101,10 +101,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof DatatypeIdValue)) {
-			return false;
-		}
-		return o1.getIri().equals(((DatatypeIdValue) o2).getIri());
+		return o2 instanceof DatatypeIdValue
+			&& o1.getIri().equals(((DatatypeIdValue) o2).getIri());
 	}
 
 	/**
@@ -191,10 +189,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof StringValue)) {
-			return false;
-		}
-		return o1.getString().equals(((StringValue) o2).getString());
+		return o2 instanceof StringValue
+			&& o1.getString().equals(((StringValue) o2).getString());
 	}
 
 	/**
@@ -275,10 +271,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof ValueSnak)) {
-			return false;
-		}
-		return o1.getPropertyId().equals(((ValueSnak) o2).getPropertyId())
+		return o2 instanceof ValueSnak
+				&& o1.getPropertyId().equals(((ValueSnak) o2).getPropertyId())
 				&& o1.getValue().equals(((ValueSnak) o2).getValue());
 	}
 
@@ -300,10 +294,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof SomeValueSnak)) {
-			return false;
-		}
-		return o1.getPropertyId().equals(((SomeValueSnak) o2).getPropertyId());
+		return o2 instanceof SomeValueSnak
+			&& o1.getPropertyId().equals(((SomeValueSnak) o2).getPropertyId());
 	}
 
 	/**
@@ -324,10 +316,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof NoValueSnak)) {
-			return false;
-		}
-		return o1.getPropertyId().equals(((NoValueSnak) o2).getPropertyId());
+		return o2 instanceof NoValueSnak
+			&& o1.getPropertyId().equals(((NoValueSnak) o2).getPropertyId());
 	}
 
 	/**
@@ -348,10 +338,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof SnakGroup)) {
-			return false;
-		}
-		return o1.getSnaks().equals(((SnakGroup) o2).getSnaks());
+		return o2 instanceof SnakGroup
+			&& o1.getSnaks().equals(((SnakGroup) o2).getSnaks());
 	}
 
 	/**
@@ -399,10 +387,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof Reference)) {
-			return false;
-		}
-		return o1.getSnakGroups().equals(((Reference) o2).getSnakGroups());
+		return o2 instanceof Reference
+			&& o1.getSnakGroups().equals(((Reference) o2).getSnakGroups());
 	}
 
 	/**
@@ -454,10 +440,8 @@ public class Equality {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof StatementGroup)) {
-			return false;
-		}
-		return o1.getStatements().equals(((StatementGroup) o2).getStatements());
+		return o2 instanceof StatementGroup
+			&& o1.getStatements().equals(((StatementGroup) o2).getStatements());
 	}
 
 	/**

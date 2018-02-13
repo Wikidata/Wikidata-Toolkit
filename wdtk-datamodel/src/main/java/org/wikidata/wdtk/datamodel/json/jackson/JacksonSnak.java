@@ -70,7 +70,7 @@ public abstract class JacksonSnak implements Snak {
 	 * necessary to set this information after each deserialization.
 	 */
 	@JsonIgnore
-	String siteIri = null;
+	private String siteIri = null;
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON

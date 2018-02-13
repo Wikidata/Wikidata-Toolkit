@@ -34,8 +34,8 @@ public class MonolingualTextValueImpl implements MonolingualTextValue,
 
 	private static final long serialVersionUID = -6165541960096088292L;
 
-	final String text;
-	final String languageCode;
+	private final String text;
+	private final String languageCode;
 
 	/**
 	 * Constructor. The language code can be any string; the class does not make

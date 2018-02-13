@@ -147,8 +147,7 @@ public abstract class JacksonTermedStatementDocument extends
 
 		for (Entry<String, List<JacksonMonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
-			returnMap.put(entry.getKey(), Collections
-					.<MonolingualTextValue> unmodifiableList(entry.getValue()));
+			returnMap.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
 		}
 
 		return Collections.unmodifiableMap(returnMap);
@@ -173,7 +172,7 @@ public abstract class JacksonTermedStatementDocument extends
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
 		return Collections
-				.<String, MonolingualTextValue> unmodifiableMap(this.descriptions);
+				.unmodifiableMap(this.descriptions);
 	}
 
 	/**
@@ -194,7 +193,7 @@ public abstract class JacksonTermedStatementDocument extends
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
 		return Collections
-				.<String, MonolingualTextValue> unmodifiableMap(this.labels);
+				.unmodifiableMap(this.labels);
 	}
 
 	/**

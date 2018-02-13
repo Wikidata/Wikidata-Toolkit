@@ -46,21 +46,6 @@ public class PropertyIdValueImpl implements PropertyIdValue {
 	private final String siteIri;
 
 	/**
-	 * Creates a new object of this type.
-	 *
-	 * @param id
-	 *            a string of the form Pn... where n... is the string
-	 *            representation of a positive integer number
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
-	 */
-	@Deprecated
-	public static PropertyIdValueImpl create(String id, String baseIri) {
-		return new PropertyIdValueImpl(id, baseIri);
-	}
-
-	/**
 	 * Constructor.
 
 	 * @param id

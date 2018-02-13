@@ -65,25 +65,25 @@ public class ItemDocumentImplTest {
 
 		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<SnakGroup> emptyList());
-		s = new StatementImpl(c, Collections.<Reference> emptyList(),
+				Collections.emptyList());
+		s = new StatementImpl(c, Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
 		statementGroups = Collections.singletonList(sg);
 
 		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		sitelinks = Collections.singletonMap("enwiki", sl);
 
 		ir1 = new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 		ir2 = new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 	}
 
@@ -98,38 +98,38 @@ public class ItemDocumentImplTest {
 	@Test
 	public void equalityBasedOnContent() {
 		ItemDocument irDiffStatementGroups = new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), sitelinks, 1234);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), sitelinks, 1234);
 		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				statementGroups, Collections.emptyMap(),
 				1234);
 		ItemDocument irDiffRevisions = new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1235);
 
 		PropertyDocument pr = new PropertyDocumentImpl(
 				new PropertyIdValueImpl("P42", "foo"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), new DatatypeIdImpl(
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING), 1234);
 
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal
 		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
 				new ItemIdValueImpl("Q23", "http://example.org/"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), sitelinks, 1234);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), sitelinks, 1234);
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
@@ -150,42 +150,42 @@ public class ItemDocumentImplTest {
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
 		new ItemDocumentImpl(null,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void labelsNotNull() {
 		new ItemDocumentImpl(iid, null,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void descriptionsNotNull() {
 		new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(), null,
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(), null,
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void aliasesNotNull() {
 		new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), null,
+				Collections.emptyList(),
+				Collections.emptyList(), null,
 				statementGroups, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void statementGroupsNotNull() {
 		new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), null,
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), null,
 				sitelinks, 1234);
 	}
 
@@ -194,9 +194,9 @@ public class ItemDocumentImplTest {
 		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
 		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
 				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		Statement s2 = new StatementImpl(c2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
 		StatementGroup sg2 = new StatementGroupImpl(
 				Collections.singletonList(s2));
@@ -206,18 +206,18 @@ public class ItemDocumentImplTest {
 		statementGroups2.add(sg2);
 
 		new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups2, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void sitelinksNotNull() {
 		new ItemDocumentImpl(iid,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, null, 1234);
 	}
 
