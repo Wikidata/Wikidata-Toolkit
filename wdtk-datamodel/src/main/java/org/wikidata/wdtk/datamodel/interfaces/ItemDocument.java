@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.List;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -21,6 +23,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for datasets that describe items. It extends {@link EntityDocument}
@@ -29,7 +32,7 @@ import java.util.Map;
  * @author Markus Kroetzsch
  *
  */
-public interface ItemDocument extends TermedDocument, StatementDocument {
+public interface ItemDocument extends TermedStatementDocument {
 
 	/**
 	 * Return the ID of the item that the data refers to.
@@ -57,5 +60,22 @@ public interface ItemDocument extends TermedDocument, StatementDocument {
 	 * @return map of SiteLinks
 	 */
 	Map<String, SiteLink> getSiteLinks();
+	
+	@Override
+	ItemDocument withRevisionId(long newRevisionId);
 
+	@Override
+	ItemDocument withLabel(MonolingualTextValue newLabel);
+	
+	@Override
+	ItemDocument withDescription(MonolingualTextValue newDescription);
+	
+	@Override
+	ItemDocument withAliases(String language, List<MonolingualTextValue> aliases);
+	
+	@Override
+	ItemDocument withStatement(Statement statement);
+	
+	@Override
+	ItemDocument withoutStatementIds(Set<String> statementIds);
 }

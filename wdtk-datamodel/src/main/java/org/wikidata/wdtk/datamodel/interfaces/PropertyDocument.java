@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.List;
+import java.util.Set;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -29,7 +32,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * @author Markus Kroetzsch
  *
  */
-public interface PropertyDocument extends TermedDocument, StatementDocument {
+public interface PropertyDocument extends TermedStatementDocument {
 
 	/**
 	 * Return the ID of the item that the data refers to.
@@ -57,5 +60,22 @@ public interface PropertyDocument extends TermedDocument, StatementDocument {
 	 * @return {@link DatatypeIdValue}
 	 */
 	DatatypeIdValue getDatatype();
+	
+	@Override
+	PropertyDocument withRevisionId(long newRevisionId);
 
+	@Override
+	PropertyDocument withLabel(MonolingualTextValue newLabel);
+	
+	@Override
+	PropertyDocument withDescription(MonolingualTextValue newDescription);
+	
+	@Override
+	PropertyDocument withAliases(String language, List<MonolingualTextValue> aliases);
+	
+	@Override
+	PropertyDocument withStatement(Statement statement);
+	
+	@Override
+	PropertyDocument withoutStatementIds(Set<String> statementIds);
 }

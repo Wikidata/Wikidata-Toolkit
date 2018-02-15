@@ -598,4 +598,33 @@ public interface StatementDocument extends EntityDocument {
 		Value value = findStatementValue(propertyId);
 		return value instanceof DatatypeIdValue ? (DatatypeIdValue) value : null;
 	}
+	
+	/**
+	 * Returns a copy of this document with an updated revision id.
+	 */
+	@Override
+	StatementDocument withRevisionId(long newRevisionId);
+	
+	/**
+	 * Returns a new version of this document which includes the
+	 * statement provided. If the identifier of this statement matches
+	 * that of any other statement for the same property, then the
+	 * existing statement will be replaced by the new one. Otherwise,
+	 * the new statement will be added at the end of the list of statements
+	 * in this group.
+	 * 
+	 * @param statement
+	 * 		the statement to add or update in the document
+	 */
+	StatementDocument withStatement(Statement statement);
+	
+	/**
+	 * Returns a new version of this document where all statements matching
+	 * any of the statement ids provided have been removed. These statements
+	 * can use different properties.
+	 * 
+	 * @param statementIds
+	 *       the identifiers of the statements to remove
+	 */
+	StatementDocument withoutStatementIds(Set<String> statementIds);
 }
