@@ -101,6 +101,21 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 					.map(id -> new ItemIdValueImpl(id, siteIri))
 					.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Copy constructor. Does not perform any checks on
+	 * its values.
+	 */
+	private FormDocumentImpl(
+			FormIdValue id,
+			Map<String,MonolingualTextValue> representations,
+			List<ItemIdValue> grammaticalFeatures,
+			Map<String, List<Statement>> statements,
+			long revisionId) {
+		super(id, statements, revisionId);
+		this.representations = representations;
+		this.grammaticalFeatures = grammaticalFeatures;
+	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
 		Map<String, MonolingualTextValue> map = new HashMap<>();
@@ -162,5 +177,28 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+	
+	@Override
+	public FormDocument withStatement(Statement statement) {
+		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
+		return new FormDocumentImpl(getEntityId(),
+				representations, grammaticalFeatures,
+				newGroups, revisionId);
+	}
+
+	@Override
+	public FormDocument withoutStatementIds(Set<String> statementIds) {
+		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
+		return new FormDocumentImpl(getEntityId(),
+				representations, grammaticalFeatures,
+				newGroups, revisionId);
+	}
+	
+	@Override
+	public FormDocument withRevisionId(long newRevisionId) {
+		return new FormDocumentImpl(getEntityId(),
+				representations, grammaticalFeatures,
+				claims, newRevisionId);
 	}
 }

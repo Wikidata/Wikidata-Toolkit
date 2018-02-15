@@ -39,7 +39,6 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -117,20 +116,19 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 		this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
 	}
 
-        /**
-	 * Protected constructor, meant to be used to create modified copies
+    /**
+	 * Private constructor, meant to be used to create modified copies
 	 * of instances.
 	 */
-	protected PropertyDocumentImpl(
-			String entityId,
-			String siteIri,
+	private PropertyDocumentImpl(
+			PropertyIdValue id,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			Map<String, List<Statement>> claims,
 			DatatypeIdValue datatypeId, 
 			long revisionId) {
-		super(entityId, siteIri, labels, descriptions, aliases, claims, revisionId);
+		super(id, labels, descriptions, aliases, claims, revisionId);
 		this.datatype = new DatatypeIdImpl(datatypeId);
 	}
 
@@ -181,7 +179,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	
 	@Override
 	public PropertyDocument withRevisionId(long newRevisionId) {
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				labels,	descriptions,
 				aliases, claims,
 				datatype, newRevisionId);
@@ -191,7 +189,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	public PropertyDocument withLabel(MonolingualTextValue newLabel) {
 		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
 		newLabels.put(newLabel.getLanguageCode(), newLabel);
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				newLabels, descriptions,
 				aliases, claims,
 				datatype, revisionId);
@@ -201,7 +199,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	public PropertyDocument withDescription(MonolingualTextValue newDescription) {
 		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
 		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				labels, newDescriptions,
 				aliases, claims,
 				datatype, revisionId);
@@ -214,7 +212,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 			Validate.isTrue(alias.getLanguageCode().equals(language));
 		}
 		newAliases.put(language, aliases);
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				labels, descriptions,
 				newAliases, claims,
 				datatype, revisionId);
@@ -223,7 +221,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public PropertyDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				labels, descriptions,
 				aliases, newGroups,
 				datatype, revisionId);
@@ -232,7 +230,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public PropertyDocument withoutStatementIds(Set<String> statementIds) {
 		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
-		return new PropertyDocumentImpl(entityId, siteIri,
+		return new PropertyDocumentImpl(getEntityId(),
 				labels, descriptions,
 				aliases, newGroups,
 				datatype, revisionId);

@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class StatementGroupTest {
 	private StatementGroup sg2;
 	private Statement statement1;
 	private Statement statement2;
+	private Statement statementEmptyId;
 	private EntityIdValue subject;
 	private PropertyIdValue property;
 
@@ -55,6 +57,8 @@ public class StatementGroupTest {
 		statement1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(), Collections.emptyList(), subject);
 		statement2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
+		statementEmptyId = new StatementImpl("", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(), Collections.emptyList(), subject);
 
 		sg1 = new StatementGroupImpl(
@@ -143,5 +147,24 @@ public class StatementGroupTest {
 
 		new StatementGroupImpl(statements);
 	}
+	
+	public void addSameStatementToGroup() {
+		StatementGroup added = sg1.withStatement(statement1);
+		
+		assertEquals(sg1, added);
+	}
+	
+	public void addStatementWithMatchingId() {
+		StatementGroup added = sg1.withStatement(statement2);
+		
+		assertEquals(new StatementGroupImpl(Collections.singletonList(statement2)), added);
+	}
 
+	public void addStatementEmptyId() {
+		StatementGroup initial = new StatementGroupImpl(Collections.singletonList(statementEmptyId));
+		StatementGroup added = initial.withStatement(statementEmptyId);
+		
+		assertEquals(new StatementGroupImpl(Arrays.asList(statementEmptyId, statementEmptyId)),
+				added);
+	}
 }

@@ -27,6 +27,7 @@ import org.wikidata.wdtk.util.NestedIterator;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Abstract Jackson implementation of {@link StatementDocument}.
@@ -43,7 +44,7 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
 	 * the statement group in the WDTK model.
 	 */
-	private final Map<String, List<Statement>> claims;
+	protected final Map<String, List<Statement>> claims;
 
 	/**
 	 * Statement groups. This member is initialized when statements are
@@ -75,6 +76,21 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 				this.claims.put(group.getProperty().getId(), group.getStatements());
 			}
 		}
+	}
+	
+	/**
+	 * Copy constructor.
+	 * 	
+	 * @param id
+	 * @param claims
+	 * @param revisionId
+	 */
+	protected StatementDocumentImpl(
+			EntityIdValue id,
+			Map<String, List<Statement>> claims,
+			long revisionId) {
+		super(id, revisionId);
+		this.claims = claims;
 	}
 
 	/**
@@ -114,6 +130,18 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 		}
 		return this.statementGroups;
 	}
+	
+	/**
+	 * Find a statement group by its property id, without checking for 
+	 * equality with the site IRI. More efficient implementation than
+	 * the default one.
+	 */
+	public StatementGroup findStatementGroup(String propertyIdValue) {
+		if (this.claims.containsKey(propertyIdValue)) {
+			return new StatementGroupImpl(this.claims.get(propertyIdValue));
+		}
+		return null;
+	}
 
 	/**
 	 * Returns the "claims". Only used by Jackson.
@@ -133,5 +161,59 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 	@JsonIgnore
 	public Iterator<Statement> getAllStatements() {
 		return new NestedIterator<>(getStatementGroups());
+	}
+	
+	/**
+	 * Adds a Statement to a given collection of statement groups.
+	 * If the statement id is not null and matches that of an existing statement,
+	 * this statement will be replaced.
+	 * 
+	 * @param statement
+	 * @param claims
+	 * @return
+	 */
+	protected static Map<String, List<Statement>> addStatementToGroups(Statement statement, Map<String, List<Statement>> claims) {
+		Map<String, List<Statement>> newGroups = new HashMap<>(claims);
+		String pid = statement.getMainSnak().getPropertyId().getId();
+		if(newGroups.containsKey(pid)) {
+			List<Statement> newGroup = new ArrayList<>(newGroups.get(pid).size());
+			boolean statementReplaced = false;
+			for(Statement existingStatement : newGroups.get(pid)) {
+				if(existingStatement.getStatementId().equals(statement.getStatementId()) &&
+						!existingStatement.getStatementId().isEmpty()) {
+					statementReplaced = true;
+					newGroup.add(statement);
+				} else {
+					newGroup.add(existingStatement);
+				}
+			}
+			if(!statementReplaced) {
+				newGroup.add(statement);
+			}
+			newGroups.put(pid, newGroup);
+		} else {
+			newGroups.put(pid, Collections.singletonList(statement));
+		}
+		return newGroups;
+	}
+	
+	/**
+	 * Removes statement ids from a collection of statement groups.
+	 * @param statementIds
+	 * @param claims
+	 * @return
+	 */
+	protected static Map<String, List<Statement>> removeStatements(Set<String> statementIds, Map<String, List<Statement>> claims) {
+		Map<String, List<Statement>> newClaims = new HashMap<>(claims.size());
+		for(Entry<String, List<Statement>> entry : claims.entrySet()) {
+			List<Statement> filteredStatements = entry.getValue().stream()
+					.filter(s -> !statementIds.contains(s.getStatementId()))
+					.collect(Collectors.toList());
+			if(!filteredStatements.isEmpty()) {
+				newClaims.put(entry.getKey(),
+					filteredStatements);
+			}
+		}
+		return newClaims;
 	}
 }

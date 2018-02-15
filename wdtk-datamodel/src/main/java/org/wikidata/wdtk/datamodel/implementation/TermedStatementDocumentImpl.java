@@ -33,16 +33,22 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -63,41 +69,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({ //TODO: drop in future release
 		@Type(value = ItemDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_ITEM),
 		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
-public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedDocument {
+public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedStatementDocument {
 
 	protected final Map<String, List<MonolingualTextValue>> aliases;
 	
 	@JsonDeserialize(contentAs=TermImpl.class)
 	protected final Map<String, MonolingualTextValue> labels;
 	@JsonDeserialize(contentAs=TermImpl.class)
-	protected final Map<String, MonolingualTextValue> descriptions;
-
-	/**
-	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
-	 * the statement group in the WDTK model.
-	 */
-	protected final Map<String, List<Statement>> claims;
-
-	/**
-	 * Statement groups. This member is initialized when statements are
-	 * accessed.
-	 */
-	private List<StatementGroup> statementGroups = null;
-
-	/**
-	 * The id of the entity that the document refers to. This is not mapped to
-	 * JSON directly by Jackson but split into two fields, "type" and "id". The
-	 * type field is ignored during deserialization since the type is clear for
-	 * a concrete document. For serialization, the type is hard-coded.
-	 * <p>
-	 * The site IRI, which would also be required to create a complete
-	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
-	 * from the outside (if not, we default to Wikidata).
-	 */
-	protected final String entityId;
-
-	protected final Map<String, MonolingualTextValue> labels;
-
 	protected final Map<String, MonolingualTextValue> descriptions;
 	
 	/**
@@ -189,21 +167,16 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 	 * @param revisionId
 	 */
 	protected TermedStatementDocumentImpl(
-			String entityId,
-			String siteIri,
+			EntityIdValue subject,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			Map<String, List<Statement>> claims,
 			long revisionId) {
-		this.entityId = entityId;
+		super(subject, claims, revisionId);
 		this.labels = labels;
 		this.descriptions = descriptions;
 		this.aliases = aliases;
-		this.claims = claims;
-		this.statementGroups = null;
-		this.revisionId = revisionId;
-		this.siteIri = siteIri;
 	}
 
 
@@ -239,19 +212,6 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 	public String getSiteIri() {
 		return this.siteIri;
 	}
-
-	@JsonIgnore
-	@Override
-	public List<StatementGroup> getStatementGroups() {
-		if (this.statementGroups == null) {
-			this.statementGroups = new ArrayList<>(this.claims.size());
-			for (List<Statement> statements : this.claims.values()) {
-				this.statementGroups
-						.add(new StatementGroupImpl(statements));
-			}
-		}
-		return this.statementGroups;
-	}
 	
 	/**
 	 * More efficient implementation of findStatementGroup than the
@@ -264,32 +224,6 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			return group;
 		}
 		return null;
-	}
-
-	/**
-	 * More efficient implementation of findStatementGroup than the
-	 * default one provided in {@link AbstractTermedStatementDocument}
-	 */
-	@Override
-	public StatementGroup findStatementGroup(String propertyIdValue) {
-		if (this.claims.containsKey(propertyIdValue)) {
-			return new StatementGroupImpl(this.claims.get(propertyIdValue));
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the "claims". Only used by Jackson.
-	 * <p>
-	 * JSON "claims" correspond to statement groups in the WDTK model. You
-	 * should use {@link ItemDocumentImpl#getStatementGroups()} to obtain
-	 * this data.
-	 *
-	 * @return map of statement groups
-	 */
-	@JsonProperty("claims")
-	public Map<String, List<Statement>> getJsonClaims() {
-		return this.claims;
 	}
 	
 	private static class NonZeroFilter {
@@ -381,4 +315,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 
 		}
 	}
+	
+	@Override
+	abstract public TermedStatementDocument withRevisionId(long newRevisionId);
 }

@@ -123,15 +123,14 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	 * of instances.
 	 */
 	protected ItemDocumentImpl(
-			String itemId,
-			String siteIri,
+			ItemIdValue subject,
 			Map<String, MonolingualTextValue> labels,
 			Map<String, MonolingualTextValue> descriptions,
 			Map<String, List<MonolingualTextValue>> aliases,
 			Map<String, List<Statement>> claims, 
 			Map<String, SiteLink> siteLinks,
 			long revisionId) {
-		super(itemId, siteIri, labels, descriptions, aliases, claims, revisionId);
+		super(subject, labels, descriptions, aliases, claims, revisionId);
 		this.sitelinks = siteLinks;
 	}
 
@@ -170,7 +169,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withRevisionId(long newRevisionId) {
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				labels,	descriptions,
 				aliases, claims,
 				sitelinks, newRevisionId);
@@ -180,7 +179,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	public ItemDocument withLabel(MonolingualTextValue newLabel) {
 		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
 		newLabels.put(newLabel.getLanguageCode(), newLabel);
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				newLabels, descriptions,
 				aliases, claims,
 				sitelinks, revisionId);
@@ -190,7 +189,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	public ItemDocument withDescription(MonolingualTextValue newDescription) {
 		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
 		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				labels, newDescriptions,
 				aliases, claims,
 				sitelinks, revisionId);
@@ -203,7 +202,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 			Validate.isTrue(alias.getLanguageCode().equals(language));
 		}
 		newAliases.put(language, aliases);
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				labels, descriptions,
 				newAliases, claims,
 				sitelinks, revisionId);
@@ -212,7 +211,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public ItemDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				labels, descriptions,
 				aliases, newGroups,
 				sitelinks, revisionId);
@@ -221,7 +220,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public ItemDocument withoutStatementIds(Set<String> statementIds) {
 		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
-		return new ItemDocumentImpl(entityId, siteIri,
+		return new ItemDocumentImpl(getItemId(),
 				labels, descriptions,
 				aliases, newGroups,
 				sitelinks, revisionId);
