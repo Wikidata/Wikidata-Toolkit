@@ -42,12 +42,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Jackson implementation of {@link PropertyDocument}. Like all Jackson objects,
- * it is not technically immutable, but it is strongly recommended to treat it
- * as such in all contexts: the setters are for Jackson; never call them in your
- * code.
+ * Jackson implementation of {@link PropertyDocument}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
+ * @author Markus Kroetzsch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -65,12 +64,23 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	 * Constructor for instances that are built manually, rather than from JSON.
 	 * 
 	 * @param id
+	 *            the id of the property that data is about
 	 * @param labels
+	 *            the list of labels of this property, with at most one label
+	 *            for each language code
 	 * @param descriptions
+	 *            the list of descriptions of this property, with at most one
+	 *            description for each language code
 	 * @param aliases
+	 *            the list of aliases of this property
 	 * @param statements
+	 *            the list of statement groups of this item; all of them must
+	 *            have the given itemIdValue as their subject
 	 * @param datatype
+	 *            the datatype of that property
 	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
 	 */
 	public PropertyDocumentImpl(
 			PropertyIdValue id,
@@ -85,8 +95,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	}
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor. Creates an instance by deserializing from JSON.
 	 */
 	@JsonCreator
 	public PropertyDocumentImpl(
@@ -107,7 +116,6 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	 * {@link #getDatatype()} is already used for another function of the
 	 * interface.
 	 *
-	 * @see #setJsonDatatype(String)
 	 * @return string datatype
 	 */
 	@JsonProperty("datatype")

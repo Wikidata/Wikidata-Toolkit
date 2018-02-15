@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Jackson implementation of {@link SiteLink}.
  *
  * @author Fredo Erxleben
- *
+ * @author Antonin Delpeuch
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SiteLinkImpl implements SiteLink {
@@ -49,6 +49,14 @@ public class SiteLinkImpl implements SiteLink {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param title
+	 * 		the title of the page on the target site
+	 * @param site
+	 * 		the identifier of the target site (such as "dewiki")
+	 * @param badges
+	 * 		the list of badge identifiers worn by this site link.
+	 * 		Can be null.
 	 */
 	@JsonCreator
 	public SiteLinkImpl(

@@ -56,6 +56,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * them in your code.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -126,6 +127,20 @@ public abstract class TermedStatementDocumentImpl extends
 	
 	/**
 	 * Constructor.
+	 * 
+	 * @param id
+	 * 		the identifier of the subject of this document
+	 * @param labels
+	 * 		the labels for this entity, at most one per language
+	 * @param descriptions
+	 * 		the descriptions for this entity, at most one per language
+	 * @param aliases
+	 * 		the aliases for this language. Their relative order in a
+	 * 		given language will be preserved.
+	 * @param claims
+	 * 		the statement groups contained in this document
+	 * @param revisionId
+	 * 		the id of the last revision of this document
 	 */
 	public TermedStatementDocumentImpl(
 			EntityIdValue id,
@@ -167,7 +182,7 @@ public abstract class TermedStatementDocumentImpl extends
 	/**
 	 * Constructor used for JSON deserialization with Jackson.
 	 */
-	public TermedStatementDocumentImpl(
+	protected TermedStatementDocumentImpl(
 			@JsonProperty("id") String jsonId,
 			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
 			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,

@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link ItemIdValue}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -49,6 +50,7 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements
 	
 	/**
 	 * Constructor.
+	 * 
 	 * @param id
 	 * 		the identifier of the entity, such as "Q42"
 	 * @param siteIri
@@ -61,12 +63,15 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements
 		checkEntityIdType();
 	}
 	/**
-	 * Constructor used for deserialization with Jackson
+	 * Constructor used for deserialization with Jackson.
+	 * 
 	 * @param value
+	 *     the inner JSON object deserialized as a {@link JacksonInnerEntityId}
 	 * @param siteIri
+	 *     the siteIRI that this value refers to.
 	 */
 	@JsonCreator
-	public ItemIdValueImpl(
+	protected ItemIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject("siteIri") String siteIri) {
 		super(value, siteIri);

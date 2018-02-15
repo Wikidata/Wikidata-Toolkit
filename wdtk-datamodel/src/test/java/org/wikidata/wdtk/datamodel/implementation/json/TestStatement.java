@@ -63,7 +63,7 @@ public class TestStatement {
 			IOException {
 		StatementImpl result = mapper.readValue(
 				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonPreStatement.class).withSubject(
-			JsonTestData.getEmtpyTestItemDocument().getEntityId());
+			JsonTestData.getEmptyTestItemDocument().getEntityId());
 
 		assertNotNull(result);
 		assertNull(result.getValue());
@@ -76,11 +76,11 @@ public class TestStatement {
 	public void testEquality() {
 		StatementImpl correctStatement = new StatementImpl(
 				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK,
-				JsonTestData.getEmtpyTestItemDocument()
+				JsonTestData.getEmptyTestItemDocument()
 				.getEntityId());
 		StatementImpl wrongId = new StatementImpl("another id",
 				JsonTestData.TEST_NOVALUE_SNAK,
-				JsonTestData.getEmtpyTestItemDocument()
+				JsonTestData.getEmptyTestItemDocument()
 				.getEntityId());
 
 		assertEquals(JsonTestData.getTestNoValueStatement(),

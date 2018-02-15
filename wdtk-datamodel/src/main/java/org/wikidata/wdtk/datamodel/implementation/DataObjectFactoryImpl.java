@@ -25,11 +25,9 @@ import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerMonolingualText;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerQuantity;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*;
 
 import java.math.BigDecimal;
 import java.util.*;

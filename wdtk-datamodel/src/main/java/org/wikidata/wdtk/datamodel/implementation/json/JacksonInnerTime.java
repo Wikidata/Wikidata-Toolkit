@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * represent values of type {@link ValueImpl#JSON_VALUE_TYPE_STRING}.
  *
  * @author Fredo Erxleben
- *
+ * @author Antonin Delpeuch
+ * @author Markus Kroetzsch
+ * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerTime {
@@ -63,11 +65,23 @@ public class JacksonInnerTime {
 	 * Constructs a new object for the given data.
 	 *
 	 * @param time
-	 * @param timezoneOffset
-	 * @param beforeTolerance
-	 * @param afterTolerance
-	 * @param precision
+	 * 		      an ISO timestamp
+	 * @param timezone
+	 *            offset in minutes that should be applied when displaying this
+	 *            time
+	 * @param before
+	 *            non-negative integer tolerance before the value; see
+	 *            {@link TimeValue#getBeforeTolerance()}
+	 * @param after
+	 *            non-zero, positive integer tolerance before the value; see
+	 *            {@link TimeValue#getAfterTolerance()}
+     * @param precision
+     *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
+     *            {@link TimeValue#PREC_1GY}
 	 * @param calendarModel
+	 *            the IRI of the calendar model preferred when displaying the
+	 *            date; usually {@link TimeValue#CM_GREGORIAN_PRO} or
+	 *            {@link TimeValue#CM_JULIAN_PRO}
 	 */
 	@JsonCreator
 	public JacksonInnerTime(
@@ -91,16 +105,33 @@ public class JacksonInnerTime {
 	 * Constructor for times that have already been parsed.
 	 *
 	 * @param year
+	 *            a year number, where 0 refers to 1BCE
 	 * @param month
+	 *            a month number between 1 and 12
 	 * @param day
+	 *            a day number between 1 and 31
 	 * @param hour
+	 *            an hour number between 0 and 23
 	 * @param minute
+	 *            a minute number between 0 and 59
 	 * @param second
+	 *            a second number between 0 and 60 (possible leap second)
 	 * @param timezone
+	 *            offset in minutes that should be applied when displaying this
+	 *            time
 	 * @param before
+	 *            non-negative integer tolerance before the value; see
+	 *            {@link TimeValue#getBeforeTolerance()}
 	 * @param after
-	 * @param precision
+	 *            non-zero, positive integer tolerance before the value; see
+	 *            {@link TimeValue#getAfterTolerance()}
+     * @param precision
+     *            a value in the range of {@link TimeValue#PREC_DAY}, ...,
+     *            {@link TimeValue#PREC_1GY}
 	 * @param calendarModel
+	 *            the IRI of the calendar model preferred when displaying the
+	 *            date; usually {@link TimeValue#CM_GREGORIAN_PRO} or
+	 *            {@link TimeValue#CM_JULIAN_PRO}
 	 */
 	public JacksonInnerTime(long year, byte month, byte day, byte hour,
 			byte minute, byte second, int timezone, int before, int after,

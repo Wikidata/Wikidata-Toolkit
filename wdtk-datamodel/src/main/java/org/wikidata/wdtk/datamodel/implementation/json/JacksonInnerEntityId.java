@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author Fredo Erxleben
  * @author Thomas Pellissier Tanon
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

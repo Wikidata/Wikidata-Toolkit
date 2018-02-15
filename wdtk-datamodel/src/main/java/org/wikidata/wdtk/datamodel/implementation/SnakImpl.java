@@ -40,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * Abstract Jackson implementation of {@link Snak}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "snaktype")

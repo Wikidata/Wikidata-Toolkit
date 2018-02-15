@@ -223,17 +223,17 @@ public class JsonTestData {
 	public static StatementImpl getTestNoValueStatement() {
 		StatementImpl result = new StatementImpl(TEST_STATEMENT_ID,
 				TEST_NOVALUE_SNAK,
-				getEmtpyTestItemDocument().getEntityId());
+				getEmptyTestItemDocument().getEntityId());
 		return result;
 	}
 
 	public static StatementImpl getTestNoValueNoIdStatement() {
 		StatementImpl result = new StatementImpl("",
-				TEST_NOVALUE_SNAK,getEmtpyTestItemDocument().getEntityId());
+				TEST_NOVALUE_SNAK,getEmptyTestItemDocument().getEntityId());
 		return result;
 	}
 
-	public static ItemDocumentImpl getEmtpyTestItemDocument() {
+	public static ItemDocumentImpl getEmptyTestItemDocument() {
 		ItemDocumentImpl testItemDocument = new ItemDocumentImpl(
 				getTestItemId(),
 				Collections.<MonolingualTextValue>emptyList(),

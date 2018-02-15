@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link StringValue}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -47,8 +48,10 @@ public class StringValueImpl extends ValueImpl implements StringValue {
 	private final String value;
 
 	/**
-	 * Constructor. Creates an empty object that can be populated during JSON
-	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * Constructor for deserialization from JSON by Jackson.
+	 * 
+	 * @param value
+	 * 		the string represented by this Wikibase value
 	 */
 	@JsonCreator
 	public StringValueImpl(

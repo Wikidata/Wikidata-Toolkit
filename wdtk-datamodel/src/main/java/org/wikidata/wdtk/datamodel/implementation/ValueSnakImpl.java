@@ -25,7 +25,6 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -39,7 +38,6 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -49,6 +47,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link ValueSnak}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -70,8 +69,11 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param property
+	 * 		the id of the property used in this snak
 	 * @param value
+	 * 		the target value for this snak
 	 */
 	public ValueSnakImpl(PropertyIdValue property, Value value) {
 		super(property.getId(), property.getSiteIri());

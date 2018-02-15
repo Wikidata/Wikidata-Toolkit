@@ -40,6 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  * in JSON, so there is no corresponding JSON object.
  *
  * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
  */
 public class StatementGroupImpl implements StatementGroup {
 

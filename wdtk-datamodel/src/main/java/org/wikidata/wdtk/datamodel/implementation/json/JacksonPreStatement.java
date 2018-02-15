@@ -50,7 +50,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * Helper class storing a statement as represented in JSON. This
  * is a Statement missing a subject.
  * 
- * @author antonin
+ * @author Antonin Delpeuch
  *
  */
 @JsonInclude(Include.NON_EMPTY)

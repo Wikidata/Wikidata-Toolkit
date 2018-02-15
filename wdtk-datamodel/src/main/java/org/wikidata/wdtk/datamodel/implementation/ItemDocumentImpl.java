@@ -45,13 +45,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * Jackson implementation of {@link ItemDocument}. Like all Jackson objects, it
- * is not technically immutable, but it is strongly recommended to treat it as
- * such in all contexts: the setters are for Jackson; never call them in your
- * code.
+ * Jackson implementation of {@link ItemDocument}.
  *
  * @author Fredo Erxleben
- *
+ * @author Antonin Delpeuch
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDocumentImpl extends TermedStatementDocumentImpl

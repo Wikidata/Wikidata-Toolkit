@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
  * present in JSON but needed to satisfy the interface.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 public class DatatypeIdImpl implements DatatypeIdValue {

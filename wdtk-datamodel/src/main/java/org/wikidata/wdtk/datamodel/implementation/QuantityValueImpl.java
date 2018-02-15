@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -41,7 +40,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link QuantityValue}.
  *
  * @author Fredo Erxleben
- *
+ * @author Antonin Delpeuch
+ * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = None.class)
@@ -82,7 +82,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
-	public QuantityValueImpl(
+	protected QuantityValueImpl(
 			@JsonProperty("value") JacksonInnerQuantity value) {
 		super(JSON_VALUE_TYPE_QUANTITY);
 		this.value = value;

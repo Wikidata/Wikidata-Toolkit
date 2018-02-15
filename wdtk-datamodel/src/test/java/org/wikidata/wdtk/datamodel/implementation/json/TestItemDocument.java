@@ -159,7 +159,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testItemIdToJson() throws JsonProcessingException {
-		ItemDocumentImpl document = JsonTestData.getEmtpyTestItemDocument();
+		ItemDocumentImpl document = JsonTestData.getEmptyTestItemDocument();
 
 		String result = mapper.writeValueAsString(document);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,

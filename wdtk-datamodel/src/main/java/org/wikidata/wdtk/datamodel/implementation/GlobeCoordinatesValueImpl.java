@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link GlobeCoordinatesValue}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
+ * @author Markus Kroetzsch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -55,9 +57,13 @@ public class GlobeCoordinatesValueImpl extends ValueImpl implements
 	 * Constructor.
 	 * 
 	 * @param latitude
+	 *            the latitude of the coordinates in degrees
 	 * @param longitude
+	 *            the longitude of the coordinates in degrees
 	 * @param precision
-	 * @param globe
+	 *            the precision of the coordinates in degrees
+	 * @param globeIri
+	 *            IRI specifying the celestial objects of the coordinates
 	 */
 	public GlobeCoordinatesValueImpl(double latitude, double longitude,
 			double precision, String globe) {
@@ -71,7 +77,7 @@ public class GlobeCoordinatesValueImpl extends ValueImpl implements
 	 * Constructor for deserialization from JSON via Jackson.
 	 */
 	@JsonCreator
-	public GlobeCoordinatesValueImpl(
+	protected GlobeCoordinatesValueImpl(
 			@JsonProperty("value") JacksonInnerGlobeCoordinates innerCoordinates) {
 		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
 		this.value = innerCoordinates;

@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Jackson implementation of {@link TimeValue}.
  *
  * @author Fredo Erxleben
+ * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

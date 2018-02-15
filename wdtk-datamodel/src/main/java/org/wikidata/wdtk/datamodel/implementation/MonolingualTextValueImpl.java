@@ -72,7 +72,7 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
-	public MonolingualTextValueImpl(
+	protected MonolingualTextValueImpl(
 			@JsonProperty("value") JacksonInnerMonolingualText value) {
 		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
 		this.value = value;

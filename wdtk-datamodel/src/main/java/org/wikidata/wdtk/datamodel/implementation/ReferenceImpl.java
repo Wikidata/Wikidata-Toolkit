@@ -39,14 +39,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Jackson implementation of {@link Reference}.
  *
  * @author Fredo Erxleben
  * @author Markus Kroetzsch
- *
+ * @author Antonin Delpeuch
+ * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferenceImpl implements Reference {
@@ -66,7 +66,12 @@ public class ReferenceImpl implements Reference {
 	
 	/**
 	 * Constructor.
+	 * <p>
+	 * The order of the snaks groups provided will be respected.
+	 * the properties used by the snak groups should be distinct.
+	 * 
 	 * @param groups
+	 * 		the snaks group which form the reference
 	 */
 	public ReferenceImpl(List<SnakGroup> groups) {
 		this.propertyOrder = groups.stream()
@@ -82,7 +87,7 @@ public class ReferenceImpl implements Reference {
 	 * @param propertyOrder
 	 */
 	@JsonCreator
-	public ReferenceImpl(
+	protected ReferenceImpl(
 			@JsonProperty("snaks") Map<String, List<SnakImpl>> snaks,
 			@JsonProperty("snaks-order") List<String> propertyOrder) {
 		this.snaks = new HashMap<>(snaks.size());

@@ -49,6 +49,7 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 	
 	/**
 	 * Constructor.
+	 * 
 	 * @param id
 	 * 		the identifier of the entity, such as "P42"
 	 * @param siteIri
@@ -65,7 +66,7 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 	 * Constructor used to deserialize an object from JSON with Jackson
 	 */
 	@JsonCreator
-	public PropertyIdValueImpl(
+	protected PropertyIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject("siteIri") String siteIri) {
 		super(value, siteIri);

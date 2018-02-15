@@ -43,6 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * provides a suitable view.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  */
 public class ClaimImpl implements Claim {
 

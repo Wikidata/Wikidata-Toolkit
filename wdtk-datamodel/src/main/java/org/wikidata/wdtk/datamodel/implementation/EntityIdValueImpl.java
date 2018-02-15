@@ -75,7 +75,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * Constructor used for deserialization with Jackson.
 	 */
 	@JsonCreator
-	public EntityIdValueImpl(
+	protected EntityIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);

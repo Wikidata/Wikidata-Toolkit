@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Jackson implementation of {@link NoValueSnak}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -43,6 +44,9 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 	
 	/**
 	 * Constructor.
+	 * 
+	 * @param property
+	 * 		the property id used by this no value snak
 	 */
 	public NoValueSnakImpl(PropertyIdValue property) {
 		super(property.getId(), property.getSiteIri());

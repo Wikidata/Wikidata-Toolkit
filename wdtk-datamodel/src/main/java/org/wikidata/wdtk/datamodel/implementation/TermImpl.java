@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * which is implemented in {@link MonolingualTextValueImpl}.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

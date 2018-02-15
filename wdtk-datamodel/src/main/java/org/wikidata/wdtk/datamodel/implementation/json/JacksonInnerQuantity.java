@@ -37,7 +37,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * represent values of type {@link ValueImpl#JSON_VALUE_TYPE_QUANTITY}.
  *
  * @author Fredo Erxleben
- *
+ * @author Antonin Delpeuch
+ * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerQuantity {
@@ -52,9 +53,13 @@ public class JacksonInnerQuantity {
 	 * the empty string meaning "no unit".
 	 *
 	 * @param amount
-	 * @param upperBound
+	 * 		the main value of this quantity
 	 * @param lowerBound
+	 * 		the lower bound of this quantity
+	 * @param upperBound
+	 * 		the upper bound of this quantity
 	 * @param unit
+	 * 		the unit of this string, as an IRI to the relevant entity
 	 */
 	@JsonCreator
 	public JacksonInnerQuantity(

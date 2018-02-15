@@ -44,12 +44,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Jackson implementation of {@link Statement}. In JSON, the corresponding
  * structures are referred to as "claim".
- * <p>
- * Like all Jackson objects, it is not technically immutable, but it is strongly
- * recommended to treat it as such in all contexts: the setters are for Jackson;
- * never call them in your code.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 public class StatementImpl extends JacksonPreStatement implements Statement {
@@ -58,9 +55,8 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	 * The subject entity that this statement refers to. This is needed since it
 	 * is not part of the JSON serialization of statements, but is needed in
 	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
-	 * information after each deserialization using
-	 * {@link JacksonPreStatement#setSubject(EntityIdValue)}
-	 * .
+	 * information after each deserialization in
+	 * {@link JacksonTermedStatementDocument}.
 	 */
 	@JsonIgnore
 	private final EntityIdValue subject;
