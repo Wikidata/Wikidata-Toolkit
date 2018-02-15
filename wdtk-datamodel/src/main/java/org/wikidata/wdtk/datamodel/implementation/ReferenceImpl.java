@@ -1,5 +1,6 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 /*
@@ -115,7 +116,7 @@ public class ReferenceImpl implements Reference {
 	 * @return the map of snaks
 	 */
 	public Map<String, List<Snak>> getSnaks() {
-		return this.snaks;
+		return Collections.unmodifiableMap(this.snaks);
 	}
 
 	/**
@@ -126,7 +127,7 @@ public class ReferenceImpl implements Reference {
 	 */
 	@JsonProperty("snaks-order")
 	public List<String> getPropertyOrder() {
-		return this.propertyOrder;
+		return Collections.unmodifiableList(this.propertyOrder);
 	}
 
 	@Override

@@ -77,7 +77,7 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public List<Statement> getStatements() {
-		return this.statements;
+		return Collections.unmodifiableList(this.statements);
 	}
 
 	@Override

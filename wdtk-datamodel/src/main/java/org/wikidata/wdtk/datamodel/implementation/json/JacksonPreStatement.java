@@ -183,7 +183,7 @@ public class JacksonPreStatement {
 	 * @return "references"
 	 */
 	public List<Reference> getReferences() {
-		return this.references;
+		return Collections.unmodifiableList(this.references);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class JacksonPreStatement {
 	 * @return qualifiers
 	 */
 	public Map<String, List<Snak>> getQualifiers() {
-		return this.qualifiers;
+		return Collections.unmodifiableMap(this.qualifiers);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class JacksonPreStatement {
 	 */
 	@JsonProperty("qualifiers-order")
 	public List<String> getPropertyOrder() {
-		return this.propertyOrder;
+		return Collections.unmodifiableList(this.propertyOrder);
 	}
 
 	@JsonIgnore

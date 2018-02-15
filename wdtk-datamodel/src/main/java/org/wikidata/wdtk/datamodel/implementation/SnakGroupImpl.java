@@ -68,7 +68,7 @@ public class SnakGroupImpl implements SnakGroup {
 
 	@Override
 	public List<Snak> getSnaks() {
-		return this.snaks;
+		return Collections.unmodifiableList(this.snaks);
 	}
 
 	@Override
