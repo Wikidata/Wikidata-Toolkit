@@ -66,6 +66,35 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedDocument {
 
 	protected final Map<String, List<MonolingualTextValue>> aliases;
+	
+	@JsonDeserialize(contentAs=TermImpl.class)
+	protected final Map<String, MonolingualTextValue> labels;
+	@JsonDeserialize(contentAs=TermImpl.class)
+	protected final Map<String, MonolingualTextValue> descriptions;
+
+	/**
+	 * This is what is called <i>claim</i> in the JSON model. It corresponds to
+	 * the statement group in the WDTK model.
+	 */
+	protected final Map<String, List<Statement>> claims;
+
+	/**
+	 * Statement groups. This member is initialized when statements are
+	 * accessed.
+	 */
+	private List<StatementGroup> statementGroups = null;
+
+	/**
+	 * The id of the entity that the document refers to. This is not mapped to
+	 * JSON directly by Jackson but split into two fields, "type" and "id". The
+	 * type field is ignored during deserialization since the type is clear for
+	 * a concrete document. For serialization, the type is hard-coded.
+	 * <p>
+	 * The site IRI, which would also be required to create a complete
+	 * {@link EntityIdValue}, is not encoded in JSON. It needs to be injected
+	 * from the outside (if not, we default to Wikidata).
+	 */
+	protected final String entityId;
 
 	protected final Map<String, MonolingualTextValue> labels;
 
@@ -140,6 +169,41 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 		} else {
 			this.aliases = Collections.emptyMap();
 		}
+	}
+	
+	/**
+	 * Protected constructor provided to ease the creation
+	 * of copies. No check is made and each field is reused without
+	 * copying.
+	 * 
+	 * @param labels
+	 * 		a map from language codes to monolingual values with
+	 * 	    the same language codes
+	 * @param descriptions
+	 * 		a map from language codes to monolingual values with
+	 * 	    the same language codes 	    
+	 * @param aliases
+	 * 		a map from language codes to lists of monolingual values
+	 *      with the same language codes
+	 * @param statementGroups
+	 * @param revisionId
+	 */
+	protected TermedStatementDocumentImpl(
+			String entityId,
+			String siteIri,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, List<Statement>> claims,
+			long revisionId) {
+		this.entityId = entityId;
+		this.labels = labels;
+		this.descriptions = descriptions;
+		this.aliases = aliases;
+		this.claims = claims;
+		this.statementGroups = null;
+		this.revisionId = revisionId;
+		this.siteIri = siteIri;
 	}
 
 

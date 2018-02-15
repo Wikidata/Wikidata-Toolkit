@@ -24,11 +24,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -116,6 +118,23 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 		}
 	}
 
+	/**
+	 * Protected constructor, meant to be used to create modified copies
+	 * of instances.
+	 */
+	protected ItemDocumentImpl(
+			String itemId,
+			String siteIri,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, List<Statement>> claims, 
+			Map<String, SiteLink> siteLinks,
+			long revisionId) {
+		super(itemId, siteIri, labels, descriptions, aliases, claims, revisionId);
+		this.sitelinks = siteLinks;
+	}
+
 	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
@@ -147,5 +166,64 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public ItemDocument withRevisionId(long newRevisionId) {
+		return new ItemDocumentImpl(entityId, siteIri,
+				labels,	descriptions,
+				aliases, claims,
+				sitelinks, newRevisionId);
+	}
+
+	@Override
+	public ItemDocument withLabel(MonolingualTextValue newLabel) {
+		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
+		newLabels.put(newLabel.getLanguageCode(), newLabel);
+		return new ItemDocumentImpl(entityId, siteIri,
+				newLabels, descriptions,
+				aliases, claims,
+				sitelinks, revisionId);
+	}
+
+	@Override
+	public ItemDocument withDescription(MonolingualTextValue newDescription) {
+		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
+		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
+		return new ItemDocumentImpl(entityId, siteIri,
+				labels, newDescriptions,
+				aliases, claims,
+				sitelinks, revisionId);
+	}
+
+	@Override
+	public ItemDocument withAliases(String language, List<MonolingualTextValue> aliases) {
+		Map<String, List<MonolingualTextValue>> newAliases = new HashMap<>(this.aliases);
+		for(MonolingualTextValue alias : aliases) {
+			Validate.isTrue(alias.getLanguageCode().equals(language));
+		}
+		newAliases.put(language, aliases);
+		return new ItemDocumentImpl(entityId, siteIri,
+				labels, descriptions,
+				newAliases, claims,
+				sitelinks, revisionId);
+	}
+
+	@Override
+	public ItemDocument withStatement(Statement statement) {
+		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
+		return new ItemDocumentImpl(entityId, siteIri,
+				labels, descriptions,
+				aliases, newGroups,
+				sitelinks, revisionId);
+	}
+
+	@Override
+	public ItemDocument withoutStatementIds(Set<String> statementIds) {
+		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
+		return new ItemDocumentImpl(entityId, siteIri,
+				labels, descriptions,
+				aliases, newGroups,
+				sitelinks, revisionId);
 	}
 }

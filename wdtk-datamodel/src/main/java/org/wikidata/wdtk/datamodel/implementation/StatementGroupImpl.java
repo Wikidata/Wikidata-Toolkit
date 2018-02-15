@@ -21,6 +21,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.util.AbstractCollection;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -107,4 +109,23 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 		return ToString.toString(this);
 	}
 
+	@Override
+	public StatementGroup withStatement(Statement statement) {
+		String statementId = statement.getStatementId();
+		boolean statementAdded = false;
+		List<Statement> newStatements = new ArrayList<>(this.statements);
+		if (!statementId.isEmpty()) {
+			for(int i = 0; i != newStatements.size(); i++) {
+				String currentStatementId = newStatements.get(i).getStatementId();
+				if (currentStatementId.equals(statementId)) {
+					newStatements.set(i, statement);
+					statementAdded = true;
+				}
+			}
+		}
+		if (!statementAdded) {
+			newStatements.add(statement);
+		}
+		return new StatementGroupImpl(newStatements);
+	}
 }
