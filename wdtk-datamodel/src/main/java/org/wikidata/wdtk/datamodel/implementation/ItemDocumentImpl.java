@@ -126,11 +126,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
-		if (this.siteIri == null) {
-			return Datamodel.makeWikidataItemIdValue(this.entityId);
-		} else {
-			return Datamodel.makeItemIdValue(this.entityId, this.siteIri);
-		}
+		return Datamodel.makeItemIdValue(this.entityId, this.siteIri);
 	}
 
 	@JsonIgnore

@@ -185,24 +185,28 @@ public class PropertyDocumentImplTest {
 				statementGroups, datatypeId, 1234);
 	}
 
+	@Test
 	public void labelsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, null, descriptions, aliases,
 				statementGroups, datatypeId, 1234);
 		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getLabels());
 	}
 
+	@Test
 	public void descriptionsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
 				datatypeId, 1234);
 		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getDescriptions());
 	}
 
+	@Test
 	public void aliasesCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, null,
 				statementGroups, datatypeId, 1234);
 		assertEquals(Collections.<String, List<MonolingualTextValue>>emptyMap(), doc.getAliases());
 	}
 
+	@Test
 	public void statementGroupsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
 				datatypeId, 1234);

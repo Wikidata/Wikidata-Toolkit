@@ -190,9 +190,10 @@ public abstract class TermedStatementDocumentImpl extends
 			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
-		this.entityId = jsonId;
-		this.siteIri = siteIri;
 		Validate.notNull(jsonId);
+		this.entityId = jsonId;
+		Validate.notNull(siteIri);
+		this.siteIri = siteIri;
 		if (labels != null) {
 			this.labels = labels;
 		} else {
@@ -348,14 +349,6 @@ public abstract class TermedStatementDocumentImpl extends
 			} else {
 				aliases.add(castTerm);
 			}
-		}
-		return map;
-	}
-	
-	protected static Map<String,List<Statement>> constructStatementMap(List<StatementGroup> groups) {
-		Map<String,List<Statement>> map = new HashMap<>();
-		for(StatementGroup group : groups) {
-			map.put(group.getProperty().getId(), group.getStatements());
 		}
 		return map;
 	}

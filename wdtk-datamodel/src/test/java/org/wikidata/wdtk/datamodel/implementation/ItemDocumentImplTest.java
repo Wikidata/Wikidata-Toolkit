@@ -157,6 +157,7 @@ public class ItemDocumentImplTest {
 				statementGroups, sitelinks, 1234);
 	}
 
+	@Test
 	public void labelsCanBeNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid, null,
 				Collections.<MonolingualTextValue> emptyList(),
@@ -165,6 +166,7 @@ public class ItemDocumentImplTest {
 		assertTrue(doc.getLabels().isEmpty());
 	}
 
+	@Test
 	public void descriptionsNotNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(), null,
@@ -173,6 +175,7 @@ public class ItemDocumentImplTest {
 		assertTrue(doc.getDescriptions().isEmpty());
 	}
 
+	@Test
 	public void aliasesCanBeNull() {
 		ItemDocument doc =new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),
@@ -181,6 +184,7 @@ public class ItemDocumentImplTest {
 		assertTrue(doc.getAliases().isEmpty());
 	}
 
+	@Test
 	public void statementGroupsCanBeNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid,
 				Collections.<MonolingualTextValue> emptyList(),

@@ -116,4 +116,88 @@ public class TestDatatypeId extends JsonTestData {
 	public void testIriForInvalidType() {
 		DatatypeIdImpl.getDatatypeIriFromJsonDatatype("some wrong type");
 	}
+	
+	@Test
+	public void testJsonForItem() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_ITEM),
+				DatatypeIdImpl.JSON_DT_ITEM);
+	}
+
+	@Test
+	public void testJsonForProperty() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_PROPERTY),
+				DatatypeIdImpl.JSON_DT_PROPERTY);
+	}
+
+	@Test
+	public void testJsonForCoordinate() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_GLOBE_COORDINATES),
+				DatatypeIdImpl.JSON_DT_GLOBE_COORDINATES);
+	}
+
+	@Test
+	public void testJsonForTime() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_TIME),
+				DatatypeIdImpl.JSON_DT_TIME);
+	}
+
+	@Test
+	public void testJsonForString() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_STRING),
+				DatatypeIdImpl.JSON_DT_STRING);
+	}
+
+	@Test
+	public void testJsonForQuantity() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_QUANTITY),
+				DatatypeIdImpl.JSON_DT_QUANTITY);
+	}
+
+	@Test
+	public void testJsonForCommons() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_COMMONS_MEDIA),
+				DatatypeIdImpl.JSON_DT_COMMONS_MEDIA);
+	}
+
+	@Test
+	public void testJsonForExternalId() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_EXTERNAL_ID),
+				DatatypeIdImpl.JSON_DT_EXTERNAL_ID);
+	}
+
+	@Test
+	public void testJsonForMath() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_MATH),
+				DatatypeIdImpl.JSON_DT_MATH);
+	}
+
+	@Test
+	public void testJsonForGeoShape() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_GEO_SHAPE),
+				DatatypeIdImpl.JSON_DT_GEO_SHAPE);
+	}
+
+	@Test
+	public void testJsonForUrl() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_URL),
+				DatatypeIdImpl.JSON_DT_URL);
+	}
+
+	@Test
+	public void testJsonForMonolingualText() {
+		assertEquals(
+				DatatypeIdImpl.getJsonDatatypeFromDatatypeIri(DatatypeIdImpl.DT_MONOLINGUAL_TEXT),
+				DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT);
+	}
 }

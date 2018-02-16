@@ -50,6 +50,7 @@ public class TestSiteLink {
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
 	}
 
+	@Test
 	public void testSiteLinkToJava() throws
 			IOException {
 		SiteLinkImpl result = mapper.readValue(JsonTestData.JSON_SITE_LINK,

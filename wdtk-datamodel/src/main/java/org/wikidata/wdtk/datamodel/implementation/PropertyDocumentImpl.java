@@ -126,11 +126,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		if (this.siteIri == null) {
-			return Datamodel.makeWikidataPropertyIdValue(this.entityId);
-		} else {
-			return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
-		}
+		return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
 	}
 
 	@JsonIgnore
