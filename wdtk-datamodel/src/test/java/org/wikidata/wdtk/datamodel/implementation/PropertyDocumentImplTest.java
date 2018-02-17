@@ -21,6 +21,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+
 
 public class PropertyDocumentImplTest {
 
@@ -271,6 +275,28 @@ public class PropertyDocumentImplTest {
 
 		PropertyDocument withAlias = pd1.withAliases("en", Collections.singletonList(newAlias));
 		assertEquals(Collections.singletonList(newAlias), withAlias.getAliases().get("en"));
+	}
+	
+	@Test
+	public void testAddStatement() {
+		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
+				Collections.emptyList(), Collections.emptyList(), pid);
+		Claim claim = fresh.getClaim();
+		assertFalse(pd1.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+		PropertyDocument withStatement = pd1.withStatement(fresh);
+		assertTrue(withStatement.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+	}
+	
+	@Test
+	public void testDeleteStatements() {
+		Statement toRemove = statementGroups.get(0).getStatements().get(0);
+		PropertyDocument withoutStatement = pd1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
+		assertNotEquals(withoutStatement, pd1);
 	}
 	
 }
