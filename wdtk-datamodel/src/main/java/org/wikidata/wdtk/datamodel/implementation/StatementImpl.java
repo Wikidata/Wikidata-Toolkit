@@ -228,9 +228,8 @@ public class StatementImpl implements Statement {
 	public Statement withStatementId(String id) {
 		return new StatementImpl(id,
 				getRank(),
-				getMainsnak(),
+				getMainSnak(),
 				getQualifiers(),
-				getPropertyOrder(),
 				getReferences(),
 				getSubject());
 	}

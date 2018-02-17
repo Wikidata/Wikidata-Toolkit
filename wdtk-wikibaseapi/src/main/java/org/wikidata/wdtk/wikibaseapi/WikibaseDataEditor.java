@@ -34,6 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
@@ -50,13 +51,19 @@ public class WikibaseDataEditor {
 	/**
 	 * API Action to edit data.
 	 */
-	final WbEditingAction wbEditEntityAction;
+	final WbEditingAction wbEditingAction;
 
 	/**
 	 * Helper class to read data. Used for checking the state of the online data
 	 * before editing.
 	 */
 	final WikibaseDataFetcher wikibaseDataFetcher;
+	
+	/**
+	 * GUID generator, for editing actions that require generating fresh GUIDs
+	 * client-side.
+	 */
+	final GuidGenerator guidGenerator;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -83,9 +90,33 @@ public class WikibaseDataEditor {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataEditor(ApiConnection connection, String siteUri) {
-		this.wbEditEntityAction = new WbEditingAction(connection, siteUri);
+		this.wbEditingAction = new WbEditingAction(connection, siteUri);
 		this.wikibaseDataFetcher = new WikibaseDataFetcher(connection, siteUri);
 		this.siteIri = siteUri;
+		this.guidGenerator = new RandomGuidGenerator();
+	}
+	
+	/**
+	 * Creates an object to edit data via the Web API of the given
+	 * {@link ApiConnection} object. The site URI is necessary to create data
+	 * objects from API responses, since it is not contained in the data
+	 * retrieved from the URI.
+	 *
+	 * @param connection
+	 *            ApiConnection
+	 * @param siteUri
+	 *            the URI identifying the site that is accessed (usually the
+	 *            prefix of entity URIs), e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @param generator
+	 * 			  the generator to use when creating fresh GUIDs for statements,
+	 *            snaks or references
+	 */
+	public WikibaseDataEditor(ApiConnection connection, String siteUri, GuidGenerator generator) {
+		this.wbEditingAction = new WbEditingAction(connection, siteUri);
+		this.wikibaseDataFetcher = new WikibaseDataFetcher(connection, siteUri);
+		this.siteIri = siteUri;
+		this.guidGenerator = generator;
 	}
 
 	/**
@@ -120,7 +151,7 @@ public class WikibaseDataEditor {
 	 * @return current setting of the maxlag parameter
 	 */
 	public int getMaxLag() {
-		return this.wbEditEntityAction.getMaxLag();
+		return this.wbEditingAction.getMaxLag();
 	}
 
 	/**
@@ -131,7 +162,7 @@ public class WikibaseDataEditor {
 	 *            the new value in seconds
 	 */
 	public void setMaxLag(int maxLag) {
-		this.wbEditEntityAction.setMaxLag(maxLag);
+		this.wbEditingAction.setMaxLag(maxLag);
 	}
 
 	/**
@@ -142,7 +173,7 @@ public class WikibaseDataEditor {
 	 * @return average time per edit in milliseconds
 	 */
 	public int getAverageTimePerEdit() {
-		return this.wbEditEntityAction.getAverageTimePerEdit();
+		return this.wbEditingAction.getAverageTimePerEdit();
 	}
 
 	/**
@@ -154,7 +185,7 @@ public class WikibaseDataEditor {
 	 *            the new value in milliseconds
 	 */
 	public void setAverageTimePerEdit(int milliseconds) {
-		this.wbEditEntityAction.setAverageTimePerEdit(milliseconds);
+		this.wbEditingAction.setAverageTimePerEdit(milliseconds);
 	}
 
 	/**
@@ -166,7 +197,7 @@ public class WikibaseDataEditor {
 	 * @return number of remaining edits
 	 */
 	public int getRemainingEdits() {
-		return this.wbEditEntityAction.getRemainingEdits();
+		return this.wbEditingAction.getRemainingEdits();
 	}
 
 	/**
@@ -178,7 +209,7 @@ public class WikibaseDataEditor {
 	 *            this limit (default setting)
 	 */
 	public void setRemainingEdits(int remainingEdits) {
-		this.wbEditEntityAction.setRemainingEdits(remainingEdits);
+		this.wbEditingAction.setRemainingEdits(remainingEdits);
 	}
 
 	/**
@@ -186,7 +217,7 @@ public class WikibaseDataEditor {
 	 * simulated but not actually send to the API.
 	 */
 	public void disableEditing() {
-		this.wbEditEntityAction.setRemainingEdits(0);
+		this.wbEditingAction.setRemainingEdits(0);
 	}
 
 	/**
@@ -213,7 +244,7 @@ public class WikibaseDataEditor {
 	public ItemDocument createItemDocument(ItemDocument itemDocument,
 			String summary) throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
-		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(null, null,
+		return (ItemDocument) this.wbEditingAction.wbEditEntity(null, null,
 				null, "item", data, false, this.editAsBot, 0, summary);
 	}
 
@@ -243,7 +274,7 @@ public class WikibaseDataEditor {
 			PropertyDocument propertyDocument, String summary)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
-		return (PropertyDocument) this.wbEditEntityAction
+		return (PropertyDocument) this.wbEditingAction
 				.wbEditEntity(null, null, null, "property", data, false,
 						this.editAsBot, 0, summary);
 	}
@@ -288,7 +319,7 @@ public class WikibaseDataEditor {
 			boolean clear, String summary) throws IOException,
 			MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
-		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(itemDocument
+		return (ItemDocument) this.wbEditingAction.wbEditEntity(itemDocument
 				.getEntityId().getId(), null, null, null, data, clear,
 				this.editAsBot, itemDocument.getRevisionId(), summary);
 	}
@@ -333,7 +364,7 @@ public class WikibaseDataEditor {
 			PropertyDocument propertyDocument, boolean clear, String summary)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
-		return (PropertyDocument) this.wbEditEntityAction.wbEditEntity(
+		return (PropertyDocument) this.wbEditingAction.wbEditEntity(
 				propertyDocument.getEntityId().getId(), null, null, null,
 				data, clear, this.editAsBot, propertyDocument.getRevisionId(),
 				summary);
@@ -498,11 +529,12 @@ public class WikibaseDataEditor {
 
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
+		statementUpdate.setGuidGenerator(guidGenerator);
 		
 		if (statementUpdate.isEmptyEdit()) {
 			return currentDocument;
 		} else {
-			return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
+			return (T) this.wbEditingAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), summary);
@@ -516,7 +548,7 @@ public class WikibaseDataEditor {
 	 * happen. The references of duplicate statements will be merged. The labels
 	 * and aliases in a given language are kept distinct.
 	 * 
-     * @param currentDocument
+         * @param currentDocument
 	 * 			the document to be updated; needs to have a correct revision id and
 	 * 			entity id
 	 * @param addLabels
@@ -545,7 +577,8 @@ public class WikibaseDataEditor {
 	 * @throws IOException
 	 *          if there are any IO errors, such as missing network connection
 	 */
-	public ItemDocument updateTermsStatements(ItemDocument currentDocument,
+	@SuppressWarnings("unchecked")
+	public <T extends TermedStatementDocument> T updateTermsStatements(T currentDocument,
 			List<MonolingualTextValue> addLabels,
 			List<MonolingualTextValue> addDescriptions,
 			List<MonolingualTextValue> addAliases,
@@ -553,18 +586,13 @@ public class WikibaseDataEditor {
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary) throws MediaWikiApiErrorException, IOException {
 		
-		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(currentDocument,
+		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(
+				(TermedStatementDocument)currentDocument,
 				addStatements, deleteStatements,
 				addLabels, addDescriptions, addAliases, deleteAliases);
+		termStatementUpdate.setGuidGenerator(guidGenerator);
 		
-		if (termStatementUpdate.isEmptyEdit()) {
-			return currentDocument;
-		} else {
-			return (ItemDocument) this.wbEditEntityAction.wbEditEntity(currentDocument
-				.getEntityId().getId(), null, null, null, termStatementUpdate
-				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), summary);
-		}
+		return  (T) termStatementUpdate.performEdit(wbEditingAction, editAsBot, summary);
 	}
 	
 	/**
@@ -578,7 +606,7 @@ public class WikibaseDataEditor {
 	 * @throws IOException 
 	 * 		    if there are any IO errors, such as missing network connection
 	 */
-	public <T extends StatementDocument> void nullEdit(ItemIdValue itemId, String summary)
+	public <T extends StatementDocument> void nullEdit(ItemIdValue itemId)
 			throws IOException, MediaWikiApiErrorException {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
 				.getEntityDocument(itemId.getId());
@@ -621,8 +649,9 @@ public class WikibaseDataEditor {
 			throws IOException, MediaWikiApiErrorException {
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				Collections.<Statement>emptyList(), Collections.<Statement>emptyList());
+		statementUpdate.setGuidGenerator(guidGenerator);
 		
-	    return (T) this.wbEditEntityAction.wbEditEntity(currentDocument
+	    return (T) this.wbEditingAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
 				.getRevisionId(), null);

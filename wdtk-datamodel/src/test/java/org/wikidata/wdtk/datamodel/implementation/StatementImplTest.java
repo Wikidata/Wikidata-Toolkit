@@ -93,8 +93,7 @@ public class StatementImplTest {
 	
 	@Test
 	public void withId() {
-		Statement statement = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, null);
+		Statement statement = new StatementImpl(null, StatementRank.NORMAL, claim.getMainSnak(), claim.getQualifiers(), Collections.<Reference> emptyList(), claim.getSubject());
 		Statement withId = statement.withStatementId("some id");
 		assertEquals("some id", withId.getStatementId());
 	}

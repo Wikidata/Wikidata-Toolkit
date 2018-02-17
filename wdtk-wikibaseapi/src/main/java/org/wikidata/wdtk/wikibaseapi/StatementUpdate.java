@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
+import java.io.IOException;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -29,14 +31,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Class to plan a statement update operation.
  *
@@ -137,13 +143,23 @@ public class StatementUpdate {
 		public String getRemoveCommand() {
 			return "";
 		}
+
+		@Override
+		public Statement withStatementId(String id) {
+			return null;
+		}
 		
 	}
 
+	private GuidGenerator guidGenerator = new RandomGuidGenerator();
+	private final ObjectMapper mapper;
+	
 	@JsonIgnore
 	final HashMap<PropertyIdValue, List<StatementWithUpdate>> toKeep;
 	@JsonIgnore
 	final List<String> toDelete;
+	@JsonIgnore
+	StatementDocument currentDocument;
 
 	/**
 	 * Constructor. Marks the given lists of statements for being added to or
@@ -161,10 +177,12 @@ public class StatementUpdate {
 	 */
 	public StatementUpdate(StatementDocument currentDocument,
 			List<Statement> addStatements, List<Statement> deleteStatements) {
+		this.currentDocument = currentDocument;
 		this.toKeep = new HashMap<>();
 		this.toDelete = new ArrayList<>();
 		markStatementsForUpdate(currentDocument, addStatements,
 				deleteStatements);
+		this.mapper = new DatamodelMapper(currentDocument.getEntityId().getSiteIri());
 	}
 
 	/**
@@ -175,11 +193,49 @@ public class StatementUpdate {
 	 */
 	@JsonIgnore
 	public String getJsonUpdateString() {
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(this);
 		} catch (JsonProcessingException e) {
 			return ("Failed to serialize statement update to JSON: " + e.toString());
+		}
+	}
+	
+	/**
+	 * Performs the update, selecting the appropriate API action depending on
+	 * the nature of the change.
+	 * 
+	 * @return the new document after update with the API
+	 * @throws MediaWikiApiErrorException 
+	 * @throws IOException 
+	 */
+	public StatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary)
+			throws IOException, MediaWikiApiErrorException {
+		if (isEmptyEdit()) {
+			return currentDocument;
+		} else if (toDelete.isEmpty() && getUpdatedStatements().size() == 1) {
+			// we can use "wbsetclaim" because we only have one statement to change
+			List<Statement> statements = getUpdatedStatements();
+			Statement statement = statements.get(0);
+			
+			if (statement.getStatementId() == null || statement.getStatementId().isEmpty()) {
+				statement = statement.withStatementId(guidGenerator.freshStatementId(currentDocument.getEntityId().getId()));
+
+			}
+			
+			JsonNode response = action.wbSetClaim(
+						JsonSerializer.getJsonString(statement), editAsBot,
+						currentDocument.getRevisionId(), summary);
+			
+			Statement returnedStatement = statement;
+			// TODO parse the returned statement from the response
+			long revisionId = getRevisionIdFromResponse(response);
+			
+			return currentDocument.withStatement(returnedStatement).withRevisionId(revisionId);
+		} else {
+			return (StatementDocument) action.wbEditEntity(currentDocument
+				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
+				false, editAsBot, currentDocument
+				.getRevisionId(), summary);
 		}
 	}
 	
@@ -510,6 +566,67 @@ public class StatementUpdate {
 		}
 
 		return snakCount2 == snakList1.size();
+	}
+	
+	/**
+	 * Sets the GUID generator for this statement update.
+	 */
+	public void setGuidGenerator(GuidGenerator generator) {
+		guidGenerator = generator;
+	}
+
+	
+	/**
+	 * Extracts the last revision id from the JSON response returned
+	 * by the API after an edit
+	 * 
+	 * @param response
+	 * 		the response as returned by Mediawiki
+	 * @return
+	 * 		the new revision id of the edited entity
+	 * @throws JsonMappingException 
+	 */
+	protected long getRevisionIdFromResponse(JsonNode response) throws JsonMappingException {
+		if(response == null) {
+			throw new JsonMappingException("API response is null");
+		}
+		JsonNode entity = null;
+		if(response.has("entity")) {
+			entity = response.path("entity");
+		} else if(response.has("pageinfo")) {
+			entity = response.path("pageinfo");
+		} 
+		if(entity != null && entity.has("lastrevid")) {
+			return entity.path("lastrevid").asLong();
+		}
+		throw new JsonMappingException("The last revision id could not be found in API response");
+	}
+	
+    /**
+     * Extracts a particular data model instance from a JSON response
+     * returned by MediaWiki. The location is described by a list of successive
+     * fields to use, from the root to the target object.
+     * 
+     * @param response
+     * 		the API response as returned by MediaWiki
+     * @param path
+     * 		a list of fields from the root to the target object
+     * @return
+     * 		the parsed POJO object
+     * @throws JsonProcessingException 
+     */
+	protected <T> T getDatamodelObjectFromResponse(JsonNode response, List<String> path, Class<T> targetClass) throws JsonProcessingException {
+		if(response == null) {
+			throw new JsonMappingException("The API response is null");
+		}
+		JsonNode currentNode = response;
+		for(String field : path) {
+			if (!currentNode.has(field)) {
+				throw new JsonMappingException("Field '"+field+"' not found in API response.");
+			}
+			currentNode = currentNode.path(field);
+		}
+		return mapper.treeToValue(currentNode, targetClass);
 	}
 
 }

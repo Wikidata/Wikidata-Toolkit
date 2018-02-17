@@ -34,6 +34,8 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class WbEditingActionTest {
 
 	@Test(expected = IOException.class)
