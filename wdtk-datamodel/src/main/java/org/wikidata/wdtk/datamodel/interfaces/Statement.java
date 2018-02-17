@@ -123,4 +123,11 @@ public interface Statement {
 	 * @return main value of the statement, or null
 	 */
 	Value getValue();
+	
+	/**
+	 * Returns the same statement, but with a different identifier.
+	 * This is useful when the existing identifier was empty and we need to 
+	 * attribute one before creating the statement in a remote Wikibase instance.
+	 */
+	Statement withStatementId(String id);
 }

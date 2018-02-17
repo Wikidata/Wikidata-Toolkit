@@ -225,6 +225,17 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
+	public Statement withStatementId(String id) {
+		return new StatementImpl(id,
+				getRank(),
+				getMainsnak(),
+				getQualifiers(),
+				getPropertyOrder(),
+				getReferences(),
+				getSubject());
+	}
+	
+	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);
 	}

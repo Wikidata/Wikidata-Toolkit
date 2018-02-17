@@ -90,6 +90,14 @@ public class StatementImplTest {
 				Collections.emptyList(), Collections.emptyList(), value);
 		assertEquals(statement.getStatementId(), "");
 	}
+	
+	@Test
+	public void withId() {
+		Statement statement = new StatementImpl(claim, Collections.<Reference> emptyList(),
+				StatementRank.NORMAL, null);
+		Statement withId = statement.withStatementId("some id");
+		assertEquals("some id", withId.getStatementId());
+	}
 
 	@Test
 	public void hashBasedOnContent() {
