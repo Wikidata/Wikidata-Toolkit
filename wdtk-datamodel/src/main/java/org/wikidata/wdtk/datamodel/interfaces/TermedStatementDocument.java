@@ -40,10 +40,10 @@ public interface TermedStatementDocument extends TermedDocument, StatementDocume
 	TermedStatementDocument withLabel(MonolingualTextValue newLabel);
 	
 	@Override
-	TermedDocument withDescription(MonolingualTextValue newDescription);
+	TermedStatementDocument withDescription(MonolingualTextValue newDescription);
 	
 	@Override
-	TermedDocument withAliases(String language, List<MonolingualTextValue> aliases);
+	TermedStatementDocument withAliases(String language, List<MonolingualTextValue> aliases);
 	
 	@Override
 	StatementDocument withStatement(Statement statement);
