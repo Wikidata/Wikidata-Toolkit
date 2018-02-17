@@ -253,6 +253,7 @@ public class StatementImpl implements Statement {
 	 * Helper class for deserializing statements from JSON.
 	 */
 	@JsonIgnoreProperties(ignoreUnknown=true)
+	public
 	static class PreStatement {
 
 		private final String statementId;
