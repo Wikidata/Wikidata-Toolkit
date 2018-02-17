@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
@@ -169,7 +171,79 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 		return Collections.unmodifiableMap(this.labels);
 	}
 
-	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
+	@JsonIgnore
+	public String getSiteIri() {
+		return this.siteIri;
+	}
+
+	@JsonIgnore
+	@Override
+	public List<StatementGroup> getStatementGroups() {
+		if (this.statementGroups == null) {
+			this.statementGroups = new ArrayList<>(this.claims.size());
+			for (List<Statement> statements : this.claims.values()) {
+				this.statementGroups
+						.add(new StatementGroupImpl(statements));
+			}
+		}
+		return this.statementGroups;
+	}
+	
+	/**
+	 * More efficient implementation of findStatementGroup than the
+	 * default one provided in {@link AbstractTermedStatementDocument}
+	 */
+	@Override
+	public StatementGroup findStatementGroup(PropertyIdValue propertyIdValue) {
+		StatementGroup group = findStatementGroup(propertyIdValue.getId());
+		if (group != null && group.getProperty().equals(propertyIdValue)) {
+			return group;
+		}
+		return null;
+	}
+
+	/**
+	 * More efficient implementation of findStatementGroup than the
+	 * default one provided in {@link AbstractTermedStatementDocument}
+	 */
+	@Override
+	public StatementGroup findStatementGroup(String propertyIdValue) {
+		if (this.claims.containsKey(propertyIdValue)) {
+			return new StatementGroupImpl(this.claims.get(propertyIdValue));
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the "claims". Only used by Jackson.
+	 * <p>
+	 * JSON "claims" correspond to statement groups in the WDTK model. You
+	 * should use {@link ItemDocumentImpl#getStatementGroups()} to obtain
+	 * this data.
+	 *
+	 * @return map of statement groups
+	 */
+	@JsonProperty("claims")
+	public Map<String, List<Statement>> getJsonClaims() {
+		return this.claims;
+	}
+	
+	private static class NonZeroFilter {
+		@Override
+		public boolean equals(Object other) {
+			return (other instanceof Long) && (long)other == 0;
+		}
+	}
+
+	@Override
+	@JsonInclude(value=Include.CUSTOM, valueFilter=NonZeroFilter.class)
+	@JsonProperty("lastrevid")
+	public long getRevisionId() {
+		return this.revisionId;
+
+	}
+	
+	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
 		Map<String, MonolingualTextValue> map = new HashMap<>();
 		for(MonolingualTextValue term : terms) {
 			String language = term.getLanguageCode();
