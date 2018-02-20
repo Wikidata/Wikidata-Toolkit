@@ -118,7 +118,7 @@ Line 3</text>
     <id>12345</id>
     <revision>
       <id>10004</id>
-      <parentid>3</parentid>
+      <parentid>10003</parentid>
       <timestamp>2014-02-19T23:34:14Z</timestamp>
       <contributor>
         <ip>127.0.0.4</ip>
@@ -131,7 +131,7 @@ Line 3</text>
     </revision>
     <revision>
       <id>10005</id>
-      <parentid>4</parentid>
+      <parentid>10004</parentid>
       <timestamp>2014-02-19T23:34:15Z</timestamp>
       <contributor>
         <ip>127.0.0.5</ip>
