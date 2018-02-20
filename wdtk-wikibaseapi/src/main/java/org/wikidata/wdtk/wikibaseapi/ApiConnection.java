@@ -215,7 +215,7 @@ public class ApiConnection {
 	 * 		true if login succeeded.
 	 */
 	@JsonCreator
-	protected ApiConnection(
+	private ApiConnection(
 			@JsonProperty("baseUrl") String apiBaseUrl,
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
