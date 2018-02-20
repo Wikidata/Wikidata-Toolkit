@@ -40,7 +40,6 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 

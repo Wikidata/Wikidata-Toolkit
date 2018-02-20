@@ -208,8 +208,11 @@ public class ApiConnection {
 	 * Deserializes an existing ApiConnection from JSON.
 	 * 
 	 * @param apiBaseUrl
+	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
 	 * @param cookies
+	 * 		map of cookies used for this session
 	 * @param loggedIn
+	 * 		true if login succeeded.
 	 */
 	@JsonCreator
 	protected ApiConnection(
