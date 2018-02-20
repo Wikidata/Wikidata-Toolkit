@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,10 @@ import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,6 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Michael Guenther
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiConnection {
 
 	static final Logger logger = LoggerFactory.getLogger(ApiConnection.class);
@@ -172,12 +178,13 @@ public class ApiConnection {
 	/**
 	 * Password used to log in.
 	 */
+	@JsonIgnore
 	String password = "";
 
 	/**
 	 * Map of cookies that are currently set.
 	 */
-	final Map<String, String> cookies = new HashMap<>();
+	final Map<String, String> cookies;
 
 	/**
 	 * Mapper object used for deserializing JSON data.
@@ -194,6 +201,29 @@ public class ApiConnection {
 	 */
 	public ApiConnection(String apiBaseUrl) {
 		this.apiBaseUrl = apiBaseUrl;
+		this.cookies = new HashMap<>();
+	}
+	
+	/**
+	 * Deserializes an existing ApiConnection from JSON.
+	 * 
+	 * @param apiBaseUrl
+	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
+	 * @param cookies
+	 * 		map of cookies used for this session
+	 * @param loggedIn
+	 * 		true if login succeeded.
+	 */
+	@JsonCreator
+	private ApiConnection(
+			@JsonProperty("baseUrl") String apiBaseUrl,
+			@JsonProperty("cookies") Map<String, String> cookies,
+			@JsonProperty("username") String username,
+			@JsonProperty("loggedIn") boolean loggedIn) {
+		this.apiBaseUrl = apiBaseUrl;
+		this.username = username;
+		this.cookies = cookies;
+		this.loggedIn = loggedIn;
 	}
 
 	/**
@@ -270,6 +300,7 @@ public class ApiConnection {
 	 *
 	 * @return true if the connection is in a logged in state
 	 */
+	@JsonProperty("loggedIn")
 	public boolean isLoggedIn() {
 		return this.loggedIn;
 	}
@@ -280,8 +311,17 @@ public class ApiConnection {
 	 *
 	 * @return name of the logged in user
 	 */
+	@JsonProperty("username")
 	public String getCurrentUser() {
 		return this.username;
+	}
+	
+	/**
+	 * Returns the map of cookies currently used in this connection.
+	 */
+	@JsonProperty("cookies")
+	public Map<String, String> getCookies() {
+		return Collections.unmodifiableMap(this.cookies);
 	}
 
 	/**

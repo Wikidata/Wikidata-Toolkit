@@ -37,11 +37,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,6 +53,12 @@ public class ApiConnectionTest {
 
 	MockApiConnection con;
 
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"loggedIn\":true,\"cookies\":{\"Path\":\"/\","+
+			"\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\","+
+			"\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\","+
+			"\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\","+
+			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
+	
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<String>();
 		StringTokenizer stok = new StringTokenizer(str, "" + ch);
@@ -133,6 +141,37 @@ public class ApiConnectionTest {
 		assertEquals("username", this.con.getCurrentUser());
 		assertEquals("password", this.con.password);
 		assertTrue(this.con.isLoggedIn());
+	}
+		
+
+	@Test
+	public void testSerialize() throws LoginFailedException, IOException {
+		
+		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("Set-Cookie", cookieList);
+		
+		con.login("username", "password");
+		con.fillCookies(headerFields);
+		
+		
+		assertTrue(this.con.isLoggedIn());
+		String jsonSerialization = mapper.writeValueAsString(this.con);
+		JsonNode tree1 = mapper.readTree(LOGGED_IN_SERIALIZED_CONNECTION);
+		JsonNode tree2 = mapper.readTree(jsonSerialization);
+		Assert.assertEquals(tree1, tree2);
+	}
+	
+	@Test
+	public void testDeserialize() throws IOException {
+		
+		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("Set-Cookie", cookieList);
+		
+		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, ApiConnection.class);
+		assertTrue(newConn.isLoggedIn());
+		assertEquals("username", newConn.getCurrentUser());
 	}
 
 	@Test
