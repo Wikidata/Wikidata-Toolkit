@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -29,17 +27,48 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 
-public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak, Serializable {
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private static final long serialVersionUID = -3117177303461177521L;
-
+/**
+ * Jackson implementation of {@link SomeValueSnak}.
+ *
+ * @author Fredo Erxleben
+ *
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
+	
 	/**
 	 * Constructor.
-	 *
-	 * @param propertyId
+	 * 
+	 * @param property
+	 * 		the id of the property used for this some value snak
 	 */
-	SomeValueSnakImpl(PropertyIdValue propertyId) {
-		super(propertyId);
+	public SomeValueSnakImpl(PropertyIdValue property) {
+		super(property.getId(), property.getSiteIri());
+	}
+
+	/**
+	 * Constructor for deserialization from JSON with Jackson.
+	 */
+	@JsonCreator
+	protected SomeValueSnakImpl(
+			@JsonProperty("property") String property,
+			@JacksonInject("siteIri") String siteIri) {
+		super(property, siteIri);
+	}
+	@Override
+	@JsonProperty("snaktype")
+	public String getSnakType() {
+		return SnakImpl.JSON_SNAK_TYPE_SOMEVALUE;
+	}
+  
+	@Override
+	public <T> T accept(SnakVisitor<T> snakVisitor) {
+		return snakVisitor.visit(this);
 	}
 
 	@Override
@@ -50,11 +79,6 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak, Serial
 	@Override
 	public boolean equals(Object obj) {
 		return Equality.equalsSomeValueSnak(this, obj);
-	}
-
-	@Override
-	public <T> T accept(SnakVisitor<T> snakVisitor) {
-		return snakVisitor.visit(this);
 	}
 
 	@Override

@@ -122,4 +122,5 @@ public class SnakImplTest {
 		new ValueSnakImpl(new PropertyIdValueImpl("P42",
 				"http://example.com/entity/"), null);
 	}
+	
 }

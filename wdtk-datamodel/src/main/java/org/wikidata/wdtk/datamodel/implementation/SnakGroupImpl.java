@@ -20,12 +20,12 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -34,16 +34,16 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 /**
- * Implementation of {@link SnakGroup}.
+ * Helper class to represent a {@link SnakGroup} deserialized from JSON. The
+ * actual data is part of a map of lists of {@link SnakImpl} objects in JSON,
+ * so there is no corresponding JSON object.
  *
  * @author Markus Kroetzsch
  *
  */
-public class SnakGroupImpl implements SnakGroup, Serializable {
+public class SnakGroupImpl implements SnakGroup {
 
-	private static final long serialVersionUID = -6497504020405854760L;
-	
-	final List<? extends Snak> snaks;
+	private final List<Snak> snaks;
 
 	/**
 	 * Constructor.
@@ -51,10 +51,10 @@ public class SnakGroupImpl implements SnakGroup, Serializable {
 	 * @param snaks
 	 *            a non-empty list of snaks that use the same property
 	 */
-	SnakGroupImpl(List<? extends Snak> snaks) {
-		Validate.notNull(snaks, "List of statements cannot be null");
-		Validate.notEmpty(snaks, "List of statements cannot be empty");
-
+	public SnakGroupImpl(List<Snak> snaks) {
+		if (snaks == null || snaks.isEmpty()) {
+			throw new IllegalArgumentException("A non-empty list of Snaks must be provided to create a SnakGroup");
+		}
 		PropertyIdValue property = snaks.get(0).getPropertyId();
 
 		for (Snak s : snaks) {
@@ -63,9 +63,7 @@ public class SnakGroupImpl implements SnakGroup, Serializable {
 						"All snaks in a snak group must use the same property");
 			}
 		}
-
-		this.snaks = snaks;
-
+		this.snaks = Collections.<Snak> unmodifiableList(snaks);
 	}
 
 	@Override
@@ -76,6 +74,31 @@ public class SnakGroupImpl implements SnakGroup, Serializable {
 	@Override
 	public PropertyIdValue getProperty() {
 		return this.snaks.get(0).getPropertyId();
+	}
+
+	@Override
+	public Iterator<Snak> iterator() {
+		return this.snaks.iterator();
+	}
+
+	/**
+	 * Construct a list of {@link SnakGroup} objects from a map from property
+	 * ids to snak lists as found in JSON.
+	 *
+	 * @param snaks
+	 *            the map with the data
+	 * @return the result list
+	 */
+	public static List<SnakGroup> makeSnakGroups(
+			Map<String, List<Snak>> snaks, List<String> propertyOrder) {
+
+		List<SnakGroup> result = new ArrayList<>(snaks.size());
+
+		for (String propertyName : propertyOrder) {
+			result.add(new SnakGroupImpl(snaks.get(propertyName)));
+		}
+
+		return result;
 	}
 
 	@Override
@@ -93,9 +116,4 @@ public class SnakGroupImpl implements SnakGroup, Serializable {
 		return ToString.toString(this);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Iterator<Snak> iterator() {
-		return (Iterator<Snak>) this.snaks.iterator();
-	}
 }

@@ -85,7 +85,7 @@ public class QuantityValueImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void lowerBoundNotNull() {
-		new QuantityValueImpl(nv, null, lb, unitMeter);
+		new QuantityValueImpl(nv, null, ub, unitMeter);
 	}
 
 	@Test(expected = NullPointerException.class)

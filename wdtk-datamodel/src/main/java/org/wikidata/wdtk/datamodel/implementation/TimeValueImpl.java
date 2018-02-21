@@ -20,38 +20,38 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
- * Implementation of {@link TimeValue}.
+ * Jackson implementation of {@link TimeValue}.
  *
+ * @author Fredo Erxleben
  * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
  *
  */
-public class TimeValueImpl implements TimeValue, Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class TimeValueImpl extends ValueImpl implements TimeValue {
 
-	private static final long serialVersionUID = 3969248626709737997L;
-
-	final long year;
-	final byte month;
-	final byte day;
-	final byte hour;
-	final byte minute;
-	final byte second;
-	final byte precision;
-	final int timezoneOffset;
-	final int beforeTolerance;
-	final int afterTolerance;
-	final String calendarModel;
-
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
+	private final JacksonInnerTime value;
+	
 	/**
 	 * Constructor.
 	 *
@@ -88,73 +88,97 @@ public class TimeValueImpl implements TimeValue, Serializable {
 	TimeValueImpl(long year, byte month, byte day, byte hour, byte minute,
 			byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
-		Validate.notNull(calendarModel, "Calendar model must not be null");
-		this.year = year;
-		this.month = month;
-		this.day = day;
-		this.hour = hour;
-		this.minute = minute;
-		this.second = second;
-		this.precision = precision;
-		this.beforeTolerance = beforeTolerance;
-		this.afterTolerance = afterTolerance;
-		this.timezoneOffset = timezoneOffset;
-		this.calendarModel = calendarModel;
+		super(JSON_VALUE_TYPE_TIME);
+		this.value = new JacksonInnerTime(
+				year, month, day, hour, minute, second,
+				timezoneOffset, beforeTolerance, afterTolerance,
+				precision, calendarModel);
 	}
 
+	/**
+	 * Constructor used for deserialization from JSON with Jackson.
+	 */
+	@JsonCreator
+	public TimeValueImpl(
+			@JsonProperty("value") JacksonInnerTime value) {
+		super(JSON_VALUE_TYPE_TIME);
+		this.value = value;
+	}
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner time value
+	 */
+	public JacksonInnerTime getValue() {
+		return value;
+	}
+	
+	@JsonIgnore
 	@Override
 	public long getYear() {
-		return this.year;
+		return this.value.getYear();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getMonth() {
-		return this.month;
+		return this.value.getMonth();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getDay() {
-		return this.day;
+		return this.value.getDay();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getHour() {
-		return this.hour;
+		return this.value.getHour();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getMinute() {
-		return this.minute;
+		return this.value.getMinute();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getSecond() {
-		return this.second;
+		return this.value.getSecond();
 	}
 
-	@Override
-	public int getTimezoneOffset() {
-		return this.timezoneOffset;
-	}
-
+	@JsonIgnore
 	@Override
 	public String getPreferredCalendarModel() {
-		return this.calendarModel;
+		return this.value.getCalendarmodel();
 	}
 
+	@JsonIgnore
 	@Override
 	public byte getPrecision() {
-		return this.precision;
+		return (byte) this.value.getPrecision();
 	}
 
+	@JsonIgnore
+	@Override
+	public int getTimezoneOffset() {
+		return this.value.getTimezone();
+	}
+
+	@JsonIgnore
 	@Override
 	public int getBeforeTolerance() {
-		return this.beforeTolerance;
+		return this.value.getBefore();
 	}
 
+	@JsonIgnore
 	@Override
 	public int getAfterTolerance() {
-		return this.afterTolerance;
+		return this.value.getAfter();
 	}
 
 	@Override

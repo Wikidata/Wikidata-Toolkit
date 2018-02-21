@@ -26,10 +26,11 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -52,7 +53,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	 * from individual revisions.
 	 */
 	final String siteIri;
-	final ObjectMapper mapper = new ObjectMapper();
+	final ObjectMapper mapper;
 	// JsonConverter jsonConverter;
 	// final DataObjectFactory dataObjectFactory;
 	final EntityDocumentProcessor entityDocumentProcessor;
@@ -71,6 +72,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		// this.dataObjectFactory = new DataObjectFactoryImpl();
 		this.entityDocumentProcessor = entityDocumentProcessor;
 		this.siteIri = siteIri;
+		this.mapper = new DatamodelMapper(siteIri);
 	}
 
 	@Override
@@ -98,8 +100,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		}
 
 		try {
-			JacksonItemDocument document = readValue(mwRevision.getText(), JacksonItemDocument.class);
-			document.setSiteIri(this.siteIri);
+			ItemDocumentImpl document = readValue(mwRevision.getText(), ItemDocumentImpl.class);
 			this.entityDocumentProcessor.processItemDocument(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for item "
@@ -132,8 +133,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		}
 
 		try {
-			JacksonPropertyDocument document = readValue(mwRevision.getText(), JacksonPropertyDocument.class);
-			document.setSiteIri(this.siteIri);
+			PropertyDocumentImpl document = readValue(mwRevision.getText(), PropertyDocumentImpl.class);
 			this.entityDocumentProcessor.processPropertyDocument(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for property "

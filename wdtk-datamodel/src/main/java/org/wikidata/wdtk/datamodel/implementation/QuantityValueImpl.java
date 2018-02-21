@@ -20,31 +20,39 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerQuantity;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
- * Implementation of {@link QuantityValue}.
+ * Jackson implementation of {@link QuantityValue}.
  *
- * @author Markus Kroetzsch
- *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
+ * 
  */
-public class QuantityValueImpl implements QuantityValue, Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 
-	private static final long serialVersionUID = 3245696048836886990L;
-
-	final BigDecimal numericValue;
-	final BigDecimal lowerBound;
-	final BigDecimal upperBound;
-	final String unit;
-
+	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
+	private final JacksonInnerQuantity value;
+	
 	/**
 	 * Constructor.
 	 *
@@ -60,49 +68,58 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
 	 */
-	QuantityValueImpl(BigDecimal numericValue, BigDecimal lowerBound,
-			BigDecimal upperBound, String unit) {
-		Validate.notNull(numericValue, "Numeric value cannot be null");
-		Validate.notNull(unit, "Unit cannot be null");
-
-		if(lowerBound != null || upperBound != null) {
-			Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
-			Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
-
-			if (lowerBound.compareTo(numericValue) == 1) {
-				throw new IllegalArgumentException(
-						"Lower bound cannot be strictly greater than numeric value");
-			}
-			if (numericValue.compareTo(upperBound) == 1) {
-				throw new IllegalArgumentException(
-						"Upper bound cannot be strictly smaller than numeric value");
-			}
-		}
-
-		this.numericValue = numericValue;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
-		this.unit = unit;
+	public QuantityValueImpl(
+			BigDecimal numericValue,
+			BigDecimal lowerBound,
+			BigDecimal upperBound,
+			String unit) {
+		super(JSON_VALUE_TYPE_QUANTITY);
+		this.value = new JacksonInnerQuantity(numericValue, lowerBound,
+				upperBound, unit);
 	}
 
+	/**
+	 * Constructor used for deserialization from JSON with Jackson.
+	 */
+	@JsonCreator
+	protected QuantityValueImpl(
+			@JsonProperty("value") JacksonInnerQuantity value) {
+		super(JSON_VALUE_TYPE_QUANTITY);
+		this.value = value;
+	}
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner quantity value
+	 */
+	public JacksonInnerQuantity getValue() {
+		return this.value;
+	}
+
+	@JsonIgnore
 	@Override
 	public BigDecimal getNumericValue() {
-		return this.numericValue;
+		return this.value.getAmount();
 	}
 
+	@JsonIgnore
 	@Override
 	public BigDecimal getLowerBound() {
-		return this.lowerBound;
+		return this.value.getLowerBound();
 	}
 
+	@JsonIgnore
 	@Override
 	public BigDecimal getUpperBound() {
-		return this.upperBound;
+		return this.value.getUpperBound();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getUnit() {
-		return this.unit;
+		return this.value.getUnit();
 	}
 
 	@Override
@@ -124,5 +141,4 @@ public class QuantityValueImpl implements QuantityValue, Serializable {
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

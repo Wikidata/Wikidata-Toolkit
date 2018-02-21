@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.List;
+import java.util.Map;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,39 +23,47 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * Implementation of {@link PropertyDocument}.
+ * Jackson implementation of {@link PropertyDocument}.
  *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  * @author Markus Kroetzsch
  *
  */
-public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
-		PropertyDocument, Serializable {
-
-	private static final long serialVersionUID = 3202706015471781558L;
-
-	final PropertyIdValue propertyId;
-	final DatatypeIdValue datatypeId;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PropertyDocumentImpl extends TermedStatementDocumentImpl
+		implements PropertyDocument {
 
 	/**
-	 * Constructor.
-	 *
-	 * @param propertyId
+	 * Datatype of the property. This is internally stored as 
+	 * a Jackson object because we need to be able to serialize
+	 * it directly to JSON as a field.
+	 */
+	private final DatatypeIdImpl datatype;
+	
+	/**
+	 * Constructor for instances that are built manually, rather than from JSON.
+	 * 
+	 * @param id
 	 *            the id of the property that data is about
 	 * @param labels
 	 *            the list of labels of this property, with at most one label
@@ -62,42 +73,72 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
 	 *            description for each language code
 	 * @param aliases
 	 *            the list of aliases of this property
-	 * @param statementGroups
+	 * @param statements
 	 *            the list of statement groups of this item; all of them must
 	 *            have the given itemIdValue as their subject
-	 * @param datatypeId
+	 * @param datatype
 	 *            the datatype of that property
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
 	 */
-	PropertyDocumentImpl(PropertyIdValue propertyId,
+	public PropertyDocumentImpl(
+			PropertyIdValue id,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
+			List<StatementGroup> statements,
+			DatatypeIdValue datatype,
 			long revisionId) {
-		super(propertyId, labels, descriptions, aliases, statementGroups,
-				revisionId);
-		Validate.notNull(propertyId, "property ID cannot be null");
-		Validate.notNull(datatypeId, "datatype ID cannot be null");
-		this.propertyId = propertyId;
-		this.datatypeId = datatypeId;
+		super(id, labels, descriptions, aliases, statements, revisionId);
+		this.datatype = new DatatypeIdImpl(datatype);
 	}
 
-	@Override
-	public EntityIdValue getEntityId() {
-		return propertyId;
+	/**
+	 * Constructor. Creates an instance by deserializing from JSON.
+	 */
+	@JsonCreator
+	public PropertyDocumentImpl(
+			@JsonProperty("id") String jsonId,
+			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
+			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
+			@JsonProperty("datatype") String datatype,
+			@JsonProperty("lastrevid") long revisionId,
+			@JacksonInject("siteIri") String siteIri) {
+		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+		this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
 	}
 
+	/**
+	 * Returns the JSON string version of the property's datatype. Note that
+	 * {@link #getDatatype()} is already used for another function of the
+	 * interface.
+	 *
+	 * @return string datatype
+	 */
+	@JsonProperty("datatype")
+	public String getJsonDatatype() {
+		return this.datatype.getJsonString();
+	}
+
+	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return propertyId;
+		return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
 	}
 
+	@JsonIgnore
+	@Override
+	public EntityIdValue getEntityId() {
+		return getPropertyId();
+	}
+
+	@JsonIgnore
 	@Override
 	public DatatypeIdValue getDatatype() {
-		return datatypeId;
+		return new DatatypeIdImpl(this.datatype);
 	}
 
 	@Override
@@ -114,5 +155,4 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl implements
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

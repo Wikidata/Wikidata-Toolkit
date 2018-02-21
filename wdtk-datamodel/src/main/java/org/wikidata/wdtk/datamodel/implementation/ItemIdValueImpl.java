@@ -1,5 +1,21 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,90 +36,63 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
-
-import java.util.regex.Pattern;
-
 /**
- * Generic implementation of {@link ItemIdValue} that works with arbitrary
- * Wikibase instances: it requires a baseIri that identifies the site globally.
+ * Jackson implementation of {@link ItemIdValue}.
  *
- * @author Markus Kroetzsch
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
-public class ItemIdValueImpl implements ItemIdValue {
-
-	private static final long serialVersionUID = -2430982177464510496L;
-	private static final Pattern ITEM_ID_PATTERN = Pattern.compile("^Q\\d+$");
-
-	private final String id;
-	private final String siteIri;
-
-	/**
-	 * Creates a new object of this type.
-	 *
-	 * @param id
-	 *            a string of the form Qn... where n... is the string
-	 *            representation of a positive integer number
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
-	 */
-	@Deprecated
-	public static ItemIdValueImpl create(String id, String baseIri) {
-		return new ItemIdValueImpl(id, baseIri);
-	}
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class ItemIdValueImpl extends EntityIdValueImpl implements
+		ItemIdValue {
+	
 	/**
 	 * Constructor.
-
+	 * 
 	 * @param id
-	 *            a string of the form Qn... where n... is the string
-	 *            representation of a positive integer number
+	 * 		the identifier of the entity, such as "Q42"
 	 * @param siteIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
+	 *      the siteIRI that this value refers to
 	 */
-	ItemIdValueImpl(String id, String siteIri) {
-		Validate.notNull(siteIri, "Entity site IRIs cannot be null");
-		if (id == null || !ITEM_ID_PATTERN.matcher(id).matches()) {
-			throw new IllegalArgumentException(
-					"Wikibase item ids must have the form \"Q<positive integer>\". Given id was \""
-							+ id + "\"");
+	public ItemIdValueImpl(
+			String id,
+			String siteIri) {
+		super(id, siteIri);
+		checkEntityIdType();
+	}
+	/**
+	 * Constructor used for deserialization with Jackson.
+	 * 
+	 * @param value
+	 *     the inner JSON object deserialized as a {@link JacksonInnerEntityId}
+	 * @param siteIri
+	 *     the siteIRI that this value refers to.
+	 */
+	@JsonCreator
+	protected ItemIdValueImpl(
+			@JsonProperty("value") JacksonInnerEntityId value,
+			@JacksonInject("siteIri") String siteIri) {
+		super(value, siteIri);
+		checkEntityIdType();
+	}
+	
+	/**
+	 * Checks that the entity id is of the right type.
+	 */
+	private void checkEntityIdType() {
+		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM.equals(value
+				.getJsonEntityType())) {
+			throw new RuntimeException("Unexpected inner value type: "
+					+ value.getJsonEntityType());
 		}
-		this.id = id;
-		this.siteIri = siteIri;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getEntityType() {
 		return EntityIdValue.ET_ITEM;
-	}
-
-	@Override
-	public String toString() {
-		return ToString.toString(this);
-	}
-
-	@Override
-	public String getId() {
-		return this.id;
-	}
-
-	@Override
-	public String getIri() {
-		return siteIri + id;
-	}
-
-	@Override
-	public String getSiteIri() {
-		return this.siteIri;
 	}
 
 	@Override
@@ -119,5 +108,10 @@ public class ItemIdValueImpl implements ItemIdValue {
 	@Override
 	public boolean equals(Object obj) {
 		return Equality.equalsEntityIdValue(this, obj);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.toString(this);
 	}
 }

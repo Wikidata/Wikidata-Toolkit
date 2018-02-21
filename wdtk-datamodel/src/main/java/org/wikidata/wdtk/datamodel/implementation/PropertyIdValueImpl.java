@@ -20,90 +20,74 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-import java.util.regex.Pattern;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * Generic implementation of {@link PropertyIdValue} that works with arbitrary
- * Wikibase instances: it requires a baseIri that identifies the site globally.
+ * Jackson implementation of {@link PropertyIdValue}.
  *
  * @author Markus Kroetzsch
  *
  */
-public class PropertyIdValueImpl implements PropertyIdValue {
-
-	private static final long serialVersionUID = 3427673190538556373L;
-	private static final Pattern PROPERTY_ID_PATTERN = Pattern.compile("^P\\d+$");
-
-	private final String id;
-	private final String siteIri;
-
-	/**
-	 * Creates a new object of this type.
-	 *
-	 * @param id
-	 *            a string of the form Pn... where n... is the string
-	 *            representation of a positive integer number
-	 * @param baseIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
-	 */
-	@Deprecated
-	public static PropertyIdValueImpl create(String id, String baseIri) {
-		return new PropertyIdValueImpl(id, baseIri);
-	}
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class PropertyIdValueImpl extends EntityIdValueImpl implements
+		PropertyIdValue {
+	
 	/**
 	 * Constructor.
-
+	 * 
 	 * @param id
-	 *            a string of the form Pn... where n... is the string
-	 *            representation of a positive integer number
+	 * 		the identifier of the entity, such as "P42"
 	 * @param siteIri
-	 *            the first part of the entity IRI of the site this belongs to,
-	 *            e.g., "http://www.wikidata.org/entity/"
+	 *      the siteIRI that this value refers to
 	 */
-	PropertyIdValueImpl(String id, String siteIri) {
-		Validate.notNull(siteIri, "Entity site IRIs cannot be null");
-		if (id == null || !PROPERTY_ID_PATTERN.matcher(id).matches()) {
-			throw new IllegalArgumentException(
-					"Wikibase property ids must have the form \"P<positive integer>\". Given id was \""
-							+ id + "\"");
-		}
-		this.id = id;
-		this.siteIri = siteIri;
+	public PropertyIdValueImpl(
+			String id,
+			String siteIri) {
+		super(id, siteIri);
+		checkEntityIdType();
 	}
 
+	/**
+	 * Constructor used to deserialize an object from JSON with Jackson
+	 */
+	@JsonCreator
+	protected PropertyIdValueImpl(
+			@JsonProperty("value") JacksonInnerEntityId value,
+			@JacksonInject("siteIri") String siteIri) {
+		super(value, siteIri);
+		checkEntityIdType();
+	}
+	
+	/**
+	 * Checks that the entity id is of the right type.
+	 */
+	private void checkEntityIdType() {
+		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY.equals(value
+				.getJsonEntityType())) {
+			throw new RuntimeException("Unexpected inner value type: "
+					+ value.getJsonEntityType());
+		}
+	}
+
+	@JsonIgnore
 	@Override
 	public String getEntityType() {
 		return EntityIdValue.ET_PROPERTY;
-	}
-
-	@Override
-	public String toString() {
-		return ToString.toString(this);
-	}
-
-	@Override
-	public String getId() {
-		return this.id;
-	}
-
-	@Override
-	public String getIri() {
-		return siteIri + id;
-	}
-
-	@Override
-	public String getSiteIri() {
-		return this.siteIri;
 	}
 
 	@Override
@@ -120,5 +104,9 @@ public class PropertyIdValueImpl implements PropertyIdValue {
 	public boolean equals(Object obj) {
 		return Equality.equalsEntityIdValue(this, obj);
 	}
-}
 
+	@Override
+	public String toString() {
+		return ToString.toString(this);
+	}
+}

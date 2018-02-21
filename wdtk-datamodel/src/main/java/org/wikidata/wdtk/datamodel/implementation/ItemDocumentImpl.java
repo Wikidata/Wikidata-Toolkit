@@ -20,16 +20,16 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
@@ -37,14 +37,29 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
-public class ItemDocumentImpl extends TermedStatementDocumentImpl implements
-		ItemDocument, Serializable {
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-	private static final long serialVersionUID = -2189045553879194935L;
+/**
+ * Jackson implementation of {@link ItemDocument}.
+ *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ItemDocumentImpl extends TermedStatementDocumentImpl
+		implements ItemDocument {
 
-	final ItemIdValue itemId;
-	final Map<String, SiteLink> siteLinks;
-
+	/**
+	 * Map to store site links.
+	 */
+	@JsonDeserialize(contentAs=SiteLinkImpl.class)
+	private final Map<String, SiteLink> sitelinks;
+	
 	/**
 	 * Constructor.
 	 *
@@ -62,39 +77,68 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl implements
 	 *            the list of statement groups of this item; all of them must
 	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
-	 *            the sitelinks of this item by site key
+	 *            the sitelinks of this item
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
 	 */
-	ItemDocumentImpl(ItemIdValue itemIdValue,
+	public ItemDocumentImpl(
+			ItemIdValue id,
 			List<MonolingualTextValue> labels,
 			List<MonolingualTextValue> descriptions,
 			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups,
-			Map<String, SiteLink> siteLinks, long revisionId) {
-		super(itemIdValue, labels, descriptions, aliases, statementGroups,
-				revisionId);
-		Validate.notNull(itemIdValue, "item ID cannot be null");
-		Validate.notNull(siteLinks, "site links cannot be null");
-
-		this.itemId = itemIdValue;
-		this.siteLinks = siteLinks;
+			List<StatementGroup> statements,
+			List<SiteLink> siteLinks,
+			long revisionId) {
+		super(id, labels, descriptions, aliases, statements, revisionId);
+		this.sitelinks = new HashMap<>();
+		for(SiteLink sitelink : siteLinks) {
+			if(this.sitelinks.containsKey(sitelink.getSiteKey())) {
+				throw new IllegalArgumentException("Multiple site links provided for the same site.");
+			} else {
+				this.sitelinks.put(sitelink.getSiteKey(), sitelink);
+			}
+		}
 	}
 
-	@Override
-	public EntityIdValue getEntityId() {
-		return itemId;
+	/**
+	 * Constructor. Creates an object that can be populated during JSON
+	 * deserialization. Should only be used by Jackson for this very purpose.
+	 */
+	@JsonCreator
+	public ItemDocumentImpl(
+			@JsonProperty("id") String jsonId,
+			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
+			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
+			@JsonProperty("sitelinks") Map<String, SiteLink> sitelinks,
+			@JsonProperty("lastrevid") long revisionId,
+			@JacksonInject("siteIri") String siteIri) {
+		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+		if (sitelinks != null) {
+			this.sitelinks = sitelinks;
+		} else {
+			this.sitelinks = Collections.<String, SiteLink>emptyMap();
+		}
 	}
 
+	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
-		return itemId;
+		return Datamodel.makeItemIdValue(this.entityId, this.siteIri);
 	}
 
+	@JsonIgnore
+	@Override
+	public EntityIdValue getEntityId() {
+		return getItemId();
+	}
+
+	@JsonProperty("sitelinks")
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		return Collections.unmodifiableMap(siteLinks);
+		return Collections.<String, SiteLink> unmodifiableMap(this.sitelinks);
 	}
 
 	@Override

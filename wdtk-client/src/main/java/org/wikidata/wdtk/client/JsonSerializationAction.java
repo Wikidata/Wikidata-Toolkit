@@ -23,9 +23,9 @@ package org.wikidata.wdtk.client;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.wikidata.wdtk.datamodel.implementation.json.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 
 /**
  * This class represents an action of generating a JSON dump from data. It has

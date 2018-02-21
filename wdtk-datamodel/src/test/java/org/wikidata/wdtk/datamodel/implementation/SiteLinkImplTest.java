@@ -85,9 +85,9 @@ public class SiteLinkImplTest {
 		new SiteLinkImpl("Dresden", null, Collections.<String> emptyList());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void badgesNotNull() {
-		new SiteLinkImpl("Dresden", "enwiki", null);
+	public void badgesCanBeNull() {
+		SiteLink sitelink = new SiteLinkImpl("Dresden", "enwiki", null);
+		assertEquals(sitelink.getBadges(), Collections.<String>emptyList());
 	}
 
 }

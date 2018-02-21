@@ -278,7 +278,7 @@ public interface DataObjectFactory {
 	 *            the string id of the Statement
 	 * @return a {@link Statement} corresponding to the input
 	 */
-	Statement getStatement(Claim claim, List<? extends Reference> references,
+	Statement getStatement(Claim claim, List<Reference> references,
 			StatementRank rank, String statementId);
 
 	/**

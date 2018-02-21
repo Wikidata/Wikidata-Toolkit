@@ -28,8 +28,10 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -52,7 +54,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class DatamodelTest {
-	DataObjectFactoryImpl factory;
+	DataObjectFactory factory;
 
 	@Before
 	public void setUp() throws Exception {
@@ -302,7 +304,7 @@ public class DatamodelTest {
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
 				"MyId");
 		StatementGroup o1 = new StatementGroupImpl(
-				Collections.singletonList(s));
+				Collections.singletonList((StatementImpl)s));
 		StatementGroup o2 = factory.getStatementGroup(Collections
 				.singletonList(s));
 		assertEquals(o1, o2);

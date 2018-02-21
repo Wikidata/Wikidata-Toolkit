@@ -20,34 +20,42 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerGlobeCoordinates;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
- * Implementation of {@link GlobeCoordinatesValue}.
+ * Jackson implementation of {@link GlobeCoordinatesValue}.
  *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  * @author Markus Kroetzsch
  *
  */
-public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue,
-		Serializable {
-
-	private static final long serialVersionUID = 5232034046447738117L;
-
-	final double latitude;
-	final double longitude;
-	final double precision;
-	final String globeIri;
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class GlobeCoordinatesValueImpl extends ValueImpl implements
+		GlobeCoordinatesValue {
 
 	/**
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
+	 */
+	private final JacksonInnerGlobeCoordinates value;
+	
+	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param latitude
 	 *            the latitude of the coordinates in degrees
 	 * @param longitude
@@ -57,48 +65,56 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue,
 	 * @param globeIri
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
-	GlobeCoordinatesValueImpl(double latitude, double longitude,
-			double precision, String globeIri) {
-		Validate.notNull(globeIri, "globe IRI must not be null");
-		if ((latitude > 90 * GlobeCoordinatesValue.PREC_DEGREE)
-				|| (latitude < -90 * GlobeCoordinatesValue.PREC_DEGREE)) {
-			throw new IllegalArgumentException(
-					"Latitude must be between 90 degrees and -90 degrees.");
-		}
-		if ((longitude > 360 * GlobeCoordinatesValue.PREC_DEGREE)
-				|| (longitude < -360 * GlobeCoordinatesValue.PREC_DEGREE)) {
-			throw new IllegalArgumentException(
-					"Longitude must be between -360 degrees and +360 degrees.");
-		}
-		if (precision <= 0) {
-			throw new IllegalArgumentException(
-					"Precision must be positive. Given value was " + precision
-							+ ".");
-		}
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.precision = precision;
-		this.globeIri = globeIri;
+	public GlobeCoordinatesValueImpl(double latitude, double longitude,
+			double precision, String globe) {
+		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
+		this.value = new JacksonInnerGlobeCoordinates(latitude, longitude,
+				precision, globe);
 	}
 
+	
+	/**
+	 * Constructor for deserialization from JSON via Jackson.
+	 */
+	@JsonCreator
+	protected GlobeCoordinatesValueImpl(
+			@JsonProperty("value") JacksonInnerGlobeCoordinates innerCoordinates) {
+		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
+		this.value = innerCoordinates;
+	}
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner globe coordinates value
+	 */
+	public JacksonInnerGlobeCoordinates getValue() {
+		return value;
+	}
+
+	@JsonIgnore
 	@Override
 	public double getLatitude() {
-		return latitude;
+		return this.value.getLatitude();
 	}
 
+	@JsonIgnore
 	@Override
 	public double getLongitude() {
-		return longitude;
+		return this.value.getLongitude();
 	}
 
+	@JsonIgnore
 	@Override
 	public double getPrecision() {
-		return precision;
+		return this.value.getPrecision();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getGlobe() {
-		return globeIri;
+		return this.value.getGlobe();
 	}
 
 	@Override
@@ -120,5 +136,4 @@ public class GlobeCoordinatesValueImpl implements GlobeCoordinatesValue,
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

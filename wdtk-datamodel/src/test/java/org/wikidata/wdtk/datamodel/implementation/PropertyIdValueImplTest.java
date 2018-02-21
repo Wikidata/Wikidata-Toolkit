@@ -80,7 +80,7 @@ public class PropertyIdValueImplTest {
 		assertEquals(prop1.hashCode(), prop2.hashCode());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = RuntimeException.class)
 	public void idValidatedForFirstLetter() {
 		new PropertyIdValueImpl("Q12345", "http://www.wikidata.org/entity/");
 	}

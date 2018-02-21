@@ -1,5 +1,8 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.Collections;
+import java.util.HashMap;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,12 +23,11 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -34,37 +36,103 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
-/**
- * Implementation of {@link Reference}.
- *
- * @author Markus Kroetzsch
- *
- */
-public class ReferenceImpl implements Reference, Serializable {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private static final long serialVersionUID = 3871345253196551888L;
-	
-	List<? extends SnakGroup> snakGroups;
+/**
+ * Jackson implementation of {@link Reference}.
+ *
+ * @author Fredo Erxleben
+ * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
+ * 
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ReferenceImpl implements Reference {
+
+	private List<SnakGroup> snakGroups;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param snakGroups
-	 *            list of snak groups
+	 * Map of property id strings to snaks, as used to encode snaks in JSON.
 	 */
-	ReferenceImpl(List<SnakGroup> snakGroups) {
-		Validate.notNull(snakGroups, "List of snak groups cannot be null");
-		this.snakGroups = snakGroups;
+	private final Map<String, List<Snak>> snaks;
+
+	/**
+	 * List of property string ids that encodes the desired order of snaks,
+	 * which is not specified by the map.
+	 */
+	private final List<String> propertyOrder;
+	
+	/**
+	 * Constructor.
+	 * <p>
+	 * The order of the snaks groups provided will be respected.
+	 * the properties used by the snak groups should be distinct.
+	 * 
+	 * @param groups
+	 * 		the snaks group which form the reference
+	 */
+	public ReferenceImpl(List<SnakGroup> groups) {
+		this.propertyOrder = groups.stream()
+				.map(g -> g.getProperty().getId())
+				.collect(Collectors.toList());
+		this.snaks = groups.stream()
+				.collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks));
+	}
+	
+	/**
+	 * Constructor for deserialization from JSON.
+	 * @param snaks
+	 * @param propertyOrder
+	 */
+	@JsonCreator
+	protected ReferenceImpl(
+			@JsonProperty("snaks") Map<String, List<SnakImpl>> snaks,
+			@JsonProperty("snaks-order") List<String> propertyOrder) {
+		this.snaks = new HashMap<>(snaks.size());
+		for(Map.Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
+			this.snaks.put(entry.getKey(),
+					entry.getValue().stream().collect(Collectors.toList()));
+		}
+		this.propertyOrder = propertyOrder;
 	}
 
+	@JsonIgnore
 	@Override
 	public List<SnakGroup> getSnakGroups() {
-		return Collections.unmodifiableList(this.snakGroups);
+		if (this.snakGroups == null) {
+			this.snakGroups = SnakGroupImpl.makeSnakGroups(this.snaks,
+					this.propertyOrder);
+		}
+		return this.snakGroups;
+	}
+
+	/**
+	 * Returns the map of snaks as found in JSON. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the map of snaks
+	 */
+	public Map<String, List<Snak>> getSnaks() {
+		return Collections.unmodifiableMap(this.snaks);
+	}
+
+	/**
+	 * Returns the list of property ids used to order snaks as found in JSON.
+	 * Only for use by Jackson during serialization.
+	 *
+	 * @return the list of property ids
+	 */
+	@JsonProperty("snaks-order")
+	public List<String> getPropertyOrder() {
+		return Collections.unmodifiableList(this.propertyOrder);
 	}
 
 	@Override
 	public Iterator<Snak> getAllSnaks() {
-		return new NestedIterator<>(this.snakGroups);
+		return new NestedIterator<>(getSnakGroups());
 	}
 
 	@Override

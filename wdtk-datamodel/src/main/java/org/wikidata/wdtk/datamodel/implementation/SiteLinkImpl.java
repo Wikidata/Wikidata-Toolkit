@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.Collections;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,8 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.Validate;
@@ -30,58 +30,65 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
-/**
- * Most basic implementation of {@link SiteLink}.
- *
- * WARNING: Site key and site base IRI are currently specified independently. It
- * is expected that this will change to use a mapping from site keys to IRIs
- * instead.
- *
- * @author Markus Kroetzsch
- *
- */
-public class SiteLinkImpl implements SiteLink, Serializable {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private static final long serialVersionUID = 8921712582883517425L;
-	
-	final String title;
-	final String siteKey;
-	final List<String> badges;
+/**
+ * Jackson implementation of {@link SiteLink}.
+ *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SiteLinkImpl implements SiteLink {
+
+	private final String title;
+	private final String site;
+	private final List<String> badges;
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param title
-	 *            the title string of the linked page, including namespace
-	 *            prefixes if any
-	 * @param siteKey
-	 *            the string key of the site of the linked article
+	 * 		the title of the page on the target site
+	 * @param site
+	 * 		the identifier of the target site (such as "dewiki")
 	 * @param badges
-	 *            the list of badges of the linked article
+	 * 		the list of badge identifiers worn by this site link.
+	 * 		Can be null.
 	 */
-	SiteLinkImpl(String title, String siteKey, List<String> badges) {
-		Validate.notNull(title, "title cannot be null");
-		Validate.notNull(siteKey, "siteKey cannot be null");
-		Validate.notNull(badges, "list of badges cannot be null");
-
+	@JsonCreator
+	public SiteLinkImpl(
+			@JsonProperty("title") String title,
+			@JsonProperty("site") String site,
+			@JsonProperty("badges") List<String> badges) {
+		Validate.notNull(title);
 		this.title = title;
-		this.siteKey = siteKey;
-		this.badges = badges;
+		Validate.notNull(site);
+		this.site = site;
+		if (badges != null) {
+			this.badges = badges;
+		} else {
+			this.badges = Collections.<String>emptyList();
+		}
 	}
 
+	@JsonProperty("title")
 	@Override
 	public String getPageTitle() {
-		return title;
+		return this.title;
 	}
 
+	@JsonProperty("site")
 	@Override
 	public String getSiteKey() {
-		return siteKey;
+		return this.site;
 	}
 
 	@Override
 	public List<String> getBadges() {
-		return Collections.unmodifiableList(badges);
+		return this.badges;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -63,7 +64,7 @@ public class Datamodel {
 	 */
 	static public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
 
-	private final static DataObjectFactoryImpl factory = new DataObjectFactoryImpl();
+	private final static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	/**
 	 * Creates an {@link ItemIdValue}.
@@ -439,7 +440,7 @@ public class Datamodel {
 	 * @return a {@link Statement} corresponding to the input
 	 */
 	public static Statement makeStatement(Claim claim,
-			List<? extends Reference> references, StatementRank rank,
+			List<Reference> references, StatementRank rank,
 			String statementId) {
 		return factory.getStatement(claim, references, rank, statementId);
 	}

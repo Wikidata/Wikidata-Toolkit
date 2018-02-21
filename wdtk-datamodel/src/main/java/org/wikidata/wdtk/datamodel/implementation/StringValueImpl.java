@@ -1,5 +1,19 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,45 +34,40 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
-
 /**
- * Implementation of {@link StringValue}.
+ * Jackson implementation of {@link StringValue}.
  *
- * @author Markus Kroetzsch
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
-public class StringValueImpl implements StringValue, Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class StringValueImpl extends ValueImpl implements StringValue {
 
-	private static final long serialVersionUID = -3372698418036275469L;
-	
-	final String string;
+	private final String value;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param string
+	 * Constructor for deserialization from JSON by Jackson.
+	 * 
+	 * @param value
+	 * 		the string represented by this Wikibase value
 	 */
-	StringValueImpl(String string) {
-		Validate.notNull(string, "URL cannot be null");
-		this.string = string;
+	@JsonCreator
+	public StringValueImpl(
+			@JsonProperty("value") String value) {
+		super(ValueImpl.JSON_VALUE_TYPE_STRING);
+		Validate.notNull(value, "A string value must provide a non-null string");
+		this.value = value;
 	}
 
-	@Override
-	public String getString() {
-		return string;
-	}
-
-	@Override
-	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		return valueVisitor.visit(this);
+	/**
+	 * Returns the string. Only for use by Jackson during serialization.
+	 *
+	 * @return the string value
+	 */
+	public String getValue() {
+		return this.value;
 	}
 
 	@Override
@@ -71,9 +80,19 @@ public class StringValueImpl implements StringValue, Serializable {
 		return Equality.equalsStringValue(this, obj);
 	}
 
+	@JsonIgnore
+	@Override
+	public String getString() {
+		return this.value;
+	}
+
+	@Override
+	public <T> T accept(ValueVisitor<T> valueVisitor) {
+		return valueVisitor.visit(this);
+	}
+
 	@Override
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

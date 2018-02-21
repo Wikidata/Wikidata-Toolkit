@@ -253,7 +253,13 @@ public class StatementDocumentAccessTest {
 		assertEquals(v, id.findStatementStringValue("P1"));
 	}
 
-	@Test
+	/**
+	 * A datatype cannot be the value of a statement by itself.
+	 * 
+	 * @todo DatatypeIdValue should not inherit from Value,
+	 * 		 and it should probably be renamed.
+	 */
+	@Test(expected = UnsupportedOperationException.class)
 	public void testFindStatementDatatypeIdValue() {
 		DatatypeIdValue v = Datamodel
 				.makeDatatypeIdValue(DatatypeIdValue.DT_STRING);
@@ -261,13 +267,8 @@ public class StatementDocumentAccessTest {
 		Statement s = StatementBuilder.forSubjectAndProperty(q1, p1)
 				.withValue(v).build();
 
-		ItemDocument id = ItemDocumentBuilder.forItemId(q1).withStatement(s)
+		ItemDocumentBuilder.forItemId(q1).withStatement(s)
 				.build();
-
-		assertEquals(v, id.findStatementValue(p1));
-		assertEquals(v, id.findStatementValue("P1"));
-		assertEquals(v, id.findStatementDatatypeIdValue(p1));
-		assertEquals(v, id.findStatementDatatypeIdValue("P1"));
 	}
 
 }

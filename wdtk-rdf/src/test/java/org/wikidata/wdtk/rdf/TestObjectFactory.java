@@ -374,7 +374,7 @@ public class TestObjectFactory {
 	 *
 	 * @return List of {@link Reference}
 	 */
-	public List<? extends Reference> createReferences() {
+	public List<Reference> createReferences() {
 		List<SnakGroup> snaks = Collections.singletonList(factory
 				.getSnakGroup(Collections
 						.singletonList(createValueSnakTimeValue("P112"))));

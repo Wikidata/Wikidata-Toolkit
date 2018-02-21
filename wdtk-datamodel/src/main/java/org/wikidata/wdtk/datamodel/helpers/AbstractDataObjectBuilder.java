@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,7 +22,6 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 
 /**

@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,10 +90,10 @@ public class GlobeCoordinatesValueImplTest {
 				GlobeCoordinatesValue.PREC_DEGREE, null);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void onlyAllowedPrecisions() {
-		new GlobeCoordinatesValueImpl(12.3, 14.1, 0.0,
+		GlobeCoordinatesValue v = new GlobeCoordinatesValueImpl(12.3, 14.1, 0.0,
 				GlobeCoordinatesValue.GLOBE_EARTH);
+		assertTrue(v.getPrecision() > 0.);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

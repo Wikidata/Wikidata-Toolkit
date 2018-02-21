@@ -28,8 +28,9 @@ import java.util.Map;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
@@ -59,14 +60,14 @@ public class WbEditEntityAction {
 	final ApiConnection connection;
 
 	/**
-	 * The IRI that identifies the site that the data is from.
-	 */
+     * The IRI that identifies the site that the data is from.
+     */
 	final String siteIri;
-
+	
 	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
-	final ObjectMapper mapper = new ObjectMapper();
+	final ObjectMapper mapper;
 
 	/**
 	 * Current CSRF (Cross-Site Request Forgery) token, or null if no valid
@@ -117,14 +118,15 @@ public class WbEditEntityAction {
 	 *
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
-	 * @param siteUri
+	 * @param siteIri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public WbEditEntityAction(ApiConnection connection, String siteUri) {
+	public WbEditEntityAction(ApiConnection connection, String siteIri) {
 		this.connection = connection;
-		this.siteIri = siteUri;
+		this.siteIri = siteIri;
+		this.mapper = new DatamodelMapper(siteIri);
 	}
 
 	/**
@@ -458,9 +460,8 @@ public class WbEditEntityAction {
 	 */
 	private EntityDocument parseJsonResponse(JsonNode entityNode) throws IOException {
 		try {
-			JacksonTermedStatementDocument ed = mapper.treeToValue(entityNode,
-					JacksonTermedStatementDocument.class);
-			ed.setSiteIri(this.siteIri);
+			TermedStatementDocumentImpl ed = mapper.treeToValue(entityNode,
+					TermedStatementDocumentImpl.class);
 
 			return ed;
 		} catch (JsonProcessingException e) {
@@ -478,11 +479,10 @@ public class WbEditEntityAction {
 					.replace("\"descriptions\":[]", "\"descriptions\":{}");
 
 			ObjectReader documentReader = this.mapper
-					.reader(JacksonTermedStatementDocument.class);
+					.reader(TermedStatementDocumentImpl.class);
 
-			JacksonTermedStatementDocument ed;
+			TermedStatementDocumentImpl ed;
 			ed = documentReader.readValue(jsonString);
-			ed.setSiteIri(this.siteIri);
 			return ed;
 		}
 	}

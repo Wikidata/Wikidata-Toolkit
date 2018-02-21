@@ -20,47 +20,84 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerMonolingualText;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-public class MonolingualTextValueImpl implements MonolingualTextValue,
-		Serializable {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonDeserializer.None;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-	private static final long serialVersionUID = -6165541960096088292L;
-
-	final String text;
-	final String languageCode;
+/**
+ * Jackson implementation of {@link MonolingualTextValue}. Java attributes are
+ * named equally to the JSON fields. Deviations are due to different naming in
+ * the implemented interfaces. The "value" in this JSON context is called
+ * "text".
+ * <p>
+ * The class extends {@link ValueImpl} which adds a type association done by
+ * the JSON.
+ *
+ * @author Fredo Erxleben
+ *
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = None.class)
+public class MonolingualTextValueImpl extends ValueImpl implements
+		MonolingualTextValue {
 
 	/**
-	 * Constructor. The language code can be any string; the class does not make
-	 * any assumptions on how language codes are defined.
-	 *
-	 * @param text
-	 *            the text of the value
-	 * @param languageCode
-	 *            the language code of the value
+	 * Inner helper object to store the actual data. Used to get the nested JSON
+	 * structure that is required here.
 	 */
-	MonolingualTextValueImpl(String text, String languageCode) {
-		Validate.notNull(text, "Text cannot be null");
-		Validate.notNull(languageCode, "Language code cannot be null");
-		this.text = text;
-		this.languageCode = languageCode;
+	private final JacksonInnerMonolingualText value;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param text
+	 * @param language
+	 */
+	public MonolingualTextValueImpl(String text, String language) {
+		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
+		this.value = new JacksonInnerMonolingualText(language, text);
 	}
 
+	/**
+	 * Constructor used for deserialization from JSON with Jackson.
+	 */
+	@JsonCreator
+	protected MonolingualTextValueImpl(
+			@JsonProperty("value") JacksonInnerMonolingualText value) {
+		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
+		this.value = value;
+	}
+
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner monolingual text value
+	 */
+	public JacksonInnerMonolingualText getValue() {
+		return this.value;
+	}
+
+	@JsonIgnore
 	@Override
 	public String getText() {
-		return this.text;
+		return this.value.getText();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getLanguageCode() {
-		return this.languageCode;
+		return this.value.getLanguage();
 	}
 
 	@Override
@@ -82,4 +119,5 @@ public class MonolingualTextValueImpl implements MonolingualTextValue,
 	public String toString() {
 		return ToString.toString(this);
 	}
+
 }

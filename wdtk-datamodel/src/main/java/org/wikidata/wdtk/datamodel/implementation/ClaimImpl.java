@@ -20,80 +20,96 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 import org.wikidata.wdtk.util.NestedIterator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
- * Implementation of {@link Claim}.
+ * Helper class to represent a {@link Claim} deserialized from JSON. The actual
+ * data is part of {@link JacksonPreStatement}. This is merely a facade that
+ * provides a suitable view.
  *
- * @author Markus Kroetzsch
- *
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  */
-public class ClaimImpl implements Claim, Serializable {
+public class ClaimImpl implements Claim {
 
-	private static final long serialVersionUID = -2991778567647082844L;
+	private final StatementImpl statement;
 
-	final EntityIdValue subject;
-	final Snak mainSnak;
-	final List<SnakGroup> qualifiers;
-
+	private List<SnakGroup> qualifiers = null;
+	
 	/**
-	 * Constructor.
-	 *
+	 * Constructor to create a claim. This internally creates
+	 * a new statement, so if you want to create a statement later
+	 * on just use {@link StatementImpl} directly.
+	 * 
 	 * @param subject
 	 *            the subject the Claim refers to
 	 * @param mainSnak
 	 *            the main Snak of the Claim
 	 * @param qualifiers
-	 *            the qualifiers of the Claim, groupd in SnakGroups
+	 *            the qualifiers of the Claim, grouped in SnakGroups
 	 */
-	ClaimImpl(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers) {
-		Validate.notNull(subject, "Statement subjects cannot be null");
-		Validate.notNull(mainSnak, "Statement main Snaks cannot be null");
-		Validate.notNull(qualifiers,
-				"Statement qualifier groups cannot be null");
-
-		this.subject = subject;
-		this.mainSnak = mainSnak;
-		this.qualifiers = qualifiers;
+	public ClaimImpl(
+			EntityIdValue subject,
+			Snak mainSnak,
+			List<SnakGroup> qualifiers) {
+		this.statement = new StatementImpl(null, StatementRank.NORMAL, mainSnak, qualifiers, null, subject);
+	}
+	
+	/**
+	 * Constructor used to initialize a claim from a JacksonStatement,
+	 * should only be used internally.
+	 * 
+	 * @param statement
+	 * 		the statement which contains this claim
+	 */
+	public ClaimImpl(StatementImpl statement) {
+		this.statement = statement;
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return subject;
+		return this.statement.getSubject();
 	}
 
 	@Override
 	public Snak getMainSnak() {
-		return mainSnak;
+		return this.statement.getMainsnak();
 	}
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		return Collections.unmodifiableList(this.qualifiers);
+		if (this.qualifiers == null) {
+			this.qualifiers = SnakGroupImpl.makeSnakGroups(
+					this.statement.getQualifiers(),
+					this.statement.getPropertyOrder());
+		}
+		return this.qualifiers;
 	}
 
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
-		return new NestedIterator<>(this.qualifiers);
+		return new NestedIterator<>(getQualifiers());
 	}
 
 	@Override
+	@JsonIgnore
 	public Value getValue() {
-		return mainSnak.getValue();
+		return this.statement.getMainsnak().getValue();
 	}
 
 	@Override
@@ -110,5 +126,4 @@ public class ClaimImpl implements Claim, Serializable {
 	public String toString() {
 		return ToString.toString(this);
 	}
-
 }

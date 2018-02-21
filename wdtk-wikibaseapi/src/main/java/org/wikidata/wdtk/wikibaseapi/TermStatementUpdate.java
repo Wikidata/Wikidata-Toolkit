@@ -29,10 +29,10 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.implementation.TermImpl;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonMonolingualTextValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -262,7 +262,7 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     @JsonProperty("labels")
     @JsonInclude(Include.NON_EMPTY)
-    public Map<String, JacksonMonolingualTextValue> getLabelUpdates() {
+    public Map<String, TermImpl> getLabelUpdates() {
     	return getMonolingualUpdatedValues(newLabels);
     }
     
@@ -271,7 +271,7 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     @JsonProperty("descriptions")
     @JsonInclude(Include.NON_EMPTY)
-    public Map<String, JacksonMonolingualTextValue> getDescriptionUpdates() {
+    public Map<String, TermImpl> getDescriptionUpdates() {
     	return getMonolingualUpdatedValues(newDescriptions);
     }
     
@@ -280,15 +280,15 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     @JsonProperty("aliases")
     @JsonInclude(Include.NON_EMPTY)
-    public Map<String, List<JacksonMonolingualTextValue>> getAliasUpdates() {
+    public Map<String, List<TermImpl>> getAliasUpdates() {
     	
-    	Map<String, List<JacksonMonolingualTextValue>> updatedValues = new HashMap<>();
+    	Map<String, List<TermImpl>> updatedValues = new HashMap<>();
     	for(Entry<String,AliasesWithUpdate> entry : newAliases.entrySet()) {
     		AliasesWithUpdate update = entry.getValue();
     		if (!update.write) {
     			continue;
     		}
-    		List<JacksonMonolingualTextValue> convertedAliases = new ArrayList<>();
+    		List<TermImpl> convertedAliases = new ArrayList<>();
     		for(MonolingualTextValue alias : update.aliases) {
     			convertedAliases.add(monolingualToJackson(alias));
     		}
@@ -315,8 +315,8 @@ public class TermStatementUpdate extends StatementUpdate {
      * 		planned updates for the type of term
      * @return map ready to be serialized as JSON by Jackson
      */
-    protected Map<String, JacksonMonolingualTextValue> getMonolingualUpdatedValues(Map<String, NameWithUpdate> updates) {
-    	Map<String, JacksonMonolingualTextValue> updatedValues = new HashMap<>();
+    protected Map<String, TermImpl> getMonolingualUpdatedValues(Map<String, NameWithUpdate> updates) {
+    	Map<String, TermImpl> updatedValues = new HashMap<>();
     	for(NameWithUpdate update : updates.values()) {
             if (!update.write) {
                 continue;
@@ -332,7 +332,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * 		target monolingual value for serialization
      * @return Jackson implementation that is serialized appropriately
      */
-    protected JacksonMonolingualTextValue monolingualToJackson(MonolingualTextValue monolingualTextValue) {
-    	return new JacksonMonolingualTextValue(monolingualTextValue.getLanguageCode(), monolingualTextValue.getText());
+    protected TermImpl monolingualToJackson(MonolingualTextValue monolingualTextValue) {
+    	return new TermImpl(monolingualTextValue.getLanguageCode(), monolingualTextValue.getText());
     }
 }

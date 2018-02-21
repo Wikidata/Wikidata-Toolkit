@@ -1,5 +1,9 @@
 /**
  * Basic implementation for objects representing Wikibase data and related factories. 
+ * Main package for Jackson-compatible implementations of the WDTK datamodel
+ * interfaces.
+ *
+ * @author Fredo Erxleben
  * 
  * @author Markus Kroetzsch
  */

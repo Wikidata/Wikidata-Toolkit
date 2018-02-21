@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
-
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -29,23 +27,39 @@ import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * Implementation of {@link NoValueSnak}.
+ * Jackson implementation of {@link NoValueSnak}.
  *
- * @author Markus Kroetzsch
+ * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
-public class NoValueSnakImpl extends SnakImpl implements NoValueSnak, Serializable {
-
-	private static final long serialVersionUID = -8040774434722723542L;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
+	
 	/**
 	 * Constructor.
-	 *
-	 * @param propertyId
+	 * 
+	 * @param property
+	 * 		the property id used by this no value snak
 	 */
-	NoValueSnakImpl(PropertyIdValue propertyId) {
-		super(propertyId);
+	public NoValueSnakImpl(PropertyIdValue property) {
+		super(property.getId(), property.getSiteIri());
+	}
+
+	/**
+	 * Constructor for deserialization from JSON with Jackson.
+	 */
+	@JsonCreator
+	protected NoValueSnakImpl(
+			@JsonProperty("property") String property,
+			@JacksonInject("siteIri") String siteIri) {
+		super(property, siteIri);
 	}
 
 	@Override
@@ -68,4 +82,9 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak, Serializab
 		return ToString.toString(this);
 	}
 
+	@Override
+	@JsonProperty("snaktype")
+	public String getSnakType() {
+		return SnakImpl.JSON_SNAK_TYPE_NOVALUE;
+	}
 }

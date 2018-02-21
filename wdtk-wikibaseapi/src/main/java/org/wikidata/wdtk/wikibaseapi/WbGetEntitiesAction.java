@@ -29,9 +29,10 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonItemDocument;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonTermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +63,7 @@ public class WbGetEntitiesAction {
 	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
-	final ObjectMapper mapper = new ObjectMapper();
+	final ObjectMapper mapper;
 
 	/**
 	 * Creates an object to fetch data from the given ApiConnection. The site
@@ -71,14 +72,15 @@ public class WbGetEntitiesAction {
 	 *
 	 * @param connection
 	 *            {@link ApiConnection} Object to send the requests
-	 * @param siteUri
+	 * @param siteIri
 	 *            the URI identifying the site that is accessed (usually the
 	 *            prefix of entity URIs), e.g.,
 	 *            "http://www.wikidata.org/entity/"
 	 */
-	public WbGetEntitiesAction(ApiConnection connection, String siteUri) {
+	public WbGetEntitiesAction(ApiConnection connection, String siteIri) {
 		this.connection = connection;
-		this.siteIri = siteUri;
+		this.siteIri = siteIri;
+		this.mapper = new DatamodelMapper(siteIri);
 	}
 
 	/**
@@ -192,23 +194,21 @@ public class WbGetEntitiesAction {
 			while(entitiesIterator.hasNext()) {
 				Entry<String,JsonNode> entry = entitiesIterator.next();
 				JsonNode entityNode = entry.getValue();
-				String queriedEntityId = entry.getKey();
 				if (!entityNode.has("missing")) {
 					try {
-						JacksonTermedStatementDocument ed = mapper.treeToValue(
+						TermedStatementDocumentImpl ed = mapper.treeToValue(
 								entityNode,
-								JacksonTermedStatementDocument.class);
-						ed.setSiteIri(this.siteIri);
+								TermedStatementDocumentImpl.class);
 
 						if (titles == null) {
 							// We use the JSON key rather than the id of the value
 							// so that retrieving redirected entities works.
 							result.put(entry.getKey(), ed);
 						} else {
-							if (ed instanceof JacksonItemDocument
-									&& ((JacksonItemDocument) ed)
+							if (ed instanceof ItemDocumentImpl
+									&& ((ItemDocumentImpl) ed)
 											.getSiteLinks().containsKey(sites)) {
-								result.put(((JacksonItemDocument) ed)
+								result.put(((ItemDocumentImpl) ed)
 										.getSiteLinks().get(sites)
 										.getPageTitle(), ed);
 							}

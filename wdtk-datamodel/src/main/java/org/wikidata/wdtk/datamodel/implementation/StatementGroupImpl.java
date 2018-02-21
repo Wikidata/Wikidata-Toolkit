@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -29,21 +28,22 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
- * Implementation of {@link StatementGroup}.
+ * Helper class to represent a {@link StatementGroup} deserialized from JSON.
+ * The actual data is part of a map of lists of {@link JacksonPreStatement} objects
+ * in JSON, so there is no corresponding JSON object.
  *
  * @author Markus Kroetzsch
- *
+ * @author Antonin Delpeuch
  */
-public class StatementGroupImpl implements StatementGroup, Serializable {
+public class StatementGroupImpl implements StatementGroup {
 
-	private static final long serialVersionUID = -7455251135036540828L;
-	
 	final List<Statement> statements;
 
 	/**
@@ -54,26 +54,25 @@ public class StatementGroupImpl implements StatementGroup, Serializable {
 	 *            main-snak property in their claim
 	 */
 	public StatementGroupImpl(List<Statement> statements) {
-		Validate.notNull(statements, "List of statements cannot be null");
-		Validate.notEmpty(statements, "List of statements cannot be empty");
-
+		Validate.notNull(statements,
+				"A non-null list of statements must be provided to create a statement group.");
+		Validate.isTrue(!statements.isEmpty(),
+				"A non-empty list of statements must be provided to create a statement group.");
 		EntityIdValue subject = statements.get(0).getClaim().getSubject();
-		PropertyIdValue property = statements.get(0).getClaim().getMainSnak()
-				.getPropertyId();
-
-		for (Statement s : statements) {
-			if (!subject.equals(s.getClaim().getSubject())) {
-				throw new IllegalArgumentException(
-						"All statements in a statement group must use the same subject");
-			}
-			if (!property.equals(s.getClaim().getMainSnak().getPropertyId())) {
-				throw new IllegalArgumentException(
-						"All statements in a statement group must use the same main property");
-			}
+		PropertyIdValue property = statements.get(0).getClaim().getMainSnak().getPropertyId();
+		for(Statement statement : statements) {
+			Validate.isTrue(statement.getClaim().getSubject().equals(subject),
+					"All statements of a statement group must have the same subject.");
+			Validate.isTrue(statement.getClaim().getMainSnak().getPropertyId().equals(property),
+			"All statements of a statement group must have the same subject.");
 		}
+		this.statements = Collections
+				.<Statement> unmodifiableList(statements);
+	}
 
-		this.statements = statements;
-
+	@Override
+	public Iterator<Statement> iterator() {
+		return this.statements.iterator();
 	}
 
 	@Override
@@ -106,8 +105,4 @@ public class StatementGroupImpl implements StatementGroup, Serializable {
 		return ToString.toString(this);
 	}
 
-	@Override
-	public Iterator<Statement> iterator() {
-		return this.statements.iterator();
-	}
 }

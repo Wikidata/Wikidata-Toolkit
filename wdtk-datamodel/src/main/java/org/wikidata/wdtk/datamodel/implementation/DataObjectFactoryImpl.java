@@ -20,57 +20,41 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerGlobeCoordinates;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerMonolingualText;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link DataObjectFactory} that uses the data object
- * implementations from this package.
- * <p>
- * <b>Note:</b> If you are using this factory in your code, you might want to
- * consider the simpler static methods of {@link Datamodel} instead.
+ * Factory implementation to create Jackson versions of the datamodel objects,
+ * where available.
  *
  * @author Markus Kroetzsch
  *
  */
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
+	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
+			this);
+
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		return new ItemIdValueImpl(id, siteIri);
+		ItemIdValueImpl result = new ItemIdValueImpl(new JacksonInnerEntityId(id), siteIri);
+		return result;
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return new PropertyIdValueImpl(id, siteIri);
+		PropertyIdValueImpl result = new PropertyIdValueImpl(new JacksonInnerEntityId(id), siteIri);
+		return result;
 	}
 
 	@Override
@@ -82,28 +66,45 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
-		return new TimeValueImpl(year, month, day, hour, minute, second,
-				precision, beforeTolerance, afterTolerance, timezoneOffset,
-				calendarModel);
+		JacksonInnerTime innerTime = new JacksonInnerTime(year, month, day,
+				hour, minute, second, timezoneOffset, beforeTolerance,
+				afterTolerance, precision, calendarModel);
+		TimeValueImpl result = new TimeValueImpl(innerTime);
+		return result;
 	}
 
 	@Override
 	public GlobeCoordinatesValue getGlobeCoordinatesValue(double latitude,
 			double longitude, double precision, String globeIri) {
-		return new GlobeCoordinatesValueImpl(latitude, longitude, precision,
+		if (precision <= 0) {
+			throw new IllegalArgumentException(
+					"Coordinates precision must be non-zero positive. Given value: "
+							+ precision);
+		}
+		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
+				latitude,
+				longitude,
+				precision,
 				globeIri);
+		GlobeCoordinatesValueImpl result = new GlobeCoordinatesValueImpl(innerCoordinates);
+		return result;
 	}
 
 	@Override
 	public StringValue getStringValue(String string) {
-		return new StringValueImpl(string);
+		StringValueImpl result = new StringValueImpl(string);
+		return result;
 	}
 
 	@Override
 	public MonolingualTextValue getMonolingualTextValue(String text,
 			String languageCode) {
-		return new MonolingualTextValueImpl(text, languageCode);
+		JacksonInnerMonolingualText innerMtlv = new JacksonInnerMonolingualText(
+				languageCode, text);
+		MonolingualTextValueImpl result = new MonolingualTextValueImpl(innerMtlv);
+		return result;
 	}
+
 
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue) {
@@ -116,17 +117,27 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return getQuantityValue(numericValue, lowerBound, upperBound, "");
 	}
 
-    @Override
+	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue, String unit) {
-		return new QuantityValueImpl(numericValue, null, null, unit);
+		return getQuantityValue(numericValue, null, null, unit);
 	}
 
 	@Override
 	public QuantityValue getQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
-		return new QuantityValueImpl(numericValue, lowerBound, upperBound, unit);
+		QuantityValueImpl result = new QuantityValueImpl(numericValue, lowerBound, upperBound, unit);
+		return result;
 	}
 
+	/**
+	 * Creates a {@link ValueSnakImpl}. Value snaks in JSON need to know the
+	 * datatype of their property, which is not given in the parameters of this
+	 * method. The snak that will be returned will use a default type based on
+	 * the kind of value that is used (usually the "simplest" type for that
+	 * value). This may not be desired.
+	 *
+	 * @see DataObjectFactory#getValueSnak(PropertyIdValue, Value)
+	 */
 	@Override
 	public ValueSnak getValueSnak(PropertyIdValue propertyId, Value value) {
 		return new ValueSnakImpl(propertyId, value);
@@ -134,23 +145,38 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public SomeValueSnak getSomeValueSnak(PropertyIdValue propertyId) {
-		return new SomeValueSnakImpl(propertyId);
+		SomeValueSnakImpl result = new SomeValueSnakImpl(
+				propertyId.getId(),
+				propertyId.getSiteIri());
+		return result;
 	}
 
 	@Override
 	public NoValueSnak getNoValueSnak(PropertyIdValue propertyId) {
-		return new NoValueSnakImpl(propertyId);
+		NoValueSnakImpl result = new NoValueSnakImpl(
+				propertyId.getId(),
+				propertyId.getSiteIri());
+		return result;
 	}
 
 	@Override
 	public SnakGroup getSnakGroup(List<? extends Snak> snaks) {
-		return new SnakGroupImpl(snaks);
+		List<Snak> snakList = new ArrayList<>(snaks.size());
+		for(Snak snak : snaks) {
+			snakList.add(snak);
+		}
+		return new SnakGroupImpl(snakList);
 	}
 
 	@Override
 	public Claim getClaim(EntityIdValue subject, Snak mainSnak,
 			List<SnakGroup> qualifiers) {
-		return new ClaimImpl(subject, mainSnak, qualifiers);
+		// Jackson claims cannot exist without a statement.
+		Statement statement = getStatement(
+				subject, mainSnak, qualifiers,
+				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				"empty id 12345");
+		return statement.getClaim();
 	}
 
 	@Override
@@ -160,20 +186,39 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public Statement getStatement(Claim claim,
-			List<? extends Reference> references, StatementRank rank,
+			List<Reference> references, StatementRank rank,
 			String statementId) {
-		return new StatementImpl(claim, references, rank, statementId);
+		return getStatement(claim.getSubject(), claim.getMainSnak(), claim.getQualifiers(),
+				references, rank, statementId);
+	}
+	
+	private Statement getStatement(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers,
+			List<Reference> references, StatementRank rank, String statementId) {
+
+		return new StatementImpl(statementId,
+				rank, mainSnak, qualifiers,
+				references, subject);
 	}
 
 	@Override
 	public StatementGroup getStatementGroup(List<Statement> statements) {
-		return new StatementGroupImpl(statements);
+		List<Statement> newStatements = new ArrayList<>(statements.size());
+		for (Statement statement : statements) {
+			if (statement instanceof JacksonPreStatement) {
+				newStatements.add(statement);
+			} else {
+				newStatements.add(this.dataModelConverter.copy(statement));
+			}
+		}
+		return new StatementGroupImpl(newStatements);
 	}
 
 	@Override
 	public SiteLink getSiteLink(String title, String siteKey,
 			List<String> badges) {
-		return new SiteLinkImpl(title, siteKey, badges);
+		SiteLinkImpl result = new SiteLinkImpl(
+				title, siteKey, badges);
+		return result;
 	}
 
 	@Override
@@ -202,8 +247,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId) {
-		return new PropertyDocumentImpl(propertyId, labels, descriptions,
-				aliases, statementGroups, datatypeId, revisionId);
+		PropertyDocumentImpl result = new PropertyDocumentImpl(
+				propertyId, labels, descriptions, aliases, statementGroups,
+				datatypeId,	revisionId);
+		return result;
 	}
 
 	@Override
@@ -224,8 +271,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks, long revisionId) {
-		return new ItemDocumentImpl(itemIdValue, labels, descriptions, aliases,
-				statementGroups, siteLinks, revisionId);
-	}
 
+		ItemDocumentImpl result = new ItemDocumentImpl(
+				itemIdValue, labels, descriptions, aliases, statementGroups,
+				siteLinks.values().stream().collect(Collectors.toList()), revisionId);
+
+		return result;
+	}
 }

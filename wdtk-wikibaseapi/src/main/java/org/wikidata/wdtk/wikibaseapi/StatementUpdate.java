@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
@@ -38,7 +39,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -103,7 +103,7 @@ public class StatementUpdate {
 
 		@Override
 		@JsonIgnore
-		public List<? extends Reference> getReferences() {
+		public List<Reference> getReferences() {
 			return null;
 		}
 
@@ -173,7 +173,7 @@ public class StatementUpdate {
 	@JsonInclude(Include.NON_EMPTY)
 	public List<Statement> getUpdatedStatements() {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new JacksonObjectFactory());
+				new DataObjectFactoryImpl());
 		List<Statement> updatedStatements = new ArrayList<>();
 		for (List<StatementWithUpdate> swus : toKeep.values()) {
 			for (StatementWithUpdate swu : swus) {
