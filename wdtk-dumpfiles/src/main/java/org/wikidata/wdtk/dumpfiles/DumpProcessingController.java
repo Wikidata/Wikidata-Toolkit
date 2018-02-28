@@ -245,7 +245,7 @@ public class DumpProcessingController {
 	 *
 	 * @see DatamodelConverter#setOptionPropertyFilter(Set)
 	 * @param propertyFilter
-	 *            set of language codes that should be retained (can be empty)
+	 *            set of properties that should be retained (can be empty)
 	 */
 	public void setPropertyFilter(Set<PropertyIdValue> propertyFilter) {
 		this.filter.setPropertyFilter(propertyFilter);
@@ -257,7 +257,7 @@ public class DumpProcessingController {
 	 *
 	 * @see DatamodelConverter#setOptionSiteLinkFilter(Set)
 	 * @param siteLinkFilter
-	 *            set of language codes that should be retained (can be empty)
+	 *            set of siteLinks that should be retained (can be empty)
 	 */
 	public void setSiteLinkFilter(Set<String> siteLinkFilter) {
 		this.filter.setSiteLinkFilter(siteLinkFilter);
