@@ -110,6 +110,23 @@ public class QuantityValueImplTest {
 		QuantityValueImpl quantity = new QuantityValueImpl(amount, null, null, "1");
 		assertEquals("+4.00", quantity.getValue().getAmountAsString());
 	}
+	
+	@Test
+	public void equalityBasedOnRepresentation() {
+		BigDecimal amount1 = new BigDecimal("4.00");
+		BigDecimal amount2 = new BigDecimal("4");
+		assertFalse(amount1.equals(amount2));
+		QuantityValue quantity1 = new QuantityValueImpl(amount1, null, null, "1");
+		QuantityValue quantity2 = new QuantityValueImpl(amount2, null, null, "1");
+		assertFalse(quantity1.equals(quantity2));
+	}
+	
+	@Test
+	public void faithfulJsonSerialization() {
+		BigDecimal amount = new BigDecimal("4.00");
+		QuantityValueImpl quantity = new QuantityValueImpl(amount, null, null, "1");
+		assertEquals("+4.00", quantity.getValue().getAmountAsString());
+	}
 
 	@Test
 	public void hashBasedOnContent() {
