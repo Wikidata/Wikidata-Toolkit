@@ -76,7 +76,7 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	 * 		the target value for this snak
 	 */
 	public ValueSnakImpl(PropertyIdValue property, Value value) {
-		super(property.getId(), property.getSiteIri());
+		super(property);
 		Validate.notNull(value, "A datavalue must be provided to create a value snak.");
 		this.datavalue = value;
 		this.datatype = getJsonPropertyTypeForValueType(datavalue);

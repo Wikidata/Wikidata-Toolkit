@@ -49,7 +49,7 @@ public class NoValueSnakImpl extends SnakImpl implements NoValueSnak {
 	 * 		the property id used by this no value snak
 	 */
 	public NoValueSnakImpl(PropertyIdValue property) {
-		super(property.getId(), property.getSiteIri());
+		super(property);
 	}
 
 	/**

@@ -30,8 +30,11 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +50,15 @@ public class TestStatement {
 		String result = mapper.writeValueAsString(statement);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
 				result);
+	}
+	
+	@Test
+	public void testFullStatementToJson() throws IOException {
+		Statement statement = DataObjectFactoryImplTest.getTestStatement(2, 3, 4, EntityIdValue.ET_ITEM);
+		ObjectMapper mapper = new DatamodelMapper(statement.getClaim().getSubject().getSiteIri());
+		String json = mapper.writeValueAsString(statement);
+		JacksonPreStatement deserialized = mapper.readValue(json, JacksonPreStatement.class);
+		assertEquals(statement, deserialized.withSubject(statement.getClaim().getSubject()));
 	}
 
 	@Test
@@ -69,7 +81,6 @@ public class TestStatement {
 		assertNull(result.getValue());
 		assertNull(result.getClaim().getValue());
 		assertEquals(JsonTestData.getTestNoValueStatement(), result);
-
 	}
 
 	@Test

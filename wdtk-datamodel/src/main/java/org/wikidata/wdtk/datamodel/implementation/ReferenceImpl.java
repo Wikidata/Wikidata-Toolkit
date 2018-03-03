@@ -115,6 +115,7 @@ public class ReferenceImpl implements Reference {
 	 *
 	 * @return the map of snaks
 	 */
+	@JsonProperty("snaks")
 	public Map<String, List<Snak>> getSnaks() {
 		return Collections.unmodifiableMap(this.snaks);
 	}
@@ -131,6 +132,7 @@ public class ReferenceImpl implements Reference {
 	}
 
 	@Override
+	@JsonIgnore
 	public Iterator<Snak> getAllSnaks() {
 		return new NestedIterator<>(getSnakGroups());
 	}

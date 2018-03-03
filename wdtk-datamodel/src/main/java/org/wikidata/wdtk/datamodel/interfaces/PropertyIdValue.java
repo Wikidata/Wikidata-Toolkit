@@ -1,6 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
 
 /*
  * #%L
@@ -67,5 +68,11 @@ public interface PropertyIdValue extends EntityIdValue {
 		public boolean equals(Object other) {
 			return Equality.equalsEntityIdValue(this, other);
 		}
+		
+		@Override
+		public int hashCode() {
+			return Hash.hashCode(this);
+		}
+
 	};
 }
