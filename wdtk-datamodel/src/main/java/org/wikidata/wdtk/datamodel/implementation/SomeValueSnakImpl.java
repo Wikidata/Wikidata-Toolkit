@@ -48,7 +48,7 @@ public class SomeValueSnakImpl extends SnakImpl implements SomeValueSnak {
 	 * 		the id of the property used for this some value snak
 	 */
 	public SomeValueSnakImpl(PropertyIdValue property) {
-		super(property.getId(), property.getSiteIri());
+		super(property);
 	}
 
 	/**

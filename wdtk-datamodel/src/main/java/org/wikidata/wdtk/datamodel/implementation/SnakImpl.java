@@ -65,31 +65,31 @@ public abstract class SnakImpl implements Snak {
 	public static final String JSON_SNAK_TYPE_NOVALUE = "novalue";
 
 	/**
-	 * Value of the "property" field in JSON, e.g., "P31".
+	 * The property used by this snak.
 	 */
-	private final String property;
-
+	private final PropertyIdValue property;
+	
 	/**
-	 * The site IRI of this snak. This is needed since the site that this snak
-	 * refers to is not part of the JSON serialization of snaks, but is needed
-	 * in WDTK to build {@link PropertyIdValue} objects etc. Thus, it is
-	 * necessary to set this information after each deserialization.
+	 * Constructor.
 	 */
-	@JsonIgnore
-	private final String siteIri;
+	public SnakImpl(PropertyIdValue property) {
+		Validate.notNull(property);
+		this.property = property;
+	}
 
 	/**
 	 * Constructor. Creates an empty object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
+	 * 
+	 * This is not marked as JsonCreator because only concrete subclasses will
+	 * be deserialized directly.
 	 */
-	@JsonCreator
 	protected SnakImpl(
-			@JsonProperty("property") String property,
-			@JacksonInject("siteIri") String siteIri) {
-		Validate.notNull(property);
-		this.property = property;
+			String id,
+			String siteIri) {
+		Validate.notNull(id);
 		Validate.notNull(siteIri);
-		this.siteIri = siteIri;
+		this.property = Datamodel.makePropertyIdValue(id, siteIri);
 	}
 
 	/**
@@ -100,13 +100,13 @@ public abstract class SnakImpl implements Snak {
 	 */
 	@JsonProperty("property")
 	public String getProperty() {
-		return this.property;
+		return this.property.getId();
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return Datamodel.makePropertyIdValue(property, this.siteIri);
+		return property;
 	}
 
 	@JsonIgnore

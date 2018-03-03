@@ -174,6 +174,7 @@ public class JacksonPreStatement {
 	 * Returns the rank of the statement.
 	 * @return "rank"
 	 */
+	@JsonProperty("rank")
 	public StatementRank getRank() {
 		return this.rank;
 	}
@@ -182,6 +183,7 @@ public class JacksonPreStatement {
 	 * Returns the references of this statement
 	 * @return "references"
 	 */
+	@JsonProperty("references")
 	public List<Reference> getReferences() {
 		return Collections.unmodifiableList(this.references);
 	}
@@ -203,6 +205,7 @@ public class JacksonPreStatement {
 	 *
 	 * @return main snak
 	 */
+	@JsonProperty("mainsnak")
 	public Snak getMainsnak() {
 		return this.mainsnak;
 	}
@@ -214,6 +217,7 @@ public class JacksonPreStatement {
 	 *
 	 * @return qualifiers
 	 */
+	@JsonProperty("qualifiers")
 	public Map<String, List<Snak>> getQualifiers() {
 		return Collections.unmodifiableMap(this.qualifiers);
 	}
