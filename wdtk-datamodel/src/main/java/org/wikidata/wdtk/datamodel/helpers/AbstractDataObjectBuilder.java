@@ -38,7 +38,7 @@ public abstract class AbstractDataObjectBuilder<T extends AbstractDataObjectBuil
 
 	static DataObjectFactory factory = new DataObjectFactoryImpl();
 
-	boolean isBuilt = false;
+	private boolean isBuilt = false;
 
 	/**
 	 * Returns the object that has been built.

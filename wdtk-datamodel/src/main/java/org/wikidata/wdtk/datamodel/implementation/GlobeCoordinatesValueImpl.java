@@ -62,7 +62,7 @@ public class GlobeCoordinatesValueImpl extends ValueImpl implements
 	 *            the longitude of the coordinates in degrees
 	 * @param precision
 	 *            the precision of the coordinates in degrees
-	 * @param globeIri
+	 * @param globe
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
 	public GlobeCoordinatesValueImpl(double latitude, double longitude,

@@ -41,9 +41,9 @@ public class PropertyDocumentBuilderTest {
 
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
 				PropertyIdValue.NULL, Collections.singletonList(mtv),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 
 		PropertyDocument pd2 = PropertyDocumentBuilder
@@ -60,9 +60,9 @@ public class PropertyDocumentBuilderTest {
 		
 		PropertyDocument initial = Datamodel.makePropertyDocument(PropertyIdValue.NULL,
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue>emptyList(),
-				Collections.<MonolingualTextValue>emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections. emptyList(),
 				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_QUANTITY),
 		        1234);
 		
@@ -73,6 +73,6 @@ public class PropertyDocumentBuilderTest {
 				"en");
 		
 		PropertyDocument withAlias = PropertyDocumentBuilder.fromPropertyDocument(initial).withAlias(alias).build();
-		assertEquals(withAlias.getAliases().get("en"), Arrays.asList(alias));
+		assertEquals(withAlias.getAliases().get("en"), Collections.singletonList(alias));
 	}
 }

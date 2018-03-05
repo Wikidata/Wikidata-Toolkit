@@ -1,7 +1,6 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 /*
  * #%L
@@ -23,9 +22,6 @@ import java.util.HashMap;
  * #L%
  */
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
@@ -84,8 +80,6 @@ public class ReferenceImpl implements Reference {
 	
 	/**
 	 * Constructor for deserialization from JSON.
-	 * @param snaks
-	 * @param propertyOrder
 	 */
 	@JsonCreator
 	protected ReferenceImpl(
@@ -93,8 +87,7 @@ public class ReferenceImpl implements Reference {
 			@JsonProperty("snaks-order") List<String> propertyOrder) {
 		this.snaks = new HashMap<>(snaks.size());
 		for(Map.Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
-			this.snaks.put(entry.getKey(),
-					entry.getValue().stream().collect(Collectors.toList()));
+			this.snaks.put(entry.getKey(), new ArrayList<>(entry.getValue()));
 		}
 		this.propertyOrder = propertyOrder;
 	}

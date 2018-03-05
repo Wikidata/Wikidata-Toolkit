@@ -40,24 +40,24 @@ public class SiteLinkImplTest {
 	@Before
 	public void setUp() throws Exception {
 		s1 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		s2 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 	}
 
 	@Test
 	public void fieldsIsCorrect() {
 		assertEquals(s1.getPageTitle(), "Dresden");
 		assertEquals(s1.getSiteKey(), "enwiki");
-		assertEquals(s1.getBadges(), Collections.<String> emptyList());
+		assertEquals(s1.getBadges(), Collections. emptyList());
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
 		SiteLink sDiffTitle = new SiteLinkImpl("Berlin", "enwiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink sDiffBadges = new SiteLinkImpl("Dresden", "enwiki",
 				Collections.singletonList("some badge?"));
 
@@ -77,17 +77,17 @@ public class SiteLinkImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void titleNotNull() {
-		new SiteLinkImpl(null, "enwiki", Collections.<String> emptyList());
+		new SiteLinkImpl(null, "enwiki", Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void siteKeyNotNull() {
-		new SiteLinkImpl("Dresden", null, Collections.<String> emptyList());
+		new SiteLinkImpl("Dresden", null, Collections.emptyList());
 	}
 
 	public void badgesCanBeNull() {
 		SiteLink sitelink = new SiteLinkImpl("Dresden", "enwiki", null);
-		assertEquals(sitelink.getBadges(), Collections.<String>emptyList());
+		assertEquals(sitelink.getBadges(), Collections.emptyList());
 	}
 
 }

@@ -30,12 +30,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -63,7 +58,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	/**
 	 * Constructor.
 	 *
-	 * @param itemIdValue
+	 * @param id
 	 *            the id of the item that data is about
 	 * @param labels
 	 *            the list of labels of this item, with at most one label for
@@ -73,7 +68,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	 *            description for each language code
 	 * @param aliases
 	 *            the list of aliases of this item
-	 * @param statementGroups
+	 * @param statements
 	 *            the list of statement groups of this item; all of them must
 	 *            have the given itemIdValue as their subject
 	 * @param siteLinks
@@ -119,7 +114,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 		if (sitelinks != null) {
 			this.sitelinks = sitelinks;
 		} else {
-			this.sitelinks = Collections.<String, SiteLink>emptyMap();
+			this.sitelinks = Collections.emptyMap();
 		}
 	}
 
@@ -138,7 +133,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonProperty("sitelinks")
 	@Override
 	public Map<String, SiteLink> getSiteLinks() {
-		return Collections.<String, SiteLink> unmodifiableMap(this.sitelinks);
+		return Collections. unmodifiableMap(this.sitelinks);
 	}
 
 	@Override

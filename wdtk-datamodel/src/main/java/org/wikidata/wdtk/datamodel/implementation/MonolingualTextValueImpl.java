@@ -59,9 +59,6 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 	
 	/**
 	 * Constructor.
-	 * 
-	 * @param text
-	 * @param language
 	 */
 	public MonolingualTextValueImpl(String text, String language) {
 		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);

@@ -87,10 +87,10 @@ public class DatamodelConverterTest {
 				new BrokenItemIdValue());
 		Claim brokenClaim = Datamodel.makeClaim(
 				DataObjectFactoryImplTest.getTestItemIdValue(2), brokenSnak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		return Datamodel
 				.makeStatement(brokenClaim,
-						Collections.<Reference> emptyList(),
+						Collections.emptyList(),
 						StatementRank.NORMAL, "id");
 	}
 
@@ -114,17 +114,17 @@ public class DatamodelConverterTest {
 
 		ItemDocument brokenId = Datamodel.makeItemDocument(
 				DataObjectFactoryImplTest.getTestItemIdValue(2),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), brokenSgs,
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), brokenSgs,
+				Collections.emptyMap());
 
 		ItemDocument fixedId = Datamodel.makeItemDocument(
 				DataObjectFactoryImplTest.getTestItemIdValue(2),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), fixedSgs,
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), fixedSgs,
+				Collections.emptyMap());
 
 		DatamodelConverter dmc = new DatamodelConverter(
 				new DataObjectFactoryImpl());
@@ -168,17 +168,17 @@ public class DatamodelConverterTest {
 
 		ItemDocument brokenId = Datamodel.makeItemDocument(
 				DataObjectFactoryImplTest.getTestItemIdValue(2),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), brokenSgs,
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), brokenSgs,
+				Collections.emptyMap());
 
 		ItemDocument fixedId = Datamodel.makeItemDocument(
 				DataObjectFactoryImplTest.getTestItemIdValue(2),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(), fixedSgs,
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), fixedSgs,
+				Collections.emptyMap());
 
 		DatamodelConverter dmc = new DatamodelConverter(
 				new DataObjectFactoryImpl());

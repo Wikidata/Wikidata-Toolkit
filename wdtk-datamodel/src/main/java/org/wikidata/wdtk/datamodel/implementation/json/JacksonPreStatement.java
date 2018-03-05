@@ -20,31 +20,17 @@ package org.wikidata.wdtk.datamodel.implementation.json;
  * #L%
  */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.implementation.ReferenceImpl;
 import org.wikidata.wdtk.datamodel.implementation.SnakImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.*;
 
 /**
  * Helper class storing a statement as represented in JSON. This
@@ -116,17 +102,17 @@ public class JacksonPreStatement {
 		if (qualifiers != null) {
 			this.qualifiers = qualifiers;
 		} else {
-			this.qualifiers = Collections.<String, List<Snak>>emptyMap();
+			this.qualifiers = Collections.emptyMap();
 		}
 		if (propertyOrder != null) {
 			this.propertyOrder = propertyOrder;
 		} else {
-			this.propertyOrder = Collections.<String>emptyList();
+			this.propertyOrder = Collections.emptyList();
 		}
 		if (references != null) {
 			this.references = references;
 		} else {
-			this.references = Collections.<Reference>emptyList();
+			this.references = Collections.emptyList();
 		}
 	}
 	
@@ -147,7 +133,7 @@ public class JacksonPreStatement {
 		}
 		Map<String, List<Snak>> newQualifiers = new HashMap<>(qualifiers.size());
 		for(Map.Entry<String,List<SnakImpl>> entry : qualifiers.entrySet()) {
-			List<Snak> snaks = entry.getValue().stream().collect(Collectors.toList());
+			List<Snak> snaks = new ArrayList<>(entry.getValue());
 			newQualifiers.put(entry.getKey(), snaks);
 		}
 		return new JacksonPreStatement(id, rank, mainsnak, newQualifiers, propertyOrder, references);
@@ -201,7 +187,7 @@ public class JacksonPreStatement {
 	/**
 	 * Returns the main snak of the claim of this statement. Only for use by
 	 * Jackson during serialization. To access this data, use
-	 * {@link #getClaim()}.
+	 * {@link Statement#getClaim()}.
 	 *
 	 * @return main snak
 	 */
@@ -213,7 +199,7 @@ public class JacksonPreStatement {
 	/**
 	 * Returns the qualifiers of the claim of this statement. Only for use by
 	 * Jackson during serialization. To access this data, use
-	 * {@link #getClaim()}.
+	 * {@link Statement#getClaim()}.
 	 *
 	 * @return qualifiers
 	 */

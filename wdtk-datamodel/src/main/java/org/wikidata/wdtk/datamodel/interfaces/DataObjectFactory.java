@@ -306,63 +306,6 @@ public interface DataObjectFactory {
 	SiteLink getSiteLink(String title, String siteKey, List<String> badges);
 
 	/**
-	 * Creates a {@link PropertyDocument} without any statements. This is
-	 * provided for backwards compatibility (property documents did not support
-	 * statements in the past).
-	 *
-	 * @param propertyId
-	 *            the id of the property that data is about
-	 * @param labels
-	 *            the list of labels of this property, with at most one label
-	 *            for each language code
-	 * @param descriptions
-	 *            the list of descriptions of this property, with at most one
-	 *            description for each language code
-	 * @param aliases
-	 *            the list of aliases of this property
-	 * @param datatypeId
-	 *            the datatype of that property
-	 * @return a {@link PropertyDocument} corresponding to the input
-	 * @deprecated Use
-	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
-	 */
-	@Deprecated
-	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId);
-
-	/**
-	 * Creates a {@link PropertyDocument}. It might be more convenient to use
-	 * the {@link PropertyDocumentBuilder} instead.
-	 *
-	 * @param propertyId
-	 *            the id of the property that data is about
-	 * @param labels
-	 *            the list of labels of this property, with at most one label
-	 *            for each language code
-	 * @param descriptions
-	 *            the list of descriptions of this property, with at most one
-	 *            description for each language code
-	 * @param aliases
-	 *            the list of aliases of this property
-	 * @param statementGroups
-	 *            the list of statement groups of this item; all of them must
-	 *            have the given itemIdValue as their subject
-	 * @param datatypeId
-	 *            the datatype of that property
-	 * @return a {@link PropertyDocument} corresponding to the input
-	 * @deprecated Use
-	 *             {@link #getPropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
-	 */
-	@Deprecated
-	PropertyDocument getPropertyDocument(PropertyIdValue propertyId,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId);
-
-	/**
 	 * Creates a {@link PropertyDocument}. It might be more convenient to use
 	 * the {@link PropertyDocumentBuilder} instead.
 	 *
@@ -392,38 +335,6 @@ public interface DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups, DatatypeIdValue datatypeId,
 			long revisionId);
-
-	/**
-	 * Creates an {@link ItemDocument}. It might be more convenient to use the
-	 * {@link ItemDocumentBuilder} instead.
-	 *
-	 * @param itemIdValue
-	 *            the id of the item that data is about
-	 * @param labels
-	 *            the list of labels of this item, with at most one label for
-	 *            each language code
-	 * @param descriptions
-	 *            the list of descriptions of this item, with at most one
-	 *            description for each language code
-	 * @param aliases
-	 *            the list of aliases of this item
-	 * @param statementGroups
-	 *            the list of statement groups of this item; all of them must
-	 *            have the given itemIdValue as their subject
-	 * @param siteLinks
-	 *            the sitelinks of this item by site key
-	 * @return an {@link ItemDocument} corresponding to the input
-	 * @deprecated Use
-	 *             {@link #getItemDocument(ItemIdValue, List, List, List, List, Map, long)}
-	 *             instead
-	 */
-	@Deprecated
-	ItemDocument getItemDocument(ItemIdValue itemIdValue,
-			List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases,
-			List<StatementGroup> statementGroups,
-			Map<String, SiteLink> siteLinks);
 
 	/**
 	 * Creates an {@link ItemDocument}. It might be more convenient to use the

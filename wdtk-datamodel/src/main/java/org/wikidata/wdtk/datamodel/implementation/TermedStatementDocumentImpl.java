@@ -123,7 +123,7 @@ public abstract class TermedStatementDocumentImpl extends
 	 * @see EntityDocument#getRevisionId()
 	 */
 	@JsonProperty("lastrevid")
-	protected long revisionId = 0;
+	protected final long revisionId;
 	
 	/**
 	 * Constructor.
@@ -155,17 +155,17 @@ public abstract class TermedStatementDocumentImpl extends
 		if (labels != null) {
 			this.labels = constructTermMap(labels);
 		} else {
-			this.labels = Collections.<String, MonolingualTextValue>emptyMap();
+			this.labels = Collections.emptyMap();
 		}
 		if (descriptions != null) {
 			this.descriptions = constructTermMap(descriptions);
 		} else {
-			this.descriptions = Collections.<String, MonolingualTextValue>emptyMap();
+			this.descriptions = Collections.emptyMap();
 		}
 		if (aliases != null) {
 			this.aliases = constructTermListMap(aliases);
 		} else {
-			this.aliases = Collections.<String, List<MonolingualTextValue>>emptyMap();
+			this.aliases = Collections.emptyMap();
 		}
 		this.claims = new HashMap<>();
 		if(claims != null) {
@@ -197,20 +197,20 @@ public abstract class TermedStatementDocumentImpl extends
 		if (labels != null) {
 			this.labels = labels;
 		} else {
-			this.labels = Collections.<String, MonolingualTextValue>emptyMap();
+			this.labels = Collections.emptyMap();
 		}
 		if (descriptions != null) {
 			this.descriptions = descriptions;
 		} else {
-			this.descriptions = Collections.<String, MonolingualTextValue>emptyMap();
+			this.descriptions = Collections.emptyMap();
 		}
 		if (aliases != null) {
 			this.aliases = aliases;
 		} else {
-			this.aliases = Collections.<String, List<MonolingualTextValue>>emptyMap();
+			this.aliases = Collections.emptyMap();
 		}
 		if (claims != null) {
-			this.claims = new HashMap<String, List<Statement>>();
+			this.claims = new HashMap<>();
 			EntityIdValue subject = this.getEntityId();
 			for (Entry<String, List<JacksonPreStatement>> entry : claims
 					.entrySet()) {
@@ -221,7 +221,7 @@ public abstract class TermedStatementDocumentImpl extends
 				this.claims.put(entry.getKey(), statements);
 			}
 		} else {
-			this.claims = Collections.<String,List<Statement>>emptyMap();
+			this.claims = Collections.emptyMap();
 		}
 		this.revisionId = revisionId;
 	}
@@ -237,7 +237,7 @@ public abstract class TermedStatementDocumentImpl extends
 		for (Entry<String, List<MonolingualTextValue>> entry : this.aliases
 				.entrySet()) {
 			returnMap.put(entry.getKey(), Collections
-					.<MonolingualTextValue> unmodifiableList(entry.getValue()));
+					. unmodifiableList(entry.getValue()));
 		}
 
 		return Collections.unmodifiableMap(returnMap);
@@ -246,15 +246,13 @@ public abstract class TermedStatementDocumentImpl extends
 	@JsonProperty("descriptions")
 	@Override
 	public Map<String, MonolingualTextValue> getDescriptions() {
-		return Collections
-				.<String, MonolingualTextValue> unmodifiableMap(this.descriptions);
+		return Collections.unmodifiableMap(this.descriptions);
 	}
 
 	@JsonProperty("labels")
 	@Override
 	public Map<String, MonolingualTextValue> getLabels() {
-		return Collections
-				.<String, MonolingualTextValue> unmodifiableMap(this.labels);
+		return Collections.unmodifiableMap(this.labels);
 	}
 
 	/**

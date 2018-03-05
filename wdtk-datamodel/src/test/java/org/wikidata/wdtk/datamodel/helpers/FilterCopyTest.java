@@ -55,11 +55,11 @@ public class FilterCopyTest {
 	protected ItemDocument getEmptyItemDocument() {
 		return Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap());
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class FilterCopyTest {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
 				new DataObjectFactoryImpl());
 		datamodelConverter.setOptionLanguageFilter(Collections
-				.<String> emptySet());
+				.emptySet());
 
 		List<MonolingualTextValue> labels = new ArrayList<>();
 		labels.add(Datamodel.makeMonolingualTextValue("Label de", "de"));
@@ -83,8 +83,8 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"), labels, descriptions,
-				aliases, Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				aliases, Collections.emptyList(),
+				Collections.emptyMap());
 
 		ItemDocument itemDocumentFiltered = getEmptyItemDocument();
 
@@ -120,8 +120,8 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"), labels, descriptions,
-				aliases, Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				aliases, Collections.emptyList(),
+				Collections.emptyMap());
 
 		List<MonolingualTextValue> labelsFiltered = new ArrayList<>();
 		labelsFiltered
@@ -140,8 +140,8 @@ public class FilterCopyTest {
 		ItemDocument itemDocumentFiltered = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"), labelsFiltered,
 				descriptionsFiltered, aliasesFiltered,
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyMap());
 
 		assertEquals(languageFilter,
 				datamodelConverter.getOptionLanguageFilter());
@@ -167,9 +167,9 @@ public class FilterCopyTest {
 		Claim claim = Datamodel.makeClaim(
 				Datamodel.makeWikidataItemIdValue("Q42"),
 				Datamodel.makeSomeValueSnak(propertyIdValue),
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		Statement statement = Datamodel.makeStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"statement-id-" + propertyIdValue.getId());
 		return Datamodel.makeStatementGroup(Collections
 				.singletonList(statement));
@@ -202,18 +202,18 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				statementGroups, Collections.emptyMap());
 
 		ItemDocument itemDocumentFiltered = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroupsFiltered,
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyMap());
 
 		assertEquals(propertyFilter,
 				datamodelConverter.getOptionPropertyFilter());
@@ -235,7 +235,7 @@ public class FilterCopyTest {
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
 				new DataObjectFactoryImpl());
 		datamodelConverter.setOptionPropertyFilter(Collections
-				.<PropertyIdValue> emptySet());
+				.emptySet());
 
 		List<StatementGroup> statementGroups = new ArrayList<>();
 		statementGroups.add(makeTestStatementGroup(p1));
@@ -245,10 +245,10 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				statementGroups, Collections.emptyMap());
 
 		ItemDocument itemDocumentFiltered = getEmptyItemDocument();
 
@@ -263,13 +263,13 @@ public class FilterCopyTest {
 	@Test
 	public void testSiteLinkFilter() {
 		SiteLink s1 = Datamodel.makeSiteLink("Title 1", "site1",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s2 = Datamodel.makeSiteLink("Title 2", "site2",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s3 = Datamodel.makeSiteLink("Title 3", "site3",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s4 = Datamodel.makeSiteLink("Title 4", "site4",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 
 		Set<String> siteLinkFilter = new HashSet<>();
 		siteLinkFilter.add("site2");
@@ -291,17 +291,17 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), siteLinks);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), siteLinks);
 
 		ItemDocument itemDocumentFiltered = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), siteLinksFiltered);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), siteLinksFiltered);
 
 		assertEquals(siteLinkFilter,
 				datamodelConverter.getOptionSiteLinkFilter());
@@ -316,18 +316,18 @@ public class FilterCopyTest {
 	@Test
 	public void testEmptySiteLinkFilter() {
 		SiteLink s1 = Datamodel.makeSiteLink("Title 1", "site1",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s2 = Datamodel.makeSiteLink("Title 2", "site2",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s3 = Datamodel.makeSiteLink("Title 3", "site3",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 		SiteLink s4 = Datamodel.makeSiteLink("Title 4", "site4",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 
 		DatamodelConverter datamodelConverter = new DatamodelConverter(
 				new DataObjectFactoryImpl());
 		datamodelConverter.setOptionSiteLinkFilter(Collections
-				.<String> emptySet());
+				.emptySet());
 
 		Map<String, SiteLink> siteLinks = new HashMap<>();
 		siteLinks.put(s1.getSiteKey(), s1);
@@ -341,10 +341,10 @@ public class FilterCopyTest {
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(), siteLinks);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), siteLinks);
 
 		ItemDocument itemDocumentFiltered = getEmptyItemDocument();
 
@@ -367,7 +367,7 @@ public class FilterCopyTest {
 		Snak snak = Datamodel.makeSomeValueSnak(propertyIdValue);
 		Claim claim = Datamodel.makeClaim(
 				Datamodel.makeWikidataItemIdValue("Q42"), snak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 
 		SnakGroup snakGroup = Datamodel.makeSnakGroup(Collections
 				.singletonList(snak));
@@ -381,25 +381,25 @@ public class FilterCopyTest {
 				.makeStatementGroup(Collections.singletonList(statement));
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(statementGroup),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyMap());
 
 		Statement statementFiltered = Datamodel.makeStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"statement-id-" + propertyIdValue.getId());
 		StatementGroup statementGroupFiltered = Datamodel
 				.makeStatementGroup(Collections
 						.singletonList(statementFiltered));
 		ItemDocument itemDocumentFiltered = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(statementGroupFiltered),
-				Collections.<String, SiteLink> emptyMap());
+				Collections.emptyMap());
 
 		assertFalse(datamodelConverter.hasOptionDeepCopyReferences());
 		assertEquals(itemDocumentFiltered,

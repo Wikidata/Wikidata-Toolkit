@@ -53,18 +53,16 @@ public class TestItemDocument {
 
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Pojo to Json
-	 *
-	 * @throws JsonProcessingException
 	 */
 	@Test
 	public void testLabelsToJson() throws JsonProcessingException {
 		ItemDocumentImpl document = new ItemDocumentImpl(
 				JsonTestData.getTestItemId().getId(),
 				JsonTestData.getTestMltvMap(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, List<MonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, SiteLink>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -74,10 +72,6 @@ public class TestItemDocument {
 
 	/**
 	 * Tests the conversion of ItemDocuments containing labels from Json to Pojo
-	 *
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
 	 */
 	@Test
 	public void testLabelToJava() throws
@@ -92,18 +86,16 @@ public class TestItemDocument {
 	/**
 	 * Tests the conversion of ItemDocuments containing descriptions from Pojo
 	 * to Json
-	 *
-	 * @throws JsonProcessingException
 	 */
 	@Test
 	public void testDescriptionsToJson() throws JsonProcessingException {
 		ItemDocumentImpl document = new ItemDocumentImpl(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.emptyMap(),
 				JsonTestData.getTestMltvMap(),
-				Collections.<String, List<MonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, SiteLink>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -114,10 +106,6 @@ public class TestItemDocument {
 	/**
 	 * Tests the conversion of ItemDocuments containing descriptions from Json
 	 * to Pojo
-	 *
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
 	 */
 	@Test
 	public void testDescriptionsToJava() throws
@@ -134,11 +122,11 @@ public class TestItemDocument {
 	public void testAliasesToJson() throws JsonProcessingException {
 		ItemDocumentImpl document = new ItemDocumentImpl(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				JsonTestData.getTestAliases(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, SiteLink>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -170,11 +158,11 @@ public class TestItemDocument {
 	public void testEmptyItemIdToJson() throws JsonProcessingException {
 		ItemDocumentImpl document = new ItemDocumentImpl(
 				ItemIdValue.NULL.getId(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, List<MonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, SiteLink>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				0, ItemIdValue.NULL.getSiteIri());
 
 		String result = mapper.writeValueAsString(document);
@@ -197,10 +185,10 @@ public class TestItemDocument {
 	public void testSiteLinksToJson() throws JsonProcessingException {
 		ItemDocumentImpl document = new ItemDocumentImpl(
 				JsonTestData.getTestItemId().getId(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, MonolingualTextValue>emptyMap(),
-				Collections.<String, List<MonolingualTextValue>>emptyMap(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				JsonTestData.getTestSiteLinkMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 
@@ -221,7 +209,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testEmptyArraysForTerms() throws IOException {
-		ItemDocumentImpl result = mapper.reader(ItemDocumentImpl.class)
+		ItemDocumentImpl result = mapper.readerFor(ItemDocumentImpl.class)
 			.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
 			.readValue(JsonTestData.JSON_EMPTY_ARRAY_AS_CONTAINER);
 
@@ -240,7 +228,7 @@ public class TestItemDocument {
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestAliases(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
+				Collections.emptyMap(),
 				JsonTestData.getTestSiteLinkMap(),
 				0, JsonTestData.getTestItemId().getSiteIri());
 

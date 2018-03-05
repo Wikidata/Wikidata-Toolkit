@@ -142,13 +142,9 @@ public class JacksonInnerEntityId {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof JacksonInnerEntityId)) {
-			return false;
-		}
-
-		return (this.numericId == ((JacksonInnerEntityId) o).numericId)
-				&& (this.entityType
-						.equals(((JacksonInnerEntityId) o).entityType));
+		return o instanceof JacksonInnerEntityId
+			&& (this.numericId == ((JacksonInnerEntityId) o).numericId)
+			&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
 	private void checkAndFillFields() {

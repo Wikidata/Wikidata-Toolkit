@@ -54,7 +54,7 @@ public class ReferenceImplTest {
 				"P42", "http://wikidata.org/entity/");
 		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
-				Collections.<Snak> singletonList(valueSnak));
+				Collections. singletonList(valueSnak));
 		r1 = new ReferenceImpl(Collections.singletonList(snakGroup));
 		r2 = new ReferenceImpl(Collections.singletonList(snakGroup));
 	}
@@ -67,7 +67,7 @@ public class ReferenceImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		Reference r3 = new ReferenceImpl(Collections.<SnakGroup> emptyList());
+		Reference r3 = new ReferenceImpl(Collections.emptyList());
 
 		assertEquals(r1, r1);
 		assertEquals(r1, r2);
