@@ -58,15 +58,11 @@ public class StatementGroupTest {
 		property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new ValueSnakImpl(property, subject);
-		Claim claim = new ClaimImpl(subject, mainSnak,
-				Collections.emptyList());
 
-		statement1 = new StatementImpl(claim,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
-		statement2 = new StatementImpl(claim,
-				Collections.emptyList(), StatementRank.PREFERRED,
-				"MyId");
+		statement1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
+		statement2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
 
 		sg1 = new StatementGroupImpl(
 				Collections.singletonList(statement1));
@@ -128,11 +124,8 @@ public class StatementGroupTest {
 		EntityIdValue subject2 = new ItemIdValueImpl("Q23",
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property);
-		Claim claim = new ClaimImpl(subject2, mainSnak,
-				Collections.emptyList());
-		Statement s2 = new StatementImpl(claim,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
+		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(),  Collections.emptyList(), subject2);
 		statements.add(s2);
 
 		new StatementGroupImpl(statements);
@@ -146,11 +139,8 @@ public class StatementGroupTest {
 
 		PropertyIdValue property2 = new PropertyIdValueImpl("P23", "http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property2);
-		Claim claim = new ClaimImpl(subject, mainSnak,
-				Collections.emptyList());
-		Statement s2 = new StatementImpl(claim,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
+		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subject);
 		statements.add(s2);
 
 		new StatementGroupImpl(statements);

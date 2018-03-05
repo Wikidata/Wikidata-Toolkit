@@ -58,12 +58,11 @@ public class StatementImplTest {
 				"http://wikidata.org/entity/");
 		mainSnak = new ValueSnakImpl(property, subject);
 
-		claim = new ClaimImpl(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
-		s1 = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, "MyId");
-		s2 = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, "MyId");
+		claim = new ClaimImpl(subject, mainSnak, Collections.emptyList());
+		s1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
+		s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
 	}
 
 	@Test
@@ -77,25 +76,34 @@ public class StatementImplTest {
 	}
 
 	@Test(expected = NullPointerException.class)
+	public void mainSnakNotNull() {
+		new StatementImpl("MyId", StatementRank.NORMAL, null,
+				Collections.emptyList(), Collections.emptyList(), subject);
+	}
+
+	@Test(expected = NullPointerException.class)
+	@SuppressWarnings("deprecation")
 	public void claimNotNull() {
 		new StatementImpl(null, Collections.<Reference> emptyList(),
 				StatementRank.NORMAL, "MyId");
 	}
 
+	@Test
 	public void referencesCanBeNull() {
-		Statement statement = new StatementImpl(claim, null, StatementRank.NORMAL, "MyId");
+		Statement statement = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,  Collections.emptyList(), null, subject);
 		assertTrue(statement.getReferences().isEmpty());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
-		new StatementImpl(claim, Collections.<Reference> emptyList(), null,
-				"MyId");
+		new StatementImpl("MyId", null, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
 	}
 
+	@Test
 	public void idCanBeNull() {
-		Statement statement = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, null);
+		Statement statement = new StatementImpl(null, StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
 		assertEquals(statement.getStatementId(), "");
 	}
 
@@ -106,26 +114,17 @@ public class StatementImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		Statement sDiffClaim, sDiffReferences, sDiffRank, sDiffId;
-
-		Claim claim2 = new ClaimImpl(new ItemIdValueImpl("Q43",
-				"http://wikidata.org/entity/"), mainSnak,
-				Collections.<SnakGroup> emptyList());
-
-		sDiffClaim = new StatementImpl(claim2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"MyId");
-		sDiffReferences = new StatementImpl(
-				claim,
-				Collections.<Reference> singletonList(new ReferenceImpl(
-						Collections.<SnakGroup> singletonList(new SnakGroupImpl(
-								Collections.<Snak> singletonList(mainSnak))))),
-				StatementRank.NORMAL, "MyId");
-		sDiffRank = new StatementImpl(claim,
-				Collections.<Reference> emptyList(), StatementRank.PREFERRED,
-				"MyId");
-		sDiffId = new StatementImpl(claim, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, "MyOtherId");
+		Statement sDiffClaim = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(),
+				new ItemIdValueImpl("Q43", "http://wikidata.org/entity/"));
+		Statement sDiffReferences = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.singletonList(new ReferenceImpl(
+						Collections.singletonList(new SnakGroupImpl(Collections.singletonList(mainSnak)))
+				)), subject);
+		Statement sDiffRank = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
+		Statement sDiffId = new StatementImpl("MyOtherId", StatementRank.NORMAL, mainSnak,
+				Collections.emptyList(), Collections.emptyList(), subject);
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);

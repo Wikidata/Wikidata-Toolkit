@@ -221,7 +221,7 @@ public class TestItemDocument {
 
 	@Test
 	public void testEmptyArraysForTerms() throws IOException {
-		ItemDocumentImpl result = mapper.reader(ItemDocumentImpl.class)
+		ItemDocumentImpl result = mapper.readerFor(ItemDocumentImpl.class)
 			.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
 			.readValue(JsonTestData.JSON_EMPTY_ARRAY_AS_CONTAINER);
 

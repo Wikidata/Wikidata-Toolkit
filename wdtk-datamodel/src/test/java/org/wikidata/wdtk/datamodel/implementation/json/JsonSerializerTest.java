@@ -107,7 +107,7 @@ public class JsonSerializerTest {
 
 		ObjectMapper mapper = new DatamodelMapper("foo:");
 		ObjectReader documentReader = mapper
-				.reader(TermedStatementDocumentImpl.class);
+				.readerFor(TermedStatementDocumentImpl.class);
 
 		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(out.toString());

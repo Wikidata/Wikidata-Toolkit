@@ -58,6 +58,7 @@ public class TestInnerValueObjects {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	@SuppressWarnings("deprecation")
 	public void testEntityIdSetterLegacy() throws JsonMappingException {
 		new JacksonInnerEntityId("wrongType", 1);
 		// should fail

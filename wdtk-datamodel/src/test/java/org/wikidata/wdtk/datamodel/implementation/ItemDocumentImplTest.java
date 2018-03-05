@@ -63,11 +63,9 @@ public class ItemDocumentImplTest {
 	public void setUp() throws Exception {
 		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
 
-		Claim c = new ClaimImpl(iid, new SomeValueSnakImpl(
-				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<SnakGroup> emptyList());
-		s = new StatementImpl(c, Collections.<Reference> emptyList(),
-				StatementRank.NORMAL, "MyId");
+		s = new StatementImpl("MyId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
+				Collections.emptyList(), Collections.emptyList(), iid);
 		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
 		statementGroups = Collections.singletonList(sg);
 
@@ -197,14 +195,10 @@ public class ItemDocumentImplTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
-		Claim c2 = new ClaimImpl(iid2, new SomeValueSnakImpl(
-				new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.<SnakGroup> emptyList());
-		Statement s2 = new StatementImpl(c2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"MyId");
-		StatementGroup sg2 = new StatementGroupImpl(
-				Collections.singletonList(s2));
+		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
+				Collections.emptyList(),  Collections.emptyList(), iid2);
+		StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(s2));
 
 		List<StatementGroup> statementGroups2 = new ArrayList<StatementGroup>();
 		statementGroups2.add(statementGroups.get(0));
