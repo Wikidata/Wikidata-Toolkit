@@ -20,37 +20,25 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
-import org.wikidata.wdtk.util.NestedIterator;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Helper class to represent a {@link Claim} deserialized from JSON. The actual
- * data is part of {@link JacksonPreStatement}. This is merely a facade that
- * provides a suitable view.
+ * Helper class to represent a {@link Claim}.
+ * This is  a ffacade for a {@link Statement}
  *
  * @author Fredo Erxleben
  * @author Antonin Delpeuch
  */
 public class ClaimImpl implements Claim {
 
-	private final StatementImpl statement;
+	private final Statement statement;
 
-	private List<SnakGroup> qualifiers = null;
-	
 	/**
 	 * Constructor to create a claim. This internally creates
 	 * a new statement, so if you want to create a statement later
@@ -83,33 +71,27 @@ public class ClaimImpl implements Claim {
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.statement.getSubject();
+		return statement.getSubject();
 	}
 
 	@Override
 	public Snak getMainSnak() {
-		return this.statement.getMainsnak();
+		return statement.getMainSnak();
 	}
 
 	@Override
 	public List<SnakGroup> getQualifiers() {
-		if (this.qualifiers == null) {
-			this.qualifiers = SnakGroupImpl.makeSnakGroups(
-					this.statement.getQualifiers(),
-					this.statement.getPropertyOrder());
-		}
-		return this.qualifiers;
+		return statement.getQualifiers();
 	}
 
 	@Override
 	public Iterator<Snak> getAllQualifiers() {
-		return new NestedIterator<>(getQualifiers());
+		return statement.getAllQualifiers();
 	}
 
 	@Override
-	@JsonIgnore
 	public Value getValue() {
-		return this.statement.getMainsnak().getValue();
+		return statement.getValue();
 	}
 
 	@Override

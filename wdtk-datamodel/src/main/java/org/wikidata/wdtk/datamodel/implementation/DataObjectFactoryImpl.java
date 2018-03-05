@@ -189,7 +189,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public StatementGroup getStatementGroup(List<Statement> statements) {
 		List<Statement> newStatements = new ArrayList<>(statements.size());
 		for (Statement statement : statements) {
-			if (statement instanceof JacksonPreStatement) {
+			if (statement instanceof StatementImpl) {
 				newStatements.add(statement);
 			} else {
 				newStatements.add(this.dataModelConverter.copy(statement));

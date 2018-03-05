@@ -25,20 +25,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -92,6 +85,30 @@ public class StatementUpdate {
 		@Override
 		@JsonIgnore
 		public Claim getClaim() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public EntityIdValue getSubject() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public Snak getMainSnak() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public List<SnakGroup> getQualifiers() {
+			return null;
+		}
+
+		@Override
+		@JsonIgnore
+		public Iterator<Snak> getAllQualifiers() {
 			return null;
 		}
 

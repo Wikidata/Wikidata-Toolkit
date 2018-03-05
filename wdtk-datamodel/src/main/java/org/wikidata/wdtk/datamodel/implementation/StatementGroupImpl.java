@@ -28,23 +28,20 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 /**
- * Helper class to represent a {@link StatementGroup} deserialized from JSON.
- * The actual data is part of a map of lists of {@link JacksonPreStatement} objects
- * in JSON, so there is no corresponding JSON object.
+ * Helper class to represent a {@link StatementGroup}.
  *
  * @author Markus Kroetzsch
  * @author Antonin Delpeuch
  */
 public class StatementGroupImpl implements StatementGroup {
 
-	final List<Statement> statements;
+	private final List<Statement> statements;
 
 	/**
 	 * Constructor.

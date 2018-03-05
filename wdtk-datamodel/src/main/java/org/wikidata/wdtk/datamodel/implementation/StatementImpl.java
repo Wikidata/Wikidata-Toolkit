@@ -1,6 +1,6 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.HashMap;
+import java.util.*;
 
 /*
  * #%L
@@ -22,24 +22,17 @@ import java.util.HashMap;
  * #L%
  */
 
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.wikidata.wdtk.datamodel.implementation.json.StatementRankSerializer;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.util.NestedIterator;
 
 /**
  * Jackson implementation of {@link Statement}. In JSON, the corresponding
@@ -47,24 +40,39 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @author Fredo Erxleben
  * @author Antonin Delpeuch
+ * @author Thomas Pellissier Tanon
  *
  */
-public class StatementImpl extends JacksonPreStatement implements Statement {
-	
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class StatementImpl implements Statement {
+
+	private final String statementId;
+
+	private final StatementRank rank;
+
+	private final Snak mainSnak;
+
 	/**
-	 * The subject entity that this statement refers to. This is needed since it
-	 * is not part of the JSON serialization of statements, but is needed in
-	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
-	 * information after each deserialization in
-	 * {@link TermedStatementDocumentImpl}.
+	 * A map from property id strings to snaks that encodes the qualifiers.
 	 */
-	@JsonIgnore
-	private final EntityIdValue subject;
+	private final Map<String, List<Snak>> qualifiers;
+
+	/**
+	 * List of property string ids that encodes the desired order of qualifiers,
+	 * which is not specified by the map.
+	 */
+	private final List<String> qualifiersOrder;
+
+	private final EntityIdValue subjectId;
+
+	private final List<Reference> references;
+
+	private List<SnakGroup> qualifiersGroups;
 
 	/**
 	 * Constructor.
 	 * <p>
-	 * The string id is used mainly for communication with a Wikibase site, in
+	 * The statementId is used mainly for communication with a Wikibase site, in
 	 * order to refer to statements of that site. When creating new statements
 	 * that are not on any site, the empty string can be used.
 	 *
@@ -72,7 +80,7 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	 *            the string id of the Statement: can be empty if the statement has not obtained it yet
 	 * @param rank
 	 *            the rank of the Statement
-	 * @param mainsnak
+	 * @param mainSnak
 	 * 			  the main snak for the Claim of the Statement
 	 * @param qualifiers
 	 *            the snak groups for the qualifiers
@@ -84,99 +92,131 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	public StatementImpl(
 			String statementId,
 			StatementRank rank,
-			Snak mainsnak,
+			Snak mainSnak,
 			List<SnakGroup> qualifiers,
 			List<Reference> references,
 			EntityIdValue subjectId) {
-		super(statementId, rank, mainsnak,
-				qualifiers.stream()
-				.collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks)),
-				qualifiers.stream()
-					.map(g -> g.getProperty().getId())
-					.collect(Collectors.toList()),
-				references);
-		Validate.notNull(subjectId);
-		this.subject = subjectId;
+		this(statementId, rank, mainSnak,
+				qualifiers.stream().collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks)),
+				qualifiers.stream().map(g -> g.getProperty().getId()).collect(Collectors.toList()),
+				references, subjectId
+		);
 	}
-	
-	/**
-	 * Constructor provided for compatibility with previous implementation.
-	 * Note that constructing a {@link Statement} from an existing {@link Claim}
-	 * is inefficient: the constructor above should be preferred instead.
-	 * <p>
-	 * The string id is used mainly for communication with a Wikibase site, in
-	 * order to refer to statements of that site. When creating new statements
-	 * that are not on any site, the empty string can be used.
-	 *
-	 * @param claim
-	 *            the main claim the Statement refers to
-	 * @param references
-	 *            the references for the Statement
-	 * @param rank
-	 *            the rank of the Statement
-	 * @param id
-	 *            the string id of the Statement: can be empty if the statement has not obtained it yet
-	 */
-	@Deprecated
+
 	public StatementImpl(
-			Claim claim,
-			List<Reference> references,
+			String statementId,
 			StatementRank rank,
-			String id) {
-		super(id, rank, claim.getMainSnak(),
-				qualifierListToMap(claim.getQualifiers()),
-				claim.getQualifiers().stream().map(g -> g.getProperty().getId()).collect(Collectors.toList()),
-				references);
-		this.subject = claim.getSubject();
-	}
-	
-	/**
-	 * Constructor used for JSON deserialization with Jackson.
-	 * Not marked as @JsonCreator because it is not called directly by Jackson,
-	 * but rather from {@link TermedStatementDocumentImpl} to convert it
-	 * from a {@link JacksonPreStatement}.
-	 */
-	public StatementImpl(
-			String id,
-			StatementRank rank,
-			Snak mainsnak,
+			Snak mainSnak,
 			Map<String,List<Snak>> qualifiers,
-			List<String> propertyOrder,
+			List<String> qualifiersOrder,
 			List<Reference> references,
 			EntityIdValue subjectId) {
-		super(id, rank, mainsnak, qualifiers, propertyOrder, references);
+		this.statementId = (statementId == null) ? "" : statementId;
+		Validate.notNull(rank, "No rank provided to create a statement.");
+		this.rank = rank;
+		Validate.notNull(mainSnak, "No main snak provided to create a statement.");
+		this.mainSnak = mainSnak;
+		this.qualifiers = (qualifiers == null) ? Collections.emptyMap() : qualifiers;
+		this.qualifiersOrder = (qualifiersOrder == null) ? Collections.emptyList() : qualifiersOrder;
+		this.references = (references == null) ? Collections.emptyList() : references;
 		Validate.notNull(subjectId);
-		this.subject = subjectId;
+		this.subjectId = subjectId;
 	}
-	
 
 	/**
 	 * TODO review the utility of this constructor.
 	 */
-	public StatementImpl(String id, Snak mainsnak, EntityIdValue subject) {
-		super(id, StatementRank.NORMAL, mainsnak, null, null, null);
-		this.subject = subject;
+	public StatementImpl(String statementId, Snak mainsnak, EntityIdValue subjectId) {
+		this(statementId, StatementRank.NORMAL, mainsnak, null, null, null, subjectId);
 	}
-
 
 	/**
-	 * Returns the subject that this statement refers to. This method is only
-	 * used by {@link ClaimImpl} to retrieve data about the subject of this
-	 * statement. To access this data from elsewhere, use {@link #getClaim()}.
+	 * Returns the value for the "type" field used in JSON. Only for use by
+	 * Jackson during deserialization.
 	 *
-	 * @see Claim#getSubject()
-	 * @return the subject of this statement
+	 * @return "statement"
 	 */
-	@JsonIgnore 
-	public EntityIdValue getSubject() {
-		return this.subject;
+	@JsonProperty("type")
+	String getJsonType() {
+		return "statement";
 	}
-	
+
+
+	@Override
 	@JsonIgnore
 	public Claim getClaim() {
 		return new ClaimImpl(this);
 	}
-	
+
+	@Override
+	@JsonIgnore
+	public EntityIdValue getSubject() {
+		return subjectId;
+	}
+
+	@Override
+	@JsonProperty("mainsnak")
+	public Snak getMainSnak() {
+		return mainSnak;
+	}
+
+	@Override
+	@JsonIgnore
+	public List<SnakGroup> getQualifiers() {
+		if (qualifiersGroups == null) {
+			qualifiersGroups = SnakGroupImpl.makeSnakGroups(qualifiers, qualifiersOrder);
+		}
+		return qualifiersGroups;
+	}
+
+	@Override
+	public Iterator<Snak> getAllQualifiers() {
+		return new NestedIterator<>(getQualifiers());
+	}
+
+	/**
+	 * Returns the qualifiers of the claim of this statement. Only for use by
+	 * Jackson during serialization. To access this data, use
+	 * {@link Statement#getClaim()}.
+	 */
+	@JsonProperty("qualifiers")
+	Map<String, List<Snak>> getJsonQualifiers() {
+		return Collections.unmodifiableMap(qualifiers);
+	}
+
+	/**
+	 * Returns the list of property ids used to order qualifiers as found in
+	 * JSON. Only for use by Jackson during serialization.
+	 *
+	 * @return the list of property ids
+	 */
+	@JsonProperty("qualifiers-order")
+	List<String> getQualifiersOrder() {
+		return Collections.unmodifiableList(this.qualifiersOrder);
+	}
+
+	@Override
+	@JsonSerialize(using = StatementRankSerializer.class)
+	public StatementRank getRank() {
+		return rank;
+	}
+
+	@Override
+	public List<Reference> getReferences() {
+		return references;
+	}
+
+	@Override
+	@JsonProperty("id")
+	public String getStatementId() {
+		return statementId;
+	}
+
+	@Override
+	public Value getValue() {
+		return mainSnak.getValue();
+	}
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);
@@ -190,20 +230,5 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
-	}
-	
-	/**
-	 * Helper to convert a list of qualifiers to the internal JSON representation.
-	 */
-	private static Map<String, List<Snak>> qualifierListToMap(List<SnakGroup> qualifiers) {
-		Map<String, List<Snak>> map = new HashMap<>();
-		for(SnakGroup group : qualifiers) {
-			if(map.containsKey(group.getProperty().getId())) {
-				throw new IllegalArgumentException("Attempting to create qualifiers with two snak groups for the same property");
-			} else {
-				map.put(group.getProperty().getId(), group.getSnaks());
-			}
-		}
-		return map;
 	}
 }
