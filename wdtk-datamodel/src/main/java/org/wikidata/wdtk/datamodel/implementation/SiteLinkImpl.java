@@ -70,7 +70,7 @@ public class SiteLinkImpl implements SiteLink {
 		if (badges != null) {
 			this.badges = badges;
 		} else {
-			this.badges = Collections.<String>emptyList();
+			this.badges = Collections.emptyList();
 		}
 	}
 

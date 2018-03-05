@@ -56,7 +56,7 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	 * is not part of the JSON serialization of statements, but is needed in
 	 * WDTK as part of {@link Claim}. Thus, it is necessary to set this
 	 * information after each deserialization in
-	 * {@link JacksonTermedStatementDocument}.
+	 * {@link TermedStatementDocumentImpl}.
 	 */
 	@JsonIgnore
 	private final EntityIdValue subject;
@@ -78,7 +78,7 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	 *            the snak groups for the qualifiers
 	 * @param references
 	 *            the references for the Statement
-     * @param subject
+     * @param subjectId
      *            the subject of this Statement
 	 */
 	public StatementImpl(
@@ -114,7 +114,7 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	 *            the references for the Statement
 	 * @param rank
 	 *            the rank of the Statement
-	 * @param statementId
+	 * @param id
 	 *            the string id of the Statement: can be empty if the statement has not obtained it yet
 	 */
 	@Deprecated
@@ -152,9 +152,6 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 
 	/**
 	 * TODO review the utility of this constructor.
-	 *
-	 * @param id
-	 * @param mainsnak
 	 */
 	public StatementImpl(String id, Snak mainsnak, EntityIdValue subject) {
 		super(id, StatementRank.NORMAL, mainsnak, null, null, null);
@@ -197,8 +194,6 @@ public class StatementImpl extends JacksonPreStatement implements Statement {
 	
 	/**
 	 * Helper to convert a list of qualifiers to the internal JSON representation.
-	 * @param qualifiers
-	 * @return
 	 */
 	private static Map<String, List<Snak>> qualifierListToMap(List<SnakGroup> qualifiers) {
 		Map<String, List<Snak>> map = new HashMap<>();

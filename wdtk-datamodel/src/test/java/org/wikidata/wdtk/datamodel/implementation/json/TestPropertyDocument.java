@@ -44,7 +44,7 @@ public class TestPropertyDocument {
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestMltvMap(),
 				JsonTestData.getTestAliases(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
+				Collections.emptyMap(),
 				"quantity",
 				0, JsonTestData.getTestItemId().getSiteIri());
 

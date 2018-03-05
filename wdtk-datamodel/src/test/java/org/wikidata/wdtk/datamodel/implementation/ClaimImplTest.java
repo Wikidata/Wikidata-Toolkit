@@ -67,7 +67,7 @@ public class ClaimImplTest {
 	public void gettersWorking() {
 		assertEquals(c1.getSubject(), subject);
 		assertEquals(c1.getMainSnak(), mainSnak);
-		assertEquals(c1.getQualifiers(), Collections.<Snak> emptyList());
+		assertEquals(c1.getQualifiers(), Collections. emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -105,7 +105,7 @@ public class ClaimImplTest {
 				Collections.emptyList());
 		cDiffQualifiers = new ClaimImpl(subject, mainSnak,
 				Collections.singletonList(new SnakGroupImpl(
-						Collections.<Snak> singletonList(mainSnak))));
+						Collections. singletonList(mainSnak))));
 
 		assertEquals(c1, c1);
 		assertEquals(c1, c2);

@@ -63,7 +63,7 @@ public class SnakGroupImpl implements SnakGroup {
 						"All snaks in a snak group must use the same property");
 			}
 		}
-		this.snaks = Collections.<Snak> unmodifiableList(snaks);
+		this.snaks = Collections. unmodifiableList(snaks);
 	}
 
 	@Override

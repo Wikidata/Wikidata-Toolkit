@@ -66,8 +66,7 @@ public class StatementGroupImpl implements StatementGroup {
 			Validate.isTrue(statement.getClaim().getMainSnak().getPropertyId().equals(property),
 			"All statements of a statement group must have the same subject.");
 		}
-		this.statements = Collections
-				.<Statement> unmodifiableList(statements);
+		this.statements = Collections.unmodifiableList(statements);
 	}
 
 	@Override

@@ -158,7 +158,7 @@ public class JsonTestData {
 	public static final TermImpl TEST_MLTV_TERM_VALUE = new TermImpl(
 			"en", "foobar");
 	public static final SiteLinkImpl TEST_SITE_LINK = (SiteLinkImpl) JACKSON_OBJECT_FACTORY
-			.getSiteLink("foobar", "enwiki", Collections.<String> emptyList());
+			.getSiteLink("foobar", "enwiki", Collections. emptyList());
 
 	public static final StringValueImpl TEST_STRING_VALUE = (StringValueImpl) JACKSON_OBJECT_FACTORY
 			.getStringValue("foobar");
@@ -221,40 +221,33 @@ public class JsonTestData {
 	}
 
 	public static StatementImpl getTestNoValueStatement() {
-		StatementImpl result = new StatementImpl(TEST_STATEMENT_ID,
-				TEST_NOVALUE_SNAK,
-				getEmptyTestItemDocument().getEntityId());
-		return result;
+		return new StatementImpl(TEST_STATEMENT_ID, TEST_NOVALUE_SNAK, getEmptyTestItemDocument().getEntityId());
 	}
 
 	public static StatementImpl getTestNoValueNoIdStatement() {
-		StatementImpl result = new StatementImpl("",
-				TEST_NOVALUE_SNAK,getEmptyTestItemDocument().getEntityId());
-		return result;
+		return new StatementImpl("", TEST_NOVALUE_SNAK,getEmptyTestItemDocument().getEntityId());
 	}
 
 	public static ItemDocumentImpl getEmptyTestItemDocument() {
-		ItemDocumentImpl testItemDocument = new ItemDocumentImpl(
+		return new ItemDocumentImpl(
 				getTestItemId(),
-				Collections.<MonolingualTextValue>emptyList(),
-				Collections.<MonolingualTextValue>emptyList(),
-				Collections.<MonolingualTextValue>emptyList(),
-				Collections.<StatementGroup>emptyList(),
-				Collections.<SiteLink>emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				0);
-		return testItemDocument;
 	}
 
 	public static ItemDocumentImpl getTestItemDocument() {
-		ItemDocumentImpl testItemDocument = new ItemDocumentImpl(
+		return new ItemDocumentImpl(
 				getTestItemId().getId(),
 				getTestMltvMap(),
 				getTestMltvMap(),
 				getTestAliases(),
-				Collections.<String, List<JacksonPreStatement>>emptyMap(),
-				Collections.<String, SiteLink>emptyMap(),
+				Collections.emptyMap(),
+				Collections.emptyMap(),
 				0, getTestItemId().getSiteIri());
-		return testItemDocument;
 	}
 
 }

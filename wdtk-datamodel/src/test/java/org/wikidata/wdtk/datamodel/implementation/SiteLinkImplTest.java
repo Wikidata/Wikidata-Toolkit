@@ -49,7 +49,7 @@ public class SiteLinkImplTest {
 	public void fieldsIsCorrect() {
 		assertEquals(s1.getPageTitle(), "Dresden");
 		assertEquals(s1.getSiteKey(), "enwiki");
-		assertEquals(s1.getBadges(), Collections.<String> emptyList());
+		assertEquals(s1.getBadges(), Collections. emptyList());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class SiteLinkImplTest {
 
 	public void badgesCanBeNull() {
 		SiteLink sitelink = new SiteLinkImpl("Dresden", "enwiki", null);
-		assertEquals(sitelink.getBadges(), Collections.<String>emptyList());
+		assertEquals(sitelink.getBadges(), Collections.emptyList());
 	}
 
 }

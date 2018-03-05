@@ -64,15 +64,15 @@ public class PropertyDocumentImplTest {
 	public void setUp() throws Exception {
 		pid = DataObjectFactoryImplTest.getTestPropertyIdValue(2);
 
-		labelMap = new HashMap<String, MonolingualTextValue>();
+		labelMap = new HashMap<>();
 		labelMap.put("en", new MonolingualTextValueImpl("Property 42", "en"));
-		labels = new ArrayList<MonolingualTextValue>();
+		labels = new ArrayList<>();
 		labels.add(new MonolingualTextValueImpl("Property 42", "en"));
 
-		descriptionMap = new HashMap<String, MonolingualTextValue>();
+		descriptionMap = new HashMap<>();
 		descriptionMap.put("de", new MonolingualTextValueImpl(
 				"Dies ist Property 42.", "de"));
-		descriptions = new ArrayList<MonolingualTextValue>();
+		descriptions = new ArrayList<>();
 		descriptions.add(new MonolingualTextValueImpl("Dies ist Property 42.",
 				"de"));
 
@@ -82,14 +82,14 @@ public class PropertyDocumentImplTest {
 				"Ein Alias von P42", "de");
 		MonolingualTextValue alias3 = new MonolingualTextValueImpl(
 				"Another alias of P42", "en");
-		aliasMap = new HashMap<String, List<MonolingualTextValue>>();
-		List<MonolingualTextValue> enAliases = new ArrayList<MonolingualTextValue>();
+		aliasMap = new HashMap<>();
+		List<MonolingualTextValue> enAliases = new ArrayList<>();
 		enAliases.add(alias1);
 		enAliases.add(alias3);
 		aliasMap.put("en", enAliases);
 		aliasMap.put("de",
 				Collections.singletonList(alias2));
-		aliases = new ArrayList<MonolingualTextValue>();
+		aliases = new ArrayList<>();
 		aliases.add(alias1);
 		aliases.add(alias2);
 		aliases.add(alias3);
@@ -141,25 +141,25 @@ public class PropertyDocumentImplTest {
 				DataObjectFactoryImplTest.getTestStatementGroups(3, 10, 3,
 						EntityIdValue.ET_PROPERTY), datatypeId, 1234);
 		PropertyDocument pdDiffLabels = new PropertyDocumentImpl(pid,
-				Collections.<MonolingualTextValue> emptyList(), descriptions,
+				Collections. emptyList(), descriptions,
 				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffDescriptions = new PropertyDocumentImpl(pid,
-				labels, Collections.<MonolingualTextValue> emptyList(),
+				labels, Collections. emptyList(),
 				aliases, statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffAliases = new PropertyDocumentImpl(pid, labels,
-				descriptions, Collections.<MonolingualTextValue> emptyList(),
+				descriptions, Collections. emptyList(),
 				statementGroups, datatypeId, 1234);
 		PropertyDocument pdDiffStatements = new PropertyDocumentImpl(pid,
 				labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 1234);
+				Collections. emptyList(), datatypeId, 1234);
 		PropertyDocument pdDiffDatatype = new PropertyDocumentImpl(pid, labels,
 				descriptions, aliases, statementGroups, new DatatypeIdImpl(
 						DatatypeIdValue.DT_STRING), 1234);
 
 		ItemDocument id = new ItemDocumentImpl(new ItemIdValueImpl("Q42",
 				"foo"), labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(),
-				Collections.<SiteLink> emptyList(), 1234);
+				Collections. emptyList(),
+				Collections. emptyList(), 1234);
 
 		assertEquals(pd1, pd1);
 		assertEquals(pd1, pd2);
@@ -189,28 +189,28 @@ public class PropertyDocumentImplTest {
 	public void labelsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, null, descriptions, aliases,
 				statementGroups, datatypeId, 1234);
-		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getLabels());
+		assertEquals(Collections.emptyMap(), doc.getLabels());
 	}
 
 	@Test
 	public void descriptionsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, null, aliases, statementGroups,
 				datatypeId, 1234);
-		assertEquals(Collections.<String, MonolingualTextValue>emptyMap(), doc.getDescriptions());
+		assertEquals(Collections.emptyMap(), doc.getDescriptions());
 	}
 
 	@Test
 	public void aliasesCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, null,
 				statementGroups, datatypeId, 1234);
-		assertEquals(Collections.<String, List<MonolingualTextValue>>emptyMap(), doc.getAliases());
+		assertEquals(Collections.emptyMap(), doc.getAliases());
 	}
 
 	@Test
 	public void statementGroupsCanBeNull() {
 		PropertyDocument doc = new PropertyDocumentImpl(pid, labels, descriptions, aliases, null,
 				datatypeId, 1234);
-		assertEquals(Collections.<StatementGroup>emptyList(), doc.getStatementGroups());
+		assertEquals(Collections.emptyList(), doc.getStatementGroups());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -221,7 +221,7 @@ public class PropertyDocumentImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void labelUniquePerLanguage() {
-		List<MonolingualTextValue> labels2 = new ArrayList<MonolingualTextValue>(
+		List<MonolingualTextValue> labels2 = new ArrayList<>(
 				labels);
 		labels2.add(new MonolingualTextValueImpl("Property 42 label duplicate",
 				"en"));
@@ -232,7 +232,7 @@ public class PropertyDocumentImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void descriptionUniquePerLanguage() {
-		List<MonolingualTextValue> descriptions2 = new ArrayList<MonolingualTextValue>(
+		List<MonolingualTextValue> descriptions2 = new ArrayList<>(
 				descriptions);
 		descriptions2.add(new MonolingualTextValueImpl(
 				"Noch eine Beschreibung fuer P42", "de"));

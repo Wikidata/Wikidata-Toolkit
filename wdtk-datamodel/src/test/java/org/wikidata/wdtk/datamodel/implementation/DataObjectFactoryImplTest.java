@@ -368,12 +368,11 @@ public class DataObjectFactoryImplTest {
 	public static Statement getTestStatement(int subjectSeed, int seed,
 			int size, String entityType) {
 		List<SnakGroup> qualifiers = getTestValueSnakGroups(seed * 100, size);
-		Statement statement = new StatementImpl("",
+		return new StatementImpl("",
 				StatementRank.NORMAL,
 				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
 				qualifiers, null,
 				getTestEntityIdValue(subjectSeed, entityType));
-		return statement;
 	}
 
 	@Test
@@ -410,7 +409,7 @@ public class DataObjectFactoryImplTest {
 	@Test
 	public final void testGetSiteLink() {
 		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
-				Collections.<String> emptyList());
+				Collections. emptyList());
 		SiteLink o2 = converter.copy(o1);
 		assertEquals(o2, o1);
 	}
@@ -451,12 +450,8 @@ public class DataObjectFactoryImplTest {
 	/**
 	 * Creates a test map of {@link MonolingualTextValue} objects. If size > 6
 	 * then multiple terms for the same language will be provided.
-	 *
-	 * @param size
-	 * @param seed
-	 * @return
 	 */
-	public static List<MonolingualTextValue> getTestMtvList(int size, int seed) {
+	private static List<MonolingualTextValue> getTestMtvList(int size, int seed) {
 		List<MonolingualTextValue> result = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			String lang = "lang" + (i % 6);
@@ -465,7 +460,7 @@ public class DataObjectFactoryImplTest {
 		return result;
 	}
 
-	public static List<SiteLink> getTestSiteLinks(int size) {
+	private static List<SiteLink> getTestSiteLinks(int size) {
 		List<SiteLink> result = new ArrayList<>(size);
 		List<String> someBadges = new ArrayList<>(2);
 		someBadges.add("badge1");
@@ -476,7 +471,7 @@ public class DataObjectFactoryImplTest {
 						"site" + i, someBadges));
 			} else {
 				result.add(new SiteLinkImpl("Article" + i, "site"
-						+ i, Collections.<String> emptyList()));
+						+ i, Collections. emptyList()));
 			}
 		}
 		return result;

@@ -54,7 +54,7 @@ public class ReferenceImplTest {
 				"P42", "http://wikidata.org/entity/");
 		valueSnak = new ValueSnakImpl(property, subject);
 		snakGroup = new SnakGroupImpl(
-				Collections.<Snak> singletonList(valueSnak));
+				Collections. singletonList(valueSnak));
 		r1 = new ReferenceImpl(Collections.singletonList(snakGroup));
 		r2 = new ReferenceImpl(Collections.singletonList(snakGroup));
 	}

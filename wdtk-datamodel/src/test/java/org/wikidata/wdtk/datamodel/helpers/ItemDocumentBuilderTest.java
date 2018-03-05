@@ -103,7 +103,7 @@ public class ItemDocumentBuilderTest {
 		
 		ItemDocument initial = Datamodel.makeItemDocument(i,
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue>emptyList(),
+				Collections.emptyList(),
 		        Arrays.asList(alias1, alias2),
 		        Collections.singletonList(sg),
 		        Collections.singletonMap("frwiki", sl), 1234);

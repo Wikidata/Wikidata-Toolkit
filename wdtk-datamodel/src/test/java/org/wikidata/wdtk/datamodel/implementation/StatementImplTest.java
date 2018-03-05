@@ -69,7 +69,7 @@ public class StatementImplTest {
 	public void gettersWorking() {
 		assertEquals(s1.getClaim(), claim);
 		assertEquals(s1.getReferences(),
-				Collections.<List<? extends Snak>> emptyList());
+				Collections. emptyList());
 		assertEquals(s1.getRank(), StatementRank.NORMAL);
 		assertEquals(s1.getStatementId(), "MyId");
 		assertEquals(s1.getValue(), subject);
@@ -84,7 +84,7 @@ public class StatementImplTest {
 	@Test(expected = NullPointerException.class)
 	@SuppressWarnings("deprecation")
 	public void claimNotNull() {
-		new StatementImpl(null, Collections.<Reference> emptyList(),
+		new StatementImpl(null, Collections. emptyList(),
 				StatementRank.NORMAL, "MyId");
 	}
 

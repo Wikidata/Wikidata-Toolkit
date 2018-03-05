@@ -67,28 +67,28 @@ public class JsonSerializerTest {
 				.getTestItemIdValue(1), Collections
 				.singletonList(Datamodel
 						.makeMonolingualTextValue("Label1", "lang1")),
-				Collections.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(),
+				Collections. emptyList(), Collections
+						. emptyList(),
 				DataObjectFactoryImplTest.getTestStatementGroups(1, 24, 1,
 						EntityIdValue.ET_ITEM), Collections
-						.<String, SiteLink> emptyMap(), 1234);
+						. emptyMap(), 1234);
 		ItemDocument id2 = Datamodel.makeItemDocument(DataObjectFactoryImplTest
 				.getTestItemIdValue(2), Collections
-				.<MonolingualTextValue> emptyList(), Collections
-				.<MonolingualTextValue> emptyList(), Collections
-				.<MonolingualTextValue> emptyList(), DataObjectFactoryImplTest
+				. emptyList(), Collections
+				. emptyList(), Collections
+				. emptyList(), DataObjectFactoryImplTest
 				.getTestStatementGroups(2, 23, 1, EntityIdValue.ET_ITEM),
 				Collections.singletonMap(
 						"enwiki",
 						Datamodel.makeSiteLink("Title2", "enwiki",
-								Collections.<String>emptyList())), 0);
+								Collections.emptyList())), 0);
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
 				DataObjectFactoryImplTest.getTestPropertyIdValue(1),
-				Collections.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
+				Collections. emptyList(), Collections
+						. emptyList(), Collections
 						.singletonList(Datamodel
 								.makeMonolingualTextValue("Alias1", "lang1")),
-				Collections.<StatementGroup> emptyList(), Datamodel
+				Collections. emptyList(), Datamodel
 						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA),
 				3456);
 
@@ -128,11 +128,11 @@ public class JsonSerializerTest {
 	public void testItemDocumentToJson() {
 		ItemDocument id = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue(JsonTestData.TEST_ITEM_ID),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
-				Collections.<String, SiteLink> emptyMap());
+				Collections. emptyList(),
+				Collections. emptyList(),
+				Collections. emptyList(),
+				Collections. emptyList(),
+				Collections. emptyMap());
 
 		String result1 = JsonSerializer.getJsonString(id);
 		String result2 = JsonSerializer.getJsonString(datamodelConverter
@@ -148,10 +148,10 @@ public class JsonSerializerTest {
 	public void testPropertyDocumentToJson() {
 		PropertyDocument pd = Datamodel.makePropertyDocument(
 				Datamodel.makeWikidataPropertyIdValue("P1"),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections. emptyList(),
+				Collections. emptyList(),
+				Collections. emptyList(),
+				Collections. emptyList(),
 				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
 
 		String result1 = JsonSerializer.getJsonString(pd);
@@ -172,8 +172,8 @@ public class JsonSerializerTest {
 								ItemIdValue.NULL,
 								Datamodel.makeNoValueSnak(Datamodel
 										.makeWikidataPropertyIdValue(JsonTestData.TEST_PROPERTY_ID)),
-								Collections.<SnakGroup> emptyList()),
-						Collections.<Reference> emptyList(),
+								Collections. emptyList()),
+						Collections. emptyList(),
 						StatementRank.NORMAL, JsonTestData.TEST_STATEMENT_ID);
 
 		String result1 = JsonSerializer.getJsonString(s);
