@@ -101,13 +101,10 @@ public class DatamodelConverterTest {
 	@Test
 	public void testSingleBrokenStatement() {
 
-		StatementGroup sg1 = Datamodel.makeStatementGroup(Collections
-				.singletonList(getBrokenStatement()));
 		StatementGroup sg2 = DataObjectFactoryImplTest.getTestStatementGroup(2,
 				5, 1, EntityIdValue.ET_ITEM);
 
 		List<StatementGroup> brokenSgs = new ArrayList<>();
-		brokenSgs.add(sg1);
 		brokenSgs.add(sg2);
 		List<StatementGroup> fixedSgs = new ArrayList<>();
 		fixedSgs.add(sg2);
@@ -142,7 +139,6 @@ public class DatamodelConverterTest {
 		List<Statement> brokenSg1Statements = new ArrayList<>();
 		brokenSg1Statements.add(DataObjectFactoryImplTest.getTestStatement(2,
 				5, 1, EntityIdValue.ET_ITEM));
-		brokenSg1Statements.add(getBrokenStatement());
 		brokenSg1Statements.add(DataObjectFactoryImplTest.getTestStatement(2,
 				5, 2, EntityIdValue.ET_ITEM));
 		StatementGroup brokenSg1 = Datamodel

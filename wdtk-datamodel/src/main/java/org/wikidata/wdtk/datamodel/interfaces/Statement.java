@@ -20,6 +20,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import org.wikidata.wdtk.util.NestedIterator;
+
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,6 +41,41 @@ public interface Statement {
 	 * @return the claim that this statement refers to
 	 */
 	Claim getClaim();
+
+	/**
+	 * The subject that the claim refers to, e.g., the id of "Berlin".
+	 *
+	 * @return EntityId of the subject
+	 */
+	EntityIdValue getSubject();
+
+	/**
+	 * Main Snak of the statement. This Snak refers directly to the subject,
+	 * e.g., the {@link ValueSnak} "Population: 3000000".
+	 *
+	 * @return the main snak
+	 */
+	Snak getMainSnak();
+
+	/**
+	 * Groups of auxiliary Snaks, also known as qualifiers, that provide
+	 * additional context information for this claim. For example, "as of: 2014"
+	 * might be a temporal context given for a claim that provides a population
+	 * number. The snaks are grouped by the property that they use.
+	 *
+	 * @return list of snak groups
+	 */
+	List<SnakGroup> getQualifiers();
+
+	/**
+	 * Returns an iterator over all qualifiers, without considering qualifier
+	 * groups. The relative order of qualifiers is preserved.
+	 *
+	 * @return iterator over all qualifier snaks
+	 */
+	default Iterator<Snak> getAllQualifiers() {
+		return new NestedIterator<>(getQualifiers());
+	}
 
 	/**
 	 * @see StatementRank
@@ -88,5 +126,7 @@ public interface Statement {
 	 *
 	 * @return main value of the statement, or null
 	 */
-	Value getValue();
+	default Value getValue() {
+		return getMainSnak().getValue();
+	}
 }
