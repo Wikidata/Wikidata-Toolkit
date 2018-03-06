@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.*;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,6 +20,7 @@ import java.util.*;
  * #L%
  */
 
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.*;
