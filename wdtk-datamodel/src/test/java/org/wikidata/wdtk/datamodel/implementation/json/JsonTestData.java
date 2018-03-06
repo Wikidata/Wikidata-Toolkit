@@ -30,7 +30,6 @@ import org.wikidata.wdtk.datamodel.implementation.SiteLinkImpl;
 import org.wikidata.wdtk.datamodel.implementation.SomeValueSnakImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.implementation.ValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;

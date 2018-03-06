@@ -1,8 +1,5 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Iterator;
-import java.util.List;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,6 +19,9 @@ import java.util.List;
  * limitations under the License.
  * #L%
  */
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Interface for Wikidata claims. Claims consist of those parts of Wikibase

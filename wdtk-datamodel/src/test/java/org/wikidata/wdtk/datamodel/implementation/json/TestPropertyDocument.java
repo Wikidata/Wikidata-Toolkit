@@ -28,7 +28,6 @@ import java.util.List;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
