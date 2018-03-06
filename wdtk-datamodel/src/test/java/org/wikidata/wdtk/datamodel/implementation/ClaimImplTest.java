@@ -43,11 +43,11 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ClaimImplTest {
 
-	EntityIdValue subject;
-	ValueSnak mainSnak;
+	private EntityIdValue subject;
+	private ValueSnak mainSnak;
 
-	Claim c1;
-	Claim c2;
+	private Claim c1;
+	private Claim c2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -67,7 +67,7 @@ public class ClaimImplTest {
 	public void gettersWorking() {
 		assertEquals(c1.getSubject(), subject);
 		assertEquals(c1.getMainSnak(), mainSnak);
-		assertEquals(c1.getQualifiers(), Collections. emptyList());
+		assertEquals(c1.getQualifiers(), Collections.emptyList());
 	}
 
 	@Test(expected = NullPointerException.class)

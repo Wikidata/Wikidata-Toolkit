@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import org.wikidata.wdtk.util.NestedIterator;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,7 +67,9 @@ public interface Claim {
 	 *
 	 * @return iterator over all qualifier snaks
 	 */
-	Iterator<Snak> getAllQualifiers();
+	default Iterator<Snak> getAllQualifiers() {
+		return new NestedIterator<>(getQualifiers());
+	}
 
 	/**
 	 * Convenience method to get the value of the claim's main snak, or null if
@@ -73,5 +77,7 @@ public interface Claim {
 	 *
 	 * @return main value of the claim, or null
 	 */
-	Value getValue();
+	default Value getValue() {
+		return getMainSnak().getValue();
+	}
 }

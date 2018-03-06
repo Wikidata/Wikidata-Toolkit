@@ -32,7 +32,6 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
@@ -45,7 +44,7 @@ public class TestStatement {
 
 	@Test
 	public void testEmptyStatementToJson() throws JsonProcessingException {
-		JacksonPreStatement statement = JsonTestData.getTestNoValueStatement();
+		StatementImpl statement = JsonTestData.getTestNoValueStatement();
 
 		String result = mapper.writeValueAsString(statement);
 		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
@@ -63,7 +62,7 @@ public class TestStatement {
 
 	@Test
 	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
-		JacksonPreStatement statement = JsonTestData.getTestNoValueNoIdStatement();
+		StatementImpl statement = JsonTestData.getTestNoValueNoIdStatement();
 
 		String result = mapper.writeValueAsString(statement);
 		JsonComparator.compareJsonStrings(
