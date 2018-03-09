@@ -779,7 +779,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private Statement deepCopyStatement(Statement statement) {
 		return this.dataObjectFactory.getStatement(
-				deepCopyClaim(statement.getClaim()),
+				(EntityIdValue) visit(statement.getSubject()),
+				deepCopySnak(statement.getMainSnak()),
+				deepCopySnakGroups(statement.getQualifiers()),
 				deepCopyReferences(statement.getReferences()),
 				statement.getRank(), statement.getStatementId());
 	}
