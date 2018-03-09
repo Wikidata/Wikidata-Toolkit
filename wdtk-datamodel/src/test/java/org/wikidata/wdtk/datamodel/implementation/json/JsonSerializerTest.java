@@ -166,15 +166,10 @@ public class JsonSerializerTest {
 
 	@Test
 	public void testStatementToJson() {
-		Statement s = Datamodel
-				.makeStatement(
-						Datamodel.makeClaim(
-								ItemIdValue.NULL,
-								Datamodel.makeNoValueSnak(Datamodel
-										.makeWikidataPropertyIdValue(JsonTestData.TEST_PROPERTY_ID)),
-								Collections. emptyList()),
-						Collections. emptyList(),
-						StatementRank.NORMAL, JsonTestData.TEST_STATEMENT_ID);
+		Statement s = Datamodel.makeStatement(ItemIdValue.NULL,
+				Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue(JsonTestData.TEST_PROPERTY_ID)),
+				Collections. emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, JsonTestData.TEST_STATEMENT_ID);
 
 		String result1 = JsonSerializer.getJsonString(s);
 		String result2 = JsonSerializer.getJsonString(datamodelConverter

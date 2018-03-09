@@ -463,7 +463,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 				.findStatementGroup("P1630");
 		if (urlPatterns != null) {
 			for (Statement s : urlPatterns.getStatements()) {
-				Value v = s.getClaim().getValue();
+				Value v = s.getValue();
 				if (v == null) {
 					continue;
 				}
@@ -475,7 +475,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 						&& s.getRank() == StatementRank.PREFERRED) {
 					pr.urlPattern = urlPattern;
 				} else if (!foundGacUrl) {
-					Iterator<Snak> snaks = s.getClaim().getAllQualifiers();
+					Iterator<Snak> snaks = s.getAllQualifiers();
 					while (snaks.hasNext()) {
 						Snak snak = snaks.next();
 						if ("P1535".equals(snak.getPropertyId().getId())
@@ -495,7 +495,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 				.findStatementGroup("P31");
 		if (instanceClasses != null) {
 			for (Statement s : instanceClasses.getStatements()) {
-				Value v = s.getClaim().getValue();
+				Value v = s.getValue();
 				if (v != null) {
 					pr.classes.add(new Integer(((ItemIdValue) v).getId()
 							.substring(1)));
@@ -550,7 +550,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 					sg.getProperty());
 
 			for (Statement s : sg) {
-				for (SnakGroup snakGroup : s.getClaim().getQualifiers()) {
+				for (SnakGroup snakGroup : s.getQualifiers()) {
 					Integer qualifierId = getNumId(snakGroup.getProperty()
 							.getId(), false);
 					if (propertyRecord.qualifiers.containsKey(qualifierId)) {

@@ -305,11 +305,11 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 			for (Statement s : sg.getStatements()) {
 				// Count uses of properties in qualifiers
-				for (SnakGroup q : s.getClaim().getQualifiers()) {
+				for (SnakGroup q : s.getQualifiers()) {
 					countPropertyQualifier(q.getProperty(), q.getSnaks().size());
 				}
 				// Count statements with qualifiers
-				if (s.getClaim().getQualifiers().size() > 0) {
+				if (s.getQualifiers().size() > 0) {
 					propertyRecord.statementWithQualifierCount++;
 				}
 				// Count uses of properties in references
@@ -322,9 +322,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 				// Process value of instance of/subclass of:
 				if ((isInstanceOf || isSubclassOf)
-						&& s.getClaim().getMainSnak() instanceof ValueSnak) {
-					Value value = ((ValueSnak) s.getClaim().getMainSnak())
-							.getValue();
+						&& s.getMainSnak() instanceof ValueSnak) {
+					Value value = s.getValue();
 					if (value instanceof EntityIdValue) {
 						ClassRecord otherClassRecord = getClassRecord((EntityIdValue) value);
 						if (isInstanceOf) {
@@ -676,8 +675,8 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 					continue;
 				}
 				for (Statement s : sg.getStatements()) {
-					if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-						Value value = ((ValueSnak) s.getClaim().getMainSnak())
+					if (s.getMainSnak() instanceof ValueSnak) {
+						Value value = ((ValueSnak) s.getMainSnak())
 								.getValue();
 						if (value instanceof StringValue) {
 							imageFile = ((StringValue) value).getString();

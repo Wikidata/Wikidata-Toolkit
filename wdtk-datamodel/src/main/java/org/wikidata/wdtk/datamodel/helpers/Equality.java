@@ -413,9 +413,11 @@ public class Equality {
 			return false;
 		}
 		Statement other = (Statement) o2;
-		return o1.getClaim().equals(other.getClaim())
-				&& o1.getRank() == other.getRank()
+		return o1.getSubject().equals(other.getSubject())
+				&& o1.getMainSnak().equals(other.getMainSnak())
+				&& o1.getQualifiers().equals(other.getQualifiers())
 				&& o1.getReferences().equals(other.getReferences())
+				&& o1.getRank() == other.getRank()
 				&& o1.getStatementId().equals(other.getStatementId());
 	}
 

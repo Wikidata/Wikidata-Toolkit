@@ -267,7 +267,9 @@ public class Hash {
 	 */
 	public static int hashCode(Statement o) {
 		int result;
-		result = o.getClaim().hashCode();
+		result = o.getSubject().hashCode();
+		result = prime * result + o.getMainSnak().hashCode();
+		result = prime * result + o.getQualifiers().hashCode();
 		result = prime * result + o.getReferences().hashCode();
 		result = prime * result + o.getRank().hashCode();
 		result = prime * result + o.getStatementId().hashCode();

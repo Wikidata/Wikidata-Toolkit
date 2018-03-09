@@ -176,11 +176,9 @@ public class RdfConverterTest {
 		StringValue value = Datamodel
 				.makeStringValue("d735497b-25f9-4503-8fb5-f50150730c18");
 		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
-		Claim claim = Datamodel.makeClaim(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
-		Statement statement = Datamodel.makeStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"stmtid");
+		Statement statement = Datamodel.makeStatement(subject, mainSnak,
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "stmtid");
 
 		this.rdfConverter.writeStatement(statement);
 		this.rdfWriter.finish();
@@ -199,11 +197,9 @@ public class RdfConverterTest {
 				.makeWikidataPropertyIdValue("P646");
 		StringValue value = Datamodel.makeStringValue("/m/0j9kvph");
 		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
-		Claim claim = Datamodel.makeClaim(subject, mainSnak,
-				Collections.<SnakGroup> emptyList());
-		Statement statement = Datamodel.makeStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"stmtid");
+		Statement statement = Datamodel.makeStatement(subject, mainSnak,
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "stmtid");
 
 		this.rdfConverter.writeStatement(statement);
 		this.rdfWriter.finish();
@@ -265,11 +261,9 @@ public class RdfConverterTest {
 		// Statement InstaceOf - P31
 		ValueSnak mainSnak1 = dataObjectFactory.getValueSnak(
 				propertyIdValueP31, value1);
-		Claim claim1 = dataObjectFactory.getClaim(itemValue, mainSnak1,
-				Collections.<SnakGroup> emptyList());
-		Statement statement1 = dataObjectFactory.getStatement(claim1,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"10103");
+		Statement statement1 = dataObjectFactory.getStatement(itemValue, mainSnak1,
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "10103");
 		List<Statement> statementList1 = new ArrayList<Statement>();
 		statementList1.add(statement1);
 		StatementGroup statementGroup1 = this.dataObjectFactory
@@ -277,11 +271,9 @@ public class RdfConverterTest {
 		// Statement SubclassOf - P279
 		ValueSnak mainSnak2 = dataObjectFactory.getValueSnak(
 				propertyIdValueP279, value2);
-		Claim claim2 = dataObjectFactory.getClaim(itemValue, mainSnak2,
-				Collections.<SnakGroup> emptyList());
-		Statement statement2 = dataObjectFactory.getStatement(claim2,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"10104");
+		Statement statement2 = dataObjectFactory.getStatement(itemValue, mainSnak2,
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "10104");
 		List<Statement> statementList2 = new ArrayList<Statement>();
 		statementList2.add(statement2);
 		StatementGroup statementGroup2 = this.dataObjectFactory
@@ -309,13 +301,11 @@ public class RdfConverterTest {
 		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
 		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
 
-		Claim claim = this.dataObjectFactory.getClaim(propertyIdValue,
-				this.dataObjectFactory.getValueSnak(subpropertyOf, subclassOf),
-				Collections.<SnakGroup> emptyList());
 		List<Statement> statements = new ArrayList<Statement>();
-		statements.add(this.dataObjectFactory.getStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
+		statements.add(this.dataObjectFactory.getStatement(propertyIdValue,
+				this.dataObjectFactory.getValueSnak(subpropertyOf, subclassOf),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
 		StatementGroup statementGroup = this.dataObjectFactory
 				.getStatementGroup(statements);
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
@@ -340,13 +330,11 @@ public class RdfConverterTest {
 		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
 		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
 
-		Claim claim = this.dataObjectFactory.getClaim(propertyIdValue,
-				this.dataObjectFactory.getValueSnak(subpropertyOf,
-						wrongProperty), Collections.<SnakGroup> emptyList());
 		List<Statement> statements = new ArrayList<Statement>();
-		statements.add(this.dataObjectFactory.getStatement(claim,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
+		statements.add(this.dataObjectFactory.getStatement(propertyIdValue,
+				this.dataObjectFactory.getValueSnak(subpropertyOf, wrongProperty),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
 		StatementGroup statementGroup = this.dataObjectFactory
 				.getStatementGroup(statements);
 		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();

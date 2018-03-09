@@ -300,7 +300,11 @@ public class ToString {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("[ID ").append(o.getStatementId()).append("] ");
-		sb.append(toString(o.getClaim()));
+		sb.append(o.getSubject()).append(": ");
+		sb.append(o.getMainSnak().toString()).append("\n");
+		for (SnakGroup s : o.getQualifiers()) {
+			sb.append(toString(s));
+		}
 		if (o.getRank() != StatementRank.NORMAL) {
 			sb.append("  Rank: ").append(o.getRank()).append("\n");
 		}

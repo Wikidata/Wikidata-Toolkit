@@ -164,13 +164,11 @@ public class FilterCopyTest {
 	 */
 	protected StatementGroup makeTestStatementGroup(
 			PropertyIdValue propertyIdValue) {
-		Claim claim = Datamodel.makeClaim(
+		Statement statement = Datamodel.makeStatement(
 				Datamodel.makeWikidataItemIdValue("Q42"),
 				Datamodel.makeSomeValueSnak(propertyIdValue),
-				Collections.emptyList());
-		Statement statement = Datamodel.makeStatement(claim,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"statement-id-" + propertyIdValue.getId());
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
 		return Datamodel.makeStatementGroup(Collections
 				.singletonList(statement));
 	}
@@ -365,18 +363,16 @@ public class FilterCopyTest {
 		PropertyIdValue propertyIdValue = Datamodel
 				.makeWikidataPropertyIdValue("P1");
 		Snak snak = Datamodel.makeSomeValueSnak(propertyIdValue);
-		Claim claim = Datamodel.makeClaim(
-				Datamodel.makeWikidataItemIdValue("Q42"), snak,
-				Collections.emptyList());
 
 		SnakGroup snakGroup = Datamodel.makeSnakGroup(Collections
 				.singletonList(snak));
 		Reference reference = Datamodel.makeReference(Collections
 				.singletonList(snakGroup));
 
-		Statement statement = Datamodel.makeStatement(claim,
-				Collections.singletonList(reference), StatementRank.NORMAL,
-				"statement-id-" + propertyIdValue.getId());
+		Statement statement = Datamodel.makeStatement(
+				Datamodel.makeWikidataItemIdValue("Q42"), snak,
+				Collections.emptyList(), Collections.singletonList(reference),
+				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
 		StatementGroup statementGroup = Datamodel
 				.makeStatementGroup(Collections.singletonList(statement));
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
@@ -387,9 +383,10 @@ public class FilterCopyTest {
 				Collections.singletonList(statementGroup),
 				Collections.emptyMap());
 
-		Statement statementFiltered = Datamodel.makeStatement(claim,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"statement-id-" + propertyIdValue.getId());
+		Statement statementFiltered = Datamodel.makeStatement(
+				Datamodel.makeWikidataItemIdValue("Q42"), snak,
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
 		StatementGroup statementGroupFiltered = Datamodel
 				.makeStatementGroup(Collections
 						.singletonList(statementFiltered));

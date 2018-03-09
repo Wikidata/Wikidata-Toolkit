@@ -278,11 +278,10 @@ public abstract class AbstractTermedStatementDocument implements
 			return false;
 		}
 		for (Statement statement : statementGroup.getStatements()) {
-			if (!(statement.getClaim().getMainSnak() instanceof ValueSnak)) {
+			if (!(statement.getMainSnak() instanceof ValueSnak)) {
 				continue;
 			}
-			ValueSnak valueSnak = (ValueSnak) statement.getClaim()
-					.getMainSnak();
+			ValueSnak valueSnak = (ValueSnak) statement.getMainSnak();
 			if (values.contains(valueSnak.getValue())) {
 				return true;
 			}
@@ -322,7 +321,7 @@ public abstract class AbstractTermedStatementDocument implements
 		if (statement == null) {
 			return null;
 		}
-		return statement.getClaim().getMainSnak().getValue();
+		return statement.getMainSnak().getValue();
 	}
 
 	/**

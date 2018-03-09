@@ -237,7 +237,8 @@ public interface DataObjectFactory {
 	SnakGroup getSnakGroup(List<? extends Snak> snaks);
 
 	/**
-	 * Creates a {@link Claim}.
+	 * Creates a {@link Claim}. It might be more convenient to use
+	 * {@link #getStatement} directly if you want to build a statement.
 	 *
 	 * @param subject
 	 *            the subject the Statement refers to
@@ -259,6 +260,32 @@ public interface DataObjectFactory {
 	 * @return a {@link Reference} corresponding to the input
 	 */
 	Reference getReference(List<SnakGroup> snakGroups);
+
+	/**
+	 * Creates a {@link Statement}. It might be more convenient to use
+	 * {@link StatementBuilder} instead.
+	 * <p>
+	 * The string id is used mainly for communication with a Wikibase site, in
+	 * order to refer to statements of that site. When creating new statements
+	 * that are not on any site, the empty string can be used.
+	 *
+	 * @param subject
+	 *            the subject the Statement refers to
+	 * @param mainSnak
+	 *            the main Snak of the Statement
+	 * @param qualifiers
+	 *            the qualifiers of the Statement, grouped in SnakGroups
+	 * @param references
+	 *            the references for the Statement
+	 * @param rank
+	 *            the rank of the Statement
+	 * @param statementId
+	 *            the string id of the Statement
+	 * @return a {@link Statement} corresponding to the input
+	 */
+	Statement getStatement(EntityIdValue subject, Snak mainSnak,
+			List<SnakGroup> qualifiers, List<Reference> references,
+			StatementRank rank, String statementId);
 
 	/**
 	 * Creates a {@link Statement}. It might be more convenient to use

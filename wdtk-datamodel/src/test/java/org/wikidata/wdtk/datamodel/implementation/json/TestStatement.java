@@ -54,10 +54,10 @@ public class TestStatement {
 	@Test
 	public void testFullStatementToJson() throws IOException {
 		Statement statement = DataObjectFactoryImplTest.getTestStatement(2, 3, 4, EntityIdValue.ET_ITEM);
-		ObjectMapper mapper = new DatamodelMapper(statement.getClaim().getSubject().getSiteIri());
+		ObjectMapper mapper = new DatamodelMapper(statement.getSubject().getSiteIri());
 		String json = mapper.writeValueAsString(statement);
 		JacksonPreStatement deserialized = mapper.readValue(json, JacksonPreStatement.class);
-		assertEquals(statement, deserialized.withSubject(statement.getClaim().getSubject()));
+		assertEquals(statement, deserialized.withSubject(statement.getSubject()));
 	}
 
 	@Test

@@ -55,12 +55,12 @@ public class StatementGroupImpl implements StatementGroup {
 				"A non-null list of statements must be provided to create a statement group.");
 		Validate.isTrue(!statements.isEmpty(),
 				"A non-empty list of statements must be provided to create a statement group.");
-		EntityIdValue subject = statements.get(0).getClaim().getSubject();
-		PropertyIdValue property = statements.get(0).getClaim().getMainSnak().getPropertyId();
+		EntityIdValue subject = statements.get(0).getSubject();
+		PropertyIdValue property = statements.get(0).getMainSnak().getPropertyId();
 		for(Statement statement : statements) {
-			Validate.isTrue(statement.getClaim().getSubject().equals(subject),
+			Validate.isTrue(statement.getSubject().equals(subject),
 					"All statements of a statement group must have the same subject.");
-			Validate.isTrue(statement.getClaim().getMainSnak().getPropertyId().equals(property),
+			Validate.isTrue(statement.getMainSnak().getPropertyId().equals(property),
 			"All statements of a statement group must have the same subject.");
 		}
 		this.statements = Collections.unmodifiableList(statements);
@@ -78,12 +78,12 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public PropertyIdValue getProperty() {
-		return this.statements.get(0).getClaim().getMainSnak().getPropertyId();
+		return this.statements.get(0).getMainSnak().getPropertyId();
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.statements.get(0).getClaim().getSubject();
+		return this.statements.get(0).getSubject();
 	}
 
 	@Override

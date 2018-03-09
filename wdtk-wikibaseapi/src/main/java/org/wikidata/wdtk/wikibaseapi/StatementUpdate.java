@@ -252,8 +252,7 @@ public class StatementUpdate {
 		for (Statement statement : deleteStatements) {
 			boolean found = false;
 			for (StatementGroup sg : currentDocument.getStatementGroups()) {
-				if (!sg.getProperty().equals(
-						statement.getClaim().getMainSnak().getPropertyId())) {
+				if (!sg.getProperty().equals(statement.getMainSnak().getPropertyId())) {
 					continue;
 				}
 
@@ -333,8 +332,7 @@ public class StatementUpdate {
 	 *            added to remove duplicates and avoid unnecessary writes
 	 */
 	protected void addStatement(Statement statement, boolean isNew) {
-		PropertyIdValue pid = statement.getClaim().getMainSnak()
-				.getPropertyId();
+		PropertyIdValue pid = statement.getMainSnak().getPropertyId();
 
 		// This code maintains the following properties:
 		// (1) the toKeep structure does not contain two statements with the

@@ -325,10 +325,10 @@ public class RdfConverter {
 		for (StatementGroup statementGroup : statementDocument
 				.getStatementGroups()) {
 			for (Statement statement : statementGroup.getStatements()) {
-				if (statement.getClaim().getQualifiers().size() == 0) {
+				if (statement.getQualifiers().size() == 0) {
 					this.snakRdfConverter.setSnakContext(subject,
 							PropertyContext.DIRECT);
-					statement.getClaim().getMainSnak()
+					statement.getMainSnak()
 							.accept(this.snakRdfConverter);
 				}
 			}
@@ -341,11 +341,10 @@ public class RdfConverter {
 				continue;
 			}
 			for (Statement statement : statementGroup.getStatements()) {
-				if (statement.getClaim().getMainSnak() instanceof ValueSnak
-						&& statement.getClaim().getQualifiers().size() == 0) {
+				if (statement.getMainSnak() instanceof ValueSnak
+						&& statement.getQualifiers().size() == 0) {
 
-					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
-							.getMainSnak();
+					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
 					Value value = this.valueRdfConverter
 							.getRdfValue(mainSnak.getValue(),
 									mainSnak.getPropertyId(), true);
@@ -376,9 +375,8 @@ public class RdfConverter {
 				continue;
 			}
 			for (Statement statement : statementGroup.getStatements()) {
-				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
-					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
-							.getMainSnak();
+				if (statement.getMainSnak() instanceof ValueSnak) {
+					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
 
 					if (isSubClassOf) {
 						this.owlDeclarationBuffer.addClass(itemDocument
@@ -389,7 +387,7 @@ public class RdfConverter {
 								.addClass((EntityIdValue) mainSnak.getValue());
 					}
 
-					if (statement.getClaim().getQualifiers().size() == 0
+					if (statement.getQualifiers().size() == 0
 							&& isSubClassOf) {
 						Value value = this.valueRdfConverter.getRdfValue(
 								mainSnak.getValue(), mainSnak.getPropertyId(),
@@ -423,10 +421,9 @@ public class RdfConverter {
 			}
 
 			for (Statement statement : statementGroup.getStatements()) {
-				if (statement.getClaim().getMainSnak() instanceof ValueSnak) {
-					ValueSnak mainSnak = (ValueSnak) statement.getClaim()
-							.getMainSnak();
-					if (statement.getClaim().getQualifiers().size() == 0) {
+				if (statement.getMainSnak() instanceof ValueSnak) {
+					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
+					if (statement.getQualifiers().size() == 0) {
 						Value value = this.valueRdfConverter.getRdfValue(
 								mainSnak.getValue(), mainSnak.getPropertyId(),
 								true);
