@@ -157,11 +157,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public Claim getClaim(EntityIdValue subject, Snak mainSnak,
 			List<SnakGroup> qualifiers) {
 		// Jackson claims cannot exist without a statement.
-		Statement statement = getStatement(
+		return getStatement(
 				subject, mainSnak, qualifiers,
 				Collections. emptyList(), StatementRank.NORMAL,
-				"empty id 12345");
-		return statement.getClaim();
+				"empty id 12345").getClaim();
 	}
 
 	@Override
@@ -176,10 +175,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return getStatement(claim.getSubject(), claim.getMainSnak(), claim.getQualifiers(),
 				references, rank, statementId);
 	}
-	
-	private Statement getStatement(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers,
-			List<Reference> references, StatementRank rank, String statementId) {
 
+	@Override
+	public Statement getStatement(EntityIdValue subject, Snak mainSnak, List<SnakGroup> qualifiers,
+			List<Reference> references, StatementRank rank, String statementId) {
 		return new StatementImpl(statementId,
 				rank, mainSnak, qualifiers,
 				references, subject);

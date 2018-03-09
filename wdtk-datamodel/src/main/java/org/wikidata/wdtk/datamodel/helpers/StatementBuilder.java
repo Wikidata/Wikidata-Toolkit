@@ -78,8 +78,7 @@ public class StatementBuilder extends
 	@Override
 	public Statement build() {
 		prepareBuild();
-		return factory.getStatement(
-				factory.getClaim(subject, getMainSnak(), getQualifierGroups()),
+		return factory.getStatement(subject, getMainSnak(), getQualifierGroups(),
 				references, rank, statementId);
 	}
 

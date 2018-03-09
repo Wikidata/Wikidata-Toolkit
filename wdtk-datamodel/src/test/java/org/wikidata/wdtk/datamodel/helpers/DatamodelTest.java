@@ -280,16 +280,18 @@ public class DatamodelTest {
 	@Test
 	public final void testGetStatement() {
 		Claim c = Datamodel
-				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
-						.getNoValueSnak(factory
-								.getPropertyIdValue("P42", "foo")), Collections
-						.emptyList());
+				.makeClaim(
+						factory.getItemIdValue("Q42", "foo"),
+						factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+						Collections.emptyList());
 		Statement o1 = Datamodel.makeStatement(c,
 				Collections.emptyList(), StatementRank.NORMAL,
 				"MyId");
-		Statement o2 = factory.getStatement(c,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
+		Statement o2 = factory.getStatement(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
 		assertEquals(o1, o2);
 	}
 
