@@ -321,7 +321,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 					Statement exactStatement = StatementBuilder
 							.forSubjectAndProperty(itemIdValue, property)
 							.withValue(exactValue).withId(s.getStatementId())
-							.withQualifiers(s.getClaim().getQualifiers())
+							.withQualifiers(s.getQualifiers())
 							.withReferences(s.getReferences())
 							.withRank(s.getRank()).build();
 					updateStatements.add(exactStatement);

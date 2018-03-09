@@ -346,12 +346,9 @@ public class PropertyRegister {
 					continue;
 				}
 				for (Statement statement : sg.getStatements()) {
-					if (statement.getClaim().getMainSnak() instanceof ValueSnak
-							&& ((ValueSnak) statement.getClaim().getMainSnak())
-									.getValue() instanceof StringValue) {
-						String uriPattern = ((StringValue) ((ValueSnak) statement
-								.getClaim().getMainSnak()).getValue())
-								.getString();
+					if (statement.getMainSnak() instanceof ValueSnak
+							&& statement.getValue() instanceof StringValue) {
+						String uriPattern = ((StringValue) statement.getValue()).getString();
 						if (this.uriPatterns.containsKey(entry.getKey())) {
 							logger.info("Found multiple URI patterns for property "
 									+ entry.getKey()

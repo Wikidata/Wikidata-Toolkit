@@ -184,9 +184,8 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 				continue;
 			}
 			for (Statement s : sg.getStatements()) {
-				if (s.getClaim().getMainSnak() instanceof ValueSnak) {
-					Value v = ((ValueSnak) s.getClaim().getMainSnak())
-							.getValue();
+				if (s.getMainSnak() instanceof ValueSnak) {
+					Value v = s.getValue();
 					// "Q1731" is "Dresden" on Wikidata
 					if (v instanceof ItemIdValue
 							&& "Q1731".equals(((ItemIdValue) v).getId())) {

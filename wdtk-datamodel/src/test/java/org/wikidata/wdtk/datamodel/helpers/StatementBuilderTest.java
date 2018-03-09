@@ -90,7 +90,7 @@ public class StatementBuilderTest {
 				Collections.singletonList(r), StatementRank.PREFERRED, "id");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
-				.withQualifiers(stmt1.getClaim().getQualifiers()).withId("id")
+				.withQualifiers(stmt1.getQualifiers()).withId("id")
 				.withReference(r).build();
 
 		assertEquals(stmt1, stmt2);

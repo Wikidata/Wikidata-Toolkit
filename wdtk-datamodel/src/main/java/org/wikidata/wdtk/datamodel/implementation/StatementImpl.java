@@ -176,7 +176,7 @@ public class StatementImpl implements Statement {
 	/**
 	 * Returns the qualifiers of the claim of this statement. Only for use by
 	 * Jackson during serialization. To access this data, use
-	 * {@link Statement#getClaim()}.
+	 * {@link Statement#getQualifiers()}.
 	 */
 	@JsonProperty("qualifiers")
 	Map<String, List<Snak>> getJsonQualifiers() {
