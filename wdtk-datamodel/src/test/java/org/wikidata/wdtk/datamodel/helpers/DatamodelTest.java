@@ -279,14 +279,11 @@ public class DatamodelTest {
 
 	@Test
 	public final void testGetStatement() {
-		Claim c = Datamodel
-				.makeClaim(
-						factory.getItemIdValue("Q42", "foo"),
-						factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-						Collections.emptyList());
-		Statement o1 = Datamodel.makeStatement(c,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
+		Statement o1 = Datamodel.makeStatement(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
 		Statement o2 = factory.getStatement(
 				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
@@ -297,14 +294,11 @@ public class DatamodelTest {
 
 	@Test
 	public final void testGetStatementGroup() {
-		Claim c = Datamodel
-				.makeClaim(factory.getItemIdValue("Q42", "foo"), factory
-						.getNoValueSnak(factory
-								.getPropertyIdValue("P42", "foo")), Collections
-						.emptyList());
-		Statement s = Datamodel.makeStatement(c,
-				Collections.emptyList(), StatementRank.NORMAL,
-				"MyId");
+		Statement s = Datamodel.makeStatement(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
 		StatementGroup o1 = new StatementGroupImpl(
 				Collections.singletonList((StatementImpl)s));
 		StatementGroup o2 = factory.getStatementGroup(Collections

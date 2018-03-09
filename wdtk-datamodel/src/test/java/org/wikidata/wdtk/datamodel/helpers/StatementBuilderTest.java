@@ -41,10 +41,10 @@ public class StatementBuilderTest {
 		ItemIdValue i = ItemIdValue.NULL;
 		PropertyIdValue p = PropertyIdValue.NULL;
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
-				Datamodel.makeSomeValueSnak(p),
-				Collections.emptyList()), Collections
-				.emptyList(), StatementRank.NORMAL, "");
+		Statement stmt1 = Datamodel.makeStatement(
+				i, Datamodel.makeSomeValueSnak(p),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p).build();
 
 		assertEquals(stmt1, stmt2);
@@ -62,8 +62,8 @@ public class StatementBuilderTest {
 
 		Reference r = Datamodel.makeReference(Collections.singletonList(sg));
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
-				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg)),
+		Statement stmt1 = Datamodel.makeStatement(i,
+				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
 				Collections.singletonList(r), StatementRank.PREFERRED, "id");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
@@ -85,8 +85,8 @@ public class StatementBuilderTest {
 
 		Reference r = Datamodel.makeReference(Collections.singletonList(sg));
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
-				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg)),
+		Statement stmt1 = Datamodel.makeStatement(i,
+				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
 				Collections.singletonList(r), StatementRank.PREFERRED, "id");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
@@ -110,8 +110,8 @@ public class StatementBuilderTest {
 		Snak q3 = Datamodel.makeValueSnak(p, i);
 		SnakGroup sg = Datamodel.makeSnakGroup(Arrays.asList(q1, q2, q3));
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
-				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg)),
+		Statement stmt1 = Datamodel.makeStatement(i,
+				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
 				Arrays.asList(r1, r2), StatementRank.PREFERRED, "id");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
@@ -127,10 +127,10 @@ public class StatementBuilderTest {
 		ItemIdValue i = ItemIdValue.NULL;
 		PropertyIdValue p = PropertyIdValue.NULL;
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
-				Datamodel.makeNoValueSnak(p),
-				Collections.emptyList()), Collections
-				.emptyList(), StatementRank.NORMAL, "");
+		Statement stmt1 = Datamodel.makeStatement(
+				i, Datamodel.makeNoValueSnak(p),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withNoValue().build();
 
@@ -142,10 +142,10 @@ public class StatementBuilderTest {
 		ItemIdValue i = ItemIdValue.NULL;
 		PropertyIdValue p = PropertyIdValue.NULL;
 
-		Statement stmt1 = Datamodel.makeStatement(Datamodel.makeClaim(i,
+		Statement stmt1 = Datamodel.makeStatement(i,
 				Datamodel.makeSomeValueSnak(p),
-				Collections.emptyList()), Collections
-				.emptyList(), StatementRank.NORMAL, "");
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withSomeValue().build();
 

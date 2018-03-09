@@ -85,13 +85,10 @@ public class DatamodelConverterTest {
 		Snak brokenSnak = Datamodel.makeValueSnak(
 				DataObjectFactoryImplTest.getTestPropertyIdValue(5),
 				new BrokenItemIdValue());
-		Claim brokenClaim = Datamodel.makeClaim(
+		return Datamodel.makeStatement(
 				DataObjectFactoryImplTest.getTestItemIdValue(2), brokenSnak,
-				Collections.emptyList());
-		return Datamodel
-				.makeStatement(brokenClaim,
-						Collections.emptyList(),
-						StatementRank.NORMAL, "id");
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "id");
 	}
 
 	/**

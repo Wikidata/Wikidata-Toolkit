@@ -71,23 +71,21 @@ public class PropertyRegisterTest {
 		PropertyIdValue pid1921 = dataObjectFactory.getPropertyIdValue("P1921",
 				this.siteIri);
 
-		Statement p23Statement = dataObjectFactory.getStatement(
-				dataObjectFactory.getClaim(pid434, dataObjectFactory
+		Statement p23Statement = dataObjectFactory.getStatement(pid434, dataObjectFactory
 						.getValueSnak(pid23, dataObjectFactory.getItemIdValue(
 								"Q42", this.siteIri)), Collections
-						.<SnakGroup> emptyList()), Collections
+						.<SnakGroup> emptyList(), Collections
 						.<Reference> emptyList(), StatementRank.NORMAL, "000");
 
 		Statement p1921Statement = dataObjectFactory
 				.getStatement(
-						dataObjectFactory.getClaim(
-								pid434,
-								dataObjectFactory
-										.getValueSnak(
-												pid1921,
-												dataObjectFactory
-														.getStringValue("http://musicbrainz.org/$1/artist")),
-								Collections.<SnakGroup> emptyList()),
+						pid434,
+						dataObjectFactory
+								.getValueSnak(
+										pid1921,
+										dataObjectFactory
+												.getStringValue("http://musicbrainz.org/$1/artist")),
+						Collections.<SnakGroup> emptyList(),
 						Collections.<Reference> emptyList(),
 						StatementRank.NORMAL, "000");
 
