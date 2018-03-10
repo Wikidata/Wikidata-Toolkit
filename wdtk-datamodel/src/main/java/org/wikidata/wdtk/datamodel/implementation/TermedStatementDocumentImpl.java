@@ -23,12 +23,12 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.helpers.AbstractTermedStatementDocument;
 import org.wikidata.wdtk.datamodel.implementation.json.AliasesDeserializer;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -37,6 +37,8 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.util.NestedIterator;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -64,8 +66,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonSubTypes({
 		@Type(value = ItemDocumentImpl.class, name = TermedStatementDocumentImpl.JSON_TYPE_ITEM),
 		@Type(value = PropertyDocumentImpl.class, name = TermedStatementDocumentImpl.JSON_TYPE_PROPERTY) })
-public abstract class TermedStatementDocumentImpl extends
-		AbstractTermedStatementDocument {
+public abstract class TermedStatementDocumentImpl implements
+	TermedDocument, StatementDocument {
 
 	/**
 	 * String used to refer to items in JSON.
@@ -316,6 +318,12 @@ public abstract class TermedStatementDocumentImpl extends
 	public long getRevisionId() {
 		return this.revisionId;
 
+	}
+
+	@Override
+	@JsonIgnore
+	public Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(getStatementGroups());
 	}
 	
 	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {

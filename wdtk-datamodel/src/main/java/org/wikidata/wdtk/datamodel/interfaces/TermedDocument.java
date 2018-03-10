@@ -59,9 +59,12 @@ public interface TermedDocument extends EntityDocument {
 	 *
 	 * @param languageCode
 	 *            a string that represents language
-	 * @return the label string
+	 * @return the label string or null if it does not exists
 	 */
-	String findLabel(String languageCode);
+	default String findLabel(String languageCode) {
+		MonolingualTextValue value = this.getLabels().get(languageCode);
+		return (value != null) ? value.getText() : null;
+	}
 
 	/**
 	 * Returns the string description for the given language code, or null if
@@ -70,8 +73,11 @@ public interface TermedDocument extends EntityDocument {
 	 *
 	 * @param languageCode
 	 *            a string that represents language
-	 * @return the description string
+	 * @return the description string or null if it does not exists
 	 */
-	String findDescription(String languageCode);
+	default String findDescription(String languageCode) {
+		MonolingualTextValue value = this.getDescriptions().get(languageCode);
+		return (value != null) ? value.getText() : null;
+	}
 
 }
