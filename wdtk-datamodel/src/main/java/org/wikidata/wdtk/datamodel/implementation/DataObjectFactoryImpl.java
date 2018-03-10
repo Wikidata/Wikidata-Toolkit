@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.json.*;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.math.BigDecimal;
@@ -45,12 +44,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
-		return new ItemIdValueImpl(new JacksonInnerEntityId(id), siteIri);
+		return new ItemIdValueImpl(id, siteIri);
 	}
 
 	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return new PropertyIdValueImpl(new JacksonInnerEntityId(id), siteIri);
+		return new PropertyIdValueImpl(id, siteIri);
 	}
 
 	@Override
@@ -62,10 +61,9 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public TimeValue getTimeValue(long year, byte month, byte day, byte hour,
 			byte minute, byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
-		JacksonInnerTime innerTime = new JacksonInnerTime(year, month, day,
-				hour, minute, second, timezoneOffset, beforeTolerance,
-				afterTolerance, precision, calendarModel);
-		return new TimeValueImpl(innerTime);
+		return new TimeValueImpl(year, month, day,
+				hour, minute, second, precision, beforeTolerance,
+				afterTolerance, timezoneOffset, calendarModel);
 	}
 
 	@Override
@@ -76,12 +74,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 					"Coordinates precision must be non-zero positive. Given value: "
 							+ precision);
 		}
-		JacksonInnerGlobeCoordinates innerCoordinates = new JacksonInnerGlobeCoordinates(
-				latitude,
+		return new GlobeCoordinatesValueImpl(latitude,
 				longitude,
 				precision,
 				globeIri);
-		return new GlobeCoordinatesValueImpl(innerCoordinates);
 	}
 
 	@Override
@@ -92,9 +88,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	@Override
 	public MonolingualTextValue getMonolingualTextValue(String text,
 			String languageCode) {
-		JacksonInnerMonolingualText innerMtlv = new JacksonInnerMonolingualText(
-				languageCode, text);
-		return new MonolingualTextValueImpl(innerMtlv);
+		return new MonolingualTextValueImpl(text, languageCode);
 	}
 
 
