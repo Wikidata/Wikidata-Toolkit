@@ -27,24 +27,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
 public class GlobeCoordinatesValueImplTest {
 
-	GlobeCoordinatesValue c1;
-	GlobeCoordinatesValue c2;
-
-	@Before
-	public void setUp() throws Exception {
-		c1 = new GlobeCoordinatesValueImpl(12.3, 14.1,
-				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
-		c2 = new GlobeCoordinatesValueImpl(12.3, 14.1,
-				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
-	}
+	private final GlobeCoordinatesValue c1 = new GlobeCoordinatesValueImpl(12.3, 14.1,
+			GlobeCoordinatesValue.PREC_DEGREE,
+			GlobeCoordinatesValue.GLOBE_EARTH);
+	private final GlobeCoordinatesValue c2 = new GlobeCoordinatesValueImpl(12.3, 14.1,
+			GlobeCoordinatesValue.PREC_DEGREE,
+			GlobeCoordinatesValue.GLOBE_EARTH);
 
 	@Test
 	public void dataIsCorrect() {
@@ -90,6 +83,7 @@ public class GlobeCoordinatesValueImplTest {
 				GlobeCoordinatesValue.PREC_DEGREE, null);
 	}
 
+	@Test
 	public void onlyAllowedPrecisions() {
 		GlobeCoordinatesValue v = new GlobeCoordinatesValueImpl(12.3, 14.1, 0.0,
 				GlobeCoordinatesValue.GLOBE_EARTH);

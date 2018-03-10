@@ -42,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TestSiteLink {
 
-	ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Test
 	public void testSiteLinkToJson() throws JsonProcessingException {

@@ -50,13 +50,13 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
  */
 public class StatementDocumentAccessTest {
 
-	final static ItemIdValue q1 = Datamodel.makeWikidataItemIdValue("Q1");
+	private final static ItemIdValue q1 = Datamodel.makeWikidataItemIdValue("Q1");
 	final static ItemIdValue q2 = Datamodel.makeWikidataItemIdValue("Q2");
-	final static PropertyIdValue p1 = Datamodel
+	private final static PropertyIdValue p1 = Datamodel
 			.makeWikidataPropertyIdValue("P1");
-	final static PropertyIdValue p2 = Datamodel
+	private final static PropertyIdValue p2 = Datamodel
 			.makeWikidataPropertyIdValue("P2");
-	final static PropertyIdValue p3 = Datamodel
+	private final static PropertyIdValue p3 = Datamodel
 			.makeWikidataPropertyIdValue("P3");
 
 	@Test

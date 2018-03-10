@@ -300,7 +300,7 @@ public class DatamodelTest {
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
 		StatementGroup o1 = new StatementGroupImpl(
-				Collections.singletonList((StatementImpl)s));
+				Collections.singletonList(s));
 		StatementGroup o2 = factory.getStatementGroup(Collections
 				.singletonList(s));
 		assertEquals(o1, o2);

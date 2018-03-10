@@ -45,14 +45,14 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 public class ItemDocumentImplTest {
 
-	ItemDocument ir1;
-	ItemDocument ir2;
+	private ItemDocument ir1;
+	private ItemDocument ir2;
 
-	Statement s;
+	private Statement s;
 
-	ItemIdValue iid;
-	List<StatementGroup> statementGroups;
-	List<SiteLink> sitelinks;
+	private ItemIdValue iid;
+	private List<StatementGroup> statementGroups;
+	private List<SiteLink> sitelinks;
 
 	@Before
 	public void setUp() throws Exception {

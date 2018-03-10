@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 public class TimeValueImplTest {
 
-	TimeValue t1;
-	TimeValue t2;
+	private TimeValue t1;
+	private TimeValue t2;
 
 	@Before
 	public void setUp() throws Exception {

@@ -32,7 +32,6 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.util.NestedIterator;
 
 public class StatementImplTest {
 

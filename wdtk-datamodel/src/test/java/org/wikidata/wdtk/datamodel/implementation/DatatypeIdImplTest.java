@@ -26,22 +26,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 public class DatatypeIdImplTest {
 
-	DatatypeIdImpl d1;
-	DatatypeIdImpl d2;
-	DatatypeIdImpl d3;
-
-	@Before
-	public void setUp() {
-		d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
-		d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
-		d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
-	}
+	private final DatatypeIdImpl d1 = new DatatypeIdImpl(DatatypeIdValue.DT_ITEM);
+	private final DatatypeIdImpl d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
+	private final DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 
 	@Test(expected = NullPointerException.class)
 	public void datatypeIdNotNull() {
