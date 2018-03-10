@@ -20,6 +20,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import org.wikidata.wdtk.util.NestedIterator;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +48,9 @@ public interface StatementDocument extends EntityDocument {
 	 *
 	 * @return iterator over all statements
 	 */
-	Iterator<Statement> getAllStatements();
+	default Iterator<Statement> getAllStatements() {
+		return new NestedIterator<>(getStatementGroups());
+	}
 
 	/**
 	 * Returns the {@link StatementGroup} for the given property, or null if
@@ -57,7 +62,14 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link StatementGroup} or null
 	 */
-	StatementGroup findStatementGroup(PropertyIdValue propertyIdValue);
+	default StatementGroup findStatementGroup(PropertyIdValue propertyIdValue) {
+		for (StatementGroup sg : getStatementGroups()) {
+			if (propertyIdValue.equals(sg.getProperty())) {
+				return sg;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Returns the {@link StatementGroup} for the given property, or null if
@@ -72,7 +84,14 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link StatementGroup} or null
 	 */
-	StatementGroup findStatementGroup(String propertyId);
+	default StatementGroup findStatementGroup(String propertyId) {
+		for (StatementGroup sg : getStatementGroups()) {
+			if (propertyId.equals(sg.getProperty().getId())) {
+				return sg;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property. This is a
@@ -83,7 +102,9 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return true if a statement for this property exists
 	 */
-	boolean hasStatement(PropertyIdValue propertyIdValue);
+	default boolean hasStatement(PropertyIdValue propertyIdValue) {
+		return findStatementGroup(propertyIdValue) != null;
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property. Only the
@@ -97,7 +118,9 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return true if a statement for this property exists
 	 */
-	boolean hasStatement(String propertyId);
+	default boolean hasStatement(String propertyId) {
+		return findStatementGroup(propertyId) != null;
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property and value.
@@ -110,7 +133,9 @@ public interface StatementDocument extends EntityDocument {
 	 *            the value to search
 	 * @return true if a statement for this property and value exists
 	 */
-	boolean hasStatementValue(PropertyIdValue propertyIdValue, Value value);
+	default boolean hasStatementValue(PropertyIdValue propertyIdValue, Value value) {
+		return hasStatementValue(propertyIdValue, Collections.singleton(value));
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property and value.
@@ -126,7 +151,9 @@ public interface StatementDocument extends EntityDocument {
 	 *            the value to search
 	 * @return true if a statement for this property and value exists
 	 */
-	boolean hasStatementValue(String propertyId, Value value);
+	default boolean hasStatementValue(String propertyId, Value value) {
+		return hasStatementValue(propertyId, Collections.singleton(value));
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property and one of
@@ -139,8 +166,19 @@ public interface StatementDocument extends EntityDocument {
 	 *            the set of values to search
 	 * @return true if a statement for this property and value exists
 	 */
-	boolean hasStatementValue(PropertyIdValue propertyIdValue,
-			Set<? extends Value> values);
+	default boolean hasStatementValue(PropertyIdValue propertyIdValue,
+			Set<? extends Value> values) {
+		StatementGroup statementGroup = findStatementGroup(propertyIdValue);
+		if(statementGroup == null) {
+			return false;
+		}
+		for (Statement statement : statementGroup.getStatements()) {
+			if (values.contains(statement.getValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Returns true if there is a statement for the given property and one of
@@ -157,7 +195,18 @@ public interface StatementDocument extends EntityDocument {
 	 *            the set of values to search
 	 * @return true if a statement for this property and value exists
 	 */
-	boolean hasStatementValue(String propertyId, Set<? extends Value> values);
+	default boolean hasStatementValue(String propertyId, Set<? extends Value> values) {
+		StatementGroup statementGroup = findStatementGroup(propertyId);
+		if(statementGroup == null) {
+			return false;
+		}
+		for (Statement statement : statementGroup.getStatements()) {
+			if (values.contains(statement.getValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the unique {@link Statement} for the given property, or null if
@@ -169,7 +218,12 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link Statement} or null
 	 */
-	Statement findStatement(PropertyIdValue propertyIdValue);
+	default Statement findStatement(PropertyIdValue propertyIdValue) {
+		StatementGroup statementGroup = findStatementGroup(propertyIdValue);
+		return (statementGroup != null && statementGroup.getStatements().size() == 1)
+				? statementGroup.getStatements().get(0)
+				: null;
+	}
 
 	/**
 	 * Returns the unique {@link Statement} for the given property, or null if
@@ -184,7 +238,12 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link Statement} or null
 	 */
-	Statement findStatement(String propertyId);
+	default Statement findStatement(String propertyId) {
+		StatementGroup statementGroup = findStatementGroup(propertyId);
+		return (statementGroup != null && statementGroup.getStatements().size() == 1)
+				? statementGroup.getStatements().get(0)
+				: null;
+	}
 
 	/**
 	 * Returns the unique {@link Value} for the given property, or null if there
@@ -197,7 +256,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link Value} or null
 	 */
-	Value findStatementValue(PropertyIdValue propertyIdValue);
+	default Value findStatementValue(PropertyIdValue propertyIdValue) {
+		Statement statement = findStatement(propertyIdValue);
+		return (statement != null) ? statement.getValue() : null;
+	}
 
 	/**
 	 * Returns the unique {@link Value} for the given property, or null if there
@@ -212,7 +274,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link Value} or null
 	 */
-	Value findStatementValue(String propertyId);
+	default Value findStatementValue(String propertyId) {
+		Statement statement = findStatement(propertyId);
+		return (statement != null) ? statement.getValue() : null;
+	}
 
 	/**
 	 * Returns the unique {@link StringValue} for the given property, or null if
@@ -225,7 +290,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link StringValue} or null
 	 */
-	StringValue findStatementStringValue(PropertyIdValue propertyIdValue);
+	default StringValue findStatementStringValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof StringValue ? (StringValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link StringValue} for the given property, or null if
@@ -240,7 +308,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link StringValue} or null
 	 */
-	StringValue findStatementStringValue(String propertyId);
+	default StringValue findStatementStringValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof StringValue ? (StringValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link QuantityValue} for the given property, or null
@@ -254,7 +325,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link QuantityValue} or null
 	 */
-	QuantityValue findStatementQuantityValue(PropertyIdValue propertyIdValue);
+	default QuantityValue findStatementQuantityValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof QuantityValue ? (QuantityValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link QuantityValue} for the given property, or null
@@ -270,7 +344,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link QuantityValue} or null
 	 */
-	QuantityValue findStatementQuantityValue(String propertyId);
+	default QuantityValue findStatementQuantityValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof QuantityValue ? (QuantityValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link GlobeCoordinatesValue} for the given property,
@@ -284,8 +361,11 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link GlobeCoordinatesValue} or null
 	 */
-	GlobeCoordinatesValue findStatementGlobeCoordinatesValue(
-			PropertyIdValue propertyIdValue);
+	default GlobeCoordinatesValue findStatementGlobeCoordinatesValue(
+			PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof GlobeCoordinatesValue ? (GlobeCoordinatesValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link GlobeCoordinatesValue} for the given property,
@@ -301,7 +381,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link GlobeCoordinatesValue} or null
 	 */
-	GlobeCoordinatesValue findStatementGlobeCoordinatesValue(String propertyId);
+	default GlobeCoordinatesValue findStatementGlobeCoordinatesValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof GlobeCoordinatesValue ? (GlobeCoordinatesValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link TimeValue} for the given property, or null if
@@ -314,7 +397,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link TimeValue} or null
 	 */
-	TimeValue findStatementTimeValue(PropertyIdValue propertyIdValue);
+	default TimeValue findStatementTimeValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof TimeValue ? (TimeValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link TimeValue} for the given property, or null if
@@ -329,7 +415,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link TimeValue} or null
 	 */
-	TimeValue findStatementTimeValue(String propertyId);
+	default TimeValue findStatementTimeValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof TimeValue ? (TimeValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link MonolingualTextValue} for the given property,
@@ -343,8 +432,11 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link MonolingualTextValue} or null
 	 */
-	MonolingualTextValue findStatementMonolingualTextValue(
-			PropertyIdValue propertyIdValue);
+	default MonolingualTextValue findStatementMonolingualTextValue(
+			PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof MonolingualTextValue ? (MonolingualTextValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link MonolingualTextValue} for the given property,
@@ -360,7 +452,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link MonolingualTextValue} or null
 	 */
-	MonolingualTextValue findStatementMonolingualTextValue(String propertyId);
+	default MonolingualTextValue findStatementMonolingualTextValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof MonolingualTextValue ? (MonolingualTextValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link ItemIdValue} for the given property, or null if
@@ -373,7 +468,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link ItemIdValue} or null
 	 */
-	ItemIdValue findStatementItemIdValue(PropertyIdValue propertyIdValue);
+	default ItemIdValue findStatementItemIdValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof ItemIdValue ? (ItemIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link ItemIdValue} for the given property, or null if
@@ -388,7 +486,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link ItemIdValue} or null
 	 */
-	ItemIdValue findStatementItemIdValue(String propertyId);
+	default ItemIdValue findStatementItemIdValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof ItemIdValue ? (ItemIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link PropertyIdValue} for the given property, or
@@ -402,7 +503,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link PropertyIdValue} or null
 	 */
-	PropertyIdValue findStatementPropertyIdValue(PropertyIdValue propertyIdValue);
+	default PropertyIdValue findStatementPropertyIdValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof PropertyIdValue ? (PropertyIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link PropertyIdValue} for the given property, or
@@ -418,7 +522,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link PropertyIdValue} or null
 	 */
-	PropertyIdValue findStatementPropertyIdValue(String propertyId);
+	default PropertyIdValue findStatementPropertyIdValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof PropertyIdValue ? (PropertyIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link EntityIdValue} for the given property, or null
@@ -432,7 +539,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link EntityIdValue} or null
 	 */
-	EntityIdValue findStatementEntityIdValue(PropertyIdValue propertyIdValue);
+	default EntityIdValue findStatementEntityIdValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof EntityIdValue ? (EntityIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link EntityIdValue} for the given property, or null
@@ -448,7 +558,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link EntityIdValue} or null
 	 */
-	EntityIdValue findStatementEntityIdValue(String propertyId);
+	default EntityIdValue findStatementEntityIdValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof EntityIdValue ? (EntityIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link DatatypeIdValue} for the given property, or
@@ -462,7 +575,10 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link DatatypeIdValue} or null
 	 */
-	DatatypeIdValue findStatementDatatypeIdValue(PropertyIdValue propertyIdValue);
+	default DatatypeIdValue findStatementDatatypeIdValue(PropertyIdValue propertyIdValue) {
+		Value value = findStatementValue(propertyIdValue);
+		return value instanceof DatatypeIdValue ? (DatatypeIdValue) value : null;
+	}
 
 	/**
 	 * Returns the unique {@link DatatypeIdValue} for the given property, or
@@ -478,5 +594,8 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link DatatypeIdValue} or null
 	 */
-	DatatypeIdValue findStatementDatatypeIdValue(String propertyId);
+	default DatatypeIdValue findStatementDatatypeIdValue(String propertyId) {
+		Value value = findStatementValue(propertyId);
+		return value instanceof DatatypeIdValue ? (DatatypeIdValue) value : null;
+	}
 }
