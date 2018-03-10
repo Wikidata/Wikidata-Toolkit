@@ -51,29 +51,26 @@ public class JacksonInnerEntityId {
 	 */
 	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
 
-	@JsonProperty("entity-type")
-	private String entityType = null;
+	private final String id;
 
-	@JsonProperty("numeric-id")
-	private int numericId = 0;
+	private final String entityType;
 
-	@JsonProperty("id")
-	private String id = null;
+	private final int numericId;
 
 	/**
 	 * Constructor. Supported entity types so far are "item" and "property".
 	 *
 	 * @param entityType
 	 *            (case-sensitive)
-	 * @param numericId
+	 * @param numericId the numerical part of the id like "111"
 	 *
 	 * @deprecated You should input the entity Id
 	 */
 	@Deprecated
 	public JacksonInnerEntityId(String entityType, int numericId) {
+		id = buildIdFromNumericId(entityType, numericId);
 		this.entityType = entityType;
 		this.numericId = numericId;
-		checkAndFillFields();
 	}
 
 	/**
@@ -81,7 +78,8 @@ public class JacksonInnerEntityId {
 	 */
 	public JacksonInnerEntityId(String id) {
 		this.id = id;
-		checkAndFillFields();
+		entityType = buildEntityType(id);
+		numericId = buildNumericId(id);
 	}
 	
 	/**
@@ -94,10 +92,26 @@ public class JacksonInnerEntityId {
 			@JsonProperty("numeric-id") int numericId,
 			@JsonProperty("entity-type") String entityType
 		) {
-		this.id = id;
-		this.numericId = numericId;
-		this.entityType = entityType;
-		checkAndFillFields();
+		if(id == null) {
+			if(entityType == null || numericId == 0) {
+				throw new IllegalArgumentException("You should provide an id or an entity type and a numeric id");
+			} else {
+				this.id = buildIdFromNumericId(entityType, numericId);
+				this.entityType = entityType;
+				this.numericId = numericId;
+			}
+		} else {
+			this.id = id;
+			if(entityType == null || numericId == 0) {
+				this.entityType = buildEntityType(id);
+				this.numericId = buildNumericId(id);
+			} else if(!id.equals(buildIdFromNumericId(entityType, numericId))) {
+				throw new IllegalArgumentException("Numerical id is different from the string id");
+			} else {
+				this.entityType = entityType;
+				this.numericId = numericId;
+			}
+		}
 	}
 
 	/**
@@ -147,48 +161,46 @@ public class JacksonInnerEntityId {
 			&& (this.entityType.equals(((JacksonInnerEntityId) o).entityType));
 	}
 
-	private void checkAndFillFields() {
-		if(entityType != null && numericId != 0) {
-			if(id == null) {
-				id = buildIdFromNumericId();
-			} else if(!id.equals(buildIdFromNumericId())) {
-				throw new IllegalArgumentException("Numerical id is different from the string id");
-			}
-		} else if(id != null) {
-			if (id.length() <= 1) {
-				throw new IllegalArgumentException(
+	private String buildEntityType(String id) {
+		if (id.length() <= 1) {
+			throw new IllegalArgumentException(
 						"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
 								+ id + "\"");
-			}
-			switch (id.charAt(0)) {
+		}
+		switch (id.charAt(0)) {
 			case 'Q':
-				entityType = JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM;
-				break;
+				return JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM;
 			case 'P':
-				entityType = JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY;
-				break;
+				return JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY;
 			default:
 				throw new IllegalArgumentException("Unrecognized entity id: \"" + id + "\"");
-			}
-			try {
-				numericId = new Integer(id.substring(1));
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(
-						"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
-								+ id + "\"");
-			}
 		}
 	}
 
-	private String buildIdFromNumericId() {
+	private int buildNumericId(String id) {
+		if (id.length() <= 1) {
+			throw new IllegalArgumentException(
+						"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
+								+ id + "\"");
+		}
+		try {
+			return Integer.parseInt(id.substring(1));
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(
+					"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""  + id
+								+ "\"");
+		}
+	}
+
+	private String buildIdFromNumericId(String entityType, int numericId) {
 		switch (entityType) {
-		case JSON_ENTITY_TYPE_ITEM:
-			return  "Q" + this.numericId;
-		case JSON_ENTITY_TYPE_PROPERTY:
-			return "P" + this.numericId;
-		default:
-			throw new IllegalArgumentException("Entities of type \""
-					+ entityType + "\" are not supported in property values.");
+			case JSON_ENTITY_TYPE_ITEM:
+				return  "Q" + numericId;
+			case JSON_ENTITY_TYPE_PROPERTY:
+				return "P" + numericId;
+			default:
+				throw new IllegalArgumentException("Entities of type \""
+						+ entityType + "\" are not supported in property values.");
 		}
 	}
 }
