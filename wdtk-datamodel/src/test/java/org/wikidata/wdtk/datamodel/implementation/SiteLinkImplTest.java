@@ -34,8 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 public class SiteLinkImplTest {
 
-	SiteLink s1;
-	SiteLink s2;
+	private SiteLink s1;
+	private SiteLink s2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -85,6 +85,7 @@ public class SiteLinkImplTest {
 		new SiteLinkImpl("Dresden", null, Collections.emptyList());
 	}
 
+	@Test
 	public void badgesCanBeNull() {
 		SiteLink sitelink = new SiteLinkImpl("Dresden", "enwiki", null);
 		assertEquals(sitelink.getBadges(), Collections.emptyList());

@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 
 public class StringValueImplTest {
 
-	StringValue s1;
-	StringValue s2;
+	private StringValue s1;
+	private StringValue s2;
 
 	@Before
 	public void setUp() throws Exception {

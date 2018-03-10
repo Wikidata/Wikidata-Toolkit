@@ -27,7 +27,6 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.ValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
@@ -41,7 +40,7 @@ import static org.junit.Assert.*;
 
 public class TestValue {
 
-	ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
+	private ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
 	@Test
 	public void testStringValueToJson() throws JsonProcessingException {

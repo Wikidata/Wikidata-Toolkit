@@ -31,11 +31,11 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 public class StatementDocumentTest {
-	static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");
-	static ItemIdValue Q2 = Datamodel.makeWikidataItemIdValue("Q2");
-	static PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
-	static PropertyIdValue P2 = Datamodel.makeWikidataPropertyIdValue("P2");
-	static PropertyIdValue P3 = Datamodel.makeWikidataPropertyIdValue("P3");
+	private static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");
+	private static ItemIdValue Q2 = Datamodel.makeWikidataItemIdValue("Q2");
+	private static PropertyIdValue P1 = Datamodel.makeWikidataPropertyIdValue("P1");
+	private static PropertyIdValue P2 = Datamodel.makeWikidataPropertyIdValue("P2");
+	private static PropertyIdValue P3 = Datamodel.makeWikidataPropertyIdValue("P3");
 
 	@Test
 	public void testFindStatement() {

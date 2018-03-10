@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -41,23 +40,15 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ReferenceImplTest {
 
-	Reference r1;
-	Reference r2;
-	SnakGroup snakGroup;
-	ValueSnak valueSnak;
-
-	@Before
-	public void setUp() throws Exception {
-		EntityIdValue subject = new ItemIdValueImpl("Q42",
-				"http://wikidata.org/entity/");
-		PropertyIdValue property = new PropertyIdValueImpl(
-				"P42", "http://wikidata.org/entity/");
-		valueSnak = new ValueSnakImpl(property, subject);
-		snakGroup = new SnakGroupImpl(
-				Collections. singletonList(valueSnak));
-		r1 = new ReferenceImpl(Collections.singletonList(snakGroup));
-		r2 = new ReferenceImpl(Collections.singletonList(snakGroup));
-	}
+	private final EntityIdValue subject = new ItemIdValueImpl("Q42",
+			"http://wikidata.org/entity/");
+	private final PropertyIdValue property = new PropertyIdValueImpl(
+			"P42", "http://wikidata.org/entity/");
+	private final ValueSnak valueSnak = new ValueSnakImpl(property, subject);
+	private final SnakGroup snakGroup = new SnakGroupImpl(
+			Collections. singletonList(valueSnak));
+	private final Reference r1 = new ReferenceImpl(Collections.singletonList(snakGroup));
+	private final Reference r2 = new ReferenceImpl(Collections.singletonList(snakGroup));
 
 	@Test
 	public void snakListIsCorrect() {

@@ -32,8 +32,8 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 public class MonolingualTextValueImplTest {
 
-	MonolingualTextValue mt1;
-	MonolingualTextValue mt2;
+	private MonolingualTextValue mt1;
+	private MonolingualTextValue mt2;
 
 	@Before
 	public void setUp() throws Exception {

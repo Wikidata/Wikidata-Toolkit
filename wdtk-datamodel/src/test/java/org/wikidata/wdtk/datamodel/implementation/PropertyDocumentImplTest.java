@@ -42,23 +42,22 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 public class PropertyDocumentImplTest {
 
-	PropertyDocument pd1;
-	PropertyDocument pd2;
+	private PropertyDocument pd1;
+	private PropertyDocument pd2;
 
-	PropertyIdValue pid;
-	Map<String, MonolingualTextValue> labelMap;
-	Map<String, MonolingualTextValue> descriptionMap;
-	Map<String, List<MonolingualTextValue>> aliasMap;
-	List<MonolingualTextValue> labels;
-	List<MonolingualTextValue> descriptions;
-	List<MonolingualTextValue> aliases;
-	List<StatementGroup> statementGroups;
-	DatatypeIdValue datatypeId;
+	private PropertyIdValue pid;
+	private Map<String, MonolingualTextValue> labelMap;
+	private Map<String, MonolingualTextValue> descriptionMap;
+	private Map<String, List<MonolingualTextValue>> aliasMap;
+	private List<MonolingualTextValue> labels;
+	private List<MonolingualTextValue> descriptions;
+	private List<MonolingualTextValue> aliases;
+	private List<StatementGroup> statementGroups;
+	private DatatypeIdValue datatypeId;
 
 	@Before
 	public void setUp() throws Exception {

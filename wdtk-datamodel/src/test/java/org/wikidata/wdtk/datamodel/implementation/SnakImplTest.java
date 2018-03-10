@@ -35,16 +35,16 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class SnakImplTest {
 
-	ValueSnak vs1;
-	ValueSnak vs2;
-	ValueSnak vs3;
-	ValueSnak vs4;
-	SomeValueSnak svs1;
-	SomeValueSnak svs2;
-	SomeValueSnak svs3;
-	NoValueSnak nvs1;
-	NoValueSnak nvs2;
-	NoValueSnak nvs3;
+	private ValueSnak vs1;
+	private ValueSnak vs2;
+	private ValueSnak vs3;
+	private ValueSnak vs4;
+	private SomeValueSnak svs1;
+	private SomeValueSnak svs2;
+	private SomeValueSnak svs3;
+	private NoValueSnak nvs1;
+	private NoValueSnak nvs2;
+	private NoValueSnak nvs3;
 
 	@Before
 	public void setUp() throws Exception {

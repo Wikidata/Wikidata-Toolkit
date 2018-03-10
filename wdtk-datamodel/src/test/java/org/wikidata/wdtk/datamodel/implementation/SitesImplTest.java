@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 public class SitesImplTest {
 
-	SitesImpl sites;
+	private SitesImpl sites;
 
 	@Before
 	public void setUp() throws Exception {

@@ -39,16 +39,15 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 
 public class SnakGroupTest {
 
-	SnakGroup sg1;
-	SnakGroup sg2;
-	Snak snak1;
-	Snak snak2;
-	EntityIdValue subject;
-	PropertyIdValue property;
+	private SnakGroup sg1;
+	private SnakGroup sg2;
+	private Snak snak1;
+	private Snak snak2;
+	private PropertyIdValue property;
 
 	@Before
 	public void setUp() throws Exception {
-		subject = new ItemIdValueImpl("Q42",
+		EntityIdValue subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
 		property = new PropertyIdValueImpl("P42",
 				"http://wikidata.org/entity/");
@@ -72,7 +71,7 @@ public class SnakGroupTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		List<Snak> snaks = new ArrayList<Snak>();
+		List<Snak> snaks = new ArrayList<>();
 		snaks.add(snak1);
 		snaks.add(snak2);
 		SnakGroup sg3 = new SnakGroupImpl(snaks);
@@ -101,7 +100,7 @@ public class SnakGroupTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void snakListRequiresSameProperty() {
-		List<Snak> snaks = new ArrayList<Snak>();
+		List<Snak> snaks = new ArrayList<>();
 
 		snaks.add(snak1);
 

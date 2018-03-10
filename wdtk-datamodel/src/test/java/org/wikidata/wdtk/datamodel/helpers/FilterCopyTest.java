@@ -162,7 +162,7 @@ public class FilterCopyTest {
 	 *            statements in this statement group
 	 * @return the new statement group
 	 */
-	protected StatementGroup makeTestStatementGroup(
+	private StatementGroup makeTestStatementGroup(
 			PropertyIdValue propertyIdValue) {
 		Statement statement = Datamodel.makeStatement(
 				Datamodel.makeWikidataItemIdValue("Q42"),
@@ -332,10 +332,6 @@ public class FilterCopyTest {
 		siteLinks.put(s2.getSiteKey(), s2);
 		siteLinks.put(s3.getSiteKey(), s3);
 		siteLinks.put(s4.getSiteKey(), s4);
-
-		Map<String, SiteLink> siteLinksFiltered = new HashMap<>();
-		siteLinksFiltered.put(s2.getSiteKey(), s2);
-		siteLinksFiltered.put(s4.getSiteKey(), s4);
 
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),

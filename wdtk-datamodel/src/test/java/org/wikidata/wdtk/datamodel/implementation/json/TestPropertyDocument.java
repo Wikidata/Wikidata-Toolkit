@@ -23,18 +23,13 @@ package org.wikidata.wdtk.datamodel.implementation.json;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class TestPropertyDocument {
-
-	ObjectMapper mapper = new ObjectMapper();
 
 	@Test
 	public void testFullDocumentSetup() {

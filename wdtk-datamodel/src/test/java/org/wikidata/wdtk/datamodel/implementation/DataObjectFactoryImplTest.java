@@ -26,10 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
@@ -82,11 +79,10 @@ public class DataObjectFactoryImplTest {
 		}
 	}
 
-	protected DataObjectFactory factory;
 	protected DatamodelConverter converter;
 
 	public DataObjectFactoryImplTest() {
-		factory = new DataObjectFactoryImpl();
+		DataObjectFactory factory = new DataObjectFactoryImpl();
 		converter = new DatamodelConverter(factory);
 	}
 
@@ -121,7 +117,7 @@ public class DataObjectFactoryImplTest {
 		return new PropertyIdValueImpl("P4" + seed, "foo:");
 	}
 
-	public static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
+	private static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
 		switch (entityType) {
 		case EntityIdValue.ET_ITEM:
 			return getTestItemIdValue(seed);
@@ -151,7 +147,7 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static TimeValue getTestTimeValue(int seed) {
+	private static TimeValue getTestTimeValue(int seed) {
 		return new TimeValueImpl(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
 				(byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
@@ -166,7 +162,7 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
+	private static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
 		return new GlobeCoordinatesValueImpl((10 + seed)
 				* GlobeCoordinatesValue.PREC_DEGREE, (1905 + seed)
 				* GlobeCoordinatesValue.PREC_DECI_DEGREE,
@@ -183,7 +179,7 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static StringValue getTestStringValue(int seed) {
+	private static StringValue getTestStringValue(int seed) {
 		return new StringValueImpl("foo" + seed);
 	}
 
@@ -196,8 +192,8 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static MonolingualTextValue getTestMonolingualTextValue(int seed,
-			String language) {
+	private static MonolingualTextValue getTestMonolingualTextValue(int seed,
+																	String language) {
 		return new MonolingualTextValueImpl("foo" + seed, language);
 	}
 
@@ -210,7 +206,7 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static QuantityValue getTestQuantityValue(int seed) {
+	private static QuantityValue getTestQuantityValue(int seed) {
 		BigDecimal nv = new BigDecimal(seed
 				+ ".123456789012345678901234567890123456789");
 		BigDecimal lb = new BigDecimal(seed
@@ -221,7 +217,7 @@ public class DataObjectFactoryImplTest {
 				"http://wikidata.org/entity/Q11573");
 	}
 
-	public static Value getTestValue(ValueType valueType, int seed) {
+	private static Value getTestValue(ValueType valueType, int seed) {
 		switch (valueType) {
 		case GLOBE_COORDINATES:
 			return getTestGlobeCoordinatesValue(seed);
@@ -248,28 +244,9 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
 	}
-	
-	private static String getJsonValueType(ValueType valueType) {
-		switch(valueType) {
-		case GLOBE_COORDINATES:
-			return DatatypeIdImpl.JSON_DT_GLOBE_COORDINATES;
-		case ITEM:
-			return DatatypeIdImpl.JSON_DT_ITEM;
-		case MONOLINGUAL_TEXT:
-			return DatatypeIdImpl.JSON_DT_MONOLINGUAL_TEXT;
-		case QUANTITY:
-			return DatatypeIdImpl.JSON_DT_QUANTITY;
-		case STRING:
-			return null;
-		case TIME:
-			return DatatypeIdImpl.JSON_DT_TIME;
-		default:
-			throw new RuntimeException("Unsupported value type.");
-		}
-	}
 
-	public static ValueSnak getTestValueSnak(ValueType valueType, int pseed,
-			int vseed) {
+	private static ValueSnak getTestValueSnak(ValueType valueType, int pseed,
+											  int vseed) {
 		PropertyIdValue property = getTestPropertyIdValue(pseed);
 		Value value =  getTestValue(valueType, vseed);
 		return new ValueSnakImpl(property, value);
@@ -302,8 +279,8 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static SnakGroup getTestValueSnakGroup(ValueType valueType,
-			int pseed, int size) {
+	private static SnakGroup getTestValueSnakGroup(ValueType valueType,
+												   int pseed, int size) {
 		List<Snak> snaks = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			snaks.add(getTestValueSnak(valueType, pseed, i));
@@ -311,7 +288,7 @@ public class DataObjectFactoryImplTest {
 		return new SnakGroupImpl(snaks);
 	}
 
-	public static List<SnakGroup> getTestValueSnakGroups(int seed, int size) {
+	private static List<SnakGroup> getTestValueSnakGroups(int seed, int size) {
 		List<SnakGroup> snakGroups = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			SnakGroup group = getTestValueSnakGroup(ValueType.fromInt(i + seed), i
@@ -330,8 +307,8 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o2, o1);
 	}
 
-	public static Claim getTestClaim(int subjectSeed, int seed, int size,
-			String entityType) {
+	private static Claim getTestClaim(int subjectSeed, int seed, int size,
+									  String entityType) {
 		
 		return getTestStatement(subjectSeed, seed, size, entityType).getClaim();
 	}
@@ -344,16 +321,6 @@ public class DataObjectFactoryImplTest {
 		assertEquals(o1.toString(), o2.toString());
 		assertEquals(o1.hashCode(), o2.hashCode());
 		assertEquals(o2, o1);
-	}
-
-	public static List<Reference> getReferenceList(int seed, int size) {
-		List<Reference> references = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			List<SnakGroup> referenceSnaks = getTestValueSnakGroups(seed,
-					(seed + i) % 4 + 1);
-			references.add(new ReferenceImpl(referenceSnaks));
-		}
-		return references;
 	}
 
 	@Test

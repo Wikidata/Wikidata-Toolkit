@@ -33,16 +33,16 @@ import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
 public class QuantityValueImplTest {
 
-	final BigDecimal nv = new BigDecimal(
+	private final BigDecimal nv = new BigDecimal(
 			"0.123456789012345678901234567890123456789");
-	final BigDecimal lb = new BigDecimal(
+	private final BigDecimal lb = new BigDecimal(
 			"0.123456789012345678901234567890123456788");
-	final BigDecimal ub = new BigDecimal(
+	private final BigDecimal ub = new BigDecimal(
 			"0.123456789012345678901234567890123456790");
-	final String unitMeter = "http://wikidata.org/entity/Q11573";
-	final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
-	final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
-	final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
+	private final String unitMeter = "http://wikidata.org/entity/Q11573";
+	private final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
+	private final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
+	private final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
 
 	@Test
 	public void gettersWorking() {

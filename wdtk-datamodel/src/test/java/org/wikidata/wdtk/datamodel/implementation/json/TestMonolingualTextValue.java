@@ -28,9 +28,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.TermImpl;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestMonolingualTextValue {
@@ -39,10 +37,6 @@ public class TestMonolingualTextValue {
 
 	/**
 	 * Tests the conversion of MonolingualTextValues from JSON to POJO
-	 *
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
 	 */
 	@Test
 	public void testMonolingualTextValueToJava() throws
@@ -57,8 +51,6 @@ public class TestMonolingualTextValue {
 
 	/**
 	 * Tests the conversion of MonolingualTextValues from POJO to JSON
-	 *
-	 * @throws JsonProcessingException
 	 */
 	@Test
 	public void testMonolingualTextValueToJson() throws JsonProcessingException {

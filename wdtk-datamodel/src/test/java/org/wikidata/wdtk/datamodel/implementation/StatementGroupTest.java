@@ -32,24 +32,21 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 public class StatementGroupTest {
 
-	StatementGroup sg1;
-	StatementGroup sg2;
-	Statement statement1;
-	Statement statement2;
-	EntityIdValue subject;
-	PropertyIdValue property;
+	private StatementGroup sg1;
+	private StatementGroup sg2;
+	private Statement statement1;
+	private Statement statement2;
+	private EntityIdValue subject;
+	private PropertyIdValue property;
 
 	@Before
 	public void setUp() throws Exception {
@@ -88,7 +85,7 @@ public class StatementGroupTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 		statements.add(statement1);
 		statements.add(statement2);
 		StatementGroup sg3 = new StatementGroupImpl(statements);
@@ -117,7 +114,7 @@ public class StatementGroupTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void statementListRequiresSameSubject() {
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 
 		statements.add(statement1);
 
@@ -133,7 +130,7 @@ public class StatementGroupTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void statementListRequiresSameProperty() {
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 
 		statements.add(statement1);
 
