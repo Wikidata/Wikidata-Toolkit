@@ -317,7 +317,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 				if (qv != null && isPlusMinusOneValue(qv)) {
 					QuantityValue exactValue = Datamodel.makeQuantityValue(
 							qv.getNumericValue(), qv.getNumericValue(),
-							qv.getNumericValue(), "");
+							qv.getNumericValue());
 					Statement exactStatement = StatementBuilder
 							.forSubjectAndProperty(itemIdValue, property)
 							.withValue(exactValue).withId(s.getStatementId())
@@ -393,7 +393,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		BigDecimal valuePrec = quantityValue.getNumericValue().subtract(
 				BigDecimal.ONE);
 		return (quantityValue.getLowerBound().equals(valuePrec)
-				&& quantityValue.getUpperBound().equals(valueSucc) && ""
+				&& quantityValue.getUpperBound().equals(valueSucc) && "1"
 					.equals(quantityValue.getUnit()));
 	}
 

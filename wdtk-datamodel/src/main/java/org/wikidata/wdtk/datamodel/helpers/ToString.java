@@ -187,7 +187,7 @@ public class ToString {
 		if(o.getLowerBound() != null && o.getUpperBound() != null) {
 			str += " [" + o.getLowerBound().toString() + " .. " + o.getUpperBound().toString() + "]";
 		}
-		if(!"".equals(o.getUnit())) {
+		if(!"1".equals(o.getUnit())) {
 			str += " " + o.getUnit();
 		}
 		return str;

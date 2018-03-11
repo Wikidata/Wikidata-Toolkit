@@ -60,7 +60,7 @@ public class QuantityValueImplTest {
 		QuantityValue q4 = new QuantityValueImpl(nvplus, lb, ub, unitMeter);
 		QuantityValue q5 = new QuantityValueImpl(nv, nvminus, ub, unitMeter);
 		QuantityValue q6 = new QuantityValueImpl(nv, lb, nvplus, unitMeter);
-		QuantityValue q7 = new QuantityValueImpl(nv, lb, ub, "");
+		QuantityValue q7 = new QuantityValueImpl(nv, lb, ub, "1");
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
@@ -113,6 +113,11 @@ public class QuantityValueImplTest {
 	@Test(expected = NullPointerException.class)
 	public void unitNotNull() {
 		new QuantityValueImpl(nv, lb, ub, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void unitNotEmpty() {
+		new QuantityValueImpl(nv, lb, ub, "");
 	}
 
 	@Test(expected = IllegalArgumentException.class)

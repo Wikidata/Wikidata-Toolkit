@@ -54,10 +54,10 @@ public interface QuantityValue extends Value {
 	BigDecimal getUpperBound();
 
 	/**
-	 * Returns the unit of this quantity, or an empty string if there is no
+	 * Returns the unit of this quantity, or the string "1" if there is no
 	 * unit. Units are typically encoded as entity IRIs.
 	 *
-	 * @return unit string, or empty string if no unit is given
+	 * @return unit string (IRI or the string "1" if there is no unit)
 	 */
 	String getUnit();
 
