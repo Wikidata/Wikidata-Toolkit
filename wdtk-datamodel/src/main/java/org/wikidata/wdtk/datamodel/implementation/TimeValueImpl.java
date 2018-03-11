@@ -83,7 +83,7 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	 * @param timezoneOffset
 	 *            offset in minutes that should be applied when displaying this
 	 *            time
-	 * @return a {@link DatatypeIdValue} corresponding to the input
+	 * @return a {@link TimeValue} corresponding to the input
 	 */
 	TimeValueImpl(long year, byte month, byte day, byte hour, byte minute,
 			byte second, byte precision, int beforeTolerance,

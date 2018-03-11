@@ -41,24 +41,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JacksonInnerTime {
-	private String time;
+	private final String time;
 	private final int timezone;
 	private final int before;
 	private final int after;
 	private final int precision;
 	private final String calendarmodel;
 
-	@JsonIgnore
 	private long year;
-	@JsonIgnore
 	private byte month;
-	@JsonIgnore
 	private byte day;
-	@JsonIgnore
 	private byte hour;
-	@JsonIgnore
 	private byte minute;
-	@JsonIgnore
 	private byte second;
 	
 	/**
@@ -86,15 +80,15 @@ public class JacksonInnerTime {
 	@JsonCreator
 	public JacksonInnerTime(
 			@JsonProperty("time") String time,
-			@JsonProperty("timezone") int timezoneOffset,
-			@JsonProperty("before") int beforeTolerance,
-			@JsonProperty("after") int afterTolerance,
+			@JsonProperty("timezone") int timezone,
+			@JsonProperty("before") int before,
+			@JsonProperty("after") int after,
 			@JsonProperty("precision") int precision,
 			@JsonProperty("calendarmodel") String calendarModel) {
 		this.time = time;
-		this.timezone = timezoneOffset;
-		this.before = beforeTolerance;
-		this.after = afterTolerance;
+		this.timezone = timezone;
+		this.before = before;
+		this.after = after;
 		this.precision = precision;
 		this.calendarmodel = calendarModel;
 
@@ -148,8 +142,7 @@ public class JacksonInnerTime {
 		this.after = after;
 		this.precision = precision;
 		this.calendarmodel = calendarModel;
-
-		this.composeTimeString();
+		this.time = composeTimeString();
 	}
 
 	/**
@@ -171,8 +164,8 @@ public class JacksonInnerTime {
 	/**
 	 * Helper method to compose the time string from its components.
 	 */
-	private void composeTimeString() {
-		this.time = String.format("%+012d-%02d-%02dT%02d:%02d:%02dZ",
+	private String composeTimeString() {
+		return String.format("%+04d-%02d-%02dT%02d:%02d:%02dZ",
 				this.year, this.month, this.day, this.hour, this.minute,
 				this.second);
 	}
