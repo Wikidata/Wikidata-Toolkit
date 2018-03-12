@@ -46,7 +46,7 @@ public class JacksonInnerQuantity {
 	private final BigDecimal amount;
 	private final BigDecimal upperBound;
 	private final BigDecimal lowerBound;
-	private final String jsonUnit;
+	private final String unit;
 
 	/**
 	 * Constructor. The unit given here is a unit string as used in WDTK, with
@@ -63,34 +63,31 @@ public class JacksonInnerQuantity {
 	 */
 	@JsonCreator
 	public JacksonInnerQuantity(
-			@JsonProperty("amount") BigDecimal numericValue,
+			@JsonProperty("amount") BigDecimal amount,
 			@JsonProperty("lowerBound") BigDecimal lowerBound,
 			@JsonProperty("upperBound") BigDecimal upperBound,
 			@JsonProperty("unit") String unit) {
-		Validate.notNull(numericValue, "Numeric value cannot be null");
+		Validate.notNull(amount, "Numeric value cannot be null");
 		Validate.notNull(unit, "Unit cannot be null");
+		Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
 
 		if(lowerBound != null || upperBound != null) {
 			Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
 			Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
 
-			if (lowerBound.compareTo(numericValue) == 1) {
+			if (lowerBound.compareTo(amount) > 0) {
 				throw new IllegalArgumentException(
 						"Lower bound cannot be strictly greater than numeric value");
 			}
-			if (numericValue.compareTo(upperBound) == 1) {
+			if (amount.compareTo(upperBound) > 0) {
 				throw new IllegalArgumentException(
 						"Upper bound cannot be strictly smaller than numeric value");
 			}
 		}
-		this.amount = numericValue;
+		this.amount = amount;
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
-		if ("".equals(unit)) {
-			this.jsonUnit = "1";
-		} else {
-			this.jsonUnit = unit;
-		}
+		this.unit = unit;
 	}
 
 	/**
@@ -148,22 +145,8 @@ public class JacksonInnerQuantity {
 	 * @return unit string
 	 */
 	@JsonProperty("unit")
-	public String getJsonUnit() {
-		return this.jsonUnit;
-	}
-
-	/**
-	 * Returns the unit to be used, converting JSON-specific encodings of
-	 * "no unit" to the one used in WDTK.
-	 *
-	 * @return unit string
-	 */
 	public String getUnit() {
-		if ("1".equals(this.jsonUnit)) {
-			return "";
-		} else {
-			return this.jsonUnit;
-		}
+		return this.unit;
 	}
 
 	@Override
@@ -179,7 +162,7 @@ public class JacksonInnerQuantity {
 		return this.amount.equals(other.amount)
 				&& equalsNullable(this.lowerBound, other.lowerBound)
 				&& equalsNullable(this.upperBound, other.upperBound)
-				&& this.jsonUnit.equals(other.jsonUnit);
+				&& this.unit.equals(other.unit);
 	}
 
 	private boolean equalsNullable(Object o1, Object o2) {
