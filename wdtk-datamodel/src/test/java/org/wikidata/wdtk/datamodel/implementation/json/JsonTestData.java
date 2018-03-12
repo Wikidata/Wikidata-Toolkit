@@ -88,7 +88,7 @@ public class JsonTestData {
 			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + ",\"id\":\"" + TEST_PROPERTY_ID + "\"}}";
 	public static final String JSON_TIME_VALUE = "{\"type\":\""
 			+ ValueImpl.JSON_VALUE_TYPE_TIME
-			+ "\", \"value\":{\"time\":\"+00000002013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
+			+ "\", \"value\":{\"time\":\"+2013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
 	public static final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
 			+ ValueImpl.JSON_VALUE_TYPE_GLOBE_COORDINATES
 			+ "\", \"value\":{\"latitude\":-90.0,\"longitude\":0.0,\"precision\":10.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
