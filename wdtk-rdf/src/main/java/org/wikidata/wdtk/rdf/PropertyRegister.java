@@ -345,7 +345,7 @@ public class PropertyRegister {
 				if (!sg.getProperty().getId().equals(this.uriPatternPropertyId)) {
 					continue;
 				}
-				for (Statement statement : sg.getStatements()) {
+				for (Statement statement : sg) {
 					if (statement.getMainSnak() instanceof ValueSnak
 							&& statement.getValue() instanceof StringValue) {
 						String uriPattern = ((StringValue) statement.getValue()).getString();

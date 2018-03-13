@@ -377,10 +377,9 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @return the list of values
 	 */
 	private List<EntityIdValue> getItemIdValueList(StatementGroup statementGroup) {
-		List<EntityIdValue> result = new ArrayList<>(statementGroup
-				.getStatements().size());
+		List<EntityIdValue> result = new ArrayList<>(statementGroup.size());
 
-		for (Statement s : statementGroup.getStatements()) {
+		for (Statement s : statementGroup) {
 			Value v = s.getValue();
 			if (v instanceof EntityIdValue) {
 				result.add((EntityIdValue) v);
@@ -401,7 +400,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @return true if value was found
 	 */
 	private boolean containsValue(StatementGroup statementGroup, Value value) {
-		for (Statement s : statementGroup.getStatements()) {
+		for (Statement s : statementGroup) {
 			if (value.equals(s.getValue())) {
 				return true;
 			}

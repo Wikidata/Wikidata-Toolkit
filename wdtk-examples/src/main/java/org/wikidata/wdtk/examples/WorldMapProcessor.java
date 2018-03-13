@@ -198,7 +198,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 
 		for (StatementGroup sg : itemDocument.getStatementGroups()) {
 			if (COORD_PROPERTY.equals(sg.getProperty().getId())) {
-				for (Statement s : sg.getStatements()) {
+				for (Statement s : sg) {
 					countCoordinateStatement(s, itemDocument);
 				}
 			}

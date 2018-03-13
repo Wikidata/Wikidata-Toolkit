@@ -257,7 +257,7 @@ public class StatementUpdate {
 				}
 
 				Statement changedStatement = null;
-				for (Statement existingStatement : sg.getStatements()) {
+				for (Statement existingStatement : sg) {
 					if (existingStatement.equals(statement)) {
 						found = true;
 						toDelete.add(statement.getStatementId());
@@ -309,7 +309,7 @@ public class StatementUpdate {
 
 		for (StatementGroup sg : currentDocument.getStatementGroups()) {
 			if (this.toKeep.containsKey(sg.getProperty())) {
-				for (Statement statement : sg.getStatements()) {
+				for (Statement statement : sg) {
 					if (!this.toDelete.contains(statement.getStatementId())) {
 						addStatement(statement, false);
 					}

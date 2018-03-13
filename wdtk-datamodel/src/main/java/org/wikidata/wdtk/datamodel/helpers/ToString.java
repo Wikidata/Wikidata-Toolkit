@@ -326,7 +326,7 @@ public class ToString {
 	public static String toString(StatementGroup o) {
 		StringBuilder sb = new StringBuilder();
 
-		for (Statement s : o.getStatements()) {
+		for (Statement s : o) {
 			sb.append(toString(s));
 		}
 
