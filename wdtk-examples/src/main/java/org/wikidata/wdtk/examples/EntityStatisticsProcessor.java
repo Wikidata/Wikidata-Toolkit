@@ -180,12 +180,11 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 		// Count Statement data:
 		for (StatementGroup sg : statementDocument.getStatementGroups()) {
 			// Count Statements:
-			usageStatistics.countStatements += sg.getStatements().size();
+			usageStatistics.countStatements += sg.size();
 
 			// Count uses of properties in Statements:
-			countPropertyMain(usageStatistics, sg.getProperty(), sg
-					.getStatements().size());
-			for (Statement s : sg.getStatements()) {
+			countPropertyMain(usageStatistics, sg.getProperty(), sg.size());
+			for (Statement s : sg) {
 				for (SnakGroup q : s.getQualifiers()) {
 					countPropertyQualifier(usageStatistics, q.getProperty(), q
 							.getSnaks().size());

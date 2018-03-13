@@ -462,7 +462,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 		StatementGroup urlPatterns = propertyDocument
 				.findStatementGroup("P1630");
 		if (urlPatterns != null) {
-			for (Statement s : urlPatterns.getStatements()) {
+			for (Statement s : urlPatterns) {
 				Value v = s.getValue();
 				if (v == null) {
 					continue;
@@ -494,7 +494,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 		StatementGroup instanceClasses = propertyDocument
 				.findStatementGroup("P31");
 		if (instanceClasses != null) {
-			for (Statement s : instanceClasses.getStatements()) {
+			for (Statement s : instanceClasses) {
 				Value v = s.getValue();
 				if (v != null) {
 					pr.classes.add(new Integer(((ItemIdValue) v).getId()
@@ -543,7 +543,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 
 		// Count statements:
 		for (StatementGroup sg : statementDocument.getStatementGroups()) {
-			entityStatistics.countStatements += sg.getStatements().size();
+			entityStatistics.countStatements += sg.size();
 			PropertyRecord propertyRecord = getPropertyRecord(sg.getProperty());
 			propertyRecord.itemCount++;
 			countCooccurringProperties(statementDocument, propertyRecord,

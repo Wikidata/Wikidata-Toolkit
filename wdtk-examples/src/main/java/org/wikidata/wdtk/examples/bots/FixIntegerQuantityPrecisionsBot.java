@@ -312,7 +312,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 			PropertyIdValue property = Datamodel
 					.makeWikidataPropertyIdValue(propertyId);
 			List<Statement> updateStatements = new ArrayList<>();
-			for (Statement s : editPropertyStatements.getStatements()) {
+			for (Statement s : editPropertyStatements) {
 				QuantityValue qv = (QuantityValue) s.getValue();
 				if (qv != null && isPlusMinusOneValue(qv)) {
 					QuantityValue exactValue = Datamodel.makeQuantityValue(
@@ -408,7 +408,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		if (statementGroup == null) {
 			return false;
 		}
-		for (Statement s : statementGroup.getStatements()) {
+		for (Statement s : statementGroup) {
 			QuantityValue qv = (QuantityValue) s.getValue();
 			if (qv != null && isPlusMinusOneValue(qv)) {
 				return true;

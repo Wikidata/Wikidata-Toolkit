@@ -172,7 +172,7 @@ public interface StatementDocument extends EntityDocument {
 		if(statementGroup == null) {
 			return false;
 		}
-		for (Statement statement : statementGroup.getStatements()) {
+		for (Statement statement : statementGroup) {
 			if (values.contains(statement.getValue())) {
 				return true;
 			}
@@ -200,7 +200,7 @@ public interface StatementDocument extends EntityDocument {
 		if(statementGroup == null) {
 			return false;
 		}
-		for (Statement statement : statementGroup.getStatements()) {
+		for (Statement statement : statementGroup) {
 			if (values.contains(statement.getValue())) {
 				return true;
 			}
@@ -220,7 +220,7 @@ public interface StatementDocument extends EntityDocument {
 	 */
 	default Statement findStatement(PropertyIdValue propertyIdValue) {
 		StatementGroup statementGroup = findStatementGroup(propertyIdValue);
-		return (statementGroup != null && statementGroup.getStatements().size() == 1)
+		return (statementGroup != null && statementGroup.size() == 1)
 				? statementGroup.getStatements().get(0)
 				: null;
 	}
@@ -240,7 +240,7 @@ public interface StatementDocument extends EntityDocument {
 	 */
 	default Statement findStatement(String propertyId) {
 		StatementGroup statementGroup = findStatementGroup(propertyId);
-		return (statementGroup != null && statementGroup.getStatements().size() == 1)
+		return (statementGroup != null && statementGroup.size() == 1)
 				? statementGroup.getStatements().get(0)
 				: null;
 	}

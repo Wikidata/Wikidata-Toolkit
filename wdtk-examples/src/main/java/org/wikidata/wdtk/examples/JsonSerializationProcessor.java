@@ -183,7 +183,7 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 			if (!"P19".equals(sg.getProperty().getId())) {
 				continue;
 			}
-			for (Statement s : sg.getStatements()) {
+			for (Statement s : sg) {
 				if (s.getMainSnak() instanceof ValueSnak) {
 					Value v = s.getValue();
 					// "Q1731" is "Dresden" on Wikidata

@@ -294,8 +294,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		for (StatementGroup sg : itemDocument.getStatementGroups()) {
 			PropertyRecord propertyRecord = getPropertyRecord(sg.getProperty());
 			propertyRecord.itemCount++;
-			propertyRecord.statementCount = propertyRecord.statementCount
-					+ sg.getStatements().size();
+			propertyRecord.statementCount += sg.size();
 
 			boolean isInstanceOf = "P31".equals(sg.getProperty().getId());
 			boolean isSubclassOf = "P279".equals(sg.getProperty().getId());
@@ -303,7 +302,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				classRecord = getClassRecord(itemDocument.getItemId());
 			}
 
-			for (Statement s : sg.getStatements()) {
+			for (Statement s : sg) {
 				// Count uses of properties in qualifiers
 				for (SnakGroup q : s.getQualifiers()) {
 					countPropertyQualifier(q.getProperty(), q.getSnaks().size());
@@ -674,10 +673,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				if (!isImage) {
 					continue;
 				}
-				for (Statement s : sg.getStatements()) {
+				for (Statement s : sg) {
 					if (s.getMainSnak() instanceof ValueSnak) {
-						Value value = ((ValueSnak) s.getMainSnak())
-								.getValue();
+						Value value = s.getMainSnak().getValue();
 						if (value instanceof StringValue) {
 							imageFile = ((StringValue) value).getString();
 							break;

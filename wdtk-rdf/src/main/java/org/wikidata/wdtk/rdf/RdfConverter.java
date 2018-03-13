@@ -305,7 +305,7 @@ public class RdfConverter {
 				.getStatementGroups()) {
 			URI property = this.rdfWriter.getUri(Vocabulary.getPropertyUri(
 					statementGroup.getProperty(), PropertyContext.STATEMENT));
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				this.rdfWriter.writeTripleUriObject(subject, property,
 						Vocabulary.getStatementUri(statement));
 			}
@@ -313,7 +313,7 @@ public class RdfConverter {
 
 		for (StatementGroup statementGroup : statementDocument
 				.getStatementGroups()) {
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				writeStatement(statement);
 			}
 			writeBestRankTriples();
@@ -324,7 +324,7 @@ public class RdfConverter {
 			StatementDocument statementDocument) {
 		for (StatementGroup statementGroup : statementDocument
 				.getStatementGroups()) {
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				if (statement.getQualifiers().size() == 0) {
 					this.snakRdfConverter.setSnakContext(subject,
 							PropertyContext.DIRECT);
@@ -340,7 +340,7 @@ public class RdfConverter {
 			if (!"P31".equals(statementGroup.getProperty().getId())) {
 				continue;
 			}
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				if (statement.getMainSnak() instanceof ValueSnak
 						&& statement.getQualifiers().size() == 0) {
 
@@ -374,7 +374,7 @@ public class RdfConverter {
 			if (!isInstanceOf && !isSubClassOf) {
 				continue;
 			}
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				if (statement.getMainSnak() instanceof ValueSnak) {
 					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
 
@@ -420,7 +420,7 @@ public class RdfConverter {
 				continue;
 			}
 
-			for (Statement statement : statementGroup.getStatements()) {
+			for (Statement statement : statementGroup) {
 				if (statement.getMainSnak() instanceof ValueSnak) {
 					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
 					if (statement.getQualifiers().size() == 0) {
