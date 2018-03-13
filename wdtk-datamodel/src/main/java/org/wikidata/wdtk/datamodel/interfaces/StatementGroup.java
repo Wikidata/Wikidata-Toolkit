@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface StatementGroup extends Iterable<Statement> {
+public interface StatementGroup extends Collection<Statement> {
 
 	/**
 	 * Get the list of Statements of this group.

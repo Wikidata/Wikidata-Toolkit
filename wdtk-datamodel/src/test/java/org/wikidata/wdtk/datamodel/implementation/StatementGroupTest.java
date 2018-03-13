@@ -84,6 +84,11 @@ public class StatementGroupTest {
 	}
 
 	@Test
+	public void size() {
+		assertEquals(sg1.size(), 1);
+	}
+
+	@Test
 	public void equalityBasedOnContent() {
 		List<Statement> statements = new ArrayList<>();
 		statements.add(statement1);

@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.util.AbstractCollection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  * @author Markus Kroetzsch
  * @author Antonin Delpeuch
  */
-public class StatementGroupImpl implements StatementGroup {
+public class StatementGroupImpl extends AbstractCollection<Statement> implements StatementGroup {
 
 	private final List<Statement> statements;
 
@@ -68,22 +69,27 @@ public class StatementGroupImpl implements StatementGroup {
 
 	@Override
 	public Iterator<Statement> iterator() {
-		return this.statements.iterator();
+		return statements.iterator();
+	}
+
+	@Override
+	public int size() {
+		return statements.size();
 	}
 
 	@Override
 	public List<Statement> getStatements() {
-		return Collections.unmodifiableList(this.statements);
+		return Collections.unmodifiableList(statements);
 	}
 
 	@Override
 	public PropertyIdValue getProperty() {
-		return this.statements.get(0).getMainSnak().getPropertyId();
+		return statements.get(0).getMainSnak().getPropertyId();
 	}
 
 	@Override
 	public EntityIdValue getSubject() {
-		return this.statements.get(0).getSubject();
+		return statements.get(0).getSubject();
 	}
 
 	@Override
