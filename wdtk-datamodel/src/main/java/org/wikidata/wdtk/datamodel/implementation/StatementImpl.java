@@ -24,11 +24,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.implementation.json.StatementRankDeserializer;
 import org.wikidata.wdtk.datamodel.implementation.json.StatementRankSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.util.NestedIterator;
@@ -230,5 +232,71 @@ public class StatementImpl implements Statement {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	/**
+	 * Helper class for deserializing statements from JSON.
+	 *
+	 * @author Antonin Delpeuch
+	 * @author Thomas Pellissier Tanon
+	 *
+	 */
+	@JsonIgnoreProperties(ignoreUnknown=true)
+	public static class PreStatement {
+
+		private final String statementId;
+
+		private final StatementRank rank;
+
+		private final List<Reference> references;
+
+		private final Snak mainSnak;
+
+		private final Map<String, List<Snak>> qualifiers;
+
+		private final List<String> qualifiersOrder;
+
+		private PreStatement(
+				String statementId,
+				StatementRank rank,
+				Snak mainsnak,
+				Map<String, List<Snak>> qualifiers,
+				List<String> qualifiersOrder,
+				List<Reference> references) {
+			this.statementId = statementId;
+			this.rank = rank;
+			this.mainSnak = mainsnak;
+			this.qualifiers = qualifiers;
+			this.qualifiersOrder = qualifiersOrder;
+			this.references = references;
+		}
+
+		/**
+		 * JSON deserialization creator.
+		 */
+		@JsonCreator
+		static PreStatement fromJson(
+				@JsonProperty("id") String id,
+				@JsonProperty("rank") 	@JsonDeserialize(using = StatementRankDeserializer.class) StatementRank rank,
+				@JsonProperty("mainsnak") SnakImpl mainsnak,
+				@JsonProperty("qualifiers") Map<String, List<SnakImpl>> qualifiers,
+				@JsonProperty("qualifiers-order") List<String> qualifiersOrder,
+				@JsonProperty("references") @JsonDeserialize(contentAs=ReferenceImpl.class) List<Reference> references) {
+			// Forget the concrete type of Jackson snaks for the qualifiers
+			if(qualifiers == null) {
+				qualifiers = Collections.emptyMap();
+			}
+			Map<String, List<Snak>> newQualifiers = new HashMap<>(qualifiers.size());
+			for(Map.Entry<String,List<SnakImpl>> entry : qualifiers.entrySet()) {
+				List<Snak> snaks = new ArrayList<>(entry.getValue());
+				newQualifiers.put(entry.getKey(), snaks);
+			}
+			return new PreStatement(id, rank, mainsnak, newQualifiers, qualifiersOrder, references);
+		}
+
+
+		public StatementImpl withSubject(EntityIdValue subjectId) {
+			return new StatementImpl(statementId, rank, mainSnak, qualifiers, qualifiersOrder, references, subjectId);
+		}
 	}
 }

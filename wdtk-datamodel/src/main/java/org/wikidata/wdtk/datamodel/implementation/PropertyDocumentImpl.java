@@ -27,7 +27,6 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
@@ -98,7 +97,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
 			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
 			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
-			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
+			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {

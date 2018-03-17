@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -193,7 +192,7 @@ public abstract class TermedStatementDocumentImpl implements
 			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
 			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
 			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
-			@JsonProperty("claims") Map<String, List<JacksonPreStatement>> claims,
+			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		Validate.notNull(jsonId);
@@ -218,10 +217,10 @@ public abstract class TermedStatementDocumentImpl implements
 		if (claims != null) {
 			this.claims = new HashMap<>();
 			EntityIdValue subject = this.getEntityId();
-			for (Entry<String, List<JacksonPreStatement>> entry : claims
+			for (Entry<String, List<StatementImpl.PreStatement>> entry : claims
 					.entrySet()) {
 				List<Statement> statements = new ArrayList<>(entry.getValue().size());
-				for (JacksonPreStatement statement : entry.getValue()) {
+				for (StatementImpl.PreStatement statement : entry.getValue()) {
 					statements.add(statement.withSubject(subject));
 				}
 				this.claims.put(entry.getKey(), statements);
