@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -43,25 +42,13 @@ import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class ClaimImplTest {
 
-	private EntityIdValue subject;
-	private ValueSnak mainSnak;
-
-	private Claim c1;
-	private Claim c2;
-
-	@Before
-	public void setUp() throws Exception {
-		subject = new ItemIdValueImpl("Q42",
-				"http://wikidata.org/entity/");
-		PropertyIdValue property = new PropertyIdValueImpl(
-				"P42", "http://wikidata.org/entity/");
-		mainSnak = new ValueSnakImpl(property, subject);
-
-		c1 = new ClaimImpl(subject, mainSnak,
-				Collections.emptyList());
-		c2 = new ClaimImpl(subject, mainSnak,
-				Collections.emptyList());
-	}
+	private final EntityIdValue subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
+	private final ValueSnak mainSnak = new ValueSnakImpl(
+			new PropertyIdValueImpl("P42", "http://wikidata.org/entity/"),
+			subject
+	);
+	private final Claim c1 = new ClaimImpl(subject, mainSnak, Collections.emptyList());
+	private final Claim c2 = new ClaimImpl(subject, mainSnak, Collections.emptyList());
 
 	@Test
 	public void gettersWorking() {

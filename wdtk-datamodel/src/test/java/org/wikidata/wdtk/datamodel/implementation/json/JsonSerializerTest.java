@@ -55,7 +55,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 public class JsonSerializerTest {
 
-	static final DatamodelConverter datamodelConverter = new DatamodelConverter(
+	private static final DatamodelConverter datamodelConverter = new DatamodelConverter(
 			new DataObjectFactoryImpl());
 
 	@Test

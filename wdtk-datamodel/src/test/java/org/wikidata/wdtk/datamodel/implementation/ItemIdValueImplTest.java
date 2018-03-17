@@ -19,30 +19,29 @@ package org.wikidata.wdtk.datamodel.implementation;
  * limitations under the License.
  * #L%
  */
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+
+import java.io.IOException;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import static org.junit.Assert.*;
 
 public class ItemIdValueImplTest {
 
-	private ItemIdValueImpl item1;
-	private ItemIdValueImpl item2;
-	private ItemIdValueImpl item3;
-	private ItemIdValueImpl item4;
+	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
-	@Before
-	public void setUp() {
-		item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
-		item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
-		item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
-		item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
-	}
+	private final ItemIdValueImpl item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
 
 	@Test
 	public void entityTypeIsItem() {
@@ -103,6 +102,42 @@ public class ItemIdValueImplTest {
 	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
 		new ItemIdValueImpl("Q42", null);
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_ITEM_ID_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_ITEM_ID_VALUE,
+				result);
+	}
+
+	@Test
+	public void testToJava() throws IOException {
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
+				ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutId() throws IOException {
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_ID,
+				ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutNumericalId() throws IOException {
+		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID,
+				ValueImpl.class));
+	}
+
+	private void assertItemIdValue(ValueImpl result) {
+		assertTrue(result instanceof ItemIdValueImpl);
+
+		assertEquals(result.getType(),
+				JsonTestData.TEST_ITEM_ID_VALUE.getType());
+		assertEquals(((ItemIdValueImpl) result).getValue(),
+				JsonTestData.TEST_ITEM_ID_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_ITEM_ID_VALUE, result);
 	}
 
 }

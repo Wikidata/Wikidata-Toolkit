@@ -22,41 +22,37 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class StatementImplTest {
 
-	private EntityIdValue subjet;
-	private EntityIdValue value;
-	private ValueSnak mainSnak;
-	private Claim claim;
+	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
-	private Statement s1;
-	private Statement s2;
+	private final EntityIdValue subjet = new ItemIdValueImpl("Q1", "http://wikidata.org/entity/");
+	private final EntityIdValue value = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
+	private final PropertyIdValue property = new PropertyIdValueImpl("P42", "http://wikidata.org/entity/");
+	private final ValueSnak mainSnak = new ValueSnakImpl(property, value);
+	private final Claim claim = new ClaimImpl(subjet, mainSnak, Collections.emptyList());
 
-	@Before
-	public void setUp() throws Exception {
-		subjet = new ItemIdValueImpl("Q1", "http://wikidata.org/entity/");
-		value = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
-		PropertyIdValue property = new PropertyIdValueImpl("P42",
-				"http://wikidata.org/entity/");
-		mainSnak = new ValueSnakImpl(property, value);
-
-		claim = new ClaimImpl(subjet, mainSnak, Collections.emptyList());
-		s1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subjet);
-		s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subjet);
-	}
+	private final Statement s1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subjet);
+	private final Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subjet);
 
 	@Test
 	public void gettersWorking() {
@@ -124,4 +120,59 @@ public class StatementImplTest {
 		assertFalse(s1.equals(this));
 	}
 
+	@Test
+	public void testEmptyStatementToJson() throws JsonProcessingException {
+		StatementImpl statement = JsonTestData.getTestNoValueStatement();
+
+		String result = mapper.writeValueAsString(statement);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
+				result);
+	}
+
+	@Test
+	public void testFullStatementToJson() throws IOException {
+		Statement statement = DataObjectFactoryImplTest.getTestStatement(2, 3, 4, EntityIdValue.ET_ITEM);
+		ObjectMapper mapper = new DatamodelMapper(statement.getSubject().getSiteIri());
+		String json = mapper.writeValueAsString(statement);
+		JacksonPreStatement deserialized = mapper.readValue(json, JacksonPreStatement.class);
+		assertEquals(statement, deserialized.withSubject(statement.getSubject()));
+	}
+
+	@Test
+	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
+		StatementImpl statement = JsonTestData.getTestNoValueNoIdStatement();
+
+		String result = mapper.writeValueAsString(statement);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_NOVALUE_NOID_STATEMENT, result);
+	}
+
+	@Test
+	public void testEmptyStatementToJava() throws
+			IOException {
+		StatementImpl result = mapper.readValue(
+				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonPreStatement.class).withSubject(
+				JsonTestData.getEmptyTestItemDocument().getEntityId());
+
+		assertNotNull(result);
+		assertNull(result.getValue());
+		assertNull(result.getClaim().getValue());
+		assertEquals(JsonTestData.getTestNoValueStatement(), result);
+	}
+
+	@Test
+	public void testEquality() {
+		StatementImpl correctStatement = new StatementImpl(
+				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK,
+				JsonTestData.getEmptyTestItemDocument()
+						.getEntityId());
+		StatementImpl wrongId = new StatementImpl("another id",
+				JsonTestData.TEST_NOVALUE_SNAK,
+				JsonTestData.getEmptyTestItemDocument()
+						.getEntityId());
+
+		assertEquals(JsonTestData.getTestNoValueStatement(), JsonTestData.getTestNoValueStatement());
+		assertEquals(JsonTestData.getTestNoValueStatement(), correctStatement);
+		assertFalse(JsonTestData.getTestNoValueStatement().equals(wrongId));
+	}
 }

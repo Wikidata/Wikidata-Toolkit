@@ -22,28 +22,29 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+
+import java.io.IOException;
 
 public class TimeValueImplTest {
 
-	private TimeValue t1;
-	private TimeValue t2;
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	@Before
-	public void setUp() throws Exception {
-		t1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
-				TimeValue.CM_GREGORIAN_PRO);
-		t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
-				TimeValue.CM_GREGORIAN_PRO);
-	}
+	private final TimeValue t1 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+			(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
+			TimeValue.CM_GREGORIAN_PRO);
+	private final TimeValue t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+			(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
+			TimeValue.CM_GREGORIAN_PRO);
 
 	@Test
 	public void storedValuesCorrect() {
@@ -131,6 +132,58 @@ public class TimeValueImplTest {
 				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_SECOND, 0, 1,
 				60, TimeValue.CM_GREGORIAN_PRO);
 		assertEquals(t.getYear(), -13800000000L);
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper.writeValueAsString(JsonTestData.TEST_TIME_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_TIME_VALUE, result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		ValueImpl result = mapper.readValue(JsonTestData.JSON_TIME_VALUE,
+				ValueImpl.class);
+		TimeValueImpl castedResult = (TimeValueImpl) result;
+
+		assertNotNull(result);
+		assertTrue(result instanceof TimeValueImpl);
+		assertEquals(result.getType(), JsonTestData.TEST_TIME_VALUE.getType());
+
+		assertEquals(castedResult.getValue(),
+				JsonTestData.TEST_TIME_VALUE.getValue());
+
+		// test if every field contains the correct value
+		assertEquals(castedResult.getSecond(),
+				JsonTestData.TEST_TIME_VALUE.getSecond());
+		assertEquals(castedResult.getMinute(),
+				JsonTestData.TEST_TIME_VALUE.getMinute());
+		assertEquals(castedResult.getHour(),
+				JsonTestData.TEST_TIME_VALUE.getHour());
+		assertEquals(castedResult.getDay(),
+				JsonTestData.TEST_TIME_VALUE.getDay());
+		assertEquals(castedResult.getMonth(),
+				JsonTestData.TEST_TIME_VALUE.getMonth());
+		assertEquals(castedResult.getYear(),
+				JsonTestData.TEST_TIME_VALUE.getYear());
+
+		assertEquals(castedResult.getAfterTolerance(),
+				JsonTestData.TEST_TIME_VALUE.getAfterTolerance());
+		assertEquals(castedResult.getBeforeTolerance(),
+				JsonTestData.TEST_TIME_VALUE.getBeforeTolerance());
+		assertEquals(castedResult.getPrecision(),
+				JsonTestData.TEST_TIME_VALUE.getPrecision());
+		assertEquals(castedResult.getPreferredCalendarModel(),
+				JsonTestData.TEST_TIME_VALUE.getPreferredCalendarModel());
+		assertEquals(castedResult.getTimezoneOffset(),
+				JsonTestData.TEST_TIME_VALUE.getTimezoneOffset());
+
+		// test against the same time, created on a different way
+		JacksonInnerTime otherTime = new JacksonInnerTime(2013, (byte) 10,
+				(byte) 28, (byte) 0, (byte) 0, (byte) 0, 0, 0, 0, 11,
+				"http://www.wikidata.org/entity/Q1985727");
+		assertEquals(((TimeValueImpl) result).getValue(), otherTime);
 	}
 
 }

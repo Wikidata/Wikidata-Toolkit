@@ -22,28 +22,24 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 public class SiteLinkImplTest {
 
-	private SiteLink s1;
-	private SiteLink s2;
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	@Before
-	public void setUp() throws Exception {
-		s1 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.emptyList());
-		s2 = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.emptyList());
-	}
+	private final SiteLink s1 = new SiteLinkImpl("Dresden", "enwiki", Collections.emptyList());
+	private final SiteLink s2 = new SiteLinkImpl("Dresden", "enwiki", Collections.emptyList());
 
 	@Test
 	public void fieldsIsCorrect() {
@@ -91,4 +87,36 @@ public class SiteLinkImplTest {
 		assertEquals(sitelink.getBadges(), Collections.emptyList());
 	}
 
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper.writeValueAsString(JsonTestData.TEST_SITE_LINK);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_SITE_LINK, result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		SiteLinkImpl result = mapper.readValue(JsonTestData.JSON_SITE_LINK,
+				SiteLinkImpl.class);
+
+		assertEquals("enwiki", result.getSiteKey());
+		assertEquals("foobar", result.getPageTitle());
+		assertTrue(result.getBadges().isEmpty());
+	}
+
+	@Test
+	public void testEquals() {
+		SiteLink match = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"foobar", "enwiki", Collections.emptyList());
+		SiteLink wrongLanguage = JsonTestData.JACKSON_OBJECT_FACTORY
+				.getSiteLink("foobar", "dewiki",
+						Collections.emptyList());
+		SiteLink wrongValue = JsonTestData.JACKSON_OBJECT_FACTORY.getSiteLink(
+				"barfoo", "enwiki", Collections.emptyList());
+
+		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
+		assertEquals(JsonTestData.TEST_SITE_LINK, match);
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongValue));
+	}
 }

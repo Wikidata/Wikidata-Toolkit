@@ -22,24 +22,23 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
+import java.io.IOException;
 
 public class StringValueImplTest {
 
-	private StringValue s1;
-	private StringValue s2;
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	@Before
-	public void setUp() throws Exception {
-		s1 = new StringValueImpl("some string");
-		s2 = new StringValueImpl("some string");
-	}
+	private static StringValue s1 = new StringValueImpl("some string");
+	private static StringValue s2 = new StringValueImpl("some string");
 
 	@Test
 	public void stringIsCorrect() {
@@ -67,4 +66,24 @@ public class StringValueImplTest {
 		new StringValueImpl(null);
 	}
 
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_STRING_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_STRING_VALUE,
+				result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		ValueImpl result = mapper.readValue(JsonTestData.JSON_STRING_VALUE,
+				ValueImpl.class);
+
+		assertTrue(result instanceof StringValueImpl);
+		assertEquals(result.getType(), JsonTestData.TEST_STRING_VALUE.getType());
+		assertEquals(((StringValueImpl) result).getValue(),
+				JsonTestData.TEST_STRING_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_STRING_VALUE, result);
+	}
 }

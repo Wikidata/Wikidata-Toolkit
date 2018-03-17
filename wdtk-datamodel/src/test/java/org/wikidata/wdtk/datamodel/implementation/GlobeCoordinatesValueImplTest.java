@@ -27,10 +27,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
+import java.io.IOException;
+
 public class GlobeCoordinatesValueImplTest {
+
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	private final GlobeCoordinatesValue c1 = new GlobeCoordinatesValueImpl(12.3, 14.1,
 			GlobeCoordinatesValue.PREC_DEGREE,
@@ -116,6 +124,28 @@ public class GlobeCoordinatesValueImplTest {
 		new GlobeCoordinatesValueImpl(45.0, -500.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper.writeValueAsString(
+				JsonTestData.TEST_GLOBE_COORDINATES_VALUE);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		ValueImpl result = mapper.readValue(
+				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, ValueImpl.class);
+
+		assertTrue(result instanceof GlobeCoordinatesValueImpl);
+		assertEquals(result.getType(),
+				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getType());
+		assertEquals(((GlobeCoordinatesValueImpl) result).getValue(),
+				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_GLOBE_COORDINATES_VALUE, result);
 	}
 
 }

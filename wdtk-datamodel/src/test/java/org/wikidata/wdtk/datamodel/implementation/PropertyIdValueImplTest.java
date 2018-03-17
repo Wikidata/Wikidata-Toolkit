@@ -22,32 +22,27 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+
+import java.io.IOException;
 
 public class PropertyIdValueImplTest {
 
-	private PropertyIdValueImpl prop1;
-	private PropertyIdValueImpl prop2;
-	private PropertyIdValueImpl prop3;
-	private PropertyIdValueImpl prop4;
+	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
-	@Before
-	public void setUp() {
-		prop1 = new PropertyIdValueImpl("P42",
-				"http://www.wikidata.org/entity/");
-		prop2 = new PropertyIdValueImpl("P42",
-				"http://www.wikidata.org/entity/");
-		prop3 = new PropertyIdValueImpl("P57",
-				"http://www.wikidata.org/entity/");
-		prop4 = new PropertyIdValueImpl("P42",
-				"http://www.example.org/entity/");
-	}
+	private final PropertyIdValueImpl prop1 = new PropertyIdValueImpl("P42", "http://www.wikidata.org/entity/");
+	private final PropertyIdValueImpl prop2 = new PropertyIdValueImpl("P42", "http://www.wikidata.org/entity/");
+	private final PropertyIdValueImpl prop3 = new PropertyIdValueImpl("P57",	 "http://www.wikidata.org/entity/");
+	private final PropertyIdValueImpl prop4 = new PropertyIdValueImpl("P42", "http://www.example.org/entity/");
 
 	@Test
 	public void entityTypeIsProperty() {
@@ -95,4 +90,26 @@ public class PropertyIdValueImplTest {
 		new PropertyIdValueImpl("P34d23", "http://www.wikidata.org/entity/");
 	}
 
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_PROPERTY_ID_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_PROPERTY_ID_VALUE,
+				result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		ValueImpl result = mapper.readValue(
+				JsonTestData.JSON_PROPERTY_ID_VALUE, ValueImpl.class);
+
+		assertTrue(result instanceof PropertyIdValueImpl);
+
+		assertEquals(result.getType(),
+				JsonTestData.TEST_PROPERTY_ID_VALUE.getType());
+		assertEquals(((PropertyIdValueImpl) result).getValue(),
+				JsonTestData.TEST_PROPERTY_ID_VALUE.getValue());
+		assertEquals(JsonTestData.TEST_PROPERTY_ID_VALUE, result);
+	}
 }

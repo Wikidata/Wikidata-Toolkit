@@ -36,6 +36,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -240,4 +241,28 @@ public class PropertyDocumentImplTest {
 				statementGroups, null, 1234);
 	}
 
+	@Test
+	public void testFullDocumentSetup() {
+		PropertyDocumentImpl fullDocument = new PropertyDocumentImpl(
+				JsonTestData.getTestPropertyId().getId(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestMltvMap(),
+				JsonTestData.getTestAliases(),
+				Collections.emptyMap(),
+				"quantity",
+				0, JsonTestData.getTestItemId().getSiteIri());
+
+		assertEquals(fullDocument.getAliases(), JsonTestData.getTestAliases());
+		assertEquals(fullDocument.getDescriptions(),
+				JsonTestData.getTestMltvMap());
+		assertEquals(fullDocument.getLabels(), JsonTestData.getTestMltvMap());
+		assertEquals(fullDocument.getPropertyId(),
+				JsonTestData.getTestPropertyId());
+		assertEquals(fullDocument.getEntityId(),
+				JsonTestData.getTestPropertyId());
+		assertEquals(fullDocument.getDatatype(),
+				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_QUANTITY));
+		assertEquals(fullDocument.getPropertyId().getId(),
+				fullDocument.getJsonId());
+	}
 }

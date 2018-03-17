@@ -22,24 +22,23 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+
+import java.io.IOException;
 
 public class MonolingualTextValueImplTest {
 
-	private MonolingualTextValue mt1;
-	private MonolingualTextValue mt2;
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	@Before
-	public void setUp() throws Exception {
-		mt1 = new MonolingualTextValueImpl("some string", "en");
-		mt2 = new MonolingualTextValueImpl("some string", "en");
-	}
+	private final MonolingualTextValue mt1 = new MonolingualTextValueImpl("some string", "en");
+	private final MonolingualTextValue mt2 = new MonolingualTextValueImpl("some string", "en");
 
 	@Test
 	public void dataIsCorrect() {
@@ -77,4 +76,64 @@ public class MonolingualTextValueImplTest {
 		new MonolingualTextValueImpl("some text", null);
 	}
 
+	/**
+	 * Tests the conversion of MonolingualTextValues from JSON to POJO
+	 */
+	@Test
+	public void testMonolingualTextValueToJava() throws
+			IOException {
+		TermImpl result = mapper.readValue(
+				JsonTestData.JSON_TERM_MLTV,
+				TermImpl.class);
+
+		assertEquals("en", result.getLanguageCode());
+		assertEquals("foobar", result.getText());
+	}
+
+	/**
+	 * Tests the conversion of MonolingualTextValues from POJO to JSON
+	 */
+	@Test
+	public void testMonolingualTextValueToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_MLTV_TERM_VALUE);
+		JsonComparator.compareJsonStrings(JsonTestData.JSON_TERM_MLTV,
+				result);
+	}
+
+	@Test
+	public void testEquals() {
+		TermImpl match = new TermImpl(
+				"en", "foobar");
+		TermImpl wrongLanguage = new TermImpl(
+				"de", "foobar");
+		TermImpl wrongValue = new TermImpl(
+				"en", "barfoo");
+
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE,
+				JsonTestData.TEST_MLTV_TERM_VALUE);
+		assertEquals(JsonTestData.TEST_MLTV_TERM_VALUE, match);
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE
+				.equals(wrongLanguage));
+		assertFalse(JsonTestData.TEST_MLTV_TERM_VALUE.equals(wrongValue));
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		String result = mapper
+				.writeValueAsString(JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE);
+		JsonComparator.compareJsonStrings(
+				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE, result);
+	}
+
+	@Test
+	public void testToJava() throws
+			IOException {
+		ValueImpl result = mapper.readValue(
+				JsonTestData.JSON_MONOLINGUAL_TEXT_VALUE, ValueImpl.class);
+
+		assertTrue(result instanceof MonolingualTextValueImpl);
+		assertEquals(JsonTestData.TEST_MONOLINGUAL_TEXT_VALUE, result);
+
+	}
 }
