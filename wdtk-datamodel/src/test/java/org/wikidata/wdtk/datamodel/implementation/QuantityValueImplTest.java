@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,7 +31,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
 public class QuantityValueImplTest {
@@ -49,6 +47,8 @@ public class QuantityValueImplTest {
 	private final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
+	private static String JSON_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"lowerBound\":\"+0.123456789012345678901234567890123456788\",\"upperBound\":\"+0.123456789012345678901234567890123456790\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
+	private static String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 
 	@Test
 	public void gettersWorking() {
@@ -138,45 +138,21 @@ public class QuantityValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_QUANTITY_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_QUANTITY_VALUE,
-				result);
+		JsonComparator.compareJsonStrings(JSON_QUANTITY_VALUE, mapper.writeValueAsString(q1));
 	}
 
 	@Test
-	public void testToJava() throws
-			IOException {
-		ValueImpl result = mapper.readValue(
-				JsonTestData.JSON_QUANTITY_VALUE, ValueImpl.class);
-
-		assertTrue(result instanceof QuantityValueImpl);
-		assertEquals(result.getType(),
-				JsonTestData.TEST_QUANTITY_VALUE.getType());
-		assertEquals(((QuantityValueImpl) result).getValue(),
-				JsonTestData.TEST_QUANTITY_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_QUANTITY_VALUE, result);
+	public void testToJava() throws IOException {
+		assertEquals(q1, mapper.readValue(JSON_QUANTITY_VALUE, ValueImpl.class));
 	}
 
 	@Test
 	public void testUnboundedToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE,
-				result);
+		JsonComparator.compareJsonStrings(JSON_UNBOUNDED_QUANTITY_VALUE, mapper.writeValueAsString(q3));
 	}
 
 	@Test
-	public void testUnboundedToJava() throws
-			IOException {
-		ValueImpl result = mapper.readValue(
-				JsonTestData.JSON_UNBOUNDED_QUANTITY_VALUE, ValueImpl.class);
-
-		assertTrue(result instanceof QuantityValueImpl);
-		assertEquals(result.getType(),
-				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getType());
-		assertEquals(((QuantityValueImpl) result).getValue(),
-				JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_UNBOUNDED_QUANTITY_VALUE, result);
+	public void testUnboundedToJava() throws IOException {
+		assertEquals(q3, mapper.readValue(JSON_UNBOUNDED_QUANTITY_VALUE, ValueImpl.class));
 	}
 }

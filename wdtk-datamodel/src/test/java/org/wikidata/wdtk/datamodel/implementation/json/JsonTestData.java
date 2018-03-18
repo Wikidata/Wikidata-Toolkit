@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation.json;
  */
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.TermImpl;
 import org.wikidata.wdtk.datamodel.implementation.NoValueSnakImpl;
@@ -31,12 +30,8 @@ import org.wikidata.wdtk.datamodel.implementation.SomeValueSnakImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
 import org.wikidata.wdtk.datamodel.implementation.ValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.GlobeCoordinatesValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.MonolingualTextValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.QuantityValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.TimeValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.math.BigDecimal;
@@ -53,54 +48,16 @@ public class JsonTestData {
 
 	public static final DataObjectFactory JACKSON_OBJECT_FACTORY = new DataObjectFactoryImpl();
 
-	// TODO maybe decompose the time a bit to have fewer magic strings in it
-
-	public static final String JSON_ENTITY_TYPE_ITEM = "item";
-	public static final String JSON_ENTITY_TYPE_PROPERTY = "property";
-
 	// the id's used in the tests
 	public static final String TEST_PROPERTY_ID = "P1";
 	public static final String TEST_ITEM_ID = "Q1";
-	public static final int TEST_NUMERIC_ID = 1;
 	public static final String TEST_STATEMENT_ID = "statement_foobar";
 
 	public static final String JSON_RANK_NORMAL = "normal";
-	public static final String JSON_RANK_DEPRECATED = "deprecated";
-	public static final String JSON_RANK_PREFERRED = "preferred";
 
 	// stand-alone descriptions of Value-parts
 	public static final String JSON_STRING_VALUE = "{\"type\":\""
 			+ ValueImpl.JSON_VALUE_TYPE_STRING + "\",\"value\":\"foobar\"}";
-	public static final String JSON_ITEM_ID_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_ENTITY_ID
-			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_ITEM
-			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + ",\"id\":\"" + TEST_ITEM_ID + "\"}}";
-    public static final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\""
-            + ValueImpl.JSON_VALUE_TYPE_ENTITY_ID
-            + "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_ITEM
-            + "\",\"numeric-id\":\"" + TEST_NUMERIC_ID + "\"}}";
-    public static final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\""
-            + ValueImpl.JSON_VALUE_TYPE_ENTITY_ID
-            + "\",\"value\":{\"id\":\"" + TEST_ITEM_ID + "\"}}";
-	public static final String JSON_PROPERTY_ID_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_ENTITY_ID
-			+ "\",\"value\":{\"entity-type\":\"" + JSON_ENTITY_TYPE_PROPERTY
-			+ "\",\"numeric-id\":" + TEST_NUMERIC_ID + ",\"id\":\"" + TEST_PROPERTY_ID + "\"}}";
-	public static final String JSON_TIME_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_TIME
-			+ "\", \"value\":{\"time\":\"+2013-10-28T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}}";
-	public static final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_GLOBE_COORDINATES
-			+ "\", \"value\":{\"latitude\":-90.0,\"longitude\":0.0,\"precision\":10.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
-	public static final String JSON_QUANTITY_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_QUANTITY
-			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\",\"upperBound\":\"+1.5\",\"lowerBound\":\"-0.5\"}}";
-	public static final String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_QUANTITY
-			+ "\",\"value\":{\"amount\":\"+1\",\"unit\":\"1\"}}";
-	public static final String JSON_MONOLINGUAL_TEXT_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_MONOLINGUAL_TEXT
-			+ "\",\"value\":{\"language\":\"en\",\"text\":\"foobar\"}}";
 
 	// stand-alone descriptions of ItemDocument-parts
 	public static final String JSON_ITEM_TYPE = "\"type\":\"item\"";
@@ -161,23 +118,8 @@ public class JsonTestData {
 
 	public static final StringValueImpl TEST_STRING_VALUE = (StringValueImpl) JACKSON_OBJECT_FACTORY
 			.getStringValue("foobar");
-	public static final ItemIdValueImpl TEST_ITEM_ID_VALUE = (ItemIdValueImpl) JACKSON_OBJECT_FACTORY
-			.getItemIdValue("Q1", Datamodel.SITE_WIKIDATA);
 	public static final PropertyIdValueImpl TEST_PROPERTY_ID_VALUE = (PropertyIdValueImpl) JACKSON_OBJECT_FACTORY
 			.getPropertyIdValue("P1", Datamodel.SITE_WIKIDATA);
-	public static final TimeValueImpl TEST_TIME_VALUE = (TimeValueImpl) JACKSON_OBJECT_FACTORY
-			.getTimeValue(2013, (byte) 10, (byte) 28, (byte) 0, (byte) 0,
-					(byte) 0, (byte) 11, 0, 0, 0, TimeValue.CM_GREGORIAN_PRO);
-	public static final GlobeCoordinatesValueImpl TEST_GLOBE_COORDINATES_VALUE = (GlobeCoordinatesValueImpl) JACKSON_OBJECT_FACTORY
-			.getGlobeCoordinatesValue(-90.0, 0.0, 10.0,
-					GlobeCoordinatesValue.GLOBE_EARTH);
-	public static final QuantityValueImpl TEST_QUANTITY_VALUE = (QuantityValueImpl) JACKSON_OBJECT_FACTORY
-			.getQuantityValue(new BigDecimal(1), new BigDecimal(-0.5),
-					new BigDecimal(1.5));
-	public static final QuantityValueImpl TEST_UNBOUNDED_QUANTITY_VALUE = (QuantityValueImpl) JACKSON_OBJECT_FACTORY
-			.getQuantityValue(new BigDecimal(1));
-	public static final MonolingualTextValueImpl TEST_MONOLINGUAL_TEXT_VALUE = (MonolingualTextValueImpl) JACKSON_OBJECT_FACTORY
-			.getMonolingualTextValue("foobar", "en");
 
 	public static final NoValueSnakImpl TEST_NOVALUE_SNAK = (NoValueSnakImpl) JACKSON_OBJECT_FACTORY
 			.getNoValueSnak(TEST_PROPERTY_ID_VALUE);
@@ -185,9 +127,6 @@ public class JsonTestData {
 			.getSomeValueSnak(TEST_PROPERTY_ID_VALUE);
 	public static final ValueSnakImpl TEST_STRING_VALUE_SNAK = (ValueSnakImpl) JACKSON_OBJECT_FACTORY
 			.getValueSnak(TEST_PROPERTY_ID_VALUE, TEST_STRING_VALUE);
-
-	// TODO continue testing using stringValueSnak, timeValueSnak,
-	// globeCoordinateValueSnak
 
 	public static Map<String, MonolingualTextValue> getTestMltvMap() {
 		Map<String, MonolingualTextValue> testMltvMap = new HashMap<>();
@@ -236,17 +175,6 @@ public class JsonTestData {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				0);
-	}
-
-	public static ItemDocumentImpl getTestItemDocument() {
-		return new ItemDocumentImpl(
-				getTestItemId().getId(),
-				getTestMltvMap(),
-				getTestMltvMap(),
-				getTestAliases(),
-				Collections.emptyMap(),
-				Collections.emptyMap(),
-				0, getTestItemId().getSiteIri());
 	}
 
 }

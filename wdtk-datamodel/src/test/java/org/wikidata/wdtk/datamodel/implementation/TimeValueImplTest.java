@@ -20,17 +20,12 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerTime;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 import java.io.IOException;
@@ -45,6 +40,7 @@ public class TimeValueImplTest {
 	private final TimeValue t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
 			(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
 			TimeValue.CM_GREGORIAN_PRO);
+	private final String JSON_TIME_VALUE = "{\"value\":{\"time\":\"+2007-05-12T10:45:00Z\",\"timezone\":60,\"before\":0,\"after\":1,\"precision\":14,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"},\"type\":\"time\"}";
 
 	@Test
 	public void storedValuesCorrect() {
@@ -99,19 +95,19 @@ public class TimeValueImplTest {
 
 		assertEquals(t1, t1);
 		assertEquals(t1, t2);
-		assertThat(t1, not(equalTo(tdYear)));
-		assertThat(t1, not(equalTo(tdMonth)));
-		assertThat(t1, not(equalTo(tdDay)));
-		assertThat(t1, not(equalTo(tdHour)));
-		assertThat(t1, not(equalTo(tdMinute)));
-		assertThat(t1, not(equalTo(tdSecond)));
-		assertThat(t1, not(equalTo(tdTimezone)));
-		assertThat(t1, not(equalTo(tdBefore)));
-		assertThat(t1, not(equalTo(tdAfter)));
-		assertThat(t1, not(equalTo(tdPrecision)));
-		assertThat(t1, not(equalTo(tdCalendar)));
-		assertThat(t1, not(equalTo(null)));
-		assertFalse(t1.equals(this));
+		assertNotEquals(t1, tdYear);
+		assertNotEquals(t1, tdMonth);
+		assertNotEquals(t1, tdDay);
+		assertNotEquals(t1, tdHour);
+		assertNotEquals(t1, tdMinute);
+		assertNotEquals(t1, tdSecond);
+		assertNotEquals(t1, tdTimezone);
+		assertNotEquals(t1, tdBefore);
+		assertNotEquals(t1, tdAfter);
+		assertNotEquals(t1, tdPrecision);
+		assertNotEquals(t1, tdCalendar);
+		assertNotEquals(t1, null);
+		assertNotEquals(t1,  this);
 	}
 
 	@Test
@@ -136,54 +132,12 @@ public class TimeValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper.writeValueAsString(JsonTestData.TEST_TIME_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_TIME_VALUE, result);
+		JsonComparator.compareJsonStrings(JSON_TIME_VALUE, mapper.writeValueAsString(t1));
 	}
 
 	@Test
-	public void testToJava() throws
-			IOException {
-		ValueImpl result = mapper.readValue(JsonTestData.JSON_TIME_VALUE,
-				ValueImpl.class);
-		TimeValueImpl castedResult = (TimeValueImpl) result;
-
-		assertNotNull(result);
-		assertTrue(result instanceof TimeValueImpl);
-		assertEquals(result.getType(), JsonTestData.TEST_TIME_VALUE.getType());
-
-		assertEquals(castedResult.getValue(),
-				JsonTestData.TEST_TIME_VALUE.getValue());
-
-		// test if every field contains the correct value
-		assertEquals(castedResult.getSecond(),
-				JsonTestData.TEST_TIME_VALUE.getSecond());
-		assertEquals(castedResult.getMinute(),
-				JsonTestData.TEST_TIME_VALUE.getMinute());
-		assertEquals(castedResult.getHour(),
-				JsonTestData.TEST_TIME_VALUE.getHour());
-		assertEquals(castedResult.getDay(),
-				JsonTestData.TEST_TIME_VALUE.getDay());
-		assertEquals(castedResult.getMonth(),
-				JsonTestData.TEST_TIME_VALUE.getMonth());
-		assertEquals(castedResult.getYear(),
-				JsonTestData.TEST_TIME_VALUE.getYear());
-
-		assertEquals(castedResult.getAfterTolerance(),
-				JsonTestData.TEST_TIME_VALUE.getAfterTolerance());
-		assertEquals(castedResult.getBeforeTolerance(),
-				JsonTestData.TEST_TIME_VALUE.getBeforeTolerance());
-		assertEquals(castedResult.getPrecision(),
-				JsonTestData.TEST_TIME_VALUE.getPrecision());
-		assertEquals(castedResult.getPreferredCalendarModel(),
-				JsonTestData.TEST_TIME_VALUE.getPreferredCalendarModel());
-		assertEquals(castedResult.getTimezoneOffset(),
-				JsonTestData.TEST_TIME_VALUE.getTimezoneOffset());
-
-		// test against the same time, created on a different way
-		JacksonInnerTime otherTime = new JacksonInnerTime(2013, (byte) 10,
-				(byte) 28, (byte) 0, (byte) 0, (byte) 0, 0, 0, 0, 11,
-				"http://www.wikidata.org/entity/Q1985727");
-		assertEquals(((TimeValueImpl) result).getValue(), otherTime);
+	public void testToJava() throws IOException {
+		assertEquals(t1, mapper.readValue(JSON_TIME_VALUE, ValueImpl.class));
 	}
 
 }

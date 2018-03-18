@@ -20,18 +20,12 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
 import java.io.IOException;
@@ -46,6 +40,9 @@ public class GlobeCoordinatesValueImplTest {
 	private final GlobeCoordinatesValue c2 = new GlobeCoordinatesValueImpl(12.3, 14.1,
 			GlobeCoordinatesValue.PREC_DEGREE,
 			GlobeCoordinatesValue.GLOBE_EARTH);
+	private final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
+			+ ValueImpl.JSON_VALUE_TYPE_GLOBE_COORDINATES
+			+ "\", \"value\":{\"latitude\":12.3,\"longitude\":14.1,\"precision\":1.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
 
 	@Test
 	public void dataIsCorrect() {
@@ -72,12 +69,12 @@ public class GlobeCoordinatesValueImplTest {
 
 		assertEquals(c1, c1);
 		assertEquals(c1, c2);
-		assertThat(c1, not(equalTo(gcDiffLatitude)));
-		assertThat(c1, not(equalTo(gcDiffLongitude)));
-		assertThat(c1, not(equalTo(gcDiffPrecision)));
-		assertThat(c1, not(equalTo(gcDiffGlobe)));
-		assertThat(c1, not(equalTo(null)));
-		assertFalse(c1.equals(this));
+		assertNotEquals(c1, gcDiffLatitude);
+		assertNotEquals(c1, gcDiffLongitude);
+		assertNotEquals(c1, gcDiffPrecision);
+		assertNotEquals(c1, gcDiffGlobe);
+		assertNotEquals(c1, null);
+		assertNotEquals(c1, this);
 	}
 
 	@Test
@@ -128,24 +125,12 @@ public class GlobeCoordinatesValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper.writeValueAsString(
-				JsonTestData.TEST_GLOBE_COORDINATES_VALUE);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, result);
+		JsonComparator.compareJsonStrings(JSON_GLOBE_COORDINATES_VALUE, mapper.writeValueAsString(c1));
 	}
 
 	@Test
-	public void testToJava() throws
-			IOException {
-		ValueImpl result = mapper.readValue(
-				JsonTestData.JSON_GLOBE_COORDINATES_VALUE, ValueImpl.class);
-
-		assertTrue(result instanceof GlobeCoordinatesValueImpl);
-		assertEquals(result.getType(),
-				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getType());
-		assertEquals(((GlobeCoordinatesValueImpl) result).getValue(),
-				JsonTestData.TEST_GLOBE_COORDINATES_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_GLOBE_COORDINATES_VALUE, result);
+	public void testToJava() throws IOException {
+		assertEquals(c1, mapper.readValue(JSON_GLOBE_COORDINATES_VALUE, ValueImpl.class));
 	}
 
 }

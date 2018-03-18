@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +28,6 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 import java.io.IOException;
@@ -43,6 +40,7 @@ public class PropertyIdValueImplTest {
 	private final PropertyIdValueImpl prop2 = new PropertyIdValueImpl("P42", "http://www.wikidata.org/entity/");
 	private final PropertyIdValueImpl prop3 = new PropertyIdValueImpl("P57",	 "http://www.wikidata.org/entity/");
 	private final PropertyIdValueImpl prop4 = new PropertyIdValueImpl("P42", "http://www.example.org/entity/");
+	private final String JSON_PROPERTY_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"property\",\"numeric-id\":42,\"id\":\"P42\"}}";
 
 	@Test
 	public void entityTypeIsProperty() {
@@ -64,10 +62,10 @@ public class PropertyIdValueImplTest {
 	public void equalityBasedOnContent() {
 		assertEquals(prop1, prop1);
 		assertEquals(prop1, prop2);
-		assertThat(prop1, not(equalTo(prop3)));
-		assertThat(prop1, not(equalTo(prop4)));
-		assertThat(prop1, not(equalTo(null)));
-		assertFalse(prop1.equals(this));
+		assertNotEquals(prop1, prop3);
+		assertNotEquals(prop1, prop4);
+		assertNotEquals(prop1, null);
+		assertNotEquals(prop1, this);
 	}
 
 	@Test
@@ -92,24 +90,12 @@ public class PropertyIdValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_PROPERTY_ID_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_PROPERTY_ID_VALUE,
-				result);
+		JsonComparator.compareJsonStrings(JSON_PROPERTY_ID_VALUE, mapper.writeValueAsString(prop1));
 	}
 
 	@Test
 	public void testToJava() throws
 			IOException {
-		ValueImpl result = mapper.readValue(
-				JsonTestData.JSON_PROPERTY_ID_VALUE, ValueImpl.class);
-
-		assertTrue(result instanceof PropertyIdValueImpl);
-
-		assertEquals(result.getType(),
-				JsonTestData.TEST_PROPERTY_ID_VALUE.getType());
-		assertEquals(((PropertyIdValueImpl) result).getValue(),
-				JsonTestData.TEST_PROPERTY_ID_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_PROPERTY_ID_VALUE, result);
+		assertEquals(prop1, mapper.readValue(JSON_PROPERTY_ID_VALUE, ValueImpl.class));
 	}
 }

@@ -20,14 +20,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 public class DatatypeIdImplTest {
@@ -45,9 +40,9 @@ public class DatatypeIdImplTest {
 	public void equalityBasedOnContent() {
 		assertEquals(d1, d1);
 		assertEquals(d1, d2);
-		assertThat(d1, not(equalTo(d3)));
-		assertThat(d1, not(equalTo(null)));
-		assertFalse(d1.equals(Datamodel.makeStringValue("foo")));
+		assertNotEquals(d1, d3);
+		assertNotEquals(d1, null);
+		assertNotEquals(d1, new StringValueImpl("foo"));
 	}
 
 	@Test

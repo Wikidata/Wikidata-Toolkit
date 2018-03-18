@@ -25,13 +25,10 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 public class ItemIdValueImplTest {
@@ -42,6 +39,9 @@ public class ItemIdValueImplTest {
 	private final ItemIdValueImpl item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
 	private final ItemIdValueImpl item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
 	private final ItemIdValueImpl item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
+	private final String JSON_ITEM_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":42,\"id\":\"Q42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
 
 	@Test
 	public void entityTypeIsItem() {
@@ -68,10 +68,10 @@ public class ItemIdValueImplTest {
 	public void equalityBasedOnContent() {
 		assertEquals(item1, item1);
 		assertEquals(item1, item2);
-		assertThat(item1, not(equalTo(item3)));
-		assertThat(item1, not(equalTo(item4)));
-		assertThat(item1, not(equalTo(null)));
-		assertFalse(item1.equals(this));
+		assertNotEquals(item1, item3);
+		assertNotEquals(item1, item4);
+		assertNotEquals(item1, null);
+		assertNotEquals(item1, this);
 	}
 
 	@Test
@@ -106,38 +106,22 @@ public class ItemIdValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_ITEM_ID_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_ITEM_ID_VALUE,
-				result);
+		JsonComparator.compareJsonStrings(JSON_ITEM_ID_VALUE, mapper.writeValueAsString(item1));
 	}
 
 	@Test
 	public void testToJava() throws IOException {
-		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE,
-				ValueImpl.class));
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE, ValueImpl.class));
 	}
 
 	@Test
 	public void testToJavaWithoutId() throws IOException {
-		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_ID,
-				ValueImpl.class));
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_ID, ValueImpl.class));
 	}
 
 	@Test
 	public void testToJavaWithoutNumericalId() throws IOException {
-		assertItemIdValue(mapper.readValue(JsonTestData.JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID,
-				ValueImpl.class));
-	}
-
-	private void assertItemIdValue(ValueImpl result) {
-		assertTrue(result instanceof ItemIdValueImpl);
-
-		assertEquals(result.getType(),
-				JsonTestData.TEST_ITEM_ID_VALUE.getType());
-		assertEquals(((ItemIdValueImpl) result).getValue(),
-				JsonTestData.TEST_ITEM_ID_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_ITEM_ID_VALUE, result);
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
 	}
 
 }

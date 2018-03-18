@@ -20,15 +20,12 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 
 import java.io.IOException;
@@ -37,8 +34,9 @@ public class StringValueImplTest {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
-	private static StringValue s1 = new StringValueImpl("some string");
-	private static StringValue s2 = new StringValueImpl("some string");
+	private final StringValue s1 = new StringValueImpl("some string");
+	private final StringValue s2 = new StringValueImpl("some string");
+	private final String JSON_STRING_VALUE = "{\"type\":\"string\",\"value\":\"some string\"}";
 
 	@Test
 	public void stringIsCorrect() {
@@ -51,9 +49,9 @@ public class StringValueImplTest {
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertNotEquals(s1, s3);
+		assertNotEquals(s1, null);
+		assertNotEquals(s1, this);
 	}
 
 	@Test
@@ -68,22 +66,11 @@ public class StringValueImplTest {
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_STRING_VALUE);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_STRING_VALUE,
-				result);
+		JsonComparator.compareJsonStrings(JSON_STRING_VALUE, mapper.writeValueAsString(s1));
 	}
 
 	@Test
-	public void testToJava() throws
-			IOException {
-		ValueImpl result = mapper.readValue(JsonTestData.JSON_STRING_VALUE,
-				ValueImpl.class);
-
-		assertTrue(result instanceof StringValueImpl);
-		assertEquals(result.getType(), JsonTestData.TEST_STRING_VALUE.getType());
-		assertEquals(((StringValueImpl) result).getValue(),
-				JsonTestData.TEST_STRING_VALUE.getValue());
-		assertEquals(JsonTestData.TEST_STRING_VALUE, result);
+	public void testToJava() throws IOException {
+		assertEquals(s1, mapper.readValue(JSON_STRING_VALUE, ValueImpl.class));
 	}
 }
