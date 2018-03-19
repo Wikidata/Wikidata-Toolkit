@@ -20,12 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,11 +91,11 @@ public class ClaimImplTest {
 
 		assertEquals(c1, c1);
 		assertEquals(c1, c2);
-		assertThat(c1, not(equalTo(cDiffSubject)));
-		assertThat(c1, not(equalTo(cDiffMainSnak)));
-		assertThat(c1, not(equalTo(cDiffQualifiers)));
-		assertThat(c1, not(equalTo(null)));
-		assertFalse(c1.equals(this));
+		assertNotEquals(c1, cDiffSubject);
+		assertNotEquals(c1, cDiffMainSnak);
+		assertNotEquals(c1, cDiffQualifiers);
+		assertNotEquals(c1, null);
+		assertNotEquals(c1, this);
 	}
 
 	@Test

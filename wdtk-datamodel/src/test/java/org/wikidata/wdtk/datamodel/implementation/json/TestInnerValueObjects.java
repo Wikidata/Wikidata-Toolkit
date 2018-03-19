@@ -23,11 +23,9 @@ package org.wikidata.wdtk.datamodel.implementation.json;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerMonolingualText;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * This class tests the inner objects lying behind the …ValueImpl-classes.
@@ -78,9 +76,8 @@ public class TestInnerValueObjects {
 		// test equals
 		assertEquals(this.testEntityId, new JacksonInnerEntityId("Q1"));
 		assertEquals(this.testEntityId, this.testEntityId);
-		assertFalse(this.testEntityId.equals(new Object()));
-		assertFalse(this.testEntityId
-				.equals(new JacksonInnerEntityId("Q2")));
+		assertNotEquals(this.testEntityId, new Object());
+		assertNotEquals(this.testEntityId, new JacksonInnerEntityId("Q2"));
 
 	}
 
@@ -93,11 +90,9 @@ public class TestInnerValueObjects {
 		assertEquals(this.testMonolingualText, new JacksonInnerMonolingualText(
 				"en", "foobar"));
 		assertEquals(this.testMonolingualText, this.testMonolingualText);
-		assertFalse(this.testMonolingualText.equals(new Object()));
-		assertFalse(this.testMonolingualText
-				.equals(new JacksonInnerMonolingualText("en", "barfoo")));
-		assertFalse(this.testMonolingualText
-				.equals(new JacksonInnerMonolingualText("de", "foobar")));
+		assertNotEquals(this.testMonolingualText, new Object());
+		assertNotEquals(this.testMonolingualText, new JacksonInnerMonolingualText("en", "barfoo"));
+		assertNotEquals(this.testMonolingualText, new JacksonInnerMonolingualText("de", "foobar"));
 
 	}
 }

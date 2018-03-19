@@ -20,12 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -163,15 +158,15 @@ public class PropertyDocumentImplTest {
 
 		assertEquals(pd1, pd1);
 		assertEquals(pd1, pd2);
-		assertThat(pd1, not(equalTo(pdDiffSubject)));
-		assertThat(pd1, not(equalTo(pdDiffLabels)));
-		assertThat(pd1, not(equalTo(pdDiffDescriptions)));
-		assertThat(pd1, not(equalTo(pdDiffAliases)));
-		assertThat(pd1, not(equalTo(pdDiffStatements)));
-		assertThat(pd1, not(equalTo(pdDiffDatatype)));
-		assertFalse(pd1.equals(id));
-		assertThat(pd1, not(equalTo(null)));
-		assertFalse(pd1.equals(this));
+		assertNotEquals(pd1, pdDiffSubject);
+		assertNotEquals(pd1, pdDiffLabels);
+		assertNotEquals(pd1, pdDiffDescriptions);
+		assertNotEquals(pd1, pdDiffAliases);
+		assertNotEquals(pd1, pdDiffStatements);
+		assertNotEquals(pd1, pdDiffDatatype);
+		assertNotEquals(pd1, id);
+		assertNotEquals(pd1, null);
+		assertNotEquals(pd1, this);
 	}
 
 	@Test

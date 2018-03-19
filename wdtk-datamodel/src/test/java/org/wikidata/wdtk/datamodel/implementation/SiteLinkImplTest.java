@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -59,11 +57,11 @@ public class SiteLinkImplTest {
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(sDiffTitle)));
-		assertThat(s1, not(equalTo(sDiffSiteKey)));
-		assertThat(s1, not(equalTo(sDiffBadges)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertNotEquals(s1, sDiffTitle);
+		assertNotEquals(s1, sDiffSiteKey);
+		assertNotEquals(s1, sDiffBadges);
+		assertNotEquals(s1, null);
+		assertNotEquals(s1, this);
 	}
 
 	@Test
@@ -116,7 +114,7 @@ public class SiteLinkImplTest {
 
 		assertEquals(JsonTestData.TEST_SITE_LINK, JsonTestData.TEST_SITE_LINK);
 		assertEquals(JsonTestData.TEST_SITE_LINK, match);
-		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongLanguage));
-		assertFalse(JsonTestData.TEST_SITE_LINK.equals(wrongValue));
+		assertNotEquals(JsonTestData.TEST_SITE_LINK, wrongLanguage);
+		assertNotEquals(JsonTestData.TEST_SITE_LINK, wrongValue);
 	}
-}
+};

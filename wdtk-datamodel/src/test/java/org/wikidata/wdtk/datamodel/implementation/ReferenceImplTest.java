@@ -20,12 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,9 +57,9 @@ public class ReferenceImplTest {
 
 		assertEquals(r1, r1);
 		assertEquals(r1, r2);
-		assertThat(r1, not(equalTo(r3)));
-		assertThat(r1, not(equalTo(null)));
-		assertFalse(r1.equals(this));
+		assertNotEquals(r1, r3);
+		assertNotEquals(r1, null);
+		assertNotEquals(r1, this);
 	}
 
 	@Test

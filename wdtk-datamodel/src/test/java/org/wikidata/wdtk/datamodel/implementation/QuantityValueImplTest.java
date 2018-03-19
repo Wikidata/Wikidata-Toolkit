@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -70,23 +68,23 @@ public class QuantityValueImplTest {
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
-		assertThat(q1, not(equalTo(q3)));
-		assertThat(q1, not(equalTo(q4)));
-		assertThat(q1, not(equalTo(q5)));
-		assertThat(q1, not(equalTo(q6)));
-		assertThat(q1, not(equalTo(q7)));
-		assertThat(q1, not(equalTo(null)));
-		assertFalse(q1.equals(this));
+		assertNotEquals(q1, q3);
+		assertNotEquals(q1, q4);
+		assertNotEquals(q1, q5);
+		assertNotEquals(q1, q6);
+		assertNotEquals(q1, q7);
+		assertNotEquals(q1, null);
+		assertNotEquals(q1, this);
 	}
 	
 	@Test
 	public void equalityBasedOnRepresentation() {
 		BigDecimal amount1 = new BigDecimal("4.00");
 		BigDecimal amount2 = new BigDecimal("4");
-		assertFalse(amount1.equals(amount2));
+		assertNotEquals(amount1, amount2);
 		QuantityValue quantity1 = new QuantityValueImpl(amount1, null, null, "1");
 		QuantityValue quantity2 = new QuantityValueImpl(amount2, null, null, "1");
-		assertFalse(quantity1.equals(quantity2));
+		assertNotEquals(quantity1, quantity2);
 	}
 	
 	@Test

@@ -20,11 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -112,12 +108,12 @@ public class StatementImplTest {
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(sDiffClaim)));
-		assertThat(s1, not(equalTo(sDiffReferences)));
-		assertThat(s1, not(equalTo(sDiffRank)));
-		assertThat(s1, not(equalTo(sDiffId)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertNotEquals(s1, sDiffClaim);
+		assertNotEquals(s1, sDiffReferences);
+		assertNotEquals(s1, sDiffRank);
+		assertNotEquals(s1, sDiffId);
+		assertNotEquals(s1, null);
+		assertNotEquals(s1, this);
 	}
 
 	@Test
@@ -173,6 +169,6 @@ public class StatementImplTest {
 
 		assertEquals(JsonTestData.getTestNoValueStatement(), JsonTestData.getTestNoValueStatement());
 		assertEquals(JsonTestData.getTestNoValueStatement(), correctStatement);
-		assertFalse(JsonTestData.getTestNoValueStatement().equals(wrongId));
+		assertNotEquals(JsonTestData.getTestNoValueStatement(), wrongId);
 	}
 }

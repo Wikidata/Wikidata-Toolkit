@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -132,13 +130,13 @@ public class ItemDocumentImplTest {
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
-		assertThat(ir1, not(equalTo(irDiffStatementGroups)));
-		assertThat(ir1, not(equalTo(irDiffSiteLinks)));
-		assertThat(ir1, not(equalTo(irDiffRevisions)));
-		assertThat(irDiffStatementGroups, not(equalTo(irDiffItemIdValue)));
-		assertFalse(ir1.equals(pr));
-		assertThat(ir1, not(equalTo(null)));
-		assertFalse(ir1.equals(this));
+		assertNotEquals(ir1, irDiffStatementGroups);
+		assertNotEquals(ir1, irDiffSiteLinks);
+		assertNotEquals(ir1, irDiffRevisions);
+		assertNotEquals(irDiffStatementGroups, irDiffItemIdValue);
+		assertNotEquals(ir1, pr);
+		assertNotEquals(ir1, null);
+		assertNotEquals(ir1, this);
 	}
 
 	@Test

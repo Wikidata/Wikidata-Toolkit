@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,34 +68,34 @@ public class SnakImplTest {
 
 	@Test
 	public void snakEqualityBasedOnType() {
-		assertFalse(svs1.equals(nvs1));
-		assertFalse(nvs1.equals(svs1));
-		assertFalse(vs1.equals(svs1));
+		assertNotEquals(svs1, nvs1);
+		assertNotEquals(nvs1, svs1);
+		assertNotEquals(vs1, svs1);
 	}
 
 	@Test
 	public void valueSnakEqualityBasedOnContent() {
 		assertEquals(vs1, vs1);
 		assertEquals(vs1, vs2);
-		assertThat(vs1, not(equalTo(vs3)));
-		assertThat(vs1, not(equalTo(vs4)));
-		assertThat(vs1, not(equalTo(null)));
+		assertNotEquals(vs1, vs3);
+		assertNotEquals(vs1, vs4);
+		assertNotEquals(vs1, null);
 	}
 
 	@Test
 	public void someValueSnakEqualityBasedOnContent() {
 		assertEquals(svs1, svs1);
 		assertEquals(svs1, svs2);
-		assertThat(svs1, not(equalTo(svs3)));
-		assertThat(svs1, not(equalTo(null)));
+		assertNotEquals(svs1, svs3);
+		assertNotEquals(svs1, null);
 	}
 
 	@Test
 	public void noValueSnakEqualityBasedOnContent() {
 		assertEquals(nvs1, nvs1);
 		assertEquals(nvs1, nvs2);
-		assertThat(nvs1, not(equalTo(nvs3)));
-		assertThat(nvs1, not(equalTo(null)));
+		assertNotEquals(nvs1, nvs3);
+		assertNotEquals(nvs1, null);
 	}
 
 	@Test(expected = NullPointerException.class)
