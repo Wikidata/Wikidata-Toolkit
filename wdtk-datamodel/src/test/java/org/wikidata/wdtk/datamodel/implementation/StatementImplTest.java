@@ -24,39 +24,45 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
 import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonTestData;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class StatementImplTest {
 
-	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
+	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
-	private final EntityIdValue subjet = new ItemIdValueImpl("Q1", "http://wikidata.org/entity/");
-	private final EntityIdValue value = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
-	private final PropertyIdValue property = new PropertyIdValueImpl("P42", "http://wikidata.org/entity/");
+	private final EntityIdValue subjet = new ItemIdValueImpl("Q1", "http://example.com/entity/");
+	private final EntityIdValue value = new ItemIdValueImpl("Q42", "http://example.com/entity/");
+	private final PropertyIdValue property = new PropertyIdValueImpl("P42", "http://example.com/entity/");
 	private final ValueSnak mainSnak = new ValueSnakImpl(property, value);
-	private final Claim claim = new ClaimImpl(subjet, mainSnak, Collections.emptyList());
+	private final List<SnakGroup> qualifiers = Collections.singletonList(new SnakGroupImpl(Collections.singletonList(mainSnak)));
+	private final List<Reference> references = Collections.singletonList(new ReferenceImpl(qualifiers));
+	private final Claim claim = new ClaimImpl(subjet, mainSnak, qualifiers);
 
-	private final Statement s1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+	private final Statement s1 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			qualifiers, references, subjet);
+	private final Statement s2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			qualifiers, references, subjet);
+	private final String JSON_STATEMENT = "{\"rank\":\"preferred\",\"references\":[{\"snaks\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]},\"snaks-order\":[\"P42\"]}],\"value\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"qualifiers-order\":[\"P42\"],\"type\":\"statement\",\"qualifiers\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]}}";
+
+	private final Statement smallStatement = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subjet);
-	private final Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-			Collections.emptyList(), Collections.emptyList(), subjet);
+	private final String JSON_SMALL_STATEMENT = "{\"rank\":\"preferred\",\"value\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"type\":\"statement\"}";
 
 	@Test
 	public void gettersWorking() {
 		assertEquals(s1.getClaim(), claim);
 		assertEquals(s1.getMainSnak(), mainSnak);
-		assertEquals(s1.getQualifiers(), Collections.emptyList());
-		assertEquals(s1.getReferences(), Collections. emptyList());
-		assertEquals(s1.getRank(), StatementRank.NORMAL);
+		assertEquals(s1.getQualifiers(), qualifiers);
+		assertEquals(s1.getReferences(), references);
+		assertEquals(s1.getRank(), StatementRank.PREFERRED);
 		assertEquals(s1.getStatementId(), "MyId");
 		assertEquals(s1.getValue(), value);
 		assertEquals(s1.getSubject(), subjet);
@@ -117,58 +123,22 @@ public class StatementImplTest {
 	}
 
 	@Test
-	public void testEmptyStatementToJson() throws JsonProcessingException {
-		StatementImpl statement = JsonTestData.getTestNoValueStatement();
-
-		String result = mapper.writeValueAsString(statement);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
-				result);
+	public void testStatementToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_STATEMENT, mapper.writeValueAsString(s1));
 	}
 
 	@Test
-	public void testFullStatementToJson() throws IOException {
-		Statement statement = DataObjectFactoryImplTest.getTestStatement(2, 3, 4, EntityIdValue.ET_ITEM);
-		ObjectMapper mapper = new DatamodelMapper(statement.getSubject().getSiteIri());
-		String json = mapper.writeValueAsString(statement);
-		JacksonPreStatement deserialized = mapper.readValue(json, JacksonPreStatement.class);
-		assertEquals(statement, deserialized.withSubject(statement.getSubject()));
+	public void testStatementToJava() throws IOException {
+		assertEquals(s1, mapper.readValue(JSON_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
 	}
 
 	@Test
-	public void testEmptyStatementNoIdToJson() throws JsonProcessingException {
-		StatementImpl statement = JsonTestData.getTestNoValueNoIdStatement();
-
-		String result = mapper.writeValueAsString(statement);
-		JsonComparator.compareJsonStrings(
-				JsonTestData.JSON_NOVALUE_NOID_STATEMENT, result);
+	public void testSmallStatementToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_SMALL_STATEMENT, mapper.writeValueAsString(smallStatement));
 	}
 
 	@Test
-	public void testEmptyStatementToJava() throws
-			IOException {
-		StatementImpl result = mapper.readValue(
-				JsonTestData.JSON_NOVALUE_STATEMENT, JacksonPreStatement.class).withSubject(
-				JsonTestData.getEmptyTestItemDocument().getEntityId());
-
-		assertNotNull(result);
-		assertNull(result.getValue());
-		assertNull(result.getClaim().getValue());
-		assertEquals(JsonTestData.getTestNoValueStatement(), result);
-	}
-
-	@Test
-	public void testEquality() {
-		StatementImpl correctStatement = new StatementImpl(
-				JsonTestData.TEST_STATEMENT_ID, JsonTestData.TEST_NOVALUE_SNAK,
-				JsonTestData.getEmptyTestItemDocument()
-						.getEntityId());
-		StatementImpl wrongId = new StatementImpl("another id",
-				JsonTestData.TEST_NOVALUE_SNAK,
-				JsonTestData.getEmptyTestItemDocument()
-						.getEntityId());
-
-		assertEquals(JsonTestData.getTestNoValueStatement(), JsonTestData.getTestNoValueStatement());
-		assertEquals(JsonTestData.getTestNoValueStatement(), correctStatement);
-		assertNotEquals(JsonTestData.getTestNoValueStatement(), wrongId);
+	public void testSmallStatementToJava() throws IOException {
+		assertEquals(smallStatement, mapper.readValue(JSON_SMALL_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
 	}
 }

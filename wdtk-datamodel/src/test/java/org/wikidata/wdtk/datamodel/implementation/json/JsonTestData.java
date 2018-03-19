@@ -23,18 +23,10 @@ package org.wikidata.wdtk.datamodel.implementation.json;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.TermImpl;
-import org.wikidata.wdtk.datamodel.implementation.NoValueSnakImpl;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SiteLinkImpl;
-import org.wikidata.wdtk.datamodel.implementation.SomeValueSnakImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.ValueSnakImpl;
-import org.wikidata.wdtk.datamodel.implementation.ValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
-import org.wikidata.wdtk.datamodel.implementation.StringValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -55,22 +47,12 @@ public class JsonTestData {
 
 	public static final String JSON_RANK_NORMAL = "normal";
 
-	// stand-alone descriptions of Value-parts
-	public static final String JSON_STRING_VALUE = "{\"type\":\""
-			+ ValueImpl.JSON_VALUE_TYPE_STRING + "\",\"value\":\"foobar\"}";
-
 	// stand-alone descriptions of ItemDocument-parts
 	public static final String JSON_ITEM_TYPE = "\"type\":\"item\"";
 	public static final String JSON_TERM_MLTV = "{\"language\": \"en\", \"value\": \"foobar\"}";
 	public static final String JSON_SITE_LINK = "{\"site\":\"enwiki\", \"title\":\"foobar\", \"badges\":[]}";
 	public static final String JSON_NOVALUE_SNAK = "{\"snaktype\":\"novalue\",\"property\":\""
 			+ TEST_PROPERTY_ID + "\"}";
-	public static final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\""
-			+ TEST_PROPERTY_ID + "\"}";
-	public static final String JSON_VALUE_SNAK_STRING = "{\"snaktype\":\"value\",\"property\":\""
-			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + "}";
-	public static final String JSON_VALUE_SNAK_STRING_HASH = "{\"snaktype\":\"value\",\"property\":\""
-			+ TEST_PROPERTY_ID + "\",\"datavalue\":" + JSON_STRING_VALUE + ",\"hash\":\"foobar\"}";
 
 	// wrapping into item document structure for dedicated tests
 	public static final String JSON_WRAPPED_LABEL = "{\"id\":\""
@@ -106,27 +88,12 @@ public class JsonTestData {
 			+ JSON_RANK_NORMAL
 			+ "\",\"mainsnak\":" + JSON_NOVALUE_SNAK + "}";
 
-	public static final String JSON_NOVALUE_NOID_STATEMENT = "{\"type\":\"statement\",\"rank\":\""
-			+ JSON_RANK_NORMAL + "\",\"mainsnak\":" + JSON_NOVALUE_SNAK + "}";
-
 	// objects to test against
 	// should (of course) correspond to the JSON strings counterpart
 	public static final TermImpl TEST_MLTV_TERM_VALUE = new TermImpl(
 			"en", "foobar");
 	public static final SiteLinkImpl TEST_SITE_LINK = (SiteLinkImpl) JACKSON_OBJECT_FACTORY
 			.getSiteLink("foobar", "enwiki", Collections. emptyList());
-
-	public static final StringValueImpl TEST_STRING_VALUE = (StringValueImpl) JACKSON_OBJECT_FACTORY
-			.getStringValue("foobar");
-	public static final PropertyIdValueImpl TEST_PROPERTY_ID_VALUE = (PropertyIdValueImpl) JACKSON_OBJECT_FACTORY
-			.getPropertyIdValue("P1", Datamodel.SITE_WIKIDATA);
-
-	public static final NoValueSnakImpl TEST_NOVALUE_SNAK = (NoValueSnakImpl) JACKSON_OBJECT_FACTORY
-			.getNoValueSnak(TEST_PROPERTY_ID_VALUE);
-	public static final SomeValueSnakImpl TEST_SOMEVALUE_SNAK = (SomeValueSnakImpl) JACKSON_OBJECT_FACTORY
-			.getSomeValueSnak(TEST_PROPERTY_ID_VALUE);
-	public static final ValueSnakImpl TEST_STRING_VALUE_SNAK = (ValueSnakImpl) JACKSON_OBJECT_FACTORY
-			.getValueSnak(TEST_PROPERTY_ID_VALUE, TEST_STRING_VALUE);
 
 	public static Map<String, MonolingualTextValue> getTestMltvMap() {
 		Map<String, MonolingualTextValue> testMltvMap = new HashMap<>();
@@ -156,14 +123,6 @@ public class JsonTestData {
 		Map<String, SiteLink> testSiteLinkMap = new HashMap<>();
 		testSiteLinkMap.put("enwiki", TEST_SITE_LINK);
 		return testSiteLinkMap;
-	}
-
-	public static StatementImpl getTestNoValueStatement() {
-		return new StatementImpl(TEST_STATEMENT_ID, TEST_NOVALUE_SNAK, getEmptyTestItemDocument().getEntityId());
-	}
-
-	public static StatementImpl getTestNoValueNoIdStatement() {
-		return new StatementImpl("", TEST_NOVALUE_SNAK,getEmptyTestItemDocument().getEntityId());
 	}
 
 	public static ItemDocumentImpl getEmptyTestItemDocument() {

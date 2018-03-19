@@ -38,7 +38,7 @@ import java.io.IOException;
 
 public class SnakImplTest {
 
-	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
+	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
 	private final PropertyIdValue p1 = new PropertyIdValueImpl("P42", "http://example.com/entity/");
 	private final PropertyIdValue p2 = new PropertyIdValueImpl("P43", "http://example.com/entity/");
@@ -52,6 +52,9 @@ public class SnakImplTest {
 	private final NoValueSnak nvs1 = new NoValueSnakImpl(p1);
 	private final NoValueSnak nvs2 = new NoValueSnakImpl(p1);
 	private final NoValueSnak nvs3 = new NoValueSnakImpl(p2);
+	private final String JSON_NOVALUE_SNAK = "{\"snaktype\":\"novalue\",\"property\":\"P42\"}";
+	private final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\"P42\"}";
+	private final String JSON_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"wikibase-property\",\"datavalue\":{\"value\":{\"id\":\"P42\",\"numeric-id\":42,\"entity-type\":\"property\"},\"type\":\"wikibase-entityid\"}}";
 
 	@Test
 	public void snakHashBasedOnContent() {
@@ -110,73 +113,33 @@ public class SnakImplTest {
 	}
 
 	@Test
-	public void testNoValueSnakToJava() throws
-			IOException {
-		SnakImpl result = mapper.readValue(JsonTestData.JSON_NOVALUE_SNAK,
-				SnakImpl.class);
-
-		assertNotNull(result);
-		assertNull(result.getValue());
-		assertTrue(result instanceof NoValueSnakImpl);
-		assertEquals(result, JsonTestData.TEST_NOVALUE_SNAK);
+	public void testNoValueSnakToJava() throws IOException {
+		assertEquals(nvs1, mapper.readValue(JSON_NOVALUE_SNAK, SnakImpl.class));
 	}
 
 	@Test
 	public void testNoValueSnakToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_NOVALUE_SNAK);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_SNAK,
-				result);
+		JsonComparator.compareJsonStrings(JSON_NOVALUE_SNAK, mapper.writeValueAsString(nvs1));
 	}
 
 	@Test
-	public void testSomeValueSnakToJava() throws
-			IOException {
-		SnakImpl result = mapper.readValue(JsonTestData.JSON_SOMEVALUE_SNAK,
-				SnakImpl.class);
-
-		assertNotNull(result);
-		assertNull(result.getValue());
-		assertTrue(result instanceof SomeValueSnakImpl);
-		assertEquals(result, JsonTestData.TEST_SOMEVALUE_SNAK);
+	public void testSomeValueSnakToJava() throws IOException {
+		assertEquals(svs1, mapper.readValue(JSON_SOMEVALUE_SNAK, SnakImpl.class));
 	}
 
 	@Test
 	public void testSomeValueSnakToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_SOMEVALUE_SNAK);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_SOMEVALUE_SNAK,
-				result);
+		JsonComparator.compareJsonStrings(JSON_SOMEVALUE_SNAK, mapper.writeValueAsString(svs1));
+
 	}
 
 	@Test
-	public void testCommonsValueSnakToJava() throws
-			IOException {
-		SnakImpl result = mapper.readValue(
-				JsonTestData.JSON_VALUE_SNAK_STRING, SnakImpl.class);
-
-		assertNotNull(result);
-		assertTrue(result instanceof ValueSnakImpl);
-		assertEquals(result, JsonTestData.TEST_STRING_VALUE_SNAK);
+	public void testValueSnakToJava() throws IOException {
+		assertEquals(vs1, mapper.readValue(JSON_VALUE_SNAK, SnakImpl.class));
 	}
 
 	@Test
-	public void testCommonsValueSnakToJson() throws JsonProcessingException {
-		String result = mapper
-				.writeValueAsString(JsonTestData.TEST_STRING_VALUE_SNAK);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_VALUE_SNAK_STRING,
-				result);
+	public void testValueSnakToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_VALUE_SNAK, mapper.writeValueAsString(vs1));
 	}
-
-	@Test
-	public void testCommonsValueSnakToJavaWithHash() throws
-			IOException {
-		SnakImpl result = mapper.readValue(
-				JsonTestData.JSON_VALUE_SNAK_STRING_HASH, SnakImpl.class);
-
-		assertNotNull(result);
-		assertTrue(result instanceof ValueSnakImpl);
-		assertEquals(result, JsonTestData.TEST_STRING_VALUE_SNAK);
-	}
-	
 }
