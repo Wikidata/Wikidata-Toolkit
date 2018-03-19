@@ -169,6 +169,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
+	@JsonIgnore
 	public Iterator<Snak> getAllQualifiers() {
 		return new NestedIterator<>(getQualifiers());
 	}
