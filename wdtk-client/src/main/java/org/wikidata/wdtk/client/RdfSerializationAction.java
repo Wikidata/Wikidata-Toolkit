@@ -58,8 +58,7 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	 * "properties", "entities") and what information should be written for each
 	 * ("statements", "sitelinks", "datatypes", "labels", "desciptions",
 	 * "aliases", "terms" meaning "labels,descriptions,aliases", "alldata"
-	 * meaning "statements,terms,sitelinks,datatypes", "taxonomy", "instanceof",
-	 * "simplestatements").
+	 * meaning "statements,terms,sitelinks,datatypes","simplestatements").
 	 */
 	public static final String OPTION_RDF_TASKS = "rdftasks";
 
@@ -76,13 +75,10 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		KNOWN_TASKS.put("descriptions", RdfSerializer.TASK_DESCRIPTIONS);
 		KNOWN_TASKS.put("aliases", RdfSerializer.TASK_ALIASES);
 		KNOWN_TASKS.put("terms", RdfSerializer.TASK_TERMS);
-		KNOWN_TASKS.put("taxonomy", RdfSerializer.TASK_TAXONOMY);
-		KNOWN_TASKS.put("instanceof", RdfSerializer.TASK_INSTANCE_OF);
 		KNOWN_TASKS
 				.put("interpropertylinks", RdfSerializer.TASK_PROPERTY_LINKS);
 		KNOWN_TASKS.put("simplestatements",
 				RdfSerializer.TASK_SIMPLE_STATEMENTS);
-		KNOWN_TASKS.put("subproperties", RdfSerializer.TASK_SUBPROPERTIES);
 	}
 
 	public static final Map<String, String> TASK_HELP = new HashMap<>();
@@ -104,20 +100,11 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 		TASK_HELP.put("aliases", "export labels for the considered entities");
 		TASK_HELP.put("terms", "shortcut for labels,descriptions,aliases");
 		TASK_HELP
-				.put("taxonomy",
-						"export unqualified subclass information for the considered entities");
-		TASK_HELP
-				.put("instanceof",
-						"export unqualified instanceof information for the considered entities");
-		TASK_HELP
 				.put("simplestatements",
 						"export unqualified statements without references as single triples");
 		TASK_HELP
 				.put("interpropertylinks",
 						"export triples which connect wikidata properties and there respective rdf properties in different contexts");
-		TASK_HELP
-				.put("subproperties",
-						"export unqualified subpropertyof information in the considered entities");
 	}
 
 	/**
