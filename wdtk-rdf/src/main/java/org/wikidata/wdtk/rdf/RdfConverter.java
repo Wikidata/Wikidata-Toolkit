@@ -168,23 +168,11 @@ public class RdfConverter {
 			writeSimpleStatements(subject, document);
 		}
 
-		if (hasTask(RdfSerializer.TASK_INSTANCE_OF)) {
-			writeInstanceOfStatements(subject, document);
-		}
-
-		if (hasTask(RdfSerializer.TASK_TAXONOMY)) {
-			writeSubclassOfStatements(subject, document);
-		}
-
 		if (hasTask(RdfSerializer.TASK_STATEMENTS)) {
 			writeStatements(subject, document);
 		}
 
 		writeSiteLinks(subject, document.getSiteLinks());
-
-		if (hasTask(RdfSerializer.TASK_TAXONOMY)) {
-			this.owlDeclarationBuffer.writeClassDeclarations(this.rdfWriter);
-		}
 
 		this.snakRdfConverter.writeAuxiliaryTriples();
 		this.owlDeclarationBuffer.writePropertyDeclarations(this.rdfWriter,
@@ -224,10 +212,6 @@ public class RdfConverter {
 		if (hasTask(RdfSerializer.TASK_PROPERTY_LINKS)) {
 			writeInterPropertyLinks(document);
 
-		}
-
-		if (hasTask(RdfSerializer.TASK_SUBPROPERTIES)) {
-			writeSubpropertyOfStatements(subject, document);
 		}
 
 		this.snakRdfConverter.writeAuxiliaryTriples();
@@ -330,142 +314,6 @@ public class RdfConverter {
 							PropertyContext.DIRECT);
 					statement.getMainSnak()
 							.accept(this.snakRdfConverter);
-				}
-			}
-		}
-	}
-
-	void writeInstanceOfStatements(Resource subject, ItemDocument itemDocument) {
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			if (!"P31".equals(statementGroup.getProperty().getId())) {
-				continue;
-			}
-			for (Statement statement : statementGroup) {
-				if (statement.getMainSnak() instanceof ValueSnak
-						&& statement.getQualifiers().size() == 0) {
-
-					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
-					Value value = this.valueRdfConverter
-							.getRdfValue(mainSnak.getValue(),
-									mainSnak.getPropertyId(), true);
-					if (value == null) {
-						logger.error("Could not serialize instance of snak: missing value (Snak: "
-								+ mainSnak.toString() + ")");
-						continue;
-					}
-
-					try {
-						this.rdfWriter.writeTripleValueObject(subject,
-								RdfWriter.RDF_TYPE, value);
-					} catch (RDFHandlerException e) {
-						throw new RuntimeException(e.toString(), e);
-					}
-				}
-			}
-		}
-	}
-
-	void writeSubclassOfStatements(Resource subject, ItemDocument itemDocument) {
-		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
-			boolean isSubClassOf = "P279".equals(statementGroup.getProperty()
-					.getId());
-			boolean isInstanceOf = "P31".equals(statementGroup.getProperty()
-					.getId());
-			if (!isInstanceOf && !isSubClassOf) {
-				continue;
-			}
-			for (Statement statement : statementGroup) {
-				if (statement.getMainSnak() instanceof ValueSnak) {
-					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
-
-					if (isSubClassOf) {
-						this.owlDeclarationBuffer.addClass(itemDocument
-								.getEntityId());
-					}
-					if (mainSnak.getValue() instanceof EntityIdValue) {
-						this.owlDeclarationBuffer
-								.addClass((EntityIdValue) mainSnak.getValue());
-					}
-
-					if (statement.getQualifiers().size() == 0
-							&& isSubClassOf) {
-						Value value = this.valueRdfConverter.getRdfValue(
-								mainSnak.getValue(), mainSnak.getPropertyId(),
-								true);
-						if (value == null) {
-							logger.error("Could not serialize subclass of snak: missing value (Snak: "
-									+ mainSnak.toString() + ")");
-							continue;
-						}
-
-						try {
-							this.rdfWriter.writeTripleValueObject(subject,
-									RdfWriter.RDFS_SUBCLASS_OF, value);
-						} catch (RDFHandlerException e) {
-							throw new RuntimeException(e.toString(), e);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	void writeSubpropertyOfStatements(Resource subject,
-			PropertyDocument propertyDocument) {
-		for (StatementGroup statementGroup : propertyDocument
-				.getStatementGroups()) {
-			boolean isSubPropertyOf = "P1647".equals(statementGroup
-					.getProperty().getId());
-			if (!isSubPropertyOf) {
-				continue;
-			}
-
-			for (Statement statement : statementGroup) {
-				if (statement.getMainSnak() instanceof ValueSnak) {
-					ValueSnak mainSnak = (ValueSnak) statement.getMainSnak();
-					if (statement.getQualifiers().size() == 0) {
-						Value value = this.valueRdfConverter.getRdfValue(
-								mainSnak.getValue(), mainSnak.getPropertyId(),
-								true);
-						if (value == null) {
-							logger.error("Clould not serialize subclass of snak: missing value (Snak: "
-									+ mainSnak.toString() + ")");
-							continue;
-						}
-						if (mainSnak.getValue() instanceof EntityIdValue) {
-							String id = ((EntityIdValue) mainSnak.getValue())
-									.getId();
-							if (id.startsWith("P")) {
-								String datatype = this.propertyRegister
-										.getPropertyType((PropertyIdValue) mainSnak
-												.getValue());
-								if (!propertyDocument.getDatatype().getIri()
-										.equals(datatype)) {
-									logger.warn("Datatype of subproperty "
-											+ propertyDocument.getDatatype()
-													.toString()
-											+ " is different from superproperty "
-											+ datatype);
-									continue;
-								}
-							} else {
-								logger.warn(value.toString()
-										+ " is not a Property");
-							}
-						} else {
-							logger.warn("Not a valid EntityIdValue: "
-									+ value.toString());
-							continue;
-						}
-
-						try {
-							this.rdfWriter.writeTripleValueObject(subject,
-									RdfWriter.RDFS_SUBPROPERTY_OF, value);
-						} catch (RDFHandlerException e) {
-							throw new RuntimeException(e.toString(), e);
-						}
-					}
-
 				}
 			}
 		}
