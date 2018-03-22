@@ -20,76 +20,52 @@ package org.wikidata.wdtk.datamodel.implementation.json;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImplTest;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class JsonSerializerTest {
-
-	private static final DatamodelConverter datamodelConverter = new DatamodelConverter(
-			new DataObjectFactoryImpl());
 
 	@Test
 	public void testSerializer() throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		JsonSerializer serializer = new JsonSerializer(out);
 
-		ItemDocument id1 = Datamodel.makeItemDocument(DataObjectFactoryImplTest
-				.getTestItemIdValue(1), Collections
-				.singletonList(Datamodel
-						.makeMonolingualTextValue("Label1", "lang1")),
-				Collections. emptyList(), Collections
-						. emptyList(),
-				DataObjectFactoryImplTest.getTestStatementGroups(1, 24, 1,
-						EntityIdValue.ET_ITEM), Collections
-						. emptyMap(), 1234);
-		ItemDocument id2 = Datamodel.makeItemDocument(DataObjectFactoryImplTest
-				.getTestItemIdValue(2), Collections
-				. emptyList(), Collections
-				. emptyList(), Collections
-				. emptyList(), DataObjectFactoryImplTest
-				.getTestStatementGroups(2, 23, 1, EntityIdValue.ET_ITEM),
-				Collections.singletonMap(
-						"enwiki",
-						Datamodel.makeSiteLink("Title2", "enwiki",
-								Collections.emptyList())), 0);
+		ItemIdValue qid1 = Datamodel.makeWikidataItemIdValue("Q1");
+		ItemDocument id1 = Datamodel.makeItemDocument(
+				qid1,
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("Label1", "lang1")),
+				Collections.emptyList(), Collections.emptyList(),
+				Collections.singletonList(Datamodel.makeStatementGroup(Collections.singletonList(
+						Datamodel.makeStatement(qid1,
+								Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue("P42")),
+								Collections.emptyList(), Collections.emptyList(),
+								StatementRank.NORMAL, "MyId"
+				)))), Collections.emptyMap(), 1234);
+		ItemDocument id2 = Datamodel.makeItemDocument(
+				Datamodel.makeWikidataItemIdValue("Q2"),
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyMap(), 12);
 		PropertyDocument pd1 = Datamodel.makePropertyDocument(
-				DataObjectFactoryImplTest.getTestPropertyIdValue(1),
-				Collections. emptyList(), Collections
-						. emptyList(), Collections
-						.singletonList(Datamodel
-								.makeMonolingualTextValue("Alias1", "lang1")),
-				Collections. emptyList(), Datamodel
-						.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA),
+				Datamodel.makeWikidataPropertyIdValue("P1"),
+				Collections.emptyList(), Collections.emptyList(),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("Alias1", "lang1")),
+				Collections.emptyList(), Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_COMMONS_MEDIA),
 				3456);
 
 		serializer.open();
@@ -98,50 +74,33 @@ public class JsonSerializerTest {
 		serializer.processPropertyDocument(pd1);
 		serializer.close();
 
-		ArrayList<EntityDocument> inputDocuments = new ArrayList<>();
-		inputDocuments.add(id1);
-		inputDocuments.add(id2);
-		inputDocuments.add(pd1);
+		List<EntityDocument> inputDocuments = Arrays.asList(id1, id2, pd1);
 
-		ArrayList<EntityDocument> outputDocuments = new ArrayList<>();
+		List<EntityDocument> outputDocuments = new ArrayList<>();
 
-		ObjectMapper mapper = new DatamodelMapper("foo:");
-		ObjectReader documentReader = mapper
-				.readerFor(TermedStatementDocumentImpl.class);
+		ObjectMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
+		ObjectReader documentReader = mapper.readerFor(TermedStatementDocumentImpl.class);
 
-		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
-				.readValues(out.toString());
+		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader.readValues(out.toString());
 		while (documentIterator.hasNextValue()) {
-			TermedStatementDocumentImpl document = documentIterator
-					.nextValue();
-			outputDocuments.add(document);
+			outputDocuments.add(documentIterator.nextValue());
 		}
 		documentIterator.close();
 
-		for (int i = 0; i < outputDocuments.size(); i++) {
-			assertEquals(inputDocuments.get(i), outputDocuments.get(i));
-		}
-		assertEquals(serializer.getEntityDocumentCount(), 3);
+		assertEquals(inputDocuments, outputDocuments);
 	}
 
 	@Test
 	public void testItemDocumentToJson() {
 		ItemDocument id = Datamodel.makeItemDocument(
-				Datamodel.makeWikidataItemIdValue(JsonTestData.TEST_ITEM_ID),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyMap());
-
-		String result1 = JsonSerializer.getJsonString(id);
-		String result2 = JsonSerializer.getJsonString(datamodelConverter
-				.copy(id));
-
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
-				result1);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_WRAPPED_ITEMID,
-				result2);
+				Datamodel.makeWikidataItemIdValue("Q42"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap());
+		String json = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"sitelinks\":{}}";
+		JsonComparator.compareJsonStrings(json, JsonSerializer.getJsonString(id));
 	}
 
 	@Test
@@ -153,32 +112,18 @@ public class JsonSerializerTest {
 				Collections. emptyList(),
 				Collections. emptyList(),
 				Datamodel.makeDatatypeIdValue(DatatypeIdValue.DT_ITEM));
-
-		String result1 = JsonSerializer.getJsonString(pd);
-		String result2 = JsonSerializer.getJsonString(datamodelConverter
-				.copy(pd));
-
 		String json = "{\"id\":\"P1\",\"aliases\":{},\"labels\":{},\"descriptions\":{},\"claims\":{},\"type\":\"property\", \"datatype\":\"wikibase-item\"}";
-
-		JsonComparator.compareJsonStrings(json, result1);
-		JsonComparator.compareJsonStrings(json, result2);
+		JsonComparator.compareJsonStrings(json, JsonSerializer.getJsonString(pd));
 	}
 
 	@Test
 	public void testStatementToJson() {
 		Statement s = Datamodel.makeStatement(ItemIdValue.NULL,
-				Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue(JsonTestData.TEST_PROPERTY_ID)),
-				Collections. emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, JsonTestData.TEST_STATEMENT_ID);
-
-		String result1 = JsonSerializer.getJsonString(s);
-		String result2 = JsonSerializer.getJsonString(datamodelConverter
-				.copy(s));
-
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
-				result1);
-		JsonComparator.compareJsonStrings(JsonTestData.JSON_NOVALUE_STATEMENT,
-				result2);
+				Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue("P1")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
+		String json = "{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P1\",\"snaktype\":\"novalue\"},\"type\":\"statement\"}";
+		JsonComparator.compareJsonStrings(json, JsonSerializer.getJsonString(s));
 	}
 
 	@Test
