@@ -10,7 +10,7 @@
 
 prov:wasDerivedFrom a owl:ObjectProperty .
 
-wo:time a owl:DatatypeProperty .
+wo:timeValue a owl:DatatypeProperty .
 
 wo:quantityLowerBound a owl:DatatypeProperty .
 
@@ -108,7 +108,7 @@ wo:BestRank a owl:Class .
 	wo:rank wo:NormalRank .
 
 id:VTec11d94e4f5bb7b00a79196734f49066 a wo:TimeValue ;
-	wo:time "0306-11-03T13:07:06Z"^^xsd:dateTime ;
+	wo:timeValue "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	wo:timePrecision "32"^^xsd:int ;
 	wo:timeTimezone "0"^^xsd:int ;
 	wo:timeCalendarModel id:Q1985727 .

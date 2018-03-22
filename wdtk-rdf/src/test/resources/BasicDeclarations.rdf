@@ -13,7 +13,7 @@
 
 <http://wikiba.se/ontology#quantityUpperBound> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://wikiba.se/ontology#time> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://wikiba.se/ontology#timeValue> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://wikiba.se/ontology#geoPrecision> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
