@@ -166,49 +166,6 @@ public class RdfConverterTest {
 	}
 
 	@Test
-	public void testUriPatternStatement() throws RDFHandlerException,
-			RDFParseException, IOException {
-
-		ItemIdValue subject = Datamodel.makeItemIdValue("Q100",
-				Datamodel.SITE_WIKIDATA);
-		PropertyIdValue propertyId = Datamodel
-				.makeWikidataPropertyIdValue("P434");
-		StringValue value = Datamodel
-				.makeStringValue("d735497b-25f9-4503-8fb5-f50150730c18");
-		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
-		Statement statement = Datamodel.makeStatement(subject, mainSnak,
-				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "stmtid");
-
-		this.rdfConverter.writeStatement(statement);
-		this.rdfWriter.finish();
-		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("StatementMusicBrainz.rdf")));
-	}
-
-	@Test
-	public void testFreebaseStatement() throws RDFHandlerException,
-			RDFParseException, IOException {
-
-		ItemIdValue subject = Datamodel.makeItemIdValue("Q100",
-				Datamodel.SITE_WIKIDATA);
-		PropertyIdValue propertyId = Datamodel
-				.makeWikidataPropertyIdValue("P646");
-		StringValue value = Datamodel.makeStringValue("/m/0j9kvph");
-		Snak mainSnak = Datamodel.makeValueSnak(propertyId, value);
-		Statement statement = Datamodel.makeStatement(subject, mainSnak,
-				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "stmtid");
-
-		this.rdfConverter.writeStatement(statement);
-		this.rdfWriter.finish();
-		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("StatementFreebase.rdf")));
-	}
-
-	@Test
 	public void testWriteBasicDeclarations() throws RDFHandlerException,
 			RDFParseException, IOException {
 		this.rdfConverter.writeBasicDeclarations();

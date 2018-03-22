@@ -35,7 +35,6 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakVisitor;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.rdf.extensions.ExportExtensions;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 
 /**
@@ -81,7 +80,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	final RdfWriter rdfWriter;
 	final PropertyRegister propertyRegister;
 	final OwlDeclarationBuffer rdfConversionBuffer;
-	final ExportExtensions exportExtensions;
 
 	final List<PropertyRestriction> someValuesQueue;
 
@@ -97,10 +95,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.rdfConversionBuffer = owlDeclarationBuffer;
 		this.propertyRegister = propertyRegister;
 		this.valueRdfConverter = valueRdfConverter;
-		this.exportExtensions = new ExportExtensions(rdfWriter,
-				owlDeclarationBuffer, propertyRegister);
-		ExportExtensions
-				.registerWikidataExportExtensions(this.exportExtensions);
 
 		this.someValuesQueue = new ArrayList<PropertyRestriction>();
 	}
@@ -168,9 +162,6 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
-
-		this.exportExtensions.writeValueSnakExtensions(snak,
-				this.currentSubject);
 
 		return null;
 	}
