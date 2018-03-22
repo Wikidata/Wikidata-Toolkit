@@ -41,7 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
 public class StatementDocumentAccessTest {
 
 	private final static ItemIdValue q1 = Datamodel.makeWikidataItemIdValue("Q1");
-	final static ItemIdValue q2 = Datamodel.makeWikidataItemIdValue("Q2");
+	private final static ItemIdValue q2 = Datamodel.makeWikidataItemIdValue("Q2");
 	private final static PropertyIdValue p1 = Datamodel
 			.makeWikidataPropertyIdValue("P1");
 	private final static PropertyIdValue p2 = Datamodel
