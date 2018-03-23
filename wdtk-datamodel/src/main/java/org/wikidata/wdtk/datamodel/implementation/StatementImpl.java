@@ -278,7 +278,7 @@ public class StatementImpl implements Statement {
 		@JsonCreator
 		static PreStatement fromJson(
 				@JsonProperty("id") String id,
-				@JsonProperty("rank") 	@JsonDeserialize(using = StatementRankDeserializer.class) StatementRank rank,
+				@JsonProperty("rank") @JsonDeserialize(using = StatementRankDeserializer.class) StatementRank rank,
 				@JsonProperty("mainsnak") SnakImpl mainsnak,
 				@JsonProperty("qualifiers") Map<String, List<SnakImpl>> qualifiers,
 				@JsonProperty("qualifiers-order") List<String> qualifiersOrder,
@@ -294,7 +294,6 @@ public class StatementImpl implements Statement {
 			}
 			return new PreStatement(id, rank, mainsnak, newQualifiers, qualifiersOrder, references);
 		}
-
 
 		public StatementImpl withSubject(EntityIdValue subjectId) {
 			return new StatementImpl(statementId, rank, mainSnak, qualifiers, qualifiersOrder, references, subjectId);
