@@ -20,18 +20,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.StatementRankDeserializer;
-import org.wikidata.wdtk.datamodel.implementation.json.StatementRankSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.util.NestedIterator;
 
@@ -236,10 +241,6 @@ public class StatementImpl implements Statement {
 
 	/**
 	 * Helper class for deserializing statements from JSON.
-	 *
-	 * @author Antonin Delpeuch
-	 * @author Thomas Pellissier Tanon
-	 *
 	 */
 	@JsonIgnoreProperties(ignoreUnknown=true)
 	public static class PreStatement {
@@ -297,6 +298,34 @@ public class StatementImpl implements Statement {
 
 		public StatementImpl withSubject(EntityIdValue subjectId) {
 			return new StatementImpl(statementId, rank, mainSnak, qualifiers, qualifiersOrder, references, subjectId);
+		}
+	}
+
+
+	/**
+	 * A serializer implementation for the StatementRank enumeration. This is
+	 * necessary since Java enumerations are in upper case but the Json counterpart
+	 * is in lower case.
+	 */
+	static class StatementRankSerializer extends JsonSerializer<StatementRank> {
+
+		@Override
+		public void serialize(StatementRank value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+			jgen.writeString(value.name().toLowerCase());
+
+		}
+	}
+
+	/**
+	 * A deserializer implementation for the StatementRank enumeration. This is
+	 * necessary since Java enumerations are in upper case but the Json counterpart
+	 * is in lower case.
+	 */
+	static class StatementRankDeserializer extends JsonDeserializer<StatementRank> {
+
+		@Override
+		public StatementRank deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+			return StatementRank.valueOf(jp.getText().toUpperCase());
 		}
 	}
 }
