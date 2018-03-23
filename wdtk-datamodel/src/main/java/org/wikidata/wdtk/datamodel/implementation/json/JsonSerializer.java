@@ -26,8 +26,6 @@ import java.io.OutputStream;
 import org.apache.commons.compress.utils.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -56,21 +54,14 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 
 	private static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	static final byte[] JSON_START_LIST = "[\n".getBytes(Charsets.UTF_8);
-	static final byte[] JSON_SEP = ",\n".getBytes(Charsets.UTF_8);
-	static final byte[] JSON_END_LIST = "\n]".getBytes(Charsets.UTF_8);
+	private static final byte[] JSON_START_LIST = "[\n".getBytes(Charsets.UTF_8);
+	private static final byte[] JSON_SEP = ",\n".getBytes(Charsets.UTF_8);
+	private static final byte[] JSON_END_LIST = "\n]".getBytes(Charsets.UTF_8);
 
 	/**
 	 * The stream that the resulting JSON is written to.
 	 */
-	protected final OutputStream outputStream;
-
-	/**
-	 * Object used to convert given entity documents to Jackson implementations
-	 * for serialization whenever needed.
-	 */
-	protected static final DatamodelConverter datamodelConverter = new DatamodelConverter(
-			new DataObjectFactoryImpl());
+	private final OutputStream outputStream;
 
 	/**
 	 * Object mapper that is used to serialize JSON.
@@ -83,7 +74,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	/**
 	 * Counter for the number of documents serialized so far.
 	 */
-	protected int entityDocumentCount;
+	private int entityDocumentCount;
 
 	/**
 	 * Creates a new JSON serializer that writes its output to the given stream.
@@ -146,7 +137,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @throws RuntimeException
 	 *             in all cases
 	 */
-	protected void reportException(Exception e) {
+	private void reportException(Exception e) {
 		logger.error("Failed to write JSON export: " + e.toString());
 		throw new RuntimeException(e.toString(), e);
 	}
@@ -157,7 +148,7 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * @param entityDocument
 	 *            the document to serialize
 	 */
-	protected void serializeEntityDocument(EntityDocument entityDocument) {
+	private void serializeEntityDocument(EntityDocument entityDocument) {
 		try {
 			if (this.entityDocumentCount > 0) {
 				this.outputStream.write(JSON_SEP);

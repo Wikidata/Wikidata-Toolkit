@@ -20,12 +20,7 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -153,11 +148,11 @@ public class TimerTest {
 		assertEquals(timerA1, timerA2);
 		assertEquals(timerA1, timerA3);
 		assertEquals(timerA1, timerA4);
-		assertThat(timerA1, not(equalTo(timerCpu)));
-		assertThat(timerA1, not(equalTo(timerWall)));
-		assertThat(timerA1, not(equalTo(timerNoThread)));
-		assertThat(timerA1, not(equalTo(timerB)));
-		assertFalse(timerA1.equals(this));
+		assertNotEquals(timerA1, timerCpu);
+		assertNotEquals(timerA1, timerWall);
+		assertNotEquals(timerA1, timerNoThread);
+		assertNotEquals(timerA1, timerB);
+		assertNotEquals(timerA1, this);
 
 		// Testing start/stop operation:
 		Timer.startNamedTimer("test timer");

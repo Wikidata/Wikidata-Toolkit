@@ -20,11 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,9 +93,9 @@ public class StatementGroupTest {
 
 		assertEquals(sg1, sg1);
 		assertEquals(sg1, sg2);
-		assertThat(sg1, not(equalTo(sg3)));
-		assertThat(sg1, not(equalTo(null)));
-		assertFalse(sg1.equals(this));
+		assertNotEquals(sg1, sg3);
+		assertNotEquals(sg1, null);
+		assertNotEquals(sg1, this);
 	}
 
 	@Test

@@ -4,7 +4,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #%L
  * Wikidata Toolkit Data Model
  * %%
- * Copyright (C) 2014 Wikidata Toolkit Developers
+ * Copyright (C) 2018 Wikidata Toolkit Developers
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -30,13 +28,16 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 import java.io.IOException;
 
-public class MonolingualTextValueImplTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+public class TermImplTest {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
-	private final MonolingualTextValue mt1 = new MonolingualTextValueImpl("some string", "en");
-	private final MonolingualTextValue mt2 = new MonolingualTextValueImpl("some string", "en");
-	private final String JSON_MONOLINGUAL_TEXT_VALUE = "{\"value\":{\"language\":\"en\",\"text\":\"some string\"},\"type\":\"monolingualtext\"}";
+	private final MonolingualTextValue mt1 = new TermImpl("en", "some string");
+	private final MonolingualTextValue mt2 = new TermImpl("en", "some string");
+	private final String JSON_TERM = "{\"language\":\"en\",\"value\":\"some string\"}";
 
 	@Test
 	public void dataIsCorrect() {
@@ -46,9 +47,9 @@ public class MonolingualTextValueImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		MonolingualTextValue mtDiffString = new MonolingualTextValueImpl(
+		MonolingualTextValue mtDiffString = new TermImpl(
 				"another string", "en");
-		MonolingualTextValue mtDiffLanguageCode = new MonolingualTextValueImpl(
+		MonolingualTextValue mtDiffLanguageCode = new TermImpl(
 				"some string", "en-GB");
 
 		assertEquals(mt1, mt1);
@@ -66,21 +67,21 @@ public class MonolingualTextValueImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void textNotNull() {
-		new MonolingualTextValueImpl(null, "en");
+		new TermImpl("en", null);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void languageCodeNotNull() {
-		new MonolingualTextValueImpl("some text", null);
+		new TermImpl(null, "some text");
 	}
 
 	@Test
 	public void testToJava() throws IOException {
-		assertEquals(mt1, mapper.readValue(JSON_MONOLINGUAL_TEXT_VALUE, MonolingualTextValueImpl.class));
+		assertEquals(mt1, mapper.readValue(JSON_TERM, TermImpl.class));
 	}
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		JsonComparator.compareJsonStrings(JSON_MONOLINGUAL_TEXT_VALUE, mapper.writeValueAsString(mt1));
+		JsonComparator.compareJsonStrings(JSON_TERM, mapper.writeValueAsString(mt1));
 	}
 }

@@ -177,4 +177,19 @@ public class DatamodelConverterTest {
 
 		assertEquals(fixedId, dmc.copy(brokenId));
 	}
+
+	@Test
+	public void testGenerationFromOtherItemDocument() {
+		ItemDocument item = Datamodel.makeItemDocument(
+				Datamodel.makeWikidataItemIdValue("Q42"),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "label")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "desc")),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("en", "alias")),
+				Collections.emptyList(),
+				Collections.singletonMap("enwiki", Datamodel.makeSiteLink("foo", "enwiki", Collections.emptyList()))
+		);
+
+		DatamodelConverter converter = new DatamodelConverter(new DataObjectFactoryImpl());
+		assertEquals(item, converter.copy(item));
+	}
 }

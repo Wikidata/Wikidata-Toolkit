@@ -20,51 +20,49 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class StatementImplTest {
 
-	private EntityIdValue subjet;
-	private EntityIdValue value;
-	private ValueSnak mainSnak;
-	private Claim claim;
+	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
-	private Statement s1;
-	private Statement s2;
+	private final EntityIdValue subjet = new ItemIdValueImpl("Q1", "http://example.com/entity/");
+	private final EntityIdValue value = new ItemIdValueImpl("Q42", "http://example.com/entity/");
+	private final PropertyIdValue property = new PropertyIdValueImpl("P42", "http://example.com/entity/");
+	private final ValueSnak mainSnak = new ValueSnakImpl(property, value);
+	private final List<SnakGroup> qualifiers = Collections.singletonList(new SnakGroupImpl(Collections.singletonList(mainSnak)));
+	private final List<Reference> references = Collections.singletonList(new ReferenceImpl(qualifiers));
+	private final Claim claim = new ClaimImpl(subjet, mainSnak, qualifiers);
 
-	@Before
-	public void setUp() throws Exception {
-		subjet = new ItemIdValueImpl("Q1", "http://wikidata.org/entity/");
-		value = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
-		PropertyIdValue property = new PropertyIdValueImpl("P42",
-				"http://wikidata.org/entity/");
-		mainSnak = new ValueSnakImpl(property, value);
+	private final Statement s1 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			qualifiers, references, subjet);
+	private final Statement s2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			qualifiers, references, subjet);
+	private final String JSON_STATEMENT = "{\"rank\":\"preferred\",\"references\":[{\"snaks\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]},\"snaks-order\":[\"P42\"]}],\"value\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"qualifiers-order\":[\"P42\"],\"type\":\"statement\",\"qualifiers\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]}}";
 
-		claim = new ClaimImpl(subjet, mainSnak, Collections.emptyList());
-		s1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subjet);
-		s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subjet);
-	}
+	private final Statement smallStatement = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subjet);
+	private final String JSON_SMALL_STATEMENT = "{\"rank\":\"preferred\",\"value\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"type\":\"statement\"}";
 
 	@Test
 	public void gettersWorking() {
 		assertEquals(s1.getClaim(), claim);
 		assertEquals(s1.getMainSnak(), mainSnak);
-		assertEquals(s1.getQualifiers(), Collections.emptyList());
-		assertEquals(s1.getReferences(), Collections. emptyList());
-		assertEquals(s1.getRank(), StatementRank.NORMAL);
+		assertEquals(s1.getQualifiers(), qualifiers);
+		assertEquals(s1.getReferences(), references);
+		assertEquals(s1.getRank(), StatementRank.PREFERRED);
 		assertEquals(s1.getStatementId(), "MyId");
 		assertEquals(s1.getValue(), value);
 		assertEquals(s1.getSubject(), subjet);
@@ -116,12 +114,31 @@ public class StatementImplTest {
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(sDiffClaim)));
-		assertThat(s1, not(equalTo(sDiffReferences)));
-		assertThat(s1, not(equalTo(sDiffRank)));
-		assertThat(s1, not(equalTo(sDiffId)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertNotEquals(s1, sDiffClaim);
+		assertNotEquals(s1, sDiffReferences);
+		assertNotEquals(s1, sDiffRank);
+		assertNotEquals(s1, sDiffId);
+		assertNotEquals(s1, null);
+		assertNotEquals(s1, this);
 	}
 
+	@Test
+	public void testStatementToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_STATEMENT, mapper.writeValueAsString(s1));
+	}
+
+	@Test
+	public void testStatementToJava() throws IOException {
+		assertEquals(s1, mapper.readValue(JSON_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
+	}
+
+	@Test
+	public void testSmallStatementToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_SMALL_STATEMENT, mapper.writeValueAsString(smallStatement));
+	}
+
+	@Test
+	public void testSmallStatementToJava() throws IOException {
+		assertEquals(smallStatement, mapper.readValue(JSON_SMALL_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
+	}
 }

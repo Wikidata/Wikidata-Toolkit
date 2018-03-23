@@ -20,18 +20,20 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 
 public class QuantityValueImplTest {
+
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	private final BigDecimal nv = new BigDecimal(
 			"0.123456789012345678901234567890123456789");
@@ -43,6 +45,8 @@ public class QuantityValueImplTest {
 	private final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
+	private static String JSON_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"lowerBound\":\"+0.123456789012345678901234567890123456788\",\"upperBound\":\"+0.123456789012345678901234567890123456790\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
+	private static String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 
 	@Test
 	public void gettersWorking() {
@@ -64,23 +68,23 @@ public class QuantityValueImplTest {
 
 		assertEquals(q1, q1);
 		assertEquals(q1, q2);
-		assertThat(q1, not(equalTo(q3)));
-		assertThat(q1, not(equalTo(q4)));
-		assertThat(q1, not(equalTo(q5)));
-		assertThat(q1, not(equalTo(q6)));
-		assertThat(q1, not(equalTo(q7)));
-		assertThat(q1, not(equalTo(null)));
-		assertFalse(q1.equals(this));
+		assertNotEquals(q1, q3);
+		assertNotEquals(q1, q4);
+		assertNotEquals(q1, q5);
+		assertNotEquals(q1, q6);
+		assertNotEquals(q1, q7);
+		assertNotEquals(q1, null);
+		assertNotEquals(q1, this);
 	}
 	
 	@Test
 	public void equalityBasedOnRepresentation() {
 		BigDecimal amount1 = new BigDecimal("4.00");
 		BigDecimal amount2 = new BigDecimal("4");
-		assertFalse(amount1.equals(amount2));
+		assertNotEquals(amount1, amount2);
 		QuantityValue quantity1 = new QuantityValueImpl(amount1, null, null, "1");
 		QuantityValue quantity2 = new QuantityValueImpl(amount2, null, null, "1");
-		assertFalse(quantity1.equals(quantity2));
+		assertNotEquals(quantity1, quantity2);
 	}
 	
 	@Test
@@ -130,4 +134,23 @@ public class QuantityValueImplTest {
 		new QuantityValueImpl(ub, lb, nv, unitMeter);
 	}
 
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_QUANTITY_VALUE, mapper.writeValueAsString(q1));
+	}
+
+	@Test
+	public void testToJava() throws IOException {
+		assertEquals(q1, mapper.readValue(JSON_QUANTITY_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testUnboundedToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_UNBOUNDED_QUANTITY_VALUE, mapper.writeValueAsString(q3));
+	}
+
+	@Test
+	public void testUnboundedToJava() throws IOException {
+		assertEquals(q3, mapper.readValue(JSON_UNBOUNDED_QUANTITY_VALUE, ValueImpl.class));
+	}
 }

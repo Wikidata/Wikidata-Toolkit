@@ -20,26 +20,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+
+import java.io.IOException;
 
 public class StringValueImplTest {
 
-	private StringValue s1;
-	private StringValue s2;
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	@Before
-	public void setUp() throws Exception {
-		s1 = new StringValueImpl("some string");
-		s2 = new StringValueImpl("some string");
-	}
+	private final StringValue s1 = new StringValueImpl("some string");
+	private final StringValue s2 = new StringValueImpl("some string");
+	private final String JSON_STRING_VALUE = "{\"type\":\"string\",\"value\":\"some string\"}";
 
 	@Test
 	public void stringIsCorrect() {
@@ -52,9 +49,9 @@ public class StringValueImplTest {
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
-		assertThat(s1, not(equalTo(s3)));
-		assertThat(s1, not(equalTo(null)));
-		assertFalse(s1.equals(this));
+		assertNotEquals(s1, s3);
+		assertNotEquals(s1, null);
+		assertNotEquals(s1, this);
 	}
 
 	@Test
@@ -67,4 +64,13 @@ public class StringValueImplTest {
 		new StringValueImpl(null);
 	}
 
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_STRING_VALUE, mapper.writeValueAsString(s1));
+	}
+
+	@Test
+	public void testToJava() throws IOException {
+		assertEquals(s1, mapper.readValue(JSON_STRING_VALUE, ValueImpl.class));
+	}
 }

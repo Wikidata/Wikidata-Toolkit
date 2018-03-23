@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -64,7 +65,9 @@ public class TermImpl implements MonolingualTextValue {
 	public TermImpl(
 			@JsonProperty("language") String languageCode,
 			@JsonProperty("value") String text) {
+		Validate.notNull(languageCode, "A language has to be provided to create a MonolingualTextValue");
 		this.languageCode = languageCode;
+		Validate.notNull(text, "A text has to be provided to create a MonolingualTextValue");
 		this.text = text;
 	}
 

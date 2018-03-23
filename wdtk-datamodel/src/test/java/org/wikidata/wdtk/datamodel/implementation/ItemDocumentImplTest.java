@@ -20,119 +20,123 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class ItemDocumentImplTest {
 
-	private ItemDocument ir1;
-	private ItemDocument ir2;
+	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
-	private Statement s;
+	private final ItemIdValue iid = new ItemIdValueImpl("Q42", "http://example.com/entity/");
+	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
+			Collections.emptyList(), Collections.emptyList(), iid);
+	private final List<StatementGroup> statementGroups = Collections.singletonList(
+			new StatementGroupImpl(Collections.singletonList(s))
+	);
+	private final MonolingualTextValue label = new TermImpl("en", "label");
+	private final List<MonolingualTextValue> labelList = Collections.singletonList(label);
+	private final MonolingualTextValue desc = new TermImpl("fr", "des");
+	private final List<MonolingualTextValue> descList = Collections.singletonList(desc);
+	private final MonolingualTextValue alias = new TermImpl("de", "alias");
+	private final List<MonolingualTextValue> aliasList = Collections.singletonList(alias);
+	private final List<SiteLink> sitelinks = Collections.singletonList(
+			new SiteLinkImpl("Douglas Adams", "enwiki", Collections.emptyList())
+	);
 
-	private ItemIdValue iid;
-	private List<StatementGroup> statementGroups;
-	private List<SiteLink> sitelinks;
+	private final ItemDocument ir1 = new ItemDocumentImpl(iid,
+			labelList, descList, aliasList,
+			statementGroups, sitelinks, 1234);
+	private final ItemDocument ir2 = new ItemDocumentImpl(iid,
+			labelList, descList, aliasList,
+			statementGroups, sitelinks, 1234);
 
-	@Before
-	public void setUp() throws Exception {
-		iid = new ItemIdValueImpl("Q42", "http://wikibase.org/entity/");
-
-		s = new StatementImpl("MyId", StatementRank.NORMAL,
-				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
-				Collections.emptyList(), Collections.emptyList(), iid);
-		StatementGroup sg = new StatementGroupImpl(Collections.singletonList(s));
-		statementGroups = Collections.singletonList(sg);
-
-		SiteLink sl = new SiteLinkImpl("Douglas Adams", "enwiki",
-				Collections. emptyList());
-		sitelinks = Collections.singletonList(sl);
-
-		ir1 = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				statementGroups, sitelinks, 1234);
-		ir2 = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				statementGroups, sitelinks, 1234);
-	}
+	private final String JSON_ITEM_LABEL = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"sitelinks\":{}}";
+	private final String JSON_ITEM_DESCRIPTION = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"des\"}},\"aliases\":{},\"claims\":{},\"sitelinks\":{}}";
+	private final String JSON_ITEM_ALIASES = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{\"de\":[{\"language\":\"de\",\"value\":\"alias\"}]},\"claims\":{},\"sitelinks\":{}}";
+	private final String JSON_ITEM_STATEMENTS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"sitelinks\":{}}";
+	private final String JSON_ITEM_SITELINKS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":{\"title\":\"Douglas Adams\",\"site\":\"enwiki\",\"badges\":[]}}}";
+	private final String JSON_ITEM_EMPTY_ARRAYS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":[],\"descriptions\":[],\"aliases\":[],\"claims\":[],\"sitelinks\":[]}";
 
 	@Test
 	public void fieldsAreCorrect() {
 		assertEquals(ir1.getItemId(), iid);
 		assertEquals(ir1.getEntityId(), iid);
+		assertEquals(ir1.getLabels(), Collections.singletonMap(label.getLanguageCode(), label));
+		assertEquals(ir1.getDescriptions(), Collections.singletonMap(desc.getLanguageCode(), desc));
+		assertEquals(
+				ir1.getAliases(),
+				Collections.singletonMap(alias.getLanguageCode(), Collections.singletonList(alias))
+		);
 		assertEquals(ir1.getStatementGroups(), statementGroups);
 		assertEquals(new ArrayList<>(ir1.getSiteLinks().values()), sitelinks);
 	}
 
 	@Test
+	public void findTerms() {
+		assertEquals("label", ir1.findLabel("en"));
+		assertNull( ir1.findLabel("ja"));
+		assertEquals("des", ir1.findDescription("fr"));
+		assertNull( ir1.findDescription("ja"));
+	}
+
+	@Test
 	public void equalityBasedOnContent() {
+		ItemDocument irDiffLabel = new ItemDocumentImpl(iid,
+				Collections.emptyList(), descList, aliasList,
+				statementGroups, sitelinks, 1234);
+		ItemDocument irDiffDesc = new ItemDocumentImpl(iid,
+				labelList, Collections.emptyList(), aliasList,
+				statementGroups, sitelinks, 1234);
+		ItemDocument irDiffAlias = new ItemDocumentImpl(iid,
+				labelList, descList, Collections.emptyList(),
+				statementGroups, sitelinks, 1234);
 		ItemDocument irDiffStatementGroups = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(), sitelinks, 1234);
+				labelList, descList, aliasList,
+				Collections.emptyList(), sitelinks, 1234);
 		ItemDocument irDiffSiteLinks = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				statementGroups, Collections. emptyList(),
+				labelList, descList, aliasList,
+				statementGroups, Collections.emptyList(),
 				1234);
 		ItemDocument irDiffRevisions = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
+				labelList, descList, aliasList,
 				statementGroups, sitelinks, 1235);
 
 		PropertyDocument pr = new PropertyDocumentImpl(
 				new PropertyIdValueImpl("P42", "foo"),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(), new DatatypeIdImpl(
-						DatatypeIdValue.DT_STRING), 1234);
+				labelList, descList, aliasList,
+				Collections.emptyList(),
+				new DatatypeIdImpl(DatatypeIdValue.DT_STRING), 1234);
 
 		// we need to use empty lists of Statement groups to test inequality
 		// based on different item ids with all other data being equal
 		ItemDocument irDiffItemIdValue = new ItemDocumentImpl(
 				new ItemIdValueImpl("Q23", "http://example.org/"),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(), sitelinks, 1234);
+				labelList, descList, aliasList,
+				Collections.emptyList(), sitelinks, 1234);
 
 		assertEquals(ir1, ir1);
 		assertEquals(ir1, ir2);
-		assertThat(ir1, not(equalTo(irDiffStatementGroups)));
-		assertThat(ir1, not(equalTo(irDiffSiteLinks)));
-		assertThat(ir1, not(equalTo(irDiffRevisions)));
-		assertThat(irDiffStatementGroups, not(equalTo(irDiffItemIdValue)));
-		assertFalse(ir1.equals(pr));
-		assertThat(ir1, not(equalTo(null)));
-		assertFalse(ir1.equals(this));
+		assertNotEquals(ir1, irDiffLabel);
+		assertNotEquals(ir1, irDiffDesc);
+		assertNotEquals(ir1, irDiffAlias);
+		assertNotEquals(ir1, irDiffStatementGroups);
+		assertNotEquals(ir1, irDiffSiteLinks);
+		assertNotEquals(ir1, irDiffRevisions);
+		assertNotEquals(irDiffStatementGroups, irDiffItemIdValue);
+		assertNotEquals(ir1, pr);
+		assertNotEquals(ir1, null);
+		assertNotEquals(ir1, this);
 	}
 
 	@Test
@@ -143,17 +147,17 @@ public class ItemDocumentImplTest {
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
 		new ItemDocumentImpl(null,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 	}
 
 	@Test
 	public void labelsCanBeNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid, null,
-				Collections. emptyList(),
-				Collections. emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 		assertTrue(doc.getLabels().isEmpty());
 	}
@@ -161,8 +165,8 @@ public class ItemDocumentImplTest {
 	@Test
 	public void descriptionsNotNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid,
-				Collections. emptyList(), null,
-				Collections. emptyList(),
+				Collections.emptyList(), null,
+				Collections.emptyList(),
 				statementGroups, sitelinks, 1234);
 		assertTrue(doc.getDescriptions().isEmpty());
 	}
@@ -170,8 +174,8 @@ public class ItemDocumentImplTest {
 	@Test
 	public void aliasesCanBeNull() {
 		ItemDocument doc =new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(), null,
+				Collections.emptyList(),
+				Collections.emptyList(), null,
 				statementGroups, sitelinks, 1234);
 		assertTrue(doc.getAliases().isEmpty());
 	}
@@ -179,9 +183,9 @@ public class ItemDocumentImplTest {
 	@Test
 	public void statementGroupsCanBeNull() {
 		ItemDocument doc = new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(), null,
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), null,
 				sitelinks, 1234);
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
@@ -199,18 +203,18 @@ public class ItemDocumentImplTest {
 		statementGroups2.add(sg2);
 
 		new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups2, sitelinks, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void sitelinksNotNull() {
 		new ItemDocumentImpl(iid,
-				Collections. emptyList(),
-				Collections. emptyList(),
-				Collections. emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				statementGroups, null, 1234);
 	}
 
@@ -221,6 +225,101 @@ public class ItemDocumentImplTest {
 		assertTrue(statements.hasNext());
 		assertEquals(s, statements.next());
 		assertFalse(statements.hasNext());
+	}
+
+	@Test
+	public void testLabelsToJson() throws JsonProcessingException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				labelList, Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), 0);
+		JsonComparator.compareJsonStrings(JSON_ITEM_LABEL, mapper.writeValueAsString(document));
+	}
+
+	@Test
+	public void testLabelToJava() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				labelList, Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), 0);
+		assertEquals(document, mapper.readValue(JSON_ITEM_LABEL, TermedStatementDocumentImpl.class));
+	}
+
+	@Test
+	public void testDescriptionsToJson() throws JsonProcessingException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), descList, Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), 0);
+		JsonComparator.compareJsonStrings(JSON_ITEM_DESCRIPTION, mapper.writeValueAsString(document));
+	}
+
+	@Test
+	public void testDescriptionsToJava() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), descList, Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), 0);
+		assertEquals(document, mapper.readValue(JSON_ITEM_DESCRIPTION, TermedStatementDocumentImpl.class));
+	}
+
+	@Test
+	public void testAliasesToJson() throws JsonProcessingException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), aliasList,
+				Collections.emptyList(), Collections.emptyList(), 0);
+		JsonComparator.compareJsonStrings(JSON_ITEM_ALIASES, mapper.writeValueAsString(document));
+	}
+
+	@Test
+	public void testAliasesToJava() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), aliasList,
+				Collections.emptyList(), Collections.emptyList(), 0);
+		assertEquals(document, mapper.readValue(JSON_ITEM_ALIASES, ItemDocumentImpl.class));
+	}
+
+	@Test
+	public void testStatementsToJson() throws JsonProcessingException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				statementGroups, Collections.emptyList(), 0);
+		JsonComparator.compareJsonStrings(JSON_ITEM_STATEMENTS, mapper.writeValueAsString(document));
+	}
+
+	@Test
+	public void testStatementsToJava() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				statementGroups, Collections.emptyList(), 0);
+		assertEquals(document, mapper.readValue(JSON_ITEM_STATEMENTS, ItemDocumentImpl.class));
+	}
+
+	@Test
+	public void testSiteLinksToJson() throws JsonProcessingException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), sitelinks, 0);
+		JsonComparator.compareJsonStrings(JSON_ITEM_SITELINKS, mapper.writeValueAsString(document));
+	}
+
+	@Test
+	public void testSiteLinksToJava() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), sitelinks, 0);
+		assertEquals(document, mapper.readValue(JSON_ITEM_SITELINKS, ItemDocumentImpl.class));
+	}
+
+	/**
+	 * Checks support of wrong serialization of empty object as empty array
+	 */
+	@Test
+	public void testEmptyArraysForTerms() throws IOException {
+		ItemDocumentImpl document = new ItemDocumentImpl(iid,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), 0);
+
+		assertEquals(document, mapper.readerFor(ItemDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+				.readValue(JSON_ITEM_EMPTY_ARRAYS)
+		);
 	}
 
 }

@@ -19,30 +19,32 @@ package org.wikidata.wdtk.datamodel.implementation;
  * limitations under the License.
  * #L%
  */
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Before;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class ItemIdValueImplTest {
 
-	private ItemIdValueImpl item1;
-	private ItemIdValueImpl item2;
-	private ItemIdValueImpl item3;
-	private ItemIdValueImpl item4;
+	private final ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
 
-	@Before
-	public void setUp() {
-		item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
-		item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
-		item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
-		item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
-	}
+	private final ItemIdValueImpl item1 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item2 = new ItemIdValueImpl("Q42", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item3 = new ItemIdValueImpl("Q57", "http://www.wikidata.org/entity/");
+	private final ItemIdValueImpl item4 = new ItemIdValueImpl("Q42", "http://www.example.org/entity/");
+	private final String JSON_ITEM_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":42,\"id\":\"Q42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WRONG_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"W42\"}}";
+	private final String JSON_ITEM_ID_VALUE_WRONG_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42}}";
 
 	@Test
 	public void entityTypeIsItem() {
@@ -69,10 +71,10 @@ public class ItemIdValueImplTest {
 	public void equalityBasedOnContent() {
 		assertEquals(item1, item1);
 		assertEquals(item1, item2);
-		assertThat(item1, not(equalTo(item3)));
-		assertThat(item1, not(equalTo(item4)));
-		assertThat(item1, not(equalTo(null)));
-		assertFalse(item1.equals(this));
+		assertNotEquals(item1, item3);
+		assertNotEquals(item1, item4);
+		assertNotEquals(item1, null);
+		assertNotEquals(item1, this);
 	}
 
 	@Test
@@ -103,6 +105,37 @@ public class ItemIdValueImplTest {
 	@Test(expected = NullPointerException.class)
 	public void baseIriNotNull() {
 		new ItemIdValueImpl("Q42", null);
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_ITEM_ID_VALUE, mapper.writeValueAsString(item1));
+	}
+
+	@Test
+	public void testToJava() throws IOException {
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutId() throws IOException {
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_ID, ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutNumericalId() throws IOException {
+		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
+	}
+
+	@Test(expected = JsonMappingException.class)
+	public void testToJavaWrongID() throws IOException {
+		mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_ID, ValueImpl.class);
+	}
+
+
+	@Test(expected = JsonMappingException.class)
+	public void testToJavaWrongType() throws IOException {
+		mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_TYPE, ValueImpl.class);
 	}
 
 }
