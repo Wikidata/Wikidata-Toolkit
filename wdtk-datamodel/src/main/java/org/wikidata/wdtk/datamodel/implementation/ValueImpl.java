@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
 
 /*
  * #%L
@@ -44,32 +43,32 @@ import java.io.IOException;
  */
 @JsonDeserialize(using = ValueImpl.JacksonDeserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class ValueImpl implements Value {
+abstract class ValueImpl implements Value {
 
 	/**
 	 * String used to denote the string value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_STRING = "string";
+	static final String JSON_VALUE_TYPE_STRING = "string";
 	/**
 	 * String used to denote the time value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_TIME = "time";
+	static final String JSON_VALUE_TYPE_TIME = "time";
 	/**
 	 * String used to denote the globe coordinates value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_GLOBE_COORDINATES = "globecoordinate";
+	static final String JSON_VALUE_TYPE_GLOBE_COORDINATES = "globecoordinate";
 	/**
 	 * String used to denote the entity id value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_ENTITY_ID = "wikibase-entityid";
+	static final String JSON_VALUE_TYPE_ENTITY_ID = "wikibase-entityid";
 	/**
 	 * String used to denote the quantity value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_QUANTITY = "quantity";
+	static final String JSON_VALUE_TYPE_QUANTITY = "quantity";
 	/**
 	 * String used to denote the monolingual text value type in JSON.
 	 */
-	public static final String JSON_VALUE_TYPE_MONOLINGUAL_TEXT = "monolingualtext";
+	static final String JSON_VALUE_TYPE_MONOLINGUAL_TEXT = "monolingualtext";
 
 	/**
 	 * JSON type id of this value.
@@ -142,9 +141,9 @@ public abstract class ValueImpl implements Value {
 					if(valueNode.has("entity-type")) {
 						String entityType = valueNode.get("entity-type").asText();
 						switch (entityType) {
-							case JacksonInnerEntityId.JSON_ENTITY_TYPE_ITEM:
+							case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
 								return ItemIdValueImpl.class;
-							case JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY:
+							case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
 								return PropertyIdValueImpl.class;
 							default:
 								throw new JsonMappingException(jsonParser, "Entities of type \""

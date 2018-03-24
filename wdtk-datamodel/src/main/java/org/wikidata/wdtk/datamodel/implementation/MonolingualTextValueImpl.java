@@ -20,10 +20,10 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerMonolingualText;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -44,10 +43,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * the JSON.
  *
  * @author Fredo Erxleben
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(using = None.class)
+@JsonDeserialize()
 public class MonolingualTextValueImpl extends ValueImpl implements
 		MonolingualTextValue {
 
@@ -60,7 +60,7 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 	/**
 	 * Constructor.
 	 */
-	public MonolingualTextValueImpl(String text, String language) {
+	MonolingualTextValueImpl(String text, String language) {
 		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
 		this.value = new JacksonInnerMonolingualText(language, text);
 	}
@@ -69,7 +69,7 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
-	protected MonolingualTextValueImpl(
+	MonolingualTextValueImpl(
 			@JsonProperty("value") JacksonInnerMonolingualText value) {
 		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
 		this.value = value;
@@ -117,4 +117,51 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 		return ToString.toString(this);
 	}
 
+	/**
+	 * Helper object that represents the JSON object structure of the value.
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class JacksonInnerMonolingualText {
+
+		private final String language;
+		private final String text;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param language
+		 * 		the Wikimedia language code
+		 * @param text
+		 * 		the text of the value
+		 */
+		@JsonCreator
+		JacksonInnerMonolingualText(
+				@JsonProperty("language") String language,
+				@JsonProperty("text") String text) {
+			Validate.notNull(language, "A language has to be provided to create a MonolingualTextValue");
+			this.language = language;
+			Validate.notNull(text, "A text has to be provided to create a MonolingualTextValue");
+			this.text = text;
+		}
+
+		/**
+		 * Returns the language code.
+		 *
+		 * @see MonolingualTextValue#getLanguageCode()
+		 * @return language code
+		 */
+		public String getLanguage() {
+			return this.language;
+		}
+
+		/**
+		 * Returns the text.
+		 *
+		 * @see MonolingualTextValue#getText()
+		 * @return text
+		 */
+		public String getText() {
+			return this.text;
+		}
+	}
 }

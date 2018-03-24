@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
@@ -33,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -43,7 +41,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(using = None.class)
+@JsonDeserialize()
 public class PropertyIdValueImpl extends EntityIdValueImpl implements
 		PropertyIdValue {
 	
@@ -59,29 +57,18 @@ public class PropertyIdValueImpl extends EntityIdValueImpl implements
 			String id,
 			String siteIri) {
 		super(id, siteIri);
-		checkEntityIdType();
+		assertHasJsonEntityType(JSON_ENTITY_TYPE_PROPERTY);
 	}
 
 	/**
 	 * Constructor used to deserialize an object from JSON with Jackson
 	 */
 	@JsonCreator
-	protected PropertyIdValueImpl(
+	PropertyIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject("siteIri") String siteIri) {
 		super(value, siteIri);
-		checkEntityIdType();
-	}
-	
-	/**
-	 * Checks that the entity id is of the right type.
-	 */
-	private void checkEntityIdType() {
-		if (!JacksonInnerEntityId.JSON_ENTITY_TYPE_PROPERTY.equals(value
-				.getJsonEntityType())) {
-			throw new RuntimeException("Unexpected inner value type: "
-					+ value.getJsonEntityType());
-		}
+		assertHasJsonEntityType(JSON_ENTITY_TYPE_PROPERTY);
 	}
 
 	@JsonIgnore

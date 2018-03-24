@@ -1,7 +1,6 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerEntityId;
 
 /*
  * #%L
@@ -35,25 +34,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Abstract base implementation of {@link EntityIdValue} for Jackson.
  *
  * @author Markus Kroetzsch
+ * @author Fredo Erxleben
+ * @author Thomas Pellissier Tanon
+ * @author Antonin Delpeuch
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class EntityIdValueImpl extends ValueImpl implements
+abstract class EntityIdValueImpl extends ValueImpl implements
 		EntityIdValue {
+
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * items.
+	 */
+	final static String JSON_ENTITY_TYPE_ITEM = "item";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * properties.
+	 */
+	final static String JSON_ENTITY_TYPE_PROPERTY = "property";
 
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON
 	 * serialization of value, but is needed in WDTK to build all current types
 	 * of {@link EntityIdValue} objects.
 	 */
-	@JsonIgnore
 	private final String siteIri;
 
 	/**
 	 * Inner helper object to store the actual data. Used to get the nested JSON
 	 * structure that is required here.
 	 */
-	protected final JacksonInnerEntityId value;
+	private final JacksonInnerEntityId value;
 	
 	/**
 	 * Constructor.
@@ -62,7 +74,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * @param siteIri
 	 *      the siteIRI that this value refers to
 	 */
-	public EntityIdValueImpl(
+	EntityIdValueImpl(
 			String id,
 			String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
@@ -75,7 +87,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * Constructor used for deserialization with Jackson.
 	 */
 	@JsonCreator
-	protected EntityIdValueImpl(
+	EntityIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
@@ -117,4 +129,139 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 		}
 	}
 
+	void assertHasJsonEntityType(String expectedType) {
+		if(!expectedType.equals(value.entityType)) {
+			throw new IllegalArgumentException(
+					"The value should have the entity-type \"" + expectedType + "\": " + this
+			);
+		}
+	}
+
+	/**
+	 * Helper object that represents the JSON object structure of the value.
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class JacksonInnerEntityId {
+
+		private final String id;
+
+		private final String entityType;
+
+		private final int numericId;
+
+		JacksonInnerEntityId(String id) {
+			this.id = id;
+			entityType = buildEntityType(id);
+			numericId = buildNumericId(id);
+		}
+
+		/**
+		 * Creates an object that can be populated during JSON deserialization.
+		 * Should only be used by Jackson for this very purpose.
+		 */
+		@JsonCreator
+		JacksonInnerEntityId(
+				@JsonProperty("id") String id,
+				@JsonProperty("numeric-id") int numericId,
+				@JsonProperty("entity-type") String entityType
+			) {
+			if(id == null) {
+				if(entityType == null || numericId == 0) {
+					throw new IllegalArgumentException("You should provide an id or an entity type and a numeric id");
+				} else {
+					this.id = buildIdFromNumericId(entityType, numericId);
+					this.entityType = entityType;
+					this.numericId = numericId;
+				}
+			} else {
+				this.id = id;
+				if(entityType == null || numericId == 0) {
+					this.entityType = buildEntityType(id);
+					this.numericId = buildNumericId(id);
+				} else if(!id.equals(buildIdFromNumericId(entityType, numericId))) {
+					throw new IllegalArgumentException("Numerical id is different from the string id");
+				} else {
+					this.entityType = entityType;
+					this.numericId = numericId;
+				}
+			}
+		}
+
+		/**
+		 * Returns the entity type string as used in JSON. Only for use by Jackson
+		 * during serialization.
+		 *
+		 * @return the entity type string
+		 */
+		@JsonProperty("entity-type")
+		public String getJsonEntityType() {
+			return entityType;
+		}
+
+		/**
+		 * Returns the numeric item id as used in JSON. Only for use by Jackson
+		 * during serialization.
+		 *
+		 * @return the numeric entity id
+		 */
+		@JsonProperty("numeric-id")
+		public int getNumericId() {
+			return numericId;
+		}
+
+		/**
+		 * Returns the standard string version of the entity id encoded in this
+		 * value. For example, an id with entityType "item" and numericId "42" is
+		 * normally identified as "Q42".
+		 *
+		 * @return the string id
+		 */
+		@JsonProperty("id")
+		public String getStringId() {
+			return id;
+		}
+
+		private String buildEntityType(String id) {
+			if (id.length() <= 1) {
+				throw new IllegalArgumentException(
+							"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
+									+ id + "\"");
+			}
+			switch (id.charAt(0)) {
+				case 'Q':
+					return JSON_ENTITY_TYPE_ITEM;
+				case 'P':
+					return JSON_ENTITY_TYPE_PROPERTY;
+				default:
+					throw new IllegalArgumentException("Unrecognized entity id: \"" + id + "\"");
+			}
+		}
+
+		private int buildNumericId(String id) {
+			if (id.length() <= 1) {
+				throw new IllegalArgumentException(
+							"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
+									+ id + "\"");
+			}
+			try {
+				return Integer.parseInt(id.substring(1));
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException(
+						"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""  + id
+									+ "\"");
+			}
+		}
+
+		private String buildIdFromNumericId(String entityType, int numericId) {
+			switch (entityType) {
+				case JSON_ENTITY_TYPE_ITEM:
+					return  "Q" + numericId;
+				case JSON_ENTITY_TYPE_PROPERTY:
+					return "P" + numericId;
+				default:
+					throw new IllegalArgumentException("Entities of type \""
+							+ entityType + "\" are not supported in property values.");
+			}
+		}
+	}
 }
