@@ -120,7 +120,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
-		return Datamodel.makeItemIdValue(this.entityId, this.siteIri);
+		return new ItemIdValueImpl(this.entityId, this.siteIri);
 	}
 
 	@JsonIgnore

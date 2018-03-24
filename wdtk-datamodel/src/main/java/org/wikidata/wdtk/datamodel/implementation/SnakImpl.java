@@ -89,7 +89,7 @@ public abstract class SnakImpl implements Snak {
 			String siteIri) {
 		Validate.notNull(id);
 		Validate.notNull(siteIri);
-		this.property = Datamodel.makePropertyIdValue(id, siteIri);
+		this.property = new PropertyIdValueImpl(id, siteIri);
 	}
 
 	/**

@@ -120,7 +120,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return Datamodel.makePropertyIdValue(this.entityId, this.siteIri);
+		return new PropertyIdValueImpl(this.entityId, this.siteIri);
 	}
 
 	@JsonIgnore
