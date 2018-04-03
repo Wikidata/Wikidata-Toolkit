@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation.json;
+package org.wikidata.wdtk.datamodel.implementation;
 
 /*
  * #%L
@@ -42,7 +42,6 @@ public class JsonComparator {
 	 * tree is build and both trees are compared.
 	 */
 	public static void compareJsonStrings(String expected, String actual) {
-
 		try {
 			JsonNode tree1 = mapper.readTree(expected);
 			JsonNode tree2 = mapper.readTree(actual);

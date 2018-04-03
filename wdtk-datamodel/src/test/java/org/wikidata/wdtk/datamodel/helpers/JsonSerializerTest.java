@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
+import org.wikidata.wdtk.datamodel.implementation.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.io.ByteArrayOutputStream;

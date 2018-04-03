@@ -30,7 +30,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class ItemDocumentImplTest {
