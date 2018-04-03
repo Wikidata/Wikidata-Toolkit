@@ -258,27 +258,6 @@ public class OwlDeclarationBuffer {
 	}
 
 	/**
-	 * Writes OWL declarations for classes that have been added recently.
-	 * Declared classes are stored so that duplicate declarations are avoided.
-	 *
-	 * @param rdfWriter
-	 *            the writer to write the declarations to
-	 * @throws RDFHandlerException
-	 *             if there was a problem writing the declarations
-	 */
-	public void writeClassDeclarations(RdfWriter rdfWriter)
-			throws RDFHandlerException {
-		for (EntityIdValue entityIdValue : this.classEntityQueue) {
-			if (!this.declaredClassEntities.add(entityIdValue)) {
-				continue;
-			}
-			rdfWriter.writeTripleValueObject(entityIdValue.getIri(),
-					RdfWriter.RDF_TYPE, RdfWriter.OWL_CLASS);
-		}
-		this.classEntityQueue.clear();
-	}
-
-	/**
 	 * Writes no-value restriction.
 	 *
 	 * @param rdfWriter
