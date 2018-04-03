@@ -300,7 +300,7 @@ public class Vocabulary {
 	/**
 	 * Property for defining the time point of a time value.
 	 */
-	public static final String WB_TIME = PREFIX_WBONTO + "time";
+	public static final String WB_TIME = PREFIX_WBONTO + "timeValue";
 	static {
 		VOCABULARY_TYPES.put(WB_TIME, OWL_DATATYPE_PROPERTY);
 	}
