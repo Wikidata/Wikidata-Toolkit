@@ -1,10 +1,10 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 /*
@@ -113,7 +113,7 @@ public abstract class ValueImpl implements Value {
 		public ValueImpl deserialize(JsonParser jsonParser,
 				DeserializationContext ctxt) throws IOException {
 
-			ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
+			ObjectCodec mapper = jsonParser.getCodec();
 			JsonNode root = mapper.readTree(jsonParser);
 			Class<? extends ValueImpl> valueClass = getValueClass(root, jsonParser);
 
