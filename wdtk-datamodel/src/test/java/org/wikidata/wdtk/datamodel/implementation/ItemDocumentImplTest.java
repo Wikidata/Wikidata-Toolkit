@@ -239,7 +239,7 @@ public class ItemDocumentImplTest {
 		ItemDocumentImpl document = new ItemDocumentImpl(iid,
 				labelList, Collections.emptyList(), Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList(), 0);
-		assertEquals(document, mapper.readValue(JSON_ITEM_LABEL, TermedStatementDocumentImpl.class));
+		assertEquals(document, mapper.readValue(JSON_ITEM_LABEL, EntityDocumentImpl.class));
 	}
 
 	@Test
@@ -255,7 +255,7 @@ public class ItemDocumentImplTest {
 		ItemDocumentImpl document = new ItemDocumentImpl(iid,
 				Collections.emptyList(), descList, Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList(), 0);
-		assertEquals(document, mapper.readValue(JSON_ITEM_DESCRIPTION, TermedStatementDocumentImpl.class));
+		assertEquals(document, mapper.readValue(JSON_ITEM_DESCRIPTION, EntityDocumentImpl.class));
 	}
 
 	@Test

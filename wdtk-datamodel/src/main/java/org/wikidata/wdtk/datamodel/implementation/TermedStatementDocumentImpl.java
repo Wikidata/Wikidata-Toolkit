@@ -59,8 +59,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({ //TODO: drop in future release
-		@Type(value = ItemDocumentImpl.class, name = TermedStatementDocumentImpl.JSON_TYPE_ITEM),
-		@Type(value = PropertyDocumentImpl.class, name = TermedStatementDocumentImpl.JSON_TYPE_PROPERTY) })
+		@Type(value = ItemDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_ITEM),
+		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
 public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedDocument {
 
 	protected final Map<String, List<MonolingualTextValue>> aliases;

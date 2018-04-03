@@ -29,10 +29,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -55,15 +56,13 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	private final ObjectReader documentReader;
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
-	private final String siteIri;
 
 	public JsonDumpFileProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
-		this.siteIri = siteIri;
 		this.mapper = new DatamodelMapper(siteIri);
 		this.documentReader = this.mapper
-				.readerFor(TermedStatementDocumentImpl.class)
+				.readerFor(EntityDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 
@@ -84,13 +83,11 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 
 		try {
 			try {
-				MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
-						.readValues(inputStream);
+				MappingIterator<EntityDocument> documentIterator = documentReader.readValues(inputStream);
 				documentIterator.getParser().disable(Feature.AUTO_CLOSE_SOURCE);
 
 				while (documentIterator.hasNextValue()) {
-					TermedStatementDocumentImpl document = documentIterator
-							.nextValue();
+					EntityDocument document = documentIterator.nextValue();
 					handleDocument(document);
 				}
 				documentIterator.close();
@@ -119,20 +116,20 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	}
 
 	/**
-	 * Handles a {@link TermedStatementDocumentImpl} that was retrieved by
+	 * Handles a {@link EntityDocument} that was retrieved by
 	 * parsing the JSON input. It will call appropriate processing methods
 	 * depending on the type of document.
 	 *
 	 * @param document
 	 *            the document to process
 	 */
-	private void handleDocument(TermedStatementDocumentImpl document) {
-		if (document instanceof ItemDocumentImpl) {
+	private void handleDocument(EntityDocument document) {
+		if (document instanceof ItemDocument) {
 			this.entityDocumentProcessor
-					.processItemDocument((ItemDocumentImpl) document);
-		} else if (document instanceof PropertyDocumentImpl) {
+					.processItemDocument((ItemDocument) document);
+		} else if (document instanceof PropertyDocument) {
 			this.entityDocumentProcessor
-					.processPropertyDocument((PropertyDocumentImpl) document);
+					.processPropertyDocument((PropertyDocument) document);
 		}
 	}
 
@@ -171,7 +168,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		line = br.readLine();
 		while (line != null && line.length() > 1) {
 			try {
-				TermedStatementDocumentImpl document;
+				EntityDocument document;
 				if (line.charAt(line.length() - 1) == ',') {
 					document = documentReader.readValue(line.substring(0,
 							line.length() - 1));
