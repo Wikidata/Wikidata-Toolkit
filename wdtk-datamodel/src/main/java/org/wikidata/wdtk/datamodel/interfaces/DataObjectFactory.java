@@ -408,4 +408,32 @@ public interface DataObjectFactory {
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks, long revisionId);
 
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	LexemeDocument getLexemeDocument(LexemeIdValue lexemeIdValue,
+								   ItemIdValue lexicalCategory,
+								   ItemIdValue language,
+								   List<MonolingualTextValue> lemmas,
+								   List<StatementGroup> statementGroups,
+								   long revisionId);
+
 }

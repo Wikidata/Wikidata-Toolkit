@@ -226,4 +226,13 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 				itemIdValue, labels, descriptions, aliases, statementGroups,
 				new ArrayList<>(siteLinks.values()), revisionId);
 	}
+
+	@Override
+	public LexemeDocument getLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			List<MonolingualTextValue> lemmas,
+			List<StatementGroup> statementGroups, long revisionId) {
+		return new LexemeDocumentImpl(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, revisionId);
+	}
 }

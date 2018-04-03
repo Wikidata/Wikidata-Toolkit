@@ -666,4 +666,30 @@ public class Datamodel {
 				aliases, statementGroups, siteLinks, revisionId);
 	}
 
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
+									 ItemIdValue lexicalCategory,
+									 ItemIdValue language,
+									 List<MonolingualTextValue> lemmas,
+									 List<StatementGroup> statementGroups) {
+		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, 0);
+	}
+
 }

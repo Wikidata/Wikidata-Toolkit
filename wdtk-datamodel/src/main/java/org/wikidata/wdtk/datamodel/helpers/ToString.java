@@ -386,6 +386,37 @@ public class ToString {
 		return sb.toString();
 	}
 
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(LexemeDocument o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("==LexemeDocument ").append(o.getLexemeId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
+		sb.append("==");
+		sb.append("\n* Lexical category: ").append(o.getLexicalCategory().getIri());
+		sb.append("\n* Language: ").append(o.getLanguage().getIri());
+		boolean first;
+		sb.append("\n* Lemmas: ");
+		first = true;
+		SortedSet<String> labelKeys = new TreeSet<>(o.getLemmas().keySet());
+		for (String key : labelKeys) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append("; ");
+			}
+			sb.append(toString(o.getLemmas().get(key)));
+		}
+		sb.append(toStringForStatementDocument(o));
+		return sb.toString();
+	}
+
 	protected static String toStringForStatementDocument(StatementDocument o) {
 		StringBuilder sb = new StringBuilder();
 

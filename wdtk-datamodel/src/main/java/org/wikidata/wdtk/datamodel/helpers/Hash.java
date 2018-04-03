@@ -20,25 +20,7 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * Static class for computing a hashcode of arbitrary data objects using only
@@ -344,7 +326,25 @@ public class Hash {
 	 *            the object to create a hash for
 	 * @return the hash code of the object
 	 */
-	protected static int hashCodeForTermedDocument(TermedDocument o) {
+	public static int hashCode(LexemeDocument o) {
+		int result;
+		result = o.getLexicalCategory().hashCode();
+		result = prime * result + o.getLanguage().hashCode();
+		result = prime * result + o.getLemmas().hashCode();
+		result = prime * result + new Long(o.getRevisionId()).hashCode();
+		result = prime * result + o.getStatementGroups().hashCode();
+		return result;
+	}
+
+	/**
+	 * Returns a hash code for the given object.
+	 *
+	 * @see java.lang.Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return the hash code of the object
+	 */
+	private static int hashCodeForTermedDocument(TermedDocument o) {
 		int result;
 		result = o.getAliases().hashCode();
 		result = prime * result + o.getDescriptions().hashCode();

@@ -20,25 +20,7 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * Static class for checking the equality of arbitrary data objects using only
@@ -485,9 +467,6 @@ public class Equality {
 	 * @return true if both objects are equal
 	 */
 	public static boolean equalsPropertyDocument(PropertyDocument o1, Object o2) {
-		if (!equalsTermedDocument(o1, o2)) {
-			return false;
-		}
 		if (o2 == o1) {
 			return true;
 		}
@@ -496,7 +475,8 @@ public class Equality {
 		}
 		PropertyDocument other = (PropertyDocument) o2;
 		// Note: property id already compared by equalsTermedDocument()
-		return o1.getDatatype().equals(other.getDatatype())
+		return equalsTermedDocument(o1, other)
+				&& o1.getDatatype().equals(other.getDatatype())
 				&& o1.getStatementGroups().equals(other.getStatementGroups());
 	}
 
@@ -512,9 +492,6 @@ public class Equality {
 	 * @return true if both objects are equal
 	 */
 	public static boolean equalsItemDocument(ItemDocument o1, Object o2) {
-		if (!equalsTermedDocument(o1, o2)) {
-			return false;
-		}
 		if (o2 == o1) {
 			return true;
 		}
@@ -523,13 +500,14 @@ public class Equality {
 		}
 		ItemDocument other = (ItemDocument) o2;
 		// Note: item id already compared by equalsTermedDocument()
-		return o1.getSiteLinks().equals(other.getSiteLinks())
+		return equalsTermedDocument(o1, other)
+				&& o1.getSiteLinks().equals(other.getSiteLinks())
 				&& o1.getStatementGroups().equals(other.getStatementGroups());
 	}
 
 	/**
-	 * Returns true if the parameters are two {@link TermedDocument} objects
-	 * with exactly the same data. It does not matter if they are different
+	 * Returns true if the parameters are two {@link LexemeDocument} objects with
+	 * exactly the same data. It does not matter if they are different
 	 * implementations of the interface as long as their content is the same.
 	 *
 	 * @param o1
@@ -538,17 +516,23 @@ public class Equality {
 	 *            the second object to compare
 	 * @return true if both objects are equal
 	 */
-	public static boolean equalsTermedDocument(TermedDocument o1, Object o2) {
-		if (o2 == null) {
-			return false;
-		}
+	public static boolean equalsLexemeDocument(LexemeDocument o1, Object o2) {
 		if (o2 == o1) {
 			return true;
 		}
-		if (!(o2 instanceof TermedDocument)) {
+		if (!(o2 instanceof LexemeDocument)) {
 			return false;
 		}
-		TermedDocument other = (TermedDocument) o2;
+		LexemeDocument other = (LexemeDocument) o2;
+		return o1.getEntityId().equals(other.getEntityId())
+				&& o1.getLanguage().equals(other.getLanguage())
+				&& o1.getLexicalCategory().equals(other.getLexicalCategory())
+				&& o1.getLemmas().equals(other.getLemmas())
+				&& o1.getStatementGroups().equals(other.getStatementGroups())
+				&& (o1.getRevisionId() == other.getRevisionId());
+	}
+
+	private static boolean equalsTermedDocument(TermedDocument o1, TermedDocument other) {
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getAliases().equals(other.getAliases())
 				&& o1.getDescriptions().equals(other.getDescriptions())

@@ -348,4 +348,22 @@ public class DatamodelTest {
 				0);
 		assertEquals(o1, o2);
 	}
+
+	@Test
+	public final void testGetLexemeDocument() {
+		LexemeDocument o1 = Datamodel.makeLexemeDocument(
+				factory.getLexemeIdValue("L42", "foo"),
+				factory.getItemIdValue("Q1", "foo"),
+				factory.getItemIdValue("Q2", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList());
+		LexemeDocument o2 = factory.getLexemeDocument(
+				factory.getLexemeIdValue("L42", "foo"),
+				factory.getItemIdValue("Q1", "foo"),
+				factory.getItemIdValue("Q2", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
 }
