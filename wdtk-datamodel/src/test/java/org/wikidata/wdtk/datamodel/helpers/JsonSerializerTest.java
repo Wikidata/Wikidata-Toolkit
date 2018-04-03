@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation.json;
+package org.wikidata.wdtk.datamodel.helpers;
 
 /*
  * #%L
@@ -25,9 +25,8 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class JsonSerializerTest {
 
@@ -136,6 +136,6 @@ public class JsonSerializerTest {
 		};
 
 		String result = JsonSerializer.jacksonObjectToString(obj);
-		assertEquals(null, result);
+		assertNull(result);
 	}
 }

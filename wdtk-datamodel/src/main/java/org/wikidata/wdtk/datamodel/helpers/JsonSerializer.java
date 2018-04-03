@@ -1,4 +1,4 @@
-package org.wikidata.wdtk.datamodel.implementation.json;
+package org.wikidata.wdtk.datamodel.helpers;
 
 /*
  * #%L
