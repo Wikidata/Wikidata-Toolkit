@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -102,9 +101,9 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonCreator
 	public ItemDocumentImpl(
 			@JsonProperty("id") String jsonId,
-			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
-			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
-			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
+			@JsonProperty("labels") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") @JsonDeserialize(using = AliasesDeserializer.class) Map<String, List<MonolingualTextValue>> aliases,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("sitelinks") Map<String, SiteLink> sitelinks,
 			@JsonProperty("lastrevid") long revisionId,

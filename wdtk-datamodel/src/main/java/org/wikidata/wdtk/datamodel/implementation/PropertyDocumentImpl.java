@@ -23,7 +23,7 @@ import java.util.Map;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -94,9 +94,9 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonCreator
 	public PropertyDocumentImpl(
 			@JsonProperty("id") String jsonId,
-			@JsonProperty("labels") Map<String, MonolingualTextValue> labels,
-			@JsonProperty("descriptions") Map<String, MonolingualTextValue> descriptions,
-			@JsonProperty("aliases") Map<String, List<MonolingualTextValue>> aliases,
+			@JsonProperty("labels") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> labels,
+			@JsonProperty("descriptions") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> descriptions,
+			@JsonProperty("aliases") @JsonDeserialize(using = AliasesDeserializer.class) Map<String, List<MonolingualTextValue>> aliases,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
