@@ -143,6 +143,8 @@ public abstract class ValueImpl implements Value {
 						switch (entityType) {
 							case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
 								return ItemIdValueImpl.class;
+							case EntityIdValueImpl.JSON_ENTITY_TYPE_LEXEME:
+								return LexemeIdValueImpl.class;
 							case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
 								return PropertyIdValueImpl.class;
 							default:
@@ -156,10 +158,12 @@ public abstract class ValueImpl implements Value {
 							throw new JsonMappingException(jsonParser, "Entity ids should not be empty.");
 						}
 						switch (id.charAt(0)) {
-							case 'Q':
-								return ItemIdValueImpl.class;
+							case 'L':
+								return LexemeIdValueImpl.class;
 							case 'P':
 								return PropertyIdValueImpl.class;
+							case 'Q':
+								return ItemIdValueImpl.class;
 							default:
 								throw new JsonMappingException(jsonParser, "Entity id \"" + id
 										+ "\" is not supported as property values yet.");

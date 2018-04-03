@@ -50,6 +50,11 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	public final static String JSON_ENTITY_TYPE_ITEM = "item";
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
+	 * lexemes.
+	 */
+	public final static String JSON_ENTITY_TYPE_LEXEME = "lexeme";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
 	 * properties.
 	 */
 	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
@@ -224,14 +229,16 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 		private String buildEntityType(String id) {
 			if (id.length() <= 1) {
 				throw new IllegalArgumentException(
-							"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
+							"Wikibase entity ids must have the form \"(L|P|Q)<positive integer>\". Given id was \""
 									+ id + "\"");
 			}
 			switch (id.charAt(0)) {
-				case 'Q':
-					return JSON_ENTITY_TYPE_ITEM;
+				case 'L':
+					return JSON_ENTITY_TYPE_LEXEME;
 				case 'P':
 					return JSON_ENTITY_TYPE_PROPERTY;
+				case 'Q':
+					return JSON_ENTITY_TYPE_ITEM;
 				default:
 					throw new IllegalArgumentException("Unrecognized entity id: \"" + id + "\"");
 			}
@@ -240,14 +247,14 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 		private int buildNumericId(String id) {
 			if (id.length() <= 1) {
 				throw new IllegalArgumentException(
-							"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""
+							"Wikibase entity ids must have the form \"(L|P|Q)<positive integer>\". Given id was \""
 									+ id + "\"");
 			}
 			try {
 				return Integer.parseInt(id.substring(1));
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException(
-						"Wikibase entity ids must have the form \"(Q|P)<positive integer>\". Given id was \""  + id
+						"Wikibase entity ids must have the form \"(L|P|Q)<positive integer>\". Given id was \""  + id
 									+ "\"");
 			}
 		}
@@ -256,6 +263,8 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 			switch (entityType) {
 				case JSON_ENTITY_TYPE_ITEM:
 					return  "Q" + numericId;
+				case JSON_ENTITY_TYPE_LEXEME:
+					return  "L" + numericId;
 				case JSON_ENTITY_TYPE_PROPERTY:
 					return "P" + numericId;
 				default:

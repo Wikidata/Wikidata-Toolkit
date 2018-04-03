@@ -88,4 +88,14 @@ public class NullEntityIdsTest {
 				PropertyIdValue.NULL.getIri());
 	}
 
+	@Test
+	public void testNullLexemeId() {
+		TestValueVisitor tvv = new TestValueVisitor();
+		assertEquals("L0", LexemeIdValue.NULL.accept(tvv));
+		assertEquals("L0", LexemeIdValue.NULL.getId());
+		assertEquals("http://localhost/entity/", LexemeIdValue.NULL.getSiteIri());
+		assertEquals(EntityIdValue.ET_LEXEME, LexemeIdValue.NULL.getEntityType());
+		assertEquals("http://localhost/entity/L0", LexemeIdValue.NULL.getIri());
+	}
+
 }

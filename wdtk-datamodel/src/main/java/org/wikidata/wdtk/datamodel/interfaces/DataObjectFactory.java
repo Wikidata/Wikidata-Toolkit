@@ -53,6 +53,20 @@ public interface DataObjectFactory {
 	ItemIdValue getItemIdValue(String id, String siteIri);
 
 	/**
+	 * Creates a {@link LexemeIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Ln... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return a {@link LexemeIdValue} corresponding to the input
+	 */
+	LexemeIdValue getLexemeIdValue(String id, String siteIri);
+
+	/**
 	 * Creates a {@link PropertyIdValue}.
 	 *
 	 * @param id

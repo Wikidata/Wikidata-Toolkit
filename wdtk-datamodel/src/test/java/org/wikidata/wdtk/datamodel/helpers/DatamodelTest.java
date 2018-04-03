@@ -30,28 +30,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
 import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
 	DataObjectFactory factory;
@@ -72,6 +51,21 @@ public class DatamodelTest {
 	public final void testGetWikidataItemId() {
 		ItemIdValue o1 = Datamodel.makeWikidataItemIdValue("Q42");
 		ItemIdValue o2 = factory.getItemIdValue("Q42",
+				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetLexemeId() {
+		LexemeIdValue o1 = Datamodel.makeLexemeIdValue("L42", "foo");
+		LexemeIdValue o2 = factory.getLexemeIdValue("L42", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikidataLexemeId() {
+		LexemeIdValue o1 = Datamodel.makeWikidataLexemeIdValue("L42");
+		LexemeIdValue o2 = factory.getLexemeIdValue("L42",
 				"http://www.wikidata.org/entity/");
 		assertEquals(o1, o2);
 	}
