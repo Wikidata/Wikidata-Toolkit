@@ -130,7 +130,7 @@ public class RdfConverter {
 		this.rdfWriter.writeNamespaceDeclaration("id",
 				this.propertyRegister.getUriPrefix());
 		this.rdfWriter
-				.writeNamespaceDeclaration("wo", Vocabulary.PREFIX_WBONTO);
+				.writeNamespaceDeclaration("wikibase", Vocabulary.PREFIX_WBONTO);
 		this.rdfWriter.writeNamespaceDeclaration("rdf", Vocabulary.PREFIX_RDF);
 		this.rdfWriter
 				.writeNamespaceDeclaration("rdfs", Vocabulary.PREFIX_RDFS);
