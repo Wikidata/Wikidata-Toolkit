@@ -75,7 +75,7 @@ public class RdfConverterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.rdfWriter = new RdfWriter(RDFFormat.N3, out);
+		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, out);
 		this.sites = new SitesImpl();
 		this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites,
 				new MockPropertyRegister());

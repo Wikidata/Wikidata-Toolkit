@@ -44,7 +44,7 @@ public class RdfTestHelpers {
 	public static Model parseRdf(String rdfResource) throws RDFParseException,
 			RDFHandlerException, IOException {
 		InputStream inStream = new ByteArrayInputStream(rdfResource.getBytes());
-		RDFParser parser = Rio.createParser(RDFFormat.N3);
+		RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
 		Model graph = new LinkedHashModel();
 		parser.setRDFHandler(new StatementCollector(graph));
 		parser.parse(inStream, "http://test/");

@@ -22,11 +22,6 @@
 	</dependency>
 	<dependency>
 		<groupId>org.eclipse.rdf4j</groupId>
-		<artifactId>rdf4j-rio-n3</artifactId>
-		<version>${rdf4jVersion}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.eclipse.rdf4j</groupId>
 		<artifactId>rdf4j-rio-ntriples</artifactId>
 		<version>${rdf4jVersion}</version>
 	</dependency>

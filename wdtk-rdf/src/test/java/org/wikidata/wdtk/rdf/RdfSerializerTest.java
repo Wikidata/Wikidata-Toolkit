@@ -44,7 +44,7 @@ public class RdfSerializerTest {
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.rdfSerializer = new RdfSerializer(RDFFormat.N3, this.out,
+		this.rdfSerializer = new RdfSerializer(RDFFormat.TURTLE, this.out,
 				new SitesImpl(), new MockPropertyRegister());
 
 	}

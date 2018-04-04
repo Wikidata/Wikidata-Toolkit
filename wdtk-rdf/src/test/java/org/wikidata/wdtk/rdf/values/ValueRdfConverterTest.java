@@ -64,7 +64,7 @@ public class ValueRdfConverterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.rdfWriter = new RdfWriter(RDFFormat.N3, this.out);
+		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, this.out);
 		this.rdfConversionBuffer = new OwlDeclarationBuffer();
 		this.rdfWriter.start();
 	}

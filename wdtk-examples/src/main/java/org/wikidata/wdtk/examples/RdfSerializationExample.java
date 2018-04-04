@@ -36,7 +36,7 @@ import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
- * This class shows how convert data from wikidata.org to RDF in N3 format. The
+ * This class shows how convert data from wikidata.org to RDF in N-Triples format. The
  * compressed output will be written into an output file.
  * <p>
  * The Wikidata Toolkit command line client provides a stand-alone tool for
