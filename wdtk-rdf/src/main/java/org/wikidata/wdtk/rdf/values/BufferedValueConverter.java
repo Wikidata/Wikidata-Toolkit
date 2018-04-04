@@ -25,8 +25,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openrdf.model.Resource;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;

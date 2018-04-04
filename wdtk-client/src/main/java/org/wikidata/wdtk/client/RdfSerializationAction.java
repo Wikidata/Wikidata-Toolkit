@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.text.WordUtils;
-import org.openrdf.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;

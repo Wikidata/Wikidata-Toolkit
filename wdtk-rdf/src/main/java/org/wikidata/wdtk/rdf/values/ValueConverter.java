@@ -20,8 +20,8 @@ package org.wikidata.wdtk.rdf.values;
  * #L%
  */
 
-import org.openrdf.model.Value;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 
 /**

@@ -27,10 +27,10 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.model.Model;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 
 public class RdfSerializerTest {

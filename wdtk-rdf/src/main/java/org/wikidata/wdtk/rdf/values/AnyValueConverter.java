@@ -19,8 +19,8 @@ package org.wikidata.wdtk.rdf.values;
  * limitations under the License.
  * #L%
  */
-import org.openrdf.model.Value;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
