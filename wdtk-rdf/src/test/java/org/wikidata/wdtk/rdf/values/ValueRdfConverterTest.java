@@ -32,7 +32,7 @@ import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.ValueFactoryImpl;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
@@ -57,9 +57,9 @@ public class ValueRdfConverterTest {
 	PropertyRegister propertyRegister = new MockPropertyRegister();
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
-	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
+	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
 
-	Resource resource = rdfFactory.createURI("http://test.org/");
+	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	@Before
 	public void setUp() throws Exception {

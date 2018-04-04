@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.URI;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
@@ -287,7 +287,7 @@ public class RdfConverter {
 			throws RDFHandlerException {
 		for (StatementGroup statementGroup : statementDocument
 				.getStatementGroups()) {
-			URI property = this.rdfWriter.getUri(Vocabulary.getPropertyUri(
+			IRI property = this.rdfWriter.getUri(Vocabulary.getPropertyUri(
 					statementGroup.getProperty(), PropertyContext.STATEMENT));
 			for (Statement statement : statementGroup) {
 				this.rdfWriter.writeTripleUriObject(subject, property,
@@ -337,7 +337,7 @@ public class RdfConverter {
 		}
 	}
 
-	void writeTermTriples(Resource subject, URI predicate,
+	void writeTermTriples(Resource subject, IRI predicate,
 			Collection<MonolingualTextValue> terms) throws RDFHandlerException {
 		for (MonolingualTextValue mtv : terms) {
 			this.rdfWriter.writeTripleValueObject(subject, predicate,
@@ -439,7 +439,7 @@ public class RdfConverter {
 			SiteLink siteLink = siteLinks.get(key);
 			String siteLinkUrl = this.sites.getSiteLinkUrl(siteLink);
 			if (siteLinkUrl != null) {
-				URI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
+				IRI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
 
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
 						RdfWriter.RDF_TYPE, RdfWriter.WB_ARTICLE);

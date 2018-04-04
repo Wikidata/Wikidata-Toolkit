@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.ValueFactoryImpl;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
@@ -66,8 +66,8 @@ public class RdfConverterTest {
 
 	SitesImpl sites;
 
-	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
-	Resource resource = rdfFactory.createURI("http://test.org/");
+	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
+	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
@@ -125,7 +125,7 @@ public class RdfConverterTest {
 			RDFParseException, IOException {
 		StatementRank rank = StatementRank.DEPRECATED;
 		Resource subject = this.rdfFactory
-				.createURI("http://www.wikidata.org/Q10Snone");
+				.createIRI("http://www.wikidata.org/Q10Snone");
 		this.rdfConverter.writeStatementRankTriple(subject, rank);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());

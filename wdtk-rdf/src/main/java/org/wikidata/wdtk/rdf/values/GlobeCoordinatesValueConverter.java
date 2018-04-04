@@ -22,7 +22,7 @@ package org.wikidata.wdtk.rdf.values;
 
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.URI;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -53,7 +53,7 @@ public class GlobeCoordinatesValueConverter extends
 			if (simple) {
 				return getSimpleGeoValue(value);
 			} else {
-				URI valueUri = this.rdfWriter.getUri(Vocabulary
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary
 						.getGlobeCoordinatesValueUri(value,
 								this.propertyRegister.getUriPrefix()));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
@@ -85,7 +85,7 @@ public class GlobeCoordinatesValueConverter extends
 				RdfWriter.WB_GEO_PRECISION, Double.valueOf(value.getPrecision())
 						.toString(), RdfWriter.XSD_DOUBLE);
 
-		URI globeUri;
+		IRI globeUri;
 		try {
 			globeUri = this.rdfWriter.getUri(value.getGlobe());
 		} catch (IllegalArgumentException e) {

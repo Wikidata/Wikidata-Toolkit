@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.URI;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
@@ -146,7 +146,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public Void visit(ValueSnak snak) {
 		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
 				this.currentPropertyContext);
-		URI property = this.rdfWriter.getUri(propertyUri);
+		IRI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
 				snak.getPropertyId(), this.simple);
 		if (value == null) { // TODO: could also be null if there is no complex

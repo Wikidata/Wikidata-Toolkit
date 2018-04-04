@@ -22,7 +22,7 @@ package org.wikidata.wdtk.rdf.values;
 
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.URI;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -54,7 +54,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 				this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
 				return TimeValueConverter.getTimeLiteral(value, this.rdfWriter);
 			} else {
-				URI valueUri = this.rdfWriter.getUri(Vocabulary
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary
 						.getTimeValueUri(value,
 								this.propertyRegister.getUriPrefix()));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
