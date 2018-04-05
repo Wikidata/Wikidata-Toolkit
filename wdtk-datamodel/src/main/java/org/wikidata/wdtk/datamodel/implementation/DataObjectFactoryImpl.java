@@ -39,9 +39,6 @@ import java.util.Map;
  */
 public class DataObjectFactoryImpl implements DataObjectFactory {
 
-	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
-			this);
-
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
 		return new ItemIdValueImpl(id, siteIri);
@@ -185,15 +182,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public StatementGroup getStatementGroup(List<Statement> statements) {
-		List<Statement> newStatements = new ArrayList<>(statements.size());
-		for (Statement statement : statements) {
-			if (statement instanceof StatementImpl) {
-				newStatements.add(statement);
-			} else {
-				newStatements.add(this.dataModelConverter.copy(statement));
-			}
-		}
-		return new StatementGroupImpl(newStatements);
+		return new StatementGroupImpl(statements);
 	}
 
 	@Override
