@@ -43,6 +43,8 @@ public class SnakImplTest {
 	private final ValueSnak vs2 = new ValueSnakImpl(p1, p1);
 	private final ValueSnak vs3 = new ValueSnakImpl(p2, p1);
 	private final ValueSnak vs4 = new ValueSnakImpl(p1, p2);
+	private final ValueSnak vsmt1 = new ValueSnakImpl(p1, new TermImpl("en", "foo"));
+	private final ValueSnak vsmt2 = new ValueSnakImpl(p1, new MonolingualTextValueImpl("foo", "en"));
 	private final SomeValueSnak svs1 = new SomeValueSnakImpl(p1);
 	private final SomeValueSnak svs2 = new SomeValueSnakImpl(p1);
 	private final SomeValueSnak svs3 = new SomeValueSnakImpl(p2);
@@ -52,10 +54,12 @@ public class SnakImplTest {
 	private final String JSON_NOVALUE_SNAK = "{\"snaktype\":\"novalue\",\"property\":\"P42\"}";
 	private final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\"P42\"}";
 	private final String JSON_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"wikibase-property\",\"datavalue\":{\"value\":{\"id\":\"P42\",\"numeric-id\":42,\"entity-type\":\"property\"},\"type\":\"wikibase-entityid\"}}";
+	private final String JSON_MONOLINGUAL_TEXT_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"monolingualtext\",\"datavalue\":{\"value\":{\"language\":\"en\",\"text\":\"foo\"},\"type\":\"monolingualtext\"}}";
 
 	@Test
 	public void snakHashBasedOnContent() {
 		assertEquals(vs1.hashCode(), vs2.hashCode());
+		assertEquals(vsmt1.hashCode(), vsmt2.hashCode());
 		assertEquals(svs1.hashCode(), svs2.hashCode());
 		assertEquals(nvs1.hashCode(), nvs2.hashCode());
 	}
@@ -88,6 +92,7 @@ public class SnakImplTest {
 		assertEquals(svs1, svs2);
 		assertNotEquals(svs1, svs3);
 		assertNotEquals(svs1, null);
+		assertEquals(vsmt1, vsmt2);
 	}
 
 	@Test
@@ -138,5 +143,17 @@ public class SnakImplTest {
 	@Test
 	public void testValueSnakToJson() throws JsonProcessingException {
 		JsonComparator.compareJsonStrings(JSON_VALUE_SNAK, mapper.writeValueAsString(vs1));
+	}
+
+	@Test
+	public void testMonolingualTextValueSnakToJava() throws IOException {
+		assertEquals(vsmt1, mapper.readValue(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, SnakImpl.class));
+		assertEquals(vsmt2, mapper.readValue(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, SnakImpl.class));
+	}
+
+	@Test
+	public void testMonolingualTextValueSnakToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, mapper.writeValueAsString(vsmt1));
+		JsonComparator.compareJsonStrings(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, mapper.writeValueAsString(vsmt2));
 	}
 }

@@ -78,7 +78,9 @@ public class ValueSnakImpl extends SnakImpl implements ValueSnak {
 	public ValueSnakImpl(PropertyIdValue property, Value value) {
 		super(property);
 		Validate.notNull(value, "A datavalue must be provided to create a value snak.");
-		this.datavalue = value;
+		datavalue = (value instanceof TermImpl)
+				? new MonolingualTextValueImpl(((TermImpl) value).getText(), ((TermImpl) value).getLanguageCode())
+				: value;
 		this.datatype = getJsonPropertyTypeForValueType(datavalue);
 	}
 
