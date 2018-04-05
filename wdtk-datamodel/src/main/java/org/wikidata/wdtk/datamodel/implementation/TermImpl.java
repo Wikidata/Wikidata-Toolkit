@@ -77,6 +77,7 @@ public class TermImpl implements MonolingualTextValue {
 	 * @param mltv
 	 *            the object to copy the data from
 	 */
+	@Deprecated
 	public TermImpl(MonolingualTextValue mltv) {
 		this(mltv.getLanguageCode(), mltv.getText());
 	}

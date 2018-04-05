@@ -45,9 +45,9 @@ public class ItemDocumentImplTest {
 	);
 	private final MonolingualTextValue label = new TermImpl("en", "label");
 	private final List<MonolingualTextValue> labelList = Collections.singletonList(label);
-	private final MonolingualTextValue desc = new TermImpl("fr", "des");
+	private final MonolingualTextValue desc = new MonolingualTextValueImpl("des", "fr");
 	private final List<MonolingualTextValue> descList = Collections.singletonList(desc);
-	private final MonolingualTextValue alias = new TermImpl("de", "alias");
+	private final MonolingualTextValue alias = new MonolingualTextValueImpl("alias", "de");
 	private final List<MonolingualTextValue> aliasList = Collections.singletonList(alias);
 	private final List<SiteLink> sitelinks = Collections.singletonList(
 			new SiteLinkImpl("Douglas Adams", "enwiki", Collections.emptyList())
