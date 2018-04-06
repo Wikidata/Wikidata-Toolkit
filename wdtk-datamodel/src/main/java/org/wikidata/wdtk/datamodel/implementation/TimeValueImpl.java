@@ -84,7 +84,7 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	 *            time
 	 * @return a {@link TimeValue} corresponding to the input
 	 */
-	TimeValueImpl(long year, byte month, byte day, byte hour, byte minute,
+	public TimeValueImpl(long year, byte month, byte day, byte hour, byte minute,
 			byte second, byte precision, int beforeTolerance,
 			int afterTolerance, int timezoneOffset, String calendarModel) {
 		super(JSON_VALUE_TYPE_TIME);

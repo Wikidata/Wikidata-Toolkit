@@ -64,7 +64,7 @@ public class GlobeCoordinatesValueImpl extends ValueImpl implements
 	 * @param globe
 	 *            IRI specifying the celestial objects of the coordinates
 	 */
-	GlobeCoordinatesValueImpl(double latitude, double longitude,
+	public GlobeCoordinatesValueImpl(double latitude, double longitude,
 			double precision, String globe) {
 		super(JSON_VALUE_TYPE_GLOBE_COORDINATES);
 		this.value = new JacksonInnerGlobeCoordinates(latitude, longitude,

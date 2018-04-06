@@ -40,19 +40,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-abstract class EntityIdValueImpl extends ValueImpl implements
+public abstract class EntityIdValueImpl extends ValueImpl implements
 		EntityIdValue {
 
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
 	 * items.
 	 */
-	final static String JSON_ENTITY_TYPE_ITEM = "item";
+	public final static String JSON_ENTITY_TYPE_ITEM = "item";
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
 	 * properties.
 	 */
-	final static String JSON_ENTITY_TYPE_PROPERTY = "property";
+	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
 
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON
@@ -74,7 +74,7 @@ abstract class EntityIdValueImpl extends ValueImpl implements
 	 * @param siteIri
 	 *      the siteIRI that this value refers to
 	 */
-	EntityIdValueImpl(
+	protected EntityIdValueImpl(
 			String id,
 			String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
@@ -87,7 +87,7 @@ abstract class EntityIdValueImpl extends ValueImpl implements
 	 * Constructor used for deserialization with Jackson.
 	 */
 	@JsonCreator
-	EntityIdValueImpl(
+	protected EntityIdValueImpl(
 			@JsonProperty("value") JacksonInnerEntityId value,
 			@JacksonInject String siteIri) {
 		super(JSON_VALUE_TYPE_ENTITY_ID);
@@ -129,7 +129,7 @@ abstract class EntityIdValueImpl extends ValueImpl implements
 		}
 	}
 
-	void assertHasJsonEntityType(String expectedType) {
+	protected void assertHasJsonEntityType(String expectedType) {
 		if(!expectedType.equals(value.entityType)) {
 			throw new IllegalArgumentException(
 					"The value should have the entity-type \"" + expectedType + "\": " + this

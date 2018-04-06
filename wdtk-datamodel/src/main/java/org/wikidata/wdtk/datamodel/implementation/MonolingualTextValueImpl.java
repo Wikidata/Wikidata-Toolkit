@@ -60,7 +60,7 @@ public class MonolingualTextValueImpl extends ValueImpl implements
 	/**
 	 * Constructor.
 	 */
-	MonolingualTextValueImpl(String text, String language) {
+	public MonolingualTextValueImpl(String text, String language) {
 		super(JSON_VALUE_TYPE_MONOLINGUAL_TEXT);
 		this.value = new JacksonInnerMonolingualText(language, text);
 	}

@@ -64,7 +64,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 *            the unit of this quantity, or the empty string if there is no
 	 *            unit
 	 */
-	QuantityValueImpl(
+	public QuantityValueImpl(
 			BigDecimal numericValue,
 			BigDecimal lowerBound,
 			BigDecimal upperBound,

@@ -43,32 +43,32 @@ import java.io.IOException;
  */
 @JsonDeserialize(using = ValueImpl.JacksonDeserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-abstract class ValueImpl implements Value {
+public abstract class ValueImpl implements Value {
 
 	/**
 	 * String used to denote the string value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_STRING = "string";
+	public static final String JSON_VALUE_TYPE_STRING = "string";
 	/**
 	 * String used to denote the time value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_TIME = "time";
+	public static final String JSON_VALUE_TYPE_TIME = "time";
 	/**
 	 * String used to denote the globe coordinates value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_GLOBE_COORDINATES = "globecoordinate";
+	public static final String JSON_VALUE_TYPE_GLOBE_COORDINATES = "globecoordinate";
 	/**
 	 * String used to denote the entity id value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_ENTITY_ID = "wikibase-entityid";
+	public static final String JSON_VALUE_TYPE_ENTITY_ID = "wikibase-entityid";
 	/**
 	 * String used to denote the quantity value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_QUANTITY = "quantity";
+	public static final String JSON_VALUE_TYPE_QUANTITY = "quantity";
 	/**
 	 * String used to denote the monolingual text value type in JSON.
 	 */
-	static final String JSON_VALUE_TYPE_MONOLINGUAL_TEXT = "monolingualtext";
+	public static final String JSON_VALUE_TYPE_MONOLINGUAL_TEXT = "monolingualtext";
 
 	/**
 	 * JSON type id of this value.
