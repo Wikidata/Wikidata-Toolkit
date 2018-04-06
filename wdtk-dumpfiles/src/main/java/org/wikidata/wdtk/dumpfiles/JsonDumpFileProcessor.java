@@ -63,7 +63,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		this.siteIri = siteIri;
 		this.mapper = new DatamodelMapper(siteIri);
 		this.documentReader = this.mapper
-				.reader(TermedStatementDocumentImpl.class)
+				.readerFor(TermedStatementDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 

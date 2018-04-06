@@ -479,7 +479,7 @@ public class WbEditEntityAction {
 					.replace("\"descriptions\":[]", "\"descriptions\":{}");
 
 			ObjectReader documentReader = this.mapper
-					.reader(TermedStatementDocumentImpl.class);
+					.readerFor(TermedStatementDocumentImpl.class);
 
 			TermedStatementDocumentImpl ed;
 			ed = documentReader.readValue(jsonString);
