@@ -47,7 +47,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Hash map defining the relative Web directory of each type of dump.
 	 */
-	static final Map<DumpContentType, String> WEB_DIRECTORY = new HashMap<DumpContentType, String>();
+	static final Map<DumpContentType, String> WEB_DIRECTORY = new HashMap<>();
 	static {
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.DAILY, "other/incr/");
 		WmfDumpFile.WEB_DIRECTORY.put(DumpContentType.CURRENT, "");
@@ -76,7 +76,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	 * revisions or not. Dumps with page revisions have a maximal revision id,
 	 * while other dump files do not.
 	 */
-	static final Map<DumpContentType, Boolean> REVISION_DUMP = new HashMap<DumpContentType, Boolean>();
+	static final Map<DumpContentType, Boolean> REVISION_DUMP = new HashMap<>();
 	static {
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.DAILY, true);
 		WmfDumpFile.REVISION_DUMP.put(DumpContentType.CURRENT, true);

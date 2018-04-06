@@ -118,7 +118,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 	 */
 	public MwRevisionDumpFileProcessor(MwRevisionProcessor mwRevisionProcessor) {
 		this.xmlFactory = XMLInputFactory.newInstance();
-		this.namespaces = new HashMap<Integer, String>();
+		this.namespaces = new HashMap<>();
 		this.mwRevision = new MwRevisionImpl();
 		this.mwRevisionProcessor = mwRevisionProcessor;
 		reset();
@@ -243,7 +243,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 					this.sitename = this.xmlReader.getElementText();
 					break;
 				case MwRevisionDumpFileProcessor.E_NAMESPACE:
-					Integer namespaceKey = new Integer(
+					Integer namespaceKey = Integer.parseInt(
 							this.xmlReader.getAttributeValue(null,
 									MwRevisionDumpFileProcessor.A_NSKEY));
 					this.namespaces.put(namespaceKey,
@@ -334,12 +334,10 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 					this.mwRevision.prefixedTitle = this.xmlReader.getElementText();
 					break;
 				case MwRevisionDumpFileProcessor.E_PAGE_NAMESPACE:
-					this.mwRevision.namespace = new Integer(
-							this.xmlReader.getElementText());
+					this.mwRevision.namespace = Integer.parseInt(this.xmlReader.getElementText());
 					break;
 				case MwRevisionDumpFileProcessor.E_PAGE_ID:
-					this.mwRevision.pageId = new Integer(
-							this.xmlReader.getElementText());
+					this.mwRevision.pageId = Integer.parseInt(this.xmlReader.getElementText());
 					break;
 				case MwRevisionDumpFileProcessor.E_PAGE_REVISION:
 					processXmlRevision();
@@ -463,8 +461,7 @@ public class MwRevisionDumpFileProcessor implements MwDumpFileProcessor {
 							.getElementText();
 					break;
 				case MwRevisionDumpFileProcessor.E_CONTRIBUTOR_ID:
-					this.mwRevision.contributorId = new Integer(
-							this.xmlReader.getElementText());
+					this.mwRevision.contributorId = Integer.parseInt(this.xmlReader.getElementText());
 					break;
 				case MwRevisionDumpFileProcessor.E_CONTRIBUTOR_IP:
 					this.mwRevision.contributor = this.xmlReader

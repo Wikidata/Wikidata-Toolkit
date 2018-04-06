@@ -622,7 +622,7 @@ public class DumpProcessingController {
 		ListenerRegistration listenerRegistration = new ListenerRegistration(
 				model, onlyCurrentRevisions);
 		if (!processors.containsKey(listenerRegistration)) {
-			processors.put(listenerRegistration, new ArrayList<T>());
+			processors.put(listenerRegistration, new ArrayList<>());
 		}
 
 		processors.get(listenerRegistration).add(processor);
@@ -664,7 +664,6 @@ public class DumpProcessingController {
 	 *
 	 * @param processor
 	 *            the processor to wrap
-	 * @return
 	 */
 	private EntityDocumentProcessor filterEntityDocumentProcessor(
 			EntityDocumentProcessor processor) {

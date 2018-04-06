@@ -497,7 +497,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 			for (Statement s : instanceClasses) {
 				Value v = s.getValue();
 				if (v != null) {
-					pr.classes.add(new Integer(((ItemIdValue) v).getId()
+					pr.classes.add(Integer.parseInt(((ItemIdValue) v).getId()
 							.substring(1)));
 				}
 			}
@@ -713,7 +713,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 		} else {
 			numString = idString.substring(1);
 		}
-		return new Integer(numString);
+		return Integer.parseInt(numString);
 	}
 
 	/**

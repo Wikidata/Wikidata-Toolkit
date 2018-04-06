@@ -293,7 +293,7 @@ public class PropertyRegister {
 	 * @param property
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
-		int propertyIdNumber = new Integer(property.getId().substring(1));
+		int propertyIdNumber = Integer.parseInt(property.getId().substring(1));
 		// Don't do anything if all properties up to this index have already
 		// been fetched. In particular, don't try indefinitely to find a
 		// certain property type (maybe the property was deleted).
