@@ -30,8 +30,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonPreStatement;
-import org.wikidata.wdtk.datamodel.implementation.json.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class StatementImplTest {
@@ -129,7 +127,7 @@ public class StatementImplTest {
 
 	@Test
 	public void testStatementToJava() throws IOException {
-		assertEquals(s1, mapper.readValue(JSON_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
+		assertEquals(s1, mapper.readValue(JSON_STATEMENT, StatementImpl.PreStatement.class).withSubject(subjet));
 	}
 
 	@Test
@@ -139,6 +137,6 @@ public class StatementImplTest {
 
 	@Test
 	public void testSmallStatementToJava() throws IOException {
-		assertEquals(smallStatement, mapper.readValue(JSON_SMALL_STATEMENT, JacksonPreStatement.class).withSubject(subjet));
+		assertEquals(smallStatement, mapper.readValue(JSON_SMALL_STATEMENT, StatementImpl.PreStatement.class).withSubject(subjet));
 	}
 }

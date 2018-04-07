@@ -23,7 +23,7 @@ package org.wikidata.wdtk.client;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.wikidata.wdtk.datamodel.implementation.json.JsonSerializer;
+import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 

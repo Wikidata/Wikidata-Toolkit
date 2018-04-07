@@ -22,18 +22,14 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.implementation.json.JacksonInnerQuantity;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -44,7 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(using = None.class)
+@JsonDeserialize()
 public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 
 	/**
@@ -82,7 +78,7 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	 * Constructor used for deserialization from JSON with Jackson.
 	 */
 	@JsonCreator
-	protected QuantityValueImpl(
+	QuantityValueImpl(
 			@JsonProperty("value") JacksonInnerQuantity value) {
 		super(JSON_VALUE_TYPE_QUANTITY);
 		this.value = value;
@@ -140,5 +136,133 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	/**
+	 * Helper object that represents the JSON object structure of the value.
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class JacksonInnerQuantity {
+
+		private final BigDecimal amount;
+		private final BigDecimal upperBound;
+		private final BigDecimal lowerBound;
+		private final String unit;
+
+		/**
+		 * Constructor. The unit given here is a unit string as used in WDTK, with
+		 * the empty string meaning "no unit".
+		 *
+		 * @param amount
+		 * 		the main value of this quantity
+		 * @param lowerBound
+		 * 		the lower bound of this quantity
+		 * @param upperBound
+		 * 		the upper bound of this quantity
+		 * @param unit
+		 * 		the unit of this string, as an IRI to the relevant entity
+		 */
+		@JsonCreator
+		JacksonInnerQuantity(
+				@JsonProperty("amount") BigDecimal amount,
+				@JsonProperty("lowerBound") BigDecimal lowerBound,
+				@JsonProperty("upperBound") BigDecimal upperBound,
+				@JsonProperty("unit") String unit) {
+			Validate.notNull(amount, "Numeric value cannot be null");
+			Validate.notNull(unit, "Unit cannot be null");
+			Validate.notEmpty(unit, "Unit cannot be empty. Use \"1\" for unit-less quantities.");
+
+			if(lowerBound != null || upperBound != null) {
+				Validate.notNull(lowerBound, "Lower and upper bounds should be null at the same time");
+				Validate.notNull(upperBound, "Lower and upper bounds should be null at the same time");
+
+				if (lowerBound.compareTo(amount) > 0) {
+					throw new IllegalArgumentException(
+							"Lower bound cannot be strictly greater than numeric value");
+				}
+				if (amount.compareTo(upperBound) > 0) {
+					throw new IllegalArgumentException(
+							"Upper bound cannot be strictly smaller than numeric value");
+				}
+			}
+			this.amount = amount;
+			this.upperBound = upperBound;
+			this.lowerBound = lowerBound;
+			this.unit = unit;
+		}
+
+		/**
+		 * Returns the numeric value.
+		 *
+		 * @see QuantityValue#getNumericValue()
+		 * @return the value
+		 */
+		@JsonIgnore
+		BigDecimal getAmount() {
+			return amount;
+		}
+
+		/**
+		 * Returns the upper bound.
+		 *
+		 * @see QuantityValue#getUpperBound()
+		 * @return the upper bound
+		 */
+		@JsonIgnore
+		BigDecimal getUpperBound() {
+			return upperBound;
+		}
+
+		/**
+		 * Returns the lower bound.
+		 *
+		 * @see QuantityValue#getLowerBound()
+		 * @return the lower bound
+		 */
+		@JsonIgnore
+		BigDecimal getLowerBound() {
+			return lowerBound;
+		}
+
+		@JsonProperty("amount")
+		String getAmountAsString() {
+			return bigDecimalToSignedString(this.amount);
+		}
+
+		@JsonProperty("upperBound")
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		String getUpperBoundAsString() {
+			return this.upperBound != null ? bigDecimalToSignedString(this.upperBound) : null;
+		}
+
+		@JsonProperty("lowerBound")
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		String getLowerBoundAsString() {
+			return this.lowerBound != null ? bigDecimalToSignedString(this.lowerBound) : null;
+		}
+
+		/**
+		 * Returns the string to use for the "unit" field in JSON. The value "1" is
+		 * used to denote "no unit"; otherwise an IRI is used to denote specific
+		 * units.
+		 *
+		 * @return unit string
+		 */
+		@JsonProperty("unit")
+		String getUnit() {
+			return this.unit;
+		}
+
+		/**
+		 * Formats the string output with a leading signum as JSON expects it.
+		 */
+		private String bigDecimalToSignedString(BigDecimal value) {
+			if (value.signum() < 0) {
+				return value.toString();
+			} else {
+				return "+" + value.toString();
+			}
+		}
+
 	}
 }
