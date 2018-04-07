@@ -143,7 +143,7 @@ public class WmfDumpFileManager {
 			return findAllDumps(DumpContentType.DAILY);
 		}
 
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
+		List<MwDumpFile> result = new ArrayList<>();
 
 		for (MwDumpFile dumpFile : findAllDumps(DumpContentType.DAILY)) {
 			if (dumpFile.getDateStamp().compareTo(mainDump.getDateStamp()) > 0) {
@@ -214,9 +214,9 @@ public class WmfDumpFileManager {
 	 */
 	List<MwDumpFile> mergeDumpLists(List<MwDumpFile> localDumps,
 			List<MwDumpFile> onlineDumps) {
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>(localDumps);
+		List<MwDumpFile> result = new ArrayList<>(localDumps);
 
-		HashSet<String> localDateStamps = new HashSet<String>();
+		HashSet<String> localDateStamps = new HashSet<>();
 		for (MwDumpFile dumpFile : localDumps) {
 			localDateStamps.add(dumpFile.getDateStamp());
 		}
@@ -225,8 +225,7 @@ public class WmfDumpFileManager {
 				result.add(dumpFile);
 			}
 		}
-		Collections.sort(result,
-				Collections.reverseOrder(new MwDumpFile.DateComparator()));
+		result.sort(Collections.reverseOrder(new MwDumpFile.DateComparator()));
 		return result;
 	}
 
@@ -254,7 +253,7 @@ public class WmfDumpFileManager {
 			return Collections.emptyList();
 		}
 
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
+		List<MwDumpFile> result = new ArrayList<>();
 
 		for (String directory : dumpFileDirectories) {
 			String dateStamp = WmfDumpFile
@@ -274,8 +273,7 @@ public class WmfDumpFileManager {
 			} // else: silently ignore directories that don't match
 		}
 
-		Collections.sort(result,
-				Collections.reverseOrder(new MwDumpFile.DateComparator()));
+		result.sort(Collections.reverseOrder(new MwDumpFile.DateComparator()));
 
 		logger.info("Found " + result.size() + " local dumps of type "
 				+ dumpContentType + ": " + result);
@@ -294,7 +292,7 @@ public class WmfDumpFileManager {
 	List<MwDumpFile> findDumpsOnline(DumpContentType dumpContentType) {
 		List<String> dumpFileDates = findDumpDatesOnline(dumpContentType);
 
-		List<MwDumpFile> result = new ArrayList<MwDumpFile>();
+		List<MwDumpFile> result = new ArrayList<>();
 
 		for (String dateStamp : dumpFileDates) {
 			if (dumpContentType == DumpContentType.DAILY) {
@@ -333,7 +331,7 @@ public class WmfDumpFileManager {
 	 * @return list of date stamps
 	 */
 	List<String> findDumpDatesOnline(DumpContentType dumpContentType) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		try (InputStream in = this.webResourceFetcher
 				.getInputStreamForUrl(WmfDumpFile.getDumpFileWebDirectory(
 						dumpContentType, this.projectName))) {
@@ -359,7 +357,7 @@ public class WmfDumpFileManager {
 			logger.error("Failed to fetch available dump dates online.");
 		}
 
-		Collections.sort(result, Collections.reverseOrder());
+		result.sort(Collections.reverseOrder());
 		return result;
 	}
 }

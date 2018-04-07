@@ -117,8 +117,7 @@ public class JsonSerializationActionTest {
 				Paths.get("/path/to/"), false);
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
-		ObjectReader documentReader = mapper
-				.reader(TermedStatementDocumentImpl.class);
+		ObjectReader documentReader = mapper.readerFor(TermedStatementDocumentImpl.class);
 		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json",
 						CompressionType.NONE));
@@ -170,8 +169,7 @@ public class JsonSerializationActionTest {
 				Paths.get("/path/to/"), false);
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
-		ObjectReader documentReader = mapper
-				.reader(TermedStatementDocumentImpl.class);
+		ObjectReader documentReader = mapper.readerFor(TermedStatementDocumentImpl.class);
 		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json.gz",
 						CompressionType.GZIP));
@@ -220,8 +218,7 @@ public class JsonSerializationActionTest {
 				false);
 
 		ObjectMapper mapper = new DatamodelMapper(Datamodel.SITE_WIKIDATA);
-		ObjectReader documentReader = mapper
-				.reader(TermedStatementDocumentImpl.class);
+		ObjectReader documentReader = mapper.readerFor(TermedStatementDocumentImpl.class);
 		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader
 				.readValues(mdm.getInputStreamForFile("output.json.bz2",
 						CompressionType.BZ2));

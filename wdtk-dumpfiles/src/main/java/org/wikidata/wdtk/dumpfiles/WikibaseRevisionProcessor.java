@@ -167,7 +167,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	}
 
 	public <T> T readValue(String content, Class<T> valueType) throws IOException {
-		return mapper.reader(valueType)
+		return mapper.readerFor(valueType)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
 				.readValue(content);
 	}

@@ -85,7 +85,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 	/**
 	 * Hash map defining the compression type of each type of dump.
 	 */
-	static final Map<DumpContentType, CompressionType> COMPRESSION_TYPE = new HashMap<DumpContentType, CompressionType>();
+	static final Map<DumpContentType, CompressionType> COMPRESSION_TYPE = new HashMap<>();
 	static {
 		MwLocalDumpFile.COMPRESSION_TYPE.put(DumpContentType.DAILY,
 				CompressionType.BZ2);
