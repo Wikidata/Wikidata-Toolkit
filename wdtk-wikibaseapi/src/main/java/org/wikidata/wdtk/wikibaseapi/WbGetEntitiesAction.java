@@ -21,7 +21,6 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,8 +29,8 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -196,9 +195,7 @@ public class WbGetEntitiesAction {
 				JsonNode entityNode = entry.getValue();
 				if (!entityNode.has("missing")) {
 					try {
-						TermedStatementDocumentImpl ed = mapper.treeToValue(
-								entityNode,
-								TermedStatementDocumentImpl.class);
+						EntityDocument ed = mapper.treeToValue(entityNode, EntityDocumentImpl.class);
 
 						if (titles == null) {
 							// We use the JSON key rather than the id of the value

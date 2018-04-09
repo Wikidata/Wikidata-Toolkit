@@ -21,25 +21,19 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.*;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * Java implementation for the wbeditentity API action.
@@ -455,36 +449,13 @@ public class WbEditEntityAction {
 	 *
 	 * @param entityNode
 	 *            the JSON node that should contain the entity document data
-	 * @return the entitiy document, or null if there were unrecoverable errors
+	 * @return the entity document, or null if there were unrecoverable errors
 	 * @throws IOException
 	 */
 	private EntityDocument parseJsonResponse(JsonNode entityNode) throws IOException {
-		try {
-			TermedStatementDocumentImpl ed = mapper.treeToValue(entityNode,
-					TermedStatementDocumentImpl.class);
-
-			return ed;
-		} catch (JsonProcessingException e) {
-			logger.warn("Error when reading JSON for entity "
-					+ entityNode.path("id").asText("UNKNOWN")
-					+ ": "
-					+ e.toString()
-					+ "\nTrying to manually fix issue https://phabricator.wikimedia.org/T73349.");
-			String jsonString = entityNode.toString();
-			jsonString = jsonString
-					.replace("\"sitelinks\":[]", "\"sitelinks\":{}")
-					.replace("\"labels\":[]", "\"labels\":{}")
-					.replace("\"aliases\":[]", "\"aliases\":{}")
-					.replace("\"claims\":[]", "\"claims\":{}")
-					.replace("\"descriptions\":[]", "\"descriptions\":{}");
-
-			ObjectReader documentReader = this.mapper
-					.readerFor(TermedStatementDocumentImpl.class);
-
-			TermedStatementDocumentImpl ed;
-			ed = documentReader.readValue(jsonString);
-			return ed;
-		}
+		return mapper.readerFor(EntityDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+				.readValue(entityNode);
 	}
 
 	/**

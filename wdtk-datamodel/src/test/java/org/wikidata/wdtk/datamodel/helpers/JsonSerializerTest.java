@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.JsonComparator;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -79,9 +79,9 @@ public class JsonSerializerTest {
 		List<EntityDocument> outputDocuments = new ArrayList<>();
 
 		ObjectMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
-		ObjectReader documentReader = mapper.readerFor(TermedStatementDocumentImpl.class);
+		ObjectReader documentReader = mapper.readerFor(EntityDocumentImpl.class);
 
-		MappingIterator<TermedStatementDocumentImpl> documentIterator = documentReader.readValues(out.toString());
+		MappingIterator<EntityDocument> documentIterator = documentReader.readValues(out.toString());
 		while (documentIterator.hasNextValue()) {
 			outputDocuments.add(documentIterator.nextValue());
 		}
