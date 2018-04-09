@@ -48,6 +48,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public LexemeIdValue getLexemeIdValue(String id, String siteIri) {
+		return new LexemeIdValueImpl(id, siteIri);
+	}
+
+	@Override
 	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
 		return new PropertyIdValueImpl(id, siteIri);
 	}
