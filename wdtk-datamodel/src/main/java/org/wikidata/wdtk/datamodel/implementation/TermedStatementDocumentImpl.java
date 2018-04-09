@@ -176,9 +176,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			if(map.containsKey(language)) {
 				throw new IllegalArgumentException("Multiple terms provided for the same language.");
 			}
-			// We need to make sure the terms are of the right type, otherwise they will not
-			// be serialized correctly.
-			map.put(language, new TermImpl(term));
+			map.put(language, toTerm(term));
 		}
 		return map;
 	}
@@ -189,17 +187,17 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			String language = term.getLanguageCode();
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			TermImpl castTerm = new TermImpl(term);
-			List<MonolingualTextValue> aliases = map.get(language);
-			if(aliases == null) {
-				aliases = new ArrayList<>();
-				aliases.add(castTerm);
-				map.put(language, aliases);
-			} else {
-				aliases.add(castTerm);
-			}
+			List<MonolingualTextValue> aliases = map.computeIfAbsent(language, (l) -> new ArrayList<>());
+			aliases.add(toTerm(term));
 		}
 		return map;
+	}
+
+	/**
+	 * We need to make sure the terms are of the right type, otherwise they will not be serialized correctly.
+	 */
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return term instanceof TermImpl ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	/**
