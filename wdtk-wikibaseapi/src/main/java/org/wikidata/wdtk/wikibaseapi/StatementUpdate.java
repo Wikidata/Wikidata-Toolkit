@@ -28,8 +28,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -188,15 +186,13 @@ public class StatementUpdate {
 	@JsonProperty("claims")
 	@JsonInclude(Include.NON_EMPTY)
 	public List<Statement> getUpdatedStatements() {
-		DatamodelConverter datamodelConverter = new DatamodelConverter(
-				new DataObjectFactoryImpl());
 		List<Statement> updatedStatements = new ArrayList<>();
 		for (List<StatementWithUpdate> swus : toKeep.values()) {
 			for (StatementWithUpdate swu : swus) {
 				if (!swu.write) {
 					continue;
 				}
-				updatedStatements.add(datamodelConverter.copy(swu.statement));
+				updatedStatements.add(swu.statement);
 			}
 		}
 		
