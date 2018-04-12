@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.math.BigDecimal;

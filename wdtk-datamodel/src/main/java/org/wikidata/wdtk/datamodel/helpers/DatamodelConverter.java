@@ -34,6 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
+ * @deprecated Not useful anymore because WikidataToolkit only provides one
+ * implementation of the Wikibase data model. To filter {@link EntityDocument}
+ * content, use the {@link DatamodelFilter} class.
+ *
  * Class to re-create data model objects using a specified factory. This is
  * provided in place of having copy constructors in each and every
  * implementation of the data model. Note that data model objects are usually
@@ -44,6 +48,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
  * @author Markus Kroetzsch
  *
  */
+@Deprecated
 public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
 
