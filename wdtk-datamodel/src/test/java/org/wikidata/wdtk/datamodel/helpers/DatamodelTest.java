@@ -25,20 +25,14 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
+
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
-	DataObjectFactory factory;
 
-	@Before
-	public void setUp() throws Exception {
-		factory = new DataObjectFactoryImpl();
-	}
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	@Test
 	public final void testGetItemId() {
@@ -293,10 +287,8 @@ public class DatamodelTest {
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
-		StatementGroup o1 = new StatementGroupImpl(
-				Collections.singletonList(s));
-		StatementGroup o2 = factory.getStatementGroup(Collections
-				.singletonList(s));
+		StatementGroup o1 = Datamodel.makeStatementGroup(Collections.singletonList(s));
+		StatementGroup o2 = factory.getStatementGroup(Collections.singletonList(s));
 		assertEquals(o1, o2);
 	}
 
