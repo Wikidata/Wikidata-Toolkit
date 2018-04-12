@@ -1,18 +1,13 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
-
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /*
  * #%L
@@ -45,7 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize()
 public class ItemIdValueImpl extends EntityIdValueImpl implements
 		ItemIdValue {
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -60,6 +55,24 @@ public class ItemIdValueImpl extends EntityIdValueImpl implements
 		super(id, siteIri);
 		assertHasJsonEntityType(JSON_ENTITY_TYPE_ITEM);
 	}
+
+	/**
+	 * Parses an item IRI
+	 *
+	 * @param iri
+	 *      the item IRI like http://www.wikidata.org/entity/Q42
+	 * @throws IllegalArgumentException
+	 *      if the IRI is invalid or does not ends with an item id
+	 */
+	static ItemIdValueImpl fromIri(String iri) {
+		int separator = iri.lastIndexOf('/') + 1;
+		try {
+			return new ItemIdValueImpl(iri.substring(separator), iri.substring(0, separator));
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Invalid Wikibase entity IRI: " + iri, e);
+		}
+	}
+
 	/**
 	 * Constructor used for deserialization with Jackson.
 	 * 

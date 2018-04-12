@@ -21,12 +21,14 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -116,6 +118,17 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 	@Override
 	public String getUnit() {
 		return this.value.getUnit();
+	}
+
+	@JsonIgnore
+	@Override
+	public Optional<ItemIdValue> getUnitItemId() {
+		String unit = this.value.getUnit();
+		if(unit.equals("1")) {
+			return Optional.empty();
+		} else {
+			return Optional.of(ItemIdValueImpl.fromIri(unit));
+		}
 	}
 
 	@Override
