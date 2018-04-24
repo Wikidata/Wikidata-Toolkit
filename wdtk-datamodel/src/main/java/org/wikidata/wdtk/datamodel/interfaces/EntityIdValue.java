@@ -61,6 +61,10 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 */
 	String ET_FORM = "http://www.wikidata.org/ontology#Form";
 	/**
+	 * IRI of the type of an entity that is a sense.
+	 */
+	String ET_SENSE = "http://www.wikidata.org/ontology#Sense";
+	/**
 	 * The site IRI of "local" identifiers. These are used to mark internal ids
 	 * that are not found on any external site. Components that send data to
 	 * external services or that create data exports should omit such ids, if

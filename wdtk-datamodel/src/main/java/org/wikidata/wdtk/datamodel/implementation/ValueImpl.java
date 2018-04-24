@@ -149,6 +149,8 @@ public abstract class ValueImpl implements Value {
 								return PropertyIdValueImpl.class;
 							case EntityIdValueImpl.JSON_ENTITY_TYPE_FORM:
 								return FormIdValueImpl.class;
+							case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
+								return SenseIdValueImpl.class;
 							default:
 								throw new JsonMappingException(jsonParser, "Entities of type \""
 										+ entityType

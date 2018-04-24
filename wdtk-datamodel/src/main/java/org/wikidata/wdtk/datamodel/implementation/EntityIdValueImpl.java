@@ -63,6 +63,11 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * lexemes forms.
 	 */
 	public final static String JSON_ENTITY_TYPE_FORM = "form";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * lexemes senses.
+	 */
+	public final static String JSON_ENTITY_TYPE_SENSE = "sense";
 
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON

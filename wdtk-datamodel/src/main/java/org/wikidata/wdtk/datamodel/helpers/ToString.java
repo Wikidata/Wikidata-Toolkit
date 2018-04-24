@@ -23,7 +23,6 @@ package org.wikidata.wdtk.datamodel.helpers;
 import java.text.DecimalFormat;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
@@ -90,6 +89,18 @@ public class ToString {
 	 */
 	public static String toString(FormIdValue o) {
 		return o.getIri() + " (form)";
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(SenseIdValue o) {
+		return o.getIri() + " (sense)";
 	}
 
 	/**
@@ -460,6 +471,35 @@ public class ToString {
 		}
 		sb.append("\n* Grammatical features: ").append(
 				o.getGrammaticalFeatures().stream().map(Object::toString).collect(Collectors.joining(", ")));
+		sb.append(toStringForStatementDocument(o));
+		return sb.toString();
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(SenseDocument o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("==SenseDocument ").append(o.getEntityId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
+		sb.append("==");
+		boolean first;
+		sb.append("\n* Lemmas: ");
+		first = true;
+		SortedSet<String> labelKeys = new TreeSet<>(o.getGlosses().keySet());
+		for (String key : labelKeys) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append("; ");
+			}
+			sb.append(toString(o.getGlosses().get(key)));
+		}
 		sb.append(toStringForStatementDocument(o));
 		return sb.toString();
 	}
