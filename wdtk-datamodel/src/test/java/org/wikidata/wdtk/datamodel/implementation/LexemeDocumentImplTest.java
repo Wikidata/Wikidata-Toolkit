@@ -49,11 +49,18 @@ public class LexemeDocumentImplTest {
 	);
 	private final MonolingualTextValue lemma = new TermImpl("en", "lemma");
 	private final List<MonolingualTextValue> lemmaList = Collections.singletonList(lemma);
+	private final List<FormDocument> forms = Collections.singletonList(new FormDocumentImpl(
+			new FormIdValueImpl("L42-F1", "http://example.com/entity/"),
+			Collections.singletonList(new TermImpl("en", "foo")),
+			Collections.emptyList(),
+			Collections.emptyList(),
+			0
+	));
 
-	private final LexemeDocument ld1 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, 1234);
-	private final LexemeDocument ld2 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, 1234);
+	private final LexemeDocument ld1 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1234);
+	private final LexemeDocument ld2 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1234);
 
-	private final String JSON_LEXEME = "{\"type\":\"lexeme\",\"id\":\"L42\",\"lexicalCategory\":\"Q1\",\"language\":\"Q2\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"lemma\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
+	private final String JSON_LEXEME = "{\"type\":\"lexeme\",\"id\":\"L42\",\"lexicalCategory\":\"Q1\",\"language\":\"Q2\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"lemma\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"forms\":[{\"type\":\"form\",\"id\":\"L42-F1\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"foo\"}},\"grammaticalFeatures\":[],\"claims\":{}}],\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -62,15 +69,17 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.getLexicalCategory(), lexCat);
 		assertEquals(ld1.getLemmas(), Collections.singletonMap(lemma.getLanguageCode(), lemma));
 		assertEquals(ld1.getStatementGroups(), statementGroups);
+		assertEquals(ld1.getForms(), forms);
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		LexemeDocument irDiffLexCat = new LexemeDocumentImpl(lid, language, language, lemmaList, statementGroups, 1234);
-		LexemeDocument irDiffLanguage = new LexemeDocumentImpl(lid, lexCat, lexCat, lemmaList, statementGroups, 1234);
-		LexemeDocument irDiffLemmas = new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, 1234);
-		LexemeDocument irDiffStatementGroups = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, Collections.emptyList(), 1234);
-		LexemeDocument irDiffRevisions = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, 1235);
+		LexemeDocument irDiffLexCat = new LexemeDocumentImpl(lid, language, language, lemmaList, statementGroups, forms, 1234);
+		LexemeDocument irDiffLanguage = new LexemeDocumentImpl(lid, lexCat, lexCat, lemmaList, statementGroups, forms, 1234);
+		LexemeDocument irDiffLemmas = new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, 1234);
+		LexemeDocument irDiffStatementGroups = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, Collections.emptyList(), forms, 1234);
+		LexemeDocument irDiffForms = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, Collections.emptyList(), 1234);
+		LexemeDocument irDiffRevisions = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1235);
 		PropertyDocument pr = new PropertyDocumentImpl(
 				new PropertyIdValueImpl("P42", "foo"),
 				lemmaList, Collections.emptyList(), Collections.emptyList(),
@@ -78,7 +87,7 @@ public class LexemeDocumentImplTest {
 				new DatatypeIdImpl(DatatypeIdValue.DT_STRING), 1234);
 		LexemeDocument irDiffLexemeIdValue = new LexemeDocumentImpl(
 				new LexemeIdValueImpl("L43", "http://example.com/entity/"),
-				lexCat, language, lemmaList, Collections.emptyList(), 1235);
+				lexCat, language, lemmaList, Collections.emptyList(), forms, 1235);
 
 		assertEquals(ld1, ld1);
 		assertEquals(ld1, ld2);
@@ -86,6 +95,7 @@ public class LexemeDocumentImplTest {
 		assertNotEquals(ld1, irDiffLanguage);
 		assertNotEquals(ld1, irDiffLemmas);
 		assertNotEquals(ld1, irDiffStatementGroups);
+		assertNotEquals(ld1, irDiffForms);
 		assertNotEquals(ld1, irDiffRevisions);
 		assertNotEquals(irDiffStatementGroups, irDiffLexemeIdValue);
 		assertNotEquals(ld1, pr);
@@ -100,29 +110,28 @@ public class LexemeDocumentImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void idNotNull() {
-		new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, 1234);
+		new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, forms, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void lexicalCategoryNotNull() {
-		new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, 1234);
+		new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, forms, 1234);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void languageNotNull() {
-		new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, 1234);
+		new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, 1234);
 	}
-
 
 	@Test
 	public void lemmasCanBeNull() {
-		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, 1234);
+		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, 1234);
 		assertTrue(doc.getLemmas().isEmpty());
 	}
 
 	@Test
 	public void statementGroupsCanBeNull() {
-		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, null, 1234);
+		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, null, forms, 1234);
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
@@ -138,7 +147,7 @@ public class LexemeDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, 1234);
+		new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, forms, 1234);
 	}
 
 	@Test
@@ -151,6 +160,12 @@ public class LexemeDocumentImplTest {
 	}
 
 	@Test
+	public void formsCanBeNull() {
+		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, Collections.emptyList(), 1234);
+		assertTrue(doc.getForms().isEmpty());
+	}
+
+	@Test
 	public void testLexemeToJson() throws JsonProcessingException {
 		JsonComparator.compareJsonStrings(JSON_LEXEME, mapper.writeValueAsString(ld1));
 	}
@@ -159,5 +174,4 @@ public class LexemeDocumentImplTest {
 	public void testLexemeToJava() throws IOException {
 		assertEquals(ld1, mapper.readValue(JSON_LEXEME, LexemeDocumentImpl.class));
 	}
-
 }

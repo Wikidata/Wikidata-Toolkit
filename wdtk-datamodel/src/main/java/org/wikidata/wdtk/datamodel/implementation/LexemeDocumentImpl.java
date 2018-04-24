@@ -47,6 +47,8 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 
 	private Map<String,MonolingualTextValue> lemmas;
 
+	private List<FormDocument> forms;
+
 	/**
 	 * Constructor.
 	 *
@@ -62,6 +64,8 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	 * @param statements
 	 *            the list of statement groups of this lexeme; all of them must
 	 *            have the given id as their subject
+	 * @param forms
+	 *            the list of the forms of this lexeme.
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
@@ -72,6 +76,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			ItemIdValue language,
 			List<MonolingualTextValue> lemmas,
 			List<StatementGroup> statements,
+			List<FormDocument> forms,
 			long revisionId) {
 		super(id, statements, revisionId);
 		Validate.notNull(lexicalCategory, "Lexeme lexical category should not be null");
@@ -79,6 +84,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		Validate.notNull(language, "Lexeme language should not be null");
 		this.language = language;
 		this.lemmas = (lemmas == null) ? Collections.emptyMap() : constructTermMap(lemmas);
+		this.forms = (forms == null) ? Collections.emptyList() : forms;
 	}
 
 	/**
@@ -92,6 +98,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			@JsonProperty("language") String language,
 			@JsonProperty("lemmas") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> lemmas,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
+			@JsonProperty("forms") @JsonDeserialize(contentAs=FormDocumentImpl.class) List<FormDocument> forms,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
@@ -100,6 +107,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		Validate.notNull(language, "Lexeme language should not be null");
 		this.language = new ItemIdValueImpl(language, siteIri);
 		this.lemmas = (lemmas == null) ? Collections.emptyMap() : lemmas;
+		this.forms = (forms == null) ? Collections.emptyList() : forms;
 	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
@@ -148,6 +156,12 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	@Override
 	public Map<String, MonolingualTextValue> getLemmas() {
 		return lemmas;
+	}
+
+	@JsonProperty("forms")
+	@Override
+	public List<FormDocument> getForms() {
+		return forms;
 	}
 
 	@Override

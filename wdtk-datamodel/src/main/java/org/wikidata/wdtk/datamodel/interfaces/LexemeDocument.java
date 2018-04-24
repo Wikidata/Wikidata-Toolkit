@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,4 +61,11 @@ public interface LexemeDocument extends StatementDocument {
 	 * @return a map from Wikimedia language code to the lemma
 	 */
 	Map<String,MonolingualTextValue> getLemmas();
+
+	/**
+	 * Return the lexeme forms
+	 *
+	 * @return the list of forms
+	 */
+	List<FormDocument> getForms();
 }

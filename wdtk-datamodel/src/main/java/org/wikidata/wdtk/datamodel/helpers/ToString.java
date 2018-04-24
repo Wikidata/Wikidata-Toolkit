@@ -428,6 +428,8 @@ public class ToString {
 			sb.append(toString(o.getLemmas().get(key)));
 		}
 		sb.append(toStringForStatementDocument(o));
+		sb.append("\n* Forms: \n").append(
+				o.getForms().stream().map(Object::toString).collect(Collectors.joining("\n")));
 		return sb.toString();
 	}
 

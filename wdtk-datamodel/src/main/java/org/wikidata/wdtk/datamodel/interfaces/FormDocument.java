@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for datasets that describe lexemes.
+ * Interface for lexemes forms.
  *
  * @author Thomas Pellissier Tanon
  *

@@ -438,6 +438,8 @@ public interface DataObjectFactory {
 	 * @param statementGroups
 	 *            the list of statement groups of this lexeme; all of them must
 	 *            have the given lexemeIdValue as their subject
+	 * @param forms
+	 *            the forms of the lexeme
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
@@ -448,6 +450,7 @@ public interface DataObjectFactory {
 			ItemIdValue language,
 			List<MonolingualTextValue> lemmas,
 			List<StatementGroup> statementGroups,
+			List<FormDocument> forms,
 			long revisionId);
 
 

@@ -237,8 +237,10 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			ItemIdValue lexicalCategory,
 			ItemIdValue language,
 			List<MonolingualTextValue> lemmas,
-			List<StatementGroup> statementGroups, long revisionId) {
-		return new LexemeDocumentImpl(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, revisionId);
+			List<StatementGroup> statementGroups,
+			List<FormDocument> forms,
+			long revisionId) {
+		return new LexemeDocumentImpl(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, revisionId);
 	}
 
 	@Override

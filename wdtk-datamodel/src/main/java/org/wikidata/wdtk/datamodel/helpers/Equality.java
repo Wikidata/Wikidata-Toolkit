@@ -529,6 +529,7 @@ public class Equality {
 				&& o1.getLexicalCategory().equals(other.getLexicalCategory())
 				&& o1.getLemmas().equals(other.getLemmas())
 				&& o1.getStatementGroups().equals(other.getStatementGroups())
+				&& o1.getForms().equals(other.getForms())
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 

@@ -710,14 +710,17 @@ public class Datamodel {
 	 * @param statementGroups
 	 *            the list of statement groups of this lexeme; all of them must
 	 *            have the given lexemeIdValue as their subject
+	 * @param forms
+	 *            the forms of the lexeme
 	 * @return a {@link LexemeDocument} corresponding to the input
 	 */
 	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
 			ItemIdValue lexicalCategory,
 			ItemIdValue language,
 			List<MonolingualTextValue> lemmas,
-			List<StatementGroup> statementGroups) {
-		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, 0);
+			List<StatementGroup> statementGroups,
+			List<FormDocument> forms) {
+		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, 0);
 	}
 
 

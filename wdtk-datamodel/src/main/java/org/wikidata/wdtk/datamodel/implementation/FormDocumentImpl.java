@@ -131,6 +131,11 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		return grammaticalFeatures.stream().map(EntityIdValue::getId).collect(Collectors.toList());
 	}
 
+	@JsonProperty("type")
+	String getType() {
+		return EntityDocumentImpl.JSON_TYPE_FORM;
+	}
+
 	@JsonProperty("representations")
 	@Override
 	public Map<String, MonolingualTextValue> getRepresentations() {
