@@ -421,7 +421,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		// Record relevant labels:
-		Integer itemId = getNumId(itemDocument.getItemId().getId(), false);
+		Integer itemId = getNumId(itemDocument.getEntityId().getId(), false);
 		if (this.classRecords.containsKey(itemId)) {
 			this.classRecords.get(itemId).label = itemDocument.findLabel("en");
 		}
@@ -455,7 +455,7 @@ public class SchemaUsageAnalyzer implements DumpProcessingAction {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		// Record relevant labels:
-		PropertyRecord pr = getPropertyRecord(propertyDocument.getPropertyId());
+		PropertyRecord pr = getPropertyRecord(propertyDocument.getEntityId());
 		pr.label = propertyDocument.findLabel("en");
 
 		// Find best URL pattern:

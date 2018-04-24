@@ -95,7 +95,7 @@ public class DataExtractionProcessor implements EntityDocumentProcessor {
 		// If a value was found, write the data:
 		if (stringValue != null) {
 			this.itemsWithPropertyCount++;
-			out.print(itemDocument.getItemId().getId());
+			out.print(itemDocument.getEntityId().getId());
 			out.print(",");
 			out.print(csvEscape(itemDocument.findLabel("en")));
 			out.print(",");

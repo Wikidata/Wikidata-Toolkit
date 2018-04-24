@@ -184,7 +184,7 @@ public class RdfConverter {
 	public void writePropertyDocument(PropertyDocument document)
 			throws RDFHandlerException {
 
-		propertyRegister.setPropertyType(document.getPropertyId(), document
+		propertyRegister.setPropertyType(document.getEntityId(), document
 				.getDatatype().getIri());
 
 		if (!hasTask(RdfSerializer.TASK_PROPERTIES)) {
@@ -235,50 +235,50 @@ public class RdfConverter {
 				.getIri());
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_DIRECT_CLAIM_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.DIRECT));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_CLAIM_PROP), Vocabulary.getPropertyUri(
-				document.getPropertyId(), PropertyContext.STATEMENT));
+				document.getEntityId(), PropertyContext.STATEMENT));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_STATEMENT_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.VALUE_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_STATEMENT_VALUE_PROP),
-				Vocabulary.getPropertyUri(document.getPropertyId(),
+				Vocabulary.getPropertyUri(document.getEntityId(),
 						PropertyContext.VALUE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_QUALIFIER_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.QUALIFIER_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_QUALIFIER_VALUE_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.QUALIFIER));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_REFERENCE_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.REFERENCE_SIMPLE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_REFERENCE_VALUE_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.REFERENCE));
 
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_NO_VALUE_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.NO_VALUE));
 		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
 				.getUri(Vocabulary.WB_NO_QUALIFIER_VALUE_PROP), Vocabulary
-				.getPropertyUri(document.getPropertyId(),
+				.getPropertyUri(document.getEntityId(),
 						PropertyContext.NO_QUALIFIER_VALUE));
 		// TODO something more with NO_VALUE
 	}

@@ -349,7 +349,7 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(PropertyDocument o) {
-		return "==PropertyDocument " + o.getPropertyId().getIri() + " (r"
+		return "==PropertyDocument " + o.getEntityId().getIri() + " (r"
 				+ o.getRevisionId() + ") ==\n" + "* Datatype: "
 				+ o.getDatatype() + toStringForTermedDocument(o)
 				+ toStringForStatementDocument(o);
@@ -365,7 +365,7 @@ public class ToString {
 	 */
 	public static String toString(ItemDocument o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("==ItemDocument ").append(o.getItemId().getIri());
+		sb.append("==ItemDocument ").append(o.getEntityId().getIri());
 		sb.append(" (r").append(o.getRevisionId()).append(") ");
 		sb.append("==").append(toStringForTermedDocument(o));
 		sb.append(toStringForStatementDocument(o));

@@ -86,7 +86,7 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 			if (this.largestNumberValue == null
 					|| numericValue.compareTo(this.largestNumberValue) > 0) {
 				this.largestNumberValue = numericValue;
-				this.largestNumberItem = itemDocument.getItemId();
+				this.largestNumberItem = itemDocument.getEntityId();
 				MonolingualTextValue label = itemDocument.getLabels().get("en");
 				if (label != null) {
 					this.largestNumberItemLabel = label.getText();
