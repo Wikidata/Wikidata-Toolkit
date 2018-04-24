@@ -124,7 +124,7 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@JsonIgnore
 	@Override
-	public EntityIdValue getEntityId() {
+	public ItemIdValue getEntityId() {
 		return getItemId();
 	}
 

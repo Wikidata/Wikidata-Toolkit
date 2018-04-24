@@ -125,7 +125,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 
 	@JsonIgnore
 	@Override
-	public EntityIdValue getEntityId() {
+	public PropertyIdValue getEntityId() {
 		return getPropertyId();
 	}
 
