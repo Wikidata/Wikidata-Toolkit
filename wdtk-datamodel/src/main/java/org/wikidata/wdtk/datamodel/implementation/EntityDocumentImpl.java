@@ -41,6 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 @JsonSubTypes({
 		@Type(value = ItemDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_ITEM),
 		@Type(value = LexemeDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_LEXEME),
+		@Type(value = FormDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_FORM),
 		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
 public abstract class EntityDocumentImpl implements EntityDocument {
 
@@ -49,13 +50,17 @@ public abstract class EntityDocumentImpl implements EntityDocument {
 	 */
 	static final String JSON_TYPE_ITEM = "item";
 	/**
+	 * String used to refer to properties in JSON.
+	 */
+	static final String JSON_TYPE_PROPERTY = "property";
+	/**
 	 * String used to refer to lexemes in JSON.
 	 */
 	static final String JSON_TYPE_LEXEME = "lexeme";
 	/**
-	 * String used to refer to properties in JSON.
+	 * String used to refer to forms in JSON.
 	 */
-	static final String JSON_TYPE_PROPERTY = "property";
+	static final String JSON_TYPE_FORM = "form";
 
 	/**
 	 * The id of the entity that the document refers to. This is not mapped to

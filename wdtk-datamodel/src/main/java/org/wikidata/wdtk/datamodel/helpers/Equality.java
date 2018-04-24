@@ -532,6 +532,32 @@ public class Equality {
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
+	/**
+	 * Returns true if the parameters are two {@link FormDocument} objects with
+	 * exactly the same data. It does not matter if they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return true if both objects are equal
+	 */
+	public static boolean equalsFormDocument(FormDocument o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof FormDocument)) {
+			return false;
+		}
+		FormDocument other = (FormDocument) o2;
+		return o1.getEntityId().equals(other.getEntityId())
+				&& o1.getGrammaticalFeatures().equals(other.getGrammaticalFeatures())
+				&& o1.getRepresentations().equals(other.getRepresentations())
+				&& o1.getStatementGroups().equals(other.getStatementGroups())
+				&& (o1.getRevisionId() == other.getRevisionId());
+	}
+
 	private static boolean equalsTermedDocument(TermedDocument o1, TermedDocument other) {
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getAliases().equals(other.getAliases())

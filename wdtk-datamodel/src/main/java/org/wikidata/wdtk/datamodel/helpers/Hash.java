@@ -331,7 +331,24 @@ public class Hash {
 		result = o.getLexicalCategory().hashCode();
 		result = prime * result + o.getLanguage().hashCode();
 		result = prime * result + o.getLemmas().hashCode();
-		result = prime * result + new Long(o.getRevisionId()).hashCode();
+		result = prime * result + Long.hashCode(o.getRevisionId());
+		result = prime * result + o.getStatementGroups().hashCode();
+		return result;
+	}
+
+	/**
+	 * Returns a hash code for the given object.
+	 *
+	 * @see java.lang.Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return the hash code of the object
+	 */
+	public static int hashCode(FormDocument o) {
+		int result;
+		result = o.getGrammaticalFeatures().hashCode();
+		result = prime * result + o.getRepresentations().hashCode();
+		result = prime * result + Long.hashCode(o.getRevisionId());
 		result = prime * result + o.getStatementGroups().hashCode();
 		return result;
 	}

@@ -25,20 +25,12 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementGroupImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
-	DataObjectFactory factory;
-
-	@Before
-	public void setUp() throws Exception {
-		factory = new DataObjectFactoryImpl();
-	}
+	private DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	@Test
 	public final void testGetItemId() {
@@ -56,21 +48,6 @@ public class DatamodelTest {
 	}
 
 	@Test
-	public final void testGetLexemeId() {
-		LexemeIdValue o1 = Datamodel.makeLexemeIdValue("L42", "foo");
-		LexemeIdValue o2 = factory.getLexemeIdValue("L42", "foo");
-		assertEquals(o1, o2);
-	}
-
-	@Test
-	public final void testGetWikidataLexemeId() {
-		LexemeIdValue o1 = Datamodel.makeWikidataLexemeIdValue("L42");
-		LexemeIdValue o2 = factory.getLexemeIdValue("L42",
-				"http://www.wikidata.org/entity/");
-		assertEquals(o1, o2);
-	}
-
-	@Test
 	public final void testGetPropertyId() {
 		PropertyIdValue o1 = Datamodel.makePropertyIdValue("P42", "foo");
 		PropertyIdValue o2 = factory.getPropertyIdValue("P42", "foo");
@@ -81,6 +58,21 @@ public class DatamodelTest {
 	public final void testGetWikidataPropertyId() {
 		PropertyIdValue o1 = Datamodel.makeWikidataPropertyIdValue("P42");
 		PropertyIdValue o2 = factory.getPropertyIdValue("P42",
+				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetFormId() {
+		FormIdValue o1 = Datamodel.makeFormIdValue("L42-F1", "foo");
+		FormIdValue o2 = factory.getFormIdValue("L42-F1", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikidataFormId() {
+		FormIdValue o1 = Datamodel.makeWikidataFormIdValue("L42-F1");
+		FormIdValue o2 = factory.getFormIdValue("L42-F1",
 				"http://www.wikidata.org/entity/");
 		assertEquals(o1, o2);
 	}
@@ -293,10 +285,8 @@ public class DatamodelTest {
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "MyId");
-		StatementGroup o1 = new StatementGroupImpl(
-				Collections.singletonList(s));
-		StatementGroup o2 = factory.getStatementGroup(Collections
-				.singletonList(s));
+		StatementGroup o1 = Datamodel.makeStatementGroup(Collections.singletonList(s));
+		StatementGroup o2 = factory.getStatementGroup(Collections.singletonList(s));
 		assertEquals(o1, o2);
 	}
 
@@ -362,6 +352,22 @@ public class DatamodelTest {
 				factory.getItemIdValue("Q1", "foo"),
 				factory.getItemIdValue("Q2", "foo"),
 				Collections.emptyList(),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetFormDocument() {
+		FormDocument o1 = Datamodel.makeFormDocument(
+				factory.getFormIdValue("L42-F1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.singletonList(factory.getItemIdValue("Q1", "foo")),
+				Collections.emptyList());
+		FormDocument o2 = factory.getFormDocument(
+				factory.getFormIdValue("L42-F1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.singletonList(factory.getItemIdValue("Q1", "foo")),
 				Collections.emptyList(),
 				0);
 		assertEquals(o1, o2);
