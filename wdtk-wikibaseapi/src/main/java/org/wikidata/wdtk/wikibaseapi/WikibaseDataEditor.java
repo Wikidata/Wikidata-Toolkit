@@ -289,7 +289,7 @@ public class WikibaseDataEditor {
 			MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
 		return (ItemDocument) this.wbEditEntityAction.wbEditEntity(itemDocument
-				.getItemId().getId(), null, null, null, data, clear,
+				.getEntityId().getId(), null, null, null, data, clear,
 				this.editAsBot, itemDocument.getRevisionId(), summary);
 	}
 
@@ -334,7 +334,7 @@ public class WikibaseDataEditor {
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
 		return (PropertyDocument) this.wbEditEntityAction.wbEditEntity(
-				propertyDocument.getPropertyId().getId(), null, null, null,
+				propertyDocument.getEntityId().getId(), null, null, null,
 				data, clear, this.editAsBot, propertyDocument.getRevisionId(),
 				summary);
 	}

@@ -254,7 +254,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		for (String propertyId : integerProperties) {
 			if (hasPlusMinusOneValues(itemDocument
 					.findStatementGroup(propertyId))) {
-				fixIntegerPrecisions(itemDocument.getItemId(), propertyId);
+				fixIntegerPrecisions(itemDocument.getEntityId(), propertyId);
 			} // else: ignore items that have no value or only correct values
 				// for the property we consider
 		}
@@ -334,7 +334,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 				return;
 			}
 
-			logEntityModification(currentItemDocument.getItemId(),
+			logEntityModification(currentItemDocument.getEntityId(),
 					updateStatements, propertyId);
 
 			dataEditor.updateStatements(currentItemDocument, updateStatements,

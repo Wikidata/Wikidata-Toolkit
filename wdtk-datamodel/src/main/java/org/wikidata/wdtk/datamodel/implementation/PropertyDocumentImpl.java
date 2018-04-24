@@ -120,13 +120,13 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getPropertyId() {
-		return new PropertyIdValueImpl(this.entityId, this.siteIri);
+		return getEntityId();
 	}
 
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
-		return getPropertyId();
+		return new PropertyIdValueImpl(this.entityId, this.siteIri);
 	}
 
 	@JsonIgnore
