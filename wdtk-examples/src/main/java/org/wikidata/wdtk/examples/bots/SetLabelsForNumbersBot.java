@@ -195,10 +195,10 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 	public void processItemDocument(ItemDocument itemDocument) {
 		if (itemDocument.hasStatement("P1181")) {
 			if (lacksSomeLanguage(itemDocument)) {
-				addLabelForNumbers(itemDocument.getItemId());
+				addLabelForNumbers(itemDocument.getEntityId());
 			} else {
 				System.out.println("*** Labels already complete for "
-						+ itemDocument.getItemId().getId());
+						+ itemDocument.getEntityId().getId());
 			}
 		} // else: ignore items that have no numeric value
 	}
@@ -286,7 +286,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 				return;
 			}
 
-			logEntityModification(currentItemDocument.getItemId(),
+			logEntityModification(currentItemDocument.getEntityId(),
 					numberString, languages);
 
 			dataEditor.editItemDocument(itemDocumentBuilder.build(), false,

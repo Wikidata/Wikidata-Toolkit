@@ -27,7 +27,6 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
@@ -75,6 +74,21 @@ public class DatamodelTest {
 	public final void testGetWikidataPropertyId() {
 		PropertyIdValue o1 = Datamodel.makeWikidataPropertyIdValue("P42");
 		PropertyIdValue o2 = factory.getPropertyIdValue("P42",
+				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetFormId() {
+		FormIdValue o1 = Datamodel.makeFormIdValue("L42-F1", "foo");
+		FormIdValue o2 = factory.getFormIdValue("L42-F1", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikidataFormId() {
+		FormIdValue o1 = Datamodel.makeWikidataFormIdValue("L42-F1");
+		FormIdValue o2 = factory.getFormIdValue("L42-F1",
 				"http://www.wikidata.org/entity/");
 		assertEquals(o1, o2);
 	}
@@ -337,6 +351,42 @@ public class DatamodelTest {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyMap(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetLexemeDocument() {
+		LexemeDocument o1 = Datamodel.makeLexemeDocument(
+				factory.getLexemeIdValue("L42", "foo"),
+				factory.getItemIdValue("Q1", "foo"),
+				factory.getItemIdValue("Q2", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList());
+		LexemeDocument o2 = factory.getLexemeDocument(
+				factory.getLexemeIdValue("L42", "foo"),
+				factory.getItemIdValue("Q1", "foo"),
+				factory.getItemIdValue("Q2", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetFormDocument() {
+		FormDocument o1 = Datamodel.makeFormDocument(
+				factory.getFormIdValue("L42-F1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.singletonList(factory.getItemIdValue("Q1", "foo")),
+				Collections.emptyList());
+		FormDocument o2 = factory.getFormDocument(
+				factory.getFormIdValue("L42-F1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.singletonList(factory.getItemIdValue("Q1", "foo")),
+				Collections.emptyList(),
 				0);
 		assertEquals(o1, o2);
 	}

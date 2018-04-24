@@ -280,9 +280,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		}
 
 		ClassRecord classRecord = null;
-		if (TOP_LEVEL_CLASSES.contains(itemDocument.getItemId().getId())
-				|| this.classRecords.containsKey(itemDocument.getItemId())) {
-			classRecord = getClassRecord(itemDocument.getItemId());
+		if (TOP_LEVEL_CLASSES.contains(itemDocument.getEntityId().getId())
+				|| this.classRecords.containsKey(itemDocument.getEntityId())) {
+			classRecord = getClassRecord(itemDocument.getEntityId());
 		}
 
 		for (StatementGroup sg : itemDocument.getStatementGroups()) {
@@ -293,7 +293,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			boolean isInstanceOf = "P31".equals(sg.getProperty().getId());
 			boolean isSubclassOf = "P279".equals(sg.getProperty().getId());
 			if (isSubclassOf && classRecord == null) {
-				classRecord = getClassRecord(itemDocument.getItemId());
+				classRecord = getClassRecord(itemDocument.getEntityId());
 			}
 
 			for (Statement s : sg) {
@@ -354,8 +354,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		this.countProperties++;
 
-		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument
-				.getPropertyId());
+		PropertyRecord propertyRecord = getPropertyRecord(propertyDocument.getEntityId());
 		propertyRecord.propertyDocument = propertyDocument;
 	}
 

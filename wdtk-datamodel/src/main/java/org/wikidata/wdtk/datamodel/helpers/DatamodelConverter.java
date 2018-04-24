@@ -483,7 +483,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	public PropertyDocument copy(PropertyDocument object) {
 		if (this.deepCopy) {
 			return this.dataObjectFactory.getPropertyDocument(copy(object
-					.getPropertyId()), deepCopyMonoLingualTextValues(object
+					.getEntityId()), deepCopyMonoLingualTextValues(object
 					.getLabels().values()),
 					deepCopyMonoLingualTextValues(object.getDescriptions()
 							.values()), flattenDeepCopyAliasMap(object
@@ -492,7 +492,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 					object.getRevisionId());
 		} else {
 			return this.dataObjectFactory.getPropertyDocument(object
-					.getPropertyId(), copyMonoLingualTextValues(object
+					.getEntityId(), copyMonoLingualTextValues(object
 					.getLabels().values()), copyMonoLingualTextValues(object
 					.getDescriptions().values()), flattenAliasMap(object
 					.getAliases()), copyStatementGroups(object
@@ -511,7 +511,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	public ItemDocument copy(ItemDocument object) {
 		if (this.deepCopy) {
 			return this.dataObjectFactory.getItemDocument(copy(object
-					.getItemId()), deepCopyMonoLingualTextValues(object
+					.getEntityId()), deepCopyMonoLingualTextValues(object
 					.getLabels().values()),
 					deepCopyMonoLingualTextValues(object.getDescriptions()
 							.values()), flattenDeepCopyAliasMap(object
@@ -520,7 +520,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 							.getSiteLinks()), object.getRevisionId());
 		} else {
 			return this.dataObjectFactory
-					.getItemDocument(object.getItemId(),
+					.getItemDocument(object.getEntityId(),
 							copyMonoLingualTextValues(object.getLabels()
 									.values()),
 							copyMonoLingualTextValues(object.getDescriptions()

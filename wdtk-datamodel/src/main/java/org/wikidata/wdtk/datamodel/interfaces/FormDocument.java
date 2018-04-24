@@ -20,42 +20,36 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for datasets that describe items. It extends {@link EntityDocument}
- * with information about site links and statements.
+ * Interface for lexemes forms.
  *
- * @author Markus Kroetzsch
+ * @author Thomas Pellissier Tanon
  *
  */
-public interface ItemDocument extends TermedDocument, StatementDocument {
+public interface FormDocument extends StatementDocument {
 
 	/**
-	 * Return the ID of the item that the data refers to.
+	 * Returns the ID of the entity that the data refers to
 	 *
-	 * @return item id
+	 * @return form id
 	 */
 	@Override
-	ItemIdValue getEntityId();
+	FormIdValue getEntityId();
 
 	/**
-	 * @deprecated Use {@link #getEntityId()}
+	 * Return the human readable representations of the form indexed by Wikimedia language code
 	 *
-	 * Return the ID of the item that the data refers to. The result is the same
-	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
-	 * specific result type.
-	 *
-	 * @return item id
+	 * @return a map from Wikimedia language code to the representations
 	 */
-	@Deprecated
-	ItemIdValue getItemId();
+	Map<String,MonolingualTextValue> getRepresentations();
 
 	/**
-	 * Get a Map of site keys to {@link SiteLink} objects.
+	 * Return the IDs of the grammatical features of the form (masculine, singular...)
 	 *
-	 * @return map of SiteLinks
+	 * @return item ids
 	 */
-	Map<String, SiteLink> getSiteLinks();
-
+	List<ItemIdValue> getGrammaticalFeatures();
 }

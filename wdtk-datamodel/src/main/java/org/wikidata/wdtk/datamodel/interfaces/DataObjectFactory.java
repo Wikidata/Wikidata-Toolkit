@@ -53,6 +53,20 @@ public interface DataObjectFactory {
 	ItemIdValue getItemIdValue(String id, String siteIri);
 
 	/**
+	 * Creates a {@link PropertyIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Pn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return a {@link PropertyIdValue} corresponding to the input
+	 */
+	PropertyIdValue getPropertyIdValue(String id, String siteIri);
+
+	/**
 	 * Creates a {@link LexemeIdValue}.
 	 *
 	 * @param id
@@ -67,18 +81,18 @@ public interface DataObjectFactory {
 	LexemeIdValue getLexemeIdValue(String id, String siteIri);
 
 	/**
-	 * Creates a {@link PropertyIdValue}.
+	 * Creates a {@link FormIdValue}.
 	 *
 	 * @param id
-	 *            a string of the form Pn... where n... is the string
+	 *            a string of the form Ln...-Fm... where n... and m... are the string
 	 *            representation of a positive integer number
 	 * @param siteIri
 	 *            IRI to identify the site, usually the first part of the entity
 	 *            IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return a {@link PropertyIdValue} corresponding to the input
+	 * @return a {@link LexemeIdValue} corresponding to the input
 	 */
-	PropertyIdValue getPropertyIdValue(String id, String siteIri);
+	FormIdValue getFormIdValue(String id, String siteIri);
 
 	/**
 	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
@@ -407,5 +421,61 @@ public interface DataObjectFactory {
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> statementGroups,
 			Map<String, SiteLink> siteLinks, long revisionId);
+
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @param forms
+	 *            the forms of the lexeme
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	LexemeDocument getLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			List<MonolingualTextValue> lemmas,
+			List<StatementGroup> statementGroups,
+			List<FormDocument> forms,
+			long revisionId);
+
+
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param formIdValue
+	 *            the id of the form that data is about
+	 * @param representations
+	 *            the list of representations of this lexeme, with at most one
+	 *            lemma for each language code
+	 * @param grammaticalFeatures
+	 *            the grammatical features of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	FormDocument getFormDocument(FormIdValue formIdValue,
+			List<MonolingualTextValue> representations,
+			List<ItemIdValue> grammaticalFeatures,
+			List<StatementGroup> statementGroups,
+			long revisionId);
 
 }

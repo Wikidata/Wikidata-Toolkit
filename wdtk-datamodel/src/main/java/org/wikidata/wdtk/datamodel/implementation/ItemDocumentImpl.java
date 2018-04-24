@@ -119,13 +119,13 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public ItemIdValue getItemId() {
-		return new ItemIdValueImpl(this.entityId, this.siteIri);
+		return getEntityId();
 	}
 
 	@JsonIgnore
 	@Override
-	public EntityIdValue getEntityId() {
-		return getItemId();
+	public ItemIdValue getEntityId() {
+		return new ItemIdValueImpl(this.entityId, this.siteIri);
 	}
 
 	@JsonProperty("sitelinks")

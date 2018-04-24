@@ -72,6 +72,34 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates a {@link PropertyIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Pn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return a {@link PropertyIdValue} corresponding to the input
+	 */
+	public static PropertyIdValue makePropertyIdValue(String id, String siteIri) {
+		return factory.getPropertyIdValue(id, siteIri);
+	}
+
+	/**
+	 * Creates a {@link PropertyIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Pn... where n... is the string
+	 *            representation of a positive integer number
+	 * @return a {@link PropertyIdValue} corresponding to the input
+	 */
+	public static PropertyIdValue makeWikidataPropertyIdValue(String id) {
+		return factory.getPropertyIdValue(id, SITE_WIKIDATA);
+	}
+
+	/**
 	 * Creates an {@link LexemeIdValue}.
 	 *
 	 * @param id
@@ -100,31 +128,31 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates a {@link PropertyIdValue}.
+	 * Creates an {@link FormIdValue}.
 	 *
 	 * @param id
-	 *            a string of the form Pn... where n... is the string
+	 *            a string of the form Ln...-Fm... where n... and m... are the string
 	 *            representation of a positive integer number
 	 * @param siteIri
 	 *            IRI to identify the site, usually the first part of the entity
 	 *            IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return a {@link PropertyIdValue} corresponding to the input
+	 * @return an {@link LexemeIdValue} corresponding to the input
 	 */
-	public static PropertyIdValue makePropertyIdValue(String id, String siteIri) {
-		return factory.getPropertyIdValue(id, siteIri);
+	public static FormIdValue makeFormIdValue(String id, String siteIri) {
+		return factory.getFormIdValue(id, siteIri);
 	}
 
 	/**
-	 * Creates a {@link PropertyIdValue}.
+	 * Creates an {@link FormIdValue} for Wikidata.
 	 *
 	 * @param id
-	 *            a string of the form Pn... where n... is the string
+	 *            a string of the form Ln...-F... where n... and m... are the string
 	 *            representation of a positive integer number
-	 * @return a {@link PropertyIdValue} corresponding to the input
+	 * @return an {@link LexemeIdValue} corresponding to the input
 	 */
-	public static PropertyIdValue makeWikidataPropertyIdValue(String id) {
-		return factory.getPropertyIdValue(id, SITE_WIKIDATA);
+	public static FormIdValue makeWikidataFormIdValue(String id) {
+		return factory.getFormIdValue(id, SITE_WIKIDATA);
 	}
 
 	/**
@@ -664,6 +692,58 @@ public class Datamodel {
 			Map<String, SiteLink> siteLinks, long revisionId) {
 		return factory.getItemDocument(itemIdValue, labels, descriptions,
 				aliases, statementGroups, siteLinks, revisionId);
+	}
+
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @param forms
+	 *            the forms of the lexeme
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			List<MonolingualTextValue> lemmas,
+			List<StatementGroup> statementGroups,
+			List<FormDocument> forms) {
+		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, 0);
+	}
+
+
+	/**
+	 * Creates an {@link LexemeDocument}.
+	 *
+	 * @param formIdValue
+	 *            the id of the form that data is about
+	 * @param representations
+	 *            the list of representations of this lexeme, with at most one
+	 *            lemma for each language code
+	 * @param grammaticalFeatures
+	 *            the grammatical features of the lexeme
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	public static FormDocument makeFormDocument(FormIdValue formIdValue,
+			List<MonolingualTextValue> representations,
+			List<ItemIdValue> grammaticalFeatures,
+			List<StatementGroup> statementGroups) {
+		return factory.getFormDocument(formIdValue, representations, grammaticalFeatures, statementGroups, 0);
 	}
 
 }
