@@ -32,6 +32,14 @@ import java.util.Map;
 public interface ItemDocument extends TermedDocument, StatementDocument {
 
 	/**
+	 * Return the ID of the item that the data refers to.
+	 *
+	 * @return item id
+	 */
+	@Override
+	ItemIdValue getEntityId();
+
+	/**
 	 * Return the ID of the item that the data refers to. The result is the same
 	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
 	 * specific result type.
