@@ -6,6 +6,7 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import java.util.regex.Pattern;
@@ -82,6 +83,12 @@ public class FormIdValueImpl extends ValueImpl implements FormIdValue {
 	@Override
 	public String getIri() {
 		return siteIri + id;
+	}
+
+
+	@Override
+	public LexemeIdValue getLexemeId() {
+		return new LexemeIdValueImpl(id.substring(0, id.indexOf("-")), siteIri);
 	}
 
 	@Override

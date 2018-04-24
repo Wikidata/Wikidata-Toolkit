@@ -99,4 +99,8 @@ public class FormIdValueImplTest {
 		new FormIdValueImpl("L42", null);
 	}
 
+	@Test
+	public void lexemeIdIsCorrect() {
+		assertEquals(lexeme1.getLexemeId(), new LexemeIdValueImpl("L42", "http://www.wikidata.org/entity/"));
+	}
 }

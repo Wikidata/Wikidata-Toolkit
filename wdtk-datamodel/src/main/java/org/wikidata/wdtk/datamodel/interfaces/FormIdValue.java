@@ -32,4 +32,11 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
  *
  */
 public interface FormIdValue extends EntityIdValue {
+
+	/**
+	 * Returns the id of the lexeme of which it is a form.
+	 *
+	 * @return A lexeme id
+	 */
+	LexemeIdValue getLexemeId();
 }
