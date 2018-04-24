@@ -95,7 +95,7 @@ public class Hash {
 	 */
 	public static int hashCode(TimeValue o) {
 		int result;
-		result = new Long(o.getYear()).hashCode();
+		result = Long.hashCode(o.getYear());
 		result = prime * result + o.getMonth();
 		result = prime * result + o.getDay();
 		result = prime * result + o.getHour();
@@ -349,7 +349,7 @@ public class Hash {
 		result = o.getAliases().hashCode();
 		result = prime * result + o.getDescriptions().hashCode();
 		result = prime * result + o.getLabels().hashCode();
-		result = prime * result + new Long(o.getRevisionId()).hashCode();
+		result = prime * result + Long.hashCode(o.getRevisionId());
 		return result;
 	}
 
