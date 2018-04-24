@@ -48,13 +48,18 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
+		return new PropertyIdValueImpl(id, siteIri);
+	}
+
+	@Override
 	public LexemeIdValue getLexemeIdValue(String id, String siteIri) {
 		return new LexemeIdValueImpl(id, siteIri);
 	}
 
 	@Override
-	public PropertyIdValue getPropertyIdValue(String id, String siteIri) {
-		return new PropertyIdValueImpl(id, siteIri);
+	public FormIdValue getFormIdValue(String id, String siteIri) {
+		return new FormIdValueImpl(id, siteIri);
 	}
 
 	@Override
@@ -225,5 +230,25 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return new ItemDocumentImpl(
 				itemIdValue, labels, descriptions, aliases, statementGroups,
 				new ArrayList<>(siteLinks.values()), revisionId);
+	}
+
+	@Override
+	public LexemeDocument getLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			List<MonolingualTextValue> lemmas,
+			List<StatementGroup> statementGroups,
+			List<FormDocument> forms,
+			long revisionId) {
+		return new LexemeDocumentImpl(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, revisionId);
+	}
+
+	@Override
+	public FormDocument getFormDocument(FormIdValue formIdValue,
+			List<MonolingualTextValue> representations,
+			List<ItemIdValue> grammaticalFeatures,
+			List<StatementGroup> statementGroups,
+			long revisionId) {
+		return new FormDocumentImpl(formIdValue, representations, grammaticalFeatures, statementGroups, revisionId);
 	}
 }

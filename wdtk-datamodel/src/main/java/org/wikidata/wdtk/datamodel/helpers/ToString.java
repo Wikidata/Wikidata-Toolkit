@@ -23,6 +23,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import java.text.DecimalFormat;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -76,6 +78,18 @@ public class ToString {
 	 */
 	public static String toString(LexemeIdValue o) {
 		return o.getIri() + " (lexeme)";
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(FormIdValue o) {
+		return o.getIri() + " (form)";
 	}
 
 	/**
@@ -383,6 +397,70 @@ public class ToString {
 			sb.append(toString(o.getSiteLinks().get(key)));
 		}
 
+		return sb.toString();
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(LexemeDocument o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("==LexemeDocument ").append(o.getEntityId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
+		sb.append("==");
+		sb.append("\n* Lexical category: ").append(o.getLexicalCategory().getIri());
+		sb.append("\n* Language: ").append(o.getLanguage().getIri());
+		boolean first;
+		sb.append("\n* Lemmas: ");
+		first = true;
+		SortedSet<String> labelKeys = new TreeSet<>(o.getLemmas().keySet());
+		for (String key : labelKeys) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append("; ");
+			}
+			sb.append(toString(o.getLemmas().get(key)));
+		}
+		sb.append(toStringForStatementDocument(o));
+		sb.append("\n* Forms: \n").append(
+				o.getForms().stream().map(Object::toString).collect(Collectors.joining("\n")));
+		return sb.toString();
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(FormDocument o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("==FormDocument ").append(o.getEntityId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
+		sb.append("==");
+		boolean first;
+		sb.append("\n* Lemmas: ");
+		first = true;
+		SortedSet<String> labelKeys = new TreeSet<>(o.getRepresentations().keySet());
+		for (String key : labelKeys) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append("; ");
+			}
+			sb.append(toString(o.getRepresentations().get(key)));
+		}
+		sb.append("\n* Grammatical features: ").append(
+				o.getGrammaticalFeatures().stream().map(Object::toString).collect(Collectors.joining(", ")));
+		sb.append(toStringForStatementDocument(o));
 		return sb.toString();
 	}
 
