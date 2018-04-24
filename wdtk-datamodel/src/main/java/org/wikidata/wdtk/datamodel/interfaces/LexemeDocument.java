@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,13 +31,12 @@ import java.util.Map;
 public interface LexemeDocument extends StatementDocument {
 
 	/**
-	 * Return the ID of the lexeme that the data refers to. The result is the same
-	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
-	 * specific result type.
+	 * Returns the ID of the entity that the data refers to
 	 *
 	 * @return lexeme id
 	 */
-	LexemeIdValue getLexemeId();
+	@Override
+	LexemeIdValue getEntityId();
 
 	/**
 	 * Return the ID of the lexical category to which the lexeme belongs

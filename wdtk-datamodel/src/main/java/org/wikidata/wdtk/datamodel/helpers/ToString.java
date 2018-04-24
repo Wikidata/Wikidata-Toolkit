@@ -410,7 +410,7 @@ public class ToString {
 	 */
 	public static String toString(LexemeDocument o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("==LexemeDocument ").append(o.getLexemeId().getIri());
+		sb.append("==LexemeDocument ").append(o.getEntityId().getIri());
 		sb.append(" (r").append(o.getRevisionId()).append(") ");
 		sb.append("==");
 		sb.append("\n* Lexical category: ").append(o.getLexicalCategory().getIri());
@@ -441,7 +441,7 @@ public class ToString {
 	 */
 	public static String toString(FormDocument o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("==FormDocument ").append(o.getFormId().getIri());
+		sb.append("==FormDocument ").append(o.getEntityId().getIri());
 		sb.append(" (r").append(o.getRevisionId()).append(") ");
 		sb.append("==");
 		boolean first;

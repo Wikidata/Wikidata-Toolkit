@@ -118,14 +118,8 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 
 	@JsonIgnore
 	@Override
-	public LexemeIdValue getLexemeId() {
+	public LexemeIdValue getEntityId() {
 		return new LexemeIdValueImpl(this.entityId, this.siteIri);
-	}
-
-	@JsonIgnore
-	@Override
-	public EntityIdValue getEntityId() {
-		return getLexemeId();
 	}
 
 	@JsonIgnore

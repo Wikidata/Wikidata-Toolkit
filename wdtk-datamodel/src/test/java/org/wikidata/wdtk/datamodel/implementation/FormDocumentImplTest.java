@@ -56,7 +56,6 @@ public class FormDocumentImplTest {
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(ld1.getFormId(), fid);
 		assertEquals(ld1.getEntityId(), fid);
 		assertEquals(ld1.getRepresentations(), Collections.singletonMap(rep.getLanguageCode(), rep));
 		assertEquals(ld1.getGrammaticalFeatures(), gramFeatures);

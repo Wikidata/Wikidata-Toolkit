@@ -57,7 +57,6 @@ public class LexemeDocumentImplTest {
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(ld1.getLexemeId(), lid);
 		assertEquals(ld1.getEntityId(), lid);
 		assertEquals(ld1.getLanguage(), language);
 		assertEquals(ld1.getLexicalCategory(), lexCat);

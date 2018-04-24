@@ -32,13 +32,12 @@ import java.util.Map;
 public interface FormDocument extends StatementDocument {
 
 	/**
-	 * Return the ID of the form that the data refers to. The result is the same
-	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
-	 * specific result type.
+	 * Returns the ID of the entity that the data refers to
 	 *
-	 * @return lexeme id
+	 * @return form id
 	 */
-	FormIdValue getFormId();
+	@Override
+	FormIdValue getEntityId();
 
 	/**
 	 * Return the human readable representations of the form indexed by Wikimedia language code
