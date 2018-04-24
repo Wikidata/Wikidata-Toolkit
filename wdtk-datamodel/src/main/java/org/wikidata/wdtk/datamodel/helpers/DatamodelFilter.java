@@ -23,7 +23,7 @@ public class DatamodelFilter {
 
 	public ItemDocument filter(ItemDocument item) {
 		return dataObjectFactory.getItemDocument(
-				item.getItemId(),
+				item.getEntityId(),
 				filterMonoLingualTextValues(item.getLabels().values().stream()),
 				filterMonoLingualTextValues(item.getDescriptions().values().stream()),
 				filterMonoLingualTextValues(item.getAliases().values().stream().flatMap(List::stream)),
@@ -35,7 +35,7 @@ public class DatamodelFilter {
 
 	public PropertyDocument filter(PropertyDocument property) {
 		return dataObjectFactory.getPropertyDocument(
-				property.getPropertyId(),
+				property.getEntityId(),
 				filterMonoLingualTextValues(property.getLabels().values().stream()),
 				filterMonoLingualTextValues(property.getDescriptions().values().stream()),
 				filterMonoLingualTextValues(property.getAliases().values().stream().flatMap(List::stream)),
