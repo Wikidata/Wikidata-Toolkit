@@ -260,11 +260,6 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		}
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// ignore properties
-	}
-
 	/**
 	 * Finishes processing and makes sure that the log file is written.
 	 */

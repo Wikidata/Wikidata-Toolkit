@@ -91,11 +91,6 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 		}
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// nothing to do for properties
-	}
-
 	/**
 	 * Writes the results of the processing to a file.
 	 */

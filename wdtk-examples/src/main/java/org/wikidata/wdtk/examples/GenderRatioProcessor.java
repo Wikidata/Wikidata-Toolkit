@@ -243,11 +243,6 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// nothing to do for properties
-	}
-
 	/**
 	 * Writes the results of the processing to a CSV file.
 	 */

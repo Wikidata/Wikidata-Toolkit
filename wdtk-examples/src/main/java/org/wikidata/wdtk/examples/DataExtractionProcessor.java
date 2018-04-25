@@ -125,11 +125,6 @@ public class DataExtractionProcessor implements EntityDocumentProcessor {
 		}
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// Nothing to do
-	}
-
 	/**
 	 * Escapes a string for use in CSV. In particular, the string is quoted and
 	 * quotation marks are escaped.

@@ -203,11 +203,6 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 		} // else: ignore items that have no numeric value
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// ignore properties
-	}
-
 	/**
 	 * Finishes processing and makes sure that the log file is written.
 	 */
