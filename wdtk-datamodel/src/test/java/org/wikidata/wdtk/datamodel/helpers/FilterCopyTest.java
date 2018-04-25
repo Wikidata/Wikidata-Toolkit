@@ -397,8 +397,5 @@ public class FilterCopyTest {
 		assertFalse(datamodelConverter.hasOptionDeepCopyReferences());
 		assertEquals(itemDocumentFiltered,
 				datamodelConverter.copy(itemDocument));
-
-		datamodelConverter.setOptionDeepCopy(false);
-		assertEquals(itemDocument, datamodelConverter.copy(itemDocument));
 	}
 }

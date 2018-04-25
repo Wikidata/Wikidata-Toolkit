@@ -34,10 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
- * @deprecated Not useful anymore because WikidataToolkit only provides one
- * implementation of the Wikibase data model. To filter {@link EntityDocument}
- * content, use the {@link DatamodelFilter} class.
- *
  * Class to re-create data model objects using a specified factory. This is
  * provided in place of having copy constructors in each and every
  * implementation of the data model. Note that data model objects are usually
@@ -48,7 +44,6 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
  * @author Markus Kroetzsch
  *
  */
-@Deprecated
 public class DatamodelConverter implements SnakVisitor<Snak>,
 		ValueVisitor<Value> {
 
@@ -60,11 +55,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private final DataObjectFactory dataObjectFactory;
 
-	/**
-	 * If set to true, subobjects will always be copied recursively. This is the
-	 * default.
-	 */
-	private boolean deepCopy = true;
+	private DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
 	 * If set to true, references will be copied when making deep copies of
@@ -72,8 +63,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * when making shallow copies.
 	 */
 	private boolean deepCopyReferences = true;
-
-	private DocumentDataFilter filter = new DocumentDataFilter();
 
 	/**
 	 * Constructor.
@@ -86,60 +75,76 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	/**
+	 * @deprecated Shallow copy is not supported anymore
+	 *
 	 * Returns true if objects will be copied by deep copy, replacing all
 	 * subobjects recursively. This is the default.
 	 *
 	 * @return true if deep copy is to be used
 	 */
+	@Deprecated
 	public boolean hasOptionDeepCopy() {
-		return this.deepCopy;
+		return true;
 	}
 
 	/**
+	 * @deprecated Shallow copy is not supported anymore
+	 *
 	 * Sets the value of the deep copy option. If true, subobjects of objects
 	 * will be copied recursively.
 	 *
 	 * @param value
 	 *            the value of the deep copy option
 	 */
+	@Deprecated
 	public void setOptionDeepCopy(boolean value) {
-		this.deepCopy = value;
 	}
 
 	/**
+	 * @deprecated Support for filtering references is going to be removed from DatamodelConverter
+	 *
 	 * Returns true if references will be copied when creating a deep copy of
-	 * statements. This is the default. The setting ahs no effect when shallow
+	 * statements. This is the default. The setting has no effect when shallow
 	 * copies are used.
 	 *
 	 * @return true if references are included in deep copy
 	 */
+	@Deprecated
 	public boolean hasOptionDeepCopyReferences() {
-		return this.deepCopyReferences;
+		return deepCopyReferences;
 	}
 
 	/**
+	 * @deprecated Support for filtering references is going to be removed from DatamodelConverter
+	 *
 	 * Sets the value of the deep copy references option. If true, references
 	 * will be copied when creating a deep copy of statements.
 	 *
 	 * @param value
 	 *            the value of the deep copy references option
 	 */
+	@Deprecated
 	public void setOptionDeepCopyReferences(boolean value) {
-		this.deepCopyReferences = value;
+		deepCopyReferences = value;
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Replaces the current filter settings with the given ones. Future changes
 	 * to the settings will take effect (a reference is used, not a full copy).
 	 *
 	 * @param filter
 	 *            the filter to use
 	 */
+	@Deprecated
 	public void setOptionFilter(DocumentDataFilter filter) {
 		this.filter = filter;
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Returns the (possibly empty) set of language codes that are used to
 	 * filter data while copying it, or null if no such filter is configured
 	 * (default). If not equal to null, only terms in the given language will be
@@ -147,11 +152,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *
 	 * @return set of language codes to use for filtering
 	 */
+	@Deprecated
 	public Set<String> getOptionLanguageFilter() {
-		return this.filter.getLanguageFilter();
+		return filter.getLanguageFilter();
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Sets the (possibly empty) set of language codes that are used to filter
 	 * data while copying it. Setting this to null disables this filter (this is
 	 * the default). If not equal to null, only terms in the given language will
@@ -163,11 +171,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @param languageFilter
 	 *            set of language codes to restrict copying to
 	 */
+	@Deprecated
 	public void setOptionLanguageFilter(Set<String> languageFilter) {
-		this.filter.setLanguageFilter(languageFilter);
+		filter.setLanguageFilter(languageFilter);
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Returns the (possibly empty) set of {@link PropertyIdValue} objects that
 	 * are used to filter statements while copying data, or null if no such
 	 * filter is configured (default). If not equal to null, only statements
@@ -175,11 +186,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *
 	 * @return set of properties to use for filtering
 	 */
+	@Deprecated
 	public Set<PropertyIdValue> getOptionPropertyFilter() {
-		return this.filter.getPropertyFilter();
+		return filter.getPropertyFilter();
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Sets the (possibly empty) set of {@link PropertyIdValue} objects that are
 	 * used to filter statements while copying data. Setting this to null
 	 * disables this filter (this is the default). If not equal to null, only
@@ -191,11 +205,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @param propertyFilter
 	 *            set of properties to use for filtering
 	 */
+	@Deprecated
 	public void setOptionPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		this.filter.setPropertyFilter(propertyFilter);
+		filter.setPropertyFilter(propertyFilter);
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Returns the (possibly empty) set of site keys that are used to filter
 	 * {@link SiteLink} objects while copying data, or null if no such filter is
 	 * configured (default). If not equal to null, only site links for the given
@@ -203,11 +220,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *
 	 * @return set of site keys to use for filtering
 	 */
+	@Deprecated
 	public Set<String> getOptionSiteLinkFilter() {
-		return this.filter.getSiteLinkFilter();
+		return filter.getSiteLinkFilter();
 	}
 
 	/**
+	 * @deprecated Use {@link DatamodelFilter}
+	 *
 	 * Sets the (possibly empty) set of site keys that are used to filter
 	 * {@link SiteLink} objects while copying data. Setting this to null
 	 * disables this filter (this is the default). If not equal to null, only
@@ -216,8 +236,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @param siteLinkFilter
 	 *            set of site keys to use for filtering
 	 */
+	@Deprecated
 	public void setOptionSiteLinkFilter(Set<String> siteLinkFilter) {
-		this.filter.setSiteLinkFilter(siteLinkFilter);
+		filter.setSiteLinkFilter(siteLinkFilter);
 	}
 
 	/**
@@ -228,8 +249,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public ItemIdValue copy(ItemIdValue object) {
-		return this.dataObjectFactory.getItemIdValue(object.getId(),
-				object.getSiteIri());
+		return dataObjectFactory.getItemIdValue(object.getId(), object.getSiteIri());
 	}
 
 	/**
@@ -240,20 +260,18 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public PropertyIdValue copy(PropertyIdValue object) {
-		return this.dataObjectFactory.getPropertyIdValue(object.getId(),
-				object.getSiteIri());
+		return dataObjectFactory.getPropertyIdValue(object.getId(), object.getSiteIri());
 	}
 
 	/**
-	 * Copies a {@link org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue}.
+	 * Copies a {@link LexemeIdValue}.
 	 *
 	 * @param object
 	 *            object to copy
 	 * @return copied object
 	 */
 	public LexemeIdValue copy(LexemeIdValue object) {
-		return this.dataObjectFactory.getLexemeIdValue(object.getId(),
-				object.getSiteIri());
+		return dataObjectFactory.getLexemeIdValue(object.getId(), object.getSiteIri());
 	}
 
 	/**
@@ -264,7 +282,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public DatatypeIdValue copy(DatatypeIdValue object) {
-		return this.dataObjectFactory.getDatatypeIdValue(object.getIri());
+		return dataObjectFactory.getDatatypeIdValue(object.getIri());
 	}
 
 	/**
@@ -275,7 +293,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public TimeValue copy(TimeValue object) {
-		return this.dataObjectFactory.getTimeValue(object.getYear(),
+		return dataObjectFactory.getTimeValue(object.getYear(),
 				object.getMonth(), object.getDay(), object.getHour(),
 				object.getMinute(), object.getSecond(), object.getPrecision(),
 				object.getBeforeTolerance(), object.getAfterTolerance(),
@@ -290,7 +308,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public GlobeCoordinatesValue copy(GlobeCoordinatesValue object) {
-		return this.dataObjectFactory.getGlobeCoordinatesValue(
+		return dataObjectFactory.getGlobeCoordinatesValue(
 				object.getLatitude(), object.getLongitude(),
 				object.getPrecision(), object.getGlobe());
 	}
@@ -303,7 +321,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public StringValue copy(StringValue object) {
-		return this.dataObjectFactory.getStringValue(object.getString());
+		return dataObjectFactory.getStringValue(object.getString());
 	}
 
 	/**
@@ -316,8 +334,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public MonolingualTextValue copy(MonolingualTextValue object) {
-		return this.dataObjectFactory.getMonolingualTextValue(object.getText(),
-				object.getLanguageCode());
+		return dataObjectFactory.getMonolingualTextValue(object.getText(), object.getLanguageCode());
 	}
 
 	/**
@@ -328,9 +345,29 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public QuantityValue copy(QuantityValue object) {
-		return this.dataObjectFactory.getQuantityValue(
+		return dataObjectFactory.getQuantityValue(
 				object.getNumericValue(), object.getLowerBound(),
 				object.getUpperBound(), object.getUnit());
+	}
+
+	/**
+	 * Copies a {@link Snak}.
+	 *
+	 * @param snak
+	 *            object to copy
+	 * @return the copied object
+	 */
+	private Snak copy(Snak snak) {
+		if (snak instanceof ValueSnak) {
+			return copy((ValueSnak) snak);
+		} else if (snak instanceof NoValueSnak) {
+			return copy((NoValueSnak) snak);
+		} else if (snak instanceof SomeValueSnak) {
+			return copy((SomeValueSnak) snak);
+		} else {
+			throw new IllegalArgumentException(
+					"I don't know how to copy snaks of type " + snak.getClass());
+		}
 	}
 
 	/**
@@ -341,13 +378,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public ValueSnak copy(ValueSnak object) {
-		if (this.deepCopy) {
-			return this.dataObjectFactory.getValueSnak(
-					copy(object.getPropertyId()), copyValue(object.getValue()));
-		} else {
-			return this.dataObjectFactory.getValueSnak(object.getPropertyId(),
-					object.getValue());
-		}
+		return dataObjectFactory.getValueSnak(copy(object.getPropertyId()), copyValue(object.getValue()));
 	}
 
 	/**
@@ -358,9 +389,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public SomeValueSnak copy(SomeValueSnak object) {
-		return this.dataObjectFactory
-				.getSomeValueSnak(innerCopyPropertyIdValue(object
-						.getPropertyId()));
+		return dataObjectFactory.getSomeValueSnak(copy(object.getPropertyId()));
 	}
 
 	/**
@@ -371,8 +400,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public NoValueSnak copy(NoValueSnak object) {
-		return this.dataObjectFactory
-				.getNoValueSnak(innerCopyPropertyIdValue(object.getPropertyId()));
+		return dataObjectFactory.getNoValueSnak(copy(object.getPropertyId()));
 	}
 
 	/**
@@ -383,11 +411,11 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public SnakGroup copy(SnakGroup object) {
-		if (this.deepCopy) {
-			return deepCopySnakGroup(object);
-		} else {
-			return this.dataObjectFactory.getSnakGroup(object.getSnaks());
+		List<Snak> snaks = new ArrayList<>(object.getSnaks().size());
+		for (Snak snak : object.getSnaks()) {
+			snaks.add(copy(snak));
 		}
+		return dataObjectFactory.getSnakGroup(snaks);
 	}
 
 	/**
@@ -398,12 +426,10 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public Claim copy(Claim object) {
-		if (this.deepCopy) {
-			return deepCopyClaim(object);
-		} else {
-			return this.dataObjectFactory.getClaim(object.getSubject(),
-					object.getMainSnak(), object.getQualifiers());
-		}
+		return dataObjectFactory.getClaim(
+				(EntityIdValue) visit(object.getSubject()),
+				copy(object.getMainSnak()),
+				copy(object.getQualifiers()));
 	}
 
 	/**
@@ -414,12 +440,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public Reference copy(Reference object) {
-		if (this.deepCopy) {
-			return this.dataObjectFactory
-					.getReference(deepCopySnakGroups(object.getSnakGroups()));
-		} else {
-			return this.dataObjectFactory.getReference(object.getSnakGroups());
-		}
+		return dataObjectFactory.getReference(copy(object.getSnakGroups()));
 	}
 
 	/**
@@ -430,14 +451,12 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public Statement copy(Statement object) {
-		if (this.deepCopy) {
-			return deepCopyStatement(object);
-		} else {
-			return this.dataObjectFactory.getStatement(object.getSubject(),
-					object.getMainSnak(), object.getQualifiers(),
-					object.getReferences(), object.getRank(),
-					object.getStatementId());
-		}
+		return dataObjectFactory.getStatement(
+				(EntityIdValue) visit(object.getSubject()),
+				copy(object.getMainSnak()),
+				copy(object.getQualifiers()),
+				copyReferences(object.getReferences()),
+				object.getRank(), object.getStatementId());
 	}
 
 	/**
@@ -450,12 +469,11 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public StatementGroup copy(StatementGroup object) {
-		if (this.deepCopy) {
-			return deepCopyStatementGroup(object);
-		} else {
-			return this.dataObjectFactory.getStatementGroup(object
-					.getStatements());
+		List<Statement> statements = new ArrayList<>(object.getStatements().size());
+		for (Statement statement : object.getStatements()) {
+			statements.add(copy(statement));
 		}
+		return dataObjectFactory.getStatementGroup(statements);
 	}
 
 	/**
@@ -469,7 +487,7 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public SiteLink copy(SiteLink object) {
-		return this.dataObjectFactory.getSiteLink(object.getPageTitle(),
+		return dataObjectFactory.getSiteLink(object.getPageTitle(),
 				object.getSiteKey(), object.getBadges());
 	}
 
@@ -481,24 +499,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public PropertyDocument copy(PropertyDocument object) {
-		if (this.deepCopy) {
-			return this.dataObjectFactory.getPropertyDocument(copy(object
-					.getEntityId()), deepCopyMonoLingualTextValues(object
-					.getLabels().values()),
-					deepCopyMonoLingualTextValues(object.getDescriptions()
-							.values()), flattenDeepCopyAliasMap(object
-							.getAliases()), deepCopyStatementGroups(object
-							.getStatementGroups()), copy(object.getDatatype()),
-					object.getRevisionId());
-		} else {
-			return this.dataObjectFactory.getPropertyDocument(object
-					.getEntityId(), copyMonoLingualTextValues(object
-					.getLabels().values()), copyMonoLingualTextValues(object
-					.getDescriptions().values()), flattenAliasMap(object
-					.getAliases()), copyStatementGroups(object
-					.getStatementGroups()), object.getDatatype(), object
-					.getRevisionId());
-		}
+		return dataObjectFactory.getPropertyDocument(
+				copy(object.getEntityId()),
+				copyMonoLingualTextValues(object.getLabels().values()),
+				copyMonoLingualTextValues(object.getDescriptions().values()),
+				copyAliasMap(object.getAliases()),
+				copyStatementGroups(object.getStatementGroups()),
+				copy(object.getDatatype()),
+				object.getRevisionId());
 	}
 
 	/**
@@ -509,27 +517,14 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public ItemDocument copy(ItemDocument object) {
-		if (this.deepCopy) {
-			return this.dataObjectFactory.getItemDocument(copy(object
-					.getEntityId()), deepCopyMonoLingualTextValues(object
-					.getLabels().values()),
-					deepCopyMonoLingualTextValues(object.getDescriptions()
-							.values()), flattenDeepCopyAliasMap(object
-							.getAliases()), deepCopyStatementGroups(object
-							.getStatementGroups()), deepCopySiteLinks(object
-							.getSiteLinks()), object.getRevisionId());
-		} else {
-			return this.dataObjectFactory
-					.getItemDocument(object.getEntityId(),
-							copyMonoLingualTextValues(object.getLabels()
-									.values()),
-							copyMonoLingualTextValues(object.getDescriptions()
-									.values()), flattenAliasMap(object
-									.getAliases()), copyStatementGroups(object
-									.getStatementGroups()),
-							copySiteLinks(object.getSiteLinks()), object
-									.getRevisionId());
-		}
+		return dataObjectFactory.getItemDocument(
+				copy(object.getEntityId()),
+				copyMonoLingualTextValues(object.getLabels().values()),
+				copyMonoLingualTextValues(object.getDescriptions().values()),
+				copyAliasMap(object.getAliases()),
+				copyStatementGroups(object.getStatementGroups()),
+				copySiteLinks(object.getSiteLinks()),
+				object.getRevisionId());
 	}
 
 	/**
@@ -614,27 +609,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	/**
 	 * Converts a map of language keys to lists of {@link MonolingualTextValue}
 	 * objects to a flat list of such objects, as required for the factory
-	 * methods.
-	 *
-	 * @param aliasMap
-	 *            the map to convert
-	 * @return the flattened list
-	 */
-	private List<MonolingualTextValue> flattenAliasMap(
-			Map<String, List<MonolingualTextValue>> aliasMap) {
-		List<MonolingualTextValue> aliases = new ArrayList<>();
-		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap
-				.entrySet()) {
-			if (this.filter.includeLanguage(langAliases.getKey())) {
-				aliases.addAll(langAliases.getValue());
-			}
-		}
-		return aliases;
-	}
-
-	/**
-	 * Converts a map of language keys to lists of {@link MonolingualTextValue}
-	 * objects to a flat list of such objects, as required for the factory
 	 * methods, where the values in the flat lists are new copies of the
 	 * original values.
 	 *
@@ -642,12 +616,11 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 *            the map to convert
 	 * @return the flattened list with copied values
 	 */
-	private List<MonolingualTextValue> flattenDeepCopyAliasMap(
+	private List<MonolingualTextValue> copyAliasMap(
 			Map<String, List<MonolingualTextValue>> aliasMap) {
 		List<MonolingualTextValue> aliases = new ArrayList<>();
-		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap
-				.entrySet()) {
-			if (this.filter.includeLanguage(langAliases.getKey())) {
+		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap.entrySet()) {
+			if (filter.includeLanguage(langAliases.getKey())) {
 				for (MonolingualTextValue mtv : langAliases.getValue()) {
 					aliases.add(copy(mtv));
 				}
@@ -658,236 +631,76 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	/**
-	 * Copies the given {@link PropertyIdValue} appearing as a subobject of some
-	 * copied structure. Depending on the setting for the deep copy option, this
-	 * will either return the value unchanged or make a copy.
-	 *
-	 * @param propertyIdValue
-	 *            the value to copy
-	 * @return the copied value
-	 */
-	private PropertyIdValue innerCopyPropertyIdValue(
-			PropertyIdValue propertyIdValue) {
-		return this.deepCopy ? copy(propertyIdValue) : propertyIdValue;
-	}
-
-	/**
-	 * Copies a {@link Snak}, creating deep copies of all subobjects.
-	 *
-	 * @param snak
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private Snak deepCopySnak(Snak snak) {
-		if (snak instanceof ValueSnak) {
-			return this.dataObjectFactory.getValueSnak(
-					copy(snak.getPropertyId()),
-					copyValue(snak.getValue()));
-		} else if (snak instanceof NoValueSnak) {
-			return this.dataObjectFactory.getNoValueSnak(copy(snak
-					.getPropertyId()));
-		} else if (snak instanceof SomeValueSnak) {
-			return this.dataObjectFactory.getSomeValueSnak(copy(snak
-					.getPropertyId()));
-		} else {
-			throw new IllegalArgumentException(
-					"I don't know how to copy snaks of type " + snak.getClass());
-		}
-	}
-
-	/**
-	 * Copies a {@link SnakGroup}, creating deep copies of all subobjects.
-	 *
-	 * @param snakGroup
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private SnakGroup deepCopySnakGroup(SnakGroup snakGroup) {
-		List<Snak> snaks = new ArrayList<>(snakGroup.getSnaks().size());
-		for (Snak snak : snakGroup.getSnaks()) {
-			snaks.add(deepCopySnak(snak));
-		}
-		return this.dataObjectFactory.getSnakGroup(snaks);
-	}
-
-	/**
-	 * Copies a list of {@link SnakGroup} objects, creating deep copies of all
-	 * subobjects.
+	 * Copies a list of {@link SnakGroup} objects.
 	 *
 	 * @param snakGroups
 	 *            object to copy
 	 * @return the copied object
 	 */
-	private List<SnakGroup> deepCopySnakGroups(List<SnakGroup> snakGroups) {
+	private List<SnakGroup> copy(List<SnakGroup> snakGroups) {
 		List<SnakGroup> result = new ArrayList<>(snakGroups.size());
 		for (SnakGroup snakGroup : snakGroups) {
-			result.add(deepCopySnakGroup(snakGroup));
+			result.add(copy(snakGroup));
 		}
 		return result;
 	}
 
 	/**
-	 * Copies a {@link Claim}, creating deep copies of all subobjects.
-	 *
-	 * @param claim
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private Claim deepCopyClaim(Claim claim) {
-		return this.dataObjectFactory.getClaim(
-				(EntityIdValue) visit(claim.getSubject()),
-				deepCopySnak(claim.getMainSnak()),
-				deepCopySnakGroups(claim.getQualifiers()));
-	}
-
-	/**
-	 * Copies a list of {@link Reference} objects, creating deep copies of all
-	 * subobjects.
+	 * Copies a list of {@link Reference} objects.
 	 *
 	 * @param references
 	 *            object to copy
 	 * @return the copied object
 	 */
-	private List<Reference> deepCopyReferences(
-			List<? extends Reference> references) {
-		if (!this.deepCopyReferences) {
+	private List<Reference> copyReferences(List<Reference> references) {
+		if (!deepCopyReferences) {
 			return Collections.emptyList();
 		}
 
 		List<Reference> result = new ArrayList<>(references.size());
 		for (Reference reference : references) {
-			result.add(this.dataObjectFactory
-					.getReference(deepCopySnakGroups(reference.getSnakGroups())));
+			result.add(dataObjectFactory
+					.getReference(copy(reference.getSnakGroups())));
 		}
 		return result;
 	}
 
 	/**
-	 * Copies a {@link Statement}, creating deep copies of all subobjects.
-	 *
-	 * @param statement
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private Statement deepCopyStatement(Statement statement) {
-		return this.dataObjectFactory.getStatement(
-				(EntityIdValue) visit(statement.getSubject()),
-				deepCopySnak(statement.getMainSnak()),
-				deepCopySnakGroups(statement.getQualifiers()),
-				deepCopyReferences(statement.getReferences()),
-				statement.getRank(), statement.getStatementId());
-	}
-
-	/**
-	 * Copies a {@link StatementGroup}, creating deep copies of all subobjects.
-	 * <p>
-	 * As opposed to most other copy methods, this method will catch exceptions
-	 * that occur when copying statements, and drop statements in this case.
-	 * Such exceptions can happen if the input data is based on another
-	 * implementation than the data that should be created in the copy. Then the
-	 * factory may refuse to create the copied object and throw an exception.
-	 * The level of statements is the most appropriate place to recover by
-	 * giving up a single statement rather than a whole statement group.
-	 * <p>
-	 * If all statements are dropped, then a statement group cannot be created
-	 * and null will be returned instead. Callers need to be prepared for this.
-	 *
-	 * @param statementGroup
-	 *            object to copy
-	 * @return the copied object, or null if all statements had to be dropped
-	 *         due to errors
-	 */
-	private StatementGroup deepCopyStatementGroup(StatementGroup statementGroup) {
-		List<Statement> statements = new ArrayList<>(statementGroup
-				.getStatements().size());
-		for (Statement statement : statementGroup.getStatements()) {
-			try {
-				statements.add(deepCopyStatement(statement));
-			} catch (IllegalArgumentException e) {
-				logger.error("A statement could not be copied and was dropped.\nError: "
-						+ e.getMessage()
-						+ "\nStatement:\n"
-						+ statement.toString());
-			}
-		}
-
-		if (statements.isEmpty()) {
-			return null;
-		} else {
-			return this.dataObjectFactory.getStatementGroup(statements);
-		}
-	}
-
-	/**
-	 * Copies a list of {@link StatementGroup} objects, creating deep copies of
-	 * all subobjects.
+	 * Copies a list of {@link StatementGroup} objects.
 	 *
 	 * @param statementGroups
 	 *            object to copy
 	 * @return the copied object
 	 */
-	private List<StatementGroup> deepCopyStatementGroups(
-			List<StatementGroup> statementGroups) {
-		if (this.filter.excludeAllProperties()) {
+	private List<StatementGroup> copyStatementGroups(List<StatementGroup> statementGroups) {
+		if (filter.excludeAllProperties()) {
 			return Collections.emptyList();
 		}
 
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
 		for (StatementGroup statementGroup : statementGroups) {
-			if (this.filter.includePropertyId(statementGroup.getProperty())) {
-				StatementGroup copiedStatementGroup = deepCopyStatementGroup(statementGroup);
-				if (copiedStatementGroup != null) {
-					result.add(copiedStatementGroup);
-				}
+			if (filter.includePropertyId(statementGroup.getProperty())) {
+				result.add(copy(statementGroup));
 			}
 		}
 		return result;
 	}
 
 	/**
-	 * Copies a list of {@link StatementGroup} objects as part of a shallow
-	 * copy.
-	 *
-	 * @param statementGroups
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private List<StatementGroup> copyStatementGroups(
-			List<StatementGroup> statementGroups) {
-		if (this.filter.getPropertyFilter() == null) {
-			return statementGroups;
-		} else if (this.filter.getPropertyFilter().isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
-		for (StatementGroup statementGroup : statementGroups) {
-			if (this.filter.getPropertyFilter().contains(
-					statementGroup.getProperty())) {
-				result.add(statementGroup);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Copies a collection of {@link MonolingualTextValue} objects, creating
-	 * deep copies of all values.
+	 * Copies a collection of {@link MonolingualTextValue} objects
 	 *
 	 * @param monoLingualTextValues
 	 *            object to copy
 	 * @return the copied object
 	 */
-	private List<MonolingualTextValue> deepCopyMonoLingualTextValues(
-			Collection<MonolingualTextValue> monoLingualTextValues) {
-		if (this.filter.excludeAllLanguages()) {
+	private List<MonolingualTextValue> copyMonoLingualTextValues(Collection<MonolingualTextValue> monoLingualTextValues) {
+		if (filter.excludeAllLanguages()) {
 			return Collections.emptyList();
 		}
 
-		List<MonolingualTextValue> result = new ArrayList<>(
-				monoLingualTextValues.size());
+		List<MonolingualTextValue> result = new ArrayList<>(monoLingualTextValues.size());
 		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			if (this.filter.includeLanguage(mtv.getLanguageCode())) {
+			if (filter.includeLanguage(mtv.getLanguageCode())) {
 				result.add(copy(mtv));
 			}
 		}
@@ -895,71 +708,21 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	/**
-	 * Copies a collection of {@link MonolingualTextValue} objects.
-	 *
-	 * @param monoLingualTextValues
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private List<MonolingualTextValue> copyMonoLingualTextValues(
-			Collection<MonolingualTextValue> monoLingualTextValues) {
-		if (this.filter.getLanguageFilter() == null) {
-			return new ArrayList<>(monoLingualTextValues);
-		} else if (this.filter.getLanguageFilter().isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		List<MonolingualTextValue> result = new ArrayList<>(
-				monoLingualTextValues.size());
-		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			if (this.filter.getLanguageFilter().contains(mtv.getLanguageCode())) {
-				result.add(mtv);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Copies a map of {@link SiteLink} objects, creating deep copies of all
-	 * sitelinks.
-	 *
-	 * @param siteLinks
-	 *            object to copy
-	 * @return the copied object
-	 */
-	private Map<String, SiteLink> deepCopySiteLinks(
-			Map<String, SiteLink> siteLinks) {
-		if (this.filter.excludeAllSiteLinks()) {
-			return Collections.emptyMap();
-		}
-
-		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
-		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
-			if (this.filter.includeSiteLink(entry.getKey())) {
-				result.put(entry.getKey(), copy(entry.getValue()));
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Copies a map of {@link SiteLink} objects as part of a shallow copy.
+	 * Copies a map of {@link SiteLink} objects.
 	 *
 	 * @param siteLinks
 	 *            object to copy
 	 * @return the copied object
 	 */
 	private Map<String, SiteLink> copySiteLinks(Map<String, SiteLink> siteLinks) {
-		if (this.filter.getSiteLinkFilter() == null) {
-			return siteLinks;
-		} else if (this.filter.getSiteLinkFilter().isEmpty()) {
+		if (filter.excludeAllSiteLinks()) {
 			return Collections.emptyMap();
 		}
 
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
 		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
-			if (this.filter.getSiteLinkFilter().contains(entry.getKey())) {
-				result.put(entry.getKey(), entry.getValue());
+			if (filter.includeSiteLink(entry.getKey())) {
+				result.put(entry.getKey(), copy(entry.getValue()));
 			}
 		}
 		return result;
