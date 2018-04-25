@@ -303,6 +303,68 @@ public class DatamodelFilterTest {
 	}
 
 	@Test
+	public void testPropertyFilterForLexeme() {
+		LexemeIdValue s = Datamodel.makeWikidataLexemeIdValue("L42");
+		FormIdValue f = Datamodel.makeWikidataFormIdValue("L42-F1");
+		PropertyIdValue p1 = Datamodel.makeWikidataPropertyIdValue("P1");
+		PropertyIdValue p2 = Datamodel.makeWikidataPropertyIdValue("P2");
+		PropertyIdValue p3 = Datamodel.makeWikidataPropertyIdValue("P3");
+		PropertyIdValue p4 = Datamodel.makeWikidataPropertyIdValue("P4");
+
+		Set<PropertyIdValue> propertyFilter = new HashSet<>();
+		propertyFilter.add(p1);
+		propertyFilter.add(p3);
+		DocumentDataFilter documentDataFilter = new DocumentDataFilter();
+		documentDataFilter.setPropertyFilter(propertyFilter);
+		DatamodelFilter filter = new DatamodelFilter(new DataObjectFactoryImpl(), documentDataFilter);
+
+		LexemeDocument lexemeDocument = Datamodel.makeLexemeDocument(
+				s,
+				Datamodel.makeWikidataItemIdValue("Q1"),
+				Datamodel.makeWikidataItemIdValue("Q1"),
+				Collections.emptyList(),
+				Arrays.asList(
+						makeTestStatementGroup(p1, s),
+						makeTestStatementGroup(p2, s),
+						makeTestStatementGroup(p3, s),
+						makeTestStatementGroup(p4, s)
+				),
+				Collections.singletonList(Datamodel.makeFormDocument(
+						f,
+						Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
+						Collections.emptyList(),
+						Arrays.asList(
+								makeTestStatementGroup(p1, f),
+								makeTestStatementGroup(p2, f),
+								makeTestStatementGroup(p3, f)
+						)
+				))
+		);
+
+		LexemeDocument lexemeDocumentFiltered = Datamodel.makeLexemeDocument(
+				s,
+				Datamodel.makeWikidataItemIdValue("Q1"),
+				Datamodel.makeWikidataItemIdValue("Q1"),
+				Collections.emptyList(),
+				Arrays.asList(
+						makeTestStatementGroup(p1, s),
+						makeTestStatementGroup(p3, s)
+				),
+				Collections.singletonList(Datamodel.makeFormDocument(
+						f,
+						Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
+						Collections.emptyList(),
+						Arrays.asList(
+								makeTestStatementGroup(p1, f),
+								makeTestStatementGroup(p3, f)
+						)
+				))
+		);
+
+		assertEquals(lexemeDocumentFiltered, filter.filter(lexemeDocument));
+	}
+
+	@Test
 	public void testEmptySiteLinkFilterForItem() {
 		SiteLink s1 = Datamodel.makeSiteLink("Title 1", "site1", Collections.emptyList());
 		SiteLink s2 = Datamodel.makeSiteLink("Title 2", "site2", Collections.emptyList());

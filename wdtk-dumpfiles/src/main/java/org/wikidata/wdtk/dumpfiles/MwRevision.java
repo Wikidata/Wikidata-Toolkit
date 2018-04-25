@@ -46,6 +46,12 @@ public interface MwRevision {
 	 */
 	String MODEL_WIKIBASE_PROPERTY = "wikibase-property";
 	/**
+	 * The model used for MediaWiki revisions representing Wikibase lexemes.
+	 * Revisions with this format should always use "application/json" as their
+	 * format.
+	 */
+	String MODEL_WIKIBASE_LEXEME = "wikibase-lexeme";
+	/**
 	 * The revision id set when the revision does not exist
 	 */
 	long NO_REVISION_ID = -1;

@@ -143,4 +143,35 @@ Line 3</text>
       <format>application/json</format>
     </revision>
   </page>
+  <page>
+    <title>Lexeme:L1</title>
+    <ns>122</ns>
+    <id>1235667</id>
+    <revision>
+      <id>100009</id>
+      <parentid>8897</parentid>
+      <timestamp>2014-02-19T23:34:19Z</timestamp>
+      <contributor>
+        <ip>127.0.0.9</ip>
+      </contributor>
+      <comment>Test comment 10009</comment>
+      <text xml:space="preserve">{&quot;type&quot;:&quot;lexeme&quot;,&quot;id&quot;:&quot;L1&quot;,&quot;lexicalCategory&quot;:&quot;Q4&quot;,&quot;language&quot;:&quot;Q9&quot;}</text>
+      <sha1>ignored</sha1>
+      <model>wikibase-lexeme</model>
+      <format>application/json</format>
+    </revision>
+    <revision>
+      <id>100010</id>
+      <parentid>8898</parentid>
+      <timestamp>2014-02-19T23:34:10Z</timestamp>
+      <contributor>
+        <ip>127.0.0.10</ip>
+      </contributor>
+      <comment>Test comment 10010</comment>
+      <text xml:space="preserve">{&quot;type&quot;:&quot;lexeme&quot;,&quot;id&quot;:&quot;L1&quot;,&quot;lexicalCategory&quot;:&quot;Q5&quot;,&quot;language&quot;:&quot;Q10&quot;}</text>
+      <sha1>ignored</sha1>
+      <model>wikibase-lexeme</model>
+      <format>application/json</format>
+    </revision>
+  </page>
 </mediawiki>

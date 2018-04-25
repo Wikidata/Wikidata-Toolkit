@@ -30,10 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -130,6 +127,9 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		} else if (document instanceof PropertyDocument) {
 			this.entityDocumentProcessor
 					.processPropertyDocument((PropertyDocument) document);
+		} else if(document instanceof LexemeDocument) {
+			this.entityDocumentProcessor
+					.processLexemeDocument((LexemeDocument) document);
 		}
 	}
 
