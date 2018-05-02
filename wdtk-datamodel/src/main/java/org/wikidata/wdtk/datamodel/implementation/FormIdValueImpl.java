@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -38,6 +40,8 @@ import java.util.regex.Pattern;
  * @author Thomas Pellissier Tanon
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize()
 public class FormIdValueImpl extends ValueImpl implements FormIdValue {
 
 	private static final Pattern PATTERN = Pattern.compile("^L[1-9]\\d*-F[1-9]\\d*$");
@@ -65,27 +69,52 @@ public class FormIdValueImpl extends ValueImpl implements FormIdValue {
 		this.siteIri = siteIri;
 	}
 
+	/**
+	 * Constructor used for deserialization with Jackson.
+	 */
+	@JsonCreator
+	FormIdValueImpl(
+			@JsonProperty("value") JacksonInnerEntityId value,
+			@JacksonInject("siteIri") String siteIri) {
+		this(value.getStringId(), siteIri);
+	}
+
+	@JsonIgnore
 	@Override
 	public String getEntityType() {
 		return EntityIdValue.ET_FORM;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getId() {
 		return id;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getSiteIri() {
 		return siteIri;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getIri() {
 		return siteIri + id;
 	}
 
+	/**
+	 * Returns the inner value helper object. Only for use by Jackson during
+	 * serialization.
+	 *
+	 * @return the inner entity id value
+	 */
+	@JsonProperty("value")
+	JacksonInnerEntityId getValue() {
+		return new JacksonInnerEntityId(id);
+	}
 
+	@JsonIgnore
 	@Override
 	public LexemeIdValue getLexemeId() {
 		return new LexemeIdValueImpl(id.substring(0, id.indexOf("-")), siteIri);
@@ -109,5 +138,44 @@ public class FormIdValueImpl extends ValueImpl implements FormIdValue {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	/**
+	 * Helper object that represents the JSON object structure of the value.
+	 */
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class JacksonInnerEntityId {
+
+		private final String id;
+
+		@JsonCreator
+		JacksonInnerEntityId(
+				@JsonProperty("id") String id
+		) {
+			this.id = id;
+		}
+
+		/**
+		 * Returns the entity type string as used in JSON. Only for use by Jackson
+		 * during serialization.
+		 *
+		 * @return the entity type string
+		 */
+		@JsonProperty("entity-type")
+		String getJsonEntityType() {
+			return "form";
+		}
+
+		/**
+		 * Returns the standard string version of the entity id encoded in this
+		 * value. For example, an id with entityType "item" and numericId "42" is
+		 * normally identified as "Q42".
+		 *
+		 * @return the string id
+		 */
+		@JsonProperty("id")
+		String getStringId() {
+			return id;
+		}
 	}
 }
