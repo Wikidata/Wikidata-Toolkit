@@ -1,0 +1,608 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<title>Wikidata  - Recent changes [en]</title>
+		<link>http://www.wikidata.org/wiki/Special:RecentChanges</link>
+		<description>Track the most recent changes to the wiki in this feed.</description>
+		<language>en</language>
+		<generator>MediaWiki 1.26wmf7</generator>
+		<lastBuildDate>Tue, 02 Jun 2015 13:22:03 GMT</lastBuildDate>
+		<item>
+			<title>Q1876457</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q1876457&amp;diff=220987804&amp;oldid=220928090</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q1876457&amp;diff=220987804&amp;oldid=220928090</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetdescription-add:1|es: &lt;/span&gt; obispo católico de España&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:22, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;obispo católico de España&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220928090:newid:220987804:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:22:02 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1876457</comments>		</item>
+		<item>
+			<title>Q2304926</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q2304926&amp;diff=220987803&amp;oldid=220987439</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q2304926&amp;diff=220987803&amp;oldid=220987439</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P856&quot; title=&quot;‎official website‎ | ‎URL to the website of this item‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;official website&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P856)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: http://www.ozolnieki.lv/&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / official website&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a rel=&quot;nofollow&quot; class=&quot;external free&quot; href=&quot;http://www.ozolnieki.lv/&quot;&gt;http://www.ozolnieki.lv/&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / official website: &lt;a rel=&quot;nofollow&quot; class=&quot;external free&quot; href=&quot;http://www.ozolnieki.lv/&quot;&gt;http://www.ozolnieki.lv/&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987439:newid:220987803:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:59 GMT</pubDate>			<dc:creator>Kikos</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q2304926</comments>		</item>
+		<item>
+			<title>Q20026648</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987802&amp;oldid=220987777</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987802&amp;oldid=220987777</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P244&quot; title=&quot;‎LCAuth identifier‎ | ‎identifier from the the Library of Congress Authorities (only for authority control; for single books see P1144)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;LCAuth identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P244)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: n79100680&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;n79100680&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: n79100680 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987777:newid:220987802:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:58 GMT</pubDate>			<dc:creator>Sergey kudryavtsev</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026648</comments>		</item>
+		<item>
+			<title>Q137138</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q137138&amp;diff=220987801&amp;oldid=220987783</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q137138&amp;diff=220987801&amp;oldid=220987783</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P269&quot; title=&quot;‎SUDOC authorities‎ | ‎identifier for authority control in the French collaborative library catalog (see also P1025)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;SUDOC authorities&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P269)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 162195001&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;162195001&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 162195001 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987783:newid:220987801:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:54 GMT</pubDate>			<dc:creator>Toto256</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q137138</comments>		</item>
+		<item>
+			<title>Q932690</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q932690&amp;diff=220987800&amp;oldid=206273244</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q932690&amp;diff=220987800&amp;oldid=206273244</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P131&quot; title=&quot;‎located in the administrative territorial entity‎ | ‎the item is located on the territory of the following administrative entity‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;located in the administrative territorial entity&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P131)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: &lt;a href=&quot;/wiki/Q1186&quot; title=&quot;‎Kerala‎ | ‎Indian state‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Kerala&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(Q1186)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / located in the administrative territorial entity&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q1186&quot; href=&quot;/wiki/Q1186&quot;&gt;Kerala&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / located in the administrative territorial entity: &lt;a title=&quot;Q1186&quot; href=&quot;/wiki/Q1186&quot;&gt;Kerala&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:206273244:newid:220987800:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:53 GMT</pubDate>			<dc:creator>Manumg</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q932690</comments>		</item>
+		<item>
+			<title>Q3928451</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q3928451&amp;diff=220987799&amp;oldid=210566815</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q3928451&amp;diff=220987799&amp;oldid=210566815</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P244&quot; title=&quot;‎LCAuth identifier‎ | ‎identifier from the the Library of Congress Authorities (only for authority control; for single books see P1144)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;LCAuth identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P244)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: sh95003611&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;sh95003611&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh95003611 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh95003611 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:53 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q3928451</comments>		</item>
+		<item>
+			<title>Q1193043</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987797&amp;oldid=220987796</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987797&amp;oldid=220987796</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetaliases-add:1|en: &lt;/span&gt; Falculea palliata&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / en / 0&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / en / 0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Falculea palliata&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987796:newid:220987797:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:50 GMT</pubDate>			<dc:creator>Jarould</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1193043</comments>		</item>
+		<item>
+			<title>Q367539</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q367539&amp;diff=220987795&amp;oldid=209231784</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q367539&amp;diff=220987795&amp;oldid=209231784</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetsitelink-add:1|ruwiki: &lt;/span&gt; Фаркаш, Ференц&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / ruwiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / ruwiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D1%80%D0%BA%D0%B0%D1%88,_%D0%A4%D0%B5%D1%80%D0%B5%D0%BD%D1%86&quot; hreflang=&quot;ru&quot; dir=&quot;auto&quot;&gt;Фаркаш, Ференц&lt;/a&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:209231784:newid:220987795:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:50 GMT</pubDate>			<dc:creator>Dutcman</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q367539</comments>		</item>
+		<item>
+			<title>Q1193043</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987796&amp;oldid=220987791</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987796&amp;oldid=220987791</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetdescription-add:1|en: &lt;/span&gt; bird&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / es / 0&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / es / 0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Falculea palliata&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / en&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / en&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;bird&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:50 GMT</pubDate>			<dc:creator>Jarould</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1193043</comments>		</item>
+		<item>
+			<title>Q15451381</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q15451381&amp;diff=220987793&amp;oldid=214099568</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q15451381&amp;diff=220987793&amp;oldid=214099568</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetsitelink-add:1|zhwiki: &lt;/span&gt; 雲信·皮哈里&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / zhwiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / zhwiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;//zh.wikipedia.org/wiki/%E9%9B%B2%E4%BF%A1%C2%B7%E7%9A%AE%E5%93%88%E9%87%8C&quot; hreflang=&quot;zh&quot; dir=&quot;auto&quot;&gt;雲信·皮哈里&lt;/a&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:214099568:newid:220987793:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:48 GMT</pubDate>			<dc:creator>Mkckim</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q15451381</comments>		</item>
+		<item>
+			<title>Q1193043</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987791&amp;oldid=220987789</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987791&amp;oldid=220987789</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetdescription-add:1|es: &lt;/span&gt; especie de ave paseriforme&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;especie de ave paseriforme&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987789:newid:220987791:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:48 GMT</pubDate>			<dc:creator>Jarould</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1193043</comments>		</item>
+		<item>
+			<title>Q20026661</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987792&amp;oldid=220987776</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987792&amp;oldid=220987776</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P345&quot; title=&quot;‎IMDb identifier‎ | ‎identifier from the Internet Movie Database (IMDb) with prefix (tt-, nm-, ch-, co-, ev-)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;IMDb identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P345)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: nm0474977&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / IMDb identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;nm0474977&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / IMDb identifier: nm0474977 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987776:newid:220987792:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:48 GMT</pubDate>			<dc:creator>Väsk</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026661</comments>		</item>
+		<item>
+			<title>Q18085792</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18085792&amp;diff=220987790&amp;oldid=212387279</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18085792&amp;diff=220987790&amp;oldid=212387279</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetsitelink-remove:1|itwiki: &lt;/span&gt; Killer Queen&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / itwiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / itwiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;//it.wikipedia.org/wiki/Killer_Queen&quot; hreflang=&quot;it&quot; dir=&quot;auto&quot;&gt;Killer Queen&lt;/a&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:212387279:newid:220987790:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:47 GMT</pubDate>			<dc:creator>Horcrux92</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18085792</comments>		</item>
+		<item>
+			<title>Q1193043</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987789&amp;oldid=215974674</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q1193043&amp;diff=220987789&amp;oldid=215974674</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetlabel-set:1|es: &lt;/span&gt; vanga piquicurvo&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / es&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / es&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Falculea palliata&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;vanga piquicurvo&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:215974674:newid:220987789:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:47 GMT</pubDate>			<dc:creator>Jarould</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q1193043</comments>		</item>
+		<item>
+			<title>Q4438870</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q4438870&amp;diff=220987788&amp;oldid=220987785</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q4438870&amp;diff=220987788&amp;oldid=220987785</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P268&quot; title=&quot;‎BnF identifier‎ | ‎identifier for the subject issued by BNF (Bibliothèque nationale de France)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;BnF identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P268)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 12323632c&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;12323632c&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 12323632c / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 12323632c / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:47 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q4438870</comments>		</item>
+		<item>
+			<title>Q20026662</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026662&amp;diff=220987786&amp;oldid=220987773</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026662&amp;diff=220987786&amp;oldid=220987773</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P31&quot; title=&quot;‎instance of‎ | ‎this item is a specific example and a member of that class‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;instance of&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P31)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: &lt;a href=&quot;/wiki/Q16970&quot; title=&quot;‎church‎ | ‎religious building for Christian worship‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;church&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(Q16970)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q16970&quot; href=&quot;/wiki/Q16970&quot;&gt;church&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of: &lt;a title=&quot;Q16970&quot; href=&quot;/wiki/Q16970&quot;&gt;church&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987773:newid:220987786:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:45 GMT</pubDate>			<dc:creator>89.114.10.123</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026662</comments>		</item>
+		<item>
+			<title>Q4438870</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q4438870&amp;diff=220987785&amp;oldid=210461074</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q4438870&amp;diff=220987785&amp;oldid=210461074</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P244&quot; title=&quot;‎LCAuth identifier‎ | ‎identifier from the the Library of Congress Authorities (only for authority control; for single books see P1144)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;LCAuth identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P244)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: sh88002145&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;sh88002145&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh88002145 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh88002145 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:45 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q4438870</comments>		</item>
+		<item>
+			<title>Q137138</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q137138&amp;diff=220987783&amp;oldid=220987747</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q137138&amp;diff=220987783&amp;oldid=220987747</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P244&quot; title=&quot;‎LCAuth identifier‎ | ‎identifier from the the Library of Congress Authorities (only for authority control; for single books see P1144)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;LCAuth identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P244)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: n81087040&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;n81087040&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: n81087040 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987747:newid:220987783:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:44 GMT</pubDate>			<dc:creator>Toto256</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q137138</comments>		</item>
+		<item>
+			<title>Q2968035</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q2968035&amp;diff=220987782&amp;oldid=192002089</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q2968035&amp;diff=220987782&amp;oldid=192002089</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P373&quot; title=&quot;‎Commons category‎ | ‎name of the Wikimedia Commons category containing files related to this item (without the prefix &amp;quot;Category&amp;quot;)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Commons category&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P373)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: Castello Normanno (Aci Castello)&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / Commons category&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Castello Normanno (Aci Castello)&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / Commons category: Castello Normanno (Aci Castello) / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:192002089:newid:220987782:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:40 GMT</pubDate>			<dc:creator>Sannita</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q2968035</comments>		</item>
+		<item>
+			<title>Q18214523</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18214523&amp;diff=220987781&amp;oldid=213421635</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18214523&amp;diff=220987781&amp;oldid=213421635</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P227&quot; title=&quot;‎GND identifier‎ | ‎identifier from an international authority file of names, subjects, and organizations (please don't use type n = name, disambiguation)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;GND identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P227)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 120784521&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / GND identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;120784521&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / GND identifier: 120784521 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / GND identifier: 120784521 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:40 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18214523</comments>		</item>
+		<item>
+			<title>Q4468164</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q4468164&amp;diff=220987779&amp;oldid=210460550</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q4468164&amp;diff=220987779&amp;oldid=210460550</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P244&quot; title=&quot;‎LCAuth identifier‎ | ‎identifier from the the Library of Congress Authorities (only for authority control; for single books see P1144)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;LCAuth identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P244)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: sh2009004997&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;sh2009004997&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh2009004997 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / LCAuth identifier: sh2009004997 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:35 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q4468164</comments>		</item>
+		<item>
+			<title>Q20026648</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987777&amp;oldid=220987764</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987777&amp;oldid=220987764</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P409&quot; title=&quot;‎NLA identifier‎ | ‎identifier issued by the National Library of Australia (see also P1315 for the newer People Australia identifier)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;NLA identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P409)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 000035468736&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / NLA identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;000035468736&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / NLA identifier: 000035468736 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987764:newid:220987777:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:34 GMT</pubDate>			<dc:creator>Sergey kudryavtsev</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026648</comments>		</item>
+		<item>
+			<title>Q20026661</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987776&amp;oldid=220987770</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987776&amp;oldid=220987770</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P27&quot; title=&quot;‎country of citizenship‎ | ‎the object is a country that recognizes the subject as its citizen‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;country of citizenship&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P27)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: &lt;a href=&quot;/wiki/Q34&quot; title=&quot;‎Sweden‎ | ‎constitutional monarchy in Northern Europe‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Sweden&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(Q34)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / country of citizenship&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q34&quot; href=&quot;/wiki/Q34&quot;&gt;Sweden&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / country of citizenship: &lt;a title=&quot;Q34&quot; href=&quot;/wiki/Q34&quot;&gt;Sweden&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987770:newid:220987776:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:33 GMT</pubDate>			<dc:creator>Väsk</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026661</comments>		</item>
+		<item>
+			<title>Q15456522</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q15456522&amp;diff=220987775&amp;oldid=208049839</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q15456522&amp;diff=220987775&amp;oldid=208049839</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P269&quot; title=&quot;‎SUDOC authorities‎ | ‎identifier for authority control in the French collaborative library catalog (see also P1025)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;SUDOC authorities&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P269)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 085693979&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;085693979&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 085693979 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 085693979 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:30 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q15456522</comments>		</item>
+		<item>
+			<title>Q20026662</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026662&amp;diff=220987773&amp;oldid=0</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026662&amp;diff=220987773&amp;oldid=0</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbeditentity-create:2|en: &lt;/span&gt; Iglesia misercordia, Church in Porto, Portugal&lt;/span&gt;&lt;/p&gt;
+&lt;a href=&quot;//www.wikidata.org/w/index.php?title=Q20026662&amp;amp;diff=220987773&quot;&gt;Show changes&lt;/a&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:25 GMT</pubDate>			<dc:creator>89.114.10.123</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026662</comments>		</item>
+		<item>
+			<title>Q18398336</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18398336&amp;diff=220987772&amp;oldid=220987769</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18398336&amp;diff=220987772&amp;oldid=220987769</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P268&quot; title=&quot;‎BnF identifier‎ | ‎identifier for the subject issued by BNF (Bibliothèque nationale de France)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;BnF identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P268)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 146560994&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;146560994&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 146560994 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 146560994 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:25 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18398336</comments>		</item>
+		<item>
+			<title>Q20026661</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987770&amp;oldid=220987760</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987770&amp;oldid=220987760</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P21&quot; title=&quot;‎sex or gender‎ | ‎Sexual identity of  subject. Main: male (Q6581097), female (Q6581072), transgender female (Q1052281),  transgender male (Q2449503). For animals, use male animal (Q44148), female animal (Q43445). For groups of  same gender, use &amp;quot;subclass of&amp;quot; (P279)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;sex or gender&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P21)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: &lt;a href=&quot;/wiki/Q6581097&quot; title=&quot;‎male‎ | ‎human who is male (use with Property:P21 sex or gender). For groups of males use with subclass of (P279).‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;male&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(Q6581097)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / sex or gender&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q6581097&quot; href=&quot;/wiki/Q6581097&quot;&gt;male&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / sex or gender: &lt;a title=&quot;Q6581097&quot; href=&quot;/wiki/Q6581097&quot;&gt;male&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987760:newid:220987770:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:23 GMT</pubDate>			<dc:creator>Väsk</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026661</comments>		</item>
+		<item>
+			<title>Q18398336</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18398336&amp;diff=220987769&amp;oldid=213588450</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18398336&amp;diff=220987769&amp;oldid=213588450</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P269&quot; title=&quot;‎SUDOC authorities‎ | ‎identifier for authority control in the French collaborative library catalog (see also P1025)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;SUDOC authorities&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P269)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 139901760&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;139901760&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 139901760 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 139901760 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:22 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18398336</comments>		</item>
+		<item>
+			<title>Q18215075</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18215075&amp;diff=220987767&amp;oldid=220987763</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18215075&amp;diff=220987767&amp;oldid=220987763</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetreference-add:2|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P268&quot; title=&quot;‎BnF identifier‎ | ‎identifier for the subject issued by BNF (Bibliothèque nationale de France)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;BnF identifier&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P268)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 120856735&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(One intermediate revision by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 029175755 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;120856735&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 120856735 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / BnF identifier: 120856735 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:17 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18215075</comments>		</item>
+		<item>
+			<title>Q20026648</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987764&amp;oldid=220987748</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026648&amp;diff=220987764&amp;oldid=220987748</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P906&quot; title=&quot;‎SELIBR‎ | ‎identifier per Libris library catalog‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;SELIBR&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P906)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 137087&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SELIBR&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;137087&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SELIBR: 137087 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987748:newid:220987764:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:15 GMT</pubDate>			<dc:creator>Sergey kudryavtsev</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026648</comments>		</item>
+		<item>
+			<title>Q18215075</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q18215075&amp;diff=220987763&amp;oldid=213586974</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q18215075&amp;diff=220987763&amp;oldid=213586974</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbcreateclaim-create:1|: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P269&quot; title=&quot;‎SUDOC authorities‎ | ‎identifier for authority control in the French collaborative library catalog (see also P1025)‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;SUDOC authorities&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P269)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: 029175755&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan='4' style='text-align: center;' class='diff-multi' lang='en'&gt;(2 intermediate revisions by the same user not shown)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / VIAF identifier&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;49251243&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / VIAF identifier: 49251243 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / VIAF identifier: 49251243 / reference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;imported from: &lt;a title=&quot;Q8447&quot; href=&quot;/wiki/Q8447&quot;&gt;French Wikipedia&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;029175755&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / SUDOC authorities: 029175755 / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:15 GMT</pubDate>			<dc:creator>KasparBot</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q18215075</comments>		</item>
+		<item>
+			<title>Q20026661</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987760&amp;oldid=220987744</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20026661&amp;diff=220987760&amp;oldid=220987744</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetclaim-create:2||1: &lt;/span&gt; &lt;a href=&quot;/wiki/Property:P31&quot; title=&quot;‎instance of‎ | ‎this item is a specific example and a member of that class‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;instance of&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(P31)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;: &lt;a href=&quot;/wiki/Q5&quot; title=&quot;‎human‎ | ‎species of the family Hominidae, unique extant species of the genus Homo‎&quot;&gt;&lt;span class=&quot;wb-itemlink&quot;&gt;&lt;span class=&quot;wb-itemlink-label&quot; lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;human&lt;/span&gt; &lt;span class=&quot;wb-itemlink-id&quot;&gt;(Q5)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q5&quot; href=&quot;/wiki/Q5&quot;&gt;human&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of: &lt;a title=&quot;Q5&quot; href=&quot;/wiki/Q5&quot;&gt;human&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987744:newid:220987760:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:12 GMT</pubDate>			<dc:creator>Väsk</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20026661</comments>		</item>
+		<item>
+			<title>Q17354242</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q17354242&amp;diff=220987759&amp;oldid=203428144</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q17354242&amp;diff=220987759&amp;oldid=203428144</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetsitelink-add:1|commonswiki: &lt;/span&gt; Category:Viktoriastraße (Hannover)&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / commonswiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / commonswiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;//commons.wikimedia.org/wiki/Category:Viktoriastra%C3%9Fe_(Hannover)&quot; hreflang=&quot;en&quot; dir=&quot;auto&quot;&gt;Category:Viktoriastraße (Hannover)&lt;/a&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:203428144:newid:220987759:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:10 GMT</pubDate>			<dc:creator>Jean11</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q17354242</comments>		</item>
+		<item>
+			<title>Q20011808</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20011808&amp;diff=220987758&amp;oldid=220987694</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20011808&amp;diff=220987758&amp;oldid=220987694</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbsetdescription-add:1|es: &lt;/span&gt; activista español pro derechos de personas con discapacidad&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;description / es&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;activista español pro derechos de personas con discapacidad&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987694:newid:220987758:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:08 GMT</pubDate>			<dc:creator>Superzerocool</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20011808</comments>		</item>
+		<item>
+			<title>Q20000339</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20000339&amp;diff=220987757&amp;oldid=220987755</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20000339&amp;diff=220987757&amp;oldid=220987755</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbcreateredirect:0||Q20000339|Q318417&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;redirect&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;redirect&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Q318417&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220987755:newid:220987757:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:02 GMT</pubDate>			<dc:creator>Lymantria</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20000339</comments>		</item>
+		<item>
+			<title>Q318417</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q318417&amp;diff=220987756&amp;oldid=206489112</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q318417&amp;diff=220987756&amp;oldid=206489112</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbmergeitems-from:0||Q20000339: &lt;/span&gt; &lt;a href=&quot;/wiki/MediaWiki:Gadget-Merge.js&quot; title=&quot;MediaWiki:Gadget-Merge.js&quot;&gt;merge.js&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / ca&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / ca&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Filip I de Macedònia&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / en / 0&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;aliases / en / 0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;Filip I de Macedònia&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / given name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q998338&quot; href=&quot;/wiki/Q998338&quot;&gt;Filip&lt;/a&gt;&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / given name: &lt;a title=&quot;Q998338&quot; href=&quot;/wiki/Q998338&quot;&gt;Filip&lt;/a&gt; / rank&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / cawiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / cawiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td class=&quot;diff-marker&quot;&gt;+&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #a3d3ff; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;ins class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;//ca.wikipedia.org/wiki/Filip_I_de_Maced%C3%B2nia&quot; hreflang=&quot;ca&quot; dir=&quot;auto&quot;&gt;Filip I de Macedònia&lt;/a&gt;&lt;/ins&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:206489112:newid:220987756:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:01 GMT</pubDate>			<dc:creator>Lymantria</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q318417</comments>		</item>
+		<item>
+			<title>Q20000339</title>
+			<link>http://www.wikidata.org/w/index.php?title=Q20000339&amp;diff=220987755&amp;oldid=220878740</link>
+			<guid isPermaLink="false">http://www.wikidata.org/w/index.php?title=Q20000339&amp;diff=220987755&amp;oldid=220878740</guid>
+			<description>&lt;p&gt;‎&lt;span dir=&quot;auto&quot;&gt;&lt;span class=&quot;autocomment&quot;&gt;wbmergeitems-to:0||Q318417: &lt;/span&gt; &lt;a href=&quot;/wiki/MediaWiki:Gadget-Merge.js&quot; title=&quot;MediaWiki:Gadget-Merge.js&quot;&gt;merge.js&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table class='diff diff-contentalign-left'&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;col class='diff-marker' /&gt;
+				&lt;col class='diff-content' /&gt;
+				&lt;tr style='vertical-align: top;' lang='en'&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;← Older revision&lt;/td&gt;
+				&lt;td colspan='2' style=&quot;background-color: white; color:black; text-align: center;&quot;&gt;Revision as of 13:21, 2 June 2015&lt;/td&gt;
+				&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / ca&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / ca&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Filip I de Macedònia&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / en&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;label / en&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;Filip I de Macedònia&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q5&quot; href=&quot;/wiki/Q5&quot;&gt;human&lt;/a&gt;&lt;/span&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / instance of: &lt;a title=&quot;Q5&quot; href=&quot;/wiki/Q5&quot;&gt;human&lt;/a&gt; / rank&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / given name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;&lt;a title=&quot;Q998338&quot; href=&quot;/wiki/Q998338&quot;&gt;Filip&lt;/a&gt;&lt;/span&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;property / given name: &lt;a title=&quot;Q998338&quot; href=&quot;/wiki/Q998338&quot;&gt;Filip&lt;/a&gt; / rank&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;span&gt;Normal rank&lt;/span&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / cawiki / name&lt;/td&gt;&lt;td colspan=&quot;2&quot; class=&quot;diff-lineno&quot;&gt;links / cawiki / name&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=&quot;diff-marker&quot;&gt;-&lt;/td&gt;&lt;td style=&quot;color:black; font-size: 88%; border-style: solid; border-width: 1px 1px 1px 4px; border-radius: 0.33em; border-color: #ffe49c; vertical-align: top; white-space: pre-wrap;&quot;&gt;&lt;div&gt;&lt;del class=&quot;diffchange diffchange-inline&quot;&gt;&lt;a href=&quot;//ca.wikipedia.org/wiki/Filip_I_de_Maced%C3%B2nia&quot; hreflang=&quot;ca&quot; dir=&quot;auto&quot;&gt;Filip I de Macedònia&lt;/a&gt;&lt;/del&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;!-- diff cache key wikidatawiki:diff:version:1.11a:oldid:220878740:newid:220987755:lang:en --&gt;
+&lt;/table&gt;</description>
+			<pubDate>Tue, 02 Jun 2015 13:21:01 GMT</pubDate>			<dc:creator>Lymantria</dc:creator>			<comments>http://www.wikidata.org/wiki/Talk:Q20000339</comments>		</item>
+	</channel>
+</rss>

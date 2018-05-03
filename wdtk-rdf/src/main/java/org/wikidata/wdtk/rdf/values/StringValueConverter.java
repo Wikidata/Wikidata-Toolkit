@@ -20,6 +20,8 @@ package org.wikidata.wdtk.rdf.values;
  * #L%
  */
 
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 import org.openrdf.model.Value;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -91,8 +93,12 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 	 * @return URL of the page
 	 */
 	static String getCommonsUrl(String pageName) {
-		return "http://commons.wikimedia.org/wiki/File:"
-				+ pageName.replace(' ', '_');
+		try {
+		    return "http://commons.wikimedia.org/wiki/File:"
+				+ URLEncoder.encode(pageName.replace(' ', '_'), "UTF-8");
+		} catch(UnsupportedEncodingException uee) {
+		    logger.error("This machine does not support UTF-8 encoding");
+		    return null;
+		}
 	}
-
 }
