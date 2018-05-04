@@ -21,413 +21,249 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DataObjectFactoryImplTest {
 
-	public enum ValueType {
-		STRING, ITEM, GLOBE_COORDINATES, TIME, QUANTITY, MONOLINGUAL_TEXT;
-
-		protected static ValueType fromInt(int seed) {
-			switch (seed % 6) {
-			case 0:
-				return STRING;
-			case 1:
-				return ITEM;
-			case 2:
-				return GLOBE_COORDINATES;
-			case 3:
-				return TIME;
-			case 4:
-				return QUANTITY;
-			default:
-			case 5:
-				return MONOLINGUAL_TEXT;
-			}
-		}
-	}
-
-	protected DatamodelConverter converter;
-
-	public DataObjectFactoryImplTest() {
-		DataObjectFactory factory = new DataObjectFactoryImpl();
-		converter = new DatamodelConverter(factory);
-	}
-
-	@Test
-	public void deepCopyOptionValue() {
-		assertTrue(this.converter.hasOptionDeepCopy());
-	}
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	@Test
 	public final void testGetItemId() {
-		ItemIdValue o1 = getTestItemIdValue(2);
-		ItemIdValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	public static ItemIdValue getTestItemIdValue(int seed) {
-		return new ItemIdValueImpl("Q4" + seed, "foo:");
+		ItemIdValue o1 = new ItemIdValueImpl("Q42", "foo");
+		ItemIdValue o2 = factory.getItemIdValue("Q42", "foo");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetLexemeId() {
-		LexemeIdValue o1 = new LexemeIdValueImpl("L42", "foo:");
-		LexemeIdValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		LexemeIdValue o1 = new LexemeIdValueImpl("L42", "foo");
+		LexemeIdValue o2 = factory.getLexemeIdValue("L42", "foo");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetPropertyId() {
-		PropertyIdValue o1 = getTestPropertyIdValue(2);
-		PropertyIdValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	public static PropertyIdValue getTestPropertyIdValue(int seed) {
-		return new PropertyIdValueImpl("P4" + seed, "foo:");
-	}
-
-	private static EntityIdValue getTestEntityIdValue(int seed, String entityType) {
-		switch (entityType) {
-		case EntityIdValue.ET_ITEM:
-			return getTestItemIdValue(seed);
-		case EntityIdValue.ET_PROPERTY:
-			return getTestPropertyIdValue(seed);
-		default:
-			throw new IllegalArgumentException("Unsupported entity type "
-					+ entityType);
-		}
+		PropertyIdValue o1 = new PropertyIdValueImpl("P42", "foo");
+		PropertyIdValue o2 = factory.getPropertyIdValue("P42", "foo");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
-		DatatypeIdValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		DatatypeIdValue o2 = factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetTimeValue() {
-		TimeValue o1 = getTestTimeValue(0);
-		TimeValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static TimeValue getTestTimeValue(int seed) {
-		return new TimeValueImpl(2007 + seed, (byte) 5, (byte) 12, (byte) 10,
-				(byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
+		TimeValue o1 = new TimeValueImpl(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
 				TimeValue.CM_GREGORIAN_PRO);
+		TimeValue o2 = factory.getTimeValue(2007, (byte) 5, (byte) 12,
+				(byte) 10, (byte) 45, (byte) 0, TimeValue.PREC_DAY, 0, 1, 60,
+				TimeValue.CM_GREGORIAN_PRO);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetGlobeCoordinatesValue() {
-		GlobeCoordinatesValue o1 = getTestGlobeCoordinatesValue(0);
-		GlobeCoordinatesValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static GlobeCoordinatesValue getTestGlobeCoordinatesValue(int seed) {
-		return new GlobeCoordinatesValueImpl((10 + seed)
-				* GlobeCoordinatesValue.PREC_DEGREE, (1905 + seed)
-				* GlobeCoordinatesValue.PREC_DECI_DEGREE,
-				GlobeCoordinatesValue.PREC_DECI_DEGREE,
+		GlobeCoordinatesValue o1 = new GlobeCoordinatesValueImpl(90.0,
+				190.5, GlobeCoordinatesValue.PREC_DECI_DEGREE,
 				GlobeCoordinatesValue.GLOBE_EARTH);
+		GlobeCoordinatesValue o2 = factory.getGlobeCoordinatesValue(90.0,
+				190.5, GlobeCoordinatesValue.PREC_DECI_DEGREE,
+				GlobeCoordinatesValue.GLOBE_EARTH);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetStringValue() {
-		StringValue o1 = getTestStringValue(0);
-		StringValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static StringValue getTestStringValue(int seed) {
-		return new StringValueImpl("foo" + seed);
+		StringValue o1 = new StringValueImpl("foo");
+		StringValue o2 = factory.getStringValue("foo");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetMonolingualTextValue() {
-		MonolingualTextValue o1 = getTestMonolingualTextValue(0, "en");
-		MonolingualTextValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static MonolingualTextValue getTestMonolingualTextValue(int seed,
-																	String language) {
-		return new MonolingualTextValueImpl("foo" + seed, language);
+		MonolingualTextValue o1 = new MonolingualTextValueImpl("foo", "en");
+		MonolingualTextValue o2 = factory.getMonolingualTextValue("foo", "en");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetQuantityValue() {
-		QuantityValue o1 = getTestQuantityValue(0);
-		QuantityValue o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		BigDecimal nv = new BigDecimal("0.123456789012345678901234567890123456789");
+		BigDecimal lb = new BigDecimal("0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal("0.123456789012345678901234567890123456790");
+		QuantityValue o1 = new QuantityValueImpl(nv, lb, ub, "unit");
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "unit");
+		assertEquals(o1, o2);
 	}
 
-	private static QuantityValue getTestQuantityValue(int seed) {
-		BigDecimal nv = new BigDecimal(seed
-				+ ".123456789012345678901234567890123456789");
-		BigDecimal lb = new BigDecimal(seed
-				+ ".123456789012345678901234567890123456788");
-		BigDecimal ub = new BigDecimal(seed
-				+ ".123456789012345678901234567890123456790");
-		return new QuantityValueImpl(nv, lb, ub,
-				"http://wikidata.org/entity/Q11573");
+	@Test
+	public final void testGetQuantityValueNoUnit() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		BigDecimal lb = new BigDecimal(
+				"0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal(
+				"0.123456789012345678901234567890123456790");
+		QuantityValue o1 = new QuantityValueImpl(nv, lb, ub, "1");
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub);
+		assertEquals(o1, o2);
 	}
 
-	private static Value getTestValue(ValueType valueType, int seed) {
-		switch (valueType) {
-		case GLOBE_COORDINATES:
-			return getTestGlobeCoordinatesValue(seed);
-		case ITEM:
-			return getTestItemIdValue(seed);
-		case MONOLINGUAL_TEXT:
-			return getTestMonolingualTextValue(seed, "de");
-		case QUANTITY:
-			return getTestQuantityValue(seed);
-		case STRING:
-			return getTestStringValue(seed);
-		case TIME:
-			return getTestTimeValue(seed);
-		default:
-			throw new RuntimeException("Unsupported value type.");
-		}
+	@Test
+	public final void testGetQuantityValueNoBounds() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = new QuantityValueImpl(nv, null, null, "unit");
+		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBoundsAndUnits() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		QuantityValue o1 = new QuantityValueImpl(nv, null, null, "1");
+		QuantityValue o2 = factory.getQuantityValue(nv);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetValueSnak() {
-		ValueSnak o1 = getTestValueSnak(ValueType.STRING, 0, 0);
-		ValueSnak o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static ValueSnak getTestValueSnak(ValueType valueType, int pseed,
-											  int vseed) {
-		PropertyIdValue property = getTestPropertyIdValue(pseed);
-		Value value =  getTestValue(valueType, vseed);
-		return new ValueSnakImpl(property, value);
+		ValueSnak o1 = new ValueSnakImpl(
+				factory.getPropertyIdValue("P42", "foo"),
+				factory.getStringValue("foo"));
+		ValueSnak o2 = factory.getValueSnak(
+				factory.getPropertyIdValue("P42", "foo"),
+				factory.getStringValue("foo"));
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetSomeValueSnak() {
-		SomeValueSnak o1 = new SomeValueSnakImpl(getTestPropertyIdValue(0));
-		SomeValueSnak o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		SomeValueSnak o1 = new SomeValueSnakImpl(factory.getPropertyIdValue("P42", "foo"));
+		SomeValueSnak o2 = factory.getSomeValueSnak(factory.getPropertyIdValue("P42", "foo"));
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetNoValueSnak() {
-		NoValueSnak o1 = new NoValueSnakImpl(getTestPropertyIdValue(0));
-		NoValueSnak o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		NoValueSnak o1 = new NoValueSnakImpl(factory.getPropertyIdValue("P42", "foo"));
+		NoValueSnak o2 = factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo"));
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetSnakGroup() {
-		SnakGroup o1 = getTestValueSnakGroup(ValueType.STRING, 0, 2);
-		SnakGroup o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static SnakGroup getTestValueSnakGroup(ValueType valueType,
-												   int pseed, int size) {
-		List<Snak> snaks = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			snaks.add(getTestValueSnak(valueType, pseed, i));
-		}
-		return new SnakGroupImpl(snaks);
-	}
-
-	private static List<SnakGroup> getTestValueSnakGroups(int seed, int size) {
-		List<SnakGroup> snakGroups = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			SnakGroup group = getTestValueSnakGroup(ValueType.fromInt(i + seed), i
-					+ seed, i + 1);
-			snakGroups.add(group);
-		}
-		return snakGroups;
+		Snak s = factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo"));
+		SnakGroup o1 = new SnakGroupImpl(Collections.singletonList(s));
+		SnakGroup o2 = factory.getSnakGroup(Collections.singletonList(s));
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetClaim() {
-		Claim o1 = getTestClaim(0, 0, 2, EntityIdValue.ET_ITEM);
-		Claim o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	private static Claim getTestClaim(int subjectSeed, int seed, int size,
-									  String entityType) {
-		
-		return getTestStatement(subjectSeed, seed, size, entityType).getClaim();
+		Claim o1 = new ClaimImpl(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList()
+		);
+		Claim o2 = factory.getClaim(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList()
+		);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetReference() {
-		List<SnakGroup> referenceSnaks = getTestValueSnakGroups(10, 3);
-		Reference o1 = new ReferenceImpl(referenceSnaks);
-		Reference o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+		Reference r1 = new ReferenceImpl(Collections.emptyList());
+		Reference r2 = factory.getReference(Collections.emptyList());
+		assertEquals(r1, r2);
 	}
 
 	@Test
 	public final void testGetStatement() {
-		Statement o1 = getTestStatement(0, 42, 3, EntityIdValue.ET_ITEM);
-		Statement o2 = converter.copy(o1);
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	public static Statement getTestStatement(int subjectSeed, int seed,
-			int size, String entityType) {
-		List<SnakGroup> qualifiers = getTestValueSnakGroups(seed * 100, size);
-		return new StatementImpl("",
-				StatementRank.NORMAL,
-				getTestValueSnak(ValueType.fromInt(seed), seed, seed),
-				qualifiers, null,
-				getTestEntityIdValue(subjectSeed, entityType));
+		Statement o1 = new StatementImpl("MyId", StatementRank.NORMAL,
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				factory.getItemIdValue("Q42", "foo"));
+		Statement o2 = factory.getStatement(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetStatementGroup() {
-		StatementGroup o1 = getTestStatementGroup(0, 17, 10,
-				EntityIdValue.ET_ITEM);
-		StatementGroup o2 = converter.copy(o1);
-
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	public static StatementGroup getTestStatementGroup(int subjectSeed,
-			int seed, int size, String entityType) {
-		List<Statement> statements = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			statements.add(getTestStatement(subjectSeed, seed, i, entityType));
-		}
-		return new StatementGroupImpl(statements);
-	}
-
-	public static List<StatementGroup> getTestStatementGroups(int subjectSeed,
-			int seed, int size, String entityType) {
-		List<StatementGroup> statementGroups = new ArrayList<>();
-		for (int i = 0; i < size; i++) {
-			StatementGroup group = getTestStatementGroup(subjectSeed, i + seed,
-					i * 2 + 1, entityType);
-			statementGroups.add(group);
-		}
-		return statementGroups;
+		Statement s = factory.getStatement(
+				factory.getItemIdValue("Q42", "foo"),
+				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
+				Collections.emptyList(), Collections.emptyList(),
+				StatementRank.NORMAL, "MyId");
+		StatementGroup o1 = new StatementGroupImpl(Collections.singletonList(s));
+		StatementGroup o2 = factory.getStatementGroup(Collections.singletonList(s));
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetSiteLink() {
-		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki",
-				Collections. emptyList());
-		SiteLink o2 = converter.copy(o1);
-		assertEquals(o2, o1);
+		SiteLink o1 = new SiteLinkImpl("SOLID", "enwiki", Collections.emptyList());
+		SiteLink o2 = factory.getSiteLink("SOLID", "enwiki", Collections.emptyList());
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetPropertyDocument() {
-		PropertyIdValue subject = getTestPropertyIdValue(2);
 		PropertyDocument o1 = new PropertyDocumentImpl(
-				subject,
-				getTestMtvList(1, 0), // labels
-				getTestMtvList(4, 13), // descriptions
-				getTestMtvList(0, 0), // aliases
-				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_PROPERTY),
-				new DatatypeIdImpl(DatatypeIdValue.DT_TIME), 1234);
-		PropertyDocument o2 = converter.copy(o1);
-
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
+				factory.getPropertyIdValue("P42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME),
+				0);
+		PropertyDocument o2 = factory.getPropertyDocument(
+				factory.getPropertyIdValue("P42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME),
+				0);
+		assertEquals(o1, o2);
 	}
 
 	@Test
 	public final void testGetItemDocument() {
 		ItemDocument o1 = new ItemDocumentImpl(
-				getTestItemIdValue(2),
-				getTestMtvList(5, 0), // labels
-				getTestMtvList(0, 0), // descriptions
-				getTestMtvList(15, 12), // aliases
-				getTestStatementGroups(2, 17, 1, EntityIdValue.ET_ITEM),
-				getTestSiteLinks(20), 1234);
-		ItemDocument o2 = converter.copy(o1);
-
-		assertEquals(o1.toString(), o2.toString());
-		assertEquals(o1.hashCode(), o2.hashCode());
-		assertEquals(o2, o1);
-	}
-
-	/**
-	 * Creates a test map of {@link MonolingualTextValue} objects. If size > 6
-	 * then multiple terms for the same language will be provided.
-	 */
-	private static List<MonolingualTextValue> getTestMtvList(int size, int seed) {
-		List<MonolingualTextValue> result = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			String lang = "lang" + (i % 6);
-			result.add(getTestMonolingualTextValue(i + seed, lang));
-		}
-		return result;
-	}
-
-	private static List<SiteLink> getTestSiteLinks(int size) {
-		List<SiteLink> result = new ArrayList<>(size);
-		List<String> someBadges = new ArrayList<>(2);
-		someBadges.add("badge1");
-		someBadges.add("badge2");
-		for (int i = 0; i < size; i++) {
-			if (i % 3 == 0) {
-				result.add(new SiteLinkImpl("Badged article" + i,
-						"site" + i, someBadges));
-			} else {
-				result.add(new SiteLinkImpl("Article" + i, "site"
-						+ i, Collections. emptyList()));
-			}
-		}
-		return result;
-
+				factory.getItemIdValue("Q42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				0);
+		ItemDocument o2 = factory.getItemDocument(
+				factory.getItemIdValue("Q42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyMap(),
+				0);
+		assertEquals(o1, o2);
 	}
 }

@@ -20,7 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelFilter;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 
 /**
@@ -36,8 +36,8 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
  */
 public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 
-	private final DatamodelConverter converter;
 	private final EntityDocumentProcessor entityDocumentProcessor;
+	private final DatamodelFilter datamodelFilter;
 
 	/**
 	 * Constructor.
@@ -50,21 +50,18 @@ public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 	public EntityDocumentProcessorFilter(
 			EntityDocumentProcessor entityDocumentProcessor,
 			DocumentDataFilter filter) {
-		this.converter = new DatamodelConverter(new DataObjectFactoryImpl());
-		this.converter.setOptionFilter(filter);
 		this.entityDocumentProcessor = entityDocumentProcessor;
+		this.datamodelFilter = new DatamodelFilter(new DataObjectFactoryImpl(), filter);
 	}
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		itemDocument = this.converter.copy(itemDocument);
-		this.entityDocumentProcessor.processItemDocument(itemDocument);
+		entityDocumentProcessor.processItemDocument(datamodelFilter.filter(itemDocument));
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		propertyDocument = this.converter.copy(propertyDocument);
-		this.entityDocumentProcessor.processPropertyDocument(propertyDocument);
+		entityDocumentProcessor.processPropertyDocument(datamodelFilter.filter(propertyDocument));
 	}
 
 }

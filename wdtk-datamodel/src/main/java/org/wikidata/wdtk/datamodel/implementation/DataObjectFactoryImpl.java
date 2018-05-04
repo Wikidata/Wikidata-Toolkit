@@ -21,7 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.math.BigDecimal;
@@ -38,9 +37,6 @@ import java.util.Map;
  *
  */
 public class DataObjectFactoryImpl implements DataObjectFactory {
-
-	private final DatamodelConverter dataModelConverter = new DatamodelConverter(
-			this);
 
 	@Override
 	public ItemIdValue getItemIdValue(String id, String siteIri) {
@@ -190,15 +186,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public StatementGroup getStatementGroup(List<Statement> statements) {
-		List<Statement> newStatements = new ArrayList<>(statements.size());
-		for (Statement statement : statements) {
-			if (statement instanceof StatementImpl) {
-				newStatements.add(statement);
-			} else {
-				newStatements.add(this.dataModelConverter.copy(statement));
-			}
-		}
-		return new StatementGroupImpl(newStatements);
+		return new StatementGroupImpl(statements);
 	}
 
 	@Override

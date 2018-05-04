@@ -30,7 +30,8 @@ import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
-	private DataObjectFactory factory = new DataObjectFactoryImpl();
+
+	private final DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	@Test
 	public final void testGetItemId() {
@@ -43,6 +44,21 @@ public class DatamodelTest {
 	public final void testGetWikidataItemId() {
 		ItemIdValue o1 = Datamodel.makeWikidataItemIdValue("Q42");
 		ItemIdValue o2 = factory.getItemIdValue("Q42",
+				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetLexemeId() {
+		LexemeIdValue o1 = Datamodel.makeLexemeIdValue("L42", "foo");
+		LexemeIdValue o2 = factory.getLexemeIdValue("L42", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikidataLexemeId() {
+		LexemeIdValue o1 = Datamodel.makeWikidataLexemeIdValue("L42");
+		LexemeIdValue o2 = factory.getLexemeIdValue("L42",
 				"http://www.wikidata.org/entity/");
 		assertEquals(o1, o2);
 	}

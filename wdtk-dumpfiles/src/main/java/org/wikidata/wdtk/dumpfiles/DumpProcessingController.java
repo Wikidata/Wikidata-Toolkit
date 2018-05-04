@@ -33,7 +33,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessorBroker;
@@ -243,7 +242,7 @@ public class DumpProcessingController {
 	 * Sets a property filter. If given, all data will be preprocessed to
 	 * contain only statements for the given (main) properties.
 	 *
-	 * @see DatamodelConverter#setOptionPropertyFilter(Set)
+	 * @see DocumentDataFilter#setPropertyFilter(Set)
 	 * @param propertyFilter
 	 *            set of properties that should be retained (can be empty)
 	 */
@@ -255,7 +254,7 @@ public class DumpProcessingController {
 	 * Sets a site link filter. If given, all data will be preprocessed to
 	 * contain only data for the given site keys.
 	 *
-	 * @see DatamodelConverter#setOptionSiteLinkFilter(Set)
+	 * @see DocumentDataFilter#setSiteLinkFilter(Set)
 	 * @param siteLinkFilter
 	 *            set of siteLinks that should be retained (can be empty)
 	 */
@@ -267,7 +266,7 @@ public class DumpProcessingController {
 	 * Sets a language filter. If given, all data will be preprocessed to
 	 * contain only data for the given languages.
 	 *
-	 * @see DatamodelConverter#setOptionLanguageFilter(Set)
+	 * @see DocumentDataFilter#setLanguageFilter(Set)
 	 * @param languageFilter
 	 *            set of language codes that should be retained (can be empty)
 	 */
