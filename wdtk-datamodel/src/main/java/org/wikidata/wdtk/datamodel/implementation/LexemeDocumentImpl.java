@@ -164,6 +164,17 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		return forms;
 	}
 
+	@JsonIgnore
+	@Override
+	public FormDocument getForm(FormIdValue formId) {
+		for(FormDocument form : forms) {
+			if(form.getEntityId().equals(formId)) {
+				return form;
+			}
+		}
+		throw new IndexOutOfBoundsException("There is no " + formId + " in the lexeme.");
+	}
+
 	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);

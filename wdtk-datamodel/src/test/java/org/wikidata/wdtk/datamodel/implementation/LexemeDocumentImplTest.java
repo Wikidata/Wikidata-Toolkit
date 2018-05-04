@@ -49,13 +49,14 @@ public class LexemeDocumentImplTest {
 	);
 	private final MonolingualTextValue lemma = new TermImpl("en", "lemma");
 	private final List<MonolingualTextValue> lemmaList = Collections.singletonList(lemma);
-	private final List<FormDocument> forms = Collections.singletonList(new FormDocumentImpl(
+	private final FormDocument form = new FormDocumentImpl(
 			new FormIdValueImpl("L42-F1", "http://example.com/entity/"),
 			Collections.singletonList(new TermImpl("en", "foo")),
 			Collections.emptyList(),
 			Collections.emptyList(),
 			0
-	));
+	);
+	private final List<FormDocument> forms = Collections.singletonList(form);
 
 	private final LexemeDocument ld1 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1234);
 	private final LexemeDocument ld2 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1234);
@@ -70,6 +71,16 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.getLemmas(), Collections.singletonMap(lemma.getLanguageCode(), lemma));
 		assertEquals(ld1.getStatementGroups(), statementGroups);
 		assertEquals(ld1.getForms(), forms);
+	}
+
+	@Test
+	public void formGetter() {
+		assertEquals(form, ld1.getForm(form.getEntityId()));
+	}
+
+	@Test(expected=IndexOutOfBoundsException.class)
+	public void formGetterNotFound() {
+		ld1.getForm(new FormIdValueImpl("L42-F2", "http://example.com/entity/"));
 	}
 
 	@Test

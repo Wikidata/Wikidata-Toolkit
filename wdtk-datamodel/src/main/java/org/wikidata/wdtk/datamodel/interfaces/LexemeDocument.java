@@ -68,4 +68,11 @@ public interface LexemeDocument extends StatementDocument {
 	 * @return the list of forms
 	 */
 	List<FormDocument> getForms();
+
+	/**
+	 * Return the inner form having the given id
+	 *
+	 * @throws IndexOutOfBoundsException if there is no form with this id in the document
+	 */
+	FormDocument getForm(FormIdValue formId);
 }
