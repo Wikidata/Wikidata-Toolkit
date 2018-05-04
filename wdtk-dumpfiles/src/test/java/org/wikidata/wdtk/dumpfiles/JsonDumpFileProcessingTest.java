@@ -66,11 +66,6 @@ public class JsonDumpFileProcessingTest {
 			}
 		}
 
-		@Override
-		public void processPropertyDocument(PropertyDocument propertyDocument) {
-			// ignore
-		}
-
 	}
 
 	@Test

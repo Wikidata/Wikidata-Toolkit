@@ -103,11 +103,6 @@ public class GreatestNumberProcessor implements EntityDocumentProcessor {
 		}
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// Nothing to do
-	}
-
 	/**
 	 * Prints the current status, time and entity count.
 	 */

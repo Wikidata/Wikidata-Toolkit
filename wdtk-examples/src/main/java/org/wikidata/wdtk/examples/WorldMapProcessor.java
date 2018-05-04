@@ -270,11 +270,6 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 		}
 	}
 
-	@Override
-	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		// properties are not considered; they should not have coordinates
-	}
-
 	/**
 	 * Writes all collected data to files after processing is finished.
 	 */

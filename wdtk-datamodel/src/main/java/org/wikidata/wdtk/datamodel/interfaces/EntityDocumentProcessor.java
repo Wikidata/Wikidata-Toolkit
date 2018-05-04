@@ -36,7 +36,8 @@ public interface EntityDocumentProcessor {
 	 * @param itemDocument
 	 *            the ItemDocument
 	 */
-	void processItemDocument(ItemDocument itemDocument);
+	default void processItemDocument(ItemDocument itemDocument) {
+	}
 
 	/**
 	 * Processes the given PropertyDocument.
@@ -44,6 +45,7 @@ public interface EntityDocumentProcessor {
 	 * @param propertyDocument
 	 *            the PropertyDocument
 	 */
-	void processPropertyDocument(PropertyDocument propertyDocument);
+	default void processPropertyDocument(PropertyDocument propertyDocument) {
+	}
 
 }
