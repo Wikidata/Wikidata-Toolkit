@@ -50,14 +50,19 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	public final static String JSON_ENTITY_TYPE_ITEM = "item";
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
+	 * properties.
+	 */
+	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
 	 * lexemes.
 	 */
 	public final static String JSON_ENTITY_TYPE_LEXEME = "lexeme";
 	/**
 	 * The string used in JSON to denote the type of entity id values that are
-	 * properties.
+	 * lexemes forms.
 	 */
-	public final static String JSON_ENTITY_TYPE_PROPERTY = "property";
+	public final static String JSON_ENTITY_TYPE_FORM = "form";
 
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON

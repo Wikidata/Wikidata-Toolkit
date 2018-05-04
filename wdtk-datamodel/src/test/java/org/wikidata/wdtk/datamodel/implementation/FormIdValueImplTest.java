@@ -20,53 +20,61 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class FormIdValueImplTest {
 
-	private final FormIdValueImpl lexeme1 = new FormIdValueImpl("L42-F1", "http://www.wikidata.org/entity/");
-	private final FormIdValueImpl lexeme2 = new FormIdValueImpl("L42-F1", "http://www.wikidata.org/entity/");
-	private final FormIdValueImpl lexeme3 = new FormIdValueImpl("L57-F2", "http://www.wikidata.org/entity/");
-	private final FormIdValueImpl lexeme4 = new FormIdValueImpl("L42-F1", "http://www.example.org/entity/");
+	private final ObjectMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
+
+	private final FormIdValueImpl form1 = new FormIdValueImpl("L42-F1", "http://www.wikidata.org/entity/");
+	private final FormIdValueImpl form2 = new FormIdValueImpl("L42-F1", "http://www.wikidata.org/entity/");
+	private final FormIdValueImpl form3 = new FormIdValueImpl("L57-F2", "http://www.wikidata.org/entity/");
+	private final FormIdValueImpl form4 = new FormIdValueImpl("L42-F1", "http://www.example.org/entity/");
+	private final String JSON_FORM_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"form\",\"id\":\"L42-F1\"}}";
 
 	@Test
 	public void entityTypeIsForm() {
-		assertEquals(lexeme1.getEntityType(), EntityIdValue.ET_FORM);
+		assertEquals(form1.getEntityType(), EntityIdValue.ET_FORM);
 	}
 
 	@Test
 	public void iriIsCorrect() {
-		assertEquals(lexeme1.getIri(), "http://www.wikidata.org/entity/L42-F1");
-		assertEquals(lexeme4.getIri(), "http://www.example.org/entity/L42-F1");
+		assertEquals(form1.getIri(), "http://www.wikidata.org/entity/L42-F1");
+		assertEquals(form4.getIri(), "http://www.example.org/entity/L42-F1");
 	}
 
 	@Test
 	public void siteIriIsCorrect() {
-		assertEquals(lexeme1.getSiteIri(), "http://www.wikidata.org/entity/");
+		assertEquals(form1.getSiteIri(), "http://www.wikidata.org/entity/");
 	}
 
 	@Test
 	public void idIsCorrect() {
-		assertEquals(lexeme1.getId(), "L42-F1");
+		assertEquals(form1.getId(), "L42-F1");
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		assertEquals(lexeme1, lexeme1);
-		assertEquals(lexeme1, lexeme2);
-		assertNotEquals(lexeme1, lexeme3);
-		assertNotEquals(lexeme1, lexeme4);
-		assertNotEquals(lexeme1, null);
-		assertNotEquals(lexeme1, this);
+		assertEquals(form1, form1);
+		assertEquals(form1, form2);
+		assertNotEquals(form1, form3);
+		assertNotEquals(form1, form4);
+		assertNotEquals(form1, null);
+		assertNotEquals(form1, this);
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(lexeme1.hashCode(), lexeme2.hashCode());
+		assertEquals(form1.hashCode(), form2.hashCode());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -101,6 +109,16 @@ public class FormIdValueImplTest {
 
 	@Test
 	public void lexemeIdIsCorrect() {
-		assertEquals(lexeme1.getLexemeId(), new LexemeIdValueImpl("L42", "http://www.wikidata.org/entity/"));
+		assertEquals(form1.getLexemeId(), new LexemeIdValueImpl("L42", "http://www.wikidata.org/entity/"));
+	}
+
+	@Test
+	public void testToJson() throws JsonProcessingException {
+		JsonComparator.compareJsonStrings(JSON_FORM_ID_VALUE, mapper.writeValueAsString(form1));
+	}
+
+	@Test
+	public void testToJava() throws IOException {
+		assertEquals(form1, mapper.readValue(JSON_FORM_ID_VALUE, ValueImpl.class));
 	}
 }
