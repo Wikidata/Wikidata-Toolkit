@@ -310,10 +310,8 @@ public class PropertyRegister {
 			this.smallestUnfetchedPropertyIdNumber++;
 		}
 
-		dataFetcher.getFilter().setLanguageFilter(
-				Collections.<String> emptySet());
-		dataFetcher.getFilter().setSiteLinkFilter(
-				Collections.<String> emptySet());
+		dataFetcher.getFilter().setLanguageFilter(Collections.emptySet());
+		dataFetcher.getFilter().setSiteLinkFilter(Collections.emptySet());
 
 		Map<String, EntityDocument> properties;
 		try {

@@ -23,6 +23,7 @@ package org.wikidata.wdtk.rdf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.IRI;
@@ -42,25 +43,14 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
  */
 public class OwlDeclarationBuffer {
 
-	final List<PropertyIdValue> objectPropertyQueue;
-	final List<PropertyIdValue> datatypePropertyQueue;
-	final List<IRI> objectPropertyUriQueue;
-	final List<IRI> datatypePropertyUriQueue;
-	final HashSet<PropertyIdValue> declaredProperties;
-	final HashSet<IRI> declaredPropertyUris;
-	final List<EntityIdValue> classEntityQueue;
-	final HashSet<EntityIdValue> declaredClassEntities;
-
-	public OwlDeclarationBuffer() {
-		this.objectPropertyQueue = new ArrayList<PropertyIdValue>();
-		this.datatypePropertyQueue = new ArrayList<PropertyIdValue>();
-		this.objectPropertyUriQueue = new ArrayList<IRI>();
-		this.datatypePropertyUriQueue = new ArrayList<IRI>();
-		this.declaredProperties = new HashSet<PropertyIdValue>();
-		this.declaredPropertyUris = new HashSet<IRI>();
-		this.classEntityQueue = new ArrayList<EntityIdValue>();
-		this.declaredClassEntities = new HashSet<EntityIdValue>();
-	}
+	final List<PropertyIdValue> objectPropertyQueue = new ArrayList<>();
+	final List<PropertyIdValue> datatypePropertyQueue = new ArrayList<>();
+	final List<IRI> objectPropertyUriQueue = new ArrayList<>();
+	final List<IRI> datatypePropertyUriQueue = new ArrayList<>();
+	final Set<PropertyIdValue> declaredProperties = new HashSet<>();
+	final Set<IRI> declaredPropertyUris = new HashSet<>();
+	final List<EntityIdValue> classEntityQueue = new ArrayList<>();
+	final Set<EntityIdValue> declaredClassEntities = new HashSet<>();
 
 	/**
 	 * Adds the given property id value to the list of properties that should be

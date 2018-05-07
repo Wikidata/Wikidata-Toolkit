@@ -34,17 +34,14 @@ import org.wikidata.wdtk.rdf.RdfWriter;
 public abstract class BufferedValueConverter<V extends org.wikidata.wdtk.datamodel.interfaces.Value>
 		extends AbstractValueConverter<V> {
 
-	final List<V> valueQueue;
-	final List<Resource> valueSubjectQueue;
-	final HashSet<Resource> declaredValues;
+	final List<V> valueQueue = new ArrayList<>();
+	final List<Resource> valueSubjectQueue = new ArrayList<>();
+	final HashSet<Resource> declaredValues = new HashSet<>();
 
 	public BufferedValueConverter(RdfWriter rdfWriter,
 			PropertyRegister propertyRegister,
 			OwlDeclarationBuffer rdfConversionBuffer) {
 		super(rdfWriter, propertyRegister, rdfConversionBuffer);
-		this.valueQueue = new ArrayList<V>();
-		this.valueSubjectQueue = new ArrayList<Resource>();
-		this.declaredValues = new HashSet<Resource>();
 	}
 
 	/**

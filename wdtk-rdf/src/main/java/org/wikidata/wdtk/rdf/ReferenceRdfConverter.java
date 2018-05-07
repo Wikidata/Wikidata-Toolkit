@@ -20,10 +20,7 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
@@ -45,9 +42,9 @@ public class ReferenceRdfConverter {
 	final RdfWriter rdfWriter;
 	final SnakRdfConverter snakRdfConverter;
 
-	final List<Reference> referenceQueue;
-	final List<Resource> referenceSubjectQueue;
-	final HashSet<Resource> declaredReferences;
+	final List<Reference> referenceQueue = new ArrayList<>();
+	final List<Resource> referenceSubjectQueue = new ArrayList<>();
+	final Set<Resource> declaredReferences = new HashSet<>();
 	final String siteUri;
 
 	/**
@@ -65,10 +62,6 @@ public class ReferenceRdfConverter {
 		this.rdfWriter = rdfWriter;
 		this.snakRdfConverter = snakRdfConverter;
 		this.siteUri = siteUri;
-
-		this.referenceQueue = new ArrayList<Reference>();
-		this.referenceSubjectQueue = new ArrayList<Resource>();
-		this.declaredReferences = new HashSet<Resource>();
 	}
 
 	/**
