@@ -20,10 +20,10 @@ package org.wikidata.wdtk.rdf.values;
  * #L%
  */
 
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
@@ -54,7 +54,7 @@ public class QuantityValueConverter extends
 				return this.rdfWriter.getLiteral(value.getNumericValue()
 						.toString(), RdfWriter.XSD_DECIMAL);
 			} else {
-				URI valueUri = this.rdfWriter.getUri(Vocabulary
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary
 						.getQuantityValueUri(value,
 								this.propertyRegister.getUriPrefix()));
 

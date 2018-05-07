@@ -22,18 +22,18 @@ package org.wikidata.wdtk.rdf;
 
 import java.io.OutputStream;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.Rio;
-import org.openrdf.rio.UnsupportedRDFormatException;
+import org.eclipse.rdf4j.model.BNode;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.RDFWriter;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 
 /**
  * This class provides methods for writing RDF data to an output stream. It
@@ -46,101 +46,101 @@ import org.openrdf.rio.UnsupportedRDFormatException;
  */
 public class RdfWriter {
 
-	static final ValueFactory factory = ValueFactoryImpl.getInstance();
+	static final ValueFactory factory = SimpleValueFactory.getInstance();
 
-	public static final URI RDF_TYPE = factory.createURI(Vocabulary.RDF_TYPE);
-	public static final URI RDFS_LABEL = factory
-			.createURI(Vocabulary.RDFS_LABEL);
-	public static final URI RDFS_SEE_ALSO = factory
-			.createURI(Vocabulary.RDFS_SEE_ALSO);
-	public static final URI RDFS_LITERAL = factory
-			.createURI(Vocabulary.RDFS_LITERAL);
-	public static final URI RDFS_SUBCLASS_OF = factory
-			.createURI(Vocabulary.RDFS_SUBCLASS_OF);
-	public static final URI RDFS_SUBPROPERTY_OF = factory
-			.createURI(Vocabulary.RDFS_SUBPROPERTY_OF);
-	public static final URI OWL_THING = factory.createURI(Vocabulary.OWL_THING);
-	public static final URI OWL_CLASS = factory.createURI(Vocabulary.OWL_CLASS);
-	public static final URI OWL_OBJECT_PROPERTY = factory
-			.createURI(Vocabulary.OWL_OBJECT_PROPERTY);
-	public static final URI OWL_DATATYPE_PROPERTY = factory
-			.createURI(Vocabulary.OWL_DATATYPE_PROPERTY);
-	public static final URI OWL_RESTRICTION = factory
-			.createURI(Vocabulary.OWL_RESTRICTION);
-	public static final URI OWL_SOME_VALUES_FROM = factory
-			.createURI(Vocabulary.OWL_SOME_VALUES_FROM);
-	public static final URI OWL_ON_PROPERTY = factory
-			.createURI(Vocabulary.OWL_ON_PROPERTY);
-	public static final URI OWL_COMPLEMENT_OF = factory
-			.createURI(Vocabulary.OWL_COMPLEMENT_OF);
-	public static final URI XSD_DOUBLE = factory
-			.createURI(Vocabulary.XSD_DOUBLE);
-	public static final URI XSD_DECIMAL = factory
-			.createURI(Vocabulary.XSD_DECIMAL);
-	public static final URI XSD_INT = factory.createURI(Vocabulary.XSD_INT);
-	public static final URI XSD_DATE = factory.createURI(Vocabulary.XSD_DATE);
-	public static final URI XSD_G_YEAR = factory
-			.createURI(Vocabulary.XSD_G_YEAR);
-	public static final URI XSD_G_YEAR_MONTH = factory
-			.createURI(Vocabulary.XSD_G_YEAR_MONTH);
-	public static final URI XSD_DATETIME = factory
-			.createURI(Vocabulary.XSD_DATETIME);
-	public static final URI XSD_STRING = factory
-			.createURI(Vocabulary.XSD_STRING);
-	public static final URI SKOS_ALT_LABEL = factory
-			.createURI(Vocabulary.SKOS_ALT_LABEL);
-	public static final URI SCHEMA_ABOUT = factory
-			.createURI(Vocabulary.SCHEMA_ABOUT);
-	public static final URI SCHEMA_DESCRIPTION = factory
-			.createURI(Vocabulary.SCHEMA_DESCRIPTION);
-	public static final URI SCHEMA_IN_LANGUAGE = factory
-			.createURI(Vocabulary.SCHEMA_IN_LANGUAGE);
-	public static final URI PROV_WAS_DERIVED_FROM = factory
-			.createURI(Vocabulary.PROV_WAS_DERIVED_FROM);
-	public static final URI WB_ITEM = factory.createURI(Vocabulary.WB_ITEM);
-	public static final URI WB_REFERENCE = factory
-			.createURI(Vocabulary.WB_REFERENCE);
-	public static final URI WB_PROPERTY = factory
-			.createURI(Vocabulary.WB_PROPERTY);
-	public static final URI WB_STATEMENT = factory
-			.createURI(Vocabulary.WB_STATEMENT);
-	public static final URI WB_ARTICLE = factory
-			.createURI(Vocabulary.WB_ARTICLE);
-	public static final URI WB_QUANTITY_VALUE = factory
-			.createURI(Vocabulary.WB_QUANTITY_VALUE);
-	public static final URI WB_TIME_VALUE = factory
-			.createURI(Vocabulary.WB_TIME_VALUE);
-	public static final URI WB_GLOBE_COORDINATES_VALUE = factory
-			.createURI(Vocabulary.WB_GLOBE_COORDINATES_VALUE);
-	public static final URI WB_PROPERTY_TYPE = factory
-			.createURI(Vocabulary.WB_PROPERTY_TYPE);
-	public static final URI WB_GEO_GLOBE = factory.createURI(Vocabulary.WB_GEO_GLOBE);
-	public static final URI WB_GEO_LATITUDE = factory
-			.createURI(Vocabulary.WB_GEO_LATITUDE);
-	public static final URI WB_GEO_LONGITUDE = factory
-			.createURI(Vocabulary.WB_GEO_LONGITUDE);
-	public static final URI WB_GEO_PRECISION = factory
-			.createURI(Vocabulary.WB_GEO_PRECISION);
-	public static final URI WB_TIME = factory.createURI(Vocabulary.WB_TIME);
-	public static final URI WB_TIME_PRECISION = factory
-			.createURI(Vocabulary.WB_TIME_PRECISION);
-	public static final URI WB_TIME_TIMEZONE = factory
-			.createURI(Vocabulary.WB_TIME_TIMEZONE);
-	public static final URI WB_TIME_CALENDAR_MODEL = factory
-			.createURI(Vocabulary.WB_TIME_CALENDAR_MODEL);
-	public static final URI WB_QUANTITY_AMOUNT = factory
-			.createURI(Vocabulary.WB_QUANTITY_AMOUNT);
-	public static final URI WB_QUANTITY_LOWER_BOUND = factory
-			.createURI(Vocabulary.WB_QUANTITY_LOWER_BOUND);
-	public static final URI WB_QUANTITY_UPPER_BOUND = factory
-			.createURI(Vocabulary.WB_QUANTITY_UPPER_BOUND);
-	public static final URI WB_QUANTITY_UNIT = factory
-			.createURI(Vocabulary.WB_QUANTITY_UNIT);
-	public static final URI OGC_LOCATION = factory
-			.createURI(Vocabulary.OGC_LOCATION);
-	public static final URI WB_RANK = factory.createURI(Vocabulary.WB_RANK);
-	public static final URI WB_BEST_RANK = factory
-			.createURI(Vocabulary.WB_BEST_RANK);
+	public static final IRI RDF_TYPE = factory.createIRI(Vocabulary.RDF_TYPE);
+	public static final IRI RDFS_LABEL = factory
+			.createIRI(Vocabulary.RDFS_LABEL);
+	public static final IRI RDFS_SEE_ALSO = factory
+			.createIRI(Vocabulary.RDFS_SEE_ALSO);
+	public static final IRI RDFS_LITERAL = factory
+			.createIRI(Vocabulary.RDFS_LITERAL);
+	public static final IRI RDFS_SUBCLASS_OF = factory
+			.createIRI(Vocabulary.RDFS_SUBCLASS_OF);
+	public static final IRI RDFS_SUBPROPERTY_OF = factory
+			.createIRI(Vocabulary.RDFS_SUBPROPERTY_OF);
+	public static final IRI OWL_THING = factory.createIRI(Vocabulary.OWL_THING);
+	public static final IRI OWL_CLASS = factory.createIRI(Vocabulary.OWL_CLASS);
+	public static final IRI OWL_OBJECT_PROPERTY = factory
+			.createIRI(Vocabulary.OWL_OBJECT_PROPERTY);
+	public static final IRI OWL_DATATYPE_PROPERTY = factory
+			.createIRI(Vocabulary.OWL_DATATYPE_PROPERTY);
+	public static final IRI OWL_RESTRICTION = factory
+			.createIRI(Vocabulary.OWL_RESTRICTION);
+	public static final IRI OWL_SOME_VALUES_FROM = factory
+			.createIRI(Vocabulary.OWL_SOME_VALUES_FROM);
+	public static final IRI OWL_ON_PROPERTY = factory
+			.createIRI(Vocabulary.OWL_ON_PROPERTY);
+	public static final IRI OWL_COMPLEMENT_OF = factory
+			.createIRI(Vocabulary.OWL_COMPLEMENT_OF);
+	public static final IRI XSD_DOUBLE = factory
+			.createIRI(Vocabulary.XSD_DOUBLE);
+	public static final IRI XSD_DECIMAL = factory
+			.createIRI(Vocabulary.XSD_DECIMAL);
+	public static final IRI XSD_INT = factory.createIRI(Vocabulary.XSD_INT);
+	public static final IRI XSD_DATE = factory.createIRI(Vocabulary.XSD_DATE);
+	public static final IRI XSD_G_YEAR = factory
+			.createIRI(Vocabulary.XSD_G_YEAR);
+	public static final IRI XSD_G_YEAR_MONTH = factory
+			.createIRI(Vocabulary.XSD_G_YEAR_MONTH);
+	public static final IRI XSD_DATETIME = factory
+			.createIRI(Vocabulary.XSD_DATETIME);
+	public static final IRI XSD_STRING = factory
+			.createIRI(Vocabulary.XSD_STRING);
+	public static final IRI SKOS_ALT_LABEL = factory
+			.createIRI(Vocabulary.SKOS_ALT_LABEL);
+	public static final IRI SCHEMA_ABOUT = factory
+			.createIRI(Vocabulary.SCHEMA_ABOUT);
+	public static final IRI SCHEMA_DESCRIPTION = factory
+			.createIRI(Vocabulary.SCHEMA_DESCRIPTION);
+	public static final IRI SCHEMA_IN_LANGUAGE = factory
+			.createIRI(Vocabulary.SCHEMA_IN_LANGUAGE);
+	public static final IRI PROV_WAS_DERIVED_FROM = factory
+			.createIRI(Vocabulary.PROV_WAS_DERIVED_FROM);
+	public static final IRI WB_ITEM = factory.createIRI(Vocabulary.WB_ITEM);
+	public static final IRI WB_REFERENCE = factory
+			.createIRI(Vocabulary.WB_REFERENCE);
+	public static final IRI WB_PROPERTY = factory
+			.createIRI(Vocabulary.WB_PROPERTY);
+	public static final IRI WB_STATEMENT = factory
+			.createIRI(Vocabulary.WB_STATEMENT);
+	public static final IRI WB_ARTICLE = factory
+			.createIRI(Vocabulary.WB_ARTICLE);
+	public static final IRI WB_QUANTITY_VALUE = factory
+			.createIRI(Vocabulary.WB_QUANTITY_VALUE);
+	public static final IRI WB_TIME_VALUE = factory
+			.createIRI(Vocabulary.WB_TIME_VALUE);
+	public static final IRI WB_GLOBE_COORDINATES_VALUE = factory
+			.createIRI(Vocabulary.WB_GLOBE_COORDINATES_VALUE);
+	public static final IRI WB_PROPERTY_TYPE = factory
+			.createIRI(Vocabulary.WB_PROPERTY_TYPE);
+	public static final IRI WB_GEO_GLOBE = factory.createIRI(Vocabulary.WB_GEO_GLOBE);
+	public static final IRI WB_GEO_LATITUDE = factory
+			.createIRI(Vocabulary.WB_GEO_LATITUDE);
+	public static final IRI WB_GEO_LONGITUDE = factory
+			.createIRI(Vocabulary.WB_GEO_LONGITUDE);
+	public static final IRI WB_GEO_PRECISION = factory
+			.createIRI(Vocabulary.WB_GEO_PRECISION);
+	public static final IRI WB_TIME = factory.createIRI(Vocabulary.WB_TIME);
+	public static final IRI WB_TIME_PRECISION = factory
+			.createIRI(Vocabulary.WB_TIME_PRECISION);
+	public static final IRI WB_TIME_TIMEZONE = factory
+			.createIRI(Vocabulary.WB_TIME_TIMEZONE);
+	public static final IRI WB_TIME_CALENDAR_MODEL = factory
+			.createIRI(Vocabulary.WB_TIME_CALENDAR_MODEL);
+	public static final IRI WB_QUANTITY_AMOUNT = factory
+			.createIRI(Vocabulary.WB_QUANTITY_AMOUNT);
+	public static final IRI WB_QUANTITY_LOWER_BOUND = factory
+			.createIRI(Vocabulary.WB_QUANTITY_LOWER_BOUND);
+	public static final IRI WB_QUANTITY_UPPER_BOUND = factory
+			.createIRI(Vocabulary.WB_QUANTITY_UPPER_BOUND);
+	public static final IRI WB_QUANTITY_UNIT = factory
+			.createIRI(Vocabulary.WB_QUANTITY_UNIT);
+	public static final IRI OGC_LOCATION = factory
+			.createIRI(Vocabulary.OGC_LOCATION);
+	public static final IRI WB_RANK = factory.createIRI(Vocabulary.WB_RANK);
+	public static final IRI WB_BEST_RANK = factory
+			.createIRI(Vocabulary.WB_BEST_RANK);
 
 	RDFWriter writer;
 
@@ -169,17 +169,17 @@ public class RdfWriter {
 	}
 
 	/**
-	 * Creates a URI object for the given URI string. Callers who use this with
+	 * Creates a IRI object for the given IRI string. Callers who use this with
 	 * user-provided data should check for exceptions.
 	 *
 	 * @param uri
-	 *            the URI string
-	 * @return the URI object
+	 *            the IRI string
+	 * @return the IRI object
 	 * @throws IllegalArgumentException
 	 *             if the string is not a valid absolute URI.
 	 */
-	public URI getUri(String uri) {
-		return factory.createURI(uri);
+	public IRI getUri(String uri) {
+		return factory.createIRI(uri);
 	}
 
 	public Literal getLiteral(String value) {
@@ -190,7 +190,7 @@ public class RdfWriter {
 		return factory.createLiteral(value, languageCode);
 	}
 
-	public Literal getLiteral(String value, URI datatypeUri) {
+	public Literal getLiteral(String value, IRI datatypeUri) {
 		return factory.createLiteral(value, datatypeUri);
 	}
 
@@ -199,47 +199,47 @@ public class RdfWriter {
 		this.writer.handleNamespace(prefix, uri);
 	}
 
-	public void writeTripleStringObject(Resource subject, URI predicate,
+	public void writeTripleStringObject(Resource subject, IRI predicate,
 			String objectLiteral) throws RDFHandlerException {
 		writeTripleValueObject(subject, predicate,
 				factory.createLiteral(objectLiteral));
 	}
 
-	public void writeTripleIntegerObject(Resource subject, URI predicate,
+	public void writeTripleIntegerObject(Resource subject, IRI predicate,
 			int objectLiteral) throws RDFHandlerException {
 		writeTripleValueObject(subject, predicate,
 				factory.createLiteral(objectLiteral));
 	}
 
-	public void writeTripleUriObject(String subjectUri, URI predicate,
+	public void writeTripleUriObject(String subjectUri, IRI predicate,
 			String objectUri) throws RDFHandlerException {
 		writeTripleValueObject(subjectUri, predicate,
-				factory.createURI(objectUri));
+				factory.createIRI(objectUri));
 	}
 
-	public void writeTripleUriObject(Resource subject, URI predicate,
+	public void writeTripleUriObject(Resource subject, IRI predicate,
 			String objectUri) throws RDFHandlerException {
-		writeTripleValueObject(subject, predicate, factory.createURI(objectUri));
+		writeTripleValueObject(subject, predicate, factory.createIRI(objectUri));
 	}
 
-	public void writeTripleValueObject(String subjectUri, URI predicate,
+	public void writeTripleValueObject(String subjectUri, IRI predicate,
 			Value object) throws RDFHandlerException {
-		URI subject = factory.createURI(subjectUri);
+		IRI subject = factory.createIRI(subjectUri);
 
 		this.tripleCount++;
 		this.writer.handleStatement(factory.createStatement(subject, predicate,
 				object));
 	}
 
-	public void writeTripleValueObject(Resource subject, URI predicate,
+	public void writeTripleValueObject(Resource subject, IRI predicate,
 			Value object) throws RDFHandlerException {
 		this.tripleCount++;
 		this.writer.handleStatement(factory.createStatement(subject, predicate,
 				object));
 	}
 
-	public void writeTripleLiteralObject(Resource subject, URI predicate,
-			String objectLexicalValue, URI datatype) throws RDFHandlerException {
+	public void writeTripleLiteralObject(Resource subject, IRI predicate,
+			String objectLexicalValue, IRI datatype) throws RDFHandlerException {
 		Literal object = factory.createLiteral(objectLexicalValue, datatype);
 
 		this.tripleCount++;

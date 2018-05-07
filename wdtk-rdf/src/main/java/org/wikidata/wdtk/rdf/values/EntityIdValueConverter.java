@@ -20,7 +20,7 @@ package org.wikidata.wdtk.rdf.values;
  * #L%
  */
 
-import org.openrdf.model.Value;
+import org.eclipse.rdf4j.model.Value;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;

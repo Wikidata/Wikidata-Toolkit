@@ -22,10 +22,10 @@ package org.wikidata.wdtk.rdf;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
@@ -146,7 +146,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	public Void visit(ValueSnak snak) {
 		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
 				this.currentPropertyContext);
-		URI property = this.rdfWriter.getUri(propertyUri);
+		IRI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
 				snak.getPropertyId(), this.simple);
 		if (value == null) { // TODO: could also be null if there is no complex

@@ -23,8 +23,8 @@ package org.wikidata.wdtk.rdf;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;

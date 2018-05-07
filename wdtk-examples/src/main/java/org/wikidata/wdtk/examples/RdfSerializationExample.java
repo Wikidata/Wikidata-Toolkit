@@ -29,14 +29,14 @@ import java.io.PipedOutputStream;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
-import org.openrdf.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFFormat;
 import org.wikidata.wdtk.datamodel.interfaces.Sites;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
 
 /**
- * This class shows how convert data from wikidata.org to RDF in N3 format. The
+ * This class shows how convert data from wikidata.org to RDF in N-Triples format. The
  * compressed output will be written into an output file.
  * <p>
  * The Wikidata Toolkit command line client provides a stand-alone tool for

@@ -23,7 +23,7 @@ package org.wikidata.wdtk.rdf;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openrdf.model.Resource;
+import org.eclipse.rdf4j.model.Resource;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 

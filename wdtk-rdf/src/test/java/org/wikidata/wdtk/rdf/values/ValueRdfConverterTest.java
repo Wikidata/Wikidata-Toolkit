@@ -28,14 +28,14 @@ import java.math.BigDecimal;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.model.Model;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -57,14 +57,14 @@ public class ValueRdfConverterTest {
 	PropertyRegister propertyRegister = new MockPropertyRegister();
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
-	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
+	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
 
-	Resource resource = rdfFactory.createURI("http://test.org/");
+	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.rdfWriter = new RdfWriter(RDFFormat.N3, this.out);
+		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, this.out);
 		this.rdfConversionBuffer = new OwlDeclarationBuffer();
 		this.rdfWriter.start();
 	}
@@ -119,7 +119,7 @@ public class ValueRdfConverterTest {
 				true);
 		this.rdfWriter.finish();
 
-		assertEquals(valueURI.toString(), "\"中华人民共和国\"@zh-hans");
+		assertEquals(valueURI.toString(), "\"中华人民共和国\"@zh-Hans");
 	}
 
 	@Test

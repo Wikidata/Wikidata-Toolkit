@@ -32,18 +32,17 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.model.Model;
-import org.openrdf.model.Resource;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -52,14 +51,10 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class RdfConverterTest {
@@ -71,8 +66,8 @@ public class RdfConverterTest {
 
 	SitesImpl sites;
 
-	ValueFactory rdfFactory = ValueFactoryImpl.getInstance();
-	Resource resource = rdfFactory.createURI("http://test.org/");
+	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
+	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	final TestObjectFactory objectFactory = new TestObjectFactory();
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
@@ -80,7 +75,7 @@ public class RdfConverterTest {
 	@Before
 	public void setUp() throws Exception {
 		this.out = new ByteArrayOutputStream();
-		this.rdfWriter = new RdfWriter(RDFFormat.N3, out);
+		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, out);
 		this.sites = new SitesImpl();
 		this.rdfConverter = new RdfConverter(this.rdfWriter, this.sites,
 				new MockPropertyRegister());
@@ -130,7 +125,7 @@ public class RdfConverterTest {
 			RDFParseException, IOException {
 		StatementRank rank = StatementRank.DEPRECATED;
 		Resource subject = this.rdfFactory
-				.createURI("http://www.wikidata.org/Q10Snone");
+				.createIRI("http://www.wikidata.org/Q10Snone");
 		this.rdfConverter.writeStatementRankTriple(subject, rank);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
