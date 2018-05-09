@@ -91,7 +91,8 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
-		if(representations == null || representations.isEmpty()) {
+		Validate.notNull(representations, "Forms representations should not be null");
+		if(representations.isEmpty()) {
 			throw new IllegalArgumentException("Forms should have at least one representation");
 		}
 		this.representations = representations;
