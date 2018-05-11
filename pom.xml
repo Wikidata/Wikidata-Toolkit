@@ -76,7 +76,7 @@
 		<jacksonVersion>2.9.5</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
-		<rdf4jVersion>2.3.0</rdf4jVersion>
+		<rdf4jVersion>2.3.2</rdf4jVersion>
 		<slf4jVersion>1.7.25</slf4jVersion>
 	</properties>
 
