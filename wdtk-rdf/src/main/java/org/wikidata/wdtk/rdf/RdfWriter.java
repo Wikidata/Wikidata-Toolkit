@@ -91,6 +91,8 @@ public class RdfWriter {
 			.createIRI(Vocabulary.SKOS_ALT_LABEL);
 	public static final IRI SCHEMA_ABOUT = factory
 			.createIRI(Vocabulary.SCHEMA_ABOUT);
+	public static final IRI SCHEMA_ARTICLE = factory
+			.createIRI(Vocabulary.SCHEMA_ARTICLE);
 	public static final IRI SCHEMA_DESCRIPTION = factory
 			.createIRI(Vocabulary.SCHEMA_DESCRIPTION);
 	public static final IRI SCHEMA_IN_LANGUAGE = factory
@@ -104,8 +106,6 @@ public class RdfWriter {
 			.createIRI(Vocabulary.WB_PROPERTY);
 	public static final IRI WB_STATEMENT = factory
 			.createIRI(Vocabulary.WB_STATEMENT);
-	public static final IRI WB_ARTICLE = factory
-			.createIRI(Vocabulary.WB_ARTICLE);
 	public static final IRI WB_QUANTITY_VALUE = factory
 			.createIRI(Vocabulary.WB_QUANTITY_VALUE);
 	public static final IRI WB_TIME_VALUE = factory
@@ -141,6 +141,7 @@ public class RdfWriter {
 	public static final IRI WB_RANK = factory.createIRI(Vocabulary.WB_RANK);
 	public static final IRI WB_BEST_RANK = factory
 			.createIRI(Vocabulary.WB_BEST_RANK);
+	public static final IRI WB_BADGE = factory.createIRI(Vocabulary.WB_BADGE);
 
 	RDFWriter writer;
 

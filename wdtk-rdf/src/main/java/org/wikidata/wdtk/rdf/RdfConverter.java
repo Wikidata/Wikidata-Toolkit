@@ -30,24 +30,7 @@ import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.Claim;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-import org.wikidata.wdtk.datamodel.interfaces.Sites;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
-import org.wikidata.wdtk.datamodel.interfaces.WikimediaLanguageCodes;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.rdf.values.AnyValueConverter;
 
 /**
@@ -440,32 +423,34 @@ public class RdfConverter {
 				IRI siteLinkUri = this.rdfWriter.getUri(siteLinkUrl);
 
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
-						RdfWriter.RDF_TYPE, RdfWriter.WB_ARTICLE);
+						RdfWriter.RDF_TYPE, RdfWriter.SCHEMA_ARTICLE);
 				this.rdfWriter.writeTripleValueObject(siteLinkUri,
 						RdfWriter.SCHEMA_ABOUT, subject);
-				// Commons has no uniform language; don't export
-				if (!"commonswiki".equals(siteLink.getSiteKey())) {
-					String siteLanguageCode = this.sites
-							.getLanguageCode(siteLink.getSiteKey());
-					String languageCode;
-					try {
-						languageCode = WikimediaLanguageCodes
-								.getLanguageCode(siteLanguageCode);
-					} catch (IllegalArgumentException e) {
-						languageCode = siteLanguageCode;
-						logger.warn("Unknown Wikimedia language code \""
-								+ languageCode
-								+ "\". Using this code in RDF now, but this might be wrong.");
-					}
 
-					this.rdfWriter.writeTripleStringObject(siteLinkUri,
-							RdfWriter.SCHEMA_IN_LANGUAGE, languageCode);
+				String siteLanguageCode = this.sites.getLanguageCode(siteLink.getSiteKey());
+				this.rdfWriter.writeTripleStringObject(siteLinkUri,
+						RdfWriter.SCHEMA_IN_LANGUAGE, convertSiteLanguageCode(siteLanguageCode));
+
+				for(ItemIdValue badge : siteLink.getBadges()) {
+					this.rdfWriter.writeTripleUriObject(siteLinkUri,
+							RdfWriter.WB_BADGE, badge.getIri());
 				}
 			} else {
 				logger.warn("Failed to find URL for page \""
 						+ siteLink.getPageTitle() + "\" on site \""
 						+ siteLink.getSiteKey() + "\"");
 			}
+		}
+	}
+
+	private String convertSiteLanguageCode(String languageCode) {
+		try {
+			return WikimediaLanguageCodes.getLanguageCode(languageCode);
+		} catch (IllegalArgumentException e) {
+			logger.warn("Unknown Wikimedia language code \""
+					+ languageCode
+					+ "\". Using this code in RDF now, but this might be wrong.");
+			return languageCode;
 		}
 	}
 
