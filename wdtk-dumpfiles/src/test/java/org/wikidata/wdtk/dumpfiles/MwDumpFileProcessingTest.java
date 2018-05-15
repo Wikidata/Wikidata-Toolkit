@@ -52,7 +52,7 @@ public class MwDumpFileProcessingTest {
 	 */
 	class TestMwRevisionProcessor implements MwRevisionProcessor {
 
-		final List<MwRevision> revisions = new ArrayList<MwRevision>();
+		final List<MwRevision> revisions = new ArrayList<>();
 		String siteName;
 		String baseUrl;
 		Map<Integer, String> namespaces;
@@ -152,6 +152,28 @@ public class MwDumpFileProcessingTest {
 	}
 
 	/**
+	 * Generates a simple lexeme revision for testing purposes.
+	 *
+	 * @param number
+	 */
+	private MwRevision getLexemeRevision(int number) {
+		MwRevisionImpl result = new MwRevisionImpl();
+		result.prefixedTitle = "Lexeme:L1";
+		result.namespace = 122;
+		result.pageId = 1235667;
+		result.revisionId = number + 100000;
+		result.parentRevisionId = number + 8888;
+		result.timeStamp = "2014-02-19T23:34:1" + (number % 10) + "Z";
+		result.format = "application/json";
+		result.model = MwRevision.MODEL_WIKIBASE_LEXEME;
+		result.comment = "Test comment " + (number + 10000);
+		result.text = "{\"type\":\"lexeme\",\"id\":\"L1\",\"lexicalCategory\":\"Q" + number / 2 + "\",\"language\":\"Q" + number + "\"}";
+		result.contributor = "127.0.0." + (number % 256);
+		result.contributorId = -1;
+		return result;
+	}
+
+	/**
 	 * Generates a simple page revision for testing purposes.
 	 *
 	 * @param number
@@ -238,7 +260,7 @@ public class MwDumpFileProcessingTest {
 				mwrpBroker);
 		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
 
-		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
+		List<MwRevision> revisionsAll = new ArrayList<>();
 		revisionsAll.add(getItemRevision(4));
 
 		assertEqualRevisionLists(revisionsAll, tmrpAll.revisions,
@@ -260,7 +282,7 @@ public class MwDumpFileProcessingTest {
 				mwrpBroker);
 		mwdfp.processDumpFileContents(resourceUrl.openStream(), mockDumpFile);
 
-		List<MwRevision> revisionsAll = new ArrayList<MwRevision>();
+		List<MwRevision> revisionsAll = new ArrayList<>();
 		revisionsAll.add(getItemRevision(4));
 		revisionsAll.add(getItemRevision(5));
 		revisionsAll.add(getPageRevision(1));
@@ -382,30 +404,37 @@ public class MwDumpFileProcessingTest {
 		TestMwRevisionProcessor tmrpAllProperties = new TestMwRevisionProcessor();
 		dpc.registerMwRevisionProcessor(tmrpAllProperties,
 				MwRevision.MODEL_WIKIBASE_PROPERTY, false);
+		TestMwRevisionProcessor tmrpAllLexemes = new TestMwRevisionProcessor();
+		dpc.registerMwRevisionProcessor(tmrpAllLexemes,
+				MwRevision.MODEL_WIKIBASE_LEXEME, false);
 
 		dpc.processDump(dpc.getMostRecentDump(DumpContentType.DAILY));
 
-		List<MwRevision> revisionsAllItems = new ArrayList<MwRevision>();
+		List<MwRevision> revisionsAllItems = new ArrayList<>();
 		revisionsAllItems.add(getItemRevision(4));
 		revisionsAllItems.add(getItemRevision(5));
 		revisionsAllItems.add(getItemRevision(3));
 		revisionsAllItems.add(getItemRevision(2));
 
-		List<MwRevision> revisionsAll = new ArrayList<MwRevision>(
-				revisionsAllItems);
+		List<MwRevision> revisionsAllProperties = new ArrayList<>();
+		revisionsAllProperties.add(getPropertyRevision(4));
+		revisionsAllProperties.add(getPropertyRevision(5));
+
+		List<MwRevision> revisionsAllLexemes = new ArrayList<>();
+		revisionsAllLexemes.add(getLexemeRevision(9));
+		revisionsAllLexemes.add(getLexemeRevision(10));
+
+		List<MwRevision> revisionsAll = new ArrayList<>(revisionsAllItems);
 		revisionsAll.add(getPageRevision(1));
 		revisionsAll.add(getPageRevision(2));
-		revisionsAll.add(getPropertyRevision(4));
-		revisionsAll.add(getPropertyRevision(5));
+		revisionsAll.addAll(revisionsAllProperties);
+		revisionsAll.addAll(revisionsAllLexemes);
 
-		List<MwRevision> revisionsAllCurrent = new ArrayList<MwRevision>();
+		List<MwRevision> revisionsAllCurrent = new ArrayList<>();
 		revisionsAllCurrent.add(getItemRevision(5));
 		revisionsAllCurrent.add(getPageRevision(2));
 		revisionsAllCurrent.add(getPropertyRevision(5));
-
-		List<MwRevision> revisionsAllProperties = new ArrayList<MwRevision>();
-		revisionsAllProperties.add(getPropertyRevision(4));
-		revisionsAllProperties.add(getPropertyRevision(5));
+		revisionsAllCurrent.add(getLexemeRevision(10));
 
 		assertEquals("Wikidata Toolkit Test", tmrpAll.siteName);
 		assertEquals(revisionsAll.size(), mwrpAllStats.getTotalRevisionCount());
@@ -418,6 +447,8 @@ public class MwDumpFileProcessingTest {
 				"allcurrent");
 		assertEqualRevisionLists(revisionsAllProperties,
 				tmrpAllProperties.revisions, "allproperties");
+		assertEqualRevisionLists(revisionsAllLexemes,
+				tmrpAllLexemes.revisions, "alllexemes");
 
 		assertEquals(revisionsAllItems.size(), edpAllCounter.itemCount);
 		assertEquals(revisionsAllProperties.size(), edpAllCounter.propCount);

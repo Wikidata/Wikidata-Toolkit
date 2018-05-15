@@ -45,6 +45,28 @@ public class DatamodelFilter {
 		);
 	}
 
+	public LexemeDocument filter(LexemeDocument lexeme) {
+		return dataObjectFactory.getLexemeDocument(
+				lexeme.getEntityId(),
+				lexeme.getLexicalCategory(),
+				lexeme.getLanguage(),
+				filterMonoLingualTextValues(lexeme.getLemmas().values().stream()),
+				filterStatementGroups(lexeme.getStatementGroups()),
+				lexeme.getForms().stream().map(this::filter).collect(Collectors.toList()),
+				lexeme.getRevisionId()
+		);
+	}
+
+	public FormDocument filter(FormDocument form) {
+		return dataObjectFactory.getFormDocument(
+				form.getEntityId(),
+				filterMonoLingualTextValues(form.getRepresentations().values().stream()),
+				form.getGrammaticalFeatures(),
+				filterStatementGroups(form.getStatementGroups()),
+				form.getRevisionId()
+		);
+	}
+
 	private List<MonolingualTextValue> filterMonoLingualTextValues(Stream<MonolingualTextValue> values) {
 		if (filter.getLanguageFilter() == null) {
 			return values.collect(Collectors.toList());

@@ -48,4 +48,13 @@ public interface EntityDocumentProcessor {
 	default void processPropertyDocument(PropertyDocument propertyDocument) {
 	}
 
+	/**
+	 * Processes the given LexemeDocument.
+	 *
+	 * @param lexemeDocument
+	 *            the LexemeDocument
+	 */
+	default void processLexemeDocument(LexemeDocument lexemeDocument) {
+	}
+
 }

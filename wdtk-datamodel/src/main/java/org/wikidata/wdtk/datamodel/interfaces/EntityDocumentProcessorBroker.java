@@ -20,9 +20,8 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Simple broker implementation of {@link EntityDocumentProcessor} which
@@ -33,8 +32,7 @@ import java.util.List;
  */
 public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 
-	private final List<EntityDocumentProcessor> entityDocumentProcessors = new ArrayList<EntityDocumentProcessor>();
-	private final HashSet<EntityDocumentProcessor> entityDocumentProcessorRegistry = new HashSet<>();
+	private final Set<EntityDocumentProcessor> entityDocumentProcessors = new HashSet<>();
 
 	/**
 	 * Registers a listener which will be called for all entity documents that
@@ -44,26 +42,28 @@ public class EntityDocumentProcessorBroker implements EntityDocumentProcessor {
 	 * @param entityDocumentProcessor
 	 *            the listener to register
 	 */
-	public void registerEntityDocumentProcessor(
-			EntityDocumentProcessor entityDocumentProcessor) {
-		if (!this.entityDocumentProcessorRegistry
-				.contains(entityDocumentProcessor)) {
-			this.entityDocumentProcessors.add(entityDocumentProcessor);
-			this.entityDocumentProcessorRegistry.add(entityDocumentProcessor);
-		}
+	public void registerEntityDocumentProcessor(EntityDocumentProcessor entityDocumentProcessor) {
+		entityDocumentProcessors.add(entityDocumentProcessor);
 	}
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
-		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
+		for (EntityDocumentProcessor entityDocumentProcessor : entityDocumentProcessors) {
 			entityDocumentProcessor.processItemDocument(itemDocument);
 		}
 	}
 
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
-		for (EntityDocumentProcessor entityDocumentProcessor : this.entityDocumentProcessors) {
+		for (EntityDocumentProcessor entityDocumentProcessor : entityDocumentProcessors) {
 			entityDocumentProcessor.processPropertyDocument(propertyDocument);
+		}
+	}
+
+	@Override
+	public void processLexemeDocument(LexemeDocument lexemeDocument) {
+		for (EntityDocumentProcessor entityDocumentProcessor : entityDocumentProcessors) {
+			entityDocumentProcessor.processLexemeDocument(lexemeDocument);
 		}
 	}
 

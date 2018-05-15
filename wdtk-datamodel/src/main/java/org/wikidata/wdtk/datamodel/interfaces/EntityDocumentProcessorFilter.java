@@ -64,4 +64,9 @@ public class EntityDocumentProcessorFilter implements EntityDocumentProcessor {
 		entityDocumentProcessor.processPropertyDocument(datamodelFilter.filter(propertyDocument));
 	}
 
+	@Override
+	public void processLexemeDocument(LexemeDocument lexemeDocument) {
+		entityDocumentProcessor.processLexemeDocument(datamodelFilter.filter(lexemeDocument));
+	}
+
 }

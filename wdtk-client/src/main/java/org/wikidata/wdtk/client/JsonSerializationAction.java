@@ -25,6 +25,7 @@ import java.io.OutputStream;
 
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 /**
@@ -92,6 +93,11 @@ public class JsonSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		this.serializer.processPropertyDocument(propertyDocument);
+	}
+
+	@Override
+	public void processLexemeDocument(LexemeDocument lexemeDocument) {
+		this.serializer.processLexemeDocument(lexemeDocument);
 	}
 
 	@Override
