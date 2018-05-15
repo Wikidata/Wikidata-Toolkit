@@ -45,7 +45,7 @@ public interface Snak {
 	 * Get the {@link Value} of this Snak, or null if the snak has no specified
 	 * value.
 	 *
-	 * @return Value
+	 * @return Value if it is a {@link ValueSnak} or null if it is not
 	 */
 	Value getValue();
 
