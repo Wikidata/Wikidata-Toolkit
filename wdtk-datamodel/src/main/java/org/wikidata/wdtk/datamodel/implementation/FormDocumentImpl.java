@@ -95,9 +95,12 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			throw new IllegalArgumentException("Forms should have at least one representation");
 		}
 		this.representations = representations;
-		this.grammaticalFeatures = (grammaticalFeatures == null)
+		this.grammaticalFeatures = (grammaticalFeatures == null || grammaticalFeatures.isEmpty())
 				? Collections.emptyList()
-				: grammaticalFeatures.stream().map(id -> new ItemIdValueImpl(id, siteIri)).collect(Collectors.toList());
+				: grammaticalFeatures.stream()
+					.sorted()
+					.map(id -> new ItemIdValueImpl(id, siteIri))
+					.collect(Collectors.toList());
 	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
@@ -128,7 +131,12 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 
 	@JsonProperty("grammaticalFeatures")
 	List<String> getJsonGrammaticalFeatures() {
-		return grammaticalFeatures.stream().map(EntityIdValue::getId).collect(Collectors.toList());
+		if (grammaticalFeatures.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return grammaticalFeatures.stream()
+				.map(EntityIdValue::getId)
+				.collect(Collectors.toList());
 	}
 
 	@JsonProperty("type")
