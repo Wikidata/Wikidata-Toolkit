@@ -87,7 +87,7 @@ public class LexemeDocumentImplTest {
 	public void equalityBasedOnContent() {
 		LexemeDocument irDiffLexCat = new LexemeDocumentImpl(lid, language, language, lemmaList, statementGroups, forms, 1234);
 		LexemeDocument irDiffLanguage = new LexemeDocumentImpl(lid, lexCat, lexCat, lemmaList, statementGroups, forms, 1234);
-		LexemeDocument irDiffLemmas = new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, 1234);
+		LexemeDocument irDiffLemmas = new LexemeDocumentImpl(lid, lexCat, language, Collections.singletonList(new TermImpl("en", "bar")), statementGroups, forms, 1234);
 		LexemeDocument irDiffStatementGroups = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, Collections.emptyList(), forms, 1234);
 		LexemeDocument irDiffForms = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, Collections.emptyList(), 1234);
 		LexemeDocument irDiffRevisions = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, 1235);
@@ -134,10 +134,14 @@ public class LexemeDocumentImplTest {
 		new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, 1234);
 	}
 
-	@Test
-	public void lemmasCanBeNull() {
-		LexemeDocument doc = new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, 1234);
-		assertTrue(doc.getLemmas().isEmpty());
+	@Test(expected = NullPointerException.class)
+	public void lemmasNotNull() {
+		new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, 1234);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void lemmasNotEmpty() {
+		new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, 1234);
 	}
 
 	@Test

@@ -83,7 +83,11 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		this.lexicalCategory = lexicalCategory;
 		Validate.notNull(language, "Lexeme language should not be null");
 		this.language = language;
-		this.lemmas = (lemmas == null) ? Collections.emptyMap() : constructTermMap(lemmas);
+		Validate.notNull(lemmas, "Lexeme lemmas should not be null");
+		if(lemmas.isEmpty()) {
+			throw new IllegalArgumentException("Lexemes should have at least one lemma");
+		}
+		this.lemmas = constructTermMap(lemmas);
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
 	}
 
@@ -106,7 +110,11 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		this.lexicalCategory = new ItemIdValueImpl(lexicalCategory, siteIri);
 		Validate.notNull(language, "Lexeme language should not be null");
 		this.language = new ItemIdValueImpl(language, siteIri);
-		this.lemmas = (lemmas == null) ? Collections.emptyMap() : lemmas;
+		Validate.notNull(lemmas, "Lexeme lemmas should not be null");
+		if(lemmas.isEmpty()) {
+			throw new IllegalArgumentException("Lexemes should have at least one lemma");
+		}
+		this.lemmas = lemmas;
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
 	}
 
