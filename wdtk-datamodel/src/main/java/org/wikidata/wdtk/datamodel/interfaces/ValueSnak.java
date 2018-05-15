@@ -31,4 +31,9 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 public interface ValueSnak extends Snak {
 
+	/**
+	 * Get the {@link Value} of this Snak
+	 */
+	@Override
+	Value getValue();
 }
