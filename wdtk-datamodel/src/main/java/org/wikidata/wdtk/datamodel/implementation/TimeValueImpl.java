@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
@@ -154,6 +155,12 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	@Override
 	public String getPreferredCalendarModel() {
 		return this.value.getCalendarmodel();
+	}
+
+	@JsonIgnore
+	@Override
+	public ItemIdValue getPreferredCalendarModelItemId() {
+		return ItemIdValueImpl.fromIri(this.value.getCalendarmodel());
 	}
 
 	@JsonIgnore

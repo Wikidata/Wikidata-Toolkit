@@ -39,6 +39,8 @@ public class TimeValueImplTest {
 	private final TimeValue t2 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
 			(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60,
 			TimeValue.CM_GREGORIAN_PRO);
+	private final TimeValue t3 = new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+			(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60, "foo");
 	private final String JSON_TIME_VALUE = "{\"value\":{\"time\":\"+2007-05-12T10:45:00Z\",\"timezone\":60,\"before\":0,\"after\":1,\"precision\":14,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"},\"type\":\"time\"}";
 
 	@Test
@@ -54,6 +56,16 @@ public class TimeValueImplTest {
 		assertEquals(t1.getAfterTolerance(), 1);
 		assertEquals(t1.getTimezoneOffset(), 60);
 		assertEquals(t1.getPreferredCalendarModel(), TimeValue.CM_GREGORIAN_PRO);
+	}
+
+	@Test
+	public void getPreferredCalendarModelItemId() {
+		assertEquals(new ItemIdValueImpl("Q1985727", "http://www.wikidata.org/entity/"), t1.getPreferredCalendarModelItemId());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getPreferredCalendarModelItemIdInvalidIri() {
+		t3.getPreferredCalendarModelItemId();
 	}
 
 	@Test
