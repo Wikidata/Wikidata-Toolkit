@@ -25,6 +25,7 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -114,6 +115,12 @@ public class GlobeCoordinatesValueImpl extends ValueImpl implements
 	@Override
 	public String getGlobe() {
 		return this.value.getGlobe();
+	}
+
+	@JsonIgnore
+	@Override
+	public ItemIdValue getGlobeItemId() {
+		return ItemIdValueImpl.fromIri(this.value.getGlobe());
 	}
 
 	@Override
