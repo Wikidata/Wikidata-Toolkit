@@ -532,7 +532,7 @@ public class Datamodel {
 	 * @return a {@link SiteLink} corresponding to the input
 	 */
 	public static SiteLink makeSiteLink(String title, String siteKey,
-			List<String> badges) {
+			List<ItemIdValue> badges) {
 		return factory.getSiteLink(title, siteKey, badges);
 	}
 

@@ -50,10 +50,7 @@ public interface SiteLink {
 
 	/**
 	 * Get the list of badges of the linked article.
-	 * 
-	 * TODO This feature is not used yet in Wikibase. This interface might
-	 * change when more details are known.
 	 */
-	List<String> getBadges();
+	List<ItemIdValue> getBadges();
 
 }

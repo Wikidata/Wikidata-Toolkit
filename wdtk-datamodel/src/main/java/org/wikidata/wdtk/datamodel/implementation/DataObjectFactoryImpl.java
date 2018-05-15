@@ -191,7 +191,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 
 	@Override
 	public SiteLink getSiteLink(String title, String siteKey,
-			List<String> badges) {
+			List<ItemIdValue> badges) {
 		return new SiteLinkImpl(title, siteKey, badges);
 	}
 

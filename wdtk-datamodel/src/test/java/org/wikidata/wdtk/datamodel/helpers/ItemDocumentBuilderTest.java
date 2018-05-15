@@ -75,7 +75,7 @@ public class ItemDocumentBuilderTest {
 		MonolingualTextValue mtv = Datamodel.makeMonolingualTextValue("Test",
 				"de");
 		SiteLink sl = Datamodel.makeSiteLink("Test", "frwiki",
-				Collections.singletonList("Badge"));
+				Collections.singletonList(Datamodel.makeWikidataItemIdValue("Q42")));
 
 		ItemDocument id1 = Datamodel.makeItemDocument(i,
 				Collections.singletonList(mtv), Collections.singletonList(mtv),
@@ -85,7 +85,7 @@ public class ItemDocumentBuilderTest {
 		ItemDocument id2 = ItemDocumentBuilder.forItemId(i)
 				.withLabel("Test", "de").withDescription("Test", "de")
 				.withAlias("Test", "de")
-				.withSiteLink("Test", "frwiki", "Badge").withStatement(s1)
+				.withSiteLink("Test", "frwiki", Datamodel.makeWikidataItemIdValue("Q42")).withStatement(s1)
 				.withStatement(s2).withRevisionId(1234).build();
 
 		assertEquals(id1, id2);
@@ -99,7 +99,7 @@ public class ItemDocumentBuilderTest {
 				"fr");
 		MonolingualTextValue alias2 = Datamodel.makeMonolingualTextValue("atoca", "fr");
 		SiteLink sl = Datamodel.makeSiteLink("Canneberge", "frwiki",
-				Collections.singletonList("Badge"));
+				Collections.singletonList(Datamodel.makeWikidataItemIdValue("Q42")));
 		
 		ItemDocument initial = Datamodel.makeItemDocument(i,
 				Collections.singletonList(label),

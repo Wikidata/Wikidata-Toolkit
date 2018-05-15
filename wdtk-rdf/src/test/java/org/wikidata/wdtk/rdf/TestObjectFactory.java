@@ -329,9 +329,9 @@ public class TestObjectFactory {
 	public Map<String, SiteLink> createSiteLinks() {
 		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
 		result.put("enwiki", factory.getSiteLink("title_en", "enwiki",
-				new LinkedList<String>()));
+				Collections.emptyList()));
 		result.put("dewiki", factory.getSiteLink("title_de", "dewiki",
-				new LinkedList<String>()));
+				Collections.emptyList()));
 		return result;
 	}
 

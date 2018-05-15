@@ -358,7 +358,7 @@ public interface DataObjectFactory {
 	 *            the list of badges of the linked article
 	 * @return a {@link SiteLink} corresponding to the input
 	 */
-	SiteLink getSiteLink(String title, String siteKey, List<String> badges);
+	SiteLink getSiteLink(String title, String siteKey, List<ItemIdValue> badges);
 
 	/**
 	 * Creates a {@link PropertyDocument}. It might be more convenient to use
