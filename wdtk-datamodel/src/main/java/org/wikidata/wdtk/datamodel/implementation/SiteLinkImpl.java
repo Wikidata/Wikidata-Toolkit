@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collections;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,30 +20,33 @@ import java.util.Collections;
  * #L%
  */
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link SiteLink}.
  *
  * @author Fredo Erxleben
  * @author Antonin Delpeuch
+ * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SiteLinkImpl implements SiteLink {
 
 	private final String title;
 	private final String site;
-	private final List<String> badges;
+	private final List<ItemIdValue> badges;
 
 	/**
 	 * Constructor.
@@ -58,20 +59,46 @@ public class SiteLinkImpl implements SiteLink {
 	 * 		the list of badge identifiers worn by this site link.
 	 * 		Can be null.
 	 */
-	@JsonCreator
 	public SiteLinkImpl(
-			@JsonProperty("title") String title,
-			@JsonProperty("site") String site,
-			@JsonProperty("badges") List<String> badges) {
+			String title,
+			String site,
+			List<ItemIdValue> badges) {
 		Validate.notNull(title);
 		this.title = title;
 		Validate.notNull(site);
 		this.site = site;
-		if (badges != null) {
-			this.badges = badges;
-		} else {
-			this.badges = Collections.emptyList();
-		}
+		this.badges = (badges == null) ? Collections.emptyList() : badges;
+		this.badges.sort(Comparator.comparing(EntityIdValue::getId));
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param title
+	 * 		the title of the page on the target site
+	 * @param site
+	 * 		the identifier of the target site (such as "dewiki")
+	 * @param badges
+	 * 		the list of badge identifiers worn by this site link.
+	 * 		Can be null.
+	 */
+	@JsonCreator
+	SiteLinkImpl(
+			@JsonProperty("title") String title,
+			@JsonProperty("site") String site,
+			@JsonProperty("badges") List<String> badges,
+			@JacksonInject("siteIri") String siteIri
+	) {
+		Validate.notNull(title);
+		this.title = title;
+		Validate.notNull(site);
+		this.site = site;
+		this.badges = (badges == null || badges.isEmpty())
+			? Collections.emptyList()
+			: badges.stream()
+					.sorted()
+					.map(id -> new ItemIdValueImpl(id, siteIri))
+					.collect(Collectors.toList());
 	}
 
 	@JsonProperty("title")
@@ -86,9 +113,20 @@ public class SiteLinkImpl implements SiteLink {
 		return this.site;
 	}
 
+	@JsonIgnore
 	@Override
-	public List<String> getBadges() {
+	public List<ItemIdValue> getBadges() {
 		return this.badges;
+	}
+
+	@JsonProperty("badges")
+	List<String> getBadgesString() {
+		if (badges.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return badges.stream()
+				.map(EntityIdValue::getId)
+				.collect(Collectors.toList());
 	}
 
 	@Override

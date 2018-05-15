@@ -74,7 +74,7 @@ public class SitesTest {
 
 		DataObjectFactory factory = new DataObjectFactoryImpl();
 		SiteLink siteLink = factory.getSiteLink("Douglas Adams", "dewiki",
-				Collections.<String> emptyList());
+				Collections.emptyList());
 
 		Sites sites = this.dpc.getSitesInformation();
 

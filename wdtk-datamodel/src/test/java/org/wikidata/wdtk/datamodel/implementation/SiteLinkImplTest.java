@@ -23,36 +23,42 @@ package org.wikidata.wdtk.datamodel.implementation;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 public class SiteLinkImplTest {
 
-	private final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
-	private final SiteLink s1 = new SiteLinkImpl("Dresden", "enwiki", Collections.emptyList());
-	private final SiteLink s2 = new SiteLinkImpl("Dresden", "enwiki", Collections.emptyList());
-	private final String JSON_SITE_LINK = "{\"site\":\"enwiki\", \"title\":\"Dresden\", \"badges\":[]}";
+	private final List<ItemIdValue> badges = Arrays.asList(
+			new ItemIdValueImpl("Q43", "http://example.com/entity/"),
+			new ItemIdValueImpl("Q42", "http://example.com/entity/")
+	);
+	private final SiteLink s1 = new SiteLinkImpl("Dresden", "enwiki", badges);
+	private final SiteLink s2 = new SiteLinkImpl("Dresden", "enwiki", badges);
+	private final String JSON_SITE_LINK = "{\"site\":\"enwiki\", \"title\":\"Dresden\", \"badges\":[\"Q42\",\"Q43\"]}";
 
 	@Test
 	public void fieldsIsCorrect() {
 		assertEquals(s1.getPageTitle(), "Dresden");
 		assertEquals(s1.getSiteKey(), "enwiki");
-		assertEquals(s1.getBadges(), Collections.emptyList());
+		assertEquals(s1.getBadges(), badges);
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		SiteLink sDiffTitle = new SiteLinkImpl("Berlin", "enwiki",
-				Collections.emptyList());
-		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki",
-				Collections.emptyList());
+		SiteLink sDiffTitle = new SiteLinkImpl("Berlin", "enwiki", badges);
+		SiteLink sDiffSiteKey = new SiteLinkImpl("Dresden", "dewiki", badges);
 		SiteLink sDiffBadges = new SiteLinkImpl("Dresden", "enwiki",
-				Collections.singletonList("some badge?"));
+				Collections.emptyList());
 
 		assertEquals(s1, s1);
 		assertEquals(s1, s2);
@@ -93,4 +99,4 @@ public class SiteLinkImplTest {
 	public void testToJava() throws IOException {
 		assertEquals(s1, mapper.readValue(JSON_SITE_LINK, SiteLinkImpl.class));
 	}
-};
+}

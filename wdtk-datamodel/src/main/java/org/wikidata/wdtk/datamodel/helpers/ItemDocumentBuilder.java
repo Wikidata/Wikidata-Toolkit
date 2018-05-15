@@ -119,7 +119,7 @@ public class ItemDocumentBuilder extends
 	 *            one or more badges
 	 */
 	public ItemDocumentBuilder withSiteLink(String title, String siteKey,
-			String... badges) {
+			ItemIdValue... badges) {
 		withSiteLink(factory.getSiteLink(title, siteKey, Arrays.asList(badges)));
 		return this;
 	}
