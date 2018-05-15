@@ -57,17 +57,23 @@ public class SnakImplTest {
 	private final String JSON_MONOLINGUAL_TEXT_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"monolingualtext\",\"datavalue\":{\"value\":{\"language\":\"en\",\"text\":\"foo\"},\"type\":\"monolingualtext\"}}";
 
 	@Test
+	public void fieldsAreCorrect() {
+		assertEquals(vs1.getPropertyId(), p1);
+		assertEquals(vs1.getValue(), p1);
+
+		assertEquals(svs1.getPropertyId(), p1);
+		assertEquals(svs1.getValue(), null);
+
+		assertEquals(nvs1.getPropertyId(), p1);
+		assertEquals(nvs1.getValue(), null);
+	}
+
+	@Test
 	public void snakHashBasedOnContent() {
 		assertEquals(vs1.hashCode(), vs2.hashCode());
 		assertEquals(vsmt1.hashCode(), vsmt2.hashCode());
 		assertEquals(svs1.hashCode(), svs2.hashCode());
 		assertEquals(nvs1.hashCode(), nvs2.hashCode());
-	}
-
-	@Test
-	public void snaksWithoutValues() {
-		assertEquals(svs1.getValue(), null);
-		assertEquals(nvs1.getValue(), null);
 	}
 
 	@Test
