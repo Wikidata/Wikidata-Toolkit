@@ -1,0 +1,3 @@
+
+<http://www.wikidata.org/entity/statement/Q0-> a <http://wikiba.se/ontology#Statement> , <http://www.wikidata.org/prop/novalue/P31> ;
+	<http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .

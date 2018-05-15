@@ -64,11 +64,11 @@ public class RdfConverter {
 	final RdfWriter rdfWriter;
 	final AnyValueConverter valueRdfConverter;
 	final SnakRdfConverter snakRdfConverter;
-	final OwlDeclarationBuffer owlDeclarationBuffer;
+	final OwlDeclarationBuffer owlDeclarationBuffer = new OwlDeclarationBuffer();
 	final ReferenceRdfConverter referenceRdfConverter;
 	final PropertyRegister propertyRegister;
 	final Sites sites;
-	final RankBuffer rankBuffer;
+	final RankBuffer rankBuffer = new RankBuffer();
 
 	int tasks = RdfSerializer.TASK_ALL_ENTITIES
 			| RdfSerializer.TASK_ALL_EXACT_DATA;
@@ -79,7 +79,6 @@ public class RdfConverter {
 		this.rdfWriter = rdfWriter;
 		this.propertyRegister = propertyRegister;
 
-		this.owlDeclarationBuffer = new OwlDeclarationBuffer();
 		this.valueRdfConverter = new AnyValueConverter(rdfWriter,
 				this.owlDeclarationBuffer, this.propertyRegister);
 		this.snakRdfConverter = new SnakRdfConverter(rdfWriter,
@@ -87,7 +86,6 @@ public class RdfConverter {
 				this.valueRdfConverter);
 		this.referenceRdfConverter = new ReferenceRdfConverter(rdfWriter,
 				this.snakRdfConverter, this.propertyRegister.siteUri);
-		this.rankBuffer = new RankBuffer();
 	}
 
 	/**
