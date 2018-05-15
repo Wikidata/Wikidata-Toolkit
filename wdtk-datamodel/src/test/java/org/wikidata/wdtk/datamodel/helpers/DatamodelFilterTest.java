@@ -322,7 +322,7 @@ public class DatamodelFilterTest {
 				s,
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Datamodel.makeWikidataItemIdValue("Q1"),
-				Collections.emptyList(),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
 				Arrays.asList(
 						makeTestStatementGroup(p1, s),
 						makeTestStatementGroup(p2, s),
@@ -345,7 +345,7 @@ public class DatamodelFilterTest {
 				s,
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Datamodel.makeWikidataItemIdValue("Q1"),
-				Collections.emptyList(),
+				Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
 				Arrays.asList(
 						makeTestStatementGroup(p1, s),
 						makeTestStatementGroup(p3, s)
