@@ -327,7 +327,9 @@ public class DatamodelTest {
 				Collections.emptyList());
 		SiteLink o2 = factory.getSiteLink("SOLID", "enwiki",
 				Collections.emptyList());
+		SiteLink o3 = Datamodel.makeSiteLink("SOLID", "enwiki");
 		assertEquals(o1, o2);
+		assertEquals(o3, o2);
 	}
 
 	@Test
