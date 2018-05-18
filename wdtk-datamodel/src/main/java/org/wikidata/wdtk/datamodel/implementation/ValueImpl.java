@@ -139,44 +139,18 @@ public abstract class ValueImpl implements Value {
 				JsonNode valueNode = jsonNode.get("value");
 				if (valueNode != null) {
 					if(valueNode.has("entity-type")) {
-						String entityType = valueNode.get("entity-type").asText();
-						switch (entityType) {
-							case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
-								return ItemIdValueImpl.class;
-							case EntityIdValueImpl.JSON_ENTITY_TYPE_LEXEME:
-								return LexemeIdValueImpl.class;
-							case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
-								return PropertyIdValueImpl.class;
-							case EntityIdValueImpl.JSON_ENTITY_TYPE_FORM:
-								return FormIdValueImpl.class;
-							case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
-								return SenseIdValueImpl.class;
-							default:
-								throw new JsonMappingException(jsonParser, "Entities of type \""
-										+ entityType
-										+ "\" are not supported as property values yet.");
+						try {
+							return getValueClassFromEntityType(valueNode.get("entity-type").asText());
+						} catch (IllegalArgumentException e) {
+							throw new JsonMappingException(jsonParser, e.getMessage(), e);
 						}
 					} else if(valueNode.has("id")) {
-						String id = valueNode.get("id").asText();
-						if(id.isEmpty()) {
-							throw new JsonMappingException(jsonParser, "Entity ids should not be empty.");
-						}
-						switch (id.charAt(0)) {
-							case 'L':
-								if(id.contains("-F")) {
-									return FormIdValueImpl.class;
-								} else if(id.contains("-S")) {
-									return SenseIdValueImpl.class;
-								} else {
-									return LexemeIdValueImpl.class;
-								}
-							case 'P':
-								return PropertyIdValueImpl.class;
-							case 'Q':
-								return ItemIdValueImpl.class;
-							default:
-								throw new JsonMappingException(jsonParser, "Entity id \"" + id
-										+ "\" is not supported as property values yet.");
+						try {
+							return getValueClassFromEntityType(
+									EntityIdValueImpl.guessEntityTypeFromId(valueNode.get("id").asText())
+							);
+						} catch (IllegalArgumentException e) {
+							throw new JsonMappingException(jsonParser, e.getMessage(), e);
 						}
 					} else {
 						throw new JsonMappingException(jsonParser, "Unexpected entity id serialization");
@@ -196,6 +170,23 @@ public abstract class ValueImpl implements Value {
 			default:
 				throw new JsonMappingException(jsonParser, "Property values of type \""
 						+ jsonType + "\" are not supported yet.");
+			}
+		}
+
+		private Class<? extends ValueImpl> getValueClassFromEntityType(String entityType) {
+			switch (entityType) {
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
+					return ItemIdValueImpl.class;
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_LEXEME:
+					return LexemeIdValueImpl.class;
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
+					return PropertyIdValueImpl.class;
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_FORM:
+					return FormIdValueImpl.class;
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
+					return SenseIdValueImpl.class;
+				default:
+					throw new IllegalArgumentException("Entities of type \"" + entityType + "\" are not supported.");
 			}
 		}
 	}

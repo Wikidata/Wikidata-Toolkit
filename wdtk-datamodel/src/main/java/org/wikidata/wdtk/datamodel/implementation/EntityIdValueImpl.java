@@ -1,6 +1,8 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 /*
  * #%L
@@ -11,9 +13,9 @@ import org.apache.commons.lang3.Validate;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +23,6 @@ import org.apache.commons.lang3.Validate;
  * limitations under the License.
  * #L%
  */
-
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Abstract base implementation of {@link EntityIdValue} for Jackson.
@@ -111,6 +105,63 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	}
 
 	/**
+	 * Parses an item id
+	 *
+	 * @param id
+	 * 		the identifier of the entity, such as "Q42"
+	 * @param siteIri
+	 *      the siteIRI that this value refers to
+	 * @throws IllegalArgumentException
+	 *      if the id is invalid
+	 */
+	static EntityIdValue fromId(String id, String siteIri) {
+		switch (guessEntityTypeFromId(id)) {
+			case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
+				return new ItemIdValueImpl(id, siteIri);
+			case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
+				return new PropertyIdValueImpl(id, siteIri);
+			case EntityIdValueImpl.JSON_ENTITY_TYPE_LEXEME:
+				return new LexemeIdValueImpl(id, siteIri);
+			case EntityIdValueImpl.JSON_ENTITY_TYPE_FORM:
+				return new FormIdValueImpl(id, siteIri);
+			case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
+				return new SenseIdValueImpl(id, siteIri);
+			default:
+				throw new IllegalArgumentException("Entity id \"" + id + "\" is not supported.");
+		}
+	}
+
+	/**
+	 * RReturns the entity type of the id like "item" or "property"
+	 *
+	 * @param id
+	 * 		the identifier of the entity, such as "Q42"
+	 * @throws IllegalArgumentException
+	 *      if the id is invalid
+	 */
+	static String guessEntityTypeFromId(String id) {
+		if(id.isEmpty()) {
+			throw new IllegalArgumentException("Entity ids should not be empty.");
+		}
+		switch (id.charAt(0)) {
+			case 'L':
+				if(id.contains("-F")) {
+					return JSON_ENTITY_TYPE_FORM;
+				} else if(id.contains("-S")) {
+					return JSON_ENTITY_TYPE_SENSE;
+				} else {
+					return JSON_ENTITY_TYPE_LEXEME;
+				}
+			case 'P':
+				return JSON_ENTITY_TYPE_PROPERTY;
+			case 'Q':
+				return JSON_ENTITY_TYPE_ITEM;
+			default:
+				throw new IllegalArgumentException("Entity id \"" + id + "\" is not supported.");
+		}
+	}
+
+	/**
 	 * Returns the inner value helper object. Only for use by Jackson during
 	 * serialization.
 	 *
@@ -166,7 +217,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 
 		JacksonInnerEntityId(String id) {
 			this.id = id;
-			entityType = buildEntityType(id);
+			entityType = guessEntityTypeFromId(id);
 			numericId = buildNumericId(id);
 		}
 
@@ -191,7 +242,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 			} else {
 				this.id = id;
 				if(entityType == null || numericId == 0) {
-					this.entityType = buildEntityType(id);
+					this.entityType = guessEntityTypeFromId(id);
 					this.numericId = buildNumericId(id);
 				} else if(!id.equals(buildIdFromNumericId(entityType, numericId))) {
 					throw new IllegalArgumentException("Numerical id is different from the string id");
@@ -234,24 +285,6 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 		@JsonProperty("id")
 		public String getStringId() {
 			return id;
-		}
-
-		private String buildEntityType(String id) {
-			if (id.length() <= 1) {
-				throw new IllegalArgumentException(
-							"Wikibase entity ids must have the form \"(L|P|Q)<positive integer>\". Given id was \""
-									+ id + "\"");
-			}
-			switch (id.charAt(0)) {
-				case 'L':
-					return JSON_ENTITY_TYPE_LEXEME;
-				case 'P':
-					return JSON_ENTITY_TYPE_PROPERTY;
-				case 'Q':
-					return JSON_ENTITY_TYPE_ITEM;
-				default:
-					throw new IllegalArgumentException("Unrecognized entity id: \"" + id + "\"");
-			}
 		}
 
 		private int buildNumericId(String id) {
