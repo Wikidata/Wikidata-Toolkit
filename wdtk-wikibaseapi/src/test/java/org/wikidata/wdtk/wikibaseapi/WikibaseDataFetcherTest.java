@@ -37,12 +37,12 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
 
 public class WikibaseDataFetcherTest {
 
-	MockApiConnection con;
+	MockBasicApiConnection con;
 	WikibaseDataFetcher wdf;
 
 	@Before
 	public void setUp() throws Exception {
-		con = new MockApiConnection();
+		con = new MockBasicApiConnection();
 		wdf = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
 	}
 

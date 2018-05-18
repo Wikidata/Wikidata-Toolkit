@@ -47,11 +47,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ApiConnectionTest {
+public class BasicApiConnectionTest {
 
 	final ObjectMapper mapper = new ObjectMapper();
 
-	MockApiConnection con;
+	MockBasicApiConnection con;
 
 	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"loggedIn\":true,\"cookies\":{\"Path\":\"/\","+
 			"\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\","+
@@ -70,7 +70,7 @@ public class ApiConnectionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.con = new MockApiConnection();
+		this.con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
@@ -245,7 +245,6 @@ public class ApiConnectionTest {
 		headerFields.put("Set-Cookie", cookieList);
 		con.fillCookies(headerFields);
 		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
-
 	}
 
 	@Test
@@ -282,21 +281,21 @@ public class ApiConnectionTest {
 
 	@Test
 	public void testGetWikidataApiConnection() {
-		ApiConnection connection = ApiConnection.getWikidataApiConnection();
+		ApiConnection connection = BasicApiConnection.getWikidataApiConnection();
 		assertEquals("https://www.wikidata.org/w/api.php",
 				connection.apiBaseUrl);
 	}
 
 	@Test
 	public void testGetTestWikidataApiConnection() {
-		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		ApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
 		assertEquals("https://test.wikidata.org/w/api.php",
 				connection.apiBaseUrl);
 	}
 
 	@Test
 	public void testErrorMessages() {
-		ApiConnection connection = ApiConnection.getTestWikidataApiConnection();
+		ApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
 		String[] knownErrors = { ApiConnection.LOGIN_WRONG_PASS,
 				ApiConnection.LOGIN_WRONG_PLUGIN_PASS,
 				ApiConnection.LOGIN_NOT_EXISTS, ApiConnection.LOGIN_BLOCKED,

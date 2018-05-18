@@ -36,13 +36,13 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 public class WbGetEntitiesActionTest {
 
-	MockApiConnection con;
+	MockBasicApiConnection con;
 	WbGetEntitiesAction action;
 
 	@Before
 	public void setUp() throws Exception {
 
-		this.con = new MockApiConnection();
+		this.con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "wbgetentities");
 		params.put("format", "json");

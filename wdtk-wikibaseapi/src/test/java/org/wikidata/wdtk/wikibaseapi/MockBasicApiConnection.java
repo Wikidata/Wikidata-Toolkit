@@ -39,10 +39,10 @@ import org.wikidata.wdtk.util.CompressionType;
  * @author Michael Guenther
  *
  */
-public class MockApiConnection extends ApiConnection {
+public class MockBasicApiConnection extends BasicApiConnection {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(MockApiConnection.class);
+			.getLogger(MockBasicApiConnection.class);
 
 	/**
 	 * Mapping from hashs of query parameter maps to request results.
@@ -52,7 +52,7 @@ public class MockApiConnection extends ApiConnection {
 	/**
 	 * Constructor.
 	 */
-	public MockApiConnection() {
+	public MockBasicApiConnection() {
 		super("");
 		webResources = new HashMap<Integer, byte[]>();
 	}
