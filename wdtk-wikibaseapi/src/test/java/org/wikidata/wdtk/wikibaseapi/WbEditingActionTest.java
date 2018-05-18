@@ -41,7 +41,7 @@ public class WbEditingActionTest {
 	@Test(expected = IOException.class)
 	public void testOffineErrors() throws IOException,
 			MediaWikiApiErrorException {
-		MockApiConnection con = new MockBasicApiConnection();
+		MockBasicApiConnection con = new MockBasicApiConnection();
 		WbEditingAction weea = new WbEditingAction(con,
 				Datamodel.SITE_WIKIDATA);
 
