@@ -239,7 +239,7 @@ public class Datamodel {
 			byte hour, byte minute, byte second, int timezoneOffset,
 			String calendarModel) {
 		return factory.getTimeValue(year, month, day, hour, minute, second,
-				TimeValue.PREC_SECOND, 0, 1, timezoneOffset, calendarModel);
+				TimeValue.PREC_SECOND, 0, 0, timezoneOffset, calendarModel);
 	}
 
 	/**
@@ -261,7 +261,7 @@ public class Datamodel {
 	public static TimeValue makeTimeValue(long year, byte month, byte day,
 			String calendarModel) {
 		return factory.getTimeValue(year, month, day, (byte) 0, (byte) 0,
-				(byte) 0, TimeValue.PREC_DAY, 0, 1, 0, calendarModel);
+				(byte) 0, TimeValue.PREC_DAY, 0, 0, 0, calendarModel);
 	}
 
 	/**
