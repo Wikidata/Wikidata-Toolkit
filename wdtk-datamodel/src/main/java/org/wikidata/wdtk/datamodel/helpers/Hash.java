@@ -386,4 +386,19 @@ public class Hash {
 		return result;
 	}
 
+	/**
+	 * Returns a hash code for the given object.
+	 *
+	 * @see java.lang.Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return the hash code of the object
+	 */
+	public static int hashCode(EntityRedirectDocument o) {
+		int result;
+		result = o.getEntityId().hashCode();
+		result = prime * result + o.getTargetId().hashCode();
+		result = prime * result + Long.hashCode(o.getRevisionId());
+		return result;
+	}
 }

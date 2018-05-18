@@ -659,4 +659,18 @@ public class ToString {
 		}
 	}
 
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(EntityRedirectDocument o) {
+		return "==EntityRedirect " + o.getEntityId().getIri() +
+				" (r" + o.getRevisionId() + ") " +
+				"==\n" +
+				"Target: " + o.getTargetId().getIri();
+	}
 }
