@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,8 @@ public class QuantityValueImplTest {
 	private final QuantityValue q1 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q2 = new QuantityValueImpl(nv, lb, ub, unitMeter);
 	private final QuantityValue q3 = new QuantityValueImpl(nv, null, null, unitMeter);
+	private final QuantityValue q4 = new QuantityValueImpl(nv, lb, ub, "1");
+	private final QuantityValue q5 = new QuantityValueImpl(nv, lb, ub, "foobar");
 	private static String JSON_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"lowerBound\":\"+0.123456789012345678901234567890123456788\",\"upperBound\":\"+0.123456789012345678901234567890123456790\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 	private static String JSON_UNBOUNDED_QUANTITY_VALUE = "{\"value\":{\"amount\":\"+0.123456789012345678901234567890123456789\",\"unit\":\"http://wikidata.org/entity/Q11573\"},\"type\":\"quantity\"}";
 
@@ -52,6 +55,21 @@ public class QuantityValueImplTest {
 		assertEquals(q1.getNumericValue(), nv);
 		assertEquals(q1.getLowerBound(), lb);
 		assertEquals(q1.getUpperBound(), ub);
+	}
+
+	@Test
+	public void getUnitItemId() {
+		assertEquals(Optional.of(new ItemIdValueImpl("Q11573", "http://wikidata.org/entity/")), q1.getUnitItemId());
+	}
+
+	@Test
+	public void getUnitItemIdNoUnit() {
+		assertEquals(Optional.empty(), q4.getUnitItemId());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getUnitItemIdInvalidIri() {
+		q5.getUnitItemId();
 	}
 
 	@Test

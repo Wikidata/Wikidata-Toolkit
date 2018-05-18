@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  */
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * A quantity value represents a number, possibly under some unit. The number
@@ -60,5 +61,12 @@ public interface QuantityValue extends Value {
 	 * @return unit string (IRI or the string "1" if there is no unit)
 	 */
 	String getUnit();
+
+	/**
+	 * @return the unit of this quantity as an item id value, or Optional.empty
+	 * if there is no unit.
+	 * @throws IllegalArgumentException if the unit is not "1" (no unit) or a valid item IRI
+	 */
+	Optional<ItemIdValue> getUnitItemId();
 
 }

@@ -39,6 +39,9 @@ public class GlobeCoordinatesValueImplTest {
 	private final GlobeCoordinatesValue c2 = new GlobeCoordinatesValueImpl(12.3, 14.1,
 			GlobeCoordinatesValue.PREC_DEGREE,
 			GlobeCoordinatesValue.GLOBE_EARTH);
+	private final GlobeCoordinatesValue c3 = new GlobeCoordinatesValueImpl(12.3, 14.1,
+			GlobeCoordinatesValue.PREC_DEGREE,
+			"earth");
 	private final String JSON_GLOBE_COORDINATES_VALUE = "{\"type\":\""
 			+ ValueImpl.JSON_VALUE_TYPE_GLOBE_COORDINATES
 			+ "\", \"value\":{\"latitude\":12.3,\"longitude\":14.1,\"precision\":1.0,\"globe\":\"http://www.wikidata.org/entity/Q2\"}}";
@@ -49,6 +52,16 @@ public class GlobeCoordinatesValueImplTest {
 		assertEquals(c1.getLongitude(), 14.1, 0);
 		assertEquals(c1.getPrecision(), GlobeCoordinatesValue.PREC_DEGREE, 0);
 		assertEquals(c1.getGlobe(), GlobeCoordinatesValue.GLOBE_EARTH);
+	}
+
+	@Test
+	public void getGlobeItemId() {
+		assertEquals(new ItemIdValueImpl("Q2", "http://www.wikidata.org/entity/"), c1.getGlobeItemId());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getGlobeItemIdInvalidIri() {
+		c3.getGlobeItemId();
 	}
 
 	@Test

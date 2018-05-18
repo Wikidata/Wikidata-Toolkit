@@ -191,6 +191,14 @@ public interface TimeValue extends Value {
 	String getPreferredCalendarModel();
 
 	/**
+	 * Get the {@link ItemIdValue} of the preferred calendar model that should
+	 * be used to display this date (and that was presumably used when entering it).
+	 *
+	 * @throws IllegalArgumentException if the calendar model is not a valid item IRI
+	 */
+	ItemIdValue getPreferredCalendarModelItemId();
+
+	/**
 	 * Get the precision hint of this date. The return value will be in the
 	 * range of {@link TimeValue#PREC_DAY}, ..., {@link TimeValue#PREC_1GY}.
 	 * 

@@ -154,4 +154,11 @@ public interface GlobeCoordinatesValue extends Value {
 	 */
 	String getGlobe();
 
+	/**
+	 * Get the {@link ItemIdValue} of the globe that these coordinates refer to.
+	 *
+	 * @throws IllegalArgumentException if the globe is not a valid item IRI
+	 */
+	ItemIdValue getGlobeItemId();
+
 }
