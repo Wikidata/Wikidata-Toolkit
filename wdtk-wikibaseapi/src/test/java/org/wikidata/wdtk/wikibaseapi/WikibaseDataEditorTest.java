@@ -49,11 +49,13 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
 public class WikibaseDataEditorTest {
 
-	MockApiConnection con;
+	MockBasicApiConnection con;
+	ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
+	PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
 
 	@Before
 	public void setUp() throws IOException {
-		this.con = new MockApiConnection();
+		this.con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");

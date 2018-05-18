@@ -51,9 +51,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Class to build up and hold a connection to a Wikibase API, managing cookies
  * and login.
+ * 
+ * This should no longer be instantiated directly: please use one of the subclasses
+ * {@class PasswordApiConnection} and {@class OAuthApiConnection} instead. This
+ * class will become an interface in a future release.
  *
  * @author Michael Guenther
- *
+ * @author Antonin Delpeuch
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiConnection {
@@ -175,6 +179,7 @@ public class ApiConnection {
 	 * User name used to log in.
 	 */
 	String username = "";
+	
 	/**
 	 * Password used to log in.
 	 */
@@ -199,6 +204,7 @@ public class ApiConnection {
 	 *            base URI to the API, e.g.,
 	 *            "https://www.wikidata.org/w/api.php/"
 	 */
+	@Deprecated
 	public ApiConnection(String apiBaseUrl) {
 		this.apiBaseUrl = apiBaseUrl;
 		this.cookies = new HashMap<>();
@@ -215,7 +221,8 @@ public class ApiConnection {
 	 * 		true if login succeeded.
 	 */
 	@JsonCreator
-	private ApiConnection(
+	@Deprecated
+	protected ApiConnection(
 			@JsonProperty("baseUrl") String apiBaseUrl,
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
@@ -229,19 +236,23 @@ public class ApiConnection {
 	/**
 	 * Creates an API connection to wikidata.org.
 	 *
-	 * @return {@link ApiConnection}
+	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @return {@link BasicApiConnection}
 	 */
-	public static ApiConnection getWikidataApiConnection() {
-		return new ApiConnection(ApiConnection.URL_WIKIDATA_API);
+	@Deprecated
+	public static BasicApiConnection getWikidataApiConnection() {
+		return new BasicApiConnection(ApiConnection.URL_WIKIDATA_API);
 	}
 
 	/**
 	 * Creates an API connection to test.wikidata.org.
 	 *
-	 * @return {@link ApiConnection}
+	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @return {@link BasicApiConnection}
 	 */
-	public static ApiConnection getTestWikidataApiConnection() {
-		return new ApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
+	@Deprecated
+	public static BasicApiConnection getTestWikidataApiConnection() {
+		return new BasicApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
 	}
 
 	/**
@@ -280,6 +291,7 @@ public class ApiConnection {
 	 * @throws LoginFailedException
 	 *             if the login failed for some reason
 	 */
+	@Deprecated
 	public void login(String username, String password)
 			throws LoginFailedException {
 		try {
@@ -300,7 +312,6 @@ public class ApiConnection {
 	 *
 	 * @return true if the connection is in a logged in state
 	 */
-	@JsonProperty("loggedIn")
 	public boolean isLoggedIn() {
 		return this.loggedIn;
 	}
@@ -311,18 +322,10 @@ public class ApiConnection {
 	 *
 	 * @return name of the logged in user
 	 */
-	@JsonProperty("username")
 	public String getCurrentUser() {
 		return this.username;
 	}
 	
-	/**
-	 * Returns the map of cookies currently used in this connection.
-	 */
-	@JsonProperty("cookies")
-	public Map<String, String> getCookies() {
-		return Collections.unmodifiableMap(this.cookies);
-	}
 
 	/**
 	 * Logs the current user out.
@@ -531,6 +534,8 @@ public class ApiConnection {
 	 * Issues a Web API query to confirm that the previous login attempt was
 	 * successful, and sets the internal state of the API connection accordingly
 	 * in this case.
+	 * 
+	 * @deprecated because it will be migrated to {@class PasswordApiConnection}.
 	 *
 	 * @param token
 	 *            the login token string
@@ -541,6 +546,7 @@ public class ApiConnection {
 	 * @throws IOException
 	 * @throws LoginFailedException
 	 */
+	@Deprecated
 	void confirmLogin(String token, String username, String password)
 			throws IOException, LoginFailedException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
@@ -570,11 +576,13 @@ public class ApiConnection {
 	/**
 	 * Returns a user-readable message for a given API response.
 	 *
+	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 * @param loginResult
 	 *            a API login request result string other than
 	 *            {@link #LOGIN_RESULT_SUCCESS}
 	 * @return error message
 	 */
+	@Deprecated
 	String getLoginErrorMessage(String loginResult) {
 		switch (loginResult) {
 		case ApiConnection.LOGIN_WRONG_PASS:
@@ -610,7 +618,10 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
+	 * 
+	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 */
+	@Deprecated
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> headerCookies = headerFields
 				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
@@ -633,9 +644,11 @@ public class ApiConnection {
 	/**
 	 * Returns the string representation of the currently stored cookies. This
 	 * data is added to the connection before making requests.
-	 *
+	 * 
+	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 * @return cookie string
 	 */
+	@Deprecated
 	String getCookieString() {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;

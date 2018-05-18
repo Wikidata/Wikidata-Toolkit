@@ -39,7 +39,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IOException.class)
 	public void testOffineErrors() throws IOException,
 			MediaWikiApiErrorException {
-		MockApiConnection con = new MockApiConnection();
+		MockBasicApiConnection con = new MockBasicApiConnection();
 		WbEditEntityAction weea = new WbEditEntityAction(con,
 				Datamodel.SITE_WIKIDATA);
 
@@ -51,7 +51,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = TokenErrorException.class)
 	public void testApiErrorGettingToken() throws IOException,
 			MediaWikiApiErrorException {
-		MockApiConnection con = new MockApiConnection();
+		MockBasicApiConnection con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
@@ -80,7 +80,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = TokenErrorException.class)
 	public void testNoTokenInReponse() throws IOException,
 			MediaWikiApiErrorException {
-		MockApiConnection con = new MockApiConnection();
+		MockBasicApiConnection con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
@@ -108,7 +108,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = MaxlagErrorException.class)
 	public void testApiErrorMaxLag() throws IOException,
 			MediaWikiApiErrorException {
-		MockApiConnection con = new MockApiConnection();
+		MockBasicApiConnection con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
@@ -137,7 +137,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testIdAndSite() throws IOException, MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", "enwiki", null, null, "{}", false, false, 0,
 				null);
 	}
@@ -145,7 +145,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testIdAndTitle() throws IOException, MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", null, "Title", null, "{}", false, false, 0,
 				null);
 	}
@@ -154,7 +154,7 @@ public class WbEditEntityActionTest {
 	public void testTitleNoSite() throws IOException,
 			MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, "Title", null, "{}", false, false, 0,
 				null);
 	}
@@ -162,7 +162,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewAndId() throws IOException, MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", null, null, "item", "{}", false, false, 0,
 				null);
 	}
@@ -170,7 +170,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewAndSite() throws IOException, MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, "enwiki", null, "item", "{}", false, false, 0,
 				null);
 	}
@@ -179,7 +179,7 @@ public class WbEditEntityActionTest {
 	public void testNewAndTitle() throws IOException,
 			MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, "Title", "item", "{}", false, false, 0,
 				null);
 	}
@@ -187,7 +187,7 @@ public class WbEditEntityActionTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testNoTask() throws IOException, MediaWikiApiErrorException {
 		WbEditEntityAction weea = new WbEditEntityAction(
-				new MockApiConnection(), Datamodel.SITE_WIKIDATA);
+				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, null, null, "{}", false, false, 0, null);
 	}
 
