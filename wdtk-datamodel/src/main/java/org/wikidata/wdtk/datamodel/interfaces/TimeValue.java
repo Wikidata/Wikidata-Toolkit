@@ -258,9 +258,12 @@ public interface TimeValue extends Value {
 	 * 2007-07-12T10:45:00. This information about the uncertainty of time
 	 * points can be taken into account in query answering, but simplified
 	 * implementations can also ignore it and work with the given (exact) time
-	 * point instead. If not set specifically by the user, the before-tolerance
+	 * point instead. If not set specifically by the user, the after-tolerance
 	 * value should be 1, i.e., the interval of uncertainty is exactly the
-	 * length given by precision.
+	 * length given by precision. However, because most (if not all) other
+	 * known implementations of the data model got this detail wrong and use 0
+	 * instead, we are also using 0 as a default value. This issue is tracked
+	 * at https://phabricator.wikimedia.org/T194869.
 	 * <p>
 	 * The boundary is exclusive. For example, a date 2013-02-01T00:00:00 with
 	 * precision {@link TimeValue#PREC_MONTH} and after-tolerance value 1 and
