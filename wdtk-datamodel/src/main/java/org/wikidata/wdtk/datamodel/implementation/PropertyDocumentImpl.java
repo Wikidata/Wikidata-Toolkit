@@ -112,9 +112,9 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
-		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
-		this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
-	}
+        super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+        this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
+    }
 
     /**
 	 * Private constructor, meant to be used to create modified copies
@@ -142,7 +142,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonProperty("datatype")
 	public String getJsonDatatype() {
 		return this.datatype.getJsonString();
-        }
+    }
 
 	@JsonIgnore
 	@Override

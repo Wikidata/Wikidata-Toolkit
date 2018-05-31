@@ -73,9 +73,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 
 	protected final Map<String, List<MonolingualTextValue>> aliases;
 	
-	@JsonDeserialize(contentAs=TermImpl.class)
 	protected final Map<String, MonolingualTextValue> labels;
-	@JsonDeserialize(contentAs=TermImpl.class)
 	protected final Map<String, MonolingualTextValue> descriptions;
 	
 	/**
@@ -211,34 +209,6 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 	@JsonIgnore
 	public String getSiteIri() {
 		return this.siteIri;
-	}
-	
-	/**
-	 * More efficient implementation of findStatementGroup than the
-	 * default one provided in {@link AbstractTermedStatementDocument}
-	 */
-	@Override
-	public StatementGroup findStatementGroup(PropertyIdValue propertyIdValue) {
-		StatementGroup group = findStatementGroup(propertyIdValue.getId());
-		if (group != null && group.getProperty().equals(propertyIdValue)) {
-			return group;
-		}
-		return null;
-	}
-	
-	private static class NonZeroFilter {
-		@Override
-		public boolean equals(Object other) {
-			return (other instanceof Long) && (long)other == 0;
-		}
-	}
-
-	@Override
-	@JsonInclude(value=Include.CUSTOM, valueFilter=NonZeroFilter.class)
-	@JsonProperty("lastrevid")
-	public long getRevisionId() {
-		return this.revisionId;
-
 	}
 	
 	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
