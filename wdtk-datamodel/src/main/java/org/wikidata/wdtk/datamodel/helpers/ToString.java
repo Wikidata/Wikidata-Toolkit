@@ -441,6 +441,8 @@ public class ToString {
 		sb.append(toStringForStatementDocument(o));
 		sb.append("\n* Forms: \n").append(
 				o.getForms().stream().map(Object::toString).collect(Collectors.joining("\n")));
+		sb.append("\n* Senses: \n").append(
+				o.getSenses().stream().map(Object::toString).collect(Collectors.joining("\n")));
 		return sb.toString();
 	}
 

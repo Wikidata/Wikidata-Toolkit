@@ -49,6 +49,8 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 
 	private List<FormDocument> forms;
 
+	private List<SenseDocument> senses;
+
 	/**
 	 * Constructor.
 	 *
@@ -66,6 +68,8 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	 *            have the given id as their subject
 	 * @param forms
 	 *            the list of the forms of this lexeme.
+	 * @param senses
+	 *            the list of the senses of this lexeme.
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
@@ -77,6 +81,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			List<MonolingualTextValue> lemmas,
 			List<StatementGroup> statements,
 			List<FormDocument> forms,
+			List<SenseDocument> senses,
 			long revisionId) {
 		super(id, statements, revisionId);
 		Validate.notNull(lexicalCategory, "Lexeme lexical category should not be null");
@@ -89,6 +94,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		}
 		this.lemmas = constructTermMap(lemmas);
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
+		this.senses = (senses == null) ? Collections.emptyList() : senses;
 	}
 
 	/**
@@ -103,6 +109,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			@JsonProperty("lemmas") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> lemmas,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("forms") @JsonDeserialize(contentAs=FormDocumentImpl.class) List<FormDocument> forms,
+			@JsonProperty("senses") @JsonDeserialize(contentAs=SenseDocumentImpl.class) List<SenseDocument> senses,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
 		super(jsonId, claims, revisionId, siteIri);
@@ -116,6 +123,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		}
 		this.lemmas = lemmas;
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
+		this.senses = (senses == null) ? Collections.emptyList() : senses;
 	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
@@ -172,6 +180,13 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		return forms;
 	}
 
+
+	@JsonProperty("senses")
+	@Override
+	public List<SenseDocument> getSenses() {
+		return senses;
+	}
+
 	@JsonIgnore
 	@Override
 	public FormDocument getForm(FormIdValue formId) {
@@ -181,6 +196,17 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			}
 		}
 		throw new IndexOutOfBoundsException("There is no " + formId + " in the lexeme.");
+	}
+
+	@JsonIgnore
+	@Override
+	public SenseDocument getSense(SenseIdValue senseId) {
+		for(SenseDocument sense : senses) {
+			if(sense.getEntityId().equals(senseId)) {
+				return sense;
+			}
+		}
+		throw new IndexOutOfBoundsException("There is no " + senseId + " in the lexeme.");
 	}
 
 	@Override

@@ -740,6 +740,8 @@ public class Datamodel {
 	 *            have the given lexemeIdValue as their subject
 	 * @param forms
 	 *            the forms of the lexeme
+	 * @param senses
+	 *            the senses of the lexeme
 	 * @return a {@link LexemeDocument} corresponding to the input
 	 */
 	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
@@ -747,8 +749,9 @@ public class Datamodel {
 			ItemIdValue language,
 			List<MonolingualTextValue> lemmas,
 			List<StatementGroup> statementGroups,
-			List<FormDocument> forms) {
-		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, 0);
+			List<FormDocument> forms,
+			List<SenseDocument> senses) {
+		return factory.getLexemeDocument(lexemeIdValue, lexicalCategory, language, lemmas, statementGroups, forms, senses, 0);
 	}
 
 

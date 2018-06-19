@@ -75,4 +75,18 @@ public interface LexemeDocument extends StatementDocument {
 	 * @throws IndexOutOfBoundsException if there is no form with this id in the document
 	 */
 	FormDocument getForm(FormIdValue formId);
+
+	/**
+	 * Return the lexeme senses
+	 *
+	 * @return the list of senses
+	 */
+	List<SenseDocument> getSenses();
+
+	/**
+	 * Return the inner sense having the given id
+	 *
+	 * @throws IndexOutOfBoundsException if there is no sense with this id in the document
+	 */
+	SenseDocument getSense(SenseIdValue formId);
 }

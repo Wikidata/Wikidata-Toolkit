@@ -378,12 +378,14 @@ public class DatamodelTest {
 				factory.getItemIdValue("Q2", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("foo", "en")),
 				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.emptyList());
 		LexemeDocument o2 = factory.getLexemeDocument(
 				factory.getLexemeIdValue("L42", "foo"),
 				factory.getItemIdValue("Q1", "foo"),
 				factory.getItemIdValue("Q2", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("foo", "en")),
+				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				0);

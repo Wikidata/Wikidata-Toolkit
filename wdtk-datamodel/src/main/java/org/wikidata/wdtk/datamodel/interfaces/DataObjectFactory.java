@@ -454,6 +454,8 @@ public interface DataObjectFactory {
 	 *            have the given lexemeIdValue as their subject
 	 * @param forms
 	 *            the forms of the lexeme
+	 * @param senses
+	 *            the senses of the lexeme
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
@@ -465,6 +467,7 @@ public interface DataObjectFactory {
 			List<MonolingualTextValue> lemmas,
 			List<StatementGroup> statementGroups,
 			List<FormDocument> forms,
+			List<SenseDocument> senses,
 			long revisionId);
 
 

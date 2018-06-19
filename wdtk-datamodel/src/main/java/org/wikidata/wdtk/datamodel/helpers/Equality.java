@@ -530,6 +530,7 @@ public class Equality {
 				&& o1.getLemmas().equals(other.getLemmas())
 				&& o1.getStatementGroups().equals(other.getStatementGroups())
 				&& o1.getForms().equals(other.getForms())
+				&& o1.getSenses().equals(other.getSenses())
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
