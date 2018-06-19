@@ -137,7 +137,7 @@ public class Datamodel {
 	 *            IRI to identify the site, usually the first part of the entity
 	 *            IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return an {@link LexemeIdValue} corresponding to the input
+	 * @return an {@link FormIdValue} corresponding to the input
 	 */
 	public static FormIdValue makeFormIdValue(String id, String siteIri) {
 		return factory.getFormIdValue(id, siteIri);
@@ -149,10 +149,38 @@ public class Datamodel {
 	 * @param id
 	 *            a string of the form Ln...-F... where n... and m... are the string
 	 *            representation of a positive integer number
-	 * @return an {@link LexemeIdValue} corresponding to the input
+	 * @return an {@link FormIdValue} corresponding to the input
 	 */
 	public static FormIdValue makeWikidataFormIdValue(String id) {
 		return factory.getFormIdValue(id, SITE_WIKIDATA);
+	}
+
+	/**
+	 * Creates an {@link SenseIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Ln...-Sm... where n... and m... are the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return an {@link SenseIdValue} corresponding to the input
+	 */
+	public static SenseIdValue makeSenseIdValue(String id, String siteIri) {
+		return factory.getSenseIdValue(id, siteIri);
+	}
+
+	/**
+	 * Creates an {@link SenseIdValue} for Wikidata.
+	 *
+	 * @param id
+	 *            a string of the form Ln...-S... where n... and m... are the string
+	 *            representation of a positive integer number
+	 * @return an {@link SenseIdValue} corresponding to the input
+	 */
+	public static SenseIdValue makeWikidataSenseIdValue(String id) {
+		return factory.getSenseIdValue(id, SITE_WIKIDATA);
 	}
 
 	/**
@@ -725,7 +753,7 @@ public class Datamodel {
 
 
 	/**
-	 * Creates an {@link LexemeDocument}.
+	 * Creates an {@link FormDocument}.
 	 *
 	 * @param formIdValue
 	 *            the id of the form that data is about
@@ -744,6 +772,25 @@ public class Datamodel {
 			List<ItemIdValue> grammaticalFeatures,
 			List<StatementGroup> statementGroups) {
 		return factory.getFormDocument(formIdValue, representations, grammaticalFeatures, statementGroups, 0);
+	}
+
+	/**
+	 * Creates an {@link SenseDocument}.
+	 *
+	 * @param senseIdValue
+	 *            the id of the form that data is about
+	 * @param glosses
+	 *            the list of glosses of this lexeme, with at most one
+	 *            gloss for each language code
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @return a {@link SenseDocument} corresponding to the input
+	 */
+	public static SenseDocument makeSenseDocument(SenseIdValue senseIdValue,
+												List<MonolingualTextValue> glosses,
+												List<StatementGroup> statementGroups) {
+		return factory.getSenseDocument(senseIdValue, glosses, statementGroups, 0);
 	}
 
 }

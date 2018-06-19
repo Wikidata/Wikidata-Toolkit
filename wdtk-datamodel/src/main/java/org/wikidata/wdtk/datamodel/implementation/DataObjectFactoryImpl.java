@@ -59,6 +59,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public SenseIdValue getSenseIdValue(String id, String siteIri) {
+		return new SenseIdValueImpl(id, siteIri);
+	}
+
+	@Override
 	public DatatypeIdValue getDatatypeIdValue(String id) {
 		return new DatatypeIdImpl(id);
 	}
@@ -238,5 +243,13 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			List<StatementGroup> statementGroups,
 			long revisionId) {
 		return new FormDocumentImpl(formIdValue, representations, grammaticalFeatures, statementGroups, revisionId);
+	}
+
+	@Override
+	public SenseDocument getSenseDocument(SenseIdValue senseIdValue,
+										List<MonolingualTextValue> glosses,
+										List<StatementGroup> statementGroups,
+										long revisionId) {
+		return new SenseDocumentImpl(senseIdValue, glosses, statementGroups, revisionId);
 	}
 }

@@ -90,9 +90,23 @@ public interface DataObjectFactory {
 	 *            IRI to identify the site, usually the first part of the entity
 	 *            IRI of the site this belongs to, e.g.,
 	 *            "http://www.wikidata.org/entity/"
-	 * @return a {@link LexemeIdValue} corresponding to the input
+	 * @return a {@link FormIdValue} corresponding to the input
 	 */
 	FormIdValue getFormIdValue(String id, String siteIri);
+
+	/**
+	 * Creates a {@link SenseIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Ln...-Sm... where n... and m... are the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return a {@link SenseIdValue} corresponding to the input
+	 */
+	SenseIdValue getSenseIdValue(String id, String siteIri);
 
 	/**
 	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
@@ -455,7 +469,7 @@ public interface DataObjectFactory {
 
 
 	/**
-	 * Creates an {@link LexemeDocument}.
+	 * Creates an {@link FormDocument}.
 	 *
 	 * @param formIdValue
 	 *            the id of the form that data is about
@@ -470,12 +484,33 @@ public interface DataObjectFactory {
 	 * @param revisionId
 	 *            the revision ID or 0 if not known; see
 	 *            {@link EntityDocument#getRevisionId()}
-	 * @return a {@link LexemeDocument} corresponding to the input
+	 * @return a {@link FormDocument} corresponding to the input
 	 */
 	FormDocument getFormDocument(FormIdValue formIdValue,
 			List<MonolingualTextValue> representations,
 			List<ItemIdValue> grammaticalFeatures,
 			List<StatementGroup> statementGroups,
 			long revisionId);
+
+	/**
+	 * Creates an {@link SenseDocument}.
+	 *
+	 * @param senseIdValue
+	 *            the id of the form that data is about
+	 * @param glosses
+	 *            the list of glosses of this lexeme, with at most one
+	 *            gloss for each language code
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given lexemeIdValue as their subject
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link SenseDocument} corresponding to the input
+	 */
+	SenseDocument getSenseDocument(SenseIdValue senseIdValue,
+								 List<MonolingualTextValue> glosses,
+								 List<StatementGroup> statementGroups,
+								 long revisionId);
 
 }
