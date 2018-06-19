@@ -83,8 +83,6 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	@JsonCreator
 	FormDocumentImpl(
 			@JsonProperty("id") String jsonId,
-			@JsonProperty("lexicalCategory") String lexicalCategory,
-			@JsonProperty("language") String language,
 			@JsonProperty("representations") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> representations,
 			@JsonProperty("grammaticalFeatures") List<String> grammaticalFeatures,
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
