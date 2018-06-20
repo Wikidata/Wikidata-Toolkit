@@ -46,8 +46,8 @@ public interface TermedStatementDocument extends TermedDocument, StatementDocume
 	TermedStatementDocument withAliases(String language, List<MonolingualTextValue> aliases);
 	
 	@Override
-	StatementDocument withStatement(Statement statement);
+	TermedStatementDocument withStatement(Statement statement);
 	
 	@Override
-	StatementDocument withoutStatementIds(Set<String> statementIds);
+	TermedStatementDocument withoutStatementIds(Set<String> statementIds);
 }
