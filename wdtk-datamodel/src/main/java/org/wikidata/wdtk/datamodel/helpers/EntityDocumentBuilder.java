@@ -30,9 +30,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 
 /**
  * Abstract base class for builders that construct {@link EntityDocument}
@@ -45,7 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
  * @param <O>
  *            the type of the object that is being built
  */
-public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O>, O extends StatementDocument & TermedDocument>
+public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O>, O extends TermedStatementDocument>
 		extends AbstractDataObjectBuilder<T, O> {
 
 	final EntityIdValue entityIdValue;

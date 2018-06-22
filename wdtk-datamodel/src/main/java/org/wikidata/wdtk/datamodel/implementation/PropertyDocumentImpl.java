@@ -28,6 +28,17 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.helpers.Equality;
+import org.wikidata.wdtk.datamodel.helpers.Hash;
+import org.wikidata.wdtk.datamodel.helpers.ToString;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -101,8 +112,24 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 			@JsonProperty("datatype") String datatype,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
-		super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
-		this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
+        super(jsonId, labels, descriptions, aliases, claims, revisionId, siteIri);
+        this.datatype = new DatatypeIdImpl(DatatypeIdImpl.getDatatypeIriFromJsonDatatype(datatype));
+    }
+
+    /**
+	 * Private constructor, meant to be used to create modified copies
+	 * of instances.
+	 */
+	private PropertyDocumentImpl(
+			PropertyIdValue id,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, List<Statement>> claims,
+			DatatypeIdValue datatypeId, 
+			long revisionId) {
+		super(id, labels, descriptions, aliases, claims, revisionId);
+		this.datatype = new DatatypeIdImpl(datatypeId);
 	}
 
 	/**
@@ -115,7 +142,7 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonProperty("datatype")
 	public String getJsonDatatype() {
 		return this.datatype.getJsonString();
-	}
+    }
 
 	@JsonIgnore
 	@Override
@@ -148,5 +175,64 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+	
+	@Override
+	public PropertyDocument withRevisionId(long newRevisionId) {
+		return new PropertyDocumentImpl(getEntityId(),
+				labels,	descriptions,
+				aliases, claims,
+				datatype, newRevisionId);
+	}
+
+	@Override
+	public PropertyDocument withLabel(MonolingualTextValue newLabel) {
+		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
+		newLabels.put(newLabel.getLanguageCode(), newLabel);
+		return new PropertyDocumentImpl(getEntityId(),
+				newLabels, descriptions,
+				aliases, claims,
+				datatype, revisionId);
+	}
+
+	@Override
+	public PropertyDocument withDescription(MonolingualTextValue newDescription) {
+		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
+		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
+		return new PropertyDocumentImpl(getEntityId(),
+				labels, newDescriptions,
+				aliases, claims,
+				datatype, revisionId);
+	}
+
+	@Override
+	public PropertyDocument withAliases(String language, List<MonolingualTextValue> aliases) {
+		Map<String, List<MonolingualTextValue>> newAliases = new HashMap<>(this.aliases);
+		for(MonolingualTextValue alias : aliases) {
+			Validate.isTrue(alias.getLanguageCode().equals(language));
+		}
+		newAliases.put(language, aliases);
+		return new PropertyDocumentImpl(getEntityId(),
+				labels, descriptions,
+				newAliases, claims,
+				datatype, revisionId);
+	}
+
+	@Override
+	public PropertyDocument withStatement(Statement statement) {
+		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
+		return new PropertyDocumentImpl(getEntityId(),
+				labels, descriptions,
+				aliases, newGroups,
+				datatype, revisionId);
+	}
+
+	@Override
+	public PropertyDocument withoutStatementIds(Set<String> statementIds) {
+		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
+		return new PropertyDocumentImpl(getEntityId(),
+				labels, descriptions,
+				aliases, newGroups,
+				datatype, revisionId);
 	}
 }

@@ -21,6 +21,9 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+
 
 public class PropertyDocumentImplTest {
 
@@ -189,6 +193,46 @@ public class PropertyDocumentImplTest {
 		new PropertyDocumentImpl(pid, labelList, descriptions2, aliasList,
 				statementGroups, datatypeId, 1234);
 	}
+	
+	@Test
+	public void testWithRevisionId() {
+		assertEquals(1235L, pd1.withRevisionId(1235L).getRevisionId());
+		assertEquals(pd1, pd1.withRevisionId(1325L).withRevisionId(pd1.getRevisionId()));
+	}
+	
+	@Test
+	public void testWithLabelInNewLanguage() {
+		MonolingualTextValue newLabel = new MonolingualTextValueImpl(
+				"Propriété P42", "fr");
+		PropertyDocument withLabel = pd1.withLabel(newLabel);
+		assertEquals("Propriété P42", withLabel.findLabel("fr"));
+		assertEquals("label", withLabel.findLabel("en"));
+	}
+
+	@Test
+	public void testWithOverridenLabel() {
+		MonolingualTextValue newLabel = new MonolingualTextValueImpl(
+				"The P42 Property", "en");
+		PropertyDocument withLabel = pd1.withLabel(newLabel);
+		assertEquals("The P42 Property", withLabel.findLabel("en"));
+	}
+	
+	@Test
+	public void testWithIdenticalLabel() {
+		MonolingualTextValue newLabel = new MonolingualTextValueImpl(
+				"label", "en");
+		PropertyDocument withLabel = pd1.withLabel(newLabel);
+		assertEquals(withLabel, pd1);
+	}
+	
+	@Test
+	public void testWithDescriptionInNewLanguage() {
+		MonolingualTextValue newDescription = new MonolingualTextValueImpl(
+				"Beschreibung", "de");
+		PropertyDocument withDescription = pd1.withDescription(newDescription);
+		assertEquals("des", withDescription.findDescription("fr"));
+		assertEquals("Beschreibung", withDescription.findDescription("de"));
+	}
 
 	@Test
 	public void testPropertyToJson() throws JsonProcessingException {
@@ -199,4 +243,60 @@ public class PropertyDocumentImplTest {
 	public void testPropertyToJava() throws IOException {
 		assertEquals(pd1, mapper.readValue(JSON_PROPERTY, PropertyDocumentImpl.class));
 	}
+        
+        @Test
+	public void testWithOverridenDescription() {
+		MonolingualTextValue newDescription = new MonolingualTextValueImpl(
+				"une meilleure description", "fr");
+		PropertyDocument withDescription = pd1.withDescription(newDescription);
+		assertEquals("une meilleure description", withDescription.findDescription("fr"));
+	}
+	
+	@Test
+	public void testWithIdenticalDescription() {
+		MonolingualTextValue newDescription = new MonolingualTextValueImpl(
+				"des", "fr");
+		PropertyDocument withDescription = pd1.withDescription(newDescription);
+		assertEquals(withDescription, pd1);
+	}
+	
+	@Test
+	public void testWithAliasInNewLanguage() {
+		MonolingualTextValue newAlias = new MonolingualTextValueImpl(
+				"Prop42", "fr");
+		PropertyDocument withAliases = pd1.withAliases("fr", Collections.singletonList(newAlias));
+		assertEquals(Collections.singletonList(newAlias), withAliases.getAliases().get("fr"));
+	}
+
+	@Test
+	public void testWithOverridenAliases() {
+		MonolingualTextValue newAlias = new MonolingualTextValueImpl(
+				"A new alias of P42", "en");
+
+		PropertyDocument withAlias = pd1.withAliases("en", Collections.singletonList(newAlias));
+		assertEquals(Collections.singletonList(newAlias), withAlias.getAliases().get("en"));
+	}
+	
+	@Test
+	public void testAddStatement() {
+		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
+				Collections.emptyList(), Collections.emptyList(), pid);
+		Claim claim = fresh.getClaim();
+		assertFalse(pd1.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+		PropertyDocument withStatement = pd1.withStatement(fresh);
+		assertTrue(withStatement.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+	}
+	
+	@Test
+	public void testDeleteStatements() {
+		Statement toRemove = statementGroups.get(0).getStatements().get(0);
+		PropertyDocument withoutStatement = pd1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
+		assertNotEquals(withoutStatement, pd1);
+	}
+	
 }

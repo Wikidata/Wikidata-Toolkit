@@ -537,6 +537,5 @@ public class WikimediaLanguageCodes {
 		} else {
 			return wikimediaLanguageCode;
 		}
-			
 	}
 }

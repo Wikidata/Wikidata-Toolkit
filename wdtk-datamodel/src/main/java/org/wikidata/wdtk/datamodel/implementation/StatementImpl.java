@@ -225,6 +225,16 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
+	public Statement withStatementId(String id) {
+		return new StatementImpl(id,
+				getRank(),
+				getMainSnak(),
+				getQualifiers(),
+				getReferences(),
+				getSubject());
+	}
+	
+	@Override
 	public int hashCode() {
 		return Hash.hashCode(this);
 	}
@@ -243,6 +253,7 @@ public class StatementImpl implements Statement {
 	 * Helper class for deserializing statements from JSON.
 	 */
 	@JsonIgnoreProperties(ignoreUnknown=true)
+	public
 	static class PreStatement {
 
 		private final String statementId;

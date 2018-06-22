@@ -33,14 +33,22 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -61,12 +69,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({ //TODO: drop in future release
 		@Type(value = ItemDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_ITEM),
 		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
-public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedDocument {
+public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedStatementDocument {
 
 	protected final Map<String, List<MonolingualTextValue>> aliases;
-
+	
 	protected final Map<String, MonolingualTextValue> labels;
-
 	protected final Map<String, MonolingualTextValue> descriptions;
 	
 	/**
@@ -139,6 +146,36 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			this.aliases = Collections.emptyMap();
 		}
 	}
+	
+	/**
+	 * Protected constructor provided to ease the creation
+	 * of copies. No check is made and each field is reused without
+	 * copying.
+	 * 
+	 * @param labels
+	 * 		a map from language codes to monolingual values with
+	 * 	    the same language codes
+	 * @param descriptions
+	 * 		a map from language codes to monolingual values with
+	 * 	    the same language codes 	    
+	 * @param aliases
+	 * 		a map from language codes to lists of monolingual values
+	 *      with the same language codes
+	 * @param statementGroups
+	 * @param revisionId
+	 */
+	protected TermedStatementDocumentImpl(
+			EntityIdValue subject,
+			Map<String, MonolingualTextValue> labels,
+			Map<String, MonolingualTextValue> descriptions,
+			Map<String, List<MonolingualTextValue>> aliases,
+			Map<String, List<Statement>> claims,
+			long revisionId) {
+		super(subject, claims, revisionId);
+		this.labels = labels;
+		this.descriptions = descriptions;
+		this.aliases = aliases;
+	}
 
 
 	@JsonProperty("aliases")
@@ -169,7 +206,12 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 		return Collections.unmodifiableMap(this.labels);
 	}
 
-	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
+	@JsonIgnore
+	public String getSiteIri() {
+		return this.siteIri;
+	}
+	
+	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
 		Map<String, MonolingualTextValue> map = new HashMap<>();
 		for(MonolingualTextValue term : terms) {
 			String language = term.getLanguageCode();
@@ -243,4 +285,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 
 		}
 	}
+	
+	@Override
+	abstract public TermedStatementDocument withRevisionId(long newRevisionId);
 }

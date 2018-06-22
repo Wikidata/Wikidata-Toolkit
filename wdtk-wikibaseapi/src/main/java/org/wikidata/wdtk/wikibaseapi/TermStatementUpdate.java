@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
+import java.io.IOException;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -21,22 +23,31 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.TermImpl;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
@@ -76,13 +87,19 @@ public class TermStatementUpdate extends StatementUpdate {
      */
     private class AliasesWithUpdate {
         public List<MonolingualTextValue> aliases;
+        public List<MonolingualTextValue> added;
+        public List<MonolingualTextValue> deleted;
         public boolean write;
         
         public AliasesWithUpdate(List<MonolingualTextValue> aliases, boolean write) {
             this.aliases = aliases;
             this.write = write;
+            this.added = new ArrayList<>();
+            this.deleted = new ArrayList<>();
         }
     }
+    
+    final protected TermedStatementDocument currentDocument;
     
     @JsonIgnore
     final Map<String, NameWithUpdate> newLabels;
@@ -113,7 +130,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * @param deleteAliases
      *          the aliases to be removed from the entity
      */
-    public TermStatementUpdate(ItemDocument currentDocument,
+    public TermStatementUpdate(TermedStatementDocument currentDocument,
             List<Statement> addStatements,
             List<Statement> deleteStatements,
             List<MonolingualTextValue> addLabels,
@@ -121,6 +138,7 @@ public class TermStatementUpdate extends StatementUpdate {
             List<MonolingualTextValue> addAliases,
             List<MonolingualTextValue> deleteAliases) {
         super(currentDocument, addStatements, deleteStatements);
+        this.currentDocument = currentDocument;
         
         // Fill the terms with their current values
         newLabels = initUpdatesFromCurrentValues(currentDocument.getLabels().values());
@@ -182,6 +200,7 @@ public class TermStatementUpdate extends StatementUpdate {
         AliasesWithUpdate currentAliases = newAliases.get(lang);
         if (currentAliases != null) {
             currentAliases.aliases.remove(alias);
+            currentAliases.deleted.add(alias);
             currentAliases.write = true;
         }
     }
@@ -210,6 +229,7 @@ public class TermStatementUpdate extends StatementUpdate {
         	List<MonolingualTextValue> currentAliases = currentAliasesUpdate.aliases;
         	if(!currentAliases.contains(alias)) {
         		currentAliases.add(alias);
+        		currentAliasesUpdate.added.add(alias);
         		currentAliasesUpdate.write = true;
         	}
         	newAliases.put(lang, currentAliasesUpdate);
@@ -298,7 +318,8 @@ public class TermStatementUpdate extends StatementUpdate {
     }
     
     /**
-     * Is this change null?
+     * Is this change null? (Which means that nothing at all
+     * will be changed on the item.)
      */
     @Override
     @JsonIgnore
@@ -310,6 +331,133 @@ public class TermStatementUpdate extends StatementUpdate {
     }
     
     /**
+     * Retrieves the list of aliases that will be added in a 
+     * given language, after all the optimizations have been done
+     * (replacing empty labels by new aliases in the same language,
+     * for instance).
+     * 
+     * @param language: the language code of the added aliases
+     * @return the list of added aliases
+     */
+    public List<MonolingualTextValue> getAddedAliases(String language) {
+		AliasesWithUpdate update = newAliases.get(language);
+		if (update == null) {
+			return Collections.<MonolingualTextValue>emptyList();
+		}
+		return update.added;
+	}
+
+    /**
+     * Retrieves the list of aliases that will be removed in a 
+     * given language, after all the optimizations have been done
+     * (replacing empty labels by new aliases in the same language,
+     * for instance).
+     * 
+     * @param language: the language code of the removed aliases
+     * @return the list of removed aliases
+     */
+	public List<MonolingualTextValue> getRemovedAliases(String language) {
+		AliasesWithUpdate update = newAliases.get(language);
+		if (update == null) {
+			return Collections.<MonolingualTextValue>emptyList();
+		}
+		return update.deleted;
+	}
+
+    
+	/**
+	 * Performs the update, selecting the appropriate API action depending on
+	 * the nature of the change.
+	 * 
+	 * @return the new document after update with the API
+	 * @throws MediaWikiApiErrorException 
+	 * @throws IOException 
+	 */
+    @Override
+	public TermedStatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary)
+			throws IOException, MediaWikiApiErrorException {
+		Map<String, TermImpl> labelUpdates = getLabelUpdates();
+		Map<String, TermImpl> descriptionUpdates = getDescriptionUpdates();
+		Map<String, List<TermImpl>> aliasUpdates = getAliasUpdates();
+		if (labelUpdates.isEmpty() && descriptionUpdates.isEmpty() && aliasUpdates.isEmpty()) {
+			return (TermedStatementDocument) super.performEdit(action, editAsBot, summary);	
+		} else {
+			if (super.isEmptyEdit()) {
+				if(labelUpdates.size() == 1
+					&& descriptionUpdates.isEmpty()
+					&& aliasUpdates.isEmpty()) {
+					// we only have a label in one language to update, so we use "wbsetlabel"
+					String language = labelUpdates.keySet().stream().findFirst().get();
+					MonolingualTextValue value = labelUpdates.get(language);
+					
+					JsonNode response = action.wbSetLabel(
+							currentDocument.getEntityId().getId(),
+							null, null, null, language, value.getText(), editAsBot,
+							currentDocument.getRevisionId(), summary);
+					
+					MonolingualTextValue respondedLabel = getDatamodelObjectFromResponse(response,
+							Arrays.asList("entity","labels",language), TermImpl.class);
+					long revisionId = getRevisionIdFromResponse(response);
+					
+					return this.currentDocument.withRevisionId(revisionId).withLabel(respondedLabel);
+				} else if (labelUpdates.isEmpty()
+					&& descriptionUpdates.size() == 1
+					&& aliasUpdates.isEmpty()) {
+					// we only have a label in one language to update, so we use "wbsetlabel"
+					String language = descriptionUpdates.keySet().stream().findFirst().get();
+					MonolingualTextValue value = descriptionUpdates.get(language);
+					
+					JsonNode response = action.wbSetDescription(
+							currentDocument.getEntityId().getId(),
+							null, null, null, language, value.getText(), editAsBot,
+							currentDocument.getRevisionId(), summary);
+					
+					MonolingualTextValue respondedDescription = getDatamodelObjectFromResponse(response,
+							Arrays.asList("entity","descriptions",language), TermImpl.class);
+					long revisionId = getRevisionIdFromResponse(response);
+					
+					return currentDocument.withRevisionId(revisionId).withDescription(respondedDescription);
+				} else if (labelUpdates.isEmpty()
+						&& descriptionUpdates.isEmpty()
+						&& aliasUpdates.size() == 1) {
+					// we only have aliases in one language to update, so we use "wbsetaliases"
+					String language = aliasUpdates.keySet().stream().findFirst().get();
+					List<MonolingualTextValue> addedValues = getAddedAliases(language);
+					List<MonolingualTextValue> removedValues = getRemovedAliases(language);
+					List<String> addedStrings = new ArrayList<>(addedValues.size());
+					for(MonolingualTextValue v : addedValues) {
+						addedStrings.add(v.getText());
+					}
+					List<String> removedStrings = new ArrayList<>(removedValues.size());
+					for(MonolingualTextValue v : removedValues) {
+						removedStrings.add(v.getText());
+					}
+					
+					JsonNode response = action.wbSetAliases(
+							currentDocument.getEntityId().getId(),
+							null, null, null, language, addedStrings, removedStrings, null, editAsBot,
+							currentDocument.getRevisionId(), summary);
+					
+					long revisionId = getRevisionIdFromResponse(response);
+
+					TermImpl[] respondedAliases = getDatamodelObjectFromResponse(response,
+							Arrays.asList("entity","aliases",language), TermImpl[].class);
+					List<MonolingualTextValue> newAliases = Arrays.stream(respondedAliases).map(e -> e).collect(Collectors.toList());
+					
+					return currentDocument.withRevisionId(revisionId).withAliases(language, newAliases);
+			    }
+			}
+			
+			// All other cases: we do a full-blown "wbeditentity"
+			EntityDocument response = action.wbEditEntity(currentDocument
+				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
+				false, editAsBot, currentDocument
+				.getRevisionId(), summary);
+			return (TermedStatementDocument) response;
+    	}
+	}
+
+	/**
      * Helper to format term updates as expected by the Wikibase API
      * @param updates
      * 		planned updates for the type of term

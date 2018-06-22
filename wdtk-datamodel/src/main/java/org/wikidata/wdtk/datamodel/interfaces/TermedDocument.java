@@ -80,4 +80,34 @@ public interface TermedDocument extends EntityDocument {
 		return (value != null) ? value.getText() : null;
 	}
 
+	/**
+	 * Returns a copy of this document with an updated revision id.
+	 */
+	@Override
+	TermedDocument withRevisionId(long newRevisionId);
+	
+	/**
+	 * Returns a new version of this document with a new label
+	 * (which overrides any existing label for this language).
+	 */
+	TermedDocument withLabel(MonolingualTextValue newLabel);
+	
+	/**
+	 * Returns a new version of this document with a new description
+	 * (which overrides any existing description).
+	 */
+	TermedDocument withDescription(MonolingualTextValue newDescription);
+	
+	/**
+	 * Returns a new version of this document with a new list of aliases
+	 * for the given language code. Any existing aliases for this language
+	 * will be discarded.
+	 * 
+	 * @param language
+	 * 		the language code for which the aliases should be set
+	 * @param aliases
+	 * 		the aliases to set for this language. The language codes they
+	 * 		contain should all match the supplied language.
+	 */
+	TermedDocument withAliases(String language, List<MonolingualTextValue> aliases);
 }

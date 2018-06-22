@@ -32,7 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test for special aspectes of {@link DatamodelConverter}. Regular operation is
+ * Test for special aspects of {@link DatamodelConverter}. Regular operation is
  * tested elsewhere already.
  *
  * @author Markus Kroetzsch

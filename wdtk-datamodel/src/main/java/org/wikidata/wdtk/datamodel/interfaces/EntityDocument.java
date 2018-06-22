@@ -46,5 +46,10 @@ public interface EntityDocument {
 	 * @return revision id
 	 */
 	long getRevisionId();
+	
+	/**
+	 * Returns a copy of this document with an updated revision id.
+	 */
+	EntityDocument withRevisionId(long newRevisionId);
 
 }

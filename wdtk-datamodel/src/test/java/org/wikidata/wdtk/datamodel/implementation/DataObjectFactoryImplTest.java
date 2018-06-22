@@ -24,8 +24,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelConverterTest.ValueType;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DataObjectFactoryImplTest {
@@ -190,20 +192,6 @@ public class DataObjectFactoryImplTest {
 		Reference r1 = new ReferenceImpl(Collections.emptyList());
 		Reference r2 = factory.getReference(Collections.emptyList());
 		assertEquals(r1, r2);
-	}
-
-	@Test
-	public final void testGetStatement() {
-		Statement o1 = new StatementImpl("MyId", StatementRank.NORMAL,
-				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.emptyList(), Collections.emptyList(),
-				factory.getItemIdValue("Q42", "foo"));
-		Statement o2 = factory.getStatement(
-				factory.getItemIdValue("Q42", "foo"),
-				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
-				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "MyId");
-		assertEquals(o1, o2);
 	}
 
 	@Test

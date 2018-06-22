@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Jackson implementation of {@link LexemeDocument}.
@@ -117,6 +118,24 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		this.lemmas = lemmas;
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
 	}
+	
+	/**
+	 * Copy constructor, used when creating modified copies of lexemes.
+	 */
+	private LexemeDocumentImpl(
+			LexemeIdValue id,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			Map<String, MonolingualTextValue> lemmas,
+			Map<String, List<Statement>> statements,
+			List<FormDocument> forms,
+			long revisionId) {
+		super(id, statements, revisionId);
+		this.lexicalCategory = lexicalCategory;
+		this.language = language;
+		this.lemmas = lemmas;
+		this.forms = forms;
+	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
 		Map<String, MonolingualTextValue> map = new HashMap<>();
@@ -196,5 +215,36 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+	/*
+	 * LexemeIdValue id,
+			ItemIdValue lexicalCategory,
+			ItemIdValue language,
+			Map<String, MonolingualTextValue> lemmas,
+			Map<String, List<Statement>> statements,
+			List<FormDocument> forms,
+			long revisionId
+			(non-Javadoc)
+	 * @see org.wikidata.wdtk.datamodel.interfaces.StatementDocument#withStatement(org.wikidata.wdtk.datamodel.interfaces.Statement)
+	 */
+	
+	@Override
+	public LexemeDocument withStatement(Statement statement) {
+		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, lemmas, newGroups, forms, revisionId);
+	}
+
+	@Override
+	public LexemeDocument withoutStatementIds(Set<String> statementIds) {
+		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, lemmas, newGroups, forms, revisionId);
+	}
+	
+	@Override
+	public LexemeDocument withRevisionId(long newRevisionId) {
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, lemmas, claims, forms, newRevisionId);
 	}
 }

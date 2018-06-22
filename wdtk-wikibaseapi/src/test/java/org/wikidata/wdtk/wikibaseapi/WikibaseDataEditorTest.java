@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -419,8 +420,6 @@ public class WikibaseDataEditorTest {
 				Datamodel.SITE_WIKIDATA);
 
 		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
-		ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
-		PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("My label", "en");
 		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("Meine Beschreibung", "de");
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Mon alias", "fr");
@@ -462,8 +461,7 @@ public class WikibaseDataEditorTest {
 		wde.setRemainingEdits(10);
 		
 		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
-		ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
-		PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
+		
 		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
 				.withValue(Q5).withId("ID-s1").build();
 		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
@@ -486,6 +484,211 @@ public class WikibaseDataEditorTest {
 		
 		assertEquals(itemDocument, nullEditedItemDocument);
 		assertEquals(9, wde.getRemainingEdits());
+	}
+	
+	@Test
+	public void testLabelEdit() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("My label", "en");
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withRevisionId(1234)
+				.build();
+		ItemDocument expectedDocument = ItemDocumentBuilder.forItemId(id)
+				.withLabel(label)
+				.withStatement(s1)
+				.withRevisionId(1235)
+				.build();
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbsetlabel");
+		params.put("id", "Q1234");
+		params.put("summary", "Adding a label");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("language", "en");
+		params.put("value", "My label");
+		String expectedResult = "{\"entity\":{\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"My label\"}},"+
+				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Arrays.asList(label),
+				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
+				Collections.<Statement>emptyList(), "Adding a label");
+		
+		assertEquals(expectedDocument, editedDocument);
+	}
+	
+	@Test
+	public void testDescriptionEdit() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("My description", "en");
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withRevisionId(1234)
+				.build();
+		ItemDocument expectedDocument = ItemDocumentBuilder.forItemId(id)
+				.withDescription(description)
+				.withStatement(s1)
+				.withRevisionId(1235L)
+				.build();
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbsetdescription");
+		params.put("id", "Q1234");
+		params.put("summary", "Adding a description");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("language", "en");
+		params.put("value", "My description");
+		String expectedResult = "{\"entity\":{\"descriptions\":{\"en\":{\"language\":\"en\",\"value\":\"My description\"}},"+
+				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+				Arrays.asList(description),	Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
+				Collections.<Statement>emptyList(), "Adding a description");
+		
+		assertEquals(expectedDocument, editedDocument);
+	}
+	
+	@Test
+	public void testAliasEdit() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("My label", "en");
+		MonolingualTextValue addedAlias = Datamodel.makeMonolingualTextValue("My added alias", "en");
+		MonolingualTextValue removedAlias = Datamodel.makeMonolingualTextValue("My removed alias", "en");
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withLabel(label)
+				.withAlias(removedAlias)
+				.withRevisionId(1234)
+				.build();
+		ItemDocument expectedDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withLabel(label)
+				.withAlias(addedAlias)
+				.withRevisionId(1235)
+				.build();
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbsetaliases");
+		params.put("id", "Q1234");
+		params.put("summary", "Changing aliases");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("language", "en");
+		params.put("add", "My added alias");
+		params.put("remove", "My removed alias");
+		String expectedResult = "{\"entity\":{\"aliases\":{\"en\":[{\"language\":\"en\",\"value\":\"My added alias\"}]},"+
+				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+				Collections.<MonolingualTextValue>emptyList(), Arrays.asList(addedAlias),
+				Arrays.asList(removedAlias), Collections.<Statement>emptyList(),
+				Collections.<Statement>emptyList(), "Changing aliases");
+		
+		assertEquals(expectedDocument, editedDocument);
+	}
+	
+	@Test
+	public void testNewSingleStatement() throws MediaWikiApiErrorException, IOException {
+		String guid = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA, new MockGuidGenerator(guid));
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("Q1234$"+guid).build();
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withRevisionId(1234)
+				.build();
+		ItemDocument expectedDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s2)
+				.withRevisionId(1235)
+				.build();
+		
+		String statementJson = JsonSerializer.getJsonString(s2);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbsetclaim");
+		params.put("summary", "Adding a claim");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("claim", statementJson);
+		String expectedResult = "{\"pageinfo\":{\"lastrevid\":1235},\"success\":1,\"claim\":"+statementJson+"}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Arrays.asList(s1),
+				Collections.<Statement>emptyList(), "Adding a claim");
+		
+		assertEquals(expectedDocument, editedDocument);
+	}
+	
+	@Test
+	public void testDeleteStatements() throws MediaWikiApiErrorException, IOException {
+		String guid1 = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
+		String guid2 = "4311895D-9091-4BC9-9B34-DFB4-1B00EE8CFA62";
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con, Datamodel.SITE_WIKIDATA);
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("Q1234$"+guid1).build();
+		Statement s2 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("Q1234$"+guid2).build();
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withRevisionId(1234)
+				.withStatement(s1)
+				.withStatement(s2)
+				.build();
+		ItemDocument expectedDocument = ItemDocumentBuilder.forItemId(id)
+				.withRevisionId(1235)
+				.build();
+		
+		List<String> statementIds = Arrays.asList("Q1234$"+guid1, "Q1234$"+guid2);
+		
+		String statementsList = String.join("|", statementIds);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("action", "wbremoveclaims");
+		params.put("summary", "Removing claims");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("claim", statementsList);
+		String expectedResult = "{\"pageinfo\":{\"lastrevid\":1235},\"success\":1,\"claims\":[\""+statementIds.get(0)+"\",\""+statementIds.get(1)+"\"]}";
+		con.setWebResource(params, expectedResult);
+		
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
+				Arrays.asList(s1,s2), "Removing claims");
+		
+		assertEquals(expectedDocument, editedDocument);
 	}
 
 	@Test
