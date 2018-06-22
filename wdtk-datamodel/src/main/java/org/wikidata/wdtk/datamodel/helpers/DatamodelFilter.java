@@ -73,6 +73,7 @@ public class DatamodelFilter {
 				filterMonoLingualTextValues(lexeme.getLemmas().values().stream()),
 				filterStatementGroups(lexeme.getStatementGroups()),
 				lexeme.getForms().stream().map(this::filter).collect(Collectors.toList()),
+				lexeme.getSenses().stream().map(this::filter).collect(Collectors.toList()),
 				lexeme.getRevisionId()
 		);
 	}
@@ -82,6 +83,15 @@ public class DatamodelFilter {
 				form.getEntityId(),
 				filterMonoLingualTextValues(form.getRepresentations().values().stream()),
 				form.getGrammaticalFeatures(),
+				filterStatementGroups(form.getStatementGroups()),
+				form.getRevisionId()
+		);
+	}
+
+	public SenseDocument filter(SenseDocument form) {
+		return dataObjectFactory.getSenseDocument(
+				form.getEntityId(),
+				filterMonoLingualTextValues(form.getGlosses().values().stream()),
 				filterStatementGroups(form.getStatementGroups()),
 				form.getRevisionId()
 		);

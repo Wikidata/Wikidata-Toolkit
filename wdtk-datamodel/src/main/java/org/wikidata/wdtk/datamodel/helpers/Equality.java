@@ -530,6 +530,7 @@ public class Equality {
 				&& o1.getLemmas().equals(other.getLemmas())
 				&& o1.getStatementGroups().equals(other.getStatementGroups())
 				&& o1.getForms().equals(other.getForms())
+				&& o1.getSenses().equals(other.getSenses())
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
@@ -555,6 +556,31 @@ public class Equality {
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getGrammaticalFeatures().equals(other.getGrammaticalFeatures())
 				&& o1.getRepresentations().equals(other.getRepresentations())
+				&& o1.getStatementGroups().equals(other.getStatementGroups())
+				&& (o1.getRevisionId() == other.getRevisionId());
+	}
+
+	/**
+	 * Returns true if the parameters are two {@link SenseDocument} objects with
+	 * exactly the same data. It does not matter if they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return true if both objects are equal
+	 */
+	public static boolean equalsSenseDocument(SenseDocument o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof SenseDocument)) {
+			return false;
+		}
+		SenseDocument other = (SenseDocument) o2;
+		return o1.getEntityId().equals(other.getEntityId())
+				&& o1.getGlosses().equals(other.getGlosses())
 				&& o1.getStatementGroups().equals(other.getStatementGroups())
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}

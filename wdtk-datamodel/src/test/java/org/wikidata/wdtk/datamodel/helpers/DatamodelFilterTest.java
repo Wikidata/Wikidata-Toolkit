@@ -304,8 +304,9 @@ public class DatamodelFilterTest {
 
 	@Test
 	public void testPropertyFilterForLexeme() {
-		LexemeIdValue s = Datamodel.makeWikidataLexemeIdValue("L42");
+		LexemeIdValue l = Datamodel.makeWikidataLexemeIdValue("L42");
 		FormIdValue f = Datamodel.makeWikidataFormIdValue("L42-F1");
+		SenseIdValue s = Datamodel.makeWikidataSenseIdValue("L42-S1");
 		PropertyIdValue p1 = Datamodel.makeWikidataPropertyIdValue("P1");
 		PropertyIdValue p2 = Datamodel.makeWikidataPropertyIdValue("P2");
 		PropertyIdValue p3 = Datamodel.makeWikidataPropertyIdValue("P3");
@@ -319,15 +320,15 @@ public class DatamodelFilterTest {
 		DatamodelFilter filter = new DatamodelFilter(new DataObjectFactoryImpl(), documentDataFilter);
 
 		LexemeDocument lexemeDocument = Datamodel.makeLexemeDocument(
-				s,
+				l,
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
 				Arrays.asList(
-						makeTestStatementGroup(p1, s),
-						makeTestStatementGroup(p2, s),
-						makeTestStatementGroup(p3, s),
-						makeTestStatementGroup(p4, s)
+						makeTestStatementGroup(p1, l),
+						makeTestStatementGroup(p2, l),
+						makeTestStatementGroup(p3, l),
+						makeTestStatementGroup(p4, l)
 				),
 				Collections.singletonList(Datamodel.makeFormDocument(
 						f,
@@ -338,17 +339,26 @@ public class DatamodelFilterTest {
 								makeTestStatementGroup(p2, f),
 								makeTestStatementGroup(p3, f)
 						)
+				)),
+				Collections.singletonList(Datamodel.makeSenseDocument(
+						s,
+						Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
+						Arrays.asList(
+								makeTestStatementGroup(p1, s),
+								makeTestStatementGroup(p2, s),
+								makeTestStatementGroup(p3, s)
+						)
 				))
 		);
 
 		LexemeDocument lexemeDocumentFiltered = Datamodel.makeLexemeDocument(
-				s,
+				l,
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Datamodel.makeWikidataItemIdValue("Q1"),
 				Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
 				Arrays.asList(
-						makeTestStatementGroup(p1, s),
-						makeTestStatementGroup(p3, s)
+						makeTestStatementGroup(p1, l),
+						makeTestStatementGroup(p3, l)
 				),
 				Collections.singletonList(Datamodel.makeFormDocument(
 						f,
@@ -357,6 +367,14 @@ public class DatamodelFilterTest {
 						Arrays.asList(
 								makeTestStatementGroup(p1, f),
 								makeTestStatementGroup(p3, f)
+						)
+				)),
+				Collections.singletonList(Datamodel.makeSenseDocument(
+						s,
+						Collections.singletonList(Datamodel.makeMonolingualTextValue("foo", "en")),
+						Arrays.asList(
+								makeTestStatementGroup(p1, s),
+								makeTestStatementGroup(p3, s)
 						)
 				))
 		);

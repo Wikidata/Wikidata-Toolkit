@@ -94,6 +94,21 @@ public class DatamodelTest {
 	}
 
 	@Test
+	public final void testGetSenseId() {
+		SenseIdValue o1 = Datamodel.makeSenseIdValue("L42-S1", "foo");
+		SenseIdValue o2 = factory.getSenseIdValue("L42-S1", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikidataSenseId() {
+		SenseIdValue o1 = Datamodel.makeWikidataSenseIdValue("L42-S1");
+		SenseIdValue o2 = factory.getSenseIdValue("L42-S1",
+				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = Datamodel
 				.makeDatatypeIdValue(DatatypeIdValue.DT_TIME);
@@ -363,12 +378,14 @@ public class DatamodelTest {
 				factory.getItemIdValue("Q2", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("foo", "en")),
 				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.emptyList());
 		LexemeDocument o2 = factory.getLexemeDocument(
 				factory.getLexemeIdValue("L42", "foo"),
 				factory.getItemIdValue("Q1", "foo"),
 				factory.getItemIdValue("Q2", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("foo", "en")),
+				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
 				0);
@@ -386,6 +403,20 @@ public class DatamodelTest {
 				factory.getFormIdValue("L42-F1", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
 				Collections.singletonList(factory.getItemIdValue("Q1", "foo")),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetSenseDocument() {
+		SenseDocument o1 = Datamodel.makeSenseDocument(
+				factory.getSenseIdValue("L42-S1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.emptyList());
+		SenseDocument o2 = factory.getSenseDocument(
+				factory.getSenseIdValue("L42-S1", "foo"),
+				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
 				Collections.emptyList(),
 				0);
 		assertEquals(o1, o2);

@@ -49,6 +49,20 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
+	public final void testGetFormId() {
+		FormIdValue o1 = new FormIdValueImpl("L42-F1", "foo");
+		FormIdValue o2 = factory.getFormIdValue("L42-F1", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetSenseId() {
+		SenseIdValue o1 = new SenseIdValueImpl("L42-S1", "foo");
+		SenseIdValue o2 = factory.getSenseIdValue("L42-S1", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetPropertyId() {
 		PropertyIdValue o1 = new PropertyIdValueImpl("P42", "foo");
 		PropertyIdValue o2 = factory.getPropertyIdValue("P42", "foo");

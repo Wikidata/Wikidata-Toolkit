@@ -149,6 +149,8 @@ public abstract class ValueImpl implements Value {
 								return PropertyIdValueImpl.class;
 							case EntityIdValueImpl.JSON_ENTITY_TYPE_FORM:
 								return FormIdValueImpl.class;
+							case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
+								return SenseIdValueImpl.class;
 							default:
 								throw new JsonMappingException(jsonParser, "Entities of type \""
 										+ entityType
@@ -163,6 +165,8 @@ public abstract class ValueImpl implements Value {
 							case 'L':
 								if(id.contains("-F")) {
 									return FormIdValueImpl.class;
+								} else if(id.contains("-S")) {
+									return SenseIdValueImpl.class;
 								} else {
 									return LexemeIdValueImpl.class;
 								}
