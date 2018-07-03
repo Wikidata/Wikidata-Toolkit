@@ -87,6 +87,19 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 		}
 		this.glosses = glosses;
 	}
+	
+	/**
+	 * Protected constructor, meant to be used to create modified copies
+	 * of instances.
+	 */
+	protected SenseDocumentImpl(
+			SenseIdValue subject,
+			Map<String,MonolingualTextValue> glosses,
+			Map<String, List<Statement>> claims, 
+			long revisionId) {
+		super(subject, claims, revisionId);
+		this.glosses = glosses;
+	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
 		Map<String, MonolingualTextValue> map = new HashMap<>();
@@ -132,5 +145,29 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public SenseDocument withRevisionId(long newRevisionId) {
+		return new SenseDocumentImpl(getEntityId(),
+				glosses,
+				claims,
+				newRevisionId);
+	}
+
+	@Override
+	public SenseDocument withStatement(Statement statement) {
+		return new SenseDocumentImpl(getEntityId(),
+				glosses,
+				addStatementToGroups(statement, claims),
+				revisionId);
+	}
+
+	@Override
+	public SenseDocument withoutStatementIds(Set<String> statementIds) {
+		return new SenseDocumentImpl(getEntityId(),
+				glosses,
+				removeStatements(statementIds, claims),
+				revisionId);
 	}
 }
