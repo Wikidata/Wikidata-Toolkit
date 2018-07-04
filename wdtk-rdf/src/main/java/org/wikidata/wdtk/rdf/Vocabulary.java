@@ -76,6 +76,8 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
 
+	public static final String PREFIX_WIKIDATA_VALUE = "http://www.wikidata.org/value/";
+
 	public static final String PREFIX_WBONTO = "http://wikiba.se/ontology#";
 	public static final String PREFIX_RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String PREFIX_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
@@ -113,11 +115,6 @@ public class Vocabulary {
 	public static final String XSD_DATETIME = PREFIX_XSD + "dateTime";
 	public static final String XSD_STRING = PREFIX_XSD + "string";
 	public static final String OGC_LOCATION = PREFIX_GEO + "wktLiteral";
-
-	// Prefixes for value/reference URI construction
-	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
-	static final String VALUE_PREFIX_QUANTITY = "VQ";
-	static final String VALUE_PREFIX_TIME = "VT";
 
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
@@ -544,7 +541,7 @@ public class Vocabulary {
 		}
 	}
 
-	public static String getReferenceUri(Reference reference, String uriPrefix) {
+	public static String getReferenceUri(Reference reference) {
 		md.reset();
 		for (SnakGroup snakgroup : reference.getSnakGroups()) {
 			for (Snak snak : snakgroup.getSnaks()) {
@@ -552,10 +549,10 @@ public class Vocabulary {
 			}
 		}
 
-		return uriPrefix + bytesToHex(md.digest());
+		return PREFIX_WIKIDATA_REFERENCE + bytesToHex(md.digest());
 	}
 
-	public static String getTimeValueUri(TimeValue value, String uriPrefix) {
+	public static String getTimeValueUri(TimeValue value) {
 		md.reset();
 		updateMessageDigestWithLong(md, value.getYear());
 		md.update(value.getMonth());
@@ -568,11 +565,10 @@ public class Vocabulary {
 		updateMessageDigestWithInt(md, value.getAfterTolerance());
 		updateMessageDigestWithInt(md, value.getTimezoneOffset());
 
-		return uriPrefix + VALUE_PREFIX_TIME + bytesToHex(md.digest());
+		return PREFIX_WIKIDATA_VALUE + bytesToHex(md.digest());
 	}
 
-	public static String getGlobeCoordinatesValueUri(
-			GlobeCoordinatesValue value, String uriPrefix) {
+	public static String getGlobeCoordinatesValueUri(GlobeCoordinatesValue value) {
 		md.reset();
 		updateMessageDigestWithString(md, value.getGlobe());
 		updateMessageDigestWithLong(md, Double.valueOf(value.getLatitude())
@@ -582,11 +578,10 @@ public class Vocabulary {
 		updateMessageDigestWithLong(md, Double.valueOf(value.getPrecision())
 				.hashCode());
 
-		return uriPrefix + VALUE_PREFIX_GLOBECOORDS + bytesToHex(md.digest());
+		return PREFIX_WIKIDATA_VALUE + bytesToHex(md.digest());
 	}
 
-	public static String getQuantityValueUri(QuantityValue value,
-			String uriPrefix) {
+	public static String getQuantityValueUri(QuantityValue value) {
 		md.reset();
 		updateMessageDigestWithInt(md, value.getNumericValue().hashCode());
 		if(value.getLowerBound() != null) {
@@ -597,7 +592,7 @@ public class Vocabulary {
 		}
 		updateMessageDigestWithInt(md, value.getUnit().hashCode());
 
-		return uriPrefix + VALUE_PREFIX_QUANTITY + bytesToHex(md.digest());
+		return PREFIX_WIKIDATA_VALUE + bytesToHex(md.digest());
 	}
 
 	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE / 8);

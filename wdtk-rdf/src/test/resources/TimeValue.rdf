@@ -1,5 +1,5 @@
 
-<http://www.wikidata.org/entity/VT916df1a6567186e91bd43adc424eeec0> a <http://wikiba.se/ontology#TimeValue> ;
+<http://www.wikidata.org/value/916df1a6567186e91bd43adc424eeec0> a <http://wikiba.se/ontology#TimeValue> ;
 	<http://wikiba.se/ontology#timeValue> "2008-01-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://wikiba.se/ontology#timePrecision> "9"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://wikiba.se/ontology#timeTimezone> "0"^^<http://www.w3.org/2001/XMLSchema#int> ;

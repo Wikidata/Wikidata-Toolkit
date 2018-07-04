@@ -1,4 +1,5 @@
-@prefix id: <http://www.wikidata.org/entity/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix wdv: <http://www.wikidata.org/value/> .
 @prefix wikibase: <http://wikiba.se/ontology#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -98,9 +99,9 @@ wikibase:badge a owl:ObjectProperty .
 	wikibase:rank wikibase:NormalRank .
 
 <http://www.wikidata.org/entity/statement/Q10-none2> a wikibase:Statement , <http://wikiba.se/ontology#BestRank> ;
-	<http://www.wikidata.org/prop/statement/value/P569> id:VTec11d94e4f5bb7b00a79196734f49066 ;
+	<http://www.wikidata.org/prop/statement/value/P569> wdv:ec11d94e4f5bb7b00a79196734f49066 ;
 	<http://www.wikidata.org/prop/statement/P569> "0306-11-03T13:07:06Z"^^xsd:dateTime ;
-	<http://www.wikidata.org/prop/qualifier/value/P15> id:VTec11d94e4f5bb7b00a79196734f49066 ;
+	<http://www.wikidata.org/prop/qualifier/value/P15> wdv:ec11d94e4f5bb7b00a79196734f49066 ;
 	<http://www.wikidata.org/prop/qualifier/P15> "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	prov:wasDerivedFrom <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> ;
 	wikibase:rank wikibase:NormalRank .
@@ -109,11 +110,11 @@ wikibase:badge a owl:ObjectProperty .
 	<http://www.wikidata.org/prop/statement/P549> "TestString" ;
 	wikibase:rank wikibase:NormalRank .
 
-id:VTec11d94e4f5bb7b00a79196734f49066 a wikibase:TimeValue ;
+wdv:ec11d94e4f5bb7b00a79196734f49066 a wikibase:TimeValue ;
 	wikibase:timeValue "0306-11-03T13:07:06Z"^^xsd:dateTime ;
 	wikibase:timePrecision "32"^^xsd:int ;
 	wikibase:timeTimezone "0"^^xsd:int ;
-	wikibase:timeCalendarModel id:Q1985727 .
+	wikibase:timeCalendarModel wd:Q1985727 .
 
 <http://www.wikidata.org/prop/P10> a owl:ObjectProperty .
 
@@ -172,7 +173,7 @@ id:VTec11d94e4f5bb7b00a79196734f49066 a wikibase:TimeValue ;
 <http://www.wikidata.org/prop/reference/P549> a owl:DatatypeProperty .
 
 <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a wikibase:Reference ;
-	<http://www.wikidata.org/prop/reference/value/P112> id:VTec11d94e4f5bb7b00a79196734f49066 .
+	<http://www.wikidata.org/prop/reference/value/P112> wdv:ec11d94e4f5bb7b00a79196734f49066 .
 	
 <http://www.wikidata.org/prop/novalue/P10> a owl:Class ;
 	owl:complementOf _:node1a5d6h9m9x1 .

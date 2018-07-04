@@ -1,5 +1,5 @@
 
-<http://www.wikidata.org/entity/VC29def5bc38867d9750430b4f14949f22> a <http://wikiba.se/ontology#GlobeCoordinatesValue> ;
+<http://www.wikidata.org/value/29def5bc38867d9750430b4f14949f22> a <http://wikiba.se/ontology#GlobeCoordinatesValue> ;
 	<http://wikiba.se/ontology#geoLatitude> "5.1033333333333E1"^^<http://www.w3.org/2001/XMLSchema#double> ;
 	<http://wikiba.se/ontology#geoLongitude> "1.3733333333333E1"^^<http://www.w3.org/2001/XMLSchema#double> ;
 	<http://wikiba.se/ontology#geoPrecision> "1.0E-1"^^<http://www.w3.org/2001/XMLSchema#double> ;

@@ -54,9 +54,7 @@ public class QuantityValueConverter extends
 				return this.rdfWriter.getLiteral(value.getNumericValue()
 						.toString(), RdfWriter.XSD_DECIMAL);
 			} else {
-				IRI valueUri = this.rdfWriter.getUri(Vocabulary
-						.getQuantityValueUri(value,
-								this.propertyRegister.getUriPrefix()));
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary.getQuantityValueUri(value));
 
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				addValue(value, valueUri);

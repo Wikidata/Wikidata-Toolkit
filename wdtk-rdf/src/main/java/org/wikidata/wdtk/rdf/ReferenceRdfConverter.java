@@ -73,9 +73,7 @@ public class ReferenceRdfConverter {
 	 * @return RDF resource that represents this reference
 	 */
 	public Resource addReference(Reference reference) {
-		String referenceUri = Vocabulary.getReferenceUri(reference,
-				Vocabulary.PREFIX_WIKIDATA_REFERENCE);
-		Resource resource = this.rdfWriter.getUri(referenceUri);
+		Resource resource = this.rdfWriter.getUri(Vocabulary.getReferenceUri(reference));
 
 		this.referenceQueue.add(reference);
 		this.referenceSubjectQueue.add(resource);
