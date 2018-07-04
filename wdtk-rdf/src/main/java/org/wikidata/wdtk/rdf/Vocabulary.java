@@ -116,11 +116,6 @@ public class Vocabulary {
 	public static final String XSD_STRING = PREFIX_XSD + "string";
 	public static final String OGC_LOCATION = PREFIX_GEO + "wktLiteral";
 
-	// Prefixes for value/reference URI construction
-	static final String VALUE_PREFIX_GLOBECOORDS = "VC";
-	static final String VALUE_PREFIX_QUANTITY = "VQ";
-	static final String VALUE_PREFIX_TIME = "VT";
-
 	/**
 	 * Hash map defining the OWL declaration types of the standard vocabulary.
 	 * Declaring this explicitly is useful to obtain a self-contained RDF file,
