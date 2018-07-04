@@ -125,7 +125,7 @@ public class RdfConverter {
 	}
 
 	public void writeNamespaceDeclarations() throws RDFHandlerException {
-		this.rdfWriter.writeNamespaceDeclaration("id",
+		this.rdfWriter.writeNamespaceDeclaration("wd",
 				this.propertyRegister.getUriPrefix());
 		this.rdfWriter
 				.writeNamespaceDeclaration("wikibase", Vocabulary.PREFIX_WBONTO);
