@@ -58,7 +58,7 @@ wikibase:referenceValue a owl:ObjectProperty .
 
 schema:description a owl:DatatypeProperty .
 
-wikibase:Article a owl:Class .
+schema:Article a owl:Class .
 
 wikibase:noqualifiervalue a owl:ObjectProperty .
 
@@ -83,6 +83,8 @@ wikibase:statementValue a owl:ObjectProperty .
 wikibase:quantityAmount a owl:DatatypeProperty .
 
 wikibase:BestRank a owl:Class .
+
+wikibase:badge a owl:ObjectProperty .
 
 <http://www.wikidata.org/Q10> a wikibase:Item ;
 	rdfs:label "bar"@lc2 , "foo"@lc ;

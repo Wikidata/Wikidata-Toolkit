@@ -146,6 +146,14 @@ public class Vocabulary {
 	}
 
 	/**
+	 * Class for Wikipedia articles.
+	 */
+	public static final String SCHEMA_ARTICLE = PREFIX_SCHEMA + "Article";
+	static {
+		VOCABULARY_TYPES.put(SCHEMA_ARTICLE, OWL_CLASS);
+	}
+
+	/**
 	 * Property "description" of schema.org.
 	 */
 	public static final String SCHEMA_DESCRIPTION = PREFIX_SCHEMA
@@ -204,14 +212,6 @@ public class Vocabulary {
 	public static final String WB_STATEMENT = PREFIX_WBONTO + "Statement";
 	static {
 		VOCABULARY_TYPES.put(WB_STATEMENT, OWL_CLASS);
-	}
-
-	/**
-	 * Class for Wikipedia articles.
-	 */
-	public static final String WB_ARTICLE = PREFIX_WBONTO + "Article";
-	static {
-		VOCABULARY_TYPES.put(WB_ARTICLE, OWL_CLASS);
 	}
 
 	/**
@@ -380,6 +380,11 @@ public class Vocabulary {
 
 	public static final String WB_DEPRECATED_RANK = PREFIX_WBONTO
 			+ "DeprecatedRank";
+
+	public static final String WB_BADGE = PREFIX_WBONTO + "badge";
+	static {
+		VOCABULARY_TYPES.put(WB_BADGE, OWL_OBJECT_PROPERTY);
+	}
 
 	/**
 	 * Property for connecting Wikibase property entities to their direct value

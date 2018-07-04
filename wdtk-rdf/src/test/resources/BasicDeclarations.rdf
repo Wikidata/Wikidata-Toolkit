@@ -41,7 +41,7 @@
 
 <http://wikiba.se/ontology#geoLatitude> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
-<http://wikiba.se/ontology#Article> a <http://www.w3.org/2002/07/owl#Class> .
+<http://schema.org/Article> a <http://www.w3.org/2002/07/owl#Class> .
 
 <http://wikiba.se/ontology#quantityAmount> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
@@ -74,3 +74,5 @@
 <http://wikiba.se/ontology#rank> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://wikiba.se/ontology#BestRank> a <http://www.w3.org/2002/07/owl#Class> .
+
+<http://wikiba.se/ontology#badge> a <http://www.w3.org/2002/07/owl#ObjectProperty> .

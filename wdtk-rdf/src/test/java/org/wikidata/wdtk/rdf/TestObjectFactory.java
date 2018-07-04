@@ -331,7 +331,7 @@ public class TestObjectFactory {
 		result.put("enwiki", factory.getSiteLink("title_en", "enwiki",
 				Collections.emptyList()));
 		result.put("dewiki", factory.getSiteLink("title_de", "dewiki",
-				Collections.emptyList()));
+				Collections.singletonList(createItemIdValue("Q42"))));
 		return result;
 	}
 

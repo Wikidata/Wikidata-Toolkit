@@ -1,8 +1,9 @@
 
-<http://de.wikipedia.org/wiki/title_de> a <http://wikiba.se/ontology#Article> ;
+<http://de.wikipedia.org/wiki/title_de> a <http://schema.org/Article> ;
 	<http://schema.org/about> <http://test.org/> ;
-	<http://schema.org/inLanguage> "de" .
+	<http://schema.org/inLanguage> "de" ;
+    <http://wikiba.se/ontology#badge> <http://www.wikidata.org/Q42> .
 
-<http://en.wikipedia.org/wiki/title_en> a <http://wikiba.se/ontology#Article> ;
+<http://en.wikipedia.org/wiki/title_en> a <http://schema.org/Article> ;
 	<http://schema.org/about> <http://test.org/> ;
 	<http://schema.org/inLanguage> "en" .
