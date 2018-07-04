@@ -53,9 +53,7 @@ public class GlobeCoordinatesValueConverter extends
 			if (simple) {
 				return getSimpleGeoValue(value);
 			} else {
-				IRI valueUri = this.rdfWriter.getUri(Vocabulary
-						.getGlobeCoordinatesValueUri(value,
-								this.propertyRegister.getUriPrefix()));
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary.getGlobeCoordinatesValueUri(value));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				addValue(value, valueUri);
 

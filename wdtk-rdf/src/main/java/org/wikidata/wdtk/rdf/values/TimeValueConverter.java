@@ -54,9 +54,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 				this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
 				return TimeValueConverter.getTimeLiteral(value, this.rdfWriter);
 			} else {
-				IRI valueUri = this.rdfWriter.getUri(Vocabulary
-						.getTimeValueUri(value,
-								this.propertyRegister.getUriPrefix()));
+				IRI valueUri = this.rdfWriter.getUri(Vocabulary.getTimeValueUri(value));
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				addValue(value, valueUri);
 
