@@ -565,6 +565,20 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates a {@link SiteLink} without badges.
+	 *
+	 * @param title
+	 *            the title string of the linked page, including namespace
+	 *            prefixes if any
+	 * @param siteKey
+	 *            the string key of the site of the linked article
+	 * @return a {@link SiteLink} corresponding to the input
+	 */
+	public static SiteLink makeSiteLink(String title, String siteKey) {
+		return factory.getSiteLink(title, siteKey, Collections.emptyList());
+	}
+
+	/**
 	 * Creates a {@link PropertyDocument} without statements and empty revision
 	 * id. It might be more convenient to use the
 	 * {@link PropertyDocumentBuilder} instead.
