@@ -47,7 +47,7 @@ public class StatementGroupTest {
 	private PropertyIdValue property;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
 		property = new PropertyIdValueImpl("P42",
@@ -71,6 +71,22 @@ public class StatementGroupTest {
 	public void statementListIsCorrect() {
 		assertEquals(sg1.getStatements(),
 				Collections.singletonList(statement1));
+	}
+
+	@Test
+	public void getBestStatementsWithPreferred() {
+		assertEquals(
+				new StatementGroupImpl(Collections.singletonList(statement2)),
+				new StatementGroupImpl(Arrays.asList(statement1, statement2)).getBestStatements()
+		);
+	}
+
+	@Test
+	public void getBestStatementsWithoutPreferred() {
+		assertEquals(
+				new StatementGroupImpl(Collections.singletonList(statement1)),
+				new StatementGroupImpl(Collections.singletonList(statement1)).getBestStatements()
+		);
 	}
 
 	@Test
@@ -147,24 +163,25 @@ public class StatementGroupTest {
 
 		new StatementGroupImpl(statements);
 	}
-	
+
+	@Test
 	public void addSameStatementToGroup() {
 		StatementGroup added = sg1.withStatement(statement1);
-		
 		assertEquals(sg1, added);
 	}
-	
+
+	@Test
 	public void addStatementWithMatchingId() {
 		StatementGroup added = sg1.withStatement(statement2);
 		
 		assertEquals(new StatementGroupImpl(Collections.singletonList(statement2)), added);
 	}
 
+	@Test
 	public void addStatementEmptyId() {
 		StatementGroup initial = new StatementGroupImpl(Collections.singletonList(statementEmptyId));
 		StatementGroup added = initial.withStatement(statementEmptyId);
 		
-		assertEquals(new StatementGroupImpl(Arrays.asList(statementEmptyId, statementEmptyId)),
-				added);
+		assertEquals(new StatementGroupImpl(Arrays.asList(statementEmptyId, statementEmptyId)), added);
 	}
 }

@@ -31,10 +31,7 @@ import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * Helper class to represent a {@link StatementGroup}.
@@ -82,6 +79,22 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 	@Override
 	public List<Statement> getStatements() {
 		return Collections.unmodifiableList(statements);
+	}
+
+	@Override
+	public StatementGroup getBestStatements() {
+		StatementRank bestRank = StatementRank.NORMAL;
+		List<Statement> bestStatements = new ArrayList<>();
+		for(Statement statement : statements) {
+			if(statement.getRank() == StatementRank.PREFERRED && bestRank == StatementRank.NORMAL) {
+				bestRank = StatementRank.PREFERRED;
+				bestStatements.clear();
+			}
+			if(statement.getRank() == bestRank) {
+				bestStatements.add(statement);
+			}
+		}
+		return new StatementGroupImpl(bestStatements);
 	}
 
 	@Override
