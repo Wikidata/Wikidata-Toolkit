@@ -564,6 +564,8 @@ public interface StatementDocument extends EntityDocument {
 	}
 
 	/**
+	 * @deprecated {@link DatatypeIdValue} is not allowed as snak value
+	 *
 	 * Returns the unique {@link DatatypeIdValue} for the given property, or
 	 * null if there are zero or many such values given in statements for this
 	 * property.
@@ -575,12 +577,15 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link DatatypeIdValue} or null
 	 */
+	@Deprecated
 	default DatatypeIdValue findStatementDatatypeIdValue(PropertyIdValue propertyIdValue) {
 		Value value = findStatementValue(propertyIdValue);
 		return value instanceof DatatypeIdValue ? (DatatypeIdValue) value : null;
 	}
 
 	/**
+	 * @deprecated {@link DatatypeIdValue} is not allowed as snak value
+	 *
 	 * Returns the unique {@link DatatypeIdValue} for the given property, or
 	 * null if there are zero or many such values given in statements for this
 	 * property. Only the string id of the property is compared, not the site
@@ -594,6 +599,7 @@ public interface StatementDocument extends EntityDocument {
 	 *            the property to search for
 	 * @return {@link DatatypeIdValue} or null
 	 */
+	@Deprecated
 	default DatatypeIdValue findStatementDatatypeIdValue(String propertyId) {
 		Value value = findStatementValue(propertyId);
 		return value instanceof DatatypeIdValue ? (DatatypeIdValue) value : null;
