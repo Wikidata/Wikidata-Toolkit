@@ -20,12 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.AbstractCollection;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
@@ -39,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
  * @author Markus Kroetzsch
  * @author Antonin Delpeuch
  */
-public class StatementGroupImpl extends AbstractCollection<Statement> implements StatementGroup {
+public class StatementGroupImpl extends AbstractList<Statement> implements StatementGroup {
 
 	private final List<Statement> statements;
 
@@ -63,7 +58,12 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 			Validate.isTrue(statement.getMainSnak().getPropertyId().equals(property),
 			"All statements of a statement group must have the same subject.");
 		}
-		this.statements = Collections.unmodifiableList(statements);
+		this.statements = statements;
+	}
+
+	@Override
+	public Statement get(int i) {
+		return statements.get(i);
 	}
 
 	@Override
@@ -74,6 +74,11 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 	@Override
 	public int size() {
 		return statements.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return statements.isEmpty();
 	}
 
 	@Override
