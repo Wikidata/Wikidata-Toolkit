@@ -40,6 +40,7 @@ public class FormIdValueImplTest {
 	private final FormIdValueImpl form3 = new FormIdValueImpl("L57-F2", "http://www.wikidata.org/entity/");
 	private final FormIdValueImpl form4 = new FormIdValueImpl("L42-F1", "http://www.example.org/entity/");
 	private final String JSON_FORM_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"form\",\"id\":\"L42-F1\"}}";
+	private final String JSON_FORM_ID_VALUE_WITHOUT_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"L42-F1\"}}";
 
 	@Test
 	public void entityTypeIsForm() {
@@ -120,5 +121,10 @@ public class FormIdValueImplTest {
 	@Test
 	public void testToJava() throws IOException {
 		assertEquals(form1, mapper.readValue(JSON_FORM_ID_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutNumericalID() throws IOException {
+		assertEquals(form1, mapper.readValue(JSON_FORM_ID_VALUE_WITHOUT_TYPE, ValueImpl.class));
 	}
 }

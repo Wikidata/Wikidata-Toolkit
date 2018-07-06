@@ -82,7 +82,7 @@ public class SenseIdValueImpl extends ValueImpl implements SenseIdValue {
 	@JsonIgnore
 	@Override
 	public String getEntityType() {
-		return EntityIdValue.ET_FORM;
+		return EntityIdValue.ET_SENSE;
 	}
 
 	@JsonIgnore
