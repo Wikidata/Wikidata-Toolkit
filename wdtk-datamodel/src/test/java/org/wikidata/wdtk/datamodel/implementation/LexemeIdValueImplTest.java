@@ -42,6 +42,7 @@ public class LexemeIdValueImplTest {
 	private final LexemeIdValueImpl lexeme3 = new LexemeIdValueImpl("L57", "http://www.wikidata.org/entity/");
 	private final LexemeIdValueImpl lexeme4 = new LexemeIdValueImpl("L42", "http://www.example.org/entity/");
 	private final String JSON_LEXEME_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"lexeme\",\"numeric-id\":42,\"id\":\"L42\"}}";
+	private final String JSON_LEXEME_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"L42\"}}";
 
 	@Test
 	public void entityTypeIsLexeme() {
@@ -112,6 +113,11 @@ public class LexemeIdValueImplTest {
 	@Test
 	public void testToJava() throws IOException {
 		assertEquals(lexeme1, mapper.readValue(JSON_LEXEME_ID_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutNumericalID() throws IOException {
+		assertEquals(lexeme1, mapper.readValue(JSON_LEXEME_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
 	}
 
 }

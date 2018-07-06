@@ -35,46 +35,47 @@ public class SenseIdValueImplTest {
 
 	private final ObjectMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
 
-	private final SenseIdValueImpl form1 = new SenseIdValueImpl("L42-S1", "http://www.wikidata.org/entity/");
-	private final SenseIdValueImpl form2 = new SenseIdValueImpl("L42-S1", "http://www.wikidata.org/entity/");
-	private final SenseIdValueImpl form3 = new SenseIdValueImpl("L57-S2", "http://www.wikidata.org/entity/");
-	private final SenseIdValueImpl form4 = new SenseIdValueImpl("L42-S1", "http://www.example.org/entity/");
+	private final SenseIdValueImpl sense1 = new SenseIdValueImpl("L42-S1", "http://www.wikidata.org/entity/");
+	private final SenseIdValueImpl sense2 = new SenseIdValueImpl("L42-S1", "http://www.wikidata.org/entity/");
+	private final SenseIdValueImpl sense3 = new SenseIdValueImpl("L57-S2", "http://www.wikidata.org/entity/");
+	private final SenseIdValueImpl sense4 = new SenseIdValueImpl("L42-S1", "http://www.example.org/entity/");
 	private final String JSON_SENSE_ID_VALUE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"sense\",\"id\":\"L42-S1\"}}";
+	private final String JSON_SENSE_ID_VALUE_WITHOUT_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"L42-S1\"}}";
 
 	@Test
 	public void entityTypeIsSense() {
-		assertEquals(form1.getEntityType(), EntityIdValue.ET_FORM);
+		assertEquals(sense1.getEntityType(), EntityIdValue.ET_SENSE);
 	}
 
 	@Test
 	public void iriIsCorrect() {
-		assertEquals(form1.getIri(), "http://www.wikidata.org/entity/L42-S1");
-		assertEquals(form4.getIri(), "http://www.example.org/entity/L42-S1");
+		assertEquals(sense1.getIri(), "http://www.wikidata.org/entity/L42-S1");
+		assertEquals(sense4.getIri(), "http://www.example.org/entity/L42-S1");
 	}
 
 	@Test
 	public void siteIriIsCorrect() {
-		assertEquals(form1.getSiteIri(), "http://www.wikidata.org/entity/");
+		assertEquals(sense1.getSiteIri(), "http://www.wikidata.org/entity/");
 	}
 
 	@Test
 	public void idIsCorrect() {
-		assertEquals(form1.getId(), "L42-S1");
+		assertEquals(sense1.getId(), "L42-S1");
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		assertEquals(form1, form1);
-		assertEquals(form1, form2);
-		assertNotEquals(form1, form3);
-		assertNotEquals(form1, form4);
-		assertNotEquals(form1, null);
-		assertNotEquals(form1, this);
+		assertEquals(sense1, sense1);
+		assertEquals(sense1, sense2);
+		assertNotEquals(sense1, sense3);
+		assertNotEquals(sense1, sense4);
+		assertNotEquals(sense1, null);
+		assertNotEquals(sense1, this);
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(form1.hashCode(), form2.hashCode());
+		assertEquals(sense1.hashCode(), sense2.hashCode());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -109,16 +110,21 @@ public class SenseIdValueImplTest {
 
 	@Test
 	public void lexemeIdIsCorrect() {
-		assertEquals(form1.getLexemeId(), new LexemeIdValueImpl("L42", "http://www.wikidata.org/entity/"));
+		assertEquals(sense1.getLexemeId(), new LexemeIdValueImpl("L42", "http://www.wikidata.org/entity/"));
 	}
 
 	@Test
 	public void testToJson() throws JsonProcessingException {
-		JsonComparator.compareJsonStrings(JSON_SENSE_ID_VALUE, mapper.writeValueAsString(form1));
+		JsonComparator.compareJsonStrings(JSON_SENSE_ID_VALUE, mapper.writeValueAsString(sense1));
 	}
 
 	@Test
 	public void testToJava() throws IOException {
-		assertEquals(form1, mapper.readValue(JSON_SENSE_ID_VALUE, ValueImpl.class));
+		assertEquals(sense1, mapper.readValue(JSON_SENSE_ID_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testToJavaWithoutNumericalID() throws IOException {
+		assertEquals(sense1, mapper.readValue(JSON_SENSE_ID_VALUE_WITHOUT_TYPE, ValueImpl.class));
 	}
 }
