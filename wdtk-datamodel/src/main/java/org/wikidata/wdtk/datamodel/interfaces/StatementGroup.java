@@ -41,6 +41,15 @@ public interface StatementGroup extends Collection<Statement> {
 	List<Statement> getStatements();
 
 	/**
+	 * Get the best statements of this group.
+	 * These are the statements with rank {@link StatementRank::PREFERRED }
+	 * if they exists or the one with rank {@link StatementRank::NORMAL }
+	 *
+	 * @return a subset of the current StatementGroup
+	 */
+	StatementGroup getBestStatements();
+
+	/**
 	 * Get the property used in the main snak of the {@link Claim} of each
 	 * statement in this group.
 	 * 

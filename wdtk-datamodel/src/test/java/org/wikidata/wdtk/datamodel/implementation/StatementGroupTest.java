@@ -22,12 +22,8 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -38,39 +34,49 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
 public class StatementGroupTest {
 
-	private StatementGroup sg1;
-	private StatementGroup sg2;
-	private Statement statement1;
-	private Statement statement2;
-	private Statement statementEmptyId;
-	private EntityIdValue subject;
-	private PropertyIdValue property;
 
-	@Before
-	public void setUp() throws Exception {
-		subject = new ItemIdValueImpl("Q42",
-				"http://wikidata.org/entity/");
-		property = new PropertyIdValueImpl("P42",
-				"http://wikidata.org/entity/");
-		Snak mainSnak = new ValueSnakImpl(property, subject);
+	private EntityIdValue subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
+	private PropertyIdValue property = new PropertyIdValueImpl("P42", "http://wikidata.org/entity/");
+	private Snak mainSnak = new ValueSnakImpl(property, subject);
+	private Statement statement1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subject);
+	private Statement statement2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subject);
+	private Statement statementEmptyId = new StatementImpl("", StatementRank.NORMAL, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subject);
+	private StatementGroup sg1 = new StatementGroupImpl(Collections.singletonList(statement1));
+	private StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(statement1));
 
-		statement1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subject);
-		statement2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subject);
-		statementEmptyId = new StatementImpl("", StatementRank.NORMAL, mainSnak,
-				Collections.emptyList(), Collections.emptyList(), subject);
-
-		sg1 = new StatementGroupImpl(
-				Collections.singletonList(statement1));
-		sg2 = new StatementGroupImpl(
-				Collections.singletonList(statement1));
+	@Test
+	public void implementsCollection() {
+		assertFalse(sg1.isEmpty());
+		assertEquals(1, sg1.size());
+		assertTrue(sg1.contains(statement1));
+		assertFalse(sg1.contains(statement2));
+		assertTrue(sg1.iterator().hasNext());
+		assertEquals(sg1.iterator().next(), statement1);
+		assertArrayEquals(new Statement[] {statement1}, sg1.toArray());
 	}
 
 	@Test
 	public void statementListIsCorrect() {
-		assertEquals(sg1.getStatements(),
-				Collections.singletonList(statement1));
+		assertEquals(sg1.getStatements(), Collections.singletonList(statement1));
+	}
+
+	@Test
+	public void getBestStatementsWithPreferred() {
+		assertEquals(
+				new StatementGroupImpl(Collections.singletonList(statement2)),
+				new StatementGroupImpl(Arrays.asList(statement1, statement2)).getBestStatements()
+		);
+	}
+
+	@Test
+	public void getBestStatementsWithoutPreferred() {
+		assertEquals(
+				new StatementGroupImpl(Collections.singletonList(statement1)),
+				new StatementGroupImpl(Collections.singletonList(statement1)).getBestStatements()
+		);
 	}
 
 	@Test
@@ -81,11 +87,6 @@ public class StatementGroupTest {
 	@Test
 	public void subjectIsCorrect() {
 		assertEquals(sg1.getSubject(), subject);
-	}
-
-	@Test
-	public void size() {
-		assertEquals(sg1.size(), 1);
 	}
 
 	@Test
@@ -147,24 +148,25 @@ public class StatementGroupTest {
 
 		new StatementGroupImpl(statements);
 	}
-	
+
+	@Test
 	public void addSameStatementToGroup() {
 		StatementGroup added = sg1.withStatement(statement1);
-		
 		assertEquals(sg1, added);
 	}
-	
+
+	@Test
 	public void addStatementWithMatchingId() {
 		StatementGroup added = sg1.withStatement(statement2);
 		
 		assertEquals(new StatementGroupImpl(Collections.singletonList(statement2)), added);
 	}
 
+	@Test
 	public void addStatementEmptyId() {
 		StatementGroup initial = new StatementGroupImpl(Collections.singletonList(statementEmptyId));
 		StatementGroup added = initial.withStatement(statementEmptyId);
 		
-		assertEquals(new StatementGroupImpl(Arrays.asList(statementEmptyId, statementEmptyId)),
-				added);
+		assertEquals(new StatementGroupImpl(Arrays.asList(statementEmptyId, statementEmptyId)), added);
 	}
 }

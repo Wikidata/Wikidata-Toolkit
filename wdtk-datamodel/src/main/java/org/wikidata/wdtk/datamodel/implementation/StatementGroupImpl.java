@@ -20,21 +20,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.AbstractCollection;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * Helper class to represent a {@link StatementGroup}.
@@ -42,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
  * @author Markus Kroetzsch
  * @author Antonin Delpeuch
  */
-public class StatementGroupImpl extends AbstractCollection<Statement> implements StatementGroup {
+public class StatementGroupImpl extends AbstractList<Statement> implements StatementGroup {
 
 	private final List<Statement> statements;
 
@@ -66,7 +58,12 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 			Validate.isTrue(statement.getMainSnak().getPropertyId().equals(property),
 			"All statements of a statement group must have the same subject.");
 		}
-		this.statements = Collections.unmodifiableList(statements);
+		this.statements = statements;
+	}
+
+	@Override
+	public Statement get(int i) {
+		return statements.get(i);
 	}
 
 	@Override
@@ -80,8 +77,29 @@ public class StatementGroupImpl extends AbstractCollection<Statement> implements
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return statements.isEmpty();
+	}
+
+	@Override
 	public List<Statement> getStatements() {
 		return Collections.unmodifiableList(statements);
+	}
+
+	@Override
+	public StatementGroup getBestStatements() {
+		StatementRank bestRank = StatementRank.NORMAL;
+		List<Statement> bestStatements = new ArrayList<>();
+		for(Statement statement : statements) {
+			if(statement.getRank() == StatementRank.PREFERRED && bestRank == StatementRank.NORMAL) {
+				bestRank = StatementRank.PREFERRED;
+				bestStatements.clear();
+			}
+			if(statement.getRank() == bestRank) {
+				bestStatements.add(statement);
+			}
+		}
+		return new StatementGroupImpl(bestStatements);
 	}
 
 	@Override
