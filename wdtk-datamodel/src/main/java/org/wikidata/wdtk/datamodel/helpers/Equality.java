@@ -593,4 +593,27 @@ public class Equality {
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}
 
+	/**
+	 * Returns true if the parameters are two {@link EntityRedirectDocument} objects with
+	 * exactly the same data. It does not matter if they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return true if both objects are equal
+	 */
+	public static boolean equalsEntityRedirectDocument(EntityRedirectDocument o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof EntityRedirectDocument)) {
+			return false;
+		}
+		EntityRedirectDocument other = (EntityRedirectDocument) o2;
+		return o1.getEntityId().equals(other.getEntityId())
+				&& o1.getTargetId().equals(other.getTargetId())
+				&& o1.getRevisionId() == other.getRevisionId();
+	}
 }
