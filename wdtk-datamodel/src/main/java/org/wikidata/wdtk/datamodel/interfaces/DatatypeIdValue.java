@@ -22,13 +22,13 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 /**
  * A value that represents one of the available Wikibase datatypes. The method
- * {@link IriIdentifiedValue#getIri() getIri()} will always return one of the
+ * {@link DatatypeIdValue#getIri() getIri()} will always return one of the
  * datatype IRIs defined in this interface.
  *
  * @author Markus Kroetzsch
  *
  */
-public interface DatatypeIdValue extends IriIdentifiedValue {
+public interface DatatypeIdValue {
 	/**
 	 * IRI of the item datatype in Wikibase.
 	 */
@@ -78,4 +78,10 @@ public interface DatatypeIdValue extends IriIdentifiedValue {
 	 */
 	String DT_GEO_SHAPE = "http://wikiba.se/ontology#GeoShape";
 
+	/**
+	 * Get the IRI of this entity.
+	 * 
+	 * @return String with the IRI
+	 */
+	String getIri();
 }

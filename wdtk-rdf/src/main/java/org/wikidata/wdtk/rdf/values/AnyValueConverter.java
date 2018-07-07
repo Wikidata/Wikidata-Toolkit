@@ -91,13 +91,6 @@ public class AnyValueConverter implements
 	}
 
 	@Override
-	public Value visit(DatatypeIdValue value) {
-		throw new RuntimeException(
-				"DatatypeIdValue cannot be processed like a value of a user-defined property. "
-						+ "Use getDatatypeIdValueLiteral() to get a Literal for such values.");
-	}
-
-	@Override
 	public Value visit(EntityIdValue value) {
 		return this.entityIdValueConverter.getRdfValue(value,
 				this.currentPropertyIdValue, this.simple);

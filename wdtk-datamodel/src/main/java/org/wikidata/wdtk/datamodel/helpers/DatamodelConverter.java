@@ -565,11 +565,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	}
 
 	@Override
-	public Value visit(DatatypeIdValue value) {
-		return copy(value);
-	}
-
-	@Override
 	public Value visit(EntityIdValue value) {
 		if (value instanceof ItemIdValue) {
 			return copy((ItemIdValue) value);

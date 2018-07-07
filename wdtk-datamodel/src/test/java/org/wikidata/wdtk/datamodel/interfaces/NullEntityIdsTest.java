@@ -29,11 +29,6 @@ public class NullEntityIdsTest {
 	class TestValueVisitor implements ValueVisitor<String> {
 
 		@Override
-		public String visit(DatatypeIdValue value) {
-			return null;
-		}
-
-		@Override
 		public String visit(EntityIdValue value) {
 			return value.getId();
 		}
