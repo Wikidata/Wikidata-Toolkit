@@ -241,11 +241,6 @@ public class DatatypeIdImpl implements DatatypeIdValue {
 	}
 
 	@Override
-	public <T> T accept(ValueVisitor<T> valueVisitor) {
-		return valueVisitor.visit(this);
-	}
-
-	@Override
 	public String toString() {
 		return ToString.toString(this);
 	}

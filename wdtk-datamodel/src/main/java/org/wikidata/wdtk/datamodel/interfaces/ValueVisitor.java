@@ -36,16 +36,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
 public interface ValueVisitor<T> {
 
 	/**
-	 * Visits a DatatypeIdValue and returns a result. This type of value does
-	 * not occur in snaks, so some implementation will not need this method.
-	 * 
-	 * @param value
-	 *            the value to visit
-	 * @return the result for this value
-	 */
-	T visit(DatatypeIdValue value);
-
-	/**
 	 * Visits a EntityIdValue and returns a result. In practice, only specific
 	 * subtypes of EntityIdValue are used, such as {@link ItemIdValue} and
 	 * {@link PropertyIdValue}. Since the set of possible subtypes can be
