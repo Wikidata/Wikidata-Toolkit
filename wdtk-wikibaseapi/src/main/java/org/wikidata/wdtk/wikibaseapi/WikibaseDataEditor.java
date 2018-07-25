@@ -20,22 +20,15 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class that provides high-level editing functionality for Wikibase data.
@@ -587,7 +580,7 @@ public class WikibaseDataEditor {
 			String summary) throws MediaWikiApiErrorException, IOException {
 		
 		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(
-				(TermedStatementDocument)currentDocument,
+				currentDocument,
 				addStatements, deleteStatements,
 				addLabels, addDescriptions, addAliases, deleteAliases);
 		termStatementUpdate.setGuidGenerator(guidGenerator);
@@ -599,7 +592,7 @@ public class WikibaseDataEditor {
 	 * Performs a null edit on an item. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
-	 * @param currentDocument
+	 * @param itemId
 	 * 			the document to perform a null edit on
 	 * @throws MediaWikiApiErrorException
 	 * 	        if the API returns errors
@@ -618,7 +611,7 @@ public class WikibaseDataEditor {
 	 * Performs a null edit on a property. This has some effects on Wikibase,
 	 * such as refreshing the labels of the referred items in the UI.
 	 * 
-	 * @param currentDocument
+	 * @param propertyId
 	 * 			the document to perform a null edit on
 	 * @throws MediaWikiApiErrorException
 	 * 	        if the API returns errors

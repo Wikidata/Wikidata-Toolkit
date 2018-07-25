@@ -20,22 +20,24 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Java implementation for the wbeditentity API action.
@@ -120,9 +122,9 @@ public class WbEditingAction {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 
-	public WbEditingAction(ApiConnection connection, String siteUri) {
+	public WbEditingAction(ApiConnection connection, String siteIri) {
 		this.connection = connection;
-		this.siteIri = siteUri;
+		this.siteIri = siteIri;
 		this.mapper = new DatamodelMapper(siteIri);
 	}
 
