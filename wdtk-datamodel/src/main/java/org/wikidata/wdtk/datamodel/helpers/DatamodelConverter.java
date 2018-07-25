@@ -411,8 +411,8 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return copied object
 	 */
 	public SnakGroup copy(SnakGroup object) {
-		List<Snak> snaks = new ArrayList<>(object.getSnaks().size());
-		for (Snak snak : object.getSnaks()) {
+		List<Snak> snaks = new ArrayList<>(object.size());
+		for (Snak snak : object) {
 			snaks.add(copy(snak));
 		}
 		return dataObjectFactory.getSnakGroup(snaks);

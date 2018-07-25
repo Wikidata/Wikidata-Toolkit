@@ -323,7 +323,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * (replacing empty labels by new aliases in the same language,
      * for instance).
      * 
-     * @param language: the language code of the added aliases
+     * @param language the language code of the added aliases
      * @return the list of added aliases
      */
     public List<MonolingualTextValue> getAddedAliases(String language) {

@@ -20,6 +20,18 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -27,26 +39,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class to build up and hold a connection to a Wikibase API, managing cookies
@@ -600,7 +594,7 @@ public class ApiConnection {
 			return loginResult + ": No user name given.";
 		case ApiConnection.LOGIN_CREATE_BLOCKED:
 			return loginResult
-					+ ": The wiki tried to automatically create a new account for you,"
+					+ ": The wiki tried to automatically create a new account for you, "
 					+ "but your IP address has been blocked from account creation.";
 		case ApiConnection.LOGIN_ILLEGAL:
 			return loginResult + ": Username is illegal.";

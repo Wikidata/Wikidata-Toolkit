@@ -544,7 +544,7 @@ public class Vocabulary {
 	public static String getReferenceUri(Reference reference) {
 		md.reset();
 		for (SnakGroup snakgroup : reference.getSnakGroups()) {
-			for (Snak snak : snakgroup.getSnaks()) {
+			for (Snak snak : snakgroup) {
 				updateMessageDigestWithInt(md, snak.hashCode());
 			}
 		}

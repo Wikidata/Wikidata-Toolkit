@@ -20,14 +20,13 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
-import java.io.IOException;
-import java.io.PrintStream;
-
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+
+import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * This document processor calculates the average life expectancy of people,
@@ -55,10 +54,8 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 	 * results to a file. To change which dump file to use and whether to run in
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
 	 *
-	 * @param args
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		LifeExpectancyProcessor.printDocumentation();
 
@@ -151,8 +148,8 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 	 *
 	 * @param document
 	 *            the document to extract the data from
-	 * @param the
-	 *            string id of the property to look for
+	 * @param propertyId
+	 *            the string id of the property to look for
 	 * @return the year, or Interger.MIN_VALUE if none was found
 	 */
 	private int getYearIfAny(StatementDocument document, String propertyId) {

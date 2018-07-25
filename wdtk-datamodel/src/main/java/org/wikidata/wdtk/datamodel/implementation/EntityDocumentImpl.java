@@ -152,6 +152,11 @@ public abstract class EntityDocumentImpl implements EntityDocument {
 		public boolean equals(Object other) {
 			return (other instanceof Long) && (long)other == 0;
 		}
+
+		@Override
+		public int hashCode() {
+			return 0;
+		}
 	}
 
 	@Override

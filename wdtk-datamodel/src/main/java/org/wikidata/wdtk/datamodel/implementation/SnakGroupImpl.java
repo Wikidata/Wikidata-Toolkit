@@ -20,11 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -41,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
  * @author Markus Kroetzsch
  *
  */
-public class SnakGroupImpl implements SnakGroup {
+public class SnakGroupImpl extends AbstractList<Snak> implements SnakGroup {
 
 	private final List<Snak> snaks;
 
@@ -67,6 +63,26 @@ public class SnakGroupImpl implements SnakGroup {
 	}
 
 	@Override
+	public Snak get(int i) {
+		return snaks.get(i);
+	}
+
+	@Override
+	public Iterator<Snak> iterator() {
+		return snaks.iterator();
+	}
+
+	@Override
+	public int size() {
+		return snaks.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return snaks.isEmpty();
+	}
+
+	@Override
 	public List<Snak> getSnaks() {
 		return Collections.unmodifiableList(this.snaks);
 	}
@@ -74,11 +90,6 @@ public class SnakGroupImpl implements SnakGroup {
 	@Override
 	public PropertyIdValue getProperty() {
 		return this.snaks.get(0).getPropertyId();
-	}
-
-	@Override
-	public Iterator<Snak> iterator() {
-		return this.snaks.iterator();
 	}
 
 	/**

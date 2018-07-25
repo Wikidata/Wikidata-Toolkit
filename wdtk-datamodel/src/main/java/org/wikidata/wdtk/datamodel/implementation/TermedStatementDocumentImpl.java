@@ -20,39 +20,17 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.TermedDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Abstract Jackson implementation of {@link TermedDocument} and {@link StatementDocument}.
@@ -161,7 +139,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 	 * @param aliases
 	 * 		a map from language codes to lists of monolingual values
 	 *      with the same language codes
-	 * @param statementGroups
+	 * @param claims
 	 * @param revisionId
 	 */
 	protected TermedStatementDocumentImpl(

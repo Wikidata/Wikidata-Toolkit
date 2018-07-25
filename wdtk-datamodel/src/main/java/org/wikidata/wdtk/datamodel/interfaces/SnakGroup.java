@@ -20,6 +20,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  * @author Markus Kroetzsch
  * 
  */
-public interface SnakGroup extends Iterable<Snak> {
+public interface SnakGroup extends Collection<Snak> {
 
 	/**
 	 * Get the list of Snaks of this group.

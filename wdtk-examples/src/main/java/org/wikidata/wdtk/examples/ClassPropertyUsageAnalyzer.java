@@ -299,7 +299,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			for (Statement s : sg) {
 				// Count uses of properties in qualifiers
 				for (SnakGroup q : s.getQualifiers()) {
-					countPropertyQualifier(q.getProperty(), q.getSnaks().size());
+					countPropertyQualifier(q.getProperty(), q.size());
 				}
 				// Count statements with qualifiers
 				if (s.getQualifiers().size() > 0) {
@@ -308,8 +308,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				// Count uses of properties in references
 				for (Reference r : s.getReferences()) {
 					for (SnakGroup snakGroup : r.getSnakGroups()) {
-						countPropertyReference(snakGroup.getProperty(),
-								snakGroup.getSnaks().size());
+						countPropertyReference(snakGroup.getProperty(), snakGroup.size());
 					}
 				}
 
