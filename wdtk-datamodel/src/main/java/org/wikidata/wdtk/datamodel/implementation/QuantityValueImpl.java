@@ -20,10 +20,8 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -32,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.math.BigDecimal;
 
 /**
  * Jackson implementation of {@link QuantityValue}.
@@ -122,12 +120,12 @@ public class QuantityValueImpl extends ValueImpl implements QuantityValue {
 
 	@JsonIgnore
 	@Override
-	public Optional<ItemIdValue> getUnitItemId() {
+	public ItemIdValue getUnitItemId() {
 		String unit = this.value.getUnit();
 		if(unit.equals("1")) {
-			return Optional.empty();
+			return null;
 		} else {
-			return Optional.of(ItemIdValueImpl.fromIri(unit));
+			return ItemIdValueImpl.fromIri(unit);
 		}
 	}
 
