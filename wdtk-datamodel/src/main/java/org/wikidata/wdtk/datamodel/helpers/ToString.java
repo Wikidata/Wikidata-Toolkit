@@ -20,12 +20,11 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
 import java.text.DecimalFormat;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * Static class for computing a toString of arbitrary data objects using only
@@ -439,10 +438,14 @@ public class ToString {
 			sb.append(toString(o.getLemmas().get(key)));
 		}
 		sb.append(toStringForStatementDocument(o));
-		sb.append("\n* Forms: \n").append(
-				o.getForms().stream().map(Object::toString).collect(Collectors.joining("\n")));
-		sb.append("\n* Senses: \n").append(
-				o.getSenses().stream().map(Object::toString).collect(Collectors.joining("\n")));
+		sb.append("\n* Forms: \n");
+		for(FormDocument form : o.getForms()) {
+			sb.append(form.toString()).append('\n');
+		}
+		sb.append("\n* Senses: \n");
+		for(SenseDocument sense : o.getSenses()) {
+			sb.append(sense.toString()).append('\n');
+		}
 		return sb.toString();
 	}
 
@@ -471,8 +474,10 @@ public class ToString {
 			}
 			sb.append(toString(o.getRepresentations().get(key)));
 		}
-		sb.append("\n* Grammatical features: ").append(
-				o.getGrammaticalFeatures().stream().map(Object::toString).collect(Collectors.joining(", ")));
+		sb.append("\n* Grammatical features: ");
+		for(ItemIdValue feature : o.getGrammaticalFeatures()) {
+			sb.append(feature.toString()).append(' ');
+		}
 		sb.append(toStringForStatementDocument(o));
 		return sb.toString();
 	}

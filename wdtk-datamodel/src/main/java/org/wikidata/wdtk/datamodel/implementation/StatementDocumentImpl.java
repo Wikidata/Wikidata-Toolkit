@@ -20,14 +20,18 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Abstract Jackson implementation of {@link StatementDocument}.
@@ -206,9 +210,12 @@ abstract class StatementDocumentImpl extends EntityDocumentImpl implements State
 	protected static Map<String, List<Statement>> removeStatements(Set<String> statementIds, Map<String, List<Statement>> claims) {
 		Map<String, List<Statement>> newClaims = new HashMap<>(claims.size());
 		for(Entry<String, List<Statement>> entry : claims.entrySet()) {
-			List<Statement> filteredStatements = entry.getValue().stream()
-					.filter(s -> !statementIds.contains(s.getStatementId()))
-					.collect(Collectors.toList());
+			List<Statement> filteredStatements = new ArrayList<>();
+			for(Statement s : entry.getValue()) {
+				if(!statementIds.contains(s.getStatementId())) {
+					filteredStatements.add(s);
+				}
+			}
 			if(!filteredStatements.isEmpty()) {
 				newClaims.put(entry.getKey(),
 					filteredStatements);

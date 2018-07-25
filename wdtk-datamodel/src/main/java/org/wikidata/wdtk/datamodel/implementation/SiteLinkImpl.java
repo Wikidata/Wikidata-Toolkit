@@ -20,11 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
@@ -33,6 +28,11 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Jackson implementation of {@link SiteLink}.
@@ -95,10 +95,15 @@ public class SiteLinkImpl implements SiteLink {
 		this.site = site;
 		this.badges = (badges == null || badges.isEmpty())
 			? Collections.emptyList()
-			: badges.stream()
-					.sorted()
-					.map(id -> new ItemIdValueImpl(id, siteIri))
-					.collect(Collectors.toList());
+			: constructBadges(badges, siteIri);
+	}
+
+	private List<ItemIdValue> constructBadges(List<String> badges, String siteIri) {
+		List<ItemIdValue> output = new ArrayList<>(badges.size());
+		for(String badge : badges) {
+			output.add(new ItemIdValueImpl(badge, siteIri));
+		}
+		return output;
 	}
 
 	@JsonProperty("title")
@@ -124,9 +129,11 @@ public class SiteLinkImpl implements SiteLink {
 		if (badges.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return badges.stream()
-				.map(EntityIdValue::getId)
-				.collect(Collectors.toList());
+		List<String> output = new ArrayList<>(badges.size());
+		for(ItemIdValue badge : badges) {
+			output.add(badge.getId());
+		}
+		return output;
 	}
 
 	@Override

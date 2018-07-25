@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.wikibaseapi;
 
-import java.io.IOException;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -11,9 +9,9 @@ import java.io.IOException;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,33 +20,22 @@ import java.io.IOException;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.Collection;
-import java.util.Collections;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.implementation.TermImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This class extends StatementUpdate to support update to terms (labels,
@@ -303,7 +290,7 @@ public class TermStatementUpdate extends StatementUpdate {
     public Map<String, List<TermImpl>> getAliasUpdates() {
     	
     	Map<String, List<TermImpl>> updatedValues = new HashMap<>();
-    	for(Entry<String,AliasesWithUpdate> entry : newAliases.entrySet()) {
+    	for(Map.Entry<String,AliasesWithUpdate> entry : newAliases.entrySet()) {
     		AliasesWithUpdate update = entry.getValue();
     		if (!update.write) {
     			continue;
@@ -387,7 +374,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					&& descriptionUpdates.isEmpty()
 					&& aliasUpdates.isEmpty()) {
 					// we only have a label in one language to update, so we use "wbsetlabel"
-					String language = labelUpdates.keySet().stream().findFirst().get();
+					String language = labelUpdates.keySet().iterator().next();
 					MonolingualTextValue value = labelUpdates.get(language);
 					
 					JsonNode response = action.wbSetLabel(
@@ -404,7 +391,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					&& descriptionUpdates.size() == 1
 					&& aliasUpdates.isEmpty()) {
 					// we only have a label in one language to update, so we use "wbsetlabel"
-					String language = descriptionUpdates.keySet().stream().findFirst().get();
+					String language = descriptionUpdates.keySet().iterator().next();
 					MonolingualTextValue value = descriptionUpdates.get(language);
 					
 					JsonNode response = action.wbSetDescription(
@@ -421,7 +408,7 @@ public class TermStatementUpdate extends StatementUpdate {
 						&& descriptionUpdates.isEmpty()
 						&& aliasUpdates.size() == 1) {
 					// we only have aliases in one language to update, so we use "wbsetaliases"
-					String language = aliasUpdates.keySet().stream().findFirst().get();
+					String language = aliasUpdates.keySet().iterator().next();
 					List<MonolingualTextValue> addedValues = getAddedAliases(language);
 					List<MonolingualTextValue> removedValues = getRemovedAliases(language);
 					List<String> addedStrings = new ArrayList<>(addedValues.size());
@@ -442,7 +429,7 @@ public class TermStatementUpdate extends StatementUpdate {
 
 					TermImpl[] respondedAliases = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","aliases",language), TermImpl[].class);
-					List<MonolingualTextValue> newAliases = Arrays.stream(respondedAliases).map(e -> e).collect(Collectors.toList());
+					List<MonolingualTextValue> newAliases = Arrays.asList(respondedAliases);
 					
 					return currentDocument.withRevisionId(revisionId).withAliases(language, newAliases);
 			    }
