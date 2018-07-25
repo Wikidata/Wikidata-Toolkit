@@ -28,10 +28,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class SnakGroupTest {
 
@@ -53,6 +50,17 @@ public class SnakGroupTest {
 
 		sg1 = new SnakGroupImpl(Collections.singletonList(snak1));
 		sg2 = new SnakGroupImpl(Collections.singletonList(snak1));
+	}
+
+	@Test
+	public void implementsCollection() {
+		assertFalse(sg1.isEmpty());
+		assertEquals(1, sg1.size());
+		assertTrue(sg1.contains(snak1));
+		assertFalse(sg1.contains(snak2));
+		assertTrue(sg1.iterator().hasNext());
+		assertEquals(sg1.iterator().next(), snak1);
+		assertArrayEquals(new Snak[] {snak1}, sg1.toArray());
 	}
 
 	@Test
