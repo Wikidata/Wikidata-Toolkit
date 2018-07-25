@@ -396,14 +396,14 @@ public class RdfConverter {
 		this.snakRdfConverter.setSnakContext(claimResource,
 				PropertyContext.QUALIFIER);
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
-			for (Snak snak : snakGroup.getSnaks()) {
+			for (Snak snak : snakGroup) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}
 		this.snakRdfConverter.setSnakContext(claimResource,
 				PropertyContext.QUALIFIER_SIMPLE);
 		for (SnakGroup snakGroup : claim.getQualifiers()) {
-			for (Snak snak : snakGroup.getSnaks()) {
+			for (Snak snak : snakGroup) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}

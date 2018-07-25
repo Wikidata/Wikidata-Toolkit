@@ -186,15 +186,13 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 			countPropertyMain(usageStatistics, sg.getProperty(), sg.size());
 			for (Statement s : sg) {
 				for (SnakGroup q : s.getQualifiers()) {
-					countPropertyQualifier(usageStatistics, q.getProperty(), q
-							.getSnaks().size());
+					countPropertyQualifier(usageStatistics, q.getProperty(), q.size());
 				}
 				for (Reference r : s.getReferences()) {
 					usageStatistics.countReferencedStatements++;
 					for (SnakGroup snakGroup : r.getSnakGroups()) {
 						countPropertyReference(usageStatistics,
-								snakGroup.getProperty(), snakGroup.getSnaks()
-										.size());
+								snakGroup.getProperty(), snakGroup.size());
 					}
 				}
 			}

@@ -112,7 +112,7 @@ public class ReferenceRdfConverter {
 		for (SnakGroup snakGroup : reference.getSnakGroups()) {
 			this.snakRdfConverter.setSnakContext(resource,
 					PropertyContext.REFERENCE);
-			for (Snak snak : snakGroup.getSnaks()) {
+			for (Snak snak : snakGroup) {
 				snak.accept(this.snakRdfConverter);
 			}
 		}
