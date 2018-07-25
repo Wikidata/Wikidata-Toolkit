@@ -209,8 +209,7 @@ public class StatementBuilder extends
 	 * @return builder object to continue construction
 	 */
 	public StatementBuilder withQualifiers(SnakGroup qualifiers) {
-		getQualifierList(qualifiers.getProperty())
-				.addAll(qualifiers.getSnaks());
+		getQualifierList(qualifiers.getProperty()).addAll(qualifiers);
 		return getThis();
 	}
 
