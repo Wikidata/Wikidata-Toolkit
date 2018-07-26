@@ -23,8 +23,6 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This is a utility class that allows to filter {@link ItemDocument} and {@link PropertyDocument}
@@ -44,9 +42,9 @@ public class DatamodelFilter {
 	public ItemDocument filter(ItemDocument item) {
 		return dataObjectFactory.getItemDocument(
 				item.getEntityId(),
-				filterMonoLingualTextValues(item.getLabels().values().stream()),
-				filterMonoLingualTextValues(item.getDescriptions().values().stream()),
-				filterMonoLingualTextValues(item.getAliases().values().stream().flatMap(List::stream)),
+				filterMonoLingualTextValues(item.getLabels().values()),
+				filterMonoLingualTextValues(item.getDescriptions().values()),
+				filterMonoLingualTextValues(flatten(item.getAliases().values())),
 				filterStatementGroups(item.getStatementGroups()),
 				filterSiteLinks(item.getSiteLinks()),
 				item.getRevisionId()
@@ -56,9 +54,9 @@ public class DatamodelFilter {
 	public PropertyDocument filter(PropertyDocument property) {
 		return dataObjectFactory.getPropertyDocument(
 				property.getEntityId(),
-				filterMonoLingualTextValues(property.getLabels().values().stream()),
-				filterMonoLingualTextValues(property.getDescriptions().values().stream()),
-				filterMonoLingualTextValues(property.getAliases().values().stream().flatMap(List::stream)),
+				filterMonoLingualTextValues(property.getLabels().values()),
+				filterMonoLingualTextValues(property.getDescriptions().values()),
+				filterMonoLingualTextValues(flatten(property.getAliases().values())),
 				filterStatementGroups(property.getStatementGroups()),
 				property.getDatatype(),
 				property.getRevisionId()
@@ -70,10 +68,10 @@ public class DatamodelFilter {
 				lexeme.getEntityId(),
 				lexeme.getLexicalCategory(),
 				lexeme.getLanguage(),
-				filterMonoLingualTextValues(lexeme.getLemmas().values().stream()),
+				filterMonoLingualTextValues(lexeme.getLemmas().values()),
 				filterStatementGroups(lexeme.getStatementGroups()),
-				lexeme.getForms().stream().map(this::filter).collect(Collectors.toList()),
-				lexeme.getSenses().stream().map(this::filter).collect(Collectors.toList()),
+				filterForms(lexeme.getForms()),
+				filterSenses(lexeme.getSenses()),
 				lexeme.getRevisionId()
 		);
 	}
@@ -81,33 +79,61 @@ public class DatamodelFilter {
 	public FormDocument filter(FormDocument form) {
 		return dataObjectFactory.getFormDocument(
 				form.getEntityId(),
-				filterMonoLingualTextValues(form.getRepresentations().values().stream()),
+				filterMonoLingualTextValues(form.getRepresentations().values()),
 				form.getGrammaticalFeatures(),
 				filterStatementGroups(form.getStatementGroups()),
 				form.getRevisionId()
 		);
 	}
 
-	public SenseDocument filter(SenseDocument form) {
+	public SenseDocument filter(SenseDocument sense) {
 		return dataObjectFactory.getSenseDocument(
-				form.getEntityId(),
-				filterMonoLingualTextValues(form.getGlosses().values().stream()),
-				filterStatementGroups(form.getStatementGroups()),
-				form.getRevisionId()
+				sense.getEntityId(),
+				filterMonoLingualTextValues(sense.getGlosses().values()),
+				filterStatementGroups(sense.getStatementGroups()),
+				sense.getRevisionId()
 		);
 	}
 
-	private List<MonolingualTextValue> filterMonoLingualTextValues(Stream<MonolingualTextValue> values) {
+	private List<FormDocument> filterForms(List<FormDocument> forms) {
+		List<FormDocument> filtered = new ArrayList<>(forms.size());
+		for(FormDocument form : forms) {
+			filtered.add(filter(form));
+		}
+		return filtered;
+	}
+
+	private List<SenseDocument> filterSenses(List<SenseDocument> senses) {
+		List<SenseDocument> filtered = new ArrayList<>(senses.size());
+		for(SenseDocument sense : senses) {
+			filtered.add(filter(sense));
+		}
+		return filtered;
+	}
+
+	private <T> List<T> flatten(Collection<List<T>> values) {
+		List<T> flattened = new ArrayList<>();
+		for(Collection<T> part : values) {
+			flattened.addAll(part);
+		}
+		return flattened;
+	}
+
+	private List<MonolingualTextValue> filterMonoLingualTextValues(Collection<MonolingualTextValue> values) {
 		if (filter.getLanguageFilter() == null) {
-			return values.collect(Collectors.toList());
+			return new ArrayList<>(values);
 		}
 		if (filter.getLanguageFilter().isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		return values
-				.filter(value -> filter.getLanguageFilter().contains(value.getLanguageCode()))
-				.collect(Collectors.toList());
+		List<MonolingualTextValue> output = new ArrayList<>();
+		for(MonolingualTextValue value : values) {
+			if (filter.getLanguageFilter().contains(value.getLanguageCode())) {
+				output.add(value);
+			}
+		}
+		return output;
 	}
 
 	private List<StatementGroup> filterStatementGroups(List<StatementGroup> statementGroups) {
@@ -118,9 +144,13 @@ public class DatamodelFilter {
 			return Collections.emptyList();
 		}
 
-		return statementGroups.stream()
-				.filter(statementGroup-> filter.getPropertyFilter().contains(statementGroup.getProperty()))
-				.collect(Collectors.toList());
+		List<StatementGroup> output = new ArrayList<>(statementGroups.size());
+		for(StatementGroup statementGroup : statementGroups) {
+			if(filter.getPropertyFilter().contains(statementGroup.getProperty())) {
+				output.add(statementGroup);
+			}
+		}
+		return output;
 	}
 
 	private Map<String, SiteLink> filterSiteLinks(Map<String, SiteLink> siteLinks) {

@@ -29,7 +29,7 @@ import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 /**
  * Jackson implementation of {@link FormDocument}.
@@ -96,10 +96,7 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		this.representations = representations;
 		this.grammaticalFeatures = (grammaticalFeatures == null || grammaticalFeatures.isEmpty())
 				? Collections.emptyList()
-				: grammaticalFeatures.stream()
-					.sorted()
-					.map(id -> new ItemIdValueImpl(id, siteIri))
-					.collect(Collectors.toList());
+				: constructGrammaticalFeatures(grammaticalFeatures, siteIri);
 	}
 	
 	/**
@@ -131,6 +128,14 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		return map;
 	}
 
+	private List<ItemIdValue> constructGrammaticalFeatures(List<String> grammaticalFeatures, String siteIri) {
+		List<ItemIdValue> output = new ArrayList<>(grammaticalFeatures.size());
+		for(String grammaticalFeature : grammaticalFeatures) {
+			output.add(new ItemIdValueImpl(grammaticalFeature, siteIri));
+		}
+		return output;
+	}
+
 	@JsonIgnore
 	@Override
 	public FormIdValue getEntityId() {
@@ -148,9 +153,11 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		if (grammaticalFeatures.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return grammaticalFeatures.stream()
-				.map(EntityIdValue::getId)
-				.collect(Collectors.toList());
+		List<String> output = new ArrayList<>(grammaticalFeatures.size());
+		for(ItemIdValue feature : grammaticalFeatures) {
+			output.add(feature.getId());
+		}
+		return output;
 	}
 
 	@JsonProperty("type")

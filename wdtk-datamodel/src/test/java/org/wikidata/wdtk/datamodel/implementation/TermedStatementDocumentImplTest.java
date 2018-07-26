@@ -20,32 +20,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class TermedStatementDocumentImplTest {
 	
@@ -54,8 +35,7 @@ public class TermedStatementDocumentImplTest {
 	private Statement statementEmptyId = null;
 	private String statementIdA = "myIdA";
 	private String statementIdB = "myIdB";
-	private Set<String> initialStatementIds = null;
-	
+
 	@Before
 	public void setUp() {
 		ItemIdValue subject = new ItemIdValueImpl("Q42",
@@ -74,9 +54,6 @@ public class TermedStatementDocumentImplTest {
 		List<Statement> statements = Arrays.asList(statementA, statementB);
 		initialStatements = new HashMap<>();
 		initialStatements.put(property.getId(), statements);
-		initialStatementIds = new HashSet<>();
-		initialStatementIds.add(statementIdA);
-		initialStatementIds.add(statementIdB);
 	}
 	
 	@Test
@@ -88,8 +65,10 @@ public class TermedStatementDocumentImplTest {
 	
 	@Test
 	public void removeAllStatements() {
-		Map<String, List<Statement>> removed = TermedStatementDocumentImpl.removeStatements(
-				Arrays.asList(statementIdA, statementIdB).stream().collect(Collectors.toSet()), initialStatements);
+		Set<String> toRemove = new HashSet<>();
+		toRemove.add(statementIdA);
+		toRemove.add(statementIdB);
+		Map<String, List<Statement>> removed = TermedStatementDocumentImpl.removeStatements(toRemove, initialStatements);
 
 		assertTrue(removed.isEmpty());
 	}

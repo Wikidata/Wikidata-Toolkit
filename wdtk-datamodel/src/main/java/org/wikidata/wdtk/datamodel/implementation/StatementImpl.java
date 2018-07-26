@@ -20,10 +20,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -39,6 +35,9 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.util.NestedIterator;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Jackson implementation of {@link Statement}. In JSON, the corresponding
@@ -102,11 +101,25 @@ public class StatementImpl implements Statement {
 			List<SnakGroup> qualifiers,
 			List<Reference> references,
 			EntityIdValue subjectId) {
-		this(statementId, rank, mainSnak,
-				qualifiers.stream().collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks)),
-				qualifiers.stream().map(g -> g.getProperty().getId()).collect(Collectors.toList()),
-				references, subjectId
-		);
+		this.statementId = (statementId == null) ? "" : statementId;
+
+		Validate.notNull(rank, "No rank provided to create a statement.");
+		this.rank = rank;
+
+		Validate.notNull(mainSnak, "No main snak provided to create a statement.");
+		this.mainSnak = mainSnak;
+
+		this.qualifiers = new HashMap<>();
+		this.qualifiersOrder = new ArrayList<>();
+		for(SnakGroup qualifiersGroup : qualifiers) {
+			this.qualifiers.put(qualifiersGroup.getProperty().getId(), qualifiersGroup.getSnaks());
+			this.qualifiersOrder.add(qualifiersGroup.getProperty().getId());
+		}
+
+		this.references = (references == null) ? Collections.emptyList() : references;
+		Validate.notNull(subjectId);
+
+		this.subjectId = subjectId;
 	}
 
 	public StatementImpl(

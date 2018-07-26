@@ -36,8 +36,6 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * This class extends StatementUpdate to support update to terms (labels,
@@ -292,7 +290,7 @@ public class TermStatementUpdate extends StatementUpdate {
     public Map<String, List<TermImpl>> getAliasUpdates() {
     	
     	Map<String, List<TermImpl>> updatedValues = new HashMap<>();
-    	for(Entry<String,AliasesWithUpdate> entry : newAliases.entrySet()) {
+    	for(Map.Entry<String,AliasesWithUpdate> entry : newAliases.entrySet()) {
     		AliasesWithUpdate update = entry.getValue();
     		if (!update.write) {
     			continue;
@@ -376,7 +374,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					&& descriptionUpdates.isEmpty()
 					&& aliasUpdates.isEmpty()) {
 					// we only have a label in one language to update, so we use "wbsetlabel"
-					String language = labelUpdates.keySet().stream().findFirst().get();
+					String language = labelUpdates.keySet().iterator().next();
 					MonolingualTextValue value = labelUpdates.get(language);
 					
 					JsonNode response = action.wbSetLabel(
@@ -393,7 +391,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					&& descriptionUpdates.size() == 1
 					&& aliasUpdates.isEmpty()) {
 					// we only have a label in one language to update, so we use "wbsetlabel"
-					String language = descriptionUpdates.keySet().stream().findFirst().get();
+					String language = descriptionUpdates.keySet().iterator().next();
 					MonolingualTextValue value = descriptionUpdates.get(language);
 					
 					JsonNode response = action.wbSetDescription(
@@ -410,7 +408,7 @@ public class TermStatementUpdate extends StatementUpdate {
 						&& descriptionUpdates.isEmpty()
 						&& aliasUpdates.size() == 1) {
 					// we only have aliases in one language to update, so we use "wbsetaliases"
-					String language = aliasUpdates.keySet().stream().findFirst().get();
+					String language = aliasUpdates.keySet().iterator().next();
 					List<MonolingualTextValue> addedValues = getAddedAliases(language);
 					List<MonolingualTextValue> removedValues = getRemovedAliases(language);
 					List<String> addedStrings = new ArrayList<>(addedValues.size());
@@ -431,7 +429,7 @@ public class TermStatementUpdate extends StatementUpdate {
 
 					TermImpl[] respondedAliases = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","aliases",language), TermImpl[].class);
-					List<MonolingualTextValue> newAliases = Arrays.stream(respondedAliases).map(e -> e).collect(Collectors.toList());
+					List<MonolingualTextValue> newAliases = Arrays.asList(respondedAliases);
 					
 					return currentDocument.withRevisionId(revisionId).withAliases(language, newAliases);
 			    }

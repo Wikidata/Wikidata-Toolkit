@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.*;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,8 +20,10 @@ import java.util.*;
  * #L%
  */
 
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -32,10 +32,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.util.NestedIterator;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.*;
 
 /**
  * Jackson implementation of {@link Reference}.
@@ -71,11 +68,13 @@ public class ReferenceImpl implements Reference {
 	 * 		the snaks group which form the reference
 	 */
 	public ReferenceImpl(List<SnakGroup> groups) {
-		this.propertyOrder = groups.stream()
-				.map(g -> g.getProperty().getId())
-				.collect(Collectors.toList());
-		this.snaks = groups.stream()
-				.collect(Collectors.toMap(g -> g.getProperty().getId(), SnakGroup::getSnaks));
+		propertyOrder = new ArrayList<>(groups.size());
+		snaks = new HashMap<>(groups.size());
+
+		for(SnakGroup group : groups) {
+			propertyOrder.add(group.getProperty().getId());
+			snaks.put(group.getProperty().getId(), group.getSnaks());
+		}
 	}
 	
 	/**

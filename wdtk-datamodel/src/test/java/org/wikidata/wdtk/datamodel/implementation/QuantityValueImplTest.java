@@ -20,16 +20,15 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+
+import static org.junit.Assert.*;
 
 public class QuantityValueImplTest {
 
@@ -59,12 +58,12 @@ public class QuantityValueImplTest {
 
 	@Test
 	public void getUnitItemId() {
-		assertEquals(Optional.of(new ItemIdValueImpl("Q11573", "http://wikidata.org/entity/")), q1.getUnitItemId());
+		assertEquals(new ItemIdValueImpl("Q11573", "http://wikidata.org/entity/"), q1.getUnitItemId());
 	}
 
 	@Test
 	public void getUnitItemIdNoUnit() {
-		assertEquals(Optional.empty(), q4.getUnitItemId());
+		assertNull(q4.getUnitItemId());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

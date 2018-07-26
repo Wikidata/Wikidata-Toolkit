@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.wikibaseapi;
 
-import java.io.IOException;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -22,32 +20,26 @@ import java.io.IOException;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
-import org.wikidata.wdtk.datamodel.implementation.TermedStatementDocumentImpl;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
+import org.wikidata.wdtk.datamodel.implementation.StatementImpl;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Class to plan a statement update operation.
  *
@@ -243,7 +235,7 @@ public class StatementUpdate {
 			
 			long revisionId = getRevisionIdFromResponse(response);
 			
-			return currentDocument.withoutStatementIds(toDelete.stream().collect(Collectors.toSet())).withRevisionId(revisionId);
+			return currentDocument.withoutStatementIds(new HashSet<>(toDelete)).withRevisionId(revisionId);
 		} else {
 			return (StatementDocument) action.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
