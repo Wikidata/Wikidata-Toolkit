@@ -286,9 +286,13 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		case DatatypeIdValue.DT_GLOBE_COORDINATES:
 		case DatatypeIdValue.DT_ITEM:
 		case DatatypeIdValue.DT_PROPERTY:
-		case DatatypeIdValue.DT_QUANTITY:
+		case DatatypeIdValue.DT_LEXEME:
+		case DatatypeIdValue.DT_FORM:
+		case DatatypeIdValue.DT_SENSE:
 		case DatatypeIdValue.DT_TIME:
 		case DatatypeIdValue.DT_URL:
+		case DatatypeIdValue.DT_GEO_SHAPE:
+		case DatatypeIdValue.DT_TABULAR_DATA:
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			return Vocabulary.OWL_THING;
 		default:

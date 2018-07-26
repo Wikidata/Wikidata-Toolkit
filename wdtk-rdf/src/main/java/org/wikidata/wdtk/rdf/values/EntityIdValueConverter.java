@@ -45,13 +45,10 @@ public class EntityIdValueConverter extends
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_ITEM:
-			if (simple) {
-				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
-				return this.rdfWriter.getUri(value.getIri());
-			} else {
-				return null; // or blank node
-			}
 		case DatatypeIdValue.DT_PROPERTY:
+		case DatatypeIdValue.DT_LEXEME:
+		case DatatypeIdValue.DT_FORM:
+		case DatatypeIdValue.DT_SENSE:
 			if (simple) {
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				return this.rdfWriter.getUri(value.getIri());
