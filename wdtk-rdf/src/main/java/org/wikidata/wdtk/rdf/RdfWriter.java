@@ -147,9 +147,12 @@ public class RdfWriter {
 
 	long tripleCount = 0;
 
-	public RdfWriter(RDFFormat format, OutputStream output)
-			throws UnsupportedRDFormatException {
-		this.writer = Rio.createWriter(format, output);
+	public RdfWriter(RDFFormat format, OutputStream output) throws UnsupportedRDFormatException {
+		this(Rio.createWriter(format, output));
+	}
+
+	public RdfWriter(RDFWriter writer) {
+		this.writer = writer;
 	}
 
 	public long getTripleCount() {
