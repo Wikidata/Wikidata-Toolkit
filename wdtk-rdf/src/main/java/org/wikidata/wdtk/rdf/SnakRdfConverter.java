@@ -149,10 +149,8 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		IRI property = this.rdfWriter.getUri(propertyUri);
 		Value value = valueRdfConverter.getRdfValue(snak.getValue(),
 				snak.getPropertyId(), this.simple);
-		if (value == null) { // TODO: could also be null if there is no complex
-								// representation but simple = false
-			logger.error("Could not serialize snak: missing value (Snak: "
-					+ snak.toString() + ")");
+		if (value == null) {
+			// if there is no complex representation and simple = false
 			return null;
 		}
 
