@@ -511,7 +511,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ur", "ur");
 		LANGUAGE_CODES.put("uun", "uun");
 		LANGUAGE_CODES.put("uz", "uz");
-		LANGUAGE_CODES.put("tru", "try");
+		LANGUAGE_CODES.put("tru", "tru");
 		LANGUAGE_CODES.put("vec", "vec");
 		LANGUAGE_CODES.put("vep", "vep");
 		LANGUAGE_CODES.put("ve", "ve");
