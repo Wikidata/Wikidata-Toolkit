@@ -60,6 +60,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ar", "ar");
 		LANGUAGE_CODES.put("arc", "arc");
 		LANGUAGE_CODES.put("arn", "arn");
+		LANGUAGE_CODES.put("arq", "arq");
 		LANGUAGE_CODES.put("ary", "ary");
 		LANGUAGE_CODES.put("arz", "arz");
 		LANGUAGE_CODES.put("as", "as");
