@@ -302,6 +302,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("mh", "mh");
 		LANGUAGE_CODES.put("mhr", "mhr");
 		LANGUAGE_CODES.put("mi", "mi");
+		LANGUAGE_CODES.put("mis", "mis");
 		LANGUAGE_CODES.put("min", "min");
 		LANGUAGE_CODES.put("mk", "mk");
 		LANGUAGE_CODES.put("ml", "ml");
@@ -313,6 +314,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("mr", "mr");
 		LANGUAGE_CODES.put("ms", "ms");
 		LANGUAGE_CODES.put("mt", "mt");
+		LANGUAGE_CODES.put("mul", "mul");
 		LANGUAGE_CODES.put("mus", "mus");
 		LANGUAGE_CODES.put("mwl", "mwl");
 		LANGUAGE_CODES.put("my", "my");
@@ -519,6 +521,7 @@ public class WikimediaLanguageCodes {
 										// same as zh-Hans or zh-Hant?
 		LANGUAGE_CODES.put("zu", "zu"); // Zulu
 		LANGUAGE_CODES.put("zun", "zun");
+		LANGUAGE_CODES.put("zxx", "zxx");
 	}
 	
 	static Map<String, String> DEPRECATED_LANGUAGE_CODES = new HashMap<>();
