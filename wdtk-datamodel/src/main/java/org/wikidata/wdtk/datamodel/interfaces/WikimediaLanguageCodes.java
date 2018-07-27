@@ -59,19 +59,23 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("anp", "anp");
 		LANGUAGE_CODES.put("ar", "ar");
 		LANGUAGE_CODES.put("arc", "arc");
+		LANGUAGE_CODES.put("arn", "arn");
 		LANGUAGE_CODES.put("ary", "ary");
 		LANGUAGE_CODES.put("arz", "arz");
 		LANGUAGE_CODES.put("as", "as");
 		LANGUAGE_CODES.put("ast", "ast");
+		LANGUAGE_CODES.put("atj", "atj");
 		LANGUAGE_CODES.put("av", "av");
 		LANGUAGE_CODES.put("avk", "avk");
 		LANGUAGE_CODES.put("ay", "ay");
 		LANGUAGE_CODES.put("az", "az");
 		LANGUAGE_CODES.put("azb", "azb");
 		LANGUAGE_CODES.put("ba", "ba");
+		LANGUAGE_CODES.put("ban", "ban");
 		LANGUAGE_CODES.put("bar", "bar");
 		LANGUAGE_CODES.put("bat-smg", "sgs"); // TODO might be redundant
 												// (Samogitian)
+		LANGUAGE_CODES.put("bbc", "bbc");
 		LANGUAGE_CODES.put("bbc-latn", "bbc-Latn"); // Batak Toba, Latin script
 		LANGUAGE_CODES.put("bcc", "bcc");
 		LANGUAGE_CODES.put("bcl", "bcl");
@@ -95,6 +99,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("brh", "brh");
 		LANGUAGE_CODES.put("brx", "brx");
 		LANGUAGE_CODES.put("bs", "bs");
+		LANGUAGE_CODES.put("bto", "bto");
 		LANGUAGE_CODES.put("bug", "bug");
 		LANGUAGE_CODES.put("bxr", "bxr");
 		LANGUAGE_CODES.put("ca", "ca");
@@ -129,8 +134,10 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("de", "de"); // German
 		LANGUAGE_CODES.put("de-formal", "de-x-formal"); // custom private subtag
 														// for formal German
+		LANGUAGE_CODES.put("din", "din");
 		LANGUAGE_CODES.put("diq", "diq");
 		LANGUAGE_CODES.put("dsb", "dsb");
+		LANGUAGE_CODES.put("dtp", "dtp");
 		LANGUAGE_CODES.put("dty", "dty");
 		LANGUAGE_CODES.put("dv", "dv");
 		LANGUAGE_CODES.put("dz", "dz");
@@ -184,8 +191,9 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("gl", "gl");
 		LANGUAGE_CODES.put("glk", "glk");
 		LANGUAGE_CODES.put("gn", "gn");
-		LANGUAGE_CODES.put("got", "got");
 		LANGUAGE_CODES.put("gom", "gom");
+		LANGUAGE_CODES.put("gor", "gor");
+		LANGUAGE_CODES.put("got", "got");
 		LANGUAGE_CODES.put("grc", "grc");
 		LANGUAGE_CODES.put("gsw", "gsw");
 		LANGUAGE_CODES.put("gu", "gu");
@@ -195,10 +203,14 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("hak", "hak");
 		LANGUAGE_CODES.put("haw", "haw");
 		LANGUAGE_CODES.put("he", "he");
-		LANGUAGE_CODES.put("hif", "hif");
 		LANGUAGE_CODES.put("hi", "hi");
+		LANGUAGE_CODES.put("hif", "hif");
+		LANGUAGE_CODES.put("hif-deva", "hif-Deva");
+		LANGUAGE_CODES.put("hif-latn", "hif-Latn");
+		LANGUAGE_CODES.put("hil", "hil");
 		LANGUAGE_CODES.put("ho", "ho");
 		LANGUAGE_CODES.put("hr", "hr");
+		LANGUAGE_CODES.put("hrx", "hrx");
 		LANGUAGE_CODES.put("hsb", "hsb");
 		LANGUAGE_CODES.put("ht", "ht");
 		LANGUAGE_CODES.put("hu", "hu");
@@ -231,6 +243,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ka", "ka");
 		LANGUAGE_CODES.put("kbd", "kbd");
 		LANGUAGE_CODES.put("kbp", "kbp");
+		LANGUAGE_CODES.put("kea", "kea");
 		LANGUAGE_CODES.put("kg", "kg");
 		LANGUAGE_CODES.put("ki", "ki");
 		LANGUAGE_CODES.put("kj", "kj");
@@ -257,7 +270,10 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("koy", "koy");
 		LANGUAGE_CODES.put("kr", "kr");
 		LANGUAGE_CODES.put("krc", "krc");
+		LANGUAGE_CODES.put("kri", "kri");
 		LANGUAGE_CODES.put("krj", "krj");
+		LANGUAGE_CODES.put("krl", "krl");
+		LANGUAGE_CODES.put("krx", "krx");
 		LANGUAGE_CODES.put("ksh", "mis-x-rip"); // Ripuarian (the code "ksh"
 												// refers to Koelsch, a subset
 												// of Ripuarian)
@@ -287,9 +303,11 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("lmo", "lmo");
 		LANGUAGE_CODES.put("ln", "ln");
 		LANGUAGE_CODES.put("lo", "lo");
+		LANGUAGE_CODES.put("loz", "loz");
 		LANGUAGE_CODES.put("lrc", "lrc");
 		LANGUAGE_CODES.put("ltg", "ltg");
 		LANGUAGE_CODES.put("lt", "lt");
+		LANGUAGE_CODES.put("lus", "lus");
 		LANGUAGE_CODES.put("lv", "lv");
 		LANGUAGE_CODES.put("lzh", "lzh"); // Literary Chinese
 		LANGUAGE_CODES.put("lzz", "lzz");
@@ -332,6 +350,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ne", "ne");
 		LANGUAGE_CODES.put("new", "new");
 		LANGUAGE_CODES.put("ng", "ng");
+		LANGUAGE_CODES.put("nui", "nui");
 		LANGUAGE_CODES.put("nl-informal", "nl-x-informal"); // custom private
 															// subtag for
 															// informal Dutch
@@ -343,6 +362,7 @@ public class WikimediaLanguageCodes {
 										// some cases
 		LANGUAGE_CODES.put("non", "non");
 		LANGUAGE_CODES.put("nov", "nov");
+		LANGUAGE_CODES.put("niu", "niu");
 		LANGUAGE_CODES.put("nr", "nr");
 		LANGUAGE_CODES.put("nrm", "fr-x-nrm"); // Norman; no individual code;
 												// lumped with French in ISO
@@ -351,6 +371,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("nv", "nv");
 		LANGUAGE_CODES.put("nxm", "nxm");
 		LANGUAGE_CODES.put("ny", "ny");
+		LANGUAGE_CODES.put("nys", "nys");
 		LANGUAGE_CODES.put("oc", "oc");
 		LANGUAGE_CODES.put("olo", "olo");
 		LANGUAGE_CODES.put("om", "om");
@@ -382,6 +403,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("pyu", "pyu");
 		LANGUAGE_CODES.put("qu", "qu");
 		LANGUAGE_CODES.put("quc", "quc");
+		LANGUAGE_CODES.put("qug", "qug");
 		LANGUAGE_CODES.put("rgn", "rgn");
 		LANGUAGE_CODES.put("rif", "rif");
 		LANGUAGE_CODES.put("rm", "rm");
@@ -392,33 +414,41 @@ public class WikimediaLanguageCodes {
 														// code, ISO 639-3 lumps
 														// it with Italian
 		LANGUAGE_CODES.put("ro", "ro");
+		LANGUAGE_CODES.put("ru", "ru");
 		LANGUAGE_CODES.put("rue", "rue");
 		LANGUAGE_CODES.put("rup", "rup"); // Macedo-Romanian/Aromanian
-		LANGUAGE_CODES.put("ru", "ru");
+		LANGUAGE_CODES.put("ruq-latn", "ruq-Latn");
 		LANGUAGE_CODES.put("rw", "rw");
 		LANGUAGE_CODES.put("rwr", "rwr");
 		LANGUAGE_CODES.put("sah", "sah");
 		LANGUAGE_CODES.put("sa", "sa");
+		LANGUAGE_CODES.put("sat", "sat");
 		LANGUAGE_CODES.put("scn", "scn");
 		LANGUAGE_CODES.put("sco", "sco");
 		LANGUAGE_CODES.put("sc", "sc");
 		LANGUAGE_CODES.put("sd", "sd");
+		LANGUAGE_CODES.put("sdc", "sdc");
 		LANGUAGE_CODES.put("se", "se");
+		LANGUAGE_CODES.put("sei", "sei");
 		LANGUAGE_CODES.put("sg", "sg");
 		LANGUAGE_CODES.put("sgs", "sgs");
 		LANGUAGE_CODES.put("sh", "sh"); // Serbo-Croatian; macrolanguage, not modern but a valid BCP 47 tag
 		LANGUAGE_CODES.put("shi", "shi");
+		LANGUAGE_CODES.put("shi-latn", "shi-Latn");
 		LANGUAGE_CODES.put("shy", "shy");
 		LANGUAGE_CODES.put("simple", "en-x-simple"); // custom private subtag
 														// for simple English
 		LANGUAGE_CODES.put("si", "si");
 		LANGUAGE_CODES.put("sjd", "sjd");
+		LANGUAGE_CODES.put("sje", "sje");
+		LANGUAGE_CODES.put("sjm", "sjm");
 		LANGUAGE_CODES.put("sju", "sju");
 		LANGUAGE_CODES.put("sk", "sk");
 		LANGUAGE_CODES.put("sl", "sl");
 		LANGUAGE_CODES.put("sli", "sli");
 		LANGUAGE_CODES.put("sm", "sm");
 		LANGUAGE_CODES.put("sma", "sma");
+		LANGUAGE_CODES.put("smj", "smj");
 		LANGUAGE_CODES.put("smn", "smn");
 		LANGUAGE_CODES.put("sms", "sms");
 		LANGUAGE_CODES.put("sn", "sn");
@@ -430,9 +460,10 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("sr-el", "sr-Latn"); // Serbian; Latin script (might
 												// change if dialect codes are
 												// added to IANA)
-		LANGUAGE_CODES.put("srn", "srn");
 		LANGUAGE_CODES.put("sr", "sr"); // Serbian TODO should probably be
-										// sr-Cyrl too?
+		// sr-Cyrl too?
+		LANGUAGE_CODES.put("srn", "srn");
+		LANGUAGE_CODES.put("srq", "srq");
 		LANGUAGE_CODES.put("ss", "ss");
 		LANGUAGE_CODES.put("ssf", "ssf");
 		LANGUAGE_CODES.put("stq", "stq");
@@ -480,6 +511,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("ur", "ur");
 		LANGUAGE_CODES.put("uun", "uun");
 		LANGUAGE_CODES.put("uz", "uz");
+		LANGUAGE_CODES.put("tru", "try");
 		LANGUAGE_CODES.put("vec", "vec");
 		LANGUAGE_CODES.put("vep", "vep");
 		LANGUAGE_CODES.put("ve", "ve");
@@ -487,6 +519,7 @@ public class WikimediaLanguageCodes {
 		LANGUAGE_CODES.put("vls", "vls");
 		LANGUAGE_CODES.put("vmf", "vmf");
 		LANGUAGE_CODES.put("vo", "vo");
+		LANGUAGE_CODES.put("vot", "vot");
 		LANGUAGE_CODES.put("vro", "vro");
 		LANGUAGE_CODES.put("war", "war");
 		LANGUAGE_CODES.put("wa", "wa");
