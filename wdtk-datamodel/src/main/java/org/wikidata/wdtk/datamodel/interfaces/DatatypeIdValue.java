@@ -38,6 +38,18 @@ public interface DatatypeIdValue {
 	 */
 	String DT_PROPERTY = "http://wikiba.se/ontology#WikibaseProperty";
 	/**
+	 * IRI of the lexeme datatype in Wikibase.
+	 */
+	String DT_LEXEME = "http://wikiba.se/ontology#WikibaseLexeme";
+	/**
+	 * IRI of the form datatype in Wikibase.
+	 */
+	String DT_FORM = "http://wikiba.se/ontology#WikibaseForm";
+	/**
+	 * IRI of the sense datatype in Wikibase.
+	 */
+	String DT_SENSE = "http://wikiba.se/ontology#WikibaseSense";
+	/**
 	 * IRI of the string datatype in Wikibase.
 	 */
 	String DT_STRING = "http://wikiba.se/ontology#String";
@@ -77,6 +89,10 @@ public interface DatatypeIdValue {
 	 * IRI of the geo shape datatype in Wikibase.
 	 */
 	String DT_GEO_SHAPE = "http://wikiba.se/ontology#GeoShape";
+	/**
+	 * IRI of the tabular data datatype in Wikibase.
+	 */
+	String DT_TABULAR_DATA = "http://wikiba.se/ontology#TabularData";
 
 	/**
 	 * Get the IRI of this entity.

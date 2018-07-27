@@ -51,12 +51,18 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 			break;
 		case DatatypeIdValue.DT_COMMONS_MEDIA:
 			if (simple) {
-				valueUriString = getCommonsUrl(value.getString());
+				valueUriString = getCommonsFileUrl(value.getString());
 			}
 			break;
 		case DatatypeIdValue.DT_URL:
 			if (simple) {
 				valueUriString = value.getString();
+			}
+			break;
+		case DatatypeIdValue.DT_GEO_SHAPE:
+		case DatatypeIdValue.DT_TABULAR_DATA:
+			if (simple) {
+				valueUriString = getCommonsDataUrl(value.getString());
 			}
 			break;
 		default:
@@ -90,8 +96,13 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 	 *            name of a page on Wikimedia Commons
 	 * @return URL of the page
 	 */
-	static String getCommonsUrl(String pageName) {
+	static String getCommonsFileUrl(String pageName) {
 		return "http://commons.wikimedia.org/wiki/File:"
+				+ pageName.replace(' ', '_');
+	}
+
+	static String getCommonsDataUrl(String pageName) {
+		return "http://commons.wikimedia.org/data/main/"
 				+ pageName.replace(' ', '_');
 	}
 
