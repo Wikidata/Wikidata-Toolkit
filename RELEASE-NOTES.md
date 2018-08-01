@@ -1,8 +1,8 @@
 Wikidata Toolkit Release Notes
 ==============================
 
-Master
-------
+Version 0.9.0
+-------------
 
 New features:
 * Compatibility with JDK 10

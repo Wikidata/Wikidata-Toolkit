@@ -18,7 +18,7 @@ Documentation
 License and Credits
 -------------------
 
-Authors: [Markus Kroetzsch](http://korrekt.org), [Julian Mendez](https://julianmendez.github.io/), [Fredo Erxleben](https://github.com/fer-rum), [Michael Guenther](https://github.com/guenthermi), [Markus Damm](https://github.com/mardam), and [other contributors](https://github.com/Wikidata/Wikidata-Toolkit/graphs/contributors)
+Authors: [Markus Kroetzsch](http://korrekt.org), [Julian Mendez](https://julianmendez.github.io/), [Fredo Erxleben](https://github.com/fer-rum), [Michael Guenther](https://github.com/guenthermi), [Markus Damm](https://github.com/mardam), [Antonin Delpeuch](http://antonin.delpeuch.eu/), [Thomas Pellissier Tanon](https://thomas.pellissier-tanon.fr/) and [other contributors](https://github.com/Wikidata/Wikidata-Toolkit/graphs/contributors)
 
 License: [Apache 2.0](LICENSE.txt)
 
