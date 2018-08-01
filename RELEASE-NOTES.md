@@ -17,8 +17,10 @@ New features:
 * EntityRedirectDocument object in order to easily represent redirections between entities
 * StatementGroup::getBestStatements utility method to retrieve quickly the best statements of the group
 * GuidGenerator and an implementation to generate statements uuid easily
+* When editing entities, the implementation attempts to use the most granular API call to perform the edit, which makes more informative edit summaries.
 * Addition of QuantityValue.getUnitItemId, TimeValue.getCalendarItemId and GlobeCoordinatesValue.getGlobeItemId to get easily ItemIdValue objects for these three fields
 * Introduction of DatamodelFilter to split out the filtering capabilities of DatamodelConverter
+* ApiConnection was changed to an interface, implemented by BasicApiConnection for normal login and (in the future) OAuthApiConnection for OAuth. BasicApiConnection was made serializable with Jackson so that a connection can be saved and restored.
 
 Bug fixes:
 * Retrieval of redirected entities using WbGetEntitiesAction should work
