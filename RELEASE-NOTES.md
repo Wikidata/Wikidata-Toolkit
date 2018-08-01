@@ -1,6 +1,49 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Master
+------
+
+New features:
+* Compatibility with JDK 10
+* Compatibility with Android except for the RDF component. It requires Gradle Android plugin 3.0+.
+* Addition of basic support for Wikibase Lexemes (including forms and senses)
+* The RDF default output is now the same as query.wikidata.org and specified at https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format except normalized values that are not supported.
+* Migration from Sesame to RDF4J
+* Most of DataModel classes has now with* methods to do easily modification of objects while keeping immutability
+* parentRevisionId is now provided by the XML dump files reader
+* WikimediaLanguageCodes.fixLanguageCodeIfDeprecated allows to fix deprecated language codes
+* StatementGroup (resp. SnakGroup) implements Collection<Statement> (resp. Collection<Snak>)
+* EntityRedirectDocument object in order to easily represent redirections between entities
+* StatementGroup::getBestStatements utility method to retrieve quickly the best statements of the group
+* GuidGenerator and an implementation to generate statements uuid easily
+* When editing entities, the implementation attempts to use the most granular API call to perform the edit, which makes more informative edit summaries.
+* Addition of QuantityValue.getUnitItemId, TimeValue.getCalendarItemId and GlobeCoordinatesValue.getGlobeItemId to get easily ItemIdValue objects for these three fields
+* Introduction of DatamodelFilter to split out the filtering capabilities of DatamodelConverter
+* ApiConnection was changed to an interface, implemented by BasicApiConnection for normal login and (in the future) OAuthApiConnection for OAuth. BasicApiConnection was made serializable with Jackson so that a connection can be saved and restored.
+
+Bug fixes:
+* Retrieval of redirected entities using WbGetEntitiesAction should work
+* StatementUpdate avoids to do null edits except if intentionally asked so
+* The WikimediaLanguageCodes lists have been updated
+* Proper RDF serialization of the Commons GeoShape and Commons Data datatypes
+
+
+Incompatible changes:
+* Support for JDK 7 is dropped.
+* The simple data model implementation has been dropped. The Jackson based implementation is now the only one provided by the library. It allows to avoid to maintain two implementations and the cost of conversion between the two representations. The jackson implementation has been moved to the former one package.
+* Migration from Sesame to RDF4J in the RDF component interface
+* Updates of various dependencies
+* The utility classes related to JSON (de)serialization are now private
+* SiteLink badges are now ItemIdValue and not String
+* The internal encoding of uniteless QuantityValue unit is now "1" and not "" for consistency with Wikibase
+* The default value for the "after" parameter of TimeValues is no 0 for compatibility with Wikibase
+* DatatypeIdValue is not implementing Value anymore. It improves type safety because Wikibase does not allow to use DatatypeIdValue as snak value.
+* The DatamodelConverter class does not do shallow copy anymore. Please use DatamodelFilter for filtering
+* The constraint TemplateParser related code have been removed. Constraints are now encoded as statements in Wikidata, making this code only usable in old dumps
+* The TimeValue timestamps are now serializing years with at least 4 digits and not 11. This replicates a change in Wikibase and make the output timestamps more similar to the ISO/XSD ones.
+
+
 Version 0.8.0
 -------------
 
