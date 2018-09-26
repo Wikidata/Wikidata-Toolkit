@@ -92,10 +92,12 @@ public class WbGetEntitiesAction {
 	 *         the API URL
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns an error
+	 * @throws IOException
+	 * 			   if we encounter network issues or HTTP 500 errors from Wikibase
 	 */
 	public Map<String, EntityDocument> wbGetEntities(
 			WbGetEntitiesActionData properties)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return wbGetEntities(properties.ids, properties.sites,
 				properties.titles, properties.props, properties.languages,
 				properties.sitefilter);
@@ -144,12 +146,14 @@ public class WbGetEntitiesAction {
 	 *         the API URL
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns an error
+	 * @throws IOException
+	 *             if we encounter network errors, or HTTP 500 errors on Wikibase's side
 	 * @throws IllegalArgumentException
 	 *             if the given combination of parameters does not make sense
 	 */
 	public Map<String, EntityDocument> wbGetEntities(String ids, String sites,
 			String titles, String props, String languages, String sitefilter)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
@@ -219,6 +223,7 @@ public class WbGetEntitiesAction {
 			}
 		} catch (IOException e) {
 			logger.error("Could not retrive data: " + e.toString());
+			throw e;
 		}
 
 		return result;

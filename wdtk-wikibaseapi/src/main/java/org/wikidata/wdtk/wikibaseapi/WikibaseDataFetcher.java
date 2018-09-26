@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
+import java.io.IOException;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -129,9 +131,10 @@ public class WikibaseDataFetcher {
 	 *            string IDs (e.g., "P31" or "Q42") of requested entity
 	 * @return retrieved entity document or null
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public EntityDocument getEntityDocument(String entityId)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return getEntityDocuments(entityId).get(entityId);
 	}
 
@@ -146,9 +149,10 @@ public class WikibaseDataFetcher {
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(String... entityIds)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return getEntityDocuments(Arrays.asList(entityIds));
 	}
 
@@ -163,9 +167,10 @@ public class WikibaseDataFetcher {
 	 * @return map from IDs for which data could be found to the documents that
 	 *         were retrieved
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> result = new HashMap<>();
 		List<String> newEntityIds = new ArrayList<>();
 		newEntityIds.addAll(entityIds);
@@ -201,9 +206,10 @@ public class WikibaseDataFetcher {
 	 * @return document for the entity with this title, or null if no such
 	 *         document exists
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public EntityDocument getEntityDocumentByTitle(String siteKey, String title)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return getEntityDocumentsByTitle(siteKey, title).get(title);
 	}
 
@@ -223,9 +229,10 @@ public class WikibaseDataFetcher {
 	 * @return map from titles for which data could be found to the documents
 	 *         that were retrieved
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
-			String siteKey, String... titles) throws MediaWikiApiErrorException {
+			String siteKey, String... titles) throws MediaWikiApiErrorException, IOException {
 		return getEntityDocumentsByTitle(siteKey, Arrays.asList(titles));
 	}
 
@@ -245,10 +252,11 @@ public class WikibaseDataFetcher {
 	 * @return map from titles for which data could be found to the documents
 	 *         that were retrieved
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		List<String> newTitles = new ArrayList<>();
 		newTitles.addAll(titles);
 		Map<String, EntityDocument> result = new HashMap<>();
@@ -284,10 +292,11 @@ public class WikibaseDataFetcher {
 	 * @return map of document identifiers or titles to documents retrieved via
 	 *         the API URL
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	Map<String, EntityDocument> getEntityDocumentMap(int numOfEntities,
 			WbGetEntitiesActionData properties)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		if (numOfEntities == 0) {
 			return Collections.emptyMap();
 		}

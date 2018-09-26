@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class PropertyRegisterTest {
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
 	@Before
-	public void setUp() throws MediaWikiApiErrorException {
+	public void setUp() throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
 		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
 

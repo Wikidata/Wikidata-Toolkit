@@ -226,9 +226,10 @@ public class EditOnlineDataExample {
 	 *
 	 * @param connection
 	 * @throws MediaWikiApiErrorException
+	 * @throws IOException 
 	 */
 	public static void findSomeStringProperties(ApiConnection connection)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WikibaseDataFetcher wbdf = new WikibaseDataFetcher(connection, siteIri);
 		wbdf.getFilter().excludeAllProperties();
 		wbdf.getFilter().setLanguageFilter(Collections.singleton("en"));
