@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.examples;
 
+import java.io.IOException;
+
 /*
  * #%L
  * Wikidata Toolkit Examples
@@ -35,7 +37,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 public class FetchOnlineDataExample {
 
-	public static void main(String[] args) throws MediaWikiApiErrorException {
+	public static void main(String[] args) throws MediaWikiApiErrorException, IOException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 

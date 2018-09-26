@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.rdf;
 
+import java.io.IOException;
+
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -291,6 +293,7 @@ public class PropertyRegister {
 	 * fetched.
 	 *
 	 * @param property
+	 * @throws IOException 
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
 		int propertyIdNumber = Integer.parseInt(property.getId().substring(1));
@@ -317,6 +320,10 @@ public class PropertyRegister {
 		try {
 			properties = dataFetcher.getEntityDocuments(propertyIds);
 		} catch (MediaWikiApiErrorException e) {
+			logger.error("Error when trying to fetch property data: "
+					+ e.toString());
+			properties = Collections.emptyMap();
+		} catch (IOException e) {
 			logger.error("Error when trying to fetch property data: "
 					+ e.toString());
 			properties = Collections.emptyMap();
