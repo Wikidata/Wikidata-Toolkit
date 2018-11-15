@@ -275,6 +275,9 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 			return null;
 
 		switch (datatype) {
+		case DatatypeIdValue.DT_MONOLINGUAL_TEXT:
+			this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
+			return Vocabulary.RDF_LANG_STRING;
 		case DatatypeIdValue.DT_STRING:
 		case DatatypeIdValue.DT_EXTERNAL_ID:
 		case DatatypeIdValue.DT_MATH:
@@ -291,6 +294,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		case DatatypeIdValue.DT_URL:
 		case DatatypeIdValue.DT_GEO_SHAPE:
 		case DatatypeIdValue.DT_TABULAR_DATA:
+		case DatatypeIdValue.DT_QUANTITY:
 			this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 			return Vocabulary.OWL_THING;
 		default:
