@@ -76,7 +76,6 @@ public class BasicApiConnectionTest {
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
-		params.put("assert", "user");
 		params.put("format", "json");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json", CompressionType.NONE);
@@ -331,7 +330,7 @@ public class BasicApiConnectionTest {
 	}
 	
 	@Test(expected = AssertUserFailedException.class)
-	public void testCheckCredentials() throws IOException, MediaWikiApiErrorException {
+	public void testCheckCredentials() throws IOException, MediaWikiApiErrorException, LoginFailedException {
 		// we first login successfully
 		this.con.login("username", "password");
 		assertTrue(this.con.isLoggedIn());
