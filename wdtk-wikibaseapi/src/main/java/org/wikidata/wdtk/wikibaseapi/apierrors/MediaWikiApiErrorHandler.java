@@ -33,7 +33,7 @@ public class MediaWikiApiErrorHandler {
 	public final static String ERROR_INVALID_TOKEN = "badtoken";
 	public final static String ERROR_NO_SUCH_ENTITY = "no-such-entity";
 	public final static String ERROR_MAXLAG = "maxlag";
-	private static final String ERROR_ASSERT_USER_FAILED = "assertuserfailed";
+	public final static String ERROR_ASSERT_USER_FAILED = "assertuserfailed";
 
 	/**
 	 * Creates and throws a suitable {@link MediaWikiApiErrorException} for the
