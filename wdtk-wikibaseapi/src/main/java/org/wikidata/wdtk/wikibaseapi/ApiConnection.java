@@ -184,7 +184,6 @@ public class ApiConnection {
 	 */
 	@JsonIgnore
 	String password = "";
-	
 	/**
 	 * Map of cookies that are currently set.
 	 */
