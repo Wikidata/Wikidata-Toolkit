@@ -33,6 +33,7 @@ public class MediaWikiApiErrorHandler {
 	public final static String ERROR_INVALID_TOKEN = "badtoken";
 	public final static String ERROR_NO_SUCH_ENTITY = "no-such-entity";
 	public final static String ERROR_MAXLAG = "maxlag";
+	private static final String ERROR_ASSERT_USER_FAILED = "assertuserfailed";
 
 	/**
 	 * Creates and throws a suitable {@link MediaWikiApiErrorException} for the
@@ -58,6 +59,8 @@ public class MediaWikiApiErrorHandler {
 			throw new NoSuchEntityErrorException(errorMessage);
 		case ERROR_MAXLAG:
 			throw new MaxlagErrorException(errorMessage);
+		case ERROR_ASSERT_USER_FAILED:
+			throw new AssertUserFailedException(errorMessage);
 		default:
 			throw new MediaWikiApiErrorException(errorCode, errorMessage);
 		}
