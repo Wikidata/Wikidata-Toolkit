@@ -161,6 +161,11 @@ public class ApiConnection {
 	final static String LOGIN_WRONG_TOKEN = "WrongToken";
 
 	/**
+	 * MediaWiki assert= parameter to ensure we are editting while logged in.
+	 */
+	private static final String ASSERT_PARAMETER = "assert";
+
+	/**
 	 * URL to access the Wikibase API.
 	 */
 	final String apiBaseUrl;
@@ -179,7 +184,6 @@ public class ApiConnection {
 	 */
 	@JsonIgnore
 	String password = "";
-
 	/**
 	 * Map of cookies that are currently set.
 	 */
@@ -394,6 +398,9 @@ public class ApiConnection {
 	 */
 	public JsonNode sendJsonRequest(String requestMethod, Map<String,String> parameters) throws IOException, MediaWikiApiErrorException {
 		parameters.put(ApiConnection.PARAM_FORMAT, "json");
+		if (loggedIn) {
+			parameters.put(ApiConnection.ASSERT_PARAMETER, "user");
+		}
 		try (InputStream response = sendRequest(requestMethod, parameters)) {
 			JsonNode root = this.mapper.readTree(response);
 			this.checkErrors(root);
@@ -474,6 +481,24 @@ public class ApiConnection {
 		for (String warning : getWarnings(root)) {
 			logger.warn("API warning " + warning);
 		}
+	}
+	
+	/**
+	 * Checks that the credentials are still valid for the
+	 * user currently logged in. This can fail if (for instance)
+	 * the cookies expired, or were invalidated by a logout from
+	 * a different client.
+	 * 
+	 * This method queries the API and throws {@class AssertUserFailedException}
+	 * if the check failed. This does not update the state of the connection
+	 * object.
+	 * @throws MediaWikiApiErrorException 
+	 * @throws IOException 
+	 */
+	public void checkCredentials() throws IOException, MediaWikiApiErrorException {
+		Map<String,String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		sendJsonRequest("POST", parameters);
 	}
 
 	/**

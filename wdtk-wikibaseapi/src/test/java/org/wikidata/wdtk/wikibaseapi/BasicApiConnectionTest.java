@@ -41,6 +41,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
+import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -114,8 +115,16 @@ public class BasicApiConnectionTest {
 
 		params.clear();
 		params.put("action", "logout");
+		params.put("assert", "user");
 		params.put("format", "json");
 		this.con.setWebResource(params, "{}");
+		
+		params.put("action", "query");
+		params.put("assert", "user");
+		params.put("format", "json");
+		this.con.setWebResourceFromPath(params, this.getClass(),
+				"/assert-user-failed.json", CompressionType.NONE);
+		params.clear();
 	}
 
 	@Test
@@ -318,6 +327,15 @@ public class BasicApiConnectionTest {
 			assertTrue(message.contains(knownErrors[i]));
 			i++;
 		}
+	}
+	
+	@Test(expected = AssertUserFailedException.class)
+	public void testCheckCredentials() throws IOException, MediaWikiApiErrorException, LoginFailedException {
+		// we first login successfully
+		this.con.login("username", "password");
+		assertTrue(this.con.isLoggedIn());
+		// after a while, the credentials expire
+		this.con.checkCredentials();
 	}
 
 	private List<String> testCookieList() {
