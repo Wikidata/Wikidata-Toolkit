@@ -31,7 +31,7 @@ package org.wikidata.wdtk.wikibaseapi.apierrors;
 public class AssertUserFailedException extends MediaWikiApiErrorException {
 
 	public AssertUserFailedException(String errorMessage) {
-		super(MediaWikiApiErrorHandler.ERROR_NO_SUCH_ENTITY, errorMessage);
+		super(MediaWikiApiErrorHandler.ERROR_ASSERT_USER_FAILED, errorMessage);
 	}
 
 }
