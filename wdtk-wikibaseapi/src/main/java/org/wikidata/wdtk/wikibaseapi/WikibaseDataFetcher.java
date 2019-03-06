@@ -86,7 +86,7 @@ public class WikibaseDataFetcher {
 	 */
 	public static WikibaseDataFetcher getWikidataDataFetcher() {
 		return new WikibaseDataFetcher(
-				new BasicApiConnection(ApiConnection.URL_WIKIDATA_API),
+				BasicApiConnection.getWikidataApiConnection(),
 				Datamodel.SITE_WIKIDATA);
 	}
 
