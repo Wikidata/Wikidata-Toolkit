@@ -37,6 +37,11 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+                <dependency>
+                    <groupId>com.github.scribejava</groupId>
+                    <artifactId>scribejava-core</artifactId>
+                    <version>${scribeJavaVersion}</version>
+                </dependency> 
 	</dependencies>
 
 </project>

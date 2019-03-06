@@ -83,6 +83,7 @@
 		<mockitoVersion>1.10.19</mockitoVersion>
 		<rdf4jVersion>2.3.2</rdf4jVersion>
 		<slf4jVersion>1.7.25</slf4jVersion>
+                <scribeJavaVersion>6.3.0</scribeJavaVersion>
 	</properties>
 
 	<dependencies>
