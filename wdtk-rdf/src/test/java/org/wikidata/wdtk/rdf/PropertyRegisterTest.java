@@ -47,7 +47,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -112,7 +112,7 @@ public class PropertyRegisterTest {
 				0));
 
 		this.propertyRegister = new PropertyRegister("P1921",
-				new ApiConnection("http://localhost/"), this.siteIri);
+				new BasicApiConnection("http://localhost/"), this.siteIri);
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);

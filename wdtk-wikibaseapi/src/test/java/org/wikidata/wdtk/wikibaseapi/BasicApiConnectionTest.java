@@ -178,7 +178,7 @@ public class BasicApiConnectionTest {
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		
-		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, ApiConnection.class);
+		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
 		assertTrue(newConn.isLoggedIn());
 		assertEquals("username", newConn.getCurrentUser());
 	}
@@ -304,14 +304,14 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testErrorMessages() {
-		ApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
-		String[] knownErrors = { ApiConnection.LOGIN_WRONG_PASS,
-				ApiConnection.LOGIN_WRONG_PLUGIN_PASS,
-				ApiConnection.LOGIN_NOT_EXISTS, ApiConnection.LOGIN_BLOCKED,
-				ApiConnection.LOGIN_EMPTY_PASS, ApiConnection.LOGIN_NO_NAME,
-				ApiConnection.LOGIN_CREATE_BLOCKED,
-				ApiConnection.LOGIN_ILLEGAL, ApiConnection.LOGIN_THROTTLED,
-				ApiConnection.LOGIN_WRONG_TOKEN, ApiConnection.LOGIN_NEEDTOKEN };
+		BasicApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
+		String[] knownErrors = { BasicApiConnection.LOGIN_WRONG_PASS,
+				BasicApiConnection.LOGIN_WRONG_PLUGIN_PASS,
+				BasicApiConnection.LOGIN_NOT_EXISTS, BasicApiConnection.LOGIN_BLOCKED,
+				BasicApiConnection.LOGIN_EMPTY_PASS, BasicApiConnection.LOGIN_NO_NAME,
+				BasicApiConnection.LOGIN_CREATE_BLOCKED,
+				BasicApiConnection.LOGIN_ILLEGAL, BasicApiConnection.LOGIN_THROTTLED,
+				BasicApiConnection.LOGIN_WRONG_TOKEN, BasicApiConnection.LOGIN_NEEDTOKEN };
 
 		ArrayList<String> messages = new ArrayList<>();
 		for (String error : knownErrors) {

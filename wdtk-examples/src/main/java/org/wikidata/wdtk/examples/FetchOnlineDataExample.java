@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -42,7 +42,7 @@ public class FetchOnlineDataExample {
 		printDocumentation();
 
 		WikibaseDataFetcher wbdf = new WikibaseDataFetcher(
-				ApiConnection.getTestWikidataApiConnection(),
+				BasicApiConnection.getTestWikidataApiConnection(),
 				Datamodel.SITE_WIKIDATA);
 
 		System.out.println("*** Fetching data for one entity:");
