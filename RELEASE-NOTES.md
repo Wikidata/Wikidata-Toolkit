@@ -10,6 +10,7 @@ Security fixes:
 New features:
 * RDF: Adds support of Quantity and MonolingualText to the SomeValueSnak and NoValueSnak converters.
 * Wikibase API: Throw an exception when credentials have expired.
+* Updates RDF4J to 2.5.2, Apache Commons Lang to 3.9 and Apache Commons Compress to 1.18.
 
 Incompatible changes:
 * Propagate IOException properly in the Wikibase API module.
