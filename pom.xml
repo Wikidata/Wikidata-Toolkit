@@ -5,7 +5,7 @@
 
 	<groupId>org.wikidata.wdtk</groupId>
 	<artifactId>wdtk-parent</artifactId>
-	<version>0.9.0</version>
+	<version>0.10.0</version>
 	<packaging>pom</packaging>
 
 	<name>Wikidata Toolkit</name>
@@ -178,8 +178,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -209,6 +209,7 @@
 				<version>3.1.0</version>
 				<configuration>
 					<bottom><![CDATA[Copyright &#169; {inceptionYear}&#x2013;{currentYear} {organizationName}. Generated from source code published under the Apache License 2.0. For more information, see the <a href="https://www.mediawiki.org/wiki/Wikidata_Toolkit">Wikidata Toolkit homepage</a>]]></bottom>
+					<source>8</source>
 				</configuration>
 			</plugin>
 			<plugin>
