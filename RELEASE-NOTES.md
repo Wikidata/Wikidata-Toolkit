@@ -1,6 +1,20 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.10.0
+--------------
+
+Security fixes:
+* Update Jackson to 2.9.9, fixing [vulnerabilities that might lead to remote code execution](https://www.cvedetails.com/vulnerability-list.php?vendor_id=15866&product_id=42991&version_id=238358&page=1&hasexp=0&opdos=0&opec=0&opov=0&opcsrf=0&opgpriv=0&opsqli=0&opxss=0&opdirt=0&opmemc=0&ophttprs=0&opbyp=0&opfileinc=0&opginf=0&cvssscoremin=0&cvssscoremax=0&year=0&cweid=0&order=1&trc=12&sha=1a71cae633886fb92e024fafb20c582c9e5b072d).
+
+New features:
+* RDF: Adds support of Quantity and MonolingualText to the SomeValueSnak and NoValueSnak converters.
+* Wikibase API: Throw an exception when credentials have expired.
+* Updates RDF4J to 2.5.2, Apache Commons Lang to 3.9 and Apache Commons Compress to 1.18.
+
+Incompatible changes:
+* Propagate IOException properly in the Wikibase API module.
+
 Version 0.9.0
 -------------
 

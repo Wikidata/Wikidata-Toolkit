@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.wikidata.wdtk</groupId>
 		<artifactId>wdtk-parent</artifactId>
-		<version>0.9.0</version>
+		<version>0.10.0</version>
 	</parent>
 
 	<artifactId>wdtk-storage</artifactId>
@@ -13,13 +13,5 @@
 
 	<name>Wikidata Toolkit Storage</name>
 	<description>WDTK support for managing large collections of Wikibase data</description>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apacheCommonsLangVersion}</version>
-		</dependency>
-	</dependencies>
 
 </project>
