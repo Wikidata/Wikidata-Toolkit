@@ -222,6 +222,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
+	@JsonProperty("references")
 	public List<Reference> getReferences() {
 		return references;
 	}
@@ -233,6 +234,7 @@ public class StatementImpl implements Statement {
 	}
 
 	@Override
+	@JsonIgnore
 	public Value getValue() {
 		return mainSnak.getValue();
 	}
