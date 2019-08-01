@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
+import org.wikidata.wdtk.datamodel.implementation.UnsupportedEntityIdValueImpl;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -217,6 +219,18 @@ public class ToString {
 	 */
 	public static String toString(UnsupportedValue o) {
 		return "unsupported value of type "+o.getTypeString();
+	}
+	
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(UnsupportedEntityIdValue o) {
+		return o.getIri() + " (unsupported)";
 	}
 
 	/**
@@ -690,4 +704,5 @@ public class ToString {
 				"==\n" +
 				"Target: " + o.getTargetId().getIri();
 	}
+
 }

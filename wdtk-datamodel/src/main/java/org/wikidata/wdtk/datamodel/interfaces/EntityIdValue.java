@@ -65,6 +65,11 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 */
 	String ET_SENSE = "http://www.wikidata.org/ontology#Sense";
 	/**
+	 * IRI of the type of an unsupported entity.
+	 */
+	String ET_UNSUPPORTED = "http://www.wikidata.org/ontology#Unsupported";
+	
+	/**
 	 * The site IRI of "local" identifiers. These are used to mark internal ids
 	 * that are not found on any external site. Components that send data to
 	 * external services or that create data exports should omit such ids, if

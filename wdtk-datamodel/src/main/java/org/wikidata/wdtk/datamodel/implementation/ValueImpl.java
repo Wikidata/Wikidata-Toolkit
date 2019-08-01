@@ -142,7 +142,7 @@ public abstract class ValueImpl implements Value {
 						try {
 							return getValueClassFromEntityType(valueNode.get("entity-type").asText());
 						} catch (IllegalArgumentException e) {
-							throw new JsonMappingException(jsonParser, e.getMessage(), e);
+							return UnsupportedEntityIdValueImpl.class;
 						}
 					} else if(valueNode.has("id")) {
 						try {

@@ -1,5 +1,18 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -22,14 +35,6 @@ package org.wikidata.wdtk.datamodel.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class ItemIdValueImplTest {
 
@@ -43,7 +48,7 @@ public class ItemIdValueImplTest {
 	private final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WRONG_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"W42\"}}";
-	private final String JSON_ITEM_ID_VALUE_WRONG_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42}}";
+	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42}}";
 
 	@Test
 	public void entityTypeIsItem() {
@@ -131,10 +136,11 @@ public class ItemIdValueImplTest {
 		mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_ID, ValueImpl.class);
 	}
 
-
-	@Test(expected = JsonMappingException.class)
-	public void testToJavaWrongType() throws IOException {
-		mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_TYPE, ValueImpl.class);
+	@Test
+	public void testToJavaUnsupportedType() throws IOException {
+		Value unsupported = mapper.readValue(JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE, ValueImpl.class);
+		assertTrue(unsupported instanceof UnsupportedEntityIdValue);
+		assertEquals("foo", ((UnsupportedEntityIdValue)unsupported).getEntityTypeString());
 	}
 
 }
