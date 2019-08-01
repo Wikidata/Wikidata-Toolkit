@@ -210,10 +210,18 @@ public class PropertyRegister {
 			return DatatypeIdValue.DT_ITEM;
 		case 'P':
 			return DatatypeIdValue.DT_PROPERTY;
+		case 'L':
+			if (value.getId().contains("F")) {
+				return DatatypeIdValue.DT_FORM;
+			} else if(value.getId().contains("S")) {
+				return DatatypeIdValue.DT_SENSE;
+			}
+			return DatatypeIdValue.DT_LEXEME;
 		default:
-			logger.warn("Could not determine Type of "
-					+ propertyIdValue.getId()
-					+ ". It is not a valid EntityDocument Id");
+			logger.warn("Could not determine datatype of "+ propertyIdValue.getId() + ".");
+			logger.warn("Example value "+value.getId()+ " is not recognized as a valid entity id.");
+			logger.warn("Perhaps this is a newly introduced datatype not supported by this version of wdtk.");
+			logger.warn("Consider upgrading the library to a newer version.");
 			return null;
 		}
 	}

@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.UnsupportedValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.PropertyRegister;
@@ -50,6 +51,7 @@ public class AnyValueConverter implements
 		ValueConverter<org.wikidata.wdtk.datamodel.interfaces.Value>,
 		ValueVisitor<Value> {
 
+	final private RdfWriter rdfWriter;
 	final EntityIdValueConverter entityIdValueConverter;
 	final StringValueConverter stringValueConverter;
 	final TimeValueConverter timeValueConverter;
@@ -67,6 +69,7 @@ public class AnyValueConverter implements
 			OwlDeclarationBuffer rdfConversionBuffer,
 			PropertyRegister propertyRegister) {
 
+		this.rdfWriter = rdfWriter;
 		this.entityIdValueConverter = new EntityIdValueConverter(rdfWriter,
 				propertyRegister, rdfConversionBuffer);
 		this.stringValueConverter = new StringValueConverter(rdfWriter,
@@ -133,6 +136,11 @@ public class AnyValueConverter implements
 		this.globeCoordinatesValueConverter.writeAuxiliaryTriples();
 		this.timeValueConverter.writeAuxiliaryTriples();
 		this.quantityValueConverter.writeAuxiliaryTriples();
+	}
+
+	@Override
+	public Value visit(UnsupportedValue value) {
+		return this.rdfWriter.getFreshBNode();
 	}
 
 }
