@@ -168,8 +168,7 @@ public abstract class ValueImpl implements Value {
 			case JSON_VALUE_TYPE_MONOLINGUAL_TEXT:
 				return MonolingualTextValueImpl.class;
 			default:
-				throw new JsonMappingException(jsonParser, "Property values of type \""
-						+ jsonType + "\" are not supported yet.");
+				return UnsupportedValueImpl.class;
 			}
 		}
 

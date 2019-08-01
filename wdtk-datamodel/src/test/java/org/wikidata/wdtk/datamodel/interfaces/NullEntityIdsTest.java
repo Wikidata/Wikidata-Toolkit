@@ -58,6 +58,11 @@ public class NullEntityIdsTest {
 			return null;
 		}
 
+		@Override
+		public String visit(UnsupportedValue value) {
+			return null;
+		}
+
 	}
 
 	@Test

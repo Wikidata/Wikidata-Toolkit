@@ -206,6 +206,18 @@ public class ToString {
 		}
 		return str;
 	}
+	
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(UnsupportedValue o) {
+		return "unsupported value of type "+o.getTypeString();
+	}
 
 	/**
 	 * Returns a human-readable string representation of the given object.
