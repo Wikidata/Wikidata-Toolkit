@@ -68,7 +68,7 @@ public class UnsupportedValueImpl extends ValueImpl implements UnsupportedValue 
 
 	@Override
 	@JsonProperty("type")
-	public String getTypeString() {
+	public String getTypeJsonString() {
 		return typeString;
 	}
 	
@@ -110,7 +110,7 @@ public class UnsupportedValueImpl extends ValueImpl implements UnsupportedValue 
 			return false;
 		}
 		UnsupportedValueImpl otherValue = (UnsupportedValueImpl) other;
-		return typeString.equals(otherValue.getTypeString()) &&
+		return typeString.equals(otherValue.getTypeJsonString()) &&
 				contents.equals(otherValue.getContents());
 	}
 }

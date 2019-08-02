@@ -218,7 +218,7 @@ public class ToString {
 	 * @return a string representation of the object
 	 */
 	public static String toString(UnsupportedValue o) {
-		return "unsupported value of type "+o.getTypeString();
+		return "unsupported value of type "+o.getTypeJsonString();
 	}
 	
 	/**

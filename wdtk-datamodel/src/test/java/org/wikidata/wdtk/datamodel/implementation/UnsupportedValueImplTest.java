@@ -76,7 +76,7 @@ public class UnsupportedValueImplTest {
 	
 	@Test
 	public void testGetTypeString() {
-		assertEquals("funky", firstValue.getTypeString());
-		assertEquals("shiny", secondValue.getTypeString());
+		assertEquals("funky", firstValue.getTypeJsonString());
+		assertEquals("shiny", secondValue.getTypeJsonString());
 	}
 }
