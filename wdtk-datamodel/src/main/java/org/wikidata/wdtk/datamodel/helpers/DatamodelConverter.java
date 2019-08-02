@@ -349,6 +349,18 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 				object.getNumericValue(), object.getLowerBound(),
 				object.getUpperBound(), object.getUnit());
 	}
+	
+	/**
+	 * Copies an {@link UnsupportedValue}.
+	 *
+	 * @param object
+	 *            object to copy
+	 * @return copied object
+	 */
+    public UnsupportedValue copy(UnsupportedValue object) {
+    	// unsupported values cannot be copied!
+    	return object;
+    }
 
 	/**
 	 * Copies a {@link Snak}.
@@ -598,6 +610,11 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 
 	@Override
 	public Value visit(TimeValue value) {
+		return copy(value);
+	}
+	
+	@Override
+	public Value visit(UnsupportedValue value) {
 		return copy(value);
 	}
 

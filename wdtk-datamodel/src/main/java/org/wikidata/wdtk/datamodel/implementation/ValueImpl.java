@@ -142,7 +142,7 @@ public abstract class ValueImpl implements Value {
 						try {
 							return getValueClassFromEntityType(valueNode.get("entity-type").asText());
 						} catch (IllegalArgumentException e) {
-							throw new JsonMappingException(jsonParser, e.getMessage(), e);
+							return UnsupportedEntityIdValueImpl.class;
 						}
 					} else if(valueNode.has("id")) {
 						try {
@@ -150,7 +150,7 @@ public abstract class ValueImpl implements Value {
 									EntityIdValueImpl.guessEntityTypeFromId(valueNode.get("id").asText())
 							);
 						} catch (IllegalArgumentException e) {
-							throw new JsonMappingException(jsonParser, e.getMessage(), e);
+							return UnsupportedEntityIdValueImpl.class;
 						}
 					} else {
 						throw new JsonMappingException(jsonParser, "Unexpected entity id serialization");
@@ -168,8 +168,7 @@ public abstract class ValueImpl implements Value {
 			case JSON_VALUE_TYPE_MONOLINGUAL_TEXT:
 				return MonolingualTextValueImpl.class;
 			default:
-				throw new JsonMappingException(jsonParser, "Property values of type \""
-						+ jsonType + "\" are not supported yet.");
+				return UnsupportedValueImpl.class;
 			}
 		}
 

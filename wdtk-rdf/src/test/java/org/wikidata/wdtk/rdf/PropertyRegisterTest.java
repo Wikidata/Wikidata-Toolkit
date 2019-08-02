@@ -173,11 +173,32 @@ public class PropertyRegisterTest {
 
 	@Test
 	public void testSetPropertyTypeFromEntityIdValue() {
+		PropertyIdValue pid = this.dataObjectFactory
+				.getPropertyIdValue("P1001", this.siteIri);
 		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
-				this.dataObjectFactory
-						.getPropertyIdValue("P1001", this.siteIri),
+				pid,
 				this.dataObjectFactory.getItemIdValue("Q20", this.siteIri)),
 				DatatypeIdValue.DT_ITEM);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getPropertyIdValue("P58", this.siteIri)),
+				DatatypeIdValue.DT_PROPERTY);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getLexemeIdValue("L343", this.siteIri)),
+				DatatypeIdValue.DT_LEXEME);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getFormIdValue("L343-F1", this.siteIri)),
+				DatatypeIdValue.DT_FORM);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getSenseIdValue("L343-S34", this.siteIri)),
+				DatatypeIdValue.DT_SENSE);
 	}
 
 	@Test

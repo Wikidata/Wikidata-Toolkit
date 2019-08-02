@@ -42,6 +42,11 @@ public class EntityIdValueConverter extends
 			PropertyIdValue propertyIdValue, boolean simple) {
 		String datatype = this.propertyRegister
 				.setPropertyTypeFromEntityIdValue(propertyIdValue, value);
+		
+		if(datatype == null) {
+			// we failed to guess the datatype: represent the value by a blank node
+			return this.rdfWriter.getFreshBNode();
+		}
 
 		switch (datatype) {
 		case DatatypeIdValue.DT_ITEM:
@@ -53,11 +58,11 @@ public class EntityIdValueConverter extends
 				this.rdfConversionBuffer.addObjectProperty(propertyIdValue);
 				return this.rdfWriter.getUri(value.getIri());
 			} else {
-				return null; // or blank node
+				return null;
 			}
 		default:
 			logIncompatibleValueError(propertyIdValue, datatype, "entity");
-			return null;
+			return this.rdfWriter.getFreshBNode();
 		}
 	}
 }

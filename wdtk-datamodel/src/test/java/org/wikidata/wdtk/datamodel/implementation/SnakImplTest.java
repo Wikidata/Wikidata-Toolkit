@@ -55,7 +55,9 @@ public class SnakImplTest {
 	private final String JSON_SOMEVALUE_SNAK = "{\"snaktype\":\"somevalue\",\"property\":\"P42\"}";
 	private final String JSON_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"wikibase-property\",\"datavalue\":{\"value\":{\"id\":\"P42\",\"numeric-id\":42,\"entity-type\":\"property\"},\"type\":\"wikibase-entityid\"}}";
 	private final String JSON_MONOLINGUAL_TEXT_VALUE_SNAK = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"monolingualtext\",\"datavalue\":{\"value\":{\"language\":\"en\",\"text\":\"foo\"},\"type\":\"monolingualtext\"}}";
-
+	private final String JSON_SNAK_UNKNOWN_ID = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"wikibase-funkyid\",\"datavalue\":{\"value\":{\"id\":\"FUNKY42\",\"entity-type\":\"funky\"},\"type\":\"wikibase-entityid\"}}";
+	private final String JSON_SNAK_UNKNOWN_DATAVALUE = "{\"snaktype\":\"value\",\"property\":\"P42\",\"datatype\":\"groovy\",\"datavalue\":{\"foo\":\"bar\",\"type\":\"groovyvalue\"}}";
+	
 	@Test
 	public void fieldsAreCorrect() {
 		assertEquals(vs1.getPropertyId(), p1);
@@ -161,5 +163,17 @@ public class SnakImplTest {
 	public void testMonolingualTextValueSnakToJson() throws JsonProcessingException {
 		JsonComparator.compareJsonStrings(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, mapper.writeValueAsString(vsmt1));
 		JsonComparator.compareJsonStrings(JSON_MONOLINGUAL_TEXT_VALUE_SNAK, mapper.writeValueAsString(vsmt2));
+	}
+	
+	@Test
+	public void testDeserializeUnknownIdSnak() throws IOException {
+		// We only require deserialization not to fail here
+		mapper.readValue(JSON_SNAK_UNKNOWN_ID, SnakImpl.class);
+	}
+	
+	@Test
+	public void testDeserializeUnknownDatavalueSnak() throws IOException {
+		// We only require deserialization not to fail here
+		mapper.readValue(JSON_SNAK_UNKNOWN_DATAVALUE, SnakImpl.class);
 	}
 }
