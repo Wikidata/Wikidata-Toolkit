@@ -6,8 +6,11 @@ jdk:
   - oraclejdk9
   - oraclejdk11
 
+script:
+  - mvn cobertura:cobertura
+
 after_success:
-  - mvn clean cobertura:cobertura coveralls:cobertura
+  - mvn coveralls:cobertura
 
 dist: trusty
 sudo: false
