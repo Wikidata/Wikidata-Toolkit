@@ -186,21 +186,22 @@
 				<!-- Create code coverage reports and submit them to coveralls.io. -->
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>2.1.0</version>
+				<version>4.3.0</version>
 			</plugin>
 			<plugin>
 				<!-- Plugin for actually computing code coverage. -->
-				<!-- Change format to html and call mvn cobertura:cobertura to generate HTML report locally. -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<format>xml</format>
-					<!-- <format>html</format> -->
-					<maxmem>256m</maxmem>
-					<!-- aggregated reports for multi-module projects -->
-					<aggregate>true</aggregate>
-				</configuration>
+				<!-- Call mvn test jacoco:report to generate test coverage -->
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.4</version>
+                                <executions>
+                                        <execution>
+                                                <id>prepare-agent</id>
+                                                <goals>
+                                                        <goal>prepare-agent</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
 			</plugin>
 			<plugin>
 				<!-- Plugin for creating Javadocs; goal for preparing docs for upload to github: javadoc:aggregate -->
