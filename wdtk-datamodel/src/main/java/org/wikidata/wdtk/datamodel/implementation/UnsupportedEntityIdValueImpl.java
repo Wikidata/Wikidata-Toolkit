@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -34,6 +35,8 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonDeserializer.None;
@@ -77,12 +80,14 @@ public class UnsupportedEntityIdValueImpl extends ValueImpl implements Unsupport
 				String entityType,
 				@JsonProperty("id")
 				String id) {
+			Validate.notNull(id);
 			this.entityType = entityType;
 			this.id = id;
 			contents = new HashMap<>();
 		}
 		
 		@JsonProperty("entity-type")
+		@JsonInclude(Include.NON_NULL)
 		public String getEntityTypeString() {
 			return entityType;
 		}
@@ -154,7 +159,7 @@ public class UnsupportedEntityIdValueImpl extends ValueImpl implements Unsupport
 
 	@Override
 	@JsonIgnore
-	public String getEntityTypeString() {
+	public String getEntityTypeJsonString() {
 		return value.getEntityTypeString();
 	}
 }

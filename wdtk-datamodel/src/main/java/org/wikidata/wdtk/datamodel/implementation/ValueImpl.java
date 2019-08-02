@@ -150,7 +150,7 @@ public abstract class ValueImpl implements Value {
 									EntityIdValueImpl.guessEntityTypeFromId(valueNode.get("id").asText())
 							);
 						} catch (IllegalArgumentException e) {
-							throw new JsonMappingException(jsonParser, e.getMessage(), e);
+							return UnsupportedEntityIdValueImpl.class;
 						}
 					} else {
 						throw new JsonMappingException(jsonParser, "Unexpected entity id serialization");

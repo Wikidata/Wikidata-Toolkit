@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
@@ -41,14 +43,16 @@ public class UnsupportedEntityIdValueTest {
 	private final ObjectMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
 
 	private final String JSON_UNSUPPORTED_VALUE_1 = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"funky\",\"id\":\"Z343\"}}";
-	private final String JSON_UNSUPPORTED_VALUE_2 = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"shiny\",\"id\":\"P8989\",\"foo\":\"bar\"}}";
+	private final String JSON_UNSUPPORTED_VALUE_2 = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"shiny\",\"id\":\"R8989\",\"foo\":\"bar\"}}";
+	private final String JSON_UNSUPPORTED_VALUE_NO_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Z343\"}}";
 	
-	private UnsupportedEntityIdValue firstValue, secondValue;
+	private UnsupportedEntityIdValue firstValue, secondValue, noType;
 	
 	@Before
-	public void deserializeFirstValue() throws JsonParseException, JsonMappingException, IOException {
+	public void deserializeValues() throws JsonParseException, JsonMappingException, IOException {
 		firstValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, UnsupportedEntityIdValueImpl.class);
 		secondValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, UnsupportedEntityIdValueImpl.class);
+		noType = mapper.readValue(JSON_UNSUPPORTED_VALUE_NO_TYPE, UnsupportedEntityIdValueImpl.class);
 	}
 	
 	@Test
@@ -56,6 +60,8 @@ public class UnsupportedEntityIdValueTest {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, ValueImpl.class);
 		assertEquals(firstValue, otherValue);
 		assertNotEquals(secondValue, otherValue);
+		assertEquals(firstValue, noType);
+		assertNotEquals(noType, secondValue);
 	}
 	
 	@Test
@@ -68,6 +74,7 @@ public class UnsupportedEntityIdValueTest {
 	public void testSerialize() throws JsonProcessingException {
 		JsonComparator.compareJsonStrings(JSON_UNSUPPORTED_VALUE_1, mapper.writeValueAsString(firstValue));
 		JsonComparator.compareJsonStrings(JSON_UNSUPPORTED_VALUE_2, mapper.writeValueAsString(secondValue));
+		JsonComparator.compareJsonStrings(JSON_UNSUPPORTED_VALUE_NO_TYPE, mapper.writeValueAsString(noType));
 	}
 	
 	@Test
@@ -78,7 +85,35 @@ public class UnsupportedEntityIdValueTest {
 	
 	@Test
 	public void testGetTypeString() {
-		assertEquals("funky", firstValue.getEntityTypeString());
-		assertEquals("shiny", secondValue.getEntityTypeString());
+		assertEquals("funky", firstValue.getEntityTypeJsonString());
+		assertEquals("shiny", secondValue.getEntityTypeJsonString());
+	}
+	
+	@Test
+	public void testGetIri() {
+		assertEquals("http://www.wikidata.org/entity/Z343", firstValue.getIri());
+		assertEquals("http://www.wikidata.org/entity/R8989", secondValue.getIri());
+		assertEquals("http://www.wikidata.org/entity/Z343", noType.getIri());
+	}
+	
+	@Test
+	public void testGetId() {
+		assertEquals("Z343", firstValue.getId());
+		assertEquals("R8989", secondValue.getId());
+		assertEquals("Z343", noType.getId());
+	}
+	
+	@Test
+	public void testGetEntityType() {
+		assertEquals(EntityIdValue.ET_UNSUPPORTED, firstValue.getEntityType());
+		assertEquals(EntityIdValue.ET_UNSUPPORTED, secondValue.getEntityType());
+		assertEquals(EntityIdValue.ET_UNSUPPORTED, noType.getEntityType());
+	}
+	
+	@Test
+	public void testGetEntityTypeString() {
+		assertEquals("funky", firstValue.getEntityTypeJsonString());
+		assertEquals("shiny", secondValue.getEntityTypeJsonString());
+		assertNull(noType.getEntityTypeJsonString());
 	}
 }

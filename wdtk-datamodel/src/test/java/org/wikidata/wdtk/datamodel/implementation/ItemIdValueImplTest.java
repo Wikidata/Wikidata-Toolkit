@@ -48,7 +48,8 @@ public class ItemIdValueImplTest {
 	private final String JSON_ITEM_ID_VALUE_WITHOUT_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"item\",\"numeric-id\":\"42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"Q42\"}}";
 	private final String JSON_ITEM_ID_VALUE_WRONG_ID = "{\"type\":\"wikibase-entityid\",\"value\":{\"id\":\"W42\"}}";
-	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42}}";
+	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE = "{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"foo\",\"numeric-id\":42,\"id\":\"F42\"}}";
+	private final String JSON_ITEM_ID_VALUE_UNSUPPORTED_NO_ID = "{\"type\":\"wikibase-entityid\",\"value\":{}}";
 
 	@Test
 	public void entityTypeIsItem() {
@@ -130,17 +131,23 @@ public class ItemIdValueImplTest {
 	public void testToJavaWithoutNumericalId() throws IOException {
 		assertEquals(item1, mapper.readValue(JSON_ITEM_ID_VALUE_WITHOUT_NUMERICAL_ID, ValueImpl.class));
 	}
-
-	@Test(expected = JsonMappingException.class)
+	
+	@Test
 	public void testToJavaWrongID() throws IOException {
-		mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_ID, ValueImpl.class);
+		Value unsupported = mapper.readValue(JSON_ITEM_ID_VALUE_WRONG_ID, ValueImpl.class);
+		assertTrue(unsupported instanceof UnsupportedEntityIdValue);
 	}
 
 	@Test
 	public void testToJavaUnsupportedType() throws IOException {
 		Value unsupported = mapper.readValue(JSON_ITEM_ID_VALUE_UNSUPPORTED_TYPE, ValueImpl.class);
 		assertTrue(unsupported instanceof UnsupportedEntityIdValue);
-		assertEquals("foo", ((UnsupportedEntityIdValue)unsupported).getEntityTypeString());
+		assertEquals("foo", ((UnsupportedEntityIdValue)unsupported).getEntityTypeJsonString());
+	}
+	
+	@Test(expected = JsonMappingException.class)
+	public void testToJavaUnsupportedWithoutId() throws IOException {
+		mapper.readValue(JSON_ITEM_ID_VALUE_UNSUPPORTED_NO_ID, ValueImpl.class);
 	}
 
 }
