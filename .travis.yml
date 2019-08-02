@@ -7,10 +7,10 @@ jdk:
   - oraclejdk11
 
 script:
-  - mvn cobertura:cobertura
+  - mvn test jacoco:report
 
 after_success:
-  - mvn coveralls:cobertura
+  - mvn coveralls:report
 
 dist: trusty
 sudo: false
