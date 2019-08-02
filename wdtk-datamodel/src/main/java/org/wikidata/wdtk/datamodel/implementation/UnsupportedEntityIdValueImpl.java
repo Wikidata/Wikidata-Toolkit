@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
@@ -116,7 +117,14 @@ public class UnsupportedEntityIdValueImpl extends ValueImpl implements Unsupport
 	@Override
 	@JsonIgnore
 	public String getEntityType() {
-		return ET_UNSUPPORTED;
+		if (value.entityType == null) {
+			return ET_UNSUPPORTED;
+		}
+		String[] parts = value.entityType.split("-");
+		for(int i = 0; i < parts.length; i++) {
+			parts[i] = StringUtils.capitalize(parts[i]);
+		}
+		return "http://www.wikidata.org/ontology#" + StringUtils.join(parts);
 	}
 
 	@Override

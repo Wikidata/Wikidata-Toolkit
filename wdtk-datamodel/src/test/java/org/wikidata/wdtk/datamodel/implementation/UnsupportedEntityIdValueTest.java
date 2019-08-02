@@ -60,7 +60,7 @@ public class UnsupportedEntityIdValueTest {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, ValueImpl.class);
 		assertEquals(firstValue, otherValue);
 		assertNotEquals(secondValue, otherValue);
-		assertEquals(firstValue, noType);
+		assertNotEquals(firstValue, noType);
 		assertNotEquals(noType, secondValue);
 	}
 	
@@ -105,8 +105,8 @@ public class UnsupportedEntityIdValueTest {
 	
 	@Test
 	public void testGetEntityType() {
-		assertEquals(EntityIdValue.ET_UNSUPPORTED, firstValue.getEntityType());
-		assertEquals(EntityIdValue.ET_UNSUPPORTED, secondValue.getEntityType());
+		assertEquals("http://www.wikidata.org/ontology#Funky", firstValue.getEntityType());
+		assertEquals("http://www.wikidata.org/ontology#Shiny", secondValue.getEntityType());
 		assertEquals(EntityIdValue.ET_UNSUPPORTED, noType.getEntityType());
 	}
 	
