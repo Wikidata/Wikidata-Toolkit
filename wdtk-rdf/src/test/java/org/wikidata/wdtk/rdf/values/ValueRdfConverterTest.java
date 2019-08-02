@@ -21,6 +21,7 @@ package org.wikidata.wdtk.rdf.values;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
@@ -36,13 +38,17 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
+import org.wikidata.wdtk.datamodel.implementation.UnsupportedEntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
 import org.wikidata.wdtk.rdf.MockPropertyRegister;
 import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.PropertyRegister;
@@ -55,6 +61,7 @@ public class ValueRdfConverterTest {
 	RdfWriter rdfWriter;
 	OwlDeclarationBuffer rdfConversionBuffer;
 	PropertyRegister propertyRegister = new MockPropertyRegister();
+	DatamodelMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
 	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
@@ -161,6 +168,23 @@ public class ValueRdfConverterTest {
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
 				.getResourceFromFile("TimeValue.rdf")));
+	}
+	
+	@Test
+	public void testWriteUnsupportedEntityIdValue() throws RDFHandlerException,
+			RDFParseException, IOException {
+		AnyValueConverter valueConverter = new AnyValueConverter(
+				this.rdfWriter, this.rdfConversionBuffer, this.propertyRegister);
+
+		UnsupportedEntityIdValue value = mapper.readValue(
+				"{\"type\":\"wikibase-entityid\",\"value\":{\"entity-type\":\"funky\",\"id\":\"Z343\"}}",
+				UnsupportedEntityIdValueImpl.class);
+		PropertyIdValue propertyIdValue = objectFactory.getPropertyIdValue(
+				"P569", "http://www.wikidata.org/entity/");
+		Value valueURI = valueConverter.getRdfValue(value, propertyIdValue,
+				false);
+		this.rdfWriter.finish();
+		assertTrue(valueURI instanceof BNode);
 	}
 
 }
