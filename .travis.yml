@@ -6,8 +6,11 @@ jdk:
   - oraclejdk9
   - oraclejdk11
 
+script:
+  - mvn test jacoco:report
+
 after_success:
-  - mvn clean cobertura:cobertura coveralls:cobertura
+  - mvn coveralls:report
 
 dist: trusty
 sudo: false
