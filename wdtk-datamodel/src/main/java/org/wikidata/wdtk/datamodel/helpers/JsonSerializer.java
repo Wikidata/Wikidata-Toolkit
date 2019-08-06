@@ -22,15 +22,11 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.compress.utils.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,9 +50,9 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 
 	private static final Logger logger = LoggerFactory.getLogger(JsonSerializer.class);
 
-	private static final byte[] JSON_START_LIST = "[\n".getBytes(Charsets.UTF_8);
-	private static final byte[] JSON_SEP = ",\n".getBytes(Charsets.UTF_8);
-	private static final byte[] JSON_END_LIST = "\n]".getBytes(Charsets.UTF_8);
+	private static final byte[] JSON_START_LIST = "[\n".getBytes(StandardCharsets.UTF_8);
+	private static final byte[] JSON_SEP = ",\n".getBytes(StandardCharsets.UTF_8);
+	private static final byte[] JSON_END_LIST = "\n]".getBytes(StandardCharsets.UTF_8);
 
 	/**
 	 * The stream that the resulting JSON is written to.
@@ -107,6 +103,16 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		serializeEntityDocument(propertyDocument);
+	}
+
+	@Override
+	public void processLexemeDocument(LexemeDocument lexemeDocument) {
+		serializeEntityDocument(lexemeDocument);
+	}
+
+	@Override
+	public void processMediaInfoDocument(MediaInfoDocument mediaInfoDocument) {
+		serializeEntityDocument(mediaInfoDocument);
 	}
 
 	@Override
