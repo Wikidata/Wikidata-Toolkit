@@ -39,7 +39,12 @@ public class Datamodel {
 	/**
 	 * The site IRI of Wikidata.
 	 */
-	static public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
+	static final public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
+
+	/**
+	 * The site IRI of Wikimedia Commons.
+	 */
+	static final public String SITE_WIKIMEDIA_COMMONS = "http://commons.wikimedia.org/entity/";
 
 	private final static DataObjectFactory factory = new DataObjectFactoryImpl();
 
@@ -181,6 +186,34 @@ public class Datamodel {
 	 */
 	public static SenseIdValue makeWikidataSenseIdValue(String id) {
 		return factory.getSenseIdValue(id, SITE_WIKIDATA);
+	}
+
+	/**
+	 * Creates an {@link MediaInfoIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Mn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return an {@link MediaInfoIdValue} corresponding to the input
+	 */
+	public static MediaInfoIdValue makeMediaInfoIdValue(String id, String siteIri) {
+		return factory.getMediaInfoIdValue(id, siteIri);
+	}
+
+	/**
+	 * Creates an {@link LexemeIdValue} for Wikimedia Commons.
+	 *
+	 * @param id
+	 *            a string of the form Mn... where n... is the string
+	 *            representation of a positive integer number
+	 * @return an {@link MediaInfoIdValue} corresponding to the input
+	 */
+	public static MediaInfoIdValue makeWikimediaCommonsMediaInfoIdValue(String id) {
+		return factory.getMediaInfoIdValue(id, SITE_WIKIMEDIA_COMMONS);
 	}
 
 	/**
@@ -810,4 +843,22 @@ public class Datamodel {
 		return factory.getSenseDocument(senseIdValue, glosses, statementGroups, 0);
 	}
 
+	/**
+	 * Creates an {@link MediaInfoDocument}.
+	 *
+	 * @param mediaInfoIdValue
+	 *            the id of the media that data is about
+	 * @param labels
+	 *            the list of labels of this media, with at most one label for
+	 *            each language code
+	 * @param statementGroups
+	 *            the list of statement groups of this media info; all of them must
+	 *            have the given mediaInfoIdValue as their subject
+	 * @return an {@link MediaInfoDocument} corresponding to the input
+	 */
+	public static MediaInfoDocument makeMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue,
+												List<MonolingualTextValue> labels,
+												List<StatementGroup> statementGroups) {
+		return factory.getMediaInfoDocument(mediaInfoIdValue, labels, statementGroups, 0);
+	}
 }

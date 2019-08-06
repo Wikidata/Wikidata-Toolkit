@@ -65,6 +65,10 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 */
 	String ET_SENSE = "http://www.wikidata.org/ontology#Sense";
 	/**
+	 * IRI of the type of an entity that is a media info.
+	 */
+	String ET_MEDIA_INFO = "http://www.wikidata.org/ontology#MediaInfo";
+	/**
 	 * IRI of the type of an unsupported entity, when no type could be
 	 * detected from the JSON representation. The IRI for ids associated
 	 * with type information are constructed using the same format as above.

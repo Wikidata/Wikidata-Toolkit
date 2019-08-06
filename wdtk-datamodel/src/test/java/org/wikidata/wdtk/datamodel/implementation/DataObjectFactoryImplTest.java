@@ -70,6 +70,13 @@ public class DataObjectFactoryImplTest {
 	}
 
 	@Test
+	public final void testGetMediaInfoId() {
+		MediaInfoIdValue o1 = new MediaInfoIdValueImpl("M22", "foo");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M22", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 		DatatypeIdValue o2 = factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME);

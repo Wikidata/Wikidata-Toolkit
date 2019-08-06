@@ -24,30 +24,24 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This interface just joins {@link TermedDocument} and {@link StatementDocument}.
+ * This interface just joins {@link LabeledDocument} and {@link StatementDocument}.
  * 
  * It is necessary to introduce this interface because the conflict between 
  * the return types of the withRevisionId method in both interfaces needs to be resolved.
- * @author antonin
  *
+ * @author Thomas Pellissier Tanon
  */
-public interface TermedStatementDocument extends TermedDocument, LabeledStatementDocument {
+public interface LabeledStatementDocument extends LabeledDocument, StatementDocument {
 
 	@Override
-	TermedStatementDocument withRevisionId(long newRevisionId);
+	LabeledStatementDocument withRevisionId(long newRevisionId);
 	
 	@Override
-	TermedStatementDocument withLabel(MonolingualTextValue newLabel);
+	LabeledStatementDocument withLabel(MonolingualTextValue newLabel);
 	
 	@Override
-	TermedStatementDocument withDescription(MonolingualTextValue newDescription);
+	LabeledStatementDocument withStatement(Statement statement);
 	
 	@Override
-	TermedStatementDocument withAliases(String language, List<MonolingualTextValue> aliases);
-	
-	@Override
-	TermedStatementDocument withStatement(Statement statement);
-	
-	@Override
-	TermedStatementDocument withoutStatementIds(Set<String> statementIds);
+	LabeledStatementDocument withoutStatementIds(Set<String> statementIds);
 }

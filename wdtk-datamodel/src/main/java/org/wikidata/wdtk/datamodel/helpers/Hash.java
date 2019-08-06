@@ -377,6 +377,21 @@ public class Hash {
 	 *            the object to create a hash for
 	 * @return the hash code of the object
 	 */
+	public static int hashCode(MediaInfoDocument o) {
+		int result;
+		result = o.getLabels().hashCode();
+		result = prime * result + o.getStatementGroups().hashCode();
+		return result;
+	}
+
+	/**
+	 * Returns a hash code for the given object.
+	 *
+	 * @see java.lang.Object#hashCode()
+	 * @param o
+	 *            the object to create a hash for
+	 * @return the hash code of the object
+	 */
 	private static int hashCodeForTermedDocument(TermedDocument o) {
 		int result;
 		result = o.getAliases().hashCode();

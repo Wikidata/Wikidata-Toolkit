@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 
 /**
  * Abstract Jackson implementation of {@link EntityDocument}. Like all Jackson
@@ -43,6 +44,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 		@Type(value = LexemeDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_LEXEME),
 		@Type(value = FormDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_FORM),
 		@Type(value = SenseDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_SENSE),
+		@Type(value = MediaInfoDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_MEDIA_INFO),
 		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
 public abstract class EntityDocumentImpl implements EntityDocument {
 
@@ -66,6 +68,10 @@ public abstract class EntityDocumentImpl implements EntityDocument {
 	 * String used to refer to forms in JSON.
 	 */
 	static final String JSON_TYPE_SENSE = "sense";
+	/**
+	 * String used to refer to forms in JSON.
+	 */
+	static final String JSON_TYPE_MEDIA_INFO = "mediainfo";
 
 	/**
 	 * The id of the entity that the document refers to. This is not mapped to
