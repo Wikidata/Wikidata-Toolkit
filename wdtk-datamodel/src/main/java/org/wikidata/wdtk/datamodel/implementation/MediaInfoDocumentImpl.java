@@ -64,15 +64,19 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 	/**
 	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
+	 *
+	 * The claims parameter is here in case the Structured Data on Commons dev team
+	 * moves back from "statements" to "claims" or someone wrongly use the "claims" key.
 	 */
 	@JsonCreator
 	public MediaInfoDocumentImpl(
 			@JsonProperty("id") String jsonId,
 			@JsonProperty("labels") @JsonDeserialize(contentAs=TermImpl.class) Map<String, MonolingualTextValue> labels,
-			@JsonProperty("statements") Map<String, List<StatementImpl.PreStatement>> claims,
+			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
+			@JsonProperty("statements") Map<String, List<StatementImpl.PreStatement>> statements,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
-		super(jsonId, labels, claims, revisionId, siteIri);
+		super(jsonId, labels, (statements == null) ? claims : statements, revisionId, siteIri);
 	}
 
 	/**

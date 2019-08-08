@@ -205,7 +205,7 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link LexemeIdValue} for Wikimedia Commons.
+	 * Creates an {@link MediaInfoIdValue} for Wikimedia Commons.
 	 *
 	 * @param id
 	 *            a string of the form Mn... where n... is the string

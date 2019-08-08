@@ -55,6 +55,7 @@ public class MediaInfoDocumentImplTest {
 	private final String JSON_MEDIA_INFO_LABEL = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"statements\":{}}";
 	private final String JSON_MEDIA_INFO_DESCRIPTION = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"descriptions\":{},\"statements\":{}}";
 	private final String JSON_MEDIA_INFO_STATEMENTS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"statements\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
+	private final String JSON_MEDIA_INFO_CLAIMS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
 	private final String JSON_MEDIA_INFO_EMPTY_ARRAYS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":[],\"descriptions\":[],\"statements\":[],\"sitelinks\":[]}";
 
 	@Test
@@ -216,6 +217,12 @@ public class MediaInfoDocumentImplTest {
 	public void testStatementsToJava() throws IOException {
 		MediaInfoDocumentImpl document = new MediaInfoDocumentImpl(mid, Collections.emptyList(), statementGroups, 0);
 		assertEquals(document, mapper.readValue(JSON_MEDIA_INFO_STATEMENTS, MediaInfoDocumentImpl.class));
+	}
+
+	@Test
+	public void testStatementsNamedClaimsToJava() throws IOException {
+		MediaInfoDocumentImpl document = new MediaInfoDocumentImpl(mid, Collections.emptyList(), statementGroups, 0);
+		assertEquals(document, mapper.readValue(JSON_MEDIA_INFO_CLAIMS, MediaInfoDocumentImpl.class));
 	}
 
 	/**
