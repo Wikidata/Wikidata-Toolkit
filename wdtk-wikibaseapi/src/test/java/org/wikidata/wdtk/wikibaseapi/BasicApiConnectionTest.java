@@ -77,6 +77,7 @@ public class BasicApiConnectionTest {
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
 		params.put("format", "json");
+		params.put("assert", "user");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json", CompressionType.NONE);
 		params.clear();
@@ -117,6 +118,7 @@ public class BasicApiConnectionTest {
 		params.put("action", "logout");
 		params.put("assert", "user");
 		params.put("format", "json");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		this.con.setWebResource(params, "{}");
 
 		params.clear();
@@ -129,12 +131,18 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testGetToken() throws IOException, MediaWikiApiErrorException {
+	public void testGetToken() throws LoginFailedException {
+		this.con.login("username", "password");
 		assertTrue(this.con.getOrFetchToken("csrf") != null);
 	}
 
 	@Test
-	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
+    public void testGetTokenWithoutLogin() throws LoginFailedException {
+		assertTrue(this.con.getOrFetchToken("csrf") == null);
+	}
+
+	@Test
+	public void testGetLoginToken() {
 		assertTrue(this.con.getOrFetchToken("login") != null);
 	}
 
