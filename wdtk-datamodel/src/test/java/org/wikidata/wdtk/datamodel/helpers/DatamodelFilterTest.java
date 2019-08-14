@@ -162,6 +162,37 @@ public class DatamodelFilterTest {
 		assertEquals(propertyDocumentFiltered, filter.filter(propertyDocument));
 	}
 
+	@Test
+	public void testLanguageFilterForMediaInfo() {
+		Set<String> languageFilter = new HashSet<>();
+		languageFilter.add("de");
+		languageFilter.add("he");
+		DocumentDataFilter documentDataFilter = new DocumentDataFilter();
+		documentDataFilter.setLanguageFilter(languageFilter);
+		DatamodelFilter filter = new DatamodelFilter(new DataObjectFactoryImpl(), documentDataFilter);
+
+		MediaInfoDocument mediaInfoDocument = Datamodel.makeMediaInfoDocument(
+				Datamodel.makeWikimediaCommonsMediaInfoIdValue("M42"),
+				Arrays.asList(
+						Datamodel.makeMonolingualTextValue("Label de", "de"),
+						Datamodel.makeMonolingualTextValue("Label en", "en"),
+						Datamodel.makeMonolingualTextValue("Label he", "he")
+				),
+				Collections.emptyList()
+		);
+
+		MediaInfoDocument mediaInfoDocumentFiltered = Datamodel.makeMediaInfoDocument(
+				Datamodel.makeWikimediaCommonsMediaInfoIdValue("M42"),
+				Arrays.asList(
+						Datamodel.makeMonolingualTextValue("Label de", "de"),
+						Datamodel.makeMonolingualTextValue("Label he", "he")
+				),
+				Collections.emptyList()
+		);
+
+		assertEquals(mediaInfoDocumentFiltered, filter.filter(mediaInfoDocument));
+	}
+
 	/**
 	 * Creates a statement group using the given property. The subject of the
 	 * statement group will be Wikidata's Q42.
@@ -380,6 +411,44 @@ public class DatamodelFilterTest {
 		);
 
 		assertEquals(lexemeDocumentFiltered, filter.filter(lexemeDocument));
+	}
+
+	@Test
+	public void testPropertyFilterForMediaInfo() {
+		MediaInfoIdValue s = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M42");
+		PropertyIdValue p1 = Datamodel.makeWikidataPropertyIdValue("P1");
+		PropertyIdValue p2 = Datamodel.makeWikidataPropertyIdValue("P2");
+		PropertyIdValue p3 = Datamodel.makeWikidataPropertyIdValue("P3");
+		PropertyIdValue p4 = Datamodel.makeWikidataPropertyIdValue("P4");
+
+		Set<PropertyIdValue> propertyFilter = new HashSet<>();
+		propertyFilter.add(p1);
+		propertyFilter.add(p3);
+		DocumentDataFilter documentDataFilter = new DocumentDataFilter();
+		documentDataFilter.setPropertyFilter(propertyFilter);
+		DatamodelFilter filter = new DatamodelFilter(new DataObjectFactoryImpl(), documentDataFilter);
+
+		MediaInfoDocument mediaInfoDocument = Datamodel.makeMediaInfoDocument(
+				s,
+				Collections.emptyList(),
+				Arrays.asList(
+						makeTestStatementGroup(p1, s),
+						makeTestStatementGroup(p2, s),
+						makeTestStatementGroup(p3, s),
+						makeTestStatementGroup(p4, s)
+				)
+		);
+
+		MediaInfoDocument mediaInfoDocumentFiltered = Datamodel.makeMediaInfoDocument(
+				s,
+				Collections.emptyList(),
+				Arrays.asList(
+						makeTestStatementGroup(p1, s),
+						makeTestStatementGroup(p3, s)
+				)
+		);
+
+		assertEquals(mediaInfoDocumentFiltered, filter.filter(mediaInfoDocument));
 	}
 
 	@Test

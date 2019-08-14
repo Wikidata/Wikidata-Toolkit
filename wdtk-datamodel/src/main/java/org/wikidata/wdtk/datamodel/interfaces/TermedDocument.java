@@ -29,13 +29,7 @@ import java.util.Map;
  *
  * @author Markus Kroetzsch
  */
-public interface TermedDocument extends EntityDocument {
-	/**
-	 * Return a Map from Wikibase language codes to labels.
-	 *
-	 * @return the map of labels
-	 */
-	Map<String, MonolingualTextValue> getLabels();
+public interface TermedDocument extends LabeledDocument {
 
 	/**
 	 * Return a Map from Wikibase language codes to descriptions.
@@ -51,20 +45,6 @@ public interface TermedDocument extends EntityDocument {
 	 * @return the aliases for this language
 	 */
 	Map<String, List<MonolingualTextValue>> getAliases();
-
-	/**
-	 * Returns the string label for the given language code, or null if there is
-	 * no label for this code. This is a convenience method for accessing the
-	 * data that can be obtained via {@link #getLabels()}.
-	 *
-	 * @param languageCode
-	 *            a string that represents language
-	 * @return the label string or null if it does not exists
-	 */
-	default String findLabel(String languageCode) {
-		MonolingualTextValue value = this.getLabels().get(languageCode);
-		return (value != null) ? value.getText() : null;
-	}
 
 	/**
 	 * Returns the string description for the given language code, or null if
@@ -90,6 +70,7 @@ public interface TermedDocument extends EntityDocument {
 	 * Returns a new version of this document with a new label
 	 * (which overrides any existing label for this language).
 	 */
+	@Override
 	TermedDocument withLabel(MonolingualTextValue newLabel);
 	
 	/**

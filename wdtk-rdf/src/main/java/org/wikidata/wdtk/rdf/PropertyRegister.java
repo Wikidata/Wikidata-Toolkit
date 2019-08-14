@@ -219,6 +219,8 @@ public class PropertyRegister {
 				return DatatypeIdValue.DT_SENSE;
 			}
 			return DatatypeIdValue.DT_LEXEME;
+		case 'M':
+				return DatatypeIdValue.DT_MEDIA_INFO;
 		default:
 			logger.warn("Could not determine datatype of "+ propertyIdValue.getId() + ".");
 			logger.warn("Example value "+value.getId()+ " is not recognized as a valid entity id.");

@@ -51,6 +51,11 @@ public class EntityIdValueImplTest {
 		assertEquals(new SenseIdValueImpl("L42-S1", "http://foo/"), EntityIdValueImpl.fromId("L42-S1", "http://foo/"));
 	}
 
+	@Test
+	public void testFromIdMediaInfo() {
+		assertEquals(new MediaInfoIdValueImpl("M42", "http://foo/"), EntityIdValueImpl.fromId("M42", "http://foo/"));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testFromIdFailure() {
 		EntityIdValueImpl.fromId("L42-P1", "http://foo/");

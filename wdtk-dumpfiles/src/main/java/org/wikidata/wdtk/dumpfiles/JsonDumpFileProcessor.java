@@ -130,6 +130,9 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 		} else if(document instanceof LexemeDocument) {
 			this.entityDocumentProcessor
 					.processLexemeDocument((LexemeDocument) document);
+		} else if(document instanceof MediaInfoDocument) {
+			this.entityDocumentProcessor
+					.processMediaInfoDocument((MediaInfoDocument) document);
 		}
 	}
 

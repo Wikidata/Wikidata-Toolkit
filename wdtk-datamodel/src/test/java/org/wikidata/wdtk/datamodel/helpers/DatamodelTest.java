@@ -109,6 +109,21 @@ public class DatamodelTest {
 	}
 
 	@Test
+	public final void testGetMediaInfoId() {
+		MediaInfoIdValue o1 = Datamodel.makeMediaInfoIdValue("M42", "foo");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M42", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikimediaCommonsMediaInfoId() {
+		MediaInfoIdValue o1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M42");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M42",
+				"http://commons.wikimedia.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetDatatypeId() {
 		DatatypeIdValue o1 = Datamodel
 				.makeDatatypeIdValue(DatatypeIdValue.DT_TIME);
@@ -419,6 +434,20 @@ public class DatamodelTest {
 		SenseDocument o2 = factory.getSenseDocument(
 				factory.getSenseIdValue("L42-S1", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMediaInfoDocument() {
+		MediaInfoDocument o1 = Datamodel.makeMediaInfoDocument(
+				factory.getMediaInfoIdValue("M42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList());
+		MediaInfoDocument o2 = factory.getMediaInfoDocument(
+				factory.getMediaInfoIdValue("M42", "foo"),
+				Collections.emptyList(),
 				Collections.emptyList(),
 				0);
 		assertEquals(o1, o2);

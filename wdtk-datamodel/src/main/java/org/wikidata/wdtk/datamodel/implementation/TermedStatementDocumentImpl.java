@@ -46,14 +46,13 @@ import java.util.Map.Entry;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({ //TODO: drop in future release
 		@Type(value = ItemDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_ITEM),
-		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY) })
-public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl implements TermedStatementDocument {
+		@Type(value = PropertyDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_PROPERTY),
+		@Type(value = MediaInfoDocumentImpl.class, name = EntityDocumentImpl.JSON_TYPE_MEDIA_INFO) })
+public abstract class TermedStatementDocumentImpl extends LabeledStatementDocumentImpl implements TermedStatementDocument {
 
-	protected final Map<String, List<MonolingualTextValue>> aliases;
-	
-	protected final Map<String, MonolingualTextValue> labels;
 	protected final Map<String, MonolingualTextValue> descriptions;
-	
+	protected final Map<String, List<MonolingualTextValue>> aliases;
+
 	/**
 	 * Constructor.
 	 * 
@@ -78,12 +77,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			List<MonolingualTextValue> aliases,
 			List<StatementGroup> claims,
 			long revisionId) {
-		super(id, claims, revisionId);
-		if (labels != null) {
-			this.labels = constructTermMap(labels);
-		} else {
-			this.labels = Collections.emptyMap();
-		}
+		super(id, labels, claims, revisionId);
 		if (descriptions != null) {
 			this.descriptions = constructTermMap(descriptions);
 		} else {
@@ -107,12 +101,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			@JsonProperty("claims") Map<String, List<StatementImpl.PreStatement>> claims,
 			@JsonProperty("lastrevid") long revisionId,
 			@JacksonInject("siteIri") String siteIri) {
-		super(jsonId, claims, revisionId, siteIri);
-		if (labels != null) {
-			this.labels = labels;
-		} else {
-			this.labels = Collections.emptyMap();
-		}
+		super(jsonId, labels, claims, revisionId, siteIri);
 		if (descriptions != null) {
 			this.descriptions = descriptions;
 		} else {
@@ -149,8 +138,7 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 			Map<String, List<MonolingualTextValue>> aliases,
 			Map<String, List<Statement>> claims,
 			long revisionId) {
-		super(subject, claims, revisionId);
-		this.labels = labels;
+		super(subject, labels, claims, revisionId);
 		this.descriptions = descriptions;
 		this.aliases = aliases;
 	}
@@ -178,27 +166,9 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 		return Collections.unmodifiableMap(this.descriptions);
 	}
 
-	@JsonProperty("labels")
-	@Override
-	public Map<String, MonolingualTextValue> getLabels() {
-		return Collections.unmodifiableMap(this.labels);
-	}
-
 	@JsonIgnore
 	public String getSiteIri() {
 		return this.siteIri;
-	}
-	
-	protected static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
-		Map<String, MonolingualTextValue> map = new HashMap<>();
-		for(MonolingualTextValue term : terms) {
-			String language = term.getLanguageCode();
-			if(map.containsKey(language)) {
-				throw new IllegalArgumentException("Multiple terms provided for the same language.");
-			}
-			map.put(language, toTerm(term));
-		}
-		return map;
 	}
 	
 	private static Map<String, List<MonolingualTextValue>> constructTermListMap(List<MonolingualTextValue> terms) {
@@ -263,7 +233,4 @@ public abstract class TermedStatementDocumentImpl extends StatementDocumentImpl 
 
 		}
 	}
-	
-	@Override
-	abstract public TermedStatementDocument withRevisionId(long newRevisionId);
 }

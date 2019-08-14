@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfSerializer;
@@ -194,6 +195,11 @@ public class RdfSerializationAction extends DumpProcessingOutputAction {
 	@Override
 	public void processLexemeDocument(LexemeDocument lexemeDocument) {
 		this.serializer.processLexemeDocument(lexemeDocument);
+	}
+
+	@Override
+	public void processMediaInfoDocument(MediaInfoDocument mediaInfoDocument) {
+		this.serializer.processMediaInfoDocument(mediaInfoDocument);
 	}
 
 	@Override

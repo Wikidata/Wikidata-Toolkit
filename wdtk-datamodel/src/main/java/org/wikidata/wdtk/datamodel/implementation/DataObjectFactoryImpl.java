@@ -64,6 +64,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public MediaInfoIdValue getMediaInfoIdValue(String id, String siteIri) {
+		return new MediaInfoIdValueImpl(id, siteIri);
+	}
+
+	@Override
 	public DatatypeIdValue getDatatypeIdValue(String id) {
 		return new DatatypeIdImpl(id);
 	}
@@ -252,5 +257,16 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 										List<StatementGroup> statementGroups,
 										long revisionId) {
 		return new SenseDocumentImpl(senseIdValue, glosses, statementGroups, revisionId);
+	}
+
+
+	@Override
+	public MediaInfoDocument getMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue,
+										List<MonolingualTextValue> labels,
+										List<StatementGroup> statementGroups,
+										long revisionId) {
+
+		return new MediaInfoDocumentImpl(
+				mediaInfoIdValue, labels, statementGroups, revisionId);
 	}
 }

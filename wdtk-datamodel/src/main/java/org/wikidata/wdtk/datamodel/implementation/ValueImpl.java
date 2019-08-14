@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * #L%
  */
 
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -184,6 +185,8 @@ public abstract class ValueImpl implements Value {
 					return FormIdValueImpl.class;
 				case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
 					return SenseIdValueImpl.class;
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_MEDIA_INFO:
+					return MediaInfoIdValueImpl.class;
 				default:
 					throw new IllegalArgumentException("Entities of type \"" + entityType + "\" are not supported.");
 			}
