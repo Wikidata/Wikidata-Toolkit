@@ -137,7 +137,7 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-    public void testGetTokenWithoutLogin() throws LoginFailedException {
+	public void testGetTokenWithoutLogin() throws LoginFailedException {
 		assertTrue(this.con.getOrFetchToken("csrf") == null);
 	}
 
