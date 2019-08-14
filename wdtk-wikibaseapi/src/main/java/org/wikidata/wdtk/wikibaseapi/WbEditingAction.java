@@ -68,12 +68,6 @@ public class WbEditingAction {
 	final ObjectMapper mapper;
 
 	/**
-	 * Current CSRF (Cross-Site Request Forgery) token, or null if no valid
-	 * token is known.
-	 */
-	String csrfToken = null;
-
-	/**
 	 * Value in seconds of MediaWiki's maxlag parameter. Shorter is nicer,
 	 * longer is more aggressive.
 	 */
@@ -717,7 +711,7 @@ public class WbEditingAction {
 				break;
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
-				refreshCsrfToken();
+				connection.clearToken("csrf");
 				parameters.put("token", getCsrfToken());
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
@@ -788,40 +782,12 @@ public class WbEditingAction {
 	 * data.
 	 */
 	private String getCsrfToken() {
-		if (this.csrfToken == null) {
-			refreshCsrfToken();
-		}
-		return this.csrfToken;
-	}
-
-	/**
-	 * Obtains and sets a new CSRF token, whether or not there is already a
-	 * token set right now.
-	 */
-	private void refreshCsrfToken() {
-
-		this.csrfToken = fetchCsrfToken();
+		return connection.getOrFetchToken("csrf");
 		// TODO if this is null, we could try to recover here:
 		// (1) Check if we are still logged in; maybe log in again
 		// (2) If there is another error, maybe just run the operation again
 	}
 
-	/**
-	 * Executes a API query action to get a new CSRF (Cross-Site Request
-	 * Forgery) token. The method only executes the action, without doing any
-	 * checks first. If errors occur, they are logged and null is returned.
-	 *
-	 * @return newly retrieved token or null if no token was retrieved
-	 */
-	private String fetchCsrfToken() {
-		try {
-			return connection.fetchToken("csrf");
-		} catch (IOException | MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch csrf token: "
-					+ e.toString());
-		}
-		return null;
-	}
 
 	/**
 	 * Makes sure that we are not editing too fast. The method stores the last

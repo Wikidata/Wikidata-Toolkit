@@ -130,17 +130,17 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testGetToken() throws IOException, MediaWikiApiErrorException {
-		assertTrue(this.con.fetchToken("csrf") != null);
+		assertTrue(this.con.getOrFetchToken("csrf") != null);
 	}
 
 	@Test
 	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
-		assertTrue(this.con.fetchToken("login") != null);
+		assertTrue(this.con.getOrFetchToken("login") != null);
 	}
 
 	@Test
 	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
-		String token = this.con.fetchToken("login");
+		String token = this.con.getOrFetchToken("login");
 		this.con.confirmLogin(token, "username", "password");
 	}
 

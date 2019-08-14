@@ -190,6 +190,11 @@ public class ApiConnection {
 	final Map<String, String> cookies;
 
 	/**
+	 * Map of requested tokens.
+	 */
+	final Map<String, String> tokens;
+
+	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
 	final ObjectMapper mapper = new ObjectMapper();
@@ -206,6 +211,7 @@ public class ApiConnection {
 	public ApiConnection(String apiBaseUrl) {
 		this.apiBaseUrl = apiBaseUrl;
 		this.cookies = new HashMap<>();
+		this.tokens = new HashMap<>();
 	}
 	
 	/**
@@ -217,6 +223,8 @@ public class ApiConnection {
 	 * 		map of cookies used for this session
 	 * @param loggedIn
 	 * 		true if login succeeded.
+	 * @param tokens
+	 * 		map of tokens used for this session
 	 */
 	@JsonCreator
 	@Deprecated
@@ -224,11 +232,13 @@ public class ApiConnection {
 			@JsonProperty("baseUrl") String apiBaseUrl,
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
-			@JsonProperty("loggedIn") boolean loggedIn) {
+			@JsonProperty("loggedIn") boolean loggedIn,
+			@JsonProperty("tokens") Map<String, String> tokens) {
 		this.apiBaseUrl = apiBaseUrl;
 		this.username = username;
 		this.cookies = cookies;
 		this.loggedIn = loggedIn;
+		this.tokens = tokens;
 	}
 
 	/**
@@ -355,6 +365,28 @@ public class ApiConnection {
 	public void clearCookies() throws IOException {
 		logout();
 		this.cookies.clear();
+		this.tokens.clear();
+	}
+
+	/**
+	 * Return a token of given type.
+	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
+	 * @return can return null if token can not be retrieved
+	 */
+	String getOrFetchToken(String tokenType) {
+		if (tokens.containsKey(tokenType)) {
+			return tokens.get(tokenType);
+		}
+		String value = fetchToken(tokenType);
+		tokens.put(tokenType, value);
+		return value;
+	}
+
+	/**
+	 * Remove fetched value of given token.
+	 */
+	void clearToken(String tokenType) {
+		tokens.remove(tokenType);
 	}
 
 	/**
@@ -365,7 +397,7 @@ public class ApiConnection {
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return newly retrieved token or null if no token was retrieved
 	 */
-	String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
+	private String fetchToken(String tokenType) {
 		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "query");
 		params.put("meta", "tokens");
