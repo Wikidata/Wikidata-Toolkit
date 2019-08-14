@@ -118,7 +118,8 @@ public class BasicApiConnectionTest {
 		params.put("assert", "user");
 		params.put("format", "json");
 		this.con.setWebResource(params, "{}");
-		
+
+		params.clear();
 		params.put("action", "query");
 		params.put("assert", "user");
 		params.put("format", "json");
