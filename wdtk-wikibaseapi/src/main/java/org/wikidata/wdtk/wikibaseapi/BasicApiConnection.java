@@ -66,7 +66,7 @@ public class BasicApiConnection extends ApiConnection {
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
 			@JsonProperty("loggedIn") boolean loggedIn,
-			@JsonProperty("cookies") Map<String, String> tokens) {
+			@JsonProperty("tokens") Map<String, String> tokens) {
 		super(apiBaseUrl, cookies, username, loggedIn, tokens);
 	}
 	
