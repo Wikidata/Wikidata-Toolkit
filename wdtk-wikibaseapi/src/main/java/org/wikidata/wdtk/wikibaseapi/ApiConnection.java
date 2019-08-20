@@ -380,6 +380,9 @@ public class ApiConnection {
 		}
 		String value = fetchToken(tokenType);
 		tokens.put(tokenType, value);
+		// TODO if this is null, we could try to recover here:
+		// (1) Check if we are still logged in; maybe log in again
+		// (2) If there is another error, maybe just run the operation again
 		return value;
 	}
 

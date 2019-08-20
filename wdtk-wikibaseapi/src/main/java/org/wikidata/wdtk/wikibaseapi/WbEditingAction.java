@@ -690,7 +690,7 @@ public class WbEditingAction {
 		}
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
-		parameters.put("token", getCsrfToken());
+		parameters.put("token", connection.getOrFetchToken("csrf"));
 
 		if (this.remainingEdits > 0) {
 			this.remainingEdits--;
@@ -712,7 +712,7 @@ public class WbEditingAction {
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
 				connection.clearToken("csrf");
-				parameters.put("token", getCsrfToken());
+				parameters.put("token", connection.getOrFetchToken("csrf"));
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
 				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
@@ -776,18 +776,6 @@ public class WbEditingAction {
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
 				.readValue(entityNode);
 	}
-
-	/**
-	 * Returns a CSRF (Cross-Site Request Forgery) token as required to edit
-	 * data.
-	 */
-	private String getCsrfToken() {
-		return connection.getOrFetchToken("csrf");
-		// TODO if this is null, we could try to recover here:
-		// (1) Check if we are still logged in; maybe log in again
-		// (2) If there is another error, maybe just run the operation again
-	}
-
 
 	/**
 	 * Makes sure that we are not editing too fast. The method stores the last
