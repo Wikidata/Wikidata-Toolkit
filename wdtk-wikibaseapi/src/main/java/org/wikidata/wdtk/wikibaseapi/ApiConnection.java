@@ -345,7 +345,7 @@ public class ApiConnection {
 			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
-			params.put("token", fetchToken("csrf"));
+			params.put("token", getOrFetchToken("csrf"));
 			try {
 				sendJsonRequest("POST", params);
 			} catch (MediaWikiApiErrorException e) {
