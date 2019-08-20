@@ -57,14 +57,17 @@ public class BasicApiConnection extends ApiConnection {
 	 * 		map of cookies used for this session
 	 * @param loggedIn
 	 * 		true if login succeeded.
+	 * @param tokens
+	 * 		map of tokens used for this session
 	 */
 	@JsonCreator
 	private BasicApiConnection(
 			@JsonProperty("baseUrl") String apiBaseUrl,
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
-			@JsonProperty("loggedIn") boolean loggedIn) {
-		super(apiBaseUrl, cookies, username, loggedIn);
+			@JsonProperty("loggedIn") boolean loggedIn,
+			@JsonProperty("tokens") Map<String, String> tokens) {
+		super(apiBaseUrl, cookies, username, loggedIn, tokens);
 	}
 	
 	/**

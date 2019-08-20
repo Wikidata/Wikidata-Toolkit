@@ -68,12 +68,6 @@ public class WbEditingAction {
 	final ObjectMapper mapper;
 
 	/**
-	 * Current CSRF (Cross-Site Request Forgery) token, or null if no valid
-	 * token is known.
-	 */
-	String csrfToken = null;
-
-	/**
 	 * Value in seconds of MediaWiki's maxlag parameter. Shorter is nicer,
 	 * longer is more aggressive.
 	 */
@@ -696,7 +690,7 @@ public class WbEditingAction {
 		}
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
-		parameters.put("token", getCsrfToken());
+		parameters.put("token", connection.getOrFetchToken("csrf"));
 
 		if (this.remainingEdits > 0) {
 			this.remainingEdits--;
@@ -717,8 +711,8 @@ public class WbEditingAction {
 				break;
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
-				refreshCsrfToken();
-				parameters.put("token", getCsrfToken());
+				connection.clearToken("csrf");
+				parameters.put("token", connection.getOrFetchToken("csrf"));
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
 				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
@@ -781,46 +775,6 @@ public class WbEditingAction {
 		return mapper.readerFor(EntityDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
 				.readValue(entityNode);
-	}
-
-	/**
-	 * Returns a CSRF (Cross-Site Request Forgery) token as required to edit
-	 * data.
-	 */
-	private String getCsrfToken() {
-		if (this.csrfToken == null) {
-			refreshCsrfToken();
-		}
-		return this.csrfToken;
-	}
-
-	/**
-	 * Obtains and sets a new CSRF token, whether or not there is already a
-	 * token set right now.
-	 */
-	private void refreshCsrfToken() {
-
-		this.csrfToken = fetchCsrfToken();
-		// TODO if this is null, we could try to recover here:
-		// (1) Check if we are still logged in; maybe log in again
-		// (2) If there is another error, maybe just run the operation again
-	}
-
-	/**
-	 * Executes a API query action to get a new CSRF (Cross-Site Request
-	 * Forgery) token. The method only executes the action, without doing any
-	 * checks first. If errors occur, they are logged and null is returned.
-	 *
-	 * @return newly retrieved token or null if no token was retrieved
-	 */
-	private String fetchCsrfToken() {
-		try {
-			return connection.fetchToken("csrf");
-		} catch (IOException | MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch csrf token: "
-					+ e.toString());
-		}
-		return null;
 	}
 
 	/**
