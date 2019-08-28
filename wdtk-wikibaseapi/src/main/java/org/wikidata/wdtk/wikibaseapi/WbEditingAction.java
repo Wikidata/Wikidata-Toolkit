@@ -44,6 +44,7 @@ import java.util.Map;
  *
  * @author Michael Guenther
  * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
  */
 public class WbEditingAction {
 
@@ -264,6 +265,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response as returned by the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -273,8 +276,8 @@ public class WbEditingAction {
 	 */
 	public EntityDocument wbEditEntity(String id, String site, String title,
 			String newEntity, String data, boolean clear, boolean bot,
-			long baserevid, String summary) throws IOException,
-			MediaWikiApiErrorException {
+			long baserevid, String summary, List<String> tags)
+					throws IOException, MediaWikiApiErrorException {
 
 		Validate.notNull(data,
 				"Data parameter cannot be null when editing entity data");
@@ -286,7 +289,7 @@ public class WbEditingAction {
 		}
 		
 		JsonNode response = performAPIAction("wbeditentity", id, site, title,
-				newEntity, parameters, summary, baserevid, bot);
+				newEntity, parameters, summary, tags, baserevid, bot);
 		return getEntityDocumentFromResponse(response);
 	}
 	
@@ -327,6 +330,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the label as returned by the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -338,7 +343,7 @@ public class WbEditingAction {
 	 */
 	public JsonNode wbSetLabel(String id, String site, String title,
 			String newEntity, String language, String value,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a label");
@@ -350,7 +355,7 @@ public class WbEditingAction {
 		}
 		
 		JsonNode response = performAPIAction("wbsetlabel", id, site, title, newEntity,
-				parameters, summary, baserevid, bot);
+				parameters, summary, tags, baserevid, bot);
 		return response;
 	}
 	
@@ -391,6 +396,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -402,7 +409,8 @@ public class WbEditingAction {
 	 */
 	public JsonNode wbSetDescription(String id, String site, String title,
 			String newEntity, String language, String value,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary,
+			List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a description");
@@ -414,7 +422,7 @@ public class WbEditingAction {
 		}
 		
 		JsonNode response = performAPIAction("wbsetdescription", id, site, title,
-				newEntity, parameters, summary, baserevid, bot);
+				newEntity, parameters, summary, tags, baserevid, bot);
 		return response;
 	}
 	
@@ -464,6 +472,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -476,7 +486,8 @@ public class WbEditingAction {
 	public JsonNode wbSetAliases(String id, String site, String title,
 			String newEntity, String language, List<String> add,
 			List<String> remove, List<String> set,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary,
+			List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting aliases");
@@ -497,7 +508,7 @@ public class WbEditingAction {
 			parameters.put("remove", ApiConnection.implodeObjects(remove));
 		}
 		
-		JsonNode response = performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, baserevid, bot);
+		JsonNode response = performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, tags, baserevid, bot);
 		return response;
 	}
 	
@@ -522,6 +533,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -532,7 +545,7 @@ public class WbEditingAction {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public JsonNode wbSetClaim(String statement,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(statement,
 				"Statement parameter cannot be null when adding or changing a statement");
@@ -541,7 +554,7 @@ public class WbEditingAction {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("claim", statement);
 		
-		return performAPIAction("wbsetclaim", null, null, null, null, parameters, summary, baserevid, bot);
+		return performAPIAction("wbsetclaim", null, null, null, null, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -565,6 +578,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -575,7 +590,7 @@ public class WbEditingAction {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public JsonNode wbRemoveClaims(List<String> statementIds,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(statementIds,
 				"statementIds parameter cannot be null when deleting statements");
@@ -587,7 +602,7 @@ public class WbEditingAction {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("claim", String.join("|", statementIds));
 		
-		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, baserevid, bot);
+		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -632,6 +647,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -647,6 +664,7 @@ public class WbEditingAction {
 			String newEntity,
 			Map<String, String> parameters,
 			String summary,
+			List<String> tags,
 			long baserevid,
 			boolean bot)
 			throws IOException, MediaWikiApiErrorException {
@@ -687,6 +705,10 @@ public class WbEditingAction {
 		
 		if (summary != null) {
 			parameters.put("summary", summary);
+		}
+		
+		if (tags != null && !tags.isEmpty()) {
+			parameters.put("tags", String.join("|", tags));
 		}
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));

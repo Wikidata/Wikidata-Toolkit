@@ -129,7 +129,7 @@ public class EditOnlineDataExample {
 		// unique, which would cause problems if this example is run many times.
 
 		ItemDocument newItemDocument = wbde.createItemDocument(itemDocument,
-				"Wikidata Toolkit example test item creation");
+				"Wikidata Toolkit example test item creation", null);
 
 		ItemIdValue newItemId = newItemDocument.getEntityId();
 		System.out.println("*** Successfully created a new item "
@@ -174,7 +174,7 @@ public class EditOnlineDataExample {
 		newItemDocument = wbde.updateStatements(newItemId,
 				Arrays.asList(statement4, statement1WithRef, statement2),
 				Collections.<Statement> emptyList(),
-				"Wikidata Toolkit example test statement addition");
+				"Wikidata Toolkit example test statement addition", null);
 
 		System.out.println("*** Successfully added statements to "
 				+ newItemId.getId()
@@ -203,7 +203,7 @@ public class EditOnlineDataExample {
 
 		newItemDocument = wbde.updateStatements(newItemDocument,
 				Arrays.asList(newStatement1), Arrays.asList(statementToDelete),
-				"Wikidata Toolkit example test statement modification");
+				"Wikidata Toolkit example test statement modification", null);
 
 		System.out.println("*** Successfully updated statements of "
 				+ newItemId.getId()

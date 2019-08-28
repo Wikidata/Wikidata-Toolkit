@@ -34,6 +34,7 @@ public class MediaWikiApiErrorHandler {
 	public final static String ERROR_NO_SUCH_ENTITY = "no-such-entity";
 	public final static String ERROR_MAXLAG = "maxlag";
 	public final static String ERROR_ASSERT_USER_FAILED = "assertuserfailed";
+	public final static String ERROR_TAGS_APPLY_NOT_ALLOWED = "tags-apply-not-allowed-one";
 
 	/**
 	 * Creates and throws a suitable {@link MediaWikiApiErrorException} for the
@@ -61,6 +62,8 @@ public class MediaWikiApiErrorHandler {
 			throw new MaxlagErrorException(errorMessage);
 		case ERROR_ASSERT_USER_FAILED:
 			throw new AssertUserFailedException(errorMessage);
+		case ERROR_TAGS_APPLY_NOT_ALLOWED:
+			throw new TagsApplyNotAllowedException(errorMessage);
 		default:
 			throw new MediaWikiApiErrorException(errorCode, errorMessage);
 		}

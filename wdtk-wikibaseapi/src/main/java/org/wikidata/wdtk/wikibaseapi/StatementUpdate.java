@@ -201,11 +201,25 @@ public class StatementUpdate {
 	 * Performs the update, selecting the appropriate API action depending on
 	 * the nature of the change.
 	 * 
+	 * @param action
+	 *       the endpoint to which the change should be pushed
+	 * @param editAsBot
+	 *        if true, the edit will be flagged as a "bot edit" provided that
+	 *        the logged in user is in the bot group; for regular users, the
+	 *        flag will just be ignored
+	 * @param summary
+	 *        summary for the edit; will be prepended by an automatically
+	 *        generated comment; the length limit of the autocomment
+	 *        together with the summary is 260 characters: everything above
+	 *        that limit will be cut off
+	 * @param tags
+	 *        string identifiers of the tags to apply to the edit.
+	 *        Ignored if null or empty.
 	 * @return the new document after update with the API
 	 * @throws MediaWikiApiErrorException 
 	 * @throws IOException 
 	 */
-	public StatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary)
+	public StatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		if (isEmptyEdit()) {
 			return currentDocument;
@@ -221,7 +235,7 @@ public class StatementUpdate {
 			
 			JsonNode response = action.wbSetClaim(
 						JsonSerializer.getJsonString(statement), editAsBot,
-						currentDocument.getRevisionId(), summary);
+						currentDocument.getRevisionId(), summary, tags);
 			
 			StatementImpl.PreStatement preStatement = getDatamodelObjectFromResponse(response, Collections.singletonList("claim"), StatementImpl.PreStatement.class);
 			Statement returnedStatement = preStatement.withSubject(statement.getClaim().getSubject());
@@ -231,7 +245,7 @@ public class StatementUpdate {
 		} else if (!toDelete.isEmpty() && getUpdatedStatements().size() == toDelete.size() && toDelete.size() <= 50) {
 			// we can use "wbremoveclaims" because we are only removing statements
 			
-			JsonNode response = action.wbRemoveClaims(toDelete, editAsBot, currentDocument.getRevisionId(), summary);
+			JsonNode response = action.wbRemoveClaims(toDelete, editAsBot, currentDocument.getRevisionId(), summary, tags);
 			
 			long revisionId = getRevisionIdFromResponse(response);
 			
@@ -240,7 +254,7 @@ public class StatementUpdate {
 			return (StatementDocument) action.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
 				false, editAsBot, currentDocument
-				.getRevisionId(), summary);
+				.getRevisionId(), summary, tags);
 		}
 	}
 	
