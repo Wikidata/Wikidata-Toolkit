@@ -44,6 +44,8 @@ public class StatementGroupTest {
 			Collections.emptyList(), Collections.emptyList(), subject);
 	private Statement statementEmptyId = new StatementImpl("", StatementRank.NORMAL, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
+	private Statement statementDeprecrated = new StatementImpl("DepId", StatementRank.DEPRECATED, mainSnak,
+			Collections.emptyList(), Collections.emptyList(), subject);
 	private StatementGroup sg1 = new StatementGroupImpl(Collections.singletonList(statement1));
 	private StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(statement1));
 
@@ -76,6 +78,14 @@ public class StatementGroupTest {
 		assertEquals(
 				new StatementGroupImpl(Collections.singletonList(statement1)),
 				new StatementGroupImpl(Collections.singletonList(statement1)).getBestStatements()
+		);
+	}
+
+	@Test
+	public void getBestStatementsEmpty() {
+		assertNull(
+				new StatementGroupImpl(Collections.singletonList(statementDeprecrated)).getBestStatements()
+
 		);
 	}
 
