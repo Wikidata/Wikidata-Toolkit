@@ -46,7 +46,7 @@ public class WbEditingActionTest {
 				Datamodel.SITE_WIKIDATA);
 
 		EntityDocument result = weea.wbEditEntity("Q42", null, null, null,
-				"{}", true, false, 0, null);
+				"{}", true, false, 0, null, null);
 		assertEquals(null, result);
 	}
 
@@ -76,7 +76,7 @@ public class WbEditingActionTest {
 
 		WbEditingAction weea = new WbEditingAction(con,
 				Datamodel.SITE_WIKIDATA);
-		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null);
+		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null, null);
 	}
 
 	@Test(expected = TokenErrorException.class)
@@ -104,7 +104,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(con,
 				Datamodel.SITE_WIKIDATA);
 
-		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null);
+		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null, null);
 	}
 
 	@Test(expected = MaxlagErrorException.class)
@@ -133,7 +133,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(con,
 				Datamodel.SITE_WIKIDATA);
 		WbEditingAction.MAXLAG_SLEEP_TIME = 0; // speed up the test ...
-		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null);
+		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -141,7 +141,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", "enwiki", null, null, "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -149,7 +149,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", null, "Title", null, "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -158,7 +158,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, "Title", null, "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -166,7 +166,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity("Q1234", null, null, "item", "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -174,7 +174,7 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, "enwiki", null, "item", "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -183,14 +183,14 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, "Title", "item", "{}", false, false, 0,
-				null);
+				null, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNoTask() throws IOException, MediaWikiApiErrorException {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
-		weea.wbEditEntity(null, null, null, null, "{}", false, false, 0, null);
+		weea.wbEditEntity(null, null, null, null, "{}", false, false, 0, null, null);
 	}
 
 }

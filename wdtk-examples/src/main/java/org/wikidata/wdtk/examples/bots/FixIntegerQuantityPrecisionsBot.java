@@ -335,7 +335,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 			dataEditor.updateStatements(currentItemDocument, updateStatements,
 					Collections.<Statement> emptyList(),
 					"Set exact values for [[Property:" + propertyId + "|"
-							+ propertyId + "]] integer quantities (Task MB2)");
+							+ propertyId + "]] integer quantities (Task MB2)", null);
 
 		} catch (MediaWikiApiErrorException e) {
 			e.printStackTrace();

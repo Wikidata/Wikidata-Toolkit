@@ -285,7 +285,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 					numberString, languages);
 
 			dataEditor.editItemDocument(itemDocumentBuilder.build(), false,
-					"Set labels to numeric value (Task MB1)");
+					"Set labels to numeric value (Task MB1)", null);
 		} catch (MediaWikiApiErrorException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

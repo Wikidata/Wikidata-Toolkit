@@ -356,18 +356,33 @@ public class TermStatementUpdate extends StatementUpdate {
 	 * Performs the update, selecting the appropriate API action depending on
 	 * the nature of the change.
 	 * 
+	 * @param action
+	 *       the endpoint to which the change should be pushed
+	 * @param editAsBot
+	 *        if true, the edit will be flagged as a "bot edit" provided that
+	 *        the logged in user is in the bot group; for regular users, the
+	 *        flag will just be ignored
+	 * @param summary
+	 *        summary for the edit; will be prepended by an automatically
+	 *        generated comment; the length limit of the autocomment
+	 *        together with the summary is 260 characters: everything above
+	 *        that limit will be cut off
+	 * @param tags
+	 *        string identifiers of the tags to apply to the edit.
+	 *        Ignored if null or empty.
 	 * @return the new document after update with the API
 	 * @throws MediaWikiApiErrorException 
 	 * @throws IOException 
 	 */
     @Override
-	public TermedStatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary)
+	public TermedStatementDocument performEdit(
+			WbEditingAction action, boolean editAsBot, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		Map<String, TermImpl> labelUpdates = getLabelUpdates();
 		Map<String, TermImpl> descriptionUpdates = getDescriptionUpdates();
 		Map<String, List<TermImpl>> aliasUpdates = getAliasUpdates();
 		if (labelUpdates.isEmpty() && descriptionUpdates.isEmpty() && aliasUpdates.isEmpty()) {
-			return (TermedStatementDocument) super.performEdit(action, editAsBot, summary);	
+			return (TermedStatementDocument) super.performEdit(action, editAsBot, summary, tags);	
 		} else {
 			if (super.isEmptyEdit()) {
 				if(labelUpdates.size() == 1
@@ -380,7 +395,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetLabel(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, value.getText(), editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					MonolingualTextValue respondedLabel = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","labels",language), TermImpl.class);
@@ -397,7 +412,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetDescription(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, value.getText(), editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					MonolingualTextValue respondedDescription = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","descriptions",language), TermImpl.class);
@@ -423,7 +438,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetAliases(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, addedStrings, removedStrings, null, editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					long revisionId = getRevisionIdFromResponse(response);
 
@@ -439,7 +454,7 @@ public class TermStatementUpdate extends StatementUpdate {
 			EntityDocument response = action.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
 				false, editAsBot, currentDocument
-				.getRevisionId(), summary);
+				.getRevisionId(), summary, tags);
 			return (TermedStatementDocument) response;
     	}
 	}
