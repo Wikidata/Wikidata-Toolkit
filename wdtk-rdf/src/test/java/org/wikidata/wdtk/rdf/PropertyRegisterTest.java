@@ -25,14 +25,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -67,6 +65,8 @@ public class PropertyRegisterTest {
 
 		PropertyIdValue pid434 = dataObjectFactory.getPropertyIdValue("P434",
 				this.siteIri);
+		PropertyIdValue pid508 = dataObjectFactory.getPropertyIdValue("P508",
+				this.siteIri);
 		PropertyIdValue pid23 = dataObjectFactory.getPropertyIdValue("P23",
 				this.siteIri);
 		PropertyIdValue pid1921 = dataObjectFactory.getPropertyIdValue("P1921",
@@ -86,6 +86,18 @@ public class PropertyRegisterTest {
 										pid1921,
 										dataObjectFactory
 												.getStringValue("http://musicbrainz.org/$1/artist")),
+						Collections.<SnakGroup> emptyList(),
+						Collections.<Reference> emptyList(),
+						StatementRank.NORMAL, "000");
+
+		Statement p1921StatementExternalID = dataObjectFactory
+				.getStatement(
+						pid508,
+						dataObjectFactory
+								.getValueSnak(
+										pid1921,
+										dataObjectFactory
+												.getStringValue("http://purl.org/bncf/tid/$1")),
 						Collections.<SnakGroup> emptyList(),
 						Collections.<Reference> emptyList(),
 						StatementRank.NORMAL, "000");
@@ -110,20 +122,25 @@ public class PropertyRegisterTest {
 				Collections.<StatementGroup> emptyList(),
 				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM),
 				0));
+		mockResult.put("P508", dataObjectFactory.getPropertyDocument(pid508,
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.singletonList(dataObjectFactory.getStatementGroup(
+						Collections.singletonList(p1921StatementExternalID)
+				)),
+				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_EXTERNAL_ID),
+				0));
 
 		this.propertyRegister = new PropertyRegister("P1921",
 				new ApiConnection("http://localhost/"), this.siteIri);
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
-
-		List<String> propertyIds = new ArrayList<String>();
-		propertyIds.add("P434");
-		for (int i = 1; i < 50; i++) {
-			propertyIds.add("P" + i);
-		}
-		Mockito.when(dataFetcher.getEntityDocuments(propertyIds)).thenReturn(
-				mockResult);
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P434"))))
+				.thenReturn(mockResult);
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P508"))))
+				.thenReturn(mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
 		this.propertyRegister.dataFetcher = dataFetcher;
@@ -149,6 +166,14 @@ public class PropertyRegisterTest {
 	}
 
 	@Test
+	public void testFetchPropertyUriPatternExternalID() {
+		PropertyIdValue pid = this.dataObjectFactory.getPropertyIdValue("P508",
+				this.siteIri);
+		assertEquals("http://purl.org/bncf/tid/$1",
+				this.propertyRegister.getPropertyUriPattern(pid));
+	}
+
+	@Test
 	public void testGetPropertyType() {
 		assertEquals(DatatypeIdValue.DT_STRING,
 				this.propertyRegister.getPropertyType(dataObjectFactory
@@ -165,10 +190,13 @@ public class PropertyRegisterTest {
 	@Test
 	public void testGetMissingPropertyType() {
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		final int smallestBefore = this.propertyRegister.smallestUnfetchedPropertyIdNumber;
 		// Check twice to test fast failing on retry
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		assertEquals("no requests should be made if the property is known to be missing",
+				smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber);
 	}
 
 	@Test
