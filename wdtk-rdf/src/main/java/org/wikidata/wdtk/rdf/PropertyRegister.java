@@ -331,11 +331,7 @@ public class PropertyRegister {
 		Map<String, EntityDocument> properties;
 		try {
 			properties = dataFetcher.getEntityDocuments(propertyIds);
-		} catch (MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch property data: "
-					+ e.toString());
-			properties = Collections.emptyMap();
-		} catch (IOException e) {
+		} catch (MediaWikiApiErrorException|IOException e) {
 			logger.error("Error when trying to fetch property data: "
 					+ e.toString());
 			properties = Collections.emptyMap();
@@ -353,7 +349,7 @@ public class PropertyRegister {
 			logger.info("Fetched type information for property "
 					+ entry.getKey() + " online: " + datatype);
 
-			if (!DatatypeIdValue.DT_STRING.equals(datatype)) {
+			if (!DatatypeIdValue.DT_STRING.equals(datatype) && !DatatypeIdValue.DT_EXTERNAL_ID.equals(datatype)) {
 				continue;
 			}
 
