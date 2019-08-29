@@ -22,11 +22,7 @@ import java.io.IOException;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -105,6 +101,12 @@ public class PropertyRegister {
 	 */
 	int smallestUnfetchedPropertyIdNumber = 1;
 
+	/**
+	 * Properties that are known to be missing. This is used to avoid making
+	 * a request for this property again.
+	 */
+	final Set<String> knownMissing;
+
 	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
 			"P1921", ApiConnection.getWikidataApiConnection(),
 			Datamodel.SITE_WIKIDATA);
@@ -127,6 +129,7 @@ public class PropertyRegister {
 			ApiConnection apiConnection, String siteUri) {
 		this.uriPatternPropertyId = uriPatternPropertyId;
 		this.siteUri = siteUri;
+		this.knownMissing = new HashSet<>();
 		dataFetcher = new WikibaseDataFetcher(apiConnection, siteUri);
 	}
 
@@ -312,7 +315,10 @@ public class PropertyRegister {
 		// Don't do anything if all properties up to this index have already
 		// been fetched. In particular, don't try indefinitely to find a
 		// certain property type (maybe the property was deleted).
-		if (this.smallestUnfetchedPropertyIdNumber > propertyIdNumber) {
+		//
+		// If we previously tried to fetch this property and didn't
+		// find it, there is no point in trying again either.
+		if (this.smallestUnfetchedPropertyIdNumber > propertyIdNumber || knownMissing.contains(property.getId())) {
 			return;
 		}
 
@@ -376,6 +382,7 @@ public class PropertyRegister {
 		if (!this.datatypes.containsKey(property.getId())) {
 			logger.error("Failed to fetch type information for property "
 					+ property.getId() + " online.");
+			knownMissing.add(property.getId());
 		}
 	}
 }
