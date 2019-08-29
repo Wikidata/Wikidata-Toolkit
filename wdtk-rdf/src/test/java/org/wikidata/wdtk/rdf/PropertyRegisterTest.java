@@ -190,10 +190,13 @@ public class PropertyRegisterTest {
 	@Test
 	public void testGetMissingPropertyType() {
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		final int smallestBefore = this.propertyRegister.smallestUnfetchedPropertyIdNumber;
 		// Check twice to test fast failing on retry
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		assertEquals("no requests should be made if the property is known to be missing",
+				smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber);
 	}
 
 	@Test
