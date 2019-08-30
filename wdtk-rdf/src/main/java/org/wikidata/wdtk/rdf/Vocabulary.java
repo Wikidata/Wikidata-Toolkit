@@ -28,14 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 /**
  * This class contains static methods and constants that define the various OWL
@@ -594,6 +587,19 @@ public class Vocabulary {
 		updateMessageDigestWithInt(md, value.getUnit().hashCode());
 
 		return PREFIX_WIKIDATA_VALUE + bytesToHex(md.digest());
+	}
+
+	public static String getStatementRankUri(StatementRank rank) {
+		switch (rank) {
+			case NORMAL:
+				return Vocabulary.WB_NORMAL_RANK;
+			case PREFERRED:
+				return Vocabulary.WB_PREFERRED_RANK;
+			case DEPRECATED:
+				return Vocabulary.WB_DEPRECATED_RANK;
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 
 	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE / 8);

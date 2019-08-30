@@ -1,0 +1,4 @@
+
+<http://www.wikidata.org/Q10Snone> <http://wikiba.se/ontology#rank> <http://wikiba.se/ontology#NormalRank> .
+
+<http://www.wikidata.org/Q10Snone> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://wikiba.se/ontology#BestRank> .

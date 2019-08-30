@@ -126,7 +126,7 @@ public class RdfConverterTest {
 		StatementRank rank = StatementRank.DEPRECATED;
 		Resource subject = this.rdfFactory
 				.createIRI("http://www.wikidata.org/Q10Snone");
-		this.rdfConverter.writeStatementRankTriple(subject, rank);
+		this.rdfConverter.writeStatementRankTriple(subject, rank, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -134,10 +134,23 @@ public class RdfConverterTest {
 	}
 
 	@Test
+	public void testWriteStatementRankTripleBest() throws RDFHandlerException,
+			RDFParseException, IOException {
+		StatementRank rank = StatementRank.NORMAL;
+		Resource subject = this.rdfFactory
+				.createIRI("http://www.wikidata.org/Q10Snone");
+		this.rdfConverter.writeStatementRankTriple(subject, rank, true);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementRankTripleBest.rdf")), model);
+	}
+
+	@Test
 	public void testStatementSimpleValue() throws RDFHandlerException,
 			RDFParseException, IOException {
 		Statement statement = objectFactory.createStatement("Q100", "P227");
-		this.rdfConverter.writeStatement(statement);
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -153,7 +166,7 @@ public class RdfConverterTest {
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, PropertyIdValue.NULL)
 				.withValue(value).build();
-		this.rdfConverter.writeStatement(statement);
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -167,7 +180,7 @@ public class RdfConverterTest {
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, pid)
 				.withNoValue().build();
-		this.rdfConverter.writeStatement(statement);
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -316,12 +329,13 @@ public class RdfConverterTest {
 	public void testWriteSimpleStatements() throws RDFHandlerException,
 			RDFParseException, IOException {
 		ItemDocument document = createTestItemDocument();
-		this.rdfConverter.writeSimpleStatements(resource, document);
+		this.rdfConverter.setTasks(RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		this.rdfConverter.writeStatements(document);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
 				RdfTestHelpers
-						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/Q10> ;\n"
+						.parseRdf("\n<http://www.wikidata.org/Q100> <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/Q10> ;\n"
 								+ "<http://www.wikidata.org/prop/direct/P279> <http://www.wikidata.org/Q11> .\n"),
 				model);
 	}
