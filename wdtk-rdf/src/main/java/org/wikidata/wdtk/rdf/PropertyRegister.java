@@ -23,11 +23,21 @@ import java.io.IOException;
  */
 
 import java.util.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -383,6 +393,61 @@ public class PropertyRegister {
 			logger.error("Failed to fetch type information for property "
 					+ property.getId() + " online.");
 			knownMissing.add(property.getId());
+		}
+	}
+
+	/**
+	 * Fetches type information for all known properties from the given SPARQL endpoint, and adds it to the register.
+	 * The SPARQL endpoint must support the wikibase:propertyType predicate.
+	 *
+	 * @param endpoint URI of the SPARQL service to use, for example "https://query.wikidata.org/sparql"
+	 */
+	public void fetchUsingSPARQL(URI endpoint) {
+		try {
+			// this query is written without assuming any PREFIXES like wd: or wdt: to ensure it is as portable
+			// as possible (the PropertyRegister might be used with private Wikibase instances and SPARQL endpoints
+			// that don't have the same PREFIXES defined as the Wikidata Query Service)
+			final String query = "SELECT ?prop ?type ?uri WHERE { " +
+					"<" + this.siteUri + this.uriPatternPropertyId + "> <http://wikiba.se/ontology#directClaim> ?uriDirect . " +
+					"?prop <http://wikiba.se/ontology#propertyType> ?type . " +
+					"OPTIONAL { ?prop ?uriDirect ?uri } " +
+					"}";
+			final String queryString = "query=" + query + "&format=json";
+			final URL queryUrl = new URI(
+					endpoint.getScheme(), endpoint.getUserInfo(), endpoint.getHost(), endpoint.getPort(),
+					endpoint.getPath(), queryString, null
+			).toURL();
+
+			final HttpURLConnection connection = (HttpURLConnection) queryUrl.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", "Wikidata-Toolkit PropertyRegister");
+
+			final ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(connection.getInputStream());
+			JsonNode bindings = root.path("results").path("bindings");
+
+			final ValueFactory valueFactory = SimpleValueFactory.getInstance();
+			int count = 0;
+			int countPatterns = 0;
+			for (JsonNode binding : bindings) {
+				final IRI property = valueFactory.createIRI(binding.path("prop").path("value").asText());
+				final IRI propType = valueFactory.createIRI(binding.path("type").path("value").asText());
+
+				final PropertyIdValue propId = new PropertyIdValueImpl(property.getLocalName(), this.siteUri);
+				setPropertyType(propId, propType.toString());
+				count += 1;
+
+				if (binding.has("uri")) {
+					countPatterns += 1;
+					this.uriPatterns.put(propId.getId(), binding.path("uri").path("value").asText());
+				}
+			}
+
+			logger.info("Fetched type information for " + count + " properties (" +
+					countPatterns + " with URI patterns) using SPARQL.");
+		} catch(IOException|URISyntaxException e) {
+			logger.error("Error when trying to fetch property data using SPARQL: "
+					+ e.toString());
 		}
 	}
 }
