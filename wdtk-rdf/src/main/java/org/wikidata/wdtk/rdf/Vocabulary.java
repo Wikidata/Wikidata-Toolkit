@@ -493,8 +493,9 @@ public class Vocabulary {
 	 */
 	public static String getStatementUri(Statement statement) {
 		int i = statement.getStatementId().indexOf('$') + 1;
+		final String id = i <= 0 ? statement.getSubject().getId() : statement.getStatementId().substring(0, i-1);
 		return PREFIX_WIKIDATA_STATEMENT
-				+ statement.getSubject().getId() + "-"
+				+ id + "-"
 				+ statement.getStatementId().substring(i);
 	}
 
