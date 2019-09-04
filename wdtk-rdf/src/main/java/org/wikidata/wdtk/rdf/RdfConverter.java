@@ -105,7 +105,9 @@ public class RdfConverter extends AbstractRdfConverter {
     @Override
     public void writeSimpleStatement(Statement statement) {
         if (!hasTask(RdfSerializer.TASK_SIMPLE_STATEMENTS)) return;
-        super.writeSimpleStatement(statement);
+        if (statement.getQualifiers().size() == 0) {
+            super.writeSimpleStatement(statement);
+        }
     }
 
     @Override
