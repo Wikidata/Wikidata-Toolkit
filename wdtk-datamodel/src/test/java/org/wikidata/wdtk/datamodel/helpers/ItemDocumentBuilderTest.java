@@ -132,7 +132,7 @@ public class ItemDocumentBuilderTest {
 		ItemDocument copy = ItemDocumentBuilder.fromItemDocument(initial).withEntityId(ItemIdValue.NULL).build();
 		
 		assertEquals(ItemIdValue.NULL, copy.getEntityId());
-		assertEquals(label, copy.findLabel("fr"));
+		assertEquals("pleutre", copy.findLabel("fr"));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
