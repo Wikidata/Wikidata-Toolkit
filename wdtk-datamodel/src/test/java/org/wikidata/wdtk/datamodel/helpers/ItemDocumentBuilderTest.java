@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -117,6 +118,26 @@ public class ItemDocumentBuilderTest {
 		
 		ItemDocument withAlias = ItemDocumentBuilder.fromItemDocument(initial).withAlias(alias3).build();
 		assertEquals(withAlias.getAliases().get("fr"), Arrays.asList(alias1, alias2, alias3));
+	}
+	
+	@Test
+	public void testChangeOfSubjectId() {
+		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("pleutre",
+				"fr");
+		ItemDocument initial = Datamodel.makeItemDocument(i,
+				Collections.singletonList(label), Collections.emptyList(), Collections.emptyList(),
+				Collections.singletonList(sg),
+				Collections.emptyMap(), 4567);
+		
+		ItemDocument copy = ItemDocumentBuilder.fromItemDocument(initial).withEntityId(ItemIdValue.NULL).build();
+		
+		assertEquals(ItemIdValue.NULL, copy.getEntityId());
+		assertEquals(label, copy.findLabel("fr"));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidChangeOfSubjectId() {
+		ItemDocumentBuilder.forItemId(ItemIdValue.NULL).withRevisionId(1234).withEntityId(PropertyIdValue.NULL);
 	}
 
 	@Test(expected = IllegalStateException.class)

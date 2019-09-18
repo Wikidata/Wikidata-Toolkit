@@ -23,6 +23,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
@@ -122,6 +124,22 @@ public class ItemDocumentBuilder extends
 			ItemIdValue... badges) {
 		withSiteLink(factory.getSiteLink(title, siteKey, Arrays.asList(badges)));
 		return this;
+	}
+	
+	/**
+	 * Changes the entity value id for the constructed document.
+	 * See {@link EntityDocument#getEntityId()}.
+	 * 
+	 * @param entityId
+	 *          the entity id, which must be an ItemIdValue
+	 * @return builder object to continue construction
+	 */
+	@Override
+	public ItemDocumentBuilder withEntityId(EntityIdValue entityId) {
+		if (!(entityId instanceof ItemIdValue)) {
+			throw new IllegalArgumentException("The entity id of an ItemDocument must be an ItemIdValue.");
+		}
+		return super.withEntityId(entityId);
 	}
 
 	@Override
