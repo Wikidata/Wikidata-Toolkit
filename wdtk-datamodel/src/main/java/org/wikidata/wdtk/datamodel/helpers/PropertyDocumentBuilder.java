@@ -21,6 +21,8 @@ package org.wikidata.wdtk.datamodel.helpers;
  */
 
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -102,6 +104,22 @@ public class PropertyDocumentBuilder extends
 			PropertyIdValue propertyIdValue, String datatypeId) {
 		return forPropertyIdAndDatatype(propertyIdValue,
 				factory.getDatatypeIdValue(datatypeId));
+	}
+	
+	/**
+	 * Changes the entity value id for the constructed document.
+	 * See {@link EntityDocument#getEntityId()}.
+	 * 
+	 * @param entityId
+	 *          the entity id, which must be an ItemIdValue
+	 * @return builder object to continue construction
+	 */
+	@Override
+	public PropertyDocumentBuilder withEntityId(EntityIdValue entityId) {
+		if (!(entityId instanceof PropertyIdValue)) {
+			throw new IllegalArgumentException("The entity id of a PropertyDocument must be an PropertyIdValue.");
+		}
+		return super.withEntityId(entityId);
 	}
 
 	/**
