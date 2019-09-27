@@ -171,6 +171,7 @@ wdv:9e335050c59079e3f3c216b8cf077d07 a wikibase:TimeValue ;
 <http://www.wikidata.org/prop/reference/P549> a owl:DatatypeProperty .
 
 <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a wikibase:Reference ;
+    <http://www.wikidata.org/prop/reference/P112> "0306-11-03T13:07:06Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://www.wikidata.org/prop/reference/value/P112> wdv:9e335050c59079e3f3c216b8cf077d07 .
 	
 <http://www.wikidata.org/prop/novalue/P10> a owl:Class ;
