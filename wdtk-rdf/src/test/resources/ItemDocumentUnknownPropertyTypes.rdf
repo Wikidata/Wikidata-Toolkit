@@ -92,4 +92,5 @@ _:node1c3irgg7cx13 a <http://www.w3.org/2002/07/owl#Restriction> ;
 <http://www.wikidata.org/prop/reference/P549> a <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 
 <http://www.wikidata.org/reference/29b7008efe33a96335e456305edfb481> a <http://wikiba.se/ontology#Reference> ;
+    <http://www.wikidata.org/prop/reference/P112> "0306-11-03T13:07:06Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	<http://www.wikidata.org/prop/reference/value/P112> <http://www.wikidata.org/value/ec11d94e4f5bb7b00a79196734f49066> .
