@@ -20,10 +20,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -57,6 +54,12 @@ public class ReferenceImpl implements Reference {
 	 * which is not specified by the map.
 	 */
 	private final List<String> propertyOrder;
+
+	/**
+	 * The wikidata hash of this reference. Empty string if we don't have knowledge about the hash.fs
+	 */
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	private final String hash;
 	
 	/**
 	 * Constructor.
@@ -75,6 +78,8 @@ public class ReferenceImpl implements Reference {
 			propertyOrder.add(group.getProperty().getId());
 			snaks.put(group.getProperty().getId(), group.getSnaks());
 		}
+
+		hash = "";
 	}
 	
 	/**
@@ -83,12 +88,15 @@ public class ReferenceImpl implements Reference {
 	@JsonCreator
 	protected ReferenceImpl(
 			@JsonProperty("snaks") Map<String, List<SnakImpl>> snaks,
-			@JsonProperty("snaks-order") List<String> propertyOrder) {
+			@JsonProperty("snaks-order") List<String> propertyOrder,
+			@JsonProperty(value = "hash", defaultValue = "") String hash) {
+
 		this.snaks = new HashMap<>(snaks.size());
 		for(Map.Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
 			this.snaks.put(entry.getKey(), new ArrayList<>(entry.getValue()));
 		}
 		this.propertyOrder = propertyOrder;
+		this.hash = hash;
 	}
 
 	@JsonIgnore
@@ -110,6 +118,11 @@ public class ReferenceImpl implements Reference {
 	@JsonProperty("snaks")
 	public Map<String, List<Snak>> getSnaks() {
 		return Collections.unmodifiableMap(this.snaks);
+	}
+
+	@Override
+	public String getHash() {
+		return hash;
 	}
 
 	/**
