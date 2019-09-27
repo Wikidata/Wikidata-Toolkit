@@ -115,13 +115,41 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 		long year = value.getYear();
 
-		//Year normalization
+		//Year, month and day normalization
 		if (year == 0 || (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR)) {
 			year--;
 		}
 
-		String timestamp = String.format("%04d-%02d-%02dT%02d:%02d:%02dZ",
-				year, value.getMonth(), value.getDay(),
+		byte month = value.getMonth();
+		byte day = value.getDay();
+
+		if (value.getPrecision() < TimeValue.PREC_MONTH || month == 0) {
+			month = 1;
+		}
+
+		if (value.getPrecision() < TimeValue.PREC_DAY || day == 0) {
+			day = 1;
+		}
+
+		if (value.getPrecision() >= TimeValue.PREC_DAY) {
+			int maxDays = Byte.MAX_VALUE;
+			if (month == 2) {
+				maxDays = 29;
+			} else if (month <= 12) {
+				if (month % 2 == 1 && month <= 7 || month % 2 == 0 && month >= 8) {
+					maxDays = 31;
+				} else {
+					maxDays = 30;
+				}
+			}
+			if (day > maxDays) {
+				day = (byte)maxDays;
+			}
+		}
+
+		String minus = year < 0 ? "-" : "";
+		String timestamp = String.format("%s%04d-%02d-%02dT%02d:%02d:%02dZ",
+				minus, Math.abs(year), month, day,
 				value.getHour(), value.getMinute(), value.getSecond());
 		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
 	}
