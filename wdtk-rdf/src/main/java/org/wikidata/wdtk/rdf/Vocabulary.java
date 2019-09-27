@@ -24,9 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -538,11 +536,17 @@ public class Vocabulary {
 
 	public static String getReferenceUri(Reference reference) {
 		md.reset();
+		ArrayList<Integer> hashes = new ArrayList<>();
 		for (SnakGroup snakgroup : reference.getSnakGroups()) {
 			for (Snak snak : snakgroup) {
-				updateMessageDigestWithInt(md, snak.hashCode());
+				hashes.add(snak.hashCode());
 			}
 		}
+		reference.getSnakGroups().stream()
+				.flatMap(g -> g.getSnaks().stream())
+				.map(Objects::hashCode)
+				.sorted()
+				.forEach(i -> updateMessageDigestWithInt(md, i));
 
 		return PREFIX_WIKIDATA_REFERENCE + bytesToHex(md.digest());
 	}
