@@ -173,13 +173,17 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 			return null;
 		}
 
+		// SomeValueSnaks only have simple values not full values
+		if (this.currentPropertyContext == PropertyContext.VALUE || this.currentPropertyContext == PropertyContext.QUALIFIER || this.currentPropertyContext == PropertyContext.REFERENCE) {
+			return null;
+		}
+
 		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
 				this.currentPropertyContext);
 		Resource bnode = this.rdfWriter.getFreshBNode();
-		addSomeValuesRestriction(bnode, propertyUri, rangeUri);
 		try {
 			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					RdfWriter.RDF_TYPE, bnode);
+					this.rdfWriter.getUri(propertyUri), bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
