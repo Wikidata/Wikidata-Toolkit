@@ -35,13 +35,6 @@ _:node1a5d5pvl8x1 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P10> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P10> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x2 .
-
-_:node1a5d5pvl8x2 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P10> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
-
 <http://www.wikidata.org/prop/novalue/P569> a <http://www.w3.org/2002/07/owl#Class> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x3 .
 
@@ -49,24 +42,10 @@ _:node1a5d5pvl8x3 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P569> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P569> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x4 .
-
-_:node1a5d5pvl8x4 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P569> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
-	
 <http://www.wikidata.org/prop/novalue/P15> a <http://www.w3.org/2002/07/owl#Class> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x5 .
 
 _:node1a5d5pvl8x5 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P15> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P15> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x6 .
-
-_:node1a5d5pvl8x6 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P15> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 	
@@ -74,13 +53,6 @@ _:node1a5d5pvl8x6 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x7 .
 
 _:node1a5d5pvl8x7 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P549> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2001/XMLSchema#string> .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P549> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1a5d5pvl8x8 .
-
-_:node1a5d5pvl8x8 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P549> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2001/XMLSchema#string> .
 
@@ -127,8 +99,6 @@ _:node1a5d5pvl8x8 a <http://www.w3.org/2002/07/owl#Restriction> ;
 <http://www.wikidata.org/prop/qualifier/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://www.wikidata.org/prop/reference/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P10> a <http://www.w3.org/2002/07/owl#Class> .
 
 <http://www.wikidata.org/prop/P549> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 

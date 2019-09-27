@@ -35,13 +35,6 @@ _:node1c3irgg7cx9 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P569> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P569> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1c3irgg7cx10 .
-
-_:node1c3irgg7cx10 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P569> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
-
 <http://www.wikidata.org/prop/P569> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://www.wikidata.org/prop/statement/P569> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -63,13 +56,6 @@ _:node1c3irgg7cx11 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P15> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P15> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1c3irgg7cx12 .
-
-_:node1c3irgg7cx12 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P15> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/07/owl#Thing> .
-
 <http://www.wikidata.org/prop/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
 
 <http://www.wikidata.org/prop/statement/P15> a <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -88,13 +74,6 @@ _:node1c3irgg7cx12 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#complementOf> _:node1c3irgg7cx13 .
 
 _:node1c3irgg7cx13 a <http://www.w3.org/2002/07/owl#Restriction> ;
-	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P549> ;
-	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2001/XMLSchema#string> .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P549> a <http://www.w3.org/2002/07/owl#Class> ;
-	<http://www.w3.org/2002/07/owl#complementOf> _:node1c3irgg7cx14 .
-
-_:node1c3irgg7cx14 a <http://www.w3.org/2002/07/owl#Restriction> ;
 	<http://www.w3.org/2002/07/owl#onProperty> <http://www.wikidata.org/P549> ;
 	<http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2001/XMLSchema#string> .
 

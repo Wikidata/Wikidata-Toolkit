@@ -145,10 +145,6 @@ public class OwlDeclarationBuffer {
 				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
 						Vocabulary.OWL_THING, Vocabulary.getPropertyUri(
 								propertyIdValue, PropertyContext.NO_VALUE));
-				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
-						Vocabulary.OWL_THING, Vocabulary.getPropertyUri(
-								propertyIdValue,
-								PropertyContext.NO_QUALIFIER_VALUE));
 			}
 			if (fullStatements) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
@@ -189,10 +185,6 @@ public class OwlDeclarationBuffer {
 				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
 						Vocabulary.XSD_STRING, Vocabulary.getPropertyUri(
 								propertyIdValue, PropertyContext.NO_VALUE));
-				writeNoValueRestriction(rdfWriter, propertyIdValue.getIri(),
-						Vocabulary.XSD_STRING, Vocabulary.getPropertyUri(
-								propertyIdValue,
-								PropertyContext.NO_QUALIFIER_VALUE));
 			}
 			if (fullStatements) {
 				rdfWriter.writeTripleValueObject(Vocabulary.getPropertyUri(
