@@ -535,6 +535,11 @@ public class Vocabulary {
 	}
 
 	public static String getReferenceUri(Reference reference) {
+		final String hash = reference.getHash();
+		if (!hash.isEmpty()) {
+			return PREFIX_WIKIDATA_REFERENCE + hash;
+		}
+
 		md.reset();
 		ArrayList<Integer> hashes = new ArrayList<>();
 		for (SnakGroup snakgroup : reference.getSnakGroups()) {
