@@ -9,5 +9,4 @@
 	<http://wikiba.se/ontology#qualifierValue> <http://www.wikidata.org/prop/qualifier/value/P1> ;
 	<http://wikiba.se/ontology#reference> <http://www.wikidata.org/prop/reference/P1> ;
 	<http://wikiba.se/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P1> ;
-	<http://wikiba.se/ontology#novalue> <http://www.wikidata.org/prop/novalue/P1>;
-	<http://wikiba.se/ontology#noqualifiervalue> <http://www.wikidata.org/prop/noqualifiervalue/P1> .
+	<http://wikiba.se/ontology#novalue> <http://www.wikidata.org/prop/novalue/P1> .

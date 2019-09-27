@@ -16,5 +16,3 @@
 <http://www.wikidata.org/P17> <http://wikiba.se/ontology#referenceValue> <http://www.wikidata.org/prop/reference/value/P17> .
 
 <http://www.wikidata.org/P17> <http://wikiba.se/ontology#novalue> <http://www.wikidata.org/prop/novalue/P17> .
-
-<http://www.wikidata.org/P17> <http://wikiba.se/ontology#noqualifiervalue> <http://www.wikidata.org/prop/noqualifiervalue/P17> .

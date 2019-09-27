@@ -65,7 +65,7 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
-	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
+	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = PREFIX_WIKIDATA_NO_VALUE;
 
 	public static final String PREFIX_WIKIDATA_VALUE = "http://www.wikidata.org/value/";
 
@@ -224,7 +224,7 @@ public class Vocabulary {
 	 * Class for Wikibase globe coordinates values.
 	 */
 	public static final String WB_GLOBE_COORDINATES_VALUE = PREFIX_WBONTO
-			+ "GlobeCoordinatesValue";
+			+ "GlobecoordinateValue";
 	static {
 		VOCABULARY_TYPES.put(WB_GLOBE_COORDINATES_VALUE, OWL_CLASS);
 	}
@@ -467,8 +467,7 @@ public class Vocabulary {
 	 * Property for connecting Wikibase property entities to their no-value
 	 * classes for qualifiers.
 	 */
-	public static final String WB_NO_QUALIFIER_VALUE_PROP = PREFIX_WBONTO
-			+ "noqualifiervalue";
+	public static final String WB_NO_QUALIFIER_VALUE_PROP = WB_NO_VALUE_PROP;
 	static {
 		VOCABULARY_TYPES.put(WB_NO_QUALIFIER_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}

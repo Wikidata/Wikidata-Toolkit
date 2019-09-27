@@ -49,7 +49,7 @@ wikibase:geoPrecision a owl:DatatypeProperty .
 
 wikibase:geoLongitude a owl:DatatypeProperty .
 
-wikibase:GlobeCoordinatesValue a owl:Class .
+wikibase:GlobecoordinateValue a owl:Class .
 
 wikibase:Reference a owl:Class .
 
@@ -60,8 +60,6 @@ wikibase:referenceValue a owl:ObjectProperty .
 schema:description a owl:DatatypeProperty .
 
 schema:Article a owl:Class .
-
-wikibase:noqualifiervalue a owl:ObjectProperty .
 
 wikibase:novalue a owl:ObjectProperty .
 
@@ -182,24 +180,10 @@ _:node1a5d6h9m9x1 a owl:Restriction ;
 	owl:onProperty <http://www.wikidata.org/P10> ;
 	owl:someValuesFrom owl:Thing .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P10> a owl:Class ;
-	owl:complementOf _:node1a5d6h9m9x2 .
-
-_:node1a5d6h9m9x2 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/P10> ;
-	owl:someValuesFrom owl:Thing .
-
 <http://www.wikidata.org/prop/novalue/P569> a owl:Class ;
 	owl:complementOf _:node1a5d6h9m9x3 .
 
 _:node1a5d6h9m9x3 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/P569> ;
-	owl:someValuesFrom owl:Thing .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P569> a owl:Class ;
-	owl:complementOf _:node1a5d6h9m9x4 .
-
-_:node1a5d6h9m9x4 a owl:Restriction ;
 	owl:onProperty <http://www.wikidata.org/P569> ;
 	owl:someValuesFrom owl:Thing .
 
@@ -210,23 +194,9 @@ _:node1a5d6h9m9x5 a owl:Restriction ;
 	owl:onProperty <http://www.wikidata.org/P15> ;
 	owl:someValuesFrom owl:Thing .
 
-<http://www.wikidata.org/prop/noqualifiervalue/P15> a owl:Class ;
-	owl:complementOf _:node1a5d6h9m9x6 .
-
-_:node1a5d6h9m9x6 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/P15> ;
-	owl:someValuesFrom owl:Thing .
-
 <http://www.wikidata.org/prop/novalue/P549> a owl:Class ;
 	owl:complementOf _:node1a5d6h9m9x7 .
 
 _:node1a5d6h9m9x7 a owl:Restriction ;
-	owl:onProperty <http://www.wikidata.org/P549> ;
-	owl:someValuesFrom xsd:string .
-
-<http://www.wikidata.org/prop/noqualifiervalue/P549> a owl:Class ;
-	owl:complementOf _:node1a5d6h9m9x8 .
-
-_:node1a5d6h9m9x8 a owl:Restriction ;
 	owl:onProperty <http://www.wikidata.org/P549> ;
 	owl:someValuesFrom xsd:string .
