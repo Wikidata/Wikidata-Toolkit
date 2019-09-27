@@ -52,7 +52,7 @@ public class QuantityValueConverter extends
 			if (simple) {
 				this.rdfConversionBuffer.addDatatypeProperty(propertyIdValue);
 				return this.rdfWriter.getLiteral(value.getNumericValue()
-						.toString(), RdfWriter.XSD_DECIMAL);
+						.toPlainString(), RdfWriter.XSD_DECIMAL);
 			} else {
 				IRI valueUri = this.rdfWriter.getUri(Vocabulary.getQuantityValueUri(value));
 
@@ -73,16 +73,16 @@ public class QuantityValueConverter extends
 		this.rdfWriter.writeTripleValueObject(resource, RdfWriter.RDF_TYPE,
 				RdfWriter.WB_QUANTITY_VALUE);
 		this.rdfWriter.writeTripleLiteralObject(resource,
-				RdfWriter.WB_QUANTITY_AMOUNT, value.getNumericValue().toString(),
+				RdfWriter.WB_QUANTITY_AMOUNT, value.getNumericValue().toPlainString(),
 				RdfWriter.XSD_DECIMAL);
 		if(value.getLowerBound() != null) {
 			this.rdfWriter.writeTripleLiteralObject(resource,
-					RdfWriter.WB_QUANTITY_LOWER_BOUND, value.getLowerBound().toString(),
+					RdfWriter.WB_QUANTITY_LOWER_BOUND, value.getLowerBound().toPlainString(),
 					RdfWriter.XSD_DECIMAL);
 		}
 		if(value.getUpperBound() != null) {
 			this.rdfWriter.writeTripleLiteralObject(resource,
-					RdfWriter.WB_QUANTITY_UPPER_BOUND, value.getUpperBound().toString(),
+					RdfWriter.WB_QUANTITY_UPPER_BOUND, value.getUpperBound().toPlainString(),
 					RdfWriter.XSD_DECIMAL);
 		}
 		String unitIri = ("1".equals(value.getUnit()))
