@@ -111,6 +111,8 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 * @return the RDF literal
 	 */
 	private static Literal getTimeLiteral(TimeValue value, RdfWriter rdfWriter) {
+		value = value.toGregorian().orElse(value);
+
 		long year = value.getYear();
 
 		//Year normalization

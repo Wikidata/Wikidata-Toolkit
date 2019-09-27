@@ -20,6 +20,8 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
+import java.util.Optional;
+
 /**
  * Time values represent points and intervals in time, and additional
  * information about their format. Information includes a specific time point,
@@ -278,5 +280,14 @@ public interface TimeValue extends Value {
 	 *         precision
 	 */
 	int getAfterTolerance();
+
+	/**
+	 * Convert the value to the Gregorian calendar, if possible.
+	 * This conversion can fail if not enough information is available
+	 * (for example, we need at least day precision to convert from Julian to Gregorian).
+	 *
+	 * @return a TimeValue that uses the Gregorian calendar, or {@ref Optional::empty} if the conversion failed.
+	 */
+	Optional<TimeValue> toGregorian();
 
 }

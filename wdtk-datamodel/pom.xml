@@ -41,6 +41,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${jacksonVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threeten-extra</artifactId>
+			<version>${threetenVersion}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

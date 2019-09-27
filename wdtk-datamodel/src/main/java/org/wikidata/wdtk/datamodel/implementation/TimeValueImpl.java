@@ -20,7 +20,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang3.Validate;
+import org.threeten.extra.chrono.JulianDate;
 import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
@@ -28,11 +34,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Jackson implementation of {@link TimeValue}.
@@ -205,6 +208,32 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
+	}
+
+	@Override
+	public Optional<TimeValue> toGregorian() {
+		// already in Gregorian calendar
+		if (this.getPreferredCalendarModel().equals(TimeValue.CM_GREGORIAN_PRO)) {
+			return Optional.of(this);
+		}
+
+		// convert Julian
+		if (this.getPreferredCalendarModel().equals(TimeValue.CM_JULIAN_PRO)
+				&& this.getPrecision() >= TimeValue.PREC_DAY
+				&& this.value.year > Integer.MIN_VALUE && this.value.year < Integer.MAX_VALUE
+		) {
+			final JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
+			final LocalDate date = LocalDate.from(julian);
+			return Optional.of(new TimeValueImpl(
+					date.getYear(), (byte)date.getMonth().getValue(), (byte)date.getDayOfMonth(),
+					this.value.hour, this.value.minute, this.value.second,
+					(byte)this.value.precision, this.value.before, this.value.after,
+					this.value.timezone, TimeValue.CM_GREGORIAN_PRO
+			));
+
+		}
+
+		return Optional.empty();
 	}
 
 	/**
