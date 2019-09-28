@@ -115,9 +115,27 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 		long year = value.getYear();
 
-		//Year, month and day normalization
-		if (year == 0 || (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR)) {
-			year--;
+		/* https://www.mediawiki.org/wiki/Wikibase/DataModel/JSON#time says the following about the JSON mapping:
+
+		  The format used for Gregorian and Julian dates use a notation resembling ISO 8601. E.g. “+1994-01-01T00:00:00Z”.
+		  The year is represented by at least four digits, zeros are added on the left side as needed.
+		  Years BCE are represented as negative numbers, using the historical numbering, in which year 0 is undefined,
+		   and the year 1 BCE is represented as -0001, the year 44 BCE is represented as -0044, etc.,
+		   like XSD 1.0 (ISO 8601:1988) does.
+		  In contrast, the RDF mapping relies on XSD 1.1 (ISO 8601:2004) dates that use the proleptic Gregorian calendar
+		  and astronomical year numbering, where the year 1 BCE is represented as +0000 and the year 44 BCE
+		  is represented as -0043.
+		*/
+
+		boolean yearZero = false;
+		// year zero is undefined
+		if (year == 0) {
+			yearZero = true;
+		}
+
+		// map negative dates from ISO 8601 to XSD 1.1
+		if (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR) {
+			year++;
 		}
 
 		byte month = value.getMonth();
@@ -131,7 +149,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 			day = 1;
 		}
 
-		if (value.getPrecision() >= TimeValue.PREC_DAY) {
+		if (value.getPrecision() >= TimeValue.PREC_DAY && !yearZero) {
 			int maxDays = Byte.MAX_VALUE;
 			if (month == 2) {
 				maxDays = 29;
@@ -151,6 +169,9 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		String timestamp = String.format("%s%04d-%02d-%02dT%02d:%02d:%02dZ",
 				minus, Math.abs(year), month, day,
 				value.getHour(), value.getMinute(), value.getSecond());
+		if (yearZero) {
+			return rdfWriter.getLiteral("+" + timestamp);
+		}
 		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
 	}
 
