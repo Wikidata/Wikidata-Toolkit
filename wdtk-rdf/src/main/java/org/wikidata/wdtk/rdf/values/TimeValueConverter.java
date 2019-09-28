@@ -33,6 +33,8 @@ import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
+import java.time.Month;
+
 public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 	public TimeValueConverter(RdfWriter rdfWriter,
@@ -133,7 +135,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 			yearZero = true;
 		}
 
-		// map negative dates from ISO 8601 to XSD 1.1
+		// map negative dates from historical numbering to XSD 1.1
 		if (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR) {
 			year++;
 		}
@@ -151,14 +153,9 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 		if (value.getPrecision() >= TimeValue.PREC_DAY && !yearZero) {
 			int maxDays = Byte.MAX_VALUE;
-			if (month == 2) {
-				maxDays = 29;
-			} else if (month <= 12) {
-				if (month % 2 == 1 && month <= 7 || month % 2 == 0 && month >= 8) {
-					maxDays = 31;
-				} else {
-					maxDays = 30;
-				}
+			if (month > 0 && month < 13) {
+				boolean leap =  (year % 4L) == 0L && (year % 100L != 0L || year % 400L == 0L);
+				maxDays = Month.of(month).length(leap);
 			}
 			if (day > maxDays) {
 				day = (byte)maxDays;
