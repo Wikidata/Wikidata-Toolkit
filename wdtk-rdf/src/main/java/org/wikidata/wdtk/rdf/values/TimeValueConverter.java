@@ -128,13 +128,6 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		  and astronomical year numbering, where the year 1 BCE is represented as +0000 and the year 44 BCE
 		  is represented as -0043.
 		*/
-
-		boolean yearZero = false;
-		// year zero is undefined
-		if (year == 0) {
-			yearZero = true;
-		}
-
 		// map negative dates from historical numbering to XSD 1.1
 		if (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR) {
 			year++;
@@ -151,7 +144,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 			day = 1;
 		}
 
-		if (value.getPrecision() >= TimeValue.PREC_DAY && !yearZero) {
+		if (value.getPrecision() >= TimeValue.PREC_DAY && year != 0) {
 			int maxDays = Byte.MAX_VALUE;
 			if (month > 0 && month < 13) {
 				boolean leap =  (year % 4L) == 0L && (year % 100L != 0L || year % 400L == 0L);
@@ -166,7 +159,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		String timestamp = String.format("%s%04d-%02d-%02dT%02d:%02d:%02dZ",
 				minus, Math.abs(year), month, day,
 				value.getHour(), value.getMinute(), value.getSecond());
-		if (yearZero) {
+		if (year == 0) {
 			return rdfWriter.getLiteral("+" + timestamp);
 		}
 		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
