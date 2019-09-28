@@ -34,6 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -222,14 +223,18 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 				&& this.getPrecision() >= TimeValue.PREC_DAY
 				&& this.value.year > Integer.MIN_VALUE && this.value.year < Integer.MAX_VALUE
 		) {
-			final JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
-			final LocalDate date = LocalDate.from(julian);
-			return Optional.of(new TimeValueImpl(
-					date.getYear(), (byte)date.getMonth().getValue(), (byte)date.getDayOfMonth(),
-					this.value.hour, this.value.minute, this.value.second,
-					(byte)this.value.precision, this.value.before, this.value.after,
-					this.value.timezone, TimeValue.CM_GREGORIAN_PRO
-			));
+			try {
+				final JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
+				final LocalDate date = LocalDate.from(julian);
+				return Optional.of(new TimeValueImpl(
+						date.getYear(), (byte) date.getMonth().getValue(), (byte) date.getDayOfMonth(),
+						this.value.hour, this.value.minute, this.value.second,
+						(byte) this.value.precision, this.value.before, this.value.after,
+						this.value.timezone, TimeValue.CM_GREGORIAN_PRO
+				));
+			} catch(DateTimeException e) {
+				return Optional.empty();
+			}
 
 		}
 
