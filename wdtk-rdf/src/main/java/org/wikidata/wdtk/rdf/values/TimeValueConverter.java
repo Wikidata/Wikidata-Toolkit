@@ -113,6 +113,11 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 * @return the RDF literal
 	 */
 	private static Literal getTimeLiteral(TimeValue value, RdfWriter rdfWriter) {
+		/* we need to check for year zero before julian date conversion,
+		 since that can change the year (if the date is 1 Jan 1 for example)
+		*/
+		boolean yearZero = value.getYear() == 0;
+
 		value = value.toGregorian().orElse(value);
 
 		long year = value.getYear();
@@ -136,15 +141,15 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		byte month = value.getMonth();
 		byte day = value.getDay();
 
-		if (value.getPrecision() < TimeValue.PREC_MONTH || month == 0) {
+		if ((value.getPrecision() < TimeValue.PREC_MONTH || month == 0) && !yearZero) {
 			month = 1;
 		}
 
-		if (value.getPrecision() < TimeValue.PREC_DAY || day == 0) {
+		if ((value.getPrecision() < TimeValue.PREC_DAY || day == 0) && !yearZero) {
 			day = 1;
 		}
 
-		if (value.getPrecision() >= TimeValue.PREC_DAY && year != 0) {
+		if (value.getPrecision() >= TimeValue.PREC_DAY && !yearZero) {
 			int maxDays = Byte.MAX_VALUE;
 			if (month > 0 && month < 13) {
 				boolean leap =  (year % 4L) == 0L && (year % 100L != 0L || year % 400L == 0L);
@@ -159,7 +164,7 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		String timestamp = String.format("%s%04d-%02d-%02dT%02d:%02d:%02dZ",
 				minus, Math.abs(year), month, day,
 				value.getHour(), value.getMinute(), value.getSecond());
-		if (year == 0) {
+		if (yearZero) {
 			return rdfWriter.getLiteral("+" + timestamp);
 		}
 		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
