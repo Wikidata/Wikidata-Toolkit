@@ -55,7 +55,7 @@ public interface Reference {
 	 * Since the calculation is hard to reproduce, this is only available if the reference was read
 	 * from a dump that contains the hash.
 	 *
-	 * @return the hash of the reference, if available, otherwise empty string.
+	 * @return the hash of the reference, if available, otherwise null.
 	 */
 	String getHash();
 }
