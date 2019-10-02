@@ -58,7 +58,6 @@ public class ReferenceImpl implements Reference {
 	/**
 	 * The wikidata hash of this reference. Empty string if we don't have knowledge about the hash.fs
 	 */
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private final String hash;
 	
 	/**
@@ -79,7 +78,7 @@ public class ReferenceImpl implements Reference {
 			snaks.put(group.getProperty().getId(), group.getSnaks());
 		}
 
-		hash = "";
+		hash = null;
 	}
 	
 	/**
@@ -89,7 +88,7 @@ public class ReferenceImpl implements Reference {
 	protected ReferenceImpl(
 			@JsonProperty("snaks") Map<String, List<SnakImpl>> snaks,
 			@JsonProperty("snaks-order") List<String> propertyOrder,
-			@JsonProperty(value = "hash", defaultValue = "") String hash) {
+			@JsonProperty(value = "hash") String hash) {
 
 		this.snaks = new HashMap<>(snaks.size());
 		for(Map.Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
@@ -121,6 +120,7 @@ public class ReferenceImpl implements Reference {
 	}
 
 	@Override
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public String getHash() {
 		return hash;
 	}

@@ -535,7 +535,7 @@ public class Vocabulary {
 
 	public static String getReferenceUri(Reference reference) {
 		final String hash = reference.getHash();
-		if (!hash.isEmpty()) {
+		if (hash != null) {
 			return PREFIX_WIKIDATA_REFERENCE + hash;
 		}
 
