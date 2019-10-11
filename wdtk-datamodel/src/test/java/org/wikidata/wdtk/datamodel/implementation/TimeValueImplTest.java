@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class TimeValueImplTest {
 
@@ -149,6 +150,25 @@ public class TimeValueImplTest {
 	@Test
 	public void testToJava() throws IOException {
 		assertEquals(t1, mapper.readValue(JSON_TIME_VALUE, ValueImpl.class));
+	}
+
+	@Test
+	public void testJulianToGregorian() {
+		final TimeValue tJulian = new TimeValueImpl(1143, (byte)10, (byte) 5, (byte) 1, (byte) 2,
+				(byte) 0, TimeValue.PREC_MINUTE, 0, 1, 0,
+				TimeValue.CM_JULIAN_PRO);
+		final TimeValue gregorian = tJulian.toGregorian().orElseThrow(NoSuchElementException::new);
+		assertEquals(1143, gregorian.getYear());
+		assertEquals(10, gregorian.getMonth());
+		assertEquals(12, gregorian.getDay());
+		assertEquals(1, gregorian.getHour());
+		assertEquals(2, gregorian.getMinute());
+		assertEquals(0, gregorian.getSecond());
+		assertEquals(TimeValue.PREC_MINUTE, gregorian.getPrecision());
+		assertEquals(0, gregorian.getBeforeTolerance());
+		assertEquals(1, gregorian.getAfterTolerance());
+		assertEquals(0, gregorian.getTimezoneOffset());
+		assertEquals(TimeValue.CM_GREGORIAN_PRO, gregorian.getPreferredCalendarModel());
 	}
 
 }
