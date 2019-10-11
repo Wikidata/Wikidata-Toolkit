@@ -47,7 +47,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O>, O extends TermedStatementDocument>
 		extends AbstractDataObjectBuilder<T, O> {
 
-	final EntityIdValue entityIdValue;
+	EntityIdValue entityIdValue;
 	final ArrayList<MonolingualTextValue> labels = new ArrayList<>();
 	final ArrayList<MonolingualTextValue> descriptions = new ArrayList<>();
 	final ArrayList<MonolingualTextValue> aliases = new ArrayList<>();
@@ -96,6 +96,19 @@ public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O
 	 */
 	public T withRevisionId(long revisionId) {
 		this.revisionId = revisionId;
+		return getThis();
+	}
+	
+	/**
+	 * Changes the entity value id for the constructed document.
+	 * See {@link EntityDocument#getEntityId()}.
+	 * 
+	 * @param entityId
+	 *          the entity id
+	 * @return builder object to continue construction
+	 */
+	public T withEntityId(EntityIdValue entityId) {
+		this.entityIdValue = entityId;
 		return getThis();
 	}
 

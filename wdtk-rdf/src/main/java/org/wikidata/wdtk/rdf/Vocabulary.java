@@ -563,6 +563,7 @@ public class Vocabulary {
 		md.update(value.getHour());
 		md.update(value.getMinute());
 		md.update(value.getSecond());
+		md.update(value.getPrecision());
 		updateMessageDigestWithString(md, value.getPreferredCalendarModel());
 		updateMessageDigestWithInt(md, value.getBeforeTolerance());
 		updateMessageDigestWithInt(md, value.getAfterTolerance());
