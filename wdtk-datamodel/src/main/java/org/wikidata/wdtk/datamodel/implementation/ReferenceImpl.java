@@ -56,7 +56,7 @@ public class ReferenceImpl implements Reference {
 	private final List<String> propertyOrder;
 
 	/**
-	 * The wikidata hash of this reference. Empty string if we don't have knowledge about the hash.fs
+	 * The wikidata hash of this reference. null if we don't have knowledge about the hash.
 	 */
 	private final String hash;
 	
@@ -72,13 +72,12 @@ public class ReferenceImpl implements Reference {
 	public ReferenceImpl(List<SnakGroup> groups) {
 		propertyOrder = new ArrayList<>(groups.size());
 		snaks = new HashMap<>(groups.size());
+		hash = null;
 
 		for(SnakGroup group : groups) {
 			propertyOrder.add(group.getProperty().getId());
 			snaks.put(group.getProperty().getId(), group.getSnaks());
 		}
-
-		hash = null;
 	}
 	
 	/**
@@ -88,7 +87,7 @@ public class ReferenceImpl implements Reference {
 	protected ReferenceImpl(
 			@JsonProperty("snaks") Map<String, List<SnakImpl>> snaks,
 			@JsonProperty("snaks-order") List<String> propertyOrder,
-			@JsonProperty(value = "hash") String hash) {
+			@JsonProperty("hash") String hash) {
 
 		this.snaks = new HashMap<>(snaks.size());
 		for(Map.Entry<String, List<SnakImpl>> entry : snaks.entrySet()) {
