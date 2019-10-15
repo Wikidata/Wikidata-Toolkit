@@ -154,14 +154,14 @@ public class TestObjectFactory {
 						baseIri)), Collections.<SnakGroup> emptyList());
 		statements1.add(factory.getStatement(claim1,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
+				"Q10$none"));
 		statementGroups.add(factory.getStatementGroup(statements1));
 
 		List<Statement> statements2 = new ArrayList<Statement>();
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				createValueSnakTimeValue("P569"), createQualifiers());
 		statements2.add(factory.getStatement(claim2, createReferences(),
-				StatementRank.NORMAL, "none2"));
+				StatementRank.NORMAL, "Q10$none2"));
 		statementGroups.add(factory.getStatementGroup(statements2));
 		List<Statement> statements3 = new ArrayList<Statement>();
 		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
@@ -169,7 +169,7 @@ public class TestObjectFactory {
 				Collections.<SnakGroup> emptyList());
 		statements3.add(factory.getStatement(claim3,
 				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none3"));
+				"Q10$none3"));
 		statementGroups.add(factory.getStatementGroup(statements3));
 		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),

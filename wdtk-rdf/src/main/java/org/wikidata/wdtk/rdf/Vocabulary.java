@@ -27,6 +27,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.wikibaseapi.GuidGenerator;
+import org.wikidata.wdtk.wikibaseapi.RandomGuidGenerator;
 
 /**
  * This class contains static methods and constants that define the various OWL
@@ -46,6 +48,8 @@ public class Vocabulary {
 					"Your Java does not support MD5 hashes. You should be concerned.");
 		}
 	}
+
+	private final static GuidGenerator GUID_GENERATOR = new RandomGuidGenerator();
 
 	// Prefixes
 	public static final String PREFIX_WIKIDATA_STATEMENT = "http://www.wikidata.org/entity/statement/";
@@ -489,11 +493,11 @@ public class Vocabulary {
 	 * @return the URI
 	 */
 	public static String getStatementUri(Statement statement) {
-		int i = statement.getStatementId().indexOf('$') + 1;
-		final String id = i <= 0 ? statement.getSubject().getId() : statement.getStatementId().substring(0, i-1);
-		return PREFIX_WIKIDATA_STATEMENT
-				+ id + "-"
-				+ statement.getStatementId().substring(i);
+		String statementId = statement.getStatementId();
+		if (statementId == null || statementId.isEmpty()) {
+			statementId = GUID_GENERATOR.freshStatementId(statement.getSubject().getId());
+		}
+		return PREFIX_WIKIDATA_STATEMENT + statementId.replaceFirst("\\$", "-");
 	}
 
 	/**
