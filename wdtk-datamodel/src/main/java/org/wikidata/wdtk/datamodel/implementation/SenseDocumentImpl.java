@@ -42,7 +42,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDocument {
 
-	private Map<String,MonolingualTextValue> glosses;
+	private final Map<String,MonolingualTextValue> glosses;
 
 	/**
 	 * Constructor.
@@ -90,15 +90,14 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 		}
 		this.glosses = glosses;
 	}
-	
+
 	/**
-	 * Protected constructor, meant to be used to create modified copies
-	 * of instances.
+	 * Copy constructor, used when creating modified copies of senses.
 	 */
-	protected SenseDocumentImpl(
+	private SenseDocumentImpl(
 			SenseIdValue subject,
-			Map<String,MonolingualTextValue> glosses,
-			Map<String, List<Statement>> claims, 
+			Map<String, MonolingualTextValue> glosses,
+			Map<String, List<Statement>> claims,
 			long revisionId) {
 		super(subject, claims, revisionId);
 		this.glosses = glosses;
@@ -156,6 +155,13 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 				glosses,
 				claims,
 				newRevisionId);
+	}
+
+	@Override
+	public SenseDocument withGloss(MonolingualTextValue gloss) {
+		Map<String, MonolingualTextValue> newGlosses = new HashMap<>(glosses);
+		newGlosses.put(gloss.getLanguageCode(), gloss);
+		return new SenseDocumentImpl(getEntityId(), newGlosses, claims, revisionId);
 	}
 
 	@Override

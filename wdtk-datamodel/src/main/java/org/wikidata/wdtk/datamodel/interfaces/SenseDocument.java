@@ -51,6 +51,8 @@ public interface SenseDocument extends StatementDocument {
 	 */
 	@Override
 	SenseDocument withRevisionId(long newRevisionId);
+
+	SenseDocument withGloss(MonolingualTextValue gloss);
 	
 	/**
 	 * Returns a new version of this document which includes the

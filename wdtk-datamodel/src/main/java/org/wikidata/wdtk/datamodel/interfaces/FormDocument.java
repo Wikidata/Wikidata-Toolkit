@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface for lexemes forms.
@@ -52,4 +53,39 @@ public interface FormDocument extends StatementDocument {
 	 * @return item ids
 	 */
 	List<ItemIdValue> getGrammaticalFeatures();
+
+	/**
+	 * Returns a copy of this document with an updated revision id.
+	 */
+	@Override
+	FormDocument withRevisionId(long newRevisionId);
+
+	FormDocument withRepresentation(MonolingualTextValue representation);
+
+	FormDocument withGrammaticalFeature(ItemIdValue grammaticalFeature);
+
+	/**
+	 * Returns a new version of this document which includes the
+	 * statement provided. If the identifier of this statement matches
+	 * that of any other statement for the same property, then the
+	 * existing statement will be replaced by the new one. Otherwise,
+	 * the new statement will be added at the end of the list of statements
+	 * in this group.
+	 *
+	 * @param statement
+	 * 		the statement to add or update in the document
+	 */
+	@Override
+	FormDocument withStatement(Statement statement);
+
+	/**
+	 * Returns a new version of this document where all statements matching
+	 * any of the statement ids provided have been removed. These statements
+	 * can use different properties.
+	 *
+	 * @param statementIds
+	 *       the identifiers of the statements to remove
+	 */
+	@Override
+	FormDocument withoutStatementIds(Set<String> statementIds);
 }
