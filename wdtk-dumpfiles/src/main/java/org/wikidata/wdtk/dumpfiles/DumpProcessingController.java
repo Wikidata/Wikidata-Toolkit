@@ -100,7 +100,7 @@ public class DumpProcessingController {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class ListenerRegistration {
+	static class ListenerRegistration {
 		final String model;
 		final boolean onlyCurrentRevisions;
 
@@ -193,8 +193,8 @@ public class DumpProcessingController {
 	 */
 	public DumpProcessingController(String projectName) {
 		this.projectName = projectName;
-		this.entityDocumentProcessors = new HashMap<ListenerRegistration, List<EntityDocumentProcessor>>();
-		this.mwRevisionProcessors = new HashMap<ListenerRegistration, List<MwRevisionProcessor>>();
+		this.entityDocumentProcessors = new HashMap<>();
+		this.mwRevisionProcessors = new HashMap<>();
 
 		try {
 			setDownloadDirectory(System.getProperty("user.dir"));

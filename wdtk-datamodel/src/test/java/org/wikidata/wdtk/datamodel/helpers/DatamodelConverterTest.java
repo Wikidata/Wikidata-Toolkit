@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class DatamodelConverterTest {
 
-	class BrokenItemIdValue implements ItemIdValue {
+	static class BrokenItemIdValue implements ItemIdValue {
 
 		@Override
 		public String getEntityType() {

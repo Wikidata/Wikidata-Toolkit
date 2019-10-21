@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
-import org.wikidata.wdtk.datamodel.implementation.UnsupportedEntityIdValueImpl;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -558,7 +556,6 @@ public class ToString {
 	 */
 	public static String toString(MediaInfoDocument o) {
 		StringBuilder sb = new StringBuilder();
-		boolean first;
 		sb.append("==MediaInfoDocument ").append(o.getEntityId().getIri());
 		sb.append(" (r").append(o.getRevisionId()).append(") ");
 		sb.append("==");

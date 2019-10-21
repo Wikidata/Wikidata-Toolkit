@@ -149,14 +149,6 @@ public class BasicApiConnection extends ApiConnection {
 	}
 	
 	/**
-	 * To be migrated from {@class ApiConnection}
-	 */
-	@Override
-	String getCookieString() {
-		return super.getCookieString();
-	}
-	
-	/**
 	 * Returns a user-readable message for a given API response.
 	 *
 	 * @deprecated to be migrated to {@class PasswordApiConnection}

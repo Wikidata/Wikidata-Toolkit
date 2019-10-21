@@ -1,8 +1,5 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.List;
-import java.util.Map;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -28,17 +25,12 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.helpers.ToString;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;

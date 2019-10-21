@@ -103,7 +103,7 @@ public class WmfLocalDumpFile extends WmfDumpFile {
 	}
 
 	@Override
-	public void prepareDumpFile() throws IOException {
+	public void prepareDumpFile() {
 		// nothing to do
 	}
 

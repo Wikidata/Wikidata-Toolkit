@@ -34,9 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.UnsupportedEntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UnsupportedEntityIdValueTest {
@@ -49,14 +47,14 @@ public class UnsupportedEntityIdValueTest {
 	private UnsupportedEntityIdValue firstValue, secondValue, noType;
 	
 	@Before
-	public void deserializeValues() throws JsonParseException, JsonMappingException, IOException {
+	public void deserializeValues() throws IOException {
 		firstValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, UnsupportedEntityIdValueImpl.class);
 		secondValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, UnsupportedEntityIdValueImpl.class);
 		noType = mapper.readValue(JSON_UNSUPPORTED_VALUE_NO_TYPE, UnsupportedEntityIdValueImpl.class);
 	}
 	
 	@Test
-	public void testEquals() throws JsonParseException, JsonMappingException, IOException {
+	public void testEquals() throws IOException {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, ValueImpl.class);
 		assertEquals(firstValue, otherValue);
 		assertNotEquals(secondValue, otherValue);
@@ -65,7 +63,7 @@ public class UnsupportedEntityIdValueTest {
 	}
 	
 	@Test
-	public void testHash() throws JsonParseException, JsonMappingException, IOException {
+	public void testHash() throws IOException {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, ValueImpl.class);
 		assertEquals(secondValue.hashCode(), otherValue.hashCode());
 	}

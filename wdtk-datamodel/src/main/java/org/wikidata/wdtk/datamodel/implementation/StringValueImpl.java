@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /*
@@ -42,7 +41,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(using = None.class)
+@JsonDeserialize()
 public class StringValueImpl extends ValueImpl implements StringValue {
 
 	private final String value;

@@ -34,5 +34,5 @@ public interface UnsupportedEntityIdValue extends EntityIdValue {
 	/**
 	 * The type of entity as represented in the JSON serialization.
 	 */
-	public String getEntityTypeJsonString();
+	String getEntityTypeJsonString();
 }

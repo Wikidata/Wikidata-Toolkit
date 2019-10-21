@@ -27,9 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
@@ -39,14 +37,11 @@ import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -83,7 +78,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		Statement s1merged = StatementBuilder.forSubjectAndProperty(Q1, P1)
 				.withValue(Q1).withReference(r1).withReference(r2)
@@ -112,7 +107,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		Statement s1merged = StatementBuilder.forSubjectAndProperty(Q1, P1)
 				.withValue(Q1).withRank(StatementRank.PREFERRED)
@@ -137,7 +132,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -161,7 +156,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -185,7 +180,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -209,7 +204,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s2), Collections.<Statement> emptyList());
+				Collections.singletonList(s2), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -235,7 +230,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).withStatement(s2).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s3, s4), Collections.<Statement> emptyList());
+				Arrays.asList(s3, s4), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -269,8 +264,8 @@ public class StatementUpdateTest {
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1)
 				.withStatement(s4).build();
 
-		List<Statement> addStatements = Arrays.asList(s3);
-		List<Statement> deleteStatements = Arrays.asList(s4);
+		List<Statement> addStatements = Collections.singletonList(s3);
+		List<Statement> deleteStatements = Collections.singletonList(s4);
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
@@ -297,9 +292,9 @@ public class StatementUpdateTest {
 				.withStatement(s1).withStatement(s2).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s3), Collections.<Statement> emptyList());
+				Collections.singletonList(s3), Collections.emptyList());
 
-		assertEquals(su.toDelete, Arrays.asList("ID-s1"));
+		assertEquals(su.toDelete, Collections.singletonList("ID-s1"));
 		assertEquals(1, su.toKeep.size());
 		assertTrue(su.toKeep.containsKey(P1));
 		assertEquals(2, su.toKeep.get(P1).size());
@@ -323,7 +318,7 @@ public class StatementUpdateTest {
 				.withStatement(s1).build();
 		
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s1dup), Arrays.asList(s2));
+				Collections.singletonList(s1dup), Collections.singletonList(s2));
 		assertTrue(su.isEmptyEdit());
 		
 	}
@@ -340,7 +335,7 @@ public class StatementUpdateTest {
 				.build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Arrays.asList(s1, s2), Collections.<Statement> emptyList());
+				Arrays.asList(s1, s2), Collections.emptyList());
 
 		assertEquals(0, su.toDelete.size());
 		assertEquals(1, su.toKeep.size());
@@ -352,7 +347,7 @@ public class StatementUpdateTest {
 	}
 
 	@Test
-	public void testDelete() throws JsonProcessingException, IOException {
+	public void testDelete() throws IOException {
 		Statement s1 = StatementBuilder.forSubjectAndProperty(Q1, P1)
 				.withValue(Q1).withId("ID-s1").build();
 		Statement s2 = StatementBuilder.forSubjectAndProperty(Q1, P1)
@@ -373,7 +368,7 @@ public class StatementUpdateTest {
 				.withStatement(s5).withStatement(s6).build();
 
 		StatementUpdate su = new StatementUpdate(currentDocument,
-				Collections.<Statement> emptyList(), Arrays.asList(s2, s3, s4,
+				Collections.emptyList(), Arrays.asList(s2, s3, s4,
 						s5));
 		
 		ObjectMapper mapper = new ObjectMapper();

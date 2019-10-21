@@ -20,9 +20,6 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,17 +27,19 @@ import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class NestedIteratorTest {
 
 	@Test
 	public void testIteration() {
-		List<String> list1 = new ArrayList<String>();
+		List<String> list1 = new ArrayList<>();
 		list1.add("1");
 		list1.add("2");
-		List<String> list2 = new ArrayList<String>();
+		List<String> list2 = new ArrayList<>();
 		list2.add("3");
-		List<String> list3 = new ArrayList<String>();
-		List<String> list4 = new ArrayList<String>();
+		List<String> list3 = new ArrayList<>();
+		List<String> list4 = new ArrayList<>();
 		list4.add("4");
 
 		List<List<String>> listOfLists = new ArrayList<>();
@@ -60,7 +59,7 @@ public class NestedIteratorTest {
 		assertEquals("3", nestedIterator.next());
 		assertTrue(nestedIterator.hasNext());
 		assertEquals("4", nestedIterator.next());
-		assertEquals(false, nestedIterator.hasNext());
+		assertFalse(nestedIterator.hasNext());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -73,14 +72,14 @@ public class NestedIteratorTest {
 	@Test(expected = NoSuchElementException.class)
 	public void iterateBeyondInnerList() {
 		NestedIterator<String> nestedIterator = new NestedIterator<>(
-				Collections.singletonList(Collections.<String> emptyList()));
+				Collections.singletonList(Collections.emptyList()));
 		nestedIterator.next();
 	}
 
 	@Test(expected = NoSuchElementException.class)
 	public void iterateBeyondOuterList() {
 		NestedIterator<String> nestedIterator = new NestedIterator<>(
-				Collections.<List<String>> emptyList());
+				Collections.emptyList());
 		nestedIterator.next();
 	}
 

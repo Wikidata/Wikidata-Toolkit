@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

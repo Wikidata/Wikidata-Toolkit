@@ -40,7 +40,6 @@ import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.UnsupportedEntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -69,7 +68,7 @@ public class ValueRdfConverterTest {
 	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, this.out);
 		this.rdfConversionBuffer = new OwlDeclarationBuffer();

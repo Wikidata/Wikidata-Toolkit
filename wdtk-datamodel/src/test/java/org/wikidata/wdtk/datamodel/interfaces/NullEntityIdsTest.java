@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class NullEntityIdsTest {
 
-	class TestValueVisitor implements ValueVisitor<String> {
+	static class TestValueVisitor implements ValueVisitor<String> {
 
 		@Override
 		public String visit(EntityIdValue value) {

@@ -21,8 +21,6 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 
 
 import java.io.IOException;

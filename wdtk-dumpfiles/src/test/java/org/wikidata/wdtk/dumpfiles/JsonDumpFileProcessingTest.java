@@ -45,7 +45,7 @@ public class JsonDumpFileProcessingTest {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class SlowDocumentProcessor implements EntityDocumentProcessor {
+	private static class SlowDocumentProcessor implements EntityDocumentProcessor {
 
 		int itemCount = 0;
 

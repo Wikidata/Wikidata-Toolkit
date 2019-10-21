@@ -11,7 +11,6 @@ import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 import org.junit.Test;
@@ -47,8 +46,8 @@ public class TermStatementUpdateTest {
 			List<MonolingualTextValue> deletedLabels) {
 		return new TermStatementUpdate(
 				doc,
-				Collections.<Statement> emptyList(),
-				Collections.<Statement> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				labels, descriptions, addedLabels, deletedLabels);
 	}
 	
@@ -56,16 +55,16 @@ public class TermStatementUpdateTest {
 	 * Adding a label on an empty item.
 	 */
 	@Test
-	public void testAddLabel() throws JsonProcessingException {
+	public void testAddLabel() {
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).build();
 		
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("Apfelstrudel", "de");
 		
 		TermStatementUpdate su = makeUpdate(currentDocument,
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList());
 		
 		// Check model
 		
@@ -90,10 +89,10 @@ public class TermStatementUpdateTest {
 		
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "de");
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(alias),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList());
 		
 		
 		assertEquals(su.getLabelUpdates().keySet(), Collections.singleton("de"));
@@ -107,15 +106,15 @@ public class TermStatementUpdateTest {
 	 * Adding a label and an alias at the same time.
 	 */
 	@Test
-	public void testAddLabelAndAlias() throws JsonProcessingException {
+	public void testAddLabelAndAlias() {
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).build();
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
 		TermStatementUpdate su = makeUpdate(currentDocument,
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(alias),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList());
 		
 		assertEquals(Collections.singleton("fr"), su.getLabelUpdates().keySet());
 		assertEquals(label.getText(), su.getLabelUpdates().get("fr").getText());
@@ -129,7 +128,7 @@ public class TermStatementUpdateTest {
 	 * Adding the same alias twice.
 	 */
 	@Test
-	public void testAliasTwice() throws JsonProcessingException {
+	public void testAliasTwice() {
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
@@ -137,10 +136,10 @@ public class TermStatementUpdateTest {
 		newAliases.add(alias);
 		newAliases.add(alias);
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				newAliases,
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList());
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(su.getAliasUpdates().size(), 1);
@@ -153,7 +152,7 @@ public class TermStatementUpdateTest {
 	 * Adding an alias on an item that has already got one
 	 */
 	@Test
-	public void testAliasMerge() throws JsonProcessingException {
+	public void testAliasMerge() {
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).withAlias(alias).build();
@@ -161,10 +160,10 @@ public class TermStatementUpdateTest {
 
 		MonolingualTextValue newAlias = Datamodel.makeMonolingualTextValue("Apfelstrudeln", "fr");
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(newAlias),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList());
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertEquals(1, su.getAliasUpdates().size());
@@ -183,10 +182,10 @@ public class TermStatementUpdateTest {
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
 		
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue> emptyList()
+				Collections.emptyList()
 				);
 		
 		
@@ -207,9 +206,9 @@ public class TermStatementUpdateTest {
 		
 		TermStatementUpdate su = makeUpdate(currentDocument,
 				Collections.singletonList(alias),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList()
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList()
 				);
 		
 		assertEquals(Collections.singleton("fr"), su.getAliasUpdates().keySet());
@@ -224,15 +223,15 @@ public class TermStatementUpdateTest {
 	 * Deleting an alias
 	 */
 	@Test
-	public void testDeleteAlias() throws JsonProcessingException {
+	public void testDeleteAlias() {
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).withAlias(alias).build();
 		
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(alias)
 				);
 		
@@ -248,17 +247,17 @@ public class TermStatementUpdateTest {
 	 * Adding a description, for the sake of coverage…
 	 */
 	@Test
-	public void testDescription() throws JsonProcessingException {
+	public void testDescription() {
 		MonolingualTextValue label = Datamodel.makeMonolingualTextValue("strudel aux pommes", "fr");
 		MonolingualTextValue alias = Datamodel.makeMonolingualTextValue("Apfelstrudel", "fr");
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).withAlias(alias).build();
 
 		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("délicieuse pâtisserie aux pommes", "fr");
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(description),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList(),
+				Collections.emptyList());
 		
 		assertTrue(su.getLabelUpdates().isEmpty());
 		assertTrue(su.getAliasUpdates().isEmpty());
@@ -278,9 +277,9 @@ public class TermStatementUpdateTest {
 		ItemDocument currentDocument = ItemDocumentBuilder.forItemId(Q1).withLabel(label).build();
 		TermStatementUpdate su = makeUpdate(currentDocument,
 				Collections.singletonList(label),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
 		assertTrue(su.isEmptyEdit());
@@ -298,10 +297,10 @@ public class TermStatementUpdateTest {
 				.withDescription(description)
 				.build();
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(description),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList(),
+				Collections.emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
 		assertTrue(su.isEmptyEdit());
@@ -319,10 +318,10 @@ public class TermStatementUpdateTest {
 				.withAlias(alias)
 				.build();
 		TermStatementUpdate su = makeUpdate(currentDocument,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				Collections.singletonList(alias),
-				Collections.<MonolingualTextValue> emptyList());
+				Collections.emptyList());
 		
 		assertEquals("{}", su.getJsonUpdateString());
 		assertTrue(su.isEmptyEdit());

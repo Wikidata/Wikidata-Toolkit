@@ -54,15 +54,15 @@ public class BitVectorImplTest {
 
 		bv.addBit(true);
 		Assert.assertEquals(1, bv.size());
-		Assert.assertEquals(true, bv.getBit(0));
+		Assert.assertTrue(bv.getBit(0));
 
 		bv.addBit(false);
 		Assert.assertEquals(2, bv.size());
-		Assert.assertEquals(false, bv.getBit(1));
+		Assert.assertFalse(bv.getBit(1));
 
 		bv.addBit(false);
 		Assert.assertEquals(3, bv.size());
-		Assert.assertEquals(false, bv.getBit(2));
+		Assert.assertFalse(bv.getBit(2));
 
 		for (int i = 3; i < 0x1000; i++) {
 			boolean value = (i % 3) == 0;
@@ -162,8 +162,8 @@ public class BitVectorImplTest {
 
 	@Test
 	public void testGetOutOfRange() {
-		Assert.assertEquals(false, new BitVectorImpl().getBit(1));
-		Assert.assertEquals(false, new BitVectorImpl().getBit(Long.MAX_VALUE));
+		Assert.assertFalse(new BitVectorImpl().getBit(1));
+		Assert.assertFalse(new BitVectorImpl().getBit(Long.MAX_VALUE));
 	}
 
 	@Test
@@ -172,10 +172,10 @@ public class BitVectorImplTest {
 		Assert.assertEquals(0, bv.size());
 		bv.setBit(41, true);
 		Assert.assertEquals(42, bv.size());
-		Assert.assertEquals(false, bv.getBit(40));
-		Assert.assertEquals(true, bv.getBit(41));
-		Assert.assertEquals(false, bv.getBit(42));
-		Assert.assertEquals(false, bv.getBit(43));
+		Assert.assertFalse(bv.getBit(40));
+		Assert.assertTrue(bv.getBit(41));
+		Assert.assertFalse(bv.getBit(42));
+		Assert.assertFalse(bv.getBit(43));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

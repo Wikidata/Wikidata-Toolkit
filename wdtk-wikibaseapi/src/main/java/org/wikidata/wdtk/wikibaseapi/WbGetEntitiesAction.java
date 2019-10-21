@@ -155,7 +155,7 @@ public class WbGetEntitiesAction {
 			String titles, String props, String languages, String sitefilter)
 			throws MediaWikiApiErrorException, IOException {
 
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
 
 		if (ids != null) {
@@ -187,7 +187,7 @@ public class WbGetEntitiesAction {
 			parameters.put("sitefilter", sitefilter);
 		}
 
-		Map<String, EntityDocument> result = new HashMap<String, EntityDocument>();
+		Map<String, EntityDocument> result = new HashMap<>();
 
 		try {
 			JsonNode root = this.connection.sendJsonRequest("POST", parameters);

@@ -144,7 +144,7 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 	 * @throws IOException
 	 *             if there was a problem closing the output
 	 */
-	public void close() throws IOException {
+	public void close() {
 		System.out.println("Serialized "
 				+ this.jsonSerializer.getEntityDocumentCount()
 				+ " item documents to JSON file " + OUTPUT_FILE_NAME + ".");

@@ -20,10 +20,6 @@ package org.wikidata.wdtk.testing;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,13 +30,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
+
+import static org.junit.Assert.*;
 
 public class MockDirectoryManagerTest {
 
@@ -90,10 +87,10 @@ public class MockDirectoryManagerTest {
 	}
 
 	@Test
-	public void getSubdirectories() throws IOException {
-		HashSet<String> mdmDirs = new HashSet<String>(
+	public void getSubdirectories() {
+		HashSet<String> mdmDirs = new HashSet<>(
 				mdm.getSubdirectories("dir*"));
-		HashSet<String> expectedDirs = new HashSet<String>();
+		HashSet<String> expectedDirs = new HashSet<>();
 		expectedDirs.add("dir1");
 		expectedDirs.add("dir2");
 		assertEquals(expectedDirs, mdmDirs);
@@ -151,9 +148,8 @@ public class MockDirectoryManagerTest {
 		mdm.createFile("newfile.txt", "New contents");
 		String content = MockStringContentFactory.getStringFromInputStream(mdm
 				.getInputStreamForFile("newfile.txt", CompressionType.NONE));
-		assertTrue(Arrays.equals(MockDirectoryManager
-				.getMockedFileContents(mdm.directory.resolve("newfile.txt")),
-				content.getBytes(StandardCharsets.UTF_8)));
+		assertArrayEquals(MockDirectoryManager
+				.getMockedFileContents(mdm.directory.resolve("newfile.txt")), content.getBytes(StandardCharsets.UTF_8));
 		assertEquals("New contents", content);
 	}
 

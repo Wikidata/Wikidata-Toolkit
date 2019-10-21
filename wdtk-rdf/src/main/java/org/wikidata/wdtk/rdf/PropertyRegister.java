@@ -77,14 +77,14 @@ public class PropertyRegister {
 	 * Map that stores the datatype of properties. Properties are identified by
 	 * their Pid; dataypes are identified by their datatype IRI.
 	 */
-	final protected Map<String, String> datatypes = new HashMap<String, String>();
+	final protected Map<String, String> datatypes = new HashMap<>();
 
 	/**
 	 * Map that stores the URI patterns of properties. Properties are identified
 	 * by their Pid; patterns are given as strings using $1 as placeholder for
 	 * the escaped value.
 	 */
-	final protected Map<String, String> uriPatterns = new HashMap<String, String>();
+	final protected Map<String, String> uriPatterns = new HashMap<>();
 
 	/**
 	 * Pid of the property used to store URI patterns, if used, or null if no
@@ -318,7 +318,6 @@ public class PropertyRegister {
 	 * fetched.
 	 *
 	 * @param property
-	 * @throws IOException 
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
 		int propertyIdNumber = Integer.parseInt(property.getId().substring(1));
@@ -332,7 +331,7 @@ public class PropertyRegister {
 			return;
 		}
 
-		List<String> propertyIds = new ArrayList<String>(
+		List<String> propertyIds = new ArrayList<>(
 				API_MAX_ENTITY_DOCUMENT_NUMBER);
 
 		propertyIds.add(property.getId());

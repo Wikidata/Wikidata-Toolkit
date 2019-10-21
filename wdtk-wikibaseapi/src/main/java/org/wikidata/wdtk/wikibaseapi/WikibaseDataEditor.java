@@ -488,7 +488,7 @@ public class WikibaseDataEditor {
 	/**
 	 * Updates the statements of the property document identified by the given
 	 * property id. The computation of updates is the same as for
-	 * {@link #updateStatements(ItemIdValue, List, List, String)}.
+	 * {@link #updateStatements(ItemIdValue, List, List, String, List)}.
 	 *
 	 * @param propertyIdValue
 	 *            id of the document to be updated
@@ -696,7 +696,7 @@ public class WikibaseDataEditor {
 	public <T extends StatementDocument> T nullEdit(T currentDocument)
 			throws IOException, MediaWikiApiErrorException {
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
-				Collections.<Statement>emptyList(), Collections.<Statement>emptyList());
+				Collections.emptyList(), Collections.emptyList());
 		statementUpdate.setGuidGenerator(guidGenerator);
 		
 	    return (T) this.wbEditingAction.wbEditEntity(currentDocument

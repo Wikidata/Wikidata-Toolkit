@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 
 /**
  * Abstract Jackson implementation of {@link EntityDocument}. Like all Jackson

@@ -20,14 +20,12 @@ package org.wikidata.wdtk.storage.datastructures;
  * #L%
  */
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
-import org.wikidata.wdtk.storage.datastructures.BitVectorIterator;
 
 /**
  * Test class for {@link BitVectorIterator}.
@@ -61,8 +59,7 @@ public class BitVectorIteratorTest {
 		Iterator<Boolean> it = bv0.iterator();
 		Assert.assertEquals(it, it);
 		Assert.assertEquals(bv0.iterator(), bv1.iterator());
-		Assert.assertNotEquals(bv0.iterator(),
-				(new ArrayList<Boolean>()).iterator());
+		Assert.assertNotEquals(bv0.iterator(), Collections.emptyIterator());
 
 		PseudorandomBooleanGenerator generator0 = new PseudorandomBooleanGenerator(
 				0x1234);

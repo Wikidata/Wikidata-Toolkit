@@ -43,7 +43,7 @@ public class WbSearchEntitiesActionTest {
     public void setUp() throws Exception {
 
         this.con = new MockBasicApiConnection();
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
         params.put(ApiConnection.PARAM_FORMAT, "json");
         params.put("search", "abc");

@@ -30,9 +30,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UnsupportedValueImplTest {
@@ -44,20 +42,20 @@ public class UnsupportedValueImplTest {
 	private UnsupportedValue firstValue, secondValue;
 	
 	@Before
-	public void deserializeFirstValue() throws JsonParseException, JsonMappingException, IOException {
+	public void deserializeFirstValue() throws IOException {
 		firstValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, UnsupportedValueImpl.class);
 		secondValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, UnsupportedValueImpl.class);
 	}
 	
 	@Test
-	public void testEquals() throws JsonParseException, JsonMappingException, IOException {
+	public void testEquals() throws IOException {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_1, ValueImpl.class);
 		assertEquals(firstValue, otherValue);
 		assertNotEquals(secondValue, otherValue);
 	}
 	
 	@Test
-	public void testHash() throws JsonParseException, JsonMappingException, IOException {
+	public void testHash() throws IOException {
 		Value otherValue = mapper.readValue(JSON_UNSUPPORTED_VALUE_2, ValueImpl.class);
 		assertEquals(secondValue.hashCode(), otherValue.hashCode());
 	}

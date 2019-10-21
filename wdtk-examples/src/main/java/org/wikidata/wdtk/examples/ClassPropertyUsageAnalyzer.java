@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -116,7 +115,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private abstract class UsageRecord {
+	private abstract static class UsageRecord {
 		/**
 		 * Number of items using this entity. For properties, this is the number
 		 * of items with such a property. For class items, this is the number of
@@ -128,7 +127,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 		 * that use this entity (where "use" has the meaning explained for
 		 * {@link UsageRecord#itemCount}).
 		 */
-		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<PropertyIdValue, Integer>();
+		public HashMap<PropertyIdValue, Integer> propertyCoCounts = new HashMap<>();
 	}
 
 	/**
@@ -137,7 +136,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class PropertyRecord extends UsageRecord {
+	private static class PropertyRecord extends UsageRecord {
 		/**
 		 * Number of statements with this property.
 		 */
@@ -167,7 +166,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class ClassRecord extends UsageRecord {
+	private static class ClassRecord extends UsageRecord {
 		/**
 		 * Number of subclasses of this class item.
 		 */
@@ -189,7 +188,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class ClassUsageRecordComparator implements
+	private static class ClassUsageRecordComparator implements
 			Comparator<Entry<? extends EntityIdValue, ? extends ClassRecord>> {
 		@Override
 		public int compare(
@@ -207,7 +206,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class UsageRecordComparator
+	private static class UsageRecordComparator
 			implements
 			Comparator<Entry<? extends EntityIdValue, ? extends PropertyRecord>> {
 		@Override
@@ -241,7 +240,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	/**
 	 * Collection of all property records.
 	 */
-	final HashMap<PropertyIdValue, PropertyRecord> propertyRecords = new HashMap<PropertyIdValue, PropertyRecord>();
+	final HashMap<PropertyIdValue, PropertyRecord> propertyRecords = new HashMap<>();
 	/**
 	 * Collection of all item records of items used as classes.
 	 */
@@ -263,7 +262,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		ClassPropertyUsageAnalyzer.printDocumentation();
 
@@ -489,9 +488,9 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 					+ ",Uses in qualifiers" + ",Uses in references"
 					+ ",Uses total" + ",Related properties");
 
-			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<Entry<PropertyIdValue, PropertyRecord>>(
+			List<Entry<PropertyIdValue, PropertyRecord>> list = new ArrayList<>(
 					this.propertyRecords.entrySet());
-			Collections.sort(list, new UsageRecordComparator());
+			list.sort(new UsageRecordComparator());
 			for (Entry<PropertyIdValue, PropertyRecord> entry : list) {
 				printPropertyRecord(out, entry.getValue(), entry.getKey());
 			}
@@ -515,7 +514,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 			List<Entry<EntityIdValue, ClassRecord>> list = new ArrayList<>(
 					this.classRecords.entrySet());
-			Collections.sort(list, new ClassUsageRecordComparator());
+			list.sort(new ClassUsageRecordComparator());
 			for (Entry<EntityIdValue, ClassRecord> entry : list) {
 				if (entry.getValue().itemCount > 0
 						|| entry.getValue().subclassCount > 0) {
@@ -558,7 +557,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		printRelatedProperties(out, classRecord);
 
-		out.println("");
+		out.println();
 	}
 
 	/**
@@ -740,7 +739,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 
 		printRelatedProperties(out, propertyRecord);
 
-		out.println("");
+		out.println();
 	}
 
 	/**
@@ -797,7 +796,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 */
 	private void printRelatedProperties(PrintStream out, UsageRecord usageRecord) {
 
-		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<ImmutablePair<PropertyIdValue, Double>>(
+		List<ImmutablePair<PropertyIdValue, Double>> list = new ArrayList<>(
 				usageRecord.propertyCoCounts.size());
 		for (Entry<PropertyIdValue, Integer> coCountEntry : usageRecord.propertyCoCounts
 				.entrySet()) {
@@ -811,21 +810,13 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 			double otherInvGlobalItemRateStep = 1 / (1 + Math.exp(6 * (-2
 					* (1 - otherGlobalItemRate) + 0.5)));
 
-			list.add(new ImmutablePair<PropertyIdValue, Double>(coCountEntry
+			list.add(new ImmutablePair<>(coCountEntry
 					.getKey(), otherThisItemRateStep
 					* otherInvGlobalItemRateStep * otherThisItemRate
 					/ otherGlobalItemRate));
 		}
 
-		Collections.sort(list,
-				new Comparator<ImmutablePair<PropertyIdValue, Double>>() {
-					@Override
-					public int compare(
-							ImmutablePair<PropertyIdValue, Double> o1,
-							ImmutablePair<PropertyIdValue, Double> o2) {
-						return o2.getValue().compareTo(o1.getValue());
-					}
-				});
+		list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
 		out.print(",\"");
 		int count = 0;

@@ -59,7 +59,7 @@ public abstract class WmfDumpFile implements MwDumpFile {
 	/**
 	 * Hash map defining file name ending of each type of dump.
 	 */
-	static final Map<DumpContentType, String> POSTFIXES = new HashMap<DumpContentType, String>();
+	static final Map<DumpContentType, String> POSTFIXES = new HashMap<>();
 	static {
 		WmfDumpFile.POSTFIXES.put(DumpContentType.DAILY,
 				"-pages-meta-hist-incr.xml.bz2");

@@ -34,7 +34,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
@@ -80,7 +79,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	public class SiteRecord {
+	public static class SiteRecord {
 		public int pageCount = 0;
 		public int humanGenderPageCount = 0;
 		public int humanPageCount = 0;
@@ -98,7 +97,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	public class SiteRecordComparator implements Comparator<SiteRecord> {
+	public static class SiteRecordComparator implements Comparator<SiteRecord> {
 		@Override
 		public int compare(SiteRecord o1, SiteRecord o2) {
 			return o2.humanPageCount - o1.humanPageCount;
@@ -128,7 +127,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		GenderRatioProcessor.printDocumentation();
 
@@ -261,7 +260,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 
 			List<SiteRecord> siteRecords = new ArrayList<>(
 					this.siteRecords.values());
-			Collections.sort(siteRecords, new SiteRecordComparator());
+			siteRecords.sort(new SiteRecordComparator());
 			for (SiteRecord siteRecord : siteRecords) {
 				out.print(siteRecord.siteKey + "," + siteRecord.pageCount + ","
 						+ siteRecord.humanPageCount + ","
@@ -314,7 +313,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 		int siteCount = 0;
 		List<SiteRecord> siteRecords = new ArrayList<>(
 				this.siteRecords.values());
-		Collections.sort(siteRecords, new SiteRecordComparator());
+		siteRecords.sort(new SiteRecordComparator());
 		for (SiteRecord siteRecord : siteRecords) {
 			if (siteCount >= 10) {
 				break;
@@ -445,12 +444,7 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 *            the site record to count it for
 	 */
 	private void countGender(EntityIdValue gender, SiteRecord siteRecord) {
-		Integer curValue = siteRecord.genderCounts.get(gender);
-		if (curValue == null) {
-			siteRecord.genderCounts.put(gender, 1);
-		} else {
-			siteRecord.genderCounts.put(gender, curValue + 1);
-		}
+		siteRecord.genderCounts.merge(gender, 1, Integer::sum);
 	}
 
 }

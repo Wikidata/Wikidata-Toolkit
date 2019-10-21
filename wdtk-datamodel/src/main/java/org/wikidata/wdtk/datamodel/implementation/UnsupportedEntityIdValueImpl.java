@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonDeserializer.None;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -53,7 +52,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * 
  * @author Antonin Delpeuch
  */
-@JsonDeserialize(using = None.class)
+@JsonDeserialize()
 public class UnsupportedEntityIdValueImpl extends ValueImpl implements UnsupportedEntityIdValue {
 	
 	private final JacksonIdValue value;

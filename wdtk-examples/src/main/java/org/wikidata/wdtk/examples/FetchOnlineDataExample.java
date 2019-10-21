@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
@@ -70,8 +69,7 @@ public class FetchOnlineDataExample {
 		// Only labels in French:
 		wbdf.getFilter().setLanguageFilter(Collections.singleton("fr"));
 		// No statements at all:
-		wbdf.getFilter().setPropertyFilter(
-				Collections.<PropertyIdValue> emptySet());
+		wbdf.getFilter().setPropertyFilter(Collections.emptySet());
 		EntityDocument q8 = wbdf.getEntityDocument("Q8");
 		if (q8 instanceof ItemDocument) {
 			System.out.println("The French label for entity Q8 is "

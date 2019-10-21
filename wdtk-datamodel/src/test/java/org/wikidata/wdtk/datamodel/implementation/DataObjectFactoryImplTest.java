@@ -24,10 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverterTest.ValueType;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DataObjectFactoryImplTest {

@@ -330,8 +330,8 @@ public class MockDirectoryManager implements DirectoryManager {
 	}
 
 	@Override
-	public List<String> getSubdirectories(String glob) throws IOException {
-		List<String> result = new ArrayList<String>();
+	public List<String> getSubdirectories(String glob) {
+		List<String> result = new ArrayList<>();
 		PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(
 				"glob:" + glob);
 		for (Path path : files.keySet()) {

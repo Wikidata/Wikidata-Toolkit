@@ -34,11 +34,10 @@ import org.junit.Test;
 
 public class DirectoryManagerFactoryTest {
 
-	public class TestDirectoryManager implements DirectoryManager {
+	public static class TestDirectoryManager implements DirectoryManager {
 
 		@Override
-		public DirectoryManager getSubdirectoryManager(String subdirectoryName)
-				throws IOException {
+		public DirectoryManager getSubdirectoryManager(String subdirectoryName) {
 			return null;
 		}
 
@@ -53,37 +52,32 @@ public class DirectoryManagerFactoryTest {
 		}
 
 		@Override
-		public long createFile(String fileName, InputStream inputStream)
-				throws IOException {
+		public long createFile(String fileName, InputStream inputStream) {
 			return 0;
 		}
 
 		@Override
-		public long createFileAtomic(String fileName, InputStream inputStream)
-				throws IOException {
+		public long createFileAtomic(String fileName, InputStream inputStream) {
 			return 0;
 		}
 
 		@Override
-		public void createFile(String fileName, String fileContents)
-				throws IOException {
+		public void createFile(String fileName, String fileContents) {
 
 		}
 
 		@Override
-		public OutputStream getOutputStreamForFile(String fileName)
-				throws IOException {
+		public OutputStream getOutputStreamForFile(String fileName) {
 			return null;
 		}
 
 		@Override
-		public InputStream getInputStreamForFile(String fileName,
-				CompressionType compressionType) throws IOException {
+		public InputStream getInputStreamForFile(String fileName, CompressionType compressionType) {
 			return null;
 		}
 
 		@Override
-		public List<String> getSubdirectories(String glob) throws IOException {
+		public List<String> getSubdirectories(String glob) {
 			return null;
 		}
 	}

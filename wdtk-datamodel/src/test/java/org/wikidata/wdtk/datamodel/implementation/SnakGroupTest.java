@@ -39,7 +39,7 @@ public class SnakGroupTest {
 	private PropertyIdValue property;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		EntityIdValue subject = new ItemIdValueImpl("Q42",
 				"http://wikidata.org/entity/");
 		property = new PropertyIdValueImpl("P42",

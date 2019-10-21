@@ -22,7 +22,7 @@ package org.wikidata.wdtk.wikibaseapi;
 
 public interface GuidGenerator {
 	
-	public static final String STATEMENT_GUID_SEPARATOR = "$";
+	String STATEMENT_GUID_SEPARATOR = "$";
 	
 	/**
 	 * Generates a fresh statement id. This consists of a first part
@@ -33,5 +33,5 @@ public interface GuidGenerator {
 	 *          the entity the statement belongs to
 	 * @return a fresh UUID in the required format.
 	 */
-	public String freshStatementId(String entityId);
+	String freshStatementId(String entityId);
 }

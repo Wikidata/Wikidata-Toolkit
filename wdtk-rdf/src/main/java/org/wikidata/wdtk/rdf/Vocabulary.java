@@ -118,7 +118,7 @@ public class Vocabulary {
 	 * even when importing ontologies that provide further details on some of
 	 * the vocabulary.
 	 */
-	static final Map<String, String> VOCABULARY_TYPES = new HashMap<String, String>();
+	static final Map<String, String> VOCABULARY_TYPES = new HashMap<>();
 
 	// Vocabulary elements that are not declared by the ontology language
 
