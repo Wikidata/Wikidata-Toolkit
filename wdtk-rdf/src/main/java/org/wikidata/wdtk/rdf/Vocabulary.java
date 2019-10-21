@@ -544,12 +544,6 @@ public class Vocabulary {
 		}
 
 		md.reset();
-		ArrayList<Integer> hashes = new ArrayList<>();
-		for (SnakGroup snakgroup : reference.getSnakGroups()) {
-			for (Snak snak : snakgroup) {
-				hashes.add(snak.hashCode());
-			}
-		}
 		reference.getSnakGroups().stream()
 				.flatMap(g -> g.getSnaks().stream())
 				.map(Objects::hashCode)
