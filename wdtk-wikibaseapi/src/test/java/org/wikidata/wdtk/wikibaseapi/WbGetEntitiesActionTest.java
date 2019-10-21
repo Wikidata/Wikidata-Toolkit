@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class WbGetEntitiesActionTest {
 	public void setUp() throws Exception {
 
 		this.con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbgetentities");
 		params.put("format", "json");
 		params.put("ids", "Q32063953");

@@ -64,10 +64,10 @@ public class SnakImplTest {
 		assertEquals(vs1.getValue(), p1);
 
 		assertEquals(svs1.getPropertyId(), p1);
-		assertEquals(svs1.getValue(), null);
+		assertNull(svs1.getValue());
 
 		assertEquals(nvs1.getPropertyId(), p1);
-		assertEquals(nvs1.getValue(), null);
+		assertNull(nvs1.getValue());
 	}
 
 	@Test

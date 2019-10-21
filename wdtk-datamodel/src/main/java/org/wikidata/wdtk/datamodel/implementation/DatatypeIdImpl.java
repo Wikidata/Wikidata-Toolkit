@@ -26,7 +26,6 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 
 import java.util.regex.Matcher;

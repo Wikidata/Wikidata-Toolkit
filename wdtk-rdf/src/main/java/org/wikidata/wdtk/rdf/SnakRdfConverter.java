@@ -58,7 +58,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class PropertyRestriction {
+	private static class PropertyRestriction {
 
 		final Resource subject;
 		final String propertyUri;
@@ -96,7 +96,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.propertyRegister = propertyRegister;
 		this.valueRdfConverter = valueRdfConverter;
 
-		this.someValuesQueue = new ArrayList<PropertyRestriction>();
+		this.someValuesQueue = new ArrayList<>();
 	}
 
 	/**
@@ -194,14 +194,11 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	@Override
 	public Void visit(NoValueSnak snak) {
 		if (simple) {
-			String rangeUri = getRangeUri(snak.getPropertyId());
-			if (rangeUri == null) {
+			if (getRangeUri(snak.getPropertyId()) == null) {
 				logger.error("Count not export NoValueSnak for property "
 						+ snak.getPropertyId().getId()
 						+ ": OWL range not known.");
 				return null;
-			} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
-				rangeUri = Vocabulary.RDFS_LITERAL;
 			}
 
 			String noValueClass;

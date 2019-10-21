@@ -35,7 +35,6 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.examples.ExampleHelpers;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
@@ -131,8 +130,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 	 * @throws IOException
 	 * @throws MediaWikiApiErrorException
 	 */
-	public static void main(String[] args) throws LoginFailedException,
-			IOException, MediaWikiApiErrorException {
+	public static void main(String[] args) throws LoginFailedException, IOException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
@@ -267,12 +265,12 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 							currentItemDocument.getRevisionId());
 			ArrayList<String> languages = new ArrayList<>(
 					arabicNumeralLanguages.length);
-			for (int i = 0; i < arabicNumeralLanguages.length; i++) {
+			for (String arabicNumeralLanguage : arabicNumeralLanguages) {
 				if (!currentItemDocument.getLabels().containsKey(
-						arabicNumeralLanguages[i])) {
+						arabicNumeralLanguage)) {
 					itemDocumentBuilder.withLabel(numberString,
-							arabicNumeralLanguages[i]);
-					languages.add(arabicNumeralLanguages[i]);
+							arabicNumeralLanguage);
+					languages.add(arabicNumeralLanguage);
 				}
 			}
 
@@ -286,9 +284,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 
 			dataEditor.editItemDocument(itemDocumentBuilder.build(), false,
 					"Set labels to numeric value (Task MB1)", null);
-		} catch (MediaWikiApiErrorException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (MediaWikiApiErrorException | IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -301,9 +297,9 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 	 * @return true if some label is missing
 	 */
 	protected boolean lacksSomeLanguage(ItemDocument itemDocument) {
-		for (int i = 0; i < arabicNumeralLanguages.length; i++) {
+		for (String arabicNumeralLanguage : arabicNumeralLanguages) {
 			if (!itemDocument.getLabels()
-					.containsKey(arabicNumeralLanguages[i])) {
+					.containsKey(arabicNumeralLanguage)) {
 				return true;
 			}
 		}

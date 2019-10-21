@@ -20,10 +20,6 @@ package org.wikidata.wdtk.dumpfiles;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,6 +30,8 @@ import org.junit.Test;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
+
+import static org.junit.Assert.*;
 
 public class MwLocalDumpFileTest {
 	MockDirectoryManager dm;
@@ -49,14 +47,14 @@ public class MwLocalDumpFileTest {
 	}
 
 	@Test
-	public void missingDumpFile() throws IOException {
+	public void missingDumpFile() {
 		MwLocalDumpFile df = new MwLocalDumpFile(
 				"/non-existing-dump-file.json.gz");
 		assertFalse(df.isAvailable());
 	}
 
 	@Test
-	public void missingDumpFileDirectory() throws IOException {
+	public void missingDumpFileDirectory() {
 		MwLocalDumpFile df = new MwLocalDumpFile(
 				"/nonexisting-directory/non-existing-file.json.gz");
 		assertFalse(df.isAvailable());
@@ -106,7 +104,7 @@ public class MwLocalDumpFileTest {
 				"/testdump-20150512.json.gz");
 		BufferedReader br = df.getDumpFileReader();
 		assertEquals("Test contents", br.readLine());
-		assertTrue(br.readLine() == null);
+		assertNull(br.readLine());
 	}
 
 	@Test(expected = IOException.class)

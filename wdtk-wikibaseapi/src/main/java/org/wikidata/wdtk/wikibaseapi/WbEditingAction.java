@@ -282,7 +282,7 @@ public class WbEditingAction {
 		Validate.notNull(data,
 				"Data parameter cannot be null when editing entity data");
 
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("data", data);
 		if (clear) {
 			parameters.put("clear", "");
@@ -348,15 +348,14 @@ public class WbEditingAction {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a label");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (value != null) {
 			parameters.put("value", value);
 		}
-		
-		JsonNode response = performAPIAction("wbsetlabel", id, site, title, newEntity,
+
+		return performAPIAction("wbsetlabel", id, site, title, newEntity,
 				parameters, summary, tags, baserevid, bot);
-		return response;
 	}
 	
 	/**
@@ -415,15 +414,14 @@ public class WbEditingAction {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a description");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (value != null) {
 			parameters.put("value", value);
 		}
-		
-		JsonNode response = performAPIAction("wbsetdescription", id, site, title,
+
+		return performAPIAction("wbsetdescription", id, site, title,
 				newEntity, parameters, summary, tags, baserevid, bot);
-		return response;
 	}
 	
 	/**
@@ -492,7 +490,7 @@ public class WbEditingAction {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting aliases");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (set != null) {
 			if (add != null || remove != null) {
@@ -507,9 +505,8 @@ public class WbEditingAction {
 		if (remove != null) {
 			parameters.put("remove", ApiConnection.implodeObjects(remove));
 		}
-		
-		JsonNode response = performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, tags, baserevid, bot);
-		return response;
+
+		return performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -551,7 +548,7 @@ public class WbEditingAction {
 				"Statement parameter cannot be null when adding or changing a statement");
 		
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("claim", statement);
 		
 		return performAPIAction("wbsetclaim", null, null, null, null, parameters, summary, tags, baserevid, bot);
@@ -599,7 +596,7 @@ public class WbEditingAction {
 		Validate.isTrue(statementIds.size() <= 50,
 				"At most 50 statements can be deleted at once");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("claim", String.join("|", statementIds));
 		
 		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, tags, baserevid, bot);

@@ -65,7 +65,7 @@ public class Timer {
 	static final ThreadMXBean tmxb = ManagementFactory.getThreadMXBean();
 
 	/** Registry of named timers. */
-	static final ConcurrentHashMap<Timer, Timer> registeredTimers = new ConcurrentHashMap<Timer, Timer>();
+	static final ConcurrentHashMap<Timer, Timer> registeredTimers = new ConcurrentHashMap<>();
 
 	final String name;
 	final long threadId;

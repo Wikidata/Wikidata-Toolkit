@@ -22,6 +22,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
+import java.util.Objects;
+
 /**
  * Static class for checking the equality of arbitrary data objects using only
  * their interfaces. This can be used to implement the equals() method of
@@ -226,13 +228,9 @@ public class Equality {
 		}
 		QuantityValue other = (QuantityValue) o2;
 		return o1.getNumericValue().equals(other.getNumericValue())
-				&& equalsNullable(o1.getLowerBound(), other.getLowerBound())
-				&& equalsNullable(o1.getUpperBound(), other.getUpperBound())
+				&& Objects.equals(o1.getLowerBound(), other.getLowerBound())
+				&& Objects.equals(o1.getUpperBound(), other.getUpperBound())
 				&& o1.getUnit().equals(other.getUnit());
-	}
-
-	private static boolean equalsNullable(Object o1, Object o2) {
-		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 
 	/**

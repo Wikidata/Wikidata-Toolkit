@@ -20,7 +20,7 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,8 +34,6 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class WbEditingActionTest {
 
 	@Test(expected = IOException.class)
@@ -47,14 +45,14 @@ public class WbEditingActionTest {
 
 		EntityDocument result = weea.wbEditEntity("Q42", null, null, null,
 				"{}", true, false, 0, null, null);
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	@Test(expected = TokenErrorException.class)
 	public void testApiErrorGettingToken() throws IOException,
 			MediaWikiApiErrorException {
 		MockBasicApiConnection con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
@@ -83,7 +81,7 @@ public class WbEditingActionTest {
 	public void testNoTokenInReponse() throws IOException,
 			MediaWikiApiErrorException {
 		MockBasicApiConnection con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("format", "json");
@@ -111,7 +109,7 @@ public class WbEditingActionTest {
 	public void testApiErrorMaxLag() throws IOException,
 			MediaWikiApiErrorException {
 		MockBasicApiConnection con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");

@@ -616,10 +616,6 @@ public class WikimediaLanguageCodes {
 	 * 			the preferred language code corresponding to the original language code
 	 */
 	public static String fixLanguageCodeIfDeprecated(String wikimediaLanguageCode) {
-		if (DEPRECATED_LANGUAGE_CODES.containsKey(wikimediaLanguageCode)) {
-			return DEPRECATED_LANGUAGE_CODES.get(wikimediaLanguageCode);
-		} else {
-			return wikimediaLanguageCode;
-		}
+		return DEPRECATED_LANGUAGE_CODES.getOrDefault(wikimediaLanguageCode, wikimediaLanguageCode);
 	}
 }

@@ -22,13 +22,10 @@ import org.apache.commons.lang3.Validate;
  * #L%
  */
 
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Antonin Delpeuch
  *
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "snaktype")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "snaktype")
 @JsonSubTypes({
 		@Type(value = NoValueSnakImpl.class, name = SnakImpl.JSON_SNAK_TYPE_NOVALUE),
 		@Type(value = SomeValueSnakImpl.class, name = SnakImpl.JSON_SNAK_TYPE_SOMEVALUE),

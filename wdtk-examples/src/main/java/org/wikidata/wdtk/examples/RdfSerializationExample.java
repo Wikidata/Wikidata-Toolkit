@@ -128,20 +128,17 @@ public class RdfSerializationExample {
 		final int SIZE = 1024 * 1024 * 10;
 		final PipedOutputStream pos = new PipedOutputStream();
 		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					byte[] bytes = new byte[SIZE];
-					for (int len; (len = pis.read(bytes)) > 0;) {
-						outputStream.write(bytes, 0, len);
-					}
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
-				} finally {
-					close(pis);
-					close(outputStream);
+		new Thread(() -> {
+			try {
+				byte[] bytes = new byte[SIZE];
+				for (int len; (len = pis.read(bytes)) > 0;) {
+					outputStream.write(bytes, 0, len);
 				}
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			} finally {
+				close(pis);
+				close(outputStream);
 			}
 		}, "async-output-stream").start();
 		return pos;

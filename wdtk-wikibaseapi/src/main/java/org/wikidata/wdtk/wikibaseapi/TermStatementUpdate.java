@@ -57,7 +57,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * 
      * @author antonin
      */
-    private class NameWithUpdate {
+    private static class NameWithUpdate {
         public MonolingualTextValue value;
         public boolean write;
         
@@ -72,7 +72,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * 
      * @author antonin
      */
-    private class AliasesWithUpdate {
+    private static class AliasesWithUpdate {
         public List<MonolingualTextValue> aliases;
         public List<MonolingualTextValue> added;
         public List<MonolingualTextValue> deleted;
@@ -133,8 +133,8 @@ public class TermStatementUpdate extends StatementUpdate {
         newAliases = new HashMap<>();
         for(Map.Entry<String, List<MonolingualTextValue>> entry : currentDocument.getAliases().entrySet()) {
             newAliases.put(entry.getKey(),
-                    new AliasesWithUpdate(
-                    		new ArrayList<>(entry.getValue()), false));
+					new AliasesWithUpdate(
+							new ArrayList<>(entry.getValue()), false));
         }
         
         // Add changes
@@ -154,7 +154,7 @@ public class TermStatementUpdate extends StatementUpdate {
     	Map<String, NameWithUpdate> updates = new HashMap<>();
         for(MonolingualTextValue label: currentValues) {
             updates.put(label.getLanguageCode(),
-                    new NameWithUpdate(label, false));
+					new NameWithUpdate(label, false));
         }
         return updates;
     }
@@ -211,7 +211,7 @@ public class TermStatementUpdate extends StatementUpdate {
         // If the new alias is equal to the current label, skip it
         } else if (!currentLabel.value.equals(alias)) {
         	if (currentAliasesUpdate == null) {
-        		currentAliasesUpdate = new AliasesWithUpdate(new ArrayList<MonolingualTextValue>(), true);
+        		currentAliasesUpdate = new AliasesWithUpdate(new ArrayList<>(), true);
         	}
         	List<MonolingualTextValue> currentAliases = currentAliasesUpdate.aliases;
         	if(!currentAliases.contains(alias)) {
@@ -235,7 +235,7 @@ public class TermStatementUpdate extends StatementUpdate {
         	// only mark the description as added if the value we are writing is different from the current one
         	if (currentValue == null || !currentValue.value.equals(description)) {
         		newDescriptions.put(description.getLanguageCode(),
-                    new NameWithUpdate(description, true));
+						new NameWithUpdate(description, true));
         	}
         }
     }
@@ -252,7 +252,7 @@ public class TermStatementUpdate extends StatementUpdate {
         	NameWithUpdate currentValue = newLabels.get(lang);
         	if (currentValue == null || !currentValue.value.equals(label)) {
 	            newLabels.put(lang,
-	                    new NameWithUpdate(label, true));
+						new NameWithUpdate(label, true));
 	            
 	            // Delete any alias that matches the new label
 	            AliasesWithUpdate currentAliases = newAliases.get(lang);
@@ -329,7 +329,7 @@ public class TermStatementUpdate extends StatementUpdate {
     public List<MonolingualTextValue> getAddedAliases(String language) {
 		AliasesWithUpdate update = newAliases.get(language);
 		if (update == null) {
-			return Collections.<MonolingualTextValue>emptyList();
+			return Collections.emptyList();
 		}
 		return update.added;
 	}
@@ -346,7 +346,7 @@ public class TermStatementUpdate extends StatementUpdate {
 	public List<MonolingualTextValue> getRemovedAliases(String language) {
 		AliasesWithUpdate update = newAliases.get(language);
 		if (update == null) {
-			return Collections.<MonolingualTextValue>emptyList();
+			return Collections.emptyList();
 		}
 		return update.deleted;
 	}

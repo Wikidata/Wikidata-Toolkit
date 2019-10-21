@@ -177,7 +177,7 @@ class FindPositionArray {
 	 *         according to the given bit vector
 	 */
 	List<Long> getPositionList() {
-		List<Long> ret = new ArrayList<Long>();
+		List<Long> ret = new ArrayList<>();
 
 		ret.add(-1L);
 		/*

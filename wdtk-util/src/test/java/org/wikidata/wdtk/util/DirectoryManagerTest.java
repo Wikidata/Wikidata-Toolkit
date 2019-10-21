@@ -56,7 +56,7 @@ public class DirectoryManagerTest {
 	}
 
 	@Test
-	public void testToString() throws IOException {
+	public void testToString() {
 		assertEquals(Paths.get(System.getProperty("user.dir")).toString(),
 				dm.toString());
 	}

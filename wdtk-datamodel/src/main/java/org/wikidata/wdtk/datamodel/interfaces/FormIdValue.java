@@ -1,8 +1,5 @@
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model

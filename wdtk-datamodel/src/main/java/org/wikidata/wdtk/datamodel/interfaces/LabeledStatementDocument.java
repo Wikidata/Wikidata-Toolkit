@@ -20,7 +20,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * #L%
  */
 
-import java.util.List;
 import java.util.Set;
 
 /**

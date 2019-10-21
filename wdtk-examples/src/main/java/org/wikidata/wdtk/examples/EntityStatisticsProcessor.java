@@ -66,7 +66,7 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class UsageStatistics {
+	static class UsageStatistics {
 		long count = 0;
 		long countLabels = 0;
 		long countDescriptions = 0;
@@ -95,9 +95,8 @@ class EntityStatisticsProcessor implements EntityDocumentProcessor {
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
 	 *
 	 * @param args
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		EntityStatisticsProcessor.printDocumentation();
 

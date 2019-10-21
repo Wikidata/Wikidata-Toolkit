@@ -20,12 +20,7 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,9 +39,10 @@ import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.Assert.*;
 
 public class BasicApiConnectionTest {
 
@@ -61,7 +57,7 @@ public class BasicApiConnectionTest {
 			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
 	
 	Set<String> split(String str, char ch) {
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		StringTokenizer stok = new StringTokenizer(str, "" + ch);
 		while (stok.hasMoreTokens()) {
 			set.add(stok.nextToken().trim());
@@ -72,7 +68,7 @@ public class BasicApiConnectionTest {
 	@Before
 	public void setUp() throws Exception {
 		this.con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
@@ -133,17 +129,17 @@ public class BasicApiConnectionTest {
 	@Test
 	public void testGetToken() throws LoginFailedException {
 		this.con.login("username", "password");
-		assertTrue(this.con.getOrFetchToken("csrf") != null);
+		assertNotNull(this.con.getOrFetchToken("csrf"));
 	}
 
 	@Test
-	public void testGetTokenWithoutLogin() throws LoginFailedException {
-		assertTrue(this.con.getOrFetchToken("csrf") == null);
+	public void testGetTokenWithoutLogin() {
+		assertNull(this.con.getOrFetchToken("csrf"));
 	}
 
 	@Test
 	public void testGetLoginToken() {
-		assertTrue(this.con.getOrFetchToken("login") != null);
+		assertNotNull(this.con.getOrFetchToken("login"));
 	}
 
 	@Test
@@ -165,7 +161,7 @@ public class BasicApiConnectionTest {
 	@Test
 	public void testSerialize() throws LoginFailedException, IOException {
 		
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		
@@ -182,11 +178,6 @@ public class BasicApiConnectionTest {
 	
 	@Test
 	public void testDeserialize() throws IOException {
-		
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("Set-Cookie", cookieList);
-		
 		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, ApiConnection.class);
 		assertTrue(newConn.isLoggedIn());
 		assertEquals("username", newConn.getCurrentUser());
@@ -198,30 +189,30 @@ public class BasicApiConnectionTest {
 		this.con.logout();
 		assertEquals("", this.con.username);
 		assertEquals("", this.con.password);
-		assertEquals(false, this.con.loggedIn);
+		assertFalse(this.con.loggedIn);
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginErrors() throws IOException, LoginFailedException {
+	public void loginErrors() throws LoginFailedException {
 		// This will fail because the token returned is not correct
 		this.con.login("username2", "password2");
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginUserErrors() throws IOException, LoginFailedException {
+	public void loginUserErrors() throws LoginFailedException {
 		// This will fail because the user is not known
 		this.con.login("username3", "password3");
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginIoErrors() throws IOException, LoginFailedException {
+	public void loginIoErrors() throws LoginFailedException {
 		// This will fail because the request will throw an IO exception
 		this.con.login("notmocked", "notmocked");
 	}
 
 	@Test
-	public void testGetQueryString() throws UnsupportedEncodingException {
-		Map<String, String> params = new HashMap<String, String>();
+	public void testGetQueryString() {
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "login");
 		params.put("lgname", "username");
 		params.put("lgpassword", "password");
@@ -258,7 +249,7 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testFillCookies() {
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		con.fillCookies(headerFields);
@@ -267,7 +258,7 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testGetCookieString() {
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		con.fillCookies(headerFields);
@@ -332,7 +323,7 @@ public class BasicApiConnectionTest {
 
 		int i = 0;
 		for (String message : messages) {
-			assertFalse(unknownMessage.equals(message));
+			assertNotEquals(unknownMessage, message);
 			assertTrue(message.contains(knownErrors[i]));
 			i++;
 		}
@@ -348,7 +339,7 @@ public class BasicApiConnectionTest {
 	}
 
 	private List<String> testCookieList() {
-		List<String> cookieList = new ArrayList<String>();
+		List<String> cookieList = new ArrayList<>();
 		cookieList
 				.add("WMF-Last-Access=18-Aug-2015;Path=/;HttpOnly;Expires=Sat, 19 Sep 2015 12:00:00 GMT");
 		cookieList

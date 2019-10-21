@@ -286,7 +286,7 @@ public interface TimeValue extends Value {
 	 * This conversion can fail if not enough information is available
 	 * (for example, we need at least day precision to convert from Julian to Gregorian).
 	 *
-	 * @return a TimeValue that uses the Gregorian calendar, or {@ref Optional::empty} if the conversion failed.
+	 * @return a TimeValue that uses the Gregorian calendar, or {@link Optional#empty} if the conversion failed.
 	 */
 	Optional<TimeValue> toGregorian();
 

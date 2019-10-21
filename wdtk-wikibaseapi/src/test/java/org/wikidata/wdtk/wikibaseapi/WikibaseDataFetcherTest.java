@@ -20,10 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -35,13 +31,15 @@ import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
 
+import static org.junit.Assert.*;
+
 public class WikibaseDataFetcherTest {
 
 	MockBasicApiConnection con;
 	WikibaseDataFetcher wdf;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		con = new MockBasicApiConnection();
 		wdf = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
 	}
@@ -49,7 +47,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntities() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q6|Q42|P31");
 		con.setWebResourceFromPath(parameters, this.getClass(),
@@ -68,21 +66,21 @@ public class WikibaseDataFetcherTest {
 	public void testGetEntityDocument() throws IOException,
 			MediaWikiApiErrorException {
 		// We use the mock answer as for a multi request; no problem
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q42");
 		con.setWebResourceFromPath(parameters, this.getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 
 		EntityDocument result = wdf.getEntityDocument("Q42");
-		assertTrue(result != null);
+		assertNotNull(result);
 	}
 
 	@Test
 	public void testGetMissingEntityDocument() throws IOException,
 			MediaWikiApiErrorException {
 		// List<String> entityIds = Arrays.asList("Q6");
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q6");
 		// We use the mock answer as for a multi request; no problem
@@ -90,13 +88,13 @@ public class WikibaseDataFetcherTest {
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 		EntityDocument result = wdf.getEntityDocument("Q6");
 
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	@Test(expected = NoSuchEntityErrorException.class)
 	public void testWbGetEntitiesError() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "bogus");
 		// We use the mock answer as for a multi request; no problem
@@ -110,7 +108,7 @@ public class WikibaseDataFetcherTest {
 			MediaWikiApiErrorException {
 
 		Map<String, EntityDocument> results = wdf
-				.getEntityDocuments(Collections.<String> emptyList());
+				.getEntityDocuments(Collections.emptyList());
 
 		assertEquals(0, results.size());
 	}
@@ -118,7 +116,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntitiesTitle() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "Douglas Adams");
 		parameters.put("sites", "enwiki");
@@ -134,7 +132,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntitiesTitleEmpty() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "1234567890");
 		parameters.put("sites", "dewiki");
@@ -144,11 +142,11 @@ public class WikibaseDataFetcherTest {
 		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki",
 				"1234567890");
 
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	@Test
-	public void testWikidataDataFetcher() throws IOException {
+	public void testWikidataDataFetcher() {
 		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
 
 		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
@@ -161,11 +159,11 @@ public class WikibaseDataFetcherTest {
 			MediaWikiApiErrorException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31", "Q1");
 
-		Map<String, String> parameters1 = new HashMap<String, String>();
+		Map<String, String> parameters1 = new HashMap<>();
 		setStandardParameters(parameters1);
 		parameters1.put("ids", "Q6|Q42|P31");
 
-		Map<String, String> parameters2 = new HashMap<String, String>();
+		Map<String, String> parameters2 = new HashMap<>();
 		setStandardParameters(parameters2);
 		parameters2.put("ids", "Q1");
 
@@ -188,14 +186,14 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testGetEntitiesTitleSplitted() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters1 = new HashMap<String, String>();
+		Map<String, String> parameters1 = new HashMap<>();
 		this.setStandardParameters(parameters1);
 		parameters1.put("titles", "Douglas Adams");
 		parameters1.put("sites", "enwiki");
 		con.setWebResourceFromPath(parameters1, getClass(),
 				"/wbgetentities-Douglas-Adams.json", CompressionType.NONE);
 
-		Map<String, String> parameters2 = new HashMap<String, String>();
+		Map<String, String> parameters2 = new HashMap<>();
 		this.setStandardParameters(parameters2);
 		parameters2.put("titles", "Oliver Kahn");
 		parameters2.put("sites", "enwiki");
@@ -220,7 +218,7 @@ public class WikibaseDataFetcherTest {
 	}
 
 	public void testWbSearchEntities() throws IOException, MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardSearchParameters(parameters);
 		parameters.put("search", "abc");
 		parameters.put("language", "en");

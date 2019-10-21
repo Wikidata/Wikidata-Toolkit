@@ -21,7 +21,6 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +125,7 @@ public class WbSearchEntitiesAction {
                                                          Boolean strictLanguage, String type, Long limit, Long offset)
             throws MediaWikiApiErrorException {
 
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
 
         if (search != null) {

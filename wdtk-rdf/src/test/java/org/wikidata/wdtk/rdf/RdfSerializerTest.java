@@ -42,7 +42,7 @@ public class RdfSerializerTest {
 	RdfSerializer rdfSerializer;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfSerializer = new RdfSerializer(RDFFormat.TURTLE, this.out,
 				new SitesImpl(), new MockPropertyRegister());

@@ -20,15 +20,13 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+
+import static org.junit.Assert.*;
 
 public class StatementDocumentTest {
 	private static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");
@@ -50,15 +48,15 @@ public class StatementDocumentTest {
 
 		assertTrue(id.hasStatement(P1));
 		assertTrue(id.hasStatement("P1"));
-		assertEquals(null, id.findStatement(P1));
-		assertEquals(null, id.findStatement("P1"));
+		assertNull(id.findStatement(P1));
+		assertNull(id.findStatement("P1"));
 		assertTrue(id.hasStatement(P2));
 		assertTrue(id.hasStatement("P2"));
 		assertEquals(s3, id.findStatement(P2));
 		assertEquals(s3, id.findStatement("P2"));
 		assertFalse(id.hasStatement(P3));
 		assertFalse(id.hasStatement("P3"));
-		assertEquals(null, id.findStatement(P3));
-		assertEquals(null, id.findStatement("P3"));
+		assertNull(id.findStatement(P3));
+		assertNull(id.findStatement("P3"));
 	}
 }

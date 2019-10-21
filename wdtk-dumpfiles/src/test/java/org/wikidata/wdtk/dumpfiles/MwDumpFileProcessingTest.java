@@ -50,7 +50,7 @@ public class MwDumpFileProcessingTest {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class TestMwRevisionProcessor implements MwRevisionProcessor {
+	static class TestMwRevisionProcessor implements MwRevisionProcessor {
 
 		final List<MwRevision> revisions = new ArrayList<>();
 		String siteName;
@@ -82,7 +82,7 @@ public class MwDumpFileProcessingTest {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class TestEntityDocumentProcessor implements EntityDocumentProcessor {
+	static class TestEntityDocumentProcessor implements EntityDocumentProcessor {
 
 		int itemCount = 0;
 		int propCount = 0;

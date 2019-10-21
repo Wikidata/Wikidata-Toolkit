@@ -38,10 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -60,8 +57,8 @@ public class PropertyRegisterTest {
 
 	@Before
 	public void setUp() throws MediaWikiApiErrorException, IOException {
-		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
-		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
+		Map<String, EntityDocument> mockResult = new HashMap<>();
+		List<StatementGroup> mockStatementGroups = new ArrayList<>();
 
 		PropertyIdValue pid434 = dataObjectFactory.getPropertyIdValue("P434",
 				this.siteIri);
@@ -72,11 +69,9 @@ public class PropertyRegisterTest {
 		PropertyIdValue pid1921 = dataObjectFactory.getPropertyIdValue("P1921",
 				this.siteIri);
 
-		Statement p23Statement = dataObjectFactory.getStatement(pid434, dataObjectFactory
-						.getValueSnak(pid23, dataObjectFactory.getItemIdValue(
-								"Q42", this.siteIri)), Collections
-						.<SnakGroup> emptyList(), Collections
-						.<Reference> emptyList(), StatementRank.NORMAL, "000");
+		Statement p23Statement = dataObjectFactory.getStatement(pid434,
+				dataObjectFactory.getValueSnak(pid23, dataObjectFactory.getItemIdValue("Q42", this.siteIri)),
+				Collections.emptyList(), Collections.emptyList(), StatementRank.NORMAL, "000");
 
 		Statement p1921Statement = dataObjectFactory
 				.getStatement(
@@ -86,8 +81,8 @@ public class PropertyRegisterTest {
 										pid1921,
 										dataObjectFactory
 												.getStringValue("http://musicbrainz.org/$1/artist")),
-						Collections.<SnakGroup> emptyList(),
-						Collections.<Reference> emptyList(),
+						Collections.emptyList(),
+						Collections.emptyList(),
 						StatementRank.NORMAL, "000");
 
 		Statement p1921StatementExternalID = dataObjectFactory
@@ -98,8 +93,8 @@ public class PropertyRegisterTest {
 										pid1921,
 										dataObjectFactory
 												.getStringValue("http://purl.org/bncf/tid/$1")),
-						Collections.<SnakGroup> emptyList(),
-						Collections.<Reference> emptyList(),
+						Collections.emptyList(),
+						Collections.emptyList(),
 						StatementRank.NORMAL, "000");
 
 		mockStatementGroups.add(dataObjectFactory.getStatementGroup(Collections
@@ -108,18 +103,17 @@ public class PropertyRegisterTest {
 				.singletonList(p1921Statement)));
 
 		mockResult.put("P434",
-				dataObjectFactory.getPropertyDocument(pid434, Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(),
+				dataObjectFactory.getPropertyDocument(pid434,
+						Collections.emptyList(), Collections.emptyList(),
+						Collections.emptyList(),
 						mockStatementGroups, dataObjectFactory
 								.getDatatypeIdValue(DatatypeIdValue.DT_STRING),
 						0));
 		mockResult.put("P23", dataObjectFactory.getPropertyDocument(pid23,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM),
 				0));
 		mockResult.put("P508", dataObjectFactory.getPropertyDocument(pid508,
@@ -162,7 +156,7 @@ public class PropertyRegisterTest {
 				this.propertyRegister.getPropertyUriPattern(pid));
 		assertEquals(50,
 				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
-		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
+		assertTrue(this.propertyRegister.datatypes.containsKey("P434"));
 	}
 
 	@Test
@@ -184,7 +178,7 @@ public class PropertyRegisterTest {
 						.getPropertyIdValue("P434", this.siteIri)));
 		assertEquals(50,
 				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
-		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
+		assertTrue(this.propertyRegister.datatypes.containsKey("P434"));
 	}
 
 	@Test

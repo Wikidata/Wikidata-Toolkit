@@ -172,8 +172,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
 			throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> result = new HashMap<>();
-		List<String> newEntityIds = new ArrayList<>();
-		newEntityIds.addAll(entityIds);
+		List<String> newEntityIds = new ArrayList<>(entityIds);
 		boolean moreItems = !newEntityIds.isEmpty();
 		while (moreItems) {
 			List<String> subListOfEntityIds;
@@ -257,8 +256,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles)
 			throws MediaWikiApiErrorException, IOException {
-		List<String> newTitles = new ArrayList<>();
-		newTitles.addAll(titles);
+		List<String> newTitles = new ArrayList<>(titles);
 		Map<String, EntityDocument> result = new HashMap<>();
 		boolean moreItems = !newTitles.isEmpty();
 

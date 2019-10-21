@@ -39,5 +39,5 @@ public interface UnsupportedValue extends Value {
 	 * @return
 	 * 		the value of "type" in the JSON representation of this value.
 	 */
-	public String getTypeJsonString();
+	String getTypeJsonString();
 }

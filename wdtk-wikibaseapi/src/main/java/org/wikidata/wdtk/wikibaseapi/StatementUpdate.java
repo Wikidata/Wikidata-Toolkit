@@ -58,7 +58,7 @@ public class StatementUpdate {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class StatementWithUpdate {
+	static class StatementWithUpdate {
 		public final Statement statement;
 		public final boolean write;
 
@@ -74,7 +74,7 @@ public class StatementUpdate {
 	 * 
 	 * @author antonin
 	 */
-	class DeletedStatement implements Statement {
+	static class DeletedStatement implements Statement {
 		
 		private String id;
 		

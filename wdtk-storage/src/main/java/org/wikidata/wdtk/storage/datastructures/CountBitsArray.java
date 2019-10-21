@@ -126,7 +126,7 @@ class CountBitsArray {
 	 *         according to the given bit vector
 	 */
 	List<Long> getCountList() {
-		List<Long> ret = new ArrayList<Long>();
+		List<Long> ret = new ArrayList<>();
 		long lastValue = 0;
 		int positionInBlock = 0;
 		for (long index = 0; index < this.bitVector.size(); index++) {
