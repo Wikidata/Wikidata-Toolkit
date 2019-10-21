@@ -48,4 +48,14 @@ public interface Reference {
 	 * @return iterator of snaks
 	 */
 	Iterator<Snak> getAllSnaks();
+
+	/**
+	 * Wikibase calculates a hash for each reference based on the content of the reference.
+	 * This hash appears in the RDF serialization of the reference.
+	 * Since the calculation is hard to reproduce, this is only available if the reference was read
+	 * from a dump that contains the hash.
+	 *
+	 * @return the hash of the reference, if available, otherwise null.
+	 */
+	String getHash();
 }

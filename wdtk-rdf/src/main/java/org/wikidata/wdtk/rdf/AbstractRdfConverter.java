@@ -219,10 +219,6 @@ abstract public class AbstractRdfConverter {
 				.getUri(Vocabulary.WB_NO_VALUE_PROP), Vocabulary
 				.getPropertyUri(document.getEntityId(),
 						PropertyContext.NO_VALUE));
-		this.rdfWriter.writeTripleUriObject(subject, this.rdfWriter
-				.getUri(Vocabulary.WB_NO_QUALIFIER_VALUE_PROP), Vocabulary
-				.getPropertyUri(document.getEntityId(),
-						PropertyContext.NO_QUALIFIER_VALUE));
 		// TODO something more with NO_VALUE
 	}
 

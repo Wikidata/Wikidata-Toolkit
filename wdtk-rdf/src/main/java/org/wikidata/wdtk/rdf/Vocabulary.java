@@ -24,11 +24,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.wikibaseapi.GuidGenerator;
+import org.wikidata.wdtk.wikibaseapi.RandomGuidGenerator;
 
 /**
  * This class contains static methods and constants that define the various OWL
@@ -49,6 +49,8 @@ public class Vocabulary {
 		}
 	}
 
+	private final static GuidGenerator GUID_GENERATOR = new RandomGuidGenerator();
+
 	// Prefixes
 	public static final String PREFIX_WIKIDATA_STATEMENT = "http://www.wikidata.org/entity/statement/";
 
@@ -67,7 +69,7 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
-	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
+	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = PREFIX_WIKIDATA_NO_VALUE;
 
 	public static final String PREFIX_WIKIDATA_VALUE = "http://www.wikidata.org/value/";
 
@@ -226,7 +228,7 @@ public class Vocabulary {
 	 * Class for Wikibase globe coordinates values.
 	 */
 	public static final String WB_GLOBE_COORDINATES_VALUE = PREFIX_WBONTO
-			+ "GlobeCoordinatesValue";
+			+ "GlobecoordinateValue";
 	static {
 		VOCABULARY_TYPES.put(WB_GLOBE_COORDINATES_VALUE, OWL_CLASS);
 	}
@@ -469,8 +471,7 @@ public class Vocabulary {
 	 * Property for connecting Wikibase property entities to their no-value
 	 * classes for qualifiers.
 	 */
-	public static final String WB_NO_QUALIFIER_VALUE_PROP = PREFIX_WBONTO
-			+ "noqualifiervalue";
+	public static final String WB_NO_QUALIFIER_VALUE_PROP = WB_NO_VALUE_PROP;
 	static {
 		VOCABULARY_TYPES.put(WB_NO_QUALIFIER_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
@@ -492,10 +493,11 @@ public class Vocabulary {
 	 * @return the URI
 	 */
 	public static String getStatementUri(Statement statement) {
-		int i = statement.getStatementId().indexOf('$') + 1;
-		return PREFIX_WIKIDATA_STATEMENT
-				+ statement.getSubject().getId() + "-"
-				+ statement.getStatementId().substring(i);
+		String statementId = statement.getStatementId();
+		if (statementId == null || statementId.isEmpty()) {
+			statementId = GUID_GENERATOR.freshStatementId(statement.getSubject().getId());
+		}
+		return PREFIX_WIKIDATA_STATEMENT + statementId.replaceFirst("\\$", "-");
 	}
 
 	/**
@@ -536,12 +538,17 @@ public class Vocabulary {
 	}
 
 	public static String getReferenceUri(Reference reference) {
-		md.reset();
-		for (SnakGroup snakgroup : reference.getSnakGroups()) {
-			for (Snak snak : snakgroup) {
-				updateMessageDigestWithInt(md, snak.hashCode());
-			}
+		final String hash = reference.getHash();
+		if (hash != null) {
+			return PREFIX_WIKIDATA_REFERENCE + hash;
 		}
+
+		md.reset();
+		reference.getSnakGroups().stream()
+				.flatMap(g -> g.getSnaks().stream())
+				.map(Objects::hashCode)
+				.sorted()
+				.forEach(i -> updateMessageDigestWithInt(md, i));
 
 		return PREFIX_WIKIDATA_REFERENCE + bytesToHex(md.digest());
 	}

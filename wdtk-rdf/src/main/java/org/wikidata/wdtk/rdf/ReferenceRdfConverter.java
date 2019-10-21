@@ -115,6 +115,10 @@ public class ReferenceRdfConverter {
 			for (Snak snak : snakGroup) {
 				snak.accept(this.snakRdfConverter);
 			}
+			this.snakRdfConverter.setSnakContext(resource, PropertyContext.REFERENCE_SIMPLE);
+			for (Snak snak : snakGroup) {
+				snak.accept(this.snakRdfConverter);
+			}
 		}
 	}
 }

@@ -149,7 +149,7 @@ public class RdfConverterTest {
 	@Test
 	public void testStatementSimpleValue() throws RDFHandlerException,
 			RDFParseException, IOException {
-		Statement statement = objectFactory.createStatement("Q100", "P227");
+		Statement statement = objectFactory.createStatement("Q100", "P227").withStatementId("Q100-id111");
 		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
@@ -165,6 +165,7 @@ public class RdfConverterTest {
 				GlobeCoordinatesValue.GLOBE_EARTH);
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, PropertyIdValue.NULL)
+				.withId("Q0$test")
 				.withValue(value).build();
 		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
@@ -179,6 +180,7 @@ public class RdfConverterTest {
 		PropertyIdValue pid = dataObjectFactory.getPropertyIdValue("P31", "http://www.wikidata.org/");
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, pid)
+				.withId("Q0$test")
 				.withNoValue().build();
 		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
