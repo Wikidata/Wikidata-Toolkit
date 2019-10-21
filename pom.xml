@@ -72,16 +72,16 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<apacheCommonsCompressVersion>1.18</apacheCommonsCompressVersion>
+		<apacheCommonsCompressVersion>1.19</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.9</apacheCommonsLangVersion>
-		<apacheHttpVersion>4.5.5</apacheHttpVersion>
+		<apacheHttpVersion>4.5.10</apacheHttpVersion>
 		<commonsCliVersion>1.4</commonsCliVersion>
 		<ini4JVersion>0.5.4</ini4JVersion>
-		<jacksonVersion>2.9.9</jacksonVersion>
+		<jacksonVersion>2.9.10</jacksonVersion>
 		<junitVersion>4.12</junitVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
-		<rdf4jVersion>2.5.2</rdf4jVersion>
-		<slf4jVersion>1.7.26</slf4jVersion>
+		<rdf4jVersion>3.0.1</rdf4jVersion>
+		<slf4jVersion>1.7.28</slf4jVersion>
 		<threetenVersion>1.5.0</threetenVersion>
 	</properties>
 
