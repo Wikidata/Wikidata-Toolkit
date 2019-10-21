@@ -206,6 +206,41 @@ public class LexemeDocumentImplTest {
 	}
 
 	@Test
+	public void testWithRevisionId() {
+		assertEquals(1235L, ld1.withRevisionId(1235L).getRevisionId());
+		assertEquals(ld1, ld1.withRevisionId(1325L).withRevisionId(ld1.getRevisionId()));
+	}
+
+	@Test
+	public void testWithLemmaInNewLanguage() {
+		MonolingualTextValue newLemma = new MonolingualTextValueImpl("Foo", "fr");
+		LexemeDocument withLemma = ld1.withLemma(newLemma);
+		assertEquals(newLemma, withLemma.getLemmas().get("fr"));
+	}
+
+	@Test
+	public void testAddStatement() {
+		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
+				Collections.emptyList(), Collections.emptyList(), lid);
+		Claim claim = fresh.getClaim();
+		assertFalse(ld1.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+		LexemeDocument withStatement = ld1.withStatement(fresh);
+		assertTrue(withStatement.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+	}
+
+	@Test
+	public void testDeleteStatements() {
+		Statement toRemove = statementGroups.get(0).getStatements().get(0);
+		LexemeDocument withoutStatement = ld1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
+		assertNotEquals(withoutStatement, ld1);
+	}
+
+	@Test
 	public void testLexemeToJson() throws JsonProcessingException {
 		JsonComparator.compareJsonStrings(JSON_LEXEME, mapper.writeValueAsString(ld1));
 	}

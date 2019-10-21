@@ -39,9 +39,9 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FormDocumentImpl extends StatementDocumentImpl implements FormDocument {
 
-	private List<ItemIdValue> grammaticalFeatures;
+	private final List<ItemIdValue> grammaticalFeatures;
 
-	private Map<String,MonolingualTextValue> representations;
+	private final Map<String,MonolingualTextValue> representations;
 
 	/**
 	 * Constructor.
@@ -98,10 +98,9 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 				? Collections.emptyList()
 				: constructGrammaticalFeatures(grammaticalFeatures, siteIri);
 	}
-	
+
 	/**
-	 * Copy constructor. Does not perform any checks on
-	 * its values.
+	 * Copy constructor, used when creating modified copies of forms.
 	 */
 	private FormDocumentImpl(
 			FormIdValue id,
@@ -187,6 +186,30 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	}
 	
 	@Override
+	public FormDocument withRevisionId(long newRevisionId) {
+		return new FormDocumentImpl(getEntityId(),
+				representations, grammaticalFeatures,
+				claims, newRevisionId);
+	}
+
+	@Override
+	public FormDocument withRepresentation(MonolingualTextValue representation) {
+		Map<String, MonolingualTextValue> newRepresentations = new HashMap<>(representations);
+		newRepresentations.put(representation.getLanguageCode(), representation);
+		return new FormDocumentImpl(getEntityId(), newRepresentations, grammaticalFeatures, claims, revisionId);
+	}
+
+	@Override
+	public FormDocument withGrammaticalFeature(ItemIdValue grammaticalFeature) {
+		if (grammaticalFeatures.contains(grammaticalFeature)) {
+			return this;
+		}
+		List<ItemIdValue> newGrammaticalFeatures = new ArrayList<>(grammaticalFeatures);
+		newGrammaticalFeatures.add(grammaticalFeature);
+		return new FormDocumentImpl(getEntityId(), representations, newGrammaticalFeatures, claims, revisionId);
+	}
+
+	@Override
 	public FormDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
 		return new FormDocumentImpl(getEntityId(),
@@ -200,12 +223,5 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		return new FormDocumentImpl(getEntityId(),
 				representations, grammaticalFeatures,
 				newGroups, revisionId);
-	}
-	
-	@Override
-	public FormDocument withRevisionId(long newRevisionId) {
-		return new FormDocumentImpl(getEntityId(),
-				representations, grammaticalFeatures,
-				claims, newRevisionId);
 	}
 }
