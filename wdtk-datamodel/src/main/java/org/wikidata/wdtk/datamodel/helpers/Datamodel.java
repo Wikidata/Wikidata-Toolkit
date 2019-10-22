@@ -805,6 +805,9 @@ public class Datamodel {
 	/**
 	 * Creates an {@link FormDocument}.
 	 *
+	 * If you plan to add this form to a specific lexeme,
+	 * it might be easier to use {@link LexemeDocument#createForm}.
+	 *
 	 * @param formIdValue
 	 *            the id of the form that data is about
 	 * @param representations
@@ -826,6 +829,9 @@ public class Datamodel {
 
 	/**
 	 * Creates an {@link SenseDocument}.
+	 *
+	 * If you plan to add this sense to a specific lexeme,
+	 * it might be easier to use {@link LexemeDocument#createSense)}.
 	 *
 	 * @param senseIdValue
 	 *            the id of the form that data is about

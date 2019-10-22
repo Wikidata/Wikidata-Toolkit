@@ -127,4 +127,31 @@ public interface LexemeDocument extends StatementDocument {
 	 */
 	@Override
 	LexemeDocument withoutStatementIds(Set<String> statementIds);
+
+	/**
+	 * Creates a new {@link FormDocument} for this lexeme.
+	 * The form is not added to the {@link LexemeDocument} object,
+	 * it should be done with {@link LexemeDocument#withForm}.
+	 */
+	FormDocument createForm(List<MonolingualTextValue> representations);
+
+	/**
+	 * Adds a {@link FormDocument} to this lexeme.
+	 * The form id should be prefixed with the lexeme id.
+	 */
+	LexemeDocument withForm(FormDocument form);
+
+	/**
+	 * Creates a new {@link SenseDocument} for this Lexeme.
+	 * The form is not added to the {@link LexemeDocument} object,
+	 * it should be done with {@link LexemeDocument#withSense}.
+	 */
+	SenseDocument createSense(List<MonolingualTextValue> glosses);
+
+	/**
+	 * Adds a {@link SenseDocument} to this lexeme.
+	 * The sense id should be prefixed with the lexeme id.
+	 */
+	LexemeDocument withSense(SenseDocument sense);
+
 }
