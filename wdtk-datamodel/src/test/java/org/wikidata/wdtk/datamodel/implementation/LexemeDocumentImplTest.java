@@ -23,6 +23,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
@@ -212,6 +213,20 @@ public class LexemeDocumentImplTest {
 	}
 
 	@Test
+	public void testWithLexicalCategory() {
+		ItemIdValue newLexicalCategory = new ItemIdValueImpl("Q142", "http://example.com/entity/");
+		LexemeDocument withLexicalCategory = ld1.withLexicalCategory(newLexicalCategory);
+		assertEquals(newLexicalCategory, withLexicalCategory.getLexicalCategory());
+	}
+
+	@Test
+	public void testWithLanguage() {
+		ItemIdValue newLanguage = new ItemIdValueImpl("Q242", "http://example.com/entity/");
+		LexemeDocument withLanguage = ld1.withLanguage(newLanguage);
+		assertEquals(newLanguage, withLanguage.getLanguage());
+	}
+
+	@Test
 	public void testWithLemmaInNewLanguage() {
 		MonolingualTextValue newLemma = new MonolingualTextValueImpl("Foo", "fr");
 		LexemeDocument withLemma = ld1.withLemma(newLemma);
@@ -238,6 +253,40 @@ public class LexemeDocumentImplTest {
 		Statement toRemove = statementGroups.get(0).getStatements().get(0);
 		LexemeDocument withoutStatement = ld1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
 		assertNotEquals(withoutStatement, ld1);
+	}
+
+	@Test
+	public void testWithForm() {
+		FormDocument newForm = ld1.createForm(Collections.singletonList(new TermImpl("en", "add1")));
+		assertEquals(lid, newForm.getEntityId().getLexemeId());
+		assertEquals(ld1.getForms().size() + 1, ld1.withForm(newForm).getForms().size());
+		assertEquals(newForm, ld1.withForm(newForm).getForm(newForm.getEntityId()));
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void testWithWrongFormId() {
+		ld1.withForm(Datamodel.makeFormDocument(
+				Datamodel.makeFormIdValue("L444-F32","http://example.com/entity/"),
+				Collections.singletonList(new TermImpl("en", "add1")),
+				Collections.emptyList(),
+				Collections.emptyList()
+		));
+	}
+
+	@Test
+	public void testWithSense() {
+		SenseDocument newSense = ld1.createSense(Collections.singletonList(new TermImpl("en", "add1")));
+		assertEquals(lid, newSense.getEntityId().getLexemeId());
+		assertEquals(ld1.getSenses().size() + 1, ld1.withSense(newSense).getSenses().size());
+		assertEquals(newSense, ld1.withSense(newSense).getSense(newSense.getEntityId()));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testWithWrongSenseId() {
+		ld1.withSense(Datamodel.makeSenseDocument(
+				Datamodel.makeSenseIdValue("L444-S32","http://example.com/entity/"),
+				Collections.singletonList(new TermImpl("en", "add1")),
+				Collections.emptyList()
+		));
 	}
 
 	@Test
