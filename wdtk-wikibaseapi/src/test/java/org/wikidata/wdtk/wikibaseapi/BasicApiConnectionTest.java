@@ -20,6 +20,14 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,7 +62,7 @@ public class BasicApiConnectionTest {
 			"\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\","+
 			"\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\","+
 			"\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\","+
-			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
+			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\",\"connectTimeout\":-1,\"readTimeout\":-1}";
 	
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
@@ -336,6 +344,45 @@ public class BasicApiConnectionTest {
 		assertTrue(this.con.isLoggedIn());
 		// after a while, the credentials expire
 		this.con.checkCredentials();
+	}
+	
+	/**
+	 * For backwards compatibility: by defaults, no timeouts
+	 * are set by us, we use HttpURLConnection's defaults.
+	 * @throws IOException
+	 */
+	@Test
+	public void testNoTimeouts() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		verify(urlConn, times(0)).setConnectTimeout(anyInt());
+		verify(urlConn, times(0)).setReadTimeout(anyInt());
+	}
+	
+	@Test
+	public void testConnectTimeout() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setConnectTimeout(1000);
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		assertEquals(con.getConnectTimeout(), 1000);
+		verify(urlConn, times(1)).setConnectTimeout(1000);
+		verify(urlConn, times(0)).setReadTimeout(anyInt());
+	}
+	
+	@Test
+	public void testReadTimeout() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setReadTimeout(2000);
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		assertEquals(con.getReadTimeout(), 2000);
+		verify(urlConn, times(0)).setConnectTimeout(anyInt());
+		verify(urlConn, times(1)).setReadTimeout(2000);
 	}
 
 	private List<String> testCookieList() {

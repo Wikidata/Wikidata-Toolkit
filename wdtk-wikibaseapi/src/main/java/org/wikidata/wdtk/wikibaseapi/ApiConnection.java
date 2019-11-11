@@ -193,6 +193,18 @@ public class ApiConnection {
 	 * Map of requested tokens.
 	 */
 	final Map<String, String> tokens;
+	
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 */
+	int connectTimeout = -1;
+	
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set.
+	 */
+	int readTimeout = -1;
 
 	/**
 	 * Mapper object used for deserializing JSON data.
@@ -772,8 +784,56 @@ public class ApiConnection {
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
+		if(connectTimeout >= 0) {
+			connection.setConnectTimeout(connectTimeout);
+		}
+		if(readTimeout >= 0) {
+			connection.setReadTimeout(readTimeout);
+		}
 		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
 				getCookieString());
+	}
+	
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set, which is the default behaviour (for
+	 * backwards compatibility).
+	 * 
+	 * @see HttpURLConnection.getConnectionTimeout
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+	
+	/**
+	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 * 
+	 * @see HttpURLConnection.setConnectionTimeout
+	 */
+	public void setConnectTimeout(int timeout) {
+		connectTimeout = timeout;
+	}
+	
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set, which is the default behaviour (for backwards
+	 * compatibility).
+	 * 
+	 * @see HttpURLConnection.getReadTimeout
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+	
+	/**
+	 * Sets the maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set.
+	 * 
+	 * @see HttpURLConnection.setReadTimeout
+	 */
+	public void setReadTimeout(int timeout) {
+		readTimeout = timeout;
 	}
 
 }
