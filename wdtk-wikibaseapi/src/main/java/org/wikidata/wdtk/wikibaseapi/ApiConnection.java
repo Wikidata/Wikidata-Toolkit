@@ -39,7 +39,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -47,7 +51,7 @@ import java.util.Map.Entry;
  * and login.
  * 
  * This should no longer be instantiated directly: please use one of the subclasses
- * {@class PasswordApiConnection} and {@class OAuthApiConnection} instead. This
+ * {@class BasicApiConnection} and {@class OAuthApiConnection} instead. This
  * class will become an interface in a future release.
  *
  * @author Michael Guenther
@@ -244,7 +248,7 @@ public class ApiConnection {
 	/**
 	 * Creates an API connection to wikidata.org.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 * @return {@link BasicApiConnection}
 	 */
 	@Deprecated
@@ -255,7 +259,7 @@ public class ApiConnection {
 	/**
 	 * Creates an API connection to test.wikidata.org.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 * @return {@link BasicApiConnection}
 	 */
 	@Deprecated
@@ -590,7 +594,7 @@ public class ApiConnection {
 	 * successful, and sets the internal state of the API connection accordingly
 	 * in this case.
 	 * 
-	 * @deprecated because it will be migrated to {@class PasswordApiConnection}.
+	 * @deprecated because it will be migrated to {@class BasicApiConnection}.
 	 *
 	 * @param token
 	 *            the login token string
@@ -631,7 +635,7 @@ public class ApiConnection {
 	/**
 	 * Returns a user-readable message for a given API response.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 * @param loginResult
 	 *            a API login request result string other than
 	 *            {@link #LOGIN_RESULT_SUCCESS}
@@ -674,7 +678,7 @@ public class ApiConnection {
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
 	 * 
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 */
 	@Deprecated
 	void fillCookies(Map<String, List<String>> headerFields) {
@@ -700,7 +704,7 @@ public class ApiConnection {
 	 * Returns the string representation of the currently stored cookies. This
 	 * data is added to the connection before making requests.
 	 * 
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
+	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 * @return cookie string
 	 */
 	@Deprecated

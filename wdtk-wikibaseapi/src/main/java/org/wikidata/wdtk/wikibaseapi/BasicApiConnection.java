@@ -73,7 +73,6 @@ public class BasicApiConnection extends ApiConnection {
 	/**
 	 * Creates an API connection to wikidata.org.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 * @return {@link BasicApiConnection}
 	 */
 	public static BasicApiConnection getWikidataApiConnection() {
@@ -83,7 +82,6 @@ public class BasicApiConnection extends ApiConnection {
 	/**
 	 * Creates an API connection to test.wikidata.org.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 * @return {@link BasicApiConnection}
 	 */
 	public static BasicApiConnection getTestWikidataApiConnection() {
@@ -151,7 +149,6 @@ public class BasicApiConnection extends ApiConnection {
 	/**
 	 * Returns a user-readable message for a given API response.
 	 *
-	 * @deprecated to be migrated to {@class PasswordApiConnection}
 	 * @param loginResult
 	 *            a API login request result string other than
 	 *            {@link #LOGIN_RESULT_SUCCESS}
