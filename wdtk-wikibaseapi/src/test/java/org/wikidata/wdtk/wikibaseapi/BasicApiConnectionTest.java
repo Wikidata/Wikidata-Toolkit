@@ -135,18 +135,18 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testGetToken() throws LoginFailedException {
+	public void testGetToken() throws LoginFailedException, IOException {
 		this.con.login("username", "password");
 		assertNotNull(this.con.getOrFetchToken("csrf"));
 	}
 
-	@Test
-	public void testGetTokenWithoutLogin() {
-		assertNull(this.con.getOrFetchToken("csrf"));
+	@Test(expected = IOException.class)
+	public void testGetTokenWithoutLogin() throws IOException {
+		this.con.getOrFetchToken("csrf");
 	}
 
 	@Test
-	public void testGetLoginToken() {
+	public void testGetLoginToken() throws IOException {
 		assertNotNull(this.con.getOrFetchToken("login"));
 	}
 

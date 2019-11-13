@@ -390,13 +390,13 @@ public class ApiConnection {
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return can return null if token can not be retrieved
 	 */
-	String getOrFetchToken(String tokenType) {
+	String getOrFetchToken(String tokenType) throws IOException {
 		if (tokens.containsKey(tokenType)) {
 			return tokens.get(tokenType);
 		}
 		String value = fetchToken(tokenType);
 		tokens.put(tokenType, value);
-		// TODO if this is null, we could try to recover here:
+		// TODO if fetchToken raises an exception, we could try to recover here:
 		// (1) Check if we are still logged in; maybe log in again
 		// (2) If there is another error, maybe just run the operation again
 		return value;
@@ -415,9 +415,10 @@ public class ApiConnection {
 	 * checks first. If errors occur, they are logged and null is returned.
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
-	 * @return newly retrieved token or null if no token was retrieved
+	 * @return newly retrieved token
+	 * @throws IOException if no token could be retrieved
 	 */
-	private String fetchToken(String tokenType) {
+	private String fetchToken(String tokenType) throws IOException {
 		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "query");
 		params.put("meta", "tokens");
@@ -426,10 +427,9 @@ public class ApiConnection {
 		try {
 			JsonNode root = this.sendJsonRequest("POST", params);
 			return root.path("query").path("tokens").path(tokenType + "token").textValue();
-		} catch (IOException | MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch token: " + e.toString());
+		} catch (MediaWikiApiErrorException e) {
+			throw new IOException("Error when trying to fetch token: " + e.toString());
 		}
-		return null;
 	}
 
 	/**
