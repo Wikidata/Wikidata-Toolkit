@@ -355,18 +355,15 @@ public class ApiConnection {
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
+	 * @throws MediaWikiApiErrorException 
 	 */
-	public void logout() throws IOException {
+	public void logout() throws IOException, MediaWikiApiErrorException {
 		if (this.loggedIn) {
 			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
 			params.put("format", "json"); // reduce the output
 			params.put("token", getOrFetchToken("csrf"));
-			try {
-				sendJsonRequest("POST", params);
-			} catch (MediaWikiApiErrorException e) {
-				throw new IOException(e.getMessage(), e); //TODO: we should throw a better exception
-			}
+			sendJsonRequest("POST", params);
 
 			this.loggedIn = false;
 			this.username = "";
@@ -378,8 +375,9 @@ public class ApiConnection {
 	 * Clears the set of cookies. This will cause a logout.
 	 *
 	 * @throws IOException
+	 * @throws MediaWikiApiErrorException 
 	 */
-	public void clearCookies() throws IOException {
+	public void clearCookies() throws IOException, MediaWikiApiErrorException {
 		logout();
 		this.cookies.clear();
 		this.tokens.clear();
@@ -388,9 +386,13 @@ public class ApiConnection {
 	/**
 	 * Return a token of given type.
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
-	 * @return can return null if token can not be retrieved
+	 * @return a token
+	 * @throws MediaWikiApiErrorException 
+	 *     if MediaWiki returned an error
+	 * @throws IOException
+	 *     if a network error occurred
 	 */
-	String getOrFetchToken(String tokenType) throws IOException {
+	String getOrFetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		if (tokens.containsKey(tokenType)) {
 			return tokens.get(tokenType);
 		}
@@ -416,20 +418,19 @@ public class ApiConnection {
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return newly retrieved token
-	 * @throws IOException if no token could be retrieved
+	 * @throws IOException 
+	 *     if a network error occurred
+	 * @throws MediaWikiApiErrorException
+	 *     if MediaWiki returned an error when fetching the token 
 	 */
-	private String fetchToken(String tokenType) throws IOException {
+	private String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "query");
 		params.put("meta", "tokens");
 		params.put("type", tokenType);
 
-		try {
-			JsonNode root = this.sendJsonRequest("POST", params);
-			return root.path("query").path("tokens").path(tokenType + "token").textValue();
-		} catch (MediaWikiApiErrorException e) {
-			throw new IOException("Error when trying to fetch token: " + e.toString());
-		}
+		JsonNode root = this.sendJsonRequest("POST", params);
+		return root.path("query").path("tokens").path(tokenType + "token").textValue();
 	}
 
 	/**

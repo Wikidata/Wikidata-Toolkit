@@ -135,18 +135,18 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testGetToken() throws LoginFailedException, IOException {
+	public void testGetToken() throws LoginFailedException, IOException, MediaWikiApiErrorException {
 		this.con.login("username", "password");
 		assertNotNull(this.con.getOrFetchToken("csrf"));
 	}
 
 	@Test(expected = IOException.class)
-	public void testGetTokenWithoutLogin() throws IOException {
+	public void testGetTokenWithoutLogin() throws IOException, MediaWikiApiErrorException {
 		this.con.getOrFetchToken("csrf");
 	}
 
 	@Test
-	public void testGetLoginToken() throws IOException {
+	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
 		assertNotNull(this.con.getOrFetchToken("login"));
 	}
 
@@ -192,7 +192,7 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testLogout() throws IOException, LoginFailedException {
+	public void testLogout() throws IOException, LoginFailedException, MediaWikiApiErrorException {
 		this.con.login("username", "password");
 		this.con.logout();
 		assertEquals("", this.con.username);
@@ -290,7 +290,7 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testClearCookies() throws IOException {
+	public void testClearCookies() throws IOException, MediaWikiApiErrorException {
 		con.cookies.put("Content", "some content");
 		con.clearCookies();
 		assertTrue(con.cookies.keySet().isEmpty());

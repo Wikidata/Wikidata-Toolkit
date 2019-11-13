@@ -85,6 +85,7 @@ public class WbEditingActionTest {
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("format", "json");
+		params.put("type", "csrf");
 		// This error makes no sense for this action, but that does not matter
 		// here:
 		con.setWebResource(params, "{}");
