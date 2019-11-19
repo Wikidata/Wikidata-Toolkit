@@ -130,9 +130,7 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 
 	@Override
 	public MediaInfoDocument withLabel(MonolingualTextValue newLabel) {
-		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
-		newLabels.put(newLabel.getLanguageCode(), newLabel);
-		return new MediaInfoDocumentImpl(getEntityId(), newLabels, claims, revisionId);
+		return new MediaInfoDocumentImpl(getEntityId(), withTerm(labels, newLabel), claims, revisionId);
 	}
 
 	@Override

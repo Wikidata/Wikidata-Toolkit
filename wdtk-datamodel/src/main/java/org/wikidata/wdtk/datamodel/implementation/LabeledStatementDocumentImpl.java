@@ -115,6 +115,13 @@ abstract class LabeledStatementDocumentImpl extends StatementDocumentImpl implem
 		return map;
 	}
 
+	protected static Map<String, MonolingualTextValue> withTerm(
+			Map<String, MonolingualTextValue> values, MonolingualTextValue value) {
+		Map<String, MonolingualTextValue> newValues = new HashMap<>(values);
+		newValues.put(value.getLanguageCode(), toTerm(value));
+		return newValues;
+	}
+
 	/**
 	 * We need to make sure the terms are of the right type, otherwise they will not be serialized correctly.
 	 */
