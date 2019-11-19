@@ -612,6 +612,20 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates an empty {@link PropertyDocument}.
+	 *
+	 * @param propertyId
+	 *            the id of the property that data is about
+	 * @param datatypeId
+	 *            the datatype of that property
+	 * @return a {@link PropertyDocument} corresponding to the input
+	 */
+	public static PropertyDocument makePropertyDocument(PropertyIdValue propertyId, DatatypeIdValue datatypeId) {
+		return makePropertyDocument(propertyId, Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), datatypeId);
+	}
+
+	/**
 	 * Creates a {@link PropertyDocument} without statements and empty revision
 	 * id. It might be more convenient to use the
 	 * {@link PropertyDocumentBuilder} instead.
@@ -629,7 +643,7 @@ public class Datamodel {
 	 * @param datatypeId
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
-	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
+	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue)}
 	 */
 	@Deprecated
 	public static PropertyDocument makePropertyDocument(
@@ -705,6 +719,18 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates an empty{@link ItemDocument}.
+	 *
+	 * @param itemIdValue
+	 *            the id of the item that data is about
+	 * @return an {@link ItemDocument} corresponding to the input
+	 */
+	public static ItemDocument makeItemDocument(ItemIdValue itemIdValue) {
+		return makeItemDocument(itemIdValue, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyMap(), 0);
+	}
+
+	/**
 	 * Creates an {@link ItemDocument} with empty revision id. It might be more
 	 * convenient to use the {@link ItemDocumentBuilder} instead.
 	 *
@@ -770,7 +796,28 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link LexemeDocument}.
+	 * Creates an empty {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory, ItemIdValue language, List<MonolingualTextValue> lemmas) {
+		return makeLexemeDocument(lexemeIdValue, lexicalCategory, language,
+				lemmas, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a {@link LexemeDocument}.
 	 *
 	 * @param lexemeIdValue
 	 *            the id of the lexeme that data is about
@@ -803,7 +850,7 @@ public class Datamodel {
 
 
 	/**
-	 * Creates an {@link FormDocument}.
+	 * Creates a {@link FormDocument}.
 	 *
 	 * If you plan to add this form to a specific lexeme,
 	 * it might be easier to use {@link LexemeDocument#createForm}.
@@ -828,7 +875,7 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link SenseDocument}.
+	 * Creates a {@link SenseDocument}.
 	 *
 	 * If you plan to add this sense to a specific lexeme,
 	 * it might be easier to use {@link LexemeDocument#createSense)}.
@@ -850,7 +897,18 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link MediaInfoDocument}.
+	 * Creates an empty {@link MediaInfoDocument}.
+	 *
+	 * @param mediaInfoIdValue
+	 *            the id of the media that data is about
+	 * @return an {@link MediaInfoDocument} corresponding to the input
+	 */
+	public static MediaInfoDocument makeMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue) {
+		return makeMediaInfoDocument(mediaInfoIdValue, Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a {@link MediaInfoDocument}.
 	 *
 	 * @param mediaInfoIdValue
 	 *            the id of the media that data is about
