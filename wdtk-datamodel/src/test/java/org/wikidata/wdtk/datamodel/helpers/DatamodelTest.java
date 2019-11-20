@@ -351,10 +351,6 @@ public class DatamodelTest {
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = Datamodel.makePropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
@@ -370,12 +366,7 @@ public class DatamodelTest {
 	@Test
 	public final void testGetItemDocument() {
 		ItemDocument o1 = Datamodel.makeItemDocument(
-				factory.getItemIdValue("Q42", "foo"),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyMap());
+				factory.getItemIdValue("Q42", "foo"));
 		ItemDocument o2 = factory.getItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
 				Collections.emptyList(),
