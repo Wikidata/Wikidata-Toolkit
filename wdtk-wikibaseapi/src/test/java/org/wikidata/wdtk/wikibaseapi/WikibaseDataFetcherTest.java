@@ -146,6 +146,47 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
+	public void testWbGetMediaInfoEntityFromId() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("ids", "M65057");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-RandomImage.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocument("M65057");
+
+		assertEquals("M65057", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWbGetMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "File:RandomImage 4658098723742867.jpg");
+		parameters.put("sites", "commonswiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-RandomImage.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("commonswiki", "File:RandomImage 4658098723742867.jpg");
+
+		assertEquals("M65057", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWbGetVirtualMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "File:Test.jpg");
+		parameters.put("sites", "commonswiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-virtual-Test.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("commonswiki", "File:Test.jpg");
+
+		assertEquals("M4215516", result.getEntityId().getId());
+	}
+
+	@Test
 	public void testWikidataDataFetcher() {
 		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
 

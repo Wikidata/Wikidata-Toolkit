@@ -52,7 +52,7 @@ public class MediaInfoDocumentImplTest {
 	private final MediaInfoDocument mi1 = new MediaInfoDocumentImpl(mid, labelList, statementGroups,1234);
 	private final MediaInfoDocument mi2 = new MediaInfoDocumentImpl(mid, labelList, statementGroups,  1234);
 
-	private final String JSON_MEDIA_INFO_LABEL = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"statements\":{}}";
+	private final String JSON_MEDIA_INFO_LABEL = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"claims\":{}}";
 	private final String JSON_MEDIA_INFO_DESCRIPTION = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"descriptions\":{},\"statements\":{}}";
 	private final String JSON_MEDIA_INFO_STATEMENTS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"statements\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
 	private final String JSON_MEDIA_INFO_CLAIMS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
@@ -210,7 +210,7 @@ public class MediaInfoDocumentImplTest {
 	@Test
 	public void testStatementsToJson() throws JsonProcessingException {
 		MediaInfoDocumentImpl document = new MediaInfoDocumentImpl(mid, Collections.emptyList(), statementGroups,  0);
-		JsonComparator.compareJsonStrings(JSON_MEDIA_INFO_STATEMENTS, mapper.writeValueAsString(document));
+		JsonComparator.compareJsonStrings(JSON_MEDIA_INFO_CLAIMS, mapper.writeValueAsString(document));
 	}
 
 	@Test

@@ -32,6 +32,9 @@ import java.util.*;
 
 /**
  * Jackson implementation of {@link MediaInfoDocument}.
+ * <p>
+ * We serialize back statements in JSON with the "claims" key for compatibility with the other entity types
+ * and the wbeditentity API mdodule
  *
  * @author Thomas Pellissier Tanon
  */
@@ -65,8 +68,7 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 	 * Constructor. Creates an object that can be populated during JSON
 	 * deserialization. Should only be used by Jackson for this very purpose.
 	 *
-	 * The claims parameter is here in case the Structured Data on Commons dev team
-	 * moves back from "statements" to "claims" or someone wrongly use the "claims" key.
+	 * The claims parameter is here for compatibility with wbeditentity.
 	 */
 	@JsonCreator
 	public MediaInfoDocumentImpl(
@@ -95,17 +97,6 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 	@Override
 	public MediaInfoIdValue getEntityId() {
 		return new MediaInfoIdValueImpl(this.entityId, this.siteIri);
-	}
-
-	@JsonProperty("type")
-	String getType() {
-		return EntityDocumentImpl.JSON_TYPE_MEDIA_INFO;
-	}
-
-	@JsonProperty("statements")
-	@Override
-	public Map<String, List<Statement>> getJsonClaims() {
-		return super.getJsonClaims();
 	}
 
 	@Override

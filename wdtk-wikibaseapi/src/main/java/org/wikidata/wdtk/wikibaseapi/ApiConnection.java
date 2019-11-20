@@ -70,6 +70,10 @@ public class ApiConnection {
 	 * URL of the API of test.wikidata.org.
 	 */
 	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
+	/**
+	 * URL of the API of commons.wikimedia.org.
+	 */
+	public final static String URL_WIKIMEDIA_COMMONS_API = "https://commons.wikimedia.org/w/api.php";
 
 	/**
 	 * Name of the HTTP parameter to submit an action to the API.

@@ -34,13 +34,7 @@ import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TagsApplyNotAllowedException;
@@ -378,6 +372,40 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		ItemDocument result = wde.editItemDocument(itemDocument, false,
+				"My summary", Arrays.asList("tag1", "tag2"));
+
+		assertEquals(expectedResultDocument, result);
+	}
+
+	@Test
+	public void testEditMediaInfo() throws IOException, MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIMEDIA_COMMONS);
+
+		MediaInfoIdValue id = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M12223");
+
+		MediaInfoDocument mediaInfoDocument = Datamodel.makeMediaInfoDocument(id)
+			.withLabel(Datamodel.makeMonolingualTextValue("test", "en"));
+		MediaInfoDocument expectedResultDocument =  Datamodel.makeMediaInfoDocument(id)
+				.withLabel(Datamodel.makeMonolingualTextValue("test", "en"))
+				.withRevisionId(1235);
+		String resultData = JsonSerializer
+				.getJsonString(expectedResultDocument);
+		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
+
+		Map<String, String> params = new HashMap<>();
+		params.put("action", "wbeditentity");
+		params.put("id", "M12223");
+		params.put("summary", "My summary");
+		params.put("tags", "tag1|tag2");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("maxlag", "5");
+		String data = JsonSerializer.getJsonString(mediaInfoDocument);
+		params.put("data", data);
+		con.setWebResource(params, expectedResult);
+
+		MediaInfoDocument result = wde.editMediaInfoDocument(mediaInfoDocument, false,
 				"My summary", Arrays.asList("tag1", "tag2"));
 
 		assertEquals(expectedResultDocument, result);

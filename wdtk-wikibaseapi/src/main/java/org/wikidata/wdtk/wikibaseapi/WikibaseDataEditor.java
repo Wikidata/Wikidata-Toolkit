@@ -20,8 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -37,9 +35,6 @@ import java.util.List;
  *
  */
 public class WikibaseDataEditor {
-
-	static final Logger logger = LoggerFactory
-			.getLogger(WikibaseDataEditor.class);
 
 	/**
 	 * API Action to edit data.
@@ -383,6 +378,56 @@ public class WikibaseDataEditor {
 		return (PropertyDocument) this.wbEditingAction.wbEditEntity(
 				propertyDocument.getEntityId().getId(), null, null, null,
 				data, clear, this.editAsBot, propertyDocument.getRevisionId(),
+				summary, tags);
+	}
+
+	/**
+	 * Writes the data for the given media info document with the summary message
+	 * as given. Optionally, the existing data is cleared (deleted).
+	 * It creates the media info if needed.
+	 * <p>
+	 * The id of the given media info document is used to specify which media info
+	 * document should be changed or created. The site IRI will be ignored for this.
+	 * <p>
+	 * The revision id of the given media info document is used to specify the
+	 * base revision, enabling the API to detect edit conflicts. The value 0 can
+	 * be used to omit this. It is strongly recommended to give a revision id
+	 * when making edits where the outcome depends on the previous state of the
+	 * data (i.e., any edit that does not use "clear").
+	 * <p>
+	 * If the data is not cleared, then the existing data will largely be
+	 * preserved. Statements with empty ids will be added without checking if
+	 * they exist already; statements with (valid) ids will replace any existing
+	 * statements with these ids or just be added if there are none. Labels
+	 * will be preserved for all languages for which no data is given at all.
+	 * For aliases this means that writing one alias in
+	 *
+	 * @param mediaInfoDocument
+	 *            the document that contains the data to be written
+	 * @param clear
+	 *            if true, the existing data will be replaced by the given data;
+	 *            if false, the given data will be added to the existing data,
+	 *            overwriting only parts that are set to new values
+	 * @param summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 * @return the modified media info document, or null if there was an error
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network
+	 *             connection
+	 */
+	public MediaInfoDocument editMediaInfoDocument(
+			MediaInfoDocument mediaInfoDocument, boolean clear, String summary,
+			List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		String data = JsonSerializer.getJsonString(mediaInfoDocument);
+		return (MediaInfoDocument) this.wbEditingAction.wbEditEntity(
+				mediaInfoDocument.getEntityId().getId(), null, null, null,
+				data, clear, this.editAsBot, mediaInfoDocument.getRevisionId(),
 				summary, tags);
 	}
 

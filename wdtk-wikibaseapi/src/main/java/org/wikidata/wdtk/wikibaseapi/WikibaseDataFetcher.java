@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.wikibaseapi;
 
-import java.io.IOException;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -11,9 +9,9 @@ import java.io.IOException;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +20,7 @@ import java.io.IOException;
  * #L%
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,14 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple class to fetch data from Wikibase via the online API.
@@ -45,10 +40,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
-
-	static final Logger logger = LoggerFactory
-			.getLogger(WikibaseDataFetcher.class);
-
 	/**
 	 * API Action to fetch data.
 	 */
@@ -60,11 +51,6 @@ public class WikibaseDataFetcher {
 	 * The IRI that identifies the site that the data is from.
 	 */
 	final String siteIri;
-
-	/**
-	 * Mapper object used for deserializing JSON data.
-	 */
-	final ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Filter that is used to restrict API requests.
@@ -86,8 +72,22 @@ public class WikibaseDataFetcher {
 	 */
 	public static WikibaseDataFetcher getWikidataDataFetcher() {
 		return new WikibaseDataFetcher(
-				ApiConnection.getWikidataApiConnection(),
+				BasicApiConnection.getWikidataApiConnection(),
 				Datamodel.SITE_WIKIDATA);
+	}
+
+
+	/**
+	 * Creates an object to fetch data from commons.wikimedia.org. This convenience
+	 * method creates a default {@link ApiConnection} that is not logged in. To
+	 * use an existing connection, the constructor
+	 * {@link #WikibaseDataFetcher(ApiConnection, String)} should be called,
+	 * using {@link Datamodel#SITE_WIKIMEDIA_COMMONS} as a site URI.
+	 */
+	public static WikibaseDataFetcher getWikimediaCommonsDataFetcher() {
+		return new WikibaseDataFetcher(
+				BasicApiConnection.getWikimediaCommonsApiConnection(),
+				Datamodel.SITE_WIKIMEDIA_COMMONS);
 	}
 
 	/**
@@ -194,6 +194,9 @@ public class WikibaseDataFetcher {
 	 * Fetches the document for the entity that has a page of the given title on
 	 * the given site. Site keys should be some site identifier known to the
 	 * Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 *
+	 * It could also be used to retrieve Wikimedia Commons MediaInfo entities
+	 * using the siteKey "commonswiki" and the file title (with the File: prefix) for title.
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.

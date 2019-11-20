@@ -21,17 +21,17 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -157,6 +157,7 @@ public class WbGetEntitiesAction {
 
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
+		List<String> titlesList = titles == null ? Collections.emptyList() : Arrays.asList(titles.split("-"));
 
 		if (ids != null) {
 			parameters.put("ids", ids);
@@ -194,24 +195,28 @@ public class WbGetEntitiesAction {
 
 			JsonNode entities = root.path("entities");
 			Iterator<Entry<String,JsonNode>> entitiesIterator = entities.fields();
+			int i = 0;
 			while(entitiesIterator.hasNext()) {
 				Entry<String,JsonNode> entry = entitiesIterator.next();
 				JsonNode entityNode = entry.getValue();
-				if (!entityNode.has("missing")) {
+				if(!entityNode.has("missing")) {
 					try {
-						EntityDocument ed = mapper.treeToValue(entityNode, EntityDocumentImpl.class);
+						EntityDocument ed = mapper.reader()
+								.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+								.treeToValue(entityNode, EntityDocumentImpl.class);
 
 						if (titles == null) {
 							// We use the JSON key rather than the id of the value
 							// so that retrieving redirected entities works.
 							result.put(entry.getKey(), ed);
 						} else {
-							if (ed instanceof ItemDocumentImpl
-									&& ((ItemDocumentImpl) ed)
-											.getSiteLinks().containsKey(sites)) {
-								result.put(((ItemDocumentImpl) ed)
-										.getSiteLinks().get(sites)
-										.getPageTitle(), ed);
+							if (ed instanceof ItemDocument) {
+								SiteLink siteLink = ((ItemDocument) ed).getSiteLinks().get(sites);
+								if(siteLink != null) {
+									result.put(siteLink.getPageTitle(), ed);
+								}
+							} else if(ed instanceof MediaInfoDocument) {
+								result.put(entityNode.get("title").textValue(), ed);
 							}
 						}
 					} catch (JsonProcessingException e) {
@@ -219,7 +224,18 @@ public class WbGetEntitiesAction {
 								+ entityNode.path("id").asText("UNKNOWN")
 								+ ": " + e.toString());
 					}
+				} else if(entityNode.has("id")) {
+					try {
+						EntityIdValue entityIdValue = EntityIdValueImpl.fromId(entityNode.get("id").asText(), siteIri);
+						if(entityIdValue instanceof MediaInfoIdValue) {
+							//TODO: bad hack, it would be much nicer if the API would return the page title
+							result.put(titlesList.get(i), Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue));
+						}
+					} catch (IllegalArgumentException e) {
+						logger.warn("Invalid entity id returned: " + entityNode.get("id").asText());
+					}
 				}
+				i++;
 			}
 		} catch (IOException e) {
 			logger.error("Could not retrive data: " + e.toString());
