@@ -112,9 +112,13 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	@JsonIgnore
@@ -160,7 +164,7 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 	@Override
 	public SenseDocument withGloss(MonolingualTextValue gloss) {
 		Map<String, MonolingualTextValue> newGlosses = new HashMap<>(glosses);
-		newGlosses.put(gloss.getLanguageCode(), gloss);
+		newGlosses.put(gloss.getLanguageCode(), toTerm(gloss));
 		return new SenseDocumentImpl(getEntityId(), newGlosses, claims, revisionId);
 	}
 

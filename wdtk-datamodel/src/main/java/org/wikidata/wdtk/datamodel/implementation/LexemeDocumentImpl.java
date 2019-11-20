@@ -168,9 +168,13 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	private static final Pattern CHILD_ID_PATTERN = Pattern.compile("^L\\d+-[FS]([1-9]\\d*)$");
@@ -289,7 +293,7 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	@Override
 	public LexemeDocument withLemma(MonolingualTextValue lemma) {
 		Map<String, MonolingualTextValue> newLemmas = new HashMap<>(lemmas);
-		newLemmas.put(lemma.getLanguageCode(), lemma);
+		newLemmas.put(lemma.getLanguageCode(), toTerm(lemma));
 		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
 				language, newLemmas, claims, forms, senses,
 				revisionId, nextFormId, nextSenseId);

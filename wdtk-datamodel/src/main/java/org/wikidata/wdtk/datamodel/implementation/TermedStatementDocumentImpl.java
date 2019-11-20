@@ -183,6 +183,20 @@ public abstract class TermedStatementDocumentImpl extends LabeledStatementDocume
 		return map;
 	}
 
+	protected static Map<String, List<MonolingualTextValue>> withAliases(
+			Map<String, List<MonolingualTextValue>> values, String language, List<MonolingualTextValue> aliases) {
+		Map<String, List<MonolingualTextValue>> newValues = new HashMap<>(values);
+		List<MonolingualTextValue> l = newValues.computeIfAbsent(language, (s) -> new ArrayList<>());
+		l.clear();
+		for(MonolingualTextValue term : aliases) {
+			if(!term.getLanguageCode().equals(language)) {
+				throw new IllegalArgumentException("The alias " + term + " does not have the same language as its group " + language);
+			}
+			l.add(toTerm(term));
+		}
+		return newValues;
+	}
+
 	/**
 	 * We need to make sure the terms are of the right type, otherwise they will not be serialized correctly.
 	 */

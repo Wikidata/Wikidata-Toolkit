@@ -122,9 +122,13 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	private List<ItemIdValue> constructGrammaticalFeatures(List<String> grammaticalFeatures, String siteIri) {
@@ -195,7 +199,7 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	@Override
 	public FormDocument withRepresentation(MonolingualTextValue representation) {
 		Map<String, MonolingualTextValue> newRepresentations = new HashMap<>(representations);
-		newRepresentations.put(representation.getLanguageCode(), representation);
+		newRepresentations.put(representation.getLanguageCode(), toTerm(representation));
 		return new FormDocumentImpl(getEntityId(), newRepresentations, grammaticalFeatures, claims, revisionId);
 	}
 
