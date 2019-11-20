@@ -119,7 +119,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * @throws IllegalArgumentException
 	 *      if the id is invalid
 	 */
-	static EntityIdValue fromId(String id, String siteIri) {
+	public static EntityIdValue fromId(String id, String siteIri) {
 		switch (guessEntityTypeFromId(id)) {
 			case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
 				return new ItemIdValueImpl(id, siteIri);

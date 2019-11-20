@@ -21,16 +21,16 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -157,6 +157,7 @@ public class WbGetEntitiesAction {
 
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put(ApiConnection.PARAM_ACTION, "wbgetentities");
+		List<String> titlesList = titles == null ? Collections.emptyList() : Arrays.asList(titles.split("-"));
 
 		if (ids != null) {
 			parameters.put("ids", ids);
@@ -194,6 +195,7 @@ public class WbGetEntitiesAction {
 
 			JsonNode entities = root.path("entities");
 			Iterator<Entry<String,JsonNode>> entitiesIterator = entities.fields();
+			int i = 0;
 			while(entitiesIterator.hasNext()) {
 				Entry<String,JsonNode> entry = entitiesIterator.next();
 				JsonNode entityNode = entry.getValue();
@@ -222,7 +224,18 @@ public class WbGetEntitiesAction {
 								+ entityNode.path("id").asText("UNKNOWN")
 								+ ": " + e.toString());
 					}
+				} else if(entityNode.has("id")) {
+					try {
+						EntityIdValue entityIdValue = EntityIdValueImpl.fromId(entityNode.get("id").asText(), siteIri);
+						if(entityIdValue instanceof MediaInfoIdValue) {
+							//TODO: bad hack, it would be much nicer if the API would return the page title
+							result.put(titlesList.get(i), Datamodel.makeMediaInfoDocument((MediaInfoIdValue) entityIdValue));
+						}
+					} catch (IllegalArgumentException e) {
+						logger.warn("Invalid entity id returned: " + entityNode.get("id").asText());
+					}
 				}
+				i++;
 			}
 		} catch (IOException e) {
 			logger.error("Could not retrive data: " + e.toString());
