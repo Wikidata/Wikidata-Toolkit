@@ -194,6 +194,18 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * Serializes the given object in JSON and returns the resulting string. In
 	 * case of errors, null is returned.
 	 *
+	 * @param mediaInfoDocument
+	 *            object to serialize
+	 * @return JSON serialization or null
+	 */
+	public static String getJsonString(MediaInfoDocument mediaInfoDocument) {
+		return jacksonObjectToString(mediaInfoDocument);
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string. In
+	 * case of errors, null is returned.
+	 *
 	 * @param statement
 	 *            object to serialize
 	 * @return JSON serialization or null

@@ -97,11 +97,6 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 		return new MediaInfoIdValueImpl(this.entityId, this.siteIri);
 	}
 
-	@JsonProperty("type")
-	String getType() {
-		return EntityDocumentImpl.JSON_TYPE_MEDIA_INFO;
-	}
-
 	@JsonProperty("statements")
 	@Override
 	public Map<String, List<Statement>> getJsonClaims() {

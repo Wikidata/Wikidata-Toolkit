@@ -87,6 +87,15 @@ public class BasicApiConnection extends ApiConnection {
 	public static BasicApiConnection getTestWikidataApiConnection() {
 		return new BasicApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
 	}
+
+	/**
+	 * Creates an API connection to commons.wikimedia.org.
+	 *
+	 * @return {@link BasicApiConnection}
+	 */
+	public static BasicApiConnection getWikimediaCommonsApiConnection() {
+		return new BasicApiConnection(ApiConnection.URL_WIKIMEDIA_COMMONS_API);
+	}
 	
 	/**
 	 * Logs in using the specified user credentials. After successful login, the
