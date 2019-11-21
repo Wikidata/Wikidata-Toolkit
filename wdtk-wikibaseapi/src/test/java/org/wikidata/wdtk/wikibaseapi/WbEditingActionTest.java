@@ -131,7 +131,7 @@ public class WbEditingActionTest {
 
 		WbEditingAction weea = new WbEditingAction(con,
 				Datamodel.SITE_WIKIDATA);
-		WbEditingAction.MAXLAG_SLEEP_TIME = 0; // speed up the test ...
+		weea.setMaxLagFirstWaitTime(0); // speed up the test ...
 		weea.wbEditEntity("Q42", null, null, null, "{}", false, false, 0, null, null);
 	}
 

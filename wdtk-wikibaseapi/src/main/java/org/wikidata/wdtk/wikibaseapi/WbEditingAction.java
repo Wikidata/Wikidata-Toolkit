@@ -51,8 +51,6 @@ public class WbEditingAction {
 	static final Logger logger = LoggerFactory
 			.getLogger(WbEditingAction.class);
 
-	static int MAXLAG_SLEEP_TIME = 5000;
-
 	/**
 	 * Connection to an Wikibase API.
 	 */
@@ -74,6 +72,25 @@ public class WbEditingAction {
 	 */
 	int maxLag = 5;
 
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	int maxLagMaxRetries = 14;
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	int maxLagFirstWaitTime = 1000;
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	double maxLagBackOffFactor = 1.5;
+	
 	/**
 	 * Number of recent editing times to monitor in order to avoid editing too
 	 * fast. Wikidata.org seems to block fast editors after 9 edits, so this
@@ -146,7 +163,7 @@ public class WbEditingAction {
 	public void setMaxLag(int maxLag) {
 		this.maxLag = maxLag;
 	}
-
+	
 	/**
 	 * Returns the number of edits that will be performed before entering
 	 * simulation mode, or -1 if there is no limit on the number of edits
@@ -722,7 +739,8 @@ public class WbEditingAction {
 		checkEditSpeed();
 		JsonNode result = null;
 		
-		int retry = 5;
+		int retry = getMaxLagMaxRetries();
+		int maxLagSleepTime = getMaxLagFirstWaitTime();
 		MediaWikiApiErrorException lastException = null;
 		while (retry > 0) {
 			try {
@@ -734,12 +752,13 @@ public class WbEditingAction {
 				parameters.put("token", connection.getOrFetchToken("csrf"));
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
-				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
+				logger.warn(e.getMessage() + String.format(" -- pausing for %d milliseconds.", maxLagSleepTime));
 				try {
-					Thread.sleep(MAXLAG_SLEEP_TIME);
+					Thread.sleep(maxLagSleepTime);
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}
+				maxLagSleepTime *= getMaxLagBackOffFactor();
 			}
 			retry--;
 		}
@@ -823,6 +842,56 @@ public class WbEditingAction {
 
 		this.recentEditTimes[nextIndex] = currentTime;
 		this.curEditTimeSlot = nextIndex;
+	}
+	
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public int getMaxLagMaxRetries() {
+		return maxLagMaxRetries;
+	}
+
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public void setMaxLagMaxRetries(int retries) {
+		maxLagMaxRetries = retries;
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public int getMaxLagFirstWaitTime() {
+		return maxLagFirstWaitTime;
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public void setMaxLagFirstWaitTime(int time) {
+		maxLagFirstWaitTime = time;
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public double getMaxLagBackOffFactor() {
+		return maxLagBackOffFactor;
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public void setMaxLagBackOffFactor(double value) {
+		maxLagBackOffFactor = value;
 	}
 
 }

@@ -68,6 +68,30 @@ public class WikibaseDataEditorTest {
 		wde.setMaxLag(3);
 		assertEquals(3, wde.getMaxLag());
 	}
+	
+	@Test
+	public void testSetMaxLagFirstWaitTime() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagFirstWaitTime(5432);
+		assertEquals(5432, wde.getMaxLagFirstWaitTime());
+	}
+	
+	@Test
+	public void testSetMaxLagBackOffFactor() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagBackOffFactor(2.7);
+		assertTrue(2.69 < wde.getMaxLagBackOffFactor() && 2.71 > wde.getMaxLagBackOffFactor());
+	}
+	
+	@Test
+	public void testSetMaxLagMaxRetries() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagMaxRetries(78);
+		assertEquals(78, wde.getMaxLagMaxRetries());
+	}
 
 	@Test
 	public void testSetAverageTimePerEdit() {
