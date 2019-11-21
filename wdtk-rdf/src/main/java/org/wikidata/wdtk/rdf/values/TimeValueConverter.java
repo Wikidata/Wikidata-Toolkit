@@ -118,7 +118,10 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 		*/
 		boolean yearZero = value.getYear() == 0;
 
-		value = value.toGregorian().orElse(value);
+		TimeValue gregorian = value.toGregorian();
+		if(gregorian != null) {
+			value = gregorian;
+		}
 
 		long year = value.getYear();
 

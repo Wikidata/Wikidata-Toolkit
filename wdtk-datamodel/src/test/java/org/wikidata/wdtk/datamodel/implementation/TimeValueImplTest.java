@@ -157,7 +157,7 @@ public class TimeValueImplTest {
 		final TimeValue tJulian = new TimeValueImpl(1143, (byte)10, (byte) 5, (byte) 1, (byte) 2,
 				(byte) 0, TimeValue.PREC_MINUTE, 0, 1, 0,
 				TimeValue.CM_JULIAN_PRO);
-		final TimeValue gregorian = tJulian.toGregorian().orElseThrow(NoSuchElementException::new);
+		final TimeValue gregorian = tJulian.toGregorian();
 		assertEquals(1143, gregorian.getYear());
 		assertEquals(10, gregorian.getMonth());
 		assertEquals(12, gregorian.getDay());

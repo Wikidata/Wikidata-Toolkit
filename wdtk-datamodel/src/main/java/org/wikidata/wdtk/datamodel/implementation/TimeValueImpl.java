@@ -211,10 +211,10 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 	}
 
 	@Override
-	public Optional<TimeValue> toGregorian() {
+	public TimeValue toGregorian() {
 		// already in Gregorian calendar
 		if (this.getPreferredCalendarModel().equals(TimeValue.CM_GREGORIAN_PRO)) {
-			return Optional.of(this);
+			return this;
 		}
 
 		// convert Julian
@@ -225,19 +225,19 @@ public class TimeValueImpl extends ValueImpl implements TimeValue {
 			try {
 				final JulianDate julian = JulianDate.of((int) this.value.year, this.value.month, this.value.day);
 				final LocalDate date = LocalDate.from(julian);
-				return Optional.of(new TimeValueImpl(
+				return new TimeValueImpl(
 						date.getYear(), (byte) date.getMonth().getValue(), (byte) date.getDayOfMonth(),
 						this.value.hour, this.value.minute, this.value.second,
 						(byte) this.value.precision, this.value.before, this.value.after,
 						this.value.timezone, TimeValue.CM_GREGORIAN_PRO
-				));
+				);
 			} catch(DateTimeException e) {
-				return Optional.empty();
+				return null;
 			}
 
 		}
 
-		return Optional.empty();
+		return null;
 	}
 
 	/**
