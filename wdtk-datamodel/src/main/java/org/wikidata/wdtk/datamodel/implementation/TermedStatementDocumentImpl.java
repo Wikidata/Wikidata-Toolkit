@@ -177,8 +177,10 @@ public abstract class TermedStatementDocumentImpl extends LabeledStatementDocume
 			String language = term.getLanguageCode();
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			List<MonolingualTextValue> aliases = map.computeIfAbsent(language, (l) -> new ArrayList<>());
-			aliases.add(toTerm(term));
+			if(!map.containsKey(language)) {
+				map.put(language, new ArrayList<>());
+			}
+			map.get(language).add(toTerm(term));
 		}
 		return map;
 	}
@@ -186,7 +188,10 @@ public abstract class TermedStatementDocumentImpl extends LabeledStatementDocume
 	protected static Map<String, List<MonolingualTextValue>> withAliases(
 			Map<String, List<MonolingualTextValue>> values, String language, List<MonolingualTextValue> aliases) {
 		Map<String, List<MonolingualTextValue>> newValues = new HashMap<>(values);
-		List<MonolingualTextValue> l = newValues.computeIfAbsent(language, (s) -> new ArrayList<>());
+		if(!newValues.containsKey(language)) {
+			newValues.put(language, new ArrayList<>());
+		}
+		List<MonolingualTextValue> l = newValues.get(language);
 		l.clear();
 		for(MonolingualTextValue term : aliases) {
 			if(!term.getLanguageCode().equals(language)) {

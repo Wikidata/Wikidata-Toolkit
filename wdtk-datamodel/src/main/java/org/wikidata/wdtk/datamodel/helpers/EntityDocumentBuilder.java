@@ -199,7 +199,10 @@ public abstract class EntityDocumentBuilder<T extends EntityDocumentBuilder<T, O
 	 */
 	public T withStatement(Statement statement) {
 		PropertyIdValue pid = statement.getMainSnak().getPropertyId();
-		ArrayList<Statement> pidStatements = this.statements.computeIfAbsent(pid, k -> new ArrayList<>());
+		if(!statements.containsKey(pid)) {
+			statements.put(pid, new ArrayList<>());
+		}
+		ArrayList<Statement> pidStatements = statements.get(pid);
 		pidStatements.add(statement);
 		return getThis();
 	}
