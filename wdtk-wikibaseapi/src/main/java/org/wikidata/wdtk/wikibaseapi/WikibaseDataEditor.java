@@ -152,6 +152,56 @@ public class WikibaseDataEditor {
 	public void setMaxLag(int maxLag) {
 		this.wbEditingAction.setMaxLag(maxLag);
 	}
+	
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public int getMaxLagMaxRetries() {
+		return this.wbEditingAction.getMaxLagMaxRetries();
+	}
+
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public void setMaxLagMaxRetries(int retries) {
+		this.wbEditingAction.setMaxLagMaxRetries(retries);
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public int getMaxLagFirstWaitTime() {
+		return this.wbEditingAction.getMaxLagFirstWaitTime();
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public void setMaxLagFirstWaitTime(int time) {
+		this.wbEditingAction.setMaxLagFirstWaitTime(time);
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public double getMaxLagBackOffFactor() {
+		return this.wbEditingAction.getMaxLagBackOffFactor();
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public void setMaxLagBackOffFactor(double value) {
+		this.wbEditingAction.setMaxLagBackOffFactor(value);
+	}
 
 	/**
 	 * Returns the average time that a single edit should take, measured in
