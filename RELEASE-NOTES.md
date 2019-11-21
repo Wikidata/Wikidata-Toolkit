@@ -1,6 +1,33 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+
+Version 0.11.0
+--------------
+
+New features:
+* Adds basic MediaInfo representation, API retrieval and editing.
+* Adds support of tags when editing using the API.
+* Adds UnsupportedValue and UnsupportedEntityIdValue to properly represent unsupported values and entity ids.
+* RDF: Fixes datatype lookup for entity ids
+RDF: Adds support of Quantity and MonolingualText to the SomeValueSnak and NoValueSnak converters.
+* Wikibase API: Throw an exception when credentials have expired.
+* Updates RDF4J to 2.5.2, Apache Commons Lang to 3.9 and Apache Commons Compress to 1.18.
+* Properly deserialize and store the Reference hash.
+* Adds edit methods to Lexeme, Form and Sense.
+* Adds timeout options to HTTP calls.
+* Adds exponential back-off for maxlag errors.
+
+Incompatible changes:
+* Removes the wikibase-client package.
+* Makes Statement.getBestStatements return null if there are no best statements.
+* Makes RDF output format closer to the one used by Wikibase.
+* Throw MediaWikiApiErrorException instead of NullPointerException if the edit token is not found.
+
+Bug fixes:
+* Removes main snak value serialization from statement serialization.
+* Use CSRF token for logout following MediaWiki API change.
+
 Version 0.10.0
 --------------
 
