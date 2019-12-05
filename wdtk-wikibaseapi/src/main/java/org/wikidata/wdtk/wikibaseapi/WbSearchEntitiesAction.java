@@ -33,7 +33,6 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
 /**
  * Java implementation of the wbsearchentities action.
