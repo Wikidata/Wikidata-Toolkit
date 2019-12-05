@@ -306,7 +306,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = "en";
@@ -314,7 +314,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, String language)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = language;
@@ -322,7 +322,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, Long limit)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = "en";
@@ -331,7 +331,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, String language, Long limit)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = language;
@@ -340,7 +340,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(WbGetEntitiesSearchData properties)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return this.wbSearchEntitiesAction.wbSearchEntities(properties);
 	}
 
