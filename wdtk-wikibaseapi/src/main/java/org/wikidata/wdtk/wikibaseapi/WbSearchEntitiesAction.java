@@ -33,6 +33,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
 /**
  * Java implementation of the wbsearchentities action.
@@ -174,7 +175,8 @@ public class WbSearchEntitiesAction {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Could not retrive data: " + e.toString());
+            MediaWikiApiErrorHandler.throwMediaWikiApiErrorException("IOException", "Error when searching entities");
+            LOGGER.error("Error when searching entities: " + e.toString());
         }
 
         return results;
