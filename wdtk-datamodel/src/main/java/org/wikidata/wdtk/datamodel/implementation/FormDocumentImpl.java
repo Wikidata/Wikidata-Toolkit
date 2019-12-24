@@ -37,6 +37,7 @@ import java.util.*;
  * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class FormDocumentImpl extends StatementDocumentImpl implements FormDocument {
 
 	private final List<ItemIdValue> grammaticalFeatures;
