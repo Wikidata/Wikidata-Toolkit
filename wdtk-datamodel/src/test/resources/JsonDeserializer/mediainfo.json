@@ -1,0 +1,51 @@
+{
+  "pageid": 74698470,
+  "ns": 6,
+  "title": "File:Chick Corea & Stanley Clarke.jpg",
+  "lastrevid": 363818804,
+  "modified": "2019-08-30T13:07:37Z",
+  "type": "mediainfo",
+  "id": "M74698470",
+  "labels": {},
+  "descriptions": {},
+  "statements": {
+    "P180": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P180",
+          "hash": "a83bcd35f5bd70a205d9eabf429841a6a091d973",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 192465,
+              "id": "Q192465"
+            },
+            "type": "wikibase-entityid"
+          }
+        },
+        "type": "statement",
+        "id": "M74698470$c598e90e-44b9-6214-64aa-367e4b2415b6",
+        "rank": "normal"
+      },
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P180",
+          "hash": "988edf83d80d66fd97714b6c977f5f3097ee194d",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 453406,
+              "id": "Q453406"
+            },
+            "type": "wikibase-entityid"
+          }
+        },
+        "type": "statement",
+        "id": "M74698470$209cb38c-4471-7fc6-5a0e-8232ab7a506c",
+        "rank": "normal"
+      }
+    ]
+  }
+}
