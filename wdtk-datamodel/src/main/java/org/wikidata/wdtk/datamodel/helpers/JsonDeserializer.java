@@ -2,6 +2,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
 import org.wikidata.wdtk.datamodel.implementation.LexemeDocumentImpl;
@@ -26,8 +27,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
  * @author Antonin Delpeuch
  */
 public class JsonDeserializer {
-	
-	protected DatamodelMapper mapper;
+
+	private ObjectReader entityDocumentReader;
+	private ObjectReader itemReader;
+	private ObjectReader propertyReader;
+	private ObjectReader lexemeReader;
+	private ObjectReader mediaInfoReader;
 	
 	/**
 	 * Constructs a new JSON deserializer for the 
@@ -37,7 +42,17 @@ public class JsonDeserializer {
 	 * 		Root IRI of the site to deserialize for
 	 */
 	public JsonDeserializer(String siteIri) {
-		mapper = new DatamodelMapper(siteIri);
+		DatamodelMapper mapper = new DatamodelMapper(siteIri);
+		entityDocumentReader = mapper.readerFor(EntityDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		itemReader = mapper.readerFor(ItemDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		propertyReader = mapper.readerFor(PropertyDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		lexemeReader = mapper.readerFor(LexemeDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		mediaInfoReader = mapper.readerFor(MediaInfoDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 	
 	/**
@@ -46,9 +61,7 @@ public class JsonDeserializer {
 			if the JSON payload is invalid
 	 */
 	public ItemDocument deserializeItemDocument(String json) throws IOException {
-		return mapper.readerFor(ItemDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-				.readValue(json);
+		return itemReader.readValue(json);
 	}
 	
 	/**
@@ -57,9 +70,7 @@ public class JsonDeserializer {
 			if the JSON payload is invalid
 	 */
 	public PropertyDocument deserializePropertyDocument(String json) throws IOException {
-		return mapper.readerFor(PropertyDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-				.readValue(json);
+		return propertyReader.readValue(json);
 	}
 
 	/**
@@ -68,9 +79,7 @@ public class JsonDeserializer {
 			if the JSON payload is invalid
 	 */
 	public LexemeDocument deserializeLexemeDocument(String json) throws IOException {
-		return mapper.readerFor(LexemeDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-				.readValue(json);
+		return lexemeReader.readValue(json);
 	}
 	
 	/**
@@ -79,9 +88,7 @@ public class JsonDeserializer {
 			if the JSON payload is invalid
 	 */
 	public MediaInfoDocument deserializeMediaInfoDocument(String json) throws IOException {
-		return mapper.readerFor(MediaInfoDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-				.readValue(json);
+		return mediaInfoReader.readValue(json);
 	}
 	
 	/**
@@ -90,8 +97,6 @@ public class JsonDeserializer {
 			if the JSON payload is invalid
 	 */
 	public EntityDocument deserializeEntityDocument(String json) throws IOException {
-		return mapper.readerFor(EntityDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-				.readValue(json);
+		return entityDocumentReader.readValue(json);
 	}
 }

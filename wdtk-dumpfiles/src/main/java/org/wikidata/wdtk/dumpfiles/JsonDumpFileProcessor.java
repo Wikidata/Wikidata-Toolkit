@@ -35,7 +35,6 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
@@ -49,7 +48,6 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	static final Logger logger = LoggerFactory
 			.getLogger(JsonDumpFileProcessor.class);
 
-	private final ObjectMapper mapper;
 	private final ObjectReader documentReader;
 
 	private final EntityDocumentProcessor entityDocumentProcessor;
@@ -57,8 +55,7 @@ public class JsonDumpFileProcessor implements MwDumpFileProcessor {
 	public JsonDumpFileProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
-		this.mapper = new DatamodelMapper(siteIri);
-		this.documentReader = this.mapper
+		this.documentReader = new DatamodelMapper(siteIri)
 				.readerFor(EntityDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}

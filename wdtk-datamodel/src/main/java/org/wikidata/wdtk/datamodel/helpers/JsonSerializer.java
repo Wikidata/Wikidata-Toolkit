@@ -26,11 +26,6 @@ import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.LexemeDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.MediaInfoDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
