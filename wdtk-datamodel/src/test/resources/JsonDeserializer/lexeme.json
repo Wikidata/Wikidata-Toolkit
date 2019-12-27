@@ -1,0 +1,79 @@
+{
+  "pageid": 55199558,
+  "ns": 146,
+  "title": "Lexeme:L3872",
+  "lastrevid": 1080404095,
+  "modified": "2019-12-20T14:47:45Z",
+  "type": "lexeme",
+  "id": "L3872",
+  "lemmas": {
+    "en": {
+      "language": "en",
+      "value": "business"
+    }
+  },
+  "lexicalCategory": "Q1084",
+  "language": "Q1860",
+  "claims": {},
+  "forms": [
+    {
+      "id": "L3872-F1",
+      "representations": {
+        "en": {
+          "language": "en",
+          "value": "business"
+        }
+      },
+      "grammaticalFeatures": [
+        "Q110786"
+      ],
+      "claims": []
+    },
+    {
+      "id": "L3872-F2",
+      "representations": {
+        "en": {
+          "language": "en",
+          "value": "businesses"
+        }
+      },
+      "grammaticalFeatures": [
+        "Q146786"
+      ],
+      "claims": []
+    }
+  ],
+  "senses": [
+    {
+      "id": "L3872-S1",
+      "glosses": {
+        "en": {
+          "language": "en",
+          "value": "economic activity done by a businessperson"
+        }
+      },
+      "claims": {
+        "P5137": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5137",
+              "hash": "e4c2933a6e50281693686282fb92e64b41fd80b1",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 19862406,
+                  "id": "Q19862406"
+                },
+                "type": "wikibase-entityid"
+              }
+            },
+            "type": "statement",
+            "id": "L3872-S1$14106EF8-9525-41FA-A358-285A314276EA",
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  ]
+}

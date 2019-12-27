@@ -46,6 +46,12 @@
 			<artifactId>threeten-extra</artifactId>
 			<version>${threetenVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${apacheCommonsIOVersion}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>

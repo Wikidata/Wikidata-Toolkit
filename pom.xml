@@ -74,6 +74,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<apacheCommonsCompressVersion>1.19</apacheCommonsCompressVersion>
 		<apacheCommonsLangVersion>3.9</apacheCommonsLangVersion>
+		<apacheCommonsIOVersion>1.3.2</apacheCommonsIOVersion>
 		<apacheHttpVersion>4.5.10</apacheHttpVersion>
 		<commonsCliVersion>1.4</commonsCliVersion>
 		<ini4JVersion>0.5.4</ini4JVersion>
