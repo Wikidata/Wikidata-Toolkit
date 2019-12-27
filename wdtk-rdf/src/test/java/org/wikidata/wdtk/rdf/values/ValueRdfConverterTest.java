@@ -33,8 +33,6 @@ import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
@@ -63,9 +61,6 @@ public class ValueRdfConverterTest {
 	DatamodelMapper mapper = new DatamodelMapper("http://www.wikidata.org/entity/");
 
 	DataObjectFactory objectFactory = new DataObjectFactoryImpl();
-	ValueFactory rdfFactory = SimpleValueFactory.getInstance();
-
-	Resource resource = rdfFactory.createIRI("http://test.org/");
 
 	@Before
 	public void setUp() {
