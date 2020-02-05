@@ -5,7 +5,7 @@ jdk:
   - openjdk8
   - openjdk11
   - openjdk13
-  - openjdk15
+  - openjdk14
 
 script:
   - mvn test jacoco:report
