@@ -372,7 +372,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwDailyDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
 		setLocalDumpFile("20140420", DumpContentType.DAILY, dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
