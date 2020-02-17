@@ -37,6 +37,28 @@ import java.util.List;
 public class WikibaseDataEditor {
 
 	/**
+	 * Field to store current csrfToken.
+	 */
+	static String csrfToken;
+	/**
+	 * fetch the value of currently available csrfToken which was stored after login
+	 * @return String value of csrfToken
+	 */
+	public static String getCsrfToken() {
+		return csrfToken;
+	}
+
+	/**
+	 * Set the value of the csrfToken parameter. 
+	 *
+	 * @param csrfToken
+	 *            the new value for csrfToken
+	 */
+	public static void setCsrfToken(String csrfToken) {
+		WikibaseDataEditor.csrfToken = csrfToken;
+	}
+	
+	/**
 	 * API Action to edit data.
 	 */
 	final WbEditingAction wbEditingAction;

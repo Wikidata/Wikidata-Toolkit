@@ -710,7 +710,7 @@ public class WbEditingAction {
 		}
 		
 		if (bot) {
-			parameters.put("bot", "");
+			parameters.put("bot", "true");
 		}
 		
 		if (baserevid != 0) {
@@ -726,7 +726,10 @@ public class WbEditingAction {
 		}
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
-		parameters.put("token", connection.getOrFetchToken("csrf"));
+		String csrfToken = WikibaseDataEditor.getCsrfToken();
+		logger.info("Existing csrfToken: " + csrfToken);
+		parameters.put("token", csrfToken);
+//		parameters.put("token", connection.getOrFetchToken("csrf"));
 
 		if (this.remainingEdits > 0) {
 			this.remainingEdits--;
@@ -736,7 +739,9 @@ public class WbEditingAction {
 			return null;
 		}
 
-		checkEditSpeed();
+		if (!bot) {
+			checkEditSpeed();
+		}
 		JsonNode result = null;
 		
 		int retry = getMaxLagMaxRetries();
@@ -748,8 +753,31 @@ public class WbEditingAction {
 				break;
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
-				connection.clearToken("csrf");
-				parameters.put("token", connection.getOrFetchToken("csrf"));
+//				connection.clearToken("csrf");
+//				parameters.put("token", connection.getOrFetchToken("csrf"));
+				logger.info("TokenErrorException Need to generate or fetch new One: Existing Token: " + WikibaseDataEditor.getCsrfToken() + " and Exception was: " + e.getMessage());
+				String csrfTokenNew = connection.getOrFetchToken("csrf");
+
+				if (csrfTokenNew != null && !csrfTokenNew.trim().equals("") && !csrfTokenNew.isEmpty() && csrfTokenNew.length() > 10 && csrfTokenNew.length() < 50) {
+					logger.info("TokenErrorException: Existing csrfToken: " + csrfTokenNew);
+				} else {
+					logger.info("TokenErrorException: Existing csrfToken Not Found Proper, need to generate and fetch new one ");
+					connection.clearToken("csrf");
+					try {
+						connection.login(connection.getCurrentUser(), connection.getCurrentUserPassword());
+					} catch (LoginFailedException ez) {
+						logger.error("TokenErrorException: Exception while login in API ", ez);
+					}
+					csrfTokenNew = connection.getOrFetchToken("csrf");
+				}
+				logger.info("New csrfToken: " + csrfTokenNew);
+
+				WikibaseDataEditor.setCsrfToken(csrfTokenNew);
+				if (csrfTokenNew != null && !csrfTokenNew.trim().equals("") && !csrfTokenNew.isEmpty() && csrfTokenNew.length() > 20) {
+					parameters.put("token", csrfTokenNew);
+				} else {
+					parameters.put("token", csrfToken);
+				}
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
 				logger.warn(e.getMessage() + String.format(" -- pausing for %d milliseconds.", maxLagSleepTime));

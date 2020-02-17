@@ -195,12 +195,12 @@ public class ApiConnection {
 	/**
 	 * Map of cookies that are currently set.
 	 */
-	final Map<String, String> cookies;
+	static Map<String, String> cookies;
 
 	/**
 	 * Map of requested tokens.
 	 */
-	final Map<String, String> tokens;
+	static Map<String, String> tokens;
 	
 	/**
 	 * Maximum time to wait for when establishing a connection, in milliseconds.
@@ -230,8 +230,12 @@ public class ApiConnection {
 	@Deprecated
 	public ApiConnection(String apiBaseUrl) {
 		this.apiBaseUrl = apiBaseUrl;
-		this.cookies = new HashMap<>();
-		this.tokens = new HashMap<>();
+		if (cookies == null) {
+			cookies = new HashMap<>();
+		} 
+		if (tokens == null) {
+			tokens = new HashMap<>();
+		} 
 	}
 	
 	/**
@@ -354,11 +358,38 @@ public class ApiConnection {
 		return this.username;
 	}
 	
+	/**
+	 * Returns the password of the user who is currently logged in. If there is
+	 * no user logged in the result is an empty string.
+	 *
+	 * @return password of the logged in user
+	 */
+	public String getCurrentUserPassword() {
+		return this.password;
+	}
+
+	/**
+	 * Set username value
+	 *
+	 * @param username
+	 */
+	public void setCurrentUser(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * Set user password value
+	 *
+	 * @param password
+	 */
+	public void setCurrentUserPassword(String password) {
+		this.password = password;
+	}
 
 	/**
 	 * Logs the current user out.
 	 *
-	 * @throws IOException
+	 * @throws IOException 
 	 * @throws MediaWikiApiErrorException 
 	 */
 	public void logout() throws IOException, MediaWikiApiErrorException {
