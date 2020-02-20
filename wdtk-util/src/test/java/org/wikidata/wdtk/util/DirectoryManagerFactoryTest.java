@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class DirectoryManagerFactoryTest {
@@ -82,11 +83,15 @@ public class DirectoryManagerFactoryTest {
 		}
 	}
 
+	@Before
+	public void setup() throws IOException {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(DirectoryManagerImpl.class);
+	}
+
 	@Test
 	public void createDirectoryManagerString() throws IOException {
 		Path path = Paths.get(System.getProperty("user.dir"));
-		DirectoryManagerFactory
-				.setDirectoryManagerClass(DirectoryManagerImpl.class);
 		DirectoryManager dm = DirectoryManagerFactory.createDirectoryManager(
 				System.getProperty("user.dir"), true);
 		assertTrue(dm instanceof DirectoryManagerImpl);
