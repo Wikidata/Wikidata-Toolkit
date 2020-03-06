@@ -184,7 +184,7 @@ public class WikibaseDataFetcher {
 			}
 			WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 			properties.ids = ApiConnection.implodeObjects(subListOfEntityIds);
-			result.putAll(getEntityDocumentMap(entityIds.size(), properties));
+			result.putAll(getEntityDocumentMap(subListOfEntityIds.size(), properties));
 			subListOfEntityIds.clear();
 		}
 		return result;
