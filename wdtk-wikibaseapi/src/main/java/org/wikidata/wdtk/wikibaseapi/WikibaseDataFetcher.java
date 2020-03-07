@@ -21,16 +21,14 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
@@ -40,6 +38,9 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
+
+	final ApiConnection connection;
+
 	/**
 	 * API Action to fetch data.
 	 */
@@ -103,6 +104,7 @@ public class WikibaseDataFetcher {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
+		this.connection = connection;
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
 		this.siteIri = siteUri;
@@ -282,6 +284,83 @@ public class WikibaseDataFetcher {
 	}
 
 	/**
+	 * Fetches the MediaInfoId of a page with the given title.
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentByTitle(String siteKey, String title)}
+	 *
+	 * @param title
+	 *            title (e.g. "File:Albert Einstein Head.jpg", "Main Page", etc.)
+	 *            of the requested MediaInfoId
+	 * @return the corresponding MediaInfoId for the title, or null if not found
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public MediaInfoIdValue getMediaInfoIdByTitle(String title)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByTitle(title).get(title);
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of pages with the given titles.
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, String... titles)}
+	 *
+	 * @param titles
+	 *            list of titles of the requested MediaInfoIds
+	 * @return map from titles for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByTitle(String... titles)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByTitle(Arrays.asList(titles));
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of pages with the given titles.
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, List titles)}
+	 *
+	 * @param titles
+	 *            list of titles of the requested MediaInfoIds
+	 * @return map from titles for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByTitle(List<String> titles)
+			throws IOException, MediaWikiApiErrorException {
+		List<String> newTitles = new ArrayList<>(titles);
+		Map<String, MediaInfoIdValue> result = new HashMap<>();
+		boolean moreItems = !newTitles.isEmpty();
+
+		while (moreItems) {
+			List<String> subListOfTitles;
+			if (newTitles.size() <= maxListSize) {
+				subListOfTitles = newTitles;
+				moreItems = false;
+			} else {
+				subListOfTitles = newTitles.subList(0, maxListSize);
+			}
+			String titlesStr = ApiConnection.implodeObjects(subListOfTitles);
+			result.putAll(getMediaInfoIdMap(subListOfTitles.size(), titlesStr));
+			subListOfTitles.clear();
+		}
+		return result;
+	}
+
+
+	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
 	 * the APIs.
 	 *
@@ -303,6 +382,63 @@ public class WikibaseDataFetcher {
 		}
 		configureProperties(properties);
 		return this.wbGetEntitiesAction.wbGetEntities(properties);
+	}
+
+	/**
+	 * Creates a map of titles to MediaInfoIds retrieved.
+	 *
+	 * @param numOfIds
+	 *            number of ids that should be retrieved
+	 * @param titles
+	 *            titles of the requested MediaInfoIds
+	 * @return map from titles for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	Map<String, MediaInfoIdValue> getMediaInfoIdMap(int numOfIds, String titles)
+			throws IOException, MediaWikiApiErrorException {
+		if (numOfIds == 0) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(ApiConnection.PARAM_ACTION, "query");
+		parameters.put("titles", titles);
+
+		Map<String, MediaInfoIdValue> result = new HashMap<>();
+
+		JsonNode root = connection.sendJsonRequest("POST", parameters);
+		if (!root.has("query")) return result; // empty query
+		JsonNode query = root.get("query");
+
+		// handle normalized situation
+		// for example, "Main_Page" will be normalized to "Main Page"
+		Map<String, String> normalizedMap = new HashMap<>();
+		if (query.has("normalized")) {
+			ArrayNode normalized = (ArrayNode) query.get("normalized");
+			Iterator<JsonNode> iterator = normalized.elements();
+			while (iterator.hasNext()) {
+				JsonNode next = iterator.next();
+				String from = next.get("from").asText();
+				String to = next.get("to").asText();
+				normalizedMap.put(to, from);
+			}
+		}
+
+		JsonNode pages = query.get("pages");
+		Iterator<Map.Entry<String, JsonNode>> iterator = pages.fields();
+		while (iterator.hasNext()) {
+			Map.Entry<String, JsonNode> page = iterator.next();
+			String pageId = page.getKey();
+			String normalizedTitle = page.getValue().get("title").textValue();
+			String title = normalizedMap.getOrDefault(normalizedTitle, normalizedTitle);
+			if (!"-1".equals(pageId)) { // "-1" means not found
+				result.put(title, Datamodel.makeMediaInfoIdValue("M" + pageId, siteIri));
+			}
+		}
+
+		return result;
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search)

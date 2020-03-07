@@ -1,0 +1,18 @@
+{
+  "batchcomplete": "",
+  "query": {
+    "normalized": [
+      {
+        "from": "Main_Page",
+        "to": "Main Page"
+      }
+    ],
+    "pages": {
+      "1": {
+        "pageid": 1,
+        "ns": 0,
+        "title": "Main Page"
+      }
+    }
+  }
+}
