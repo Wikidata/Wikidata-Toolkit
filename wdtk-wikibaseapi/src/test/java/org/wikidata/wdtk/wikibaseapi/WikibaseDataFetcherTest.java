@@ -200,6 +200,19 @@ public class WikibaseDataFetcherTest {
 	}
 
 	@Test
+	public void testGetMediaInfoIdNotFound() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "Not Found");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Not Found.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByTitle("Not Found");
+		assertNull(result);
+	}
+
+	@Test
 	public void testWbGetVirtualMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);
