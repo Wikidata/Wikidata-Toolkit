@@ -23,8 +23,6 @@ package org.wikidata.wdtk.wikibaseapi;
 import java.io.IOException;
 import java.util.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -39,14 +37,14 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  */
 public class WikibaseDataFetcher {
 
-	final ApiConnection connection;
-
 	/**
 	 * API Action to fetch data.
 	 */
 	final WbGetEntitiesAction wbGetEntitiesAction;
 
 	final WbSearchEntitiesAction wbSearchEntitiesAction;
+
+	final MediaInfoIdQueryAction mediaInfoIdQueryAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -104,9 +102,9 @@ public class WikibaseDataFetcher {
 	 *            "http://www.wikidata.org/entity/"
 	 */
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
-		this.connection = connection;
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
+		this.mediaInfoIdQueryAction = new MediaInfoIdQueryAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -284,81 +282,103 @@ public class WikibaseDataFetcher {
 	}
 
 	/**
-	 * Fetches the MediaInfoId of a page with the given title.
+	 * Fetches the MediaInfoId of a file with the given name.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
 	 *
 	 * Use this method for speeding up if you only need the id information,
 	 * i.e. you don't need other information like labels, descriptions, statements, etc.
 	 * Otherwise, you may need to use
 	 * {@link WikibaseDataFetcher#getEntityDocumentByTitle(String siteKey, String title)}
 	 *
-	 * @param title
-	 *            title (e.g. "File:Albert Einstein Head.jpg", "Main Page", etc.)
-	 *            of the requested MediaInfoId
-	 * @return the corresponding MediaInfoId for the title, or null if not found
+	 * @param fileName
+	 *            file name (e.g. "File:Albert Einstein Head.jpg" or "Albert Einstein Head.jpg")
+	 *            of the requested MediaInfoId, the "File:" prefix can be omitted
+	 * @return the corresponding MediaInfoId for the file name, or null if not found
 	 * @throws IOException
 	 * @throws MediaWikiApiErrorException
 	 */
-	public MediaInfoIdValue getMediaInfoIdByTitle(String title)
+	public MediaInfoIdValue getMediaInfoIdByFileName(String fileName)
 			throws IOException, MediaWikiApiErrorException {
-		return getMediaInfoIdsByTitle(title).get(title);
+		return getMediaInfoIdsByFileName(fileName).get(fileName);
 	}
 
 	/**
-	 * Fetches the MediaInfoIds of pages with the given titles.
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
 	 *
 	 * Use this method for speeding up if you only need the id information,
 	 * i.e. you don't need other information like labels, descriptions, statements, etc.
 	 * Otherwise, you may need to use
 	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, String... titles)}
 	 *
-	 * @param titles
-	 *            list of titles of the requested MediaInfoIds
-	 * @return map from titles for which data could be found to the MediaInfoIds
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
 	 *         that were retrieved
 	 * @throws IOException
 	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, MediaInfoIdValue> getMediaInfoIdsByTitle(String... titles)
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(String... fileNames)
 			throws IOException, MediaWikiApiErrorException {
-		return getMediaInfoIdsByTitle(Arrays.asList(titles));
+		return getMediaInfoIdsByFileName(Arrays.asList(fileNames));
 	}
 
 	/**
-	 * Fetches the MediaInfoIds of pages with the given titles.
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
 	 *
 	 * Use this method for speeding up if you only need the id information,
 	 * i.e. you don't need other information like labels, descriptions, statements, etc.
 	 * Otherwise, you may need to use
 	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, List titles)}
 	 *
-	 * @param titles
-	 *            list of titles of the requested MediaInfoIds
-	 * @return map from titles for which data could be found to the MediaInfoIds
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
 	 *         that were retrieved
 	 * @throws IOException
 	 * @throws MediaWikiApiErrorException
 	 */
-	public Map<String, MediaInfoIdValue> getMediaInfoIdsByTitle(List<String> titles)
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(List<String> fileNames)
 			throws IOException, MediaWikiApiErrorException {
-		List<String> newTitles = new ArrayList<>(titles);
+		List<String> newFileNames = new ArrayList<>(fileNames);
 		Map<String, MediaInfoIdValue> result = new HashMap<>();
-		boolean moreItems = !newTitles.isEmpty();
+		boolean moreItems = !newFileNames.isEmpty();
 
 		while (moreItems) {
-			List<String> subListOfTitles;
-			if (newTitles.size() <= maxListSize) {
-				subListOfTitles = newTitles;
+			List<String> subListOfFileNames;
+			if (newFileNames.size() <= maxListSize) {
+				subListOfFileNames = newFileNames;
 				moreItems = false;
 			} else {
-				subListOfTitles = newTitles.subList(0, maxListSize);
+				subListOfFileNames = newFileNames.subList(0, maxListSize);
 			}
-			String titlesStr = ApiConnection.implodeObjects(subListOfTitles);
-			result.putAll(getMediaInfoIdMap(subListOfTitles.size(), titlesStr));
-			subListOfTitles.clear();
+			result.putAll(mediaInfoIdQueryAction.getMediaInfoIds(subListOfFileNames));
+			subListOfFileNames.clear();
 		}
 		return result;
 	}
-
 
 	/**
 	 * Creates a map of identifiers or page titles to documents retrieved via
@@ -382,63 +402,6 @@ public class WikibaseDataFetcher {
 		}
 		configureProperties(properties);
 		return this.wbGetEntitiesAction.wbGetEntities(properties);
-	}
-
-	/**
-	 * Creates a map of titles to MediaInfoIds retrieved.
-	 *
-	 * @param numOfIds
-	 *            number of ids that should be retrieved
-	 * @param titles
-	 *            titles of the requested MediaInfoIds
-	 * @return map from titles for which data could be found to the MediaInfoIds
-	 *         that were retrieved
-	 * @throws IOException
-	 * @throws MediaWikiApiErrorException
-	 */
-	Map<String, MediaInfoIdValue> getMediaInfoIdMap(int numOfIds, String titles)
-			throws IOException, MediaWikiApiErrorException {
-		if (numOfIds == 0) {
-			return Collections.emptyMap();
-		}
-
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put(ApiConnection.PARAM_ACTION, "query");
-		parameters.put("titles", titles);
-
-		Map<String, MediaInfoIdValue> result = new HashMap<>();
-
-		JsonNode root = connection.sendJsonRequest("POST", parameters);
-		if (!root.has("query")) return result; // empty query
-		JsonNode query = root.get("query");
-
-		// handle normalized situation
-		// for example, "Main_Page" will be normalized to "Main Page"
-		Map<String, String> normalizedMap = new HashMap<>();
-		if (query.has("normalized")) {
-			ArrayNode normalized = (ArrayNode) query.get("normalized");
-			Iterator<JsonNode> iterator = normalized.elements();
-			while (iterator.hasNext()) {
-				JsonNode next = iterator.next();
-				String from = next.get("from").asText();
-				String to = next.get("to").asText();
-				normalizedMap.put(to, from);
-			}
-		}
-
-		JsonNode pages = query.get("pages");
-		Iterator<Map.Entry<String, JsonNode>> iterator = pages.fields();
-		while (iterator.hasNext()) {
-			Map.Entry<String, JsonNode> page = iterator.next();
-			String pageId = page.getKey();
-			String normalizedTitle = page.getValue().get("title").textValue();
-			String title = normalizedMap.getOrDefault(normalizedTitle, normalizedTitle);
-			if (!"-1".equals(pageId)) { // "-1" means not found
-				result.put(title, Datamodel.makeMediaInfoIdValue("M" + pageId, siteIri));
-			}
-		}
-
-		return result;
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search)

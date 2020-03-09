@@ -182,7 +182,20 @@ public class WikibaseDataFetcherTest {
 		con.setWebResourceFromPath(parameters, getClass(),
 				"/query-Albert Einstein Head.jpg.json", CompressionType.NONE);
 
-		MediaInfoIdValue result = wdf.getMediaInfoIdByTitle("File:Albert Einstein Head.jpg");
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("File:Albert Einstein Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdWithoutPrefix() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert Einstein Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Albert Einstein Head.jpg");
 		assertEquals("M925243", result.getId());
 	}
 
@@ -191,12 +204,54 @@ public class WikibaseDataFetcherTest {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("action", "query");
 		parameters.put("format", "json");
-		parameters.put("titles", "Main_Page");
+		parameters.put("titles", "File:Albert_Einstein_Head.jpg");
 		con.setWebResourceFromPath(parameters, getClass(),
-				"/query-Main_Page.json", CompressionType.NONE);
+				"/query-Albert Einstein Head normalized.jpg.json", CompressionType.NONE);
 
-		MediaInfoIdValue result = wdf.getMediaInfoIdByTitle("Main_Page");
-		assertEquals("M1", result.getId());
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("File:Albert_Einstein_Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdNormalizedWithoutPrefix() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert_Einstein_Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head normalized.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Albert_Einstein_Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdDuplicated1() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Cat.jpg|File:Cat.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Cat.jpg.json", CompressionType.NONE);
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "Cat.jpg");
+		assertEquals(result.size(), 1);
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdDuplicated2() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Cat.jpg|File:Cat.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Cat.jpg.json", CompressionType.NONE);
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "File:Cat.jpg");
+		assertEquals(result.size(), 2);
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
+		assertEquals("M32455073", result.get("File:Cat.jpg").getId());
 	}
 
 	@Test
@@ -204,11 +259,11 @@ public class WikibaseDataFetcherTest {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("action", "query");
 		parameters.put("format", "json");
-		parameters.put("titles", "Not Found");
+		parameters.put("titles", "File:Not Found");
 		con.setWebResourceFromPath(parameters, getClass(),
 				"/query-Not Found.json", CompressionType.NONE);
 
-		MediaInfoIdValue result = wdf.getMediaInfoIdByTitle("Not Found");
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Not Found");
 		assertNull(result);
 	}
 
@@ -296,9 +351,9 @@ public class WikibaseDataFetcherTest {
 		Map<String, String> parameters1 = new HashMap<>();
 		parameters1.put("action", "query");
 		parameters1.put("format", "json");
-		parameters1.put("titles", "Main Page");
+		parameters1.put("titles", "File:Cat.jpg");
 		con.setWebResourceFromPath(parameters1, getClass(),
-				"/query-Main Page.json", CompressionType.NONE);
+				"/query-Cat.jpg.json", CompressionType.NONE);
 
 		Map<String, String> parameters2 = new HashMap<>();
 		parameters2.put("action", "query");
@@ -309,9 +364,9 @@ public class WikibaseDataFetcherTest {
 
 		wdf.maxListSize = 1;
 
-		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByTitle("Main Page", "File:Albert Einstein Head.jpg");
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "File:Albert Einstein Head.jpg");
 		assertEquals(2, result.size());
-		assertEquals("M1", result.get("Main Page").getId());
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
 		assertEquals("M925243", result.get("File:Albert Einstein Head.jpg").getId());
 	}
 

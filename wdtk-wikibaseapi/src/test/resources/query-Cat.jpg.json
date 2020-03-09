@@ -2,10 +2,10 @@
   "batchcomplete": "",
   "query": {
     "pages": {
-      "-1": {
+      "32455073": {
+        "pageid": 32455073,
         "ns": 6,
-        "title": "File:Not Found",
-        "missing": ""
+        "title": "File:Cat.jpg"
       }
     }
   }
