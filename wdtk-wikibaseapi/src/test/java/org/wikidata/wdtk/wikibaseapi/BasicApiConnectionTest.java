@@ -266,11 +266,12 @@ public class BasicApiConnectionTest {
 	
 	@Test
 	public void testFillCookiesCaseInsensitive() {
-	    Map<String, List<String>> headerFields = new HashMap<>();
-        List<String> cookieList = testCookieList();
-        headerFields.put("set-cookie", cookieList);
-        con.fillCookies(headerFields);
-        assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
+		// for https://github.com/Wikidata/Wikidata-Toolkit/issues/491
+		Map<String, List<String>> headerFields = new HashMap<>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("set-cookie", cookieList);
+		con.fillCookies(headerFields);
+		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
 	}
 
 	@Test
