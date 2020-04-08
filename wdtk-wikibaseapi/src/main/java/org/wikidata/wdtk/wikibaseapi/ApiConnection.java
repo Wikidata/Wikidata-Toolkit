@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@ import java.util.Map.Entry;
 /**
  * Class to build up and hold a connection to a Wikibase API, managing cookies
  * and login.
- * 
+ *
  * This should no longer be instantiated directly: please use one of the subclasses
  * {@class BasicApiConnection} and {@class OAuthApiConnection} instead. This
  * class will become an interface in a future release.
@@ -186,7 +186,7 @@ public class ApiConnection {
 	 * User name used to log in.
 	 */
 	String username = "";
-	
+
 	/**
 	 * Password used to log in.
 	 */
@@ -201,13 +201,13 @@ public class ApiConnection {
 	 * Map of requested tokens.
 	 */
 	final Map<String, String> tokens;
-	
+
 	/**
 	 * Maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
 	 */
 	int connectTimeout = -1;
-	
+
 	/**
 	 * Maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set.
@@ -233,10 +233,10 @@ public class ApiConnection {
 		this.cookies = new HashMap<>();
 		this.tokens = new HashMap<>();
 	}
-	
+
 	/**
 	 * Deserializes an existing ApiConnection from JSON.
-	 * 
+	 *
 	 * @param apiBaseUrl
 	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
 	 * @param cookies
@@ -353,13 +353,13 @@ public class ApiConnection {
 	public String getCurrentUser() {
 		return this.username;
 	}
-	
+
 
 	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 */
 	public void logout() throws IOException, MediaWikiApiErrorException {
 		if (this.loggedIn) {
@@ -379,7 +379,7 @@ public class ApiConnection {
 	 * Clears the set of cookies. This will cause a logout.
 	 *
 	 * @throws IOException
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 */
 	public void clearCookies() throws IOException, MediaWikiApiErrorException {
 		logout();
@@ -391,7 +391,7 @@ public class ApiConnection {
 	 * Return a token of given type.
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return a token
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 *     if MediaWiki returned an error
 	 * @throws IOException
 	 *     if a network error occurred
@@ -422,10 +422,10 @@ public class ApiConnection {
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return newly retrieved token
-	 * @throws IOException 
+	 * @throws IOException
 	 *     if a network error occurred
 	 * @throws MediaWikiApiErrorException
-	 *     if MediaWiki returned an error when fetching the token 
+	 *     if MediaWiki returned an error when fetching the token
 	 */
 	private String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
@@ -539,18 +539,18 @@ public class ApiConnection {
 			logger.warn("API warning " + warning);
 		}
 	}
-	
+
 	/**
 	 * Checks that the credentials are still valid for the
 	 * user currently logged in. This can fail if (for instance)
 	 * the cookies expired, or were invalidated by a logout from
 	 * a different client.
-	 * 
+	 *
 	 * This method queries the API and throws {@class AssertUserFailedException}
 	 * if the check failed. This does not update the state of the connection
 	 * object.
-	 * @throws MediaWikiApiErrorException 
-	 * @throws IOException 
+	 * @throws MediaWikiApiErrorException
+	 * @throws IOException
 	 */
 	public void checkCredentials() throws IOException, MediaWikiApiErrorException {
 		Map<String,String> parameters = new HashMap<>();
@@ -610,7 +610,7 @@ public class ApiConnection {
 	 * Issues a Web API query to confirm that the previous login attempt was
 	 * successful, and sets the internal state of the API connection accordingly
 	 * in this case.
-	 * 
+	 *
 	 * @deprecated because it will be migrated to {@class BasicApiConnection}.
 	 *
 	 * @param token
@@ -694,14 +694,18 @@ public class ApiConnection {
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
-	 * 
+	 *
 	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 */
 	@Deprecated
 	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = headerFields
-				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		if (headerCookies != null) {
+		List<String> headerCookies = new ArrayList<>();
+		for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
+			if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
+				headerCookies.addAll(headers.getValue());
+			}
+		}
+		if (!headerCookies.isEmpty()) {
 			for (String cookie : headerCookies) {
 				String[] cookieResponse = cookie.split(";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
@@ -720,7 +724,7 @@ public class ApiConnection {
 	/**
 	 * Returns the string representation of the currently stored cookies. This
 	 * data is added to the connection before making requests.
-	 * 
+	 *
 	 * @deprecated to be migrated to {@class BasicApiConnection}
 	 * @return cookie string
 	 */
@@ -802,43 +806,43 @@ public class ApiConnection {
 		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
 				getCookieString());
 	}
-	
+
 	/**
 	 * Maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set, which is the default behaviour (for
 	 * backwards compatibility).
-	 * 
+	 *
 	 * @see HttpURLConnection.getConnectionTimeout
 	 */
 	public int getConnectTimeout() {
 		return connectTimeout;
 	}
-	
+
 	/**
 	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
-	 * 
+	 *
 	 * @see HttpURLConnection.setConnectionTimeout
 	 */
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
 	}
-	
+
 	/**
 	 * Maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set, which is the default behaviour (for backwards
 	 * compatibility).
-	 * 
+	 *
 	 * @see HttpURLConnection.getReadTimeout
 	 */
 	public int getReadTimeout() {
 		return readTimeout;
 	}
-	
+
 	/**
 	 * Sets the maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set.
-	 * 
+	 *
 	 * @see HttpURLConnection.setReadTimeout
 	 */
 	public void setReadTimeout(int timeout) {
