@@ -699,9 +699,13 @@ public class ApiConnection {
 	 */
 	@Deprecated
 	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = headerFields
-				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		if (headerCookies != null) {
+	    List<String> headerCookies = new ArrayList<>();
+	    for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
+	        if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
+	            headerCookies.addAll(headers.getValue());
+	        }
+	    }
+	    if (!headerCookies.isEmpty()) {
 			for (String cookie : headerCookies) {
 				String[] cookieResponse = cookie.split(";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
