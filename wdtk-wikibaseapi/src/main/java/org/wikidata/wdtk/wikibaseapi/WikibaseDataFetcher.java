@@ -21,16 +21,12 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 /**
@@ -40,12 +36,15 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  * @author Michael Guenther
  */
 public class WikibaseDataFetcher {
+
 	/**
 	 * API Action to fetch data.
 	 */
 	final WbGetEntitiesAction wbGetEntitiesAction;
 
 	final WbSearchEntitiesAction wbSearchEntitiesAction;
+
+	final MediaInfoIdQueryAction mediaInfoIdQueryAction;
 
 	/**
 	 * The IRI that identifies the site that the data is from.
@@ -105,6 +104,7 @@ public class WikibaseDataFetcher {
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
+		this.mediaInfoIdQueryAction = new MediaInfoIdQueryAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -277,6 +277,105 @@ public class WikibaseDataFetcher {
 			result.putAll(getEntityDocumentMap(subListOfTitles.size(),
 					properties));
 			subListOfTitles.clear();
+		}
+		return result;
+	}
+
+	/**
+	 * Fetches the MediaInfoId of a file with the given name.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentByTitle(String siteKey, String title)}
+	 *
+	 * @param fileName
+	 *            file name (e.g. "File:Albert Einstein Head.jpg" or "Albert Einstein Head.jpg")
+	 *            of the requested MediaInfoId, the "File:" prefix can be omitted
+	 * @return the corresponding MediaInfoId for the file name, or null if not found
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public MediaInfoIdValue getMediaInfoIdByFileName(String fileName)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByFileName(fileName).get(fileName);
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, String... titles)}
+	 *
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(String... fileNames)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByFileName(Arrays.asList(fileNames));
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, List titles)}
+	 *
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(List<String> fileNames)
+			throws IOException, MediaWikiApiErrorException {
+		List<String> newFileNames = new ArrayList<>(fileNames);
+		Map<String, MediaInfoIdValue> result = new HashMap<>();
+		boolean moreItems = !newFileNames.isEmpty();
+
+		while (moreItems) {
+			List<String> subListOfFileNames;
+			if (newFileNames.size() <= maxListSize) {
+				subListOfFileNames = newFileNames;
+				moreItems = false;
+			} else {
+				subListOfFileNames = newFileNames.subList(0, maxListSize);
+			}
+			result.putAll(mediaInfoIdQueryAction.getMediaInfoIds(subListOfFileNames));
+			subListOfFileNames.clear();
 		}
 		return result;
 	}
