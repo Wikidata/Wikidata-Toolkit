@@ -27,6 +27,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
@@ -204,6 +205,21 @@ public class DatamodelTest {
 	}
 
 	@Test
+	public final void testGetQuantityValueItemIdValue() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		BigDecimal lb = new BigDecimal(
+				"0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal(
+				"0.123456789012345678901234567890123456790");
+		
+		ItemIdValue unit = factory.getItemIdValue("Q1", "foo");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, unit);
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, unit.getId());
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetQuantityValueNoUnit() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
@@ -222,6 +238,16 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456789");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
 		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBoundsItemIdValue() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		ItemIdValue unit = factory.getItemIdValue("Q1", "foo");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, unit);
+		QuantityValue o2 = factory.getQuantityValue(nv, unit.getId());
 		assertEquals(o1, o2);
 	}
 
