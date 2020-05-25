@@ -116,6 +116,13 @@ public abstract class ApiConnection {
 	}
 
 	/**
+	 * Getter for the apiBaseUrl.
+	 */
+	public String getApiBaseUrl() {
+		return apiBaseUrl;
+	}
+
+	/**
 	 * Returns true if a user is logged in. This does not perform
 	 * any request to the server: it just returns our own internal state.
 	 * To check if our authentication credentials are still considered

@@ -21,7 +21,7 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -40,10 +40,15 @@ import static org.junit.Assert.*;
 
 public class OAuthApiConnectionTest {
 
-    private static final String consumerKey = "consumer_key";
-    private static final String consumerSecret = "consumer_secret";
-    private static final String accessToken = "access_token";
-    private static final String accessSecret = "access_secret";
+    private static final String CONSUMER_KEY = "consumer_key";
+    private static final String CONSUMER_SECRET = "consumer_secret";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String ACCESS_SECRET = "access_secret";
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private static final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55690/w/api.php\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"loggedIn\":false,\"username\":\"\"}";
+    private static final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55178/w/api.php\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"loggedIn\":true,\"username\":\"foo\"}";
 
     @Test
     public void testAnonymousRequest() throws IOException, MediaWikiApiErrorException, InterruptedException {
@@ -52,8 +57,10 @@ public class OAuthApiConnectionTest {
                 .setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\",\"labels\":{\"fr\":{\"language\":\"fr\",\"value\":\"bonheur\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"état émotionnel\"}},\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\":)\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE04\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE03\"}]},\"sitelinks\":{\"enwiki\":{\"site\":\"enwiki\",\"title\":\"Happiness\",\"badges\":[]}}}},\"success\":1}"));
         server.start();
         HttpUrl apiBaseUrl = server.url("/w/api.php");
-        // We don't need to login here, so we don't care about the consumer key/secret.
-        ApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(), null, null);
+        // We don't need to login here.
+        ApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString());
+        assertFalse(connection.isLoggedIn());
+        assertEquals("", connection.getCurrentUser());
 
         // We can still fetch unprotected data without logging in.
         WikibaseDataFetcher wbdf = new WikibaseDataFetcher(connection, Datamodel.SITE_WIKIDATA);
@@ -80,7 +87,7 @@ public class OAuthApiConnectionTest {
     }
 
     @Test
-    public void testLoginAndLogout() throws IOException, LoginFailedException, InterruptedException {
+    public void testLogout() throws IOException, LoginFailedException, InterruptedException {
         MockWebServer server = new MockWebServer();
         // user info
         server.enqueue(new MockResponse()
@@ -89,21 +96,82 @@ public class OAuthApiConnectionTest {
         server.start();
         HttpUrl apiBaseUrl = server.url("w/api.php");
 
-        OAuthApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(), consumerKey, consumerSecret);
-        assertEquals("", connection.getCurrentUser());
-        assertFalse(connection.isLoggedIn());
-        connection.login(accessToken, accessSecret);
-        assertEquals("foo", connection.getCurrentUser());
+        OAuthApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
+                CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
         assertTrue(connection.isLoggedIn());
+        assertEquals("foo", connection.getCurrentUser());
+
         connection.logout();
         assertEquals("", connection.getCurrentUser());
         assertFalse(connection.isLoggedIn());
+        assertEquals("", connection.getCurrentUser());
 
         RecordedRequest request = server.takeRequest();
         assertNotNull(request.getHeader("Authorization"));
-        assertEquals("GET /w/api.php?meta=userinfo&format=json&action=query HTTP/1.1", request.toString());
+
+        assertEquals("/w/api.php?meta=userinfo&assert=user&format=json&action=query", request.getPath());
 
         server.shutdown();
     }
+
+    @Test
+    public void testSerialize() throws IOException, LoginFailedException {
+        MockWebServer server = new MockWebServer();
+        // user info
+        server.enqueue(new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}"));
+        server.start();
+        HttpUrl apiBaseUrl = server.url("w/api.php");
+
+        OAuthApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
+                CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
+        String jsonSerialization = mapper.writeValueAsString(connection);
+        // The baseUrl field may be different because the server port is random in every run.
+        // But other fields are required to be the same.
+        assertEquals(LOGGED_IN_SERIALIZED.substring(LOGGED_IN_SERIALIZED.indexOf("/w/api.php")),
+                jsonSerialization.substring(jsonSerialization.indexOf("/w/api.php")));
+        server.shutdown();
+    }
+
+    @Test
+    public void testDeserialize() throws IOException {
+        OAuthApiConnection connection = mapper.readValue(LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
+        assertTrue(connection.isLoggedIn());
+        assertEquals(CONSUMER_KEY, connection.getConsumerKey());
+        assertEquals(CONSUMER_SECRET, connection.getConsumerSecret());
+        assertEquals(ACCESS_TOKEN, connection.getAccessToken());
+        assertEquals(ACCESS_SECRET, connection.getAccessSecret());
+        assertEquals("http://kubernetes.docker.internal:55178/w/api.php", connection.getApiBaseUrl());
+
+        // To get the username, we have to start a server at http://kubernetes.docker.internal:55178/w/api.php
+        // and return the corresponding json response.
+        // But we cannot control the port of the mocked server, so we just change the url here.
+        MockWebServer server = new MockWebServer();
+        // user info
+        server.enqueue(new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}"));
+        server.start();
+        HttpUrl apiBaseUrl = server.url("w/api.php");
+        OAuthApiConnection connection1 = new OAuthApiConnection(apiBaseUrl.toString(),
+                connection.getConsumerKey(), connection.getConsumerSecret(),
+                connection.getAccessToken(), connection.getAccessSecret());
+
+        assertEquals("foo", connection1.getCurrentUser());
+        server.shutdown();
+    }
+
+    @Test
+    public void testDeserializeNotLogin() throws IOException {
+        OAuthApiConnection connection = mapper.readValue(NOT_LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
+        assertFalse(connection.isLoggedIn());
+        assertNull(CONSUMER_KEY, connection.getConsumerKey());
+        assertNull(CONSUMER_SECRET, connection.getConsumerSecret());
+        assertNull(ACCESS_TOKEN, connection.getAccessToken());
+        assertNull(ACCESS_SECRET, connection.getAccessSecret());
+        assertEquals("http://kubernetes.docker.internal:55690/w/api.php", connection.getApiBaseUrl());
+    }
+
 
 }
