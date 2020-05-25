@@ -37,11 +37,18 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-                <dependency>
-                    <groupId>com.github.scribejava</groupId>
-                    <artifactId>scribejava-core</artifactId>
-                    <version>${scribeJavaVersion}</version>
-                </dependency> 
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.2.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>se.akerfeldt</groupId>
+			<artifactId>okhttp-signpost</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

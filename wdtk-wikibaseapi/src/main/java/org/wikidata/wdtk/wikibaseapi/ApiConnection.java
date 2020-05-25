@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
@@ -47,7 +48,7 @@ import java.util.Map.Entry;
  * and login.
  * 
  * This should no longer be instantiated directly: please use one of the subclasses
- * {@class PasswordApiConnection} and {@class OAuthApiConnection} instead. This
+ * {@link BasicApiConnection} and {@link OAuthApiConnection} instead. This
  * class will become an interface in a future release.
  *
  * @author Michael Guenther
@@ -132,7 +133,7 @@ public abstract class ApiConnection {
 	 * the cookies expired, or were invalidated by a logout from
 	 * a different client.
 	 * 
-	 * This method queries the API and throws {@class AssertUserFailedException}
+	 * This method queries the API and throws {@link AssertUserFailedException}
 	 * if the check failed. This does not update the state of the connection
 	 * object.
 	 * @throws MediaWikiApiErrorException 
