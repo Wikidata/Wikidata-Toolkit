@@ -213,9 +213,9 @@ public class DatamodelTest {
 		BigDecimal ub = new BigDecimal(
 				"0.123456789012345678901234567890123456790");
 		
-		ItemIdValue unit = factory.getItemIdValue("Q1", "foo");
+		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, unit);
-		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, unit.getId());
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, unit.getIri());
 		assertEquals(o1, o2);
 	}
 
@@ -245,9 +245,9 @@ public class DatamodelTest {
 	public final void testGetQuantityValueNoBoundsItemIdValue() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
-		ItemIdValue unit = factory.getItemIdValue("Q1", "foo");
+		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, unit);
-		QuantityValue o2 = factory.getQuantityValue(nv, unit.getId());
+		QuantityValue o2 = factory.getQuantityValue(nv, unit.getIri());
 		assertEquals(o1, o2);
 	}
 
