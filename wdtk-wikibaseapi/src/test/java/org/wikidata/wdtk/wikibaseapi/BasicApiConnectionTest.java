@@ -54,11 +54,7 @@ public class BasicApiConnectionTest {
 
 	MockBasicApiConnection con;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"loggedIn\":true,\"cookies\":{\"Path\":\"/\","+
-			"\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\","+
-			"\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\","+
-			"\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\","+
-			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"https://mocked.api.connection/w/api.php\",\"loggedIn\":true,\"cookies\":{\"Path\":\"/\",\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\",\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\",\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
 	
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<String>();
@@ -181,6 +177,7 @@ public class BasicApiConnectionTest {
 		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
 		assertTrue(newConn.isLoggedIn());
 		assertEquals("username", newConn.getCurrentUser());
+		assertEquals("https://mocked.api.connection/w/api.php", newConn.getApiBaseUrl());
 	}
 
 	@Test

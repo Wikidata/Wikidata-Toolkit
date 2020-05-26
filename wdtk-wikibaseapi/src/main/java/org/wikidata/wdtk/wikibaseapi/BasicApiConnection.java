@@ -38,11 +38,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * A connection to the MediaWiki API established via
  * standard login with username and password.
- * 
- * Users should migrate to this class rather than
- * instantiating {@class ApiConnection} directly
- * as ApiConnection will become an interface.
- * 
+ *
  * @author Antonin Delpeuch
  *
  */
@@ -261,6 +257,12 @@ public class BasicApiConnection extends ApiConnection {
 				throw new LoginFailedException(message);
 			}
 		}
+	}
+
+	@Override
+	@JsonProperty("baseUrl")
+	public String getApiBaseUrl() {
+		return super.getApiBaseUrl();
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class FetchOnlineDataExample {
 		printDocumentation();
 
 		WikibaseDataFetcher wbdf = new WikibaseDataFetcher(
-				BasicApiConnection.getTestWikidataApiConnection(),
+				BasicApiConnection.getWikidataApiConnection(),
 				Datamodel.SITE_WIKIDATA);
 
 		System.out.println("*** Fetching data for one entity:");
