@@ -37,6 +37,7 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.implementation.EntityIdValueImpl;
 import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -220,21 +221,9 @@ public class PropertyRegister {
 	 */
 	public String setPropertyTypeFromEntityIdValue(
 			PropertyIdValue propertyIdValue, EntityIdValue value) {
-		switch (value.getId().charAt(0)) {
-		case 'Q':
-			return DatatypeIdValue.DT_ITEM;
-		case 'P':
-			return DatatypeIdValue.DT_PROPERTY;
-		case 'L':
-			if (value.getId().contains("F")) {
-				return DatatypeIdValue.DT_FORM;
-			} else if(value.getId().contains("S")) {
-				return DatatypeIdValue.DT_SENSE;
-			}
-			return DatatypeIdValue.DT_LEXEME;
-		case 'M':
-				return DatatypeIdValue.DT_MEDIA_INFO;
-		default:
+		try{
+			return EntityIdValueImpl.guessEntityTypeFromId(value.getId());
+		} catch (IllegalArgumentException e){
 			logger.warn("Could not determine datatype of "+ propertyIdValue.getId() + ".");
 			logger.warn("Example value "+value.getId()+ " is not recognized as a valid entity id.");
 			logger.warn("Perhaps this is a newly introduced datatype not supported by this version of wdtk.");
