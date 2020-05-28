@@ -221,9 +221,9 @@ public class PropertyRegister {
 	 */
 	public String setPropertyTypeFromEntityIdValue(
 			PropertyIdValue propertyIdValue, EntityIdValue value) {
-		try{
+		try {
 			return EntityIdValueImpl.guessEntityTypeFromId(value.getId());
-		} catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			logger.warn("Could not determine datatype of "+ propertyIdValue.getId() + ".");
 			logger.warn("Example value "+value.getId()+ " is not recognized as a valid entity id.");
 			logger.warn("Perhaps this is a newly introduced datatype not supported by this version of wdtk.");

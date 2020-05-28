@@ -140,7 +140,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	}
 
 	/**
-	 * RReturns the entity type of the id like "item" or "property"
+	 * Returns the entity type of the id like "item" or "property"
 	 *
 	 * @param id
 	 * 		the identifier of the entity, such as "Q42"
@@ -163,7 +163,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 					return returnJsonEntity ? JSON_ENTITY_TYPE_LEXEME : DatatypeIdValue.DT_LEXEME;
 				}
 			case 'M':
-				return JSON_ENTITY_TYPE_MEDIA_INFO;
+				return returnJsonEntity ? JSON_ENTITY_TYPE_MEDIA_INFO : DatatypeIdValue.DT_MEDIA_INFO;
 			case 'P':
 				return returnJsonEntity ? JSON_ENTITY_TYPE_PROPERTY : DatatypeIdValue.DT_PROPERTY;
 			case 'Q':
@@ -174,7 +174,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	}
 
 	/**
-	 * RReturns the entity type of the id like "item" or "property"
+	 * Returns the entity type of the id like "item" or "property"
 	 *
 	 * @param id
 	 * 		the identifier of the entity, such as "Q42"
