@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A connection to the MediaWiki/Wikibase API which uses OAuth
@@ -230,4 +231,39 @@ public class OAuthApiConnection extends ApiConnection {
         return accessSecret;
     }
 
+    @Override
+    public void setConnectTimeout(int timeout) {
+        super.setConnectTimeout(timeout);
+        updateTimeoutSetting();
+    }
+
+    @Override
+    public void setReadTimeout(int timeout) {
+        super.setReadTimeout(timeout);
+        updateTimeoutSetting();
+    }
+
+    private void updateTimeoutSetting() {
+        // avoid instantiating new objects if possible
+        if (connectTimeout < 0 && readTimeout < 0) return;
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        if (loggedIn) {
+            OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
+            consumer.setTokenWithSecret(accessToken, accessSecret);
+            builder.addInterceptor(new SigningInterceptor(consumer));
+        }
+
+        if (connectTimeout >= 0) {
+            builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        }
+
+        if (readTimeout >= 0) {
+            builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
+
+        // rebuild the client
+        client = builder.build();
+    }
 }

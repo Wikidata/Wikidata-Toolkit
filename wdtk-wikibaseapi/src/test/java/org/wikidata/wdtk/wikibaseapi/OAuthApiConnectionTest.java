@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -173,5 +173,23 @@ public class OAuthApiConnectionTest {
         assertEquals("http://kubernetes.docker.internal:55690/w/api.php", connection.getApiBaseUrl());
     }
 
+
+    @Test
+    public void testConnectionTimeout() {
+        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API,
+                CONSUMER_KEY, CONSUMER_SECRET,
+                ACCESS_TOKEN, ACCESS_SECRET);
+        connection.setConnectTimeout(2000);
+        assertEquals(2000, connection.getConnectTimeout());
+        assertEquals(-1, connection.getReadTimeout());
+    }
+
+    @Test
+    public void testReadTimeout() {
+        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API);
+        connection.setReadTimeout(2000);
+        assertEquals(-1, connection.getConnectTimeout());
+        assertEquals(2000, connection.getReadTimeout());
+    }
 
 }

@@ -507,7 +507,7 @@ public abstract class ApiConnection {
 	 * For negative values, no timeout is set, which is the default behaviour (for
 	 * backwards compatibility).
 	 * 
-	 * @see HttpURLConnection.getConnectionTimeout
+	 * @see HttpURLConnection#getConnectTimeout
 	 */
 	public int getConnectTimeout() {
 		return connectTimeout;
@@ -517,7 +517,7 @@ public abstract class ApiConnection {
 	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
 	 * 
-	 * @see HttpURLConnection.setConnectionTimeout
+	 * @see HttpURLConnection#setConnectTimeout
 	 */
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
@@ -528,7 +528,7 @@ public abstract class ApiConnection {
 	 * For negative values, no timeout is set, which is the default behaviour (for backwards
 	 * compatibility).
 	 * 
-	 * @see HttpURLConnection.getReadTimeout
+	 * @see HttpURLConnection#getReadTimeout
 	 */
 	public int getReadTimeout() {
 		return readTimeout;
@@ -538,7 +538,7 @@ public abstract class ApiConnection {
 	 * Sets the maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set.
 	 * 
-	 * @see HttpURLConnection.setReadTimeout
+	 * @see HttpURLConnection#setReadTimeout
 	 */
 	public void setReadTimeout(int timeout) {
 		readTimeout = timeout;
