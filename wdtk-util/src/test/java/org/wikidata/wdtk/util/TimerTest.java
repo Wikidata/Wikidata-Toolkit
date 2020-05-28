@@ -39,8 +39,6 @@ public class TimerTest {
 
 	/**
 	 * Spend some time computing to be able to measure something.
-	 * 
-	 * @throws InterruptedException
 	 */
 	void doDummyComputation() {
 		long dummyValue = 0;
@@ -172,16 +170,12 @@ public class TimerTest {
 		assertTrue(
 				"Timer for CPU time should have measured a non-zero CPU time.",
 				timerCpu.getTotalCpuTime() > 0);
-		assertTrue("Timer for CPU time should not have measured a wall time.",
-				timerCpu.getTotalWallTime() == 0);
-		assertTrue("Timer for wall time should not have measured a CPU time.",
-				timerWall.getTotalCpuTime() == 0);
+		assertEquals("Timer for CPU time should not have measured a wall time.", 0, timerCpu.getTotalWallTime());
+		assertEquals("Timer for wall time should not have measured a CPU time.", 0, timerWall.getTotalCpuTime());
 		assertTrue(
 				"Timer for wall time should have measured a non-zero wall time.",
 				timerWall.getTotalWallTime() > 0);
-		assertTrue(
-				"Timer without threadId should not have measured a CPU time.",
-				timerNoThread.getTotalCpuTime() == 0);
+		assertEquals("Timer without threadId should not have measured a CPU time.", 0, timerNoThread.getTotalCpuTime());
 		assertTrue(
 				"Timer without threadId should have measured a non-zero wall time.",
 				timerNoThread.getTotalWallTime() > 0);
@@ -226,22 +220,14 @@ public class TimerTest {
 		Timer.resetNamedTimer("test timer", Timer.RECORD_WALLTIME);
 		Timer.resetNamedTimer("test timer", Timer.RECORD_ALL, 0);
 
-		assertTrue("Named timer should have reset CPU time.",
-				timerA1.getTotalCpuTime() == 0);
-		assertTrue("Named timer should have reset wall time.",
-				timerA1.getTotalWallTime() == 0);
-		assertTrue("Timer for CPU time should have reset CPU time.",
-				timerCpu.getTotalCpuTime() == 0);
-		assertTrue("Timer for CPU time should have reset wall time.",
-				timerCpu.getTotalWallTime() == 0);
-		assertTrue("Timer for wall time should have reset CPU time.",
-				timerWall.getTotalCpuTime() == 0);
-		assertTrue("Timer for wall time should have reset wall time.",
-				timerWall.getTotalWallTime() == 0);
-		assertTrue("Timer without threadId should have reset CPU time.",
-				timerNoThread.getTotalCpuTime() == 0);
-		assertTrue("Timer without threadId should have reset wall time.",
-				timerNoThread.getTotalWallTime() == 0);
+		assertEquals("Named timer should have reset CPU time.", 0, timerA1.getTotalCpuTime());
+		assertEquals("Named timer should have reset wall time.", 0, timerA1.getTotalWallTime());
+		assertEquals("Timer for CPU time should have reset CPU time.", 0, timerCpu.getTotalCpuTime());
+		assertEquals("Timer for CPU time should have reset wall time.", 0, timerCpu.getTotalWallTime());
+		assertEquals("Timer for wall time should have reset CPU time.", 0, timerWall.getTotalCpuTime());
+		assertEquals("Timer for wall time should have reset wall time.", 0, timerWall.getTotalWallTime());
+		assertEquals("Timer without threadId should have reset CPU time.", 0, timerNoThread.getTotalCpuTime());
+		assertEquals("Timer without threadId should have reset wall time.", 0, timerNoThread.getTotalWallTime());
 
 		// Testing unregistered timer stop (does not create one):
 		assertEquals(Timer.stopNamedTimer("unknown name"), -1);

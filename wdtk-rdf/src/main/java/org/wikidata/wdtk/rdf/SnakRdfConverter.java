@@ -58,7 +58,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	private class PropertyRestriction {
+	private static class PropertyRestriction {
 
 		final Resource subject;
 		final String propertyUri;
@@ -96,7 +96,7 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 		this.propertyRegister = propertyRegister;
 		this.valueRdfConverter = valueRdfConverter;
 
-		this.someValuesQueue = new ArrayList<PropertyRestriction>();
+		this.someValuesQueue = new ArrayList<>();
 	}
 
 	/**
@@ -173,13 +173,17 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 			return null;
 		}
 
+		// SomeValueSnaks only have simple values not full values
+		if (this.currentPropertyContext == PropertyContext.VALUE || this.currentPropertyContext == PropertyContext.QUALIFIER || this.currentPropertyContext == PropertyContext.REFERENCE) {
+			return null;
+		}
+
 		String propertyUri = Vocabulary.getPropertyUri(snak.getPropertyId(),
 				this.currentPropertyContext);
 		Resource bnode = this.rdfWriter.getFreshBNode();
-		addSomeValuesRestriction(bnode, propertyUri, rangeUri);
 		try {
 			this.rdfWriter.writeTripleValueObject(this.currentSubject,
-					RdfWriter.RDF_TYPE, bnode);
+					this.rdfWriter.getUri(propertyUri), bnode);
 		} catch (RDFHandlerException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -190,14 +194,11 @@ public class SnakRdfConverter implements SnakVisitor<Void> {
 	@Override
 	public Void visit(NoValueSnak snak) {
 		if (simple) {
-			String rangeUri = getRangeUri(snak.getPropertyId());
-			if (rangeUri == null) {
+			if (getRangeUri(snak.getPropertyId()) == null) {
 				logger.error("Count not export NoValueSnak for property "
 						+ snak.getPropertyId().getId()
 						+ ": OWL range not known.");
 				return null;
-			} else if (!Vocabulary.OWL_THING.equals(rangeUri)) {
-				rangeUri = Vocabulary.RDFS_LITERAL;
 			}
 
 			String noValueClass;

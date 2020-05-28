@@ -20,8 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -37,9 +35,6 @@ import java.util.List;
  *
  */
 public class WikibaseDataEditor {
-
-	static final Logger logger = LoggerFactory
-			.getLogger(WikibaseDataEditor.class);
 
 	/**
 	 * API Action to edit data.
@@ -157,6 +152,56 @@ public class WikibaseDataEditor {
 	public void setMaxLag(int maxLag) {
 		this.wbEditingAction.setMaxLag(maxLag);
 	}
+	
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public int getMaxLagMaxRetries() {
+		return this.wbEditingAction.getMaxLagMaxRetries();
+	}
+
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public void setMaxLagMaxRetries(int retries) {
+		this.wbEditingAction.setMaxLagMaxRetries(retries);
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public int getMaxLagFirstWaitTime() {
+		return this.wbEditingAction.getMaxLagFirstWaitTime();
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public void setMaxLagFirstWaitTime(int time) {
+		this.wbEditingAction.setMaxLagFirstWaitTime(time);
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public double getMaxLagBackOffFactor() {
+		return this.wbEditingAction.getMaxLagBackOffFactor();
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public void setMaxLagBackOffFactor(double value) {
+		this.wbEditingAction.setMaxLagBackOffFactor(value);
+	}
 
 	/**
 	 * Returns the average time that a single edit should take, measured in
@@ -227,7 +272,13 @@ public class WikibaseDataEditor {
 	 * @param itemDocument
 	 *            the document that contains the data to be written
 	 * @param summary
-	 *            additional summary message for the edit, or null to omit this
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 *            Ignored if null or empty.
 	 * @return newly created item document, or null if there was an error
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
@@ -235,10 +286,10 @@ public class WikibaseDataEditor {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public ItemDocument createItemDocument(ItemDocument itemDocument,
-			String summary) throws IOException, MediaWikiApiErrorException {
+			String summary, List<String> tags) throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
 		return (ItemDocument) this.wbEditingAction.wbEditEntity(null, null,
-				null, "item", data, false, this.editAsBot, 0, summary);
+				null, "item", data, false, this.editAsBot, 0, summary, tags);
 	}
 
 	/**
@@ -256,7 +307,13 @@ public class WikibaseDataEditor {
 	 * @param propertyDocument
 	 *            the document that contains the data to be written
 	 * @param summary
-	 *            additional summary message for the edit, or null to omit this
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 *            Ignored if null or empty.
 	 * @return newly created property document, or null if there was an error
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
@@ -264,12 +321,12 @@ public class WikibaseDataEditor {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public PropertyDocument createPropertyDocument(
-			PropertyDocument propertyDocument, String summary)
+			PropertyDocument propertyDocument, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
 		return (PropertyDocument) this.wbEditingAction
 				.wbEditEntity(null, null, null, "property", data, false,
-						this.editAsBot, 0, summary);
+						this.editAsBot, 0, summary, tags);
 	}
 
 	/**
@@ -301,7 +358,12 @@ public class WikibaseDataEditor {
 	 *            if false, the given data will be added to the existing data,
 	 *            overwriting only parts that are set to new values
 	 * @param summary
-	 *            additional summary message for the edit, or null to omit this
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
 	 * @return the modified item document, or null if there was an error
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
@@ -309,12 +371,12 @@ public class WikibaseDataEditor {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public ItemDocument editItemDocument(ItemDocument itemDocument,
-			boolean clear, String summary) throws IOException,
+			boolean clear, String summary, List<String> tags) throws IOException,
 			MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(itemDocument);
 		return (ItemDocument) this.wbEditingAction.wbEditEntity(itemDocument
 				.getEntityId().getId(), null, null, null, data, clear,
-				this.editAsBot, itemDocument.getRevisionId(), summary);
+				this.editAsBot, itemDocument.getRevisionId(), summary, tags);
 	}
 
 	/**
@@ -346,7 +408,12 @@ public class WikibaseDataEditor {
 	 *            if false, the given data will be added to the existing data,
 	 *            overwriting only parts that are set to new values
 	 * @param summary
-	 *            additional summary message for the edit, or null to omit this
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
 	 * @return the modified property document, or null if there was an error
 	 * @throws IOException
 	 *             if there was an IO problem, such as missing network
@@ -354,13 +421,64 @@ public class WikibaseDataEditor {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public PropertyDocument editPropertyDocument(
-			PropertyDocument propertyDocument, boolean clear, String summary)
+			PropertyDocument propertyDocument, boolean clear, String summary,
+			List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(propertyDocument);
 		return (PropertyDocument) this.wbEditingAction.wbEditEntity(
 				propertyDocument.getEntityId().getId(), null, null, null,
 				data, clear, this.editAsBot, propertyDocument.getRevisionId(),
-				summary);
+				summary, tags);
+	}
+
+	/**
+	 * Writes the data for the given media info document with the summary message
+	 * as given. Optionally, the existing data is cleared (deleted).
+	 * It creates the media info if needed.
+	 * <p>
+	 * The id of the given media info document is used to specify which media info
+	 * document should be changed or created. The site IRI will be ignored for this.
+	 * <p>
+	 * The revision id of the given media info document is used to specify the
+	 * base revision, enabling the API to detect edit conflicts. The value 0 can
+	 * be used to omit this. It is strongly recommended to give a revision id
+	 * when making edits where the outcome depends on the previous state of the
+	 * data (i.e., any edit that does not use "clear").
+	 * <p>
+	 * If the data is not cleared, then the existing data will largely be
+	 * preserved. Statements with empty ids will be added without checking if
+	 * they exist already; statements with (valid) ids will replace any existing
+	 * statements with these ids or just be added if there are none. Labels
+	 * will be preserved for all languages for which no data is given at all.
+	 * For aliases this means that writing one alias in
+	 *
+	 * @param mediaInfoDocument
+	 *            the document that contains the data to be written
+	 * @param clear
+	 *            if true, the existing data will be replaced by the given data;
+	 *            if false, the given data will be added to the existing data,
+	 *            overwriting only parts that are set to new values
+	 * @param summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 * @return the modified media info document, or null if there was an error
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network
+	 *             connection
+	 */
+	public MediaInfoDocument editMediaInfoDocument(
+			MediaInfoDocument mediaInfoDocument, boolean clear, String summary,
+			List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		String data = JsonSerializer.getJsonString(mediaInfoDocument);
+		return (MediaInfoDocument) this.wbEditingAction.wbEditEntity(
+				mediaInfoDocument.getEntityId().getId(), null, null, null,
+				data, clear, this.editAsBot, mediaInfoDocument.getRevisionId(),
+				summary, tags);
 	}
 
 	/**
@@ -380,7 +498,12 @@ public class WikibaseDataEditor {
 	 *            deleted if they are present in the current document (in
 	 *            exactly the same form, with the same id)
 	 * @param summary
-	 *            short edit summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
 	 * @return the updated document
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns errors
@@ -389,13 +512,14 @@ public class WikibaseDataEditor {
 	 */
 	public ItemDocument updateStatements(ItemIdValue itemIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
-			String summary) throws MediaWikiApiErrorException, IOException {
+			String summary, List<String> tags)
+					throws MediaWikiApiErrorException, IOException {
 
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
 				.getEntityDocument(itemIdValue.getId());
 
 		return updateStatements(currentDocument, addStatements,
-				deleteStatements, summary);
+				deleteStatements, summary, tags);
 	}
 	
 	
@@ -427,7 +551,12 @@ public class WikibaseDataEditor {
 	 *          deleted if they are present in the current document (in
 	 *          exactly the same form, with the same id)
 	 * @param summary
-	 * 			short edit summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
 	 * @return the updated document
 	 * @throws MediaWikiApiErrorException
 	 * 			if the API returns errors
@@ -441,19 +570,20 @@ public class WikibaseDataEditor {
 			List<MonolingualTextValue> deleteAliases,
 			List<Statement> addStatements,
 			List<Statement> deleteStatements,
-			String summary) throws MediaWikiApiErrorException, IOException {
+			String summary,
+			List<String> tags) throws MediaWikiApiErrorException, IOException {
 		ItemDocument currentDocument = (ItemDocument) this.wikibaseDataFetcher
 				.getEntityDocument(itemIdValue.getId());
 		
 		return updateTermsStatements(currentDocument, addLabels,
 				addDescriptions, addAliases, deleteAliases,
-				addStatements, deleteStatements, summary);
+				addStatements, deleteStatements, summary, tags);
 	}
 
 	/**
 	 * Updates the statements of the property document identified by the given
 	 * property id. The computation of updates is the same as for
-	 * {@link #updateStatements(ItemIdValue, List, List, String)}.
+	 * {@link #updateStatements(ItemIdValue, List, List, String, List)}.
 	 *
 	 * @param propertyIdValue
 	 *            id of the document to be updated
@@ -466,7 +596,12 @@ public class WikibaseDataEditor {
 	 *            deleted if they are present in the current document (in
 	 *            exactly the same form, with the same id)
 	 * @param summary
-	 *            short edit summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
 	 * @return the updated document
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns errors
@@ -475,13 +610,14 @@ public class WikibaseDataEditor {
 	 */
 	public PropertyDocument updateStatements(PropertyIdValue propertyIdValue,
 			List<Statement> addStatements, List<Statement> deleteStatements,
-			String summary) throws MediaWikiApiErrorException, IOException {
+			String summary, List<String> tags)
+					throws MediaWikiApiErrorException, IOException {
 
 		PropertyDocument currentDocument = (PropertyDocument) this.wikibaseDataFetcher
 				.getEntityDocument(propertyIdValue.getId());
 
 		return updateStatements(currentDocument, addStatements,
-				deleteStatements, summary);
+				deleteStatements, summary, tags);
 	}
 
 	/**
@@ -508,7 +644,13 @@ public class WikibaseDataEditor {
 	 *            deleted if they are present in the current document (in
 	 *            exactly the same form, with the same id)
 	 * @param summary
-	 *            short edit summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 *            Ignored if null or empty.
 	 * @return the updated document
 	 * @throws MediaWikiApiErrorException
 	 *             if the API returns errors
@@ -518,7 +660,8 @@ public class WikibaseDataEditor {
 	@SuppressWarnings("unchecked")
 	public <T extends StatementDocument> T updateStatements(T currentDocument,
 			List<Statement> addStatements, List<Statement> deleteStatements,
-			String summary) throws MediaWikiApiErrorException, IOException {
+			String summary, List<String> tags)
+					throws MediaWikiApiErrorException, IOException {
 
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
 				addStatements, deleteStatements);
@@ -530,7 +673,7 @@ public class WikibaseDataEditor {
 			return (T) this.wbEditingAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), summary);
+				.getRevisionId(), summary, tags);
 		}
 	}
 	
@@ -541,7 +684,7 @@ public class WikibaseDataEditor {
 	 * happen. The references of duplicate statements will be merged. The labels
 	 * and aliases in a given language are kept distinct.
 	 * 
-         * @param currentDocument
+     * @param currentDocument
 	 * 			the document to be updated; needs to have a correct revision id and
 	 * 			entity id
 	 * @param addLabels
@@ -563,7 +706,13 @@ public class WikibaseDataEditor {
 	 *          deleted if they are present in the current document (in
 	 *          exactly the same form, with the same id)
 	 * @param summary
-	 * 			short edit summary
+	 *            summary for the edit; will be prepended by an automatically
+	 *            generated comment; the length limit of the autocomment
+	 *            together with the summary is 260 characters: everything above
+	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit.
+	 *            Ignored if null or empty.
 	 * @return the updated document
 	 * @throws MediaWikiApiErrorException
 	 * 			if the API returns errors
@@ -577,7 +726,8 @@ public class WikibaseDataEditor {
 			List<MonolingualTextValue> addAliases,
 			List<MonolingualTextValue> deleteAliases,
 			List<Statement> addStatements, List<Statement> deleteStatements,
-			String summary) throws MediaWikiApiErrorException, IOException {
+			String summary, List<String> tags)
+					throws MediaWikiApiErrorException, IOException {
 		
 		TermStatementUpdate termStatementUpdate = new TermStatementUpdate(
 				currentDocument,
@@ -585,7 +735,7 @@ public class WikibaseDataEditor {
 				addLabels, addDescriptions, addAliases, deleteAliases);
 		termStatementUpdate.setGuidGenerator(guidGenerator);
 		
-		return  (T) termStatementUpdate.performEdit(wbEditingAction, editAsBot, summary);
+		return  (T) termStatementUpdate.performEdit(wbEditingAction, editAsBot, summary, tags);
 	}
 	
 	/**
@@ -641,12 +791,12 @@ public class WikibaseDataEditor {
 	public <T extends StatementDocument> T nullEdit(T currentDocument)
 			throws IOException, MediaWikiApiErrorException {
 		StatementUpdate statementUpdate = new StatementUpdate(currentDocument,
-				Collections.<Statement>emptyList(), Collections.<Statement>emptyList());
+				Collections.emptyList(), Collections.emptyList());
 		statementUpdate.setGuidGenerator(guidGenerator);
 		
 	    return (T) this.wbEditingAction.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, statementUpdate
 				.getJsonUpdateString(), false, this.editAsBot, currentDocument
-				.getRevisionId(), null);
+				.getRevisionId(), null, null);
 	}
 }

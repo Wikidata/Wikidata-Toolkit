@@ -1,14 +1,17 @@
 language: java
+dist: xenial
+sudo: false
 jdk:
   - openjdk8
-  - oraclejdk8
-  - oraclejdk9
+  - openjdk11
+  - openjdk13
+  - openjdk14
+
+script:
+  - mvn test jacoco:report
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:cobertura
-
-dist: trusty
-sudo: false
+  - mvn coveralls:report
 
 cache:
   directories:

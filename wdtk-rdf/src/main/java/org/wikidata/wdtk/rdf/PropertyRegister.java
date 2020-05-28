@@ -22,16 +22,22 @@ import java.io.IOException;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.ValueFactory;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.implementation.PropertyIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
@@ -72,14 +78,14 @@ public class PropertyRegister {
 	 * Map that stores the datatype of properties. Properties are identified by
 	 * their Pid; dataypes are identified by their datatype IRI.
 	 */
-	final protected Map<String, String> datatypes = new HashMap<String, String>();
+	final protected Map<String, String> datatypes = new HashMap<>();
 
 	/**
 	 * Map that stores the URI patterns of properties. Properties are identified
 	 * by their Pid; patterns are given as strings using $1 as placeholder for
 	 * the escaped value.
 	 */
-	final protected Map<String, String> uriPatterns = new HashMap<String, String>();
+	final protected Map<String, String> uriPatterns = new HashMap<>();
 
 	/**
 	 * Pid of the property used to store URI patterns, if used, or null if no
@@ -106,6 +112,12 @@ public class PropertyRegister {
 	 */
 	int smallestUnfetchedPropertyIdNumber = 1;
 
+	/**
+	 * Properties that are known to be missing. This is used to avoid making
+	 * a request for this property again.
+	 */
+	final Set<String> knownMissing;
+
 	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
 			"P1921", BasicApiConnection.getWikidataApiConnection(),
 			Datamodel.SITE_WIKIDATA);
@@ -128,6 +140,7 @@ public class PropertyRegister {
 			ApiConnection apiConnection, String siteUri) {
 		this.uriPatternPropertyId = uriPatternPropertyId;
 		this.siteUri = siteUri;
+		this.knownMissing = new HashSet<>();
 		dataFetcher = new WikibaseDataFetcher(apiConnection, siteUri);
 	}
 
@@ -201,6 +214,8 @@ public class PropertyRegister {
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link EntityIdValue} objects.
 	 *
+	 * @todo this really ought to be exposed by the wdtk-datamodel
+	 * module and reused here. The same heuristic is implemented in {@class EntityIdValueImpl}.
 	 * @param propertyIdValue
 	 * @param value
 	 */
@@ -211,10 +226,20 @@ public class PropertyRegister {
 			return DatatypeIdValue.DT_ITEM;
 		case 'P':
 			return DatatypeIdValue.DT_PROPERTY;
+		case 'L':
+			if (value.getId().contains("F")) {
+				return DatatypeIdValue.DT_FORM;
+			} else if(value.getId().contains("S")) {
+				return DatatypeIdValue.DT_SENSE;
+			}
+			return DatatypeIdValue.DT_LEXEME;
+		case 'M':
+				return DatatypeIdValue.DT_MEDIA_INFO;
 		default:
-			logger.warn("Could not determine Type of "
-					+ propertyIdValue.getId()
-					+ ". It is not a valid EntityDocument Id");
+			logger.warn("Could not determine datatype of "+ propertyIdValue.getId() + ".");
+			logger.warn("Example value "+value.getId()+ " is not recognized as a valid entity id.");
+			logger.warn("Perhaps this is a newly introduced datatype not supported by this version of wdtk.");
+			logger.warn("Consider upgrading the library to a newer version.");
 			return null;
 		}
 	}
@@ -294,18 +319,20 @@ public class PropertyRegister {
 	 * fetched.
 	 *
 	 * @param property
-	 * @throws IOException 
 	 */
 	protected void fetchPropertyInformation(PropertyIdValue property) {
 		int propertyIdNumber = Integer.parseInt(property.getId().substring(1));
 		// Don't do anything if all properties up to this index have already
 		// been fetched. In particular, don't try indefinitely to find a
 		// certain property type (maybe the property was deleted).
-		if (this.smallestUnfetchedPropertyIdNumber > propertyIdNumber) {
+		//
+		// If we previously tried to fetch this property and didn't
+		// find it, there is no point in trying again either.
+		if (this.smallestUnfetchedPropertyIdNumber > propertyIdNumber || knownMissing.contains(property.getId())) {
 			return;
 		}
 
-		List<String> propertyIds = new ArrayList<String>(
+		List<String> propertyIds = new ArrayList<>(
 				API_MAX_ENTITY_DOCUMENT_NUMBER);
 
 		propertyIds.add(property.getId());
@@ -320,11 +347,7 @@ public class PropertyRegister {
 		Map<String, EntityDocument> properties;
 		try {
 			properties = dataFetcher.getEntityDocuments(propertyIds);
-		} catch (MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch property data: "
-					+ e.toString());
-			properties = Collections.emptyMap();
-		} catch (IOException e) {
+		} catch (MediaWikiApiErrorException|IOException e) {
 			logger.error("Error when trying to fetch property data: "
 					+ e.toString());
 			properties = Collections.emptyMap();
@@ -342,7 +365,7 @@ public class PropertyRegister {
 			logger.info("Fetched type information for property "
 					+ entry.getKey() + " online: " + datatype);
 
-			if (!DatatypeIdValue.DT_STRING.equals(datatype)) {
+			if (!DatatypeIdValue.DT_STRING.equals(datatype) && !DatatypeIdValue.DT_EXTERNAL_ID.equals(datatype)) {
 				continue;
 			}
 
@@ -369,6 +392,62 @@ public class PropertyRegister {
 		if (!this.datatypes.containsKey(property.getId())) {
 			logger.error("Failed to fetch type information for property "
 					+ property.getId() + " online.");
+			knownMissing.add(property.getId());
+		}
+	}
+
+	/**
+	 * Fetches type information for all known properties from the given SPARQL endpoint, and adds it to the register.
+	 * The SPARQL endpoint must support the wikibase:propertyType predicate.
+	 *
+	 * @param endpoint URI of the SPARQL service to use, for example "https://query.wikidata.org/sparql"
+	 */
+	public void fetchUsingSPARQL(URI endpoint) {
+		try {
+			// this query is written without assuming any PREFIXES like wd: or wdt: to ensure it is as portable
+			// as possible (the PropertyRegister might be used with private Wikibase instances and SPARQL endpoints
+			// that don't have the same PREFIXES defined as the Wikidata Query Service)
+			final String query = "SELECT ?prop ?type ?uri WHERE { " +
+					"<" + this.siteUri + this.uriPatternPropertyId + "> <http://wikiba.se/ontology#directClaim> ?uriDirect . " +
+					"?prop <http://wikiba.se/ontology#propertyType> ?type . " +
+					"OPTIONAL { ?prop ?uriDirect ?uri } " +
+					"}";
+			final String queryString = "query=" + query + "&format=json";
+			final URL queryUrl = new URI(
+					endpoint.getScheme(), endpoint.getUserInfo(), endpoint.getHost(), endpoint.getPort(),
+					endpoint.getPath(), queryString, null
+			).toURL();
+
+			final HttpURLConnection connection = (HttpURLConnection) queryUrl.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", "Wikidata-Toolkit PropertyRegister");
+
+			final ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(connection.getInputStream());
+			JsonNode bindings = root.path("results").path("bindings");
+
+			final ValueFactory valueFactory = SimpleValueFactory.getInstance();
+			int count = 0;
+			int countPatterns = 0;
+			for (JsonNode binding : bindings) {
+				final IRI property = valueFactory.createIRI(binding.path("prop").path("value").asText());
+				final IRI propType = valueFactory.createIRI(binding.path("type").path("value").asText());
+
+				final PropertyIdValue propId = new PropertyIdValueImpl(property.getLocalName(), this.siteUri);
+				setPropertyType(propId, propType.toString());
+				count += 1;
+
+				if (binding.has("uri")) {
+					countPatterns += 1;
+					this.uriPatterns.put(propId.getId(), binding.path("uri").path("value").asText());
+				}
+			}
+
+			logger.info("Fetched type information for " + count + " properties (" +
+					countPatterns + " with URI patterns) using SPARQL.");
+		} catch(IOException|URISyntaxException e) {
+			logger.error("Error when trying to fetch property data using SPARQL: "
+					+ e.toString());
 		}
 	}
 }

@@ -22,6 +22,7 @@ package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -161,14 +162,17 @@ public class BasicApiConnection extends ApiConnection {
 	 * 		map of cookies used for this session
 	 * @param loggedIn
 	 * 		true if login succeeded.
+	 * @param tokens
+	 * 		map of tokens used for this session
 	 */
 	@JsonCreator
 	protected BasicApiConnection(
 			@JsonProperty("baseUrl") String apiBaseUrl,
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
-			@JsonProperty("loggedIn") boolean loggedIn) {
-		super(apiBaseUrl);
+			@JsonProperty("loggedIn") boolean loggedIn,
+			@JsonProperty("tokens") Map<String, String> tokens) {
+		super(apiBaseUrl, tokens);
 		this.username = username;
 		this.cookies = cookies;
 		this.loggedIn = loggedIn;
@@ -191,6 +195,15 @@ public class BasicApiConnection extends ApiConnection {
 	public static BasicApiConnection getWikidataApiConnection() {
 		return new BasicApiConnection(ApiConnection.URL_WIKIDATA_API);
 	}
+
+	/**
+	 * Creates an API connection to commons.wikimedia.org.
+	 *
+	 * @return {@link BasicApiConnection}
+	 */
+	public static BasicApiConnection getWikimediaCommonsApiConnection() {
+		return new BasicApiConnection(ApiConnection.URL_WIKIMEDIA_COMMONS_API);
+	}
 	
 	/**
 	 * Logs in using the specified user credentials. After successful login, the
@@ -207,11 +220,12 @@ public class BasicApiConnection extends ApiConnection {
 	public void login(String username, String password)
 			throws LoginFailedException {
 		try {
-			String token = fetchToken("login");
+			String token = getOrFetchToken("login");
 			try {
 				this.confirmLogin(token, username, password);
 			} catch (NeedLoginTokenException e) { // try once more
-				token = fetchToken("login");
+				clearToken("login");
+				token = getOrFetchToken("login");
 				this.confirmLogin(token, username, password);
 			}
 		} catch (IOException | MediaWikiApiErrorException e1) {
@@ -290,7 +304,7 @@ public class BasicApiConnection extends ApiConnection {
 	 *
 	 * @throws IOException
 	 */
-	public void clearCookies() throws IOException {
+	public void clearCookies() throws IOException, MediaWikiApiErrorException {
 		logout();
 		this.cookies.clear();
 	}
@@ -300,9 +314,13 @@ public class BasicApiConnection extends ApiConnection {
 	 * API connection with it.
 	 */
 	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = headerFields
-				.get(HEADER_FIELD_SET_COOKIE);
-		if (headerCookies != null) {
+		List<String> headerCookies = new ArrayList<>();
+		for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
+		if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
+			headerCookies.addAll(headers.getValue());
+		}
+           }
+           if (!headerCookies.isEmpty()) {
 			for (String cookie : headerCookies) {
 				String[] cookieResponse = cookie.split(";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
@@ -409,10 +427,11 @@ public class BasicApiConnection extends ApiConnection {
 	 *
 	 * @throws IOException
 	 */
-	public void logout() throws IOException {
+	public void logout() throws IOException, MediaWikiApiErrorException {
 		if (this.loggedIn) {
 			Map<String, String> params = new HashMap<>();
 			params.put("action", "logout");
+			params.put("token", getOrFetchToken("csrf"));
 			params.put("format", "json"); // reduce the output
 			try {
 				sendJsonRequest("POST", params);

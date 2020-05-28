@@ -20,10 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -31,9 +27,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.NoSuchEntityErrorException;
+
+import static org.junit.Assert.*;
 
 public class WikibaseDataFetcherTest {
 
@@ -41,7 +40,7 @@ public class WikibaseDataFetcherTest {
 	WikibaseDataFetcher wdf;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		con = new MockBasicApiConnection();
 		wdf = new WikibaseDataFetcher(con, Datamodel.SITE_WIKIDATA);
 	}
@@ -49,7 +48,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntities() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q6|Q42|P31");
 		con.setWebResourceFromPath(parameters, this.getClass(),
@@ -68,21 +67,21 @@ public class WikibaseDataFetcherTest {
 	public void testGetEntityDocument() throws IOException,
 			MediaWikiApiErrorException {
 		// We use the mock answer as for a multi request; no problem
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q42");
 		con.setWebResourceFromPath(parameters, this.getClass(),
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 
 		EntityDocument result = wdf.getEntityDocument("Q42");
-		assertTrue(result != null);
+		assertNotNull(result);
 	}
 
 	@Test
 	public void testGetMissingEntityDocument() throws IOException,
 			MediaWikiApiErrorException {
 		// List<String> entityIds = Arrays.asList("Q6");
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "Q6");
 		// We use the mock answer as for a multi request; no problem
@@ -90,13 +89,13 @@ public class WikibaseDataFetcherTest {
 				"/wbgetentities-Q6-Q42-P31.json", CompressionType.NONE);
 		EntityDocument result = wdf.getEntityDocument("Q6");
 
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	@Test(expected = NoSuchEntityErrorException.class)
 	public void testWbGetEntitiesError() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardParameters(parameters);
 		parameters.put("ids", "bogus");
 		// We use the mock answer as for a multi request; no problem
@@ -110,7 +109,7 @@ public class WikibaseDataFetcherTest {
 			MediaWikiApiErrorException {
 
 		Map<String, EntityDocument> results = wdf
-				.getEntityDocuments(Collections.<String> emptyList());
+				.getEntityDocuments(Collections.emptyList());
 
 		assertEquals(0, results.size());
 	}
@@ -118,7 +117,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntitiesTitle() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "Douglas Adams");
 		parameters.put("sites", "enwiki");
@@ -134,7 +133,7 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testWbGetEntitiesTitleEmpty() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		this.setStandardParameters(parameters);
 		parameters.put("titles", "1234567890");
 		parameters.put("sites", "dewiki");
@@ -144,11 +143,146 @@ public class WikibaseDataFetcherTest {
 		EntityDocument result = wdf.getEntityDocumentByTitle("dewiki",
 				"1234567890");
 
-		assertEquals(null, result);
+		assertNull(result);
 	}
 
 	@Test
-	public void testWikidataDataFetcher() throws IOException {
+	public void testWbGetMediaInfoEntityFromId() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("ids", "M65057");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-RandomImage.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocument("M65057");
+
+		assertEquals("M65057", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWbGetMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "File:RandomImage 4658098723742867.jpg");
+		parameters.put("sites", "commonswiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-RandomImage.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("commonswiki", "File:RandomImage 4658098723742867.jpg");
+
+		assertEquals("M65057", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testGetMediaInfoId() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert Einstein Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("File:Albert Einstein Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdWithoutPrefix() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert Einstein Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Albert Einstein Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdNormalized() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert_Einstein_Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head normalized.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("File:Albert_Einstein_Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdNormalizedWithoutPrefix() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Albert_Einstein_Head.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Albert Einstein Head normalized.jpg.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Albert_Einstein_Head.jpg");
+		assertEquals("M925243", result.getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdDuplicated1() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Cat.jpg|File:Cat.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Cat.jpg.json", CompressionType.NONE);
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "Cat.jpg");
+		assertEquals(result.size(), 1);
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdDuplicated2() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Cat.jpg|File:Cat.jpg");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Cat.jpg.json", CompressionType.NONE);
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "File:Cat.jpg");
+		assertEquals(result.size(), 2);
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
+		assertEquals("M32455073", result.get("File:Cat.jpg").getId());
+	}
+
+	@Test
+	public void testGetMediaInfoIdNotFound() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("format", "json");
+		parameters.put("titles", "File:Not Found");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/query-Not Found.json", CompressionType.NONE);
+
+		MediaInfoIdValue result = wdf.getMediaInfoIdByFileName("Not Found");
+		assertNull(result);
+	}
+
+	@Test
+	public void testWbGetVirtualMediaInfoEntityFromTitle() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		this.setStandardParameters(parameters);
+		parameters.put("titles", "File:Test.jpg");
+		parameters.put("sites", "commonswiki");
+		con.setWebResourceFromPath(parameters, getClass(),
+				"/wbgetentities-virtual-Test.jpg.json", CompressionType.NONE);
+
+		EntityDocument result = wdf.getEntityDocumentByTitle("commonswiki", "File:Test.jpg");
+
+		assertEquals("M4215516", result.getEntityId().getId());
+	}
+
+	@Test
+	public void testWikidataDataFetcher() {
 		WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
 
 		assertEquals(Datamodel.SITE_WIKIDATA, wbdf.siteIri);
@@ -161,11 +295,11 @@ public class WikibaseDataFetcherTest {
 			MediaWikiApiErrorException {
 		List<String> entityIds = Arrays.asList("Q6", "Q42", "P31", "Q1");
 
-		Map<String, String> parameters1 = new HashMap<String, String>();
+		Map<String, String> parameters1 = new HashMap<>();
 		setStandardParameters(parameters1);
 		parameters1.put("ids", "Q6|Q42|P31");
 
-		Map<String, String> parameters2 = new HashMap<String, String>();
+		Map<String, String> parameters2 = new HashMap<>();
 		setStandardParameters(parameters2);
 		parameters2.put("ids", "Q1");
 
@@ -188,14 +322,14 @@ public class WikibaseDataFetcherTest {
 	@Test
 	public void testGetEntitiesTitleSplitted() throws IOException,
 			MediaWikiApiErrorException {
-		Map<String, String> parameters1 = new HashMap<String, String>();
+		Map<String, String> parameters1 = new HashMap<>();
 		this.setStandardParameters(parameters1);
 		parameters1.put("titles", "Douglas Adams");
 		parameters1.put("sites", "enwiki");
 		con.setWebResourceFromPath(parameters1, getClass(),
 				"/wbgetentities-Douglas-Adams.json", CompressionType.NONE);
 
-		Map<String, String> parameters2 = new HashMap<String, String>();
+		Map<String, String> parameters2 = new HashMap<>();
 		this.setStandardParameters(parameters2);
 		parameters2.put("titles", "Oliver Kahn");
 		parameters2.put("sites", "enwiki");
@@ -211,7 +345,31 @@ public class WikibaseDataFetcherTest {
 		assertEquals("Q42", result.get("Douglas Adams").getEntityId().getId());
 		assertEquals("Q131261", result.get("Oliver Kahn").getEntityId().getId());
 	}
-  
+
+	@Test
+	public void getGetMediaInfoIdsSplitted() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters1 = new HashMap<>();
+		parameters1.put("action", "query");
+		parameters1.put("format", "json");
+		parameters1.put("titles", "File:Cat.jpg");
+		con.setWebResourceFromPath(parameters1, getClass(),
+				"/query-Cat.jpg.json", CompressionType.NONE);
+
+		Map<String, String> parameters2 = new HashMap<>();
+		parameters2.put("action", "query");
+		parameters2.put("format", "json");
+		parameters2.put("titles", "File:Albert Einstein Head.jpg");
+		con.setWebResourceFromPath(parameters2, getClass(),
+				"/query-Albert Einstein Head.jpg.json", CompressionType.NONE);
+
+		wdf.maxListSize = 1;
+
+		Map<String, MediaInfoIdValue> result = wdf.getMediaInfoIdsByFileName("Cat.jpg", "File:Albert Einstein Head.jpg");
+		assertEquals(2, result.size());
+		assertEquals("M32455073", result.get("Cat.jpg").getId());
+		assertEquals("M925243", result.get("File:Albert Einstein Head.jpg").getId());
+	}
+
 	private void setStandardParameters(Map<String, String> parameters) {
 		parameters.put("action", "wbgetentities");
 		parameters.put("format", "json");
@@ -220,7 +378,7 @@ public class WikibaseDataFetcherTest {
 	}
 
 	public void testWbSearchEntities() throws IOException, MediaWikiApiErrorException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		setStandardSearchParameters(parameters);
 		parameters.put("search", "abc");
 		parameters.put("language", "en");

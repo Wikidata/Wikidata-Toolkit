@@ -42,7 +42,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * undefined and the first occurrence needs to be found in the following cell of
  * the bit vector, i.e. at position 0. Anyway, since the zeroth occurrence is
  * not defined, the {@link #findPosition(long)} method returns
- * {@link RankedBitVector.NOT_FOUND} for that value.
+ * {@link RankedBitVector#NOT_FOUND} for that value.
  * <p>
  * The array for <code>true</code> is [-1, 1, 7]. The second occurrence of
  * <code>true</code> is at position 1 in the bit vector. The forth occurrence of
@@ -177,7 +177,7 @@ class FindPositionArray {
 	 *         according to the given bit vector
 	 */
 	List<Long> getPositionList() {
-		List<Long> ret = new ArrayList<Long>();
+		List<Long> ret = new ArrayList<>();
 
 		ret.add(-1L);
 		/*

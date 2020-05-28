@@ -180,15 +180,15 @@ public class RankedBitVectorImplTest {
 
 		bv.addBit(true);
 		Assert.assertEquals(1, bv.size());
-		Assert.assertEquals(true, bv.getBit(0));
+		Assert.assertTrue(bv.getBit(0));
 
 		bv.addBit(false);
 		Assert.assertEquals(2, bv.size());
-		Assert.assertEquals(false, bv.getBit(1));
+		Assert.assertFalse(bv.getBit(1));
 
 		bv.addBit(false);
 		Assert.assertEquals(3, bv.size());
-		Assert.assertEquals(false, bv.getBit(2));
+		Assert.assertFalse(bv.getBit(2));
 
 		for (int i = 3; i < 0x1000; i++) {
 			boolean value = (i % 3) == 0;

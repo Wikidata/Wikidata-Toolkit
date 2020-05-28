@@ -176,10 +176,8 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 	 * @param args
 	 * @throws LoginFailedException
 	 * @throws IOException
-	 * @throws MediaWikiApiErrorException
 	 */
-	public static void main(String[] args) throws LoginFailedException,
-			IOException, MediaWikiApiErrorException {
+	public static void main(String[] args) throws LoginFailedException, IOException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
@@ -332,13 +330,11 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 					updateStatements, propertyId);
 
 			dataEditor.updateStatements(currentItemDocument, updateStatements,
-					Collections.<Statement> emptyList(),
+					Collections.emptyList(),
 					"Set exact values for [[Property:" + propertyId + "|"
-							+ propertyId + "]] integer quantities (Task MB2)");
+							+ propertyId + "]] integer quantities (Task MB2)", null);
 
-		} catch (MediaWikiApiErrorException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (MediaWikiApiErrorException | IOException e) {
 			e.printStackTrace();
 		}
 	}

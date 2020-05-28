@@ -44,13 +44,12 @@ import java.util.Map;
  *
  * @author Michael Guenther
  * @author Markus Kroetzsch
+ * @author Antonin Delpeuch
  */
 public class WbEditingAction {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(WbEditingAction.class);
-
-	static int MAXLAG_SLEEP_TIME = 5000;
 
 	/**
 	 * Connection to an Wikibase API.
@@ -68,17 +67,30 @@ public class WbEditingAction {
 	final ObjectMapper mapper;
 
 	/**
-	 * Current CSRF (Cross-Site Request Forgery) token, or null if no valid
-	 * token is known.
-	 */
-	String csrfToken = null;
-
-	/**
 	 * Value in seconds of MediaWiki's maxlag parameter. Shorter is nicer,
 	 * longer is more aggressive.
 	 */
 	int maxLag = 5;
 
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	int maxLagMaxRetries = 14;
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	int maxLagFirstWaitTime = 1000;
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	double maxLagBackOffFactor = 1.5;
+	
 	/**
 	 * Number of recent editing times to monitor in order to avoid editing too
 	 * fast. Wikidata.org seems to block fast editors after 9 edits, so this
@@ -151,7 +163,7 @@ public class WbEditingAction {
 	public void setMaxLag(int maxLag) {
 		this.maxLag = maxLag;
 	}
-
+	
 	/**
 	 * Returns the number of edits that will be performed before entering
 	 * simulation mode, or -1 if there is no limit on the number of edits
@@ -270,6 +282,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response as returned by the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -279,20 +293,20 @@ public class WbEditingAction {
 	 */
 	public EntityDocument wbEditEntity(String id, String site, String title,
 			String newEntity, String data, boolean clear, boolean bot,
-			long baserevid, String summary) throws IOException,
-			MediaWikiApiErrorException {
+			long baserevid, String summary, List<String> tags)
+					throws IOException, MediaWikiApiErrorException {
 
 		Validate.notNull(data,
 				"Data parameter cannot be null when editing entity data");
 
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("data", data);
 		if (clear) {
 			parameters.put("clear", "");
 		}
 		
 		JsonNode response = performAPIAction("wbeditentity", id, site, title,
-				newEntity, parameters, summary, baserevid, bot);
+				newEntity, parameters, summary, tags, baserevid, bot);
 		return getEntityDocumentFromResponse(response);
 	}
 	
@@ -333,6 +347,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the label as returned by the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -344,20 +360,19 @@ public class WbEditingAction {
 	 */
 	public JsonNode wbSetLabel(String id, String site, String title,
 			String newEntity, String language, String value,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a label");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (value != null) {
 			parameters.put("value", value);
 		}
-		
-		JsonNode response = performAPIAction("wbsetlabel", id, site, title, newEntity,
-				parameters, summary, baserevid, bot);
-		return response;
+
+		return performAPIAction("wbsetlabel", id, site, title, newEntity,
+				parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -397,6 +412,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -408,20 +425,20 @@ public class WbEditingAction {
 	 */
 	public JsonNode wbSetDescription(String id, String site, String title,
 			String newEntity, String language, String value,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary,
+			List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting a description");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (value != null) {
 			parameters.put("value", value);
 		}
-		
-		JsonNode response = performAPIAction("wbsetdescription", id, site, title,
-				newEntity, parameters, summary, baserevid, bot);
-		return response;
+
+		return performAPIAction("wbsetdescription", id, site, title,
+				newEntity, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -470,6 +487,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -482,12 +501,13 @@ public class WbEditingAction {
 	public JsonNode wbSetAliases(String id, String site, String title,
 			String newEntity, String language, List<String> add,
 			List<String> remove, List<String> set,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary,
+			List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(language,
 				"Language parameter cannot be null when setting aliases");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("language", language);
 		if (set != null) {
 			if (add != null || remove != null) {
@@ -502,9 +522,8 @@ public class WbEditingAction {
 		if (remove != null) {
 			parameters.put("remove", ApiConnection.implodeObjects(remove));
 		}
-		
-		JsonNode response = performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, baserevid, bot);
-		return response;
+
+		return performAPIAction("wbsetaliases", id, site, title, newEntity, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -528,6 +547,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -538,16 +559,16 @@ public class WbEditingAction {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public JsonNode wbSetClaim(String statement,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(statement,
 				"Statement parameter cannot be null when adding or changing a statement");
 		
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("claim", statement);
 		
-		return performAPIAction("wbsetclaim", null, null, null, null, parameters, summary, baserevid, bot);
+		return performAPIAction("wbsetclaim", null, null, null, null, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -571,6 +592,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -581,7 +604,7 @@ public class WbEditingAction {
 	 * @throws MediaWikiApiErrorException
 	 */
 	public JsonNode wbRemoveClaims(List<String> statementIds,
-			boolean bot, long baserevid, String summary)
+			boolean bot, long baserevid, String summary, List<String> tags)
 					throws IOException, MediaWikiApiErrorException {
 		Validate.notNull(statementIds,
 				"statementIds parameter cannot be null when deleting statements");
@@ -590,10 +613,10 @@ public class WbEditingAction {
 		Validate.isTrue(statementIds.size() <= 50,
 				"At most 50 statements can be deleted at once");
 		
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, String> parameters = new HashMap<>();
 		parameters.put("claim", String.join("|", statementIds));
 		
-		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, baserevid, bot);
+		return performAPIAction("wbremoveclaims", null, null, null, null, parameters, summary, tags, baserevid, bot);
 	}
 	
 	/**
@@ -638,6 +661,8 @@ public class WbEditingAction {
 	 *            generated comment; the length limit of the autocomment
 	 *            together with the summary is 260 characters: everything above
 	 *            that limit will be cut off
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit. Ignored if null.
 	 * @return the JSON response from the API
 	 * @throws IOException
 	 *             if there was an IO problem. such as missing network
@@ -653,6 +678,7 @@ public class WbEditingAction {
 			String newEntity,
 			Map<String, String> parameters,
 			String summary,
+			List<String> tags,
 			long baserevid,
 			boolean bot)
 			throws IOException, MediaWikiApiErrorException {
@@ -694,9 +720,13 @@ public class WbEditingAction {
 		if (summary != null) {
 			parameters.put("summary", summary);
 		}
+		
+		if (tags != null && !tags.isEmpty()) {
+			parameters.put("tags", String.join("|", tags));
+		}
 
 		parameters.put("maxlag", Integer.toString(this.maxLag));
-		parameters.put("token", getCsrfToken());
+		parameters.put("token", connection.getOrFetchToken("csrf"));
 
 		if (this.remainingEdits > 0) {
 			this.remainingEdits--;
@@ -709,7 +739,8 @@ public class WbEditingAction {
 		checkEditSpeed();
 		JsonNode result = null;
 		
-		int retry = 5;
+		int retry = getMaxLagMaxRetries();
+		int maxLagSleepTime = getMaxLagFirstWaitTime();
 		MediaWikiApiErrorException lastException = null;
 		while (retry > 0) {
 			try {
@@ -717,16 +748,17 @@ public class WbEditingAction {
 				break;
 			} catch (TokenErrorException e) { // try again with a fresh token
 				lastException = e;
-				refreshCsrfToken();
-				parameters.put("token", getCsrfToken());
+				connection.clearToken("csrf");
+				parameters.put("token", connection.getOrFetchToken("csrf"));
 			} catch (MaxlagErrorException e) { // wait for 5 seconds
 				lastException = e;
-				logger.warn(e.getMessage() + " -- pausing for 5 seconds.");
+				logger.warn(e.getMessage() + String.format(" -- pausing for %d milliseconds.", maxLagSleepTime));
 				try {
-					Thread.sleep(MAXLAG_SLEEP_TIME);
+					Thread.sleep(maxLagSleepTime);
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}
+				maxLagSleepTime *= getMaxLagBackOffFactor();
 			}
 			retry--;
 		}
@@ -784,46 +816,6 @@ public class WbEditingAction {
 	}
 
 	/**
-	 * Returns a CSRF (Cross-Site Request Forgery) token as required to edit
-	 * data.
-	 */
-	private String getCsrfToken() {
-		if (this.csrfToken == null) {
-			refreshCsrfToken();
-		}
-		return this.csrfToken;
-	}
-
-	/**
-	 * Obtains and sets a new CSRF token, whether or not there is already a
-	 * token set right now.
-	 */
-	private void refreshCsrfToken() {
-
-		this.csrfToken = fetchCsrfToken();
-		// TODO if this is null, we could try to recover here:
-		// (1) Check if we are still logged in; maybe log in again
-		// (2) If there is another error, maybe just run the operation again
-	}
-
-	/**
-	 * Executes a API query action to get a new CSRF (Cross-Site Request
-	 * Forgery) token. The method only executes the action, without doing any
-	 * checks first. If errors occur, they are logged and null is returned.
-	 *
-	 * @return newly retrieved token or null if no token was retrieved
-	 */
-	private String fetchCsrfToken() {
-		try {
-			return connection.fetchToken("csrf");
-		} catch (IOException | MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch csrf token: "
-					+ e.toString());
-		}
-		return null;
-	}
-
-	/**
 	 * Makes sure that we are not editing too fast. The method stores the last
 	 * {@link WbEditingAction#editTimeWindow} time points when an edit was
 	 * made. If the time since the oldest edit in this window is shorter than
@@ -850,6 +842,56 @@ public class WbEditingAction {
 
 		this.recentEditTimes[nextIndex] = currentTime;
 		this.curEditTimeSlot = nextIndex;
+	}
+	
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public int getMaxLagMaxRetries() {
+		return maxLagMaxRetries;
+	}
+
+	/**
+	 * Number of times we should retry if an editing action fails because
+	 * the lag is too high.
+	 */
+	public void setMaxLagMaxRetries(int retries) {
+		maxLagMaxRetries = retries;
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public int getMaxLagFirstWaitTime() {
+		return maxLagFirstWaitTime;
+	}
+
+	/**
+	 * Initial wait time in milliseconds, when an edit fails for the first
+	 * time because of a high lag. This wait time is going to be multiplied
+	 * by maxLagBackOffFactor for the subsequent waits. 
+	 */
+	public void setMaxLagFirstWaitTime(int time) {
+		maxLagFirstWaitTime = time;
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public double getMaxLagBackOffFactor() {
+		return maxLagBackOffFactor;
+	}
+
+	/**
+	 * Factor by which the wait time between two maxlag retries should be
+	 * multiplied at each attempt.
+	 */
+	public void setMaxLagBackOffFactor(double value) {
+		maxLagBackOffFactor = value;
 	}
 
 }

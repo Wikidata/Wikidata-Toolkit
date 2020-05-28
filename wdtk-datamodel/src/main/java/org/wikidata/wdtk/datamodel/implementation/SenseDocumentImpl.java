@@ -40,9 +40,10 @@ import java.util.Set;
  * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDocument {
 
-	private Map<String,MonolingualTextValue> glosses;
+	private final Map<String,MonolingualTextValue> glosses;
 
 	/**
 	 * Constructor.
@@ -90,15 +91,14 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 		}
 		this.glosses = glosses;
 	}
-	
+
 	/**
-	 * Protected constructor, meant to be used to create modified copies
-	 * of instances.
+	 * Copy constructor, used when creating modified copies of senses.
 	 */
-	protected SenseDocumentImpl(
+	private SenseDocumentImpl(
 			SenseIdValue subject,
-			Map<String,MonolingualTextValue> glosses,
-			Map<String, List<Statement>> claims, 
+			Map<String, MonolingualTextValue> glosses,
+			Map<String, List<Statement>> claims,
 			long revisionId) {
 		super(subject, claims, revisionId);
 		this.glosses = glosses;
@@ -113,9 +113,13 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	@JsonIgnore
@@ -156,6 +160,13 @@ public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDoc
 				glosses,
 				claims,
 				newRevisionId);
+	}
+
+	@Override
+	public SenseDocument withGloss(MonolingualTextValue gloss) {
+		Map<String, MonolingualTextValue> newGlosses = new HashMap<>(glosses);
+		newGlosses.put(gloss.getLanguageCode(), toTerm(gloss));
+		return new SenseDocumentImpl(getEntityId(), newGlosses, claims, revisionId);
 	}
 
 	@Override

@@ -37,11 +37,12 @@ import java.util.*;
  * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class FormDocumentImpl extends StatementDocumentImpl implements FormDocument {
 
-	private List<ItemIdValue> grammaticalFeatures;
+	private final List<ItemIdValue> grammaticalFeatures;
 
-	private Map<String,MonolingualTextValue> representations;
+	private final Map<String,MonolingualTextValue> representations;
 
 	/**
 	 * Constructor.
@@ -98,10 +99,9 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 				? Collections.emptyList()
 				: constructGrammaticalFeatures(grammaticalFeatures, siteIri);
 	}
-	
+
 	/**
-	 * Copy constructor. Does not perform any checks on
-	 * its values.
+	 * Copy constructor, used when creating modified copies of forms.
 	 */
 	private FormDocumentImpl(
 			FormIdValue id,
@@ -123,9 +123,13 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
 	}
 
 	private List<ItemIdValue> constructGrammaticalFeatures(List<String> grammaticalFeatures, String siteIri) {
@@ -187,6 +191,30 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	}
 	
 	@Override
+	public FormDocument withRevisionId(long newRevisionId) {
+		return new FormDocumentImpl(getEntityId(),
+				representations, grammaticalFeatures,
+				claims, newRevisionId);
+	}
+
+	@Override
+	public FormDocument withRepresentation(MonolingualTextValue representation) {
+		Map<String, MonolingualTextValue> newRepresentations = new HashMap<>(representations);
+		newRepresentations.put(representation.getLanguageCode(), toTerm(representation));
+		return new FormDocumentImpl(getEntityId(), newRepresentations, grammaticalFeatures, claims, revisionId);
+	}
+
+	@Override
+	public FormDocument withGrammaticalFeature(ItemIdValue grammaticalFeature) {
+		if (grammaticalFeatures.contains(grammaticalFeature)) {
+			return this;
+		}
+		List<ItemIdValue> newGrammaticalFeatures = new ArrayList<>(grammaticalFeatures);
+		newGrammaticalFeatures.add(grammaticalFeature);
+		return new FormDocumentImpl(getEntityId(), representations, newGrammaticalFeatures, claims, revisionId);
+	}
+
+	@Override
 	public FormDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
 		return new FormDocumentImpl(getEntityId(),
@@ -200,12 +228,5 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 		return new FormDocumentImpl(getEntityId(),
 				representations, grammaticalFeatures,
 				newGroups, revisionId);
-	}
-	
-	@Override
-	public FormDocument withRevisionId(long newRevisionId) {
-		return new FormDocumentImpl(getEntityId(),
-				representations, grammaticalFeatures,
-				claims, newRevisionId);
 	}
 }

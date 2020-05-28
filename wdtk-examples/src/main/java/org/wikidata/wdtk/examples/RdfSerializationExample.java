@@ -20,12 +20,7 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
@@ -38,10 +33,6 @@ import org.wikidata.wdtk.rdf.RdfSerializer;
 /**
  * This class shows how convert data from wikidata.org to RDF in N-Triples format. The
  * compressed output will be written into an output file.
- * <p>
- * The Wikidata Toolkit command line client provides a stand-alone tool for
- * generating RDF exports and it supports a range of parameters. This example is
- * merely used to illustrate how to achieve this from your own code if needed.
  *
  * @author Michael Günther
  * @author Markus Kroetzsch
@@ -94,23 +85,23 @@ public class RdfSerializationExample {
 	 * Print some basic documentation about this program.
 	 */
 	private static void printDocumentation() {
-		System.out
-				.println("********************************************************************");
-		System.out.println("*** Wikidata Toolkit: RDF Serialization Example");
-		System.out.println("*** ");
-		System.out
-				.println("*** This program will download dumps from Wikidata and serialize the data in a RDF format.");
-		System.out
-				.println("*** Downloading may take some time initially. After that, files");
-		System.out
-				.println("*** are stored on disk and are used until newer dumps are available.");
-		System.out
-				.println("*** You can delete files manually when no longer needed (see ");
-		System.out
-				.println("*** message below for the directory where dump files are found).");
-		System.out
-				.println("********************************************************************");
-	}
+        System.out
+                .println("********************************************************************");
+        System.out.println("*** Wikidata Toolkit: RDF Serialization Example");
+        System.out.println("*** ");
+        System.out
+                .println("*** This program will download dumps from Wikidata and serialize the data in a RDF format.");
+        System.out
+                .println("*** Downloading may take some time initially. After that, files");
+        System.out
+                .println("*** are stored on disk and are used until newer dumps are available.");
+        System.out
+                .println("*** You can delete files manually when no longer needed (see ");
+        System.out
+                .println("*** message below for the directory where dump files are found).");
+        System.out
+                .println("********************************************************************");
+    }
 
 	/**
 	 * Creates a separate thread for writing into the given output stream and
@@ -132,23 +123,43 @@ public class RdfSerializationExample {
 		final int SIZE = 1024 * 1024 * 10;
 		final PipedOutputStream pos = new PipedOutputStream();
 		final PipedInputStream pis = new PipedInputStream(pos, SIZE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					byte[] bytes = new byte[SIZE];
-					for (int len; (len = pis.read(bytes)) > 0;) {
-						outputStream.write(bytes, 0, len);
-					}
-				} catch (IOException ioException) {
-					ioException.printStackTrace();
-				} finally {
-					close(pis);
-					close(outputStream);
+		final Thread worker = new Thread(() -> {
+			try {
+				byte[] bytes = new byte[SIZE];
+				for (int len; (len = pis.read(bytes)) > 0;) {
+					outputStream.write(bytes, 0, len);
 				}
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			} finally {
+				close(pis);
+				close(outputStream);
 			}
-		}, "async-output-stream").start();
-		return pos;
+		}, "async-output-stream");
+		return new SyncCloseOutputStream(pos, worker);
+	}
+
+
+	/**
+	 * Helper class that joins a thread on a call to close, to ensure that the output stream has really been closed.
+	 */
+	private static final class SyncCloseOutputStream extends FilterOutputStream {
+		private final Thread worker;
+
+		public SyncCloseOutputStream(OutputStream out, Thread worker) {
+			super(out);
+			this.worker = worker;
+		}
+
+		@Override
+		public void close() throws IOException {
+			super.close();
+			try {
+				worker.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

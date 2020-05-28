@@ -47,8 +47,8 @@ public class OAuthApiConnectionTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55690/w/api.php\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"loggedIn\":false,\"username\":\"\"}";
-    private static final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55178/w/api.php\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"loggedIn\":true,\"username\":\"foo\"}";
+    private static final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55690/w/api.php\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":false,\"username\":\"\"}";
+    private static final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55178/w/api.php\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":true,\"username\":\"foo\"}";
 
     @Test
     public void testAnonymousRequest() throws IOException, MediaWikiApiErrorException, InterruptedException {

@@ -97,7 +97,7 @@ public class OAuthApiConnection extends ApiConnection {
             @JsonProperty("consumerSecret") String consumerSecret,
             @JsonProperty("accessToken") String accessToken,
             @JsonProperty("accessSecret") String accessSecret) {
-        super(apiBaseUrl);
+        super(apiBaseUrl, null);
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.accessToken = accessToken;

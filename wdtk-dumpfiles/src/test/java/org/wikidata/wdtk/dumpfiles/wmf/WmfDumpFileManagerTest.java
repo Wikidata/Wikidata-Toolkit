@@ -51,7 +51,7 @@ public class WmfDumpFileManagerTest {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class TestDumpfileProcessor implements MwDumpFileProcessor {
+	static class TestDumpfileProcessor implements MwDumpFileProcessor {
 
 		String result = "";
 

@@ -1,8 +1,5 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.List;
-import java.util.Map;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -28,17 +25,12 @@ import org.wikidata.wdtk.datamodel.helpers.Equality;
 import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.Validate;
-import org.wikidata.wdtk.datamodel.helpers.Equality;
-import org.wikidata.wdtk.datamodel.helpers.Hash;
-import org.wikidata.wdtk.datamodel.helpers.ToString;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -187,34 +179,25 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public PropertyDocument withLabel(MonolingualTextValue newLabel) {
-		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
-		newLabels.put(newLabel.getLanguageCode(), newLabel);
 		return new PropertyDocumentImpl(getEntityId(),
-				newLabels, descriptions,
+				withTerm(labels, newLabel), descriptions,
 				aliases, claims,
 				datatype, revisionId);
 	}
 
 	@Override
 	public PropertyDocument withDescription(MonolingualTextValue newDescription) {
-		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
-		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
 		return new PropertyDocumentImpl(getEntityId(),
-				labels, newDescriptions,
+				labels, withTerm(descriptions, newDescription),
 				aliases, claims,
 				datatype, revisionId);
 	}
 
 	@Override
 	public PropertyDocument withAliases(String language, List<MonolingualTextValue> aliases) {
-		Map<String, List<MonolingualTextValue>> newAliases = new HashMap<>(this.aliases);
-		for(MonolingualTextValue alias : aliases) {
-			Validate.isTrue(alias.getLanguageCode().equals(language));
-		}
-		newAliases.put(language, aliases);
 		return new PropertyDocumentImpl(getEntityId(),
 				labels, descriptions,
-				newAliases, claims,
+				withAliases(this.aliases, language, aliases), claims,
 				datatype, revisionId);
 	}
 

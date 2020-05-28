@@ -1,7 +1,5 @@
 package org.wikidata.wdtk.wikibaseapi;
 
-import java.io.IOException;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -11,9 +9,9 @@ import java.io.IOException;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,21 +20,14 @@ import java.io.IOException;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple class to fetch data from Wikibase via the online API.
@@ -46,9 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WikibaseDataFetcher {
 
-	static final Logger logger = LoggerFactory
-			.getLogger(WikibaseDataFetcher.class);
-
 	/**
 	 * API Action to fetch data.
 	 */
@@ -56,15 +44,12 @@ public class WikibaseDataFetcher {
 
 	final WbSearchEntitiesAction wbSearchEntitiesAction;
 
+	final MediaInfoIdQueryAction mediaInfoIdQueryAction;
+
 	/**
 	 * The IRI that identifies the site that the data is from.
 	 */
 	final String siteIri;
-
-	/**
-	 * Mapper object used for deserializing JSON data.
-	 */
-	final ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Filter that is used to restrict API requests.
@@ -90,6 +75,20 @@ public class WikibaseDataFetcher {
 				Datamodel.SITE_WIKIDATA);
 	}
 
+
+	/**
+	 * Creates an object to fetch data from commons.wikimedia.org. This convenience
+	 * method creates a default {@link ApiConnection} that is not logged in. To
+	 * use an existing connection, the constructor
+	 * {@link #WikibaseDataFetcher(ApiConnection, String)} should be called,
+	 * using {@link Datamodel#SITE_WIKIMEDIA_COMMONS} as a site URI.
+	 */
+	public static WikibaseDataFetcher getWikimediaCommonsDataFetcher() {
+		return new WikibaseDataFetcher(
+				BasicApiConnection.getWikimediaCommonsApiConnection(),
+				Datamodel.SITE_WIKIMEDIA_COMMONS);
+	}
+
 	/**
 	 * Creates an object to fetch data from API with the given
 	 * {@link ApiConnection} object. The site URI is necessary since it is not
@@ -105,6 +104,7 @@ public class WikibaseDataFetcher {
 	public WikibaseDataFetcher(ApiConnection connection, String siteUri) {
 		this.wbGetEntitiesAction = new WbGetEntitiesAction(connection, siteUri);
 		this.wbSearchEntitiesAction = new WbSearchEntitiesAction(connection, siteUri);
+		this.mediaInfoIdQueryAction = new MediaInfoIdQueryAction(connection, siteUri);
 		this.siteIri = siteUri;
 	}
 
@@ -172,8 +172,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocuments(List<String> entityIds)
 			throws MediaWikiApiErrorException, IOException {
 		Map<String, EntityDocument> result = new HashMap<>();
-		List<String> newEntityIds = new ArrayList<>();
-		newEntityIds.addAll(entityIds);
+		List<String> newEntityIds = new ArrayList<>(entityIds);
 		boolean moreItems = !newEntityIds.isEmpty();
 		while (moreItems) {
 			List<String> subListOfEntityIds;
@@ -185,7 +184,7 @@ public class WikibaseDataFetcher {
 			}
 			WbGetEntitiesActionData properties = new WbGetEntitiesActionData();
 			properties.ids = ApiConnection.implodeObjects(subListOfEntityIds);
-			result.putAll(getEntityDocumentMap(entityIds.size(), properties));
+			result.putAll(getEntityDocumentMap(subListOfEntityIds.size(), properties));
 			subListOfEntityIds.clear();
 		}
 		return result;
@@ -195,6 +194,9 @@ public class WikibaseDataFetcher {
 	 * Fetches the document for the entity that has a page of the given title on
 	 * the given site. Site keys should be some site identifier known to the
 	 * Wikibase site that is queried, such as "enwiki" for Wikidata.org.
+	 *
+	 * It could also be used to retrieve Wikimedia Commons MediaInfo entities
+	 * using the siteKey "commonswiki" and the file title (with the File: prefix) for title.
 	 * <p>
 	 * Note: This method will not work properly if a filter is set for sites
 	 * that excludes the requested site.
@@ -257,8 +259,7 @@ public class WikibaseDataFetcher {
 	public Map<String, EntityDocument> getEntityDocumentsByTitle(
 			String siteKey, List<String> titles)
 			throws MediaWikiApiErrorException, IOException {
-		List<String> newTitles = new ArrayList<>();
-		newTitles.addAll(titles);
+		List<String> newTitles = new ArrayList<>(titles);
 		Map<String, EntityDocument> result = new HashMap<>();
 		boolean moreItems = !newTitles.isEmpty();
 
@@ -276,6 +277,105 @@ public class WikibaseDataFetcher {
 			result.putAll(getEntityDocumentMap(subListOfTitles.size(),
 					properties));
 			subListOfTitles.clear();
+		}
+		return result;
+	}
+
+	/**
+	 * Fetches the MediaInfoId of a file with the given name.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentByTitle(String siteKey, String title)}
+	 *
+	 * @param fileName
+	 *            file name (e.g. "File:Albert Einstein Head.jpg" or "Albert Einstein Head.jpg")
+	 *            of the requested MediaInfoId, the "File:" prefix can be omitted
+	 * @return the corresponding MediaInfoId for the file name, or null if not found
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public MediaInfoIdValue getMediaInfoIdByFileName(String fileName)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByFileName(fileName).get(fileName);
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, String... titles)}
+	 *
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(String... fileNames)
+			throws IOException, MediaWikiApiErrorException {
+		return getMediaInfoIdsByFileName(Arrays.asList(fileNames));
+	}
+
+	/**
+	 * Fetches the MediaInfoIds of files with the given names.
+	 *
+	 * This method <b>only works with file name</b> (e.g. "File:Albert Einstein Head.jpg").
+	 * The "File:" prefix can be omitted, in this case, it will be automatically added during processing.
+	 * For example, "Albert Einstein Head.jpg" will be processed as "File:Albert Einstein Head.jpg".
+	 *
+	 * Notice that pages other than file pages will also be fitted with the "File:" prefix.
+	 * For example, "Main Page" will be processed as "File:Main Page", which doesn't exist.
+	 * <b>So always make sure you are dealing with file name.</b>
+	 *
+	 * Use this method for speeding up if you only need the id information,
+	 * i.e. you don't need other information like labels, descriptions, statements, etc.
+	 * Otherwise, you may need to use
+	 * {@link WikibaseDataFetcher#getEntityDocumentsByTitle(String siteKey, List titles)}
+	 *
+	 * @param fileNames
+	 *            list of file names of the requested MediaInfoIds
+	 * @return map from file names for which data could be found to the MediaInfoIds
+	 *         that were retrieved
+	 * @throws IOException
+	 * @throws MediaWikiApiErrorException
+	 */
+	public Map<String, MediaInfoIdValue> getMediaInfoIdsByFileName(List<String> fileNames)
+			throws IOException, MediaWikiApiErrorException {
+		List<String> newFileNames = new ArrayList<>(fileNames);
+		Map<String, MediaInfoIdValue> result = new HashMap<>();
+		boolean moreItems = !newFileNames.isEmpty();
+
+		while (moreItems) {
+			List<String> subListOfFileNames;
+			if (newFileNames.size() <= maxListSize) {
+				subListOfFileNames = newFileNames;
+				moreItems = false;
+			} else {
+				subListOfFileNames = newFileNames.subList(0, maxListSize);
+			}
+			result.putAll(mediaInfoIdQueryAction.getMediaInfoIds(subListOfFileNames));
+			subListOfFileNames.clear();
 		}
 		return result;
 	}
@@ -305,7 +405,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = "en";
@@ -313,7 +413,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, String language)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = language;
@@ -321,7 +421,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, Long limit)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = "en";
@@ -330,7 +430,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(String search, String language, Long limit)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		WbGetEntitiesSearchData properties = new WbGetEntitiesSearchData();
 		properties.search = search;
 		properties.language = language;
@@ -339,7 +439,7 @@ public class WikibaseDataFetcher {
 	}
 
 	public List<WbSearchEntitiesResult> searchEntities(WbGetEntitiesSearchData properties)
-			throws MediaWikiApiErrorException {
+			throws MediaWikiApiErrorException, IOException {
 		return this.wbSearchEntitiesAction.wbSearchEntities(properties);
 	}
 

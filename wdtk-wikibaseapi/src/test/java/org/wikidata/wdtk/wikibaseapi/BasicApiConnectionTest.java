@@ -23,9 +23,12 @@ package org.wikidata.wdtk.wikibaseapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,9 +47,10 @@ import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.Assert.*;
 
 public class BasicApiConnectionTest {
 
@@ -54,10 +58,10 @@ public class BasicApiConnectionTest {
 
 	MockBasicApiConnection con;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"https://mocked.api.connection/w/api.php\",\"loggedIn\":true,\"cookies\":{\"Path\":\"/\",\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\",\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\",\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"connectTimeout\":-1,\"readTimeout\":-1,\"baseUrl\":\"https://mocked.api.connection/w/api.php\",\"loggedIn\":true,\"cookies\":{\"Path\":\"/\",\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\",\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\",\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
 	
 	Set<String> split(String str, char ch) {
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		StringTokenizer stok = new StringTokenizer(str, "" + ch);
 		while (stok.hasMoreTokens()) {
 			set.add(stok.nextToken().trim());
@@ -68,11 +72,12 @@ public class BasicApiConnectionTest {
 	@Before
 	public void setUp() throws Exception {
 		this.con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
 		params.put("format", "json");
+		params.put("assert", "user");
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/query-csrf-token-loggedin-response.json", CompressionType.NONE);
 		params.clear();
@@ -113,8 +118,10 @@ public class BasicApiConnectionTest {
 		params.put("action", "logout");
 		params.put("assert", "user");
 		params.put("format", "json");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		this.con.setWebResource(params, "{}");
-		
+
+		params.clear();
 		params.put("action", "query");
 		params.put("assert", "user");
 		params.put("format", "json");
@@ -124,18 +131,24 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testGetToken() throws IOException, MediaWikiApiErrorException {
-		assertTrue(this.con.fetchToken("csrf") != null);
+	public void testGetToken() throws LoginFailedException, IOException, MediaWikiApiErrorException {
+		this.con.login("username", "password");
+		assertNotNull(this.con.getOrFetchToken("csrf"));
+	}
+
+	@Test(expected = IOException.class)
+	public void testGetTokenWithoutLogin() throws IOException, MediaWikiApiErrorException {
+		this.con.getOrFetchToken("csrf");
 	}
 
 	@Test
 	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
-		assertTrue(this.con.fetchToken("login") != null);
+		assertNotNull(this.con.getOrFetchToken("login"));
 	}
 
 	@Test
 	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
-		String token = this.con.fetchToken("login");
+		String token = this.con.getOrFetchToken("login");
 		this.con.confirmLogin(token, "username", "password");
 	}
 
@@ -152,7 +165,7 @@ public class BasicApiConnectionTest {
 	@Test
 	public void testSerialize() throws LoginFailedException, IOException {
 		
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		
@@ -181,35 +194,35 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testLogout() throws IOException, LoginFailedException {
+	public void testLogout() throws IOException, LoginFailedException, MediaWikiApiErrorException {
 		this.con.login("username", "password");
 		this.con.logout();
 		assertEquals("", this.con.username);
 		assertEquals("", this.con.password);
-		assertEquals(false, this.con.loggedIn);
+		assertFalse(this.con.loggedIn);
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginErrors() throws IOException, LoginFailedException {
+	public void loginErrors() throws LoginFailedException {
 		// This will fail because the token returned is not correct
 		this.con.login("username2", "password2");
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginUserErrors() throws IOException, LoginFailedException {
+	public void loginUserErrors() throws LoginFailedException {
 		// This will fail because the user is not known
 		this.con.login("username3", "password3");
 	}
 
 	@Test(expected = LoginFailedException.class)
-	public void loginIoErrors() throws IOException, LoginFailedException {
+	public void loginIoErrors() throws LoginFailedException {
 		// This will fail because the request will throw an IO exception
 		this.con.login("notmocked", "notmocked");
 	}
 
 	@Test
-	public void testGetQueryString() throws UnsupportedEncodingException {
-		Map<String, String> params = new HashMap<String, String>();
+	public void testGetQueryString() {
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "login");
 		params.put("lgname", "username");
 		params.put("lgpassword", "password");
@@ -246,16 +259,26 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testFillCookies() {
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
+		con.fillCookies(headerFields);
+		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
+	}
+	
+	@Test
+	public void testFillCookiesCaseInsensitive() {
+		// for https://github.com/Wikidata/Wikidata-Toolkit/issues/491
+		Map<String, List<String>> headerFields = new HashMap<>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("set-cookie", cookieList);
 		con.fillCookies(headerFields);
 		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
 	}
 
 	@Test
 	public void testGetCookieString() {
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		Map<String, List<String>> headerFields = new HashMap<>();
 		List<String> cookieList = testCookieList();
 		headerFields.put("Set-Cookie", cookieList);
 		con.fillCookies(headerFields);
@@ -279,7 +302,7 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testClearCookies() throws IOException {
+	public void testClearCookies() throws IOException, MediaWikiApiErrorException {
 		con.cookies.put("Content", "some content");
 		con.clearCookies();
 		assertTrue(con.cookies.keySet().isEmpty());
@@ -320,7 +343,7 @@ public class BasicApiConnectionTest {
 
 		int i = 0;
 		for (String message : messages) {
-			assertFalse(unknownMessage.equals(message));
+			assertNotEquals(unknownMessage, message);
 			assertTrue(message.contains(knownErrors[i]));
 			i++;
 		}
@@ -334,9 +357,48 @@ public class BasicApiConnectionTest {
 		// after a while, the credentials expire
 		this.con.checkCredentials();
 	}
+	
+	/**
+	 * For backwards compatibility: by defaults, no timeouts
+	 * are set by us, we use HttpURLConnection's defaults.
+	 * @throws IOException
+	 */
+	@Test
+	public void testNoTimeouts() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		verify(urlConn, times(0)).setConnectTimeout(anyInt());
+		verify(urlConn, times(0)).setReadTimeout(anyInt());
+	}
+	
+	@Test
+	public void testConnectTimeout() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setConnectTimeout(1000);
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		assertEquals(con.getConnectTimeout(), 1000);
+		verify(urlConn, times(1)).setConnectTimeout(1000);
+		verify(urlConn, times(0)).setReadTimeout(anyInt());
+	}
+	
+	@Test
+	public void testReadTimeout() throws IOException {
+		HttpURLConnection urlConn = mock(HttpURLConnection.class);
+		
+		this.con.setReadTimeout(2000);
+		this.con.setupConnection("GET", "foo=bar", urlConn);
+		
+		assertEquals(con.getReadTimeout(), 2000);
+		verify(urlConn, times(0)).setConnectTimeout(anyInt());
+		verify(urlConn, times(1)).setReadTimeout(2000);
+	}
 
 	private List<String> testCookieList() {
-		List<String> cookieList = new ArrayList<String>();
+		List<String> cookieList = new ArrayList<>();
 		cookieList
 				.add("WMF-Last-Access=18-Aug-2015;Path=/;HttpOnly;Expires=Sat, 19 Sep 2015 12:00:00 GMT");
 		cookieList

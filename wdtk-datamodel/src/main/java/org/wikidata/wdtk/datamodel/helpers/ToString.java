@@ -101,6 +101,17 @@ public class ToString {
 	public static String toString(SenseIdValue o) {
 		return o.getIri() + " (sense)";
 	}
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(MediaInfoIdValue o) {
+		return o.getIri() + " (media-info)";
+	}
 
 	/**
 	 * Returns a human-readable string representation of the given object.
@@ -205,6 +216,30 @@ public class ToString {
 			str += " " + o.getUnit();
 		}
 		return str;
+	}
+	
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(UnsupportedValue o) {
+		return "unsupported value of type "+o.getTypeJsonString();
+	}
+	
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(UnsupportedEntityIdValue o) {
+		return o.getIri() + " (unsupported)";
 	}
 
 	/**
@@ -511,6 +546,24 @@ public class ToString {
 		return sb.toString();
 	}
 
+	/**
+	 * Returns a human-readable string representation of the given object.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	public static String toString(MediaInfoDocument o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("==MediaInfoDocument ").append(o.getEntityId().getIri());
+		sb.append(" (r").append(o.getRevisionId()).append(") ");
+		sb.append("==");
+		sb.append(toStringForLabeledDocument(o));
+		sb.append(toStringForStatementDocument(o));
+		return sb.toString();
+	}
+
 	protected static String toStringForStatementDocument(StatementDocument o) {
 		StringBuilder sb = new StringBuilder();
 
@@ -536,18 +589,7 @@ public class ToString {
 		StringBuilder sb = new StringBuilder();
 		boolean first;
 
-		sb.append("\n* Labels: ");
-		first = true;
-		SortedSet<String> labelKeys = new TreeSet<>(o.getLabels()
-				.keySet());
-		for (String key : labelKeys) {
-			if (first) {
-				first = false;
-			} else {
-				sb.append("; ");
-			}
-			sb.append(toString(o.getLabels().get(key)));
-		}
+		sb.append(toStringForLabeledDocument(o));
 
 		sb.append("\n* Descriptions: ");
 		first = true;
@@ -577,6 +619,33 @@ public class ToString {
 			}
 		}
 
+		return sb.toString();
+	}
+
+	/**
+	 * Returns a human-readable string representation of the given
+	 * {@link LabeledDocument}.
+	 *
+	 * @see java.lang.Object#toString()
+	 * @param o
+	 *            the object to represent as string
+	 * @return a string representation of the object
+	 */
+	private static String toStringForLabeledDocument(LabeledDocument o) {
+		StringBuilder sb = new StringBuilder();
+		boolean first;
+		sb.append("\n* Labels: ");
+		first = true;
+		SortedSet<String> labelKeys = new TreeSet<>(o.getLabels()
+				.keySet());
+		for (String key : labelKeys) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append("; ");
+			}
+			sb.append(toString(o.getLabels().get(key)));
+		}
 		return sb.toString();
 	}
 
@@ -678,4 +747,5 @@ public class ToString {
 				"==\n" +
 				"Target: " + o.getTargetId().getIri();
 	}
+
 }

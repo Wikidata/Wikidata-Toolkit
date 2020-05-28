@@ -27,6 +27,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
+import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DatamodelTest {
@@ -105,6 +106,21 @@ public class DatamodelTest {
 		SenseIdValue o1 = Datamodel.makeWikidataSenseIdValue("L42-S1");
 		SenseIdValue o2 = factory.getSenseIdValue("L42-S1",
 				"http://www.wikidata.org/entity/");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMediaInfoId() {
+		MediaInfoIdValue o1 = Datamodel.makeMediaInfoIdValue("M42", "foo");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M42", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetWikimediaCommonsMediaInfoId() {
+		MediaInfoIdValue o1 = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M42");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M42",
+				"http://commons.wikimedia.org/entity/");
 		assertEquals(o1, o2);
 	}
 
@@ -189,6 +205,21 @@ public class DatamodelTest {
 	}
 
 	@Test
+	public final void testGetQuantityValueItemIdValue() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		BigDecimal lb = new BigDecimal(
+				"0.123456789012345678901234567890123456788");
+		BigDecimal ub = new BigDecimal(
+				"0.123456789012345678901234567890123456790");
+		
+		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, unit);
+		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, unit.getIri());
+		assertEquals(o1, o2);
+	}
+
+	@Test
 	public final void testGetQuantityValueNoUnit() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
@@ -207,6 +238,16 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456789");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
 		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetQuantityValueNoBoundsItemIdValue() {
+		BigDecimal nv = new BigDecimal(
+				"0.123456789012345678901234567890123456789");
+		ItemIdValue unit = factory.getItemIdValue("Q1", "http://www.wikidata.org/entity/");
+		QuantityValue o1 = Datamodel.makeQuantityValue(nv, unit);
+		QuantityValue o2 = factory.getQuantityValue(nv, unit.getIri());
 		assertEquals(o1, o2);
 	}
 
@@ -336,10 +377,6 @@ public class DatamodelTest {
 	public final void testGetPropertyDocument() {
 		PropertyDocument o1 = Datamodel.makePropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
 				factory.getDatatypeIdValue(DatatypeIdValue.DT_TIME));
 		PropertyDocument o2 = factory.getPropertyDocument(
 				factory.getPropertyIdValue("P42", "foo"),
@@ -355,12 +392,7 @@ public class DatamodelTest {
 	@Test
 	public final void testGetItemDocument() {
 		ItemDocument o1 = Datamodel.makeItemDocument(
-				factory.getItemIdValue("Q42", "foo"),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyMap());
+				factory.getItemIdValue("Q42", "foo"));
 		ItemDocument o2 = factory.getItemDocument(
 				factory.getItemIdValue("Q42", "foo"),
 				Collections.emptyList(),
@@ -419,6 +451,20 @@ public class DatamodelTest {
 		SenseDocument o2 = factory.getSenseDocument(
 				factory.getSenseIdValue("L42-S1", "foo"),
 				Collections.singletonList(factory.getMonolingualTextValue("en", "foo")),
+				Collections.emptyList(),
+				0);
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMediaInfoDocument() {
+		MediaInfoDocument o1 = Datamodel.makeMediaInfoDocument(
+				factory.getMediaInfoIdValue("M42", "foo"),
+				Collections.emptyList(),
+				Collections.emptyList());
+		MediaInfoDocument o2 = factory.getMediaInfoDocument(
+				factory.getMediaInfoIdValue("M42", "foo"),
+				Collections.emptyList(),
 				Collections.emptyList(),
 				0);
 		assertEquals(o1, o2);

@@ -49,17 +49,17 @@ public class FormDocumentImplTest {
 	private final MonolingualTextValue rep = new TermImpl("en", "rep");
 	private final List<MonolingualTextValue> repList = Collections.singletonList(rep);
 
-	private final FormDocument ld1 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
-	private final FormDocument ld2 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
+	private final FormDocument fd1 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
+	private final FormDocument fd2 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
 
 	private final String JSON_FORM = "{\"type\":\"form\",\"id\":\"L42-F1\",\"grammaticalFeatures\":[\"Q1\",\"Q2\"],\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(ld1.getEntityId(), fid);
-		assertEquals(ld1.getRepresentations(), Collections.singletonMap(rep.getLanguageCode(), rep));
-		assertEquals(ld1.getGrammaticalFeatures(), gramFeatures);
-		assertEquals(ld1.getStatementGroups(), statementGroups);
+		assertEquals(fd1.getEntityId(), fid);
+		assertEquals(fd1.getRepresentations(), Collections.singletonMap(rep.getLanguageCode(), rep));
+		assertEquals(fd1.getGrammaticalFeatures(), gramFeatures);
+		assertEquals(fd1.getStatementGroups(), statementGroups);
 	}
 
 	@Test
@@ -77,21 +77,21 @@ public class FormDocumentImplTest {
 				new FormIdValueImpl("L42-F2", "http://example.com/entity/"),
 				repList, gramFeatures, Collections.emptyList(), 1235);
 
-		assertEquals(ld1, ld1);
-		assertEquals(ld1, ld2);
-		assertNotEquals(ld1, irDiffRepresentations);
-		assertNotEquals(ld1, irDiffGramFeatures);
-		assertNotEquals(ld1, irDiffStatementGroups);
-		assertNotEquals(ld1, irDiffRevisions);
+		assertEquals(fd1, fd1);
+		assertEquals(fd1, fd2);
+		assertNotEquals(fd1, irDiffRepresentations);
+		assertNotEquals(fd1, irDiffGramFeatures);
+		assertNotEquals(fd1, irDiffStatementGroups);
+		assertNotEquals(fd1, irDiffRevisions);
 		assertNotEquals(irDiffStatementGroups, irDiffFormIdValue);
-		assertNotEquals(ld1, pr);
-		assertNotEquals(ld1, null);
-		assertNotEquals(ld1, this);
+		assertNotEquals(fd1, pr);
+		assertNotEquals(fd1, null);
+		assertNotEquals(fd1, this);
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(ld1.hashCode(), ld2.hashCode());
+		assertEquals(fd1.hashCode(), fd2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -138,7 +138,7 @@ public class FormDocumentImplTest {
 
 	@Test
 	public void iterateOverAllStatements() {
-		Iterator<Statement> statements = ld1.getAllStatements();
+		Iterator<Statement> statements = fd1.getAllStatements();
 
 		assertTrue(statements.hasNext());
 		assertEquals(s, statements.next());
@@ -146,13 +146,63 @@ public class FormDocumentImplTest {
 	}
 
 	@Test
+	public void testWithRevisionId() {
+		assertEquals(1235L, fd1.withRevisionId(1235L).getRevisionId());
+		assertEquals(fd1, fd1.withRevisionId(1325L).withRevisionId(fd1.getRevisionId()));
+	}
+
+	@Test
+	public void testWithRepresentationInNewLanguage() {
+		MonolingualTextValue newRepresentation = new MonolingualTextValueImpl("Foo", "fr");
+		FormDocument withRepresentation = fd1.withRepresentation(newRepresentation);
+		assertEquals(newRepresentation, withRepresentation.getRepresentations().get("fr"));
+	}
+
+	@Test
+	public void testWithNewGrammaticalFeatures() {
+		ItemIdValue newGrammaticalFeature = new ItemIdValueImpl("Q3", "http://example.com/entity/");
+		FormDocument withGrammaticalFeature = fd1.withGrammaticalFeature(newGrammaticalFeature);
+		assertTrue(withGrammaticalFeature.getGrammaticalFeatures().containsAll(gramFeatures));
+		assertTrue(withGrammaticalFeature.getGrammaticalFeatures().contains(newGrammaticalFeature));
+	}
+
+	@Test
+	public void testWithExistingGrammaticalFeatures() {
+		ItemIdValue newGrammaticalFeature = new ItemIdValueImpl("Q2", "http://example.com/entity/");
+		FormDocument withGrammaticalFeature = fd1.withGrammaticalFeature(newGrammaticalFeature);
+		assertEquals(fd1, withGrammaticalFeature);
+	}
+
+	@Test
+	public void testAddStatement() {
+		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
+				Collections.emptyList(), Collections.emptyList(), fid);
+		Claim claim = fresh.getClaim();
+		assertFalse(fd1.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+		FormDocument withStatement = fd1.withStatement(fresh);
+		assertTrue(withStatement.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+	}
+
+	@Test
+	public void testDeleteStatements() {
+		Statement toRemove = statementGroups.get(0).getStatements().get(0);
+		FormDocument withoutStatement = fd1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
+		assertNotEquals(withoutStatement, fd1);
+	}
+
+	@Test
 	public void testFormToJson() throws JsonProcessingException {
-		JsonComparator.compareJsonStrings(JSON_FORM, mapper.writeValueAsString(ld1));
+		JsonComparator.compareJsonStrings(JSON_FORM, mapper.writeValueAsString(fd1));
 	}
 
 	@Test
 	public void testFormToJava() throws IOException {
-		assertEquals(ld1, mapper.readValue(JSON_FORM, FormDocumentImpl.class));
+		assertEquals(fd1, mapper.readValue(JSON_FORM, FormDocumentImpl.class));
 	}
 
 }

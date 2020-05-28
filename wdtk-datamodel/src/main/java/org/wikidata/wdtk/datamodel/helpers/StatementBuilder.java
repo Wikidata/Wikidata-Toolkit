@@ -279,12 +279,10 @@ public class StatementBuilder extends
 	 * @return
 	 */
 	protected ArrayList<Snak> getQualifierList(PropertyIdValue propertyIdValue) {
-		ArrayList<Snak> result = this.qualifiers.get(propertyIdValue);
-		if (result == null) {
-			result = new ArrayList<Snak>();
-			this.qualifiers.put(propertyIdValue, result);
+		if(!qualifiers.containsKey(propertyIdValue)) {
+			qualifiers.put(propertyIdValue, new ArrayList<>());
 		}
-		return result;
+		return qualifiers.get(propertyIdValue);
 	}
 
 	/**

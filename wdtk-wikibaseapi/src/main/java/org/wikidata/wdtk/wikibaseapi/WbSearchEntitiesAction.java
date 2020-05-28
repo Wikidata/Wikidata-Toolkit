@@ -21,7 +21,6 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +78,7 @@ public class WbSearchEntitiesAction {
     }
 
     public List<WbSearchEntitiesResult> wbSearchEntities(WbGetEntitiesSearchData properties)
-            throws MediaWikiApiErrorException {
+            throws MediaWikiApiErrorException, IOException {
         return wbSearchEntities(properties.search, properties.language,
                 properties.strictlanguage, properties.type, properties.limit, properties.offset);
     }
@@ -124,9 +123,9 @@ public class WbSearchEntitiesAction {
      */
     public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
                                                          Boolean strictLanguage, String type, Long limit, Long offset)
-            throws MediaWikiApiErrorException {
+            throws MediaWikiApiErrorException, IOException {
 
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
 
         if (search != null) {
@@ -160,22 +159,18 @@ public class WbSearchEntitiesAction {
 
         List<WbSearchEntitiesResult> results = new ArrayList<>();
 
-        try {
-            JsonNode root = this.connection.sendJsonRequest("POST", parameters);
-            JsonNode entities = root.path("search");
-            for (JsonNode entityNode : entities) {
-                try {
-                    JacksonWbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
-                            JacksonWbSearchEntitiesResult.class);
-                    results.add(ed);
-                } catch (JsonProcessingException e) {
-                    LOGGER.error("Error when reading JSON for entity "
-                            + entityNode.path("id").asText("UNKNOWN") + ": "
-                            + e.toString());
-                }
+        JsonNode root = this.connection.sendJsonRequest("POST", parameters);
+        JsonNode entities = root.path("search");
+        for (JsonNode entityNode : entities) {
+            try {
+                JacksonWbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
+                        JacksonWbSearchEntitiesResult.class);
+                results.add(ed);
+            } catch (JsonProcessingException e) {
+                LOGGER.error("Error when reading JSON for entity "
+                        + entityNode.path("id").asText("UNKNOWN") + ": "
+                        + e.toString());
             }
-        } catch (IOException e) {
-            LOGGER.error("Could not retrive data: " + e.toString());
         }
 
         return results;

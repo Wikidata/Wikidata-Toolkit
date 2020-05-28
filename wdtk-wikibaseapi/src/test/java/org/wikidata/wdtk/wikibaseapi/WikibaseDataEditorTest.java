@@ -20,9 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,16 +34,13 @@ import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.TagsApplyNotAllowedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
+
+import static org.junit.Assert.*;
 
 public class WikibaseDataEditorTest {
 
@@ -57,7 +51,7 @@ public class WikibaseDataEditorTest {
 	@Before
 	public void setUp() throws IOException {
 		this.con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "query");
 		params.put("meta", "tokens");
 		params.put("type", "csrf");
@@ -68,16 +62,39 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
-	public void testSetMaxLag() throws IOException, MediaWikiApiErrorException {
+	public void testSetMaxLag() {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
 		wde.setMaxLag(3);
 		assertEquals(3, wde.getMaxLag());
 	}
+	
+	@Test
+	public void testSetMaxLagFirstWaitTime() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagFirstWaitTime(5432);
+		assertEquals(5432, wde.getMaxLagFirstWaitTime());
+	}
+	
+	@Test
+	public void testSetMaxLagBackOffFactor() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagBackOffFactor(2.7);
+		assertTrue(2.69 < wde.getMaxLagBackOffFactor() && 2.71 > wde.getMaxLagBackOffFactor());
+	}
+	
+	@Test
+	public void testSetMaxLagMaxRetries() {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		wde.setMaxLagMaxRetries(78);
+		assertEquals(78, wde.getMaxLagMaxRetries());
+	}
 
 	@Test
-	public void testSetAverageTimePerEdit() throws IOException,
-			MediaWikiApiErrorException {
+	public void testSetAverageTimePerEdit() {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
 		wde.setAverageTimePerEdit(5000);
@@ -100,7 +117,7 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -113,11 +130,11 @@ public class WikibaseDataEditorTest {
 
 		assertEquals(1, wde.getRemainingEdits());
 		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
+				.createItemDocument(itemDocument, "My summary", null);
 		assertEquals(expectedResultDocument, result);
 		assertEquals(0, wde.getRemainingEdits());
-		result = wde.createItemDocument(itemDocument, "My summary");
-		assertEquals(null, result);
+		result = wde.createItemDocument(itemDocument, "My summary", null);
+		assertNull(result);
 		assertEquals(0, wde.getRemainingEdits());
 	}
 
@@ -133,9 +150,9 @@ public class WikibaseDataEditorTest {
 		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(
 				ItemIdValue.NULL).build();
 		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
+				.createItemDocument(itemDocument, "My summary", null);
 
-		assertEquals(null, result);
+		assertNull(result);
 		assertEquals(0, wde.getRemainingEdits());
 	}
 
@@ -153,11 +170,12 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("tags", "my-tag");
 		params.put("format", "json");
 		params.put("maxlag", "5");
 		String data = JsonSerializer.getJsonString(itemDocument);
@@ -165,7 +183,7 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
+				.createItemDocument(itemDocument, "My summary", Collections.singletonList("my-tag"));
 
 		assertEquals(expectedResultDocument, result);
 		assertEquals(-1, wde.getRemainingEdits());
@@ -180,7 +198,7 @@ public class WikibaseDataEditorTest {
 		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(
 				ItemIdValue.NULL).build();
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -192,7 +210,7 @@ public class WikibaseDataEditorTest {
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/error-badtoken.json", CompressionType.NONE);
 
-		wde.createItemDocument(itemDocument, "My summary");
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
 	@Test
@@ -210,7 +228,7 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -222,9 +240,9 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		// Create item twice
-		wde.createItemDocument(itemDocument, "My summary");
+		wde.createItemDocument(itemDocument, "My summary", null);
 		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
+				.createItemDocument(itemDocument, "My summary", null);
 
 		assertEquals(expectedResultDocument, result);
 	}
@@ -246,7 +264,7 @@ public class WikibaseDataEditorTest {
 				+ "{\"type\":\"item\",\"aliases\":[],\"labels\":[],\"descriptions\":[],\"lastrevid\":1234,\"sitelinks\":[],\"id\":\"Q1234\",\"claims\":[]}"
 				+ ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -258,7 +276,7 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		ItemDocument result = wde
-				.createItemDocument(itemDocument, "My summary");
+				.createItemDocument(itemDocument, "My summary", null);
 
 		assertEquals(expectedResultDocument, result);
 	}
@@ -275,7 +293,7 @@ public class WikibaseDataEditorTest {
 				ItemIdValue.NULL).build();
 		String expectedResult = "{\"entity\":" + "{}" + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -286,7 +304,7 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		wde.createItemDocument(itemDocument, "My summary");
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
 	@Test(expected = IOException.class)
@@ -299,7 +317,7 @@ public class WikibaseDataEditorTest {
 				ItemIdValue.NULL).build();
 		String expectedResult = "{\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("summary", "My summary");
 		params.put("new", "item");
@@ -310,7 +328,7 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		wde.createItemDocument(itemDocument, "My summary");
+		wde.createItemDocument(itemDocument, "My summary", null);
 	}
 
 	@Test
@@ -331,7 +349,7 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("new", "property");
 		params.put("bot", "");
@@ -343,7 +361,7 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		PropertyDocument result = wde.createPropertyDocument(propertyDocument,
-				null);
+				null, null);
 
 		assertTrue(wde.editAsBot());
 		assertEquals(expectedResultDocument, result);
@@ -364,10 +382,11 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("id", "Q1234");
 		params.put("summary", "My summary");
+		params.put("tags", "tag1|tag2");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
 		params.put("baserevid", "1234");
@@ -377,7 +396,41 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		ItemDocument result = wde.editItemDocument(itemDocument, false,
-				"My summary");
+				"My summary", Arrays.asList("tag1", "tag2"));
+
+		assertEquals(expectedResultDocument, result);
+	}
+
+	@Test
+	public void testEditMediaInfo() throws IOException, MediaWikiApiErrorException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIMEDIA_COMMONS);
+
+		MediaInfoIdValue id = Datamodel.makeWikimediaCommonsMediaInfoIdValue("M12223");
+
+		MediaInfoDocument mediaInfoDocument = Datamodel.makeMediaInfoDocument(id)
+			.withLabel(Datamodel.makeMonolingualTextValue("test", "en"));
+		MediaInfoDocument expectedResultDocument =  Datamodel.makeMediaInfoDocument(id)
+				.withLabel(Datamodel.makeMonolingualTextValue("test", "en"))
+				.withRevisionId(1235);
+		String resultData = JsonSerializer
+				.getJsonString(expectedResultDocument);
+		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
+
+		Map<String, String> params = new HashMap<>();
+		params.put("action", "wbeditentity");
+		params.put("id", "M12223");
+		params.put("summary", "My summary");
+		params.put("tags", "tag1|tag2");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("maxlag", "5");
+		String data = JsonSerializer.getJsonString(mediaInfoDocument);
+		params.put("data", data);
+		con.setWebResource(params, expectedResult);
+
+		MediaInfoDocument result = wde.editMediaInfoDocument(mediaInfoDocument, false,
+				"My summary", Arrays.asList("tag1", "tag2"));
 
 		assertEquals(expectedResultDocument, result);
 	}
@@ -405,9 +458,10 @@ public class WikibaseDataEditorTest {
 		
 		ItemDocument editedItemDocument = wde.updateStatements(
 				itemDocument,
-				Arrays.asList(s1dup),
-				Arrays.asList(s2),
-				"Doing spurious changes");
+				Collections.singletonList(s1dup),
+				Collections.singletonList(s2),
+				"Doing spurious changes",
+				null);
 		
 		// no edit was made at all
 		assertEquals(itemDocument, editedItemDocument);
@@ -440,13 +494,14 @@ public class WikibaseDataEditorTest {
 		
 		ItemDocument editedItemDocument = wde.updateTermsStatements(
 				itemDocument,
-				Arrays.asList(label),
-				Arrays.asList(description), 
-				Collections.<MonolingualTextValue>emptyList(),
-				Arrays.asList(alias),
-				Arrays.asList(s1dup),
-				Arrays.asList(s2),
-				"Doing spurious changes");
+				Collections.singletonList(label),
+				Collections.singletonList(description),
+				Collections.emptyList(),
+				Collections.singletonList(alias),
+				Collections.singletonList(s1dup),
+				Collections.singletonList(s2),
+				"Doing spurious changes",
+				null);
 		
 		// no edit was made at all
 		assertEquals(itemDocument, editedItemDocument);
@@ -468,7 +523,7 @@ public class WikibaseDataEditorTest {
 				.withStatement(s1)
 				.withRevisionId(1234).build();
 		
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("id", "Q1234");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
@@ -504,7 +559,7 @@ public class WikibaseDataEditorTest {
 				.withRevisionId(1235)
 				.build();
 		
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbsetlabel");
 		params.put("id", "Q1234");
 		params.put("summary", "Adding a label");
@@ -517,12 +572,12 @@ public class WikibaseDataEditorTest {
 		String expectedResult = "{\"entity\":{\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"My label\"}},"+
 				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
 		con.setWebResource(params, expectedResult);
-		
-		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Arrays.asList(label),
-				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
-				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
-				Collections.<Statement>emptyList(), "Adding a label");
-		
+
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.singletonList(label),
+				Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), "Adding a label", Collections.emptyList());
+
 		assertEquals(expectedDocument, editedDocument);
 	}
 	
@@ -544,7 +599,7 @@ public class WikibaseDataEditorTest {
 				.withRevisionId(1235L)
 				.build();
 		
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbsetdescription");
 		params.put("id", "Q1234");
 		params.put("summary", "Adding a description");
@@ -557,12 +612,12 @@ public class WikibaseDataEditorTest {
 		String expectedResult = "{\"entity\":{\"descriptions\":{\"en\":{\"language\":\"en\",\"value\":\"My description\"}},"+
 				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
 		con.setWebResource(params, expectedResult);
-		
-		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
-				Arrays.asList(description),	Collections.<MonolingualTextValue>emptyList(),
+
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.emptyList(),
+				Collections.singletonList(description),	Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
-				Collections.<Statement>emptyList(), "Adding a description");
-		
+				Collections.<Statement>emptyList(), "Adding a description", null);
+
 		assertEquals(expectedDocument, editedDocument);
 	}
 	
@@ -589,7 +644,7 @@ public class WikibaseDataEditorTest {
 				.withRevisionId(1235)
 				.build();
 		
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbsetaliases");
 		params.put("id", "Q1234");
 		params.put("summary", "Changing aliases");
@@ -603,12 +658,12 @@ public class WikibaseDataEditorTest {
 		String expectedResult = "{\"entity\":{\"aliases\":{\"en\":[{\"language\":\"en\",\"value\":\"My added alias\"}]},"+
 				"\"id\":\"Q1234\",\"type\":\"item\",\"lastrevid\":1235},\"success\":1}";
 		con.setWebResource(params, expectedResult);
-		
-		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
-				Collections.<MonolingualTextValue>emptyList(), Arrays.asList(addedAlias),
-				Arrays.asList(removedAlias), Collections.<Statement>emptyList(),
-				Collections.<Statement>emptyList(), "Changing aliases");
-		
+
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Collections.singletonList(addedAlias),
+				Collections.singletonList(removedAlias), Collections.<Statement>emptyList(),
+				Collections.<Statement>emptyList(), "Changing aliases", null);
+
 		assertEquals(expectedDocument, editedDocument);
 	}
 	
@@ -631,9 +686,10 @@ public class WikibaseDataEditorTest {
 				.build();
 		
 		String statementJson = JsonSerializer.getJsonString(s2);
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbsetclaim");
 		params.put("summary", "Adding a claim");
+		params.put("tags", "statement-creation");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
 		params.put("format", "json");
 		params.put("baserevid", "1234");
@@ -641,12 +697,12 @@ public class WikibaseDataEditorTest {
 		params.put("claim", statementJson);
 		String expectedResult = "{\"pageinfo\":{\"lastrevid\":1235},\"success\":1,\"claim\":"+statementJson+"}";
 		con.setWebResource(params, expectedResult);
-		
-		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
-				Collections.<MonolingualTextValue>emptyList(), Arrays.asList(s1),
-				Collections.<Statement>emptyList(), "Adding a claim");
-		
+				Collections.<MonolingualTextValue>emptyList(), Collections.singletonList(s1),
+				Collections.<Statement>emptyList(), "Adding a claim", Collections.singletonList("statement-creation"));
+
 		assertEquals(expectedDocument, editedDocument);
 	}
 	
@@ -672,7 +728,7 @@ public class WikibaseDataEditorTest {
 		List<String> statementIds = Arrays.asList("Q1234$"+guid1, "Q1234$"+guid2);
 		
 		String statementsList = String.join("|", statementIds);
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbremoveclaims");
 		params.put("summary", "Removing claims");
 		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
@@ -682,12 +738,12 @@ public class WikibaseDataEditorTest {
 		params.put("claim", statementsList);
 		String expectedResult = "{\"pageinfo\":{\"lastrevid\":1235},\"success\":1,\"claims\":[\""+statementIds.get(0)+"\",\""+statementIds.get(1)+"\"]}";
 		con.setWebResource(params, expectedResult);
-		
-		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(), 
+
+		ItemDocument editedDocument = wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
-				Arrays.asList(s1,s2), "Removing claims");
-		
+				Arrays.asList(s1,s2), "Removing claims", null);
+
 		assertEquals(expectedDocument, editedDocument);
 	}
 
@@ -709,7 +765,7 @@ public class WikibaseDataEditorTest {
 				.getJsonString(expectedResultDocument);
 		String expectedResult = "{\"entity\":" + resultData + ",\"success\":1}";
 
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("action", "wbeditentity");
 		params.put("id", "P1234");
 		params.put("summary", "My summary");
@@ -723,9 +779,46 @@ public class WikibaseDataEditorTest {
 		con.setWebResource(params, expectedResult);
 
 		PropertyDocument result = wde.editPropertyDocument(itemDocument, true,
-				"My summary");
+				"My summary", Collections.emptyList());
 
 		assertEquals(expectedResultDocument, result);
+	}
+	
+	@Test(expected = TagsApplyNotAllowedException.class)
+	public void testApplyInvalidTag() throws MediaWikiApiErrorException, IOException {
+		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
+				Datamodel.SITE_WIKIDATA);
+		ItemIdValue id = Datamodel.makeWikidataItemIdValue("Q1234");
+		Statement s1 = StatementBuilder.forSubjectAndProperty(id, P31)
+				.withValue(Q5).withId("ID-s1").build();
+		MonolingualTextValue description = Datamodel.makeMonolingualTextValue("My description", "en");
+		ItemDocument itemDocument = ItemDocumentBuilder.forItemId(id)
+				.withStatement(s1)
+				.withRevisionId(1234)
+				.build();
+
+		Map<String, String> params = new HashMap<>();
+		params.put("action", "wbsetdescription");
+		params.put("id", "Q1234");
+		params.put("summary", "testing tags");
+		params.put("tags", "tag_which_does_not_exist");
+		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
+		params.put("format", "json");
+		params.put("baserevid", "1234");
+		params.put("maxlag", "5");
+		params.put("language", "en");
+		params.put("value", "My description");
+		String expectedResult = "{\"error\":"
+				+ "{\"code\":\"tags-apply-not-allowed-one\","
+				+ "\"info\":\"The tag \\\"tag_which_does_not_exist\\\" is not allowed to be manually applied.\","
+				+ "\"*\":\"See https://www.wikidata.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/mailman/listinfo/mediawiki-api-announce&gt; for notice of API deprecations and breaking changes.\"},"
+				+ "\"servedby\":\"mw1276\"}";
+		con.setWebResource(params, expectedResult);
+
+		wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
+				Collections.singletonList(description),	Collections.<MonolingualTextValue>emptyList(),
+				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
+				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist"));
 	}
 
 }

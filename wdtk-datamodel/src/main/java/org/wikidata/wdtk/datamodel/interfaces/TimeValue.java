@@ -279,4 +279,13 @@ public interface TimeValue extends Value {
 	 */
 	int getAfterTolerance();
 
+	/**
+	 * Convert the value to the Gregorian calendar, if possible.
+	 * This conversion can fail if not enough information is available
+	 * (for example, we need at least day precision to convert from Julian to Gregorian).
+	 *
+	 * @return a TimeValue that uses the Gregorian calendar, or null if the conversion failed.
+	 */
+	TimeValue toGregorian();
+
 }

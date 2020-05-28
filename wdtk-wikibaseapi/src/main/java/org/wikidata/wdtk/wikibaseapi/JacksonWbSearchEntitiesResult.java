@@ -20,8 +20,8 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -93,29 +93,16 @@ class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if(!(obj instanceof JacksonMatch)) {
                 return false;
-            if (getClass() != obj.getClass())
-                return false;
+            }
             JacksonMatch other = (JacksonMatch) obj;
-            if (language == null) {
-                if (other.language != null)
-                    return false;
-            } else if (!language.equals(other.language))
-                return false;
-            if (text == null) {
-                if (other.text != null)
-                    return false;
-            } else if (!text.equals(other.text))
-                return false;
-            if (type == null) {
-                if (other.type != null)
-                    return false;
-            } else if (!type.equals(other.type))
-                return false;
-            return true;
+            return Objects.equals(language, other.language) &&
+                    Objects.equals(text, other.text) &&
+                    Objects.equals(type, other.type);
         }
     }
 
@@ -316,56 +303,22 @@ class JacksonWbSearchEntitiesResult implements WbSearchEntitiesResult {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if(!(obj instanceof JacksonWbSearchEntitiesResult)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         JacksonWbSearchEntitiesResult other = (JacksonWbSearchEntitiesResult) obj;
-        if (aliases == null) {
-            if (other.aliases != null)
-                return false;
-        } else if (!aliases.equals(other.aliases))
-            return false;
-        if (conceptUri == null) {
-            if (other.conceptUri != null)
-                return false;
-        } else if (!conceptUri.equals(other.conceptUri))
-            return false;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (entityId == null) {
-            if (other.entityId != null)
-                return false;
-        } else if (!entityId.equals(other.entityId))
-            return false;
-        if (label == null) {
-            if (other.label != null)
-                return false;
-        } else if (!label.equals(other.label))
-            return false;
-        if (match == null) {
-            if (other.match != null)
-                return false;
-        } else if (!match.equals(other.match))
-            return false;
-        if (pageId != other.pageId)
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        if (url == null) {
-            if (other.url != null)
-                return false;
-        } else if (!url.equals(other.url))
-            return false;
-        return true;
+        return Objects.equals(aliases, other.aliases) &&
+                Objects.equals(conceptUri, other.conceptUri) &&
+                Objects.equals(description, other.description) &&
+                Objects.equals(entityId, other.entityId) &&
+                Objects.equals(label, other.label) &&
+                Objects.equals(match, other.match) &&
+                pageId == other.pageId &&
+                Objects.equals(title, other.title) &&
+                Objects.equals(url, other.url);
     }
 
 

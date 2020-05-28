@@ -24,10 +24,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelConverterTest.ValueType;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 public class DataObjectFactoryImplTest {
@@ -66,6 +64,13 @@ public class DataObjectFactoryImplTest {
 	public final void testGetPropertyId() {
 		PropertyIdValue o1 = new PropertyIdValueImpl("P42", "foo");
 		PropertyIdValue o2 = factory.getPropertyIdValue("P42", "foo");
+		assertEquals(o1, o2);
+	}
+
+	@Test
+	public final void testGetMediaInfoId() {
+		MediaInfoIdValue o1 = new MediaInfoIdValueImpl("M22", "foo");
+		MediaInfoIdValue o2 = factory.getMediaInfoIdValue("M22", "foo");
 		assertEquals(o1, o2);
 	}
 

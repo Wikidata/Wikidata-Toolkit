@@ -40,7 +40,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -68,6 +72,11 @@ public abstract class ApiConnection {
 	 */
 	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
 	
+	/**
+	 * URL of the API of commons.wikimedia.org.
+	 */
+	public final static String URL_WIKIMEDIA_COMMONS_API = "https://commons.wikimedia.org/w/api.php";
+
 	/**
 	 * Name of the HTTP parameter to submit an action to the API.
 	 */
@@ -99,6 +108,23 @@ public abstract class ApiConnection {
 	String username = "";
 	
 	/**
+	 * Map of requested tokens.
+	 */
+	final Map<String, String> tokens;
+	
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 */
+	int connectTimeout = -1;
+	
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set.
+	 */
+	int readTimeout = -1;
+
+	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
 	final ObjectMapper mapper = new ObjectMapper();
@@ -112,7 +138,22 @@ public abstract class ApiConnection {
 	 *            "https://www.wikidata.org/w/api.php/"
 	 */
 	public ApiConnection(String apiBaseUrl) {
+		this(apiBaseUrl, null);
+	}
+
+	/**
+	 * Creates an object to manage a connection to the Web API of a Wikibase
+	 * site.
+	 *
+	 * @param apiBaseUrl
+	 *            base URI to the API, e.g.,
+	 *            "https://www.wikidata.org/w/api.php/"
+	 * @param tokens
+	 * 	      CSRF tokens already acquired by the connection
+	 */
+	public ApiConnection(String apiBaseUrl, Map<String, String> tokens) {
 		this.apiBaseUrl = apiBaseUrl;
+		this.tokens = tokens != null ? tokens : new HashMap<>();
 	}
 
 	/**
@@ -166,8 +207,37 @@ public abstract class ApiConnection {
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
+	 * @throws MediaWikiApiErrorException 
 	 */
-	public abstract void logout() throws IOException;
+	public abstract void logout() throws IOException, MediaWikiApiErrorException;
+
+	/**
+	 * Return a token of given type.
+	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
+	 * @return a token
+	 * @throws MediaWikiApiErrorException 
+	 *     if MediaWiki returned an error
+	 * @throws IOException
+	 *     if a network error occurred
+	 */
+	String getOrFetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
+		if (tokens.containsKey(tokenType)) {
+			return tokens.get(tokenType);
+		}
+		String value = fetchToken(tokenType);
+		tokens.put(tokenType, value);
+		// TODO if fetchToken raises an exception, we could try to recover here:
+		// (1) Check if we are still logged in; maybe log in again
+		// (2) If there is another error, maybe just run the operation again
+		return value;
+	}
+
+	/**
+	 * Remove fetched value of given token.
+	 */
+	void clearToken(String tokenType) {
+		tokens.remove(tokenType);
+	}
 
 	/**
 	 * Executes a API query action to get a new token.
@@ -175,21 +245,20 @@ public abstract class ApiConnection {
 	 * checks first. If errors occur, they are logged and null is returned.
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
-	 * @return newly retrieved token or null if no token was retrieved
+	 * @return newly retrieved token
+	 * @throws IOException 
+	 *     if a network error occurred
+	 * @throws MediaWikiApiErrorException
+	 *     if MediaWiki returned an error when fetching the token 
 	 */
-	String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
+	private String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
 		params.put(ApiConnection.PARAM_ACTION, "query");
 		params.put("meta", "tokens");
 		params.put("type", tokenType);
 
-		try {
-			JsonNode root = this.sendJsonRequest("POST", params);
-			return root.path("query").path("tokens").path(tokenType + "token").textValue();
-		} catch (IOException | MediaWikiApiErrorException e) {
-			logger.error("Error when trying to fetch token: " + e.toString());
-		}
-		return null;
+		JsonNode root = this.sendJsonRequest("POST", params);
+		return root.path("query").path("tokens").path(tokenType + "token").textValue();
 	}
 
 	/**
@@ -281,6 +350,12 @@ public abstract class ApiConnection {
 		connection.setDoInput(true);
 		connection.setDoOutput(true);
 		connection.setUseCaches(false);
+		if(connectTimeout >= 0) {
+			connection.setConnectTimeout(connectTimeout);
+		}
+		if(readTimeout >= 0) {
+			connection.setReadTimeout(readTimeout);
+		}
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
 	}
@@ -425,6 +500,48 @@ public abstract class ApiConnection {
 			builder.append(o.toString());
 		}
 		return builder.toString();
+	}
+	
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set, which is the default behaviour (for
+	 * backwards compatibility).
+	 * 
+	 * @see HttpURLConnection.getConnectionTimeout
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+	
+	/**
+	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 * 
+	 * @see HttpURLConnection.setConnectionTimeout
+	 */
+	public void setConnectTimeout(int timeout) {
+		connectTimeout = timeout;
+	}
+	
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set, which is the default behaviour (for backwards
+	 * compatibility).
+	 * 
+	 * @see HttpURLConnection.getReadTimeout
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+	
+	/**
+	 * Sets the maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set.
+	 * 
+	 * @see HttpURLConnection.setReadTimeout
+	 */
+	public void setReadTimeout(int timeout) {
+		readTimeout = timeout;
 	}
 
 }

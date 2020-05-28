@@ -20,7 +20,7 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -67,7 +67,7 @@ public class WmfLocalDumpFileTest {
 		dm.setDirectory(thisDumpPath);
 		WmfLocalDumpFile dumpFile = new WmfLocalDumpFile("20140220",
 				"wikidatawiki", dm, DumpContentType.DAILY);
-		assertEquals(dumpFile.isAvailable(), false);
+		assertFalse(dumpFile.isAvailable());
 	}
 
 }

@@ -22,6 +22,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
+import java.util.Objects;
+
 /**
  * Static class for checking the equality of arbitrary data objects using only
  * their interfaces. This can be used to implement the equals() method of
@@ -226,13 +228,9 @@ public class Equality {
 		}
 		QuantityValue other = (QuantityValue) o2;
 		return o1.getNumericValue().equals(other.getNumericValue())
-				&& equalsNullable(o1.getLowerBound(), other.getLowerBound())
-				&& equalsNullable(o1.getUpperBound(), other.getUpperBound())
+				&& Objects.equals(o1.getLowerBound(), other.getLowerBound())
+				&& Objects.equals(o1.getUpperBound(), other.getUpperBound())
 				&& o1.getUnit().equals(other.getUnit());
-	}
-
-	private static boolean equalsNullable(Object o1, Object o2) {
-		return o1 == null ? o2 == null : o1.equals(o2);
 	}
 
 	/**
@@ -581,6 +579,31 @@ public class Equality {
 		SenseDocument other = (SenseDocument) o2;
 		return o1.getEntityId().equals(other.getEntityId())
 				&& o1.getGlosses().equals(other.getGlosses())
+				&& o1.getStatementGroups().equals(other.getStatementGroups())
+				&& (o1.getRevisionId() == other.getRevisionId());
+	}
+
+	/**
+	 * Returns true if the parameters are two {@link MediaInfoDocument} objects with
+	 * exactly the same data. It does not matter if they are different
+	 * implementations of the interface as long as their content is the same.
+	 *
+	 * @param o1
+	 *            the first object to compare
+	 * @param o2
+	 *            the second object to compare
+	 * @return true if both objects are equal
+	 */
+	public static boolean equalsMediaInfoDocument(MediaInfoDocument o1, Object o2) {
+		if (o2 == o1) {
+			return true;
+		}
+		if (!(o2 instanceof MediaInfoDocument)) {
+			return false;
+		}
+		MediaInfoDocument other = (MediaInfoDocument) o2;
+		return o1.getEntityId().equals(other.getEntityId())
+				&& o1.getLabels().equals(other.getLabels())
 				&& o1.getStatementGroups().equals(other.getStatementGroups())
 				&& (o1.getRevisionId() == other.getRevisionId());
 	}

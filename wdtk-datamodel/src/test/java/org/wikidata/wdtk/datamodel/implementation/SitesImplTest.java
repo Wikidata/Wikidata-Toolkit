@@ -21,6 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Collections;
 
@@ -33,7 +34,7 @@ public class SitesImplTest {
 	private SitesImpl sites;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.sites = new SitesImpl();
 		this.sites.setSiteInformation("enwiki", "wikipedia", "en", "mediawiki",
 				"http://en.wikipedia.org/w/$1",
@@ -61,11 +62,11 @@ public class SitesImplTest {
 
 	@Test
 	public void unknownSiteKey() {
-		assertEquals(this.sites.getGroup("somekey"), null);
-		assertEquals(this.sites.getSiteType("somekey"), null);
-		assertEquals(this.sites.getLanguageCode("somekey"), null);
-		assertEquals(this.sites.getFileUrl("somekey", "filename"), null);
-		assertEquals(this.sites.getPageUrl("somekey", "page name"), null);
+		assertNull(this.sites.getGroup("somekey"));
+		assertNull(this.sites.getSiteType("somekey"));
+		assertNull(this.sites.getLanguageCode("somekey"));
+		assertNull(this.sites.getFileUrl("somekey", "filename"));
+		assertNull(this.sites.getPageUrl("somekey", "page name"));
 	}
 
 	@Test

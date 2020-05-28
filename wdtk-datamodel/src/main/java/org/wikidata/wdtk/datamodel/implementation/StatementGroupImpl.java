@@ -99,6 +99,7 @@ public class StatementGroupImpl extends AbstractList<Statement> implements State
 				bestStatements.add(statement);
 			}
 		}
+		if (bestStatements.size() == 0) return null;
 		return new StatementGroupImpl(bestStatements);
 	}
 

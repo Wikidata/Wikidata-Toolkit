@@ -81,7 +81,7 @@ public class TestObjectFactory {
 				.getDatatypeIdValue(DatatypeIdValue.DT_GLOBE_COORDINATES);
 		return this.factory.getPropertyDocument(
 				propertyId, labels, descriptions, aliases,
-				Collections.<StatementGroup> emptyList(), datatypeId, 0);
+				Collections.emptyList(), datatypeId, 0);
 	}
 
 	/**
@@ -146,30 +146,30 @@ public class TestObjectFactory {
 	 * @return {@link ItemDocument}
 	 */
 	public ItemDocument createItemDocument() {
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		List<StatementGroup> statementGroups = new ArrayList<>();
 
-		List<Statement> statements1 = new ArrayList<Statement>();
+		List<Statement> statements1 = new ArrayList<>();
 		Claim claim1 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P10",
-						baseIri)), Collections.<SnakGroup> emptyList());
+						baseIri)), Collections.emptyList());
 		statements1.add(factory.getStatement(claim1,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none"));
+				Collections.emptyList(), StatementRank.NORMAL,
+				"Q10$none"));
 		statementGroups.add(factory.getStatementGroup(statements1));
 
-		List<Statement> statements2 = new ArrayList<Statement>();
+		List<Statement> statements2 = new ArrayList<>();
 		Claim claim2 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				createValueSnakTimeValue("P569"), createQualifiers());
 		statements2.add(factory.getStatement(claim2, createReferences(),
-				StatementRank.NORMAL, "none2"));
+				StatementRank.NORMAL, "Q10$none2"));
 		statementGroups.add(factory.getStatementGroup(statements2));
-		List<Statement> statements3 = new ArrayList<Statement>();
+		List<Statement> statements3 = new ArrayList<>();
 		Claim claim3 = factory.getClaim(factory.getItemIdValue("Q10", baseIri),
 				createValueSnakStringValue("P549"),
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 		statements3.add(factory.getStatement(claim3,
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
-				"none3"));
+				Collections.emptyList(), StatementRank.NORMAL,
+				"Q10$none3"));
 		statementGroups.add(factory.getStatementGroup(statements3));
 		return factory.getItemDocument(factory.getItemIdValue("Q10", baseIri),
 				createLabels(), createDescriptions(), createAliases(),
@@ -226,11 +226,11 @@ public class TestObjectFactory {
 	public StatementGroup createStatementGroup() {
 		final String pId = "P122";
 		final String qId = "Q10";
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 		statements.add(createStatement(qId, pId));
 		statements.add(factory.getStatement(
 				createClaim(qId, createValueSnakQuantityValue(pId)),
-				Collections.<Reference> emptyList(), StatementRank.NORMAL,
+				Collections.emptyList(), StatementRank.NORMAL,
 				"id112"));
 		return factory.getStatementGroup(statements);
 	}
@@ -327,7 +327,7 @@ public class TestObjectFactory {
 	 * @return Map for {@link SiteLink}s and their titles
 	 */
 	public Map<String, SiteLink> createSiteLinks() {
-		Map<String, SiteLink> result = new HashMap<String, SiteLink>();
+		Map<String, SiteLink> result = new HashMap<>();
 		result.put("enwiki", factory.getSiteLink("title_en", "enwiki",
 				Collections.emptyList()));
 		result.put("dewiki", factory.getSiteLink("title_de", "dewiki",
@@ -402,7 +402,7 @@ public class TestObjectFactory {
 	 * @return {@link Reference}
 	 */
 	public Reference createReference() {
-		List<SnakGroup> snakGroups = new ArrayList<SnakGroup>();
+		List<SnakGroup> snakGroups = new ArrayList<>();
 
 		snakGroups.add(factory.getSnakGroup(Collections
 				.singletonList(createValueSnakGlobeCoordinatesValue("P232"))));
@@ -428,7 +428,7 @@ public class TestObjectFactory {
 	 */
 	public Claim createClaim(String id, Snak snak) {
 		return factory.getClaim(factory.getItemIdValue(id, baseIri), snak,
-				Collections.<SnakGroup> emptyList());
+				Collections.emptyList());
 	}
 
 	/**

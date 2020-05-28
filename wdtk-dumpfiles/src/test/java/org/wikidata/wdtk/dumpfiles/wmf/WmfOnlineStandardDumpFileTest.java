@@ -20,10 +20,6 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -35,6 +31,8 @@ import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 import org.wikidata.wdtk.util.CompressionType;
+
+import static org.junit.Assert.*;
 
 public class WmfOnlineStandardDumpFileTest {
 
@@ -66,7 +64,7 @@ public class WmfOnlineStandardDumpFileTest {
 		BufferedReader br = dump.getDumpFileReader();
 
 		assertEquals(br.readLine(), "Line1");
-		assertEquals(br.readLine(), null);
+		assertNull(br.readLine());
 		assertTrue(dump.isAvailable());
 		assertEquals("20140210", dump.getDateStamp());
 		assertEquals(DumpContentType.CURRENT, dump.getDumpContentType());
@@ -89,7 +87,7 @@ public class WmfOnlineStandardDumpFileTest {
 		BufferedReader br = dump.getDumpFileReader();
 
 		assertEquals(br.readLine(), "Line1");
-		assertEquals(br.readLine(), null);
+		assertNull(br.readLine());
 		assertTrue(dump.isAvailable());
 		assertEquals("20140210", dump.getDateStamp());
 		assertEquals(DumpContentType.CURRENT, dump.getDumpContentType());

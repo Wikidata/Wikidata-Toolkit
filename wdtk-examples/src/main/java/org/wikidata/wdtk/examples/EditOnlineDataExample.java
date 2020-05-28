@@ -89,8 +89,7 @@ public class EditOnlineDataExample {
 	static PropertyIdValue stringProperty4;
 	static PropertyIdValue stringProperty5;
 
-	public static void main(String[] args) throws LoginFailedException,
-			IOException, MediaWikiApiErrorException {
+	public static void main(String[] args) throws IOException, MediaWikiApiErrorException {
 		ExampleHelpers.configureLogging();
 		printDocumentation();
 
@@ -130,7 +129,7 @@ public class EditOnlineDataExample {
 		// unique, which would cause problems if this example is run many times.
 
 		ItemDocument newItemDocument = wbde.createItemDocument(itemDocument,
-				"Wikidata Toolkit example test item creation");
+				"Wikidata Toolkit example test item creation", null);
 
 		ItemIdValue newItemId = newItemDocument.getEntityId();
 		System.out.println("*** Successfully created a new item "
@@ -174,8 +173,8 @@ public class EditOnlineDataExample {
 		// * statement2: already present, will not be added again
 		newItemDocument = wbde.updateStatements(newItemId,
 				Arrays.asList(statement4, statement1WithRef, statement2),
-				Collections.<Statement> emptyList(),
-				"Wikidata Toolkit example test statement addition");
+				Collections.emptyList(),
+				"Wikidata Toolkit example test statement addition", null);
 
 		System.out.println("*** Successfully added statements to "
 				+ newItemId.getId()
@@ -203,8 +202,9 @@ public class EditOnlineDataExample {
 				newItemDocument).getStatements().get(0);
 
 		newItemDocument = wbde.updateStatements(newItemDocument,
-				Arrays.asList(newStatement1), Arrays.asList(statementToDelete),
-				"Wikidata Toolkit example test statement modification");
+				Collections.singletonList(newStatement1),
+				Collections.singletonList(statementToDelete),
+				"Wikidata Toolkit example test statement modification", null);
 
 		System.out.println("*** Successfully updated statements of "
 				+ newItemId.getId()

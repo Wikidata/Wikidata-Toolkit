@@ -157,7 +157,7 @@ public class EntityTimerProcessor implements EntityDocumentDumpProcessor {
 		this.timer.start();
 	}
 
-	public class TimeoutException extends RuntimeException {
+	public static class TimeoutException extends RuntimeException {
 		private static final long serialVersionUID = -1083533602730765194L;
 	}
 

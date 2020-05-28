@@ -93,5 +93,14 @@ public interface ValueVisitor<T> {
 	 * @return the result for this value
 	 */
 	T visit(TimeValue value);
+	
+	/**
+	 * Visits an UnsupportedValue and returns a result
+	 * 
+	 * @param value
+	 *            the value to visit
+	 * @return the result for this value
+	 */
+	T visit(UnsupportedValue value);
 
 }

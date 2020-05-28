@@ -33,6 +33,8 @@ import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 import org.wikidata.wdtk.rdf.Vocabulary;
 
+import java.time.Month;
+
 public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 
 	public TimeValueConverter(RdfWriter rdfWriter,
@@ -111,16 +113,63 @@ public class TimeValueConverter extends BufferedValueConverter<TimeValue> {
 	 * @return the RDF literal
 	 */
 	private static Literal getTimeLiteral(TimeValue value, RdfWriter rdfWriter) {
-		long year = value.getYear();
+		/* we need to check for year zero before julian date conversion,
+		 since that can change the year (if the date is 1 Jan 1 for example)
+		*/
+		boolean yearZero = value.getYear() == 0;
 
-		//Year normalization
-		if (year == 0 || (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR)) {
-			year--;
+		TimeValue gregorian = value.toGregorian();
+		if(gregorian != null) {
+			value = gregorian;
 		}
 
-		String timestamp = String.format("%04d-%02d-%02dT%02d:%02d:%02dZ",
-				year, value.getMonth(), value.getDay(),
+		long year = value.getYear();
+
+		/* https://www.mediawiki.org/wiki/Wikibase/DataModel/JSON#time says the following about the JSON mapping:
+
+		  The format used for Gregorian and Julian dates use a notation resembling ISO 8601. E.g. “+1994-01-01T00:00:00Z”.
+		  The year is represented by at least four digits, zeros are added on the left side as needed.
+		  Years BCE are represented as negative numbers, using the historical numbering, in which year 0 is undefined,
+		   and the year 1 BCE is represented as -0001, the year 44 BCE is represented as -0044, etc.,
+		   like XSD 1.0 (ISO 8601:1988) does.
+		  In contrast, the RDF mapping relies on XSD 1.1 (ISO 8601:2004) dates that use the proleptic Gregorian calendar
+		  and astronomical year numbering, where the year 1 BCE is represented as +0000 and the year 44 BCE
+		  is represented as -0043.
+		*/
+		// map negative dates from historical numbering to XSD 1.1
+		if (year < 0 && value.getPrecision() >= TimeValue.PREC_YEAR) {
+			year++;
+		}
+
+		byte month = value.getMonth();
+		byte day = value.getDay();
+
+		if ((value.getPrecision() < TimeValue.PREC_MONTH || month == 0) && !yearZero) {
+			month = 1;
+		}
+
+		if ((value.getPrecision() < TimeValue.PREC_DAY || day == 0) && !yearZero) {
+			day = 1;
+		}
+
+		if (value.getPrecision() >= TimeValue.PREC_DAY && !yearZero) {
+			int maxDays = Byte.MAX_VALUE;
+			if (month > 0 && month < 13) {
+				boolean leap =  (year % 4L) == 0L && (year % 100L != 0L || year % 400L == 0L);
+				maxDays = Month.of(month).length(leap);
+			}
+			if (day > maxDays) {
+				day = (byte)maxDays;
+			}
+		}
+
+		String minus = year < 0 ? "-" : "";
+		String timestamp = String.format("%s%04d-%02d-%02dT%02d:%02d:%02dZ",
+				minus, Math.abs(year), month, day,
 				value.getHour(), value.getMinute(), value.getSecond());
+		if (yearZero) {
+			return rdfWriter.getLiteral("+" + timestamp);
+		}
 		return rdfWriter.getLiteral(timestamp, RdfWriter.XSD_DATETIME);
 	}
 

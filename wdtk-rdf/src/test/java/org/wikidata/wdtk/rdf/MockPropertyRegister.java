@@ -69,12 +69,12 @@ public class MockPropertyRegister extends PropertyRegister {
 		}
 	}
 
-	static Map<String, String> KNOWN_URI_PATTERNS = new HashMap<String, String>();
+	static Map<String, String> KNOWN_URI_PATTERNS = new HashMap<>();
 	static {
 		KNOWN_URI_PATTERNS.put("P434", "https://musicbrainz.org/artist/$1");
 	}
 
-	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<String, String>();
+	static Map<String, String> KNOWN_PROPERTY_TYPES = new HashMap<>();
 	static {
 		KNOWN_PROPERTY_TYPES.put("P10", DatatypeIdValue.DT_COMMONS_MEDIA);
 		KNOWN_PROPERTY_TYPES.put("P1001", DatatypeIdValue.DT_ITEM);

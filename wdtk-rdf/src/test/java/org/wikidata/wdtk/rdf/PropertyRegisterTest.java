@@ -25,14 +25,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
@@ -40,10 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.DocumentDataFilter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
@@ -62,21 +57,21 @@ public class PropertyRegisterTest {
 
 	@Before
 	public void setUp() throws MediaWikiApiErrorException, IOException {
-		Map<String, EntityDocument> mockResult = new HashMap<String, EntityDocument>();
-		List<StatementGroup> mockStatementGroups = new ArrayList<StatementGroup>();
+		Map<String, EntityDocument> mockResult = new HashMap<>();
+		List<StatementGroup> mockStatementGroups = new ArrayList<>();
 
 		PropertyIdValue pid434 = dataObjectFactory.getPropertyIdValue("P434",
+				this.siteIri);
+		PropertyIdValue pid508 = dataObjectFactory.getPropertyIdValue("P508",
 				this.siteIri);
 		PropertyIdValue pid23 = dataObjectFactory.getPropertyIdValue("P23",
 				this.siteIri);
 		PropertyIdValue pid1921 = dataObjectFactory.getPropertyIdValue("P1921",
 				this.siteIri);
 
-		Statement p23Statement = dataObjectFactory.getStatement(pid434, dataObjectFactory
-						.getValueSnak(pid23, dataObjectFactory.getItemIdValue(
-								"Q42", this.siteIri)), Collections
-						.<SnakGroup> emptyList(), Collections
-						.<Reference> emptyList(), StatementRank.NORMAL, "000");
+		Statement p23Statement = dataObjectFactory.getStatement(pid434,
+				dataObjectFactory.getValueSnak(pid23, dataObjectFactory.getItemIdValue("Q42", this.siteIri)),
+				Collections.emptyList(), Collections.emptyList(), StatementRank.NORMAL, "000");
 
 		Statement p1921Statement = dataObjectFactory
 				.getStatement(
@@ -86,8 +81,20 @@ public class PropertyRegisterTest {
 										pid1921,
 										dataObjectFactory
 												.getStringValue("http://musicbrainz.org/$1/artist")),
-						Collections.<SnakGroup> emptyList(),
-						Collections.<Reference> emptyList(),
+						Collections.emptyList(),
+						Collections.emptyList(),
+						StatementRank.NORMAL, "000");
+
+		Statement p1921StatementExternalID = dataObjectFactory
+				.getStatement(
+						pid508,
+						dataObjectFactory
+								.getValueSnak(
+										pid1921,
+										dataObjectFactory
+												.getStringValue("http://purl.org/bncf/tid/$1")),
+						Collections.emptyList(),
+						Collections.emptyList(),
 						StatementRank.NORMAL, "000");
 
 		mockStatementGroups.add(dataObjectFactory.getStatementGroup(Collections
@@ -96,19 +103,27 @@ public class PropertyRegisterTest {
 				.singletonList(p1921Statement)));
 
 		mockResult.put("P434",
-				dataObjectFactory.getPropertyDocument(pid434, Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(),
+				dataObjectFactory.getPropertyDocument(pid434,
+						Collections.emptyList(), Collections.emptyList(),
+						Collections.emptyList(),
 						mockStatementGroups, dataObjectFactory
 								.getDatatypeIdValue(DatatypeIdValue.DT_STRING),
 						0));
 		mockResult.put("P23", dataObjectFactory.getPropertyDocument(pid23,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<StatementGroup> emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
 				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM),
+				0));
+		mockResult.put("P508", dataObjectFactory.getPropertyDocument(pid508,
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.singletonList(dataObjectFactory.getStatementGroup(
+						Collections.singletonList(p1921StatementExternalID)
+				)),
+				dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_EXTERNAL_ID),
 				0));
 
 		this.propertyRegister = new PropertyRegister("P1921",
@@ -116,14 +131,10 @@ public class PropertyRegisterTest {
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
-
-		List<String> propertyIds = new ArrayList<String>();
-		propertyIds.add("P434");
-		for (int i = 1; i < 50; i++) {
-			propertyIds.add("P" + i);
-		}
-		Mockito.when(dataFetcher.getEntityDocuments(propertyIds)).thenReturn(
-				mockResult);
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P434"))))
+				.thenReturn(mockResult);
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P508"))))
+				.thenReturn(mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
 		this.propertyRegister.dataFetcher = dataFetcher;
@@ -145,7 +156,15 @@ public class PropertyRegisterTest {
 				this.propertyRegister.getPropertyUriPattern(pid));
 		assertEquals(50,
 				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
-		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
+		assertTrue(this.propertyRegister.datatypes.containsKey("P434"));
+	}
+
+	@Test
+	public void testFetchPropertyUriPatternExternalID() {
+		PropertyIdValue pid = this.dataObjectFactory.getPropertyIdValue("P508",
+				this.siteIri);
+		assertEquals("http://purl.org/bncf/tid/$1",
+				this.propertyRegister.getPropertyUriPattern(pid));
 	}
 
 	@Test
@@ -159,25 +178,49 @@ public class PropertyRegisterTest {
 						.getPropertyIdValue("P434", this.siteIri)));
 		assertEquals(50,
 				this.propertyRegister.smallestUnfetchedPropertyIdNumber);
-		assertTrue(this.propertyRegister.datatypes.keySet().contains("P434"));
+		assertTrue(this.propertyRegister.datatypes.containsKey("P434"));
 	}
 
 	@Test
 	public void testGetMissingPropertyType() {
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		final int smallestBefore = this.propertyRegister.smallestUnfetchedPropertyIdNumber;
 		// Check twice to test fast failing on retry
 		assertNull(this.propertyRegister.getPropertyType(dataObjectFactory
-				.getPropertyIdValue("P10", this.siteIri)));
+				.getPropertyIdValue("P10000", this.siteIri)));
+		assertEquals("no requests should be made if the property is known to be missing",
+				smallestBefore, this.propertyRegister.smallestUnfetchedPropertyIdNumber);
 	}
 
 	@Test
 	public void testSetPropertyTypeFromEntityIdValue() {
+		PropertyIdValue pid = this.dataObjectFactory
+				.getPropertyIdValue("P1001", this.siteIri);
 		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
-				this.dataObjectFactory
-						.getPropertyIdValue("P1001", this.siteIri),
+				pid,
 				this.dataObjectFactory.getItemIdValue("Q20", this.siteIri)),
 				DatatypeIdValue.DT_ITEM);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getPropertyIdValue("P58", this.siteIri)),
+				DatatypeIdValue.DT_PROPERTY);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getLexemeIdValue("L343", this.siteIri)),
+				DatatypeIdValue.DT_LEXEME);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getFormIdValue("L343-F1", this.siteIri)),
+				DatatypeIdValue.DT_FORM);
+		
+		assertEquals(this.propertyRegister.setPropertyTypeFromEntityIdValue(
+				pid,
+				this.dataObjectFactory.getSenseIdValue("L343-S34", this.siteIri)),
+				DatatypeIdValue.DT_SENSE);
 	}
 
 	@Test

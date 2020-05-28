@@ -20,16 +20,14 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 import org.wikidata.wdtk.datamodel.interfaces.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Test general statement access methods as implemented in
@@ -70,14 +68,14 @@ public class StatementDocumentAccessTest {
 
 		assertEquals(s1, id.findStatement(p1));
 		assertEquals(s1, id.findStatement("P1"));
-		assertEquals(null, id.findStatement(p2));
-		assertEquals(null, id.findStatement("P2"));
-		assertEquals(null, id.findStatement(p3));
-		assertEquals(null, id.findStatement("P3"));
+		assertNull(id.findStatement(p2));
+		assertNull(id.findStatement("P2"));
+		assertNull(id.findStatement(p3));
+		assertNull(id.findStatement("P3"));
 
 		assertEquals(q1, id.findStatementValue(p1));
-		assertEquals(null, id.findStatementValue(p2));
-		assertEquals(null, id.findStatementValue(p3));
+		assertNull(id.findStatementValue(p2));
+		assertNull(id.findStatementValue(p3));
 	}
 
 	@Test
@@ -119,8 +117,8 @@ public class StatementDocumentAccessTest {
 		assertEquals(s3, id.findStatement("P3"));
 
 		assertEquals(q1, id.findStatementValue(p1));
-		assertEquals(null, id.findStatementValue(p2));
-		assertEquals(null, id.findStatementValue(p3));
+		assertNull(id.findStatementValue(p2));
+		assertNull(id.findStatementValue(p3));
 	}
 
 	@Test
@@ -137,8 +135,8 @@ public class StatementDocumentAccessTest {
 		assertEquals(q1, id.findStatementEntityIdValue("P1"));
 		assertEquals(q1, id.findStatementItemIdValue(p1));
 		assertEquals(q1, id.findStatementItemIdValue("P1"));
-		assertEquals(null, id.findStatementPropertyIdValue(p1));
-		assertEquals(null, id.findStatementPropertyIdValue("P1"));
+		assertNull(id.findStatementPropertyIdValue(p1));
+		assertNull(id.findStatementPropertyIdValue("P1"));
 	}
 
 	@Test
@@ -155,8 +153,8 @@ public class StatementDocumentAccessTest {
 		assertEquals(p2, id.findStatementEntityIdValue("P1"));
 		assertEquals(p2, id.findStatementPropertyIdValue(p1));
 		assertEquals(p2, id.findStatementPropertyIdValue("P1"));
-		assertEquals(null, id.findStatementItemIdValue(p1));
-		assertEquals(null, id.findStatementItemIdValue("P1"));
+		assertNull(id.findStatementItemIdValue(p1));
+		assertNull(id.findStatementItemIdValue("P1"));
 	}
 
 	@Test

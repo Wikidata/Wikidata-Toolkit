@@ -23,19 +23,13 @@ package org.wikidata.wdtk.dumpfiles;
 import java.io.IOException;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.LexemeDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
+import org.wikidata.wdtk.datamodel.helpers.JsonDeserializer;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A revision processor that processes Wikibase entity content from a dump file.
@@ -54,9 +48,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	 * from individual revisions.
 	 */
 	private final EntityDocumentProcessor entityDocumentProcessor;
-	private final ObjectReader itemReader;
-	private final ObjectReader propertyReader;
-	private final ObjectReader lexemeReader;
+	private final JsonDeserializer jsonDeserializer;
 
 
 	/**
@@ -71,14 +63,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 	public WikibaseRevisionProcessor(
 			EntityDocumentProcessor entityDocumentProcessor, String siteIri) {
 		this.entityDocumentProcessor = entityDocumentProcessor;
-
-		ObjectMapper mapper = new DatamodelMapper(siteIri);
-		itemReader = mapper.readerFor(ItemDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-		propertyReader = mapper.readerFor(PropertyDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-		lexemeReader = mapper.readerFor(LexemeDocumentImpl.class)
-				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		this.jsonDeserializer = new JsonDeserializer(siteIri);
 	}
 
 	@Override
@@ -109,7 +94,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		}
 
 		try {
-			ItemDocument document = itemReader.readValue(mwRevision.getText());
+			ItemDocument document = jsonDeserializer.deserializeItemDocument(mwRevision.getText());
 			entityDocumentProcessor.processItemDocument(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for item "
@@ -130,7 +115,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		}
 
 		try {
-			PropertyDocument document = propertyReader.readValue(mwRevision.getText());
+			PropertyDocument document = jsonDeserializer.deserializePropertyDocument(mwRevision.getText());
 			entityDocumentProcessor.processPropertyDocument(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for property "
@@ -151,7 +136,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 		}
 
 		try {
-			LexemeDocument document = lexemeReader.readValue(mwRevision.getText());
+			LexemeDocument document = jsonDeserializer.deserializeLexemeDocument(mwRevision.getText());
 			entityDocumentProcessor.processLexemeDocument(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for lexeme "

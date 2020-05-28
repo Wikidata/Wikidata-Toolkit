@@ -57,7 +57,7 @@ public class SitesImpl implements Sites {
 	 * @author Markus Kroetzsch
 	 *
 	 */
-	class SiteInformation {
+	static class SiteInformation {
 		final String siteKey;
 		final String group;
 		final String languageCode;
@@ -88,13 +88,11 @@ public class SitesImpl implements Sites {
 
 			int iFileName = filePath.indexOf("$1");
 			this.filePathPre = filePath.substring(0, iFileName);
-			this.filePathPost = filePath.substring(iFileName + 2,
-					filePath.length());
+			this.filePathPost = filePath.substring(iFileName + 2);
 
 			int iPageName = pagePath.indexOf("$1");
 			this.pagePathPre = pagePath.substring(0, iPageName);
-			this.pagePathPost = pagePath.substring(iPageName + 2,
-					pagePath.length());
+			this.pagePathPost = pagePath.substring(iPageName + 2);
 		}
 
 		/**
@@ -157,7 +155,7 @@ public class SitesImpl implements Sites {
 		}
 	}
 
-	final HashMap<String, SiteInformation> sites = new HashMap<String, SiteInformation>();
+	final HashMap<String, SiteInformation> sites = new HashMap<>();
 
 	@Override
 	public void setSiteInformation(String siteKey, String group,

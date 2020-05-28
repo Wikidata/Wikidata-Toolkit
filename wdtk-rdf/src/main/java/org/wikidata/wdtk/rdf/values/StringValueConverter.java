@@ -28,6 +28,10 @@ import org.wikidata.wdtk.rdf.OwlDeclarationBuffer;
 import org.wikidata.wdtk.rdf.PropertyRegister;
 import org.wikidata.wdtk.rdf.RdfWriter;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class StringValueConverter extends AbstractValueConverter<StringValue> {
 
 	public StringValueConverter(RdfWriter rdfWriter,
@@ -97,13 +101,22 @@ public class StringValueConverter extends AbstractValueConverter<StringValue> {
 	 * @return URL of the page
 	 */
 	static String getCommonsFileUrl(String pageName) {
-		return "http://commons.wikimedia.org/wiki/File:"
-				+ pageName.replace(' ', '_');
+		try {
+			return "http://commons.wikimedia.org/wiki/File:"
+					+ URLEncoder.encode(pageName.replace(' ', '_'), StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			// can't happen
+			throw new IllegalStateException(e);
+		}
 	}
 
 	static String getCommonsDataUrl(String pageName) {
-		return "http://commons.wikimedia.org/data/main/"
-				+ pageName.replace(' ', '_');
+		try {
+			return "http://commons.wikimedia.org/data/main/"
+					+ URLEncoder.encode(pageName.replace(' ', '_'), StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 }

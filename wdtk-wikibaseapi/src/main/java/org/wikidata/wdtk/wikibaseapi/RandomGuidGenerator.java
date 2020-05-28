@@ -43,10 +43,6 @@ public class RandomGuidGenerator implements GuidGenerator {
 	@Override
 	public String freshStatementId(String entityId) {
 		String uuid = UUID.randomUUID().toString().toUpperCase();
-		StringBuilder builder = new StringBuilder();
-		builder.append(entityId);
-		builder.append(STATEMENT_GUID_SEPARATOR);
-		builder.append(uuid);
-		return builder.toString();
+		return entityId + STATEMENT_GUID_SEPARATOR + uuid;
 	}
 }

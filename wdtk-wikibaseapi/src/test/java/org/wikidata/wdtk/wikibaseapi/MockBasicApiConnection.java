@@ -54,7 +54,7 @@ public class MockBasicApiConnection extends BasicApiConnection {
 	 */
 	public MockBasicApiConnection() {
 		super("https://mocked.api.connection/w/api.php");
-		webResources = new HashMap<Integer, byte[]>();
+		webResources = new HashMap<>();
 	}
 
 	/**
@@ -89,8 +89,6 @@ public class MockBasicApiConnection extends BasicApiConnection {
 	 *            the path to the java resource
 	 * @param compressionType
 	 *            the compression type of the resource file
-	 * @throws MalformedURLException
-	 *
 	 * @throws IOException
 	 *             if the Java resource could not be loaded
 	 */

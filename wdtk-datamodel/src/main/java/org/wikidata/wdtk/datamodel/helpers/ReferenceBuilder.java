@@ -136,12 +136,10 @@ public class ReferenceBuilder extends
 	 * @return
 	 */
 	protected ArrayList<Snak> getSnakList(PropertyIdValue propertyIdValue) {
-		ArrayList<Snak> result = this.snaks.get(propertyIdValue);
-		if (result == null) {
-			result = new ArrayList<Snak>();
-			this.snaks.put(propertyIdValue, result);
+		if(!snaks.containsKey(propertyIdValue)) {
+			snaks.put(propertyIdValue, new ArrayList<>());
 		}
-		return result;
+		return this.snaks.get(propertyIdValue);
 	}
 
 }

@@ -1,0 +1,291 @@
+{
+  "pageid": 30034564,
+  "ns": 120,
+  "title": "Property:P3467",
+  "lastrevid": 830819467,
+  "modified": "2019-01-09T10:01:52Z",
+  "type": "property",
+  "datatype": "external-id",
+  "id": "P3467",
+  "labels": {
+    "en": {
+      "language": "en",
+      "value": "Inventario Sculture - Polo Museale Fiorentino"
+    },
+    "fr": {
+      "language": "fr",
+      "value": "identifiant Inventario Sculture"
+    },
+    "de": {
+      "language": "de",
+      "value": "Inventario Sculture - Polo Museale Fiorentino"
+    },
+    "nl": {
+      "language": "nl",
+      "value": "Inventario Sculture - Polo Museale Fiorentino-identificatiecode"
+    },
+    "it": {
+      "language": "it",
+      "value": "Inventario Sculture - Polo Museale Fiorentino"
+    },
+    "uk": {
+      "language": "uk",
+      "value": "ідентифікатор Inventario Sculture - Polo Museale Fiorentino"
+    },
+    "ar": {
+      "language": "ar",
+      "value": "مخزون تماثيل متاحف فلورنسا"
+    }
+  },
+  "descriptions": {
+    "en": {
+      "language": "en",
+      "value": "identifier of an artwork in the inventory of sculptures of Florentine museums"
+    },
+    "fr": {
+      "language": "fr",
+      "value": "identifiant d'une œuvre d'art dans l'inventaire des musée de Florence"
+    },
+    "de": {
+      "language": "de",
+      "value": "Identifikator im Skulpturenverzeichnis der Florentiner Museen"
+    },
+    "uk": {
+      "language": "uk",
+      "value": "ідентифікатор твору в реєстрі скульптур флорентійських музеїв"
+    }
+  },
+  "aliases": {
+    "fr": [
+      {
+        "language": "fr",
+        "value": "identifiant Musées florentins dans l'inventaire des sculptures"
+      }
+    ],
+    "ar": [
+      {
+        "language": "ar",
+        "value": "تماثيل متاحف فلورنسا"
+      },
+      {
+        "language": "ar",
+        "value": "متاحف فلورنسا"
+      }
+    ]
+  },
+  "claims": {
+    "P1630": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P1630",
+          "hash": "9b277739598a6d628ba53d6f60715f9710a02da0",
+          "datavalue": {
+            "value": "http://www.polomuseale.firenze.it/invSculture/scheda.asp?position=1&ninv=$1",
+            "type": "string"
+          },
+          "datatype": "string"
+        },
+        "type": "statement",
+        "id": "P3467$ae93c71e-4136-76e7-fe65-8a9b7b56fc91",
+        "rank": "normal"
+      }
+    ],
+    "P1855": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P1855",
+          "hash": "97a73a7c139f349a76231c5a859b8135751d9da0",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 179900,
+              "id": "Q179900"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "qualifiers": {
+          "P3467": [
+            {
+              "snaktype": "value",
+              "property": "P3467",
+              "hash": "78e7e897edc03f2a240745407bb7a72c908b90b2",
+              "datavalue": {
+                "value": "1076",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            }
+          ]
+        },
+        "qualifiers-order": [
+          "P3467"
+        ],
+        "id": "P3467$47877943-4a51-e3cb-ebf3-994a93462c16",
+        "rank": "normal"
+      }
+    ],
+    "P1659": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P1659",
+          "hash": "995c8df1850c9b9ba0b64e046e87589f6b2166b8",
+          "datavalue": {
+            "value": {
+              "entity-type": "property",
+              "numeric-id": 1726,
+              "id": "P1726"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-property"
+        },
+        "type": "statement",
+        "id": "P3467$3207cb44-4f32-1d3f-a528-26263d9c23b2",
+        "rank": "normal"
+      },
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P1659",
+          "hash": "5350e2f34085bd8efe0fc409f6fafc8e2a19ab66",
+          "datavalue": {
+            "value": {
+              "entity-type": "property",
+              "numeric-id": 3504,
+              "id": "P3504"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-property"
+        },
+        "type": "statement",
+        "id": "P3467$f4e38de1-4e20-d61a-df96-2712a2d06968",
+        "rank": "normal"
+      }
+    ],
+    "P31": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P31",
+          "hash": "f4decee31e9752960d9623ea58d1dfd672b31341",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 19847637,
+              "id": "Q19847637"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "P3467$20910560-30AC-45BA-A59A-3D360FFCD8F1",
+        "rank": "normal"
+      },
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P31",
+          "hash": "1f57f44f72b149c4f7fca8eedaf8f07f7ca3324f",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 44847669,
+              "id": "Q44847669"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "P3467$861b3b1c-4456-a89d-609a-920d583accde",
+        "rank": "normal"
+      },
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P31",
+          "hash": "c65038907f055c45440c54a515d4b0d2962edf25",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 45312863,
+              "id": "Q45312863"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "P3467$e3c68b14-41b3-68fb-8311-6360b1f2a90b",
+        "rank": "normal"
+      }
+    ],
+    "P3254": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P3254",
+          "hash": "edbfa6b14cc828f6026a70112475cb16704a5a1a",
+          "datavalue": {
+            "value": "https://www.wikidata.org/wiki/Wikidata:Property_proposal/Inventario_Sculture_-_Polo_Museale_Fiorentino",
+            "type": "string"
+          },
+          "datatype": "url"
+        },
+        "type": "statement",
+        "id": "P3467$FE8D4091-AABB-4445-98C6-DF894971F5C4",
+        "rank": "normal"
+      }
+    ],
+    "P17": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P17",
+          "hash": "b48529e9f7e0898ab1ddaefe8547cdb863e0167c",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 38,
+              "id": "Q38"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "P3467$e4c3c067-48ba-cdae-aae7-3cf6295abf67",
+        "rank": "normal"
+      }
+    ],
+    "P2875": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P2875",
+          "hash": "dbf395280e2e27dbd093e482bb2915baae993e77",
+          "datavalue": {
+            "value": {
+              "entity-type": "item",
+              "numeric-id": 45312584,
+              "id": "Q45312584"
+            },
+            "type": "wikibase-entityid"
+          },
+          "datatype": "wikibase-item"
+        },
+        "type": "statement",
+        "id": "P3467$91df8651-4147-8940-be42-22d7e30dd1b4",
+        "rank": "normal"
+      }
+    ]
+  }
+}

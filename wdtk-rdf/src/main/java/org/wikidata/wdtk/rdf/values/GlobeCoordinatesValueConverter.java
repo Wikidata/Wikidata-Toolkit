@@ -105,9 +105,9 @@ public class GlobeCoordinatesValueConverter extends
 					.append("> ");
 		}
 		builder.append("Point(");
-		builder.append(value.getLatitude());
-		builder.append(" ");
 		builder.append(value.getLongitude());
+		builder.append(" ");
+		builder.append(value.getLatitude());
 		builder.append(")");
 		return this.rdfWriter.getLiteral(builder.toString(),
 				RdfWriter.OGC_LOCATION);

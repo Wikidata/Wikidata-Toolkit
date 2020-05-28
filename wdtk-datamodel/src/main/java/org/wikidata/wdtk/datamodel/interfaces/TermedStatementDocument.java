@@ -31,7 +31,7 @@ import java.util.Set;
  * @author antonin
  *
  */
-public interface TermedStatementDocument extends TermedDocument, StatementDocument {
+public interface TermedStatementDocument extends TermedDocument, LabeledStatementDocument {
 
 	@Override
 	TermedStatementDocument withRevisionId(long newRevisionId);

@@ -39,7 +39,12 @@ public class Datamodel {
 	/**
 	 * The site IRI of Wikidata.
 	 */
-	static public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
+	static final public String SITE_WIKIDATA = "http://www.wikidata.org/entity/";
+
+	/**
+	 * The site IRI of Wikimedia Commons.
+	 */
+	static final public String SITE_WIKIMEDIA_COMMONS = "http://commons.wikimedia.org/entity/";
 
 	private final static DataObjectFactory factory = new DataObjectFactoryImpl();
 
@@ -181,6 +186,34 @@ public class Datamodel {
 	 */
 	public static SenseIdValue makeWikidataSenseIdValue(String id) {
 		return factory.getSenseIdValue(id, SITE_WIKIDATA);
+	}
+
+	/**
+	 * Creates an {@link MediaInfoIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Mn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return an {@link MediaInfoIdValue} corresponding to the input
+	 */
+	public static MediaInfoIdValue makeMediaInfoIdValue(String id, String siteIri) {
+		return factory.getMediaInfoIdValue(id, siteIri);
+	}
+
+	/**
+	 * Creates an {@link MediaInfoIdValue} for Wikimedia Commons.
+	 *
+	 * @param id
+	 *            a string of the form Mn... where n... is the string
+	 *            representation of a positive integer number
+	 * @return an {@link MediaInfoIdValue} corresponding to the input
+	 */
+	public static MediaInfoIdValue makeWikimediaCommonsMediaInfoIdValue(String id) {
+		return factory.getMediaInfoIdValue(id, SITE_WIKIMEDIA_COMMONS);
 	}
 
 	/**
@@ -347,11 +380,47 @@ public class Datamodel {
 	 * @param unit
 	 *            the unit identifier to use for this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, BigDecimal, BigDecimal, ItemIdValue)}
 	 */
+	@Deprecated
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
 				unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue}.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
+				unit.getIri());
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, ItemIdValue)}
+	 */
+	@Deprecated
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
+		return factory.getQuantityValue(numericValue, unit);
 	}
 
 	/**
@@ -363,8 +432,8 @@ public class Datamodel {
 	 *            the unit identifier to use for this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
-	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
-		return factory.getQuantityValue(numericValue, unit);
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, ItemIdValue unit) {
+		return factory.getQuantityValue(numericValue, unit.getIri());
 	}
 
 	/**
@@ -579,6 +648,20 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates an empty {@link PropertyDocument}.
+	 *
+	 * @param propertyId
+	 *            the id of the property that data is about
+	 * @param datatypeId
+	 *            the datatype of that property
+	 * @return a {@link PropertyDocument} corresponding to the input
+	 */
+	public static PropertyDocument makePropertyDocument(PropertyIdValue propertyId, DatatypeIdValue datatypeId) {
+		return makePropertyDocument(propertyId, Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList(), datatypeId);
+	}
+
+	/**
 	 * Creates a {@link PropertyDocument} without statements and empty revision
 	 * id. It might be more convenient to use the
 	 * {@link PropertyDocumentBuilder} instead.
@@ -596,7 +679,7 @@ public class Datamodel {
 	 * @param datatypeId
 	 *            the datatype of that property
 	 * @return a {@link PropertyDocument} corresponding to the input
-	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue, long)}
+	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue)}
 	 */
 	@Deprecated
 	public static PropertyDocument makePropertyDocument(
@@ -672,6 +755,18 @@ public class Datamodel {
 	}
 
 	/**
+	 * Creates an empty{@link ItemDocument}.
+	 *
+	 * @param itemIdValue
+	 *            the id of the item that data is about
+	 * @return an {@link ItemDocument} corresponding to the input
+	 */
+	public static ItemDocument makeItemDocument(ItemIdValue itemIdValue) {
+		return makeItemDocument(itemIdValue, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyMap(), 0);
+	}
+
+	/**
 	 * Creates an {@link ItemDocument} with empty revision id. It might be more
 	 * convenient to use the {@link ItemDocumentBuilder} instead.
 	 *
@@ -737,7 +832,28 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link LexemeDocument}.
+	 * Creates an empty {@link LexemeDocument}.
+	 *
+	 * @param lexemeIdValue
+	 *            the id of the lexeme that data is about
+	 * @param lexicalCategory
+	 *            the lexical category to which the lexeme belongs
+	 *            (noun, verb...)
+	 * @param language
+	 *            the language to which the lexeme belongs
+	 * 	          (French, British English...)
+	 * @param lemmas
+	 *            the human readable representations of the lexeme
+	 * @return a {@link LexemeDocument} corresponding to the input
+	 */
+	public static LexemeDocument makeLexemeDocument(LexemeIdValue lexemeIdValue,
+			ItemIdValue lexicalCategory, ItemIdValue language, List<MonolingualTextValue> lemmas) {
+		return makeLexemeDocument(lexemeIdValue, lexicalCategory, language,
+				lemmas, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a {@link LexemeDocument}.
 	 *
 	 * @param lexemeIdValue
 	 *            the id of the lexeme that data is about
@@ -770,7 +886,10 @@ public class Datamodel {
 
 
 	/**
-	 * Creates an {@link FormDocument}.
+	 * Creates a {@link FormDocument}.
+	 *
+	 * If you plan to add this form to a specific lexeme,
+	 * it might be easier to use {@link LexemeDocument#createForm}.
 	 *
 	 * @param formIdValue
 	 *            the id of the form that data is about
@@ -792,7 +911,10 @@ public class Datamodel {
 	}
 
 	/**
-	 * Creates an {@link SenseDocument}.
+	 * Creates a {@link SenseDocument}.
+	 *
+	 * If you plan to add this sense to a specific lexeme,
+	 * it might be easier to use {@link LexemeDocument#createSense)}.
 	 *
 	 * @param senseIdValue
 	 *            the id of the form that data is about
@@ -810,4 +932,33 @@ public class Datamodel {
 		return factory.getSenseDocument(senseIdValue, glosses, statementGroups, 0);
 	}
 
+	/**
+	 * Creates an empty {@link MediaInfoDocument}.
+	 *
+	 * @param mediaInfoIdValue
+	 *            the id of the media that data is about
+	 * @return an {@link MediaInfoDocument} corresponding to the input
+	 */
+	public static MediaInfoDocument makeMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue) {
+		return makeMediaInfoDocument(mediaInfoIdValue, Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a {@link MediaInfoDocument}.
+	 *
+	 * @param mediaInfoIdValue
+	 *            the id of the media that data is about
+	 * @param labels
+	 *            the list of labels of this media, with at most one label for
+	 *            each language code
+	 * @param statementGroups
+	 *            the list of statement groups of this media info; all of them must
+	 *            have the given mediaInfoIdValue as their subject
+	 * @return an {@link MediaInfoDocument} corresponding to the input
+	 */
+	public static MediaInfoDocument makeMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue,
+												List<MonolingualTextValue> labels,
+												List<StatementGroup> statementGroups) {
+		return factory.getMediaInfoDocument(mediaInfoIdValue, labels, statementGroups, 0);
+	}
 }

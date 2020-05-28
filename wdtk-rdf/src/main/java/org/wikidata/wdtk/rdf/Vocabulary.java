@@ -24,18 +24,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
-import org.wikidata.wdtk.datamodel.interfaces.Reference;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.wikibaseapi.GuidGenerator;
+import org.wikidata.wdtk.wikibaseapi.RandomGuidGenerator;
 
 /**
  * This class contains static methods and constants that define the various OWL
@@ -56,6 +49,8 @@ public class Vocabulary {
 		}
 	}
 
+	private final static GuidGenerator GUID_GENERATOR = new RandomGuidGenerator();
+
 	// Prefixes
 	public static final String PREFIX_WIKIDATA_STATEMENT = "http://www.wikidata.org/entity/statement/";
 
@@ -74,7 +69,7 @@ public class Vocabulary {
 
 	public static final String PREFIX_WIKIDATA_NO_VALUE = "http://www.wikidata.org/prop/novalue/";
 
-	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = "http://www.wikidata.org/prop/noqualifiervalue/";
+	public static final String PREFIX_WIKIDATA_NO_QUALIFIER_VALUE = PREFIX_WIKIDATA_NO_VALUE;
 
 	public static final String PREFIX_WIKIDATA_VALUE = "http://www.wikidata.org/value/";
 
@@ -123,7 +118,7 @@ public class Vocabulary {
 	 * even when importing ontologies that provide further details on some of
 	 * the vocabulary.
 	 */
-	static final Map<String, String> VOCABULARY_TYPES = new HashMap<String, String>();
+	static final Map<String, String> VOCABULARY_TYPES = new HashMap<>();
 
 	// Vocabulary elements that are not declared by the ontology language
 
@@ -233,7 +228,7 @@ public class Vocabulary {
 	 * Class for Wikibase globe coordinates values.
 	 */
 	public static final String WB_GLOBE_COORDINATES_VALUE = PREFIX_WBONTO
-			+ "GlobeCoordinatesValue";
+			+ "GlobecoordinateValue";
 	static {
 		VOCABULARY_TYPES.put(WB_GLOBE_COORDINATES_VALUE, OWL_CLASS);
 	}
@@ -476,8 +471,7 @@ public class Vocabulary {
 	 * Property for connecting Wikibase property entities to their no-value
 	 * classes for qualifiers.
 	 */
-	public static final String WB_NO_QUALIFIER_VALUE_PROP = PREFIX_WBONTO
-			+ "noqualifiervalue";
+	public static final String WB_NO_QUALIFIER_VALUE_PROP = WB_NO_VALUE_PROP;
 	static {
 		VOCABULARY_TYPES.put(WB_NO_QUALIFIER_VALUE_PROP, OWL_OBJECT_PROPERTY);
 	}
@@ -499,10 +493,11 @@ public class Vocabulary {
 	 * @return the URI
 	 */
 	public static String getStatementUri(Statement statement) {
-		int i = statement.getStatementId().indexOf('$') + 1;
-		return PREFIX_WIKIDATA_STATEMENT
-				+ statement.getSubject().getId() + "-"
-				+ statement.getStatementId().substring(i);
+		String statementId = statement.getStatementId();
+		if (statementId == null || statementId.isEmpty()) {
+			statementId = GUID_GENERATOR.freshStatementId(statement.getSubject().getId());
+		}
+		return PREFIX_WIKIDATA_STATEMENT + statementId.replaceFirst("\\$", "-");
 	}
 
 	/**
@@ -543,12 +538,17 @@ public class Vocabulary {
 	}
 
 	public static String getReferenceUri(Reference reference) {
-		md.reset();
-		for (SnakGroup snakgroup : reference.getSnakGroups()) {
-			for (Snak snak : snakgroup) {
-				updateMessageDigestWithInt(md, snak.hashCode());
-			}
+		final String hash = reference.getHash();
+		if (hash != null) {
+			return PREFIX_WIKIDATA_REFERENCE + hash;
 		}
+
+		md.reset();
+		reference.getSnakGroups().stream()
+				.flatMap(g -> g.getSnaks().stream())
+				.map(Objects::hashCode)
+				.sorted()
+				.forEach(i -> updateMessageDigestWithInt(md, i));
 
 		return PREFIX_WIKIDATA_REFERENCE + bytesToHex(md.digest());
 	}
@@ -561,6 +561,7 @@ public class Vocabulary {
 		md.update(value.getHour());
 		md.update(value.getMinute());
 		md.update(value.getSecond());
+		md.update(value.getPrecision());
 		updateMessageDigestWithString(md, value.getPreferredCalendarModel());
 		updateMessageDigestWithInt(md, value.getBeforeTolerance());
 		updateMessageDigestWithInt(md, value.getAfterTolerance());
@@ -594,6 +595,19 @@ public class Vocabulary {
 		updateMessageDigestWithInt(md, value.getUnit().hashCode());
 
 		return PREFIX_WIKIDATA_VALUE + bytesToHex(md.digest());
+	}
+
+	public static String getStatementRankUri(StatementRank rank) {
+		switch (rank) {
+			case NORMAL:
+				return Vocabulary.WB_NORMAL_RANK;
+			case PREFERRED:
+				return Vocabulary.WB_PREFERRED_RANK;
+			case DEPRECATED:
+				return Vocabulary.WB_DEPRECATED_RANK;
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 
 	static ByteBuffer longByteBuffer = ByteBuffer.allocate(Long.SIZE / 8);

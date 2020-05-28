@@ -57,7 +57,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * 
      * @author antonin
      */
-    private class NameWithUpdate {
+    private static class NameWithUpdate {
         public MonolingualTextValue value;
         public boolean write;
         
@@ -72,7 +72,7 @@ public class TermStatementUpdate extends StatementUpdate {
      * 
      * @author antonin
      */
-    private class AliasesWithUpdate {
+    private static class AliasesWithUpdate {
         public List<MonolingualTextValue> aliases;
         public List<MonolingualTextValue> added;
         public List<MonolingualTextValue> deleted;
@@ -133,8 +133,8 @@ public class TermStatementUpdate extends StatementUpdate {
         newAliases = new HashMap<>();
         for(Map.Entry<String, List<MonolingualTextValue>> entry : currentDocument.getAliases().entrySet()) {
             newAliases.put(entry.getKey(),
-                    new AliasesWithUpdate(
-                    		new ArrayList<>(entry.getValue()), false));
+					new AliasesWithUpdate(
+							new ArrayList<>(entry.getValue()), false));
         }
         
         // Add changes
@@ -154,7 +154,7 @@ public class TermStatementUpdate extends StatementUpdate {
     	Map<String, NameWithUpdate> updates = new HashMap<>();
         for(MonolingualTextValue label: currentValues) {
             updates.put(label.getLanguageCode(),
-                    new NameWithUpdate(label, false));
+					new NameWithUpdate(label, false));
         }
         return updates;
     }
@@ -211,7 +211,7 @@ public class TermStatementUpdate extends StatementUpdate {
         // If the new alias is equal to the current label, skip it
         } else if (!currentLabel.value.equals(alias)) {
         	if (currentAliasesUpdate == null) {
-        		currentAliasesUpdate = new AliasesWithUpdate(new ArrayList<MonolingualTextValue>(), true);
+        		currentAliasesUpdate = new AliasesWithUpdate(new ArrayList<>(), true);
         	}
         	List<MonolingualTextValue> currentAliases = currentAliasesUpdate.aliases;
         	if(!currentAliases.contains(alias)) {
@@ -235,7 +235,7 @@ public class TermStatementUpdate extends StatementUpdate {
         	// only mark the description as added if the value we are writing is different from the current one
         	if (currentValue == null || !currentValue.value.equals(description)) {
         		newDescriptions.put(description.getLanguageCode(),
-                    new NameWithUpdate(description, true));
+						new NameWithUpdate(description, true));
         	}
         }
     }
@@ -252,7 +252,7 @@ public class TermStatementUpdate extends StatementUpdate {
         	NameWithUpdate currentValue = newLabels.get(lang);
         	if (currentValue == null || !currentValue.value.equals(label)) {
 	            newLabels.put(lang,
-	                    new NameWithUpdate(label, true));
+						new NameWithUpdate(label, true));
 	            
 	            // Delete any alias that matches the new label
 	            AliasesWithUpdate currentAliases = newAliases.get(lang);
@@ -329,7 +329,7 @@ public class TermStatementUpdate extends StatementUpdate {
     public List<MonolingualTextValue> getAddedAliases(String language) {
 		AliasesWithUpdate update = newAliases.get(language);
 		if (update == null) {
-			return Collections.<MonolingualTextValue>emptyList();
+			return Collections.emptyList();
 		}
 		return update.added;
 	}
@@ -346,7 +346,7 @@ public class TermStatementUpdate extends StatementUpdate {
 	public List<MonolingualTextValue> getRemovedAliases(String language) {
 		AliasesWithUpdate update = newAliases.get(language);
 		if (update == null) {
-			return Collections.<MonolingualTextValue>emptyList();
+			return Collections.emptyList();
 		}
 		return update.deleted;
 	}
@@ -356,18 +356,33 @@ public class TermStatementUpdate extends StatementUpdate {
 	 * Performs the update, selecting the appropriate API action depending on
 	 * the nature of the change.
 	 * 
+	 * @param action
+	 *       the endpoint to which the change should be pushed
+	 * @param editAsBot
+	 *        if true, the edit will be flagged as a "bot edit" provided that
+	 *        the logged in user is in the bot group; for regular users, the
+	 *        flag will just be ignored
+	 * @param summary
+	 *        summary for the edit; will be prepended by an automatically
+	 *        generated comment; the length limit of the autocomment
+	 *        together with the summary is 260 characters: everything above
+	 *        that limit will be cut off
+	 * @param tags
+	 *        string identifiers of the tags to apply to the edit.
+	 *        Ignored if null or empty.
 	 * @return the new document after update with the API
 	 * @throws MediaWikiApiErrorException 
 	 * @throws IOException 
 	 */
     @Override
-	public TermedStatementDocument performEdit(WbEditingAction action, boolean editAsBot, String summary)
+	public TermedStatementDocument performEdit(
+			WbEditingAction action, boolean editAsBot, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		Map<String, TermImpl> labelUpdates = getLabelUpdates();
 		Map<String, TermImpl> descriptionUpdates = getDescriptionUpdates();
 		Map<String, List<TermImpl>> aliasUpdates = getAliasUpdates();
 		if (labelUpdates.isEmpty() && descriptionUpdates.isEmpty() && aliasUpdates.isEmpty()) {
-			return (TermedStatementDocument) super.performEdit(action, editAsBot, summary);	
+			return (TermedStatementDocument) super.performEdit(action, editAsBot, summary, tags);	
 		} else {
 			if (super.isEmptyEdit()) {
 				if(labelUpdates.size() == 1
@@ -380,7 +395,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetLabel(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, value.getText(), editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					MonolingualTextValue respondedLabel = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","labels",language), TermImpl.class);
@@ -397,7 +412,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetDescription(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, value.getText(), editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					MonolingualTextValue respondedDescription = getDatamodelObjectFromResponse(response,
 							Arrays.asList("entity","descriptions",language), TermImpl.class);
@@ -423,7 +438,7 @@ public class TermStatementUpdate extends StatementUpdate {
 					JsonNode response = action.wbSetAliases(
 							currentDocument.getEntityId().getId(),
 							null, null, null, language, addedStrings, removedStrings, null, editAsBot,
-							currentDocument.getRevisionId(), summary);
+							currentDocument.getRevisionId(), summary, tags);
 					
 					long revisionId = getRevisionIdFromResponse(response);
 
@@ -439,7 +454,7 @@ public class TermStatementUpdate extends StatementUpdate {
 			EntityDocument response = action.wbEditEntity(currentDocument
 				.getEntityId().getId(), null, null, null, getJsonUpdateString(),
 				false, editAsBot, currentDocument
-				.getRevisionId(), summary);
+				.getRevisionId(), summary, tags);
 			return (TermedStatementDocument) response;
     	}
 	}

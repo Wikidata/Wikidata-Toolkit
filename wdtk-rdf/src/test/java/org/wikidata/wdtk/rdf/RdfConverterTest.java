@@ -73,7 +73,7 @@ public class RdfConverterTest {
 	final DataObjectFactory dataObjectFactory = new DataObjectFactoryImpl();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfWriter = new RdfWriter(RDFFormat.TURTLE, out);
 		this.sites = new SitesImpl();
@@ -126,7 +126,7 @@ public class RdfConverterTest {
 		StatementRank rank = StatementRank.DEPRECATED;
 		Resource subject = this.rdfFactory
 				.createIRI("http://www.wikidata.org/Q10Snone");
-		this.rdfConverter.writeStatementRankTriple(subject, rank);
+		this.rdfConverter.writeStatementRankTriple(subject, rank, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -134,10 +134,23 @@ public class RdfConverterTest {
 	}
 
 	@Test
+	public void testWriteStatementRankTripleBest() throws RDFHandlerException,
+			RDFParseException, IOException {
+		StatementRank rank = StatementRank.NORMAL;
+		Resource subject = this.rdfFactory
+				.createIRI("http://www.wikidata.org/Q10Snone");
+		this.rdfConverter.writeStatementRankTriple(subject, rank, true);
+		this.rdfWriter.finish();
+		Model model = RdfTestHelpers.parseRdf(this.out.toString());
+		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
+				.getResourceFromFile("StatementRankTripleBest.rdf")), model);
+	}
+
+	@Test
 	public void testStatementSimpleValue() throws RDFHandlerException,
 			RDFParseException, IOException {
-		Statement statement = objectFactory.createStatement("Q100", "P227");
-		this.rdfConverter.writeStatement(statement);
+		Statement statement = objectFactory.createStatement("Q100", "P227").withStatementId("Q100-id111");
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -152,8 +165,9 @@ public class RdfConverterTest {
 				GlobeCoordinatesValue.GLOBE_EARTH);
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, PropertyIdValue.NULL)
+				.withId("Q0$test")
 				.withValue(value).build();
-		this.rdfConverter.writeStatement(statement);
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -166,8 +180,9 @@ public class RdfConverterTest {
 		PropertyIdValue pid = dataObjectFactory.getPropertyIdValue("P31", "http://www.wikidata.org/");
 		Statement statement = StatementBuilder
 				.forSubjectAndProperty(ItemIdValue.NULL, pid)
+				.withId("Q0$test")
 				.withNoValue().build();
-		this.rdfConverter.writeStatement(statement);
+		this.rdfConverter.writeFullStatement(statement, false);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
@@ -229,7 +244,7 @@ public class RdfConverterTest {
 		Statement statement1 = dataObjectFactory.getStatement(itemValue, mainSnak1,
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "10103");
-		List<Statement> statementList1 = new ArrayList<Statement>();
+		List<Statement> statementList1 = new ArrayList<>();
 		statementList1.add(statement1);
 		StatementGroup statementGroup1 = this.dataObjectFactory
 				.getStatementGroup(statementList1);
@@ -239,19 +254,19 @@ public class RdfConverterTest {
 		Statement statement2 = dataObjectFactory.getStatement(itemValue, mainSnak2,
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "10104");
-		List<Statement> statementList2 = new ArrayList<Statement>();
+		List<Statement> statementList2 = new ArrayList<>();
 		statementList2.add(statement2);
 		StatementGroup statementGroup2 = this.dataObjectFactory
 				.getStatementGroup(statementList2);
 
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		List<StatementGroup> statementGroups = new ArrayList<>();
 		statementGroups.add(statementGroup1);
 		statementGroups.add(statementGroup2);
 		return dataObjectFactory.getItemDocument(itemValue,
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				Collections.<MonolingualTextValue> emptyList(),
-				statementGroups, Collections.<String, SiteLink> emptyMap(), 0);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				statementGroups, Collections.emptyMap(), 0);
 	}
 
 	private PropertyDocument createTestPropertyDocument() {
@@ -262,18 +277,18 @@ public class RdfConverterTest {
 		PropertyIdValue subclassOf = this.dataObjectFactory.getPropertyIdValue(
 				"P279", "http://www.wikidata.org/");
 
-		List<MonolingualTextValue> labels = new ArrayList<MonolingualTextValue>();
-		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
-		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> labels = new ArrayList<>();
+		List<MonolingualTextValue> descriptions = new ArrayList<>();
+		List<MonolingualTextValue> aliases = new ArrayList<>();
 
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 		statements.add(this.dataObjectFactory.getStatement(propertyIdValue,
 				this.dataObjectFactory.getValueSnak(subpropertyOf, subclassOf),
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
 		StatementGroup statementGroup = this.dataObjectFactory
 				.getStatementGroup(statements);
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		List<StatementGroup> statementGroups = new ArrayList<>();
 		statementGroups.add(statementGroup);
 
 		DatatypeIdValue datatypeId = this.dataObjectFactory
@@ -291,18 +306,18 @@ public class RdfConverterTest {
 		PropertyIdValue wrongProperty = this.dataObjectFactory
 				.getPropertyIdValue("P90000", "http://www.wikidata.org/");
 
-		List<MonolingualTextValue> labels = new ArrayList<MonolingualTextValue>();
-		List<MonolingualTextValue> descriptions = new ArrayList<MonolingualTextValue>();
-		List<MonolingualTextValue> aliases = new ArrayList<MonolingualTextValue>();
+		List<MonolingualTextValue> labels = new ArrayList<>();
+		List<MonolingualTextValue> descriptions = new ArrayList<>();
+		List<MonolingualTextValue> aliases = new ArrayList<>();
 
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 		statements.add(this.dataObjectFactory.getStatement(propertyIdValue,
 				this.dataObjectFactory.getValueSnak(subpropertyOf, wrongProperty),
 				Collections.emptyList(), Collections.emptyList(),
 				StatementRank.NORMAL, "P171$6fb788c6-4e81-8398-3a1a-68f8b98a8943"));
 		StatementGroup statementGroup = this.dataObjectFactory
 				.getStatementGroup(statements);
-		List<StatementGroup> statementGroups = new ArrayList<StatementGroup>();
+		List<StatementGroup> statementGroups = new ArrayList<>();
 		statementGroups.add(statementGroup);
 
 		DatatypeIdValue datatypeId = this.dataObjectFactory
@@ -316,12 +331,13 @@ public class RdfConverterTest {
 	public void testWriteSimpleStatements() throws RDFHandlerException,
 			RDFParseException, IOException {
 		ItemDocument document = createTestItemDocument();
-		this.rdfConverter.writeSimpleStatements(resource, document);
+		this.rdfConverter.setTasks(RdfSerializer.TASK_SIMPLE_STATEMENTS);
+		this.rdfConverter.writeStatements(document);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
 		assertEquals(
 				RdfTestHelpers
-						.parseRdf("\n<http://test.org/> <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/Q10> ;\n"
+						.parseRdf("\n<http://www.wikidata.org/Q100> <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/Q10> ;\n"
 								+ "<http://www.wikidata.org/prop/direct/P279> <http://www.wikidata.org/Q11> .\n"),
 				model);
 	}
@@ -331,12 +347,10 @@ public class RdfConverterTest {
 			RDFParseException, IOException {
 		PropertyDocument document = this.dataObjectFactory.getPropertyDocument(
 				this.dataObjectFactory.getPropertyIdValue("P17",
-						"http://www.wikidata.org/"), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<MonolingualTextValue> emptyList(), Collections
-						.<StatementGroup> emptyList(), this.dataObjectFactory
-						.getDatatypeIdValue(DatatypeIdValue.DT_ITEM), 0);
+						"http://www.wikidata.org/"),
+						Collections.emptyList(), Collections.emptyList(),
+						Collections.emptyList(), Collections.emptyList(),
+						this.dataObjectFactory.getDatatypeIdValue(DatatypeIdValue.DT_ITEM), 0);
 		this.rdfConverter.writeInterPropertyLinks(document);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(out.toString());

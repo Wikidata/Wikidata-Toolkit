@@ -206,7 +206,7 @@ public class DirectoryManagerImpl implements DirectoryManager {
 
 	@Override
 	public List<String> getSubdirectories(String glob) throws IOException {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
 				this.directory, glob)) {
 			for (Path entry : directoryStream) {

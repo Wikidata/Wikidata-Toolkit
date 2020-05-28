@@ -57,4 +57,12 @@ public interface EntityDocumentProcessor {
 	default void processLexemeDocument(LexemeDocument lexemeDocument) {
 	}
 
+	/**
+	 * Processes the given MediaInfoDocument.
+	 *
+	 * @param mediaInfoDocument
+	 *            the MediaInfoDocument
+	 */
+	default void processMediaInfoDocument(MediaInfoDocument mediaInfoDocument) {
+	}
 }

@@ -62,6 +62,11 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * lexemes senses.
 	 */
 	public final static String JSON_ENTITY_TYPE_SENSE = "sense";
+	/**
+	 * The string used in JSON to denote the type of entity id values that are
+	 * media info.
+	 */
+	public final static String JSON_ENTITY_TYPE_MEDIA_INFO = "mediainfo";
 
 	/**
 	 * The site IRI that this value refers to. This data not part of the JSON
@@ -114,7 +119,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 * @throws IllegalArgumentException
 	 *      if the id is invalid
 	 */
-	static EntityIdValue fromId(String id, String siteIri) {
+	public static EntityIdValue fromId(String id, String siteIri) {
 		switch (guessEntityTypeFromId(id)) {
 			case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
 				return new ItemIdValueImpl(id, siteIri);
@@ -126,6 +131,8 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 				return new FormIdValueImpl(id, siteIri);
 			case EntityIdValueImpl.JSON_ENTITY_TYPE_SENSE:
 				return new SenseIdValueImpl(id, siteIri);
+				case EntityIdValueImpl.JSON_ENTITY_TYPE_MEDIA_INFO:
+				return new MediaInfoIdValueImpl(id, siteIri);
 			default:
 				throw new IllegalArgumentException("Entity id \"" + id + "\" is not supported.");
 		}
@@ -152,6 +159,8 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 				} else {
 					return JSON_ENTITY_TYPE_LEXEME;
 				}
+			case 'M':
+				return JSON_ENTITY_TYPE_MEDIA_INFO;
 			case 'P':
 				return JSON_ENTITY_TYPE_PROPERTY;
 			case 'Q':
@@ -310,6 +319,8 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 					return  "L" + numericId;
 				case JSON_ENTITY_TYPE_PROPERTY:
 					return "P" + numericId;
+				case JSON_ENTITY_TYPE_MEDIA_INFO:
+					return "M" + numericId;
 				default:
 					throw new IllegalArgumentException("Entities of type \""
 							+ entityType + "\" are not supported in property values.");

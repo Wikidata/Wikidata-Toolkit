@@ -51,7 +51,7 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	 * @author Markus Kroetzsch
 	 * 
 	 */
-	class RevisionSubscription {
+	static class RevisionSubscription {
 		MwRevisionProcessor mwRevisionProcessor;
 		String model;
 		boolean onlyCurrentRevisions;
@@ -83,7 +83,7 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	final BitVector encounteredRevisions;
 
 	public MwRevisionProcessorBroker() {
-		this.revisionSubscriptions = new ArrayList<MwRevisionProcessorBroker.RevisionSubscription>();
+		this.revisionSubscriptions = new ArrayList<>();
 		this.mostCurrentRevision = null;
 		this.currentPageId = -1;
 		// TODO these initial sizes need to be configurable
@@ -116,7 +116,7 @@ public class MwRevisionProcessorBroker implements MwRevisionProcessor {
 	public void registerMwRevisionProcessor(
 			MwRevisionProcessor mwRevisionProcessor, String model,
 			boolean onlyCurrentRevisions) {
-		MwRevisionProcessorBroker.RevisionSubscription rs = new MwRevisionProcessorBroker.RevisionSubscription();
+		MwRevisionProcessorBroker.RevisionSubscription rs = new RevisionSubscription();
 		rs.mwRevisionProcessor = mwRevisionProcessor;
 		rs.model = model;
 		rs.onlyCurrentRevisions = onlyCurrentRevisions;

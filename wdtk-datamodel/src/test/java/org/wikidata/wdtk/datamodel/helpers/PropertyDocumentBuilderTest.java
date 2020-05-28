@@ -22,11 +22,11 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -73,5 +73,10 @@ public class PropertyDocumentBuilderTest {
 		
 		PropertyDocument withAlias = PropertyDocumentBuilder.fromPropertyDocument(initial).withAlias(alias).build();
 		assertEquals(withAlias.getAliases().get("en"), Collections.singletonList(alias));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidSubjectId() {
+		PropertyDocumentBuilder.forPropertyIdAndDatatype(PropertyIdValue.NULL, DatatypeIdValue.DT_EXTERNAL_ID).withEntityId(ItemIdValue.NULL);
 	}
 }

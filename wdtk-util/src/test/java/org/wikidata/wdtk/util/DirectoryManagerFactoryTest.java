@@ -30,15 +30,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class DirectoryManagerFactoryTest {
 
-	public class TestDirectoryManager implements DirectoryManager {
+	public static class TestDirectoryManager implements DirectoryManager {
 
 		@Override
-		public DirectoryManager getSubdirectoryManager(String subdirectoryName)
-				throws IOException {
+		public DirectoryManager getSubdirectoryManager(String subdirectoryName) {
 			return null;
 		}
 
@@ -53,46 +53,45 @@ public class DirectoryManagerFactoryTest {
 		}
 
 		@Override
-		public long createFile(String fileName, InputStream inputStream)
-				throws IOException {
+		public long createFile(String fileName, InputStream inputStream) {
 			return 0;
 		}
 
 		@Override
-		public long createFileAtomic(String fileName, InputStream inputStream)
-				throws IOException {
+		public long createFileAtomic(String fileName, InputStream inputStream) {
 			return 0;
 		}
 
 		@Override
-		public void createFile(String fileName, String fileContents)
-				throws IOException {
+		public void createFile(String fileName, String fileContents) {
 
 		}
 
 		@Override
-		public OutputStream getOutputStreamForFile(String fileName)
-				throws IOException {
+		public OutputStream getOutputStreamForFile(String fileName) {
 			return null;
 		}
 
 		@Override
-		public InputStream getInputStreamForFile(String fileName,
-				CompressionType compressionType) throws IOException {
+		public InputStream getInputStreamForFile(String fileName, CompressionType compressionType) {
 			return null;
 		}
 
 		@Override
-		public List<String> getSubdirectories(String glob) throws IOException {
+		public List<String> getSubdirectories(String glob) {
 			return null;
 		}
+	}
+
+	@Before
+	public void setup() throws IOException {
+		DirectoryManagerFactory
+				.setDirectoryManagerClass(DirectoryManagerImpl.class);
 	}
 
 	@Test
 	public void createDirectoryManagerString() throws IOException {
 		Path path = Paths.get(System.getProperty("user.dir"));
-		DirectoryManagerFactory
-				.setDirectoryManagerClass(DirectoryManagerImpl.class);
 		DirectoryManager dm = DirectoryManagerFactory.createDirectoryManager(
 				System.getProperty("user.dir"), true);
 		assertTrue(dm instanceof DirectoryManagerImpl);

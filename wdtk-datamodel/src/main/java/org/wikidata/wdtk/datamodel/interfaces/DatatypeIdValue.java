@@ -50,6 +50,10 @@ public interface DatatypeIdValue {
 	 */
 	String DT_SENSE = "http://wikiba.se/ontology#WikibaseSense";
 	/**
+	 * IRI of the media info datatype in Wikibase.
+	 */
+	String DT_MEDIA_INFO = "http://wikiba.se/ontology#WikibaseMediaInfo";
+	/**
 	 * IRI of the string datatype in Wikibase.
 	 */
 	String DT_STRING = "http://wikiba.se/ontology#String";

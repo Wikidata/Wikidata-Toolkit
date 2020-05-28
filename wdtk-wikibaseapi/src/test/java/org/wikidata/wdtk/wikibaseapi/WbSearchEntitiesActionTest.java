@@ -23,6 +23,7 @@ package org.wikidata.wdtk.wikibaseapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class WbSearchEntitiesActionTest {
     public void setUp() throws Exception {
 
         this.con = new MockBasicApiConnection();
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
         params.put(ApiConnection.PARAM_FORMAT, "json");
         params.put("search", "abc");
@@ -60,7 +61,7 @@ public class WbSearchEntitiesActionTest {
     }
 
     @Test
-    public void testWbSearchEntities() throws MediaWikiApiErrorException {
+    public void testWbSearchEntities() throws MediaWikiApiErrorException, IOException {
         List<WbSearchEntitiesResult> results = action.wbSearchEntities("abc",
                 "en", null, null, null, null);
 
@@ -85,7 +86,7 @@ public class WbSearchEntitiesActionTest {
     }
 
     @Test
-    public void testWbSearchEntitiesEmpty() throws MediaWikiApiErrorException {
+    public void testWbSearchEntitiesEmpty() throws MediaWikiApiErrorException, IOException {
         List<WbSearchEntitiesResult> results = action.wbSearchEntities(
                 "some search string with no results", "en", null, null, null,
                 null);
@@ -94,12 +95,12 @@ public class WbSearchEntitiesActionTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIdsAndTitles() throws MediaWikiApiErrorException {
+    public void testIdsAndTitles() throws MediaWikiApiErrorException, IOException {
         action.wbSearchEntities(null, "en", null, null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIdsAndSites() throws MediaWikiApiErrorException {
+    public void testIdsAndSites() throws MediaWikiApiErrorException, IOException {
         action.wbSearchEntities("abc", null, null, null, null, null);
     }
 }

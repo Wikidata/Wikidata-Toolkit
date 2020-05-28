@@ -35,7 +35,6 @@ import javax.imageio.ImageIO;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -103,9 +102,8 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
 	 *
 	 * @param args
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();
 		WorldMapProcessor.printDocumentation();
 
@@ -178,9 +176,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 	 */
 	public void addSite(String siteKey) {
 		ValueMap gv = new ValueMap(siteKey);
-		if (!this.valueMaps.contains(gv)) {
-			this.valueMaps.add(gv);
-		}
+		this.valueMaps.add(gv);
 	}
 
 	/**
@@ -257,12 +253,7 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 			ItemDocument itemDocument) {
 
 		for (String siteKey : itemDocument.getSiteLinks().keySet()) {
-			Integer count = this.siteCounts.get(siteKey);
-			if (count == null) {
-				this.siteCounts.put(siteKey, 1);
-			} else {
-				this.siteCounts.put(siteKey, count + 1);
-			}
+			this.siteCounts.merge(siteKey, 1, Integer::sum);
 		}
 
 		for (ValueMap vm : this.valueMaps) {
@@ -392,7 +383,6 @@ public class WorldMapProcessor implements EntityDocumentProcessor {
 		 * @param xCoord
 		 * @param yCoord
 		 * @param itemDocument
-		 * @return
 		 */
 		public void countCoordinates(int xCoord, int yCoord,
 				ItemDocument itemDocument) {

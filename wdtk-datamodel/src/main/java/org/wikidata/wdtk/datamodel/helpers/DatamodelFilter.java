@@ -25,7 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
 import java.util.*;
 
 /**
- * This is a utility class that allows to filter {@link ItemDocument} and {@link PropertyDocument}
+ * This is a utility class that allows to filter {@link EntityDocument}
  * using the data declared in a {@link DocumentDataFilter}.
  */
 public class DatamodelFilter {
@@ -60,6 +60,15 @@ public class DatamodelFilter {
 				filterStatementGroups(property.getStatementGroups()),
 				property.getDatatype(),
 				property.getRevisionId()
+		);
+	}
+
+	public MediaInfoDocument filter(MediaInfoDocument mediaInfo) {
+		return dataObjectFactory.getMediaInfoDocument(
+				mediaInfo.getEntityId(),
+				filterMonoLingualTextValues(mediaInfo.getLabels().values()),
+				filterStatementGroups(mediaInfo.getStatementGroups()),
+				mediaInfo.getRevisionId()
 		);
 	}
 

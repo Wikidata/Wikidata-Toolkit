@@ -35,33 +35,33 @@ public class SenseDocumentImplTest {
 
 	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
-	private final SenseIdValue fid = new SenseIdValueImpl("L42-S1", "http://example.com/entity/");
+	private final SenseIdValue sid = new SenseIdValueImpl("L42-S1", "http://example.com/entity/");
 	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
-			Collections.emptyList(), Collections.emptyList(), fid);
+			Collections.emptyList(), Collections.emptyList(), sid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
 			new StatementGroupImpl(Collections.singletonList(s))
 	);
 	private final MonolingualTextValue rep = new TermImpl("en", "rep");
 	private final List<MonolingualTextValue> repList = Collections.singletonList(rep);
 
-	private final SenseDocument ld1 = new SenseDocumentImpl(fid, repList, statementGroups, 1234);
-	private final SenseDocument ld2 = new SenseDocumentImpl(fid, repList, statementGroups, 1234);
+	private final SenseDocument sd1 = new SenseDocumentImpl(sid, repList, statementGroups, 1234);
+	private final SenseDocument sd2 = new SenseDocumentImpl(sid, repList, statementGroups, 1234);
 
 	private final String JSON_SENSE = "{\"type\":\"sense\",\"id\":\"L42-S1\",\"glosses\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(ld1.getEntityId(), fid);
-		assertEquals(ld1.getGlosses(), Collections.singletonMap(rep.getLanguageCode(), rep));
-		assertEquals(ld1.getStatementGroups(), statementGroups);
+		assertEquals(sd1.getEntityId(), sid);
+		assertEquals(sd1.getGlosses(), Collections.singletonMap(rep.getLanguageCode(), rep));
+		assertEquals(sd1.getStatementGroups(), statementGroups);
 	}
 
 	@Test
 	public void equalityBasedOnContent() {
-		SenseDocument irDiffGlosses = new SenseDocumentImpl(fid, Collections.singletonList(new MonolingualTextValueImpl("fr", "bar")), statementGroups, 1234);
-		SenseDocument irDiffStatementGroups = new SenseDocumentImpl(fid, repList, Collections.emptyList(), 1234);
-		SenseDocument irDiffRevisions = new SenseDocumentImpl(fid, repList, statementGroups, 1235);
+		SenseDocument irDiffGlosses = new SenseDocumentImpl(sid, Collections.singletonList(new MonolingualTextValueImpl("fr", "bar")), statementGroups, 1234);
+		SenseDocument irDiffStatementGroups = new SenseDocumentImpl(sid, repList, Collections.emptyList(), 1234);
+		SenseDocument irDiffRevisions = new SenseDocumentImpl(sid, repList, statementGroups, 1235);
 		PropertyDocument pr = new PropertyDocumentImpl(
 				new PropertyIdValueImpl("P42", "foo"),
 				repList, Collections.emptyList(), Collections.emptyList(),
@@ -71,20 +71,20 @@ public class SenseDocumentImplTest {
 				new SenseIdValueImpl("L42-S2", "http://example.com/entity/"),
 				repList, Collections.emptyList(), 1235);
 
-		assertEquals(ld1, ld1);
-		assertEquals(ld1, ld2);
-		assertNotEquals(ld1, irDiffGlosses);
-		assertNotEquals(ld1, irDiffStatementGroups);
-		assertNotEquals(ld1, irDiffRevisions);
+		assertEquals(sd1, sd1);
+		assertEquals(sd1, sd2);
+		assertNotEquals(sd1, irDiffGlosses);
+		assertNotEquals(sd1, irDiffStatementGroups);
+		assertNotEquals(sd1, irDiffRevisions);
 		assertNotEquals(irDiffStatementGroups, irDiffSenseIdValue);
-		assertNotEquals(ld1, pr);
-		assertNotEquals(ld1, null);
-		assertNotEquals(ld1, this);
+		assertNotEquals(sd1, pr);
+		assertNotEquals(sd1, null);
+		assertNotEquals(sd1, this);
 	}
 
 	@Test
 	public void hashBasedOnContent() {
-		assertEquals(ld1.hashCode(), ld2.hashCode());
+		assertEquals(sd1.hashCode(), sd2.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -94,17 +94,17 @@ public class SenseDocumentImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void glossesNotNull() {
-		new SenseDocumentImpl(fid,  null, statementGroups, 1234);
+		new SenseDocumentImpl(sid,  null, statementGroups, 1234);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void glossesNotEmpty() {
-		new SenseDocumentImpl(fid, Collections.emptyList(), statementGroups, 1234);
+		new SenseDocumentImpl(sid, Collections.emptyList(), statementGroups, 1234);
 	}
 
 	@Test
 	public void statementGroupsCanBeNull() {
-		SenseDocument doc = new SenseDocumentImpl(fid, repList, null, 1234);
+		SenseDocument doc = new SenseDocumentImpl(sid, repList, null, 1234);
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
@@ -120,12 +120,12 @@ public class SenseDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new SenseDocumentImpl(fid, repList, statementGroups2, 1234);
+		new SenseDocumentImpl(sid, repList, statementGroups2, 1234);
 	}
 
 	@Test
 	public void iterateOverAllStatements() {
-		Iterator<Statement> statements = ld1.getAllStatements();
+		Iterator<Statement> statements = sd1.getAllStatements();
 
 		assertTrue(statements.hasNext());
 		assertEquals(s, statements.next());
@@ -133,13 +133,49 @@ public class SenseDocumentImplTest {
 	}
 
 	@Test
+	public void testWithRevisionId() {
+		assertEquals(1235L, sd1.withRevisionId(1235L).getRevisionId());
+		assertEquals(sd1, sd1.withRevisionId(1325L).withRevisionId(sd1.getRevisionId()));
+	}
+
+	@Test
+	public void testWithGlossInNewLanguage() {
+		MonolingualTextValue newGloss = new MonolingualTextValueImpl("Foo", "fr");
+		SenseDocument withGloss = sd1.withGloss(newGloss);
+		assertEquals(newGloss, withGloss.getGlosses().get("fr"));
+	}
+
+	@Test
+	public void testAddStatement() {
+		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
+				Collections.emptyList(), Collections.emptyList(), sid);
+		Claim claim = fresh.getClaim();
+		assertFalse(sd1.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+		SenseDocument withStatement = sd1.withStatement(fresh);
+		assertTrue(withStatement.hasStatementValue(
+				claim.getMainSnak().getPropertyId(),
+				claim.getValue()));
+	}
+
+	@Test
+	public void testDeleteStatements() {
+		Statement toRemove = statementGroups.get(0).getStatements().get(0);
+		SenseDocument withoutStatement = sd1.withoutStatementIds(Collections.singleton(toRemove.getStatementId()));
+		assertNotEquals(withoutStatement, sd1);
+	}
+
+
+	@Test
 	public void testSenseToJson() throws JsonProcessingException {
-		JsonComparator.compareJsonStrings(JSON_SENSE, mapper.writeValueAsString(ld1));
+		JsonComparator.compareJsonStrings(JSON_SENSE, mapper.writeValueAsString(sd1));
 	}
 
 	@Test
 	public void testSenseToJava() throws IOException {
-		assertEquals(ld1, mapper.readValue(JSON_SENSE, SenseDocumentImpl.class));
+		assertEquals(sd1, mapper.readValue(JSON_SENSE, SenseDocumentImpl.class));
 	}
 
 }

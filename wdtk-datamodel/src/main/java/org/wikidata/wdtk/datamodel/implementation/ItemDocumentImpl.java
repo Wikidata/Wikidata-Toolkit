@@ -177,34 +177,25 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 
 	@Override
 	public ItemDocument withLabel(MonolingualTextValue newLabel) {
-		Map<String, MonolingualTextValue> newLabels = new HashMap<>(labels);
-		newLabels.put(newLabel.getLanguageCode(), newLabel);
 		return new ItemDocumentImpl(getItemId(),
-				newLabels, descriptions,
+				withTerm(labels, newLabel), descriptions,
 				aliases, claims,
 				sitelinks, revisionId);
 	}
 
 	@Override
 	public ItemDocument withDescription(MonolingualTextValue newDescription) {
-		Map<String, MonolingualTextValue> newDescriptions = new HashMap<>(descriptions);
-		newDescriptions.put(newDescription.getLanguageCode(), newDescription);
 		return new ItemDocumentImpl(getItemId(),
-				labels, newDescriptions,
+				labels, withTerm(descriptions, newDescription),
 				aliases, claims,
 				sitelinks, revisionId);
 	}
 
 	@Override
 	public ItemDocument withAliases(String language, List<MonolingualTextValue> aliases) {
-		Map<String, List<MonolingualTextValue>> newAliases = new HashMap<>(this.aliases);
-		for(MonolingualTextValue alias : aliases) {
-			Validate.isTrue(alias.getLanguageCode().equals(language));
-		}
-		newAliases.put(language, aliases);
 		return new ItemDocumentImpl(getItemId(),
 				labels, descriptions,
-				newAliases, claims,
+				withAliases(this.aliases, language, aliases), claims,
 				sitelinks, revisionId);
 	}
 

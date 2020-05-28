@@ -109,6 +109,20 @@ public interface DataObjectFactory {
 	SenseIdValue getSenseIdValue(String id, String siteIri);
 
 	/**
+	 * Creates a {@link MediaInfoIdValue}.
+	 *
+	 * @param id
+	 *            a string of the form Mn... where n... is the string
+	 *            representation of a positive integer number
+	 * @param siteIri
+	 *            IRI to identify the site, usually the first part of the entity
+	 *            IRI of the site this belongs to, e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 * @return a {@link MediaInfoIdValue} corresponding to the input
+	 */
+	MediaInfoIdValue getMediaInfoIdValue(String id, String siteIri);
+
+	/**
 	 * Creates a {@link DatatypeIdValue}. The datatype IRI is usually one of the
 	 * constants defined in {@link DatatypeIdValue}, but this is not enforced,
 	 * since there might be extensions that provide additional types.
@@ -496,7 +510,7 @@ public interface DataObjectFactory {
 			long revisionId);
 
 	/**
-	 * Creates an {@link SenseDocument}.
+	 * Creates a {@link SenseDocument}.
 	 *
 	 * @param senseIdValue
 	 *            the id of the form that data is about
@@ -515,5 +529,26 @@ public interface DataObjectFactory {
 								 List<MonolingualTextValue> glosses,
 								 List<StatementGroup> statementGroups,
 								 long revisionId);
+
+	/**
+	 * Creates a {@link MediaInfoDocument}.
+	 *
+	 * @param mediaInfoIdValue
+	 *            the id of the form that data is about
+	 * @param labels
+	 *            the list of labels of this media info, with at most one label for
+	 *            each language code
+	 * @param statementGroups
+	 *            the list of statement groups of this lexeme; all of them must
+	 *            have the given mediaInfoIdValue as their subject
+	 * @param revisionId
+	 *            the revision ID or 0 if not known; see
+	 *            {@link EntityDocument#getRevisionId()}
+	 * @return a {@link MediaInfoDocument} corresponding to the input
+	 */
+	MediaInfoDocument getMediaInfoDocument(MediaInfoIdValue mediaInfoIdValue,
+										   List<MonolingualTextValue> labels,
+										   List<StatementGroup> statementGroups,
+										   long revisionId);
 
 }

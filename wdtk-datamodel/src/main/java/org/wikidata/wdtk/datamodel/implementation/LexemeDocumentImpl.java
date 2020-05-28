@@ -28,11 +28,9 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Jackson implementation of {@link LexemeDocument}.
@@ -42,15 +40,19 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeDocument {
 
-	private ItemIdValue lexicalCategory;
+	private final ItemIdValue lexicalCategory;
 
-	private ItemIdValue language;
+	private final ItemIdValue language;
 
-	private Map<String,MonolingualTextValue> lemmas;
+	private final Map<String,MonolingualTextValue> lemmas;
 
-	private List<FormDocument> forms;
+	private final List<FormDocument> forms;
 
-	private List<SenseDocument> senses;
+	private final List<SenseDocument> senses;
+
+	private int nextFormId;
+
+	private int nextSenseId;
 
 	/**
 	 * Constructor.
@@ -96,6 +98,9 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		this.lemmas = constructTermMap(lemmas);
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
 		this.senses = (senses == null) ? Collections.emptyList() : senses;
+
+		nextFormId = nextChildEntityId(this.forms);
+		nextSenseId = nextChildEntityId(this.senses);
 	}
 
 	/**
@@ -125,6 +130,9 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 		this.lemmas = lemmas;
 		this.forms = (forms == null) ? Collections.emptyList() : forms;
 		this.senses = (senses == null) ? Collections.emptyList() : senses;
+
+		nextFormId = nextChildEntityId(this.forms);
+		nextSenseId = nextChildEntityId(this.senses);
 	}
 	
 	/**
@@ -137,12 +145,18 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			Map<String, MonolingualTextValue> lemmas,
 			Map<String, List<Statement>> statements,
 			List<FormDocument> forms,
-			long revisionId) {
+			List<SenseDocument> senses,
+			long revisionId,
+			int nextFormId,
+			int nextSenseId) {
 		super(id, statements, revisionId);
 		this.lexicalCategory = lexicalCategory;
 		this.language = language;
 		this.lemmas = lemmas;
 		this.forms = forms;
+		this.senses = senses;
+		this.nextFormId = nextFormId;
+		this.nextSenseId = nextSenseId;
 	}
 
 	private static Map<String, MonolingualTextValue> constructTermMap(List<MonolingualTextValue> terms) {
@@ -154,9 +168,28 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 			}
 			// We need to make sure the terms are of the right type, otherwise they will not
 			// be serialized correctly.
-			map.put(language, (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText()));
+			map.put(language, toTerm(term));
 		}
 		return map;
+	}
+
+	private static MonolingualTextValue toTerm(MonolingualTextValue term) {
+		return (term instanceof TermImpl) ? term : new TermImpl(term.getLanguageCode(), term.getText());
+	}
+
+	private static final Pattern CHILD_ID_PATTERN = Pattern.compile("^L\\d+-[FS]([1-9]\\d*)$");
+
+	private static int nextChildEntityId(List<? extends EntityDocument> childrenDocuments) {
+		int maxId = 0;
+		for(EntityDocument document : childrenDocuments) {
+			Matcher matcher = CHILD_ID_PATTERN.matcher(document.getEntityId().getId());
+			if(matcher.matches()) {
+				maxId = Math.max(maxId, Integer.parseInt(matcher.group(1)));
+			} else {
+				throw new IllegalArgumentException("Invalid child entity id " + document.getEntityId());
+			}
+		}
+		return maxId + 1;
 	}
 
 	@JsonIgnore
@@ -242,35 +275,93 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	public String toString() {
 		return ToString.toString(this);
 	}
-	/*
-	 * LexemeIdValue id,
-			ItemIdValue lexicalCategory,
-			ItemIdValue language,
-			Map<String, MonolingualTextValue> lemmas,
-			Map<String, List<Statement>> statements,
-			List<FormDocument> forms,
-			long revisionId
-			(non-Javadoc)
-	 * @see org.wikidata.wdtk.datamodel.interfaces.StatementDocument#withStatement(org.wikidata.wdtk.datamodel.interfaces.Statement)
-	 */
+
+	@Override
+	public LexemeDocument withLexicalCategory(ItemIdValue newLexicalCategory) {
+		return new LexemeDocumentImpl(getEntityId(), newLexicalCategory,
+				language, lemmas, claims, forms, senses,
+				revisionId, nextFormId, nextSenseId);
+	}
+
+	@Override
+	public LexemeDocument withLanguage(ItemIdValue newLanguage) {
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				newLanguage, lemmas, claims, forms, senses,
+				revisionId, nextFormId, nextSenseId);
+	}
+
+	@Override
+	public LexemeDocument withLemma(MonolingualTextValue lemma) {
+		Map<String, MonolingualTextValue> newLemmas = new HashMap<>(lemmas);
+		newLemmas.put(lemma.getLanguageCode(), toTerm(lemma));
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, newLemmas, claims, forms, senses,
+				revisionId, nextFormId, nextSenseId);
+	}
 	
 	@Override
 	public LexemeDocument withStatement(Statement statement) {
 		Map<String, List<Statement>> newGroups = addStatementToGroups(statement, claims);
 		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
-				language, lemmas, newGroups, forms, revisionId);
+				language, lemmas, newGroups, forms, senses,
+				revisionId, nextFormId, nextSenseId);
 	}
 
 	@Override
 	public LexemeDocument withoutStatementIds(Set<String> statementIds) {
 		Map<String, List<Statement>> newGroups = removeStatements(statementIds, claims);
 		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
-				language, lemmas, newGroups, forms, revisionId);
+				language, lemmas, newGroups, forms, senses,
+				revisionId, nextFormId, nextSenseId);
 	}
-	
+
+	@Override
+	public FormDocument createForm(List<MonolingualTextValue> representations) {
+		FormIdValue newFormId = new FormIdValueImpl(entityId + "-F" + nextFormId, siteIri);
+		nextFormId++;
+
+		return new FormDocumentImpl(newFormId, representations, Collections.emptyList(),
+				Collections.emptyList(), revisionId);
+	}
+
+	@Override
+	public LexemeDocument withForm(FormDocument form) {
+		if(!form.getEntityId().getLexemeId().equals(getEntityId())) {
+			throw new IllegalArgumentException("The form " + form.getEntityId() + " does not belong to lexeme " + getEntityId());
+		}
+
+		List<FormDocument> newForms = new ArrayList<>(forms);
+		newForms.add(form);
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, lemmas, claims, newForms, senses,
+				revisionId, nextFormId, nextSenseId);
+	}
+
+	@Override
+	public SenseDocument createSense(List<MonolingualTextValue> glosses) {
+		SenseIdValue newSenseId = new SenseIdValueImpl(entityId + "-S" + nextSenseId, siteIri);
+		nextSenseId++;
+
+		return new SenseDocumentImpl(newSenseId, glosses, Collections.emptyList(), revisionId);
+	}
+
+	@Override
+	public LexemeDocument withSense(SenseDocument sense) {
+		if(!sense.getEntityId().getLexemeId().equals(getEntityId())) {
+			throw new IllegalArgumentException("The sense " + sense.getEntityId() + " does not belong to lexeme " + getEntityId());
+		}
+
+		List<SenseDocument> newSenses = new ArrayList<>(senses);
+		newSenses.add(sense);
+		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
+				language, lemmas, claims, forms, newSenses,
+				revisionId, nextFormId, nextSenseId);
+	}
+
 	@Override
 	public LexemeDocument withRevisionId(long newRevisionId) {
 		return new LexemeDocumentImpl(getEntityId(), lexicalCategory,
-				language, lemmas, claims, forms, newRevisionId);
+				language, lemmas, claims, forms, senses,
+				newRevisionId, nextFormId, nextSenseId);
 	}
 }
