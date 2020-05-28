@@ -2,6 +2,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.Validate;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
 /*
@@ -120,7 +121,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	 *      if the id is invalid
 	 */
 	public static EntityIdValue fromId(String id, String siteIri) {
-		switch (guessEntityTypeFromId(id)) {
+		switch (guessEntityTypeFromId(id, true)) {
 			case EntityIdValueImpl.JSON_ENTITY_TYPE_ITEM:
 				return new ItemIdValueImpl(id, siteIri);
 			case EntityIdValueImpl.JSON_ENTITY_TYPE_PROPERTY:
@@ -139,35 +140,49 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 	}
 
 	/**
-	 * RReturns the entity type of the id like "item" or "property"
+	 * Returns the entity type of the id like "item" or "property"
 	 *
 	 * @param id
 	 * 		the identifier of the entity, such as "Q42"
+	 * @param returnJsonEntity
+	 * 		returns JSON entity types when set to true
 	 * @throws IllegalArgumentException
 	 *      if the id is invalid
 	 */
-	static String guessEntityTypeFromId(String id) {
+	static String guessEntityTypeFromId(String id, boolean returnJsonEntity) {
 		if(id.isEmpty()) {
 			throw new IllegalArgumentException("Entity ids should not be empty.");
 		}
 		switch (id.charAt(0)) {
 			case 'L':
 				if(id.contains("-F")) {
-					return JSON_ENTITY_TYPE_FORM;
+					return returnJsonEntity ? JSON_ENTITY_TYPE_FORM : DatatypeIdValue.DT_FORM;
 				} else if(id.contains("-S")) {
-					return JSON_ENTITY_TYPE_SENSE;
+					return returnJsonEntity ? JSON_ENTITY_TYPE_SENSE : DatatypeIdValue.DT_SENSE;
 				} else {
-					return JSON_ENTITY_TYPE_LEXEME;
+					return returnJsonEntity ? JSON_ENTITY_TYPE_LEXEME : DatatypeIdValue.DT_LEXEME;
 				}
 			case 'M':
-				return JSON_ENTITY_TYPE_MEDIA_INFO;
+				return returnJsonEntity ? JSON_ENTITY_TYPE_MEDIA_INFO : DatatypeIdValue.DT_MEDIA_INFO;
 			case 'P':
-				return JSON_ENTITY_TYPE_PROPERTY;
+				return returnJsonEntity ? JSON_ENTITY_TYPE_PROPERTY : DatatypeIdValue.DT_PROPERTY;
 			case 'Q':
-				return JSON_ENTITY_TYPE_ITEM;
+				return returnJsonEntity ? JSON_ENTITY_TYPE_ITEM : DatatypeIdValue.DT_ITEM;
 			default:
 				throw new IllegalArgumentException("Entity id \"" + id + "\" is not supported.");
 		}
+	}
+
+	/**
+	 * Returns the entity type of the id like "item" or "property"
+	 *
+	 * @param id
+	 * 		the identifier of the entity, such as "Q42"
+	 * @throws IllegalArgumentException
+	 *      if the id is invalid
+	 */
+	public static String guessEntityTypeFromId(String id){
+		return guessEntityTypeFromId(id, false);
 	}
 
 	/**
@@ -226,7 +241,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 
 		JacksonInnerEntityId(String id) {
 			this.id = id;
-			entityType = guessEntityTypeFromId(id);
+			entityType = guessEntityTypeFromId(id, true);
 			numericId = buildNumericId(id);
 		}
 
@@ -251,7 +266,7 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 			} else {
 				this.id = id;
 				if(entityType == null || numericId == 0) {
-					this.entityType = guessEntityTypeFromId(id);
+					this.entityType = guessEntityTypeFromId(id, true);
 					this.numericId = buildNumericId(id);
 				} else if(!id.equals(buildIdFromNumericId(entityType, numericId))) {
 					throw new IllegalArgumentException("Numerical id is different from the string id");
