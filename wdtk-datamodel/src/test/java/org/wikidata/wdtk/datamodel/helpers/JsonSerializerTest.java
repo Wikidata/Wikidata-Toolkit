@@ -55,7 +55,7 @@ public class JsonSerializerTest {
 						Datamodel.makeStatement(qid1,
 								Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue("P42")),
 								Collections.emptyList(), Collections.emptyList(),
-								StatementRank.NORMAL, "MyId"
+								StatementRank.NORMAL, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d"
 				)))), Collections.emptyMap(), 1234);
 		ItemDocument id2 = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q2"),
@@ -121,8 +121,8 @@ public class JsonSerializerTest {
 		Statement s = Datamodel.makeStatement(ItemIdValue.NULL,
 				Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue("P1")),
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "MyId");
-		String json = "{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P1\",\"snaktype\":\"novalue\"},\"type\":\"statement\"}";
+				StatementRank.NORMAL, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
+		String json = "{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P1\",\"snaktype\":\"novalue\"},\"type\":\"statement\"}";
 		JsonComparator.compareJsonStrings(json, JsonSerializer.getJsonString(s));
 	}
 
