@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.util.*;
+
 import org.apache.commons.lang3.Validate;
 
 /*
@@ -26,8 +28,10 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -67,9 +71,36 @@ public abstract class SnakImpl implements Snak {
 	private final PropertyIdValue property;
 	
 	/**
+	 * The wikidata hash of this Snak . null if we don't have knowledge about the hash.
+	 */
+	private String hash;
+	
+	
+	/**
+	 * The snaktype of this snak.
+	 */
+	private final String snaktype;
+	
+	/**
+	 * The datavalue of this snak.
+	 */
+	private final HashMap<String, String> datavalue;
+	
+	/**
+	 * The datatype of this snak.
+	 */
+	private final String datatype;
+	
+	
+	
+	/**
 	 * Constructor.
 	 */
 	public SnakImpl(PropertyIdValue property) {
+		this.datatype = "";
+		this.hash = null;
+		this.snaktype = "";
+		this.datavalue = new HashMap<String,String>();
 		Validate.notNull(property);
 		this.property = property;
 	}
@@ -84,11 +115,52 @@ public abstract class SnakImpl implements Snak {
 	protected SnakImpl(
 			String id,
 			String siteIri) {
+		this.datatype = "";
+		this.snaktype = "";
+		this.hash = null;
+		this.datavalue = new HashMap<String,String>();
 		Validate.notNull(id);
 		Validate.notNull(siteIri);
 		this.property = new PropertyIdValueImpl(id, siteIri);
 	}
+	
+	/**
+	 * Constructor for snak deserialization from JSON with @JsonCreator
+	 */
+	@JsonCreator
+	protected SnakImpl(
+			@JsonProperty("snaktype") String snaktype,
+			@JsonProperty("property") PropertyIdValue property,
+			@JsonProperty("hash") String hash,
+			@JsonProperty("datavalue") HashMap<String,String> datavalue,
+			@JsonProperty("datatype") String datatype) {
 
+		
+		
+		this.snaktype = snaktype;
+		this.property = property;
+		this.hash = hash;
+		this.datavalue = datavalue;
+		this.datatype = datatype;
+
+	}
+	
+	
+	
+	
+	/**
+	 * Returns the hash as found in JSON. Only for use by Jackson during
+	 * serialization.
+	 * The wikidata hash of this snak. null if we don't have knowledge about the hash.
+	 * @return the hash
+	 */
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	public String getHash() {
+		return hash;
+	}
+	
+	
+	
 	/**
 	 * Returns the property id string. Only for use by Jackson during
 	 * serialization.
@@ -113,5 +185,13 @@ public abstract class SnakImpl implements Snak {
 	}
 	
 	@JsonProperty("snaktype")
-	public abstract String getSnakType();
+	public String getSnakType() {
+		return this.snaktype;	
+	}
+	
+	@JsonProperty("datatype")
+	public String getDataType() {
+		return this.datatype;	
+	}
+	
 }
