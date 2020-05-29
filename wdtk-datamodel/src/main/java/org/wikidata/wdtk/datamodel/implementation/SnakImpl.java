@@ -76,31 +76,12 @@ public abstract class SnakImpl implements Snak {
 	private String hash;
 	
 	
-	/**
-	 * The snaktype of this snak.
-	 */
-	private final String snaktype;
-	
-	/**
-	 * The datavalue of this snak.
-	 */
-	private final HashMap<String, String> datavalue;
-	
-	/**
-	 * The datatype of this snak.
-	 */
-	private final String datatype;
-	
-	
 	
 	/**
 	 * Constructor.
 	 */
 	public SnakImpl(PropertyIdValue property) {
-		this.datatype = "";
 		this.hash = null;
-		this.snaktype = "";
-		this.datavalue = new HashMap<String,String>();
 		Validate.notNull(property);
 		this.property = property;
 	}
@@ -114,11 +95,10 @@ public abstract class SnakImpl implements Snak {
 	 */
 	protected SnakImpl(
 			String id,
-			String siteIri) {
-		this.datatype = "";
-		this.snaktype = "";
+			String siteIri) {	
+	
 		this.hash = null;
-		this.datavalue = new HashMap<String,String>();
+	
 		Validate.notNull(id);
 		Validate.notNull(siteIri);
 		this.property = new PropertyIdValueImpl(id, siteIri);
@@ -135,13 +115,9 @@ public abstract class SnakImpl implements Snak {
 			@JsonProperty("datavalue") HashMap<String,String> datavalue,
 			@JsonProperty("datatype") String datatype) {
 
-		
-		
-		this.snaktype = snaktype;
+	
 		this.property = property;
 		this.hash = hash;
-		this.datavalue = datavalue;
-		this.datatype = datatype;
 
 	}
 	
@@ -185,14 +161,5 @@ public abstract class SnakImpl implements Snak {
 	}
 	
 	@JsonProperty("snaktype")
-	public String getSnakType() {
-		return this.snaktype;	
-	}
-	
-	@JsonIgnore
-	@JsonProperty("datatype")
-	public String getDataType() {
-		return this.datatype;	
-	}
-	
+	public abstract String getSnakType();
 }

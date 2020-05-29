@@ -118,7 +118,12 @@ public class ReferenceImpl implements Reference {
 		return Collections.unmodifiableMap(this.snaks);
 	}
 
-	
+	@Override
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	public String getHash() {
+		return hash;
+	}
+
 	/**
 	 * Returns the list of property ids used to order snaks as found in JSON.
 	 * Only for use by Jackson during serialization.
@@ -149,16 +154,5 @@ public class ReferenceImpl implements Reference {
 	@Override
 	public String toString() {
 		return ToString.toString(this);
-	}
-	
-	/**
-	 * Returns the hash as found in JSON. 
-	 * The wikidata hash of this reference. null if we don't have knowledge about the hash.
-	 * @return the hash
-	 */
-	@Override
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	public String getHash() {
-		return hash;
 	}
 }
