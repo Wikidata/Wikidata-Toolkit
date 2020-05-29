@@ -41,7 +41,7 @@ public class PropertyDocumentImplTest {
 	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
 	private PropertyIdValue pid = new PropertyIdValueImpl("P2", "http://example.com/entity/");
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), pid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -60,7 +60,7 @@ public class PropertyDocumentImplTest {
 	private final PropertyDocument pd2 = new PropertyDocumentImpl(pid, labelList, descList, aliasList,
 			statementGroups, datatypeId, 1234);
 
-	private final String JSON_PROPERTY = "{\"type\":\"property\",\"id\":\"P2\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"des\"}},\"aliases\":{\"de\":[{\"language\":\"de\",\"value\":\"alias\"}]},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"datatype\":\"wikibase-item\",\"lastrevid\":1234}";
+	private final String JSON_PROPERTY = "{\"type\":\"property\",\"id\":\"P2\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"des\"}},\"aliases\":{\"de\":[{\"language\":\"de\",\"value\":\"alias\"}]},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"datatype\":\"wikibase-item\",\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -277,7 +277,7 @@ public class PropertyDocumentImplTest {
 	
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), pid);
 		Claim claim = fresh.getClaim();

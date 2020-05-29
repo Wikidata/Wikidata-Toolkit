@@ -42,7 +42,7 @@ public class LexemeDocumentImplTest {
 	private final LexemeIdValue lid = new LexemeIdValueImpl("L42", "http://example.com/entity/");
 	private final ItemIdValue lexCat = new ItemIdValueImpl("Q1", "http://example.com/entity/");
 	private final ItemIdValue language = new ItemIdValueImpl("Q2", "http://example.com/entity/");
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), lid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -69,7 +69,7 @@ public class LexemeDocumentImplTest {
 	private final LexemeDocument ld1 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, senses, 1234);
 	private final LexemeDocument ld2 = new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups, forms, senses, 1234);
 
-	private final String JSON_LEXEME = "{\"type\":\"lexeme\",\"id\":\"L42\",\"lexicalCategory\":\"Q1\",\"language\":\"Q2\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"lemma\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"forms\":[{\"type\":\"form\",\"id\":\"L42-F1\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"foo\"}},\"grammaticalFeatures\":[],\"claims\":{}}],\"senses\":[{\"type\":\"sense\",\"id\":\"L42-S1\",\"glosses\":{\"en\":{\"language\":\"en\",\"value\":\"foo meaning\"}},\"claims\":{}}],\"lastrevid\":1234}";
+	private final String JSON_LEXEME = "{\"type\":\"lexeme\",\"id\":\"L42\",\"lexicalCategory\":\"Q1\",\"language\":\"Q2\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"lemma\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"forms\":[{\"type\":\"form\",\"id\":\"L42-F1\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"foo\"}},\"grammaticalFeatures\":[],\"claims\":{}}],\"senses\":[{\"type\":\"sense\",\"id\":\"L42-S1\",\"glosses\":{\"en\":{\"language\":\"en\",\"value\":\"foo meaning\"}},\"claims\":{}}],\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -173,7 +173,7 @@ public class LexemeDocumentImplTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		LexemeIdValue iid2 = new LexemeIdValueImpl("Q23", "http://example.org/");
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
 		StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(s2));
@@ -235,7 +235,7 @@ public class LexemeDocumentImplTest {
 
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), lid);
 		Claim claim = fresh.getClaim();

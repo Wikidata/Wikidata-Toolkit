@@ -36,7 +36,7 @@ public class SenseDocumentImplTest {
 	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
 	private final SenseIdValue sid = new SenseIdValueImpl("L42-S1", "http://example.com/entity/");
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), sid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -48,7 +48,7 @@ public class SenseDocumentImplTest {
 	private final SenseDocument sd1 = new SenseDocumentImpl(sid, repList, statementGroups, 1234);
 	private final SenseDocument sd2 = new SenseDocumentImpl(sid, repList, statementGroups, 1234);
 
-	private final String JSON_SENSE = "{\"type\":\"sense\",\"id\":\"L42-S1\",\"glosses\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
+	private final String JSON_SENSE = "{\"type\":\"sense\",\"id\":\"L42-S1\",\"glosses\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -111,7 +111,7 @@ public class SenseDocumentImplTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		SenseIdValue iid2 = new SenseIdValueImpl("Q23", "http://example.org/");
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
 		StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(s2));
@@ -147,7 +147,7 @@ public class SenseDocumentImplTest {
 
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), sid);
 		Claim claim = fresh.getClaim();

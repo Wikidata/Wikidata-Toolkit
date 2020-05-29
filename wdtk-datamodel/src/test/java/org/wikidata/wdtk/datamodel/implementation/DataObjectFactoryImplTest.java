@@ -219,7 +219,7 @@ public class DataObjectFactoryImplTest {
 				factory.getItemIdValue("Q42", "foo"),
 				factory.getNoValueSnak(factory.getPropertyIdValue("P42", "foo")),
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "MyId");
+				StatementRank.NORMAL, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		StatementGroup o1 = new StatementGroupImpl(Collections.singletonList(s));
 		StatementGroup o2 = factory.getStatementGroup(Collections.singletonList(s));
 		assertEquals(o1, o2);

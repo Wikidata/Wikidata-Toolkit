@@ -167,7 +167,7 @@ public class FilterCopyTest {
 				Datamodel.makeWikidataItemIdValue("Q42"),
 				Datamodel.makeSomeValueSnak(propertyIdValue),
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
+				StatementRank.NORMAL,propertyIdValue.getId() + "$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		return Datamodel.makeStatementGroup(Collections
 				.singletonList(statement));
 	}
@@ -367,7 +367,7 @@ public class FilterCopyTest {
 		Statement statement = Datamodel.makeStatement(
 				Datamodel.makeWikidataItemIdValue("Q42"), snak,
 				Collections.emptyList(), Collections.singletonList(reference),
-				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
+				StatementRank.NORMAL,propertyIdValue.getId() + "$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		StatementGroup statementGroup = Datamodel
 				.makeStatementGroup(Collections.singletonList(statement));
 		ItemDocument itemDocument = Datamodel.makeItemDocument(
@@ -381,7 +381,7 @@ public class FilterCopyTest {
 		Statement statementFiltered = Datamodel.makeStatement(
 				Datamodel.makeWikidataItemIdValue("Q42"), snak,
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL,"statement-id-" + propertyIdValue.getId());
+				StatementRank.NORMAL,propertyIdValue.getId() + "$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		StatementGroup statementGroupFiltered = Datamodel
 				.makeStatementGroup(Collections
 						.singletonList(statementFiltered));
