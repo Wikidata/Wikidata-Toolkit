@@ -189,6 +189,7 @@ public abstract class SnakImpl implements Snak {
 		return this.snaktype;	
 	}
 	
+	@JsonIgnore
 	@JsonProperty("datatype")
 	public String getDataType() {
 		return this.datatype;	
