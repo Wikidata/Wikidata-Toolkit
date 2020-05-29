@@ -90,6 +90,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	public void processItemRevision(MwRevision mwRevision) {
 		if(isWikibaseRedirection(mwRevision)) {
+			processRedirectedEntity(mwRevision);
 			return;
 		}
 
@@ -111,6 +112,7 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	public void processPropertyRevision(MwRevision mwRevision) {
 		if(isWikibaseRedirection(mwRevision)) {
+			processRedirectedEntity(mwRevision);
 			return;
 		}
 
@@ -132,12 +134,30 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 
 	private void processLexemeRevision(MwRevision mwRevision) {
 		if(isWikibaseRedirection(mwRevision)) {
+			processRedirectedEntity(mwRevision);
 			return;
 		}
 
 		try {
 			LexemeDocument document = jsonDeserializer.deserializeLexemeDocument(mwRevision.getText());
 			entityDocumentProcessor.processLexemeDocument(document);
+		} catch (JsonParseException e1) {
+			logger.error("Failed to parse JSON for lexeme "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+		} catch (JsonMappingException e1) {
+			logger.error("Failed to map JSON for lexeme "
+					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
+			e1.printStackTrace();
+			System.out.print(mwRevision.getText());
+		} catch (IOException e1) {
+			logger.error("Failed to read revision: " + e1.getMessage());
+		}
+	}
+
+	private void processRedirectedEntity(MwRevision mwRevision) {
+		try {
+			RedirectedEntity document = jsonDeserializer.deserializeRedirectedEntity(mwRevision.getText());
+			entityDocumentProcessor.processRedirectedEntity(document);
 		} catch (JsonParseException e1) {
 			logger.error("Failed to parse JSON for lexeme "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());

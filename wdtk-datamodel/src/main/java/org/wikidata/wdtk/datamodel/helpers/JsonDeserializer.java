@@ -23,16 +23,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.LexemeDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.MediaInfoDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
-import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.implementation.*;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 
@@ -53,6 +45,7 @@ public class JsonDeserializer {
 	private ObjectReader propertyReader;
 	private ObjectReader lexemeReader;
 	private ObjectReader mediaInfoReader;
+	private ObjectReader redirectedEntityReader;
 	
 	/**
 	 * Constructs a new JSON deserializer for the 
@@ -72,6 +65,8 @@ public class JsonDeserializer {
 		lexemeReader = mapper.readerFor(LexemeDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 		mediaInfoReader = mapper.readerFor(MediaInfoDocumentImpl.class)
+				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		redirectedEntityReader = mapper.readerFor(RedirectedEntityImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 	
@@ -109,6 +104,15 @@ public class JsonDeserializer {
 	 */
 	public MediaInfoDocument deserializeMediaInfoDocument(String json) throws IOException {
 		return mediaInfoReader.readValue(json);
+	}
+
+	/**
+	 * Deserializes a JSON string into a {@class MediaInfoDocument}.
+	 * @throws IOException
+	if the JSON payload is invalid
+	 */
+	public RedirectedEntity deserializeRedirectedEntity(String json) throws IOException {
+		return redirectedEntityReader.readValue(json);
 	}
 	
 	/**
