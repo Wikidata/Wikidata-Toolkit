@@ -159,10 +159,10 @@ public class WikibaseRevisionProcessor implements MwRevisionProcessor {
 			RedirectedEntity document = jsonDeserializer.deserializeRedirectedEntity(mwRevision.getText());
 			entityDocumentProcessor.processRedirectedEntity(document);
 		} catch (JsonParseException e1) {
-			logger.error("Failed to parse JSON for lexeme "
+			logger.error("Failed to parse JSON for redirect "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
 		} catch (JsonMappingException e1) {
-			logger.error("Failed to map JSON for lexeme "
+			logger.error("Failed to map JSON for redirect "
 					+ mwRevision.getPrefixedTitle() + ": " + e1.getMessage());
 			e1.printStackTrace();
 			System.out.print(mwRevision.getText());
