@@ -66,7 +66,7 @@ public class JsonDeserializer {
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 		mediaInfoReader = mapper.readerFor(MediaInfoDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-		entityDocumentReader = mapper.readerFor(EntityRedirectDocumentImpl.class)
+		entityRedirectReader = mapper.readerFor(EntityRedirectDocumentImpl.class)
 				.with(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 	}
 	
