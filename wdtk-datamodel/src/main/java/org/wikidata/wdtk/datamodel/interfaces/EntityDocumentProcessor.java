@@ -65,4 +65,13 @@ public interface EntityDocumentProcessor {
 	 */
 	default void processMediaInfoDocument(MediaInfoDocument mediaInfoDocument) {
 	}
+
+	/**
+	 * Processes the given EntityRedirectDocument.
+	 *
+	 * @param entityRedirectDocument
+	 *            the EntityRedirectDocument
+	 */
+	default void processEntityRedirectDocument(EntityRedirectDocument entityRedirectDocument) {
+	}
 }
