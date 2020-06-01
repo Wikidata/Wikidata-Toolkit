@@ -38,7 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
 import org.wikidata.wdtk.examples.ExampleHelpers;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
-import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 import org.wikidata.wdtk.wikibaseapi.LoginFailedException;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataEditor;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
@@ -81,7 +81,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
  */
 public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 
-	final ApiConnection connection;
+	final BasicApiConnection connection;
 	final WikibaseDataEditor dataEditor;
 	final WikibaseDataFetcher dataFetcher;
 
@@ -169,7 +169,7 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 		WebResourceFetcherImpl
 				.setUserAgent("makrobot 0.3.0; Wikidata Toolkit; Java");
 
-		connection = ApiConnection.getWikidataApiConnection();
+		connection = BasicApiConnection.getWikidataApiConnection();
 		if (BotSettings.USERNAME != null) {
 			connection.login(BotSettings.USERNAME, BotSettings.PASSWORD);
 		}

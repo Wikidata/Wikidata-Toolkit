@@ -43,7 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.examples.ExampleHelpers;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
-import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 import org.wikidata.wdtk.wikibaseapi.LoginFailedException;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataEditor;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
@@ -148,7 +148,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 			"P2196", // students count
 	};
 
-	final ApiConnection connection;
+	final BasicApiConnection connection;
 	final WikibaseDataEditor dataEditor;
 	final WikibaseDataFetcher dataFetcher;
 
@@ -219,7 +219,7 @@ public class FixIntegerQuantityPrecisionsBot implements EntityDocumentProcessor 
 		WebResourceFetcherImpl
 				.setUserAgent("makrobot 0.4.0; Wikidata Toolkit; Java");
 
-		connection = ApiConnection.getWikidataApiConnection();
+		connection = BasicApiConnection.getWikidataApiConnection();
 		if (BotSettings.USERNAME != null) {
 			connection.login(BotSettings.USERNAME, BotSettings.PASSWORD);
 		}

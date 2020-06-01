@@ -53,6 +53,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -119,7 +120,7 @@ public class PropertyRegister {
 	final Set<String> knownMissing;
 
 	static final PropertyRegister WIKIDATA_PROPERTY_REGISTER = new PropertyRegister(
-			"P1921", ApiConnection.getWikidataApiConnection(),
+			"P1921", BasicApiConnection.getWikidataApiConnection(),
 			Datamodel.SITE_WIKIDATA);
 
 	/**

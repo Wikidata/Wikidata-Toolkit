@@ -58,11 +58,7 @@ public class BasicApiConnectionTest {
 
 	MockBasicApiConnection con;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"loggedIn\":true,\"cookies\":{\"Path\":\"/\","+
-			"\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\","+
-			"\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\","+
-			"\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\","+
-			"\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\",\"connectTimeout\":-1,\"readTimeout\":-1}";
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"connectTimeout\":-1,\"readTimeout\":-1,\"baseUrl\":\"https://mocked.api.connection/w/api.php\",\"loggedIn\":true,\"cookies\":{\"Path\":\"/\",\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\",\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\",\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
 	
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
@@ -186,9 +182,15 @@ public class BasicApiConnectionTest {
 	
 	@Test
 	public void testDeserialize() throws IOException {
-		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, ApiConnection.class);
+		
+		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+		List<String> cookieList = testCookieList();
+		headerFields.put("Set-Cookie", cookieList);
+		
+		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
 		assertTrue(newConn.isLoggedIn());
 		assertEquals("username", newConn.getCurrentUser());
+		assertEquals("https://mocked.api.connection/w/api.php", newConn.getApiBaseUrl());
 	}
 
 	@Test
@@ -322,14 +324,14 @@ public class BasicApiConnectionTest {
 
 	@Test
 	public void testErrorMessages() {
-		ApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
-		String[] knownErrors = { ApiConnection.LOGIN_WRONG_PASS,
-				ApiConnection.LOGIN_WRONG_PLUGIN_PASS,
-				ApiConnection.LOGIN_NOT_EXISTS, ApiConnection.LOGIN_BLOCKED,
-				ApiConnection.LOGIN_EMPTY_PASS, ApiConnection.LOGIN_NO_NAME,
-				ApiConnection.LOGIN_CREATE_BLOCKED,
-				ApiConnection.LOGIN_ILLEGAL, ApiConnection.LOGIN_THROTTLED,
-				ApiConnection.LOGIN_WRONG_TOKEN, ApiConnection.LOGIN_NEEDTOKEN };
+		BasicApiConnection connection = BasicApiConnection.getTestWikidataApiConnection();
+		String[] knownErrors = { BasicApiConnection.LOGIN_WRONG_PASS,
+				BasicApiConnection.LOGIN_WRONG_PLUGIN_PASS,
+				BasicApiConnection.LOGIN_NOT_EXISTS, BasicApiConnection.LOGIN_BLOCKED,
+				BasicApiConnection.LOGIN_EMPTY_PASS, BasicApiConnection.LOGIN_NO_NAME,
+				BasicApiConnection.LOGIN_CREATE_BLOCKED,
+				BasicApiConnection.LOGIN_ILLEGAL, BasicApiConnection.LOGIN_THROTTLED,
+				BasicApiConnection.LOGIN_WRONG_TOKEN, BasicApiConnection.LOGIN_NEEDTOKEN };
 
 		ArrayList<String> messages = new ArrayList<>();
 		for (String error : knownErrors) {
