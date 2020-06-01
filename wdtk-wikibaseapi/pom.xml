@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>se.akerfeldt</groupId>
 			<artifactId>okhttp-signpost</artifactId>
-			<version>1.1.0</version>
+			<version>${okhttpSignpostVersion}</version>
 		</dependency>
 
 	</dependencies>
