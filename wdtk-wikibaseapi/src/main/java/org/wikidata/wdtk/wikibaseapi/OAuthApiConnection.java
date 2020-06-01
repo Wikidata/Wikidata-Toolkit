@@ -54,28 +54,13 @@ public class OAuthApiConnection extends ApiConnection {
 
     private OkHttpClient client;
 
-    private static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
-
-    /**
-     * Constructs a plain connection without OAuth functionality to the given MediaWiki API endpoint.
-     * <p>
-     * Use this constructor if you will only make anonymous requests which don't require logging in.
-     * <p>
-     * {@link OAuthApiConnection#isLoggedIn()} will always return false if using this constructor.
-     *
-     * @param apiBaseUrl the MediaWiki API endpoint, such as "https://www.wikidata.org/w/api.php"
-     */
-    public OAuthApiConnection(String apiBaseUrl) {
-        super(apiBaseUrl);
-        client = new OkHttpClient.Builder().build();
-        loggedIn = false;
-    }
+    private static final MediaType URLENCODED_MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
 
     /**
      * Constructs an OAuth connection to the given MediaWiki API endpoint.
      * <p>
      * {@link ApiConnection#isLoggedIn()} will return true
-     * if this constructor is used and {@link ApiConnection#logout()} hasn't been called.
+     * until {@link ApiConnection#logout()} is called.
      * <p>
      * NOTICE: The constructor doesn't check if the OAuth credentials
      * (i.e., the consumer key/secret and the access token/secret) are valid.
@@ -132,7 +117,7 @@ public class OAuthApiConnection extends ApiConnection {
         if ("GET".equalsIgnoreCase(requestMethod)) {
             request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
         } else if ("POST".equalsIgnoreCase(requestMethod)) {
-            request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(MEDIA_TYPE, queryString)).build();
+            request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(URLENCODED_MEDIA_TYPE, queryString)).build();
         } else {
             throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
         }
@@ -244,16 +229,16 @@ public class OAuthApiConnection extends ApiConnection {
     }
 
     private void updateTimeoutSetting() {
+        if (!loggedIn) throw new IllegalStateException("Cannot update connection settings after logging out");
+
         // avoid instantiating new objects if possible
         if (connectTimeout < 0 && readTimeout < 0) return;
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
-        if (loggedIn) {
-            OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
-            consumer.setTokenWithSecret(accessToken, accessSecret);
-            builder.addInterceptor(new SigningInterceptor(consumer));
-        }
+        OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
+        consumer.setTokenWithSecret(accessToken, accessSecret);
+        builder.addInterceptor(new SigningInterceptor(consumer));
 
         if (connectTimeout >= 0) {
             builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);

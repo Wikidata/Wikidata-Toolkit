@@ -51,16 +51,16 @@ public class OAuthApiConnectionTest {
     private static final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55178/w/api.php\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":true,\"username\":\"foo\"}";
 
     @Test
-    public void testAnonymousRequest() throws IOException, MediaWikiApiErrorException, InterruptedException {
+    public void testFetchOnlineData() throws IOException, MediaWikiApiErrorException, InterruptedException {
         MockWebServer server = new MockWebServer();
         server.enqueue(new MockResponse().addHeader("Content-Type", "application/json; charset=utf-8")
                 .setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\",\"labels\":{\"fr\":{\"language\":\"fr\",\"value\":\"bonheur\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"état émotionnel\"}},\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\":)\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE04\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE03\"}]},\"sitelinks\":{\"enwiki\":{\"site\":\"enwiki\",\"title\":\"Happiness\",\"badges\":[]}}}},\"success\":1}"));
         server.start();
         HttpUrl apiBaseUrl = server.url("/w/api.php");
-        // We don't need to login here.
-        ApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString());
-        assertFalse(connection.isLoggedIn());
-        assertEquals("", connection.getCurrentUser());
+        ApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
+                CONSUMER_KEY, CONSUMER_SECRET,
+                ACCESS_TOKEN, ACCESS_SECRET);
+        assertTrue(connection.isLoggedIn());
 
         // We can still fetch unprotected data without logging in.
         WikibaseDataFetcher wbdf = new WikibaseDataFetcher(connection, Datamodel.SITE_WIKIDATA);
@@ -81,7 +81,7 @@ public class OAuthApiConnectionTest {
                 "and its English Wikipedia page has the title Happiness.", result);
 
         RecordedRequest request = server.takeRequest();
-        assertNull(request.getHeader("Authorization"));
+        assertNotNull(request.getHeader("Authorization"));
 
         server.shutdown();
     }
@@ -186,7 +186,9 @@ public class OAuthApiConnectionTest {
 
     @Test
     public void testReadTimeout() {
-        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API);
+        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API,
+                CONSUMER_KEY, CONSUMER_SECRET,
+                ACCESS_TOKEN, ACCESS_SECRET);
         connection.setReadTimeout(2000);
         assertEquals(-1, connection.getConnectTimeout());
         assertEquals(2000, connection.getReadTimeout());
