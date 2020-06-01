@@ -128,7 +128,7 @@ public abstract class ApiConnection {
 	 * Mapper object used for deserializing JSON data.
 	 */
 	final ObjectMapper mapper = new ObjectMapper();
-	
+
 	/**
 	 * Creates an object to manage a connection to the Web API of a Wikibase
 	 * site.
@@ -330,7 +330,7 @@ public abstract class ApiConnection {
 		processResponseHeaders(connection.getHeaderFields());
 		return iStream;
 	}
-	
+
 	/**
 	 * Configures a given {@link HttpURLConnection} object to send requests.
 	 * Takes the request method (either "POST" or "GET") and query string.
@@ -477,7 +477,7 @@ public abstract class ApiConnection {
 
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Builds a string that serializes a list of objects separated by the pipe
 	 * character. The toString methods are used to turn objects into strings.
