@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class BasicApiConnection extends ApiConnection {
-	
+
 	/**
 	 * Name of the HTTP parameter to submit a password to the API.
 	 */
@@ -57,7 +57,7 @@ public class BasicApiConnection extends ApiConnection {
 	 * Name of the HTTP parameter to submit a login token to the API.
 	 */
 	protected final static String PARAM_LOGIN_TOKEN = "lgtoken";
-	
+
 	/**
 	 * String value in the result field of the JSON response if the login was
 	 * successful.
@@ -118,7 +118,7 @@ public class BasicApiConnection extends ApiConnection {
 	 * String value in the result field of the JSON response if token is wrong.
 	 */
 	protected final static String LOGIN_WRONG_TOKEN = "WrongToken";
-	
+
 	/**
 	 * Name of the HTTP parameter to submit cookies to the API.
 	 */
@@ -139,7 +139,7 @@ public class BasicApiConnection extends ApiConnection {
 	 * Map of cookies that are currently set.
 	 */
 	final Map<String, String> cookies;
-	
+
 	/**
 	 * Creates an object to manage a connection to the Web API of a Wikibase
 	 * site.
@@ -152,10 +152,10 @@ public class BasicApiConnection extends ApiConnection {
 		super(apiBaseUrl);
 		this.cookies = new HashMap<>();
 	}
-	
+
 	/**
 	 * Deserializes an existing BasicApiConnection from JSON.
-	 * 
+	 *
 	 * @param apiBaseUrl
 	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
 	 * @param cookies
@@ -177,7 +177,7 @@ public class BasicApiConnection extends ApiConnection {
 		this.cookies = cookies;
 		this.loggedIn = loggedIn;
 	}
-	
+
 	/**
 	 * Creates an API connection to test.wikidata.org.
 	 *
@@ -186,7 +186,7 @@ public class BasicApiConnection extends ApiConnection {
 	public static BasicApiConnection getTestWikidataApiConnection() {
 		return new BasicApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
 	}
-	
+
 	/**
 	 * Creates an API connection to wikidata.org.
 	 *
@@ -204,7 +204,7 @@ public class BasicApiConnection extends ApiConnection {
 	public static BasicApiConnection getWikimediaCommonsApiConnection() {
 		return new BasicApiConnection(ApiConnection.URL_WIKIMEDIA_COMMONS_API);
 	}
-	
+
 	/**
 	 * Logs in using the specified user credentials. After successful login, the
 	 * API connection remains in a logged in state, and future actions will be
@@ -232,7 +232,7 @@ public class BasicApiConnection extends ApiConnection {
 			throw new LoginFailedException(e1.getMessage(), e1);
 		}
 	}
-	
+
 	/**
 	 * Issues a Web API query to confirm that the previous login attempt was
 	 * successful, and sets the internal state of the API connection accordingly
@@ -290,7 +290,7 @@ public class BasicApiConnection extends ApiConnection {
 	public String getCurrentUser() {
 		return super.getCurrentUser();
 	}
-	
+
 	/**
 	 * Returns the map of cookies currently used in this connection.
 	 */
@@ -298,7 +298,7 @@ public class BasicApiConnection extends ApiConnection {
 	public Map<String, String> getCookies() {
 		return Collections.unmodifiableMap(this.cookies);
 	}
-	
+
 	/**
 	 * Clears the set of cookies. This will cause a logout.
 	 *
@@ -308,7 +308,7 @@ public class BasicApiConnection extends ApiConnection {
 		logout();
 		this.cookies.clear();
 	}
-	
+
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
@@ -316,11 +316,11 @@ public class BasicApiConnection extends ApiConnection {
 	void fillCookies(Map<String, List<String>> headerFields) {
 		List<String> headerCookies = new ArrayList<>();
 		for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
-		if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
-			headerCookies.addAll(headers.getValue());
+			if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
+				headerCookies.addAll(headers.getValue());
+			}
 		}
-           }
-           if (!headerCookies.isEmpty()) {
+		if (!headerCookies.isEmpty()) {
 			for (String cookie : headerCookies) {
 				String[] cookieResponse = cookie.split(";\\p{Space}??");
 				for (String cookieLine : cookieResponse) {
@@ -335,11 +335,11 @@ public class BasicApiConnection extends ApiConnection {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the string representation of the currently stored cookies. This
 	 * data is added to the connection before making requests.
-	 * 
+	 *
 	 * @return cookie string
 	 */
 	protected String getCookieString() {
@@ -360,7 +360,7 @@ public class BasicApiConnection extends ApiConnection {
 		return result.toString();
 	}
 
-	
+
 	/**
 	 * Returns a user-readable message for a given API response.
 	 *
@@ -400,7 +400,7 @@ public class BasicApiConnection extends ApiConnection {
 			return "Login Error: " + loginResult;
 		}
 	}
-	
+
 	/**
 	 * Configures a given {@link HttpURLConnection} object to send requests.
 	 * Takes the request method (either "POST" or "GET") and query string.
@@ -421,7 +421,7 @@ public class BasicApiConnection extends ApiConnection {
 		connection.setRequestProperty(PARAM_COOKIE,
 				getCookieString());
 	}
-	
+
 	/**
 	 * Logs the current user out.
 	 *
