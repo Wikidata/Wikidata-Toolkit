@@ -309,6 +309,11 @@ public class BasicApiConnection extends ApiConnection {
 		this.cookies.clear();
 	}
 
+	@Override
+	public void processResponseHeaders(Map<String, List<String>> headerFields) {
+		fillCookies(headerFields);
+	}
+
 	/**
 	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
 	 * API connection with it.
