@@ -22,10 +22,14 @@ package org.wikidata.wdtk.wikibaseapi;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.jetbrains.annotations.NotNull;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
@@ -45,24 +49,53 @@ public class OAuthApiConnectionTest {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String ACCESS_SECRET = "access_secret";
 
+    private static MockWebServer server;
+    private OAuthApiConnection connection;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55690/w/api.php\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":false,\"username\":\"\"}";
-    private static final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"http://kubernetes.docker.internal:55178/w/api.php\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":true,\"username\":\"foo\"}";
+    private final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":false,\"username\":\"\"}";
+    private final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":true,\"username\":\"foo\"}";
+
+    @BeforeClass
+    public static void init() throws IOException {
+        Dispatcher dispatcher = new Dispatcher() {
+            @NotNull
+            @Override
+            public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+                switch (request.getBody().readUtf8()) {
+                    case "languages=fr&assert=user&format=json&action=wbgetentities&ids=Q8&sitefilter=enwiki&props=info%7Cdatatype%7Clabels%7Caliases%7Cdescriptions%7Csitelinks":
+                        return new MockResponse()
+                                .addHeader("Content-Type", "application/json; charset=utf-8")
+                                .setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\",\"labels\":{\"fr\":{\"language\":\"fr\",\"value\":\"bonheur\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"état émotionnel\"}},\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\":)\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE04\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE03\"}]},\"sitelinks\":{\"enwiki\":{\"site\":\"enwiki\",\"title\":\"Happiness\",\"badges\":[]}}}},\"success\":1}");
+                    case "meta=userinfo&assert=user&format=json&action=query":
+                        return new MockResponse()
+                                .addHeader("Content-Type", "application/json; charset=utf-8")
+                                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}");
+                    default:
+                        return new MockResponse().setResponseCode(404);
+                }
+            }
+        };
+
+        server = new MockWebServer();
+        server.setDispatcher(dispatcher);
+        server.start();
+    }
+
+    @AfterClass
+    public static void finish() throws IOException {
+        server.shutdown();
+    }
+
+    @Before
+    public void setUp() {
+        connection = new OAuthApiConnection(server.url("/w/api.php").toString(),
+                CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
+    }
 
     @Test
     public void testFetchOnlineData() throws IOException, MediaWikiApiErrorException, InterruptedException {
-        MockWebServer server = new MockWebServer();
-        server.enqueue(new MockResponse().addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\",\"labels\":{\"fr\":{\"language\":\"fr\",\"value\":\"bonheur\"}},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"état émotionnel\"}},\"aliases\":{\"fr\":[{\"language\":\"fr\",\"value\":\":)\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE04\"},{\"language\":\"fr\",\"value\":\"\uD83D\uDE03\"}]},\"sitelinks\":{\"enwiki\":{\"site\":\"enwiki\",\"title\":\"Happiness\",\"badges\":[]}}}},\"success\":1}"));
-        server.start();
-        HttpUrl apiBaseUrl = server.url("/w/api.php");
-        ApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
-                CONSUMER_KEY, CONSUMER_SECRET,
-                ACCESS_TOKEN, ACCESS_SECRET);
-        assertTrue(connection.isLoggedIn());
-
-        // We can still fetch unprotected data without logging in.
         WikibaseDataFetcher wbdf = new WikibaseDataFetcher(connection, Datamodel.SITE_WIKIDATA);
         wbdf.getFilter().setSiteLinkFilter(Collections.singleton("enwiki"));
         wbdf.getFilter().setLanguageFilter(Collections.singleton("fr"));
@@ -79,25 +112,10 @@ public class OAuthApiConnectionTest {
         }
         assertEquals("The French label for entity Q8 is bonheur\n" +
                 "and its English Wikipedia page has the title Happiness.", result);
-
-        RecordedRequest request = server.takeRequest();
-        assertNotNull(request.getHeader("Authorization"));
-
-        server.shutdown();
     }
 
     @Test
-    public void testLogout() throws IOException, LoginFailedException, InterruptedException {
-        MockWebServer server = new MockWebServer();
-        // user info
-        server.enqueue(new MockResponse()
-                .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}"));
-        server.start();
-        HttpUrl apiBaseUrl = server.url("w/api.php");
-
-        OAuthApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
-                CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
+    public void testLogout() throws IOException, InterruptedException {
         assertTrue(connection.isLoggedIn());
         assertEquals("foo", connection.getCurrentUser());
 
@@ -108,58 +126,24 @@ public class OAuthApiConnectionTest {
 
         RecordedRequest request = server.takeRequest();
         assertNotNull(request.getHeader("Authorization"));
-
-        assertEquals("/w/api.php?meta=userinfo&assert=user&format=json&action=query", request.getPath());
-
-        server.shutdown();
     }
 
     @Test
     public void testSerialize() throws IOException, LoginFailedException {
-        MockWebServer server = new MockWebServer();
-        // user info
-        server.enqueue(new MockResponse()
-                .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}"));
-        server.start();
-        HttpUrl apiBaseUrl = server.url("w/api.php");
-
-        OAuthApiConnection connection = new OAuthApiConnection(apiBaseUrl.toString(),
-                CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
         String jsonSerialization = mapper.writeValueAsString(connection);
-        // The baseUrl field may be different because the server port is random in every run.
-        // But other fields are required to be the same.
-        assertEquals(LOGGED_IN_SERIALIZED.substring(LOGGED_IN_SERIALIZED.indexOf("/w/api.php")),
-                jsonSerialization.substring(jsonSerialization.indexOf("/w/api.php")));
-        server.shutdown();
+        assertEquals(LOGGED_IN_SERIALIZED, jsonSerialization);
     }
 
     @Test
     public void testDeserialize() throws IOException {
-        OAuthApiConnection connection = mapper.readValue(LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
-        assertTrue(connection.isLoggedIn());
-        assertEquals(CONSUMER_KEY, connection.getConsumerKey());
-        assertEquals(CONSUMER_SECRET, connection.getConsumerSecret());
-        assertEquals(ACCESS_TOKEN, connection.getAccessToken());
-        assertEquals(ACCESS_SECRET, connection.getAccessSecret());
-        assertEquals("http://kubernetes.docker.internal:55178/w/api.php", connection.getApiBaseUrl());
-
-        // To get the username, we have to start a server at http://kubernetes.docker.internal:55178/w/api.php
-        // and return the corresponding json response.
-        // But we cannot control the port of the mocked server, so we just change the url here.
-        MockWebServer server = new MockWebServer();
-        // user info
-        server.enqueue(new MockResponse()
-                .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody("{\"batchcomplete\":\"\",\"query\":{\"userinfo\":{\"id\":2333,\"name\":\"foo\"}}}"));
-        server.start();
-        HttpUrl apiBaseUrl = server.url("w/api.php");
-        OAuthApiConnection connection1 = new OAuthApiConnection(apiBaseUrl.toString(),
-                connection.getConsumerKey(), connection.getConsumerSecret(),
-                connection.getAccessToken(), connection.getAccessSecret());
-
-        assertEquals("foo", connection1.getCurrentUser());
-        server.shutdown();
+        OAuthApiConnection newConnection = mapper.readValue(LOGGED_IN_SERIALIZED, OAuthApiConnection.class);
+        assertTrue(newConnection.isLoggedIn());
+        assertEquals(CONSUMER_KEY, newConnection.getConsumerKey());
+        assertEquals(CONSUMER_SECRET, newConnection.getConsumerSecret());
+        assertEquals(ACCESS_TOKEN, newConnection.getAccessToken());
+        assertEquals(ACCESS_SECRET, newConnection.getAccessSecret());
+        assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
+        assertEquals("foo", newConnection.getCurrentUser());
     }
 
     @Test
@@ -170,28 +154,6 @@ public class OAuthApiConnectionTest {
         assertNull(CONSUMER_SECRET, connection.getConsumerSecret());
         assertNull(ACCESS_TOKEN, connection.getAccessToken());
         assertNull(ACCESS_SECRET, connection.getAccessSecret());
-        assertEquals("http://kubernetes.docker.internal:55690/w/api.php", connection.getApiBaseUrl());
+        assertEquals(server.url("/w/api.php").toString(), connection.getApiBaseUrl());
     }
-
-
-    @Test
-    public void testConnectionTimeout() {
-        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API,
-                CONSUMER_KEY, CONSUMER_SECRET,
-                ACCESS_TOKEN, ACCESS_SECRET);
-        connection.setConnectTimeout(2000);
-        assertEquals(2000, connection.getConnectTimeout());
-        assertEquals(-1, connection.getReadTimeout());
-    }
-
-    @Test
-    public void testReadTimeout() {
-        ApiConnection connection = new OAuthApiConnection(ApiConnection.URL_WIKIDATA_API,
-                CONSUMER_KEY, CONSUMER_SECRET,
-                ACCESS_TOKEN, ACCESS_SECRET);
-        connection.setReadTimeout(2000);
-        assertEquals(-1, connection.getConnectTimeout());
-        assertEquals(2000, connection.getReadTimeout());
-    }
-
 }

@@ -20,7 +20,6 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,11 +30,8 @@ import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
 import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A connection to the MediaWiki/Wikibase API which uses OAuth
@@ -51,10 +47,6 @@ public class OAuthApiConnection extends ApiConnection {
 
     private String accessToken;
     private String accessSecret;
-
-    private OkHttpClient client;
-
-    private static final MediaType URLENCODED_MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
 
     /**
      * Constructs an OAuth connection to the given MediaWiki API endpoint.
@@ -88,42 +80,15 @@ public class OAuthApiConnection extends ApiConnection {
         this.consumerSecret = consumerSecret;
         this.accessToken = accessToken;
         this.accessSecret = accessSecret;
-        OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
-        consumer.setTokenWithSecret(accessToken, accessSecret);
-        client = new OkHttpClient.Builder()
-                .addInterceptor(new SigningInterceptor(consumer))
-                .build();
         loggedIn = true;
     }
 
-    /**
-     * Sends a request to the API with the given parameters and the given
-     * request method and returns the result string.
-     * <p>
-     * WARNING: You probably want to use {@link ApiConnection#sendJsonRequest}
-     * that execute the request using JSON content format,
-     * throws the errors and logs the warnings.
-     *
-     * @param requestMethod either POST or GET
-     * @param parameters    Maps parameter keys to values. Out of this map the function
-     *                      will create a query string for the request.
-     * @return API result
-     * @throws IOException
-     */
     @Override
-    public InputStream sendRequest(String requestMethod, Map<String, String> parameters) throws IOException {
-        Request request;
-        String queryString = getQueryString(parameters);
-        if ("GET".equalsIgnoreCase(requestMethod)) {
-            request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
-        } else if ("POST".equalsIgnoreCase(requestMethod)) {
-            request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(URLENCODED_MEDIA_TYPE, queryString)).build();
-        } else {
-            throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
-        }
-
-        Response response = client.newCall(request).execute();
-        return Objects.requireNonNull(response.body()).byteStream();
+    protected OkHttpClient.Builder getBuilder() {
+        OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
+        consumer.setTokenWithSecret(accessToken, accessSecret);
+        return new OkHttpClient.Builder()
+                .addInterceptor(new SigningInterceptor(consumer));
     }
 
     /**
@@ -183,7 +148,7 @@ public class OAuthApiConnection extends ApiConnection {
             Map<String, String> params = new HashMap<>();
             params.put(PARAM_ACTION, "query");
             params.put("meta", "userinfo");
-            JsonNode root = sendJsonRequest("GET", params);
+            JsonNode root = sendJsonRequest("POST", params);
             JsonNode nameNode = root.path("query").path("userinfo").path("name");
             if (nameNode.isMissingNode()) {
                 throw new AssertUserFailedException("The path \"query/userinfo/name\" doesn't exist in the json response");
@@ -216,39 +181,4 @@ public class OAuthApiConnection extends ApiConnection {
         return accessSecret;
     }
 
-    @Override
-    public void setConnectTimeout(int timeout) {
-        super.setConnectTimeout(timeout);
-        updateTimeoutSetting();
-    }
-
-    @Override
-    public void setReadTimeout(int timeout) {
-        super.setReadTimeout(timeout);
-        updateTimeoutSetting();
-    }
-
-    private void updateTimeoutSetting() {
-        if (!loggedIn) throw new IllegalStateException("Cannot update connection settings after logging out");
-
-        // avoid instantiating new objects if possible
-        if (connectTimeout < 0 && readTimeout < 0) return;
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
-        OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
-        consumer.setTokenWithSecret(accessToken, accessSecret);
-        builder.addInterceptor(new SigningInterceptor(consumer));
-
-        if (connectTimeout >= 0) {
-            builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
-        }
-
-        if (readTimeout >= 0) {
-            builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
-        }
-
-        // rebuild the client
-        client = builder.build();
-    }
 }

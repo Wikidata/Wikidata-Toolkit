@@ -20,43 +20,31 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Class to build up and hold a connection to a Wikibase API, managing cookies
- * and login.
- * 
- * This should no longer be instantiated directly: please use one of the subclasses
- * {@link BasicApiConnection} and {@link OAuthApiConnection} instead. This
- * class will become an interface in a future release.
+ * Class to build up and hold a connection to a Wikibase API.
  *
  * @author Michael Guenther
  * @author Antonin Delpeuch
+ * @author Lu Liu
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class ApiConnection {
@@ -71,7 +59,7 @@ public abstract class ApiConnection {
 	 * URL of the API of test.wikidata.org.
 	 */
 	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
-	
+
 	/**
 	 * URL of the API of commons.wikimedia.org.
 	 */
@@ -86,48 +74,56 @@ public abstract class ApiConnection {
 	 * Name of the HTTP parameter to submit the requested result format to the
 	 * API.
 	 */
-	public final static String PARAM_FORMAT = "format";
+	protected final static String PARAM_FORMAT = "format";
 
 	/**
-	 * MediaWiki assert= parameter to ensure we are editting while logged in.
+	 * MediaWiki assert parameter to ensure we are editing while logged in.
 	 */
-	private static final String ASSERT_PARAMETER = "assert";
+	protected static final String ASSERT_PARAMETER = "assert";
+
+	protected static final MediaType URLENCODED_MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
 
 	/**
 	 * URL to access the Wikibase API.
 	 */
-	final String apiBaseUrl;
+	protected final String apiBaseUrl;
 
 	/**
 	 * True after successful login.
 	 */
-	boolean loggedIn = false;
+	protected boolean loggedIn = false;
 	/**
 	 * User name used to log in.
 	 */
-	String username = "";
-	
+	protected String username = "";
+
 	/**
 	 * Map of requested tokens.
 	 */
-	final Map<String, String> tokens;
-	
+	@NotNull
+	protected final Map<String, String> tokens;
+
 	/**
 	 * Maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
 	 */
-	int connectTimeout = -1;
-	
+	protected int connectTimeout = -1;
+
 	/**
 	 * Maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set.
 	 */
-	int readTimeout = -1;
+	protected int readTimeout = -1;
+
+	/**
+	 * Http client used for making requests.
+	 */
+	private OkHttpClient client;
 
 	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
-	final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Creates an object to manage a connection to the Web API of a Wikibase
@@ -157,6 +153,19 @@ public abstract class ApiConnection {
 	}
 
 	/**
+	 * Subclasses can customized their own {@link OkHttpClient.Builder} instances.
+	 *
+	 * An example:
+	 * <pre>
+	 * 	    return new OkHttpClient.Builder()
+	 * 		        .connectTimeout(5, TimeUnit.MILLISECONDS)
+	 * 		        .readTimeout(5, TimeUnit.MILLISECONDS)
+	 * 		        .cookieJar(...);
+	 * </pre>
+	 */
+	protected abstract OkHttpClient.Builder getBuilder();
+
+	/**
 	 * Getter for the apiBaseUrl.
 	 */
 	public String getApiBaseUrl() {
@@ -167,25 +176,25 @@ public abstract class ApiConnection {
 	 * Returns true if a user is logged in. This does not perform
 	 * any request to the server: it just returns our own internal state.
 	 * To check if our authentication credentials are still considered
-	 * valid by the remote server, use checkCredentials().
+	 * valid by the remote server, use {@link ApiConnection#checkCredentials()}.
 	 *
 	 * @return true if the connection is in a logged in state
 	 */
 	public boolean isLoggedIn() {
-		return this.loggedIn;
+		return loggedIn;
 	}
-	
+
 	/**
 	 * Checks that the credentials are still valid for the
 	 * user currently logged in. This can fail if (for instance)
 	 * the cookies expired, or were invalidated by a logout from
 	 * a different client.
-	 * 
+	 *
 	 * This method queries the API and throws {@link AssertUserFailedException}
 	 * if the check failed. This does not update the state of the connection
 	 * object.
-	 * @throws MediaWikiApiErrorException 
-	 * @throws IOException 
+	 * @throws MediaWikiApiErrorException
+	 * @throws IOException
 	 */
 	public void checkCredentials() throws IOException, MediaWikiApiErrorException {
 		Map<String,String> parameters = new HashMap<>();
@@ -200,14 +209,66 @@ public abstract class ApiConnection {
 	 * @return name of the logged in user
 	 */
 	public String getCurrentUser() {
-		return this.username;
+		return username;
 	}
-	
+
+	/**
+	 * Sets the maximum time to wait for a server response once the connection was established, in milliseconds.
+	 * For negative values, no timeout is set.
+	 *
+	 * @see HttpURLConnection#setReadTimeout
+	 */
+	public void setReadTimeout(int timeout) {
+		readTimeout = timeout;
+		if (timeout >= 0) {
+			OkHttpClient.Builder builder = getBuilder();
+			builder.readTimeout(timeout, TimeUnit.MILLISECONDS);
+			client = builder.build();
+		}
+	}
+
+	/**
+	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 *
+	 * @see HttpURLConnection#setConnectTimeout
+	 */
+	public void setConnectTimeout(int timeout) {
+		connectTimeout = timeout;
+		if (timeout >= 0) {
+			OkHttpClient.Builder builder = getBuilder();
+			builder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
+			client = builder.build();
+		}
+	}
+
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set, which is the default behaviour (for
+	 * backwards compatibility).
+	 *
+	 * @see HttpURLConnection#getConnectTimeout
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set, which is the default behaviour (for backwards
+	 * compatibility).
+	 *
+	 * @see HttpURLConnection#getReadTimeout
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+
 	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 */
 	public abstract void logout() throws IOException, MediaWikiApiErrorException;
 
@@ -215,7 +276,7 @@ public abstract class ApiConnection {
 	 * Return a token of given type.
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return a token
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 *     if MediaWiki returned an error
 	 * @throws IOException
 	 *     if a network error occurred
@@ -246,10 +307,10 @@ public abstract class ApiConnection {
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return newly retrieved token
-	 * @throws IOException 
+	 * @throws IOException
 	 *     if a network error occurred
 	 * @throws MediaWikiApiErrorException
-	 *     if MediaWiki returned an error when fetching the token 
+	 *     if MediaWiki returned an error when fetching the token
 	 */
 	private String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
@@ -309,67 +370,21 @@ public abstract class ApiConnection {
 	 */
 	public InputStream sendRequest(String requestMethod,
 			Map<String, String> parameters) throws IOException {
+		Request request;
 		String queryString = getQueryString(parameters);
-		URL url = new URL(this.apiBaseUrl);
-		HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl
-				.getUrlConnection(url);
-
-		setupConnection(requestMethod, queryString, connection);
-		OutputStreamWriter writer = new OutputStreamWriter(
-				connection.getOutputStream());
-		writer.write(queryString);
-		writer.flush();
-		writer.close();
-
-		int rc = connection.getResponseCode();
-		if (rc != 200) {
-			logger.warn("Error: API request returned response code " + rc);
+		if ("GET".equalsIgnoreCase(requestMethod)) {
+			request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
+		} else if ("POST".equalsIgnoreCase(requestMethod)) {
+			request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(URLENCODED_MEDIA_TYPE, queryString)).build();
+		} else {
+			throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
 		}
 
-		InputStream iStream = connection.getInputStream();
-		processResponseHeaders(connection.getHeaderFields());
-		return iStream;
-	}
-
-	/**
-	 * Configures a given {@link HttpURLConnection} object to send requests.
-	 * Takes the request method (either "POST" or "GET") and query string.
-	 *
-	 * @param requestMethod
-	 *            either "POST" or "GET"
-	 * @param queryString
-	 *            the query string to submit
-	 * @param connection
-	 *            the connection to configure
-	 * @throws IOException
-	 *             if the given protocol is not valid
-	 */
-	protected void setupConnection(String requestMethod, String queryString,
-			HttpURLConnection connection) throws IOException {
-		connection.setRequestMethod(requestMethod);
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setUseCaches(false);
-		if(connectTimeout >= 0) {
-			connection.setConnectTimeout(connectTimeout);
+		if (client == null) {
+			client = getBuilder().build();
 		}
-		if(readTimeout >= 0) {
-			connection.setReadTimeout(readTimeout);
-		}
-		connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-	}
-	
-	/**
-	 * Method called after each request with the response headers received
-	 * from the server. Can be used to store cookies returned by the server for instance.
-	 * By default, does nothing.
-	 * 
-	 * @param headerFields
-	 * 		the headers returned by the server
-	 */
-	public void processResponseHeaders(Map<String, List<String>> headerFields) {
-		
+		Response response = client.newCall(request).execute();
+		return Objects.requireNonNull(response.body()).byteStream();
 	}
 
 	/**
@@ -500,48 +515,6 @@ public abstract class ApiConnection {
 			builder.append(o.toString());
 		}
 		return builder.toString();
-	}
-	
-	/**
-	 * Maximum time to wait for when establishing a connection, in milliseconds.
-	 * For negative values, no timeout is set, which is the default behaviour (for
-	 * backwards compatibility).
-	 * 
-	 * @see HttpURLConnection#getConnectTimeout
-	 */
-	public int getConnectTimeout() {
-		return connectTimeout;
-	}
-	
-	/**
-	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
-	 * For negative values, no timeout is set.
-	 * 
-	 * @see HttpURLConnection#setConnectTimeout
-	 */
-	public void setConnectTimeout(int timeout) {
-		connectTimeout = timeout;
-	}
-	
-	/**
-	 * Maximum time to wait for a server response once the connection was established.
-	 * For negative values, no timeout is set, which is the default behaviour (for backwards
-	 * compatibility).
-	 * 
-	 * @see HttpURLConnection#getReadTimeout
-	 */
-	public int getReadTimeout() {
-		return readTimeout;
-	}
-	
-	/**
-	 * Sets the maximum time to wait for a server response once the connection was established.
-	 * For negative values, no timeout is set.
-	 * 
-	 * @see HttpURLConnection#setReadTimeout
-	 */
-	public void setReadTimeout(int timeout) {
-		readTimeout = timeout;
 	}
 
 }

@@ -21,14 +21,17 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -120,17 +123,6 @@ public class BasicApiConnection extends ApiConnection {
 	protected final static String LOGIN_WRONG_TOKEN = "WrongToken";
 
 	/**
-	 * Name of the HTTP parameter to submit cookies to the API.
-	 */
-	public final static String PARAM_COOKIE = "Cookie";
-
-	/**
-	 * Name of the HTTP response header field that provides us with cookies we
-	 * should set.
-	 */
-	final static String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
-
-	/**
 	 * Password used to log in.
 	 */
 	@JsonIgnore
@@ -176,6 +168,12 @@ public class BasicApiConnection extends ApiConnection {
 		this.username = username;
 		this.cookies = cookies;
 		this.loggedIn = loggedIn;
+	}
+
+	@Override
+	protected OkHttpClient.Builder getBuilder() {
+		return new OkHttpClient.Builder()
+				.cookieJar(new ApiConnectionCookieJar());
 	}
 
 	/**
@@ -309,63 +307,6 @@ public class BasicApiConnection extends ApiConnection {
 		this.cookies.clear();
 	}
 
-	@Override
-	public void processResponseHeaders(Map<String, List<String>> headerFields) {
-		fillCookies(headerFields);
-	}
-
-	/**
-	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
-	 * API connection with it.
-	 */
-	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = new ArrayList<>();
-		for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
-			if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
-				headerCookies.addAll(headers.getValue());
-			}
-		}
-		if (!headerCookies.isEmpty()) {
-			for (String cookie : headerCookies) {
-				String[] cookieResponse = cookie.split(";\\p{Space}??");
-				for (String cookieLine : cookieResponse) {
-					String[] entry = cookieLine.split("=");
-					if (entry.length == 2) {
-						this.cookies.put(entry[0], entry[1]);
-					}
-					if (entry.length == 1) {
-						this.cookies.put(entry[0], "");
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns the string representation of the currently stored cookies. This
-	 * data is added to the connection before making requests.
-	 *
-	 * @return cookie string
-	 */
-	protected String getCookieString() {
-		StringBuilder result = new StringBuilder();
-		boolean first = true;
-		for (Entry<String, String> entry : this.cookies.entrySet()) {
-			if (first) {
-				first = false;
-			} else {
-				result.append("; ");
-			}
-			result.append(entry.getKey());
-			if (!"".equals(entry.getValue())) {
-				result.append("=").append(entry.getValue());
-			}
-
-		}
-		return result.toString();
-	}
-
-
 	/**
 	 * Returns a user-readable message for a given API response.
 	 *
@@ -407,27 +348,6 @@ public class BasicApiConnection extends ApiConnection {
 	}
 
 	/**
-	 * Configures a given {@link HttpURLConnection} object to send requests.
-	 * Takes the request method (either "POST" or "GET") and query string.
-	 *
-	 * @param requestMethod
-	 *            either "POST" or "GET"
-	 * @param queryString
-	 *            the query string to submit
-	 * @param connection
-	 *            the connection to configure
-	 * @throws IOException
-	 *             if the given protocol is not valid
-	 */
-	@Override
-	protected void setupConnection(String requestMethod, String queryString,
-			HttpURLConnection connection) throws IOException {
-		super.setupConnection(requestMethod, queryString, connection);
-		connection.setRequestProperty(PARAM_COOKIE,
-				getCookieString());
-	}
-
-	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
@@ -447,6 +367,41 @@ public class BasicApiConnection extends ApiConnection {
 			this.loggedIn = false;
 			this.username = "";
 			this.password = "";
+		}
+	}
+
+	private class ApiConnectionCookieJar implements CookieJar {
+
+		private String domain;
+
+		public ApiConnectionCookieJar() {
+			int firstSlash = apiBaseUrl.indexOf("/", apiBaseUrl.indexOf("//") + 2);
+			domain = apiBaseUrl.substring(apiBaseUrl.indexOf("//") + 2, firstSlash);
+			if (domain.contains(":")) { // Cookies do not provide isolation by port.
+				domain = domain.substring(0, domain.indexOf(":"));
+			}
+		}
+
+		@Override
+		public void saveFromResponse(@NotNull HttpUrl url, @NotNull List<Cookie> cookieList) {
+			for (Cookie cookie : cookieList) {
+				cookies.put(cookie.name(), cookie.value());
+			}
+		}
+
+		@NotNull
+		@Override
+		public List<Cookie> loadForRequest(@NotNull HttpUrl url) {
+			List<Cookie> cookieList = new ArrayList<>();
+			for (Map.Entry<String, String> entry : cookies.entrySet()) {
+				Cookie cookie = new Cookie.Builder()
+						.domain(domain)
+						.name(entry.getKey())
+						.value(entry.getValue())
+						.build();
+				cookieList.add(cookie);
+			}
+			return cookieList;
 		}
 	}
 }
