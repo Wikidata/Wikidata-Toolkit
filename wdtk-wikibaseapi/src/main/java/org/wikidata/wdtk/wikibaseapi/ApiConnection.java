@@ -92,6 +92,7 @@ public abstract class ApiConnection {
 	 * True after successful login.
 	 */
 	protected boolean loggedIn = false;
+
 	/**
 	 * User name used to log in.
 	 */
@@ -228,9 +229,7 @@ public abstract class ApiConnection {
 	 */
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
-		if (timeout >= 0) {
-			buildClient();
-		}
+		client = null;
 	}
 
 	/**
@@ -241,20 +240,7 @@ public abstract class ApiConnection {
 	 */
 	public void setReadTimeout(int timeout) {
 		readTimeout = timeout;
-		if (timeout >= 0) {
-			buildClient();
-		}
-	}
-
-	private void buildClient() {
-		OkHttpClient.Builder builder = getClientBuilder();
-		if (connectTimeout >= 0) {
-			builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
-		}
-		if (readTimeout >= 0) {
-			builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
-		}
-		client = builder.build();
+		client = null;
 	}
 
 	/**
@@ -400,6 +386,17 @@ public abstract class ApiConnection {
 		}
 		Response response = client.newCall(request).execute();
 		return Objects.requireNonNull(response.body()).byteStream();
+	}
+
+	private void buildClient() {
+		OkHttpClient.Builder builder = getClientBuilder();
+		if (connectTimeout >= 0) {
+			builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+		}
+		if (readTimeout >= 0) {
+			builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+		}
+		client = builder.build();
 	}
 
 	/**
