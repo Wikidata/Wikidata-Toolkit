@@ -23,19 +23,15 @@ package org.wikidata.wdtk.wikibaseapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
@@ -82,9 +78,9 @@ public class BasicApiConnectionTest {
 	@BeforeClass
 	public static void init() throws Exception {
 		Dispatcher dispatcher = new Dispatcher() {
-			@NotNull
+
 			@Override
-			public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+			public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
 				if ("/w/api.php?languages=fr&format=json&action=wbgetentities&ids=Q8&sitefilter=enwiki&props=info".equals(request.getPath())) {
 					return new MockResponse()
 							.setHeader("Content-Type", "application/json; charset=utf-8")

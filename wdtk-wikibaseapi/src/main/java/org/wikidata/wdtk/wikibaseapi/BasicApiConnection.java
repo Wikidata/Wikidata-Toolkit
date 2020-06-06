@@ -31,7 +31,6 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -383,15 +382,14 @@ public class BasicApiConnection extends ApiConnection {
 		}
 
 		@Override
-		public void saveFromResponse(@NotNull HttpUrl url, @NotNull List<Cookie> cookieList) {
+		public void saveFromResponse(HttpUrl url, List<Cookie> cookieList) {
 			for (Cookie cookie : cookieList) {
 				cookies.put(cookie.name(), cookie.value());
 			}
 		}
 
-		@NotNull
 		@Override
-		public List<Cookie> loadForRequest(@NotNull HttpUrl url) {
+		public List<Cookie> loadForRequest(HttpUrl url) {
 			List<Cookie> cookieList = new ArrayList<>();
 			for (Map.Entry<String, String> entry : cookies.entrySet()) {
 				Cookie cookie = new Cookie.Builder()

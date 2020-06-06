@@ -26,7 +26,6 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,9 +59,9 @@ public class OAuthApiConnectionTest {
     @BeforeClass
     public static void init() throws IOException {
         Dispatcher dispatcher = new Dispatcher() {
-            @NotNull
+
             @Override
-            public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+            public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
                 switch (request.getBody().readUtf8()) {
                     case "languages=fr&assert=user&format=json&action=wbgetentities&ids=Q8&sitefilter=enwiki&props=info%7Cdatatype%7Clabels%7Caliases%7Cdescriptions%7Csitelinks":
                         return new MockResponse()
