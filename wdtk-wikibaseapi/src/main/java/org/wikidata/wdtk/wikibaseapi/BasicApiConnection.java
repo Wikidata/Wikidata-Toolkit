@@ -170,7 +170,7 @@ public class BasicApiConnection extends ApiConnection {
 	}
 
 	@Override
-	protected OkHttpClient.Builder getBuilder() {
+	protected OkHttpClient.Builder getClientBuilder() {
 		return new OkHttpClient.Builder()
 				.cookieJar(new ApiConnectionCookieJar());
 	}

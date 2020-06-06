@@ -84,7 +84,7 @@ public class OAuthApiConnection extends ApiConnection {
     }
 
     @Override
-    protected OkHttpClient.Builder getBuilder() {
+    protected OkHttpClient.Builder getClientBuilder() {
         OkHttpOAuthConsumer consumer = new OkHttpOAuthConsumer(consumerKey, consumerSecret);
         consumer.setTokenWithSecret(accessToken, accessSecret);
         return new OkHttpClient.Builder()

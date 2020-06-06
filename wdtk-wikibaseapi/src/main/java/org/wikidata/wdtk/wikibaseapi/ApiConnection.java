@@ -161,7 +161,7 @@ public abstract class ApiConnection {
 	 * 		        .cookieJar(...);
 	 * </pre>
 	 */
-	protected abstract OkHttpClient.Builder getBuilder();
+	protected abstract OkHttpClient.Builder getClientBuilder();
 
 	/**
 	 * Getter for the apiBaseUrl.
@@ -219,7 +219,7 @@ public abstract class ApiConnection {
 	public void setReadTimeout(int timeout) {
 		readTimeout = timeout;
 		if (timeout >= 0) {
-			OkHttpClient.Builder builder = getBuilder();
+			OkHttpClient.Builder builder = getClientBuilder();
 			builder.readTimeout(timeout, TimeUnit.MILLISECONDS);
 			client = builder.build();
 		}
@@ -234,7 +234,7 @@ public abstract class ApiConnection {
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
 		if (timeout >= 0) {
-			OkHttpClient.Builder builder = getBuilder();
+			OkHttpClient.Builder builder = getClientBuilder();
 			builder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
 			client = builder.build();
 		}
@@ -379,7 +379,7 @@ public abstract class ApiConnection {
 		}
 
 		if (client == null) {
-			client = getBuilder().build();
+			client = getClientBuilder().build();
 		}
 		Response response = client.newCall(request).execute();
 		return Objects.requireNonNull(response.body()).byteStream();
