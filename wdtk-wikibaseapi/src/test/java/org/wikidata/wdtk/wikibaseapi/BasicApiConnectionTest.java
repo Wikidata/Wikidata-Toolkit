@@ -49,12 +49,13 @@ public class BasicApiConnectionTest {
 	private static MockWebServer server;
 	private BasicApiConnection connection;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"" + server.url("/w/api.php").toString() +
-			"\",\"cookies\":{\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\"WMF-Last-Access\":\"18-Aug-2015\"}," +
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"" + server.url("/w/api.php").toString() + "\"," +
+			"\"cookies\":{\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\"WMF-Last-Access\":\"18-Aug-2015\"}," +
 			"\"username\":\"username\"," +
 			"\"loggedIn\":true," +
-			"\"connectTimeout\":-1," +
-			"\"readTimeout\":-1}\n";
+			"\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"}," +
+			"\"connectTimeout\":5000," +
+			"\"readTimeout\":6000}\n";
 
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
@@ -153,6 +154,8 @@ public class BasicApiConnectionTest {
 	@Test
 	public void testSerialize() throws LoginFailedException, IOException {
 		connection.login("username", "password");
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(6000);
 		assertTrue(connection.isLoggedIn());
 		String jsonSerialization = mapper.writeValueAsString(connection);
 		JsonNode tree1 = mapper.readTree(LOGGED_IN_SERIALIZED_CONNECTION);
@@ -165,13 +168,16 @@ public class BasicApiConnectionTest {
 		BasicApiConnection newConnection = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
 		assertTrue(newConnection.isLoggedIn());
 		assertEquals("username", newConnection.getCurrentUser());
-		assertEquals(-1, newConnection.getConnectTimeout());
-		assertEquals(-1, newConnection.getReadTimeout());
+		assertEquals(5000, newConnection.getConnectTimeout());
+		assertEquals(6000, newConnection.getReadTimeout());
 		assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
 		Map<String, String> cookies = newConnection.getCookies();
 		assertEquals("18-Aug-2015", cookies.get("WMF-Last-Access"));
 		assertEquals("DE:13:Dresden:51.0500:13.7500:v4", cookies.get("GeoIP"));
 		assertEquals("c18ef92637227283bcda73bcf95cfaf5", cookies.get("testwikidatawikiSession"));
+		Map<String, String> tokens = newConnection.getTokens();
+		assertEquals("b5780b6e2f27e20b450921d9461010b4", tokens.get("login"));
+		assertNull(tokens.get("csrf"));
 	}
 
 	@Test

@@ -21,6 +21,7 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
@@ -166,6 +167,7 @@ public abstract class ApiConnection {
 	/**
 	 * Getter for the apiBaseUrl.
 	 */
+	@JsonProperty("baseUrl")
 	public String getApiBaseUrl() {
 		return apiBaseUrl;
 	}
@@ -206,8 +208,16 @@ public abstract class ApiConnection {
 	 *
 	 * @return name of the logged in user
 	 */
+	@JsonProperty("username")
 	public String getCurrentUser() {
 		return username;
+	}
+
+	/**
+	 * Returns the map of tokens (such as csrf token and login token) currently used in this connection.
+	 */
+	public Map<String, String> getTokens() {
+		return Collections.unmodifiableMap(tokens);
 	}
 
 	/**
@@ -219,7 +229,7 @@ public abstract class ApiConnection {
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
 		if (timeout >= 0) {
-			updateTimeoutSettings();
+			buildClient();
 		}
 	}
 
@@ -232,11 +242,11 @@ public abstract class ApiConnection {
 	public void setReadTimeout(int timeout) {
 		readTimeout = timeout;
 		if (timeout >= 0) {
-			updateTimeoutSettings();
+			buildClient();
 		}
 	}
 
-	private void updateTimeoutSettings() {
+	private void buildClient() {
 		OkHttpClient.Builder builder = getClientBuilder();
 		if (connectTimeout >= 0) {
 			builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
@@ -386,7 +396,7 @@ public abstract class ApiConnection {
 		}
 
 		if (client == null) {
-			client = getClientBuilder().build();
+			buildClient();
 		}
 		Response response = client.newCall(request).execute();
 		return Objects.requireNonNull(response.body()).byteStream();

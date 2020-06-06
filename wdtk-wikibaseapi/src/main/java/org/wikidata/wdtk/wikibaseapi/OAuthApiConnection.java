@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ package org.wikidata.wdtk.wikibaseapi;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
@@ -68,19 +68,54 @@ public class OAuthApiConnection extends ApiConnection {
      * @param accessToken    the access token obtained via the OAuth process
      * @param accessSecret   the secret key obtained via the OAuth process
      */
-    @JsonCreator
-    public OAuthApiConnection(
-            @JsonProperty("baseUrl") String apiBaseUrl,
-            @JsonProperty("consumerKey") String consumerKey,
-            @JsonProperty("consumerSecret") String consumerSecret,
-            @JsonProperty("accessToken") String accessToken,
-            @JsonProperty("accessSecret") String accessSecret) {
+    public OAuthApiConnection(String apiBaseUrl,
+                              String consumerKey,
+                              String consumerSecret,
+                              String accessToken,
+                              String accessSecret) {
         super(apiBaseUrl, null);
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.accessToken = accessToken;
         this.accessSecret = accessSecret;
         loggedIn = true;
+    }
+
+    /**
+     * Deserializes an existing OAuthApiConnection from JSON.
+     *
+     * @param apiBaseUrl     the MediaWiki API endpoint, such as "https://www.wikidata.org/w/api.php"
+     * @param consumerKey    the OAuth 1.0a consumer key
+     * @param consumerSecret the OAuth 1.0a consumer secret
+     * @param accessToken    the access token obtained via the OAuth process
+     * @param accessSecret   the secret key obtained via the OAuth process
+     * @param username       name of the current user
+     * @param loggedIn       true if login succeeded.
+     * @param tokens         map of tokens used for this session
+     * @param connectTimeout the maximum time to wait for when establishing a connection, in milliseconds
+     * @param readTimeout    the maximum time to wait for a server response once the connection was established, in milliseconds
+     */
+    @JsonCreator
+    protected OAuthApiConnection(
+            @JsonProperty("baseUrl") String apiBaseUrl,
+            @JsonProperty("consumerKey") String consumerKey,
+            @JsonProperty("consumerSecret") String consumerSecret,
+            @JsonProperty("accessToken") String accessToken,
+            @JsonProperty("accessSecret") String accessSecret,
+            @JsonProperty("username") String username,
+            @JsonProperty("loggedIn") boolean loggedIn,
+            @JsonProperty("tokens") Map<String, String> tokens,
+            @JsonProperty("connectTimeout") int connectTimeout,
+            @JsonProperty("readTimeout") int readTimeout) {
+        super(apiBaseUrl, tokens);
+        this.consumerKey = consumerKey;
+        this.consumerSecret = consumerSecret;
+        this.accessToken = accessToken;
+        this.accessSecret = accessSecret;
+        this.username = username;
+        this.loggedIn = loggedIn;
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
     }
 
     @Override

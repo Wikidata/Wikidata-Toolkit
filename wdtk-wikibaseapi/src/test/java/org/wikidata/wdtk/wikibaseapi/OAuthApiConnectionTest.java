@@ -53,8 +53,26 @@ public class OAuthApiConnectionTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"consumerKey\":null,\"consumerSecret\":null,\"accessToken\":null,\"accessSecret\":null,\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":false,\"username\":\"\"}";
-    private final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"consumerKey\":\"consumer_key\",\"consumerSecret\":\"consumer_secret\",\"accessToken\":\"access_token\",\"accessSecret\":\"access_secret\",\"connectTimeout\":-1,\"readTimeout\":-1,\"loggedIn\":true,\"username\":\"foo\"}";
+    private final String NOT_LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\"," +
+            "\"consumerKey\":null," +
+            "\"consumerSecret\":null," +
+            "\"accessToken\":null," +
+            "\"accessSecret\":null," +
+            "\"username\":\"\"," +
+            "\"loggedIn\":false," +
+            "\"tokens\":{}," +
+            "\"connectTimeout\":-1," +
+            "\"readTimeout\":-1}";
+    private final String LOGGED_IN_SERIALIZED = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\"," +
+            "\"consumerKey\":\"consumer_key\"," +
+            "\"consumerSecret\":\"consumer_secret\"," +
+            "\"accessToken\":\"access_token\"," +
+            "\"accessSecret\":\"access_secret\"," +
+            "\"username\":\"foo\"," +
+            "\"loggedIn\":true," +
+            "\"tokens\":{}," +
+            "\"connectTimeout\":-1," +
+            "\"readTimeout\":-1}";
 
     @BeforeClass
     public static void init() throws IOException {
@@ -143,6 +161,9 @@ public class OAuthApiConnectionTest {
         assertEquals(ACCESS_SECRET, newConnection.getAccessSecret());
         assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
         assertEquals("foo", newConnection.getCurrentUser());
+        assertEquals(-1, connection.getConnectTimeout());
+        assertEquals(-1, connection.getReadTimeout());
+        assertTrue(connection.getTokens().isEmpty());
     }
 
     @Test
@@ -154,5 +175,8 @@ public class OAuthApiConnectionTest {
         assertNull(ACCESS_TOKEN, connection.getAccessToken());
         assertNull(ACCESS_SECRET, connection.getAccessSecret());
         assertEquals(server.url("/w/api.php").toString(), connection.getApiBaseUrl());
+        assertEquals(-1, connection.getConnectTimeout());
+        assertEquals(-1, connection.getReadTimeout());
+        assertTrue(connection.getTokens().isEmpty());
     }
 }

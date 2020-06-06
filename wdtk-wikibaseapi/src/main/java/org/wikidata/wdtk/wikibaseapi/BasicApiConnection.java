@@ -147,14 +147,13 @@ public class BasicApiConnection extends ApiConnection {
 	/**
 	 * Deserializes an existing BasicApiConnection from JSON.
 	 *
-	 * @param apiBaseUrl
-	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
-	 * @param cookies
-	 * 		map of cookies used for this session
-	 * @param loggedIn
-	 * 		true if login succeeded.
-	 * @param tokens
-	 * 		map of tokens used for this session
+	 * @param apiBaseUrl     base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
+	 * @param cookies        map of cookies used for this session
+	 * @param username       name of the current user
+	 * @param loggedIn       true if login succeeded.
+	 * @param tokens         map of tokens used for this session
+	 * @param connectTimeout the maximum time to wait for when establishing a connection, in milliseconds
+	 * @param readTimeout    the maximum time to wait for a server response once the connection was established, in milliseconds
 	 */
 	@JsonCreator
 	protected BasicApiConnection(
@@ -162,11 +161,15 @@ public class BasicApiConnection extends ApiConnection {
 			@JsonProperty("cookies") Map<String, String> cookies,
 			@JsonProperty("username") String username,
 			@JsonProperty("loggedIn") boolean loggedIn,
-			@JsonProperty("tokens") Map<String, String> tokens) {
+			@JsonProperty("tokens") Map<String, String> tokens,
+			@JsonProperty("connectTimeout") int connectTimeout,
+			@JsonProperty("readTimeout") int readTimeout) {
 		super(apiBaseUrl, tokens);
 		this.username = username;
 		this.cookies = cookies;
 		this.loggedIn = loggedIn;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
 
 	@Override
@@ -268,24 +271,6 @@ public class BasicApiConnection extends ApiConnection {
 				throw new LoginFailedException(message);
 			}
 		}
-	}
-
-	@Override
-	@JsonProperty("baseUrl")
-	public String getApiBaseUrl() {
-		return super.getApiBaseUrl();
-	}
-
-	@Override
-	@JsonProperty("loggedIn")
-	public boolean isLoggedIn() {
-		return super.isLoggedIn();
-	}
-
-	@Override
-	@JsonProperty("username")
-	public String getCurrentUser() {
-		return super.getCurrentUser();
 	}
 
 	/**
