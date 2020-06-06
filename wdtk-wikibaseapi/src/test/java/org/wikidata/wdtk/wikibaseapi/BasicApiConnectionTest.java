@@ -307,6 +307,14 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
+	public void testTimeouts() {
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(5000);
+		assertEquals(5000, connection.getConnectTimeout());
+		assertEquals(5000, connection.getReadTimeout());
+	}
+
+	@Test
 	public void testGetMethod() throws IOException, MediaWikiApiErrorException {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("action", "wbgetentities");

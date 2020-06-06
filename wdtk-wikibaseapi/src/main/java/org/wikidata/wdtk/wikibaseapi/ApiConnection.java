@@ -211,21 +211,6 @@ public abstract class ApiConnection {
 	}
 
 	/**
-	 * Sets the maximum time to wait for a server response once the connection was established, in milliseconds.
-	 * For negative values, no timeout is set.
-	 *
-	 * @see HttpURLConnection#setReadTimeout
-	 */
-	public void setReadTimeout(int timeout) {
-		readTimeout = timeout;
-		if (timeout >= 0) {
-			OkHttpClient.Builder builder = getClientBuilder();
-			builder.readTimeout(timeout, TimeUnit.MILLISECONDS);
-			client = builder.build();
-		}
-	}
-
-	/**
 	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
 	 *
@@ -234,10 +219,32 @@ public abstract class ApiConnection {
 	public void setConnectTimeout(int timeout) {
 		connectTimeout = timeout;
 		if (timeout >= 0) {
-			OkHttpClient.Builder builder = getClientBuilder();
-			builder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
-			client = builder.build();
+			updateTimeoutSettings();
 		}
+	}
+
+	/**
+	 * Sets the maximum time to wait for a server response once the connection was established, in milliseconds.
+	 * For negative values, no timeout is set.
+	 *
+	 * @see HttpURLConnection#setReadTimeout
+	 */
+	public void setReadTimeout(int timeout) {
+		readTimeout = timeout;
+		if (timeout >= 0) {
+			updateTimeoutSettings();
+		}
+	}
+
+	private void updateTimeoutSettings() {
+		OkHttpClient.Builder builder = getClientBuilder();
+		if (connectTimeout >= 0) {
+			builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+		}
+		if (readTimeout >= 0) {
+			builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+		}
+		client = builder.build();
 	}
 
 	/**
