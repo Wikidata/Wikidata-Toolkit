@@ -21,14 +21,12 @@ package org.wikidata.wdtk.wikibaseapi;
  */
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import okhttp3.*;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -120,25 +118,15 @@ public class BasicApiConnection extends ApiConnection {
 	protected final static String LOGIN_WRONG_TOKEN = "WrongToken";
 
 	/**
-	 * Name of the HTTP parameter to submit cookies to the API.
-	 */
-	public final static String PARAM_COOKIE = "Cookie";
-
-	/**
-	 * Name of the HTTP response header field that provides us with cookies we
-	 * should set.
-	 */
-	final static String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
-
-	/**
 	 * Password used to log in.
 	 */
 	@JsonIgnore
 	String password = "";
+
 	/**
-	 * Map of cookies that are currently set.
+	 * Used for managing and serializing/deserializing cookies.
 	 */
-	final Map<String, String> cookies;
+	private final CookieManager cookieManager;
 
 	/**
 	 * Creates an object to manage a connection to the Web API of a Wikibase
@@ -150,32 +138,49 @@ public class BasicApiConnection extends ApiConnection {
 	 */
 	public BasicApiConnection(String apiBaseUrl) {
 		super(apiBaseUrl);
-		this.cookies = new HashMap<>();
+		cookieManager = new CookieManager();
+		cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
 	}
 
 	/**
 	 * Deserializes an existing BasicApiConnection from JSON.
 	 *
-	 * @param apiBaseUrl
-	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
-	 * @param cookies
-	 * 		map of cookies used for this session
-	 * @param loggedIn
-	 * 		true if login succeeded.
-	 * @param tokens
-	 * 		map of tokens used for this session
+	 * @param apiBaseUrl     base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
+	 * @param cookies        map of cookies used for this session
+	 * @param username       name of the current user
+	 * @param loggedIn       true if login succeeded.
+	 * @param tokens         map of tokens used for this session
+	 * @param connectTimeout the maximum time to wait for when establishing a connection, in milliseconds
+	 * @param readTimeout    the maximum time to wait for a server response once the connection was established, in milliseconds
 	 */
 	@JsonCreator
 	protected BasicApiConnection(
 			@JsonProperty("baseUrl") String apiBaseUrl,
-			@JsonProperty("cookies") Map<String, String> cookies,
+			@JsonProperty("cookies") List<HttpCookieWrapper> cookies,
 			@JsonProperty("username") String username,
 			@JsonProperty("loggedIn") boolean loggedIn,
-			@JsonProperty("tokens") Map<String, String> tokens) {
+			@JsonProperty("tokens") Map<String, String> tokens,
+			@JsonProperty("connectTimeout") int connectTimeout,
+			@JsonProperty("readTimeout") int readTimeout) {
 		super(apiBaseUrl, tokens);
 		this.username = username;
-		this.cookies = cookies;
 		this.loggedIn = loggedIn;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
+
+		cookieManager = new CookieManager();
+		cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+		CookieStore cookieStore = cookieManager.getCookieStore();
+		// We only deal with apiBaseUrl here.
+		URI uri = URI.create(apiBaseUrl);
+		cookies.stream().map(HttpCookieWrapper::toHttpCookie)
+				.forEach(cookie -> cookieStore.add(uri, cookie));
+	}
+
+	@Override
+	protected OkHttpClient.Builder getClientBuilder() {
+		return new OkHttpClient.Builder()
+				.cookieJar(new JavaNetCookieJar(cookieManager));
 	}
 
 	/**
@@ -273,30 +278,12 @@ public class BasicApiConnection extends ApiConnection {
 		}
 	}
 
-	@Override
-	@JsonProperty("baseUrl")
-	public String getApiBaseUrl() {
-		return super.getApiBaseUrl();
-	}
-
-	@Override
-	@JsonProperty("loggedIn")
-	public boolean isLoggedIn() {
-		return super.isLoggedIn();
-	}
-
-	@Override
-	@JsonProperty("username")
-	public String getCurrentUser() {
-		return super.getCurrentUser();
-	}
-
 	/**
 	 * Returns the map of cookies currently used in this connection.
 	 */
 	@JsonProperty("cookies")
-	public Map<String, String> getCookies() {
-		return Collections.unmodifiableMap(this.cookies);
+	public List<HttpCookie> getCookies() {
+		return cookieManager.getCookieStore().getCookies();
 	}
 
 	/**
@@ -306,65 +293,8 @@ public class BasicApiConnection extends ApiConnection {
 	 */
 	public void clearCookies() throws IOException, MediaWikiApiErrorException {
 		logout();
-		this.cookies.clear();
+		cookieManager.getCookieStore().removeAll();
 	}
-
-	@Override
-	public void processResponseHeaders(Map<String, List<String>> headerFields) {
-		fillCookies(headerFields);
-	}
-
-	/**
-	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
-	 * API connection with it.
-	 */
-	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = new ArrayList<>();
-		for (Map.Entry<String, List<String>> headers : headerFields.entrySet()) {
-			if (HEADER_FIELD_SET_COOKIE.equalsIgnoreCase(headers.getKey())) {
-				headerCookies.addAll(headers.getValue());
-			}
-		}
-		if (!headerCookies.isEmpty()) {
-			for (String cookie : headerCookies) {
-				String[] cookieResponse = cookie.split(";\\p{Space}??");
-				for (String cookieLine : cookieResponse) {
-					String[] entry = cookieLine.split("=");
-					if (entry.length == 2) {
-						this.cookies.put(entry[0], entry[1]);
-					}
-					if (entry.length == 1) {
-						this.cookies.put(entry[0], "");
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns the string representation of the currently stored cookies. This
-	 * data is added to the connection before making requests.
-	 *
-	 * @return cookie string
-	 */
-	protected String getCookieString() {
-		StringBuilder result = new StringBuilder();
-		boolean first = true;
-		for (Entry<String, String> entry : this.cookies.entrySet()) {
-			if (first) {
-				first = false;
-			} else {
-				result.append("; ");
-			}
-			result.append(entry.getKey());
-			if (!"".equals(entry.getValue())) {
-				result.append("=").append(entry.getValue());
-			}
-
-		}
-		return result.toString();
-	}
-
 
 	/**
 	 * Returns a user-readable message for a given API response.
@@ -407,27 +337,6 @@ public class BasicApiConnection extends ApiConnection {
 	}
 
 	/**
-	 * Configures a given {@link HttpURLConnection} object to send requests.
-	 * Takes the request method (either "POST" or "GET") and query string.
-	 *
-	 * @param requestMethod
-	 *            either "POST" or "GET"
-	 * @param queryString
-	 *            the query string to submit
-	 * @param connection
-	 *            the connection to configure
-	 * @throws IOException
-	 *             if the given protocol is not valid
-	 */
-	@Override
-	protected void setupConnection(String requestMethod, String queryString,
-			HttpURLConnection connection) throws IOException {
-		super.setupConnection(requestMethod, queryString, connection);
-		connection.setRequestProperty(PARAM_COOKIE,
-				getCookieString());
-	}
-
-	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
@@ -447,6 +356,48 @@ public class BasicApiConnection extends ApiConnection {
 			this.loggedIn = false;
 			this.username = "";
 			this.password = "";
+		}
+	}
+
+	/**
+	 * Wrapper for {@link HttpCookie}.
+	 *
+	 * Used for json deserialization.
+	 *
+	 * Since {@link HttpCookie} is final, we can't extend it here.
+	 */
+	protected static class HttpCookieWrapper {
+
+		private HttpCookie httpCookie;
+
+		@JsonCreator
+		public HttpCookieWrapper(@JsonProperty("name") String name,
+		                         @JsonProperty("value") String value,
+		                         @JsonProperty("comment") String comment,
+		                         @JsonProperty("commentURL") String commentURL,
+		                         @JsonProperty("domain") String domain,
+		                         @JsonProperty("maxAge") int maxAge,
+		                         @JsonProperty("path") String path,
+		                         @JsonProperty("portlist") String portlist,
+		                         @JsonProperty("secure") boolean secure,
+		                         @JsonProperty("httpOnly") boolean httpOnly,
+		                         @JsonProperty("version") int version,
+		                         @JsonProperty("discard") boolean discard) {
+			httpCookie = new HttpCookie(name, value);
+			httpCookie.setComment(comment);
+			httpCookie.setCommentURL(commentURL);
+			httpCookie.setDomain(domain);
+			httpCookie.setMaxAge(maxAge);
+			httpCookie.setPath(path);
+			httpCookie.setPortlist(portlist);
+			httpCookie.setSecure(secure);
+			httpCookie.setHttpOnly(httpOnly);
+			httpCookie.setVersion(version);
+			httpCookie.setDiscard(discard);
+		}
+
+		public HttpCookie toHttpCookie() {
+			return httpCookie;
 		}
 	}
 }

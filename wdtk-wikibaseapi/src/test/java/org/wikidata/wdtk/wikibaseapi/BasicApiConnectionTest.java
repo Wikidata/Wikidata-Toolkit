@@ -9,9 +9,9 @@ package org.wikidata.wdtk.wikibaseapi;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,18 @@ package org.wikidata.wdtk.wikibaseapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.net.HttpCookie;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
+import java.util.*;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.wikidata.wdtk.util.CompressionType;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.*;
+import org.wikidata.wdtk.testing.MockStringContentFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
@@ -54,12 +45,13 @@ import static org.junit.Assert.*;
 
 public class BasicApiConnectionTest {
 
-	final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
-	MockBasicApiConnection con;
+	private static MockWebServer server;
+	private BasicApiConnection connection;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"connectTimeout\":-1,\"readTimeout\":-1,\"baseUrl\":\"https://mocked.api.connection/w/api.php\",\"loggedIn\":true,\"cookies\":{\"Path\":\"/\",\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\" path\":\"/\",\" Domain\":\".wikidata.org\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\" secure\":\"\",\"WMF-Last-Access\":\"18-Aug-2015\",\"Expires\":\"Sat, 19 Sep 2015 12:00:00 GMT\",\"HttpOnly\":\"\",\" Path\":\"/\",\" httponly\":\"\"},\"username\":\"username\"}";
-	
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"cookies\":[{\"name\":\"GeoIP\",\"value\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"comment\":null,\"commentURL\":null,\"domain\":\"domain comparison should be skipped\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":false,\"httpOnly\":false,\"version\":0,\"discard\":false},{\"name\":\"testwikidatawikiSession\",\"value\":\"c18ef92637227283bcda73bcf95cfaf5\",\"comment\":null,\"commentURL\":null,\"domain\":\"domain comparison should be skipped\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":true,\"httpOnly\":true,\"version\":0,\"discard\":false}],\"username\":\"username\",\"loggedIn\":true,\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"},\"connectTimeout\":5000,\"readTimeout\":6000}";
+
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
 		StringTokenizer stok = new StringTokenizer(str, "" + ch);
@@ -69,155 +61,139 @@ public class BasicApiConnectionTest {
 		return set;
 	}
 
+	private static MockResponse makeJsonResponseFrom(String path) throws IOException {
+		String body = MockStringContentFactory.getStringFromUrl(BasicApiConnectionTest.class.getResource(path));
+		return new MockResponse()
+				.addHeader("Content-Type", "application/json; charset=utf-8")
+				.addHeader("Set-Cookie", "WMF-Last-Access=18-Aug-2015;Path=/;HttpOnly;Expires=Sat, 19 Sep 2015 12:00:00 GMT")
+				.addHeader("Set-Cookie", "GeoIP=DE:13:Dresden:51.0500:13.7500:v4; Path=/; Domain=" + server.getHostName())
+				.addHeader("Set-Cookie", "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; path=/; secure; httponly")
+				.setBody(body);
+	}
+
+	@BeforeClass
+	public static void init() throws Exception {
+		Dispatcher dispatcher = new Dispatcher() {
+
+			@Override
+			public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+				if ("/w/api.php?languages=fr&format=json&action=wbgetentities&ids=Q8&sitefilter=enwiki&props=info".equals(request.getPath())) {
+					return new MockResponse()
+							.setHeader("Content-Type", "application/json; charset=utf-8")
+							.setBody("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\"}},\"success\":1}\n");
+				}
+				try {
+					switch (request.getBody().readUtf8()) {
+						case "meta=tokens&format=json&action=query&type=login":
+							return makeJsonResponseFrom("/query-login-token.json");
+						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password&format=json&action=login&lgname=username":
+							return makeJsonResponseFrom("/loginSuccess.json");
+						case "lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password1&format=json&action=login&lgname=username1":
+							return makeJsonResponseFrom("/loginError.json");
+						case "meta=tokens&assert=user&format=json&action=query&type=csrf":
+							return makeJsonResponseFrom("/query-csrf-token-loggedin-response.json");
+						case "assert=user&format=json&action=logout&token=42307b93c79b0cb558d2dfb4c3c92e0955e06041%2B%5C":
+							return new MockResponse().setHeader("Content-Type", "application/json; charset=utf-8").setBody("{}");
+						case "assert=user&format=json&action=query":
+							return makeJsonResponseFrom("/assert-user-failed.json");
+					}
+				}catch (Exception e) {
+					return new MockResponse().setResponseCode(404);
+				}
+				return new MockResponse().setResponseCode(404);
+			}
+		};
+
+		server = new MockWebServer();
+		server.setDispatcher(dispatcher);
+		server.start();
+	}
+
+	@AfterClass
+	public static void finish() throws IOException {
+		server.shutdown();
+	}
+
 	@Before
-	public void setUp() throws Exception {
-		this.con = new MockBasicApiConnection();
-		Map<String, String> params = new HashMap<>();
-		params.put("action", "query");
-		params.put("meta", "tokens");
-		params.put("type", "csrf");
-		params.put("format", "json");
-		params.put("assert", "user");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/query-csrf-token-loggedin-response.json", CompressionType.NONE);
-		params.clear();
-		params.put("action", "query");
-		params.put("meta", "tokens");
-		params.put("type", "login");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/query-login-token.json", CompressionType.NONE);
-		params.clear();
-		params.put("action", "login");
-		params.put("lgname", "username");
-		params.put("lgpassword", "password");
-		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginSuccess.json", CompressionType.NONE);
-
-		params.clear();
-		params.put("action", "login");
-		params.put("lgname", "username2");
-		params.put("lgpassword", "password2");
-		params.put("lgtoken", "anothertoken");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginError.json", CompressionType.NONE);
-
-		params.clear();
-		params.put("action", "login");
-		params.put("lgname", "username3");
-		params.put("lgpassword", "password3");
-		params.put("lgtoken", "b5780b6e2f27e20b450921d9461010b4");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/loginError2.json", CompressionType.NONE);
-
-		params.clear();
-		params.put("action", "logout");
-		params.put("assert", "user");
-		params.put("format", "json");
-		params.put("token", "42307b93c79b0cb558d2dfb4c3c92e0955e06041+\\");
-		this.con.setWebResource(params, "{}");
-
-		params.clear();
-		params.put("action", "query");
-		params.put("assert", "user");
-		params.put("format", "json");
-		this.con.setWebResourceFromPath(params, this.getClass(),
-				"/assert-user-failed.json", CompressionType.NONE);
-		params.clear();
+	public void setUp() {
+		connection = new BasicApiConnection(server.url("/w/api.php").toString());
 	}
 
 	@Test
-	public void testGetToken() throws LoginFailedException, IOException, MediaWikiApiErrorException {
-		this.con.login("username", "password");
-		assertNotNull(this.con.getOrFetchToken("csrf"));
-	}
-
-	@Test(expected = IOException.class)
-	public void testGetTokenWithoutLogin() throws IOException, MediaWikiApiErrorException {
-		this.con.getOrFetchToken("csrf");
+	public void testGetToken() throws LoginFailedException, IOException, MediaWikiApiErrorException, InterruptedException {
+		connection.login("username", "password");
+		assertNotNull(connection.getOrFetchToken("csrf"));
 	}
 
 	@Test
-	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException {
-		assertNotNull(this.con.getOrFetchToken("login"));
+	public void testGetLoginToken() throws IOException, MediaWikiApiErrorException, InterruptedException, LoginFailedException {
+		assertNotNull(connection.getOrFetchToken("login"));
 	}
 
 	@Test
 	public void testConfirmLogin() throws LoginFailedException, IOException, MediaWikiApiErrorException {
-		String token = this.con.getOrFetchToken("login");
-		this.con.confirmLogin(token, "username", "password");
+		String token = connection.getOrFetchToken("login");
+		connection.confirmLogin(token, "username", "password");
 	}
 
 	@Test
 	public void testLogin() throws LoginFailedException {
-		assertFalse(this.con.loggedIn);
-		this.con.login("username", "password");
-		assertEquals("username", this.con.getCurrentUser());
-		assertEquals("password", this.con.password);
-		assertTrue(this.con.isLoggedIn());
+		assertFalse(connection.loggedIn);
+		connection.login("username", "password");
+		assertEquals("username", connection.getCurrentUser());
+		assertEquals("password", connection.password);
+		assertTrue(connection.isLoggedIn());
 	}
-		
+
 
 	@Test
 	public void testSerialize() throws LoginFailedException, IOException {
-		
-		Map<String, List<String>> headerFields = new HashMap<>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("Set-Cookie", cookieList);
-		
-		con.login("username", "password");
-		con.fillCookies(headerFields);
-		
-		
-		assertTrue(this.con.isLoggedIn());
-		String jsonSerialization = mapper.writeValueAsString(this.con);
-		JsonNode tree1 = mapper.readTree(LOGGED_IN_SERIALIZED_CONNECTION);
-		JsonNode tree2 = mapper.readTree(jsonSerialization);
-		Assert.assertEquals(tree1, tree2);
+		connection.login("username", "password");
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(6000);
+		assertTrue(connection.isLoggedIn());
+		String jsonSerialization = mapper.writeValueAsString(connection);
+		// We skip comparing the cookie domains here, since they depend on
+		// the mocked web server's host, which is system dependent.
+		jsonSerialization = jsonSerialization.replaceAll("\"domain\":\"[^\"]*\"", "\"domain\":\"domain comparison should be skipped\"");
+		assertEquals(LOGGED_IN_SERIALIZED_CONNECTION, jsonSerialization);
 	}
-	
+
 	@Test
 	public void testDeserialize() throws IOException {
-		
-		Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("Set-Cookie", cookieList);
-		
-		ApiConnection newConn = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
-		assertTrue(newConn.isLoggedIn());
-		assertEquals("username", newConn.getCurrentUser());
-		assertEquals("https://mocked.api.connection/w/api.php", newConn.getApiBaseUrl());
+		BasicApiConnection newConnection = mapper.readValue(LOGGED_IN_SERIALIZED_CONNECTION, BasicApiConnection.class);
+		assertTrue(newConnection.isLoggedIn());
+		assertEquals("username", newConnection.getCurrentUser());
+		assertEquals(5000, newConnection.getConnectTimeout());
+		assertEquals(6000, newConnection.getReadTimeout());
+		assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
+		List<HttpCookie> cookies = newConnection.getCookies();
+		for (HttpCookie cookie : cookies) {
+			if (cookie.getName().equals("GeoIP")) {
+				assertEquals("DE:13:Dresden:51.0500:13.7500:v4", cookie.getValue());
+			} else {
+				assertEquals("testwikidatawikiSession", cookie.getName());
+				assertEquals("c18ef92637227283bcda73bcf95cfaf5", cookie.getValue());
+			}
+		}
+		Map<String, String> tokens = newConnection.getTokens();
+		assertEquals("b5780b6e2f27e20b450921d9461010b4", tokens.get("login"));
+		assertNull(tokens.get("csrf"));
 	}
 
 	@Test
 	public void testLogout() throws IOException, LoginFailedException, MediaWikiApiErrorException {
-		this.con.login("username", "password");
-		this.con.logout();
-		assertEquals("", this.con.username);
-		assertEquals("", this.con.password);
-		assertFalse(this.con.loggedIn);
-	}
-
-	@Test(expected = LoginFailedException.class)
-	public void loginErrors() throws LoginFailedException {
-		// This will fail because the token returned is not correct
-		this.con.login("username2", "password2");
+		connection.login("username", "password");
+		connection.logout();
+		assertEquals("", connection.username);
+		assertEquals("", connection.password);
+		assertFalse(connection.loggedIn);
 	}
 
 	@Test(expected = LoginFailedException.class)
 	public void loginUserErrors() throws LoginFailedException {
 		// This will fail because the user is not known
-		this.con.login("username3", "password3");
-	}
-
-	@Test(expected = LoginFailedException.class)
-	public void loginIoErrors() throws LoginFailedException {
-		// This will fail because the request will throw an IO exception
-		this.con.login("notmocked", "notmocked");
+		connection.login("username1", "password1");
 	}
 
 	@Test
@@ -231,7 +207,7 @@ public class BasicApiConnectionTest {
 		assertEquals(
 				split("lgtoken=b5780b6e2f27e20b450921d9461010b4&lgpassword=password"
 						+ "&action=login&lgname=username&format=json", '&'),
-				split(con.getQueryString(params), '&'));
+				split(connection.getQueryString(params), '&'));
 	}
 
 	@Test
@@ -239,7 +215,7 @@ public class BasicApiConnectionTest {
 		JsonNode root;
 		URL path = this.getClass().getResource("/warnings.json");
 		root = mapper.readTree(path.openStream());
-		List<String> warnings = con.getWarnings(root);
+		List<String> warnings = connection.getWarnings(root);
 		List<String> expectedWarnings = Arrays
 				.asList("[main]: Unrecognized parameter: 'rmparam'",
 						"[query]: Unrecognized value for parameter 'list': raremodule",
@@ -254,58 +230,15 @@ public class BasicApiConnectionTest {
 		JsonNode root;
 		URL path = this.getClass().getResource("/error.json");
 		root = mapper.readTree(path.openStream());
-		con.checkErrors(root);
+		connection.checkErrors(root);
 	}
 
 	@Test
-	public void testFillCookies() {
-		Map<String, List<String>> headerFields = new HashMap<>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("Set-Cookie", cookieList);
-		con.fillCookies(headerFields);
-		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
-	}
-	
-	@Test
-	public void testFillCookiesCaseInsensitive() {
-		// for https://github.com/Wikidata/Wikidata-Toolkit/issues/491
-		Map<String, List<String>> headerFields = new HashMap<>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("set-cookie", cookieList);
-		con.fillCookies(headerFields);
-		assertEquals(con.cookies.get(" Domain"), ".wikidata.org");
-	}
-
-	@Test
-	public void testGetCookieString() {
-		Map<String, List<String>> headerFields = new HashMap<>();
-		List<String> cookieList = testCookieList();
-		headerFields.put("Set-Cookie", cookieList);
-		con.fillCookies(headerFields);
-		assertEquals(
-				split("HttpOnly;  httponly;  Path=/; GeoIP=DE:13:Dresden:51.0500:13.7500:v4;  "
-						+ "Domain=.wikidata.org; Expires=Sat, 19 Sep 2015 12:00:00 GMT;  secure;  path=/; "
-						+ "testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; WMF-Last-Access=18-Aug-2015; Path=/", ';'),
-				split(con.getCookieString(), ';'));
-	}
-
-	@Test
-	public void testSetupConnection() throws IOException {
-		URL url = new URL("http://example.org/");
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		con.setupConnection("POST", "", connection);
-		assertEquals("POST",
-				connection.getRequestMethod());
-		assertEquals("application/x-www-form-urlencoded",
-				connection.getRequestProperty("Content-Type"));
-
-	}
-
-	@Test
-	public void testClearCookies() throws IOException, MediaWikiApiErrorException {
-		con.cookies.put("Content", "some content");
-		con.clearCookies();
-		assertTrue(con.cookies.keySet().isEmpty());
+	public void testClearCookies() throws LoginFailedException, IOException, MediaWikiApiErrorException {
+		connection.login("username", "password");
+		assertFalse(connection.getCookies().isEmpty());
+		connection.clearCookies();
+		assertTrue(connection.getCookies().isEmpty());
 	}
 
 	@Test
@@ -348,16 +281,16 @@ public class BasicApiConnectionTest {
 			i++;
 		}
 	}
-	
+
 	@Test(expected = AssertUserFailedException.class)
 	public void testCheckCredentials() throws IOException, MediaWikiApiErrorException, LoginFailedException {
 		// we first login successfully
-		this.con.login("username", "password");
-		assertTrue(this.con.isLoggedIn());
+		connection.login("username", "password");
+		assertTrue(connection.isLoggedIn());
 		// after a while, the credentials expire
-		this.con.checkCredentials();
+		connection.checkCredentials();
 	}
-	
+
 	/**
 	 * For backwards compatibility: by defaults, no timeouts
 	 * are set by us, we use HttpURLConnection's defaults.
@@ -365,47 +298,44 @@ public class BasicApiConnectionTest {
 	 */
 	@Test
 	public void testNoTimeouts() throws IOException {
-		HttpURLConnection urlConn = mock(HttpURLConnection.class);
-		
-		this.con.setupConnection("GET", "foo=bar", urlConn);
-		
-		verify(urlConn, times(0)).setConnectTimeout(anyInt());
-		verify(urlConn, times(0)).setReadTimeout(anyInt());
+		assertEquals(-1, connection.getConnectTimeout());
+		assertEquals(-1, connection.getReadTimeout());
 	}
-	
+
 	@Test
 	public void testConnectTimeout() throws IOException {
-		HttpURLConnection urlConn = mock(HttpURLConnection.class);
-		
-		this.con.setConnectTimeout(1000);
-		this.con.setupConnection("GET", "foo=bar", urlConn);
-		
-		assertEquals(con.getConnectTimeout(), 1000);
-		verify(urlConn, times(1)).setConnectTimeout(1000);
-		verify(urlConn, times(0)).setReadTimeout(anyInt());
+		connection.setConnectTimeout(5000);
+		assertEquals(5000, connection.getConnectTimeout());
 	}
-	
+
 	@Test
 	public void testReadTimeout() throws IOException {
-		HttpURLConnection urlConn = mock(HttpURLConnection.class);
-		
-		this.con.setReadTimeout(2000);
-		this.con.setupConnection("GET", "foo=bar", urlConn);
-		
-		assertEquals(con.getReadTimeout(), 2000);
-		verify(urlConn, times(0)).setConnectTimeout(anyInt());
-		verify(urlConn, times(1)).setReadTimeout(2000);
+		connection.setReadTimeout(5000);
+		assertEquals(5000, connection.getReadTimeout());
 	}
 
-	private List<String> testCookieList() {
-		List<String> cookieList = new ArrayList<>();
-		cookieList
-				.add("WMF-Last-Access=18-Aug-2015;Path=/;HttpOnly;Expires=Sat, 19 Sep 2015 12:00:00 GMT");
-		cookieList
-				.add("GeoIP=DE:13:Dresden:51.0500:13.7500:v4; Path=/; Domain=.wikidata.org");
-		cookieList
-				.add("testwikidatawikiSession=c18ef92637227283bcda73bcf95cfaf5; path=/; secure; httponly");
-		return cookieList;
+	@Test
+	public void testTimeouts() {
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(5000);
+		assertEquals(5000, connection.getConnectTimeout());
+		assertEquals(5000, connection.getReadTimeout());
 	}
 
+	@Test
+	public void testGetMethod() throws IOException, MediaWikiApiErrorException {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("action", "wbgetentities");
+		parameters.put("languages", "fr");
+		parameters.put("ids", "Q8");
+		parameters.put("sitefilter", "enwiki");
+		parameters.put("props", "info");
+		JsonNode root = connection.sendJsonRequest("GET", parameters);
+		assertEquals("{\"entities\":{\"Q8\":{\"pageid\":134,\"ns\":0,\"title\":\"Q8\",\"lastrevid\":1174289176,\"modified\":\"2020-05-05T12:39:07Z\",\"type\":\"item\",\"id\":\"Q8\"}},\"success\":1}", mapper.writeValueAsString(root));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUnsupportedMethod() throws IOException, MediaWikiApiErrorException {
+		connection.sendJsonRequest("PUT", new HashMap<>());
+	}
 }
