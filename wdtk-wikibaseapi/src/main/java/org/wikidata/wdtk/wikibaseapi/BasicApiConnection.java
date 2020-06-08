@@ -281,6 +281,7 @@ public class BasicApiConnection extends ApiConnection {
 	/**
 	 * Returns the map of cookies currently used in this connection.
 	 */
+	@JsonProperty("cookies")
 	public List<HttpCookie> getCookies() {
 		return cookieManager.getCookieStore().getCookies();
 	}

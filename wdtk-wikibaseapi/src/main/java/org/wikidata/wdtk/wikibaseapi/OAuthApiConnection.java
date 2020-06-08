@@ -162,18 +162,6 @@ public class OAuthApiConnection extends ApiConnection {
     }
 
     @Override
-    @JsonProperty("baseUrl")
-    public String getApiBaseUrl() {
-        return super.getApiBaseUrl();
-    }
-
-    @Override
-    @JsonProperty("loggedIn")
-    public boolean isLoggedIn() {
-        return super.isLoggedIn();
-    }
-
-    @Override
     @JsonProperty("username")
     public String getCurrentUser() {
         if (!loggedIn) return "";

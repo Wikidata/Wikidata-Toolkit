@@ -181,6 +181,7 @@ public abstract class ApiConnection {
 	 *
 	 * @return true if the connection is in a logged in state
 	 */
+	@JsonProperty("loggedIn")
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
@@ -217,6 +218,7 @@ public abstract class ApiConnection {
 	/**
 	 * Returns the map of tokens (such as csrf token and login token) currently used in this connection.
 	 */
+	@JsonProperty("tokens")
 	public Map<String, String> getTokens() {
 		return Collections.unmodifiableMap(tokens);
 	}
@@ -250,6 +252,7 @@ public abstract class ApiConnection {
 	 *
 	 * @see HttpURLConnection#getConnectTimeout
 	 */
+	@JsonProperty("connectTimeout")
 	public int getConnectTimeout() {
 		return connectTimeout;
 	}
@@ -261,6 +264,7 @@ public abstract class ApiConnection {
 	 *
 	 * @see HttpURLConnection#getReadTimeout
 	 */
+	@JsonProperty("readTimeout")
 	public int getReadTimeout() {
 		return readTimeout;
 	}
