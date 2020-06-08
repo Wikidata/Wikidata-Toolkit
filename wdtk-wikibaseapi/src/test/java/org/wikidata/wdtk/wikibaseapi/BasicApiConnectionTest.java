@@ -50,7 +50,7 @@ public class BasicApiConnectionTest {
 	private static MockWebServer server;
 	private BasicApiConnection connection;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"http://kubernetes.docker.internal:" + server.getPort() + "/w/api.php\",\"cookies\":[{\"name\":\"GeoIP\",\"value\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"comment\":null,\"commentURL\":null,\"domain\":\".kubernetes.docker.internal\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":false,\"httpOnly\":false,\"version\":0,\"discard\":false},{\"name\":\"testwikidatawikiSession\",\"value\":\"c18ef92637227283bcda73bcf95cfaf5\",\"comment\":null,\"commentURL\":null,\"domain\":\"kubernetes.docker.internal\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":true,\"httpOnly\":true,\"version\":0,\"discard\":false}],\"username\":\"username\",\"loggedIn\":true,\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"},\"connectTimeout\":5000,\"readTimeout\":6000}\n";
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"" + server.url("/w/api.php") + "\",\"cookies\":[{\"name\":\"GeoIP\",\"value\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"comment\":null,\"commentURL\":null,\"domain\":\"domain comparison should be skipped\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":false,\"httpOnly\":false,\"version\":0,\"discard\":false},{\"name\":\"testwikidatawikiSession\",\"value\":\"c18ef92637227283bcda73bcf95cfaf5\",\"comment\":null,\"commentURL\":null,\"domain\":\"domain comparison should be skipped\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":true,\"httpOnly\":true,\"version\":0,\"discard\":false}],\"username\":\"username\",\"loggedIn\":true,\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"},\"connectTimeout\":5000,\"readTimeout\":6000}";
 
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
@@ -153,9 +153,10 @@ public class BasicApiConnectionTest {
 		connection.setReadTimeout(6000);
 		assertTrue(connection.isLoggedIn());
 		String jsonSerialization = mapper.writeValueAsString(connection);
-		JsonNode tree1 = mapper.readTree(LOGGED_IN_SERIALIZED_CONNECTION);
-		JsonNode tree2 = mapper.readTree(jsonSerialization);
-		Assert.assertEquals(tree1, tree2);
+		// We skip comparing the cookie domains here, since they depend on
+		// the mocked web server's host, which is system dependent.
+		jsonSerialization = jsonSerialization.replaceAll("\"domain\":\"[^\"]*\"", "\"domain\":\"domain comparison should be skipped\"");
+		assertEquals(LOGGED_IN_SERIALIZED_CONNECTION, jsonSerialization);
 	}
 
 	@Test
