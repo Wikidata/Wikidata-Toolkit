@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.HttpCookie;
 import java.net.URL;
 import java.util.*;
 
@@ -49,13 +50,7 @@ public class BasicApiConnectionTest {
 	private static MockWebServer server;
 	private BasicApiConnection connection;
 
-	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"" + server.url("/w/api.php").toString() + "\"," +
-			"\"cookies\":{\"GeoIP\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"testwikidatawikiSession\":\"c18ef92637227283bcda73bcf95cfaf5\",\"WMF-Last-Access\":\"18-Aug-2015\"}," +
-			"\"username\":\"username\"," +
-			"\"loggedIn\":true," +
-			"\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"}," +
-			"\"connectTimeout\":5000," +
-			"\"readTimeout\":6000}\n";
+	private String LOGGED_IN_SERIALIZED_CONNECTION = "{\"baseUrl\":\"http://kubernetes.docker.internal:" + server.getPort() + "/w/api.php\",\"cookies\":[{\"name\":\"GeoIP\",\"value\":\"DE:13:Dresden:51.0500:13.7500:v4\",\"comment\":null,\"commentURL\":null,\"domain\":\".kubernetes.docker.internal\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":false,\"httpOnly\":false,\"version\":0,\"discard\":false},{\"name\":\"testwikidatawikiSession\",\"value\":\"c18ef92637227283bcda73bcf95cfaf5\",\"comment\":null,\"commentURL\":null,\"domain\":\"kubernetes.docker.internal\",\"maxAge\":-1,\"path\":\"/\",\"portlist\":null,\"secure\":true,\"httpOnly\":true,\"version\":0,\"discard\":false}],\"username\":\"username\",\"loggedIn\":true,\"tokens\":{\"login\":\"b5780b6e2f27e20b450921d9461010b4\"},\"connectTimeout\":5000,\"readTimeout\":6000}\n";
 
 	Set<String> split(String str, char ch) {
 		Set<String> set = new TreeSet<>();
@@ -171,10 +166,15 @@ public class BasicApiConnectionTest {
 		assertEquals(5000, newConnection.getConnectTimeout());
 		assertEquals(6000, newConnection.getReadTimeout());
 		assertEquals(server.url("/w/api.php").toString(), newConnection.getApiBaseUrl());
-		Map<String, String> cookies = newConnection.getCookies();
-		assertEquals("18-Aug-2015", cookies.get("WMF-Last-Access"));
-		assertEquals("DE:13:Dresden:51.0500:13.7500:v4", cookies.get("GeoIP"));
-		assertEquals("c18ef92637227283bcda73bcf95cfaf5", cookies.get("testwikidatawikiSession"));
+		List<HttpCookie> cookies = newConnection.getCookies();
+		for (HttpCookie cookie : cookies) {
+			if (cookie.getName().equals("GeoIP")) {
+				assertEquals("DE:13:Dresden:51.0500:13.7500:v4", cookie.getValue());
+			} else {
+				assertEquals("testwikidatawikiSession", cookie.getName());
+				assertEquals("c18ef92637227283bcda73bcf95cfaf5", cookie.getValue());
+			}
+		}
 		Map<String, String> tokens = newConnection.getTokens();
 		assertEquals("b5780b6e2f27e20b450921d9461010b4", tokens.get("login"));
 		assertNull(tokens.get("csrf"));
@@ -233,10 +233,11 @@ public class BasicApiConnectionTest {
 	}
 
 	@Test
-	public void testClearCookies() throws IOException, MediaWikiApiErrorException {
-		connection.cookies.put("Content", "some content");
+	public void testClearCookies() throws LoginFailedException, IOException, MediaWikiApiErrorException {
+		connection.login("username", "password");
+		assertFalse(connection.getCookies().isEmpty());
 		connection.clearCookies();
-		assertTrue(connection.cookies.keySet().isEmpty());
+		assertTrue(connection.getCookies().isEmpty());
 	}
 
 	@Test
