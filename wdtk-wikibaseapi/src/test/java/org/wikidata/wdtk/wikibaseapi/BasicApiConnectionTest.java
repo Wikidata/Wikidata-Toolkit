@@ -45,6 +45,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -253,6 +254,18 @@ public class BasicApiConnectionTest {
 		URL path = this.getClass().getResource("/error.json");
 		root = mapper.readTree(path.openStream());
 		con.checkErrors(root);
+	}
+	
+	@Test
+	public void testMaxlagError() throws IOException, MediaWikiApiErrorException {
+		JsonNode root;
+		URL path = this.getClass().getResource("/error-maxlag-full.json");
+		root = mapper.readTree(path.openStream());
+		try {
+			con.checkErrors(root);
+		} catch(MaxlagErrorException e) {
+			assertEquals(3.45, e.getLag(), 0.001);
+		}
 	}
 
 	@Test

@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
@@ -520,9 +521,16 @@ public class ApiConnection {
 	public void checkErrors(JsonNode root) throws MediaWikiApiErrorException {
 		if (root.has("error")) {
 			JsonNode errorNode = root.path("error");
-			MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(errorNode
-					.path("code").asText("UNKNOWN"), errorNode.path("info")
-					.asText("No details provided"));
+			String code = errorNode.path("code").asText("UNKNOWN");
+			String info = errorNode.path("info").asText("No details provided");
+			// Special case for the maxlag error since we also want to return
+			// the lag value in the exception thrown
+			if (errorNode.has("lag") && MediaWikiApiErrorHandler.ERROR_MAXLAG.equals(code)) {
+				double lag = errorNode.path("lag").asDouble();
+				throw new MaxlagErrorException(info, lag);
+			} else {
+				MediaWikiApiErrorHandler.throwMediaWikiApiErrorException(code, info);
+			}
 		}
 	}
 
