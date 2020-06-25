@@ -372,7 +372,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwDailyDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
 		setLocalDumpFile("20140420", DumpContentType.DAILY, dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(
@@ -459,7 +459,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwRecentCurrentDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
 		mockLocalDumpFile("20140420", 4, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140419", 3, DumpContentType.DAILY, dm);
 		mockLocalDumpFile("20140418", 2, DumpContentType.DAILY, dm);
@@ -509,7 +509,7 @@ public class MwDumpFileProcessingTest {
 	@Test
 	public void testMwMostRecentFullDumpFileProcessing() throws IOException {
 		Path dmPath = Paths.get(System.getProperty("user.dir"));
-		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true);
+		MockDirectoryManager dm = new MockDirectoryManager(dmPath, true, true);
 		mockLocalDumpFile("20140418", 2, DumpContentType.FULL, dm);
 
 		DumpProcessingController dpc = new DumpProcessingController(

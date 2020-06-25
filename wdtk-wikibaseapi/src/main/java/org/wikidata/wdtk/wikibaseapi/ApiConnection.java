@@ -20,46 +20,36 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Class to build up and hold a connection to a Wikibase API, managing cookies
- * and login.
- * 
- * This should no longer be instantiated directly: please use one of the subclasses
- * {@class BasicApiConnection} and {@class OAuthApiConnection} instead. This
- * class will become an interface in a future release.
+ * Class to build up and hold a connection to a Wikibase API.
  *
  * @author Michael Guenther
  * @author Antonin Delpeuch
+ * @author Lu Liu
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiConnection {
+public abstract class ApiConnection {
 
 	static final Logger logger = LoggerFactory.getLogger(ApiConnection.class);
 
@@ -71,6 +61,7 @@ public class ApiConnection {
 	 * URL of the API of test.wikidata.org.
 	 */
 	public final static String URL_TEST_WIKIDATA_API = "https://test.wikidata.org/w/api.php";
+
 	/**
 	 * URL of the API of commons.wikimedia.org.
 	 */
@@ -79,146 +70,62 @@ public class ApiConnection {
 	/**
 	 * Name of the HTTP parameter to submit an action to the API.
 	 */
-	public final static String PARAM_ACTION = "action";
-	/**
-	 * Name of the HTTP parameter to submit a password to the API.
-	 */
-	public final static String PARAM_LOGIN_USERNAME = "lgname";
-	/**
-	 * Name of the HTTP parameter to submit a password to the API.
-	 */
-	public final static String PARAM_LOGIN_PASSWORD = "lgpassword";
-	/**
-	 * Name of the HTTP parameter to submit a login token to the API.
-	 */
-	public final static String PARAM_LOGIN_TOKEN = "lgtoken";
+	protected final static String PARAM_ACTION = "action";
+
 	/**
 	 * Name of the HTTP parameter to submit the requested result format to the
 	 * API.
 	 */
-	public final static String PARAM_FORMAT = "format";
-	/**
-	 * Name of the HTTP parameter to submit cookies to the API.
-	 */
-	public final static String PARAM_COOKIE = "Cookie";
+	protected final static String PARAM_FORMAT = "format";
 
 	/**
-	 * Name of the HTTP response header field that provides us with cookies we
-	 * should set.
+	 * MediaWiki assert parameter to ensure we are editing while logged in.
 	 */
-	final static String HEADER_FIELD_SET_COOKIE = "Set-Cookie";
+	protected static final String ASSERT_PARAMETER = "assert";
 
-	/**
-	 * String value in the result field of the JSON response if the login was
-	 * successful.
-	 */
-	final static String LOGIN_RESULT_SUCCESS = "Success";
-	/**
-	 * String value in the result field of the JSON response if the password was
-	 * wrong.
-	 */
-	final static String LOGIN_WRONG_PASS = "WrongPass";
-	/**
-	 * String value in the result field of the JSON response if the password was
-	 * rejected by an authentication plugin.
-	 */
-	final static String LOGIN_WRONG_PLUGIN_PASS = "WrongPluginPass";
-	/**
-	 * String value in the result field of the JSON response if no username was
-	 * given.
-	 */
-	final static String LOGIN_NO_NAME = "NoName";
-	/**
-	 * String value in the result field of the JSON response if given username
-	 * does not exist.
-	 */
-	final static String LOGIN_NOT_EXISTS = "NotExists";
-	/**
-	 * String value in the result field of the JSON response if the user name is
-	 * illegal.
-	 */
-	final static String LOGIN_ILLEGAL = "Illegal";
-	/**
-	 * String value in the result field of the JSON response if there were too
-	 * many logins in a short time.
-	 */
-	final static String LOGIN_THROTTLED = "Throttled";
-	/**
-	 * String value in the result field of the JSON response if password is
-	 * empty.
-	 */
-	final static String LOGIN_EMPTY_PASS = "EmptyPass";
-	/**
-	 * String value in the result field of the JSON response if the wiki tried
-	 * to automatically create a new account for you, but your IP address has
-	 * been blocked from account creation.
-	 */
-	final static String LOGIN_CREATE_BLOCKED = "CreateBlocked";
-	/**
-	 * String value in the result field of the JSON response if the user is
-	 * blocked.
-	 */
-	final static String LOGIN_BLOCKED = "Blocked";
-	/**
-	 * String value in the result field of the JSON response if token or session
-	 * ID is missing.
-	 */
-	final static String LOGIN_NEEDTOKEN = "NeedToken";
-	/**
-	 * String value in the result field of the JSON response if token is wrong.
-	 */
-	final static String LOGIN_WRONG_TOKEN = "WrongToken";
-
-	/**
-	 * MediaWiki assert= parameter to ensure we are editting while logged in.
-	 */
-	private static final String ASSERT_PARAMETER = "assert";
+	protected static final MediaType URLENCODED_MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded");
 
 	/**
 	 * URL to access the Wikibase API.
 	 */
-	final String apiBaseUrl;
+	protected final String apiBaseUrl;
 
 	/**
 	 * True after successful login.
 	 */
-	boolean loggedIn = false;
+	protected boolean loggedIn = false;
+
 	/**
 	 * User name used to log in.
 	 */
-	String username = "";
-	
-	/**
-	 * Password used to log in.
-	 */
-	@JsonIgnore
-	String password = "";
-	/**
-	 * Map of cookies that are currently set.
-	 */
-	final Map<String, String> cookies;
+	protected String username = "";
 
 	/**
 	 * Map of requested tokens.
 	 */
-	final Map<String, String> tokens;
-	
+	protected final Map<String, String> tokens;
+
 	/**
 	 * Maximum time to wait for when establishing a connection, in milliseconds.
 	 * For negative values, no timeout is set.
 	 */
-	int connectTimeout = -1;
-	
+	protected int connectTimeout = -1;
+
 	/**
 	 * Maximum time to wait for a server response once the connection was established.
 	 * For negative values, no timeout is set.
 	 */
-	int readTimeout = -1;
+	protected int readTimeout = -1;
+
+	/**
+	 * Http client used for making requests.
+	 */
+	private OkHttpClient client;
 
 	/**
 	 * Mapper object used for deserializing JSON data.
 	 */
-	final ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Creates an object to manage a connection to the Web API of a Wikibase
@@ -228,121 +135,75 @@ public class ApiConnection {
 	 *            base URI to the API, e.g.,
 	 *            "https://www.wikidata.org/w/api.php/"
 	 */
-	@Deprecated
 	public ApiConnection(String apiBaseUrl) {
-		this.apiBaseUrl = apiBaseUrl;
-		this.cookies = new HashMap<>();
-		this.tokens = new HashMap<>();
+		this(apiBaseUrl, null);
 	}
-	
+
 	/**
-	 * Deserializes an existing ApiConnection from JSON.
-	 * 
+	 * Creates an object to manage a connection to the Web API of a Wikibase
+	 * site.
+	 *
 	 * @param apiBaseUrl
-	 * 		base URL of the API to use, e.g. "https://www.wikidata.org/w/api.php/"
-	 * @param cookies
-	 * 		map of cookies used for this session
-	 * @param loggedIn
-	 * 		true if login succeeded.
+	 *            base URI to the API, e.g.,
+	 *            "https://www.wikidata.org/w/api.php/"
 	 * @param tokens
-	 * 		map of tokens used for this session
+	 * 	      CSRF tokens already acquired by the connection
 	 */
-	@JsonCreator
-	@Deprecated
-	protected ApiConnection(
-			@JsonProperty("baseUrl") String apiBaseUrl,
-			@JsonProperty("cookies") Map<String, String> cookies,
-			@JsonProperty("username") String username,
-			@JsonProperty("loggedIn") boolean loggedIn,
-			@JsonProperty("tokens") Map<String, String> tokens) {
+	public ApiConnection(String apiBaseUrl, Map<String, String> tokens) {
 		this.apiBaseUrl = apiBaseUrl;
-		this.username = username;
-		this.cookies = cookies;
-		this.loggedIn = loggedIn;
-		this.tokens = tokens;
+		this.tokens = tokens != null ? tokens : new HashMap<>();
 	}
 
 	/**
-	 * Creates an API connection to wikidata.org.
+	 * Subclasses can customized their own {@link OkHttpClient.Builder} instances.
 	 *
-	 * @deprecated to be migrated to {@class BasicApiConnection}
-	 * @return {@link BasicApiConnection}
+	 * An example:
+	 * <pre>
+	 * 	    return new OkHttpClient.Builder()
+	 * 		        .connectTimeout(5, TimeUnit.MILLISECONDS)
+	 * 		        .readTimeout(5, TimeUnit.MILLISECONDS)
+	 * 		        .cookieJar(...);
+	 * </pre>
 	 */
-	@Deprecated
-	public static BasicApiConnection getWikidataApiConnection() {
-		return new BasicApiConnection(ApiConnection.URL_WIKIDATA_API);
+	protected abstract OkHttpClient.Builder getClientBuilder();
+
+	/**
+	 * Getter for the apiBaseUrl.
+	 */
+	@JsonProperty("baseUrl")
+	public String getApiBaseUrl() {
+		return apiBaseUrl;
 	}
 
 	/**
-	 * Creates an API connection to test.wikidata.org.
-	 *
-	 * @deprecated to be migrated to {@class BasicApiConnection}
-	 * @return {@link BasicApiConnection}
-	 */
-	@Deprecated
-	public static BasicApiConnection getTestWikidataApiConnection() {
-		return new BasicApiConnection(ApiConnection.URL_TEST_WIKIDATA_API);
-	}
-
-	/**
-	 * Builds a string that serializes a list of objects separated by the pipe
-	 * character. The toString methods are used to turn objects into strings.
-	 * This operation is commonly used to build parameter lists for API
-	 * requests.
-	 *
-	 * @param objects
-	 *            the objects to implode
-	 * @return string of imploded objects
-	 */
-	public static String implodeObjects(Iterable<?> objects) {
-		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for (Object o : objects) {
-			if (first) {
-				first = false;
-			} else {
-				builder.append("|");
-			}
-			builder.append(o.toString());
-		}
-		return builder.toString();
-	}
-
-	/**
-	 * Logs in using the specified user credentials. After successful login, the
-	 * API connection remains in a logged in state, and future actions will be
-	 * run as a logged in user.
-	 *
-	 * @param username
-	 *            the name of the user to log in
-	 * @param password
-	 *            the password of the user
-	 * @throws LoginFailedException
-	 *             if the login failed for some reason
-	 */
-	@Deprecated
-	public void login(String username, String password)
-			throws LoginFailedException {
-		try {
-			String token = fetchToken("login");
-			try {
-				this.confirmLogin(token, username, password);
-			} catch (NeedLoginTokenException e) { // try once more
-				token = fetchToken("login");
-				this.confirmLogin(token, username, password);
-			}
-		} catch (IOException | MediaWikiApiErrorException e1) {
-			throw new LoginFailedException(e1.getMessage(), e1);
-		}
-	}
-
-	/**
-	 * Returns true if a user is logged in.
+	 * Returns true if a user is logged in. This does not perform
+	 * any request to the server: it just returns our own internal state.
+	 * To check if our authentication credentials are still considered
+	 * valid by the remote server, use {@link ApiConnection#checkCredentials()}.
 	 *
 	 * @return true if the connection is in a logged in state
 	 */
+	@JsonProperty("loggedIn")
 	public boolean isLoggedIn() {
-		return this.loggedIn;
+		return loggedIn;
+	}
+
+	/**
+	 * Checks that the credentials are still valid for the
+	 * user currently logged in. This can fail if (for instance)
+	 * the cookies expired, or were invalidated by a logout from
+	 * a different client.
+	 *
+	 * This method queries the API and throws {@link AssertUserFailedException}
+	 * if the check failed. This does not update the state of the connection
+	 * object.
+	 * @throws MediaWikiApiErrorException
+	 * @throws IOException
+	 */
+	public void checkCredentials() throws IOException, MediaWikiApiErrorException {
+		Map<String,String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		sendJsonRequest("POST", parameters);
 	}
 
 	/**
@@ -351,48 +212,78 @@ public class ApiConnection {
 	 *
 	 * @return name of the logged in user
 	 */
+	@JsonProperty("username")
 	public String getCurrentUser() {
-		return this.username;
+		return username;
 	}
-	
+
+	/**
+	 * Returns the map of tokens (such as csrf token and login token) currently used in this connection.
+	 */
+	@JsonProperty("tokens")
+	public Map<String, String> getTokens() {
+		return Collections.unmodifiableMap(tokens);
+	}
+
+	/**
+	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set.
+	 *
+	 * @see HttpURLConnection#setConnectTimeout
+	 */
+	public void setConnectTimeout(int timeout) {
+		connectTimeout = timeout;
+		client = null;
+	}
+
+	/**
+	 * Sets the maximum time to wait for a server response once the connection was established, in milliseconds.
+	 * For negative values, no timeout is set.
+	 *
+	 * @see HttpURLConnection#setReadTimeout
+	 */
+	public void setReadTimeout(int timeout) {
+		readTimeout = timeout;
+		client = null;
+	}
+
+	/**
+	 * Maximum time to wait for when establishing a connection, in milliseconds.
+	 * For negative values, no timeout is set, which is the default behaviour (for
+	 * backwards compatibility).
+	 *
+	 * @see HttpURLConnection#getConnectTimeout
+	 */
+	@JsonProperty("connectTimeout")
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	/**
+	 * Maximum time to wait for a server response once the connection was established.
+	 * For negative values, no timeout is set, which is the default behaviour (for backwards
+	 * compatibility).
+	 *
+	 * @see HttpURLConnection#getReadTimeout
+	 */
+	@JsonProperty("readTimeout")
+	public int getReadTimeout() {
+		return readTimeout;
+	}
 
 	/**
 	 * Logs the current user out.
 	 *
 	 * @throws IOException
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 */
-	public void logout() throws IOException, MediaWikiApiErrorException {
-		if (this.loggedIn) {
-			Map<String, String> params = new HashMap<>();
-			params.put("action", "logout");
-			params.put("format", "json"); // reduce the output
-			params.put("token", getOrFetchToken("csrf"));
-			sendJsonRequest("POST", params);
-
-			this.loggedIn = false;
-			this.username = "";
-			this.password = "";
-		}
-	}
-
-	/**
-	 * Clears the set of cookies. This will cause a logout.
-	 *
-	 * @throws IOException
-	 * @throws MediaWikiApiErrorException 
-	 */
-	public void clearCookies() throws IOException, MediaWikiApiErrorException {
-		logout();
-		this.cookies.clear();
-		this.tokens.clear();
-	}
+	public abstract void logout() throws IOException, MediaWikiApiErrorException;
 
 	/**
 	 * Return a token of given type.
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return a token
-	 * @throws MediaWikiApiErrorException 
+	 * @throws MediaWikiApiErrorException
 	 *     if MediaWiki returned an error
 	 * @throws IOException
 	 *     if a network error occurred
@@ -423,10 +314,10 @@ public class ApiConnection {
 	 *
 	 * @param tokenType The kind of token to retrieve like "csrf" or "login"
 	 * @return newly retrieved token
-	 * @throws IOException 
+	 * @throws IOException
 	 *     if a network error occurred
 	 * @throws MediaWikiApiErrorException
-	 *     if MediaWiki returned an error when fetching the token 
+	 *     if MediaWiki returned an error when fetching the token
 	 */
 	private String fetchToken(String tokenType) throws IOException, MediaWikiApiErrorException {
 		Map<String, String> params = new HashMap<>();
@@ -486,31 +377,35 @@ public class ApiConnection {
 	 */
 	public InputStream sendRequest(String requestMethod,
 			Map<String, String> parameters) throws IOException {
+		Request request;
 		String queryString = getQueryString(parameters);
-		URL url = new URL(this.apiBaseUrl);
-		HttpURLConnection connection = (HttpURLConnection) WebResourceFetcherImpl
-				.getUrlConnection(url);
-
-		setupConnection(requestMethod, queryString, connection);
-		OutputStreamWriter writer = new OutputStreamWriter(
-				connection.getOutputStream());
-		writer.write(queryString);
-		writer.flush();
-		writer.close();
-
-		int rc = connection.getResponseCode();
-		if (rc != 200) {
-			logger.warn("Error: API request returned response code " + rc);
+		if ("GET".equalsIgnoreCase(requestMethod)) {
+			request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
+		} else if ("POST".equalsIgnoreCase(requestMethod)) {
+			request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(URLENCODED_MEDIA_TYPE, queryString)).build();
+		} else {
+			throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
 		}
 
-		InputStream iStream = connection.getInputStream();
-		fillCookies(connection.getHeaderFields());
-		return iStream;
+		if (client == null) {
+			buildClient();
+		}
+		Response response = client.newCall(request).execute();
+		return Objects.requireNonNull(response.body()).byteStream();
+	}
+
+	private void buildClient() {
+		OkHttpClient.Builder builder = getClientBuilder();
+		if (connectTimeout >= 0) {
+			builder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+		}
+		if (readTimeout >= 0) {
+			builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+		}
+		client = builder.build();
 	}
 
 	/**
-	 * @deprecated Use ApiConnection.sendJsonRequest that executes this method
-	 *
 	 * Checks if an API response contains an error and throws a suitable
 	 * exception in this case.
 	 *
@@ -518,7 +413,7 @@ public class ApiConnection {
 	 *            root node of the JSON result
 	 * @throws MediaWikiApiErrorException
 	 */
-	public void checkErrors(JsonNode root) throws MediaWikiApiErrorException {
+	protected void checkErrors(JsonNode root) throws MediaWikiApiErrorException {
 		if (root.has("error")) {
 			JsonNode errorNode = root.path("error");
 			String code = errorNode.path("code").asText("UNKNOWN");
@@ -535,35 +430,15 @@ public class ApiConnection {
 	}
 
 	/**
-	 * @deprecated Use ApiConnection.sendJsonRequest that executes this method
-	 *
 	 * Extracts and logs any warnings that are returned in an API response.
 	 *
 	 * @param root
 	 *            root node of the JSON result
 	 */
-	public void logWarnings(JsonNode root) {
+	protected void logWarnings(JsonNode root) {
 		for (String warning : getWarnings(root)) {
 			logger.warn("API warning " + warning);
 		}
-	}
-	
-	/**
-	 * Checks that the credentials are still valid for the
-	 * user currently logged in. This can fail if (for instance)
-	 * the cookies expired, or were invalidated by a logout from
-	 * a different client.
-	 * 
-	 * This method queries the API and throws {@class AssertUserFailedException}
-	 * if the check failed. This does not update the state of the connection
-	 * object.
-	 * @throws MediaWikiApiErrorException 
-	 * @throws IOException 
-	 */
-	public void checkCredentials() throws IOException, MediaWikiApiErrorException {
-		Map<String,String> parameters = new HashMap<>();
-		parameters.put("action", "query");
-		sendJsonRequest("POST", parameters);
 	}
 
 	/**
@@ -615,143 +490,6 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Issues a Web API query to confirm that the previous login attempt was
-	 * successful, and sets the internal state of the API connection accordingly
-	 * in this case.
-	 * 
-	 * @deprecated because it will be migrated to {@class BasicApiConnection}.
-	 *
-	 * @param token
-	 *            the login token string
-	 * @param username
-	 *            the name of the user that was logged in
-	 * @param password
-	 *            the password used to log in
-	 * @throws IOException
-	 * @throws LoginFailedException
-	 */
-	@Deprecated
-	void confirmLogin(String token, String username, String password)
-			throws IOException, LoginFailedException, MediaWikiApiErrorException {
-		Map<String, String> params = new HashMap<>();
-		params.put(ApiConnection.PARAM_ACTION, "login");
-		params.put(ApiConnection.PARAM_LOGIN_USERNAME, username);
-		params.put(ApiConnection.PARAM_LOGIN_PASSWORD, password);
-		params.put(ApiConnection.PARAM_LOGIN_TOKEN, token);
-
-		JsonNode root = sendJsonRequest("POST", params);
-
-		String result = root.path("login").path("result").textValue();
-		if (ApiConnection.LOGIN_RESULT_SUCCESS.equals(result)) {
-			this.loggedIn = true;
-			this.username = username;
-			this.password = password;
-		} else {
-			String message = getLoginErrorMessage(result);
-			logger.warn(message);
-			if (ApiConnection.LOGIN_WRONG_TOKEN.equals(result)) {
-				throw new NeedLoginTokenException(message);
-			} else {
-				throw new LoginFailedException(message);
-			}
-		}
-	}
-
-	/**
-	 * Returns a user-readable message for a given API response.
-	 *
-	 * @deprecated to be migrated to {@class BasicApiConnection}
-	 * @param loginResult
-	 *            a API login request result string other than
-	 *            {@link #LOGIN_RESULT_SUCCESS}
-	 * @return error message
-	 */
-	@Deprecated
-	String getLoginErrorMessage(String loginResult) {
-		switch (loginResult) {
-		case ApiConnection.LOGIN_WRONG_PASS:
-			return loginResult + ": Wrong Password.";
-		case ApiConnection.LOGIN_WRONG_PLUGIN_PASS:
-			return loginResult
-					+ ": Wrong Password. An authentication plugin rejected the password.";
-		case ApiConnection.LOGIN_NOT_EXISTS:
-			return loginResult + ": Username does not exist.";
-		case ApiConnection.LOGIN_BLOCKED:
-			return loginResult + ": User is blocked.";
-		case ApiConnection.LOGIN_EMPTY_PASS:
-			return loginResult + ": Password is empty.";
-		case ApiConnection.LOGIN_NO_NAME:
-			return loginResult + ": No user name given.";
-		case ApiConnection.LOGIN_CREATE_BLOCKED:
-			return loginResult
-					+ ": The wiki tried to automatically create a new account for you, "
-					+ "but your IP address has been blocked from account creation.";
-		case ApiConnection.LOGIN_ILLEGAL:
-			return loginResult + ": Username is illegal.";
-		case ApiConnection.LOGIN_THROTTLED:
-			return loginResult + ": Too many login attempts in a short time.";
-		case ApiConnection.LOGIN_WRONG_TOKEN:
-			return loginResult + ": Token is wrong.";
-		case ApiConnection.LOGIN_NEEDTOKEN:
-			return loginResult + ": Token or session ID is missing.";
-		default:
-			return "Login Error: " + loginResult;
-		}
-	}
-
-	/**
-	 * Reads out the Set-Cookie Header Fields and fills the cookie map of the
-	 * API connection with it.
-	 * 
-	 * @deprecated to be migrated to {@class BasicApiConnection}
-	 */
-	@Deprecated
-	void fillCookies(Map<String, List<String>> headerFields) {
-		List<String> headerCookies = headerFields
-				.get(ApiConnection.HEADER_FIELD_SET_COOKIE);
-		if (headerCookies != null) {
-			for (String cookie : headerCookies) {
-				String[] cookieResponse = cookie.split(";\\p{Space}??");
-				for (String cookieLine : cookieResponse) {
-					String[] entry = cookieLine.split("=");
-					if (entry.length == 2) {
-						this.cookies.put(entry[0], entry[1]);
-					}
-					if (entry.length == 1) {
-						this.cookies.put(entry[0], "");
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns the string representation of the currently stored cookies. This
-	 * data is added to the connection before making requests.
-	 * 
-	 * @deprecated to be migrated to {@class BasicApiConnection}
-	 * @return cookie string
-	 */
-	@Deprecated
-	String getCookieString() {
-		StringBuilder result = new StringBuilder();
-		boolean first = true;
-		for (Entry<String, String> entry : this.cookies.entrySet()) {
-			if (first) {
-				first = false;
-			} else {
-				result.append("; ");
-			}
-			result.append(entry.getKey());
-			if (!"".equals(entry.getValue())) {
-				result.append("=").append(entry.getValue());
-			}
-
-		}
-		return result.toString();
-	}
-
-	/**
 	 * Returns the query string of a URL from a parameter list.
 	 *
 	 * @param params
@@ -781,76 +519,27 @@ public class ApiConnection {
 	}
 
 	/**
-	 * Configures a given {@link HttpURLConnection} object to send requests.
-	 * Takes the request method (either "POST" or "GET") and query string.
+	 * Builds a string that serializes a list of objects separated by the pipe
+	 * character. The toString methods are used to turn objects into strings.
+	 * This operation is commonly used to build parameter lists for API
+	 * requests.
 	 *
-	 * @param requestMethod
-	 *            either "POST" or "GET"
-	 * @param queryString
-	 *            the query string to submit
-	 * @param connection
-	 *            the connection to configure
-	 * @throws IOException
-	 *             if the given protocol is not valid
+	 * @param objects
+	 *            the objects to implode
+	 * @return string of imploded objects
 	 */
-	void setupConnection(String requestMethod, String queryString,
-			HttpURLConnection connection) throws IOException {
-		connection.setRequestMethod(requestMethod);
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setUseCaches(false);
-		connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		if(connectTimeout >= 0) {
-			connection.setConnectTimeout(connectTimeout);
+	public static String implodeObjects(Iterable<?> objects) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for (Object o : objects) {
+			if (first) {
+				first = false;
+			} else {
+				builder.append("|");
+			}
+			builder.append(o.toString());
 		}
-		if(readTimeout >= 0) {
-			connection.setReadTimeout(readTimeout);
-		}
-		connection.setRequestProperty(ApiConnection.PARAM_COOKIE,
-				getCookieString());
-	}
-	
-	/**
-	 * Maximum time to wait for when establishing a connection, in milliseconds.
-	 * For negative values, no timeout is set, which is the default behaviour (for
-	 * backwards compatibility).
-	 * 
-	 * @see HttpURLConnection.getConnectionTimeout
-	 */
-	public int getConnectTimeout() {
-		return connectTimeout;
-	}
-	
-	/**
-	 * Sets the maximum time to wait for when establishing a connection, in milliseconds.
-	 * For negative values, no timeout is set.
-	 * 
-	 * @see HttpURLConnection.setConnectionTimeout
-	 */
-	public void setConnectTimeout(int timeout) {
-		connectTimeout = timeout;
-	}
-	
-	/**
-	 * Maximum time to wait for a server response once the connection was established.
-	 * For negative values, no timeout is set, which is the default behaviour (for backwards
-	 * compatibility).
-	 * 
-	 * @see HttpURLConnection.getReadTimeout
-	 */
-	public int getReadTimeout() {
-		return readTimeout;
-	}
-	
-	/**
-	 * Sets the maximum time to wait for a server response once the connection was established.
-	 * For negative values, no timeout is set.
-	 * 
-	 * @see HttpURLConnection.setReadTimeout
-	 */
-	public void setReadTimeout(int timeout) {
-		readTimeout = timeout;
+		return builder.toString();
 	}
 
 }

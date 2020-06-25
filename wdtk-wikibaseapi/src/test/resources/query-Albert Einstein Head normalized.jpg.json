@@ -1,0 +1,18 @@
+{
+  "batchcomplete": "",
+  "query": {
+    "normalized": [
+      {
+        "from": "File:Albert_Einstein_Head.jpg",
+        "to": "File:Albert Einstein Head.jpg"
+      }
+    ],
+    "pages": {
+      "925243": {
+        "pageid": 925243,
+        "ns": 6,
+        "title": "File:Albert Einstein Head.jpg"
+      }
+    }
+  }
+}

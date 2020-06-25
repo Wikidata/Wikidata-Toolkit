@@ -1,6 +1,12 @@
 Wikidata Toolkit Release Notes
 ==============================
 
+Version 0.11.1
+--------------
+
+Bug fixes:
+* Fixes API connection bug due to lower-case set-cookie header sent from Wikidata
+* Upgrades dependencies to latest version
 
 Version 0.11.0
 --------------

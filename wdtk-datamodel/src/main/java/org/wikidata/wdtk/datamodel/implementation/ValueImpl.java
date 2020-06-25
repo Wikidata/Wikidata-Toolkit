@@ -147,7 +147,7 @@ public abstract class ValueImpl implements Value {
 					} else if(valueNode.has("id")) {
 						try {
 							return getValueClassFromEntityType(
-									EntityIdValueImpl.guessEntityTypeFromId(valueNode.get("id").asText())
+									EntityIdValueImpl.guessEntityTypeFromId(valueNode.get("id").asText(),true)
 							);
 						} catch (IllegalArgumentException e) {
 							return UnsupportedEntityIdValueImpl.class;

@@ -40,6 +40,7 @@ import java.util.Set;
  * @author Thomas Pellissier Tanon
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class SenseDocumentImpl extends StatementDocumentImpl implements SenseDocument {
 
 	private final Map<String,MonolingualTextValue> glosses;

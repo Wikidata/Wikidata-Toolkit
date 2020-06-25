@@ -763,7 +763,7 @@ public class WbEditingAction {
 			retry--;
 		}
 
-		if (lastException != null) {
+		if (retry == 0 && lastException != null) {
 			logger.error("Gave up after several retries. Last error was: "
 					+ lastException.toString());
 			throw lastException;

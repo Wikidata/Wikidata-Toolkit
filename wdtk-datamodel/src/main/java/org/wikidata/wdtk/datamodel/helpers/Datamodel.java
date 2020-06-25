@@ -380,11 +380,47 @@ public class Datamodel {
 	 * @param unit
 	 *            the unit identifier to use for this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, BigDecimal, BigDecimal, ItemIdValue)}
 	 */
+	@Deprecated
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
 				unit);
+	}
+
+	/**
+	 * Creates a {@link QuantityValue}.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param lowerBound
+	 *            the lower bound of the numeric value of this quantity
+	 * @param upperBound
+	 *            the upper bound of the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 */
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
+			BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit) {
+		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
+				unit.getIri());
+	}
+
+	/**
+	 * Creates a {@link QuantityValue} without bounds.
+	 *
+	 * @param numericValue
+	 *            the numeric value of this quantity
+	 * @param unit
+	 *            the unit identifier to use for this quantity
+	 * @return a {@link QuantityValue} corresponding to the input
+	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, ItemIdValue)}
+	 */
+	@Deprecated
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
+		return factory.getQuantityValue(numericValue, unit);
 	}
 
 	/**
@@ -396,8 +432,8 @@ public class Datamodel {
 	 *            the unit identifier to use for this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
 	 */
-	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
-		return factory.getQuantityValue(numericValue, unit);
+	public static QuantityValue makeQuantityValue(BigDecimal numericValue, ItemIdValue unit) {
+		return factory.getQuantityValue(numericValue, unit.getIri());
 	}
 
 	/**

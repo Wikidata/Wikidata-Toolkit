@@ -53,7 +53,7 @@ public class MockBasicApiConnection extends BasicApiConnection {
 	 * Constructor.
 	 */
 	public MockBasicApiConnection() {
-		super("");
+		super("https://mocked.api.connection/w/api.php");
 		webResources = new HashMap<>();
 	}
 
