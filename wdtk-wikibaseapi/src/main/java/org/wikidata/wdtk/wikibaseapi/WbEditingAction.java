@@ -894,4 +894,25 @@ public class WbEditingAction {
 		maxLagBackOffFactor = value;
 	}
 
+	/**
+	 * Retrieves the current lag from the target site, by making an API call.
+	 * 
+	 * @throws MediaWikiApiErrorException
+	 * 		when an unexpected MediaWiki API error happened (not the spurious
+	 *      one normally returned by MediaWiki when retrieving lag).
+	 * @throws IOException
+	 *      when communication with the server failed.
+	 *      
+	 */
+	public double getCurrentLag() throws IOException, MediaWikiApiErrorException {
+		Map<String,String> parameters = new HashMap<>();
+		parameters.put("action", "query");
+		parameters.put("maxlag", "-1");
+		try {
+			this.connection.sendJsonRequest("POST", parameters);
+		} catch (MaxlagErrorException e) {
+			return e.getLag();
+		}
+		throw new IllegalStateException("MediaWiki did not return any maxlag value");
+	}
 }

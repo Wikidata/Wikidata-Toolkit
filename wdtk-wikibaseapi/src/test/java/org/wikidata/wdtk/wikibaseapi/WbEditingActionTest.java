@@ -1,5 +1,7 @@
 package org.wikidata.wdtk.wikibaseapi;
 
+import static org.junit.Assert.assertEquals;
+
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -190,6 +192,23 @@ public class WbEditingActionTest {
 		WbEditingAction weea = new WbEditingAction(
 				new MockBasicApiConnection(), Datamodel.SITE_WIKIDATA);
 		weea.wbEditEntity(null, null, null, null, "{}", false, false, 0, null, null);
+	}
+	
+	@Test
+	public void testGetLag() throws IOException, MediaWikiApiErrorException {
+		MockBasicApiConnection con = new MockBasicApiConnection();
+		Map<String, String> params = new HashMap<>();
+		params.put("action", "query");
+		params.put("maxlag", "-1");
+		params.put("format", "json");
+		con.setWebResourceFromPath(params, this.getClass(),
+				"/error-maxlag-full.json",
+				CompressionType.NONE);
+		
+		WbEditingAction weea = new WbEditingAction(
+				con, Datamodel.SITE_WIKIDATA);
+		double lag = weea.getCurrentLag();
+		assertEquals(3.45, lag, 0.001);
 	}
 
 }

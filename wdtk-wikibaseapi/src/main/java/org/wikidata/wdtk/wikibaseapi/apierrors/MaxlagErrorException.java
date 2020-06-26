@@ -32,6 +32,8 @@ package org.wikidata.wdtk.wikibaseapi.apierrors;
 public class MaxlagErrorException extends MediaWikiApiErrorException {
 
 	private static final long serialVersionUID = -4013361654647685959L;
+	
+	protected double lag = 0;
 
 	/**
 	 * Creates a new exception.
@@ -43,5 +45,30 @@ public class MaxlagErrorException extends MediaWikiApiErrorException {
 	public MaxlagErrorException(String errorMessage) {
 		super(MediaWikiApiErrorHandler.ERROR_MAXLAG, errorMessage);
 	}
-
+	
+	/**
+	 * Creates an exception which also stores the lag announced by the server.
+	 * 
+	 * @param errorMessage
+	 *            the error message reported by MediaWiki, or any other
+	 *            meaningful message for the user
+	 * @param lag
+	 *            the value of the reported lag, in seconds
+	 */
+	public MaxlagErrorException(String errorMessage, double lag) {
+		super(MediaWikiApiErrorHandler.ERROR_MAXLAG, errorMessage);
+		this.lag = lag;
+	}
+	
+	/**
+	 * Retrieves the amount of lag announced by the server when this
+	 * error was emitted. May return 0 if the lag was not extracted from
+	 * the server response.
+	 * 
+	 * @return
+	 *    the lag on the target server
+	 */
+	public double getLag() {
+		return lag;
+	}
 }
