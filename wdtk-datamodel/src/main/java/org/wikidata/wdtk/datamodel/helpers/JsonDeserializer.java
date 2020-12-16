@@ -71,7 +71,7 @@ public class JsonDeserializer {
 	}
 	
 	/**
-	 * Deserializes a JSON string into an {@class ItemDocument}.
+	 * Deserializes a JSON string into an {@link ItemDocument}.
 	 * @throws IOException 
 			if the JSON payload is invalid
 	 */
@@ -80,7 +80,7 @@ public class JsonDeserializer {
 	}
 	
 	/**
-	 * Deserializes a JSON string into a {@class PropertyDocument}.
+	 * Deserializes a JSON string into a {@link PropertyDocument}.
 	 * @throws IOException 
 			if the JSON payload is invalid
 	 */
@@ -89,7 +89,7 @@ public class JsonDeserializer {
 	}
 
 	/**
-	 * Deserializes a JSON string into a {@class LexemeDocument}.
+	 * Deserializes a JSON string into a {@link LexemeDocument}.
 	 * @throws IOException 
 			if the JSON payload is invalid
 	 */
@@ -98,7 +98,7 @@ public class JsonDeserializer {
 	}
 	
 	/**
-	 * Deserializes a JSON string into a {@class MediaInfoDocument}.
+	 * Deserializes a JSON string into a {@link MediaInfoDocument}.
 	 * @throws IOException 
 			if the JSON payload is invalid
 	 */
@@ -107,7 +107,7 @@ public class JsonDeserializer {
 	}
 	
 	/**
-	 * Deserializes a JSON string into a {@class EntityDocument}.
+	 * Deserializes a JSON string into a {@link EntityDocument}.
 	 * @throws IOException 
 			if the JSON payload is invalid
 	 */
@@ -116,7 +116,7 @@ public class JsonDeserializer {
 	}
 
 	/**
-	 * Deserializes a JSON string into a {@class EntityRedirectDocument}.
+	 * Deserializes a JSON string into a {@link EntityRedirectDocument}.
 	 * @throws IOException
 	if the JSON payload is invalid
 	 */

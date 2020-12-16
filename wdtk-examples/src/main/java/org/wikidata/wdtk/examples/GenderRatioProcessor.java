@@ -123,9 +123,6 @@ public class GenderRatioProcessor implements EntityDocumentProcessor {
 	 * Main method. Processes the whole dump using this processor and writes the
 	 * results to a file. To change which dump file to use and whether to run in
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
-	 *
-	 * @param args
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();

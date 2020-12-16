@@ -124,11 +124,6 @@ public class SetLabelsForNumbersBot implements EntityDocumentProcessor {
 
 	/**
 	 * Main method to run the bot.
-	 *
-	 * @param args
-	 * @throws LoginFailedException
-	 * @throws IOException
-	 * @throws MediaWikiApiErrorException
 	 */
 	public static void main(String[] args) throws LoginFailedException, IOException {
 		ExampleHelpers.configureLogging();

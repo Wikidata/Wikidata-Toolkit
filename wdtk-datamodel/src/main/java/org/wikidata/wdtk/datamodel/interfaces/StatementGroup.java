@@ -42,8 +42,8 @@ public interface StatementGroup extends Collection<Statement> {
 
 	/**
 	 * Get the best statements of this group.
-	 * These are the statements with rank {@link StatementRank::PREFERRED }
-	 * if they exists or the one with rank {@link StatementRank::NORMAL }
+	 * These are the statements with rank {@link StatementRank#PREFERRED}
+	 * if they exists or the one with rank {@link StatementRank#NORMAL}
 	 *
 	 * @return a subset of the current StatementGroup, or null if there are no best statements
 	 */
