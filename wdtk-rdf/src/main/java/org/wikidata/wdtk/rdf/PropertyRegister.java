@@ -215,8 +215,8 @@ public class PropertyRegister {
 	 * Returns the IRI of the primitive Type of an Property for
 	 * {@link EntityIdValue} objects.
 	 *
-	 * @todo this really ought to be exposed by the wdtk-datamodel
-	 * module and reused here. The same heuristic is implemented in {@class EntityIdValueImpl}.
+	 * TODO: this really ought to be exposed by the wdtk-datamodel
+	 * module and reused here. The same heuristic is implemented in {@link EntityIdValueImpl}.
 	 * @param propertyIdValue
 	 * @param value
 	 */

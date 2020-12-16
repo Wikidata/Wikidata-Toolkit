@@ -93,7 +93,7 @@ public interface WbSearchEntitiesResult {
      *
      * The language of the returned label depends on the HTTP
      * <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">
-     * Accept-Language header or the uselang URL parameter.
+     * Accept-Language</a> header or the uselang URL parameter.
      *
      * @return the label of the entity
      */
@@ -104,7 +104,7 @@ public interface WbSearchEntitiesResult {
      *
      * The language of the returned description depends on the HTTP
      * <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">
-     * Accept-Language header or the uselang URL parameter.
+     * Accept-Language</a> header or the uselang URL parameter.
      *
      * @return the description
      */
@@ -120,7 +120,7 @@ public interface WbSearchEntitiesResult {
     /**
      * A list of alias labels (returned only when an alias matched the query).
      *
-     * @ return a list of aliases
+     * @return a list of aliases
      */
     List<String> getAliases();
 
