@@ -773,7 +773,7 @@ public class WbEditingAction {
 	}
 	
 	/**
-	 * @todo TO BE REFACTORED
+	 * TODO: TO BE REFACTORED
 	 * @param root
 	 * @return
 	 * @throws IOException

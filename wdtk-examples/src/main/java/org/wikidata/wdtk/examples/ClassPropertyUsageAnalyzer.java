@@ -258,9 +258,6 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * Main method. Processes the whole dump using this processor. To change
 	 * which dump file to use and whether to run in offline mode, modify the
 	 * settings in {@link ExampleHelpers}.
-	 *
-	 * @param args
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		ExampleHelpers.configureLogging();

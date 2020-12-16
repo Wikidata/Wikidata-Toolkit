@@ -140,9 +140,6 @@ public class JsonSerializationProcessor implements EntityDocumentProcessor {
 	/**
 	 * Closes the output. Should be called after the JSON serialization was
 	 * finished.
-	 *
-	 * @throws IOException
-	 *             if there was a problem closing the output
 	 */
 	public void close() {
 		System.out.println("Serialized "
