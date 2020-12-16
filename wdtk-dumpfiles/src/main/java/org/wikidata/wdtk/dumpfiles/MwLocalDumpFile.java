@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.util.DirectoryManager;
 import org.wikidata.wdtk.util.DirectoryManagerFactory;
+import org.wikidata.wdtk.dumpfiles.wmf.WmfDumpFile;
 
 /**
  * Class for representing dump files that are found at arbitrary (local) file
@@ -199,7 +200,7 @@ public class MwLocalDumpFile implements MwDumpFile {
 					+ "\" is not available for reading.");
 		}
 		return this.directoryManager.getInputStreamForFile(this.dumpFileName,
-				MwLocalDumpFile.COMPRESSION_TYPE.get(this.dumpContentType));
+				WmfDumpFile.getDumpFileCompressionType(dumpFileName));
 	}
 
 	@Override
