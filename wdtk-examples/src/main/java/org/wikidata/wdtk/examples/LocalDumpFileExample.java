@@ -41,7 +41,7 @@ public class LocalDumpFileExample {
 	 */
 	private final static String DUMP_FILE = "./src/resources/sample-dump-20150815.json.gz";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		LocalDumpFileExample.printDocumentation();
 

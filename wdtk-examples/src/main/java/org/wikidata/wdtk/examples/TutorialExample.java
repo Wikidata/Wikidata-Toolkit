@@ -20,6 +20,8 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
+import java.io.IOException;
+
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwRevision;
@@ -41,7 +43,7 @@ import org.wikidata.wdtk.dumpfiles.StatisticsMwRevisionProcessor;
  */
 public class TutorialExample {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 
 		// Controller object for processing dumps:

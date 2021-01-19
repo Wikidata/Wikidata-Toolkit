@@ -259,7 +259,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 	 * which dump file to use and whether to run in offline mode, modify the
 	 * settings in {@link ExampleHelpers}.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		ClassPropertyUsageAnalyzer.printDocumentation();
 
