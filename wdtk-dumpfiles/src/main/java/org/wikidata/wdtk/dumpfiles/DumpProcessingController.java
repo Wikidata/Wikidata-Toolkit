@@ -374,7 +374,8 @@ public class DumpProcessingController {
 	 * @see DumpProcessingController#processDump(MwDumpFile)
 	 * @see DumpProcessingController#getMostRecentDump(DumpContentType)
 	 */
-	public void processAllRecentRevisionDumps() {
+	public void processAllRecentRevisionDumps() 
+		throws IOException, FileAlreadyExistsException {
 		WmfDumpFileManager wmfDumpFileManager = getWmfDumpFileManager();
 		if (wmfDumpFileManager == null) {
 			return;
@@ -403,7 +404,8 @@ public class DumpProcessingController {
 	 *             in WDTK 0.5
 	 */
 	@Deprecated
-	public void processMostRecentDailyDump() {
+	public void processMostRecentDailyDump() 
+		throws IOException, FileAlreadyExistsException {
 		processDump(getMostRecentDump(DumpContentType.JSON));
 	}
 
@@ -417,7 +419,8 @@ public class DumpProcessingController {
 	 *
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 */
-	public void processMostRecentMainDump() {
+	public void processMostRecentMainDump() 
+		throws IOException, FileAlreadyExistsException {
 		DumpContentType dumpContentType;
 		if (this.preferCurrent) {
 			dumpContentType = DumpContentType.CURRENT;
@@ -438,7 +441,8 @@ public class DumpProcessingController {
 	 *
 	 * @see DumpProcessingController#processAllRecentRevisionDumps()
 	 */
-	public void processMostRecentJsonDump() {
+	public void processMostRecentJsonDump() 
+		throws IOException, FileAlreadyExistsException {
 		processDump(getMostRecentDump(DumpContentType.JSON));
 	}
 
@@ -453,7 +457,8 @@ public class DumpProcessingController {
 	 * @param dumpFile
 	 *            the dump to process
 	 */
-	public void processDump(MwDumpFile dumpFile) {
+	public void processDump(MwDumpFile dumpFile) 
+			throws IOException, FileAlreadyExistsException {
 		if (dumpFile == null) {
 			return;
 		}
@@ -495,7 +500,8 @@ public class DumpProcessingController {
 	 */
 	@Deprecated
 	public void processMostRecentDump(DumpContentType dumpContentType,
-			MwDumpFileProcessor dumpFileProcessor) {
+			MwDumpFileProcessor dumpFileProcessor) 
+				throws IOException, FileAlreadyExistsException {
 		MwDumpFile dumpFile = getMostRecentDump(dumpContentType);
 		if (dumpFile != null) {
 			processDumpFile(dumpFile, dumpFileProcessor);
@@ -536,18 +542,23 @@ public class DumpProcessingController {
 	 *            the dump file processor to use
 	 */
 	void processDumpFile(MwDumpFile dumpFile,
-			MwDumpFileProcessor dumpFileProcessor) {
+			MwDumpFileProcessor dumpFileProcessor) 
+					throws IOException, FileAlreadyExistsException {
 		try (InputStream inputStream = dumpFile.getDumpFileStream()) {
 			dumpFileProcessor.processDumpFileContents(inputStream, dumpFile);
 		} catch (FileAlreadyExistsException e) {
-			logger.error("Dump file "
+			String errorMessage = "Dump file "
 					+ dumpFile.toString()
 					+ " could not be processed since file "
 					+ e.getFile()
-					+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.");
+					+ " already exists. Try deleting the file or dumpfile directory to attempt a new download.";
+			logger.error(errorMessage);
+			throw new FileAlreadyExistsException(errorMessage);
 		} catch (IOException e) {
-			logger.error("Dump file " + dumpFile.toString()
-					+ " could not be processed: " + e.toString());
+			String errorMessage = "Dump file " + dumpFile.toString()
+					+ " could not be processed: " + e.toString();
+			logger.error(errorMessage);
+			throw new IOException(errorMessage);
 		}
 	}
 
