@@ -117,7 +117,7 @@ public class ExampleHelpers {
 	 *            the object to use for processing entities in this dump
 	 */
 	public static void processEntitiesFromWikidataDump(
-			EntityDocumentProcessor entityDocumentProcessor) {
+			EntityDocumentProcessor entityDocumentProcessor) throws IOException {
 
 		// Controller object for processing dumps:
 		DumpProcessingController dumpProcessingController = new DumpProcessingController(

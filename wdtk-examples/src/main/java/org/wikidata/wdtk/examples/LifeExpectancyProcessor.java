@@ -55,7 +55,7 @@ public class LifeExpectancyProcessor implements EntityDocumentProcessor {
 	 * offline mode, modify the settings in {@link ExampleHelpers}.
 	 *
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ExampleHelpers.configureLogging();
 		LifeExpectancyProcessor.printDocumentation();
 
