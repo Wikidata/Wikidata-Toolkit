@@ -2,7 +2,7 @@ Wikidata Toolkit
 ================
 
 ![Build status](https://github.com/Wikidata/Wikidata-Toolkit/workflows/Java%20CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/Wikidata/Wikidata-Toolkit/badge.svg?branch=master)](https://coveralls.io/github/Wikidata/Wikidata-Toolkit?branch=master)
+[![Coverage status](https://codecov.io/gh/Wikidata/Wikidata-Toolkit/branch/master/graph/badge.svg?token=QtTNJdTAbO)](https://codecov.io/gh/Wikidata/Wikidata-Toolkit)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wikidata.wdtk/wdtk-parent/badge.svg)](http://search.maven.org/#search|ga|1|g%3A%22org.wikidata.wdtk%22)
 [![Project Stats](https://www.openhub.net/p/Wikidata-Toolkit/widgets/project_thin_badge.gif)](https://www.openhub.net/p/Wikidata-Toolkit)
 
