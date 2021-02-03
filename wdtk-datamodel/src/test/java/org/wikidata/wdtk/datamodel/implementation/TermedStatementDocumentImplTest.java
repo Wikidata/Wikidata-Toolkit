@@ -33,8 +33,8 @@ public class TermedStatementDocumentImplTest {
 	private Map<String, List<Statement>> initialStatements = null;
 	private Statement statementA = null;
 	private Statement statementEmptyId = null;
-	private String statementIdA = "myIdA";
-	private String statementIdB = "myIdB";
+	private String statementIdA = "Q5721$a763ede3-42b3-5ecb-ec0e-4bb85d4d348d";
+	private String statementIdB = "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d";
 
 	@Before
 	public void setUp() {

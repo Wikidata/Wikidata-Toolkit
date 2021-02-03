@@ -170,7 +170,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return getStatement(
 				subject, mainSnak, qualifiers,
 				Collections. emptyList(), StatementRank.NORMAL,
-				"empty id 12345").getClaim();
+				"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d").getClaim();
 	}
 
 	@Override

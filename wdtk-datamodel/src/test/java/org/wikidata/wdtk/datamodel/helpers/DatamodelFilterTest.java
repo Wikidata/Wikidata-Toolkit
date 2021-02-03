@@ -207,7 +207,7 @@ public class DatamodelFilterTest {
 				subjectIdValue,
 				Datamodel.makeSomeValueSnak(propertyIdValue),
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "statement-id-" + propertyIdValue.getId());
+				StatementRank.NORMAL, propertyIdValue.getId() + "$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		return Datamodel.makeStatementGroup(Collections.singletonList(statement));
 	}
 

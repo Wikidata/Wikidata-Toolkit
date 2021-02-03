@@ -40,7 +40,7 @@ public class FormDocumentImplTest {
 			new ItemIdValueImpl("Q2", "http://example.com/entity/"),
 			new ItemIdValueImpl("Q1", "http://example.com/entity/")
 	);
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), fid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -52,7 +52,7 @@ public class FormDocumentImplTest {
 	private final FormDocument fd1 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
 	private final FormDocument fd2 = new FormDocumentImpl(fid, repList, gramFeatures, statementGroups, 1234);
 
-	private final String JSON_FORM = "{\"type\":\"form\",\"id\":\"L42-F1\",\"grammaticalFeatures\":[\"Q1\",\"Q2\"],\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
+	private final String JSON_FORM = "{\"type\":\"form\",\"id\":\"L42-F1\",\"grammaticalFeatures\":[\"Q1\",\"Q2\"],\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"rep\"}},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"lastrevid\":1234}";
 
 	@Test
 	public void fieldsAreCorrect() {
@@ -124,7 +124,7 @@ public class FormDocumentImplTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		FormIdValue iid2 = new FormIdValueImpl("Q23", "http://example.org/");
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
 		StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(s2));
@@ -175,7 +175,7 @@ public class FormDocumentImplTest {
 
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), fid);
 		Claim claim = fresh.getClaim();

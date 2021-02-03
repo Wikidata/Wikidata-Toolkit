@@ -75,6 +75,36 @@ public class StatementImpl implements Statement {
 	private List<SnakGroup> qualifiersGroups;
 
 	/**
+	 * Checks if the statement ID consists of a first part
+	 * with the entity id of the item the statement belongs to, the separator $, plus
+	 * a random hash of the form
+	 * /^\{?[A-Z\d]{8}-[A-Z\d]{4}-[A-Z\d]{4}-[A-Z\d]{4}-[A-Z\d]{12}\}?\z/
+	 *
+	 * @param statementID
+	 * @return true if the statement ID is of the valid format
+	 */
+	public static boolean validateStatementID(String statementID)
+	{
+		if(statementID.equals(""))
+			return true;
+
+		String separator = "\\$";
+		String statementFormat ="^\\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\\}?$";
+
+		String[] statementParts = statementID.split(separator);
+		if(statementParts.length != 2)
+			throw new IllegalArgumentException("Statement ID does not have the correct number of parts");
+
+		if(statementParts[0].charAt(0) != 'Q' && statementParts[0].charAt(0) != 'P' && statementParts[0].charAt(0) != 'L' && statementParts[0].charAt(0) != 'M')
+			throw new TypeNotPresentException("Query,Property or Lexeme", null);
+
+		if(!statementParts[1].matches(statementFormat))
+	    throw new IllegalStateException("Statement part does not have a correct format");
+
+		return true;
+	}
+
+	/**
 	 * Constructor.
 	 * <p>
 	 * The statementId is used mainly for communication with a Wikibase site, in
@@ -102,6 +132,7 @@ public class StatementImpl implements Statement {
 			List<Reference> references,
 			EntityIdValue subjectId) {
 		this.statementId = (statementId == null) ? "" : statementId;
+		boolean check = validateStatementID(this.statementId);
 
 		Validate.notNull(rank, "No rank provided to create a statement.");
 		this.rank = rank;
@@ -131,6 +162,7 @@ public class StatementImpl implements Statement {
 			List<Reference> references,
 			EntityIdValue subjectId) {
 		this.statementId = (statementId == null) ? "" : statementId;
+		boolean check = validateStatementID(statementId);
 		Validate.notNull(rank, "No rank provided to create a statement.");
 		this.rank = rank;
 		Validate.notNull(mainSnak, "No main snak provided to create a statement.");

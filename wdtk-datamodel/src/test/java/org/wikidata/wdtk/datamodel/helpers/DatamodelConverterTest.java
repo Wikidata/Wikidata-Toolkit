@@ -76,7 +76,7 @@ public class DatamodelConverterTest {
 		return Datamodel.makeStatement(
 				getTestItemIdValue(2), brokenSnak,
 				Collections.emptyList(), Collections.emptyList(),
-				StatementRank.NORMAL, "id");
+				StatementRank.NORMAL, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 	}
 
 	/**

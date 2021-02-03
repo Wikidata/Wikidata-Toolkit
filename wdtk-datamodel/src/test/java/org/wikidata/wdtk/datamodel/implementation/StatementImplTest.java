@@ -44,15 +44,15 @@ public class StatementImplTest {
 	private final List<Reference> references = Collections.singletonList(new ReferenceImpl(qualifiers));
 	private final Claim claim = new ClaimImpl(subjet, mainSnak, qualifiers);
 
-	private final Statement s1 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+	private final Statement s1 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.PREFERRED, mainSnak,
 			qualifiers, references, subjet);
-	private final Statement s2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+	private final Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.PREFERRED, mainSnak,
 			qualifiers, references, subjet);
-	private final String JSON_STATEMENT = "{\"rank\":\"preferred\",\"references\":[{\"snaks\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]},\"snaks-order\":[\"P42\"]}],\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"qualifiers-order\":[\"P42\"],\"type\":\"statement\",\"qualifiers\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]}}";
+	private final String JSON_STATEMENT = "{\"rank\":\"preferred\",\"references\":[{\"snaks\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]},\"snaks-order\":[\"P42\"]}],\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"qualifiers-order\":[\"P42\"],\"type\":\"statement\",\"qualifiers\":{\"P42\":[{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"}]}}";
 
-	private final Statement smallStatement = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+	private final Statement smallStatement = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.PREFERRED, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subjet);
-	private final String JSON_SMALL_STATEMENT = "{\"rank\":\"preferred\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"type\":\"statement\"}";
+	private final String JSON_SMALL_STATEMENT = "{\"rank\":\"preferred\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"datatype\":\"wikibase-item\",\"datavalue\":{\"value\":{\"id\":\"Q42\",\"numeric-id\":42,\"entity-type\":\"item\"},\"type\":\"wikibase-entityid\"},\"snaktype\":\"value\"},\"type\":\"statement\"}";
 
 	@Test
 	public void gettersWorking() {
@@ -61,26 +61,26 @@ public class StatementImplTest {
 		assertEquals(s1.getQualifiers(), qualifiers);
 		assertEquals(s1.getReferences(), references);
 		assertEquals(s1.getRank(), StatementRank.PREFERRED);
-		assertEquals(s1.getStatementId(), "MyId");
+		assertEquals(s1.getStatementId(), "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		assertEquals(s1.getValue(), value);
 		assertEquals(s1.getSubject(), subjet);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void mainSnakNotNull() {
-		new StatementImpl("MyId", StatementRank.NORMAL, null,
+		new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, null,
 				Collections.emptyList(), Collections.emptyList(), value);
 	}
 
 	@Test
 	public void referencesCanBeNull() {
-		Statement statement = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,  Collections.emptyList(), null, value);
+		Statement statement = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,  Collections.emptyList(), null, value);
 		assertTrue(statement.getReferences().isEmpty());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void rankNotNull() {
-		new StatementImpl("MyId", null, mainSnak,
+		new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", null, mainSnak,
 				Collections.emptyList(), Collections.emptyList(), value);
 	}
 
@@ -94,8 +94,8 @@ public class StatementImplTest {
 	@Test
 	public void withId() {
 		Statement statement = new StatementImpl(null, StatementRank.NORMAL, claim.getMainSnak(), claim.getQualifiers(), Collections.emptyList(), claim.getSubject());
-		Statement withId = statement.withStatementId("some id");
-		assertEquals("some id", withId.getStatementId());
+		Statement withId = statement.withStatementId("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
+		assertEquals("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", withId.getStatementId());
 	}
 
 	@Test
@@ -105,16 +105,16 @@ public class StatementImplTest {
 
 	@Test
 	public void equalityBasedOnContent() {
-		Statement sDiffClaim = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+		Statement sDiffClaim = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(), Collections.emptyList(),
 				new ItemIdValueImpl("Q43", "http://wikidata.org/entity/"));
-		Statement sDiffReferences = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+		Statement sDiffReferences = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(), Collections.singletonList(new ReferenceImpl(
 						Collections.singletonList(new SnakGroupImpl(Collections.singletonList(mainSnak)))
 				)), value);
-		Statement sDiffRank = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+		Statement sDiffRank = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.PREFERRED, mainSnak,
 				Collections.emptyList(), Collections.emptyList(), value);
-		Statement sDiffId = new StatementImpl("MyOtherId", StatementRank.NORMAL, mainSnak,
+		Statement sDiffId = new StatementImpl("Q1209$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(), Collections.emptyList(), value);
 
 		assertEquals(s1, s1);

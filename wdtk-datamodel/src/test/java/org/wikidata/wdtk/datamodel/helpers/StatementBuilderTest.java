@@ -64,11 +64,11 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(i,
 				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
-				Collections.singletonList(r), StatementRank.PREFERRED, "id");
+				Collections.singletonList(r), StatementRank.PREFERRED, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
 				.withQualifierSomeValue(p).withQualifierNoValue(p)
-				.withQualifierValue(p, i).withId("id").withReference(r).build();
+				.withQualifierValue(p, i).withId("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d").withReference(r).build();
 
 		assertEquals(stmt1, stmt2);
 	}
@@ -87,10 +87,10 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(i,
 				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
-				Collections.singletonList(r), StatementRank.PREFERRED, "id");
+				Collections.singletonList(r), StatementRank.PREFERRED, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
-				.withQualifiers(stmt1.getQualifiers()).withId("id")
+				.withQualifiers(stmt1.getQualifiers()).withId("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d")
 				.withReference(r).build();
 
 		assertEquals(stmt1, stmt2);
@@ -112,11 +112,11 @@ public class StatementBuilderTest {
 
 		Statement stmt1 = Datamodel.makeStatement(i,
 				Datamodel.makeValueSnak(p, i), Collections.singletonList(sg),
-				Arrays.asList(r1, r2), StatementRank.PREFERRED, "id");
+				Arrays.asList(r1, r2), StatementRank.PREFERRED, "Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d");
 		Statement stmt2 = StatementBuilder.forSubjectAndProperty(i, p)
 				.withRank(StatementRank.PREFERRED).withValue(i)
 				.withQualifierSomeValue(p).withQualifierNoValue(p)
-				.withQualifierValue(p, i).withId("id")
+				.withQualifierValue(p, i).withId("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d")
 				.withReferences(Arrays.asList(r1, r2)).build();
 
 		assertEquals(stmt1, stmt2);

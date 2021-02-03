@@ -40,7 +40,7 @@ public class ItemDocumentImplTest {
 	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
 	private final ItemIdValue iid = new ItemIdValueImpl("Q42", "http://example.com/entity/");
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), iid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -66,7 +66,7 @@ public class ItemDocumentImplTest {
 	private final String JSON_ITEM_LABEL = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"sitelinks\":{}}";
 	private final String JSON_ITEM_DESCRIPTION = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{\"fr\":{\"language\":\"fr\",\"value\":\"des\"}},\"aliases\":{},\"claims\":{},\"sitelinks\":{}}";
 	private final String JSON_ITEM_ALIASES = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{\"de\":[{\"language\":\"de\",\"value\":\"alias\"}]},\"claims\":{},\"sitelinks\":{}}";
-	private final String JSON_ITEM_STATEMENTS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"sitelinks\":{}}";
+	private final String JSON_ITEM_STATEMENTS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]},\"sitelinks\":{}}";
 	private final String JSON_ITEM_SITELINKS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":{},\"descriptions\":{},\"aliases\":{},\"claims\":{},\"sitelinks\":{\"enwiki\":{\"title\":\"Douglas Adams\",\"site\":\"enwiki\",\"badges\":[]}}}";
 	private final String JSON_ITEM_EMPTY_ARRAYS = "{\"type\":\"item\",\"id\":\"Q42\",\"labels\":[],\"descriptions\":[],\"aliases\":[],\"claims\":[],\"sitelinks\":[]}";
 
@@ -278,7 +278,7 @@ public class ItemDocumentImplTest {
 	
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), iid);
 		Claim claim = fresh.getClaim();

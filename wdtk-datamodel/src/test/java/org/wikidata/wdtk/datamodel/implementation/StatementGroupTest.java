@@ -38,13 +38,13 @@ public class StatementGroupTest {
 	private EntityIdValue subject = new ItemIdValueImpl("Q42", "http://wikidata.org/entity/");
 	private PropertyIdValue property = new PropertyIdValueImpl("P42", "http://wikidata.org/entity/");
 	private Snak mainSnak = new ValueSnakImpl(property, subject);
-	private Statement statement1 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+	private Statement statement1 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
-	private Statement statement2 = new StatementImpl("MyId", StatementRank.PREFERRED, mainSnak,
+	private Statement statement2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.PREFERRED, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
 	private Statement statementEmptyId = new StatementImpl("", StatementRank.NORMAL, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
-	private Statement statementDeprecrated = new StatementImpl("DepId", StatementRank.DEPRECATED, mainSnak,
+	private Statement statementDeprecrated = new StatementImpl("Q1221$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.DEPRECATED, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
 	private StatementGroup sg1 = new StatementGroupImpl(Collections.singletonList(statement1));
 	private StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(statement1));
@@ -137,7 +137,7 @@ public class StatementGroupTest {
 		EntityIdValue subject2 = new ItemIdValueImpl("Q23",
 				"http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property);
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 				Collections.emptyList(),  Collections.emptyList(), subject2);
 		statements.add(s2);
 
@@ -152,7 +152,7 @@ public class StatementGroupTest {
 
 		PropertyIdValue property2 = new PropertyIdValueImpl("P23", "http://wikidata.org/entity/");
 		Snak mainSnak = new NoValueSnakImpl(property2);
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL, mainSnak,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL, mainSnak,
 			Collections.emptyList(), Collections.emptyList(), subject);
 		statements.add(s2);
 

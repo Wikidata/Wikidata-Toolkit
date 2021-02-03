@@ -40,7 +40,7 @@ public class MediaInfoDocumentImplTest {
 	private final ObjectMapper mapper = new DatamodelMapper("http://example.com/entity/");
 
 	private final MediaInfoIdValue mid = new MediaInfoIdValueImpl("M42", "http://example.com/entity/");
-	private final Statement s = new StatementImpl("MyId", StatementRank.NORMAL,
+	private final Statement s = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 			new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://example.com/entity/")),
 			Collections.emptyList(), Collections.emptyList(), mid);
 	private final List<StatementGroup> statementGroups = Collections.singletonList(
@@ -54,8 +54,8 @@ public class MediaInfoDocumentImplTest {
 
 	private final String JSON_MEDIA_INFO_LABEL = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"label\"}},\"claims\":{}}";
 	private final String JSON_MEDIA_INFO_DESCRIPTION = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"descriptions\":{},\"statements\":{}}";
-	private final String JSON_MEDIA_INFO_STATEMENTS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"statements\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
-	private final String JSON_MEDIA_INFO_CLAIMS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"MyId\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
+	private final String JSON_MEDIA_INFO_STATEMENTS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"statements\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
+	private final String JSON_MEDIA_INFO_CLAIMS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":{},\"claims\":{\"P42\":[{\"rank\":\"normal\",\"id\":\"Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d\",\"mainsnak\":{\"property\":\"P42\",\"snaktype\":\"somevalue\"},\"type\":\"statement\"}]}}";
 	private final String JSON_MEDIA_INFO_EMPTY_ARRAYS = "{\"type\":\"mediainfo\",\"id\":\"M42\",\"labels\":[],\"descriptions\":[],\"statements\":[],\"sitelinks\":[]}";
 
 	@Test
@@ -130,7 +130,7 @@ public class MediaInfoDocumentImplTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void statementGroupsUseSameSubject() {
 		MediaInfoIdValue mid2 = new MediaInfoIdValueImpl("Q23", "http://example.org/");
-		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
+		Statement s2 = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), mid2);
 		StatementGroup sg2 = new StatementGroupImpl(Collections.singletonList(s2));
@@ -167,7 +167,7 @@ public class MediaInfoDocumentImplTest {
 	
 	@Test
 	public void testAddStatement() {
-		Statement fresh = new StatementImpl("MyFreshId", StatementRank.NORMAL,
+		Statement fresh = new StatementImpl("Q5721$b763ede3-42b3-5ecb-ec0e-4bb85d4d348d", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P29", "http://example.com/entity/")),
 				Collections.emptyList(), Collections.emptyList(), mid);
 		Claim claim = fresh.getClaim();
