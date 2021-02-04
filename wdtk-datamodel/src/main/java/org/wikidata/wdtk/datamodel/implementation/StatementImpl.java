@@ -236,7 +236,9 @@ public class StatementImpl implements Statement {
 	@Override
 	@JsonIgnore
 	public Value getValue() {
-		return mainSnak.getValue();
+		if (mainSnak instanceof ValueSnak)
+			return ((ValueSnak)mainSnak).getValue();
+		return null;
 	}
 
 	@Override

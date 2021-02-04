@@ -62,12 +62,6 @@ public class SnakImplTest {
 	public void fieldsAreCorrect() {
 		assertEquals(vs1.getPropertyId(), p1);
 		assertEquals(vs1.getValue(), p1);
-
-		assertEquals(svs1.getPropertyId(), p1);
-		assertNull(svs1.getValue());
-
-		assertEquals(nvs1.getPropertyId(), p1);
-		assertNull(nvs1.getValue());
 	}
 
 	@Test

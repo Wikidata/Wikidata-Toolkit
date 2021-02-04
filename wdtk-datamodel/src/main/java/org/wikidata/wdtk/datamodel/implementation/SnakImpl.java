@@ -24,7 +24,6 @@ import org.apache.commons.lang3.Validate;
 
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -104,12 +103,6 @@ public abstract class SnakImpl implements Snak {
 	@Override
 	public PropertyIdValue getPropertyId() {
 		return property;
-	}
-
-	@JsonIgnore
-	@Override
-	public Value getValue() {
-		return null;
 	}
 	
 	@JsonProperty("snaktype")
