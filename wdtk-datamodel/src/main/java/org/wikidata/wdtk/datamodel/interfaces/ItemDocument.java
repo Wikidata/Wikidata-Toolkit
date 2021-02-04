@@ -43,18 +43,6 @@ public interface ItemDocument extends TermedStatementDocument {
 	ItemIdValue getEntityId();
 
 	/**
-	 * @deprecated Use {@link #getEntityId()}
-	 *
-	 * Return the ID of the item that the data refers to. The result is the same
-	 * as that of {@link EntityDocument#getEntityId()}, but declared with a more
-	 * specific result type.
-	 *
-	 * @return item id
-	 */
-	@Deprecated
-	ItemIdValue getItemId();
-
-	/**
 	 * Get a Map of site keys to {@link SiteLink} objects.
 	 *
 	 * @return map of SiteLinks

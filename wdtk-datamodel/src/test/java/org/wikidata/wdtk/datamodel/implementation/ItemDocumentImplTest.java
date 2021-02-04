@@ -72,7 +72,6 @@ public class ItemDocumentImplTest {
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(ir1.getItemId(), iid);
 		assertEquals(ir1.getEntityId(), iid);
 		assertEquals(ir1.getLabels(), Collections.singletonMap(label.getLanguageCode(), label));
 		assertEquals(ir1.getDescriptions(), Collections.singletonMap(desc.getLanguageCode(), desc));

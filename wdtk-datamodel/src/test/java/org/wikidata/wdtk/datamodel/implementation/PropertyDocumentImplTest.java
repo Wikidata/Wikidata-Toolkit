@@ -64,7 +64,6 @@ public class PropertyDocumentImplTest {
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(pd1.getPropertyId(), pid);
 		assertEquals(pd1.getEntityId(), pid);
 		assertEquals(pd1.getLabels(), Collections.singletonMap(label.getLanguageCode(), label));
 		assertEquals(pd1.getDescriptions(), Collections.singletonMap(desc.getLanguageCode(), desc));

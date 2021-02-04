@@ -71,17 +71,6 @@ public class TermImpl implements MonolingualTextValue {
 		this.text = text;
 	}
 
-	/**
-	 * Copy constructor.
-	 *
-	 * @param mltv
-	 *            the object to copy the data from
-	 */
-	@Deprecated
-	public TermImpl(MonolingualTextValue mltv) {
-		this(mltv.getLanguageCode(), mltv.getText());
-	}
-
 	@Override
 	public <T> T accept(ValueVisitor<T> valueVisitor) {
 		return valueVisitor.visit(this);
