@@ -503,8 +503,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<StatementGroup> copyStatementGroups(List<StatementGroup> statementGroups) {
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
-		for (StatementGroup statementGroup : statementGroups)
+		for (StatementGroup statementGroup : statementGroups) {
 			result.add(copy(statementGroup));
+		}
 		return result;
 	}
 
@@ -517,8 +518,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private List<MonolingualTextValue> copyMonoLingualTextValues(Collection<MonolingualTextValue> monoLingualTextValues) {
 		List<MonolingualTextValue> result = new ArrayList<>(monoLingualTextValues.size());
-		for (MonolingualTextValue mtv : monoLingualTextValues)
+		for (MonolingualTextValue mtv : monoLingualTextValues) {
 			result.add(copy(mtv));
+		}
 		return result;
 	}
 
@@ -531,8 +533,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private Map<String, SiteLink> copySiteLinks(Map<String, SiteLink> siteLinks) {
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
-		for (Entry<String, SiteLink> entry : siteLinks.entrySet())
+		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
 			result.put(entry.getKey(), copy(entry.getValue()));
+		}
 		return result;
 	}
 
