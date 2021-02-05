@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,14 +18,10 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
-import org.wikidata.wdtk.datamodel.implementation.JsonComparator;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,8 +30,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.JsonComparator;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 public class JsonSerializerTest {
 
@@ -130,8 +136,8 @@ public class JsonSerializerTest {
 	public void testJacksonObjectToJsonError() {
 		Object obj = new Object() {
 			@SuppressWarnings("unused")
-			public String getData() throws JsonGenerationException {
-				throw new JsonGenerationException("Test exception");
+			public String getData() {
+				throw new RuntimeException("Test exception");
 			}
 		};
 
