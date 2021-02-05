@@ -105,6 +105,8 @@ public abstract class ValueImpl implements Value {
 	 */
 	static class JacksonDeserializer extends StdDeserializer<ValueImpl> {
 
+		private static final long serialVersionUID = 6659522064661507680L;
+
 		JacksonDeserializer() {
 			super(ValueImpl.class);
 		}
