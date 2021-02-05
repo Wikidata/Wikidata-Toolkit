@@ -393,7 +393,7 @@ public abstract class ApiConnection {
 		if ("GET".equalsIgnoreCase(requestMethod)) {
 			request = new Request.Builder().url(apiBaseUrl + "?" + queryString).build();
 		} else if ("POST".equalsIgnoreCase(requestMethod)) {
-			request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(URLENCODED_MEDIA_TYPE, queryString)).build();
+			request = new Request.Builder().url(apiBaseUrl).post(RequestBody.create(queryString, URLENCODED_MEDIA_TYPE)).build();
 		} else {
 			throw new IllegalArgumentException("Expected the requestMethod to be either GET or POST, but got " + requestMethod);
 		}

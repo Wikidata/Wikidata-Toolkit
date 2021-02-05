@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
@@ -42,7 +43,7 @@ public class JsonDeserializerTest {
 	protected String loadJson(String filename) throws IOException {
 		InputStream stream = JsonDeserializerTest.class.getClassLoader()
 				.getResourceAsStream("JsonDeserializer/"+filename);
-		return IOUtils.toString(stream);
+		return IOUtils.toString(stream, StandardCharsets.UTF_8);
 	}
 
 	@Test
