@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,15 +18,18 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.io.IOException;
+
 import org.junit.Test;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
-import java.io.IOException;
-import java.util.NoSuchElementException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TimeValueImplTest {
 

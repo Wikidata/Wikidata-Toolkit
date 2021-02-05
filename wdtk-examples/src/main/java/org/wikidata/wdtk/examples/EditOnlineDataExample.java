@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.examples;
-
 /*
  * #%L
  * Wikidata Toolkit Examples
@@ -19,6 +17,8 @@ package org.wikidata.wdtk.examples;
  * limitations under the License.
  * #L%
  */
+
+package org.wikidata.wdtk.examples;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +43,6 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.util.WebResourceFetcherImpl;
 import org.wikidata.wdtk.wikibaseapi.ApiConnection;
 import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
-import org.wikidata.wdtk.wikibaseapi.LoginFailedException;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataEditor;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import org.wikidata.wdtk.wikibaseapi.apierrors.EditConflictErrorException;

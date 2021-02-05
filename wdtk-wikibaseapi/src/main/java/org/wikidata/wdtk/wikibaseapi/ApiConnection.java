@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,26 +18,39 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.wikidata.wdtk.util.WebResourceFetcherImpl;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
-import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
+package org.wikidata.wdtk.wikibaseapi;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.wikibaseapi.apierrors.AssertUserFailedException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorHandler;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Class to build up and hold a connection to a Wikibase API.

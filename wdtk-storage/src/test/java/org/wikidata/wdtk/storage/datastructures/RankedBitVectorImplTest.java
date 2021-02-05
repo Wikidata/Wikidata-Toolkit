@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.storage.datastructures;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,16 +18,12 @@ package org.wikidata.wdtk.storage.datastructures;
  * #L%
  */
 
+package org.wikidata.wdtk.storage.datastructures;
+
 import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.wikidata.wdtk.storage.datastructures.BitVector;
-import org.wikidata.wdtk.storage.datastructures.BitVectorImpl;
-import org.wikidata.wdtk.storage.datastructures.CountBitsArray;
-import org.wikidata.wdtk.storage.datastructures.FindPositionArray;
-import org.wikidata.wdtk.storage.datastructures.RankedBitVector;
-import org.wikidata.wdtk.storage.datastructures.RankedBitVectorImpl;
 
 /**
  * Test class for {@link RankedBitVectorImpl}.
