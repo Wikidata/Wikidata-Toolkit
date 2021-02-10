@@ -51,11 +51,6 @@ public class WbSearchEntitiesAction {
     private final ApiConnection connection;
 
     /**
-     * The IRI that identifies the site that the data is from.
-     */
-    private final String siteIri;
-
-    /**
      * Mapper object used for deserializing JSON data.
      */
     private final ObjectMapper mapper = new ObjectMapper();
@@ -74,7 +69,6 @@ public class WbSearchEntitiesAction {
      */
     public WbSearchEntitiesAction(ApiConnection connection, String siteUri) {
         this.connection = connection;
-        this.siteIri = siteUri;
     }
 
     public List<WbSearchEntitiesResult> wbSearchEntities(WbGetEntitiesSearchData properties)

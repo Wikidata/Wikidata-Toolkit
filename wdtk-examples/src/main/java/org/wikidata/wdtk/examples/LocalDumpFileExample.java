@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.examples;
-
 /*
  * #%L
  * Wikidata Toolkit Examples
@@ -20,7 +18,7 @@ package org.wikidata.wdtk.examples;
  * #L%
  */
 
-import java.io.IOException;
+package org.wikidata.wdtk.examples;
 
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;

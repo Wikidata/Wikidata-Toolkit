@@ -1,15 +1,3 @@
-package org.wikidata.wdtk.rdf;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.wikibaseapi.ApiConnection;
-import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
-
 /*
  * #%L
  * Wikidata Toolkit Testing Utilities
@@ -29,6 +17,17 @@ import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
  * limitations under the License.
  * #L%
  */
+
+package org.wikidata.wdtk.rdf;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.wikibaseapi.BasicApiConnection;
 
 /**
  * This is a helper class for testing processes which need a
