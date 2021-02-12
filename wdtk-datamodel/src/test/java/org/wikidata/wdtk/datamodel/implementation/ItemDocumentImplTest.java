@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,12 +18,14 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +33,22 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ItemDocumentImplTest {
 
@@ -86,7 +101,7 @@ public class ItemDocumentImplTest {
 	@Test
 	public void findTerms() {
 		assertEquals("label", ir1.findLabel("en"));
-		assertNull( ir1.findLabel("ja"));
+		assertNull(ir1.findLabel("ja"));
 		assertEquals("des", ir1.findDescription("fr"));
 		assertNull( ir1.findDescription("ja"));
 	}
@@ -145,13 +160,13 @@ public class ItemDocumentImplTest {
 		assertEquals(ir1.hashCode(), ir2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new ItemDocumentImpl(null,
+		assertThrows(NullPointerException.class, () -> new ItemDocumentImpl(null,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups, sitelinks, 1234);
+				statementGroups, sitelinks, 1234));
 	}
 
 	@Test
@@ -191,7 +206,7 @@ public class ItemDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementGroupsUseSameSubject() {
 		ItemIdValue iid2 = new ItemIdValueImpl("Q23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
@@ -203,20 +218,20 @@ public class ItemDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new ItemDocumentImpl(iid,
+		assertThrows(IllegalArgumentException.class, () -> new ItemDocumentImpl(iid,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups2, sitelinks, 1234);
+				statementGroups2, sitelinks, 1234));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void sitelinksNotNull() {
-		new ItemDocumentImpl(iid,
+		assertThrows(NullPointerException.class, () -> new ItemDocumentImpl(iid,
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				statementGroups, null, 1234);
+				statementGroups, null, 1234));
 	}
 
 	@Test

@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,18 +18,23 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SnakImplTest {
 
@@ -105,15 +108,15 @@ public class SnakImplTest {
 		assertNotEquals(nvs1, null);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void snakPropertyNotNull() {
-		new SomeValueSnakImpl(null);
+		assertThrows(NullPointerException.class, () -> new SomeValueSnakImpl(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void snakValueNotNull() {
-		new ValueSnakImpl(new PropertyIdValueImpl("P42",
-				"http://example.com/entity/"), null);
+		assertThrows(NullPointerException.class, () -> new ValueSnakImpl(new PropertyIdValueImpl("P42",
+				"http://example.com/entity/"), null));
 	}
 
 	@Test

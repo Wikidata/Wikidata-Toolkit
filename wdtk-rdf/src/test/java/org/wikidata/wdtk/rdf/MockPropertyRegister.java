@@ -20,10 +20,11 @@
 
 package org.wikidata.wdtk.rdf;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -50,7 +51,7 @@ public class MockPropertyRegister extends PropertyRegister {
 
 	@Override
 	protected void fetchPropertyInformation(PropertyIdValue startProperty) {
-		Assert.fail("Please add " + startProperty
+		fail("Please add " + startProperty
 				+ "to the datatypes and uriPatterns map.");
 	}
 

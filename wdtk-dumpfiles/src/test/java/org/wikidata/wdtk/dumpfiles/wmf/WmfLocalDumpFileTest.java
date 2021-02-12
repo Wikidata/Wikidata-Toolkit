@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.dumpfiles.wmf;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -20,14 +18,17 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
-import static org.junit.Assert.assertFalse;
+package org.wikidata.wdtk.dumpfiles.wmf;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
@@ -37,28 +38,28 @@ public class WmfLocalDumpFileTest {
 	MockDirectoryManager dm;
 	Path dmPath;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.dmPath = Paths.get(System.getProperty("user.dir"))
 				.resolve("dumpfiles").resolve("wikidatawiki");
 		this.dm = new MockDirectoryManager(this.dmPath, true, true);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void directoryDoesNotExist() {
-		new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
-				DumpContentType.DAILY);
+		assertThrows(IllegalArgumentException.class, () -> new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
+				DumpContentType.DAILY));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void directoryNotReadable() throws IOException {
 		MockDirectoryManager dm = Mockito.mock(MockDirectoryManager.class);
 		Mockito.when(dm.hasSubdirectory("daily-20140220")).thenReturn(true);
 		Mockito.doThrow(new IOException()).when(dm)
 				.getSubdirectoryManager("daily-20140220");
 
-		new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
-				DumpContentType.DAILY);
+		assertThrows(IllegalArgumentException.class, () -> new WmfLocalDumpFile("20140220", "wikidatawiki", dm,
+				DumpContentType.DAILY));
 	}
 
 	@Test

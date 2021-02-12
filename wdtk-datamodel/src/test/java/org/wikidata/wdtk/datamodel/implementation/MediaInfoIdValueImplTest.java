@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,17 +18,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MediaInfoIdValueImplTest {
 
@@ -79,29 +81,29 @@ public class MediaInfoIdValueImplTest {
 		assertEquals(mediaInfo1.hashCode(), mediaInfo2.hashCode());
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idValidatedForFirstLetter() {
-		new MediaInfoIdValueImpl("Q12345", "http://commons.wikimedia.org/entity/");
+		assertThrows(RuntimeException.class, () -> new MediaInfoIdValueImpl("Q12345", "http://commons.wikimedia.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForNumber() {
-		new MediaInfoIdValueImpl("L34d23", "http://commons.wikimedia.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new MediaInfoIdValueImpl("L34d23", "http://commons.wikimedia.org/entity/"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void idValidatedForLength() {
-		new MediaInfoIdValueImpl("M", "http://commons.wikimedia.org/entity/");
+		assertThrows(IllegalArgumentException.class, () -> new MediaInfoIdValueImpl("M", "http://commons.wikimedia.org/entity/"));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void idNotNull() {
-		new MediaInfoIdValueImpl((String)null, "http://commons.wikimedia.org/entity/");
+		assertThrows(RuntimeException.class, () -> new MediaInfoIdValueImpl((String)null, "http://commons.wikimedia.org/entity/"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void baseIriNotNull() {
-		new MediaInfoIdValueImpl("M42", null);
+		assertThrows(NullPointerException.class, () -> new MediaInfoIdValueImpl("M42", null));
 	}
 
 	@Test

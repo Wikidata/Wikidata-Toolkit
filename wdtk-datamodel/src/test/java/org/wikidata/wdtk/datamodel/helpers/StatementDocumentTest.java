@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,13 +18,18 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import org.junit.Test;
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-
-import static org.junit.Assert.*;
 
 public class StatementDocumentTest {
 	private static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");

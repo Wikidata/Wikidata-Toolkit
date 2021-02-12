@@ -76,20 +76,27 @@
 		<apacheCommonsLangVersion>3.10</apacheCommonsLangVersion>
 		<apacheCommonsIOVersion>2.6</apacheCommonsIOVersion>
 		<jacksonVersion>2.10.3</jacksonVersion>
-		<junitVersion>4.13.1</junitVersion>
+		<junitVersion>5.7.1</junitVersion>
+		<hamcrestVersion>1.3</hamcrestVersion>
 		<mockitoVersion>1.10.19</mockitoVersion>
 		<rdf4jVersion>3.1.3</rdf4jVersion>
 		<slf4jVersion>1.7.30</slf4jVersion>
 		<threetenVersion>1.5.0</threetenVersion>
 		<okhttpSignpostVersion>1.1.0</okhttpSignpostVersion>
-		<okhttpVersion>4.2.2</okhttpVersion>
+		<okhttpVersion>5.0.0-alpha.2</okhttpVersion>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<version>${junitVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>${hamcrestVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

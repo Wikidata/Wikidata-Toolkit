@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.util;
-
 /*
  * #%L
  * Wikidata Toolkit utilities
@@ -20,13 +18,18 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TimerTest {
 
@@ -79,22 +82,22 @@ public class TimerTest {
 		long wallTime1 = System.nanoTime();
 		timer.start();
 		doDummyComputation();
-		assertTrue("Timer should be running", timer.isRunning());
+		assertTrue(timer.isRunning(), "Timer should be running");
 		timer.stop();
 		cpuTime1 = tmxb.getThreadCpuTime(threadId) - cpuTime1;
 		wallTime1 = System.nanoTime() - wallTime1;
 		assertTrue(
-				"Unrealistic CPU time: " + timer.getTotalCpuTime()
-						+ " should be closer to " + cpuTime1,
 				(cpuTime1 - TimerTest.TIME_TOLERANCE) <= timer
 						.getTotalCpuTime()
-						&& timer.getTotalCpuTime() <= cpuTime1);
+						&& timer.getTotalCpuTime() <= cpuTime1,
+				"Unrealistic CPU time: " + timer.getTotalCpuTime()
+						+ " should be closer to " + cpuTime1);
 		assertTrue(
-				"Unrealistic wall time: " + timer.getTotalWallTime()
-						+ " should be closer to " + wallTime1,
 				(wallTime1 - 2 * TimerTest.TIME_TOLERANCE) <= timer
 						.getTotalWallTime()
-						&& timer.getTotalWallTime() <= wallTime1);
+						&& timer.getTotalWallTime() <= wallTime1,
+				"Unrealistic wall time: " + timer.getTotalWallTime()
+						+ " should be closer to " + wallTime1);
 
 		long cpuTime2 = tmxb.getThreadCpuTime(threadId);
 		long wallTime2 = System.nanoTime();
@@ -104,17 +107,17 @@ public class TimerTest {
 		cpuTime1 += tmxb.getThreadCpuTime(threadId) - cpuTime2;
 		wallTime1 += System.nanoTime() - wallTime2;
 		assertTrue(
-				"Unrealistic total CPU time: " + timer.getTotalCpuTime()
-						+ " should be closer to " + cpuTime1,
 				(cpuTime1 - 2 * TimerTest.TIME_TOLERANCE) <= timer
 						.getTotalCpuTime()
-						&& timer.getTotalCpuTime() <= cpuTime1);
+						&& timer.getTotalCpuTime() <= cpuTime1,
+				"Unrealistic total CPU time: " + timer.getTotalCpuTime()
+						+ " should be closer to " + cpuTime1);
 		assertTrue(
-				"Unrealistic total wall time: " + timer.getTotalWallTime()
-						+ " should be closer to " + wallTime1,
 				(wallTime1 - 4 * TimerTest.TIME_TOLERANCE) <= timer
 						.getTotalWallTime()
-						&& timer.getTotalWallTime() <= wallTime1);
+						&& timer.getTotalWallTime() <= wallTime1,
+				"Unrealistic total wall time: " + timer.getTotalWallTime()
+						+ " should be closer to " + wallTime1);
 
 		assertEquals(timer.getTotalCpuTime() / 2, timer.getAvgCpuTime());
 		assertEquals(timer.getTotalWallTime() / 2, timer.getAvgWallTime());
@@ -122,7 +125,7 @@ public class TimerTest {
 		timer.reset();
 		assertEquals(timer.getTotalCpuTime(), 0);
 		assertEquals(timer.getTotalWallTime(), 0);
-		assertFalse("Timer should not be running", timer.isRunning());
+		assertFalse(timer.isRunning(), "Timer should not be running");
 	}
 
 	@Test
@@ -163,22 +166,22 @@ public class TimerTest {
 		Timer.stopNamedTimer("test timer", Timer.RECORD_WALLTIME);
 		Timer.stopNamedTimer("test timer", Timer.RECORD_ALL, 0);
 
-		assertTrue("Named timer should have measured a non-zero CPU time.",
-				timerA1.getTotalCpuTime() > 0);
-		assertTrue("Named timer should have measured a non-zero wall time.",
-				timerA1.getTotalWallTime() > 0);
+		assertTrue(timerA1.getTotalCpuTime() > 0,
+				"Named timer should have measured a non-zero CPU time.");
+		assertTrue(timerA1.getTotalWallTime() > 0,
+				"Named timer should have measured a non-zero wall time.");
 		assertTrue(
-				"Timer for CPU time should have measured a non-zero CPU time.",
-				timerCpu.getTotalCpuTime() > 0);
-		assertEquals("Timer for CPU time should not have measured a wall time.", 0, timerCpu.getTotalWallTime());
-		assertEquals("Timer for wall time should not have measured a CPU time.", 0, timerWall.getTotalCpuTime());
+				timerCpu.getTotalCpuTime() > 0,
+				"Timer for CPU time should have measured a non-zero CPU time.");
+		assertEquals(0, timerCpu.getTotalWallTime(), "Timer for CPU time should not have measured a wall time.");
+		assertEquals(0, timerWall.getTotalCpuTime(), "Timer for wall time should not have measured a CPU time.");
 		assertTrue(
-				"Timer for wall time should have measured a non-zero wall time.",
-				timerWall.getTotalWallTime() > 0);
-		assertEquals("Timer without threadId should not have measured a CPU time.", 0, timerNoThread.getTotalCpuTime());
+				timerWall.getTotalWallTime() > 0,
+				"Timer for wall time should have measured a non-zero wall time.");
+		assertEquals(0, timerNoThread.getTotalCpuTime(), "Timer without threadId should not have measured a CPU time.");
 		assertTrue(
-				"Timer without threadId should have measured a non-zero wall time.",
-				timerNoThread.getTotalWallTime() > 0);
+				timerNoThread.getTotalWallTime() > 0,
+				"Timer without threadId should have measured a non-zero wall time.");
 
 		// Testing total timer creation:
 		Timer totalTimer1 = Timer.getNamedTotalTimer("test timer");
@@ -220,14 +223,14 @@ public class TimerTest {
 		Timer.resetNamedTimer("test timer", Timer.RECORD_WALLTIME);
 		Timer.resetNamedTimer("test timer", Timer.RECORD_ALL, 0);
 
-		assertEquals("Named timer should have reset CPU time.", 0, timerA1.getTotalCpuTime());
-		assertEquals("Named timer should have reset wall time.", 0, timerA1.getTotalWallTime());
-		assertEquals("Timer for CPU time should have reset CPU time.", 0, timerCpu.getTotalCpuTime());
-		assertEquals("Timer for CPU time should have reset wall time.", 0, timerCpu.getTotalWallTime());
-		assertEquals("Timer for wall time should have reset CPU time.", 0, timerWall.getTotalCpuTime());
-		assertEquals("Timer for wall time should have reset wall time.", 0, timerWall.getTotalWallTime());
-		assertEquals("Timer without threadId should have reset CPU time.", 0, timerNoThread.getTotalCpuTime());
-		assertEquals("Timer without threadId should have reset wall time.", 0, timerNoThread.getTotalWallTime());
+		assertEquals(0, timerA1.getTotalCpuTime(), "Named timer should have reset CPU time.");
+		assertEquals(0, timerA1.getTotalWallTime(), "Named timer should have reset wall time.");
+		assertEquals(0, timerCpu.getTotalCpuTime(), "Timer for CPU time should have reset CPU time.");
+		assertEquals(0, timerCpu.getTotalWallTime(), "Timer for CPU time should have reset wall time.");
+		assertEquals(0, timerWall.getTotalCpuTime(), "Timer for wall time should have reset CPU time.");
+		assertEquals(0, timerWall.getTotalWallTime(), "Timer for wall time should have reset wall time.");
+		assertEquals(0, timerNoThread.getTotalCpuTime(), "Timer without threadId should have reset CPU time.");
+		assertEquals(0, timerNoThread.getTotalWallTime(), "Timer without threadId should have reset wall time.");
 
 		// Testing unregistered timer stop (does not create one):
 		assertEquals(Timer.stopNamedTimer("unknown name"), -1);
@@ -261,7 +264,7 @@ public class TimerTest {
 		doDummyComputation();
 		timer.stop();
 
-		assertTrue("Timer should have measured a CPU time.",
-				timer.getTotalCpuTime() > 0);
+		assertTrue(timer.getTotalCpuTime() > 0,
+				"Timer should have measured a CPU time.");
 	}
 }

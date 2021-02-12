@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.rdf;
-
 /*
  * #%L
  * Wikidata Toolkit RDF
@@ -20,17 +18,19 @@ package org.wikidata.wdtk.rdf;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.rdf;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.implementation.SitesImpl;
 
 public class RdfSerializerTest {
@@ -41,7 +41,7 @@ public class RdfSerializerTest {
 
 	RdfSerializer rdfSerializer;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.out = new ByteArrayOutputStream();
 		this.rdfSerializer = new RdfSerializer(RDFFormat.TURTLE, this.out,

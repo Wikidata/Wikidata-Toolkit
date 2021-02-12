@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.dumpfiles.wmf;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -20,25 +18,31 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
+package org.wikidata.wdtk.dumpfiles.wmf;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 import org.wikidata.wdtk.util.CompressionType;
-
-import static org.junit.Assert.*;
 
 public class WmfOnlineDailyDumpFileTest {
 
 	MockWebResourceFetcher wrf;
 	MockDirectoryManager dm;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		dm = new MockDirectoryManager(
 				Paths.get(System.getProperty("user.dir")), true, false);
@@ -108,7 +112,7 @@ public class WmfOnlineDailyDumpFileTest {
 		assertFalse(dump.isAvailable());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void downloadNoRevisionId() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
@@ -118,10 +122,10 @@ public class WmfOnlineDailyDumpFileTest {
 				CompressionType.BZ2);
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
-		dump.getDumpFileReader();
+		assertThrows(IOException.class, () -> dump.getDumpFileReader());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void downloadNoDumpFile() throws IOException {
 		String dateStamp = "20140220";
 		wrf.setWebResourceContents(
@@ -129,7 +133,7 @@ public class WmfOnlineDailyDumpFileTest {
 						+ dateStamp + "/status.txt", "done");
 		WmfOnlineDailyDumpFile dump = new WmfOnlineDailyDumpFile(dateStamp,
 				"wikidatawiki", wrf, dm);
-		dump.getDumpFileReader();
+		assertThrows(IOException.class, () -> dump.getDumpFileReader());
 	}
 
 }

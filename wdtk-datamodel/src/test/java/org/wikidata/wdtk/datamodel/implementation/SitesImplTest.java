@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,20 +18,22 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 
 public class SitesImplTest {
 
 	private SitesImpl sites;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.sites = new SitesImpl();
 		this.sites.setSiteInformation("enwiki", "wikipedia", "en", "mediawiki",

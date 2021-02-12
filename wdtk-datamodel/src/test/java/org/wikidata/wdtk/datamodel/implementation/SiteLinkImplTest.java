@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,19 +18,24 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SiteLinkImplTest {
 
@@ -74,14 +77,14 @@ public class SiteLinkImplTest {
 		assertEquals(s1.hashCode(), s2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void titleNotNull() {
-		new SiteLinkImpl(null, "enwiki", Collections.emptyList());
+		assertThrows(NullPointerException.class, () -> new SiteLinkImpl(null, "enwiki", Collections.emptyList()));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void siteKeyNotNull() {
-		new SiteLinkImpl("Dresden", null, Collections.emptyList());
+		assertThrows(NullPointerException.class, () -> new SiteLinkImpl("Dresden", null, Collections.emptyList()));
 	}
 
 	@Test
