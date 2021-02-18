@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,13 +18,16 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
@@ -42,7 +43,7 @@ public class ItemDocumentBuilderTest {
 	Statement s2;
 	Statement s1;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		i = ItemIdValue.NULL;
 		s1 = StatementBuilder.forSubjectAndProperty(i,
@@ -135,15 +136,16 @@ public class ItemDocumentBuilderTest {
 		assertEquals("pleutre", copy.findLabel("fr"));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvalidChangeOfSubjectId() {
-		ItemDocumentBuilder.forItemId(ItemIdValue.NULL).withRevisionId(1234).withEntityId(PropertyIdValue.NULL);
+		ItemDocumentBuilder builder = ItemDocumentBuilder.forItemId(ItemIdValue.NULL).withRevisionId(1234);
+		assertThrows(IllegalArgumentException.class, () -> builder.withEntityId(PropertyIdValue.NULL));
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testDoubleBuild() {
 		ItemDocumentBuilder b = ItemDocumentBuilder.forItemId(ItemIdValue.NULL);
 		b.build();
-		b.build();
+		assertThrows(IllegalStateException.class, () -> b.build());
 	}
 }

@@ -20,12 +20,13 @@
 
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,9 +66,9 @@ public class TimeValueImplTest {
 		assertEquals(new ItemIdValueImpl("Q1985727", "http://www.wikidata.org/entity/"), t1.getPreferredCalendarModelItemId());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void getPreferredCalendarModelItemIdInvalidIri() {
-		t3.getPreferredCalendarModelItemId();
+		assertThrows(IllegalArgumentException.class, () -> t3.getPreferredCalendarModelItemId());
 	}
 
 	@Test
@@ -128,10 +129,10 @@ public class TimeValueImplTest {
 		assertEquals(t1.hashCode(), t2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void calendarModelNotNull() {
-		new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
-				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60, null);
+		assertThrows(NullPointerException.class, () -> new TimeValueImpl(2007, (byte) 5, (byte) 12, (byte) 10, (byte) 45,
+				(byte) 0, TimeValue.PREC_SECOND, 0, 1, 60, null));
 	}
 
 	@Test

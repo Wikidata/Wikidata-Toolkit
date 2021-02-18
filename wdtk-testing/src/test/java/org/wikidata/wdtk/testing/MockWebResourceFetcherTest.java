@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.testing;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -20,20 +18,23 @@ package org.wikidata.wdtk.testing;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.testing;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MockWebResourceFetcherTest {
 
 	MockWebResourceFetcher mwrf;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mwrf = new MockWebResourceFetcher();
 		mwrf.setWebResourceContents("http://example.com/test.html",
@@ -73,9 +74,9 @@ public class MockWebResourceFetcherTest {
 		assertTrue(exception);
 	}
 
-	@Test(expected = IOException.class)
-	public void readOnlyMockedUrls() throws IOException {
-		mwrf.getInputStreamForUrl("http://not-mocked.com");
+	@Test
+	public void readOnlyMockedUrls() {
+		assertThrows(IOException.class, () -> mwrf.getInputStreamForUrl("http://not-mocked.com"));
 	}
 
 }

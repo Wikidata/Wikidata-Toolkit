@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,15 +18,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class QuantityValueImplTest {
 
@@ -66,9 +70,9 @@ public class QuantityValueImplTest {
 		assertNull(q4.getUnitItemId());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void getUnitItemIdInvalidIri() {
-		q5.getUnitItemId();
+		assertThrows(IllegalArgumentException.class, () -> q5.getUnitItemId());
 	}
 
 	@Test
@@ -115,39 +119,39 @@ public class QuantityValueImplTest {
 		assertEquals(q1.hashCode(), q2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void numValueNotNull() {
-		new QuantityValueImpl(null, lb, ub, unitMeter);
+		assertThrows(NullPointerException.class, () -> new QuantityValueImpl(null, lb, ub, unitMeter));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void lowerBoundNotNull() {
-		new QuantityValueImpl(nv, null, ub, unitMeter);
+		assertThrows(NullPointerException.class, () -> new QuantityValueImpl(nv, null, ub, unitMeter));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void upperBoundNotNull() {
-		new QuantityValueImpl(nv, lb, null, unitMeter);
+		assertThrows(NullPointerException.class, () -> new QuantityValueImpl(nv, lb, null, unitMeter));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void unitNotNull() {
-		new QuantityValueImpl(nv, lb, ub, null);
+		assertThrows(NullPointerException.class, () -> new QuantityValueImpl(nv, lb, ub, null));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void unitNotEmpty() {
-		new QuantityValueImpl(nv, lb, ub, "");
+		assertThrows(IllegalArgumentException.class, () -> new QuantityValueImpl(nv, lb, ub, ""));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void lowerBoundNotGreaterNumVal() {
-		new QuantityValueImpl(lb, nv, ub, unitMeter);
+		assertThrows(IllegalArgumentException.class, () -> new QuantityValueImpl(lb, nv, ub, unitMeter));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void numValNotGreaterLowerBound() {
-		new QuantityValueImpl(ub, lb, nv, unitMeter);
+		assertThrows(IllegalArgumentException.class, () -> new QuantityValueImpl(ub, lb, nv, unitMeter));
 	}
 
 	@Test

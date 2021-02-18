@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,12 +18,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +32,24 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LexemeDocumentImplTest {
 
@@ -86,9 +102,9 @@ public class LexemeDocumentImplTest {
 		assertEquals(form, ld1.getForm(form.getEntityId()));
 	}
 
-	@Test(expected=IndexOutOfBoundsException.class)
+	@Test
 	public void formGetterNotFound() {
-		ld1.getForm(new FormIdValueImpl("L42-F2", "http://example.com/entity/"));
+		assertThrows(IndexOutOfBoundsException.class, () -> ld1.getForm(new FormIdValueImpl("L42-F2", "http://example.com/entity/")));
 	}
 
 	@Test
@@ -96,9 +112,9 @@ public class LexemeDocumentImplTest {
 		assertEquals(sense, ld1.getSense(sense.getEntityId()));
 	}
 
-	@Test(expected=IndexOutOfBoundsException.class)
+	@Test
 	public void senseGetterNotFound() {
-		ld1.getSense(new SenseIdValueImpl("L42-S2", "http://example.com/entity/"));
+		assertThrows(IndexOutOfBoundsException.class, () -> ld1.getSense(new SenseIdValueImpl("L42-S2", "http://example.com/entity/")));
 	}
 
 	@Test
@@ -139,29 +155,29 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.hashCode(), ld2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, forms, senses,  1234);
+		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(null, lexCat, language, lemmaList, statementGroups, forms, senses,  1234));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void lexicalCategoryNotNull() {
-		new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, forms, senses, 1234);
+		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, null, language, lemmaList, statementGroups, forms, senses, 1234));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void languageNotNull() {
-		new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, senses,  1234);
+		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, lexCat, null, lemmaList, statementGroups, forms, senses,  1234));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void lemmasNotNull() {
-		new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, senses,  1234);
+		assertThrows(NullPointerException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, null, statementGroups, forms, senses,  1234));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void lemmasNotEmpty() {
-		new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, senses,  1234);
+		assertThrows(IllegalArgumentException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, Collections.emptyList(), statementGroups, forms, senses,  1234));
 	}
 
 	@Test
@@ -170,9 +186,9 @@ public class LexemeDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementGroupsUseSameSubject() {
-		LexemeIdValue iid2 = new LexemeIdValueImpl("Q23", "http://example.org/");
+		LexemeIdValue iid2 = new LexemeIdValueImpl("L23", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
@@ -182,7 +198,7 @@ public class LexemeDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, forms, senses,  1234);
+		assertThrows(IllegalArgumentException.class, () -> new LexemeDocumentImpl(lid, lexCat, language, lemmaList, statementGroups2, forms, senses,  1234));
 	}
 
 	@Test
@@ -262,14 +278,14 @@ public class LexemeDocumentImplTest {
 		assertEquals(ld1.getForms().size() + 1, ld1.withForm(newForm).getForms().size());
 		assertEquals(newForm, ld1.withForm(newForm).getForm(newForm.getEntityId()));
 	}
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWithWrongFormId() {
-		ld1.withForm(Datamodel.makeFormDocument(
+		assertThrows(IllegalArgumentException.class, () -> ld1.withForm(Datamodel.makeFormDocument(
 				Datamodel.makeFormIdValue("L444-F32","http://example.com/entity/"),
 				Collections.singletonList(new TermImpl("en", "add1")),
 				Collections.emptyList(),
 				Collections.emptyList()
-		));
+		)));
 	}
 
 	@Test
@@ -280,13 +296,13 @@ public class LexemeDocumentImplTest {
 		assertEquals(newSense, ld1.withSense(newSense).getSense(newSense.getEntityId()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWithWrongSenseId() {
-		ld1.withSense(Datamodel.makeSenseDocument(
+		assertThrows(IllegalArgumentException.class, () -> ld1.withSense(Datamodel.makeSenseDocument(
 				Datamodel.makeSenseIdValue("L444-S32","http://example.com/entity/"),
 				Collections.singletonList(new TermImpl("en", "add1")),
 				Collections.emptyList()
-		));
+		)));
 	}
 
 	@Test

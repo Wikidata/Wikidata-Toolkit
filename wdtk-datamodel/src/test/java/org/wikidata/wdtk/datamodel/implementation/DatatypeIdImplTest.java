@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,9 +18,13 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 
 public class DatatypeIdImplTest {
@@ -31,9 +33,9 @@ public class DatatypeIdImplTest {
 	private final DatatypeIdImpl d2 = new DatatypeIdImpl("http://wikiba.se/ontology#WikibaseItem");
 	private final DatatypeIdImpl d3 = new DatatypeIdImpl(DatatypeIdValue.DT_TIME);
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void datatypeIdNotNull() {
-		new DatatypeIdImpl((String) null);
+		assertThrows(NullPointerException.class, () -> new DatatypeIdImpl((String) null));
 	}
 
 	@Test
@@ -134,9 +136,9 @@ public class DatatypeIdImplTest {
 				DatatypeIdValue.DT_MONOLINGUAL_TEXT);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIriForInvalidType() {
-		DatatypeIdImpl.getDatatypeIriFromJsonDatatype("some wrong type");
+		assertThrows(IllegalArgumentException.class, () -> DatatypeIdImpl.getDatatypeIriFromJsonDatatype("some wrong type"))	;
 	}
 
 	@Test

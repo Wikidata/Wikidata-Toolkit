@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.storage.datastructures;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,8 +18,15 @@ package org.wikidata.wdtk.storage.datastructures;
  * #L%
  */
 
-import org.junit.Assert;
-import org.junit.Test;
+package org.wikidata.wdtk.storage.datastructures;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for {@link BitVectorImpl}.
@@ -41,33 +46,33 @@ public class BitVectorImplTest {
 	 *            another bit vector
 	 */
 	void assertEqualsForBitVector(BitVector bv0, BitVector bv1) {
-		Assert.assertEquals(bv0, bv0);
-		Assert.assertEquals(bv0, bv1);
-		Assert.assertEquals(bv1, bv0);
-		Assert.assertEquals(bv0.hashCode(), bv1.hashCode());
+		assertEquals(bv0, bv0);
+		assertEquals(bv0, bv1);
+		assertEquals(bv1, bv0);
+		assertEquals(bv0.hashCode(), bv1.hashCode());
 	}
 
 	@Test
 	public void testAdd() {
 		BitVectorImpl bv = new BitVectorImpl();
-		Assert.assertEquals(0, bv.size());
+		assertEquals(0, bv.size());
 
 		bv.addBit(true);
-		Assert.assertEquals(1, bv.size());
-		Assert.assertTrue(bv.getBit(0));
+		assertEquals(1, bv.size());
+		assertTrue(bv.getBit(0));
 
 		bv.addBit(false);
-		Assert.assertEquals(2, bv.size());
-		Assert.assertFalse(bv.getBit(1));
+		assertEquals(2, bv.size());
+		assertFalse(bv.getBit(1));
 
 		bv.addBit(false);
-		Assert.assertEquals(3, bv.size());
-		Assert.assertFalse(bv.getBit(2));
+		assertEquals(3, bv.size());
+		assertFalse(bv.getBit(2));
 
 		for (int i = 3; i < 0x1000; i++) {
 			boolean value = (i % 3) == 0;
 			bv.addBit(value);
-			Assert.assertEquals(value, bv.getBit(i));
+			assertEquals(value, bv.getBit(i));
 		}
 	}
 
@@ -85,8 +90,8 @@ public class BitVectorImplTest {
 	public void testEqualityAndCopyConstructor() {
 		int aLargeNumber = 0x100000;
 		BitVectorImpl bv0 = new BitVectorImpl();
-		Assert.assertEquals(bv0, bv0);
-		Assert.assertNotEquals(bv0, new Object());
+		assertEquals(bv0, bv0);
+		assertNotEquals(bv0, new Object());
 		BitVectorImpl bv1 = new BitVectorImpl();
 
 		PseudorandomBooleanGenerator generator = new PseudorandomBooleanGenerator(
@@ -104,12 +109,12 @@ public class BitVectorImplTest {
 		bv1.setBit(0x12345, false);
 		bv2.setBit(0x12345, true);
 
-		Assert.assertNotEquals(bv1, bv2);
-		Assert.assertNotEquals(bv2, bv1);
+		assertNotEquals(bv1, bv2);
+		assertNotEquals(bv2, bv1);
 
 		RankedBitVectorImpl bv3 = new RankedBitVectorImpl(bv2);
-		Assert.assertNotEquals(bv1, bv3);
-		Assert.assertNotEquals(bv3, bv1);
+		assertNotEquals(bv1, bv3);
+		assertNotEquals(bv3, bv1);
 	}
 
 	@Test
@@ -117,28 +122,28 @@ public class BitVectorImplTest {
 		long word = 0;
 
 		for (byte i = 0; i < 0x40; i++) {
-			Assert.assertFalse(BitVectorImpl.getBitInWord(i, word));
+			assertFalse(BitVectorImpl.getBitInWord(i, word));
 		}
 
 		word = 0x0810F;
 
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 0, word));
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 1, word));
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 2, word));
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 3, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 4, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 5, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 6, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 7, word));
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 8, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 9, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 10, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 11, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 12, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 13, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 14, word));
-		Assert.assertTrue(BitVectorImpl.getBitInWord((byte) 15, word));
-		Assert.assertFalse(BitVectorImpl.getBitInWord((byte) 16, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 0, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 1, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 2, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 3, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 4, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 5, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 6, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 7, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 8, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 9, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 10, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 11, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 12, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 13, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 14, word));
+		assertTrue(BitVectorImpl.getBitInWord((byte) 15, word));
+		assertFalse(BitVectorImpl.getBitInWord((byte) 16, word));
 
 	}
 
@@ -146,66 +151,66 @@ public class BitVectorImplTest {
 	public void testHashCode() {
 		{
 			BitVectorImpl bv = new BitVectorImpl();
-			Assert.assertEquals(0, bv.hashCode());
+			assertEquals(0, bv.hashCode());
 
 			bv.addBit(false);
-			Assert.assertEquals(1, bv.hashCode());
+			assertEquals(1, bv.hashCode());
 		}
 		{
 			BitVectorImpl bv = new BitVectorImpl();
-			Assert.assertEquals(0, bv.hashCode());
+			assertEquals(0, bv.hashCode());
 
 			bv.addBit(true);
-			Assert.assertEquals(0x20, bv.hashCode());
+			assertEquals(0x20, bv.hashCode());
 		}
 	}
 
 	@Test
 	public void testGetOutOfRange() {
-		Assert.assertFalse(new BitVectorImpl().getBit(1));
-		Assert.assertFalse(new BitVectorImpl().getBit(Long.MAX_VALUE));
+		assertFalse(new BitVectorImpl().getBit(1));
+		assertFalse(new BitVectorImpl().getBit(Long.MAX_VALUE));
 	}
 
 	@Test
 	public void testSetOutOfRange() {
 		BitVectorImpl bv = new BitVectorImpl();
-		Assert.assertEquals(0, bv.size());
+		assertEquals(0, bv.size());
 		bv.setBit(41, true);
-		Assert.assertEquals(42, bv.size());
-		Assert.assertFalse(bv.getBit(40));
-		Assert.assertTrue(bv.getBit(41));
-		Assert.assertFalse(bv.getBit(42));
-		Assert.assertFalse(bv.getBit(43));
+		assertEquals(42, bv.size());
+		assertFalse(bv.getBit(40));
+		assertTrue(bv.getBit(41));
+		assertFalse(bv.getBit(42));
+		assertFalse(bv.getBit(43));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testInvalidInitialSize() {
-		new BitVectorImpl(-1);
+		assertThrows(IllegalArgumentException.class, () -> new BitVectorImpl(-1));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testInvalidPositionSizeGet00() {
-		(new BitVectorImpl()).getBit(-1);
+		assertThrows(IndexOutOfBoundsException.class, () -> new BitVectorImpl().getBit(-1));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testInvalidPositionSizeGet01() {
-		BitVectorImpl.getBitInWord((byte) -1, 0);
+		assertThrows(IndexOutOfBoundsException.class, () -> BitVectorImpl.getBitInWord((byte) -1, 0));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testInvalidPositionSizeGet02() {
-		BitVectorImpl.getBitInWord((byte) 0x40, 0);
+		assertThrows(IndexOutOfBoundsException.class, () -> BitVectorImpl.getBitInWord((byte) 0x40, 0));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testInvalidPositionSizeSet00() {
-		BitVectorImpl.setBitInWord((byte) -1, true, 0);
+		assertThrows(IndexOutOfBoundsException.class, () -> BitVectorImpl.setBitInWord((byte) -1, true, 0));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testInvalidPositionSizeSet01() {
-		BitVectorImpl.setBitInWord((byte) 0x40, false, 0);
+		assertThrows(IndexOutOfBoundsException.class, () -> BitVectorImpl.setBitInWord((byte) 0x40, false, 0));
 	}
 
 	@Test
@@ -217,7 +222,7 @@ public class BitVectorImplTest {
 		}
 
 		for (byte i = 0; i < 0x40; i++) {
-			Assert.assertTrue(BitVectorImpl.getBitInWord(i, word));
+			assertTrue(BitVectorImpl.getBitInWord(i, word));
 		}
 
 		for (byte i = 0; i < 0x40; i++) {
@@ -225,25 +230,25 @@ public class BitVectorImplTest {
 		}
 
 		for (byte i = 0; i < 0x40; i++) {
-			Assert.assertFalse(BitVectorImpl.getBitInWord(i, word));
+			assertFalse(BitVectorImpl.getBitInWord(i, word));
 		}
 
 		word = 0x0362;
 		for (byte i = 0; i < 0x40; i++) {
 			boolean value = BitVectorImpl.getBitInWord(i, word);
 			word = BitVectorImpl.setBitInWord(i, value, word);
-			Assert.assertEquals(value, BitVectorImpl.getBitInWord(i, word));
+			assertEquals(value, BitVectorImpl.getBitInWord(i, word));
 
 			value = !value;
 			word = BitVectorImpl.setBitInWord(i, value, word);
-			Assert.assertEquals(value, BitVectorImpl.getBitInWord(i, word));
+			assertEquals(value, BitVectorImpl.getBitInWord(i, word));
 
 			value = !value;
 			word = BitVectorImpl.setBitInWord(i, value, word);
-			Assert.assertEquals(value, BitVectorImpl.getBitInWord(i, word));
+			assertEquals(value, BitVectorImpl.getBitInWord(i, word));
 		}
 
-		Assert.assertEquals(0x0362, word);
+		assertEquals(0x0362, word);
 
 	}
 
@@ -251,18 +256,18 @@ public class BitVectorImplTest {
 	public void testSize() {
 		{
 			BitVectorImpl bv = new BitVectorImpl(0x100);
-			Assert.assertEquals(0x100, bv.size());
+			assertEquals(0x100, bv.size());
 			bv.addBit(false);
 			bv.addBit(true);
-			Assert.assertEquals(0x102, bv.size());
+			assertEquals(0x102, bv.size());
 		}
 
 		{
 			BitVectorImpl bv = new BitVectorImpl();
-			Assert.assertEquals(0, bv.size());
+			assertEquals(0, bv.size());
 			for (int i = 0; i < 0x300; i++) {
 				bv.addBit((i % 5) == 0);
-				Assert.assertEquals(i + 1, bv.size());
+				assertEquals(i + 1, bv.size());
 			}
 		}
 	}
@@ -274,39 +279,39 @@ public class BitVectorImplTest {
 			boolean value = (i % 3) == 0;
 			bv.addBit(value);
 		}
-		Assert.assertEquals("1001001001001001", bv.toString());
+		assertEquals("1001001001001001", bv.toString());
 
 		for (int i = 0; i < 0x10; i++) {
 			boolean value = (i % 2) == 0;
 			bv.addBit(value);
 		}
-		Assert.assertEquals("10010010010010011010101010101010", bv.toString());
+		assertEquals("10010010010010011010101010101010", bv.toString());
 
 		for (int i = 0; i < 0x20; i++) {
 			bv.setBit(i, bv.getBit(i));
 		}
-		Assert.assertEquals("10010010010010011010101010101010", bv.toString());
+		assertEquals("10010010010010011010101010101010", bv.toString());
 
 		for (int i = 0; i < 0x20; i++) {
 			bv.setBit(i, !bv.getBit(i));
 		}
-		Assert.assertEquals("01101101101101100101010101010101", bv.toString());
+		assertEquals("01101101101101100101010101010101", bv.toString());
 
 	}
 
 	@Test
 	public void testWordToString() {
 		long word = 0;
-		Assert.assertEquals(
+		assertEquals(
 				"0000000000000000000000000000000000000000000000000000000000000000",
 				BitVectorImpl.wordToString(word));
 		word = -1;
-		Assert.assertEquals(
+		assertEquals(
 				"1111111111111111111111111111111111111111111111111111111111111111",
 				BitVectorImpl.wordToString(word));
 
 		word = 0x362;
-		Assert.assertEquals(
+		assertEquals(
 				"0100011011000000000000000000000000000000000000000000000000000000",
 				BitVectorImpl.wordToString(word));
 	}
