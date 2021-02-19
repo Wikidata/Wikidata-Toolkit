@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.core.IsCollectionContaining;
+import org.hamcrest.core.IsIterableContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
@@ -135,9 +135,9 @@ public class PropertyRegisterTest {
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P434"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsIterableContaining.hasItems("P434"))))
 				.thenReturn(mockResult);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsCollectionContaining.hasItems("P508"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsIterableContaining.hasItems("P508"))))
 				.thenReturn(mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
