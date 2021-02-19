@@ -34,8 +34,8 @@ import java.util.Map;
 import org.hamcrest.core.IsIterableContaining;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
 import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
@@ -135,9 +135,9 @@ public class PropertyRegisterTest {
 
 		WikibaseDataFetcher dataFetcher = Mockito
 				.mock(WikibaseDataFetcher.class);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsIterableContaining.hasItems("P434"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)MockitoHamcrest.argThat(IsIterableContaining.hasItems("P434"))))
 				.thenReturn(mockResult);
-		Mockito.when(dataFetcher.getEntityDocuments((List<String>)Matchers.argThat(IsIterableContaining.hasItems("P508"))))
+		Mockito.when(dataFetcher.getEntityDocuments((List<String>)MockitoHamcrest.argThat(IsIterableContaining.hasItems("P508"))))
 				.thenReturn(mockResult);
 		Mockito.when(dataFetcher.getFilter()).thenReturn(
 				new DocumentDataFilter());
