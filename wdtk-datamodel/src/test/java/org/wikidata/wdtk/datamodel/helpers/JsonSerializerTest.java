@@ -21,7 +21,7 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
@@ -37,10 +39,14 @@ import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -97,7 +103,7 @@ public class JsonSerializerTest {
 	}
 
 	@Test
-	public void testItemDocumentToJson() {
+	public void testItemDocumentToJson() throws JsonProcessingException {
 		ItemDocument id = Datamodel.makeItemDocument(
 				Datamodel.makeWikidataItemIdValue("Q42"),
 				Collections.emptyList(),
@@ -110,7 +116,7 @@ public class JsonSerializerTest {
 	}
 
 	@Test
-	public void testPropertyDocumentToJson() {
+	public void testPropertyDocumentToJson() throws JsonProcessingException {
 		PropertyDocument pd = Datamodel.makePropertyDocument(
 				Datamodel.makeWikidataPropertyIdValue("P1"),
 				Collections. emptyList(),
@@ -123,7 +129,7 @@ public class JsonSerializerTest {
 	}
 
 	@Test
-	public void testStatementToJson() {
+	public void testStatementToJson() throws JsonProcessingException {
 		Statement s = Datamodel.makeStatement(ItemIdValue.NULL,
 				Datamodel.makeNoValueSnak(Datamodel.makeWikidataPropertyIdValue("P1")),
 				Collections.emptyList(), Collections.emptyList(),
@@ -134,14 +140,74 @@ public class JsonSerializerTest {
 
 	@Test
 	public void testJacksonObjectToJsonError() {
-		Object obj = new Object() {
-			@SuppressWarnings("unused")
-			public String getData() {
-				throw new RuntimeException("Test exception");
+		ItemDocument obj = new ItemDocument() {
+
+			@Override
+			public List<StatementGroup> getStatementGroups() {
+				return null;
+			}
+
+			@Override
+			public long getRevisionId() {
+				return 0;
+			}
+
+			@Override
+			public Map<String, MonolingualTextValue> getLabels() {
+				return null;
+			}
+
+			@Override
+			public Map<String, MonolingualTextValue> getDescriptions() {
+				return null;
+			}
+
+			@Override
+			public Map<String, List<MonolingualTextValue>> getAliases() {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withoutStatementIds(Set<String> statementIds) {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withStatement(Statement statement) {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withRevisionId(long newRevisionId) {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withLabel(MonolingualTextValue newLabel) {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withDescription(MonolingualTextValue newDescription) {
+				return null;
+			}
+
+			@Override
+			public ItemDocument withAliases(String language, List<MonolingualTextValue> aliases) {
+				return null;
+			}
+
+			@Override
+			public Map<String, SiteLink> getSiteLinks() {
+				return null;
+			}
+
+			@Override
+			public ItemIdValue getEntityId() {
+				return null;
 			}
 		};
 
-		String result = JsonSerializer.jacksonObjectToString(obj);
-		assertNull(result);
+		assertThrows(JsonProcessingException.class, () -> JsonSerializer.getJsonString(obj));
 	}
 }

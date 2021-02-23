@@ -42,6 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Reference;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -215,7 +216,7 @@ public class StatementUpdateTest {
 	}
 
 	@Test
-	public void testAddStatements() {
+	public void testAddStatements() throws JsonProcessingException {
 		// Inserting new P2 statements won't touch existing P1 statement
 		Statement s1 = StatementBuilder.forSubjectAndProperty(Q1, P1)
 				.withValue(Q1).withId("ID-s1").build();
