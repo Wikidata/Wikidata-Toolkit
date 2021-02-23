@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*-
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,13 +18,24 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import java.io.IOException;
+package org.wikidata.wdtk.datamodel.helpers;
 
-import com.fasterxml.jackson.databind.ObjectReader;
-import org.wikidata.wdtk.datamodel.implementation.*;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.implementation.EntityDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.EntityRedirectDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.ItemDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.LexemeDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.MediaInfoDocumentImpl;
+import org.wikidata.wdtk.datamodel.implementation.PropertyDocumentImpl;
+import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityRedirectDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * Helper to deserialize datamodel objects from their
@@ -72,55 +81,55 @@ public class JsonDeserializer {
 	
 	/**
 	 * Deserializes a JSON string into an {@link ItemDocument}.
-	 * @throws IOException 
+	 * @throws JsonProcessingException 
 			if the JSON payload is invalid
 	 */
-	public ItemDocument deserializeItemDocument(String json) throws IOException {
+	public ItemDocument deserializeItemDocument(String json) throws JsonProcessingException {
 		return itemReader.readValue(json);
 	}
 	
 	/**
 	 * Deserializes a JSON string into a {@link PropertyDocument}.
-	 * @throws IOException 
+	 * @throws JsonProcessingException 
 			if the JSON payload is invalid
 	 */
-	public PropertyDocument deserializePropertyDocument(String json) throws IOException {
+	public PropertyDocument deserializePropertyDocument(String json) throws JsonProcessingException {
 		return propertyReader.readValue(json);
 	}
 
 	/**
 	 * Deserializes a JSON string into a {@link LexemeDocument}.
-	 * @throws IOException 
+	 * @throws JsonProcessingException 
 			if the JSON payload is invalid
 	 */
-	public LexemeDocument deserializeLexemeDocument(String json) throws IOException {
+	public LexemeDocument deserializeLexemeDocument(String json) throws JsonProcessingException {
 		return lexemeReader.readValue(json);
 	}
 	
 	/**
 	 * Deserializes a JSON string into a {@link MediaInfoDocument}.
-	 * @throws IOException 
+	 * @throws JsonProcessingException 
 			if the JSON payload is invalid
 	 */
-	public MediaInfoDocument deserializeMediaInfoDocument(String json) throws IOException {
+	public MediaInfoDocument deserializeMediaInfoDocument(String json) throws JsonProcessingException {
 		return mediaInfoReader.readValue(json);
 	}
 	
 	/**
 	 * Deserializes a JSON string into a {@link EntityDocument}.
-	 * @throws IOException 
+	 * @throws JsonProcessingException 
 			if the JSON payload is invalid
 	 */
-	public EntityDocument deserializeEntityDocument(String json) throws IOException {
+	public EntityDocument deserializeEntityDocument(String json) throws JsonProcessingException {
 		return entityDocumentReader.readValue(json);
 	}
 
 	/**
 	 * Deserializes a JSON string into a {@link EntityRedirectDocument}.
-	 * @throws IOException
+	 * @throws JsonProcessingException
 	if the JSON payload is invalid
 	 */
-	public EntityRedirectDocument deserializeEntityRedirectDocument(String json) throws IOException {
+	public EntityRedirectDocument deserializeEntityRedirectDocument(String json) throws JsonProcessingException {
 		return entityRedirectReader.readValue(json);
 	}
 }
