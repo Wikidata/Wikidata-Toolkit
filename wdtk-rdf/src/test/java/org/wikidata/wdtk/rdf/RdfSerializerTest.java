@@ -20,12 +20,13 @@
 
 package org.wikidata.wdtk.rdf;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
@@ -57,8 +58,10 @@ public class RdfSerializerTest {
 				.createItemDocument());
 		this.rdfSerializer.close();
 		Model model = RdfTestHelpers.parseRdf(this.out.toString());
-		assertEquals(RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("completeRDFDocument.rdf")), model);
+		assertTrue(Models.isomorphic(
+				RdfTestHelpers.parseRdf(RdfTestHelpers.getResourceFromFile("completeRDFDocument.rdf")),
+				model
+		));
 	}
 
 }
