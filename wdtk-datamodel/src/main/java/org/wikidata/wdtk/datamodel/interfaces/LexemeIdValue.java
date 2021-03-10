@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 public interface LexemeIdValue extends EntityIdValue {
 
 	/**
-	 * Fixed {@link LexemeIdValue} that refers to a non-existing item. Can be used
+	 * Fixed {@link LexemeIdValue} that refers to a non-existing lexeme. It can be used
 	 * as a placeholder object in situations where the entity id is irrelevant.
 	 */
 	LexemeIdValue NULL = new LexemeIdValue() {
