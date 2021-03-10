@@ -115,6 +115,11 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 	}
 
 	@Override
+	public MediaInfoDocument withEntityId(MediaInfoIdValue newEntityId) {
+		return new MediaInfoDocumentImpl(newEntityId, labels, claims, revisionId);
+	}
+
+	@Override
 	public MediaInfoDocument withRevisionId(long newRevisionId) {
 		return new MediaInfoDocumentImpl(getEntityId(), labels, claims, newRevisionId);
 	}

@@ -168,6 +168,11 @@ public class JsonSerializerTest {
 			}
 
 			@Override
+			public ItemDocument withEntityId(ItemIdValue newEntityId) {
+				return null;
+			}
+
+			@Override
 			public ItemDocument withoutStatementIds(Set<String> statementIds) {
 				return null;
 			}

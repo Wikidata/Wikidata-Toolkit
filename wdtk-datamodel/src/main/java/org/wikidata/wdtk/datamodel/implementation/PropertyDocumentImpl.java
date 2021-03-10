@@ -168,6 +168,11 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	}
 	
 	@Override
+	public PropertyDocument withEntityId(PropertyIdValue newEntityId) {
+		return new PropertyDocumentImpl(newEntityId, labels, descriptions, aliases, claims, datatype, revisionId);
+	}
+
+	@Override
 	public PropertyDocument withRevisionId(long newRevisionId) {
 		return new PropertyDocumentImpl(getEntityId(),
 				labels,	descriptions,

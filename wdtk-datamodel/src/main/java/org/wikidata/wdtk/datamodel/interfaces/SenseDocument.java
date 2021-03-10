@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.interfaces;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,6 +17,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +44,16 @@ public interface SenseDocument extends StatementDocument {
 	 * @return a map from Wikimedia language code to the representations
 	 */
 	Map<String,MonolingualTextValue> getGlosses();
-	
+
+	/**
+	 * Returns a new version of this document with updated ID.
+	 * 
+	 * @param newEntityId
+	 *            new ID of the document
+	 * @return document with updated ID
+	 */
+	SenseDocument withEntityId(SenseIdValue newEntityId);
+
 	/**
 	 * Returns a copy of this document with an updated revision id.
 	 */

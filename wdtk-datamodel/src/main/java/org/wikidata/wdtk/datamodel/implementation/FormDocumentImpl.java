@@ -191,6 +191,11 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	}
 	
 	@Override
+	public FormDocument withEntityId(FormIdValue newEntityId) {
+		return new FormDocumentImpl(newEntityId, representations, grammaticalFeatures, claims, revisionId);
+	}
+
+	@Override
 	public FormDocument withRevisionId(long newRevisionId) {
 		return new FormDocumentImpl(getEntityId(),
 				representations, grammaticalFeatures,

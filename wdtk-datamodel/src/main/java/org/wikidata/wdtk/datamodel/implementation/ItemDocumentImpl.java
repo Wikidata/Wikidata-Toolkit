@@ -167,6 +167,11 @@ public class ItemDocumentImpl extends TermedStatementDocumentImpl
 	}
 
 	@Override
+	public ItemDocument withEntityId(ItemIdValue itemId) {
+		return new ItemDocumentImpl(itemId, labels, descriptions, aliases, claims, sitelinks, revisionId);
+	}
+
+	@Override
 	public ItemDocument withRevisionId(long newRevisionId) {
 		return new ItemDocumentImpl(getEntityId(),
 				labels,	descriptions,

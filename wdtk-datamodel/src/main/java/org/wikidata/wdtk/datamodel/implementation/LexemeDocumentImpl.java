@@ -277,6 +277,12 @@ public class LexemeDocumentImpl extends StatementDocumentImpl implements LexemeD
 	}
 
 	@Override
+	public LexemeDocument withEntityId(LexemeIdValue newEntityId) {
+		return new LexemeDocumentImpl(newEntityId, lexicalCategory, language, lemmas,
+				claims, forms, senses, revisionId, nextFormId, nextSenseId);
+	}
+
+	@Override
 	public LexemeDocument withLexicalCategory(ItemIdValue newLexicalCategory) {
 		return new LexemeDocumentImpl(getEntityId(), newLexicalCategory,
 				language, lemmas, claims, forms, senses,
