@@ -25,6 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -269,4 +270,105 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 		return new MediaInfoDocumentImpl(
 				mediaInfoIdValue, labels, statementGroups, revisionId);
 	}
+
+	@Override
+	public SenseUpdate getSenseUpdate(
+			SenseIdValue entityId,
+			SenseDocument document,
+			Collection<MonolingualTextValue> modifiedGlosses,
+			Collection<String> removedGlosses,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements) {
+		return new SenseUpdateImpl(entityId, document, modifiedGlosses, removedGlosses,
+				addedStatements, replacedStatements, removedStatements);
+	}
+
+	@Override
+	public FormUpdate getFormUpdate(
+			FormIdValue entityId,
+			FormDocument document,
+			Collection<MonolingualTextValue> modifiedRepresentations,
+			Collection<String> removedRepresentations,
+			Collection<ItemIdValue> grammaticalFeatures,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements) {
+		return new FormUpdateImpl(entityId, document,
+				modifiedRepresentations, removedRepresentations, grammaticalFeatures,
+				addedStatements, replacedStatements, removedStatements);
+	}
+
+	@Override
+	public LexemeUpdate getLexemeUpdate(
+			LexemeIdValue entityId,
+			LexemeDocument document,
+			ItemIdValue language,
+			ItemIdValue lexicalCategory,
+			Collection<MonolingualTextValue> modifiedLemmas,
+			Collection<String> removedLemmas,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements,
+			Collection<SenseDocument> addedSenses,
+			Collection<SenseUpdate> updatedSenses,
+			Collection<SenseIdValue> removedSenses,
+			Collection<FormDocument> addedForms,
+			Collection<FormUpdate> updatedForms,
+			Collection<FormIdValue> removedForms) {
+		return new LexemeUpdateImpl(entityId, document,
+				language, lexicalCategory, modifiedLemmas, removedLemmas,
+				addedStatements, replacedStatements, removedStatements,
+				addedSenses, updatedSenses, removedSenses,
+				addedForms, updatedForms, removedForms);
+	}
+
+	@Override
+	public MediaInfoUpdate getMediaInfoUpdate(
+			MediaInfoIdValue entityId,
+			MediaInfoDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements) {
+		return new MediaInfoUpdateImpl(entityId, document,
+				modifiedLabels, removedLabels,
+				addedStatements, replacedStatements, removedStatements);
+	}
+
+	@Override
+	public ItemUpdate getItemUpdate(
+			ItemIdValue entityId,
+			ItemDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<MonolingualTextValue> modifiedDescriptions,
+			Collection<String> removedDescriptions,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements) {
+		return new ItemUpdateImpl(entityId, document,
+				modifiedLabels, removedLabels,
+				modifiedDescriptions, removedDescriptions,
+				addedStatements, replacedStatements, removedStatements);
+	}
+
+	@Override
+	public PropertyUpdate getPropertyUpdate(
+			PropertyIdValue entityId,
+			PropertyDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<MonolingualTextValue> modifiedDescriptions,
+			Collection<String> removedDescriptions,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements) {
+		return new PropertyUpdateImpl(entityId, document,
+				modifiedLabels, removedLabels,
+				modifiedDescriptions, removedDescriptions,
+				addedStatements, replacedStatements, removedStatements);
+	}
+
 }

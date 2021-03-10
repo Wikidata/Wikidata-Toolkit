@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.interfaces;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,14 +17,22 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * limitations under the License.
  * #L%
  */
+package org.wikidata.wdtk.datamodel.interfaces;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.wikidata.wdtk.datamodel.helpers.FormUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
+import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
 
 /**
@@ -550,5 +556,243 @@ public interface DataObjectFactory {
 										   List<MonolingualTextValue> labels,
 										   List<StatementGroup> statementGroups,
 										   long revisionId);
+
+	/**
+	 * Creates new {@link SenseUpdate}. It might be more convenient to use
+	 * {@link SenseUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the sense that is to be updated
+	 * @param document
+	 *            sense revision to be updated or {@code null} if not available
+	 * @param modifiedGlosses
+	 *            added or changed sense glosses
+	 * @param removedGlosses
+	 *            language codes of removed sense glosses
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @return new {@link SenseUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	SenseUpdate getSenseUpdate(
+			SenseIdValue entityId,
+			SenseDocument document,
+			Collection<MonolingualTextValue> modifiedGlosses,
+			Collection<String> removedGlosses,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements);
+
+	/**
+	 * Creates new {@link FormUpdate}. It might be more convenient to use
+	 * {@link FormUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the form that is to be updated
+	 * @param document
+	 *            form revision to be updated or {@code null} if not available
+	 * @param modifiedRepresentations
+	 *            added or changed form representations
+	 * @param removedRepresentations
+	 *            language codes of removed form representations
+	 * @param grammaticalFeatures
+	 *            new grammatical features of the form or {@code null} for no change
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @return new {@link FormUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	FormUpdate getFormUpdate(
+			FormIdValue entityId,
+			FormDocument document,
+			Collection<MonolingualTextValue> modifiedRepresentations,
+			Collection<String> removedRepresentations,
+			Collection<ItemIdValue> grammaticalFeatures,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements);
+
+	/**
+	 * Creates new {@link LexemeUpdate}. It might be more convenient to use
+	 * {@link LexemeUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the lexeme that is to be updated
+	 * @param document
+	 *            lexeme revision to be updated or {@code null} if not available
+	 * @param language
+	 *            new lexeme language or {@code null} for no change
+	 * @param lexicalCategory
+	 *            new lexical category of the lexeme or {@code null} for no change
+	 * @param modifiedLemmas
+	 *            added or changed lemmas
+	 * @param removedLemmas
+	 *            language codes of removed lemmas
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @param addedSenses
+	 *            added senses
+	 * @param updatedSenses
+	 *            updated senses
+	 * @param removedSenses
+	 *            IDs of removed senses
+	 * @param addedForms
+	 *            added forms
+	 * @param updatedForms
+	 *            updated forms
+	 * @param removedForms
+	 *            IDs of removed forms
+	 * @return new {@link LexemeUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	LexemeUpdate getLexemeUpdate(
+			LexemeIdValue entityId,
+			LexemeDocument document,
+			ItemIdValue language,
+			ItemIdValue lexicalCategory,
+			Collection<MonolingualTextValue> modifiedLemmas,
+			Collection<String> removedLemmas,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements,
+			Collection<SenseDocument> addedSenses,
+			Collection<SenseUpdate> updatedSenses,
+			Collection<SenseIdValue> removedSenses,
+			Collection<FormDocument> addedForms,
+			Collection<FormUpdate> updatedForms,
+			Collection<FormIdValue> removedForms);
+
+	/**
+	 * Creates new {@link MediaInfoUpdate}. It might be more convenient to use
+	 * {@link MediaInfoUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the media that is to be updated
+	 * @param document
+	 *            media revision to be updated or {@code null} if not available
+	 * @param modifiedLabels
+	 *            added or changed entity labels
+	 * @param removedLabels
+	 *            language codes of removed entity labels
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @return new {@link MediaInfoUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	MediaInfoUpdate getMediaInfoUpdate(
+			MediaInfoIdValue entityId,
+			MediaInfoDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements);
+
+	/**
+	 * Creates new {@link ItemUpdate}. It might be more convenient to use
+	 * {@link ItemUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the item that is to be updated
+	 * @param document
+	 *            item revision to be updated or {@code null} if not available
+	 * @param modifiedLabels
+	 *            added or changed entity labels
+	 * @param removedLabels
+	 *            language codes of removed entity labels
+	 * @param modifiedDescriptions
+	 *            added or changed entity descriptions
+	 * @param removedDescriptions
+	 *            language codes of removed entity descriptions
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @return new {@link ItemUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	ItemUpdate getItemUpdate(
+			ItemIdValue entityId,
+			ItemDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<MonolingualTextValue> modifiedDescriptions,
+			Collection<String> removedDescriptions,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements);
+
+	/**
+	 * Creates new {@link PropertyUpdate}. It might be more convenient to use
+	 * {@link PropertyUpdateBuilder}.
+	 * 
+	 * @param entityId
+	 *            ID of the property entity that is to be updated
+	 * @param document
+	 *            property entity revision to be updated or {@code null} if not
+	 *            available
+	 * @param modifiedLabels
+	 *            added or changed entity labels
+	 * @param removedLabels
+	 *            language codes of removed entity labels
+	 * @param modifiedDescriptions
+	 *            added or changed entity descriptions
+	 * @param removedDescriptions
+	 *            language codes of removed entity descriptions
+	 * @param addedStatements
+	 *            added statements
+	 * @param replacedStatements
+	 *            replaced statements
+	 * @param removedStatements
+	 *            IDs of removed statements
+	 * @return new {@link PropertyUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	PropertyUpdate getPropertyUpdate(
+			PropertyIdValue entityId,
+			PropertyDocument document,
+			Collection<MonolingualTextValue> modifiedLabels,
+			Collection<String> removedLabels,
+			Collection<MonolingualTextValue> modifiedDescriptions,
+			Collection<String> removedDescriptions,
+			Collection<Statement> addedStatements,
+			Collection<Statement> replacedStatements,
+			Collection<String> removedStatements);
 
 }
