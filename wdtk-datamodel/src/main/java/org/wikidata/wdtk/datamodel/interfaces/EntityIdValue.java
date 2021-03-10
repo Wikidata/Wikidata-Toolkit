@@ -107,4 +107,15 @@ public interface EntityIdValue extends IriIdentifiedValue {
 	 */
 	String getSiteIri();
 
+	/**
+	 * Checks whether this entity ID is valid. Invalid IDs are commonly used as
+	 * placeholders when creating new entitites.
+	 * 
+	 * @return {@code true} if this is a valid ID, {@code false} for placeholder or
+	 *         otherwise invalid ID
+	 */
+	default boolean isValid() {
+		return !getSiteIri().equals(SITE_LOCAL);
+	}
+
 }
