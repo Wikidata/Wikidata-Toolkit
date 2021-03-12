@@ -21,6 +21,7 @@
 package org.wikidata.wdtk.rdf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
@@ -88,8 +90,10 @@ public class RdfConverterTest {
 		this.rdfConverter.writeItemDocument(document);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("ItemDocument.rdf")));
+		assertTrue(Models.isomorphic(
+				model,
+				RdfTestHelpers.parseRdf(RdfTestHelpers.getResourceFromFile("ItemDocument.rdf"))
+		));
 	}
 
 	@Test
@@ -102,8 +106,10 @@ public class RdfConverterTest {
 		this.rdfConverter.writeItemDocument(document);
 		this.rdfWriter.finish();
 		Model model = RdfTestHelpers.parseRdf(out.toString());
-		assertEquals(model, RdfTestHelpers.parseRdf(RdfTestHelpers
-				.getResourceFromFile("ItemDocumentUnknownPropertyTypes.rdf")));
+		assertTrue(Models.isomorphic(
+				model,
+				RdfTestHelpers.parseRdf(RdfTestHelpers.getResourceFromFile("ItemDocumentUnknownPropertyTypes.rdf"))
+		));
 	}
 
 
