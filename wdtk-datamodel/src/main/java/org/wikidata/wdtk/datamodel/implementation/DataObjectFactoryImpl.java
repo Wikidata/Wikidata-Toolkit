@@ -61,6 +61,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -315,14 +316,20 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public StatementUpdate getStatementUpdate(
+			Collection<Statement> added,
+			Collection<Statement> replaced,
+			Collection<String> removed) {
+		return new StatementUpdateImpl(added, replaced, removed);
+	}
+
+	@Override
 	public SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
 			SenseDocument document,
 			MultilingualTextUpdate glosses,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		return new SenseUpdateImpl(entityId, document, glosses, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		return new SenseUpdateImpl(entityId, document, glosses, statements);
 	}
 
 	@Override
@@ -331,11 +338,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			FormDocument document,
 			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		return new FormUpdateImpl(entityId, document, representations, grammaticalFeatures,
-				addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		return new FormUpdateImpl(entityId, document, representations, grammaticalFeatures, statements);
 	}
 
 	@Override
@@ -345,9 +349,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			MultilingualTextUpdate lemmas,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements,
+			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
 			Collection<SenseIdValue> removedSenses,
@@ -355,8 +357,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
 		return new LexemeUpdateImpl(entityId, document,
-				language, lexicalCategory, lemmas,
-				addedStatements, replacedStatements, removedStatements,
+				language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses, removedSenses,
 				addedForms, updatedForms, removedForms);
 	}
@@ -366,11 +367,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
 			MultilingualTextUpdate labels,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		return new MediaInfoUpdateImpl(entityId, document, labels,
-				addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		return new MediaInfoUpdateImpl(entityId, document, labels, statements);
 	}
 
 	@Override
@@ -379,11 +377,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			ItemDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		return new ItemUpdateImpl(entityId, document, labels, descriptions,
-				addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		return new ItemUpdateImpl(entityId, document, labels, descriptions, statements);
 	}
 
 	@Override
@@ -392,11 +387,8 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			PropertyDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		return new PropertyUpdateImpl(entityId, document, labels, descriptions,
-				addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		return new PropertyUpdateImpl(entityId, document, labels, descriptions, statements);
 	}
 
 }

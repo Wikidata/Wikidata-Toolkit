@@ -19,29 +19,21 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static java.util.stream.Collectors.toMap;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link StatementDocumentUpdate}.
+ * 
+ * @see StatementUpdateImpl
  */
 public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl implements StatementDocumentUpdate {
 
-	private final List<Statement> addedStatements;
-	private final Map<String, Statement> replacedStatements;
-	private final Set<String> removedStatements;
+	private final StatementUpdate statements;
 
 	/**
 	 * Initializes new entity update.
@@ -50,12 +42,8 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	 *            ID of the entity that is to be updated
 	 * @param document
 	 *            entity revision to be updated or {@code null} if not available
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -64,14 +52,10 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	protected StatementDocumentUpdateImpl(
 			EntityIdValue entityId,
 			StatementDocument document,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
+			StatementUpdate statements) {
 		super(entityId, document);
-		this.addedStatements = Collections.unmodifiableList(new ArrayList<>(addedStatements));
-		this.replacedStatements = Collections.unmodifiableMap(
-				replacedStatements.stream().collect(toMap(s -> s.getStatementId(), s -> s)));
-		this.removedStatements = Collections.unmodifiableSet(new HashSet<>(removedStatements));
+		Objects.requireNonNull(statements, "Statement update cannot be null.");
+		this.statements = statements;
 	}
 
 	@Override
@@ -80,18 +64,8 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	}
 
 	@Override
-	public List<Statement> getAddedStatements() {
-		return addedStatements;
-	}
-
-	@Override
-	public Map<String, Statement> getReplacedStatements() {
-		return replacedStatements;
-	}
-
-	@Override
-	public Set<String> getRemovedStatements() {
-		return removedStatements;
+	public StatementUpdate getStatements() {
+		return statements;
 	}
 
 }

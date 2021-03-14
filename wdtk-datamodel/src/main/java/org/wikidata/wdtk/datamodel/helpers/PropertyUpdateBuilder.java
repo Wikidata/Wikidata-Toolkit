@@ -105,8 +105,8 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 
 	@Override
 	public PropertyUpdate build() {
-		return factory.getPropertyUpdate(getEntityId(), getCurrentDocument(), getLabels(), getDescriptions(),
-				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
+		return factory.getPropertyUpdate(getEntityId(), getCurrentDocument(),
+				getLabels(), getDescriptions(), getStatements());
 	}
 
 }

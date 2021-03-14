@@ -41,7 +41,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link LexemeUpdate}.
@@ -71,12 +71,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 *            new lexical category of the lexeme or {@code null} for no change
 	 * @param lemmas
 	 *            changes in lemmas or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @param addedSenses
 	 *            added senses
 	 * @param updatedSenses
@@ -100,16 +96,14 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			MultilingualTextUpdate lemmas,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements,
+			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
 			Collection<SenseIdValue> removedSenses,
 			Collection<FormDocument> addedForms,
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
-		super(entityId, document, addedStatements, replacedStatements, removedStatements);
+		super(entityId, document, statements);
 		this.language = language;
 		this.lexicalCategory = lexicalCategory;
 		this.lemmas = lemmas;

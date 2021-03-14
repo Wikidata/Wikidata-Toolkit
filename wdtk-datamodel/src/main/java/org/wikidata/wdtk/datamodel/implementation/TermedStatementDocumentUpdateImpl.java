@@ -19,12 +19,11 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
@@ -47,12 +46,8 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -63,10 +58,8 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 			TermedStatementDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		super(entityId, document, labels, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		super(entityId, document, labels, statements);
 		this.descriptions = descriptions;
 	}
 

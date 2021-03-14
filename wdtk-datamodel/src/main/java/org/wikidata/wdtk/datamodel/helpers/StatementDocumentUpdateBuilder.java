@@ -19,16 +19,8 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
@@ -45,18 +37,19 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link StatementDocumentUpdate}
  * objects.
+ * 
+ * @see StatementUpdateBuilder
  */
 public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder {
 
-	private final List<Statement> addedStatements = new ArrayList<>();
-	private final Map<String, Statement> replacedStatements = new HashMap<>();
-	private final Set<String> removedStatements = new HashSet<>();
+	private StatementUpdate statements = StatementUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -149,7 +142,8 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 			return LexemeUpdateBuilder.forLexemeDocument((LexemeDocument) document);
 		}
 		if (document instanceof LabeledStatementDocument) {
-			return LabeledStatementDocumentUpdateBuilder.forLabeledStatementDocument((LabeledStatementDocument) document);
+			return LabeledStatementDocumentUpdateBuilder
+					.forLabeledStatementDocument((LabeledStatementDocument) document);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
@@ -160,48 +154,12 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	/**
-	 * Returns collection of added statements.
+	 * Returns statement changes.
 	 * 
-	 * @return added statements
+	 * @return statement update, possibly empty
 	 */
-	protected Collection<Statement> getAddedStatements() {
-		return addedStatements;
-	}
-
-	/**
-	 * Returns collection of replaced statements.
-	 * 
-	 * @return replaced statements
-	 */
-	protected Collection<Statement> getReplacedStatements() {
-		return replacedStatements.values();
-	}
-
-	/**
-	 * Returns collection of removed statement IDs.
-	 * 
-	 * @return removed statement IDs
-	 */
-	protected Collection<String> getRemovedStatements() {
-		return removedStatements;
-	}
-
-	/**
-	 * Adds statement to the entity. If {@code statement} has an ID (perhaps because
-	 * it is a modified copy of another statement), its ID is stripped to ensure the
-	 * statement is added and no other statement is modified.
-	 * 
-	 * @param statement
-	 *            new statement to add
-	 * @throws NullPointerException
-	 *             if {@code statement} is {@code null}
-	 */
-	public void addStatement(Statement statement) {
-		Objects.requireNonNull(statement, "Statement cannot be null.");
-		if (!statement.getStatementId().isEmpty()) {
-			statement = statement.withStatementId("");
-		}
-		addedStatements.add(statement);
+	protected StatementUpdate getStatements() {
+		return statements;
 	}
 
 	private boolean hadStatementId(String statementId) {
@@ -216,48 +174,31 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	/**
-	 * Replaces existing statement in the entity. Provided {@code statement} must
-	 * have statement ID identifying statement to replace. Calling this method
-	 * overrides any previous changes made to the same statement ID by this method
-	 * or {@link #removeStatement(String)}.
+	 * Updates entity statements. Any previous changes to statements are discarded.
 	 * 
-	 * @param statement
-	 *            replacement for existing statement
+	 * @param update
+	 *            statement update, possibly empty
 	 * @throws NullPointerException
-	 *             if {@code statement} is {@code null}
+	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code statement} does not have statement ID of if such ID
-	 *             does not exist in current version of the document (if available)
+	 *             if replaced or removed statement is not present in current entity
+	 *             revision (if available)
 	 */
-	public void replaceStatement(Statement statement) {
-		Objects.requireNonNull(statement, "Statement cannot be null.");
-		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
-		if (getCurrentDocument() != null && !hadStatementId(statement.getStatementId())) {
-			throw new IllegalArgumentException("Statement with this ID is not in the current revision.");
+	public void updateStatements(StatementUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		if (getCurrentDocument() != null) {
+			for (Statement replaced : update.getReplacedStatements().values()) {
+				if (!hadStatementId(replaced.getStatementId())) {
+					throw new IllegalArgumentException("Replaced statement is not in the current revision.");
+				}
+			}
+			for (String removed : update.getRemovedStatements()) {
+				if (!hadStatementId(removed)) {
+					throw new IllegalArgumentException("Removed statement is not in the current revision.");
+				}
+			}
 		}
-		replacedStatements.put(statement.getStatementId(), statement);
-		removedStatements.remove(statement.getStatementId());
-	}
-
-	/**
-	 * Removes existing statement from the entity. Calling this method overrides any
-	 * previous changes made to the same statement ID by
-	 * {@link #replaceStatement(Statement)}. Removing the same statement ID twice is
-	 * silently tolerated.
-	 * 
-	 * @param statementId
-	 *            ID of the removed statement
-	 * @throws IllegalArgumentException
-	 *             if {@code statementId} is empty or if such ID does not exist in
-	 *             current version of the document (if available)
-	 */
-	public void removeStatement(String statementId) {
-		Validate.notEmpty(statementId, "Statement ID must not be empty.");
-		if (getCurrentDocument() != null && !hadStatementId(statementId)) {
-			throw new IllegalArgumentException("Statement with this ID is not in the current revision.");
-		}
-		removedStatements.add(statementId);
-		replacedStatements.remove(statementId);
+		statements = update;
 	}
 
 	/**

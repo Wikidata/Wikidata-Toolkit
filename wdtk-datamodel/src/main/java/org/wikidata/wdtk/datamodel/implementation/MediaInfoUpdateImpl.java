@@ -19,13 +19,11 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collection;
-
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link MediaInfoUpdate}.
@@ -41,12 +39,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 *            media revision to be updated or {@code null} if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -56,10 +50,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
 			MultilingualTextUpdate labels,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		super(entityId, document, labels, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		super(entityId, document, labels, statements);
 	}
 
 	@Override

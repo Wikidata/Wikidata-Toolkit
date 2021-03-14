@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
 import org.wikidata.wdtk.datamodel.helpers.SenseUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
+import org.wikidata.wdtk.datamodel.helpers.StatementUpdateBuilder;
 
 /**
  * Interface for factories that create data objects that implement the
@@ -577,6 +578,27 @@ public interface DataObjectFactory {
 			Collection<String> removed);
 
 	/**
+	 * Creates new {@link StatementUpdate}. It might be more convenient to use
+	 * {@link StatementUpdateBuilder}.
+	 * 
+	 * @param added
+	 *            added statements
+	 * @param replaced
+	 *            replaced statements
+	 * @param removed
+	 *            IDs of removed statements
+	 * @return new {@link StatementUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	StatementUpdate getStatementUpdate(
+			Collection<Statement> added,
+			Collection<Statement> replaced,
+			Collection<String> removed);
+
+	/**
 	 * Creates new {@link SenseUpdate}. It might be more convenient to use
 	 * {@link SenseUpdateBuilder}.
 	 * 
@@ -586,12 +608,8 @@ public interface DataObjectFactory {
 	 *            sense revision to be updated or {@code null} if not available
 	 * @param glosses
 	 *            changes in sense glosses or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @return new {@link SenseUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -602,9 +620,7 @@ public interface DataObjectFactory {
 			SenseIdValue entityId,
 			SenseDocument document,
 			MultilingualTextUpdate glosses,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements);
+			StatementUpdate statements);
 
 	/**
 	 * Creates new {@link FormUpdate}. It might be more convenient to use
@@ -618,12 +634,8 @@ public interface DataObjectFactory {
 	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
 	 *            new grammatical features of the form or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @return new {@link FormUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -635,9 +647,7 @@ public interface DataObjectFactory {
 			FormDocument document,
 			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements);
+			StatementUpdate statements);
 
 	/**
 	 * Creates new {@link LexemeUpdate}. It might be more convenient to use
@@ -653,12 +663,8 @@ public interface DataObjectFactory {
 	 *            new lexical category of the lexeme or {@code null} for no change
 	 * @param lemmas
 	 *            changes in lemmas or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @param addedSenses
 	 *            added senses
 	 * @param updatedSenses
@@ -683,9 +689,7 @@ public interface DataObjectFactory {
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			MultilingualTextUpdate lemmas,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements,
+			StatementUpdate statements,
 			Collection<SenseDocument> addedSenses,
 			Collection<SenseUpdate> updatedSenses,
 			Collection<SenseIdValue> removedSenses,
@@ -703,12 +707,8 @@ public interface DataObjectFactory {
 	 *            media revision to be updated or {@code null} if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @return new {@link MediaInfoUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -719,9 +719,7 @@ public interface DataObjectFactory {
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
 			MultilingualTextUpdate labels,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements);
+			StatementUpdate statements);
 
 	/**
 	 * Creates new {@link ItemUpdate}. It might be more convenient to use
@@ -735,12 +733,8 @@ public interface DataObjectFactory {
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @return new {@link ItemUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -752,9 +746,7 @@ public interface DataObjectFactory {
 			ItemDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements);
+			StatementUpdate statements);
 
 	/**
 	 * Creates new {@link PropertyUpdate}. It might be more convenient to use
@@ -769,12 +761,8 @@ public interface DataObjectFactory {
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @return new {@link PropertyUpdate}
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
@@ -786,8 +774,6 @@ public interface DataObjectFactory {
 			PropertyDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements);
+			StatementUpdate statements);
 
 }

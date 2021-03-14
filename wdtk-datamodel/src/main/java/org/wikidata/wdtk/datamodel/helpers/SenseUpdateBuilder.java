@@ -133,8 +133,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public SenseUpdate build() {
-		return factory.getSenseUpdate(getEntityId(), getCurrentDocument(), glosses,
-				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
+		return factory.getSenseUpdate(getEntityId(), getCurrentDocument(), glosses, getStatements());
 	}
 
 }

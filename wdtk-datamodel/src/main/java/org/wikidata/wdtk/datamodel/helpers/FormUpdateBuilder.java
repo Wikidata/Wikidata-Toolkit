@@ -161,8 +161,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public FormUpdate build() {
-		return factory.getFormUpdate(getEntityId(), getCurrentDocument(), representations, grammaticalFeatures,
-				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
+		return factory.getFormUpdate(getEntityId(), getCurrentDocument(),
+				representations, grammaticalFeatures, getStatements());
 	}
 
 }

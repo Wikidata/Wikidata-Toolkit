@@ -19,14 +19,13 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link LabeledStatementDocumentUpdate}.
@@ -45,12 +44,8 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 *            entity revision to be updated or {@code null} if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -60,10 +55,8 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 			EntityIdValue entityId,
 			LabeledStatementDocument document,
 			MultilingualTextUpdate labels,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		super(entityId, document, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		super(entityId, document, statements);
 		this.labels = labels;
 	}
 

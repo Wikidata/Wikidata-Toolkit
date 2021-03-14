@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link FormUpdate}.
@@ -51,12 +51,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
 	 *            new grammatical features of the form or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -67,10 +63,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 			FormDocument document,
 			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		super(entityId, document, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		super(entityId, document, statements);
 		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
 				? Collections.unmodifiableSet(new HashSet<>(grammaticalFeatures))

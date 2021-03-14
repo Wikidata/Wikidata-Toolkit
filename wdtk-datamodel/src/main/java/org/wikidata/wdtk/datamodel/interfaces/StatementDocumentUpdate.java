@@ -19,12 +19,10 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Collection of changes that can be applied to an entity that has statements.
+ * 
+ * @see StatementUpdate
  */
 public interface StatementDocumentUpdate extends EntityUpdate {
 
@@ -32,24 +30,10 @@ public interface StatementDocumentUpdate extends EntityUpdate {
 	StatementDocument getCurrentDocument();
 
 	/**
-	 * Returns statements added to the entity in this update.
+	 * Returns statement changes included in this update.
 	 * 
-	 * @return list of added statements
+	 * @return statement update, possibly empty
 	 */
-	List<Statement> getAddedStatements();
-
-	/**
-	 * Returns entity statements modified in this update.
-	 * 
-	 * @return modified statements indexed by statement ID
-	 */
-	Map<String, Statement> getReplacedStatements();
-
-	/**
-	 * Returns IDs of statements removed from the entity in this update.
-	 * 
-	 * @return list of IDs of removed statements
-	 */
-	Set<String> getRemovedStatements();
+	StatementUpdate getStatements();
 
 }

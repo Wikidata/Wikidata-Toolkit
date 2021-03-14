@@ -19,13 +19,11 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Collection;
-
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Jackson implementation of {@link ItemUpdate}.
@@ -43,12 +41,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
 	 *            changes in entity descriptions or {@code null} for no change
-	 * @param addedStatements
-	 *            added statements
-	 * @param replacedStatements
-	 *            replaced statements
-	 * @param removedStatements
-	 *            IDs of removed statements
+	 * @param statements
+	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
 	 *             if any required parameter is {@code null}
 	 * @throws IllegalArgumentException
@@ -59,10 +53,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 			ItemDocument document,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
-			Collection<Statement> addedStatements,
-			Collection<Statement> replacedStatements,
-			Collection<String> removedStatements) {
-		super(entityId, document, labels, descriptions, addedStatements, replacedStatements, removedStatements);
+			StatementUpdate statements) {
+		super(entityId, document, labels, descriptions, statements);
 	}
 
 	@Override

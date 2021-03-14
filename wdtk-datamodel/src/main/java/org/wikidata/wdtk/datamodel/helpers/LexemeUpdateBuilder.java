@@ -296,8 +296,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public LexemeUpdate build() {
-		return factory.getLexemeUpdate(getEntityId(), getCurrentDocument(), language, lexicalCategory, lemmas,
-				getAddedStatements(), getReplacedStatements(), getRemovedStatements(),
+		return factory.getLexemeUpdate(getEntityId(), getCurrentDocument(),
+				language, lexicalCategory, lemmas, getStatements(),
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);
 	}
