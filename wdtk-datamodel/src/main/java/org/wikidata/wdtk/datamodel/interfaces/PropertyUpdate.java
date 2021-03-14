@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * Collection of changes that can be applied to property entity.
  */
-public interface PropertyUpdate extends TermedStatementUpdate {
+public interface PropertyUpdate extends TermedStatementDocumentUpdate {
 
 	@Override
 	PropertyIdValue getEntityId();

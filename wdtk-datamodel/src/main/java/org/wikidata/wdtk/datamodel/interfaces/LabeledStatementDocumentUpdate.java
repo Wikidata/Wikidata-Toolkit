@@ -23,7 +23,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
  * Collection of changes that can be applied to an entity that has labels and
  * statements.
  */
-public interface LabeledStatementUpdate extends LabeledUpdate, StatementUpdate {
+public interface LabeledStatementDocumentUpdate extends LabeledDocumentUpdate, StatementDocumentUpdate {
 
 	@Override
 	LabeledStatementDocument getCurrentDocument();

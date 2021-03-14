@@ -25,7 +25,7 @@ import java.util.Optional;
  * Collection of changes that can be applied to an entity that has labels,
  * aliases, and descriptions.
  */
-public interface TermedUpdate extends LabeledUpdate {
+public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 
 	@Override
 	TermedDocument getCurrentDocument();

@@ -43,7 +43,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 /**
  * Builder for incremental construction of {@link LexemeUpdate} objects.
  */
-public class LexemeUpdateBuilder extends StatementUpdateBuilder {
+public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private ItemIdValue language;
 	private ItemIdValue lexicalCategory;

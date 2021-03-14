@@ -34,7 +34,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 /**
  * Builder for incremental construction of {@link FormUpdate} objects.
  */
-public class FormUpdateBuilder extends StatementUpdateBuilder {
+public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private MultilingualTextUpdate representations;
 	private Set<ItemIdValue> grammaticalFeatures;

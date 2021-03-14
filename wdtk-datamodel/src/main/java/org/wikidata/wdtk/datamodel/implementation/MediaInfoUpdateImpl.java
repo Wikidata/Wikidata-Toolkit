@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link MediaInfoUpdate}.
  */
-public class MediaInfoUpdateImpl extends LabeledStatementUpdateImpl implements MediaInfoUpdate {
+public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl implements MediaInfoUpdate {
 
 	/**
 	 * Initializes new media update.

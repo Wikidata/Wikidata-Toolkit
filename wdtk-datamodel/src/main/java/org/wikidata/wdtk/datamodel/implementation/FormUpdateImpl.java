@@ -35,7 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link FormUpdate}.
  */
-public class FormUpdateImpl extends StatementUpdateImpl implements FormUpdate {
+public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormUpdate {
 
 	private final MultilingualTextUpdate representations;
 	private final Set<ItemIdValue> grammaticalFeatures;

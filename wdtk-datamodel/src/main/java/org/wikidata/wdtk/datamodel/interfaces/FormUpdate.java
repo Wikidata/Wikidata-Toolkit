@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Collection of changes that can be applied to form entity.
  */
-public interface FormUpdate extends StatementUpdate {
+public interface FormUpdate extends StatementDocumentUpdate {
 
 	@Override
 	FormIdValue getEntityId();

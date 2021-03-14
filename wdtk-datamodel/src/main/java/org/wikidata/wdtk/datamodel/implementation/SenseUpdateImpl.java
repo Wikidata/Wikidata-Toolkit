@@ -31,7 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link SenseUpdate}.
  */
-public class SenseUpdateImpl extends StatementUpdateImpl implements SenseUpdate {
+public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements SenseUpdate {
 
 	private final MultilingualTextUpdate glosses;
 

@@ -28,13 +28,13 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
 /**
- * Builder for incremental construction of {@link TermedStatementUpdate}
+ * Builder for incremental construction of {@link TermedStatementDocumentUpdate}
  * objects.
  */
-public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdateBuilder {
+public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
 	private MultilingualTextUpdate descriptions;
 
@@ -49,7 +49,7 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is not a valid ID
 	 */
-	protected TermedStatementUpdateBuilder(EntityIdValue entityId) {
+	protected TermedStatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
 	}
 
@@ -64,7 +64,7 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	 * @throws IllegalArgumentException
 	 *             if {@code document} does not have valid ID
 	 */
-	protected TermedStatementUpdateBuilder(TermedStatementDocument document) {
+	protected TermedStatementDocumentUpdateBuilder(TermedStatementDocument document) {
 		super(document);
 	}
 
@@ -81,7 +81,7 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is of unrecognized type or it is not valid
 	 */
-	public static TermedStatementUpdateBuilder forEntityId(EntityIdValue entityId) {
+	public static TermedStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof ItemIdValue) {
 			return ItemUpdateBuilder.forItemId((ItemIdValue) entityId);
@@ -111,7 +111,7 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	 *             if {@code document} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static TermedStatementUpdateBuilder forTermedStatementDocument(TermedStatementDocument document) {
+	public static TermedStatementDocumentUpdateBuilder forTermedStatementDocument(TermedStatementDocument document) {
 		Objects.requireNonNull(document, "Entity document cannot be null.");
 		if (document instanceof ItemDocument) {
 			return ItemUpdateBuilder.forItemDocument((ItemDocument) document);
@@ -160,12 +160,12 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	}
 
 	/**
-	 * Creates new {@link TermedStatementUpdate} object with contents of this
-	 * builder object.
+	 * Creates new {@link TermedStatementDocumentUpdate} object with contents of
+	 * this builder object.
 	 * 
 	 * @return constructed object
 	 */
 	@Override
-	public abstract TermedStatementUpdate build();
+	public abstract TermedStatementDocumentUpdate build();
 
 }

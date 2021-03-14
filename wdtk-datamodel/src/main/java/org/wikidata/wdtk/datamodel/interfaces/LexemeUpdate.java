@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Collection of changes that can be applied to lexeme entity.
  */
-public interface LexemeUpdate extends StatementUpdate {
+public interface LexemeUpdate extends StatementDocumentUpdate {
 
 	@Override
 	LexemeIdValue getEntityId();

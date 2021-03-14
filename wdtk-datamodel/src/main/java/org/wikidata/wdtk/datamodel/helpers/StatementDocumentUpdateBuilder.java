@@ -46,12 +46,13 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 
 /**
- * Builder for incremental construction of {@link StatementUpdate} objects.
+ * Builder for incremental construction of {@link StatementDocumentUpdate}
+ * objects.
  */
-public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
+public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder {
 
 	private final List<Statement> addedStatements = new ArrayList<>();
 	private final Map<String, Statement> replacedStatements = new HashMap<>();
@@ -68,7 +69,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is not a valid ID
 	 */
-	protected StatementUpdateBuilder(EntityIdValue entityId) {
+	protected StatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
 	}
 
@@ -83,7 +84,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code document} does not have valid ID
 	 */
-	protected StatementUpdateBuilder(StatementDocument document) {
+	protected StatementDocumentUpdateBuilder(StatementDocument document) {
 		super(document);
 	}
 
@@ -102,7 +103,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is of unrecognized type or it is not valid
 	 */
-	public static StatementUpdateBuilder forEntityId(EntityIdValue entityId) {
+	public static StatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof SenseIdValue) {
 			return SenseUpdateBuilder.forSenseId((SenseIdValue) entityId);
@@ -113,7 +114,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 		if (entityId instanceof LexemeIdValue) {
 			return LexemeUpdateBuilder.forLexemeId((LexemeIdValue) entityId);
 		}
-		return LabeledStatementUpdateBuilder.forEntityId(entityId);
+		return LabeledStatementDocumentUpdateBuilder.forEntityId(entityId);
 	}
 
 	/**
@@ -136,7 +137,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 	 *             if {@code document} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static StatementUpdateBuilder forStatementDocument(StatementDocument document) {
+	public static StatementDocumentUpdateBuilder forStatementDocument(StatementDocument document) {
 		Objects.requireNonNull(document, "Entity document cannot be null.");
 		if (document instanceof SenseDocument) {
 			return SenseUpdateBuilder.forSenseDocument((SenseDocument) document);
@@ -148,7 +149,7 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 			return LexemeUpdateBuilder.forLexemeDocument((LexemeDocument) document);
 		}
 		if (document instanceof LabeledStatementDocument) {
-			return LabeledStatementUpdateBuilder.forLabeledStatementDocument((LabeledStatementDocument) document);
+			return LabeledStatementDocumentUpdateBuilder.forLabeledStatementDocument((LabeledStatementDocument) document);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
@@ -260,12 +261,12 @@ public abstract class StatementUpdateBuilder extends EntityUpdateBuilder {
 	}
 
 	/**
-	 * Creates new {@link StatementUpdate} object with contents of this builder
-	 * object.
+	 * Creates new {@link StatementDocumentUpdate} object with contents of this
+	 * builder object.
 	 * 
 	 * @return constructed object
 	 */
 	@Override
-	public abstract StatementUpdate build();
+	public abstract StatementDocumentUpdate build();
 
 }

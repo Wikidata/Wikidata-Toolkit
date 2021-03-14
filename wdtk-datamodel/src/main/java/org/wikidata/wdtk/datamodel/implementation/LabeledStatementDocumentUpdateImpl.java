@@ -24,14 +24,15 @@ import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
- * Jackson implementation of {@link LabeledStatementUpdate}.
+ * Jackson implementation of {@link LabeledStatementDocumentUpdate}.
  */
-public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl implements LabeledStatementUpdate {
+public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocumentUpdateImpl
+		implements LabeledStatementDocumentUpdate {
 
 	private final MultilingualTextUpdate labels;
 
@@ -55,7 +56,7 @@ public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl imp
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected LabeledStatementUpdateImpl(
+	protected LabeledStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
 			LabeledStatementDocument document,
 			MultilingualTextUpdate labels,

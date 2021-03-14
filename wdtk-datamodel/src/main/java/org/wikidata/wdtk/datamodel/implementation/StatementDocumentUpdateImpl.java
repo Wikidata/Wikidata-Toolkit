@@ -19,21 +19,29 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.TermedStatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 
 /**
- * Jackson implementation of {@link TermedStatementUpdate}.
+ * Jackson implementation of {@link StatementDocumentUpdate}.
  */
-public abstract class TermedStatementUpdateImpl extends LabeledStatementUpdateImpl implements TermedStatementUpdate {
+public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl implements StatementDocumentUpdate {
 
-	private final MultilingualTextUpdate descriptions;
+	private final List<Statement> addedStatements;
+	private final Map<String, Statement> replacedStatements;
+	private final Set<String> removedStatements;
 
 	/**
 	 * Initializes new entity update.
@@ -42,10 +50,6 @@ public abstract class TermedStatementUpdateImpl extends LabeledStatementUpdateIm
 	 *            ID of the entity that is to be updated
 	 * @param document
 	 *            entity revision to be updated or {@code null} if not available
-	 * @param labels
-	 *            changes in entity labels or {@code null} for no change
-	 * @param descriptions
-	 *            changes in entity descriptions or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -57,26 +61,37 @@ public abstract class TermedStatementUpdateImpl extends LabeledStatementUpdateIm
 	 * @throws IllegalArgumentException
 	 *             if any parameters or their combination is invalid
 	 */
-	protected TermedStatementUpdateImpl(
+	protected StatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			TermedStatementDocument document,
-			MultilingualTextUpdate labels,
-			MultilingualTextUpdate descriptions,
+			StatementDocument document,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		super(entityId, document, labels, addedStatements, replacedStatements, removedStatements);
-		this.descriptions = descriptions;
+		super(entityId, document);
+		this.addedStatements = Collections.unmodifiableList(new ArrayList<>(addedStatements));
+		this.replacedStatements = Collections.unmodifiableMap(
+				replacedStatements.stream().collect(toMap(s -> s.getStatementId(), s -> s)));
+		this.removedStatements = Collections.unmodifiableSet(new HashSet<>(removedStatements));
 	}
 
 	@Override
-	public TermedStatementDocument getCurrentDocument() {
-		return (TermedStatementDocument) super.getCurrentDocument();
+	public StatementDocument getCurrentDocument() {
+		return (StatementDocument) super.getCurrentDocument();
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getDescriptions() {
-		return Optional.ofNullable(descriptions);
+	public List<Statement> getAddedStatements() {
+		return addedStatements;
+	}
+
+	@Override
+	public Map<String, Statement> getReplacedStatements() {
+		return replacedStatements;
+	}
+
+	@Override
+	public Set<String> getRemovedStatements() {
+		return removedStatements;
 	}
 
 }

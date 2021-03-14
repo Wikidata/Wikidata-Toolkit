@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link ItemUpdate}.
  */
-public class ItemUpdateImpl extends TermedStatementUpdateImpl implements ItemUpdate {
+public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements ItemUpdate {
 
 	/**
 	 * Initializes new item update.

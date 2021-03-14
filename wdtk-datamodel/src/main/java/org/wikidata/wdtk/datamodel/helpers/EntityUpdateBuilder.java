@@ -102,7 +102,7 @@ public abstract class EntityUpdateBuilder {
 	 *             if {@code entityId} is of unrecognized type
 	 */
 	public static EntityUpdateBuilder forEntityId(EntityIdValue entityId) {
-		return StatementUpdateBuilder.forEntityId(entityId);
+		return StatementDocumentUpdateBuilder.forEntityId(entityId);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public abstract class EntityUpdateBuilder {
 	 *             if {@code document} is of unrecognized type
 	 */
 	public static EntityUpdateBuilder forEntityDocument(EntityDocument document) {
-		return StatementUpdateBuilder.forEntityDocument(document);
+		return StatementDocumentUpdateBuilder.forEntityDocument(document);
 	}
 
 	/**

@@ -25,7 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
-import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
@@ -34,10 +34,10 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 
 /**
- * Builder for incremental construction of {@link LabeledStatementUpdate}
- * objects.
+ * Builder for incremental construction of
+ * {@link LabeledStatementDocumentUpdate} objects.
  */
-public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuilder {
+public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private MultilingualTextUpdate labels;
 
@@ -52,7 +52,7 @@ public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuild
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is not a valid ID
 	 */
-	protected LabeledStatementUpdateBuilder(EntityIdValue entityId) {
+	protected LabeledStatementDocumentUpdateBuilder(EntityIdValue entityId) {
 		super(entityId);
 	}
 
@@ -67,7 +67,7 @@ public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuild
 	 * @throws IllegalArgumentException
 	 *             if {@code document} does not have valid ID
 	 */
-	protected LabeledStatementUpdateBuilder(LabeledStatementDocument document) {
+	protected LabeledStatementDocumentUpdateBuilder(LabeledStatementDocument document) {
 		super(document);
 	}
 
@@ -85,12 +85,12 @@ public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuild
 	 * @throws IllegalArgumentException
 	 *             if {@code entityId} is of unrecognized type or it is not valid
 	 */
-	public static LabeledStatementUpdateBuilder forEntityId(EntityIdValue entityId) {
+	public static LabeledStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof MediaInfoIdValue) {
 			return MediaInfoUpdateBuilder.forMediaInfoId((MediaInfoIdValue) entityId);
 		}
-		return TermedStatementUpdateBuilder.forEntityId(entityId);
+		return TermedStatementDocumentUpdateBuilder.forEntityId(entityId);
 	}
 
 	/**
@@ -112,13 +112,13 @@ public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuild
 	 *             if {@code document} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static LabeledStatementUpdateBuilder forLabeledStatementDocument(LabeledStatementDocument document) {
+	public static LabeledStatementDocumentUpdateBuilder forLabeledStatementDocument(LabeledStatementDocument document) {
 		Objects.requireNonNull(document, "Entity document cannot be null.");
 		if (document instanceof MediaInfoDocument) {
 			return MediaInfoUpdateBuilder.forMediaInfoDocument((MediaInfoDocument) document);
 		}
 		if (document instanceof TermedStatementDocument) {
-			return TermedStatementUpdateBuilder.forTermedStatementDocument((TermedStatementDocument) document);
+			return TermedStatementDocumentUpdateBuilder.forTermedStatementDocument((TermedStatementDocument) document);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
@@ -161,12 +161,12 @@ public abstract class LabeledStatementUpdateBuilder extends StatementUpdateBuild
 	}
 
 	/**
-	 * Creates new {@link LabeledStatementUpdate} object with contents of this
-	 * builder object.
+	 * Creates new {@link LabeledStatementDocumentUpdate} object with contents of
+	 * this builder object.
 	 * 
 	 * @return constructed object
 	 */
 	@Override
-	public abstract LabeledStatementUpdate build();
+	public abstract LabeledStatementDocumentUpdate build();
 
 }

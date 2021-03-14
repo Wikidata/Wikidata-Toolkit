@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Collection of changes that can be applied to sense entity.
  */
-public interface SenseUpdate extends StatementUpdate {
+public interface SenseUpdate extends StatementDocumentUpdate {
 
 	@Override
 	SenseIdValue getEntityId();

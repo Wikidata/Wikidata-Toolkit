@@ -19,37 +19,13 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * Collection of changes that can be applied to an entity that has statements.
+ * Collection of changes that can be applied to an entity that has labels,
+ * aliases, descriptions, and statements.
  */
-public interface StatementUpdate extends EntityUpdate {
+public interface TermedStatementDocumentUpdate extends TermedDocumentUpdate, LabeledStatementDocumentUpdate {
 
 	@Override
-	StatementDocument getCurrentDocument();
-
-	/**
-	 * Returns statements added to the entity in this update.
-	 * 
-	 * @return list of added statements
-	 */
-	List<Statement> getAddedStatements();
-
-	/**
-	 * Returns entity statements modified in this update.
-	 * 
-	 * @return modified statements indexed by statement ID
-	 */
-	Map<String, Statement> getReplacedStatements();
-
-	/**
-	 * Returns IDs of statements removed from the entity in this update.
-	 * 
-	 * @return list of IDs of removed statements
-	 */
-	Set<String> getRemovedStatements();
+	TermedStatementDocument getCurrentDocument();
 
 }

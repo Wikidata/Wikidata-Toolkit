@@ -22,7 +22,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 /**
  * Collection of changes that can be applied to media entity.
  */
-public interface MediaInfoUpdate extends LabeledStatementUpdate {
+public interface MediaInfoUpdate extends LabeledStatementDocumentUpdate {
 
 	@Override
 	MediaInfoIdValue getEntityId();

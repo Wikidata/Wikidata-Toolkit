@@ -26,7 +26,7 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 /**
  * Builder for incremental construction of {@link PropertyUpdate} objects.
  */
-public class PropertyUpdateBuilder extends TermedStatementUpdateBuilder {
+public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 
 	/**
 	 * Initializes new builder object for constructing update of property entity

@@ -30,7 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link PropertyUpdate}.
  */
-public class PropertyUpdateImpl extends TermedStatementUpdateImpl implements PropertyUpdate {
+public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implements PropertyUpdate {
 
 	/**
 	 * Initializes new property update.

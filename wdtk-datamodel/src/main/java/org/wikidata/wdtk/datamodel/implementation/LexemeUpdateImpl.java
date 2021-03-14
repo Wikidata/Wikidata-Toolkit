@@ -46,7 +46,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 /**
  * Jackson implementation of {@link LexemeUpdate}.
  */
-public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdate {
+public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements LexemeUpdate {
 
 	private final ItemIdValue language;
 	private final ItemIdValue lexicalCategory;

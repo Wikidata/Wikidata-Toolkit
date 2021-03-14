@@ -26,7 +26,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 /**
  * Builder for incremental construction of {@link MediaInfoUpdate} objects.
  */
-public class MediaInfoUpdateBuilder extends LabeledStatementUpdateBuilder {
+public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
 	/**
 	 * Initializes new builder object for constructing update of media entity with

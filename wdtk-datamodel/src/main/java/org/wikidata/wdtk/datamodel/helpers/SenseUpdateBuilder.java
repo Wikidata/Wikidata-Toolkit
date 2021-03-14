@@ -29,7 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 /**
  * Builder for incremental construction of {@link SenseUpdate} objects.
  */
-public class SenseUpdateBuilder extends StatementUpdateBuilder {
+public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private MultilingualTextUpdate glosses;
 
