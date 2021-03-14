@@ -219,6 +219,12 @@ public abstract class EntityIdValueImpl extends ValueImpl implements
 		}
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isValid() {
+		return EntityIdValue.super.isValid();
+	}
+
 	protected void assertHasJsonEntityType(String expectedType) {
 		if(!expectedType.equals(value.entityType)) {
 			throw new IllegalArgumentException(

@@ -103,6 +103,12 @@ public class FormIdValueImpl extends ValueImpl implements FormIdValue {
 		return siteIri + id;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isValid() {
+		return FormIdValue.super.isValid();
+	}
+
 	/**
 	 * Returns the inner value helper object. Only for use by Jackson during
 	 * serialization.

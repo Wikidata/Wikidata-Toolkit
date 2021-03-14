@@ -103,6 +103,12 @@ public class SenseIdValueImpl extends ValueImpl implements SenseIdValue {
 		return siteIri + id;
 	}
 
+	@JsonIgnore
+	@Override
+	public boolean isValid() {
+		return SenseIdValue.super.isValid();
+	}
+
 	/**
 	 * Returns the inner value helper object. Only for use by Jackson during
 	 * serialization.
