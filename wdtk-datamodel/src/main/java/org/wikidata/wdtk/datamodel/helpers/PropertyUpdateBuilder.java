@@ -19,9 +19,11 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link PropertyUpdate} objects.
@@ -101,6 +103,24 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	@Override
 	protected PropertyDocument getCurrentDocument() {
 		return (PropertyDocument) super.getCurrentDocument();
+	}
+
+	@Override
+	public PropertyUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
+	@Override
+	public PropertyUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+		super.updateLabels(update);
+		return this;
+	}
+
+	@Override
+	public PropertyUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
+		super.updateDescriptions(update);
+		return this;
 	}
 
 	@Override

@@ -178,13 +178,14 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * 
 	 * @param update
 	 *            statement update, possibly empty
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if replaced or removed statement is not present in current entity
 	 *             revision (if available)
 	 */
-	public void updateStatements(StatementUpdate update) {
+	public StatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (Statement replaced : update.getReplacedStatements().values()) {
@@ -199,6 +200,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 			}
 		}
 		statements = update;
+		return this;
 	}
 
 	/**

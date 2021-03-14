@@ -31,6 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 
 /**
@@ -137,18 +138,25 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 		return labels;
 	}
 
+	@Override
+	public LabeledStatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
 	/**
 	 * Updates entity labels. Any previous changes to labels are discarded.
 	 * 
 	 * @param update
 	 *            changes to entity labels
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if removed label is not present in current entity revision (if
 	 *             available)
 	 */
-	public void updateLabels(MultilingualTextUpdate update) {
+	public LabeledStatementDocumentUpdateBuilder updateLabels(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (String removed : update.getRemovedValues()) {
@@ -158,6 +166,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 			}
 		}
 		labels = update;
+		return this;
 	}
 
 	/**

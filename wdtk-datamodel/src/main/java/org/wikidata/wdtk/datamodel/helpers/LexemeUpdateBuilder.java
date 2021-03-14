@@ -39,6 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link LexemeUpdate} objects.
@@ -130,16 +131,42 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		return (LexemeDocument) super.getCurrentDocument();
 	}
 
-	public void setLanguage(ItemIdValue language) {
+	@Override
+	public LexemeUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
+	/**
+	 * Sets lexeme language.
+	 * 
+	 * @param language
+	 *            new lexeme language
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code language} is {@code null}
+	 */
+	public LexemeUpdateBuilder setLanguage(ItemIdValue language) {
 		Objects.requireNonNull(language, "Language cannot be null.");
 		Validate.isTrue(language.isValid(), "Language ID is not valid.");
 		this.language = language;
+		return this;
 	}
 
-	public void setLexicalCategory(ItemIdValue category) {
+	/**
+	 * Sets lexical category of the lexeme.
+	 * 
+	 * @param category
+	 *            new lexical category
+	 * @return {@code this} (fluent method)
+	 * @throws NullPointerException
+	 *             if {@code category} is {@code null}
+	 */
+	public LexemeUpdateBuilder setLexicalCategory(ItemIdValue category) {
 		Objects.requireNonNull(category, "Lexical category cannot be null.");
 		Validate.isTrue(category.isValid(), "Lexical category ID is not valid.");
 		lexicalCategory = category;
+		return this;
 	}
 
 	/**
@@ -147,13 +174,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param update
 	 *            changes to lemmas
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if removed lemma is not present in current lexeme revision (if
 	 *             available)
 	 */
-	public void updateLemmas(MultilingualTextUpdate update) {
+	public LexemeUpdateBuilder updateLemmas(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (String removed : update.getRemovedValues()) {
@@ -163,6 +191,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 			}
 		}
 		lemmas = update;
+		return this;
 	}
 
 	/**
@@ -172,14 +201,16 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param sense
 	 *            new sense to add
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code sense} is {@code null}
 	 */
-	public void addSense(SenseDocument sense) {
+	public LexemeUpdateBuilder addSense(SenseDocument sense) {
 		Objects.requireNonNull(sense, "Sense cannot be null.");
 		if (sense.getEntityId().isValid())
 			sense = sense.withEntityId(SenseIdValue.NULL);
 		addedSenses.add(sense);
+		return this;
 	}
 
 	/**
@@ -189,13 +220,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param update
 	 *            update of existing sense
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code update} refers to sense ID that does not exist in
 	 *             current version of the lexeme document (if available)
 	 */
-	public void updateSense(SenseUpdate update) {
+	public LexemeUpdateBuilder updateSense(SenseUpdate update) {
 		Objects.requireNonNull(update, "Sense update cannot be null.");
 		if (getCurrentDocument() != null && getCurrentDocument().getSenses().stream()
 				.noneMatch(s -> s.getEntityId().equals(update.getEntityId()))) {
@@ -203,6 +235,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		updatedSenses.put(update.getEntityId(), update);
 		removedSenses.remove(update.getEntityId());
+		return this;
 	}
 
 	/**
@@ -213,13 +246,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param senseId
 	 *            ID of the removed sense
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code senseId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code senseId} is not valid or if such ID does not exist in
 	 *             current version of the lexeme document (if available)
 	 */
-	public void removeSense(SenseIdValue senseId) {
+	public LexemeUpdateBuilder removeSense(SenseIdValue senseId) {
 		Objects.requireNonNull(senseId, "Sense ID cannot be null.");
 		Validate.isTrue(senseId.isValid(), "ID of removed sense must be valid.");
 		if (getCurrentDocument() != null
@@ -228,6 +262,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		removedSenses.add(senseId);
 		updatedSenses.remove(senseId);
+		return this;
 	}
 
 	/**
@@ -237,14 +272,16 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param form
 	 *            new form to add
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code form} is {@code null}
 	 */
-	public void addForm(FormDocument form) {
+	public LexemeUpdateBuilder addForm(FormDocument form) {
 		Objects.requireNonNull(form, "Form cannot be null.");
 		if (form.getEntityId().isValid())
 			form = form.withEntityId(FormIdValue.NULL);
 		addedForms.add(form);
+		return this;
 	}
 
 	/**
@@ -254,13 +291,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param update
 	 *            update of existing form
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code update} refers to form ID that does not exist in
 	 *             current version of the lexeme document (if available)
 	 */
-	public void updateForm(FormUpdate update) {
+	public LexemeUpdateBuilder updateForm(FormUpdate update) {
 		Objects.requireNonNull(update, "Form update cannot be null.");
 		if (getCurrentDocument() != null && getCurrentDocument().getForms().stream()
 				.noneMatch(f -> f.getEntityId().equals(update.getEntityId()))) {
@@ -268,6 +306,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		updatedForms.put(update.getEntityId(), update);
 		removedForms.remove(update.getEntityId());
+		return this;
 	}
 
 	/**
@@ -277,13 +316,14 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param formId
 	 *            ID of the removed form
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code formId} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code formId} is not valid or if such ID does not exist in
 	 *             current version of the lexeme document (if available)
 	 */
-	public void removeForm(FormIdValue formId) {
+	public LexemeUpdateBuilder removeForm(FormIdValue formId) {
 		Objects.requireNonNull(formId, "Form ID cannot be null.");
 		Validate.isTrue(formId.isValid(), "ID of removed form must be valid.");
 		if (getCurrentDocument() != null
@@ -292,6 +332,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 		}
 		removedForms.add(formId);
 		updatedForms.remove(formId);
+		return this;
 	}
 
 	@Override

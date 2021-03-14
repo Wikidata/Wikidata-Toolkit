@@ -27,6 +27,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
@@ -136,19 +137,32 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 		return descriptions;
 	}
 
+	@Override
+	public TermedStatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
+	@Override
+	public TermedStatementDocumentUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+		super.updateLabels(update);
+		return this;
+	}
+
 	/**
 	 * Updates entity descriptions. Any previous changes to descriptions are
 	 * discarded.
 	 * 
 	 * @param update
 	 *            changes to entity descriptions
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if removed description is not present in current entity revision
 	 *             (if available)
 	 */
-	public void updateDescriptions(MultilingualTextUpdate update) {
+	public TermedStatementDocumentUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (String removed : update.getRemovedValues()) {
@@ -158,6 +172,7 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 			}
 		}
 		descriptions = update;
+		return this;
 	}
 
 	/**

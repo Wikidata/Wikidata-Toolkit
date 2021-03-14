@@ -30,6 +30,7 @@ import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link FormUpdate} objects.
@@ -114,19 +115,26 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 		return (FormDocument) super.getCurrentDocument();
 	}
 
+	@Override
+	public FormUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
 	/**
 	 * Updates form representations. Any previous changes to form representations
 	 * are discarded.
 	 * 
 	 * @param update
 	 *            changes to form representations
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if removed representation is not present in current form revision
 	 *             (if available)
 	 */
-	public void updateRepresentations(MultilingualTextUpdate update) {
+	public FormUpdateBuilder updateRepresentations(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (String removed : update.getRemovedValues()) {
@@ -136,6 +144,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 			}
 		}
 		representations = update;
+		return this;
 	}
 
 	/**
@@ -146,18 +155,20 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * 
 	 * @param features
 	 *            new grammatical features of the form
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code features} or any of its items is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if any item ID in {@code features} is invalid
 	 */
-	public void setGrammaticalFeatures(Collection<ItemIdValue> features) {
+	public FormUpdateBuilder setGrammaticalFeatures(Collection<ItemIdValue> features) {
 		Objects.requireNonNull(features, "Collection of grammatical features cannot be null.");
 		for (ItemIdValue id : features) {
 			Objects.requireNonNull(id, "Grammatical feature IDs must not be null.");
 			Validate.isTrue(id.isValid(), "Grammatical feature ID must be valid.");
 		}
 		this.grammaticalFeatures = new HashSet<>(features);
+		return this;
 	}
 
 	@Override

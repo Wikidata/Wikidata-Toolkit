@@ -25,6 +25,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link SenseUpdate} objects.
@@ -108,18 +109,25 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 		return (SenseDocument) super.getCurrentDocument();
 	}
 
+	@Override
+	public SenseUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
 	/**
 	 * Updates sense glosses. Any previous changes to sense glosses are discarded.
 	 * 
 	 * @param update
 	 *            changes to sense glosses
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if removed gloss is not present in current sense revision (if
 	 *             available)
 	 */
-	public void updateGlosses(MultilingualTextUpdate update) {
+	public SenseUpdateBuilder updateGlosses(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
 		if (getCurrentDocument() != null) {
 			for (String removed : update.getRemovedValues()) {
@@ -129,6 +137,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 			}
 		}
 		glosses = update;
+		return this;
 	}
 
 	@Override

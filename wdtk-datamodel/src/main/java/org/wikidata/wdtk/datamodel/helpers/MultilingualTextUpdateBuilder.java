@@ -50,13 +50,15 @@ public class MultilingualTextUpdateBuilder {
 	 * 
 	 * @param value
 	 *            monolingual value to add or change
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code value} is {@code null}
 	 */
-	public void set(MonolingualTextValue value) {
+	public MultilingualTextUpdateBuilder set(MonolingualTextValue value) {
 		Objects.requireNonNull(value, "Value cannot be null.");
 		modified.put(value.getLanguageCode(), value);
 		removed.remove(value.getLanguageCode());
+		return this;
 	}
 
 	/**
@@ -66,13 +68,15 @@ public class MultilingualTextUpdateBuilder {
 	 * 
 	 * @param languageCode
 	 *            language code of the removed monolingual value
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code languageCode} is {@code null}
 	 */
-	public void remove(String languageCode) {
+	public MultilingualTextUpdateBuilder remove(String languageCode) {
 		Objects.requireNonNull(languageCode, "Language code cannot be null.");
 		removed.add(languageCode);
 		modified.remove(languageCode);
+		return this;
 	}
 
 	/**

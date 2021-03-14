@@ -22,6 +22,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link MediaInfoUpdate} objects.
@@ -101,6 +103,18 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	@Override
 	protected MediaInfoDocument getCurrentDocument() {
 		return (MediaInfoDocument) super.getCurrentDocument();
+	}
+
+	@Override
+	public MediaInfoUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
+	@Override
+	public MediaInfoUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+		super.updateLabels(update);
+		return this;
 	}
 
 	@Override

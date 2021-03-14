@@ -53,15 +53,17 @@ public class StatementUpdateBuilder {
 	 * 
 	 * @param statement
 	 *            new statement to add
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code statement} is {@code null}
 	 */
-	public void add(Statement statement) {
+	public StatementUpdateBuilder add(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		if (!statement.getStatementId().isEmpty()) {
 			statement = statement.withStatementId("");
 		}
 		added.add(statement);
+		return this;
 	}
 
 	/**
@@ -72,16 +74,18 @@ public class StatementUpdateBuilder {
 	 * 
 	 * @param statement
 	 *            replacement for existing statement
+	 * @return {@code this} (fluent method)
 	 * @throws NullPointerException
 	 *             if {@code statement} is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if {@code statement} does not have statement ID
 	 */
-	public void replace(Statement statement) {
+	public StatementUpdateBuilder replace(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
 		replaced.put(statement.getStatementId(), statement);
 		removed.remove(statement.getStatementId());
+		return this;
 	}
 
 	/**
@@ -92,15 +96,23 @@ public class StatementUpdateBuilder {
 	 * 
 	 * @param statementId
 	 *            ID of the removed statement
+	 * @return {@code this} (fluent method)
 	 * @throws IllegalArgumentException
 	 *             if {@code statementId} is empty
 	 */
-	public void remove(String statementId) {
+	public StatementUpdateBuilder remove(String statementId) {
 		Validate.notEmpty(statementId, "Statement ID must not be empty.");
 		removed.add(statementId);
 		replaced.remove(statementId);
+		return this;
 	}
 
+	/**
+	 * Creates new {@link StatementUpdate} object with contents of this builder
+	 * object.
+	 * 
+	 * @return constructed object
+	 */
 	public StatementUpdate build() {
 		return factory.getStatementUpdate(added, replaced.values(), removed);
 	}

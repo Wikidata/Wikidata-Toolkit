@@ -22,6 +22,8 @@ package org.wikidata.wdtk.datamodel.helpers;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
 /**
  * Builder for incremental construction of {@link ItemUpdate} objects.
@@ -101,6 +103,24 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	@Override
 	protected ItemDocument getCurrentDocument() {
 		return (ItemDocument) super.getCurrentDocument();
+	}
+
+	@Override
+	public ItemUpdateBuilder updateStatements(StatementUpdate update) {
+		super.updateStatements(update);
+		return this;
+	}
+
+	@Override
+	public ItemUpdateBuilder updateLabels(MultilingualTextUpdate update) {
+		super.updateLabels(update);
+		return this;
+	}
+
+	@Override
+	public ItemUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
+		super.updateDescriptions(update);
+		return this;
 	}
 
 	@Override
