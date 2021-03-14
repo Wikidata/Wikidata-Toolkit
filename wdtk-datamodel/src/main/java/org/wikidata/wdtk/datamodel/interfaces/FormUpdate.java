@@ -36,10 +36,9 @@ public interface FormUpdate extends StatementDocumentUpdate {
 	/**
 	 * Returns changes in form representations.
 	 * 
-	 * @return update of form representations or {@link Optional#empty()} if there
-	 *         are no changes
+	 * @return update of form representations, possibly empty
 	 */
-	Optional<MultilingualTextUpdate> getRepresentations();
+	MultilingualTextUpdate getRepresentations();
 
 	/**
 	 * Returns new grammatical features of the form assigned in this update. If

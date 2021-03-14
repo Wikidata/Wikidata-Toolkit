@@ -36,7 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
  */
 public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate descriptions;
+	private MultilingualTextUpdate descriptions = MultilingualTextUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -137,7 +137,8 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	/**
-	 * Updates entity descriptions.
+	 * Updates entity descriptions. Any previous changes to descriptions are
+	 * discarded.
 	 * 
 	 * @param update
 	 *            changes to entity descriptions

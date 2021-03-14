@@ -36,7 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
  */
 public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate representations;
+	private MultilingualTextUpdate representations = MultilingualTextUpdate.NULL;
 	private Set<ItemIdValue> grammaticalFeatures;
 
 	/**
@@ -115,7 +115,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates form representations.
+	 * Updates form representations. Any previous changes to form representations
+	 * are discarded.
 	 * 
 	 * @param update
 	 *            changes to form representations

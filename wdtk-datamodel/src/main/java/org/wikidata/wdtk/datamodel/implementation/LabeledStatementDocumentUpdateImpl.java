@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
@@ -43,7 +43,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 * @param document
 	 *            entity revision to be updated or {@code null} if not available
 	 * @param labels
-	 *            changes in entity labels or {@code null} for no change
+	 *            changes in entity labels, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -57,6 +57,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 			MultilingualTextUpdate labels,
 			StatementUpdate statements) {
 		super(entityId, document, statements);
+		Objects.requireNonNull(labels, "Label update cannot be null.");
 		this.labels = labels;
 	}
 
@@ -66,8 +67,8 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getLabels() {
-		return Optional.ofNullable(labels);
+	public MultilingualTextUpdate getLabels() {
+		return labels;
 	}
 
 }

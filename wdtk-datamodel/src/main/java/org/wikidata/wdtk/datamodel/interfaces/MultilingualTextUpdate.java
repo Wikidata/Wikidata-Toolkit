@@ -19,13 +19,21 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import org.wikidata.wdtk.datamodel.implementation.MultilingualTextUpdateImpl;
 
 /**
  * Collection of changes made to multilingual text value.
  */
 public interface MultilingualTextUpdate {
+
+	/**
+	 * Empty update that does not alter or add any monolingual values.
+	 */
+	MultilingualTextUpdate NULL = new MultilingualTextUpdateImpl(Collections.emptyList(), Collections.emptyList());
 
 	/**
 	 * Returns values added or modified in this update. Existing values are

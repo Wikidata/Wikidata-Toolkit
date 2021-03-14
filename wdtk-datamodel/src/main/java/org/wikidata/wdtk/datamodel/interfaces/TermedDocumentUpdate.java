@@ -19,8 +19,6 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Optional;
-
 /**
  * Collection of changes that can be applied to an entity that has labels,
  * aliases, and descriptions.
@@ -33,9 +31,8 @@ public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 	/**
 	 * Returns changes in entity descriptions.
 	 * 
-	 * @return update of entity descriptions or {@link Optional#empty()} if there
-	 *         are no changes
+	 * @return update of entity descriptions, possibly empty
 	 */
-	Optional<MultilingualTextUpdate> getDescriptions();
+	MultilingualTextUpdate getDescriptions();
 
 }

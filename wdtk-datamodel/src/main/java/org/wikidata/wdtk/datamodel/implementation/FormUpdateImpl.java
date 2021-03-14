@@ -22,6 +22,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 * @param document
 	 *            form revision to be updated or {@code null} if not available
 	 * @param representations
-	 *            changes in form representations or {@code null} for no change
+	 *            changes in form representations, possibly empty
 	 * @param grammaticalFeatures
 	 *            new grammatical features of the form or {@code null} for no change
 	 * @param statements
@@ -65,6 +66,7 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
 		super(entityId, document, statements);
+		Objects.requireNonNull(representations, "Representation update cannot be null.");
 		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
 				? Collections.unmodifiableSet(new HashSet<>(grammaticalFeatures))
@@ -82,8 +84,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getRepresentations() {
-		return Optional.ofNullable(representations);
+	public MultilingualTextUpdate getRepresentations() {
+		return representations;
 	}
 
 	@Override

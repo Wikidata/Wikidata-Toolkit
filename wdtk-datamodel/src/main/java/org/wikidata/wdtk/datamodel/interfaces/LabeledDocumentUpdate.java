@@ -19,8 +19,6 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Optional;
-
 /**
  * Collection of changes that can be applied to an entity that has labels.
  */
@@ -32,9 +30,8 @@ public interface LabeledDocumentUpdate extends EntityUpdate {
 	/**
 	 * Returns changes in entity labels.
 	 * 
-	 * @return update of entity labels or {@link Optional#empty()} if there are no
-	 *         changes
+	 * @return update of entity labels, possibly empty
 	 */
-	Optional<MultilingualTextUpdate> getLabels();
+	MultilingualTextUpdate getLabels();
 
 }

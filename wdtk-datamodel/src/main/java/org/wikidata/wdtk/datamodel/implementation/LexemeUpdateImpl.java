@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 * @param lexicalCategory
 	 *            new lexical category of the lexeme or {@code null} for no change
 	 * @param lemmas
-	 *            changes in lemmas or {@code null} for no change
+	 *            changes in lemmas, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @param addedSenses
@@ -104,6 +105,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
 		super(entityId, document, statements);
+		Objects.requireNonNull(lemmas, "Lemma update cannot be null.");
 		this.language = language;
 		this.lexicalCategory = lexicalCategory;
 		this.lemmas = lemmas;
@@ -138,8 +140,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getLemmas() {
-		return Optional.ofNullable(lemmas);
+	public MultilingualTextUpdate getLemmas() {
+		return lemmas;
 	}
 
 	@Override

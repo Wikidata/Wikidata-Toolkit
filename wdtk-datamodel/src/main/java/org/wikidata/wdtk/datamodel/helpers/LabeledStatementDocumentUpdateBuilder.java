@@ -39,7 +39,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
  */
 public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate labels;
+	private MultilingualTextUpdate labels = MultilingualTextUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -138,7 +138,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	/**
-	 * Updates entity labels.
+	 * Updates entity labels. Any previous changes to labels are discarded.
 	 * 
 	 * @param update
 	 *            changes to entity labels

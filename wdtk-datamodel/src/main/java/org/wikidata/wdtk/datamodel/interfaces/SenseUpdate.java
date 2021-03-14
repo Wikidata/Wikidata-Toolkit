@@ -19,8 +19,6 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Optional;
-
 /**
  * Collection of changes that can be applied to sense entity.
  */
@@ -35,9 +33,8 @@ public interface SenseUpdate extends StatementDocumentUpdate {
 	/**
 	 * Returns changes in sense glosses.
 	 * 
-	 * @return update of sense glosses or {@link Optional#empty()} if there are no
-	 *         changes
+	 * @return update of sense glosses, possibly empty
 	 */
-	Optional<MultilingualTextUpdate> getGlosses();
+	MultilingualTextUpdate getGlosses();
 
 }

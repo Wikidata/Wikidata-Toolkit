@@ -31,7 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
  */
 public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate glosses;
+	private MultilingualTextUpdate glosses = MultilingualTextUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of sense entity with
@@ -109,7 +109,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates sense glosses.
+	 * Updates sense glosses. Any previous changes to sense glosses are discarded.
 	 * 
 	 * @param update
 	 *            changes to sense glosses

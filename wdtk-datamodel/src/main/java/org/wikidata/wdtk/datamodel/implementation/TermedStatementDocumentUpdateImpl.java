@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
@@ -45,7 +45,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
-	 *            changes in entity descriptions or {@code null} for no change
+	 *            changes in entity descriptions, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -60,6 +60,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 			MultilingualTextUpdate descriptions,
 			StatementUpdate statements) {
 		super(entityId, document, labels, statements);
+		Objects.requireNonNull(descriptions, "Description update cannot be null.");
 		this.descriptions = descriptions;
 	}
 
@@ -69,8 +70,8 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getDescriptions() {
-		return Optional.ofNullable(descriptions);
+	public MultilingualTextUpdate getDescriptions() {
+		return descriptions;
 	}
 
 }

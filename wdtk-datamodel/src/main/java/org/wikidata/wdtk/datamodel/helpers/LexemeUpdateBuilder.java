@@ -47,7 +47,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	private ItemIdValue language;
 	private ItemIdValue lexicalCategory;
-	private MultilingualTextUpdate lemmas;
+	private MultilingualTextUpdate lemmas = MultilingualTextUpdate.NULL;
 	private final List<SenseDocument> addedSenses = new ArrayList<>();
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses = new HashMap<>();
 	private final Set<SenseIdValue> removedSenses = new HashSet<>();
@@ -143,7 +143,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Updates lemmas.
+	 * Updates lemmas. Any previous changes to lemmas are discarded.
 	 * 
 	 * @param update
 	 *            changes to lemmas

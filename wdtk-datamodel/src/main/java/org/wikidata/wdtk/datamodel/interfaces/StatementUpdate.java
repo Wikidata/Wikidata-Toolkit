@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.wikidata.wdtk.datamodel.implementation.StatementUpdateImpl;
+
 /**
  * Collection of statement changes.
  * 
@@ -34,24 +36,7 @@ public interface StatementUpdate {
 	/**
 	 * Empty update that does not alter or add any statements.
 	 */
-	StatementUpdate NULL = new StatementUpdate() {
-
-		@Override
-		public Map<String, Statement> getReplacedStatements() {
-			return Collections.emptyMap();
-		}
-
-		@Override
-		public Set<String> getRemovedStatements() {
-			return Collections.emptySet();
-		}
-
-		@Override
-		public List<Statement> getAddedStatements() {
-			return Collections.emptyList();
-		}
-
-	};
+	StatementUpdate NULL = new StatementUpdateImpl(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 	/**
 	 * Returns statements added to the entity in this update.

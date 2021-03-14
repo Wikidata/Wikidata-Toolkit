@@ -19,7 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
@@ -42,7 +42,7 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 * @param document
 	 *            sense revision to be updated or {@code null} if not available
 	 * @param glosses
-	 *            changes in sense glosses or {@code null} for no change
+	 *            changes in sense glosses, possibly empty
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -56,6 +56,7 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 			MultilingualTextUpdate glosses,
 			StatementUpdate statements) {
 		super(entityId, document, statements);
+		Objects.requireNonNull(glosses, "Gloss update cannot be null.");
 		this.glosses = glosses;
 	}
 
@@ -70,8 +71,8 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	}
 
 	@Override
-	public Optional<MultilingualTextUpdate> getGlosses() {
-		return Optional.ofNullable(glosses);
+	public MultilingualTextUpdate getGlosses() {
+		return glosses;
 	}
 
 }
