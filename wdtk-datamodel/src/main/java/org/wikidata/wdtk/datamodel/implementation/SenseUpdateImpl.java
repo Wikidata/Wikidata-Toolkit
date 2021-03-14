@@ -19,15 +19,10 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -38,8 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
  */
 public class SenseUpdateImpl extends StatementUpdateImpl implements SenseUpdate {
 
-	private final Map<String, MonolingualTextValue> modifiedGlosses;
-	private final Set<String> removedGlosses;
+	private final MultilingualTextUpdate glosses;
 
 	/**
 	 * Initializes new sense update.
@@ -48,10 +42,8 @@ public class SenseUpdateImpl extends StatementUpdateImpl implements SenseUpdate 
 	 *            ID of the sense that is to be updated
 	 * @param document
 	 *            sense revision to be updated or {@code null} if not available
-	 * @param modifiedGlosses
-	 *            added or changed sense glosses
-	 * @param removedGlosses
-	 *            language codes of removed sense glosses
+	 * @param glosses
+	 *            changes in sense glosses or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -66,15 +58,12 @@ public class SenseUpdateImpl extends StatementUpdateImpl implements SenseUpdate 
 	protected SenseUpdateImpl(
 			SenseIdValue entityId,
 			SenseDocument document,
-			Collection<MonolingualTextValue> modifiedGlosses,
-			Collection<String> removedGlosses,
+			MultilingualTextUpdate glosses,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
 		super(entityId, document, addedStatements, replacedStatements, removedStatements);
-		this.modifiedGlosses = Collections.unmodifiableMap(
-				modifiedGlosses.stream().collect(toMap(r -> r.getLanguageCode(), r -> r)));
-		this.removedGlosses = Collections.unmodifiableSet(new HashSet<>(removedGlosses));
+		this.glosses = glosses;
 	}
 
 	@Override
@@ -88,13 +77,8 @@ public class SenseUpdateImpl extends StatementUpdateImpl implements SenseUpdate 
 	}
 
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedGlosses() {
-		return modifiedGlosses;
-	}
-
-	@Override
-	public Set<String> getRemovedGlosses() {
-		return removedGlosses;
+	public Optional<MultilingualTextUpdate> getGlosses() {
+		return Optional.ofNullable(glosses);
 	}
 
 }

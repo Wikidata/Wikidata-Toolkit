@@ -19,25 +19,27 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Collection of changes that can be applied to sense entity.
+ * Collection of changes made to multilingual text value.
  */
-public interface SenseUpdate extends StatementUpdate {
-
-	@Override
-	SenseIdValue getEntityId();
-
-	@Override
-	SenseDocument getCurrentDocument();
+public interface MultilingualTextUpdate {
 
 	/**
-	 * Returns changes in sense glosses.
+	 * Returns values added or modified in this update. Existing values are
+	 * preserved if their language code is not listed here.
 	 * 
-	 * @return update of sense glosses or {@link Optional#empty()} if there are no
-	 *         changes
+	 * @return added or modified values indexed by language code
 	 */
-	Optional<MultilingualTextUpdate> getGlosses();
+	Map<String, MonolingualTextValue> getModifiedValues();
+
+	/**
+	 * Returns language codes of values removed in this update.
+	 * 
+	 * @return language codes of removed values
+	 */
+	Set<String> getRemovedValues();
 
 }

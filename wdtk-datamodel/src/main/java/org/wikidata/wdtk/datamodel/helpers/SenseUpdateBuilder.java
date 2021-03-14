@@ -19,13 +19,9 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -35,8 +31,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
  */
 public class SenseUpdateBuilder extends StatementUpdateBuilder {
 
-	private final Map<String, MonolingualTextValue> modifiedGlosses = new HashMap<>();
-	private final Set<String> removedGlosses = new HashSet<>();
+	private MultilingualTextUpdate glosses;
 
 	/**
 	 * Initializes new builder object for constructing update of sense entity with
@@ -114,49 +109,31 @@ public class SenseUpdateBuilder extends StatementUpdateBuilder {
 	}
 
 	/**
-	 * Adds or changes sense gloss. If there is no gloss for the language code, new
-	 * gloss is added. If a gloss with this language code already exists, it is
-	 * replaced. Glosses with other language codes are not touched. Calling this
-	 * method overrides any previous changes made with the same language code by
-	 * this method or {@link #removeGloss(String)}.
+	 * Updates sense glosses.
 	 * 
-	 * @param gloss
-	 *            sense gloss to add or change
+	 * @param update
+	 *            changes to sense glosses
 	 * @throws NullPointerException
-	 *             if {@code gloss} is {@code null}
-	 */
-	public void setGloss(MonolingualTextValue gloss) {
-		Objects.requireNonNull(gloss, "Gloss cannot be null.");
-		modifiedGlosses.put(gloss.getLanguageCode(), gloss);
-		removedGlosses.remove(gloss.getLanguageCode());
-	}
-
-	/**
-	 * Removes sense gloss. Glosses with other language codes are not touched.
-	 * Calling this method overrides any previous changes made with the same
-	 * language code by this method or {@link #setGloss(MonolingualTextValue)}.
-	 * 
-	 * @param languageCode
-	 *            language code of the removed sense gloss
-	 * @throws NullPointerException
-	 *             if {@code languageCode} is {@code null}
+	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if the gloss is not present in current sense entity revision (if
+	 *             if removed gloss is not present in current sense revision (if
 	 *             available)
 	 */
-	public void removeGloss(String languageCode) {
-		Objects.requireNonNull(languageCode, "Language code cannot be null.");
-		if (getCurrentDocument() != null && !getCurrentDocument().getGlosses().containsKey(languageCode)) {
-			throw new IllegalArgumentException("Gloss with this language code is not in the current revision.");
+	public void updateGlosses(MultilingualTextUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		if (getCurrentDocument() != null) {
+			for (String removed : update.getRemovedValues()) {
+				if (!getCurrentDocument().getGlosses().containsKey(removed)) {
+					throw new IllegalArgumentException("Removed gloss is not in the current revision.");
+				}
+			}
 		}
-		removedGlosses.add(languageCode);
-		modifiedGlosses.remove(languageCode);
+		glosses = update;
 	}
 
 	@Override
 	public SenseUpdate build() {
-		return factory.getSenseUpdate(getEntityId(), getCurrentDocument(),
-				modifiedGlosses.values(), removedGlosses,
+		return factory.getSenseUpdate(getEntityId(), getCurrentDocument(), glosses,
 				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
 	}
 

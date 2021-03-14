@@ -19,12 +19,9 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,7 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
@@ -40,8 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
  */
 public class FormUpdateImpl extends StatementUpdateImpl implements FormUpdate {
 
-	private final Map<String, MonolingualTextValue> modifiedRepresentations;
-	private final Set<String> removedRepresentations;
+	private final MultilingualTextUpdate representations;
 	private final Set<ItemIdValue> grammaticalFeatures;
 
 	/**
@@ -51,10 +47,8 @@ public class FormUpdateImpl extends StatementUpdateImpl implements FormUpdate {
 	 *            ID of the form that is to be updated
 	 * @param document
 	 *            form revision to be updated or {@code null} if not available
-	 * @param modifiedRepresentations
-	 *            added or changed form representations
-	 * @param removedRepresentations
-	 *            language codes of removed form representations
+	 * @param representations
+	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
 	 *            new grammatical features of the form or {@code null} for no change
 	 * @param addedStatements
@@ -71,16 +65,13 @@ public class FormUpdateImpl extends StatementUpdateImpl implements FormUpdate {
 	protected FormUpdateImpl(
 			FormIdValue entityId,
 			FormDocument document,
-			Collection<MonolingualTextValue> modifiedRepresentations,
-			Collection<String> removedRepresentations,
+			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
 		super(entityId, document, addedStatements, replacedStatements, removedStatements);
-		this.modifiedRepresentations = Collections.unmodifiableMap(
-				modifiedRepresentations.stream().collect(toMap(r -> r.getLanguageCode(), r -> r)));
-		this.removedRepresentations = Collections.unmodifiableSet(new HashSet<>(removedRepresentations));
+		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
 				? Collections.unmodifiableSet(new HashSet<>(grammaticalFeatures))
 				: null;
@@ -97,13 +88,8 @@ public class FormUpdateImpl extends StatementUpdateImpl implements FormUpdate {
 	}
 
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedRepresentations() {
-		return modifiedRepresentations;
-	}
-
-	@Override
-	public Set<String> getRemovedRepresentations() {
-		return removedRepresentations;
+	public Optional<MultilingualTextUpdate> getRepresentations() {
+		return Optional.ofNullable(representations);
 	}
 
 	@Override

@@ -19,8 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 /**
  * Collection of changes that can be applied to an entity that has labels.
@@ -31,18 +30,11 @@ public interface LabeledUpdate extends EntityUpdate {
 	LabeledDocument getCurrentDocument();
 
 	/**
-	 * Returns labels added or modified in this update. Existing labels are
-	 * preserved if their language code is not listed here.
+	 * Returns changes in entity labels.
 	 * 
-	 * @return added or modified labels indexed by language code
+	 * @return update of entity labels or {@link Optional#empty()} if there are no
+	 *         changes
 	 */
-	Map<String, MonolingualTextValue> getModifiedLabels();
-
-	/**
-	 * Returns language codes of labels removed in this update.
-	 * 
-	 * @return language codes of removed labels
-	 */
-	Set<String> getRemovedLabels();
+	Optional<MultilingualTextUpdate> getLabels();
 
 }

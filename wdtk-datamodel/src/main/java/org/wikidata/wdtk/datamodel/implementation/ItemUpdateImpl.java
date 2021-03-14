@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
@@ -39,14 +39,10 @@ public class ItemUpdateImpl extends TermedStatementUpdateImpl implements ItemUpd
 	 *            ID of the item that is to be updated
 	 * @param document
 	 *            item revision to be updated or {@code null} if not available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
-	 * @param modifiedDescriptions
-	 *            added or changed entity descriptions
-	 * @param removedDescriptions
-	 *            language codes of removed entity descriptions
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -61,15 +57,12 @@ public class ItemUpdateImpl extends TermedStatementUpdateImpl implements ItemUpd
 	protected ItemUpdateImpl(
 			ItemIdValue entityId,
 			ItemDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		super(entityId, document, modifiedLabels, removedLabels, modifiedDescriptions, removedDescriptions,
-				addedStatements, replacedStatements, removedStatements);
+		super(entityId, document, labels, descriptions, addedStatements, replacedStatements, removedStatements);
 	}
 
 	@Override

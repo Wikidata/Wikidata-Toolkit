@@ -105,8 +105,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementUpdateBuilder {
 
 	@Override
 	public MediaInfoUpdate build() {
-		return factory.getMediaInfoUpdate(getEntityId(), getCurrentDocument(),
-				getModifiedLabels().values(), getRemovedLabels(),
+		return factory.getMediaInfoUpdate(getEntityId(), getCurrentDocument(), getLabels(),
 				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
 	}
 

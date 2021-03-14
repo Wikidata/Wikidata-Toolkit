@@ -21,7 +21,7 @@ package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.Collection;
 
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
@@ -40,14 +40,10 @@ public class PropertyUpdateImpl extends TermedStatementUpdateImpl implements Pro
 	 * @param document
 	 *            property entity revision to be updated or {@code null} if not
 	 *            available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
-	 * @param modifiedDescriptions
-	 *            added or changed entity descriptions
-	 * @param removedDescriptions
-	 *            language codes of removed entity descriptions
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -62,15 +58,12 @@ public class PropertyUpdateImpl extends TermedStatementUpdateImpl implements Pro
 	protected PropertyUpdateImpl(
 			PropertyIdValue entityId,
 			PropertyDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		super(entityId, document, modifiedLabels, removedLabels, modifiedDescriptions, removedDescriptions,
-				addedStatements, replacedStatements, removedStatements);
+		super(entityId, document, labels, descriptions, addedStatements, replacedStatements, removedStatements);
 	}
 
 	@Override

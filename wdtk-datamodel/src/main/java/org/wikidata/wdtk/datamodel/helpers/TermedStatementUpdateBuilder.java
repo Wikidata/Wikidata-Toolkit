@@ -19,16 +19,12 @@
  */
 package org.wikidata.wdtk.datamodel.helpers;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
@@ -40,8 +36,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementUpdate;
  */
 public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdateBuilder {
 
-	private final Map<String, MonolingualTextValue> modifiedDescriptions = new HashMap<>();
-	private final Set<String> removedDescriptions = new HashSet<>();
+	private MultilingualTextUpdate descriptions;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -89,10 +84,10 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	public static TermedStatementUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof ItemIdValue) {
-			return ItemUpdateBuilder.forItemId((ItemIdValue)entityId);
+			return ItemUpdateBuilder.forItemId((ItemIdValue) entityId);
 		}
 		if (entityId instanceof PropertyIdValue) {
-			return PropertyUpdateBuilder.forPropertyId((PropertyIdValue)entityId);
+			return PropertyUpdateBuilder.forPropertyId((PropertyIdValue) entityId);
 		}
 		throw new IllegalArgumentException("Unrecognized entity ID type.");
 	}
@@ -119,10 +114,10 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 	public static TermedStatementUpdateBuilder forTermedStatementDocument(TermedStatementDocument document) {
 		Objects.requireNonNull(document, "Entity document cannot be null.");
 		if (document instanceof ItemDocument) {
-			return ItemUpdateBuilder.forItemDocument((ItemDocument)document);
+			return ItemUpdateBuilder.forItemDocument((ItemDocument) document);
 		}
 		if (document instanceof PropertyDocument) {
-			return PropertyUpdateBuilder.forPropertyDocument((PropertyDocument)document);
+			return PropertyUpdateBuilder.forPropertyDocument((PropertyDocument) document);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
@@ -132,53 +127,36 @@ public abstract class TermedStatementUpdateBuilder extends LabeledStatementUpdat
 		return (TermedStatementDocument) super.getCurrentDocument();
 	}
 
-	protected Map<String, MonolingualTextValue> getModifiedDescriptions() {
-		return modifiedDescriptions;
-	}
-
-	protected Set<String> getRemovedDescriptions() {
-		return removedDescriptions;
-	}
-
 	/**
-	 * Adds or changes entity description. If there is no description for the
-	 * language code, new description is added. If a description with this language
-	 * code already exists, it is replaced. Descriptions with other language codes
-	 * are not touched. Calling this method overrides any previous changes made with
-	 * the same language code by this method or {@link #removeDescription(String)}.
+	 * Returns description changes.
 	 * 
-	 * @param description
-	 *            entity description to add or change
-	 * @throws NullPointerException
-	 *             if {@code description} is {@code null}
+	 * @return description update or {@code null} for no change
 	 */
-	public void setDescription(MonolingualTextValue description) {
-		Objects.requireNonNull(description, "Description cannot be null.");
-		modifiedDescriptions.put(description.getLanguageCode(), description);
-		removedDescriptions.remove(description.getLanguageCode());
+	protected MultilingualTextUpdate getDescriptions() {
+		return descriptions;
 	}
 
 	/**
-	 * Removes entity description. Descriptions with other language codes are not
-	 * touched. Calling this method overrides any previous changes made with the
-	 * same language code by this method or
-	 * {@link #setDescription(MonolingualTextValue)}.
+	 * Updates entity descriptions.
 	 * 
-	 * @param languageCode
-	 *            language code of the removed entity description
+	 * @param update
+	 *            changes to entity descriptions
 	 * @throws NullPointerException
-	 *             if {@code languageCode} is {@code null}
+	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if the description is not present in current entity revision (if
-	 *             available)
+	 *             if removed description is not present in current entity revision
+	 *             (if available)
 	 */
-	public void removeDescription(String languageCode) {
-		Objects.requireNonNull(languageCode, "Language code cannot be null.");
-		if (getCurrentDocument() != null && !getCurrentDocument().getDescriptions().containsKey(languageCode)) {
-			throw new IllegalArgumentException("Description with this language code is not in the current revision.");
+	public void updateDescriptions(MultilingualTextUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		if (getCurrentDocument() != null) {
+			for (String removed : update.getRemovedValues()) {
+				if (!getCurrentDocument().getDescriptions().containsKey(removed)) {
+					throw new IllegalArgumentException("Removed description is not in the current revision.");
+				}
+			}
 		}
-		removedDescriptions.add(languageCode);
-		modifiedDescriptions.remove(languageCode);
+		descriptions = update;
 	}
 
 	/**

@@ -35,7 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -47,8 +47,7 @@ public class LexemeUpdateBuilder extends StatementUpdateBuilder {
 
 	private ItemIdValue language;
 	private ItemIdValue lexicalCategory;
-	private final Map<String, MonolingualTextValue> modifiedLemmas = new HashMap<>();
-	private final Set<String> removedLemmas = new HashSet<>();
+	private MultilingualTextUpdate lemmas;
 	private final List<SenseDocument> addedSenses = new ArrayList<>();
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses = new HashMap<>();
 	private final Set<SenseIdValue> removedSenses = new HashSet<>();
@@ -144,43 +143,26 @@ public class LexemeUpdateBuilder extends StatementUpdateBuilder {
 	}
 
 	/**
-	 * Adds or changes lexeme lemma. If there is no lemma for the language code, new
-	 * lemma is added. If a lemma with this language code already exists, it is
-	 * replaced. Lemmas with other language codes are not touched. Calling this
-	 * method overrides any previous changes made with the same language code by
-	 * this method or {@link #removeLemma(String)}.
+	 * Updates lemmas.
 	 * 
-	 * @param lemma
-	 *            lexeme lemma to add or change
+	 * @param update
+	 *            changes to lemmas
 	 * @throws NullPointerException
-	 *             if {@code lemma} is {@code null}
-	 */
-	public void setLemma(MonolingualTextValue lemma) {
-		Objects.requireNonNull(lemma, "Lemma cannot be null.");
-		modifiedLemmas.put(lemma.getLanguageCode(), lemma);
-		removedLemmas.remove(lemma.getLanguageCode());
-	}
-
-	/**
-	 * Removes lexeme lemma. Lemmas with other language codes are not touched.
-	 * Calling this method overrides any previous changes made with the same
-	 * language code by this method or {@link #setLemma(MonolingualTextValue)}.
-	 * 
-	 * @param languageCode
-	 *            language code of the removed lexeme lemma
-	 * @throws NullPointerException
-	 *             if {@code languageCode} is {@code null}
+	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if the lemma is not present in current lexeme entity revision (if
+	 *             if removed lemma is not present in current lexeme revision (if
 	 *             available)
 	 */
-	public void removeLemma(String languageCode) {
-		Objects.requireNonNull(languageCode, "Language code cannot be null.");
-		if (getCurrentDocument() != null && !getCurrentDocument().getLemmas().containsKey(languageCode)) {
-			throw new IllegalArgumentException("Lemma with this language code is not in the current revision.");
+	public void updateLemmas(MultilingualTextUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		if (getCurrentDocument() != null) {
+			for (String removed : update.getRemovedValues()) {
+				if (!getCurrentDocument().getLemmas().containsKey(removed)) {
+					throw new IllegalArgumentException("Removed lemma is not in the current revision.");
+				}
+			}
 		}
-		removedLemmas.add(languageCode);
-		modifiedLemmas.remove(languageCode);
+		lemmas = update;
 	}
 
 	/**
@@ -314,8 +296,7 @@ public class LexemeUpdateBuilder extends StatementUpdateBuilder {
 
 	@Override
 	public LexemeUpdate build() {
-		return factory.getLexemeUpdate(getEntityId(), getCurrentDocument(),
-				language, lexicalCategory, modifiedLemmas.values(), removedLemmas,
+		return factory.getLexemeUpdate(getEntityId(), getCurrentDocument(), language, lexicalCategory, lemmas,
 				getAddedStatements(), getReplacedStatements(), getRemovedStatements(),
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);

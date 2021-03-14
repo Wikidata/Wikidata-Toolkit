@@ -19,18 +19,13 @@
  */
 package org.wikidata.wdtk.datamodel.implementation;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
@@ -38,8 +33,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
  */
 public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl implements LabeledStatementUpdate {
 
-	private final Map<String, MonolingualTextValue> modifiedLabels;
-	private final Set<String> removedLabels;
+	private final MultilingualTextUpdate labels;
 
 	/**
 	 * Initializes new entity update.
@@ -48,10 +42,8 @@ public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl imp
 	 *            ID of the entity that is to be updated
 	 * @param document
 	 *            entity revision to be updated or {@code null} if not available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -66,15 +58,12 @@ public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl imp
 	protected LabeledStatementUpdateImpl(
 			EntityIdValue entityId,
 			LabeledStatementDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
+			MultilingualTextUpdate labels,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
 		super(entityId, document, addedStatements, replacedStatements, removedStatements);
-		this.modifiedLabels = Collections.unmodifiableMap(
-				modifiedLabels.stream().collect(toMap(r -> r.getLanguageCode(), r -> r)));
-		this.removedLabels = Collections.unmodifiableSet(new HashSet<>(removedLabels));
+		this.labels = labels;
 	}
 
 	@Override
@@ -83,13 +72,8 @@ public abstract class LabeledStatementUpdateImpl extends StatementUpdateImpl imp
 	}
 
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedLabels() {
-		return modifiedLabels;
-	}
-
-	@Override
-	public Set<String> getRemovedLabels() {
-		return removedLabels;
+	public Optional<MultilingualTextUpdate> getLabels() {
+		return Optional.ofNullable(labels);
 	}
 
 }

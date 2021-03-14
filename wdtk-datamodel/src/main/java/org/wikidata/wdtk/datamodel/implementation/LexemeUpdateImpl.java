@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
 import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
@@ -50,8 +50,7 @@ public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdat
 
 	private final ItemIdValue language;
 	private final ItemIdValue lexicalCategory;
-	private final Map<String, MonolingualTextValue> modifiedLemmas;
-	private final Set<String> removedLemmas;
+	private final MultilingualTextUpdate lemmas;
 	private final List<SenseDocument> addedSenses;
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses;
 	private final Set<SenseIdValue> removedSenses;
@@ -70,10 +69,8 @@ public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdat
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
 	 *            new lexical category of the lexeme or {@code null} for no change
-	 * @param modifiedLemmas
-	 *            added or changed lemmas
-	 * @param removedLemmas
-	 *            language codes of removed lemmas
+	 * @param lemmas
+	 *            changes in lemmas or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -102,8 +99,7 @@ public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdat
 			LexemeDocument document,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			Collection<MonolingualTextValue> modifiedLemmas,
-			Collection<String> removedLemmas,
+			MultilingualTextUpdate lemmas,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements,
@@ -116,9 +112,7 @@ public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdat
 		super(entityId, document, addedStatements, replacedStatements, removedStatements);
 		this.language = language;
 		this.lexicalCategory = lexicalCategory;
-		this.modifiedLemmas = Collections.unmodifiableMap(
-				modifiedLemmas.stream().collect(toMap(r -> r.getLanguageCode(), r -> r)));
-		this.removedLemmas = Collections.unmodifiableSet(new HashSet<>(removedLemmas));
+		this.lemmas = lemmas;
 		this.addedSenses = Collections.unmodifiableList(new ArrayList<>(addedSenses));
 		this.updatedSenses = Collections.unmodifiableMap(
 				updatedSenses.stream().collect(toMap(s -> s.getEntityId(), s -> s)));
@@ -150,13 +144,8 @@ public class LexemeUpdateImpl extends StatementUpdateImpl implements LexemeUpdat
 	}
 
 	@Override
-	public Map<String, MonolingualTextValue> getModifiedLemmas() {
-		return modifiedLemmas;
-	}
-
-	@Override
-	public Set<String> getRemovedLemmas() {
-		return removedLemmas;
+	public Optional<MultilingualTextUpdate> getLemmas() {
+		return Optional.ofNullable(lemmas);
 	}
 
 	@Override

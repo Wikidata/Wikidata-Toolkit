@@ -1,5 +1,12 @@
 package org.wikidata.wdtk.datamodel.implementation;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,16 +26,45 @@ package org.wikidata.wdtk.datamodel.implementation;
  * limitations under the License.
  * #L%
  */
-
-
-import org.wikidata.wdtk.datamodel.interfaces.*;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.Value;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 /**
  * Factory implementation to create Jackson versions of the datamodel objects,
@@ -272,30 +308,33 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	}
 
 	@Override
+	public MultilingualTextUpdate getMultilingualTextUpdate(
+			Collection<MonolingualTextValue> modified,
+			Collection<String> removed) {
+		return new MultilingualTextUpdateImpl(modified, removed);
+	}
+
+	@Override
 	public SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
 			SenseDocument document,
-			Collection<MonolingualTextValue> modifiedGlosses,
-			Collection<String> removedGlosses,
+			MultilingualTextUpdate glosses,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		return new SenseUpdateImpl(entityId, document, modifiedGlosses, removedGlosses,
-				addedStatements, replacedStatements, removedStatements);
+		return new SenseUpdateImpl(entityId, document, glosses, addedStatements, replacedStatements, removedStatements);
 	}
 
 	@Override
 	public FormUpdate getFormUpdate(
 			FormIdValue entityId,
 			FormDocument document,
-			Collection<MonolingualTextValue> modifiedRepresentations,
-			Collection<String> removedRepresentations,
+			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		return new FormUpdateImpl(entityId, document,
-				modifiedRepresentations, removedRepresentations, grammaticalFeatures,
+		return new FormUpdateImpl(entityId, document, representations, grammaticalFeatures,
 				addedStatements, replacedStatements, removedStatements);
 	}
 
@@ -305,8 +344,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			LexemeDocument document,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			Collection<MonolingualTextValue> modifiedLemmas,
-			Collection<String> removedLemmas,
+			MultilingualTextUpdate lemmas,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements,
@@ -317,7 +355,7 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
 		return new LexemeUpdateImpl(entityId, document,
-				language, lexicalCategory, modifiedLemmas, removedLemmas,
+				language, lexicalCategory, lemmas,
 				addedStatements, replacedStatements, removedStatements,
 				addedSenses, updatedSenses, removedSenses,
 				addedForms, updatedForms, removedForms);
@@ -327,13 +365,11 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
+			MultilingualTextUpdate labels,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		return new MediaInfoUpdateImpl(entityId, document,
-				modifiedLabels, removedLabels,
+		return new MediaInfoUpdateImpl(entityId, document, labels,
 				addedStatements, replacedStatements, removedStatements);
 	}
 
@@ -341,16 +377,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
 			ItemDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		return new ItemUpdateImpl(entityId, document,
-				modifiedLabels, removedLabels,
-				modifiedDescriptions, removedDescriptions,
+		return new ItemUpdateImpl(entityId, document, labels, descriptions,
 				addedStatements, replacedStatements, removedStatements);
 	}
 
@@ -358,16 +390,12 @@ public class DataObjectFactoryImpl implements DataObjectFactory {
 	public PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
 			PropertyDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		return new PropertyUpdateImpl(entityId, document,
-				modifiedLabels, removedLabels,
-				modifiedDescriptions, removedDescriptions,
+		return new PropertyUpdateImpl(entityId, document, labels, descriptions,
 				addedStatements, replacedStatements, removedStatements);
 	}
 

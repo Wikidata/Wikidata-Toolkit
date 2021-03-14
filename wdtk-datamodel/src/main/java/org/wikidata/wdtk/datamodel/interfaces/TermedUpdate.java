@@ -19,8 +19,7 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 /**
  * Collection of changes that can be applied to an entity that has labels,
@@ -32,18 +31,11 @@ public interface TermedUpdate extends LabeledUpdate {
 	TermedDocument getCurrentDocument();
 
 	/**
-	 * Returns descriptions added or modified in this update. Existing descriptions
-	 * are preserved if their language code is not listed here.
+	 * Returns changes in entity descriptions.
 	 * 
-	 * @return added or modified descriptions indexed by language code
+	 * @return update of entity descriptions or {@link Optional#empty()} if there
+	 *         are no changes
 	 */
-	Map<String, MonolingualTextValue> getModifiedDescriptions();
-
-	/**
-	 * Returns language codes of descriptions removed in this update.
-	 * 
-	 * @return language codes of removed descriptions
-	 */
-	Set<String> getRemovedDescriptions();
+	Optional<MultilingualTextUpdate> getDescriptions();
 
 }

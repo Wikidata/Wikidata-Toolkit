@@ -54,19 +54,11 @@ public interface LexemeUpdate extends StatementUpdate {
 	Optional<ItemIdValue> getLexicalCategory();
 
 	/**
-	 * Returns lemmas added or modified in this update. Existing lemmas are
-	 * preserved if their language code is not listed here.
+	 * Returns changes in lemmas.
 	 * 
-	 * @return added or modified lemmas indexed by language code
+	 * @return update of lemmas or {@link Optional#empty()} if there are no changes
 	 */
-	Map<String, MonolingualTextValue> getModifiedLemmas();
-
-	/**
-	 * Returns language codes of lemmas removed in this update.
-	 * 
-	 * @return language codes of removed lemmas
-	 */
-	Set<String> getRemovedLemmas();
+	Optional<MultilingualTextUpdate> getLemmas();
 
 	/**
 	 * Returns new forms added to the lexeme in this update. Existing forms are

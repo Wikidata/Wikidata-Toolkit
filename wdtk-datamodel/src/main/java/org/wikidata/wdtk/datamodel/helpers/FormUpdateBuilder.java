@@ -20,9 +20,7 @@
 package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,15 +29,14 @@ import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
 import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.FormUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 
 /**
  * Builder for incremental construction of {@link FormUpdate} objects.
  */
 public class FormUpdateBuilder extends StatementUpdateBuilder {
 
-	private final Map<String, MonolingualTextValue> modifiedRepresentations = new HashMap<>();
-	private final Set<String> removedRepresentations = new HashSet<>();
+	private MultilingualTextUpdate representations;
 	private Set<ItemIdValue> grammaticalFeatures;
 
 	/**
@@ -118,46 +115,26 @@ public class FormUpdateBuilder extends StatementUpdateBuilder {
 	}
 
 	/**
-	 * Adds or changes form representation. If there is no representation for the
-	 * language code, new representation is added. If a representation with this
-	 * language code already exists, it is replaced. Representations with other
-	 * language codes are not touched. Calling this method overrides any previous
-	 * changes made with the same language code by this method or
-	 * {@link #removeRepresentation(String)}.
+	 * Updates form representations.
 	 * 
-	 * @param representation
-	 *            form representation to add or change
+	 * @param update
+	 *            changes to form representations
 	 * @throws NullPointerException
-	 *             if {@code representation} is {@code null}
-	 */
-	public void setRepresentation(MonolingualTextValue representation) {
-		Objects.requireNonNull(representation, "Representation cannot be null.");
-		modifiedRepresentations.put(representation.getLanguageCode(), representation);
-		removedRepresentations.remove(representation.getLanguageCode());
-	}
-
-	/**
-	 * Removes form representation. Representations with other language codes are
-	 * not touched. Calling this method overrides any previous changes made with the
-	 * same language code by this method or
-	 * {@link #setRepresentation(MonolingualTextValue)}.
-	 * 
-	 * @param languageCode
-	 *            language code of the removed form representation
-	 * @throws NullPointerException
-	 *             if {@code languageCode} is {@code null}
+	 *             if {@code update} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if the representation is not present in current form entity
-	 *             revision (if available)
+	 *             if removed representation is not present in current form revision
+	 *             (if available)
 	 */
-	public void removeRepresentation(String languageCode) {
-		Objects.requireNonNull(languageCode, "Language code cannot be null.");
-		if (getCurrentDocument() != null && !getCurrentDocument().getRepresentations().containsKey(languageCode)) {
-			throw new IllegalArgumentException(
-					"Representation with this language code is not in the current revision.");
+	public void updateRepresentations(MultilingualTextUpdate update) {
+		Objects.requireNonNull(update, "Update cannot be null.");
+		if (getCurrentDocument() != null) {
+			for (String removed : update.getRemovedValues()) {
+				if (!getCurrentDocument().getRepresentations().containsKey(removed)) {
+					throw new IllegalArgumentException("Removed representation is not in the current revision.");
+				}
+			}
 		}
-		removedRepresentations.add(languageCode);
-		modifiedRepresentations.remove(languageCode);
+		representations = update;
 	}
 
 	/**
@@ -184,8 +161,7 @@ public class FormUpdateBuilder extends StatementUpdateBuilder {
 
 	@Override
 	public FormUpdate build() {
-		return factory.getFormUpdate(getEntityId(), getCurrentDocument(),
-				modifiedRepresentations.values(), removedRepresentations, grammaticalFeatures,
+		return factory.getFormUpdate(getEntityId(), getCurrentDocument(), representations, grammaticalFeatures,
 				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
 	}
 

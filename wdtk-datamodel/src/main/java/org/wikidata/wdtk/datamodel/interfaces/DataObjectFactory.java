@@ -29,6 +29,7 @@ import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ItemUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.LexemeUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.MediaInfoUpdateBuilder;
+import org.wikidata.wdtk.datamodel.helpers.MultilingualTextUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.PropertyUpdateBuilder;
 import org.wikidata.wdtk.datamodel.helpers.ReferenceBuilder;
@@ -558,6 +559,24 @@ public interface DataObjectFactory {
 										   long revisionId);
 
 	/**
+	 * Creates new {@link MultilingualTextUpdate}. It might be more convenient to
+	 * use {@link MultilingualTextUpdateBuilder}.
+	 * 
+	 * @param modified
+	 *            added or changed values
+	 * @param removed
+	 *            language codes of removed values
+	 * @return new {@link MultilingualTextUpdate}
+	 * @throws NullPointerException
+	 *             if any required parameter is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if any parameters or their combination is invalid
+	 */
+	MultilingualTextUpdate getMultilingualTextUpdate(
+			Collection<MonolingualTextValue> modified,
+			Collection<String> removed);
+
+	/**
 	 * Creates new {@link SenseUpdate}. It might be more convenient to use
 	 * {@link SenseUpdateBuilder}.
 	 * 
@@ -565,10 +584,8 @@ public interface DataObjectFactory {
 	 *            ID of the sense that is to be updated
 	 * @param document
 	 *            sense revision to be updated or {@code null} if not available
-	 * @param modifiedGlosses
-	 *            added or changed sense glosses
-	 * @param removedGlosses
-	 *            language codes of removed sense glosses
+	 * @param glosses
+	 *            changes in sense glosses or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -584,8 +601,7 @@ public interface DataObjectFactory {
 	SenseUpdate getSenseUpdate(
 			SenseIdValue entityId,
 			SenseDocument document,
-			Collection<MonolingualTextValue> modifiedGlosses,
-			Collection<String> removedGlosses,
+			MultilingualTextUpdate glosses,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements);
@@ -598,10 +614,8 @@ public interface DataObjectFactory {
 	 *            ID of the form that is to be updated
 	 * @param document
 	 *            form revision to be updated or {@code null} if not available
-	 * @param modifiedRepresentations
-	 *            added or changed form representations
-	 * @param removedRepresentations
-	 *            language codes of removed form representations
+	 * @param representations
+	 *            changes in form representations or {@code null} for no change
 	 * @param grammaticalFeatures
 	 *            new grammatical features of the form or {@code null} for no change
 	 * @param addedStatements
@@ -619,8 +633,7 @@ public interface DataObjectFactory {
 	FormUpdate getFormUpdate(
 			FormIdValue entityId,
 			FormDocument document,
-			Collection<MonolingualTextValue> modifiedRepresentations,
-			Collection<String> removedRepresentations,
+			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
@@ -638,10 +651,8 @@ public interface DataObjectFactory {
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
 	 *            new lexical category of the lexeme or {@code null} for no change
-	 * @param modifiedLemmas
-	 *            added or changed lemmas
-	 * @param removedLemmas
-	 *            language codes of removed lemmas
+	 * @param lemmas
+	 *            changes in lemmas or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -671,8 +682,7 @@ public interface DataObjectFactory {
 			LexemeDocument document,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
-			Collection<MonolingualTextValue> modifiedLemmas,
-			Collection<String> removedLemmas,
+			MultilingualTextUpdate lemmas,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements,
@@ -691,10 +701,8 @@ public interface DataObjectFactory {
 	 *            ID of the media that is to be updated
 	 * @param document
 	 *            media revision to be updated or {@code null} if not available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -710,8 +718,7 @@ public interface DataObjectFactory {
 	MediaInfoUpdate getMediaInfoUpdate(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
+			MultilingualTextUpdate labels,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements);
@@ -724,14 +731,10 @@ public interface DataObjectFactory {
 	 *            ID of the item that is to be updated
 	 * @param document
 	 *            item revision to be updated or {@code null} if not available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
-	 * @param modifiedDescriptions
-	 *            added or changed entity descriptions
-	 * @param removedDescriptions
-	 *            language codes of removed entity descriptions
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -747,10 +750,8 @@ public interface DataObjectFactory {
 	ItemUpdate getItemUpdate(
 			ItemIdValue entityId,
 			ItemDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements);
@@ -764,14 +765,10 @@ public interface DataObjectFactory {
 	 * @param document
 	 *            property entity revision to be updated or {@code null} if not
 	 *            available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
-	 * @param modifiedDescriptions
-	 *            added or changed entity descriptions
-	 * @param removedDescriptions
-	 *            language codes of removed entity descriptions
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
+	 * @param descriptions
+	 *            changes in entity descriptions or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -787,10 +784,8 @@ public interface DataObjectFactory {
 	PropertyUpdate getPropertyUpdate(
 			PropertyIdValue entityId,
 			PropertyDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
-			Collection<MonolingualTextValue> modifiedDescriptions,
-			Collection<String> removedDescriptions,
+			MultilingualTextUpdate labels,
+			MultilingualTextUpdate descriptions,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements);

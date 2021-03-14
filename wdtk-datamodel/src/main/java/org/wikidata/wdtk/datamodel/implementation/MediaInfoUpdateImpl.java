@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 
 /**
@@ -39,10 +39,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementUpdateImpl implements M
 	 *            ID of the media that is to be updated
 	 * @param document
 	 *            media revision to be updated or {@code null} if not available
-	 * @param modifiedLabels
-	 *            added or changed entity labels
-	 * @param removedLabels
-	 *            language codes of removed entity labels
+	 * @param labels
+	 *            changes in entity labels or {@code null} for no change
 	 * @param addedStatements
 	 *            added statements
 	 * @param replacedStatements
@@ -57,13 +55,11 @@ public class MediaInfoUpdateImpl extends LabeledStatementUpdateImpl implements M
 	protected MediaInfoUpdateImpl(
 			MediaInfoIdValue entityId,
 			MediaInfoDocument document,
-			Collection<MonolingualTextValue> modifiedLabels,
-			Collection<String> removedLabels,
+			MultilingualTextUpdate labels,
 			Collection<Statement> addedStatements,
 			Collection<Statement> replacedStatements,
 			Collection<String> removedStatements) {
-		super(entityId, document, modifiedLabels, removedLabels,
-				addedStatements, replacedStatements, removedStatements);
+		super(entityId, document, labels, addedStatements, replacedStatements, removedStatements);
 	}
 
 	@Override

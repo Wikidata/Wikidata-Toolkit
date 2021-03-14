@@ -105,9 +105,7 @@ public class ItemUpdateBuilder extends TermedStatementUpdateBuilder {
 
 	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getCurrentDocument(),
-				getModifiedLabels().values(), getRemovedLabels(),
-				getModifiedDescriptions().values(), getRemovedDescriptions(),
+		return factory.getItemUpdate(getEntityId(), getCurrentDocument(), getLabels(), getDescriptions(),
 				getAddedStatements(), getReplacedStatements(), getRemovedStatements());
 	}
 

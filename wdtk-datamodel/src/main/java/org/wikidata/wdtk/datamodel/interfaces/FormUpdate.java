@@ -19,7 +19,6 @@
  */
 package org.wikidata.wdtk.datamodel.interfaces;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,19 +34,12 @@ public interface FormUpdate extends StatementUpdate {
 	FormDocument getCurrentDocument();
 
 	/**
-	 * Returns form representations added or modified in this update. Existing
-	 * representations are preserved if their language code is not listed here.
+	 * Returns changes in form representations.
 	 * 
-	 * @return added or modified representations indexed by language code
+	 * @return update of form representations or {@link Optional#empty()} if there
+	 *         are no changes
 	 */
-	Map<String, MonolingualTextValue> getModifiedRepresentations();
-
-	/**
-	 * Returns language codes of form representations removed in this update.
-	 * 
-	 * @return language codes of removed form representations
-	 */
-	Set<String> getRemovedRepresentations();
+	Optional<MultilingualTextUpdate> getRepresentations();
 
 	/**
 	 * Returns new grammatical features of the form assigned in this update. If
