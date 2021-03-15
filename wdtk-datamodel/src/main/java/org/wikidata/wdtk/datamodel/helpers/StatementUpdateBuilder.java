@@ -57,7 +57,7 @@ public class StatementUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code statement} is {@code null}
 	 */
-	public StatementUpdateBuilder add(Statement statement) {
+	public StatementUpdateBuilder addStatement(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		if (!statement.getStatementId().isEmpty()) {
 			statement = statement.withStatementId("");
@@ -70,7 +70,7 @@ public class StatementUpdateBuilder {
 	 * Replaces existing statement in the entity. Provided {@code statement} must
 	 * have statement ID identifying statement to replace. Calling this method
 	 * overrides any previous changes made to the same statement ID by this method
-	 * or {@link #remove(String)}.
+	 * or {@link #removeStatement(String)}.
 	 * 
 	 * @param statement
 	 *            replacement for existing statement
@@ -80,7 +80,7 @@ public class StatementUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code statement} does not have statement ID
 	 */
-	public StatementUpdateBuilder replace(Statement statement) {
+	public StatementUpdateBuilder replaceStatement(Statement statement) {
 		Objects.requireNonNull(statement, "Statement cannot be null.");
 		Validate.notEmpty(statement.getStatementId(), "Statement must have an ID.");
 		replaced.put(statement.getStatementId(), statement);
@@ -91,8 +91,8 @@ public class StatementUpdateBuilder {
 	/**
 	 * Removes existing statement from the entity. Calling this method overrides any
 	 * previous changes made to the same statement ID by
-	 * {@link #replace(Statement)}. Removing the same statement ID twice is silently
-	 * tolerated.
+	 * {@link #replaceStatement(Statement)}. Removing the same statement ID twice is
+	 * silently tolerated.
 	 * 
 	 * @param statementId
 	 *            ID of the removed statement
@@ -100,7 +100,7 @@ public class StatementUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code statementId} is empty
 	 */
-	public StatementUpdateBuilder remove(String statementId) {
+	public StatementUpdateBuilder removeStatement(String statementId) {
 		Validate.notEmpty(statementId, "Statement ID must not be empty.");
 		removed.add(statementId);
 		replaced.remove(statementId);

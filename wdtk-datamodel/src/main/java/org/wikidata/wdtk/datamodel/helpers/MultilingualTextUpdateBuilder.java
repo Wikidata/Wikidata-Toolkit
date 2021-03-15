@@ -46,7 +46,7 @@ public class MultilingualTextUpdateBuilder {
 	 * code, new value is added. If a value with this language code already exists,
 	 * it is replaced. Values with other language codes are not touched. Calling
 	 * this method overrides any previous changes made with the same language code
-	 * by this method or {@link #remove(String)}.
+	 * by this method or {@link #removeMonolingualText(String)}.
 	 * 
 	 * @param value
 	 *            monolingual value to add or change
@@ -54,7 +54,7 @@ public class MultilingualTextUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code value} is {@code null}
 	 */
-	public MultilingualTextUpdateBuilder set(MonolingualTextValue value) {
+	public MultilingualTextUpdateBuilder setMonolingualText(MonolingualTextValue value) {
 		Objects.requireNonNull(value, "Value cannot be null.");
 		modified.put(value.getLanguageCode(), value);
 		removed.remove(value.getLanguageCode());
@@ -64,7 +64,8 @@ public class MultilingualTextUpdateBuilder {
 	/**
 	 * Removes monolingual value. Values with other language codes are not touched.
 	 * Calling this method overrides any previous changes made with the same
-	 * language code by this method or {@link #set(MonolingualTextValue)}.
+	 * language code by this method or
+	 * {@link #setMonolingualText(MonolingualTextValue)}.
 	 * 
 	 * @param languageCode
 	 *            language code of the removed monolingual value
@@ -72,7 +73,7 @@ public class MultilingualTextUpdateBuilder {
 	 * @throws NullPointerException
 	 *             if {@code languageCode} is {@code null}
 	 */
-	public MultilingualTextUpdateBuilder remove(String languageCode) {
+	public MultilingualTextUpdateBuilder removeMonolingualText(String languageCode) {
 		Objects.requireNonNull(languageCode, "Language code cannot be null.");
 		removed.add(languageCode);
 		modified.remove(languageCode);
