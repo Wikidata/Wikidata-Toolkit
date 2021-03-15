@@ -36,6 +36,14 @@ public interface MultilingualTextUpdate {
 	MultilingualTextUpdate NULL = new MultilingualTextUpdateImpl(Collections.emptyList(), Collections.emptyList());
 
 	/**
+	 * Checks whether the update is empty. Empty update will not change or remove
+	 * any monolingual values.
+	 * 
+	 * @return {@code true} if the update is empty, {@code false} otherwise
+	 */
+	boolean isEmpty();
+
+	/**
 	 * Returns values added or modified in this update. Existing values are
 	 * preserved if their language code is not listed here.
 	 * 

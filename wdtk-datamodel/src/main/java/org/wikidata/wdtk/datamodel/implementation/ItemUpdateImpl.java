@@ -67,4 +67,9 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 		return (ItemDocument) super.getCurrentDocument();
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return getLabels().isEmpty() && getDescriptions().isEmpty() && getStatements().isEmpty();
+	}
+
 }

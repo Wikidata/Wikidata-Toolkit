@@ -68,4 +68,9 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 		return (PropertyDocument) super.getCurrentDocument();
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return getLabels().isEmpty() && getDescriptions().isEmpty() && getStatements().isEmpty();
+	}
+
 }

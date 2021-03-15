@@ -56,6 +56,11 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return modified.isEmpty() && removed.isEmpty();
+	}
+
+	@Override
 	public Map<String, MonolingualTextValue> getModifiedValues() {
 		return modified;
 	}

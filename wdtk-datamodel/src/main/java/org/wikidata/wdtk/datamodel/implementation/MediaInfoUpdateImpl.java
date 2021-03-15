@@ -64,4 +64,9 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 		return (MediaInfoDocument) super.getCurrentDocument();
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return getLabels().isEmpty() && getStatements().isEmpty();
+	}
+
 }

@@ -71,6 +71,11 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return glosses.isEmpty() && getStatements().isEmpty();
+	}
+
+	@Override
 	public MultilingualTextUpdate getGlosses() {
 		return glosses;
 	}

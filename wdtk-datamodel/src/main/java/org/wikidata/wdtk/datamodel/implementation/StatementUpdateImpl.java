@@ -66,6 +66,11 @@ public class StatementUpdateImpl implements StatementUpdate {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return added.isEmpty() && replaced.isEmpty() && removed.isEmpty();
+	}
+
+	@Override
 	public List<Statement> getAddedStatements() {
 		return added;
 	}

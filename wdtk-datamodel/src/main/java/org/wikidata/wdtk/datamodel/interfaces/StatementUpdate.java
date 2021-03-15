@@ -36,7 +36,16 @@ public interface StatementUpdate {
 	/**
 	 * Empty update that does not alter or add any statements.
 	 */
-	StatementUpdate NULL = new StatementUpdateImpl(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+	StatementUpdate NULL = new StatementUpdateImpl(
+			Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+
+	/**
+	 * Checks whether the update is empty. Empty update will not change or remove
+	 * any statements.
+	 * 
+	 * @return {@code true} if the update is empty, {@code false} otherwise
+	 */
+	boolean isEmpty();
 
 	/**
 	 * Returns statements added to the entity in this update.

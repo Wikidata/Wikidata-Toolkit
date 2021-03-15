@@ -41,4 +41,12 @@ public interface EntityUpdate {
 	 */
 	EntityDocument getCurrentDocument();
 
+	/**
+	 * Checks whether the update is empty. Empty update will not change the entity
+	 * in any way.
+	 * 
+	 * @return {@code true} if the update is empty, {@code false} otherwise
+	 */
+	boolean isEmpty();
+
 }

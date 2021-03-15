@@ -130,6 +130,13 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return language == null && lexicalCategory == null && lemmas.isEmpty() && getStatements().isEmpty()
+				&& addedSenses.isEmpty() && updatedSenses.isEmpty() && removedSenses.isEmpty()
+				&& addedForms.isEmpty() && updatedForms.isEmpty() && removedForms.isEmpty();
+	}
+
+	@Override
 	public Optional<ItemIdValue> getLanguage() {
 		return Optional.ofNullable(language);
 	}

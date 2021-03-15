@@ -84,6 +84,11 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return representations.isEmpty() && grammaticalFeatures == null && getStatements().isEmpty();
+	}
+
+	@Override
 	public MultilingualTextUpdate getRepresentations() {
 		return representations;
 	}
