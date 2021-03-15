@@ -32,6 +32,10 @@ import java.util.Set;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Jackson implementation of {@link StatementUpdate}.
  * 
@@ -65,24 +69,58 @@ public class StatementUpdateImpl implements StatementUpdate {
 		this.removed = Collections.unmodifiableSet(new HashSet<>(removed));
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return added.isEmpty() && replaced.isEmpty() && removed.isEmpty();
 	}
 
+	@JsonIgnore
 	@Override
 	public List<Statement> getAddedStatements() {
 		return added;
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<String, Statement> getReplacedStatements() {
 		return replaced;
 	}
 
+	@JsonIgnore
 	@Override
 	public Set<String> getRemovedStatements() {
 		return removed;
+	}
+
+	static class RemovedStatement {
+
+		private final String id;
+
+		RemovedStatement(String id) {
+			this.id = id;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		@JsonProperty("remove")
+		String getRemoveCommand() {
+			return "";
+		}
+
+	}
+
+	@JsonValue
+	List<Object> toJson() {
+		List<Object> list = new ArrayList<>();
+		list.addAll(added);
+		list.addAll(replaced.values());
+		for (String id : removed) {
+			list.add(new RemovedStatement(id));
+		}
+		return list;
 	}
 
 }

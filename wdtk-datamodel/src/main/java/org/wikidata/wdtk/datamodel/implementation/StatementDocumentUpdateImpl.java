@@ -26,6 +26,10 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Jackson implementation of {@link StatementDocumentUpdate}.
  * 
@@ -58,14 +62,20 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 		this.statements = statements;
 	}
 
+	@JsonIgnore
 	@Override
 	public StatementDocument getCurrentDocument() {
 		return (StatementDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public StatementUpdate getStatements() {
 		return statements;
 	}
 
+	@JsonInclude(Include.NON_EMPTY)
+	StatementUpdate getClaims() {
+		return statements.isEmpty() ? null : statements;
+	}
 }

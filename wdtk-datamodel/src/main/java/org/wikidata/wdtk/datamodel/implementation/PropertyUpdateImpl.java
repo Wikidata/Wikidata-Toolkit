@@ -25,6 +25,8 @@ import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Jackson implementation of {@link PropertyUpdate}.
  */
@@ -58,16 +60,19 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 		super(entityId, document, labels, descriptions, statements);
 	}
 
+	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
 		return (PropertyIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public PropertyDocument getCurrentDocument() {
 		return (PropertyDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return getLabels().isEmpty() && getDescriptions().isEmpty() && getStatements().isEmpty();

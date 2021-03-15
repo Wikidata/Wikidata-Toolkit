@@ -26,6 +26,8 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Jackson implementation of {@link EntityUpdate}.
  */
@@ -58,11 +60,17 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 		currentDocument = document;
 	}
 
+	@JsonIgnore
 	@Override
 	public EntityIdValue getEntityId() {
 		return entityId;
 	}
 
+	String getId() {
+		return entityId.getId();
+	}
+
+	@JsonIgnore
 	@Override
 	public EntityDocument getCurrentDocument() {
 		return currentDocument;

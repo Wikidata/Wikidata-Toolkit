@@ -27,6 +27,11 @@ import org.wikidata.wdtk.datamodel.interfaces.LabeledStatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Jackson implementation of {@link LabeledStatementDocumentUpdate}.
  */
@@ -61,14 +66,22 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 		this.labels = labels;
 	}
 
+	@JsonIgnore
 	@Override
 	public LabeledStatementDocument getCurrentDocument() {
 		return (LabeledStatementDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public MultilingualTextUpdate getLabels() {
 		return labels;
+	}
+
+	@JsonProperty("labels")
+	@JsonInclude(Include.NON_EMPTY)
+	MultilingualTextUpdate getJsonLabels() {
+		return labels.isEmpty() ? null : labels;
 	}
 
 }

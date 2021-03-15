@@ -25,6 +25,8 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Jackson implementation of {@link ItemUpdate}.
  */
@@ -57,16 +59,19 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 		super(entityId, document, labels, descriptions, statements);
 	}
 
+	@JsonIgnore
 	@Override
 	public ItemIdValue getEntityId() {
 		return (ItemIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public ItemDocument getCurrentDocument() {
 		return (ItemDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return getLabels().isEmpty() && getDescriptions().isEmpty() && getStatements().isEmpty();

@@ -25,6 +25,8 @@ import org.wikidata.wdtk.datamodel.interfaces.MediaInfoUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Jackson implementation of {@link MediaInfoUpdate}.
  */
@@ -54,16 +56,19 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 		super(entityId, document, labels, statements);
 	}
 
+	@JsonIgnore
 	@Override
 	public MediaInfoIdValue getEntityId() {
 		return (MediaInfoIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public MediaInfoDocument getCurrentDocument() {
 		return (MediaInfoDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return getLabels().isEmpty() && getStatements().isEmpty();

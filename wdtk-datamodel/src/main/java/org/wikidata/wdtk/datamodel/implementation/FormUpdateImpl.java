@@ -33,6 +33,11 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Jackson implementation of {@link FormUpdate}.
  */
@@ -73,26 +78,37 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 				: null;
 	}
 
+	@JsonIgnore
 	@Override
 	public FormIdValue getEntityId() {
 		return (FormIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public FormDocument getCurrentDocument() {
 		return (FormDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return representations.isEmpty() && grammaticalFeatures == null && getStatements().isEmpty();
 	}
 
+	@JsonIgnore
 	@Override
 	public MultilingualTextUpdate getRepresentations() {
 		return representations;
 	}
 
+	@JsonProperty("representations")
+	@JsonInclude(Include.NON_EMPTY)
+	MultilingualTextUpdate getJsonRepresentations() {
+		return representations.isEmpty() ? null : representations;
+	}
+
+	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<Set<ItemIdValue>> getGrammaticalFeatures() {
 		return Optional.ofNullable(grammaticalFeatures);

@@ -23,12 +23,17 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.MultilingualTextUpdate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Jackson implementation of {@link MultilingualTextUpdate}.
@@ -55,19 +60,53 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 		this.removed = Collections.unmodifiableSet(new HashSet<>(removed));
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return modified.isEmpty() && removed.isEmpty();
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<String, MonolingualTextValue> getModifiedValues() {
 		return modified;
 	}
 
+	@JsonIgnore
 	@Override
 	public Set<String> getRemovedValues() {
 		return removed;
+	}
+
+	static class RemovedMonolingualTextValue {
+
+		private final String language;
+
+		RemovedMonolingualTextValue(String language) {
+			this.language = language;
+		}
+
+		String getLanguage() {
+			return language;
+		}
+
+		@JsonProperty("remove")
+		String getRemoveCommand() {
+			return "";
+		}
+
+	}
+
+	@JsonValue
+	Map<String, Object> toJson() {
+		Map<String, Object> map = new HashMap<>();
+		for (MonolingualTextValue value : modified.values()) {
+			map.put(value.getLanguageCode(), value);
+		}
+		for (String language : removed) {
+			map.put(language, new RemovedMonolingualTextValue(language));
+		}
+		return map;
 	}
 
 }

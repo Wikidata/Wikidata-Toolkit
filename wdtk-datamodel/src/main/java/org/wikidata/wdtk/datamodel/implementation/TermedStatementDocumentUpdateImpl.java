@@ -27,6 +27,11 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Jackson implementation of {@link TermedStatementDocumentUpdate}.
  */
@@ -64,14 +69,22 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 		this.descriptions = descriptions;
 	}
 
+	@JsonIgnore
 	@Override
 	public TermedStatementDocument getCurrentDocument() {
 		return (TermedStatementDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public MultilingualTextUpdate getDescriptions() {
 		return descriptions;
+	}
+
+	@JsonProperty("descriptions")
+	@JsonInclude(Include.NON_EMPTY)
+	MultilingualTextUpdate getJsonDescriptions() {
+		return descriptions.isEmpty() ? null : descriptions;
 	}
 
 }

@@ -44,6 +44,11 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Jackson implementation of {@link LexemeUpdate}.
  */
@@ -119,16 +124,19 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 		this.removedForms = Collections.unmodifiableSet(new HashSet<>(removedForms));
 	}
 
+	@JsonIgnore
 	@Override
 	public LexemeIdValue getEntityId() {
 		return (LexemeIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public LexemeDocument getCurrentDocument() {
 		return (LexemeDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return language == null && lexicalCategory == null && lemmas.isEmpty() && getStatements().isEmpty()
@@ -136,49 +144,154 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 				&& addedForms.isEmpty() && updatedForms.isEmpty() && removedForms.isEmpty();
 	}
 
+	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<ItemIdValue> getLanguage() {
 		return Optional.ofNullable(language);
 	}
 
+	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<ItemIdValue> getLexicalCategory() {
 		return Optional.ofNullable(lexicalCategory);
 	}
 
+	@JsonIgnore
 	@Override
 	public MultilingualTextUpdate getLemmas() {
 		return lemmas;
 	}
 
+	@JsonProperty("lemmas")
+	@JsonInclude(Include.NON_EMPTY)
+	MultilingualTextUpdate getJsonLemmas() {
+		return lemmas.isEmpty() ? null : lemmas;
+	}
+
+	@JsonIgnore
 	@Override
 	public List<SenseDocument> getAddedSenses() {
 		return addedSenses;
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<SenseIdValue, SenseUpdate> getUpdatedSenses() {
 		return updatedSenses;
 	}
 
+	@JsonIgnore
 	@Override
 	public Set<SenseIdValue> getRemovedSenses() {
 		return removedSenses;
 	}
 
+	@JsonIgnore
 	@Override
 	public List<FormDocument> getAddedForms() {
 		return addedForms;
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<FormIdValue, FormUpdate> getUpdatedForms() {
 		return updatedForms;
 	}
 
+	@JsonIgnore
 	@Override
 	public Set<FormIdValue> getRemovedForms() {
 		return removedForms;
+	}
+
+	static class AddedSense extends SenseDocumentImpl {
+
+		AddedSense(SenseDocument sense) {
+			super(SenseIdValue.NULL, new ArrayList<>(sense.getGlosses().values()),
+					sense.getStatementGroups(), sense.getRevisionId());
+		}
+
+		@JsonProperty("add")
+		public String getAddCommand() {
+			return "";
+		}
+
+	}
+
+	static class RemovedSense {
+
+		private final SenseIdValue id;
+
+		RemovedSense(SenseIdValue id) {
+			this.id = id;
+		}
+
+		String getId() {
+			return id.getId();
+		}
+
+		@JsonProperty("remove")
+		String getRemoveCommand() {
+			return "";
+		}
+
+	}
+
+	List<Object> getSenses() {
+		List<Object> list = new ArrayList<>();
+		for (SenseDocument sense : addedSenses) {
+			list.add(new AddedSense(sense));
+		}
+		list.addAll(updatedSenses.values());
+		for (SenseIdValue id : removedSenses) {
+			list.add(new RemovedSense(id));
+		}
+		return list;
+	}
+
+	static class AddedForm extends FormDocumentImpl {
+
+		AddedForm(FormDocument form) {
+			super(FormIdValue.NULL, new ArrayList<>(form.getRepresentations().values()), form.getGrammaticalFeatures(),
+					form.getStatementGroups(), form.getRevisionId());
+		}
+
+		@JsonProperty("add")
+		public String getAddCommand() {
+			return "";
+		}
+
+	}
+
+	static class RemovedForm {
+
+		private final FormIdValue id;
+
+		RemovedForm(FormIdValue id) {
+			this.id = id;
+		}
+
+		String getId() {
+			return id.getId();
+		}
+
+		@JsonProperty("remove")
+		String getRemoveCommand() {
+			return "";
+		}
+
+	}
+
+	List<Object> getForms() {
+		List<Object> list = new ArrayList<>();
+		for (FormDocument form : addedForms) {
+			list.add(new AddedForm(form));
+		}
+		list.addAll(updatedForms.values());
+		for (FormIdValue id : removedForms) {
+			list.add(new RemovedForm(id));
+		}
+		return list;
 	}
 
 }

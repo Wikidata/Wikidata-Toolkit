@@ -27,6 +27,11 @@ import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.SenseUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Jackson implementation of {@link SenseUpdate}.
  */
@@ -60,24 +65,34 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 		this.glosses = glosses;
 	}
 
+	@JsonIgnore
 	@Override
 	public SenseIdValue getEntityId() {
 		return (SenseIdValue) super.getEntityId();
 	}
 
+	@JsonIgnore
 	@Override
 	public SenseDocument getCurrentDocument() {
 		return (SenseDocument) super.getCurrentDocument();
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEmpty() {
 		return glosses.isEmpty() && getStatements().isEmpty();
 	}
 
+	@JsonIgnore
 	@Override
 	public MultilingualTextUpdate getGlosses() {
 		return glosses;
+	}
+
+	@JsonProperty("glosses")
+	@JsonInclude(Include.NON_EMPTY)
+	MultilingualTextUpdate getJsonGlosses() {
+		return glosses.isEmpty() ? null : glosses;
 	}
 
 }
