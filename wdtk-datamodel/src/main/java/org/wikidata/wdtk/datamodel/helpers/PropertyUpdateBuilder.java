@@ -46,18 +46,18 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given property
+	 * Initializes new builder object for constructing update of given base property
 	 * entity revision.
 	 * 
-	 * @param document
-	 *            property entity revision to be updated
+	 * @param revision
+	 *            base property entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private PropertyUpdateBuilder(PropertyDocument document) {
-		super(document);
+	private PropertyUpdateBuilder(PropertyDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -77,22 +77,22 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given property entity
-	 * revision. Provided property document might not represent the latest revision
-	 * of the property entity as currently stored in Wikibase. It will be used for
-	 * validation in builder methods. If the document has revision ID, it will be
-	 * used to detect edit conflicts.
+	 * Creates new builder object for constructing update of given base property
+	 * entity revision. Provided property document might not represent the latest
+	 * revision of the property entity as currently stored in Wikibase. It will be
+	 * used for validation in builder methods. If the document has revision ID, it
+	 * will be used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            property entity revision to be updated
+	 * @param revision
+	 *            base property entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static PropertyUpdateBuilder forPropertyDocument(PropertyDocument document) {
-		return new PropertyUpdateBuilder(document);
+	public static PropertyUpdateBuilder forPropertyDocument(PropertyDocument revision) {
+		return new PropertyUpdateBuilder(revision);
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	}
 
 	@Override
-	protected PropertyDocument getCurrentDocument() {
-		return (PropertyDocument) super.getCurrentDocument();
+	protected PropertyDocument getBaseRevision() {
+		return (PropertyDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 
 	@Override
 	public PropertyUpdate build() {
-		return factory.getPropertyUpdate(getEntityId(), getCurrentDocument(),
+		return factory.getPropertyUpdate(getEntityId(), getBaseRevision(),
 				getLabels(), getDescriptions(), getStatements());
 	}
 

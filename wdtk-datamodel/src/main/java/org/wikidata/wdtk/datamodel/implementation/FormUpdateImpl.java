@@ -51,8 +51,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 * 
 	 * @param entityId
 	 *            ID of the form that is to be updated
-	 * @param document
-	 *            form revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base form revision to be updated or {@code null} if not available
 	 * @param representations
 	 *            changes in form representations, possibly empty
 	 * @param grammaticalFeatures
@@ -66,11 +66,11 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	 */
 	protected FormUpdateImpl(
 			FormIdValue entityId,
-			FormDocument document,
+			FormDocument revision,
 			MultilingualTextUpdate representations,
 			Collection<ItemIdValue> grammaticalFeatures,
 			StatementUpdate statements) {
-		super(entityId, document, statements);
+		super(entityId, revision, statements);
 		Objects.requireNonNull(representations, "Representation update cannot be null.");
 		this.representations = representations;
 		this.grammaticalFeatures = grammaticalFeatures != null
@@ -86,8 +86,8 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 
 	@JsonIgnore
 	@Override
-	public FormDocument getCurrentDocument() {
-		return (FormDocument) super.getCurrentDocument();
+	public FormDocument getBaseRevision() {
+		return (FormDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

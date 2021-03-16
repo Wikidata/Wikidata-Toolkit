@@ -44,8 +44,9 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param document
-	 *            entity revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base entity revision to be updated or {@code null} if not
+	 *            available
 	 * @param statements
 	 *            changes in entity statements, possibly empty
 	 * @throws NullPointerException
@@ -55,17 +56,17 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 	 */
 	protected StatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			StatementDocument document,
+			StatementDocument revision,
 			StatementUpdate statements) {
-		super(entityId, document);
+		super(entityId, revision);
 		Objects.requireNonNull(statements, "Statement update cannot be null.");
 		this.statements = statements;
 	}
 
 	@JsonIgnore
 	@Override
-	public StatementDocument getCurrentDocument() {
-		return (StatementDocument) super.getCurrentDocument();
+	public StatementDocument getBaseRevision() {
+		return (StatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

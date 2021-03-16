@@ -48,7 +48,7 @@ public abstract class EntityUpdateBuilder {
 	static DataObjectFactory factory = new DataObjectFactoryImpl();
 
 	private final EntityIdValue entityId;
-	private final EntityDocument currentDocument;
+	private final EntityDocument baseRevision;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -65,25 +65,25 @@ public abstract class EntityUpdateBuilder {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		Validate.isTrue(entityId.isValid(), "Entity ID must be valid.");
 		this.entityId = entityId;
-		currentDocument = null;
+		baseRevision = null;
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given entity
+	 * Initializes new builder object for constructing update of given base entity
 	 * revision.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	protected EntityUpdateBuilder(EntityDocument document) {
-		Objects.requireNonNull(document, "Entity document cannot be null.");
-		Validate.isTrue(document.getEntityId().isValid(), "Entity ID must be valid.");
-		entityId = document.getEntityId();
-		currentDocument = document;
+	protected EntityUpdateBuilder(EntityDocument revision) {
+		Objects.requireNonNull(revision, "Base entity revision cannot be null.");
+		Validate.isTrue(revision.getEntityId().isValid(), "Entity ID must be valid.");
+		entityId = revision.getEntityId();
+		baseRevision = revision;
 	}
 
 	/**
@@ -106,9 +106,9 @@ public abstract class EntityUpdateBuilder {
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given entity revision.
-	 * Provided entity document might not represent the latest revision of the
-	 * entity as currently stored in Wikibase. It will be used for validation in
+	 * Creates new builder object for constructing update of given base entity
+	 * revision. Provided entity document might not represent the latest revision of
+	 * the entity as currently stored in Wikibase. It will be used for validation in
 	 * builder methods. If the document has revision ID, it will be used to detect
 	 * edit conflicts.
 	 * <p>
@@ -116,16 +116,16 @@ public abstract class EntityUpdateBuilder {
 	 * {@link PropertyDocument}, {@link LexemeDocument}, {@link FormDocument},
 	 * {@link SenseDocument}, and {@link MediaInfoDocument}.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @return builder object matching entity type
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} is of unrecognized type
+	 *             if {@code revision} is of unrecognized type
 	 */
-	public static EntityUpdateBuilder forEntityDocument(EntityDocument document) {
-		return StatementDocumentUpdateBuilder.forEntityDocument(document);
+	public static EntityUpdateBuilder forEntityDocument(EntityDocument revision) {
+		return StatementDocumentUpdateBuilder.forEntityDocument(revision);
 	}
 
 	/**
@@ -138,14 +138,14 @@ public abstract class EntityUpdateBuilder {
 	}
 
 	/**
-	 * Returns entity revision, upon which this update is built. If no entity
+	 * Returns base entity revision, upon which this update is built. If no base
 	 * revision was provided when this builder was constructed, this method returns
 	 * {@code null}.
 	 * 
-	 * @return entity revision that is being updated
+	 * @return base entity revision that is being updated
 	 */
-	protected EntityDocument getCurrentDocument() {
-		return currentDocument;
+	protected EntityDocument getBaseRevision() {
+		return baseRevision;
 	}
 
 	/**

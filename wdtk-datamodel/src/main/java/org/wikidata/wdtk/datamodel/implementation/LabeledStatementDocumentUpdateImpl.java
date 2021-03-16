@@ -45,8 +45,9 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param document
-	 *            entity revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base entity revision to be updated or {@code null} if not
+	 *            available
 	 * @param labels
 	 *            changes in entity labels, possibly empty
 	 * @param statements
@@ -58,18 +59,18 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	 */
 	protected LabeledStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			LabeledStatementDocument document,
+			LabeledStatementDocument revision,
 			MultilingualTextUpdate labels,
 			StatementUpdate statements) {
-		super(entityId, document, statements);
+		super(entityId, revision, statements);
 		Objects.requireNonNull(labels, "Label update cannot be null.");
 		this.labels = labels;
 	}
 
 	@JsonIgnore
 	@Override
-	public LabeledStatementDocument getCurrentDocument() {
-		return (LabeledStatementDocument) super.getCurrentDocument();
+	public LabeledStatementDocument getBaseRevision() {
+		return (LabeledStatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

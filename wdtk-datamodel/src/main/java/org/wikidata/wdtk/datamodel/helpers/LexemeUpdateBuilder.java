@@ -72,18 +72,18 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given lexeme entity
-	 * revision.
+	 * Initializes new builder object for constructing update of given base lexeme
+	 * entity revision.
 	 * 
-	 * @param document
-	 *            lexeme revision to be updated
+	 * @param revision
+	 *            base lexeme revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private LexemeUpdateBuilder(LexemeDocument document) {
-		super(document);
+	private LexemeUpdateBuilder(LexemeDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -103,22 +103,22 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given lexeme entity
-	 * revision. Provided lexeme document might not represent the latest revision of
-	 * the lexeme entity as currently stored in Wikibase. It will be used for
-	 * validation in builder methods. If the document has revision ID, it will be
-	 * used to detect edit conflicts.
+	 * Creates new builder object for constructing update of given base lexeme
+	 * entity revision. Provided lexeme document might not represent the latest
+	 * revision of the lexeme entity as currently stored in Wikibase. It will be
+	 * used for validation in builder methods. If the document has revision ID, it
+	 * will be used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            lexeme entity revision to be updated
+	 * @param revision
+	 *            base lexeme entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static LexemeUpdateBuilder forLexemeDocument(LexemeDocument document) {
-		return new LexemeUpdateBuilder(document);
+	public static LexemeUpdateBuilder forLexemeDocument(LexemeDocument revision) {
+		return new LexemeUpdateBuilder(revision);
 	}
 
 	@Override
@@ -127,8 +127,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected LexemeDocument getCurrentDocument() {
-		return (LexemeDocument) super.getCurrentDocument();
+	protected LexemeDocument getBaseRevision() {
+		return (LexemeDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -183,9 +183,9 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder updateLemmas(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (String removed : update.getRemovedValues()) {
-				if (!getCurrentDocument().getLemmas().containsKey(removed)) {
+				if (!getBaseRevision().getLemmas().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed lemma is not in the current revision.");
 				}
 			}
@@ -229,7 +229,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder updateSense(SenseUpdate update) {
 		Objects.requireNonNull(update, "Sense update cannot be null.");
-		if (getCurrentDocument() != null && getCurrentDocument().getSenses().stream()
+		if (getBaseRevision() != null && getBaseRevision().getSenses().stream()
 				.noneMatch(s -> s.getEntityId().equals(update.getEntityId()))) {
 			throw new IllegalArgumentException("Cannot update sense that is not in the current revision.");
 		}
@@ -256,8 +256,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	public LexemeUpdateBuilder removeSense(SenseIdValue senseId) {
 		Objects.requireNonNull(senseId, "Sense ID cannot be null.");
 		Validate.isTrue(senseId.isValid(), "ID of removed sense must be valid.");
-		if (getCurrentDocument() != null
-				&& getCurrentDocument().getSenses().stream().noneMatch(s -> s.getEntityId().equals(senseId))) {
+		if (getBaseRevision() != null
+				&& getBaseRevision().getSenses().stream().noneMatch(s -> s.getEntityId().equals(senseId))) {
 			throw new IllegalArgumentException("Cannot remove sense that is not in the current revision.");
 		}
 		removedSenses.add(senseId);
@@ -300,7 +300,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public LexemeUpdateBuilder updateForm(FormUpdate update) {
 		Objects.requireNonNull(update, "Form update cannot be null.");
-		if (getCurrentDocument() != null && getCurrentDocument().getForms().stream()
+		if (getBaseRevision() != null && getBaseRevision().getForms().stream()
 				.noneMatch(f -> f.getEntityId().equals(update.getEntityId()))) {
 			throw new IllegalArgumentException("Cannot update form that is not in the current revision.");
 		}
@@ -326,8 +326,8 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	public LexemeUpdateBuilder removeForm(FormIdValue formId) {
 		Objects.requireNonNull(formId, "Form ID cannot be null.");
 		Validate.isTrue(formId.isValid(), "ID of removed form must be valid.");
-		if (getCurrentDocument() != null
-				&& getCurrentDocument().getForms().stream().noneMatch(f -> f.getEntityId().equals(formId))) {
+		if (getBaseRevision() != null
+				&& getBaseRevision().getForms().stream().noneMatch(f -> f.getEntityId().equals(formId))) {
 			throw new IllegalArgumentException("Cannot remove form that is not in the current revision.");
 		}
 		removedForms.add(formId);
@@ -337,7 +337,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public LexemeUpdate build() {
-		return factory.getLexemeUpdate(getEntityId(), getCurrentDocument(),
+		return factory.getLexemeUpdate(getEntityId(), getBaseRevision(),
 				language, lexicalCategory, lemmas, getStatements(),
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);

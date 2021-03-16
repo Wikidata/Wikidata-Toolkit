@@ -31,7 +31,7 @@ public interface FormUpdate extends StatementDocumentUpdate {
 	FormIdValue getEntityId();
 
 	@Override
-	FormDocument getCurrentDocument();
+	FormDocument getBaseRevision();
 
 	/**
 	 * Returns changes in form representations.

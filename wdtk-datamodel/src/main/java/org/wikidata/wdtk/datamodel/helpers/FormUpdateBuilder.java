@@ -56,18 +56,18 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given form entity
-	 * revision.
+	 * Initializes new builder object for constructing update of given base form
+	 * entity revision.
 	 * 
-	 * @param document
-	 *            form revision to be updated
+	 * @param revision
+	 *            base form revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private FormUpdateBuilder(FormDocument document) {
-		super(document);
+	private FormUpdateBuilder(FormDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -87,22 +87,22 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given form entity
+	 * Creates new builder object for constructing update of given base form entity
 	 * revision. Provided form document might not represent the latest revision of
 	 * the form entity as currently stored in Wikibase. It will be used for
 	 * validation in builder methods. If the document has revision ID, it will be
 	 * used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            form entity revision to be updated
+	 * @param revision
+	 *            base form entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static FormUpdateBuilder forFormDocument(FormDocument document) {
-		return new FormUpdateBuilder(document);
+	public static FormUpdateBuilder forFormDocument(FormDocument revision) {
+		return new FormUpdateBuilder(revision);
 	}
 
 	@Override
@@ -111,8 +111,8 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected FormDocument getCurrentDocument() {
-		return (FormDocument) super.getCurrentDocument();
+	protected FormDocument getBaseRevision() {
+		return (FormDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -136,9 +136,9 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public FormUpdateBuilder updateRepresentations(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (String removed : update.getRemovedValues()) {
-				if (!getCurrentDocument().getRepresentations().containsKey(removed)) {
+				if (!getBaseRevision().getRepresentations().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed representation is not in the current revision.");
 				}
 			}
@@ -173,7 +173,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public FormUpdate build() {
-		return factory.getFormUpdate(getEntityId(), getCurrentDocument(),
+		return factory.getFormUpdate(getEntityId(), getBaseRevision(),
 				representations, grammaticalFeatures, getStatements());
 	}
 

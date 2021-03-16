@@ -26,6 +26,6 @@ package org.wikidata.wdtk.datamodel.interfaces;
 public interface LabeledStatementDocumentUpdate extends LabeledDocumentUpdate, StatementDocumentUpdate {
 
 	@Override
-	LabeledStatementDocument getCurrentDocument();
+	LabeledStatementDocument getBaseRevision();
 
 }

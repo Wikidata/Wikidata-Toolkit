@@ -55,18 +55,18 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given entity
+	 * Initializes new builder object for constructing update of given base entity
 	 * revision.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	protected TermedStatementDocumentUpdateBuilder(TermedStatementDocument document) {
-		super(document);
+	protected TermedStatementDocumentUpdateBuilder(TermedStatementDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -94,38 +94,38 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given entity revision.
-	 * Provided entity document might not represent the latest revision of the
-	 * entity as currently stored in Wikibase. It will be used for validation in
+	 * Creates new builder object for constructing update of given base entity
+	 * revision. Provided entity document might not represent the latest revision of
+	 * the entity as currently stored in Wikibase. It will be used for validation in
 	 * builder methods. If the document has revision ID, it will be used to detect
 	 * edit conflicts.
 	 * <p>
 	 * Supported entity types include {@link ItemDocument} and
 	 * {@link PropertyDocument}.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @return builder object matching entity type
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} is of unrecognized type or it does not have
+	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static TermedStatementDocumentUpdateBuilder forTermedStatementDocument(TermedStatementDocument document) {
-		Objects.requireNonNull(document, "Entity document cannot be null.");
-		if (document instanceof ItemDocument) {
-			return ItemUpdateBuilder.forItemDocument((ItemDocument) document);
+	public static TermedStatementDocumentUpdateBuilder forTermedStatementDocument(TermedStatementDocument revision) {
+		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		if (revision instanceof ItemDocument) {
+			return ItemUpdateBuilder.forItemDocument((ItemDocument) revision);
 		}
-		if (document instanceof PropertyDocument) {
-			return PropertyUpdateBuilder.forPropertyDocument((PropertyDocument) document);
+		if (revision instanceof PropertyDocument) {
+			return PropertyUpdateBuilder.forPropertyDocument((PropertyDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
 
 	@Override
-	protected TermedStatementDocument getCurrentDocument() {
-		return (TermedStatementDocument) super.getCurrentDocument();
+	protected TermedStatementDocument getBaseRevision() {
+		return (TermedStatementDocument) super.getBaseRevision();
 	}
 
 	/**
@@ -164,9 +164,9 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 */
 	public TermedStatementDocumentUpdateBuilder updateDescriptions(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (String removed : update.getRemovedValues()) {
-				if (!getCurrentDocument().getDescriptions().containsKey(removed)) {
+				if (!getBaseRevision().getDescriptions().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed description is not in the current revision.");
 				}
 			}

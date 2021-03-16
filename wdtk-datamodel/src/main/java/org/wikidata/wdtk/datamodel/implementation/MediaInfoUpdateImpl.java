@@ -37,8 +37,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 * 
 	 * @param entityId
 	 *            ID of the media that is to be updated
-	 * @param document
-	 *            media revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base media revision to be updated or {@code null} if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param statements
@@ -50,10 +50,10 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 	 */
 	protected MediaInfoUpdateImpl(
 			MediaInfoIdValue entityId,
-			MediaInfoDocument document,
+			MediaInfoDocument revision,
 			MultilingualTextUpdate labels,
 			StatementUpdate statements) {
-		super(entityId, document, labels, statements);
+		super(entityId, revision, labels, statements);
 	}
 
 	@JsonIgnore
@@ -64,8 +64,8 @@ public class MediaInfoUpdateImpl extends LabeledStatementDocumentUpdateImpl impl
 
 	@JsonIgnore
 	@Override
-	public MediaInfoDocument getCurrentDocument() {
-		return (MediaInfoDocument) super.getCurrentDocument();
+	public MediaInfoDocument getBaseRevision() {
+		return (MediaInfoDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

@@ -69,8 +69,9 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 * 
 	 * @param entityId
 	 *            ID of the lexeme that is to be updated
-	 * @param document
-	 *            lexeme revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base lexeme revision to be updated or {@code null} if not
+	 *            available
 	 * @param language
 	 *            new lexeme language or {@code null} for no change
 	 * @param lexicalCategory
@@ -98,7 +99,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	 */
 	protected LexemeUpdateImpl(
 			LexemeIdValue entityId,
-			LexemeDocument document,
+			LexemeDocument revision,
 			ItemIdValue language,
 			ItemIdValue lexicalCategory,
 			MultilingualTextUpdate lemmas,
@@ -109,7 +110,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 			Collection<FormDocument> addedForms,
 			Collection<FormUpdate> updatedForms,
 			Collection<FormIdValue> removedForms) {
-		super(entityId, document, statements);
+		super(entityId, revision, statements);
 		Objects.requireNonNull(lemmas, "Lemma update cannot be null.");
 		this.language = language;
 		this.lexicalCategory = lexicalCategory;
@@ -132,8 +133,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	@JsonIgnore
 	@Override
-	public LexemeDocument getCurrentDocument() {
-		return (LexemeDocument) super.getCurrentDocument();
+	public LexemeDocument getBaseRevision() {
+		return (LexemeDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

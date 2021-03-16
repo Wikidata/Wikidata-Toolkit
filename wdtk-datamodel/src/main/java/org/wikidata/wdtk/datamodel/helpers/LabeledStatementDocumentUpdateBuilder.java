@@ -58,18 +58,18 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given entity
+	 * Initializes new builder object for constructing update of given base entity
 	 * revision.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	protected LabeledStatementDocumentUpdateBuilder(LabeledStatementDocument document) {
-		super(document);
+	protected LabeledStatementDocumentUpdateBuilder(LabeledStatementDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -95,38 +95,38 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given entity revision.
-	 * Provided entity document might not represent the latest revision of the
-	 * entity as currently stored in Wikibase. It will be used for validation in
+	 * Creates new builder object for constructing update of given base entity
+	 * revision. Provided entity document might not represent the latest revision of
+	 * the entity as currently stored in Wikibase. It will be used for validation in
 	 * builder methods. If the document has revision ID, it will be used to detect
 	 * edit conflicts.
 	 * <p>
 	 * Supported entity types include {@link ItemDocument},
 	 * {@link PropertyDocument}, and {@link MediaInfoDocument}.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @return builder object matching entity type
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} is of unrecognized type or it does not have
+	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static LabeledStatementDocumentUpdateBuilder forLabeledStatementDocument(LabeledStatementDocument document) {
-		Objects.requireNonNull(document, "Entity document cannot be null.");
-		if (document instanceof MediaInfoDocument) {
-			return MediaInfoUpdateBuilder.forMediaInfoDocument((MediaInfoDocument) document);
+	public static LabeledStatementDocumentUpdateBuilder forLabeledStatementDocument(LabeledStatementDocument revision) {
+		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		if (revision instanceof MediaInfoDocument) {
+			return MediaInfoUpdateBuilder.forMediaInfoDocument((MediaInfoDocument) revision);
 		}
-		if (document instanceof TermedStatementDocument) {
-			return TermedStatementDocumentUpdateBuilder.forTermedStatementDocument((TermedStatementDocument) document);
+		if (revision instanceof TermedStatementDocument) {
+			return TermedStatementDocumentUpdateBuilder.forTermedStatementDocument((TermedStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
 
 	@Override
-	protected LabeledStatementDocument getCurrentDocument() {
-		return (LabeledStatementDocument) super.getCurrentDocument();
+	protected LabeledStatementDocument getBaseRevision() {
+		return (LabeledStatementDocument) super.getBaseRevision();
 	}
 
 	/**
@@ -158,9 +158,9 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 */
 	public LabeledStatementDocumentUpdateBuilder updateLabels(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (String removed : update.getRemovedValues()) {
-				if (!getCurrentDocument().getLabels().containsKey(removed)) {
+				if (!getBaseRevision().getLabels().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed label is not in the current revision.");
 				}
 			}

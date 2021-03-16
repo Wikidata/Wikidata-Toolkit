@@ -44,8 +44,8 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 * 
 	 * @param entityId
 	 *            ID of the sense that is to be updated
-	 * @param document
-	 *            sense revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base sense revision to be updated or {@code null} if not available
 	 * @param glosses
 	 *            changes in sense glosses, possibly empty
 	 * @param statements
@@ -57,10 +57,10 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 	 */
 	protected SenseUpdateImpl(
 			SenseIdValue entityId,
-			SenseDocument document,
+			SenseDocument revision,
 			MultilingualTextUpdate glosses,
 			StatementUpdate statements) {
-		super(entityId, document, statements);
+		super(entityId, revision, statements);
 		Objects.requireNonNull(glosses, "Gloss update cannot be null.");
 		this.glosses = glosses;
 	}
@@ -73,8 +73,8 @@ public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements Sens
 
 	@JsonIgnore
 	@Override
-	public SenseDocument getCurrentDocument() {
-		return (SenseDocument) super.getCurrentDocument();
+	public SenseDocument getBaseRevision() {
+		return (SenseDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

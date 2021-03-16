@@ -33,7 +33,7 @@ public interface LexemeUpdate extends StatementDocumentUpdate {
 	LexemeIdValue getEntityId();
 
 	@Override
-	LexemeDocument getCurrentDocument();
+	LexemeDocument getBaseRevision();
 
 	/**
 	 * Returns new lexeme language assigned in this update. If language code is not

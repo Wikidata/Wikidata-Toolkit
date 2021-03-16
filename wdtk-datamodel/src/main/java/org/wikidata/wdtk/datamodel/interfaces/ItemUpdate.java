@@ -28,6 +28,6 @@ public interface ItemUpdate extends TermedStatementDocumentUpdate {
 	ItemIdValue getEntityId();
 
 	@Override
-	ItemDocument getCurrentDocument();
+	ItemDocument getBaseRevision();
 
 }

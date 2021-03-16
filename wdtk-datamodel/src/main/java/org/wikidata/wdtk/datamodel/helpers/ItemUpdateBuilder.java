@@ -46,18 +46,18 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given item entity
-	 * revision.
+	 * Initializes new builder object for constructing update of given base item
+	 * entity revision.
 	 * 
-	 * @param document
-	 *            item entity revision to be updated
+	 * @param revision
+	 *            base item entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private ItemUpdateBuilder(ItemDocument document) {
-		super(document);
+	private ItemUpdateBuilder(ItemDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -77,22 +77,22 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given item entity
+	 * Creates new builder object for constructing update of given base item entity
 	 * revision. Provided item document might not represent the latest revision of
 	 * the item entity as currently stored in Wikibase. It will be used for
 	 * validation in builder methods. If the document has revision ID, it will be
 	 * used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            item entity revision to be updated
+	 * @param revision
+	 *            base item entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static ItemUpdateBuilder forItemDocument(ItemDocument document) {
-		return new ItemUpdateBuilder(document);
+	public static ItemUpdateBuilder forItemDocument(ItemDocument revision) {
+		return new ItemUpdateBuilder(revision);
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected ItemDocument getCurrentDocument() {
-		return (ItemDocument) super.getCurrentDocument();
+	protected ItemDocument getBaseRevision() {
+		return (ItemDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 
 	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getCurrentDocument(),
+		return factory.getItemUpdate(getEntityId(), getBaseRevision(),
 				getLabels(), getDescriptions(), getStatements());
 	}
 

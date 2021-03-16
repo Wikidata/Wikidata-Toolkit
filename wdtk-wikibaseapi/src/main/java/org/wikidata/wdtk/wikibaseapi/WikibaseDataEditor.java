@@ -426,7 +426,7 @@ public class WikibaseDataEditor {
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(update);
-		long revisionId = update.getCurrentDocument() != null ? update.getCurrentDocument().getRevisionId() : 0;
+		long revisionId = update.getBaseRevision() != null ? update.getBaseRevision().getRevisionId() : 0;
 		return this.wbEditingAction.wbEditEntity(
 				update.getEntityId().getId(), null, null, null, data, clear, editAsBot, revisionId, summary, tags);
 	}

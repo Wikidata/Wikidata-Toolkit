@@ -46,18 +46,18 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given media entity
-	 * revision.
+	 * Initializes new builder object for constructing update of given base media
+	 * entity revision.
 	 * 
-	 * @param document
-	 *            form revision to be updated
+	 * @param revision
+	 *            base media revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private MediaInfoUpdateBuilder(MediaInfoDocument document) {
-		super(document);
+	private MediaInfoUpdateBuilder(MediaInfoDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -77,22 +77,22 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given media entity
+	 * Creates new builder object for constructing update of given base media entity
 	 * revision. Provided media document might not represent the latest revision of
 	 * the media entity as currently stored in Wikibase. It will be used for
 	 * validation in builder methods. If the document has revision ID, it will be
 	 * used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            media entity revision to be updated
+	 * @param revision
+	 *            base media entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static MediaInfoUpdateBuilder forMediaInfoDocument(MediaInfoDocument document) {
-		return new MediaInfoUpdateBuilder(document);
+	public static MediaInfoUpdateBuilder forMediaInfoDocument(MediaInfoDocument revision) {
+		return new MediaInfoUpdateBuilder(revision);
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	}
 
 	@Override
-	protected MediaInfoDocument getCurrentDocument() {
-		return (MediaInfoDocument) super.getCurrentDocument();
+	protected MediaInfoDocument getBaseRevision() {
+		return (MediaInfoDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 
 	@Override
 	public MediaInfoUpdate build() {
-		return factory.getMediaInfoUpdate(getEntityId(), getCurrentDocument(), getLabels(), getStatements());
+		return factory.getMediaInfoUpdate(getEntityId(), getBaseRevision(), getLabels(), getStatements());
 	}
 
 }

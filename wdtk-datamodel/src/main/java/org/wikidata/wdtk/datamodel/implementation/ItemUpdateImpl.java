@@ -37,8 +37,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 * 
 	 * @param entityId
 	 *            ID of the item that is to be updated
-	 * @param document
-	 *            item revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base item revision to be updated or {@code null} if not available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -52,11 +52,11 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 	 */
 	protected ItemUpdateImpl(
 			ItemIdValue entityId,
-			ItemDocument document,
+			ItemDocument revision,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
 			StatementUpdate statements) {
-		super(entityId, document, labels, descriptions, statements);
+		super(entityId, revision, labels, descriptions, statements);
 	}
 
 	@JsonIgnore
@@ -67,8 +67,8 @@ public class ItemUpdateImpl extends TermedStatementDocumentUpdateImpl implements
 
 	@JsonIgnore
 	@Override
-	public ItemDocument getCurrentDocument() {
-		return (ItemDocument) super.getCurrentDocument();
+	public ItemDocument getBaseRevision() {
+		return (ItemDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

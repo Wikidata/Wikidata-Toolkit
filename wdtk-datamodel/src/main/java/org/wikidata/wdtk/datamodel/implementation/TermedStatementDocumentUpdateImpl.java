@@ -45,8 +45,9 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param document
-	 *            entity revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base entity revision to be updated or {@code null} if not
+	 *            available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
 	 * @param descriptions
@@ -60,19 +61,19 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	 */
 	protected TermedStatementDocumentUpdateImpl(
 			EntityIdValue entityId,
-			TermedStatementDocument document,
+			TermedStatementDocument revision,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
 			StatementUpdate statements) {
-		super(entityId, document, labels, statements);
+		super(entityId, revision, labels, statements);
 		Objects.requireNonNull(descriptions, "Description update cannot be null.");
 		this.descriptions = descriptions;
 	}
 
 	@JsonIgnore
 	@Override
-	public TermedStatementDocument getCurrentDocument() {
-		return (TermedStatementDocument) super.getCurrentDocument();
+	public TermedStatementDocument getBaseRevision() {
+		return (TermedStatementDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

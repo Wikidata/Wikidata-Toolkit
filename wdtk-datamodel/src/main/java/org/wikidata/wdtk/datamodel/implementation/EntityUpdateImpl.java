@@ -34,30 +34,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class EntityUpdateImpl implements EntityUpdate {
 
 	private final EntityIdValue entityId;
-	private final EntityDocument currentDocument;
+	private final EntityDocument baseRevision;
 
 	/**
 	 * Initializes new entity update.
 	 * 
 	 * @param entityId
 	 *            ID of the entity that is to be updated
-	 * @param document
-	 *            entity revision to be updated or {@code null} if not available
+	 * @param revision
+	 *            base entity revision to be updated or {@code null} if not
+	 *            available
 	 * @throws NullPointerException
 	 *             if {@code entityId} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code entityId} is not a valid ID or it does not match
-	 *             current revision document ID (if provided)
+	 *             if {@code entityId} is not a valid ID or it does not match base
+	 *             revision document ID (if provided)
 	 */
-	protected EntityUpdateImpl(EntityIdValue entityId, EntityDocument document) {
+	protected EntityUpdateImpl(EntityIdValue entityId, EntityDocument revision) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		Validate.isTrue(entityId.isValid(), "Entity ID must be valid.");
-		if (document != null) {
-			Validate.isTrue(entityId.equals(document.getEntityId()),
-					"Entity ID must be the same as ID of the current revision document.");
+		if (revision != null) {
+			Validate.isTrue(entityId.equals(revision.getEntityId()),
+					"Entity ID must be the same as ID of the base revision document.");
 		}
 		this.entityId = entityId;
-		currentDocument = document;
+		baseRevision = revision;
 	}
 
 	@JsonIgnore
@@ -72,8 +73,8 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 
 	@JsonIgnore
 	@Override
-	public EntityDocument getCurrentDocument() {
-		return currentDocument;
+	public EntityDocument getBaseRevision() {
+		return baseRevision;
 	}
 
 }

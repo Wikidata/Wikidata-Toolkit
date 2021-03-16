@@ -67,18 +67,18 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given entity
+	 * Initializes new builder object for constructing update of given base entity
 	 * revision.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	protected StatementDocumentUpdateBuilder(StatementDocument document) {
-		super(document);
+	protected StatementDocumentUpdateBuilder(StatementDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -111,9 +111,9 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given entity revision.
-	 * Provided entity document might not represent the latest revision of the
-	 * entity as currently stored in Wikibase. It will be used for validation in
+	 * Creates new builder object for constructing update of given base entity
+	 * revision. Provided entity document might not represent the latest revision of
+	 * the entity as currently stored in Wikibase. It will be used for validation in
 	 * builder methods. If the document has revision ID, it will be used to detect
 	 * edit conflicts.
 	 * <p>
@@ -121,36 +121,36 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 * {@link PropertyDocument}, {@link LexemeDocument}, {@link FormDocument},
 	 * {@link SenseDocument}, and {@link MediaInfoDocument}.
 	 * 
-	 * @param document
-	 *            entity revision to be updated
+	 * @param revision
+	 *            base entity revision to be updated
 	 * @return builder object matching entity type
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} is of unrecognized type or it does not have
+	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static StatementDocumentUpdateBuilder forStatementDocument(StatementDocument document) {
-		Objects.requireNonNull(document, "Entity document cannot be null.");
-		if (document instanceof SenseDocument) {
-			return SenseUpdateBuilder.forSenseDocument((SenseDocument) document);
+	public static StatementDocumentUpdateBuilder forStatementDocument(StatementDocument revision) {
+		Objects.requireNonNull(revision, "Entity document cannot be null.");
+		if (revision instanceof SenseDocument) {
+			return SenseUpdateBuilder.forSenseDocument((SenseDocument) revision);
 		}
-		if (document instanceof FormDocument) {
-			return FormUpdateBuilder.forFormDocument((FormDocument) document);
+		if (revision instanceof FormDocument) {
+			return FormUpdateBuilder.forFormDocument((FormDocument) revision);
 		}
-		if (document instanceof LexemeDocument) {
-			return LexemeUpdateBuilder.forLexemeDocument((LexemeDocument) document);
+		if (revision instanceof LexemeDocument) {
+			return LexemeUpdateBuilder.forLexemeDocument((LexemeDocument) revision);
 		}
-		if (document instanceof LabeledStatementDocument) {
+		if (revision instanceof LabeledStatementDocument) {
 			return LabeledStatementDocumentUpdateBuilder
-					.forLabeledStatementDocument((LabeledStatementDocument) document);
+					.forLabeledStatementDocument((LabeledStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
 
 	@Override
-	protected StatementDocument getCurrentDocument() {
-		return (StatementDocument) super.getCurrentDocument();
+	protected StatementDocument getBaseRevision() {
+		return (StatementDocument) super.getBaseRevision();
 	}
 
 	/**
@@ -163,7 +163,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	private boolean hadStatementId(String statementId) {
-		for (StatementGroup group : getCurrentDocument().getStatementGroups()) {
+		for (StatementGroup group : getBaseRevision().getStatementGroups()) {
 			for (Statement statement : group.getStatements()) {
 				if (statement.getStatementId().equals(statementId)) {
 					return true;
@@ -187,7 +187,7 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 */
 	public StatementDocumentUpdateBuilder updateStatements(StatementUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (Statement replaced : update.getReplacedStatements().values()) {
 				if (!hadStatementId(replaced.getStatementId())) {
 					throw new IllegalArgumentException("Replaced statement is not in the current revision.");

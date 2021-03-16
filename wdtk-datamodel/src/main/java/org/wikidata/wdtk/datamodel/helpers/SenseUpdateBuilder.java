@@ -50,18 +50,18 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Initializes new builder object for constructing update of given sense entity
-	 * revision.
+	 * Initializes new builder object for constructing update of given base sense
+	 * entity revision.
 	 * 
-	 * @param document
-	 *            sense revision to be updated
+	 * @param revision
+	 *            base sense revision to be updated
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	private SenseUpdateBuilder(SenseDocument document) {
-		super(document);
+	private SenseUpdateBuilder(SenseDocument revision) {
+		super(revision);
 	}
 
 	/**
@@ -81,22 +81,22 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	/**
-	 * Creates new builder object for constructing update of given sense entity
+	 * Creates new builder object for constructing update of given base sense entity
 	 * revision. Provided sense document might not represent the latest revision of
 	 * the sense entity as currently stored in Wikibase. It will be used for
 	 * validation in builder methods. If the document has revision ID, it will be
 	 * used to detect edit conflicts.
 	 * 
-	 * @param document
-	 *            sense entity revision to be updated
+	 * @param revision
+	 *            base sense entity revision to be updated
 	 * @return update builder object
 	 * @throws NullPointerException
-	 *             if {@code document} is {@code null}
+	 *             if {@code revision} is {@code null}
 	 * @throws IllegalArgumentException
-	 *             if {@code document} does not have valid ID
+	 *             if {@code revision} does not have valid ID
 	 */
-	public static SenseUpdateBuilder forSenseDocument(SenseDocument document) {
-		return new SenseUpdateBuilder(document);
+	public static SenseUpdateBuilder forSenseDocument(SenseDocument revision) {
+		return new SenseUpdateBuilder(revision);
 	}
 
 	@Override
@@ -105,8 +105,8 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected SenseDocument getCurrentDocument() {
-		return (SenseDocument) super.getCurrentDocument();
+	protected SenseDocument getBaseRevision() {
+		return (SenseDocument) super.getBaseRevision();
 	}
 
 	@Override
@@ -129,9 +129,9 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 */
 	public SenseUpdateBuilder updateGlosses(MultilingualTextUpdate update) {
 		Objects.requireNonNull(update, "Update cannot be null.");
-		if (getCurrentDocument() != null) {
+		if (getBaseRevision() != null) {
 			for (String removed : update.getRemovedValues()) {
-				if (!getCurrentDocument().getGlosses().containsKey(removed)) {
+				if (!getBaseRevision().getGlosses().containsKey(removed)) {
 					throw new IllegalArgumentException("Removed gloss is not in the current revision.");
 				}
 			}
@@ -142,7 +142,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public SenseUpdate build() {
-		return factory.getSenseUpdate(getEntityId(), getCurrentDocument(), glosses, getStatements());
+		return factory.getSenseUpdate(getEntityId(), getBaseRevision(), glosses, getStatements());
 	}
 
 }

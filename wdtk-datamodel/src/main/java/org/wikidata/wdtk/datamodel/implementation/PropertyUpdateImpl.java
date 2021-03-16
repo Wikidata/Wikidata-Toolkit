@@ -37,8 +37,8 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	 * 
 	 * @param entityId
 	 *            ID of the property entity that is to be updated
-	 * @param document
-	 *            property entity revision to be updated or {@code null} if not
+	 * @param revision
+	 *            base property entity revision to be updated or {@code null} if not
 	 *            available
 	 * @param labels
 	 *            changes in entity labels or {@code null} for no change
@@ -53,11 +53,11 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 	 */
 	protected PropertyUpdateImpl(
 			PropertyIdValue entityId,
-			PropertyDocument document,
+			PropertyDocument revision,
 			MultilingualTextUpdate labels,
 			MultilingualTextUpdate descriptions,
 			StatementUpdate statements) {
-		super(entityId, document, labels, descriptions, statements);
+		super(entityId, revision, labels, descriptions, statements);
 	}
 
 	@JsonIgnore
@@ -68,8 +68,8 @@ public class PropertyUpdateImpl extends TermedStatementDocumentUpdateImpl implem
 
 	@JsonIgnore
 	@Override
-	public PropertyDocument getCurrentDocument() {
-		return (PropertyDocument) super.getCurrentDocument();
+	public PropertyDocument getBaseRevision() {
+		return (PropertyDocument) super.getBaseRevision();
 	}
 
 	@JsonIgnore

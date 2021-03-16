@@ -27,7 +27,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 public interface StatementDocumentUpdate extends EntityUpdate {
 
 	@Override
-	StatementDocument getCurrentDocument();
+	StatementDocument getBaseRevision();
 
 	/**
 	 * Returns statement changes included in this update.

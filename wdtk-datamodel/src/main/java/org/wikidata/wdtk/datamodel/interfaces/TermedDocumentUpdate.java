@@ -26,7 +26,7 @@ package org.wikidata.wdtk.datamodel.interfaces;
 public interface TermedDocumentUpdate extends LabeledDocumentUpdate {
 
 	@Override
-	TermedDocument getCurrentDocument();
+	TermedDocument getBaseRevision();
 
 	/**
 	 * Returns changes in entity descriptions.
