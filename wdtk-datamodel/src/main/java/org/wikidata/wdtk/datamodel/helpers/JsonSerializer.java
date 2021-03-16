@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
+import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
@@ -176,6 +177,19 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	 * Serializes the given object in JSON and returns the resulting string.
 	 * Throws if the serialization fails.
 	 *
+	 * @param entityDocument
+	 *            object to serialize
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
+	 */
+	public static String getJsonString(EntityDocument entityDocument) throws JsonProcessingException {
+		return mapper.writeValueAsString(entityDocument);
+	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
+	 *
 	 * @param itemDocument
 	 *            object to serialize
 	 * @return JSON serialization
@@ -223,4 +237,18 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	public static String getJsonString(Statement statement) throws JsonProcessingException {
 		return mapper.writeValueAsString(statement);
 	}
+
+	/**
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
+	 *
+	 * @param update
+	 *            object to serialize
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
+	 */
+	public static String getJsonString(EntityUpdate update) throws JsonProcessingException {
+		return mapper.writeValueAsString(update);
+	}
+
 }
