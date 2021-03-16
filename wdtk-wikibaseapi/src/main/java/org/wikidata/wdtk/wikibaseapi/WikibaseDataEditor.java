@@ -422,7 +422,37 @@ public class WikibaseDataEditor {
 				this.editAsBot, itemDocument.getRevisionId(), summary, tags);
 	}
 
-	private EntityDocument editDocument(
+	/**
+	 * Updates {@link EntityDocument} entity. ID of the entity to update is taken
+	 * from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link EntityDocument} or {@code null} for simulated edit
+	 *         (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public EntityDocument editEntityDocument(
 			EntityUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
 		String data = JsonSerializer.getJsonString(update);
@@ -464,7 +494,7 @@ public class WikibaseDataEditor {
 	public ItemDocument editItemDocument(
 			ItemUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (ItemDocument) editDocument(update, clear, summary, tags);
+		return (ItemDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -552,7 +582,7 @@ public class WikibaseDataEditor {
 	public PropertyDocument editPropertyDocument(
 			PropertyUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (PropertyDocument) editDocument(update, clear, summary, tags);
+		return (PropertyDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -638,7 +668,7 @@ public class WikibaseDataEditor {
 	public MediaInfoDocument editMediaInfoDocument(
 			MediaInfoUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (MediaInfoDocument) editDocument(update, clear, summary, tags);
+		return (MediaInfoDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -674,7 +704,7 @@ public class WikibaseDataEditor {
 	public SenseDocument editSenseDocument(
 			SenseUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (SenseDocument) editDocument(update, clear, summary, tags);
+		return (SenseDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -710,7 +740,7 @@ public class WikibaseDataEditor {
 	public FormDocument editFormDocument(
 			FormUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (FormDocument) editDocument(update, clear, summary, tags);
+		return (FormDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
@@ -746,7 +776,187 @@ public class WikibaseDataEditor {
 	public LexemeDocument editLexemeDocument(
 			LexemeUpdate update, boolean clear, String summary, List<String> tags)
 			throws IOException, MediaWikiApiErrorException {
-		return (LexemeDocument) editDocument(update, clear, summary, tags);
+		return (LexemeDocument) editEntityDocument(update, clear, summary, tags);
+	}
+
+	/**
+	 * Updates {@link StatementDocument} entity. ID of the entity to update is taken
+	 * from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link StatementDocument} or {@code null} for simulated edit
+	 *         (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public StatementDocument editStatementDocument(
+			StatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (StatementDocument) editEntityDocument(update, clear, summary, tags);
+	}
+
+	/**
+	 * Updates {@link LabeledDocument} entity. ID of the entity to update is taken
+	 * from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link LabeledDocument} or {@code null} for simulated edit
+	 *         (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public LabeledDocument editLabeledDocument(
+			LabeledDocumentUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (LabeledDocument) editEntityDocument(update, clear, summary, tags);
+	}
+
+	/**
+	 * Updates {@link LabeledStatementDocument} entity. ID of the entity to update
+	 * is taken from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link LabeledStatementDocument} or {@code null} for
+	 *         simulated edit (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public LabeledStatementDocument editLabeledStatementDocument(
+			LabeledStatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (LabeledStatementDocument) editEntityDocument(update, clear, summary, tags);
+	}
+
+	/**
+	 * Updates {@link TermedDocument} entity. ID of the entity to update is taken
+	 * from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link TermedDocument} or {@code null} for simulated edit
+	 *         (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public TermedDocument editTermedDocument(
+			TermedDocumentUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (TermedDocument) editEntityDocument(update, clear, summary, tags);
+	}
+
+	/**
+	 * Updates {@link TermedStatementDocument} entity. ID of the entity to update is
+	 * taken from the update object. Its site IRI is ignored.
+	 * <p>
+	 * If the update object references base revision of the document, its revision
+	 * ID is used to specify the base revision in the API request, enabling the API
+	 * to detect edit conflicts. It is strongly recommended to specify base revision
+	 * document in the update object.
+	 * <p>
+	 * Summary message will be prepended by an automatically generated comment. The
+	 * length limit of the autocomment together with the summary is 260 characters.
+	 * Everything above that limit will be cut off.
+	 *
+	 * @param update
+	 *            collection of changes to be written
+	 * @param clear
+	 *            if set to {@code true}, existing entity data will be removed and
+	 *            the update will be applied to empty entity
+	 * @param summary
+	 *            summary for the edit
+	 * @param tags
+	 *            string identifiers of the tags to apply to the edit, {@code null}
+	 *            or empty for no tags
+	 * @return updated {@link TermedStatementDocument} or {@code null} for simulated
+	 *         edit (see {@link #disableEditing()}
+	 * @throws IOException
+	 *             if there was an IO problem, such as missing network connection
+	 * @throws MediaWikiApiErrorException
+	 *             if MediaWiki API returned an error response
+	 */
+	public TermedStatementDocument editTermedStatementDocument(
+			TermedStatementDocumentUpdate update, boolean clear, String summary, List<String> tags)
+			throws IOException, MediaWikiApiErrorException {
+		return (TermedStatementDocument) editEntityDocument(update, clear, summary, tags);
 	}
 
 	/**
