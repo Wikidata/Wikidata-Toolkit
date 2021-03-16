@@ -42,6 +42,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.StatementDocumentUpdate;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
@@ -56,11 +57,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * @deprecated Use {@link WikibaseDataEditor#editStatementDocument(StatementDocumentUpdate, boolean, String, List)} instead.
  * Class to plan a statement update operation.
  *
  * @author Markus Kroetzsch
  *
  */
+@Deprecated
 public class StatementUpdate {
 
 	static final Logger logger = LoggerFactory.getLogger(StatementUpdate.class);

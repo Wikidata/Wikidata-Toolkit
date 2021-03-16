@@ -46,6 +46,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class StatementUpdateTest {
 
 	final static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");

@@ -35,6 +35,7 @@ import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
+@Deprecated
 public class TermStatementUpdateTest {
 	final static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");
 	

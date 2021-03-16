@@ -379,6 +379,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditItem() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -413,6 +414,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditMediaInfo() throws IOException, MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIMEDIA_COMMONS);
@@ -447,6 +449,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -480,6 +483,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testTermStatementUpdateWithoutChanges() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -553,6 +557,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testLabelEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -593,6 +598,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testDescriptionEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -633,6 +639,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testAliasEdit() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -679,6 +686,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testNewSingleStatement() throws MediaWikiApiErrorException, IOException {
 		String guid = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -718,6 +726,7 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
 	public void testDeleteStatements() throws MediaWikiApiErrorException, IOException {
 		String guid1 = "8372EF7A-B72C-7DE2-98D0-DFB4-8EC8392AC28E";
 		String guid2 = "4311895D-9091-4BC9-9B34-DFB4-1B00EE8CFA62";
@@ -759,6 +768,7 @@ public class WikibaseDataEditorTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testEditProperty() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -796,6 +806,8 @@ public class WikibaseDataEditorTest {
 	}
 	
 	@Test
+	@Deprecated
+	@SuppressWarnings("deprecation")
 	public void testApplyInvalidTag() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);

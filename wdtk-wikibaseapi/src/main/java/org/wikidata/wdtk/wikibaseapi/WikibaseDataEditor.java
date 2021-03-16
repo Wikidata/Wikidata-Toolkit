@@ -373,6 +373,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editItemDocument(ItemUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given item document with the summary message as
 	 * given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -413,6 +414,7 @@ public class WikibaseDataEditor {
 	 *             connection
 	 * @throws MediaWikiApiErrorException
 	 */
+	@Deprecated
 	public ItemDocument editItemDocument(ItemDocument itemDocument,
 			boolean clear, String summary, List<String> tags) throws IOException,
 			MediaWikiApiErrorException {
@@ -498,6 +500,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editPropertyDocument(PropertyUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given property document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * <p>
@@ -538,6 +541,7 @@ public class WikibaseDataEditor {
 	 *             connection
 	 * @throws MediaWikiApiErrorException
 	 */
+	@Deprecated
 	public PropertyDocument editPropertyDocument(
 			PropertyDocument propertyDocument, boolean clear, String summary,
 			List<String> tags)
@@ -586,6 +590,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated Use {@link #editMediaInfoDocument(MediaInfoUpdate, boolean, String, List)} instead.
 	 * Writes the data for the given media info document with the summary message
 	 * as given. Optionally, the existing data is cleared (deleted).
 	 * It creates the media info if needed.
@@ -624,6 +629,7 @@ public class WikibaseDataEditor {
 	 *             if there was an IO problem, such as missing network
 	 *             connection
 	 */
+	@Deprecated
 	public MediaInfoDocument editMediaInfoDocument(
 			MediaInfoDocument mediaInfoDocument, boolean clear, String summary,
 			List<String> tags)
@@ -1099,6 +1105,7 @@ public class WikibaseDataEditor {
 	}
 
 	/**
+	 * @deprecated {@link #editStatementDocument(StatementDocumentUpdate, boolean, String, List)} instead.
 	 * Updates statements of the given document. The document should be the
 	 * current revision of the data that is to be updated. The updates are
 	 * computed with respect to the data found in the document, making sure that
@@ -1136,6 +1143,7 @@ public class WikibaseDataEditor {
 	 *             if there are IO problems, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public <T extends StatementDocument> T updateStatements(T currentDocument,
 			List<Statement> addStatements, List<Statement> deleteStatements,
 			String summary, List<String> tags)
@@ -1156,6 +1164,7 @@ public class WikibaseDataEditor {
 	}
 	
 	/**
+	 * @deprecated Use {@link #editTermedStatementDocument(TermedStatementDocumentUpdate, boolean, String, List)} instead.
 	 * Updates the terms and statements of the current document.
 	 * The updates are computed with respect to the current data in the document,
 	 * making sure that no redundant deletions or duplicate insertions
@@ -1198,6 +1207,7 @@ public class WikibaseDataEditor {
 	 *          if there are any IO errors, such as missing network connection
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public <T extends TermedStatementDocument> T updateTermsStatements(T currentDocument,
 			List<MonolingualTextValue> addLabels,
 			List<MonolingualTextValue> addDescriptions,

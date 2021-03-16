@@ -32,12 +32,14 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
+import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
+ * @deprecated Use {@link WikibaseDataEditor#editTermedStatementDocument(TermedStatementDocumentUpdate, boolean, String, List)} instead.
  * This class extends StatementUpdate to support update to terms (labels,
  * descriptions and aliases).
  * 
@@ -48,6 +50,7 @@ import java.util.*;
  * 
  * @author antonin
  */
+@Deprecated
 public class TermStatementUpdate extends StatementUpdate {
 	static final Logger logger = LoggerFactory.getLogger(TermStatementUpdate.class);
     
