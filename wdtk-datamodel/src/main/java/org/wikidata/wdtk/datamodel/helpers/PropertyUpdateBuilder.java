@@ -72,7 +72,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	 * @throws IllegalArgumentException
 	 *             if {@code propertyId} is not valid
 	 */
-	public static PropertyUpdateBuilder forPropertyId(PropertyIdValue propertyId) {
+	public static PropertyUpdateBuilder forEntityId(PropertyIdValue propertyId) {
 		return new PropertyUpdateBuilder(propertyId);
 	}
 
@@ -91,7 +91,7 @@ public class PropertyUpdateBuilder extends TermedStatementDocumentUpdateBuilder 
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static PropertyUpdateBuilder forPropertyDocument(PropertyDocument revision) {
+	public static PropertyUpdateBuilder forBaseRevision(PropertyDocument revision) {
 		return new PropertyUpdateBuilder(revision);
 	}
 

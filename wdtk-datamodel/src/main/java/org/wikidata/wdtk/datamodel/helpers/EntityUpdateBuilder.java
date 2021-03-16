@@ -124,8 +124,8 @@ public abstract class EntityUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} is of unrecognized type
 	 */
-	public static EntityUpdateBuilder forEntityDocument(EntityDocument revision) {
-		return StatementDocumentUpdateBuilder.forEntityDocument(revision);
+	public static EntityUpdateBuilder forBaseRevision(EntityDocument revision) {
+		return StatementDocumentUpdateBuilder.forBaseRevision(revision);
 	}
 
 	/**

@@ -98,7 +98,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code lexemeId} is not valid
 	 */
-	public static LexemeUpdateBuilder forLexemeId(LexemeIdValue lexemeId) {
+	public static LexemeUpdateBuilder forEntityId(LexemeIdValue lexemeId) {
 		return new LexemeUpdateBuilder(lexemeId);
 	}
 
@@ -117,7 +117,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static LexemeUpdateBuilder forLexemeDocument(LexemeDocument revision) {
+	public static LexemeUpdateBuilder forBaseRevision(LexemeDocument revision) {
 		return new LexemeUpdateBuilder(revision);
 	}
 

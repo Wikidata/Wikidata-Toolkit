@@ -89,7 +89,7 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	public static LabeledStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof MediaInfoIdValue) {
-			return MediaInfoUpdateBuilder.forMediaInfoId((MediaInfoIdValue) entityId);
+			return MediaInfoUpdateBuilder.forEntityId((MediaInfoIdValue) entityId);
 		}
 		return TermedStatementDocumentUpdateBuilder.forEntityId(entityId);
 	}
@@ -113,13 +113,13 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static LabeledStatementDocumentUpdateBuilder forLabeledStatementDocument(LabeledStatementDocument revision) {
+	public static LabeledStatementDocumentUpdateBuilder forBaseRevision(LabeledStatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");
 		if (revision instanceof MediaInfoDocument) {
-			return MediaInfoUpdateBuilder.forMediaInfoDocument((MediaInfoDocument) revision);
+			return MediaInfoUpdateBuilder.forBaseRevision((MediaInfoDocument) revision);
 		}
 		if (revision instanceof TermedStatementDocument) {
-			return TermedStatementDocumentUpdateBuilder.forTermedStatementDocument((TermedStatementDocument) revision);
+			return TermedStatementDocumentUpdateBuilder.forBaseRevision((TermedStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}

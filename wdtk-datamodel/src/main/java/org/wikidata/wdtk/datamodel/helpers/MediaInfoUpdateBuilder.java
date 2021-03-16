@@ -72,7 +72,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	 * @throws IllegalArgumentException
 	 *             if {@code mediaInfoId} is not valid
 	 */
-	public static MediaInfoUpdateBuilder forMediaInfoId(MediaInfoIdValue mediaInfoId) {
+	public static MediaInfoUpdateBuilder forEntityId(MediaInfoIdValue mediaInfoId) {
 		return new MediaInfoUpdateBuilder(mediaInfoId);
 	}
 
@@ -91,7 +91,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static MediaInfoUpdateBuilder forMediaInfoDocument(MediaInfoDocument revision) {
+	public static MediaInfoUpdateBuilder forBaseRevision(MediaInfoDocument revision) {
 		return new MediaInfoUpdateBuilder(revision);
 	}
 

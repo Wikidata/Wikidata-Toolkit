@@ -76,7 +76,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code senseId} is not valid
 	 */
-	public static SenseUpdateBuilder forSenseId(SenseIdValue senseId) {
+	public static SenseUpdateBuilder forEntityId(SenseIdValue senseId) {
 		return new SenseUpdateBuilder(senseId);
 	}
 
@@ -95,7 +95,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static SenseUpdateBuilder forSenseDocument(SenseDocument revision) {
+	public static SenseUpdateBuilder forBaseRevision(SenseDocument revision) {
 		return new SenseUpdateBuilder(revision);
 	}
 

@@ -82,7 +82,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code formId} is not valid
 	 */
-	public static FormUpdateBuilder forFormId(FormIdValue formId) {
+	public static FormUpdateBuilder forEntityId(FormIdValue formId) {
 		return new FormUpdateBuilder(formId);
 	}
 
@@ -101,7 +101,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static FormUpdateBuilder forFormDocument(FormDocument revision) {
+	public static FormUpdateBuilder forBaseRevision(FormDocument revision) {
 		return new FormUpdateBuilder(revision);
 	}
 

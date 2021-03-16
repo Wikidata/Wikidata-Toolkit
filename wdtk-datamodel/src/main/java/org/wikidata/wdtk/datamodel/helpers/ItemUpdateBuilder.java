@@ -72,7 +72,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code itemId} is not valid
 	 */
-	public static ItemUpdateBuilder forItemId(ItemIdValue itemId) {
+	public static ItemUpdateBuilder forEntityId(ItemIdValue itemId) {
 		return new ItemUpdateBuilder(itemId);
 	}
 
@@ -91,7 +91,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	 * @throws IllegalArgumentException
 	 *             if {@code revision} does not have valid ID
 	 */
-	public static ItemUpdateBuilder forItemDocument(ItemDocument revision) {
+	public static ItemUpdateBuilder forBaseRevision(ItemDocument revision) {
 		return new ItemUpdateBuilder(revision);
 	}
 

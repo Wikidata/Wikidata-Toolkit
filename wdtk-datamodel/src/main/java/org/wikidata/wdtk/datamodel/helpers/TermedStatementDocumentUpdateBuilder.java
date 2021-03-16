@@ -85,10 +85,10 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	public static TermedStatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof ItemIdValue) {
-			return ItemUpdateBuilder.forItemId((ItemIdValue) entityId);
+			return ItemUpdateBuilder.forEntityId((ItemIdValue) entityId);
 		}
 		if (entityId instanceof PropertyIdValue) {
-			return PropertyUpdateBuilder.forPropertyId((PropertyIdValue) entityId);
+			return PropertyUpdateBuilder.forEntityId((PropertyIdValue) entityId);
 		}
 		throw new IllegalArgumentException("Unrecognized entity ID type.");
 	}
@@ -112,13 +112,13 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static TermedStatementDocumentUpdateBuilder forTermedStatementDocument(TermedStatementDocument revision) {
+	public static TermedStatementDocumentUpdateBuilder forBaseRevision(TermedStatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");
 		if (revision instanceof ItemDocument) {
-			return ItemUpdateBuilder.forItemDocument((ItemDocument) revision);
+			return ItemUpdateBuilder.forBaseRevision((ItemDocument) revision);
 		}
 		if (revision instanceof PropertyDocument) {
-			return PropertyUpdateBuilder.forPropertyDocument((PropertyDocument) revision);
+			return PropertyUpdateBuilder.forBaseRevision((PropertyDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}

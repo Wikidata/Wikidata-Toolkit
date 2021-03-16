@@ -99,13 +99,13 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	public static StatementDocumentUpdateBuilder forEntityId(EntityIdValue entityId) {
 		Objects.requireNonNull(entityId, "Entity ID cannot be null.");
 		if (entityId instanceof SenseIdValue) {
-			return SenseUpdateBuilder.forSenseId((SenseIdValue) entityId);
+			return SenseUpdateBuilder.forEntityId((SenseIdValue) entityId);
 		}
 		if (entityId instanceof FormIdValue) {
-			return FormUpdateBuilder.forFormId((FormIdValue) entityId);
+			return FormUpdateBuilder.forEntityId((FormIdValue) entityId);
 		}
 		if (entityId instanceof LexemeIdValue) {
-			return LexemeUpdateBuilder.forLexemeId((LexemeIdValue) entityId);
+			return LexemeUpdateBuilder.forEntityId((LexemeIdValue) entityId);
 		}
 		return LabeledStatementDocumentUpdateBuilder.forEntityId(entityId);
 	}
@@ -130,20 +130,20 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	 *             if {@code revision} is of unrecognized type or it does not have
 	 *             valid ID
 	 */
-	public static StatementDocumentUpdateBuilder forStatementDocument(StatementDocument revision) {
+	public static StatementDocumentUpdateBuilder forBaseRevision(StatementDocument revision) {
 		Objects.requireNonNull(revision, "Entity document cannot be null.");
 		if (revision instanceof SenseDocument) {
-			return SenseUpdateBuilder.forSenseDocument((SenseDocument) revision);
+			return SenseUpdateBuilder.forBaseRevision((SenseDocument) revision);
 		}
 		if (revision instanceof FormDocument) {
-			return FormUpdateBuilder.forFormDocument((FormDocument) revision);
+			return FormUpdateBuilder.forBaseRevision((FormDocument) revision);
 		}
 		if (revision instanceof LexemeDocument) {
-			return LexemeUpdateBuilder.forLexemeDocument((LexemeDocument) revision);
+			return LexemeUpdateBuilder.forBaseRevision((LexemeDocument) revision);
 		}
 		if (revision instanceof LabeledStatementDocument) {
 			return LabeledStatementDocumentUpdateBuilder
-					.forLabeledStatementDocument((LabeledStatementDocument) revision);
+					.forBaseRevision((LabeledStatementDocument) revision);
 		}
 		throw new IllegalArgumentException("Unrecognized entity document type.");
 	}
