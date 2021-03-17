@@ -43,7 +43,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormUpdate {
 
+	@JsonIgnore
 	private final MultilingualTextUpdate representations;
+	@JsonIgnore
 	private final Set<ItemIdValue> grammaticalFeatures;
 
 	/**
@@ -103,11 +105,12 @@ public class FormUpdateImpl extends StatementDocumentUpdateImpl implements FormU
 	}
 
 	@JsonProperty("representations")
-	@JsonInclude(Include.NON_EMPTY)
+	@JsonInclude(Include.NON_NULL)
 	MultilingualTextUpdate getJsonRepresentations() {
 		return representations.isEmpty() ? null : representations;
 	}
 
+	@JsonProperty
 	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<Set<ItemIdValue>> getGrammaticalFeatures() {

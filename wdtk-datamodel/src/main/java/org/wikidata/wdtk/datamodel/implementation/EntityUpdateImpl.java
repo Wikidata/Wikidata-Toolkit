@@ -27,13 +27,16 @@ import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link EntityUpdate}.
  */
 public abstract class EntityUpdateImpl implements EntityUpdate {
 
+	@JsonIgnore
 	private final EntityIdValue entityId;
+	@JsonIgnore
 	private final EntityDocument baseRevision;
 
 	/**
@@ -67,6 +70,7 @@ public abstract class EntityUpdateImpl implements EntityUpdate {
 		return entityId;
 	}
 
+	@JsonProperty
 	String getId() {
 		return entityId.getId();
 	}

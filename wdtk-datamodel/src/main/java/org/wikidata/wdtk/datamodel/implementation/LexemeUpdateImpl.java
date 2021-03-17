@@ -54,14 +54,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements LexemeUpdate {
 
+	@JsonIgnore
 	private final ItemIdValue language;
+	@JsonIgnore
 	private final ItemIdValue lexicalCategory;
+	@JsonIgnore
 	private final MultilingualTextUpdate lemmas;
+	@JsonIgnore
 	private final List<SenseDocument> addedSenses;
+	@JsonIgnore
 	private final Map<SenseIdValue, SenseUpdate> updatedSenses;
+	@JsonIgnore
 	private final Set<SenseIdValue> removedSenses;
+	@JsonIgnore
 	private final List<FormDocument> addedForms;
+	@JsonIgnore
 	private final Map<FormIdValue, FormUpdate> updatedForms;
+	@JsonIgnore
 	private final Set<FormIdValue> removedForms;
 
 	/**
@@ -145,12 +154,14 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 				&& addedForms.isEmpty() && updatedForms.isEmpty() && removedForms.isEmpty();
 	}
 
+	@JsonProperty
 	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<ItemIdValue> getLanguage() {
 		return Optional.ofNullable(language);
 	}
 
+	@JsonProperty
 	@JsonInclude(Include.NON_ABSENT)
 	@Override
 	public Optional<ItemIdValue> getLexicalCategory() {
@@ -164,7 +175,7 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 	}
 
 	@JsonProperty("lemmas")
-	@JsonInclude(Include.NON_EMPTY)
+	@JsonInclude(Include.NON_NULL)
 	MultilingualTextUpdate getJsonLemmas() {
 		return lemmas.isEmpty() ? null : lemmas;
 	}
@@ -238,6 +249,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	}
 
+	@JsonProperty
+	@JsonInclude(Include.NON_EMPTY)
 	List<Object> getSenses() {
 		List<Object> list = new ArrayList<>();
 		for (SenseDocument sense : addedSenses) {
@@ -283,6 +296,8 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 
 	}
 
+	@JsonProperty
+	@JsonInclude(Include.NON_EMPTY)
 	List<Object> getForms() {
 		List<Object> list = new ArrayList<>();
 		for (FormDocument form : addedForms) {

@@ -38,6 +38,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
  * This class implements {@link EntityDocumentDumpProcessor} to provide a
@@ -72,6 +73,10 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	protected static final ObjectMapper mapper = new ObjectMapper();
 	static {
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+		/*
+		 * Support for Optional properties.
+		 */
+		mapper.registerModule(new Jdk8Module());
 	}
 
 	/**

@@ -43,8 +43,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public class StatementUpdateImpl implements StatementUpdate {
 
+	@JsonIgnore
 	private final List<Statement> added;
+	@JsonIgnore
 	private final Map<String, Statement> replaced;
+	@JsonIgnore
 	private final Set<String> removed;
 
 	/**

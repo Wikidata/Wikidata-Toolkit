@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 public class SenseUpdateImpl extends StatementDocumentUpdateImpl implements SenseUpdate {
 
+	@JsonIgnore
 	private final MultilingualTextUpdate glosses;
 
 	/**

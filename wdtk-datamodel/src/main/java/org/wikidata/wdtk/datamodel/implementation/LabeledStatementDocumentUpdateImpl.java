@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocumentUpdateImpl
 		implements LabeledStatementDocumentUpdate {
 
+	@JsonIgnore
 	private final MultilingualTextUpdate labels;
 
 	/**
@@ -80,7 +81,7 @@ public abstract class LabeledStatementDocumentUpdateImpl extends StatementDocume
 	}
 
 	@JsonProperty("labels")
-	@JsonInclude(Include.NON_EMPTY)
+	@JsonInclude(Include.NON_NULL)
 	MultilingualTextUpdate getJsonLabels() {
 		return labels.isEmpty() ? null : labels;
 	}

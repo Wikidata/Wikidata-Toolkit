@@ -40,7 +40,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 
+	@JsonIgnore
 	private final Map<String, MonolingualTextValue> modified;
+	@JsonIgnore
 	private final Set<String> removed;
 
 	/**

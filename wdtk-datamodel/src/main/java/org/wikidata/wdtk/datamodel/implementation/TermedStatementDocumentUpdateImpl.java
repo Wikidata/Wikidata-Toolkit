@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatementDocumentUpdateImpl
 		implements TermedStatementDocumentUpdate {
 
+	@JsonIgnore
 	private final MultilingualTextUpdate descriptions;
 
 	/**
@@ -83,7 +84,7 @@ public abstract class TermedStatementDocumentUpdateImpl extends LabeledStatement
 	}
 
 	@JsonProperty("descriptions")
-	@JsonInclude(Include.NON_EMPTY)
+	@JsonInclude(Include.NON_NULL)
 	MultilingualTextUpdate getJsonDescriptions() {
 		return descriptions.isEmpty() ? null : descriptions;
 	}

@@ -29,6 +29,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Jackson implementation of {@link StatementDocumentUpdate}.
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl implements StatementDocumentUpdate {
 
+	@JsonIgnore
 	private final StatementUpdate statements;
 
 	/**
@@ -75,7 +77,8 @@ public abstract class StatementDocumentUpdateImpl extends EntityUpdateImpl imple
 		return statements;
 	}
 
-	@JsonInclude(Include.NON_EMPTY)
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
 	StatementUpdate getClaims() {
 		return statements.isEmpty() ? null : statements;
 	}
