@@ -143,7 +143,11 @@ public class FormDocumentImpl extends StatementDocumentImpl implements FormDocum
 	@JsonIgnore
 	@Override
 	public FormIdValue getEntityId() {
-		return new FormIdValueImpl(entityId, siteIri);
+		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
+			return new FormIdValueImpl(entityId, siteIri);
+		} else {
+			return FormIdValue.NULL;
+		}
 	}
 
 	@JsonIgnore

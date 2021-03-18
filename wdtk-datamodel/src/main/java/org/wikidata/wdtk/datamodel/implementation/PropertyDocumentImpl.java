@@ -17,7 +17,6 @@
  * limitations under the License.
  * #L%
  */
-
 package org.wikidata.wdtk.datamodel.implementation;
 
 import java.util.List;
@@ -29,6 +28,7 @@ import org.wikidata.wdtk.datamodel.helpers.Hash;
 import org.wikidata.wdtk.datamodel.helpers.ToString;
 import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
@@ -143,7 +143,11 @@ public class PropertyDocumentImpl extends TermedStatementDocumentImpl
 	@JsonIgnore
 	@Override
 	public PropertyIdValue getEntityId() {
-		return new PropertyIdValueImpl(this.entityId, this.siteIri);
+		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
+			return new PropertyIdValueImpl(entityId, siteIri);
+		} else {
+			return PropertyIdValue.NULL;
+		}
 	}
 
 	@JsonIgnore

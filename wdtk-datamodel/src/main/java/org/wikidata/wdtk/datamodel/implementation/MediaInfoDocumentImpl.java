@@ -96,7 +96,11 @@ public class MediaInfoDocumentImpl extends LabeledStatementDocumentImpl implemen
 	@JsonIgnore
 	@Override
 	public MediaInfoIdValue getEntityId() {
-		return new MediaInfoIdValueImpl(this.entityId, this.siteIri);
+		if (!EntityIdValue.SITE_LOCAL.equals(siteIri)) {
+			return new MediaInfoIdValueImpl(entityId, siteIri);
+		} else {
+			return MediaInfoIdValue.NULL;
+		}
 	}
 
 	@Override
