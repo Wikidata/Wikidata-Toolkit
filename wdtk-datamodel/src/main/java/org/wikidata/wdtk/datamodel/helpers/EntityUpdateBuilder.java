@@ -133,7 +133,7 @@ public abstract class EntityUpdateBuilder {
 	 * 
 	 * @return ID of the updated entity
 	 */
-	protected EntityIdValue getEntityId() {
+	EntityIdValue getEntityId() {
 		return entityId;
 	}
 
@@ -144,7 +144,7 @@ public abstract class EntityUpdateBuilder {
 	 * 
 	 * @return base entity revision that is being updated
 	 */
-	protected EntityDocument getBaseRevision() {
+	EntityDocument getBaseRevision() {
 		return baseRevision;
 	}
 

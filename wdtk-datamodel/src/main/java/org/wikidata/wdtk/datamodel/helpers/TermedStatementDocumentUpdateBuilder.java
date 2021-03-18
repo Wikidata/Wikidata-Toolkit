@@ -37,7 +37,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocumentUpdate;
  */
 public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate descriptions = MultilingualTextUpdate.NULL;
+	MultilingualTextUpdate descriptions = MultilingualTextUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -124,17 +124,8 @@ public abstract class TermedStatementDocumentUpdateBuilder extends LabeledStatem
 	}
 
 	@Override
-	protected TermedStatementDocument getBaseRevision() {
+	TermedStatementDocument getBaseRevision() {
 		return (TermedStatementDocument) super.getBaseRevision();
-	}
-
-	/**
-	 * Returns description changes.
-	 * 
-	 * @return description update or {@code null} for no change
-	 */
-	protected MultilingualTextUpdate getDescriptions() {
-		return descriptions;
 	}
 
 	@Override

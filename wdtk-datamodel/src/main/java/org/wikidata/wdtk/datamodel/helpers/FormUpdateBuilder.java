@@ -106,12 +106,12 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected FormIdValue getEntityId() {
+	FormIdValue getEntityId() {
 		return (FormIdValue) super.getEntityId();
 	}
 
 	@Override
-	protected FormDocument getBaseRevision() {
+	FormDocument getBaseRevision() {
 		return (FormDocument) super.getBaseRevision();
 	}
 
@@ -174,7 +174,7 @@ public class FormUpdateBuilder extends StatementDocumentUpdateBuilder {
 	@Override
 	public FormUpdate build() {
 		return factory.getFormUpdate(getEntityId(), getBaseRevision(),
-				representations, grammaticalFeatures, getStatements());
+				representations, grammaticalFeatures, statements);
 	}
 
 }

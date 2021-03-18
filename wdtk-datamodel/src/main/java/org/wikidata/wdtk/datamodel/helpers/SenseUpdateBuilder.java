@@ -100,12 +100,12 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected SenseIdValue getEntityId() {
+	SenseIdValue getEntityId() {
 		return (SenseIdValue) super.getEntityId();
 	}
 
 	@Override
-	protected SenseDocument getBaseRevision() {
+	SenseDocument getBaseRevision() {
 		return (SenseDocument) super.getBaseRevision();
 	}
 
@@ -142,7 +142,7 @@ public class SenseUpdateBuilder extends StatementDocumentUpdateBuilder {
 
 	@Override
 	public SenseUpdate build() {
-		return factory.getSenseUpdate(getEntityId(), getBaseRevision(), glosses, getStatements());
+		return factory.getSenseUpdate(getEntityId(), getBaseRevision(), glosses, statements);
 	}
 
 }

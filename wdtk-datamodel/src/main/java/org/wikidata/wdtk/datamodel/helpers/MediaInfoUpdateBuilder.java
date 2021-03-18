@@ -96,12 +96,12 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 	}
 
 	@Override
-	protected MediaInfoIdValue getEntityId() {
+	MediaInfoIdValue getEntityId() {
 		return (MediaInfoIdValue) super.getEntityId();
 	}
 
 	@Override
-	protected MediaInfoDocument getBaseRevision() {
+	MediaInfoDocument getBaseRevision() {
 		return (MediaInfoDocument) super.getBaseRevision();
 	}
 
@@ -119,7 +119,7 @@ public class MediaInfoUpdateBuilder extends LabeledStatementDocumentUpdateBuilde
 
 	@Override
 	public MediaInfoUpdate build() {
-		return factory.getMediaInfoUpdate(getEntityId(), getBaseRevision(), getLabels(), getStatements());
+		return factory.getMediaInfoUpdate(getEntityId(), getBaseRevision(), labels, statements);
 	}
 
 }

@@ -49,7 +49,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementUpdate;
  */
 public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder {
 
-	private StatementUpdate statements = StatementUpdate.NULL;
+	StatementUpdate statements = StatementUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -149,17 +149,8 @@ public abstract class StatementDocumentUpdateBuilder extends EntityUpdateBuilder
 	}
 
 	@Override
-	protected StatementDocument getBaseRevision() {
+	StatementDocument getBaseRevision() {
 		return (StatementDocument) super.getBaseRevision();
-	}
-
-	/**
-	 * Returns statement changes.
-	 * 
-	 * @return statement update, possibly empty
-	 */
-	protected StatementUpdate getStatements() {
-		return statements;
 	}
 
 	private boolean hadStatementId(String statementId) {

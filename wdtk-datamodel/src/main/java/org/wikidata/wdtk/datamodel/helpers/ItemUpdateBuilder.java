@@ -96,12 +96,12 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected ItemIdValue getEntityId() {
+	ItemIdValue getEntityId() {
 		return (ItemIdValue) super.getEntityId();
 	}
 
 	@Override
-	protected ItemDocument getBaseRevision() {
+	ItemDocument getBaseRevision() {
 		return (ItemDocument) super.getBaseRevision();
 	}
 
@@ -125,8 +125,7 @@ public class ItemUpdateBuilder extends TermedStatementDocumentUpdateBuilder {
 
 	@Override
 	public ItemUpdate build() {
-		return factory.getItemUpdate(getEntityId(), getBaseRevision(),
-				getLabels(), getDescriptions(), getStatements());
+		return factory.getItemUpdate(getEntityId(), getBaseRevision(), labels, descriptions, statements);
 	}
 
 }

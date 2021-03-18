@@ -122,12 +122,12 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	}
 
 	@Override
-	protected LexemeIdValue getEntityId() {
+	LexemeIdValue getEntityId() {
 		return (LexemeIdValue) super.getEntityId();
 	}
 
 	@Override
-	protected LexemeDocument getBaseRevision() {
+	LexemeDocument getBaseRevision() {
 		return (LexemeDocument) super.getBaseRevision();
 	}
 
@@ -338,7 +338,7 @@ public class LexemeUpdateBuilder extends StatementDocumentUpdateBuilder {
 	@Override
 	public LexemeUpdate build() {
 		return factory.getLexemeUpdate(getEntityId(), getBaseRevision(),
-				language, lexicalCategory, lemmas, getStatements(),
+				language, lexicalCategory, lemmas, statements,
 				addedSenses, updatedSenses.values(), removedSenses,
 				addedForms, updatedForms.values(), removedForms);
 	}

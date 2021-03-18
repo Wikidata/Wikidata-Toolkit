@@ -40,7 +40,7 @@ import org.wikidata.wdtk.datamodel.interfaces.TermedStatementDocument;
  */
 public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDocumentUpdateBuilder {
 
-	private MultilingualTextUpdate labels = MultilingualTextUpdate.NULL;
+	MultilingualTextUpdate labels = MultilingualTextUpdate.NULL;
 
 	/**
 	 * Initializes new builder object for constructing update of entity with given
@@ -125,17 +125,8 @@ public abstract class LabeledStatementDocumentUpdateBuilder extends StatementDoc
 	}
 
 	@Override
-	protected LabeledStatementDocument getBaseRevision() {
+	LabeledStatementDocument getBaseRevision() {
 		return (LabeledStatementDocument) super.getBaseRevision();
-	}
-
-	/**
-	 * Returns label changes.
-	 * 
-	 * @return label update or {@code null} for no change
-	 */
-	protected MultilingualTextUpdate getLabels() {
-		return labels;
 	}
 
 	@Override
