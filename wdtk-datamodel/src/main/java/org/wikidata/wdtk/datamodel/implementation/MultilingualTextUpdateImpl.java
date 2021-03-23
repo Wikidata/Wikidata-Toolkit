@@ -58,7 +58,9 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 	 *             if any parameters or their combination is invalid
 	 */
 	public MultilingualTextUpdateImpl(Collection<MonolingualTextValue> modified, Collection<String> removed) {
-		this.modified = Collections.unmodifiableMap(modified.stream().collect(toMap(r -> r.getLanguageCode(), r -> r)));
+		this.modified = Collections.unmodifiableMap(modified.stream()
+				.map(v -> new TermImpl(v.getLanguageCode(), v.getText()))
+				.collect(toMap(v -> v.getLanguageCode(), r -> r)));
 		this.removed = Collections.unmodifiableSet(new HashSet<>(removed));
 	}
 
