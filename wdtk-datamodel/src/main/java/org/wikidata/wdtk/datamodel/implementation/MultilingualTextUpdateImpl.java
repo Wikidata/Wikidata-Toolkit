@@ -90,6 +90,7 @@ public class MultilingualTextUpdateImpl implements MultilingualTextUpdate {
 			this.language = language;
 		}
 
+		@JsonProperty
 		String getLanguage() {
 			return language;
 		}
