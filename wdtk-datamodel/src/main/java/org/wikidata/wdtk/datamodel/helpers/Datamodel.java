@@ -380,47 +380,11 @@ public class Datamodel {
 	 * @param unit
 	 *            the unit identifier to use for this quantity
 	 * @return a {@link QuantityValue} corresponding to the input
-	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, BigDecimal, BigDecimal, ItemIdValue)}
-	 */
-	@Deprecated
-	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
-			BigDecimal lowerBound, BigDecimal upperBound, String unit) {
-		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
-				unit);
-	}
-
-	/**
-	 * Creates a {@link QuantityValue}.
-	 *
-	 * @param numericValue
-	 *            the numeric value of this quantity
-	 * @param lowerBound
-	 *            the lower bound of the numeric value of this quantity
-	 * @param upperBound
-	 *            the upper bound of the numeric value of this quantity
-	 * @param unit
-	 *            the unit identifier to use for this quantity
-	 * @return a {@link QuantityValue} corresponding to the input
 	 */
 	public static QuantityValue makeQuantityValue(BigDecimal numericValue,
 			BigDecimal lowerBound, BigDecimal upperBound, ItemIdValue unit) {
 		return factory.getQuantityValue(numericValue, lowerBound, upperBound,
 				unit.getIri());
-	}
-
-	/**
-	 * Creates a {@link QuantityValue} without bounds.
-	 *
-	 * @param numericValue
-	 *            the numeric value of this quantity
-	 * @param unit
-	 *            the unit identifier to use for this quantity
-	 * @return a {@link QuantityValue} corresponding to the input
-	 * @deprecated Use {@link #makeQuantityValue(BigDecimal, ItemIdValue)}
-	 */
-	@Deprecated
-	public static QuantityValue makeQuantityValue(BigDecimal numericValue, String unit) {
-		return factory.getQuantityValue(numericValue, unit);
 	}
 
 	/**
@@ -659,35 +623,6 @@ public class Datamodel {
 	public static PropertyDocument makePropertyDocument(PropertyIdValue propertyId, DatatypeIdValue datatypeId) {
 		return makePropertyDocument(propertyId, Collections.emptyList(), Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList(), datatypeId);
-	}
-
-	/**
-	 * Creates a {@link PropertyDocument} without statements and empty revision
-	 * id. It might be more convenient to use the
-	 * {@link PropertyDocumentBuilder} instead.
-	 *
-	 * @param propertyId
-	 *            the id of the property that data is about
-	 * @param labels
-	 *            the list of labels of this property, with at most one label
-	 *            for each language code
-	 * @param descriptions
-	 *            the list of descriptions of this property, with at most one
-	 *            description for each language code
-	 * @param aliases
-	 *            the list of aliases of this property
-	 * @param datatypeId
-	 *            the datatype of that property
-	 * @return a {@link PropertyDocument} corresponding to the input
-	 * @deprecated Use {@link #makePropertyDocument(PropertyIdValue, List, List, List, List, DatatypeIdValue)}
-	 */
-	@Deprecated
-	public static PropertyDocument makePropertyDocument(
-			PropertyIdValue propertyId, List<MonolingualTextValue> labels,
-			List<MonolingualTextValue> descriptions,
-			List<MonolingualTextValue> aliases, DatatypeIdValue datatypeId) {
-		return makePropertyDocument(propertyId, labels, descriptions,
-				aliases, Collections.emptyList(), datatypeId);
 	}
 
 	/**

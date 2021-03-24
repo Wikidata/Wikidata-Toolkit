@@ -663,7 +663,7 @@ public class ClassPropertyUsageAnalyzer implements EntityDocumentProcessor {
 				}
 				for (Statement s : sg) {
 					if (s.getMainSnak() instanceof ValueSnak) {
-						Value value = s.getMainSnak().getValue();
+						Value value = ((ValueSnak)s.getMainSnak()).getValue();
 						if (value instanceof StringValue) {
 							imageFile = ((StringValue) value).getString();
 							break;

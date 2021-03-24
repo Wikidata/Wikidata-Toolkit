@@ -390,26 +390,6 @@ public class DumpProcessingController {
 	}
 
 	/**
-	 * Processes the most recent incremental (daily) dump that is available.
-	 * This is mainly useful for testing, since these dumps are much smaller
-	 * than the main dumps. The registered listeners (MwRevisionProcessor or
-	 * EntityDocumentProcessor objects) will be notified of all data they
-	 * registered for.
-	 *
-	 * @see DumpProcessingController#processMostRecentMainDump()
-	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 * @deprecated Use {@link #getMostRecentDump(DumpContentType)} with
-	 *             {@link DumpContentType#DAILY} and
-	 *             {@link #processDump(MwDumpFile)} instead; method will vanish
-	 *             in WDTK 0.5
-	 */
-	@Deprecated
-	public void processMostRecentDailyDump() 
-		throws IOException, FileAlreadyExistsException {
-		processDump(getMostRecentDump(DumpContentType.JSON));
-	}
-
-	/**
 	 * Processes the most recent main (complete) dump that is available.
 	 * Convenience method: same as retrieving a dump with
 	 * {@link #getMostRecentDump(DumpContentType)} with
@@ -481,31 +461,6 @@ public class DumpProcessingController {
 		}
 
 		processDumpFile(dumpFile, dumpFileProcessor);
-	}
-
-	/**
-	 * Processes the most recent dump of the given type using the given dump
-	 * processor.
-	 *
-	 * @see DumpProcessingController#processMostRecentMainDump()
-	 * @see DumpProcessingController#processAllRecentRevisionDumps()
-	 *
-	 * @param dumpContentType
-	 *            the type of dump to process
-	 * @param dumpFileProcessor
-	 *            the processor to use
-	 * @deprecated Use {@link #getMostRecentDump(DumpContentType)} and
-	 *             {@link #processDump(MwDumpFile)} instead; method will vanish
-	 *             in WDTK 0.5
-	 */
-	@Deprecated
-	public void processMostRecentDump(DumpContentType dumpContentType,
-			MwDumpFileProcessor dumpFileProcessor) 
-				throws IOException, FileAlreadyExistsException {
-		MwDumpFile dumpFile = getMostRecentDump(dumpContentType);
-		if (dumpFile != null) {
-			processDumpFile(dumpFile, dumpFileProcessor);
-		}
 	}
 
 	/**

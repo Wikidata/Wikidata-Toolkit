@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,10 +18,13 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+package org.wikidata.wdtk.wikibaseapi;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,9 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MaxlagErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Java implementation for the wbeditentity API action.
@@ -792,7 +792,7 @@ public class WbEditingAction {
 		} else if (root.has("entity")) {
 			return parseJsonResponse(root.path("entity"));
 		} else {
-			throw new JsonMappingException(
+			throw new MalformedResponseException(
 					"No entity document found in API response.");
 		}
 	}

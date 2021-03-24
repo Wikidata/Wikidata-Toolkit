@@ -1,22 +1,3 @@
- package org.wikidata.wdtk.wikibaseapi;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
-
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -36,6 +17,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  * limitations under the License.
  * #L%
  */
+
+package org.wikidata.wdtk.wikibaseapi;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 
 public class TermStatementUpdateTest {
 	final static ItemIdValue Q1 = Datamodel.makeWikidataItemIdValue("Q1");

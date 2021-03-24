@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.dumpfiles.wmf;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -10,9 +8,8 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
+ *      http://www.apache.org/licenses/LI
+import org.junit.jupiter.api.Test; required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -20,9 +17,11 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.dumpfiles.wmf;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.dumpfiles.MwDumpFileProcessor;
@@ -70,7 +69,7 @@ public class WmfDumpFileManagerTest {
 
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		this.wrf = new MockWebResourceFetcher();
 		this.dmPath = Paths.get(System.getProperty("user.dir"));
@@ -134,12 +133,12 @@ public class WmfDumpFileManagerTest {
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(
-						"Dumpfile " + dumpFiles.get(i) + " should be local.",
-						dumpFiles.get(i) instanceof WmfLocalDumpFile);
+						dumpFiles.get(i) instanceof WmfLocalDumpFile,
+						"Dumpfile " + dumpFiles.get(i) + " should be local.");
 			} else {
-				assertTrue("Dumpfile " + dumpFiles.get(i)
-						+ " should be online.",
-						dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile);
+				assertTrue(
+						dumpFiles.get(i) instanceof WmfOnlineDailyDumpFile,
+						"Dumpfile " + dumpFiles.get(i) + " should be online.");
 			}
 		}
 	}
@@ -174,12 +173,12 @@ public class WmfDumpFileManagerTest {
 			assertEquals(dumpFiles.get(i).getDateStamp(), dumpDates[i]);
 			if (dumpIsLocal[i]) {
 				assertTrue(
-						"Dumpfile " + dumpFiles.get(i) + " should be local.",
-						dumpFiles.get(i) instanceof WmfLocalDumpFile);
+						dumpFiles.get(i) instanceof WmfLocalDumpFile,
+						"Dumpfile " + dumpFiles.get(i) + " should be local.");
 			} else {
-				assertTrue("Dumpfile " + dumpFiles.get(i)
-						+ " should be online.",
-						dumpFiles.get(i) instanceof JsonOnlineDumpFile);
+				assertTrue(
+						dumpFiles.get(i) instanceof JsonOnlineDumpFile,
+						"Dumpfile " + dumpFiles.get(i) + " should be online.");
 			}
 		}
 	}

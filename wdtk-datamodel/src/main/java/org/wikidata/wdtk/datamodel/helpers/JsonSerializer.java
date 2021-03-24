@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -19,6 +17,8 @@ package org.wikidata.wdtk.datamodel.helpers;
  * limitations under the License.
  * #L%
  */
+
+package org.wikidata.wdtk.datamodel.helpers;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -173,69 +173,54 @@ public class JsonSerializer implements EntityDocumentDumpProcessor {
 	}
 
 	/**
-	 * Serializes the given object in JSON and returns the resulting string. In
-	 * case of errors, null is returned.
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
 	 *
 	 * @param itemDocument
 	 *            object to serialize
-	 * @return JSON serialization or null
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
 	 */
-	public static String getJsonString(ItemDocument itemDocument) {
-		return jacksonObjectToString(itemDocument);
+	public static String getJsonString(ItemDocument itemDocument) throws JsonProcessingException {
+		return mapper.writeValueAsString(itemDocument);
 	}
 
 	/**
-	 * Serializes the given object in JSON and returns the resulting string. In
-	 * case of errors, null is returned.
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
 	 *
 	 * @param propertyDocument
 	 *            object to serialize
-	 * @return JSON serialization or null
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
 	 */
-	public static String getJsonString(PropertyDocument propertyDocument) {
-		return jacksonObjectToString(propertyDocument);
+	public static String getJsonString(PropertyDocument propertyDocument) throws JsonProcessingException {
+		return mapper.writeValueAsString(propertyDocument);
 	}
 
 	/**
-	 * Serializes the given object in JSON and returns the resulting string. In
-	 * case of errors, null is returned.
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
 	 *
 	 * @param mediaInfoDocument
 	 *            object to serialize
-	 * @return JSON serialization or null
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
 	 */
-	public static String getJsonString(MediaInfoDocument mediaInfoDocument) {
-		return jacksonObjectToString(mediaInfoDocument);
+	public static String getJsonString(MediaInfoDocument mediaInfoDocument) throws JsonProcessingException {
+		return mapper.writeValueAsString(mediaInfoDocument);
 	}
 
 	/**
-	 * Serializes the given object in JSON and returns the resulting string. In
-	 * case of errors, null is returned.
+	 * Serializes the given object in JSON and returns the resulting string.
+	 * Throws if the serialization fails.
 	 *
 	 * @param statement
 	 *            object to serialize
-	 * @return JSON serialization or null
+	 * @return JSON serialization
+	 * @throws JsonProcessingException if the object cannot be serialized
 	 */
-	public static String getJsonString(Statement statement) {
-		return jacksonObjectToString(statement);
-	}
-
-	/**
-	 * Serializes the given object in JSON and returns the resulting string. In
-	 * case of errors, null is returned. In particular, this happens if the
-	 * object is not based on a Jackson-annotated class. An error is logged in
-	 * this case.
-	 *
-	 * @param object
-	 *            object to serialize
-	 * @return JSON serialization or null
-	 */
-	protected static String jacksonObjectToString(Object object) {
-		try {
-			return mapper.writeValueAsString(object);
-		} catch (JsonProcessingException e) {
-			logger.error("Failed to serialize JSON data: " + e.toString());
-			return null;
-		}
+	public static String getJsonString(Statement statement) throws JsonProcessingException {
+		return mapper.writeValueAsString(statement);
 	}
 }

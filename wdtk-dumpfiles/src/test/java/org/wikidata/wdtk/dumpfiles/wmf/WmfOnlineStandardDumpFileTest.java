@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.dumpfiles.wmf;
-
 /*
  * #%L
  * Wikidata Toolkit Dump File Handling
@@ -20,26 +18,32 @@ package org.wikidata.wdtk.dumpfiles.wmf;
  * #L%
  */
 
+package org.wikidata.wdtk.dumpfiles.wmf;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.dumpfiles.DumpContentType;
 import org.wikidata.wdtk.dumpfiles.MwDumpFile;
 import org.wikidata.wdtk.testing.MockDirectoryManager;
 import org.wikidata.wdtk.testing.MockWebResourceFetcher;
 import org.wikidata.wdtk.util.CompressionType;
 
-import static org.junit.Assert.*;
-
 public class WmfOnlineStandardDumpFileTest {
 
 	MockWebResourceFetcher wrf;
 	MockDirectoryManager dm;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		dm = new MockDirectoryManager(
 				Paths.get(System.getProperty("user.dir")), true, false);
@@ -134,7 +138,7 @@ public class WmfOnlineStandardDumpFileTest {
 		assertEquals(DumpContentType.FULL, dump.getDumpContentType());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void downloadNoRevisionId() throws IOException {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
@@ -144,10 +148,10 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
-		dump.getDumpFileReader();
+		assertThrows(IOException.class, () -> dump.getDumpFileReader());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void downloadNoMd5sum() throws IOException {
 		wrf.setWebResourceContents(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/wikidatawiki-20140210-pages-meta-current.xml.bz2",
@@ -157,10 +161,10 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-index.html", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.FULL);
-		dump.getDumpFileReader();
+		assertThrows(IOException.class, () -> dump.getDumpFileReader());
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void downloadNoDumpFile() throws IOException {
 		wrf.setWebResourceContentsFromResource(
 				"http://dumps.wikimedia.org/wikidatawiki/20140210/",
@@ -170,7 +174,7 @@ public class WmfOnlineStandardDumpFileTest {
 				"/wikidatawiki-20140210-md5sums.txt", this.getClass());
 		MwDumpFile dump = new WmfOnlineStandardDumpFile("20140210",
 				"wikidatawiki", wrf, dm, DumpContentType.CURRENT);
-		dump.getDumpFileReader();
+		assertThrows(IOException.class, () -> dump.getDumpFileReader());
 	}
 
 }

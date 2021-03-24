@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,14 +18,14 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+package org.wikidata.wdtk.wikibaseapi;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,138 +40,130 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WbSearchEntitiesAction {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(WbSearchEntitiesAction.class);
+	/**
+	 * Connection to a Wikibase API.
+	 */
+	private final ApiConnection connection;
 
-    /**
-     * Connection to a Wikibase API.
-     */
-    private final ApiConnection connection;
+	/**
+	 * Mapper object used for deserializing JSON data.
+	 */
+	private final ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * The IRI that identifies the site that the data is from.
-     */
-    private final String siteIri;
+	/**
+	 * Creates an object to fetch data from the given ApiConnection. The site
+	 * URI is necessary since it is not contained in the data retrieved from the
+	 * API.
+	 *
+	 * @param connection
+	 *            {@link ApiConnection} Object to send the requests
+	 * @param siteUri
+	 *            the URI identifying the site that is accessed (usually the
+	 *            prefix of entity URIs), e.g.,
+	 *            "http://www.wikidata.org/entity/"
+	 */
+	public WbSearchEntitiesAction(ApiConnection connection, String siteUri) {
+		this.connection = connection;
+	}
 
-    /**
-     * Mapper object used for deserializing JSON data.
-     */
-    private final ObjectMapper mapper = new ObjectMapper();
+	public List<WbSearchEntitiesResult> wbSearchEntities(WbGetEntitiesSearchData properties)
+			throws MediaWikiApiErrorException, IOException {
+		return wbSearchEntities(properties.search, properties.language,
+				properties.strictlanguage, properties.type, properties.limit, properties.offset);
+	}
 
-    /**
-     * Creates an object to fetch data from the given ApiConnection. The site
-     * URI is necessary since it is not contained in the data retrieved from the
-     * API.
-     *
-     * @param connection
-     *            {@link ApiConnection} Object to send the requests
-     * @param siteUri
-     *            the URI identifying the site that is accessed (usually the
-     *            prefix of entity URIs), e.g.,
-     *            "http://www.wikidata.org/entity/"
-     */
-    public WbSearchEntitiesAction(ApiConnection connection, String siteUri) {
-        this.connection = connection;
-        this.siteIri = siteUri;
-    }
+	/**
+	 * Executes the API action "wbsearchentity" for the given parameters.
+	 * Searches for entities using labels and aliases. Returns a label and
+	 * description for the entity in the user language if possible. Returns
+	 * details of the matched term. The matched term text is also present in the
+	 * aliases key if different from the display label.
+	 *
+	 * <p>
+	 * See the <a href=
+	 * "https://www.wikidata.org/w/api.php?action=help&modules=wbsearchentity"
+	 * >online API documentation</a> for further information.
+	 * <p>
+	 *
+	 * @param search
+	 *            (required) search for this text
+	 * @param language
+	 *            (required) search in this language
+	 * @param strictLanguage
+	 *            (optional) whether to disable language fallback
+	 * @param type
+	 *            (optional) search for this type of entity
+	 *            One of the following values: item, property
+	 *            Default: item
+	 * @param limit
+	 *            (optional) maximal number of results
+	 *            no more than 50 (500 for bots) allowed
+	 *            Default: 7
+	 * @param offset
+	 *            (optional) offset where to continue a search
+	 *            Default: 0
+	 *            this parameter is called "continue" in the API (which is a Java keyword)
+	 *
+	 * @return list of matching entities retrieved via the API URL
+	 * @throws MediaWikiApiErrorException
+	 *             if the API returns an error
+	 * @throws IllegalArgumentException
+	 *             if the given combination of parameters does not make sense
+	 * @throws MalformedResponseException
+	 *             if response JSON cannot be parsed
+	 */
+	public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
+			Boolean strictLanguage, String type, Long limit, Long offset)
+					throws MediaWikiApiErrorException, IOException {
 
-    public List<WbSearchEntitiesResult> wbSearchEntities(WbGetEntitiesSearchData properties)
-            throws MediaWikiApiErrorException, IOException {
-        return wbSearchEntities(properties.search, properties.language,
-                properties.strictlanguage, properties.type, properties.limit, properties.offset);
-    }
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
 
-    /**
-     * Executes the API action "wbsearchentity" for the given parameters.
-     * Searches for entities using labels and aliases. Returns a label and
-     * description for the entity in the user language if possible. Returns
-     * details of the matched term. The matched term text is also present in the
-     * aliases key if different from the display label.
-     *
-     * <p>
-     * See the <a href=
-     * "https://www.wikidata.org/w/api.php?action=help&modules=wbsearchentity"
-     * >online API documentation</a> for further information.
-     * <p>
-     *
-     * @param search
-     *            (required) search for this text
-     * @param language
-     *            (required) search in this language
-     * @param strictLanguage
-     *            (optional) whether to disable language fallback
-     * @param type
-     *            (optional) search for this type of entity
-     *            One of the following values: item, property
-     *            Default: item
-     * @param limit
-     *            (optional) maximal number of results
-     *            no more than 50 (500 for bots) allowed
-     *            Default: 7
-     * @param offset
-     *            (optional) offset where to continue a search
-     *            Default: 0
-     *            this parameter is called "continue" in the API (which is a Java keyword)
-     *
-     * @return list of matching entities retrieved via the API URL
-     * @throws MediaWikiApiErrorException
-     *             if the API returns an error
-     * @throws IllegalArgumentException
-     *             if the given combination of parameters does not make sense
-     */
-    public List<WbSearchEntitiesResult> wbSearchEntities(String search, String language,
-                                                         Boolean strictLanguage, String type, Long limit, Long offset)
-            throws MediaWikiApiErrorException, IOException {
+		if (search != null) {
+			parameters.put("search", search);
+		} else {
+			throw new IllegalArgumentException(
+					"Search parameter must be specified for this action.");
+		}
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(ApiConnection.PARAM_ACTION, "wbsearchentities");
+		if (language != null) {
+			parameters.put("language", language);
+		} else {
+			throw new IllegalArgumentException(
+					"Language parameter must be specified for this action.");
+		}
+		if (strictLanguage != null) {
+			parameters.put("strictlanguage", Boolean.toString(strictLanguage));
+		}
 
-        if (search != null) {
-            parameters.put("search", search);
-        } else {
-            throw new IllegalArgumentException(
-                    "Search parameter must be specified for this action.");
-        }
+		if (type != null) {
+			parameters.put("type", type);
+		}
 
-        if (language != null) {
-            parameters.put("language", language);
-        } else {
-            throw new IllegalArgumentException(
-                    "Language parameter must be specified for this action.");
-        }
-        if (strictLanguage != null) {
-            parameters.put("strictlanguage", Boolean.toString(strictLanguage));
-        }
+		if (limit != null) {
+			parameters.put("limit", Long.toString(limit));
+		}
 
-        if (type != null) {
-            parameters.put("type", type);
-        }
+		if (offset != null) {
+			parameters.put("continue", Long.toString(offset));
+		}
 
-        if (limit != null) {
-            parameters.put("limit", Long.toString(limit));
-        }
+		List<WbSearchEntitiesResult> results = new ArrayList<>();
 
-        if (offset != null) {
-            parameters.put("continue", Long.toString(offset));
-        }
+		JsonNode root = this.connection.sendJsonRequest("POST", parameters);
+		JsonNode entities = root.path("search");
+		for (JsonNode entityNode : entities) {
+			try {
+				JacksonWbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
+						JacksonWbSearchEntitiesResult.class);
+				results.add(ed);
+			} catch (JsonProcessingException e) {
+				throw new MalformedResponseException(
+						"Error when reading JSON for entity " + entityNode.path("id").asText("UNKNOWN"), e);
+			}
+		}
 
-        List<WbSearchEntitiesResult> results = new ArrayList<>();
-
-        JsonNode root = this.connection.sendJsonRequest("POST", parameters);
-        JsonNode entities = root.path("search");
-        for (JsonNode entityNode : entities) {
-            try {
-                JacksonWbSearchEntitiesResult ed = mapper.treeToValue(entityNode,
-                        JacksonWbSearchEntitiesResult.class);
-                results.add(ed);
-            } catch (JsonProcessingException e) {
-                LOGGER.error("Error when reading JSON for entity "
-                        + entityNode.path("id").asText("UNKNOWN") + ": "
-                        + e.toString());
-            }
-        }
-
-        return results;
-    }
+		return results;
+	}
 
 }

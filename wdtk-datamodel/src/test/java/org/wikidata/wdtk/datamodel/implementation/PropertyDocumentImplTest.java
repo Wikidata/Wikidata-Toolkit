@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,20 +18,35 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class PropertyDocumentImplTest {
@@ -64,7 +77,6 @@ public class PropertyDocumentImplTest {
 
 	@Test
 	public void fieldsAreCorrect() {
-		assertEquals(pd1.getPropertyId(), pid);
 		assertEquals(pd1.getEntityId(), pid);
 		assertEquals(pd1.getLabels(), Collections.singletonMap(label.getLanguageCode(), label));
 		assertEquals(pd1.getDescriptions(), Collections.singletonMap(desc.getLanguageCode(), desc));
@@ -87,9 +99,9 @@ public class PropertyDocumentImplTest {
 	@Test
 	public void findTerms() {
 		assertEquals("label", pd1.findLabel("en"));
-		assertNull( pd1.findLabel("ja"));
+		assertNull(pd1.findLabel("ja"));
 		assertEquals("des", pd1.findDescription("fr"));
-		assertNull( pd1.findDescription("ja"));
+		assertNull(pd1.findDescription("ja"));
 	}
 
 	@Test
@@ -134,10 +146,10 @@ public class PropertyDocumentImplTest {
 		assertEquals(pd1.hashCode(), pd2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new PropertyDocumentImpl(null, labelList, descList, aliasList,
-				statementGroups, datatypeId, 1234);
+		assertThrows(NullPointerException.class, () -> new PropertyDocumentImpl(null, labelList, descList, aliasList,
+				statementGroups, datatypeId, 1234));
 	}
 
 	@Test
@@ -168,28 +180,28 @@ public class PropertyDocumentImplTest {
 		assertEquals(Collections.emptyList(), doc.getStatementGroups());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void datatypeNotNull() {
-		new PropertyDocumentImpl(pid, labelList, descList, aliasList,
-				statementGroups, null, 1234);
+		assertThrows(NullPointerException.class, () -> new PropertyDocumentImpl(pid, labelList, descList, aliasList,
+				statementGroups, null, 1234));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void labelUniquePerLanguage() {
 		List<MonolingualTextValue> labels2 = new ArrayList<>(labelList);
 		labels2.add(new MonolingualTextValueImpl("Property 42 label duplicate", "en"));
 
-		new PropertyDocumentImpl(pid, labels2, descList, aliasList,
-				statementGroups, datatypeId, 1234);
+		assertThrows(IllegalArgumentException.class, () -> new PropertyDocumentImpl(pid, labels2, descList, aliasList,
+				statementGroups, datatypeId, 1234));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void descriptionUniquePerLanguage() {
 		List<MonolingualTextValue> descriptions2 = new ArrayList<>(descList);
 		descriptions2.add(new MonolingualTextValueImpl("Duplicate desc P42", "fr"));
 
-		new PropertyDocumentImpl(pid, labelList, descriptions2, aliasList,
-				statementGroups, datatypeId, 1234);
+		assertThrows(IllegalArgumentException.class, () -> new PropertyDocumentImpl(pid, labelList, descriptions2, aliasList,
+				statementGroups, datatypeId, 1234));
 	}
 	
 	@Test

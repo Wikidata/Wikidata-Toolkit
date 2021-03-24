@@ -22,7 +22,6 @@ package org.wikidata.wdtk.datamodel.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,15 +54,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	private final DataObjectFactory dataObjectFactory;
 
-	private DocumentDataFilter filter = new DocumentDataFilter();
-
-	/**
-	 * If set to true, references will be copied when making deep copies of
-	 * statements. This is the default. The setting does not have any effect
-	 * when making shallow copies.
-	 */
-	private boolean deepCopyReferences = true;
-
 	/**
 	 * Constructor.
 	 *
@@ -72,173 +62,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 */
 	public DatamodelConverter(DataObjectFactory dataObjectFactory) {
 		this.dataObjectFactory = dataObjectFactory;
-	}
-
-	/**
-	 * @deprecated Shallow copy is not supported anymore
-	 *
-	 * Returns true if objects will be copied by deep copy, replacing all
-	 * subobjects recursively. This is the default.
-	 *
-	 * @return true if deep copy is to be used
-	 */
-	@Deprecated
-	public boolean hasOptionDeepCopy() {
-		return true;
-	}
-
-	/**
-	 * @deprecated Shallow copy is not supported anymore
-	 *
-	 * Sets the value of the deep copy option. If true, subobjects of objects
-	 * will be copied recursively.
-	 *
-	 * @param value
-	 *            the value of the deep copy option
-	 */
-	@Deprecated
-	public void setOptionDeepCopy(boolean value) {
-	}
-
-	/**
-	 * @deprecated Support for filtering references is going to be removed from DatamodelConverter
-	 *
-	 * Returns true if references will be copied when creating a deep copy of
-	 * statements. This is the default. The setting has no effect when shallow
-	 * copies are used.
-	 *
-	 * @return true if references are included in deep copy
-	 */
-	@Deprecated
-	public boolean hasOptionDeepCopyReferences() {
-		return deepCopyReferences;
-	}
-
-	/**
-	 * @deprecated Support for filtering references is going to be removed from DatamodelConverter
-	 *
-	 * Sets the value of the deep copy references option. If true, references
-	 * will be copied when creating a deep copy of statements.
-	 *
-	 * @param value
-	 *            the value of the deep copy references option
-	 */
-	@Deprecated
-	public void setOptionDeepCopyReferences(boolean value) {
-		deepCopyReferences = value;
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Replaces the current filter settings with the given ones. Future changes
-	 * to the settings will take effect (a reference is used, not a full copy).
-	 *
-	 * @param filter
-	 *            the filter to use
-	 */
-	@Deprecated
-	public void setOptionFilter(DocumentDataFilter filter) {
-		this.filter = filter;
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Returns the (possibly empty) set of language codes that are used to
-	 * filter data while copying it, or null if no such filter is configured
-	 * (default). If not equal to null, only terms in the given language will be
-	 * copied.
-	 *
-	 * @return set of language codes to use for filtering
-	 */
-	@Deprecated
-	public Set<String> getOptionLanguageFilter() {
-		return filter.getLanguageFilter();
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Sets the (possibly empty) set of language codes that are used to filter
-	 * data while copying it. Setting this to null disables this filter (this is
-	 * the default). If not equal to null, only terms in the given language will
-	 * be copied.
-	 * <p>
-	 * The language filter is not applied to monolingual text values in
-	 * statements. Only labels, descriptions, and aliases are filtered.
-	 *
-	 * @param languageFilter
-	 *            set of language codes to restrict copying to
-	 */
-	@Deprecated
-	public void setOptionLanguageFilter(Set<String> languageFilter) {
-		filter.setLanguageFilter(languageFilter);
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Returns the (possibly empty) set of {@link PropertyIdValue} objects that
-	 * are used to filter statements while copying data, or null if no such
-	 * filter is configured (default). If not equal to null, only statements
-	 * using the given properties will be copied.
-	 *
-	 * @return set of properties to use for filtering
-	 */
-	@Deprecated
-	public Set<PropertyIdValue> getOptionPropertyFilter() {
-		return filter.getPropertyFilter();
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Sets the (possibly empty) set of {@link PropertyIdValue} objects that are
-	 * used to filter statements while copying data. Setting this to null
-	 * disables this filter (this is the default). If not equal to null, only
-	 * statements using the given properties will be copied.
-	 * <p>
-	 * The property filter is not applied to qualifiers and references in
-	 * statements. Only the main property of statements is filtered.
-	 *
-	 * @param propertyFilter
-	 *            set of properties to use for filtering
-	 */
-	@Deprecated
-	public void setOptionPropertyFilter(Set<PropertyIdValue> propertyFilter) {
-		filter.setPropertyFilter(propertyFilter);
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Returns the (possibly empty) set of site keys that are used to filter
-	 * {@link SiteLink} objects while copying data, or null if no such filter is
-	 * configured (default). If not equal to null, only site links for the given
-	 * sites will be copied.
-	 *
-	 * @return set of site keys to use for filtering
-	 */
-	@Deprecated
-	public Set<String> getOptionSiteLinkFilter() {
-		return filter.getSiteLinkFilter();
-	}
-
-	/**
-	 * @deprecated Use {@link DatamodelFilter}
-	 *
-	 * Sets the (possibly empty) set of site keys that are used to filter
-	 * {@link SiteLink} objects while copying data. Setting this to null
-	 * disables this filter (this is the default). If not equal to null, only
-	 * site links for the given sites will be copied.
-	 *
-	 * @param siteLinkFilter
-	 *            set of site keys to use for filtering
-	 */
-	@Deprecated
-	public void setOptionSiteLinkFilter(Set<String> siteLinkFilter) {
-		filter.setSiteLinkFilter(siteLinkFilter);
 	}
 
 	/**
@@ -632,10 +455,8 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 			Map<String, List<MonolingualTextValue>> aliasMap) {
 		List<MonolingualTextValue> aliases = new ArrayList<>();
 		for (Entry<String, List<MonolingualTextValue>> langAliases : aliasMap.entrySet()) {
-			if (filter.includeLanguage(langAliases.getKey())) {
-				for (MonolingualTextValue mtv : langAliases.getValue()) {
-					aliases.add(copy(mtv));
-				}
+			for (MonolingualTextValue mtv : langAliases.getValue()) {
+				aliases.add(copy(mtv));
 			}
 		}
 		return aliases;
@@ -665,10 +486,6 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<Reference> copyReferences(List<Reference> references) {
-		if (!deepCopyReferences) {
-			return Collections.emptyList();
-		}
-
 		List<Reference> result = new ArrayList<>(references.size());
 		for (Reference reference : references) {
 			result.add(dataObjectFactory
@@ -685,15 +502,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<StatementGroup> copyStatementGroups(List<StatementGroup> statementGroups) {
-		if (filter.excludeAllProperties()) {
-			return Collections.emptyList();
-		}
-
 		List<StatementGroup> result = new ArrayList<>(statementGroups.size());
 		for (StatementGroup statementGroup : statementGroups) {
-			if (filter.includePropertyId(statementGroup.getProperty())) {
-				result.add(copy(statementGroup));
-			}
+			result.add(copy(statementGroup));
 		}
 		return result;
 	}
@@ -706,15 +517,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private List<MonolingualTextValue> copyMonoLingualTextValues(Collection<MonolingualTextValue> monoLingualTextValues) {
-		if (filter.excludeAllLanguages()) {
-			return Collections.emptyList();
-		}
-
 		List<MonolingualTextValue> result = new ArrayList<>(monoLingualTextValues.size());
 		for (MonolingualTextValue mtv : monoLingualTextValues) {
-			if (filter.includeLanguage(mtv.getLanguageCode())) {
-				result.add(copy(mtv));
-			}
+			result.add(copy(mtv));
 		}
 		return result;
 	}
@@ -727,15 +532,9 @@ public class DatamodelConverter implements SnakVisitor<Snak>,
 	 * @return the copied object
 	 */
 	private Map<String, SiteLink> copySiteLinks(Map<String, SiteLink> siteLinks) {
-		if (filter.excludeAllSiteLinks()) {
-			return Collections.emptyMap();
-		}
-
 		Map<String, SiteLink> result = new HashMap<>(siteLinks.size());
 		for (Entry<String, SiteLink> entry : siteLinks.entrySet()) {
-			if (filter.includeSiteLink(entry.getKey())) {
-				result.put(entry.getKey(), copy(entry.getValue()));
-			}
+			result.put(entry.getKey(), copy(entry.getValue()));
 		}
 		return result;
 	}

@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,14 +18,20 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import static org.junit.Assert.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
-
-import java.io.IOException;
 
 public class GlobeCoordinatesValueImplTest {
 
@@ -59,9 +63,9 @@ public class GlobeCoordinatesValueImplTest {
 		assertEquals(new ItemIdValueImpl("Q2", "http://www.wikidata.org/entity/"), c1.getGlobeItemId());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void getGlobeItemIdInvalidIri() {
-		c3.getGlobeItemId();
+		assertThrows(IllegalArgumentException.class, () -> c3.getGlobeItemId());
 	}
 
 	@Test
@@ -94,10 +98,10 @@ public class GlobeCoordinatesValueImplTest {
 		assertEquals(c1.hashCode(), c2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void globeNotNull() {
-		new GlobeCoordinatesValueImpl(12.3, 14.1,
-				GlobeCoordinatesValue.PREC_DEGREE, null);
+		assertThrows(NullPointerException.class, () -> new GlobeCoordinatesValueImpl(12.3, 14.1,
+				GlobeCoordinatesValue.PREC_DEGREE, null));
 	}
 
 	@Test
@@ -107,32 +111,32 @@ public class GlobeCoordinatesValueImplTest {
 		assertTrue(v.getPrecision() > 0.);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void latitudeWithinUpperRange() {
-		new GlobeCoordinatesValueImpl(91.0, 270.0,
+		assertThrows(IllegalArgumentException.class, () -> new GlobeCoordinatesValueImpl(91.0, 270.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
+				GlobeCoordinatesValue.GLOBE_EARTH));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void latitudeWithinLowerRange() {
-		new GlobeCoordinatesValueImpl(-91.0, 270.0,
+		assertThrows(IllegalArgumentException.class, () -> new GlobeCoordinatesValueImpl(-91.0, 270.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
+				GlobeCoordinatesValue.GLOBE_EARTH));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void longitudeWithinUpperRange() {
-		new GlobeCoordinatesValueImpl(45.0, 500.0,
+		assertThrows(IllegalArgumentException.class, () -> new GlobeCoordinatesValueImpl(45.0, 500.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
+				GlobeCoordinatesValue.GLOBE_EARTH));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void longitudeWithinLowerRange() {
-		new GlobeCoordinatesValueImpl(45.0, -500.0,
+		assertThrows(IllegalArgumentException.class, () -> new GlobeCoordinatesValueImpl(45.0, -500.0,
 				GlobeCoordinatesValue.PREC_DEGREE,
-				GlobeCoordinatesValue.GLOBE_EARTH);
+				GlobeCoordinatesValue.GLOBE_EARTH));
 	}
 
 	@Test

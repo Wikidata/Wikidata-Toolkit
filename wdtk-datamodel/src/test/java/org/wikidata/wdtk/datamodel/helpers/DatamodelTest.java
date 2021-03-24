@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.helpers;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,15 +18,45 @@ package org.wikidata.wdtk.datamodel.helpers;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
+package org.wikidata.wdtk.datamodel.helpers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.implementation.DataObjectFactoryImpl;
-import org.wikidata.wdtk.datamodel.implementation.ItemIdValueImpl;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DataObjectFactory;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeDocument;
+import org.wikidata.wdtk.datamodel.interfaces.LexemeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.NoValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.SenseDocument;
+import org.wikidata.wdtk.datamodel.interfaces.SenseIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
+import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
+import org.wikidata.wdtk.datamodel.interfaces.SomeValueSnak;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 public class DatamodelTest {
 
@@ -192,19 +220,6 @@ public class DatamodelTest {
 	}
 
 	@Test
-	public final void testGetQuantityValue() {
-		BigDecimal nv = new BigDecimal(
-				"0.123456789012345678901234567890123456789");
-		BigDecimal lb = new BigDecimal(
-				"0.123456789012345678901234567890123456788");
-		BigDecimal ub = new BigDecimal(
-				"0.123456789012345678901234567890123456790");
-		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub, "unit");
-		assertEquals(o1, o2);
-	}
-
-	@Test
 	public final void testGetQuantityValueItemIdValue() {
 		BigDecimal nv = new BigDecimal(
 				"0.123456789012345678901234567890123456789");
@@ -229,15 +244,6 @@ public class DatamodelTest {
 				"0.123456789012345678901234567890123456790");
 		QuantityValue o1 = Datamodel.makeQuantityValue(nv, lb, ub);
 		QuantityValue o2 = factory.getQuantityValue(nv, lb, ub);
-		assertEquals(o1, o2);
-	}
-
-	@Test
-	public final void testGetQuantityValueNoBounds() {
-		BigDecimal nv = new BigDecimal(
-				"0.123456789012345678901234567890123456789");
-		QuantityValue o1 = Datamodel.makeQuantityValue(nv, "unit");
-		QuantityValue o2 = factory.getQuantityValue(nv, "unit");
 		assertEquals(o1, o2);
 	}
 

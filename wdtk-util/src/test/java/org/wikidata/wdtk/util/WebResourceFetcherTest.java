@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.util;
-
 /*
  * #%L
  * Wikidata Toolkit Utilities
@@ -20,20 +18,22 @@ package org.wikidata.wdtk.util;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WebResourceFetcherTest {
 
 	@Test
 	public void testSetUserAgent() {
 		WebResourceFetcherImpl.setUserAgent("My user agent");
-		assertEquals("My user agent", WebResourceFetcherImpl.getUserAgent());
+		assertEquals(WebResourceFetcherImpl.getUserAgent(), "My user agent");
 	}
 
 	@Test

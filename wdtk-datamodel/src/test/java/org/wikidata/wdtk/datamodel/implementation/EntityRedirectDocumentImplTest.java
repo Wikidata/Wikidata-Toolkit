@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,17 +18,21 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
 import org.wikidata.wdtk.datamodel.interfaces.EntityRedirectDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EntityRedirectDocumentImplTest {
 
@@ -74,19 +76,19 @@ public class EntityRedirectDocumentImplTest {
 		assertEquals(itemRedirect.hashCode(), itemRedirect2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new EntityRedirectDocumentImpl(null, targetItemId, 0);
+		assertThrows(NullPointerException.class, () -> new EntityRedirectDocumentImpl(null, targetItemId, 0));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void targetNotNull() {
-		new EntityRedirectDocumentImpl(entityItemId, null, 0);
+		assertThrows(NullPointerException.class, () -> new EntityRedirectDocumentImpl(entityItemId, null, 0));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void entityTypeEquality() {
-		new EntityRedirectDocumentImpl(entityItemId, new LexemeIdValueImpl("L1", "http://example.com/entity/"), 0);
+		assertThrows(IllegalArgumentException.class, () -> new EntityRedirectDocumentImpl(entityItemId, new LexemeIdValueImpl("L1", "http://example.com/entity/"), 0));
 	}
 
 	@Test

@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.datamodel.implementation;
-
 /*
  * #%L
  * Wikidata Toolkit Data Model
@@ -20,16 +18,36 @@ package org.wikidata.wdtk.datamodel.implementation;
  * #L%
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
-import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+package org.wikidata.wdtk.datamodel.implementation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.wikidata.wdtk.datamodel.helpers.DatamodelMapper;
+import org.wikidata.wdtk.datamodel.interfaces.Claim;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.FormDocument;
+import org.wikidata.wdtk.datamodel.interfaces.FormIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
+import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FormDocumentImplTest {
 
@@ -94,19 +112,19 @@ public class FormDocumentImplTest {
 		assertEquals(fd1.hashCode(), fd2.hashCode());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void idNotNull() {
-		new FormDocumentImpl(null, repList, gramFeatures, statementGroups, 1234);
+		assertThrows(NullPointerException.class, () -> new FormDocumentImpl(null, repList, gramFeatures, statementGroups, 1234));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void representationsNotNull() {
-		new FormDocumentImpl(fid,  null, gramFeatures, statementGroups, 1234);
+		assertThrows(NullPointerException.class, () -> new FormDocumentImpl(fid,  null, gramFeatures, statementGroups, 1234));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void representationsNotEmpty() {
-		new FormDocumentImpl(fid, Collections.emptyList(), gramFeatures, statementGroups, 1234);
+		assertThrows(IllegalArgumentException.class, () -> new FormDocumentImpl(fid, Collections.emptyList(), gramFeatures, statementGroups, 1234));
 	}
 
 	@Test
@@ -121,9 +139,9 @@ public class FormDocumentImplTest {
 		assertTrue(doc.getStatementGroups().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void statementGroupsUseSameSubject() {
-		FormIdValue iid2 = new FormIdValueImpl("Q23", "http://example.org/");
+		FormIdValue iid2 = new FormIdValueImpl("L23-F5", "http://example.org/");
 		Statement s2 = new StatementImpl("MyId", StatementRank.NORMAL,
 				new SomeValueSnakImpl(new PropertyIdValueImpl("P42", "http://wikibase.org/entity/")),
 				Collections.emptyList(),  Collections.emptyList(), iid2);
@@ -133,7 +151,7 @@ public class FormDocumentImplTest {
 		statementGroups2.add(statementGroups.get(0));
 		statementGroups2.add(sg2);
 
-		new FormDocumentImpl(fid, repList, gramFeatures, statementGroups2, 1234);
+		assertThrows(IllegalArgumentException.class, () -> new FormDocumentImpl(fid, repList, gramFeatures, statementGroups2, 1234));
 	}
 
 	@Test

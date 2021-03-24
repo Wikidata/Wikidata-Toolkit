@@ -43,18 +43,6 @@ public interface PropertyDocument extends TermedStatementDocument {
 	PropertyIdValue getEntityId();
 
 	/**
-	 * @deprecated Use {@link #getEntityId()}
-	 *
-	 * Return the ID of the property that the data refers to. The result is the
-	 * same as that of {@link EntityDocument#getEntityId()}, but declared with a
-	 * more specific result type.
-	 *
-	 * @return property id
-	 */
-	@Deprecated
-	PropertyIdValue getPropertyId();
-
-	/**
 	 * Get the datatype id of the datatype defined for this property.
 	 *
 	 * @return {@link DatatypeIdValue}

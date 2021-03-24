@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,8 +18,11 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.wikidata.wdtk.wikibaseapi;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
@@ -40,7 +41,7 @@ public class WbSearchEntitiesActionTest {
     MockBasicApiConnection con;
     WbSearchEntitiesAction action;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         this.con = new MockBasicApiConnection();
@@ -94,13 +95,13 @@ public class WbSearchEntitiesActionTest {
         assertTrue(results.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIdsAndTitles() throws MediaWikiApiErrorException, IOException {
-        action.wbSearchEntities(null, "en", null, null, null, null);
+        assertThrows(IllegalArgumentException.class, () -> action.wbSearchEntities(null, "en", null, null, null, null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIdsAndSites() throws MediaWikiApiErrorException, IOException {
-        action.wbSearchEntities("abc", null, null, null, null, null);
+        assertThrows(IllegalArgumentException.class, () -> action.wbSearchEntities("abc", null, null, null, null, null));
     }
 }

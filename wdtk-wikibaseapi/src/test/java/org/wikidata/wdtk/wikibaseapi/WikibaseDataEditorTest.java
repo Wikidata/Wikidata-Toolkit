@@ -1,5 +1,3 @@
-package org.wikidata.wdtk.wikibaseapi;
-
 /*
  * #%L
  * Wikidata Toolkit Wikibase API
@@ -20,6 +18,13 @@ package org.wikidata.wdtk.wikibaseapi;
  * #L%
  */
 
+package org.wikidata.wdtk.wikibaseapi;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,20 +32,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.ItemDocumentBuilder;
+import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
 import org.wikidata.wdtk.datamodel.helpers.PropertyDocumentBuilder;
 import org.wikidata.wdtk.datamodel.helpers.StatementBuilder;
-import org.wikidata.wdtk.datamodel.helpers.JsonSerializer;
-import org.wikidata.wdtk.datamodel.interfaces.*;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
+import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoDocument;
+import org.wikidata.wdtk.datamodel.interfaces.MediaInfoIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.util.CompressionType;
 import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TagsApplyNotAllowedException;
 import org.wikidata.wdtk.wikibaseapi.apierrors.TokenErrorException;
-
-import static org.junit.Assert.*;
 
 public class WikibaseDataEditorTest {
 
@@ -48,7 +59,7 @@ public class WikibaseDataEditorTest {
 	ItemIdValue Q5 = Datamodel.makeWikidataItemIdValue("Q5");
 	PropertyIdValue P31 = Datamodel.makeWikidataPropertyIdValue("P31");
 
-	@Before
+	@BeforeEach
 	public void setUp() throws IOException {
 		this.con = new MockBasicApiConnection();
 		Map<String, String> params = new HashMap<>();
@@ -189,7 +200,7 @@ public class WikibaseDataEditorTest {
 		assertEquals(-1, wde.getRemainingEdits());
 	}
 
-	@Test(expected = TokenErrorException.class)
+	@Test
 	public void testCreateItemBadToken() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -210,7 +221,7 @@ public class WikibaseDataEditorTest {
 		this.con.setWebResourceFromPath(params, this.getClass(),
 				"/error-badtoken.json", CompressionType.NONE);
 
-		wde.createItemDocument(itemDocument, "My summary", null);
+		assertThrows(TokenErrorException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
 	}
 
 	@Test
@@ -281,7 +292,7 @@ public class WikibaseDataEditorTest {
 		assertEquals(expectedResultDocument, result);
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testCreateItemBadEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
 		// Test what happens if the API returns JSON without an actual entity
@@ -304,10 +315,10 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		wde.createItemDocument(itemDocument, "My summary", null);
+		assertThrows(IOException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testCreateItemMissingEntityDocumentJson() throws IOException,
 			MediaWikiApiErrorException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
@@ -328,7 +339,7 @@ public class WikibaseDataEditorTest {
 		params.put("data", data);
 		con.setWebResource(params, expectedResult);
 
-		wde.createItemDocument(itemDocument, "My summary", null);
+		assertThrows(IOException.class, () -> wde.createItemDocument(itemDocument, "My summary", null));
 	}
 
 	@Test
@@ -784,7 +795,7 @@ public class WikibaseDataEditorTest {
 		assertEquals(expectedResultDocument, result);
 	}
 	
-	@Test(expected = TagsApplyNotAllowedException.class)
+	@Test
 	public void testApplyInvalidTag() throws MediaWikiApiErrorException, IOException {
 		WikibaseDataEditor wde = new WikibaseDataEditor(this.con,
 				Datamodel.SITE_WIKIDATA);
@@ -815,10 +826,10 @@ public class WikibaseDataEditorTest {
 				+ "\"servedby\":\"mw1276\"}";
 		con.setWebResource(params, expectedResult);
 
-		wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
+		assertThrows(TagsApplyNotAllowedException.class, () -> wde.updateTermsStatements(itemDocument, Collections.<MonolingualTextValue>emptyList(),
 				Collections.singletonList(description),	Collections.<MonolingualTextValue>emptyList(),
 				Collections.<MonolingualTextValue>emptyList(), Collections.<Statement>emptyList(),
-				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist"));
+				Collections.<Statement>emptyList(), "testing tags", Collections.singletonList("tag_which_does_not_exist")));
 	}
 
 }
