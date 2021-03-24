@@ -154,18 +154,28 @@ public class LexemeUpdateImpl extends StatementDocumentUpdateImpl implements Lex
 				&& addedForms.isEmpty() && updatedForms.isEmpty() && removedForms.isEmpty();
 	}
 
-	@JsonProperty
-	@JsonInclude(Include.NON_ABSENT)
+	@JsonIgnore
 	@Override
 	public Optional<ItemIdValue> getLanguage() {
 		return Optional.ofNullable(language);
 	}
 
-	@JsonProperty
-	@JsonInclude(Include.NON_ABSENT)
+	@JsonProperty("language")
+	@JsonInclude(Include.NON_NULL)
+	String getJsonLanguage() {
+		return language != null ? language.getId() : null;
+	}
+
+	@JsonIgnore
 	@Override
 	public Optional<ItemIdValue> getLexicalCategory() {
 		return Optional.ofNullable(lexicalCategory);
+	}
+
+	@JsonProperty("lexicalCategory")
+	@JsonInclude(Include.NON_NULL)
+	String getJsonLexicalCategory() {
+		return lexicalCategory != null ? lexicalCategory.getId() : null;
 	}
 
 	@JsonIgnore
